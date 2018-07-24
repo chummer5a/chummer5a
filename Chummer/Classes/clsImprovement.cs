@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,116 +16,131 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
-using System.Xml.Linq;
- using Chummer.Backend;
- using Chummer.Backend.Equipment;
- using Chummer.Skills;
+using Chummer.Backend.Equipment;
+using Chummer.Classes;
+using Chummer.Backend.Skills;
+using Chummer.Backend.Attributes;
+using System.Drawing;
+using System.Text;
+using static Chummer.Backend.Skills.SkillsSection;
+using System.ComponentModel;
 
 namespace Chummer
 {
-	[DebuggerDisplay("{DisplayDebug()}")]
-    public class Improvement
+    [DebuggerDisplay("{" + nameof(DisplayDebug) + "()}")]
+    public class Improvement: IHasNotes, IHasInternalId
     {
-		private string DisplayDebug()
-		{
-			return $"{_objImprovementType} ({_intVal}, {_intRating}) <- {_objImprovementSource}, {_strSourceName}, {_strImprovedName}";
-		}
+        private string DisplayDebug()
+        {
+            return $"{_objImprovementType} ({_intVal}, {_intRating}) 🡐 {_objImprovementSource}, {_strSourceName}, {_strImprovedName}";
+        }
 
         public enum ImprovementType
         {
             Attribute,
             Text,
-			Armor,
-			Reach,
-			Nuyen,
-			Essence,
-			Reaction,
-			PhysicalCM,
-			StunCM,
-			UnarmedDV,
-			InitiativePass,
-			MatrixInitiative,
-			MatrixInitiativePass,
-			LifestyleCost,
-			CMThreshold,
-			EnhancedArticulation,
-			WeaponCategoryDV,
-			CyberwareEssCost,
-			SpecialTab,
-			Initiative,
-			Uneducated,
-			LivingPersonaResponse,
-			LivingPersonaSignal,
-			LivingPersonaFirewall,
-			LivingPersonaSystem,
-			LivingPersonaBiofeedback,
-			Smartlink,
-			BiowareEssCost,
-			GenetechCostMultiplier,
-			BasicBiowareEssCost,
-			TransgenicsBiowareCost,
-			SoftWeave,
-			SensitiveSystem,
-			ConditionMonitor,
-			UnarmedDVPhysical,
-			MovementPercent,
-			Adapsin,
-			FreePositiveQualities,
-			FreeNegativeQualities,
-			FreeKnowledgeSkills, 
-			NuyenMaxBP,
-			CMOverflow,
-			FreeSpiritPowerPoints,
-			AdeptPowerPoints,
-			ArmorEncumbrancePenalty,
-			Uncouth,
-			Initiation,
-			Submersion,
-			Infirm,
-			Skillwire,
-			DamageResistance,
-			RestrictedItemCount,
-			AdeptLinguistics,
-			SwimPercent,
-			FlyPercent,
-			FlySpeed,
-			JudgeIntentions,
-			LiftAndCarry,
-			Memory,
-			Concealability,
-			SwapSkillAttribute,
-			DrainResistance,
-			FadingResistance,
-			MatrixInitiativePassAdd,
-			InitiativePassAdd,
-			Composure,
-			UnarmedAP,
-			CMThresholdOffset,
-			Restricted,
-			Notoriety,
-			SpellCategory,
-			ThrowRange,
-			SkillsoftAccess, 
-			AddSprite,
-			BlackMarketDiscount,
-			SelectWeapon,
-			ComplexFormLimit,
-			SpellLimit,
-			QuickeningMetamagic,
-			BasicLifestyleCost,
-			ThrowSTR,
-			IgnoreCMPenaltyStun,
-			IgnoreCMPenaltyPhysical,
-			CyborgEssence,
-			EssenceMax,
+            Armor,
+            FireArmor,
+            ColdArmor,
+            ElectricityArmor,
+            AcidArmor,
+            FallingArmor,
+            Dodge,
+            Reach,
+            Nuyen,
+            PhysicalCM,
+            StunCM,
+            UnarmedDV,
+            InitiativeDice,
+            MatrixInitiative,
+            MatrixInitiativeDice,
+            LifestyleCost,
+            CMThreshold,
+            EnhancedArticulation,
+            WeaponCategoryDV,
+            WeaponCategoryDice,
+            CyberwareEssCost,
+            CyberwareTotalEssMultiplier,
+            CyberwareEssCostNonRetroactive,
+            CyberwareTotalEssMultiplierNonRetroactive,
+            SpecialTab,
+            Initiative,
+            LivingPersonaDeviceRating,
+            LivingPersonaProgramLimit,
+            LivingPersonaAttack,
+            LivingPersonaSleaze,
+            LivingPersonaDataProcessing,
+            LivingPersonaFirewall,
+            Smartlink,
+            BiowareEssCost,
+            BiowareTotalEssMultiplier,
+            BiowareEssCostNonRetroactive,
+            BiowareTotalEssMultiplierNonRetroactive,
+            GenetechCostMultiplier,
+            BasicBiowareEssCost,
+            SoftWeave,
+            DisableBioware,
+            DisableCyberware,
+            DisableBiowareGrade,
+            DisableCyberwareGrade,
+            ConditionMonitor,
+            UnarmedDVPhysical,
+            Adapsin,
+            FreePositiveQualities,
+            FreeNegativeQualities,
+            FreeKnowledgeSkills,
+            NuyenMaxBP,
+            CMOverflow,
+            FreeSpiritPowerPoints,
+            AdeptPowerPoints,
+            ArmorEncumbrancePenalty,
+            Initiation,
+            Submersion,
+            Metamagic,
+            Echo,
+            Skillwire,
+            DamageResistance,
+            RestrictedItemCount,
+            JudgeIntentions,
+            JudgeIntentionsOffense,
+            JudgeIntentionsDefense,
+            LiftAndCarry,
+            Memory,
+            Concealability,
+            SwapSkillAttribute,
+            DrainResistance,
+            FadingResistance,
+            MatrixInitiativeDiceAdd,
+            InitiativeDiceAdd,
+            Composure,
+            UnarmedAP,
+            CMThresholdOffset,
+            CMSharedThresholdOffset,
+            Restricted,
+            Notoriety,
+            SpellCategory,
+            SpellCategoryDamage,
+            SpellCategoryDrain,
+            ThrowRange,
+            SkillsoftAccess,
+            AddSprite,
+            BlackMarketDiscount,
+            ComplexFormLimit,
+            SpellLimit,
+            QuickeningMetamagic,
+            BasicLifestyleCost,
+            ThrowSTR,
+            IgnoreCMPenaltyStun,
+            IgnoreCMPenaltyPhysical,
+            CyborgEssence,
+            EssenceMax,
             AdeptPower,
             SpecificQuality,
             MartialArt,
@@ -133,5593 +148,3967 @@ namespace Chummer
             PhysicalLimit,
             MentalLimit,
             SocialLimit,
-            SchoolOfHardKnocks,
             FriendsInHighPlaces,
-            JackOfAllTrades,
-            CollegeEducation,
             Erased,
-            BornRich,
             Fame,
-            LightningReflexes,
-            Linguist,
             MadeMan,
             Overclocker,
             RestrictedGear,
-            TechSchool,
             TrustFund,
             ExCon,
-            BlackMarket,
-            ContactMadeMan,
-			SelectArmor,
-			Attributelevel,
-			AddContact,
-			Seeker,
-			PublicAwareness,
-			PrototypeTranshuman,
-			Hardwire,
+            ContactForceGroup,
+            Attributelevel,
+            AddContact,
+            Seeker,
+            PublicAwareness,
+            PrototypeTranshuman,
+            Hardwire,
             DealerConnection,
             Skill,  //Improve pool of skill based on name
-			SkillGroup,  //Group
-			SkillCategory, //category
-			SkillAttribute, //attribute
-			SkillLevel,  //Karma points in skill
-			SkillGroupLevel, //group
-			SkillBase,  //base points in skill
-			SkillGroupBase, //group
-			SkillKnowledgeForced, //A skill gained from a knowsoft
-
-			SpecialSkills,
-			ReflexRecorderOptimization,
-	        
+            SkillGroup,  //Group
+            SkillCategory, //category
+            SkillAttribute, //attribute
+            SkillLinkedAttribute, //linked attribute
+            SkillLevel,  //Karma points in skill
+            SkillGroupLevel, //group
+            SkillBase,  //base points in skill
+            SkillGroupBase, //group
+            Skillsoft, // A knowledge or language skill gained from a knowsoft
+            Activesoft, // An active skill gained from an activesoft
+            ReplaceAttribute, //Alter the base metatype or metavariant of a character. Used for infected.
+            SpecialSkills,
+            ReflexRecorderOptimization,
+            BlockSkillDefault,
+            Ambidextrous,
+            UnarmedReach,
+            SkillSpecialization,
+            NativeLanguageLimit,
+            AdeptPowerFreeLevels,
+            AdeptPowerFreePoints,
+            AIProgram,
+            CritterPowerLevel,
+            CritterPower,
+            SwapSkillSpecAttribute,
+            SpellResistance,
+            LimitSpellCategory,
+            LimitSpellDescriptor,
+            LimitSpiritCategory,
+            WalkSpeed,
+            RunSpeed,
+            SprintSpeed,
+            WalkMultiplier,
+            RunMultiplier,
+            SprintBonus,
+            WalkMultiplierPercent,
+            RunMultiplierPercent,
+            SprintBonusPercent,
+            EssencePenalty,
+            EssencePenaltyT100,
+            EssencePenaltyMAGOnlyT100,
+            FreeSpellsATT,
+            FreeSpells,
+            DrainValue,
+            FadingValue,
+            Spell,
+            ComplexForm,
+            Gear,
+            Weapon,
+            MentorSpirit,
+            Paragon,
+            FreeSpellsSkill,
+            DisableSpecializationEffects, // Disable the effects of specializations for a skill
+            FatigueResist,
+            RadiationResist,
+            SonicResist,
+            ToxinContactResist,
+            ToxinIngestionResist,
+            ToxinInhalationResist,
+            ToxinInjectionResist,
+            PathogenContactResist,
+            PathogenIngestionResist,
+            PathogenInhalationResist,
+            PathogenInjectionResist,
+            ToxinContactImmune,
+            ToxinIngestionImmune,
+            ToxinInhalationImmune,
+            ToxinInjectionImmune,
+            PathogenContactImmune,
+            PathogenIngestionImmune,
+            PathogenInhalationImmune,
+            PathogenInjectionImmune,
+            PhysiologicalAddictionFirstTime,
+            PsychologicalAddictionFirstTime,
+            PhysiologicalAddictionAlreadyAddicted,
+            PsychologicalAddictionAlreadyAddicted,
+            StunCMRecovery,
+            PhysicalCMRecovery,
+            AddESStoStunCMRecovery,
+            AddESStoPhysicalCMRecovery,
+            MentalManipulationResist,
+            PhysicalManipulationResist,
+            ManaIllusionResist,
+            PhysicalIllusionResist,
+            DetectionSpellResist,
+            AddLimb,
+            StreetCredMultiplier,
+            StreetCred,
+            AttributeKarmaCostMultiplier,
+            AttributeKarmaCost,
+            ActiveSkillKarmaCostMultiplier,
+            SkillGroupKarmaCostMultiplier,
+            KnowledgeSkillKarmaCostMultiplier,
+            ActiveSkillKarmaCost,
+            SkillGroupKarmaCost,
+            SkillGroupDisable,
+            KnowledgeSkillKarmaCost,
+            SkillCategorySpecializationKarmaCostMultiplier,
+            SkillCategorySpecializationKarmaCost,
+            SkillCategoryKarmaCostMultiplier,
+            SkillCategoryKarmaCost,
+            SkillGroupCategoryKarmaCostMultiplier,
+            SkillGroupCategoryDisable,
+            SkillGroupCategoryKarmaCost,
+            AttributePointCostMultiplier,
+            AttributePointCost,
+            ActiveSkillPointCostMultiplier,
+            SkillGroupPointCostMultiplier,
+            KnowledgeSkillPointCostMultiplier,
+            ActiveSkillPointCost,
+            SkillGroupPointCost,
+            KnowledgeSkillPointCost,
+            SkillCategoryPointCostMultiplier,
+            SkillCategoryPointCost,
+            SkillGroupCategoryPointCostMultiplier,
+            SkillGroupCategoryPointCost,
+            NewSpellKarmaCostMultiplier,
+            NewSpellKarmaCost,
+            NewComplexFormKarmaCostMultiplier,
+            NewComplexFormKarmaCost,
+            NewAIProgramKarmaCostMultiplier,
+            NewAIProgramKarmaCost,
+            NewAIAdvancedProgramKarmaCostMultiplier,
+            NewAIAdvancedProgramKarmaCost,
+            BlockSkillSpecializations,
+            BlockSkillCategorySpecializations,
+            FocusBindingKarmaCost,
+            FocusBindingKarmaMultiplier,
+            MagiciansWayDiscount,
+            BurnoutsWay,
+            ContactForcedLoyalty,
+            ContactMakeFree,
+            FreeWare,
+            WeaponAccuracy,
+            WeaponSkillAccuracy,
+            MetageneticLimit,
+            Tradition,
+            NumImprovementTypes, // 🡐 This one should always be the last defined enum
         }
 
         public enum ImprovementSource
         {
             Quality,
             Power,
-			Metatype,
-			Cyberware,
-			Metavariant,
-			Bioware,
-			Nanotech,
-			Genetech,
-			ArmorEncumbrance,
-			Gear,
-			Spell,
-			MartialArtAdvantage,
-			Initiation,
-			Submersion,
-			Metamagic,
-			Echo,
-			Armor, 
-			ArmorMod,
-			EssenceLoss,
-			ConditionMonitor,
-			CritterPower,
-			ComplexForm,
-			EdgeUse,
-			MutantCritter,
-			Cyberzombie,
-			StackedFocus,
-			AttributeLoss,
+            Metatype,
+            Cyberware,
+            Metavariant,
+            Bioware,
+            ArmorEncumbrance,
+            Gear,
+            VehicleMod,
+            Spell,
+            Initiation,
+            Submersion,
+            Metamagic,
+            Echo,
+            Armor,
+            ArmorMod,
+            EssenceLoss,
+            EssenceLossChargen,
+            CritterPower,
+            ComplexForm,
+            EdgeUse,
+            MutantCritter,
+            Cyberzombie,
+            StackedFocus,
+            AttributeLoss,
             Art,
             Enhancement,
-			Custom,
-	        Heritage,
-			Drug
+            Custom,
+            Heritage,
+            MartialArt,
+            MartialArtTechnique,
+            AIProgram,
+            SpiritFettering,
+            MentorSpirit,
+            Drug,
+            NumImprovementSources // 🡐 This one should always be the last defined enum
         }
 
-		private string _strImprovedName = "";
-        private string _strSourceName = "";
-		private int _intMin = 0;
-		private int _intMax = 0;
-        private int _intAug = 0;
-        private int _intAugMax = 0;
-        private int _intVal = 0;
+        private readonly Character _objCharacter;
+        private string _strImprovedName = string.Empty;
+        private string _strSourceName = string.Empty;
+        private int _intMin;
+        private int _intMax;
+        private int _intAug;
+        private int _intAugMax;
+        private int _intVal;
         private int _intRating = 1;
-		private string _strExclude = "";
-		private string _strUniqueName = "";
+        private string _strExclude = string.Empty;
+        private string _strCondition = string.Empty;
+        private string _strUniqueName = string.Empty;
+        private string _strTarget = string.Empty;
         private ImprovementType _objImprovementType;
         private ImprovementSource _objImprovementSource;
-		private bool _blnCustom = false;
-		private string _strCustomName = "";
-		private string _strCustomId = "";
-		private string _strCustomGroup = "";
-		private string _strNotes = "";
-		private bool _blnAddToRating = false;
-		private bool _blnEnabled = true;
-		private int _intOrder = 0;
+        private bool _blnCustom;
+        private string _strCustomName = string.Empty;
+        private string _strCustomId = string.Empty;
+        private string _strCustomGroup = string.Empty;
+        private string _strNotes = string.Empty;
+        private bool _blnAddToRating;
+        private bool _blnEnabled = true;
+        private int _intOrder;
 
-        private CommonFunctions objFunctions = new CommonFunctions();
+        #region Helper Methods
 
-		#region Helper Methods
+        /// <summary>
+        /// Convert a string to an ImprovementType.
+        /// </summary>
+        /// <param name="strValue">String value to convert.</param>
+        public static ImprovementType ConvertToImprovementType(string strValue)
+        {
+            if (strValue.Contains("InitiativePass"))
+            {
+                strValue = strValue.Replace("InitiativePass","InitiativeDice");
+            }
+            if (strValue == "ContactForceLoyalty")
+                strValue = "ContactForcedLoyalty";
+            return (ImprovementType) Enum.Parse(typeof (ImprovementType), strValue);
+        }
 
-		/// <summary>
-		/// Convert a string to an ImprovementType.
-		/// </summary>
-		/// <param name="strValue">String value to convert.</param>
-		private ImprovementType ConvertToImprovementType(string strValue)
-		{
-			return (ImprovementType) Enum.Parse(typeof (ImprovementType), strValue);
-		}
+        /// <summary>
+        /// Convert a string to an ImprovementSource.
+        /// </summary>
+        /// <param name="strValue">String value to convert.</param>
+        public static ImprovementSource ConvertToImprovementSource(string strValue)
+        {
+            if (strValue == "MartialArtAdvantage")
+                strValue = "MartialArtTechnique";
+            return (ImprovementSource) Enum.Parse(typeof (ImprovementSource), strValue);
+        }
 
-		/// <summary>
-		/// Convert a string to an ImprovementSource.
-		/// </summary>
-		/// <param name="strValue">String value to convert.</param>
-		public ImprovementSource ConvertToImprovementSource(string strValue)
-		{
-			return (ImprovementSource) Enum.Parse(typeof (ImprovementSource), strValue);
-			}
+        #endregion
 
-		#endregion
+        #region Save and Load Methods
+        public Improvement(Character objCharacter)
+        {
+            _objCharacter = objCharacter;
+        }
 
-		#region Save and Load Methods
+        /// <summary>
+        /// Save the object's XML to the XmlWriter.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        public void Save(XmlTextWriter objWriter)
+        {
+            Log.Enter("Save");
 
-		/// <summary>
-		/// Save the object's XML to the XmlWriter.
-		/// </summary>
-		/// <param name="objWriter">XmlTextWriter to write with.</param>
-		public void Save(XmlTextWriter objWriter)
-		{
-			Log.Enter("Save");
-
-			objWriter.WriteStartElement("improvement");
-			if (_strUniqueName != "")
-				objWriter.WriteElementString("unique", _strUniqueName);
-			objWriter.WriteElementString("improvedname", _strImprovedName);
-			objWriter.WriteElementString("sourcename", _strSourceName);
-			objWriter.WriteElementString("min", _intMin.ToString());
-			objWriter.WriteElementString("max", _intMax.ToString());
-			objWriter.WriteElementString("aug", _intAug.ToString());
-			objWriter.WriteElementString("augmax", _intAugMax.ToString());
-			objWriter.WriteElementString("val", _intVal.ToString());
-			objWriter.WriteElementString("rating", _intRating.ToString());
-			objWriter.WriteElementString("exclude", _strExclude);
-			objWriter.WriteElementString("improvementttype", _objImprovementType.ToString());
-			objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
-			objWriter.WriteElementString("custom", _blnCustom.ToString());
-			objWriter.WriteElementString("customname", _strCustomName);
-			objWriter.WriteElementString("customid", _strCustomId);
-			objWriter.WriteElementString("customgroup", _strCustomGroup);
-			objWriter.WriteElementString("addtorating", _blnAddToRating.ToString());
-			objWriter.WriteElementString("enabled", _blnEnabled.ToString());
-			objWriter.WriteElementString("order", _intOrder.ToString());
-			objWriter.WriteElementString("notes", _strNotes);
-			objWriter.WriteEndElement();
+            objWriter.WriteStartElement("improvement");
+            if (!string.IsNullOrEmpty(_strUniqueName))
+                objWriter.WriteElementString("unique", _strUniqueName);
+            objWriter.WriteElementString("target", _strTarget);
+            objWriter.WriteElementString("improvedname", _strImprovedName);
+            objWriter.WriteElementString("sourcename", _strSourceName);
+            objWriter.WriteElementString("min", _intMin.ToString());
+            objWriter.WriteElementString("max", _intMax.ToString());
+            objWriter.WriteElementString("aug", _intAug.ToString());
+            objWriter.WriteElementString("augmax", _intAugMax.ToString());
+            objWriter.WriteElementString("val", _intVal.ToString());
+            objWriter.WriteElementString("rating", _intRating.ToString());
+            objWriter.WriteElementString("exclude", _strExclude);
+            objWriter.WriteElementString("condition", _strCondition);
+            objWriter.WriteElementString("improvementttype", _objImprovementType.ToString());
+            objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
+            objWriter.WriteElementString("custom", _blnCustom.ToString());
+            objWriter.WriteElementString("customname", _strCustomName);
+            objWriter.WriteElementString("customid", _strCustomId);
+            objWriter.WriteElementString("customgroup", _strCustomGroup);
+            objWriter.WriteElementString("addtorating", _blnAddToRating.ToString());
+            objWriter.WriteElementString("enabled", _blnEnabled.ToString());
+            objWriter.WriteElementString("order", _intOrder.ToString());
+            objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteEndElement();
 
             Log.Exit("Save");
         }
 
-		/// <summary>
-		/// Load the CharacterAttribute from the XmlNode.
-		/// </summary>
-		/// <param name="objNode">XmlNode to load.</param>
-		public void Load(XmlNode objNode)
-		{
+        /// <summary>
+        /// Load the CharacterAttribute from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        public void Load(XmlNode objNode)
+        {
+            if (objNode == null)
+                return;
             Log.Enter("Load");
-            
-            try
-			{
-				_strUniqueName = objNode["unique"].InnerText;
-			}
-			catch
-			{
-			}
-			_strImprovedName = objNode["improvedname"].InnerText;
-			_strSourceName = objNode["sourcename"].InnerText;
-			try
-			{
-				_intMin = Convert.ToInt32(objNode["min"].InnerText);
-			}
-			catch
-			{
-			}
-			_intMax = Convert.ToInt32(objNode["max"].InnerText);
-			_intAug = Convert.ToInt32(objNode["aug"].InnerText);
-			_intAugMax = Convert.ToInt32(objNode["augmax"].InnerText);
-			_intVal = Convert.ToInt32(objNode["val"].InnerText);
-			_intRating = Convert.ToInt32(objNode["rating"].InnerText);
-			_strExclude = objNode["exclude"].InnerText;
-			_objImprovementType = ConvertToImprovementType(objNode["improvementttype"].InnerText);
-			_objImprovementSource = ConvertToImprovementSource(objNode["improvementsource"].InnerText);
-			_blnCustom = Convert.ToBoolean(objNode["custom"].InnerText);
-			_strCustomName = objNode["customname"].InnerText;
-			try
-			{
-				_strCustomId = objNode["customid"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strCustomGroup = objNode["customgroup"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnAddToRating = Convert.ToBoolean(objNode["addtorating"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnEnabled = Convert.ToBoolean(objNode["enabled"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intOrder = Convert.ToInt32(objNode["order"].InnerText);
-			}
-			catch
-			{
-			}
+
+            objNode.TryGetStringFieldQuickly("unique", ref _strUniqueName);
+            objNode.TryGetStringFieldQuickly("target", ref _strTarget);
+            objNode.TryGetStringFieldQuickly("improvedname", ref _strImprovedName);
+            objNode.TryGetStringFieldQuickly("sourcename", ref _strSourceName);
+            objNode.TryGetInt32FieldQuickly("min", ref _intMin);
+            objNode.TryGetInt32FieldQuickly("max", ref _intMax);
+            objNode.TryGetInt32FieldQuickly("aug", ref _intAug);
+            objNode.TryGetInt32FieldQuickly("augmax", ref _intAugMax);
+            objNode.TryGetInt32FieldQuickly("val", ref _intVal);
+            objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
+            objNode.TryGetStringFieldQuickly("exclude", ref _strExclude);
+            objNode.TryGetStringFieldQuickly("condition", ref _strCondition);
+            if (objNode["improvementttype"] != null)
+            _objImprovementType = ConvertToImprovementType(objNode["improvementttype"].InnerText);
+            if (objNode["improvementsource"] != null)
+            _objImprovementSource = ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+            // Legacy shim
+            if (_objImprovementType == ImprovementType.LimitModifier && string.IsNullOrEmpty(_strCondition) && !string.IsNullOrEmpty(_strExclude))
+            {
+                _strCondition = _strExclude;
+                _strExclude = string.Empty;
+            }
+            objNode.TryGetBoolFieldQuickly("custom", ref _blnCustom);
+            objNode.TryGetStringFieldQuickly("customname", ref _strCustomName);
+            objNode.TryGetStringFieldQuickly("customid", ref _strCustomId);
+            objNode.TryGetStringFieldQuickly("customgroup", ref _strCustomGroup);
+            objNode.TryGetBoolFieldQuickly("addtorating", ref _blnAddToRating);
+            objNode.TryGetBoolFieldQuickly("enabled", ref _blnEnabled);
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetInt32FieldQuickly("order", ref _intOrder);
 
             Log.Exit("Load");
         }
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		/// Whether or not this is a custom-made (manually created) Improvement.
-		/// </summary>
-		public bool Custom
-		{
-			get { return _blnCustom; }
-			set { _blnCustom = value; }
-			}
+        /// <summary>
+        /// Whether or not this is a custom-made (manually created) Improvement.
+        /// </summary>
+        public bool Custom
+        {
+            get => _blnCustom;
+            set => _blnCustom = value;
+        }
 
-		/// <summary>
-		/// User-entered name for the custom Improvement.
-		/// </summary>
-		public string CustomName
-		{
-			get { return _strCustomName; }
-			set { _strCustomName = value; }
-			}
+        /// <summary>
+        /// User-entered name for the custom Improvement.
+        /// </summary>
+        public string CustomName
+        {
+            get => _strCustomName;
+            set => _strCustomName = value;
+        }
 
-		/// <summary>
-		/// ID from the Improvements file. Only used for custom-made (manually created) Improvements.
-		/// </summary>
-		public string CustomId
-		{
-			get { return _strCustomId; }
-			set { _strCustomId = value; }
-			}
+        /// <summary>
+        /// ID from the Improvements file. Only used for custom-made (manually created) Improvements.
+        /// </summary>
+        public string CustomId
+        {
+            get => _strCustomId;
+            set => _strCustomId = value;
+        }
 
-		/// <summary>
-		/// Group name for the Custom Improvement.
-		/// </summary>
-		public string CustomGroup
-		{
-			get { return _strCustomGroup; }
-			set { _strCustomGroup = value; }
-			}
+        /// <summary>
+        /// Group name for the Custom Improvement.
+        /// </summary>
+        public string CustomGroup
+        {
+            get => _strCustomGroup;
+            set => _strCustomGroup = value;
+        }
 
-		/// <summary>
-		/// User-entered notes for the custom Improvement.
-		/// </summary>
-		public string Notes
-		{
-			get { return _strNotes; }
-			set { _strNotes = value; }
-			}
+        /// <summary>
+        /// User-entered notes for the custom Improvement.
+        /// </summary>
+        public string Notes
+        {
+            get => _strNotes;
+            set => _strNotes = value;
+        }
 
         /// <summary>
         /// Name of the Skill or CharacterAttribute that the Improvement is improving.
         /// </summary>
         public string ImprovedName
         {
-			get { return _strImprovedName; }
-			set { _strImprovedName = value; }
+            get => _strImprovedName;
+            set
+            {
+                if (_strImprovedName != value)
+                {
+                    if (Enabled)
+                    {
+                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, _strImprovedName);
+                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, value);
+                    }
+
+                    _strImprovedName = value;
+                }
             }
+        }
 
         /// <summary>
         /// Name of the source that granted this Improvement.
         /// </summary>
         public string SourceName
         {
-			get { return _strSourceName; }
-			set { _strSourceName = value; }
-            }
+            get => _strSourceName;
+            set => _strSourceName = value;
+        }
 
         /// <summary>
         /// The type of Object that the Improvement is improving.
         /// </summary>
         public ImprovementType ImproveType
         {
-			get { return _objImprovementType; }
-			set { _objImprovementType = value; }
+            get => _objImprovementType;
+            set
+            {
+                if (_objImprovementType != value)
+                {
+                    if (Enabled)
+                    {
+                        ImprovementManager.ClearCachedValue(_objCharacter, _objImprovementType, ImprovedName);
+                        ImprovementManager.ClearCachedValue(_objCharacter, value, ImprovedName);
+                    }
+
+                    _objImprovementType = value;
+                }
             }
+        }
 
         /// <summary>
         /// The type of Object that granted this Improvement.
         /// </summary>
         public ImprovementSource ImproveSource
         {
-			get { return _objImprovementSource; }
-			set { _objImprovementSource = value; }
+            get => _objImprovementSource;
+            set
+            {
+                if (_objImprovementSource != value)
+                {
+                    _objImprovementSource = value;
+                    if (Enabled)
+                        ImprovementManager.ClearCachedValue(_objCharacter, ImprovementType.MatrixInitiativeDice, ImprovedName);
+                }
             }
+        }
 
-		/// <summary>
-		/// Minimum value modifier.
-		/// </summary>
-		public int Minimum
-		{
-			get { return _intMin; }
-			set { _intMin = value; }
-			}
+        /// <summary>
+        /// Minimum value modifier.
+        /// </summary>
+        public int Minimum
+        {
+            get => _intMin;
+            set => _intMin = value;
+        }
 
         /// <summary>
         /// Maximum value modifier.
         /// </summary>
         public int Maximum
         {
-			get { return _intMax; }
-			set { _intMax = value; }
-            }
+            get => _intMax;
+            set => _intMax = value;
+        }
 
         /// <summary>
         /// Augmented Maximum value modifier.
         /// </summary>
         public int AugmentedMaximum
         {
-			get { return _intAugMax; }
-			set { _intAugMax = value; }
-            }
+            get => _intAugMax;
+            set => _intAugMax = value;
+        }
 
         /// <summary>
         /// Augmented score modifier.
         /// </summary>
         public int Augmented
         {
-			get { return _intAug; }
-			set { _intAug = value; }
+            get => _intAug;
+            set
+            {
+                if (_intAug != value)
+                {
+                    _intAug = value;
+                    if (Enabled)
+                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                }
             }
+        }
 
         /// <summary>
         /// Value modifier.
         /// </summary>
         public int Value
         {
-			get { return _intVal; }
-			set { _intVal = value; }
+            get => _intVal;
+            set
+            {
+                if (_intVal != value)
+                {
+                    _intVal = value;
+                    if (Enabled)
+                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                }
             }
+        }
 
         /// <summary>
         /// The Rating value for the Improvement. This is 1 by default.
         /// </summary>
         public int Rating
         {
-			get { return _intRating; }
-			set { _intRating = value; }
+            get => _intRating;
+            set
+            {
+                if (_intRating != value)
+                {
+                    _intRating = value;
+                    if (Enabled)
+                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                }
             }
+        }
 
-		/// <summary>
-		/// A list of child items that should not receive the Improvement's benefit (typically for excluding a Skill from a Skill Group bonus).
-		/// </summary>
-		public string Exclude
-		{
-			get { return _strExclude; }
-			set { _strExclude = value; }
-			}
+        /// <summary>
+        /// A list of child items that should not receive the Improvement's benefit (typically for excluding a Skill from a Skill Group bonus).
+        /// </summary>
+        public string Exclude
+        {
+            get => _strExclude;
+            set => _strExclude = value;
+        }
 
-		/// <summary>
-		/// A Unique name for the Improvement. Only the highest value of any one Improvement that is part of this Unique Name group will be applied.
-		/// </summary>
-		public string UniqueName
-		{
-			get { return _strUniqueName; }
-			set { _strUniqueName = value; }
-			}
+        /// <summary>
+        /// String containing the condition for when the bonus applies (e.g. a dicepool bonus to a skill that only applies to certain types of tests).
+        /// </summary>
+        public string Condition
+        {
+            get => _strCondition;
+            set => _strCondition = value;
+        }
 
-		/// <summary>
-		/// Whether or not the bonus applies directly to a Skill's Rating
-		/// </summary>
-		public bool AddToRating
-		{
-			get { return _blnAddToRating; }
-			set { _blnAddToRating = value; }
-			}
+        /// <summary>
+        /// A Unique name for the Improvement. Only the highest value of any one Improvement that is part of this Unique Name group will be applied.
+        /// </summary>
+        public string UniqueName
+        {
+            get => _strUniqueName;
+            set
+            {
+                if (_strUniqueName != value)
+                {
+                    _strUniqueName = value;
+                    if (Enabled)
+                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                }
+            }
+        }
 
-		/// <summary>
-		/// Whether or not the Improvement is enabled and provided its bonus.
-		/// </summary>
-		public bool Enabled
-		{
-			get { return _blnEnabled; }
-			set { _blnEnabled = value; }
-			}
+        /// <summary>
+        /// Whether or not the bonus applies directly to a Skill's Rating
+        /// </summary>
+        public bool AddToRating
+        {
+            get => _blnAddToRating;
+            set
+            {
+                if (_blnAddToRating != value)
+                {
+                    _blnAddToRating = value;
+                    if (Enabled)
+                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                }
+            }
+        }
 
-		/// <summary>
-		/// Sort order for Custom Improvements.
-		/// </summary>
-		public int SortOrder
-		{
-			get { return _intOrder; }
-			set { _intOrder = value; }
-			}
+        /// <summary>
+        /// The target of an improvement, e.g. the skill whose attributes should be swapped
+        /// </summary>
+        public string Target
+        {
+            get => _strTarget;
+            set => _strTarget = value;
+        }
 
-		#endregion
-	}
+        /// <summary>
+        /// Whether or not the Improvement is enabled and provided its bonus.
+        /// </summary>
+        public bool Enabled
+        {
+            get => _blnEnabled;
+            set
+            {
+                if (_blnEnabled != value)
+                {
+                    _blnEnabled = value;
+                    ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                }
+            }
+        }
 
-	public class ImprovementManager
-	{
-		private readonly Character _objCharacter;
-		
-		// String that will be used to limit the selection in Pick forms.
-		private string _strLimitSelection = "";
+        /// <summary>
+        /// Sort order for Custom Improvements.
+        /// </summary>
+        public int SortOrder
+        {
+            get => _intOrder;
+            set => _intOrder = value;
+        }
+        #endregion
 
-		private string _strSelectedValue = "";
-		private string _strForcedValue = "";
-		private readonly List<Improvement> _lstTransaction = new List<Improvement>();
+        #region Methods
+        /// <summary>
+        /// Get an enumerable of events to fire related to this specific improvement.
+        /// TODO: Merge parts or all of this function with ImprovementManager methods that enable, disable, add, or remove improvements.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Tuple<INotifyMultiplePropertyChanged, string>> GetRelevantPropertyChangers()
+        {
+            switch (ImproveType)
+            {
+                case ImprovementType.Attribute:
+                {
+                    string strTargetAttribute = ImprovedName;
+                    bool blnIsBase = strTargetAttribute.EndsWith("Base");
 
-        private CommonFunctions objFunctions = new CommonFunctions();
+                    HashSet<string> setAttributePropertiesChanged = new HashSet<string>();
+                    if (AugmentedMaximum != 0)
+                        setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AugmentedMaximumModifiers));
+                    if (Maximum != 0)
+                        setAttributePropertiesChanged.Add(nameof(CharacterAttrib.MaximumModifiers));
+                    if (Minimum != 0)
+                        setAttributePropertiesChanged.Add(nameof(CharacterAttrib.MinimumModifiers));
+                    if (blnIsBase)
+                    {
+                        strTargetAttribute = strTargetAttribute.TrimEndOnce("Base", true);
+                        if (Augmented != 0)
+                            setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AttributeValueModifiers));
+                    }
+                    else
+                    {
+                        if (Augmented != 0)
+                            setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AttributeModifiers));
+                    }
+                    if (setAttributePropertiesChanged.Count > 0)
+                    {
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        {
+                            if (objCharacterAttrib.Abbrev == strTargetAttribute)
+                            {
+                                foreach (string strPropertyName in setAttributePropertiesChanged)
+                                {
+                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib, strPropertyName);
+                                }
+                            }
+                        }
+                    }
+                }
+                    break;
+                case ImprovementType.Armor:
+                {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.TotalArmorRating));
+                }
+                    break;
+                case ImprovementType.FireArmor:
+                {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.TotalFireArmorRating));
+                }
+                    break;
+                case ImprovementType.ColdArmor:
+                {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.TotalColdArmorRating));
+                }
+                    break;
+                case ImprovementType.ElectricityArmor:
+                {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.TotalElectricityArmorRating));
+                }
+                    break;
+                case ImprovementType.AcidArmor:
+                {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.TotalAcidArmorRating));
+                }
+                    break;
+                case ImprovementType.FallingArmor:
+                {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.TotalFallingArmorRating));
+                }
+                    break;
+                case ImprovementType.Dodge:
+                {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.TotalBonusDodgeRating));
+                }
+                    break;
+                case ImprovementType.Reach:
+                    break;
+                case ImprovementType.Nuyen:
+                {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.StartingNuyenModifiers));
+                }
+                    break;
+                case ImprovementType.PhysicalCM:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.PhysicalCM));
+                }
+                    break;
+                case ImprovementType.StunCM:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.StunCM));
+                }
+                    break;
+                case ImprovementType.UnarmedDV:
+                    break;
+                case ImprovementType.InitiativeDiceAdd:
+                case ImprovementType.InitiativeDice:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.InitiativeDice));
+                }
+                    break;
+                case ImprovementType.MatrixInitiative:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.MatrixInitiativeValue));
+                }
+                    break;
+                case ImprovementType.MatrixInitiativeDiceAdd:
+                case ImprovementType.MatrixInitiativeDice:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.MatrixInitiativeDice));
+                }
+                    break;
+                case ImprovementType.LifestyleCost:
+                    break;
+                case ImprovementType.CMThreshold:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.CMThreshold));
+                }
+                    break;
+                case ImprovementType.IgnoreCMPenaltyPhysical:
+                case ImprovementType.IgnoreCMPenaltyStun:
+                case ImprovementType.CMThresholdOffset:
+                case ImprovementType.CMSharedThresholdOffset:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.CMThresholdOffsets));
+                }
+                    break;
+                case ImprovementType.EnhancedArticulation:
+                    break;
+                case ImprovementType.WeaponCategoryDV:
+                    break;
+                case ImprovementType.WeaponCategoryDice:
+                    break;
+                case ImprovementType.CyberwareEssCostNonRetroactive:
+                    break;
+                case ImprovementType.CyberwareTotalEssMultiplierNonRetroactive:
+                    break;
+                case ImprovementType.SpecialTab:
+                    break;
+                case ImprovementType.Initiative:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.InitiativeValue));
+                }
+                    break;
+                case ImprovementType.LivingPersonaDeviceRating:
+                    break;
+                case ImprovementType.LivingPersonaProgramLimit:
+                    break;
+                case ImprovementType.LivingPersonaAttack:
+                    break;
+                case ImprovementType.LivingPersonaSleaze:
+                    break;
+                case ImprovementType.LivingPersonaDataProcessing:
+                    break;
+                case ImprovementType.LivingPersonaFirewall:
+                    break;
+                case ImprovementType.Smartlink:
+                    break;
+                case ImprovementType.BiowareEssCostNonRetroactive:
+                    break;
+                case ImprovementType.BiowareTotalEssMultiplierNonRetroactive:
+                    break;
+                case ImprovementType.GenetechCostMultiplier:
+                    break;
+                case ImprovementType.SoftWeave:
+                    break;
+                case ImprovementType.DisableBioware:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.AddBiowareEnabled));
+                    }
+                    break;
+                case ImprovementType.DisableCyberware:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.AddCyberwareEnabled));
+                    }
+                    break;
+                case ImprovementType.DisableBiowareGrade:
+                    break;
+                case ImprovementType.DisableCyberwareGrade:
+                    break;
+                case ImprovementType.ConditionMonitor:
+                    break;
+                case ImprovementType.UnarmedDVPhysical:
+                    break;
+                case ImprovementType.Adapsin:
+                    break;
+                case ImprovementType.FreePositiveQualities:
+                    break;
+                case ImprovementType.FreeNegativeQualities:
+                    break;
+                case ImprovementType.FreeKnowledgeSkills:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter.SkillsSection, nameof(SkillsSection.KnowledgeSkillPoints));
+                }
+                    break;
+                case ImprovementType.NuyenMaxBP:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.TotalNuyenMaximumBP));
+                }
+                    break;
+                case ImprovementType.CMOverflow:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.CMOverflow));
+                }
+                    break;
+                case ImprovementType.FreeSpiritPowerPoints:
+                    break;
+                case ImprovementType.AdeptPowerPoints:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.PowerPointsTotal));
+                }
+                    break;
+                case ImprovementType.ArmorEncumbrancePenalty:
+                    break;
+                case ImprovementType.Initiation:
+                    break;
+                case ImprovementType.Submersion:
+                    break;
+                case ImprovementType.Metamagic:
+                    break;
+                case ImprovementType.Echo:
+                    break;
+                case ImprovementType.Skillwire:
+                {
+                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objSkill, nameof(Skill.CyberwareRating));
+                    }
+                }
+                    break;
+                case ImprovementType.DamageResistance:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.DamageResistancePool));
+                }
+                    break;
+                case ImprovementType.RestrictedItemCount:
+                    break;
+                case ImprovementType.JudgeIntentions:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.JudgeIntentions));
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.JudgeIntentionsResist));
+                }
+                    break;
+                case ImprovementType.JudgeIntentionsOffense:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.JudgeIntentions));
+                }
+                    break;
+                case ImprovementType.JudgeIntentionsDefense:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.JudgeIntentionsResist));
+                }
+                    break;
+                case ImprovementType.LiftAndCarry:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.LiftAndCarry));
+                }
+                    break;
+                case ImprovementType.Memory:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.Memory));
+                }
+                    break;
+                case ImprovementType.Concealability:
+                    break;
+                case ImprovementType.SwapSkillAttribute:
+                case ImprovementType.SwapSkillSpecAttribute:
+                {
+                    Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                           (_objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName) ??
+                                            (Skill)_objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == ImprovedName || x.DisplayNameMethod(GlobalOptions.Language) == ImprovedName));
+                    if (objTargetSkill != null)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.PoolToolTip));
+                    }
+                }
+                    break;
+                case ImprovementType.DrainResistance:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.TraditionDrainValue));
+                }
+                    break;
+                case ImprovementType.FadingResistance:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.TechnomancerFadingValue));
+                }
+                    break;
+                case ImprovementType.Composure:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.Composure));
+                }
+                    break;
+                case ImprovementType.UnarmedAP:
+                    break;
+                case ImprovementType.Restricted:
+                    break;
+                case ImprovementType.Notoriety:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.CalculatedNotoriety));
+                }
+                    break;
+                case ImprovementType.SpellCategory:
+                    break;
+                case ImprovementType.SpellCategoryDamage:
+                    break;
+                case ImprovementType.SpellCategoryDrain:
+                    break;
+                case ImprovementType.ThrowRange:
+                    break;
+                case ImprovementType.SkillsoftAccess:
+                {
+                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills.Concat(_objCharacter.SkillsSection.KnowledgeSkills))
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objSkill, nameof(Skill.CyberwareRating));
+                    }
+                }
+                    break;
+                case ImprovementType.AddSprite:
+                    break;
+                case ImprovementType.BlackMarketDiscount:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.BlackMarketDiscount));
+                }
+                    break;
+                case ImprovementType.ComplexFormLimit:
+                    break;
+                case ImprovementType.SpellLimit:
+                    break;
+                case ImprovementType.QuickeningMetamagic:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.QuickeningEnabled));
+                }
+                    break;
+                case ImprovementType.BasicLifestyleCost:
+                    break;
+                case ImprovementType.ThrowSTR:
+                    break;
+                case ImprovementType.EssenceMax:
+                {
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                    {
+                        if (objCharacterAttrib.Abbrev == "ESS")
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib, nameof(CharacterAttrib.MetatypeMaximum));
+                        }
+                    }
+                }
+                    break;
+                case ImprovementType.AdeptPower:
+                    break;
+                case ImprovementType.SpecificQuality:
+                    break;
+                case ImprovementType.MartialArt:
+                    break;
+                case ImprovementType.LimitModifier:
+                    break;
+                case ImprovementType.PhysicalLimit:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.LimitPhysical));
+                }
+                    break;
+                case ImprovementType.MentalLimit:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.LimitMental));
+                }
+                    break;
+                case ImprovementType.SocialLimit:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.LimitSocial));
+                }
+                    break;
+                case ImprovementType.FriendsInHighPlaces:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.FriendsInHighPlaces));
+                }
+                    break;
+                case ImprovementType.Erased:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.Erased));
+                }
+                    break;
+                case ImprovementType.Fame:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.Fame));
+                }
+                    break;
+                case ImprovementType.MadeMan:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.MadeMan));
+                }
+                    break;
+                case ImprovementType.Overclocker:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.Overclocker));
+                }
+                    break;
+                case ImprovementType.RestrictedGear:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.RestrictedGear));
+                }
+                    break;
+                case ImprovementType.TrustFund:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.TrustFund));
+                }
+                    break;
+                case ImprovementType.ExCon:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.ExCon));
+                }
+                    break;
+                case ImprovementType.ContactForceGroup:
+                {
+                    Contact objTargetContact = _objCharacter.Contacts.FirstOrDefault(x => x.GUID == ImprovedName);
+                    if (objTargetContact != null)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetContact, nameof(Contact.GroupEnabled));
+                    }
+                }
+                    break;
+                case ImprovementType.Attributelevel:
+                {
+                    string strTargetAttribute = ImprovedName;
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                    {
+                        if (objCharacterAttrib.Abbrev == strTargetAttribute)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib, nameof(CharacterAttrib.FreeBase));
+                        }
+                    }
+                }
+                    break;
+                case ImprovementType.AddContact:
+                    break;
+                case ImprovementType.Seeker:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.RedlinerBonus));
+                }
+                    break;
+                case ImprovementType.PublicAwareness:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.CalculatedPublicAwareness));
+                }
+                    break;
+                case ImprovementType.PrototypeTranshuman:
+                    break;
+                case ImprovementType.Hardwire:
+                {
+                    Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                           (_objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName) ??
+                                            (Skill) _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.InternalId == ImprovedName || x.DisplayNameMethod(GlobalOptions.Language) == ImprovedName));
+                    if (objTargetSkill != null)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.CyberwareRating));
+                    }
+                }
+                    break;
+                case ImprovementType.DealerConnection:
+                    break;
+                case ImprovementType.Skill:
+                {
+                    Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                           _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                    if (objTargetSkill != null)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.Base));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillGroup:
+                case ImprovementType.BlockSkillDefault:
+                {
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills.Where(x => x.SkillGroup == ImprovedName))
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.DisplayPool));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillCategory:
+                {
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills.Concat(_objCharacter.SkillsSection.KnowledgeSkills).Where(x => x.SkillCategory == ImprovedName))
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.DisplayPool));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillLinkedAttribute:
+                {
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills.Concat(_objCharacter.SkillsSection.KnowledgeSkills).Where(x => x.Attribute == ImprovedName))
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.DisplayPool));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillLevel:
+                {
+                    Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                           _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                    if (objTargetSkill != null)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.FreeKarma));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillGroupLevel:
+                {
+                    SkillGroup objTargetGroup = _objCharacter.SkillsSection.SkillGroups.FirstOrDefault(x => x.Name == ImprovedName);
+                    if (objTargetGroup != null)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup, nameof(SkillGroup.FreeLevels));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillBase:
+                {
+                    Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                           _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                    if (objTargetSkill != null)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.FreeBase));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillGroupBase:
+                {
+                    SkillGroup objTargetGroup = _objCharacter.SkillsSection.SkillGroups.FirstOrDefault(x => x.Name == ImprovedName);
+                    if (objTargetGroup != null)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup, nameof(SkillGroup.FreeBase));
+                    }
+                }
+                    break;
+                case ImprovementType.Skillsoft:
+                {
+                    KnowledgeSkill objTargetSkill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.InternalId == ImprovedName || x.DisplayNameMethod(GlobalOptions.Language) == ImprovedName);
+                    if (objTargetSkill != null)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.CyberwareRating));
+                    }
+                }
+                    break;
+                case ImprovementType.Activesoft:
+                {
+                    Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                           _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                    if (objTargetSkill != null)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.CyberwareRating));
+                    }
+                }
+                    break;
+                case ImprovementType.ReplaceAttribute:
+                {
+                    string strTargetAttribute = ImprovedName;
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                    {
+                        if (objCharacterAttrib.Abbrev == strTargetAttribute)
+                        {
+                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib, nameof(CharacterAttrib.MetatypeMaximum));
+                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib, nameof(CharacterAttrib.MetatypeMinimum));
+                        }
+                    }
+                }
+                    break;
+                case ImprovementType.SpecialSkills:
+                    break;
+                case ImprovementType.SkillAttribute:
+                case ImprovementType.ReflexRecorderOptimization:
+                {
+                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objSkill, nameof(Skill.PoolModifiers));
+                    }
+                }
+                    break;
+                case ImprovementType.Ambidextrous:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.Ambidextrous));
+                }
+                    break;
+                case ImprovementType.UnarmedReach:
+                    break;
+                case ImprovementType.SkillSpecialization:
+                    break;
+                case ImprovementType.NativeLanguageLimit:
+                    break;
+                case ImprovementType.AdeptPowerFreePoints:
+                    {
+                        // Get the power improved by this improvement
+                        Power objImprovedPower = _objCharacter.Powers.FirstOrDefault(objPower => objPower.Name == ImprovedName && objPower.Extra == UniqueName);
+                        if (objImprovedPower != null)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objImprovedPower, nameof(Power.FreePoints));
+                        }
+                    }
+                    break;
+                case ImprovementType.AdeptPowerFreeLevels:
+                    {
+                        // Get the power improved by this improvement
+                        Power objImprovedPower = _objCharacter.Powers.FirstOrDefault(objPower => objPower.Name == ImprovedName && objPower.Extra == UniqueName);
+                        if (objImprovedPower != null)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objImprovedPower, nameof(Power.FreeLevels));
+                        }
+                    }
+                    break;
+                case ImprovementType.AIProgram:
+                    break;
+                case ImprovementType.CritterPowerLevel:
+                    break;
+                case ImprovementType.CritterPower:
+                    break;
+                case ImprovementType.SpellResistance:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellResistance));
+                }
+                    break;
+                case ImprovementType.LimitSpellCategory:
+                    break;
+                case ImprovementType.LimitSpellDescriptor:
+                    break;
+                case ImprovementType.LimitSpiritCategory:
+                    break;
+                case ImprovementType.WalkSpeed:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.WalkingRate));
+                }
+                    break;
+                case ImprovementType.RunSpeed:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.RunningRate));
+                }
+                    break;
+                case ImprovementType.SprintSpeed:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SprintingRate));
+                }
+                    break;
+                case ImprovementType.WalkMultiplier:
+                case ImprovementType.WalkMultiplierPercent:
+                case ImprovementType.RunMultiplier:
+                case ImprovementType.RunMultiplierPercent:
+                case ImprovementType.SprintBonus:
+                case ImprovementType.SprintBonusPercent:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.CalculatedMovement));
+                }
+                    break;
+                case ImprovementType.EssencePenalty:
+                case ImprovementType.EssencePenaltyT100:
+                case ImprovementType.EssencePenaltyMAGOnlyT100:
+                case ImprovementType.CyborgEssence:
+                case ImprovementType.CyberwareEssCost:
+                case ImprovementType.CyberwareTotalEssMultiplier:
+                case ImprovementType.BiowareEssCost:
+                case ImprovementType.BiowareTotalEssMultiplier:
+                case ImprovementType.BasicBiowareEssCost:
+                    // Immediately reset cached essence to make sure this fires off before any other property changers would
+                    _objCharacter.ResetCachedEssence();
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.Essence));
+                    break;
+                case ImprovementType.FreeSpellsATT:
+                    break;
+                case ImprovementType.FreeSpells:
+                    break;
+                case ImprovementType.DrainValue:
+                    break;
+                case ImprovementType.FadingValue:
+                    break;
+                case ImprovementType.Spell:
+                    break;
+                case ImprovementType.ComplexForm:
+                    break;
+                case ImprovementType.Gear:
+                    break;
+                case ImprovementType.Weapon:
+                    break;
+                case ImprovementType.MentorSpirit:
+                    break;
+                case ImprovementType.Paragon:
+                    break;
+                case ImprovementType.FreeSpellsSkill:
+                    break;
+                case ImprovementType.DisableSpecializationEffects:
+                {
+                    Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                           _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                    if (objTargetSkill != null)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.DisplayPool));
+                    }
+                }
+                    break;
+                case ImprovementType.PhysiologicalAddictionFirstTime:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.PhysiologicalAddictionResistFirstTime));
+                }
+                    break;
+                case ImprovementType.PsychologicalAddictionFirstTime:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.PsychologicalAddictionResistFirstTime));
+                }
+                    break;
+                case ImprovementType.PhysiologicalAddictionAlreadyAddicted:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.PhysiologicalAddictionResistAlreadyAddicted));
+                }
+                    break;
+                case ImprovementType.PsychologicalAddictionAlreadyAddicted:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.PsychologicalAddictionResistAlreadyAddicted));
+                }
+                    break;
+                case ImprovementType.AddESStoStunCMRecovery:
+                case ImprovementType.StunCMRecovery:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.StunCMNaturalRecovery));
+                }
+                    break;
+                case ImprovementType.AddESStoPhysicalCMRecovery:
+                case ImprovementType.PhysicalCMRecovery:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.PhysicalCMNaturalRecovery));
+                }
+                    break;
+                case ImprovementType.MentalManipulationResist:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseManipulationMental));
+                }
+                    break;
+                case ImprovementType.PhysicalManipulationResist:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseManipulationPhysical));
+                }
+                    break;
+                case ImprovementType.ManaIllusionResist:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseIllusionMana));
+                }
+                    break;
+                case ImprovementType.PhysicalIllusionResist:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseIllusionPhysical));
+                }
+                    break;
+                case ImprovementType.DetectionSpellResist:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellDefenseDetection));
+                }
+                    break;
+                case ImprovementType.AddLimb:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.LimbCount));
+                }
+                    break;
+                case ImprovementType.StreetCredMultiplier:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.CalculatedStreetCred));
+                }
+                    break;
+                case ImprovementType.StreetCred:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.TotalStreetCred));
+                }
+                    break;
+                case ImprovementType.AttributeKarmaCostMultiplier:
+                case ImprovementType.AttributeKarmaCost:
+                {
+                    if (!string.IsNullOrEmpty(ImprovedName))
+                    {
+                        string strTargetAttribute = ImprovedName;
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        {
+                            if (objCharacterAttrib.Abbrev == strTargetAttribute)
+                            {
+                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib, nameof(CharacterAttrib.UpgradeKarmaCost));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib, nameof(CharacterAttrib.UpgradeKarmaCost));
+                        }
+                    }
+                }
+                    break;
+                case ImprovementType.ActiveSkillKarmaCost:
+                case ImprovementType.ActiveSkillKarmaCostMultiplier:
+                {
+                    if (!string.IsNullOrEmpty(ImprovedName))
+                    {
+                        Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                               _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                        if (objTargetSkill != null)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.UpgradeKarmaCost));
+                        }
+                    }
+                    else
+                    {
+                        foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.UpgradeKarmaCost));
+                        }
+                    }
+                }
+                    break;
+                case ImprovementType.KnowledgeSkillKarmaCost:
+                case ImprovementType.KnowledgeSkillKarmaCostMultiplier:
+                {
+                    if (!string.IsNullOrEmpty(ImprovedName))
+                    {
+                        KnowledgeSkill objTargetSkill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == ImprovedName || x.DisplayNameMethod(GlobalOptions.Language) == ImprovedName);
+                        if (objTargetSkill != null)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.UpgradeKarmaCost));
+                        }
+                    }
+                    else
+                    {
+                        foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.UpgradeKarmaCost));
+                        }
+                    }
+                }
+                    break;
+                case ImprovementType.SkillGroupKarmaCost:
+                case ImprovementType.SkillGroupKarmaCostMultiplier:
+                {
+                    if (!string.IsNullOrEmpty(ImprovedName))
+                    {
+                        SkillGroup objTargetGroup = _objCharacter.SkillsSection.SkillGroups.FirstOrDefault(x => x.Name == ImprovedName);
+                        if (objTargetGroup != null)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup, nameof(SkillGroup.UpgradeKarmaCost));
+                        }
+                    }
+                    else
+                    {
+                        foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup, nameof(SkillGroup.UpgradeKarmaCost));
+                        }
+                    }
+                }
+                    break;
+                case ImprovementType.SkillGroupDisable:
+                {
+                    SkillGroup objTargetGroup = _objCharacter.SkillsSection.SkillGroups.FirstOrDefault(x => x.Name == ImprovedName);
+                    if (objTargetGroup != null)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup, nameof(SkillGroup.IsDisabled));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillCategorySpecializationKarmaCost:
+                case ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
+                {
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills.Concat(_objCharacter.SkillsSection.KnowledgeSkills).Where(x => x.SkillCategory == ImprovedName))
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.CanAffordSpecialization));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillCategoryKarmaCost:
+                case ImprovementType.SkillCategoryKarmaCostMultiplier:
+                {
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills.Concat(_objCharacter.SkillsSection.KnowledgeSkills).Where(x => x.SkillCategory == ImprovedName))
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.UpgradeKarmaCost));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillGroupCategoryDisable:
+                {
+                    foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups.Where(x => x.GetRelevantSkillCategories.Contains(ImprovedName)))
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup, nameof(SkillGroup.IsDisabled));
+                    }
+                }
+                    break;
+                case ImprovementType.SkillGroupCategoryKarmaCostMultiplier:
+                case ImprovementType.SkillGroupCategoryKarmaCost:
+                {
+                    foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups.Where(x => x.GetRelevantSkillCategories.Contains(ImprovedName)))
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup, nameof(SkillGroup.UpgradeKarmaCost));
+                    }
+                }
+                    break;
+                case ImprovementType.AttributePointCost:
+                case ImprovementType.AttributePointCostMultiplier:
+                    break;
+                case ImprovementType.ActiveSkillPointCost:
+                case ImprovementType.ActiveSkillPointCostMultiplier:
+                    break;
+                case ImprovementType.SkillGroupPointCost:
+                case ImprovementType.SkillGroupPointCostMultiplier:
+                    break;
+                case ImprovementType.KnowledgeSkillPointCost:
+                case ImprovementType.KnowledgeSkillPointCostMultiplier:
+                    break;
+                case ImprovementType.SkillCategoryPointCost:
+                case ImprovementType.SkillCategoryPointCostMultiplier:
+                    break;
+                case ImprovementType.SkillGroupCategoryPointCost:
+                case ImprovementType.SkillGroupCategoryPointCostMultiplier:
+                    break;
+                case ImprovementType.NewSpellKarmaCost:
+                case ImprovementType.NewSpellKarmaCostMultiplier:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.SpellKarmaCost));
+                }
+                    break;
+                case ImprovementType.NewComplexFormKarmaCost:
+                case ImprovementType.NewComplexFormKarmaCostMultiplier:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.ComplexFormKarmaCost));
+                }
+                    break;
+                case ImprovementType.NewAIProgramKarmaCost:
+                case ImprovementType.NewAIProgramKarmaCostMultiplier:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.AIProgramKarmaCost));
+                }
+                    break;
+                case ImprovementType.NewAIAdvancedProgramKarmaCost:
+                case ImprovementType.NewAIAdvancedProgramKarmaCostMultiplier:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.AIAdvancedProgramKarmaCost));
+                }
+                    break;
+                case ImprovementType.BlockSkillSpecializations:
+                {
+                    if (!string.IsNullOrEmpty(ImprovedName))
+                    {
+                        Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                               _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                        if (objTargetSkill != null)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.CanHaveSpecs));
+                        }
+                    }
+                    else
+                    {
+                        foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.CanHaveSpecs));
+                        }
+                    }
+                }
+                    break;
+                case ImprovementType.BlockSkillCategorySpecializations:
+                {
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills.Concat(_objCharacter.SkillsSection.KnowledgeSkills).Where(x => x.SkillCategory == ImprovedName))
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.CanHaveSpecs));
+                    }
+                }
+                    break;
+                case ImprovementType.FocusBindingKarmaCost:
+                    break;
+                case ImprovementType.FocusBindingKarmaMultiplier:
+                    break;
+                case ImprovementType.MagiciansWayDiscount:
+                    break;
+                case ImprovementType.BurnoutsWay:
+                    break;
+                case ImprovementType.ContactForcedLoyalty:
+                    {
+                        Contact objTargetContact = _objCharacter.Contacts.FirstOrDefault(x => x.GUID == ImprovedName);
+                        if (objTargetContact != null)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetContact, nameof(Contact.ForcedLoyalty));
+                        }
+                    }
+                    break;
+                case ImprovementType.ContactMakeFree:
+                    {
+                        Contact objTargetContact = _objCharacter.Contacts.FirstOrDefault(x => x.GUID == ImprovedName);
+                        if (objTargetContact != null)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetContact, nameof(Contact.Free));
+                        }
+                    }
+                    break;
+                case ImprovementType.FreeWare:
+                    break;
+                case ImprovementType.WeaponSkillAccuracy:
+                    break;
+                case ImprovementType.WeaponAccuracy:
+                    break;
+                case ImprovementType.MetageneticLimit:
+                {
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.MetageneticLimit));
+                }
+                    break;
+            }
+        }
 
-		public ImprovementManager(Character objCharacter)
-		{
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
-			_objCharacter = objCharacter;
-		}
+        #region UI Methods
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsImprovement)
+        {
+            TreeNode nodImprovement = new TreeNode
+            {
+                Tag = this,
+                Text = CustomName,
+                ToolTipText = Notes.WordWrap(100),
+                ContextMenuStrip = cmsImprovement,
+                ForeColor = PreferredColor
+            };
+            return nodImprovement;
+        }
 
-		#region Properties
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    if (Enabled)
+                        return Color.SaddleBrown;
+                    return Color.SandyBrown;
+                }
+                if (Enabled)
+                    return SystemColors.WindowText;
+                return SystemColors.GrayText;
+            }
+        }
+        #endregion
+        #endregion
 
-		/// <summary>
-		/// Limit what can be selected in Pick forms to a single value. This is typically used when selecting the Qualities for a Metavariant that has a specifiec
-		/// CharacterAttribute selection for Qualities like Metagenetic Improvement.
-		/// </summary>
-		public string LimitSelection
-		{
-			get { return _strLimitSelection; }
-			set { _strLimitSelection = value; }
-			}
+        public string InternalId => SourceName;
+    }
 
-		/// <summary>
-		/// The string that was entered or selected from any of the dialogue windows that were presented because of this Improvement.
-		/// </summary>
-		public string SelectedValue
-		{
-			get { return _strSelectedValue; }
-			}
+    public struct ImprovementDictionaryKey
+    {
+        private readonly Tuple<Character, Improvement.ImprovementType, string> _objTupleKey;
 
-		/// <summary>
-		/// Force any dialogue windows that open to use this string as their selected value.
-		/// </summary>
-		public string ForcedValue
-		{
-			set { _strForcedValue = value; }
-			}
+        public Character CharacterObject => _objTupleKey.Item1;
+        public Improvement.ImprovementType ImprovementType => _objTupleKey.Item2;
+        public string ImprovementName => _objTupleKey.Item3;
 
-		#endregion
+        public ImprovementDictionaryKey(Character objCharacter, Improvement.ImprovementType eImprovementType, string strImprovementName)
+        {
+            _objTupleKey = new Tuple<Character, Improvement.ImprovementType, string>(objCharacter, eImprovementType, strImprovementName);
+        }
 
-		#region Helper Methods
+        public override bool Equals(object obj)
+        {
+            if (obj is ImprovementDictionaryKey objOtherImprovementDictionaryKey)
+            {
+                return CharacterObject == objOtherImprovementDictionaryKey.CharacterObject &&
+                       ImprovementType == objOtherImprovementDictionaryKey.ImprovementType &&
+                       ImprovementName == objOtherImprovementDictionaryKey.ImprovementName;
+            }
+            if (obj is Tuple<Character, Improvement.ImprovementType, string> objOtherTuple)
+            {
+                return CharacterObject == objOtherTuple.Item1 &&
+                       ImprovementType == objOtherTuple.Item2 &&
+                       ImprovementName == objOtherTuple.Item3;
+            }
+            return false;
+        }
 
-		/// <summary>
-		/// Retrieve the total Improvement value for the specified ImprovementType.
-		/// </summary>
-		/// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
-		/// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
-		/// <param name="strImprovedName">Name to assign to the Improvement.</param>
-		public int ValueOf(Improvement.ImprovementType objImprovementType, bool blnAddToRating = false,
-			string strImprovedName = null)
-		{
-			//Log.Enter("ValueOf");
-			//Log.Info("objImprovementType = " + objImprovementType.ToString());
-			//Log.Info("blnAddToRating = " + blnAddToRating.ToString());
-			//Log.Info("strImprovedName = " + ("" + strImprovedName).ToString());
+        public override int GetHashCode()
+        {
+            return CharacterObject.GetHashCode() + ImprovementType.GetHashCode() + ImprovementName.GetHashCode();
+        }
 
-            if (_objCharacter == null)
+        public override string ToString()
+        {
+            return _objTupleKey.ToString();
+        }
+
+        public static bool operator ==(ImprovementDictionaryKey x, object y)
+        {
+            return x.Equals(y);
+        }
+
+        public static bool operator !=(ImprovementDictionaryKey x, object y)
+        {
+            return !x.Equals(y);
+        }
+
+        public static bool operator ==(object x, ImprovementDictionaryKey y)
+        {
+            return x?.Equals(y) ?? y == null;
+        }
+
+        public static bool operator !=(object x, ImprovementDictionaryKey y)
+        {
+            return !(x?.Equals(y) ?? y == null);
+        }
+    }
+
+    public class TransactingImprovement
+    {
+        public TransactingImprovement(Improvement objImprovement)
+        {
+            ImprovementObject = objImprovement;
+        }
+
+        public Improvement ImprovementObject { get; }
+
+        public bool IsCommitting { get; set; }
+    }
+
+    public static class ImprovementManager
+    {
+        // String that will be used to limit the selection in Pick forms.
+        private static string s_StrLimitSelection = string.Empty;
+
+        private static string s_StrSelectedValue = string.Empty;
+        private static string s_StrForcedValue = string.Empty;
+        private static readonly ConcurrentDictionary<Character, List<TransactingImprovement>> s_DictionaryTransactions = new ConcurrentDictionary<Character, List<TransactingImprovement>>(8, 10);
+        private static readonly ConcurrentDictionary<ImprovementDictionaryKey, int> s_DictionaryCachedValues = new ConcurrentDictionary<ImprovementDictionaryKey, int>(8, (int)Improvement.ImprovementType.NumImprovementTypes);
+        private static readonly ConcurrentDictionary<ImprovementDictionaryKey, int> s_DictionaryCachedAugmentedValues = new ConcurrentDictionary<ImprovementDictionaryKey, int>(8, (int)Improvement.ImprovementType.NumImprovementTypes);
+
+        #region Properties
+        /// <summary>
+        /// Limit what can be selected in Pick forms to a single value. This is typically used when selecting the Qualities for a Metavariant that has a specifiec
+        /// CharacterAttribute selection for Qualities like Metagenetic Improvement.
+        /// </summary>
+        public static string LimitSelection
+        {
+            get => s_StrLimitSelection;
+            set => s_StrLimitSelection = value;
+        }
+
+        /// <summary>
+        /// The string that was entered or selected from any of the dialogue windows that were presented because of this Improvement.
+        /// </summary>
+        public static string SelectedValue
+        {
+            get => s_StrSelectedValue;
+            set => s_StrSelectedValue = value;
+        }
+
+        /// <summary>
+        /// Force any dialogue windows that open to use this string as their selected value.
+        /// </summary>
+        public static string ForcedValue
+        {
+            get => s_StrForcedValue;
+            set => s_StrForcedValue = value;
+        }
+
+        public static void ClearCachedValue(Character objCharacter, Improvement.ImprovementType eImprovementType, string strImprovementName = "")
+        {
+            if (!string.IsNullOrEmpty(strImprovementName))
+            {
+                ImprovementDictionaryKey objCheckKey = new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovementName);
+                if (!s_DictionaryCachedValues.TryAdd(objCheckKey, int.MinValue))
+                    s_DictionaryCachedValues[objCheckKey] = int.MinValue;
+                if (!s_DictionaryCachedAugmentedValues.TryAdd(objCheckKey, int.MinValue))
+                    s_DictionaryCachedAugmentedValues[objCheckKey] = int.MinValue;
+            }
+            else
+            {
+                foreach (ImprovementDictionaryKey objCheckKey in s_DictionaryCachedValues.Keys.Where(x => x.CharacterObject == objCharacter && x.ImprovementType == eImprovementType).ToList())
+                    s_DictionaryCachedValues[objCheckKey] = int.MinValue;
+                foreach (ImprovementDictionaryKey objCheckKey in s_DictionaryCachedAugmentedValues.Keys.Where(x => x.CharacterObject == objCharacter && x.ImprovementType == eImprovementType).ToList())
+                    s_DictionaryCachedAugmentedValues[objCheckKey] = int.MinValue;
+            }
+        }
+
+        public static void ClearCachedValues(Character objCharacter)
+        {
+            foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedValues.Keys.ToList())
+            {
+                if (objKey.CharacterObject == objCharacter)
+                    s_DictionaryCachedValues.TryRemove(objKey, out int _);
+            }
+            foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedAugmentedValues.Keys.ToList())
+            {
+                if (objKey.CharacterObject == objCharacter)
+                    s_DictionaryCachedAugmentedValues.TryRemove(objKey, out int _);
+            }
+            s_DictionaryTransactions.TryRemove(objCharacter, out List<TransactingImprovement> _);
+        }
+        #endregion
+
+        #region Helper Methods
+        /// <summary>
+        /// Retrieve the total Improvement value for the specified ImprovementType.
+        /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
+        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="strImprovedName">Name to assign to the Improvement.</param>
+        /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
+        public static int ValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType, bool blnAddToRating = false, string strImprovedName = "", bool blnUnconditionalOnly = true)
+        {
+            //Log.Enter("ValueOf");
+            //Log.Info("objImprovementType = " + objImprovementType.ToString());
+            //Log.Info("blnAddToRating = " + blnAddToRating.ToString());
+            //Log.Info("strImprovedName = " + ("" + strImprovedName).ToString());
+
+            if (objCharacter == null)
             {
                 //Log.Exit("ValueOf");
                 return 0;
             }
 
-			List<string> lstUniqueName = new List<string>();
-			List<string[,]> lstUniquePair = new List<string[,]>();
-			int intValue = 0;
-			foreach (Improvement objImprovement in _objCharacter.Improvements)
-			{
-				if (objImprovement.Enabled && !objImprovement.Custom)
-				{
-					bool blnAllowed = true;
-					// Technomancers cannot benefit from Gear-based Matrix Initiative Pass modifiers (Gear - Sim Modules).
-					if (_objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
-					    objImprovementType == Improvement.ImprovementType.MatrixInitiativePass)
-						blnAllowed = false;
-					// Ignore items that apply to a Skill's Rating.
-					if (objImprovement.AddToRating != blnAddToRating)
-						blnAllowed = false;
-					// If an Improved Name has been passed, only retrieve values that have this Improved Name.
-					if (strImprovedName != null)
-					{
-						if (strImprovedName != objImprovement.ImprovedName)
-							blnAllowed = false;
-					}
+            // If we've got a value cached for the default ValueOf call for an improvementType, let's just return that
+            if (!blnAddToRating && blnUnconditionalOnly)
+            {
+                if (!string.IsNullOrEmpty(strImprovedName))
+                {
+                    ImprovementDictionaryKey objCacheKey = new ImprovementDictionaryKey(objCharacter, objImprovementType, strImprovedName);
+                    if (s_DictionaryCachedValues.TryGetValue(objCacheKey, out int intCachedValue) && intCachedValue != int.MinValue)
+                    {
+                        return intCachedValue;
+                    }
+                }
+                else
+                {
+                    bool blnDoRecalculate = true;
+                    int intCachedValue = 0;
+                    // Only fetch based on cached values if the dictionary contains at least one element with matching characters and types and none of those elements have a "reset" value of int.MinValue
+                    foreach (KeyValuePair<ImprovementDictionaryKey, int> objLoopCachedEntry in s_DictionaryCachedValues)
+                    {
+                        ImprovementDictionaryKey objLoopKey = objLoopCachedEntry.Key;
+                        if (objLoopKey.CharacterObject == objCharacter && objLoopKey.ImprovementType == objImprovementType)
+                        {
+                            blnDoRecalculate = false;
+                            int intLoopCachedValue = objLoopCachedEntry.Value;
+                            if (intLoopCachedValue == int.MinValue)
+                            {
+                                blnDoRecalculate = true;
+                                break;
+                            }
+                            intCachedValue += intLoopCachedValue;
+                        }
+                    }
+                    if (!blnDoRecalculate)
+                    {
+                        return intCachedValue;
+                    }
+                }
+            }
 
-					if (blnAllowed)
-					{
-						if (objImprovement.UniqueName != "" && objImprovement.ImproveType == objImprovementType)
-						{
-							// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-							bool blnFound = false;
-							foreach (string strName in lstUniqueName)
-							{
-								if (strName == objImprovement.UniqueName)
-									blnFound = true;
-								break;
-							}
-							if (!blnFound)
-								lstUniqueName.Add(objImprovement.UniqueName);
+            Dictionary<string, HashSet<string>> dicUniqueNames = new Dictionary<string, HashSet<string>>();
+            Dictionary<string, List<Tuple<string, int>>> dicUniquePairs = new Dictionary<string, List<Tuple<string, int>>>();
+            Dictionary<string, int> dicValues = new Dictionary<string, int>();
+            foreach (Improvement objImprovement in objCharacter.Improvements)
+            {
+                if (objImprovement.ImproveType == objImprovementType && objImprovement.Enabled && !objImprovement.Custom && (!blnUnconditionalOnly || string.IsNullOrEmpty(objImprovement.Condition)))
+                {
+                    string strLoopImprovedName = objImprovement.ImprovedName;
+                    bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
+                        !(objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
+                          objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice) &&
+                    // Ignore items that apply to a Skill's Rating.
+                          objImprovement.AddToRating == blnAddToRating &&
+                    // If an Improved Name has been passed, only retrieve values that have this Improved Name.
+                          (string.IsNullOrEmpty(strImprovedName) || strImprovedName == strLoopImprovedName);
 
-							// Add the values to the UniquePair List so we can check them later.
-							string[,] strValues = new string[,] {{objImprovement.UniqueName, objImprovement.Value.ToString()}};
-							lstUniquePair.Add(strValues);
-						}
-						else
-						{
-							if (objImprovement.ImproveType == objImprovementType)
-								intValue += objImprovement.Value;
-						}
-					}
-				}
-			}
+                    if (blnAllowed)
+                    {
+                        string strUniqueName = objImprovement.UniqueName;
+                        if (!string.IsNullOrEmpty(strUniqueName))
+                        {
+                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                            if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
+                            {
+                                if (!lstUniqueNames.Contains(strUniqueName))
+                                    lstUniqueNames.Add(strUniqueName);
+                            }
+                            else
+                            {
+                                dicUniqueNames.Add(strLoopImprovedName, new HashSet<string>{strUniqueName});
+                            }
 
-			// Run through the list of UniqueNames and pick out the highest value for each one.
-			foreach (string strName in lstUniqueName)
-			{
-				int intHighest = -999;
-				foreach (string[,] strValues in lstUniquePair)
-				{
-					if (strValues[0, 0] == strName)
-					{
-						if (Convert.ToInt32(strValues[0, 1]) > intHighest)
-							intHighest = Convert.ToInt32(strValues[0, 1]);
-					}
-				}
-				intValue += intHighest;
-			}
+                            // Add the values to the UniquePair List so we can check them later.
+                            if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                            {
+                                lstUniquePairs.Add(new Tuple<string, int>(strUniqueName, objImprovement.Value));
+                            }
+                            else
+                            {
+                                dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, int>> { new Tuple<string, int>(strUniqueName, objImprovement.Value) });
+                            }
 
-			if (lstUniqueName.Contains("precedence1"))
-			{
-				intValue = 0;
-				// Retrieve all of the items that are precedence1 and nothing else.
-				foreach (string[,] strValues in lstUniquePair)
-				{
-					if (strValues[0, 0] == "precedence1")
-						intValue += Convert.ToInt32(strValues[0, 1]);
-				}
-			}
+                            if (!dicValues.ContainsKey(strLoopImprovedName))
+                            {
+                                dicValues.Add(strLoopImprovedName, 0);
+                            }
+                        }
+                        else if (dicValues.ContainsKey(strLoopImprovedName))
+                        {
+                            dicValues[strLoopImprovedName] += objImprovement.Value;
+                        }
+                        else
+                        {
+                            dicValues.Add(strLoopImprovedName, objImprovement.Value);
+                        }
+                    }
+                }
+            }
 
-			if (lstUniqueName.Contains("precedence0"))
-			{
-				// Retrieve only the highest precedence0 value.
-				// Run through the list of UniqueNames and pick out the highest value for each one.
-				int intHighest = -999;
-				foreach (string[,] strValues in lstUniquePair)
-				{
-					if (strValues[0, 0] == "precedence0")
-					{
-						if (Convert.ToInt32(strValues[0, 1]) > intHighest)
-							intHighest = Convert.ToInt32(strValues[0, 1]);
-					}
-				}
-				intValue = intHighest;
-			}
+            foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
+            {
+                string strLoopImprovedName = objLoopValuePair.Key;
+                HashSet<string> lstUniqueNames = objLoopValuePair.Value;
+                bool blnValuesDictionaryContains = dicValues.TryGetValue(strLoopImprovedName, out int intLoopValue);
+                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                {
+                    if (lstUniqueNames.Contains("precedence0"))
+                    {
+                        // Retrieve only the highest precedence0 value.
+                        // Run through the list of UniqueNames and pick out the highest value for each one.
+                        int intHighest = int.MinValue;
+                        foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
+                        {
+                            if (objLoopUniquePair.Item1 == "precedence0")
+                                intHighest = Math.Max(intHighest, objLoopUniquePair.Item2);
+                        }
+                        if (lstUniqueNames.Contains("precedence-1"))
+                        {
+                            intHighest += lstUniquePairs.Where(strValues => strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2);
+                        }
+                        intLoopValue = Math.Max(intLoopValue, intHighest);
+                    }
+                    else if (lstUniqueNames.Contains("precedence1"))
+                    {
+                        // Retrieve all of the items that are precedence1 and nothing else.
+                        intLoopValue = Math.Max(intLoopValue, lstUniquePairs.Where(strValues => strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2));
+                    }
+                    else
+                    {
+                        // Run through the list of UniqueNames and pick out the highest value for each one.
+                        foreach (string strUniqueName in lstUniqueNames)
+                        {
+                            int intInnerLoopValue = int.MinValue;
+                            foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
+                            {
+                                if (objLoopUniquePair.Item1 == strUniqueName)
+                                    intInnerLoopValue = Math.Max(intInnerLoopValue, objLoopUniquePair.Item2);
+                            }
+                            if (intInnerLoopValue != int.MinValue)
+                                intLoopValue += intInnerLoopValue;
+                        }
+                    }
+                    if (blnValuesDictionaryContains)
+                        dicValues[strLoopImprovedName] = intLoopValue;
+                    else
+                        dicValues.Add(strLoopImprovedName, intLoopValue);
+                }
+            }
 
-			// Factor in Custom Improvements.
-			lstUniqueName = new List<string>();
-			lstUniquePair = new List<string[,]>();
-			int intCustomValue = 0;
-			foreach (Improvement objImprovement in _objCharacter.Improvements)
-			{
-				if (objImprovement.Enabled && objImprovement.Custom)
-				{
-					bool blnAllowed = true;
-					// Technomancers cannot benefit from Gear-based Matrix Initiative Pass modifiers (Gear - Sim Modules).
-					if (_objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
-					    objImprovementType == Improvement.ImprovementType.MatrixInitiativePass)
-						blnAllowed = false;
-					// Ignore items that apply to a Skill's Rating.
-					if (objImprovement.AddToRating != blnAddToRating)
-						blnAllowed = false;
-					// If an Improved Name has been passed, only retrieve values that have this Improved Name.
-					if (strImprovedName != null)
-					{
-						if (strImprovedName != objImprovement.ImprovedName)
-							blnAllowed = false;
-					}
+            // Factor in Custom Improvements.
+            dicUniqueNames.Clear();
+            dicUniquePairs.Clear();
+            Dictionary<string, int> dicCustomValues = new Dictionary<string, int>();
+            foreach (Improvement objImprovement in objCharacter.Improvements)
+            {
+                if (objImprovement.Custom && objImprovement.Enabled && (!blnUnconditionalOnly || string.IsNullOrEmpty(objImprovement.Condition)))
+                {
+                    string strLoopImprovedName = objImprovement.ImprovedName;
+                    bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
+                        !(objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
+                          objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice) &&
+                    // Ignore items that apply to a Skill's Rating.
+                          objImprovement.AddToRating == blnAddToRating &&
+                    // If an Improved Name has been passed, only retrieve values that have this Improved Name.
+                          (string.IsNullOrEmpty(strImprovedName) || strImprovedName == strLoopImprovedName);
 
-					if (blnAllowed)
-					{
-						if (objImprovement.UniqueName != "" && objImprovement.ImproveType == objImprovementType)
-						{
-							// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-							bool blnFound = false;
-							foreach (string strName in lstUniqueName)
-							{
-								if (strName == objImprovement.UniqueName)
-									blnFound = true;
-								break;
-							}
-							if (!blnFound)
-								lstUniqueName.Add(objImprovement.UniqueName);
+                    if (blnAllowed)
+                    {
+                        string strUniqueName = objImprovement.UniqueName;
+                        if (!string.IsNullOrEmpty(strUniqueName))
+                        {
+                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                            if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
+                            {
+                                if (!lstUniqueNames.Contains(strUniqueName))
+                                    lstUniqueNames.Add(strUniqueName);
+                            }
+                            else
+                            {
+                                dicUniqueNames.Add(strLoopImprovedName, new HashSet<string> { strUniqueName });
+                            }
 
-							// Add the values to the UniquePair List so we can check them later.
-							string[,] strValues = new string[,] {{objImprovement.UniqueName, objImprovement.Value.ToString()}};
-							lstUniquePair.Add(strValues);
-						}
-						else
-						{
-							if (objImprovement.ImproveType == objImprovementType)
-								intCustomValue += objImprovement.Value;
-						}
-					}
-				}
-			}
+                            // Add the values to the UniquePair List so we can check them later.
+                            if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                            {
+                                lstUniquePairs.Add(new Tuple<string, int>(strUniqueName, objImprovement.Value));
+                            }
+                            else
+                            {
+                                dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, int>> { new Tuple<string, int>(strUniqueName, objImprovement.Value) });
+                            }
 
-			// Run through the list of UniqueNames and pick out the highest value for each one.
-			foreach (string strName in lstUniqueName)
-			{
-				int intHighest = -999;
-				foreach (string[,] strValues in lstUniquePair)
-				{
-					if (strValues[0, 0] == strName)
-					{
-						if (Convert.ToInt32(strValues[0, 1]) > intHighest)
-							intHighest = Convert.ToInt32(strValues[0, 1]);
-					}
-				}
-				intCustomValue += intHighest;
-			}
+                            if (!dicCustomValues.ContainsKey(strLoopImprovedName))
+                            {
+                                dicCustomValues.Add(strLoopImprovedName, 0);
+                            }
+                        }
+                        else if (dicCustomValues.ContainsKey(strLoopImprovedName))
+                        {
+                            dicCustomValues[strLoopImprovedName] += objImprovement.Value;
+                        }
+                        else
+                        {
+                            dicCustomValues.Add(strLoopImprovedName, objImprovement.Value);
+                        }
+                    }
+                }
+            }
+
+            foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
+            {
+                string strLoopImprovedName = objLoopValuePair.Key;
+                HashSet<string> lstUniqueNames = objLoopValuePair.Value;
+                bool blnValuesDictionaryContains = dicCustomValues.TryGetValue(strLoopImprovedName, out int intLoopValue);
+                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                {
+                    // Run through the list of UniqueNames and pick out the highest value for each one.
+                    foreach (string strUniqueName in lstUniqueNames)
+                    {
+                        int intInnerLoopValue = int.MinValue;
+                        foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
+                        {
+                            if (objLoopUniquePair.Item1 == strUniqueName)
+                                intInnerLoopValue = Math.Max(intInnerLoopValue, objLoopUniquePair.Item2);
+                        }
+                        if (intInnerLoopValue != int.MinValue)
+                            intLoopValue += intInnerLoopValue;
+                    }
+                    if (blnValuesDictionaryContains)
+                        dicCustomValues[strLoopImprovedName] = intLoopValue;
+                    else
+                        dicCustomValues.Add(strLoopImprovedName, intLoopValue);
+                }
+            }
+
+            foreach (KeyValuePair<string, int> objLoopValuePair in dicCustomValues)
+            {
+                string strLoopImprovedName = objLoopValuePair.Key;
+                if (dicValues.ContainsKey(strLoopImprovedName))
+                {
+                    dicValues[strLoopImprovedName] += objLoopValuePair.Value;
+                }
+                else
+                {
+                    dicValues.Add(strLoopImprovedName, objLoopValuePair.Value);
+                }
+            }
+
+            int intReturn = 0;
 
             //Log.Exit("ValueOf");
+            // If this is the default ValueOf() call, let's cache the value we've calculated so that we don't have to do this all over again unless something has changed
+            if (!blnAddToRating && blnUnconditionalOnly)
+            {
+                foreach (KeyValuePair<string, int> objLoopValuePair in dicValues)
+                {
+                    string strLoopImprovedName = objLoopValuePair.Key;
+                    int intLoopValue = objLoopValuePair.Value;
+                    ImprovementDictionaryKey objLoopCacheKey = new ImprovementDictionaryKey(objCharacter, objImprovementType, strLoopImprovedName);
+                    if (!s_DictionaryCachedValues.TryAdd(objLoopCacheKey, intLoopValue))
+                        s_DictionaryCachedValues[objLoopCacheKey] = intLoopValue;
+                    intReturn += intLoopValue;
+                }
+            }
 
-			return intValue + intCustomValue;
-		}
+            return intReturn;
+        }
 
-		/// <summary>
-		/// Convert a string to an integer, converting "Rating" to a number where appropriate.
-		/// </summary>
-		/// <param name="strValue">String value to parse.</param>
-		/// <param name="intRating">Integer value to replace "Rating" with.</param>
-		private int ValueToInt(string strValue, int intRating)
-		{
-   //         Log.Enter("ValueToInt");
-   //         Log.Info("strValue = " + strValue);
-			//Log.Info("intRating = " + intRating.ToString());
-            
-			if (strValue.Contains("Rating") || strValue.Contains("BOD") || strValue.Contains("AGI") || strValue.Contains("REA") ||
-			    strValue.Contains("STR") || strValue.Contains("CHA") || strValue.Contains("INT") || strValue.Contains("LOG") ||
-			    strValue.Contains("WIL") || strValue.Contains("EDG") || strValue.Contains("MAG") || strValue.Contains("RES"))
-			{
-				// If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
-				strValue = strValue.Replace("BOD", _objCharacter.BOD.TotalValue.ToString());
-				strValue = strValue.Replace("AGI", _objCharacter.AGI.TotalValue.ToString());
-				strValue = strValue.Replace("REA", _objCharacter.REA.TotalValue.ToString());
-				strValue = strValue.Replace("STR", _objCharacter.STR.TotalValue.ToString());
-				strValue = strValue.Replace("CHA", _objCharacter.CHA.TotalValue.ToString());
-				strValue = strValue.Replace("INT", _objCharacter.INT.TotalValue.ToString());
-				strValue = strValue.Replace("LOG", _objCharacter.LOG.TotalValue.ToString());
-				strValue = strValue.Replace("WIL", _objCharacter.WIL.TotalValue.ToString());
-				strValue = strValue.Replace("EDG", _objCharacter.EDG.TotalValue.ToString());
-				strValue = strValue.Replace("MAG", _objCharacter.MAG.TotalValue.ToString());
-				strValue = strValue.Replace("RES", _objCharacter.RES.TotalValue.ToString());
+        /// <summary>
+        /// Retrieve the total Improvement Augmented x Rating for the specified ImprovementType.
+        /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
+        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="strImprovedName">Name to assign to the Improvement.</param>
+        /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
+        public static int AugmentedValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType, bool blnAddToRating = false, string strImprovedName = "", bool blnUnconditionalOnly = true)
+        {
+            //Log.Enter("AugmentedValueOf");
+            //Log.Info("objImprovementType = " + objImprovementType.ToString());
+            //Log.Info("blnAddToRating = " + blnAddToRating.ToString());
+            //Log.Info("strImprovedName = " + ("" + strImprovedName).ToString());
 
-				XmlDocument objXmlDocument = new XmlDocument();
-				XPathNavigator nav = objXmlDocument.CreateNavigator();
-				string strReturn = strValue.Replace("Rating", intRating.ToString());
+            if (objCharacter == null)
+            {
+                //Log.Exit("AugmentedValueOf");
+                return 0;
+            }
+
+            // If we've got a value cached for the default AugmentedValueOf call for an improvementType, let's just return that
+            if (!blnAddToRating && blnUnconditionalOnly)
+            {
+                if (!string.IsNullOrEmpty(strImprovedName))
+                {
+                    ImprovementDictionaryKey objCacheKey = new ImprovementDictionaryKey(objCharacter, objImprovementType, strImprovedName);
+                    if (s_DictionaryCachedAugmentedValues.TryGetValue(objCacheKey, out int intCachedValue) && intCachedValue != int.MinValue)
+                    {
+                        return intCachedValue;
+                    }
+                }
+                else
+                {
+                    bool blnDoRecalculate = true;
+                    int intCachedValue = 0;
+                    // Only fetch based on cached values if the dictionary contains at least one element with matching characters and types and none of those elements have a "reset" value of int.MinValue
+                    foreach (KeyValuePair<ImprovementDictionaryKey, int> objLoopCachedEntry in s_DictionaryCachedAugmentedValues)
+                    {
+                        ImprovementDictionaryKey objLoopKey = objLoopCachedEntry.Key;
+                        if (objLoopKey.CharacterObject == objCharacter && objLoopKey.ImprovementType == objImprovementType)
+                        {
+                            blnDoRecalculate = false;
+                            int intLoopCachedValue = objLoopCachedEntry.Value;
+                            if (intLoopCachedValue == int.MinValue)
+                            {
+                                blnDoRecalculate = true;
+                                break;
+                            }
+                            intCachedValue += intLoopCachedValue;
+                        }
+                    }
+                    if (!blnDoRecalculate)
+                    {
+                        return intCachedValue;
+                    }
+                }
+            }
+
+            Dictionary<string, HashSet<string>> dicUniqueNames = new Dictionary<string, HashSet<string>>();
+            Dictionary<string, List<Tuple<string, int>>> dicUniquePairs = new Dictionary<string, List<Tuple<string, int>>>();
+            Dictionary<string, int> dicValues = new Dictionary<string, int>();
+            foreach (Improvement objImprovement in objCharacter.Improvements)
+            {
+                if (objImprovement.ImproveType == objImprovementType && objImprovement.Enabled && !objImprovement.Custom && (!blnUnconditionalOnly || string.IsNullOrEmpty(objImprovement.Condition)))
+                {
+                    string strLoopImprovedName = objImprovement.ImprovedName;
+                    bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
+                        !(objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
+                          objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice) &&
+                    // Ignore items that apply to a Skill's Rating.
+                          objImprovement.AddToRating == blnAddToRating &&
+                    // If an Improved Name has been passed, only retrieve values that have this Improved Name.
+                          (string.IsNullOrEmpty(strImprovedName) || strImprovedName == strLoopImprovedName);
+
+                    if (blnAllowed)
+                    {
+                        string strUniqueName = objImprovement.UniqueName;
+                        if (!string.IsNullOrEmpty(strUniqueName))
+                        {
+                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                            if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
+                            {
+                                if (!lstUniqueNames.Contains(strUniqueName))
+                                    lstUniqueNames.Add(strUniqueName);
+                            }
+                            else
+                            {
+                                dicUniqueNames.Add(strLoopImprovedName, new HashSet<string> { strUniqueName });
+                            }
+
+                            // Add the values to the UniquePair List so we can check them later.
+                            if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                            {
+                                lstUniquePairs.Add(new Tuple<string, int>(strUniqueName, objImprovement.Augmented * objImprovement.Rating));
+                            }
+                            else
+                            {
+                                dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, int>> { new Tuple<string, int>(strUniqueName, objImprovement.Augmented * objImprovement.Rating) });
+                            }
+
+                            if (!dicValues.ContainsKey(strLoopImprovedName))
+                            {
+                                dicValues.Add(strLoopImprovedName, 0);
+                            }
+                        }
+                        else if (dicValues.ContainsKey(strLoopImprovedName))
+                        {
+                            dicValues[strLoopImprovedName] += objImprovement.Augmented * objImprovement.Rating;
+                        }
+                        else
+                        {
+                            dicValues.Add(strLoopImprovedName, objImprovement.Augmented * objImprovement.Rating);
+                        }
+                    }
+                }
+            }
+
+            foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
+            {
+                string strLoopImprovedName = objLoopValuePair.Key;
+                HashSet<string> lstUniqueNames = objLoopValuePair.Value;
+                bool blnValuesDictionaryContains = dicValues.TryGetValue(strLoopImprovedName, out int intLoopValue);
+                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                {
+                    if (lstUniqueNames.Contains("precedence0"))
+                    {
+                        // Retrieve only the highest precedence0 value.
+                        // Run through the list of UniqueNames and pick out the highest value for each one.
+                        int intHighest = int.MinValue;
+                        foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
+                        {
+                            if (objLoopUniquePair.Item1 == "precedence0")
+                                intHighest = Math.Max(intHighest, objLoopUniquePair.Item2);
+                        }
+                        if (lstUniqueNames.Contains("precedence-1"))
+                        {
+                            intHighest += lstUniquePairs.Where(strValues => strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2);
+                        }
+                        intLoopValue = Math.Max(intLoopValue, intHighest);
+                    }
+                    else if (lstUniqueNames.Contains("precedence1"))
+                    {
+                        // Retrieve all of the items that are precedence1 and nothing else.
+                        intLoopValue = Math.Max(intLoopValue, lstUniquePairs.Where(strValues => strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2));
+                    }
+                    else
+                    {
+                        // Run through the list of UniqueNames and pick out the highest value for each one.
+                        foreach (string strUniqueName in lstUniqueNames)
+                        {
+                            int intInnerLoopValue = int.MinValue;
+                            foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
+                            {
+                                if (objLoopUniquePair.Item1 == strUniqueName)
+                                    intInnerLoopValue = Math.Max(intInnerLoopValue, objLoopUniquePair.Item2);
+                            }
+                            if (intInnerLoopValue != int.MinValue)
+                                intLoopValue += intInnerLoopValue;
+                        }
+                    }
+                    if (blnValuesDictionaryContains)
+                        dicValues[strLoopImprovedName] = intLoopValue;
+                    else
+                        dicValues.Add(strLoopImprovedName, intLoopValue);
+                }
+            }
+
+            // Factor in Custom Improvements.
+            dicUniqueNames.Clear();
+            dicUniquePairs.Clear();
+            Dictionary<string, int> dicCustomValues = new Dictionary<string, int>();
+            foreach (Improvement objImprovement in objCharacter.Improvements)
+            {
+                if (objImprovement.Custom && objImprovement.Enabled && (!blnUnconditionalOnly || string.IsNullOrEmpty(objImprovement.Condition)))
+                {
+                    string strLoopImprovedName = objImprovement.ImprovedName;
+                    bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
+                        !(objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
+                          objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice) &&
+                    // Ignore items that apply to a Skill's Rating.
+                          objImprovement.AddToRating == blnAddToRating &&
+                    // If an Improved Name has been passed, only retrieve values that have this Improved Name.
+                          (string.IsNullOrEmpty(strImprovedName) || strImprovedName == strLoopImprovedName);
+
+                    if (blnAllowed)
+                    {
+                        string strUniqueName = objImprovement.UniqueName;
+                        if (!string.IsNullOrEmpty(strUniqueName))
+                        {
+                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                            if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
+                            {
+                                if (!lstUniqueNames.Contains(strUniqueName))
+                                    lstUniqueNames.Add(strUniqueName);
+                            }
+                            else
+                            {
+                                dicUniqueNames.Add(strLoopImprovedName, new HashSet<string> { strUniqueName });
+                            }
+
+                            // Add the values to the UniquePair List so we can check them later.
+                            if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                            {
+                                lstUniquePairs.Add(new Tuple<string, int>(strUniqueName, objImprovement.Augmented * objImprovement.Rating));
+                            }
+                            else
+                            {
+                                dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, int>> { new Tuple<string, int>(strUniqueName, objImprovement.Augmented * objImprovement.Rating) });
+                            }
+
+                            if (!dicCustomValues.ContainsKey(strLoopImprovedName))
+                            {
+                                dicCustomValues.Add(strLoopImprovedName, 0);
+                            }
+                        }
+                        else if (dicCustomValues.ContainsKey(strLoopImprovedName))
+                        {
+                            dicCustomValues[strLoopImprovedName] += objImprovement.Augmented * objImprovement.Rating;
+                        }
+                        else
+                        {
+                            dicCustomValues.Add(strLoopImprovedName, objImprovement.Augmented * objImprovement.Rating);
+                        }
+                    }
+                }
+            }
+
+            foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
+            {
+                string strLoopImprovedName = objLoopValuePair.Key;
+                HashSet<string> lstUniqueNames = objLoopValuePair.Value;
+                bool blnValuesDictionaryContains = dicCustomValues.TryGetValue(strLoopImprovedName, out int intLoopValue);
+                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                {
+                    // Run through the list of UniqueNames and pick out the highest value for each one.
+                    foreach (string strUniqueName in lstUniqueNames)
+                    {
+                        int intInnerLoopValue = int.MinValue;
+                        foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
+                        {
+                            if (objLoopUniquePair.Item1 == strUniqueName)
+                                intInnerLoopValue = Math.Max(intInnerLoopValue, objLoopUniquePair.Item2);
+                        }
+                        if (intInnerLoopValue != int.MinValue)
+                            intLoopValue += intInnerLoopValue;
+                    }
+                    if (blnValuesDictionaryContains)
+                        dicCustomValues[strLoopImprovedName] = intLoopValue;
+                    else
+                        dicCustomValues.Add(strLoopImprovedName, intLoopValue);
+                }
+            }
+
+            foreach (KeyValuePair<string, int> objLoopValuePair in dicCustomValues)
+            {
+                string strLoopImprovedName = objLoopValuePair.Key;
+                if (dicValues.ContainsKey(strLoopImprovedName))
+                {
+                    dicValues[strLoopImprovedName] += objLoopValuePair.Value;
+                }
+                else
+                {
+                    dicValues.Add(strLoopImprovedName, objLoopValuePair.Value);
+                }
+            }
+
+            int intReturn = 0;
+
+            //Log.Exit("AugmentedValueOf");
+            // If this is the default AugmentedValueOf() call, let's cache the value we've calculated so that we don't have to do this all over again unless something has changed
+            if (!blnAddToRating && blnUnconditionalOnly)
+            {
+                foreach (KeyValuePair<string, int> objLoopValuePair in dicValues)
+                {
+                    string strLoopImprovedName = objLoopValuePair.Key;
+                    int intLoopValue = objLoopValuePair.Value;
+                    ImprovementDictionaryKey objLoopCacheKey = new ImprovementDictionaryKey(objCharacter, objImprovementType, strLoopImprovedName);
+                    if (!s_DictionaryCachedAugmentedValues.TryAdd(objLoopCacheKey, intLoopValue))
+                        s_DictionaryCachedAugmentedValues[objLoopCacheKey] = intLoopValue;
+                    intReturn += intLoopValue;
+                }
+            }
+
+            return intReturn;
+        }
+
+        /// <summary>
+        /// Convert a string to an integer, converting "Rating" to a number where appropriate.
+        /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="strValue">String value to parse.</param>
+        /// <param name="intRating">Integer value to replace "Rating" with.</param>
+        public static int ValueToInt(Character objCharacter, string strValue, int intRating)
+        {
+            if (string.IsNullOrEmpty(strValue))
+                return 0;
+            //         Log.Enter("ValueToInt");
+            //         Log.Info("strValue = " + strValue);
+            //Log.Info("intRating = " + intRating.ToString());
+            if (strValue.StartsWith("FixedValues("))
+            {
+                string[] strValues = strValue.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
+            }
+            if (strValue.Contains("Rating") || AttributeSection.AttributeStrings.Any(strValue.Contains))
+            {
+                string strReturn = strValue.Replace("Rating", intRating.ToString());
+                // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
+                foreach (string strAttribute in AttributeSection.AttributeStrings)
+                {
+                    strReturn = strReturn.CheapReplace(strAttribute, () => objCharacter.GetAttribute(strAttribute).TotalValue.ToString());
+                }
+
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
-                XPathExpression xprValue = nav.Compile(strReturn);
 
-				// Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
-				decimal decValue = Convert.ToDecimal(nav.Evaluate(xprValue).ToString(), GlobalOptions.Instance.CultureInfo);
-				decValue = Math.Floor(decValue);
-				int intValue = Convert.ToInt32(decValue);
+                // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn, out bool blnIsSuccess);
+                int intValue = blnIsSuccess ? Convert.ToInt32(Math.Floor((double)objProcess)) : 0;
 
                 //Log.Exit("ValueToInt");
-				return Convert.ToInt32(intValue);
-			}
-			else
-			{
-                //Log.Exit("ValueToInt");
-                if (strValue.Contains("FixedValues"))
-				{
-					string[] strValues = strValue.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-					return Convert.ToInt32(strValues[intRating - 1]);
-				}
-				else
-					return Convert.ToInt32(strValue);
-			}
-		}
+                return intValue;
+            }
+            //Log.Exit("ValueToInt");
+            int.TryParse(strValue, out int intReturn);
+            return intReturn;
+        }
 
-		/// <summary>
-		/// Determine whether or not an XmlNode with the specified name exists within an XmlNode.
-		/// </summary>
-		/// <param name="objXmlNode">XmlNode to examine.</param>
-		/// <param name="strName">Name of the XmlNode to look for.</param>
-		private bool NodeExists(XmlNode objXmlNode, string strName)
-		{
-   //         Log.Enter("NodeExists");
-			//Log.Info("objXmlNode = " + objXmlNode.OuterXml.ToString());
-   //         Log.Info("strName = " + strName);
+        public static string DoSelectSkill(XmlNode xmlBonusNode, Character objCharacter, int intRating, string strFriendlyName, ref bool blnIsKnowledgeSkill)
+        {
+            string strSelectedSkill;
+            blnIsKnowledgeSkill = blnIsKnowledgeSkill || xmlBonusNode.Attributes?["knowledgeskills"]?.InnerText == bool.TrueString;
+            if (blnIsKnowledgeSkill)
+            {
+                int intMinimumRating = 0;
+                string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strMinimumRating))
+                    intMinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
+                int intMaximumRating = int.MaxValue;
+                string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strMaximumRating))
+                    intMaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
 
-            bool blnReturn = false;
-			try
-			{
-				XmlNode objXmlTest = objXmlNode.SelectSingleNode(strName);
-				if (objXmlTest != null)
-					blnReturn = true;
-			}
-			catch
-			{
-			}
+                HashSet<string> setAllowedCategories = null;
+                string strOnlyCategory = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
+                if (!string.IsNullOrEmpty(strOnlyCategory))
+                {
+                    setAllowedCategories = new HashSet<string>(strOnlyCategory.Split(',').Select(x => x.Trim()));
+                }
+                else
+                {
+                    using (XmlNodeList xmlCategoryList = xmlBonusNode.SelectNodes("skillcategories/category"))
+                    {
+                        if (xmlCategoryList?.Count > 0)
+                        {
+                            setAllowedCategories = new HashSet<string>();
+                            foreach (XmlNode objNode in xmlCategoryList)
+                            {
+                                setAllowedCategories.Add(objNode.InnerText);
+                            }
+                        }
+                    }
+                }
 
-			return blnReturn;
-		}
+                HashSet<string> setForbiddenCategories = null;
+                string strExcludeCategory = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
+                if (!string.IsNullOrEmpty(strExcludeCategory))
+                {
+                    setForbiddenCategories = new HashSet<string>(strExcludeCategory.Split(',').Select(x => x.Trim()));
+                }
+                HashSet<string> setAllowedNames = null;
+                if (!string.IsNullOrEmpty(ForcedValue))
+                {
+                    setAllowedNames = new HashSet<string> {ForcedValue};
+                }
+                else
+                {
+                    string strLimitToSkill = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
+                    if (!string.IsNullOrEmpty(strLimitToSkill))
+                    {
+                        setAllowedNames = new HashSet<string>(strLimitToSkill.Split(',').Select(x => x.Trim()));
+                    }
+                }
 
-		#endregion
+                HashSet<string> setAllowedLinkedAttributes = null;
+                string strLimitToAttribute = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
+                if (!string.IsNullOrEmpty(strLimitToAttribute))
+                {
+                    setAllowedLinkedAttributes = new HashSet<string>(strLimitToAttribute.Split(',').Select(x => x.Trim()));
+                }
 
-		#region Improvement System
+                List<ListItem> lstDropdownItems = new List<ListItem>();
+                HashSet<string> setProcessedSkillNames = new HashSet<string>();
+                foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowledgeSkills)
+                {
+                    if (setAllowedCategories?.Contains(objKnowledgeSkill.SkillCategory) != false &&
+                        setForbiddenCategories?.Contains(objKnowledgeSkill.SkillCategory) != true &&
+                        setAllowedNames?.Contains(objKnowledgeSkill.Name) != false &&
+                        setAllowedLinkedAttributes?.Contains(objKnowledgeSkill.Attribute) != false)
+                    {
+                        int intSkillRating = objKnowledgeSkill.Rating;
+                        if (intSkillRating >= intMinimumRating && intRating < intMaximumRating)
+                        {
+                            lstDropdownItems.Add(new ListItem(objKnowledgeSkill.Name, objKnowledgeSkill.DisplayNameMethod(GlobalOptions.Language)));
+                        }
+                    }
+                    setProcessedSkillNames.Add(objKnowledgeSkill.Name);
+                }
+                if (intMinimumRating <= 0)
+                {
+                    StringBuilder objFilter = new StringBuilder();
+                    if (setAllowedCategories?.Count > 0)
+                    {
+                        objFilter.Append('(');
+                        foreach (string strCategory in setAllowedCategories)
+                        {
+                            objFilter.Append("category = \"" + strCategory + "\" or ");
+                        }
 
-		/// <summary>
-		/// Create all of the Improvements for an XML Node.
-		/// </summary>
-		/// <param name="objImprovementSource">Type of object that grants these Improvements.</param>
-		/// <param name="strSourceName">Name of the item that grants these Improvements.</param>
-		/// <param name="nodBonus">bonus XMLXode from the source data file.</param>
-		/// <param name="blnConcatSelectedValue">Whether or not any selected values should be concatinated with the SourceName string when storing.</param>
-		/// <param name="intRating">Selected Rating value that is used to replace the Rating string in an Improvement.</param>
-		/// <param name="strFriendlyName">Friendly name to show in any dialogue windows that ask for a value.</param>
-		/// <returns>True if successfull</returns>
-		public bool CreateImprovements(Improvement.ImprovementSource objImprovementSource, string strSourceName,
-			XmlNode nodBonus, bool blnConcatSelectedValue = false, int intRating = 1, string strFriendlyName = "",
-			object fCreate = null)
-		{
+                        objFilter.Length -= 4;
+                        objFilter.Append(')');
+                    }
+                    if (setForbiddenCategories?.Count > 0)
+                    {
+                        if (objFilter.Length > 0)
+                            objFilter.Append(" and ");
+                        objFilter.Append("not(");
+                        foreach (string strCategory in setForbiddenCategories)
+                        {
+                            objFilter.Append("category = \"" + strCategory + "\" or ");
+                        }
+
+                        objFilter.Length -= 4;
+                        objFilter.Append(')');
+                    }
+                    if (setAllowedNames?.Count > 0)
+                    {
+                        if (objFilter.Length > 0)
+                            objFilter.Append(" and ");
+                        objFilter.Append('(');
+                        foreach (string strName in setAllowedNames)
+                        {
+                            objFilter.Append("name = \"" + strName + "\" or ");
+                        }
+
+                        objFilter.Length -= 4;
+                        objFilter.Append(')');
+                    }
+                    if (setProcessedSkillNames.Count > 0)
+                    {
+                        if (objFilter.Length > 0)
+                            objFilter.Append(" and ");
+                        objFilter.Append("not(");
+                        foreach (string strName in setProcessedSkillNames)
+                        {
+                            objFilter.Append("name = \"" + strName + "\" or ");
+                        }
+
+                        objFilter.Length -= 4;
+                        objFilter.Append(')');
+                    }
+                    if (setAllowedLinkedAttributes?.Count > 0)
+                    {
+                        if (objFilter.Length > 0)
+                            objFilter.Append(" and ");
+                        objFilter.Append('(');
+                        foreach (string strAttribute in setAllowedLinkedAttributes)
+                        {
+                            objFilter.Append("attribute = \"" + strAttribute + "\" or ");
+                        }
+
+                        objFilter.Length -= 4;
+                        objFilter.Append(')');
+                    }
+
+                    string strFilter = objFilter.Length > 0 ? ") and (" + objFilter.ToString() : string.Empty;
+                    using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectNodes("/chummer/knowledgeskills/skill[(not(hide)" + strFilter + ")]"))
+                    {
+                        if (xmlSkillList?.Count > 0)
+                        {
+                            foreach (XmlNode xmlSkill in xmlSkillList)
+                            {
+                                string strName = xmlSkill["name"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strName))
+                                    lstDropdownItems.Add(new ListItem(strName, xmlSkill["translate"]?.InnerText ?? strName));
+                            }
+                        }
+                    }
+                }
+
+                lstDropdownItems.Sort(CompareListItems.CompareNames);
+
+                frmSelectItem frmPickSkill = new frmSelectItem
+                {
+                    Description = LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Language)
+                };
+                if (setAllowedNames != null)
+                    frmPickSkill.GeneralItems = lstDropdownItems;
+                else
+                    frmPickSkill.DropdownItems = lstDropdownItems;
+
+                frmPickSkill.ShowDialog();
+
+                if (frmPickSkill.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                strSelectedSkill = frmPickSkill.SelectedItem;
+            }
+            else
+            {
+                // Display the Select Skill window and record which Skill was selected.
+                frmSelectSkill frmPickSkill = new frmSelectSkill(objCharacter, strFriendlyName)
+                {
+                    Description = !string.IsNullOrEmpty(strFriendlyName)
+                        ? LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language).Replace("{0}", strFriendlyName)
+                        : LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Language)
+                };
+                string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strMinimumRating))
+                    frmPickSkill.MinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
+                string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strMaximumRating))
+                    frmPickSkill.MaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
+
+                XmlNode xmlSkillCategories = xmlBonusNode.SelectSingleNode("skillcategories");
+                if (xmlSkillCategories != null)
+                    frmPickSkill.LimitToCategories = xmlSkillCategories;
+                string strTemp = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp))
+                    frmPickSkill.OnlyCategory = strTemp;
+                strTemp = xmlBonusNode.SelectSingleNode("@skillgroup")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp))
+                    frmPickSkill.OnlySkillGroup = strTemp;
+                strTemp = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp))
+                    frmPickSkill.ExcludeCategory = strTemp;
+                strTemp = xmlBonusNode.SelectSingleNode("@excludeskillgroup")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp))
+                    frmPickSkill.ExcludeSkillGroup = strTemp;
+                strTemp = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp))
+                    frmPickSkill.LimitToSkill = strTemp;
+                strTemp = xmlBonusNode.SelectSingleNode("@excludeskill")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp))
+                    frmPickSkill.ExcludeSkill = strTemp;
+                strTemp = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp))
+                    frmPickSkill.LinkedAttribute = strTemp;
+
+                if (!string.IsNullOrEmpty(ForcedValue))
+                {
+                    frmPickSkill.OnlySkill = ForcedValue;
+                    frmPickSkill.Opacity = 0;
+                }
+
+                frmPickSkill.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickSkill.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                strSelectedSkill = frmPickSkill.SelectedSkill;
+            }
+
+            return strSelectedSkill;
+        }
+        #endregion
+
+        #region Improvement System
+
+        /// <summary>
+        /// Create all of the Improvements for an XML Node.
+        /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="objImprovementSource">Type of object that grants these Improvements.</param>
+        /// <param name="strSourceName">Name of the item that grants these Improvements.</param>
+        /// <param name="nodBonus">bonus XMLXode from the source data file.</param>
+        /// <param name="blnConcatSelectedValue">Whether or not any selected values should be concatinated with the SourceName string when storing.</param>
+        /// <param name="intRating">Selected Rating value that is used to replace the Rating string in an Improvement.</param>
+        /// <param name="strFriendlyName">Friendly name to show in any dialogue windows that ask for a value.</param>
+        /// <param name="blnAddImprovementsToCharacter">If True, adds created improvements to the character. Set to false if all we need is a SelectedValue.</param>
+        /// <returns>True if successfull</returns>
+        public static bool CreateImprovements(Character objCharacter, Improvement.ImprovementSource objImprovementSource, string strSourceName,
+            XmlNode nodBonus, bool blnConcatSelectedValue = false, int intRating = 1, string strFriendlyName = "", bool blnAddImprovementsToCharacter = true)
+        {
             Log.Enter("CreateImprovements");
-			Log.Info("objImprovementSource = " + objImprovementSource.ToString());
-			Log.Info("strSourceName = " + strSourceName);
-			Log.Info("nodBonus = " + nodBonus.OuterXml.ToString());
-			Log.Info("blnConcatSelectedValue = " + blnConcatSelectedValue.ToString());
-			Log.Info("intRating = " + intRating.ToString());
-			Log.Info("strFriendlyName = " + strFriendlyName);
-			Log.Info("intRating = " + intRating.ToString());
-
-            bool blnSuccess = true;
+            Log.Info("objImprovementSource = " + objImprovementSource.ToString());
+            Log.Info("strSourceName = " + strSourceName);
+            Log.Info("nodBonus = " + nodBonus?.OuterXml);
+            Log.Info("blnConcatSelectedValue = " + blnConcatSelectedValue.ToString());
+            Log.Info("intRating = " + intRating.ToString());
+            Log.Info("strFriendlyName = " + strFriendlyName);
+            Log.Info("intRating = " + intRating.ToString());
 
             /*try
             {*/
-                if (nodBonus == null)
+            if (nodBonus == null)
+            {
+                s_StrForcedValue = string.Empty;
+                s_StrLimitSelection = string.Empty;
+                Log.Exit("CreateImprovements");
+                return true;
+            }
+
+            s_StrSelectedValue = string.Empty;
+
+            Log.Info("_strForcedValue = " + s_StrForcedValue);
+            Log.Info("_strLimitSelection = " + s_StrLimitSelection);
+
+            // If there is no character object, don't attempt to add any Improvements.
+            if (objCharacter == null && blnAddImprovementsToCharacter)
+            {
+                Log.Info("_objCharacter = Null");
+                Log.Exit("CreateImprovements");
+                return true;
+            }
+
+            string strUnique = nodBonus.Attributes?["unique"]?.InnerText ?? string.Empty;
+            // If no friendly name was provided, use the one from SourceName.
+            if (string.IsNullOrEmpty(strFriendlyName))
+                strFriendlyName = strSourceName;
+
+            if (nodBonus.HasChildNodes)
+            {
+                Log.Info("Has Child Nodes");
+                if (nodBonus["selecttext"] != null)
                 {
-                    _strForcedValue = "";
-                    _strLimitSelection = "";
-                    Log.Exit("CreateImprovements");
-                    return true;
-                }
+                    Log.Info("selecttext");
 
-                string strUnique = "";
-                if (nodBonus.Attributes["unique"] != null)
-                    strUnique = nodBonus.Attributes["unique"].InnerText;
-
-                _strSelectedValue = "";
-
-				Log.Info(
-					"_strForcedValue = " + _strForcedValue);
-				Log.Info(
-					"_strLimitSelection = " + _strLimitSelection);
-
-                // If no friendly name was provided, use the one from SourceName.
-                if (strFriendlyName == "")
-                    strFriendlyName = strSourceName;
-
-                if (nodBonus.HasChildNodes)
-                {
-                    Log.Info("Has Child Nodes");
-
-                    // Select Text (custom entry for things like Allergy).
-                    if (NodeExists(nodBonus, "selecttext"))
+                    if (!string.IsNullOrEmpty(s_StrForcedValue))
                     {
-                        Log.Info("selecttext");
+                        LimitSelection = s_StrForcedValue;
+                    }
+                    else if (objCharacter?.Pushtext.Count != 0)
+                    {
+                        LimitSelection = objCharacter?.Pushtext.Pop();
+                    }
 
-					if (_objCharacter != null)
-					{
-						if (_strForcedValue != "")
-						{
-							_strLimitSelection = _strForcedValue;
-						}
-						else if (_objCharacter.Pushtext.Count != 0)
-						{
-							_strLimitSelection = _objCharacter.Pushtext.Pop();
-						}
-					}
+                    Log.Info("_strForcedValue = " + SelectedValue);
+                    Log.Info("_strLimitSelection = " + LimitSelection);
 
-						Log.Info("_strForcedValue = " + _strSelectedValue);
-						Log.Info("_strLimitSelection = " + _strLimitSelection);
-
+                    if (!string.IsNullOrEmpty(LimitSelection))
+                    {
+                        s_StrSelectedValue = LimitSelection;
+                    }
+                    else
+                    {
                         // Display the Select Text window and record the value that was entered.
-                        frmSelectText frmPickText = new frmSelectText();
-						frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
-							.Replace("{0}", strFriendlyName);
-
-                        if (_strLimitSelection != "")
+                        frmSelectText frmPickText = new frmSelectText
                         {
-                            frmPickText.SelectedValue = _strLimitSelection;
-                            frmPickText.Opacity = 0;
-                        }
-
+                            Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", strFriendlyName)
+                        };
                         frmPickText.ShowDialog();
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickText.DialogResult == DialogResult.Cancel)
                         {
-                            Rollback();
-                            blnSuccess = false;
-                            _strForcedValue = "";
-                            _strLimitSelection = "";
+                            Rollback(objCharacter);
+                            ForcedValue = string.Empty;
+                            LimitSelection = string.Empty;
                             Log.Exit("CreateImprovements");
                             return false;
                         }
 
-                        _strSelectedValue = frmPickText.SelectedValue;
-                        if (blnConcatSelectedValue)
-                            strSourceName += " (" + _strSelectedValue + ")";
-						Log.Info("_strSelectedValue = " + _strSelectedValue);
-						Log.Info("strSourceName = " + strSourceName);
-
-                        // Create the Improvement.
-                        Log.Info("Calling CreateImprovement");
-						CreateImprovement(frmPickText.SelectedValue, objImprovementSource, strSourceName, Improvement.ImprovementType.Text,
-							strUnique);
+                        s_StrSelectedValue = frmPickText.SelectedValue;
                     }
-                }
+                    if (blnConcatSelectedValue)
+                        strSourceName += " (" + SelectedValue + ')';
+                    Log.Info("_strSelectedValue = " + SelectedValue);
+                    Log.Info("strSourceName = " + strSourceName);
 
-                // If there is no character object, don't attempt to add any Improvements.
-                if (_objCharacter == null)
-                {
-                    Log.Info( "_objCharacter = Null");
-                    Log.Exit("CreateImprovements");
-                    return true;
+                    // Create the Improvement.
+                    Log.Info("Calling CreateImprovement");
+
+                    CreateImprovement(objCharacter, s_StrSelectedValue, objImprovementSource, strSourceName,
+                        Improvement.ImprovementType.Text,
+                        strUnique);
                 }
 
                 // Check to see what bonuses the node grants.
-				foreach (XmlNode bonusNode in nodBonus.ChildNodes)
+                foreach (XmlNode bonusNode in nodBonus.ChildNodes)
                 {
-					blnSuccess = ProcessBonus(objImprovementSource, ref strSourceName, blnConcatSelectedValue, intRating,
-						strFriendlyName, bonusNode, strUnique);
-					if (blnSuccess == false)
-					{
-						Rollback();
-						return false;
-					}
-				}
-
-
-				// If we've made it this far, everything went OK, so commit the Improvements.
-				Log.Info("Calling Commit");
-				Commit();
-				Log.Info("Returned from Commit");
-				// Clear the Forced Value and Limit Selection strings once we're done to prevent these from forcing their values on other Improvements.
-				_strForcedValue = "";
-				_strLimitSelection = "";
-			/*}
-			catch (Exception ex)
-			{
-				objFunctions.LogWrite(CommonFunctions.LogType.Error, "Chummer.ImprovementManager", "ERROR Message = " + ex.Message);
-				objFunctions.LogWrite(CommonFunctions.LogType.Error, "Chummer.ImprovementManager", "ERROR Source  = " + ex.Source);
-				objFunctions.LogWrite(CommonFunctions.LogType.Error, "Chummer.ImprovementManager",
-					"ERROR Trace   = " + ex.StackTrace.ToString());
-				
-				Rollback();
-				throw;
-			}*/
-			Log.Exit("CreateImprovements");
-			return blnSuccess;
-
-		}
-
-		private bool ProcessBonus(Improvement.ImprovementSource objImprovementSource, ref string strSourceName,
-			bool blnConcatSelectedValue,
-			int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique)
-		{
-			Log.Info("Has Child Nodes");
-			// Add an Attribute.
-			if (bonusNode.LocalName == ("addattribute"))
-			{
-				Log.Info("addattribute");
-				if (bonusNode["name"].InnerText == "MAG")
-				{
-					_objCharacter.MAGEnabled = true;
-					Log.Info("Calling CreateImprovement for MAG");
-					CreateImprovement("MAG", objImprovementSource, strSourceName, Improvement.ImprovementType.Attribute,
-						"enableattribute", 0, 0);
-				}
-				else if (bonusNode["name"].InnerText == "RES")
-				{
-					_objCharacter.RESEnabled = true;
-					Log.Info("Calling CreateImprovement for RES");
-					CreateImprovement("RES", objImprovementSource, strSourceName, Improvement.ImprovementType.Attribute,
-						"enableattribute", 0, 0);
-				}
-			}
-
-			// Enable a special tab.
-			if (bonusNode.LocalName == ("enabletab"))
-			{
-				Log.Info("enabletab");
-				foreach (XmlNode objXmlEnable in bonusNode.ChildNodes)
-				{
-					switch (objXmlEnable.InnerText)
-					{
-						case "magician":
-							_objCharacter.MagicianEnabled = true;
-							Log.Info("magician");
-							CreateImprovement("Magician", objImprovementSource, strSourceName, Improvement.ImprovementType.SpecialTab,
-								"enabletab", 0, 0);
-							break;
-						case "adept":
-							_objCharacter.AdeptEnabled = true;
-							Log.Info("adept");
-							CreateImprovement("Adept", objImprovementSource, strSourceName, Improvement.ImprovementType.SpecialTab,
-								"enabletab",
-								0, 0);
-							break;
-						case "technomancer":
-							_objCharacter.TechnomancerEnabled = true;
-							Log.Info("technomancer");
-							CreateImprovement("Technomancer", objImprovementSource, strSourceName, Improvement.ImprovementType.SpecialTab,
-								"enabletab", 0, 0);
-							break;
-						case "critter":
-							_objCharacter.CritterEnabled = true;
-							Log.Info("critter");
-							CreateImprovement("Critter", objImprovementSource, strSourceName, Improvement.ImprovementType.SpecialTab,
-								"enabletab", 0, 0);
-							break;
-						case "initiation":
-							_objCharacter.InitiationEnabled = true;
-							Log.Info("initiation");
-							CreateImprovement("Initiation", objImprovementSource, strSourceName, Improvement.ImprovementType.SpecialTab,
-								"enabletab", 0, 0);
-							break;
-					}
-				}
-			}
-
-			// Select Restricted (select Restricted items for Fake Licenses).
-			if (bonusNode.LocalName == ("selectrestricted"))
-			{
-				Log.Info("selectrestricted");
-				frmSelectItem frmPickItem = new frmSelectItem();
-				frmPickItem.Character = _objCharacter;
-				if (_strForcedValue != string.Empty)
-					frmPickItem.ForceItem = _strForcedValue;
-				frmPickItem.AllowAutoSelect = false;
-				frmPickItem.ShowDialog();
-
-				// Make sure the dialogue window was not canceled.
-				if (frmPickItem.DialogResult == DialogResult.Cancel)
-				{
-					Rollback();
-					_strForcedValue = "";
-					_strLimitSelection = "";
-					return false;
-				}
-
-				_strSelectedValue = frmPickItem.SelectedItem;
-				if (blnConcatSelectedValue)
-					strSourceName += " (" + _strSelectedValue + ")";
-
-				Log.Info("_strSelectedValue = " + _strSelectedValue);
-				Log.Info("strSourceName = " + strSourceName);
-
-				// Create the Improvement.
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement(frmPickItem.SelectedItem, objImprovementSource, strSourceName,
-					Improvement.ImprovementType.Restricted, strUnique);
-			}
-
-			if (bonusNode.LocalName == "cyberseeker")
-			{
-				//Check if valid attrib
-				if (new string[] {"BOD", "AGI", "STR", "REA", "LOG", "CHA", "INT", "WIL", "BOX"}.Any(x => x == bonusNode.InnerText))
-				{
-					CreateImprovement(bonusNode.InnerText, objImprovementSource, strSourceName, Improvement.ImprovementType.Seeker, strUnique,0,0,0,0,0,0);
-
-				}
-				else
-				{
-					Utils.BreakIfDebug();
-				}
-
-			}
-
-			// Select a Skill.
-			if (bonusNode.LocalName == ("selectskill"))
-			{
-				//TODO this don't work
-				Log.Info("selectskill");
-				if (_strForcedValue == "+2 to a Combat Skill")
-					_strForcedValue = "";
-
-				Log.Info("_strSelectedValue = " + _strSelectedValue);
-				Log.Info("_strForcedValue = " + _strForcedValue);
-
-				// Display the Select Skill window and record which Skill was selected.
-				frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
-				if (strFriendlyName != "")
-					frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillNamed")
-						.Replace("{0}", strFriendlyName);
-				else
-					frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkill");
-
-				Log.Info("selectskill = " + bonusNode.OuterXml.ToString());
-				if (bonusNode.OuterXml.Contains("skillgroup"))
-					frmPickSkill.OnlySkillGroup = bonusNode.Attributes["skillgroup"].InnerText;
-				else if (bonusNode.OuterXml.Contains("skillcategory"))
-					frmPickSkill.OnlyCategory = bonusNode.Attributes["skillcategory"].InnerText;
-				else if (bonusNode.OuterXml.Contains("excludecategory"))
-					frmPickSkill.ExcludeCategory = bonusNode.Attributes["excludecategory"].InnerText;
-				else if (bonusNode.OuterXml.Contains("limittoskill"))
-					frmPickSkill.LimitToSkill = bonusNode.Attributes["limittoskill"].InnerText;
-				else if (bonusNode.OuterXml.Contains("limittoattribute"))
-					frmPickSkill.LinkedAttribute = bonusNode.Attributes["limittoattribute"].InnerText;
-
-				if (_strForcedValue != "")
-				{
-					frmPickSkill.OnlySkill = _strForcedValue;
-					frmPickSkill.Opacity = 0;
-				}
-				frmPickSkill.ShowDialog();
-
-				// Make sure the dialogue window was not canceled.
-				if (frmPickSkill.DialogResult == DialogResult.Cancel)
-				{
-					Rollback();
-					_strForcedValue = "";
-					_strLimitSelection = "";
-					return false;
-				}
-
-				bool blnAddToRating = false;
-				if (bonusNode["applytorating"] != null)
-				{
-					if (bonusNode["applytorating"].InnerText == "yes")
-						blnAddToRating = true;
-				}
-
-				_strSelectedValue = frmPickSkill.SelectedSkill;
-				if (blnConcatSelectedValue)
-					strSourceName += " (" + _strSelectedValue + ")";
-
-				Log.Info("_strSelectedValue = " + _strSelectedValue);
-				Log.Info("strSourceName = " + strSourceName);
-
-				// Find the selected Skill.
-				foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-				{
-					if (frmPickSkill.SelectedSkill.Contains("Exotic Melee Weapon") ||
-					    frmPickSkill.SelectedSkill.Contains("Exotic Ranged Weapon") ||
-					    frmPickSkill.SelectedSkill.Contains("Pilot Exotic Vehicle"))
-					{
-						if (objSkill.Name + " (" + objSkill.Specialization + ")" == frmPickSkill.SelectedSkill)
-						{
-							// We've found the selected Skill.
-							if (bonusNode.InnerXml.Contains("val"))
-							{
-								Log.Info("Calling CreateImprovement");
-								CreateImprovement(objSkill.Name + " (" + objSkill.Specialization + ")", objImprovementSource, strSourceName,
-									Improvement.ImprovementType.Skill, strUnique, ValueToInt(bonusNode["val"].InnerText, intRating), 1,
-									0, 0, 0, 0, "", blnAddToRating);
-							}
-
-							if (bonusNode.InnerXml.Contains("max"))
-							{
-								Log.Info("Calling CreateImprovement");
-								CreateImprovement(objSkill.Name + " (" + objSkill.Specialization + ")", objImprovementSource, strSourceName,
-									Improvement.ImprovementType.Skill, strUnique, 0, 1, 0,
-									ValueToInt(bonusNode["max"].InnerText, intRating), 0, 0, "", blnAddToRating);
-							}
-						}
-					}
-					else
-					{
-						if (objSkill.Name == frmPickSkill.SelectedSkill)
-						{
-							// We've found the selected Skill.
-							if (bonusNode.InnerXml.Contains("val"))
-							{
-								Log.Info("Calling CreateImprovement");
-								CreateImprovement(objSkill.Name, objImprovementSource, strSourceName, Improvement.ImprovementType.Skill,
-									strUnique,
-									ValueToInt(bonusNode["val"].InnerText, intRating), 1, 0, 0, 0, 0, "", blnAddToRating);
-							}
-
-							if (bonusNode.InnerXml.Contains("max"))
-							{
-								Log.Info("Calling CreateImprovement");
-								CreateImprovement(objSkill.Name, objImprovementSource, strSourceName, Improvement.ImprovementType.Skill,
-									strUnique,
-									0, 1, 0, ValueToInt(bonusNode["max"].InnerText, intRating), 0, 0, "", blnAddToRating);
-							}
-						}
-					}
-				}
-			}
-
-			// Select a Skill Group.
-			if (bonusNode.LocalName == ("selectskillgroup"))
-			{
-				Log.Info("selectskillgroup");
-				string strExclude = "";
-				if (bonusNode.Attributes["excludecategory"] != null)
-					strExclude = bonusNode.Attributes["excludecategory"].InnerText;
-
-				frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup();
-				if (strFriendlyName != "")
-					frmPickSkillGroup.Description =
-						LanguageManager.Instance.GetString("String_Improvement_SelectSkillGroupName").Replace("{0}", strFriendlyName);
-				else
-					frmPickSkillGroup.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillGroup");
-
-				Log.Info("_strForcedValue = " + _strForcedValue);
-				Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-				if (_strForcedValue != "")
-				{
-					frmPickSkillGroup.OnlyGroup = _strForcedValue;
-					frmPickSkillGroup.Opacity = 0;
-				}
-
-				if (strExclude != string.Empty)
-					frmPickSkillGroup.ExcludeCategory = strExclude;
-
-				frmPickSkillGroup.ShowDialog();
-
-				// Make sure the dialogue window was not canceled.
-				if (frmPickSkillGroup.DialogResult == DialogResult.Cancel)
-				{
-					Rollback();
-
-					_strForcedValue = "";
-					_strLimitSelection = "";
-					return false;
-				}
-
-				bool blnAddToRating = false;
-				if (bonusNode["applytorating"] != null)
-				{
-					if (bonusNode["applytorating"].InnerText == "yes")
-						blnAddToRating = true;
-				}
-
-				_strSelectedValue = frmPickSkillGroup.SelectedSkillGroup;
-
-				Log.Info("_strSelectedValue = " + _strSelectedValue);
-				Log.Info("strSourceName = " + strSourceName);
-
-				if (bonusNode.SelectSingleNode("bonus") != null)
-				{
-					Log.Info("Calling CreateImprovement");
-					CreateImprovement(_strSelectedValue, objImprovementSource, strSourceName, Improvement.ImprovementType.SkillGroup,
-						strUnique, ValueToInt(bonusNode["bonus"].InnerText, intRating), 1, 0, 0, 0, 0, strExclude,
-						blnAddToRating);
-				}
-				else
-				{
-					Log.Info("Calling CreateImprovement");
-					CreateImprovement(_strSelectedValue, objImprovementSource, strSourceName, Improvement.ImprovementType.SkillGroup,
-						strUnique, 0, 0, 0, 1, 0, 0, strExclude,
-						blnAddToRating);
-				}
-			}
-
-			if (bonusNode.LocalName == ("selectattributes"))
-			{
-				foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("selectattribute"))
-				{
-					Log.Info("selectattribute");
-					// Display the Select Attribute window and record which Skill was selected.
-					frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
-					if (strFriendlyName != "")
-						frmPickAttribute.Description =
-							LanguageManager.Instance.GetString("String_Improvement_SelectAttributeNamed").Replace("{0}", strFriendlyName);
-					else
-						frmPickAttribute.Description = LanguageManager.Instance.GetString("String_Improvement_SelectAttribute");
-
-					// Add MAG and/or RES to the list of Attributes if they are enabled on the form.
-					if (_objCharacter.MAGEnabled)
-						frmPickAttribute.AddMAG();
-					if (_objCharacter.RESEnabled)
-						frmPickAttribute.AddRES();
-
-					Log.Info("selectattribute = " + bonusNode.OuterXml.ToString());
-
-					if (objXmlAttribute.InnerXml.Contains("<attribute>"))
-					{
-						List<string> strValue = new List<string>();
-						foreach (XmlNode objSubNode in objXmlAttribute.SelectNodes("attribute"))
-							strValue.Add(objSubNode.InnerText);
-						frmPickAttribute.LimitToList(strValue);
-					}
-
-					if (bonusNode.InnerXml.Contains("<excludeattribute>"))
-					{
-						List<string> strValue = new List<string>();
-						foreach (XmlNode objSubNode in objXmlAttribute.SelectNodes("excludeattribute"))
-							strValue.Add(objSubNode.InnerText);
-						frmPickAttribute.RemoveFromList(strValue);
-					}
-
-					// Check to see if there is only one possible selection because of _strLimitSelection.
-					if (_strForcedValue != "")
-						_strLimitSelection = _strForcedValue;
-
-					Log.Info("_strForcedValue = " + _strForcedValue);
-					Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-					if (_strLimitSelection != "")
-					{
-						frmPickAttribute.SingleAttribute(_strLimitSelection);
-						frmPickAttribute.Opacity = 0;
-					}
-
-					frmPickAttribute.ShowDialog();
-
-					// Make sure the dialogue window was not canceled.
-					if (frmPickAttribute.DialogResult == DialogResult.Cancel)
-					{
-						Rollback();
-						_strForcedValue = "";
-						return false;
-					}
-
-					_strSelectedValue = frmPickAttribute.SelectedAttribute;
-					if (blnConcatSelectedValue)
-						strSourceName += " (" + _strSelectedValue + ")";
-
-					Log.Info("_strSelectedValue = " + _strSelectedValue);
-					Log.Info("strSourceName = " + strSourceName);
-
-					// Record the improvement.
-					int intMin = 0;
-					int intAug = 0;
-					int intMax = 0;
-					int intAugMax = 0;
-
-					// Extract the modifiers.
-					if (objXmlAttribute.InnerXml.Contains("min"))
-						intMin = Convert.ToInt32(objXmlAttribute["min"].InnerText);
-					if (objXmlAttribute.InnerXml.Contains("val"))
-						intAug = Convert.ToInt32(objXmlAttribute["val"].InnerText);
-					if (objXmlAttribute.InnerXml.Contains("max"))
-						intMax = Convert.ToInt32(objXmlAttribute["max"].InnerText);
-					if (objXmlAttribute.InnerXml.Contains("aug"))
-						intAugMax = Convert.ToInt32(objXmlAttribute["aug"].InnerText);
-
-					string strAttribute = frmPickAttribute.SelectedAttribute;
-
-					if (objXmlAttribute["affectbase"] != null)
-						strAttribute += "Base";
-
-					Log.Info("Calling CreateImprovement");
-					CreateImprovement(strAttribute, objImprovementSource, strSourceName, Improvement.ImprovementType.Attribute,
-						strUnique,
-						0, 1, intMin, intMax, intAug, intAugMax);
-				}
-			}
-
-			// Select an CharacterAttribute.
-			if (bonusNode.LocalName == ("selectattribute"))
-			{
-				Log.Info("selectattribute");
-				// Display the Select Attribute window and record which Skill was selected.
-				frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
-				if (strFriendlyName != "")
-					frmPickAttribute.Description =
-						LanguageManager.Instance.GetString("String_Improvement_SelectAttributeNamed").Replace("{0}", strFriendlyName);
-				else
-					frmPickAttribute.Description = LanguageManager.Instance.GetString("String_Improvement_SelectAttribute");
-
-				// Add MAG and/or RES to the list of Attributes if they are enabled on the form.
-				if (_objCharacter.MAGEnabled)
-					frmPickAttribute.AddMAG();
-				if (_objCharacter.RESEnabled)
-					frmPickAttribute.AddRES();
-
-				Log.Info("selectattribute = " + bonusNode.OuterXml.ToString());
-
-				if (bonusNode.InnerXml.Contains("<attribute>"))
-				{
-					List<string> strValue = new List<string>();
-					foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("attribute"))
-						strValue.Add(objXmlAttribute.InnerText);
-					frmPickAttribute.LimitToList(strValue);
-				}
-
-				if (bonusNode.InnerXml.Contains("<excludeattribute>"))
-				{
-					List<string> strValue = new List<string>();
-					foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("excludeattribute"))
-						strValue.Add(objXmlAttribute.InnerText);
-					frmPickAttribute.RemoveFromList(strValue);
-				}
-
-				// Check to see if there is only one possible selection because of _strLimitSelection.
-				if (_strForcedValue != "")
-					_strLimitSelection = _strForcedValue;
-
-				Log.Info("_strForcedValue = " + _strForcedValue);
-				Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-				if (_strLimitSelection != "")
-				{
-					frmPickAttribute.SingleAttribute(_strLimitSelection);
-					frmPickAttribute.Opacity = 0;
-				}
-
-				frmPickAttribute.ShowDialog();
-
-				// Make sure the dialogue window was not canceled.
-				if (frmPickAttribute.DialogResult == DialogResult.Cancel)
-				{
-					Rollback();
-					_strForcedValue = "";
-					return false;
-				}
-
-				_strSelectedValue = frmPickAttribute.SelectedAttribute;
-				if (blnConcatSelectedValue)
-					strSourceName += " (" + _strSelectedValue + ")";
-
-				Log.Info("_strSelectedValue = " + _strSelectedValue);
-				Log.Info("strSourceName = " + strSourceName);
-
-				// Record the improvement.
-				int intMin = 0;
-				int intAug = 0;
-				int intMax = 0;
-				int intAugMax = 0;
-
-				// Extract the modifiers.
-				if (bonusNode.InnerXml.Contains("min"))
-					intMin = ValueToInt(bonusNode["min"].InnerXml, intRating);
-				if (bonusNode.InnerXml.Contains("val"))
-					intAug = ValueToInt(bonusNode["val"].InnerXml, intRating);
-				if (bonusNode.InnerXml.Contains("max"))
-					intMax = ValueToInt(bonusNode["max"].InnerXml, intRating);
-				if (bonusNode.InnerXml.Contains("aug"))
-					intAugMax = ValueToInt(bonusNode["aug"].InnerXml, intRating);
-
-				string strAttribute = frmPickAttribute.SelectedAttribute;
-
-				if (bonusNode["affectbase"] != null)
-					strAttribute += "Base";
-
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement(strAttribute, objImprovementSource, strSourceName, Improvement.ImprovementType.Attribute,
-					strUnique,
-					0, 1, intMin, intMax, intAug, intAugMax);
-			}
-
-			// Select a Limit.
-			if (bonusNode.LocalName == ("selectlimit"))
-			{
-				Log.Info("selectlimit");
-				// Display the Select Limit window and record which Limit was selected.
-				frmSelectLimit frmPickLimit = new frmSelectLimit();
-				if (strFriendlyName != "")
-					frmPickLimit.Description = LanguageManager.Instance.GetString("String_Improvement_SelectLimitNamed")
-						.Replace("{0}", strFriendlyName);
-				else
-					frmPickLimit.Description = LanguageManager.Instance.GetString("String_Improvement_SelectLimit");
-
-				Log.Info("selectlimit = " + bonusNode.OuterXml.ToString());
-
-				if (bonusNode.InnerXml.Contains("<limit>"))
-				{
-					List<string> strValue = new List<string>();
-					foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("limit"))
-						strValue.Add(objXmlAttribute.InnerText);
-					frmPickLimit.LimitToList(strValue);
-				}
-
-				if (bonusNode.InnerXml.Contains("<excludelimit>"))
-				{
-					List<string> strValue = new List<string>();
-					foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("excludelimit"))
-						strValue.Add(objXmlAttribute.InnerText);
-					frmPickLimit.RemoveFromList(strValue);
-				}
-
-				// Check to see if there is only one possible selection because of _strLimitSelection.
-				if (_strForcedValue != "")
-					_strLimitSelection = _strForcedValue;
-
-				Log.Info("_strForcedValue = " + _strForcedValue);
-				Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-				if (_strLimitSelection != "")
-				{
-					frmPickLimit.SingleLimit(_strLimitSelection);
-					frmPickLimit.Opacity = 0;
-				}
-
-				frmPickLimit.ShowDialog();
-
-				// Make sure the dialogue window was not canceled.
-				if (frmPickLimit.DialogResult == DialogResult.Cancel)
-				{
-					Rollback();
-					_strForcedValue = "";
-					return false;
-				}
-
-				_strSelectedValue = frmPickLimit.SelectedLimit;
-				if (blnConcatSelectedValue)
-					strSourceName += " (" + _strSelectedValue + ")";
-
-				// Record the improvement.
-				int intMin = 0;
-				int intAug = 0;
-				int intMax = 0;
-				int intAugMax = 0;
-
-				// Extract the modifiers.
-				if (bonusNode.InnerXml.Contains("min"))
-					intMin = ValueToInt(bonusNode["min"].InnerXml, intRating);
-				if (bonusNode.InnerXml.Contains("val"))
-					intAug = ValueToInt(bonusNode["val"].InnerXml, intRating);
-				if (bonusNode.InnerXml.Contains("max"))
-					intMax = ValueToInt(bonusNode["max"].InnerXml, intRating);
-				if (bonusNode.InnerXml.Contains("aug"))
-					intAugMax = ValueToInt(bonusNode["aug"].InnerXml, intRating);
-
-				string strLimit = frmPickLimit.SelectedLimit;
-
-				if (bonusNode["affectbase"] != null)
-					strLimit += "Base";
-
-				Log.Info("_strSelectedValue = " + _strSelectedValue);
-				Log.Info("strSourceName = " + strSourceName);
-
-				LimitModifier objLimitMod = new LimitModifier(_objCharacter);
-				// string strBonus = bonusNode["value"].InnerText;
-				int intBonus = intAug;
-				string strName = strFriendlyName;
-				TreeNode nodTemp = new TreeNode();
-				Improvement.ImprovementType objType = Improvement.ImprovementType.PhysicalLimit;
-
-				switch (strLimit)
-				{
-					case "Mental":
-						{
-							objType = Improvement.ImprovementType.MentalLimit;
-							break;
-						}
-					case "Social":
-						{
-							objType = Improvement.ImprovementType.SocialLimit;
-							break;
-						}
-					default:
-						{
-							objType = Improvement.ImprovementType.PhysicalLimit;
-							break;
-						}
-				}
-
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement(strLimit, objImprovementSource, strSourceName, objType, strFriendlyName, intBonus, 0, intMin,
-					intMax,
-					intAug, intAugMax);
-			}
-
-			// Select an CharacterAttribute to use instead of the default on a skill.
-			if (bonusNode.LocalName == ("swapskillattribute"))
-			{
-				Log.Info("swapskillattribute");
-				// Display the Select Attribute window and record which Skill was selected.
-				frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
-				if (strFriendlyName != "")
-					frmPickAttribute.Description =
-						LanguageManager.Instance.GetString("String_Improvement_SelectAttributeNamed").Replace("{0}", strFriendlyName);
-				else
-					frmPickAttribute.Description = LanguageManager.Instance.GetString("String_Improvement_SelectAttribute");
-
-				List<string> strValue = new List<string>();
-				strValue.Add("LOG");
-				strValue.Add("WIL");
-				strValue.Add("INT");
-				strValue.Add("CHA");
-				strValue.Add("EDG");
-				strValue.Add("MAG");
-				strValue.Add("RES");
-				frmPickAttribute.RemoveFromList(strValue);
-
-				Log.Info("swapskillattribute = " + bonusNode.OuterXml.ToString());
-
-				if (bonusNode.InnerXml.Contains("<attribute>"))
-				{
-					List<string> strLimitValue = new List<string>();
-					foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("attribute"))
-						strLimitValue.Add(objXmlAttribute.InnerText);
-					frmPickAttribute.LimitToList(strLimitValue);
-				}
-
-				// Check to see if there is only one possible selection because of _strLimitSelection.
-				if (_strForcedValue != "")
-					_strLimitSelection = _strForcedValue;
-
-				Log.Info("_strForcedValue = " + _strForcedValue);
-				Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-				if (_strLimitSelection != "")
-				{
-					frmPickAttribute.SingleAttribute(_strLimitSelection);
-					frmPickAttribute.Opacity = 0;
-				}
-
-				frmPickAttribute.ShowDialog();
-
-				// Make sure the dialogue window was not canceled.
-				if (frmPickAttribute.DialogResult == DialogResult.Cancel)
-				{
-					Rollback();
-					_strForcedValue = "";
-					_strLimitSelection = "";
-					return false;
-				}
-
-				_strSelectedValue = frmPickAttribute.SelectedAttribute;
-				if (blnConcatSelectedValue)
-					strSourceName += " (" + _strSelectedValue + ")";
-
-				Log.Info("_strSelectedValue = " + _strSelectedValue);
-				Log.Info("strSourceName = " + strSourceName);
-
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement(frmPickAttribute.SelectedAttribute, objImprovementSource, strSourceName,
-					Improvement.ImprovementType.SwapSkillAttribute, strUnique);
-			}
-
-			// Select a Spell.
-			if (bonusNode.LocalName == ("selectspell"))
-			{
-				Log.Info("selectspell");
-				// Display the Select Spell window.
-				frmSelectSpell frmPickSpell = new frmSelectSpell(_objCharacter);
-
-				if (bonusNode.Attributes["category"] != null)
-					frmPickSpell.LimitCategory = bonusNode.Attributes["category"].InnerText;
-
-				Log.Info("selectspell = " + bonusNode.OuterXml.ToString());
-				Log.Info("_strForcedValue = " + _strForcedValue);
-				Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-				if (_strForcedValue != "")
-				{
-					frmPickSpell.ForceSpellName = _strForcedValue;
-					frmPickSpell.Opacity = 0;
-				}
-
-				frmPickSpell.ShowDialog();
-
-				// Make sure the dialogue window was not canceled.
-				if (frmPickSpell.DialogResult == DialogResult.Cancel)
-				{
-					Rollback();
-					_strForcedValue = "";
-					_strLimitSelection = "";
-					return false;
-				}
-
-				_strSelectedValue = frmPickSpell.SelectedSpell;
-				if (blnConcatSelectedValue)
-					strSourceName += " (" + _strSelectedValue + ")";
-
-				Log.Info("_strSelectedValue = " + _strSelectedValue);
-				Log.Info("strSourceName = " + strSourceName);
-
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement(frmPickSpell.SelectedSpell, objImprovementSource, strSourceName, Improvement.ImprovementType.Text,
-					strUnique);
-			}
-
-			// Select a Contact
-			if (bonusNode.LocalName == ("selectcontact"))
-			{
-				Log.Info("selectcontact");
-				XmlNode nodSelect = bonusNode;
-
-				frmSelectItem frmSelect = new frmSelectItem();
-
-				String strMode = NodeExists(nodSelect, "type")
-					? nodSelect["type"].InnerText
-					: "all";
-
-				List<Contact> selectedContactsList;
-				if (strMode == "all")
-				{
-					selectedContactsList = new List<Contact>(_objCharacter.Contacts);
-				}
-				else if (strMode == "group" || strMode == "nongroup")
-				{
-					bool blnGroup = strMode == "group";
-
-
-					//Select any contact where IsGroup equals blnGroup
-					//and add to a list
-					selectedContactsList =
-						new List<Contact>(from contact in _objCharacter.Contacts
-							where contact.IsGroup == blnGroup
-							select contact);
-				}
-				else
-				{
-					Rollback();
-					return false;
-				}
-
-				if (selectedContactsList.Count == 0)
-				{
-					MessageBox.Show(LanguageManager.Instance.GetString("Message_NoContactFound"),
-						LanguageManager.Instance.GetString("MessageTitle_NoContactFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-					Rollback();
-					return false;
-				}
-
-				int count = 0;
-				//Black magic LINQ to cast content of list to another type
-				List<ListItem> contacts = new List<ListItem>(from x in selectedContactsList
-					select new ListItem() {Name = x.Name, Value = (count++).ToString()});
-
-				String strPrice = NodeExists(nodSelect, "cost")
-					? nodSelect["cost"].InnerText
-					: "";
-
-				frmSelect.GeneralItems = contacts;
-				frmSelect.ShowDialog();
-
-				int index = int.Parse(frmSelect.SelectedItem);
-				if (frmSelect.DialogResult != DialogResult.Cancel)
-				{
-					Contact selectedContact = selectedContactsList[index];
-
-					if (nodSelect["mademan"] != null)
-					{
-						selectedContact.MadeMan = true;
-						CreateImprovement(selectedContact.GUID, Improvement.ImprovementSource.Quality, strSourceName,
-							Improvement.ImprovementType.ContactMadeMan, selectedContact.GUID);
-					}
-
-					if (String.IsNullOrWhiteSpace(_strSelectedValue))
-					{
-						_strSelectedValue = selectedContact.Name;
-					}
-					else
-					{
-						_strSelectedValue += (", " + selectedContact.Name);
-					}
+                    if (!ProcessBonus(objCharacter, objImprovementSource, ref strSourceName, blnConcatSelectedValue, intRating,
+                        strFriendlyName, bonusNode, strUnique, !blnAddImprovementsToCharacter))
+                    {
+                        Rollback(objCharacter);
+                        return false;
+                    }
                 }
-				else
-				{
-					Rollback();
-					return false;
-				}
-			}
-
-			if (bonusNode.LocalName == "addcontact")
-			{
-				Log.Info("addcontact");
-
-				int loyalty, connection;
-				
-				bonusNode.TryGetField("loyalty", out loyalty, 1);
-				bonusNode.TryGetField("connection", out connection, 1);
-				bool group = bonusNode["group"] != null;
-				bool free = bonusNode["free"] != null;
-
-				Contact contact = new Contact(_objCharacter);
-				contact.Free = free;
-				contact.IsGroup = group;
-				contact.Loyalty = loyalty;
-				contact.Connection = connection;
-				contact.ReadOnly = true;
-				_objCharacter.Contacts.Add(contact);
-
-				CreateImprovement(contact.GUID, Improvement.ImprovementSource.Quality, strSourceName,
-							Improvement.ImprovementType.AddContact, contact.GUID);
-			}
-
-			// Affect a Specific CharacterAttribute.
-			if (bonusNode.LocalName == ("specificattribute"))
-			{
-				Log.Info("specificattribute");
-
-				if (bonusNode["name"].InnerText != "ESS")
-				{
-					// Display the Select CharacterAttribute window and record which CharacterAttribute was selected.
-					// Record the improvement.
-					int intMin = 0;
-					int intAug = 0;
-					int intMax = 0;
-					int intAugMax = 0;
-
-					// Extract the modifiers.
-					if (bonusNode.InnerXml.Contains("min"))
-						intMin = ValueToInt(bonusNode["min"].InnerXml, intRating);
-					if (bonusNode.InnerXml.Contains("val"))
-						intAug = ValueToInt(bonusNode["val"].InnerXml, intRating);
-					if (bonusNode.InnerXml.Contains("max"))
-					{
-						if (bonusNode["max"].InnerText.Contains("-natural"))
-						{
-							intMax = Convert.ToInt32(bonusNode["max"].InnerText.Replace("-natural", string.Empty)) -
-							         _objCharacter.GetAttribute(bonusNode["name"].InnerText).MetatypeMaximum;
-						}
-						else
-							intMax = ValueToInt(bonusNode["max"].InnerXml, intRating);
-					}
-					if (bonusNode.InnerXml.Contains("aug"))
-						intAugMax = ValueToInt(bonusNode["aug"].InnerXml, intRating);
-
-					string strUseUnique = strUnique;
-					if (bonusNode["name"].Attributes["precedence"] != null)
-						strUseUnique = "precedence" + bonusNode["name"].Attributes["precedence"].InnerText;
-
-					string strAttribute = bonusNode["name"].InnerText;
-
-					if (bonusNode["affectbase"] != null)
-						strAttribute += "Base";
-					
-					CreateImprovement(strAttribute, objImprovementSource, strSourceName, Improvement.ImprovementType.Attribute,
-						strUseUnique, 0, 1, intMin, intMax, intAug, intAugMax);
-				}
-				else
-				{
-					CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Essence, "",
-						Convert.ToInt32(bonusNode["val"].InnerText));
-				}
-			}
-
-			// Add a paid increase to an attribute
-			if (bonusNode.LocalName == ("attributelevel"))
-			{
-				Log.Info(new object[] {"attributelevel", bonusNode.OuterXml});
-				String strAttrib;
-				int value;
-				bonusNode.TryGetField("val", out value, 1);
-
-				if (bonusNode.TryGetField("name", out strAttrib))
-				{
-					CreateImprovement(strAttrib, objImprovementSource, strSourceName,
-						Improvement.ImprovementType.Attributelevel, "", value);
-				}
-				else
-				{
-					Log.Error(new object[] {"attributelevel", bonusNode.OuterXml});
-				}
-			}
-
-			if (bonusNode.LocalName == ("skilllevel"))
-			{
-				Log.Info(new object[] {"skilllevel", bonusNode.OuterXml});
-				String strSkill;
-				int value;
-				bonusNode.TryGetField("val", out value, 1);
-                if (bonusNode.TryGetField("name", out strSkill))
-				{
-					CreateImprovement(strSkill, objImprovementSource, strSourceName,
-						Improvement.ImprovementType.SkillLevel, "", value);
-
-
-				}
-				else
-				{
-					Log.Error(new object[] {"skilllevel", bonusNode.OuterXml});
-				}
-			}
-
-			if (bonusNode.LocalName == "pushtext")
-			{
-
-				String push = bonusNode.InnerText;
-				if (!String.IsNullOrWhiteSpace(push))
-				{
-					_objCharacter.Pushtext.Push(push);
-				}
-			}
-
-			
-
-			if (bonusNode.LocalName == "knowsoft")
-			{
-				int val = bonusNode["val"] != null ? ValueToInt(bonusNode["val"].InnerText, intRating) : 1;
-
-				string name;
-				if (!string.IsNullOrWhiteSpace(_strForcedValue))
-				{
-					name = _strForcedValue;
-				}
-				else if (bonusNode["pick"] != null)
-				{
-					List<ListItem> types;
-					if (bonusNode["group"] != null)
-					{
-						var v = bonusNode.SelectNodes($"./group");
-						types =
-							KnowledgeSkill.KnowledgeTypes.Where(x => bonusNode.SelectNodes($"group[. = '{x.Value}']").Count > 0).ToList();
-
-					}
-					else if (bonusNode["notgroup"] != null)
-					{
-						types =
-							KnowledgeSkill.KnowledgeTypes.Where(x => bonusNode.SelectNodes($"notgroup[. = '{x.Value}']").Count == 0).ToList();
-					}
-					else
-					{
-						types = KnowledgeSkill.KnowledgeTypes;
-					}
-
-					frmSelectItem select = new frmSelectItem();
-					select.DropdownItems = KnowledgeSkill.KnowledgeSkillsWithCategory(types.Select(x => x.Value).ToArray());
-
-					select.ShowDialog();
-					if (select.DialogResult == DialogResult.Cancel)
-					{
-						return false;
-					}
-
-					name = select.SelectedItem;
-				}
-				else if (bonusNode["name"] != null)
-				{
-					name = bonusNode["name"].InnerText;
-				}
-				else
-				{
-					//TODO some kind of error handling
-					Log.Error(new[] {bonusNode.OuterXml, "Missing pick or name"});
-					return false;
-				}
-				_strSelectedValue = name;
-
-
-				KnowledgeSkill skill = new KnowledgeSkill(_objCharacter, name);
-
-				bool knowsoft = bonusNode.TryCheckValue("require", "skilljack");
-
-				if (knowsoft)
-				{
-					_objCharacter.SkillsSection.KnowsoftSkills.Add(skill);
-					if (_objCharacter.SkillsoftAccess)
-					{
-						_objCharacter.SkillsSection.KnowledgeSkills.Add(skill);
-					}
-				}
-				else
-				{
-					_objCharacter.SkillsSection.KnowledgeSkills.Add(skill);
-				}
-
-				CreateImprovement(name, objImprovementSource, strSourceName, Improvement.ImprovementType.SkillBase, strUnique, val);
-				CreateImprovement(skill.Id.ToString(), objImprovementSource, strSourceName,
-					Improvement.ImprovementType.SkillKnowledgeForced, strUnique);
-
-			}
-
-			if (bonusNode.LocalName == "knowledgeskilllevel")
-			{
-				//Theoretically life modules, right now we just give out free points and let people sort it out themselves.
-				//Going to be fun to do the real way, from a computer science perspective, but i don't feel like using 2 weeks on that now
-
-				int val = bonusNode["val"] != null ? ValueToInt(bonusNode["val"].InnerText, intRating) : 1;
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FreeKnowledgeSkills, "", val);
-			}
-
-			if (bonusNode.LocalName == "knowledgeskillpoints")
-			{
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FreeKnowledgeSkills, "", ValueToInt(bonusNode.InnerText,Convert.ToInt32(bonusNode.Value)));
-			}
-
-			if (bonusNode.LocalName == ("skillgrouplevel"))
-			{
-				Log.Info(new object[] {"skillgrouplevel", bonusNode.OuterXml});
-				String strSkillGroup;
-				int value;
-				if (bonusNode.TryGetField("name", out strSkillGroup) &&
-				    bonusNode.TryGetField("val", out value))
-				{
-					CreateImprovement(strSkillGroup, objImprovementSource, strSourceName,
-						Improvement.ImprovementType.SkillGroupLevel, "", value);
-				}
-				else
-				{
-					Log.Error(new object[] {"skillgrouplevel", bonusNode.OuterXml});
-				}
-			}
-
-			// Change the maximum number of BP that can be spent on Nuyen.
-			if (bonusNode.LocalName == ("nuyenmaxbp"))
-			{
-				Log.Info("nuyenmaxbp");
-				Log.Info("nuyenmaxbp = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.NuyenMaxBP, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Apply a bonus/penalty to physical limit.
-			if (bonusNode.LocalName == ("physicallimit"))
-			{
-				Log.Info("physicallimit");
-				Log.Info("physicallimit = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-			    CreateImprovement("Physical", objImprovementSource, strSourceName, Improvement.ImprovementType.PhysicalLimit, strFriendlyName,
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Apply a bonus/penalty to mental limit.
-			if (bonusNode.LocalName == ("mentallimit"))
-			{
-				Log.Info("mentallimit");
-				Log.Info("mentallimit = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("Mental", objImprovementSource, strSourceName, Improvement.ImprovementType.MentalLimit, strFriendlyName,
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Apply a bonus/penalty to social limit.
-			if (bonusNode.LocalName == ("sociallimit"))
-			{
-				Log.Info("sociallimit");
-				Log.Info("sociallimit = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("Social", objImprovementSource, strSourceName, Improvement.ImprovementType.SocialLimit, strFriendlyName,
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Change the amount of Nuyen the character has at creation time (this can put the character over the amount they're normally allowed).
-			if (bonusNode.LocalName == ("nuyenamt"))
-			{
-				Log.Info("nuyenamt");
-				Log.Info("nuyenamt = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Nuyen, strUnique,
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Improve Condition Monitors.
-			if (bonusNode.LocalName == ("conditionmonitor"))
-			{
-				Log.Info("conditionmonitor");
-				Log.Info("conditionmonitor = " + bonusNode.OuterXml.ToString());
-				// Physical Condition.
-				if (bonusNode.InnerXml.Contains("physical"))
-				{
-					Log.Info("Calling CreateImprovement for Physical");
-					CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.PhysicalCM, strUnique,
-						ValueToInt(bonusNode["physical"].InnerText, intRating));
-				}
-
-				// Stun Condition.
-				if (bonusNode.InnerXml.Contains("stun"))
-				{
-					Log.Info("Calling CreateImprovement for Stun");
-					CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.StunCM, strUnique,
-						ValueToInt(bonusNode["stun"].InnerText, intRating));
-				}
-
-				// Condition Monitor Threshold.
-				if (NodeExists(bonusNode, "threshold"))
-				{
-					string strUseUnique = strUnique;
-					if (bonusNode["threshold"].Attributes["precedence"] != null)
-						strUseUnique = "precedence" + bonusNode["threshold"].Attributes["precedence"].InnerText;
-
-					Log.Info("Calling CreateImprovement for Threshold");
-					CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.CMThreshold, strUseUnique,
-						ValueToInt(bonusNode["threshold"].InnerText, intRating));
-				}
-
-				// Condition Monitor Threshold Offset. (Additioal boxes appear before the FIRST Condition Monitor penalty)
-				if (NodeExists(bonusNode, "thresholdoffset"))
-				{
-					string strUseUnique = strUnique;
-					if (bonusNode["thresholdoffset"].Attributes["precedence"] != null)
-						strUseUnique = "precedence" + bonusNode["thresholdoffset"].Attributes["precedence"].InnerText;
-
-					Log.Info("Calling CreateImprovement for Threshold Offset");
-					CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.CMThresholdOffset,
-						strUseUnique, ValueToInt(bonusNode["thresholdoffset"].InnerText, intRating));
-				}
-
-				// Condition Monitor Overflow.
-				if (bonusNode.InnerXml.Contains("overflow"))
-				{
-					Log.Info("Calling CreateImprovement for Overflow");
-					CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.CMOverflow, strUnique,
-						ValueToInt(bonusNode["overflow"].InnerText, intRating));
-				}
-			}
-
-			// Improve Living Personal Attributes.
-			if (bonusNode.LocalName == ("livingpersona"))
-			{
-				Log.Info("livingpersona");
-				Log.Info("livingpersona = " + bonusNode.OuterXml.ToString());
-				// Response.
-				if (bonusNode.InnerXml.Contains("response"))
-				{
-					Log.Info("Calling CreateImprovement for response");
-					CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.LivingPersonaResponse,
-						strUnique, ValueToInt(bonusNode["response"].InnerText, intRating));
-				}
-
-				// Signal.
-				if (bonusNode.InnerXml.Contains("signal"))
-				{
-					Log.Info("Calling CreateImprovement for signal");
-					CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.LivingPersonaSignal,
-						strUnique,
-						ValueToInt(bonusNode["signal"].InnerText, intRating));
-				}
-
-				// Firewall.
-				if (bonusNode.InnerXml.Contains("firewall"))
-				{
-					Log.Info("Calling CreateImprovement for firewall");
-					CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.LivingPersonaFirewall,
-						strUnique, ValueToInt(bonusNode["firewall"].InnerText, intRating));
-				}
-
-				// System.
-				if (bonusNode.InnerXml.Contains("system"))
-				{
-					Log.Info("Calling CreateImprovement for system");
-					CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.LivingPersonaSystem,
-						strUnique,
-						ValueToInt(bonusNode["system"].InnerText, intRating));
-				}
-
-				// Biofeedback Filter.
-				if (bonusNode.InnerXml.Contains("biofeedback"))
-				{
-					Log.Info("Calling CreateImprovement for biofeedback");
-					CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.LivingPersonaBiofeedback,
-						strUnique, ValueToInt(bonusNode["biofeedback"].InnerText, intRating));
-				}
-			}
-
-			// The Improvement adjusts a specific Skill.
-			if (bonusNode.LocalName == ("specificskill"))
-			{
-				Log.Info("specificskill");
-				Log.Info("specificskill = " + bonusNode.OuterXml.ToString());
-				bool blnAddToRating = false;
-				if (bonusNode["applytorating"] != null)
-				{
-					if (bonusNode["applytorating"].InnerText == "yes")
-						blnAddToRating = true;
-				}
-
-				string strUseUnique = strUnique;
-				if (bonusNode.Attributes["precedence"] != null)
-					strUseUnique = "precedence" + bonusNode.Attributes["precedence"].InnerText;
-
-				// Record the improvement.
-				if (bonusNode["bonus"] != null)
-				{
-					Log.Info("Calling CreateImprovement for bonus");
-					CreateImprovement(bonusNode["name"].InnerText, objImprovementSource, strSourceName,
-						Improvement.ImprovementType.Skill, strUseUnique, ValueToInt(bonusNode["bonus"].InnerXml, intRating), 1, 0, 0, 0,
-						0, "", blnAddToRating);
-				}
-				if (bonusNode["max"] != null)
-				{
-					Log.Info("Calling CreateImprovement for max");
-					CreateImprovement(bonusNode["name"].InnerText, objImprovementSource, strSourceName,
-						Improvement.ImprovementType.Skill, strUseUnique, 0, 1, 0, ValueToInt(bonusNode["max"].InnerText, intRating), 0,
-						0,
-						"", blnAddToRating);
-				}
-			}
-
-			if (bonusNode.LocalName == "reflexrecorderoptimization")
-			{
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.ReflexRecorderOptimization, strUnique);
-			}
-
-			// The Improvement adds a martial art
-			if (bonusNode.LocalName == ("martialart"))
-			{
-				Log.Info("martialart");
-				Log.Info("martialart = " + bonusNode.OuterXml.ToString());
-				XmlDocument _objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
-				XmlNode objXmlArt =
-					_objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + bonusNode.InnerText +
-					                                 "\"]");
-
-				TreeNode objNode = new TreeNode();
-				MartialArt objMartialArt = new MartialArt(_objCharacter);
-				objMartialArt.Create(objXmlArt, objNode, _objCharacter);
-				objMartialArt.IsQuality = true;
-				_objCharacter.MartialArts.Add(objMartialArt);
-			}
-
-			// The Improvement adds a limit modifier
-			if (bonusNode.LocalName == ("limitmodifier"))
-			{
-				Log.Info("limitmodifier");
-				Log.Info("limitmodifier = " + bonusNode.OuterXml.ToString());
-				LimitModifier objLimitMod = new LimitModifier(_objCharacter);
-				string strLimit = bonusNode["limit"].InnerText;
-				string strBonus = bonusNode["value"].InnerText;
-			    if (strBonus == "Rating")
-			    {
-			        strBonus = intRating.ToString();
-			    }
-				string strCondition = "";
-				try
-				{
-					strCondition = bonusNode["condition"].InnerText;
-				}
-				catch
-				{
-				}
-				int intBonus = 0;
-				if (strBonus == "Rating")
-					intBonus = intRating;
-				else
-					intBonus = Convert.ToInt32(strBonus);
-				string strName = strFriendlyName;
-				TreeNode nodTemp = new TreeNode();
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement(strLimit, objImprovementSource, strSourceName, Improvement.ImprovementType.LimitModifier,
-					strFriendlyName, intBonus, 0, 0, 0, 0, 0, strCondition);
-			}
-
-			// The Improvement adjusts a Skill Category.
-			if (bonusNode.LocalName == ("skillcategory"))
-			{
-				Log.Info("skillcategory");
-				Log.Info("skillcategory = " + bonusNode.OuterXml.ToString());
-
-				bool blnAddToRating = false;
-				if (bonusNode["applytorating"] != null)
-				{
-					if (bonusNode["applytorating"].InnerText == "yes")
-						blnAddToRating = true;
-				}
-				if (bonusNode.InnerXml.Contains("exclude"))
-				{
-					Log.Info("Calling CreateImprovement - exclude");
-					CreateImprovement(bonusNode["name"].InnerText, objImprovementSource, strSourceName,
-						Improvement.ImprovementType.SkillCategory, strUnique, ValueToInt(bonusNode["bonus"].InnerXml, intRating), 1, 0,
-						0,
-						0, 0, bonusNode["exclude"].InnerText, blnAddToRating);
-				}
-				else
-				{
-					Log.Info("Calling CreateImprovement");
-					CreateImprovement(bonusNode["name"].InnerText, objImprovementSource, strSourceName,
-						Improvement.ImprovementType.SkillCategory, strUnique, ValueToInt(bonusNode["bonus"].InnerXml, intRating), 1, 0,
-						0,
-						0, 0, "", blnAddToRating);
-				}
-			}
-
-			// The Improvement adjusts a Skill Group.
-			if (bonusNode.LocalName == ("skillgroup"))
-			{
-				Log.Info("skillgroup");
-				Log.Info("skillgroup = " + bonusNode.OuterXml.ToString());
-
-				bool blnAddToRating = false;
-				if (bonusNode["applytorating"] != null)
-				{
-					if (bonusNode["applytorating"].InnerText == "yes")
-						blnAddToRating = true;
-				}
-				if (bonusNode.InnerXml.Contains("exclude"))
-				{
-					Log.Info("Calling CreateImprovement - exclude");
-					CreateImprovement(bonusNode["name"].InnerText, objImprovementSource, strSourceName,
-						Improvement.ImprovementType.SkillGroup, strUnique, ValueToInt(bonusNode["bonus"].InnerXml, intRating), 1, 0, 0, 0,
-						0, bonusNode["exclude"].InnerText, blnAddToRating);
-				}
-				else
-				{
-					Log.Info("Calling CreateImprovement");
-					CreateImprovement(bonusNode["name"].InnerText, objImprovementSource, strSourceName,
-						Improvement.ImprovementType.SkillGroup, strUnique, ValueToInt(bonusNode["bonus"].InnerXml, intRating), 1, 0, 0, 0,
-						0, "", blnAddToRating);
-				}
-			}
-
-			// The Improvement adjust Skills with the given CharacterAttribute.
-			if (bonusNode.LocalName == ("skillattribute"))
-			{
-				Log.Info("skillattribute");
-				Log.Info("skillattribute = " + bonusNode.OuterXml.ToString());
-
-				string strUseUnique = strUnique;
-				if (bonusNode["name"].Attributes["precedence"] != null)
-					strUseUnique = "precedence" + bonusNode["name"].Attributes["precedence"].InnerText;
-
-				bool blnAddToRating = false;
-				if (bonusNode["applytorating"] != null)
-				{
-					if (bonusNode["applytorating"].InnerText == "yes")
-						blnAddToRating = true;
-				}
-				if (bonusNode.InnerXml.Contains("exclude"))
-				{
-					Log.Info("Calling CreateImprovement - exclude");
-					CreateImprovement(bonusNode["name"].InnerText, objImprovementSource, strSourceName,
-						Improvement.ImprovementType.SkillAttribute, strUseUnique, ValueToInt(bonusNode["bonus"].InnerXml, intRating), 1,
-						0, 0, 0, 0, bonusNode["exclude"].InnerText, blnAddToRating);
-				}
-				else
-				{
-					Log.Info("Calling CreateImprovement");
-					CreateImprovement(bonusNode["name"].InnerText, objImprovementSource, strSourceName,
-						Improvement.ImprovementType.SkillAttribute, strUseUnique, ValueToInt(bonusNode["bonus"].InnerXml, intRating), 1,
-						0, 0, 0, 0, "", blnAddToRating);
-				}
-			}
-
-			// The Improvement comes from Enhanced Articulation (improves Physical Active Skills linked to a Physical CharacterAttribute).
-			if (bonusNode.LocalName == ("skillarticulation"))
-			{
-				Log.Info("skillarticulation");
-				Log.Info("skillarticulation = " + bonusNode.OuterXml.ToString());
-
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.EnhancedArticulation,
-					strUnique,
-					ValueToInt(bonusNode["bonus"].InnerText, intRating));
-			}
-
-			// Check for Armor modifiers.
-			if (bonusNode.LocalName == ("armor"))
-			{
-				Log.Info("armor");
-				Log.Info("armor = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				string strUseUnique = strUnique;
-				if (bonusNode.Attributes["precedence"] != null)
-				{
-					strUseUnique = "precedence" + bonusNode.Attributes["precedence"].InnerText;
-				}
-				else if (bonusNode.Attributes["group"] != null)
-				{
-					strUseUnique = "group" + bonusNode.Attributes["group"].InnerText;
-				}
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Armor, strUseUnique,
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Reach modifiers.
-			if (bonusNode.LocalName == ("reach"))
-			{
-				Log.Info("reach");
-				Log.Info("reach = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Reach, strUnique,
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Unarmed Damage Value modifiers.
-			if (bonusNode.LocalName == ("unarmeddv"))
-			{
-				Log.Info("unarmeddv");
-				Log.Info("unarmeddv = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.UnarmedDV, strUnique,
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Unarmed Damage Value Physical.
-			if (bonusNode.LocalName == ("unarmeddvphysical"))
-			{
-				Log.Info("unarmeddvphysical");
-				Log.Info("unarmeddvphysical = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.UnarmedDVPhysical, "");
-			}
-
-			// Check for Unarmed Armor Penetration.
-			if (bonusNode.LocalName == ("unarmedap"))
-			{
-				Log.Info("unarmedap");
-				Log.Info("unarmedap = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.UnarmedAP, strUnique,
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Initiative modifiers.
-			if (bonusNode.LocalName == ("initiative"))
-			{
-				Log.Info("initiative");
-				Log.Info("initiative = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Initiative, strUnique,
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Initiative Pass modifiers. Only the highest one ever applies.
-			if (bonusNode.LocalName == ("initiativepass"))
-			{
-				Log.Info("initiativepass");
-				Log.Info("initiativepass = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.InitiativePass,
-					"initiativepass", ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Initiative Pass modifiers. Only the highest one ever applies.
-			if (bonusNode.LocalName == ("initiativepassadd"))
-			{
-				Log.Info("initiativepassadd");
-				Log.Info("initiativepassadd = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.InitiativePassAdd, strUnique,
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Matrix Initiative modifiers.
-			if (bonusNode.LocalName == ("matrixinitiative"))
-			{
-				Log.Info("matrixinitiative");
-				Log.Info("matrixinitiative = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.MatrixInitiative, strUnique,
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Matrix Initiative Pass modifiers.
-			if (bonusNode.LocalName == ("matrixinitiativepass"))
-			{
-				Log.Info("matrixinitiativepass");
-				Log.Info("matrixinitiativepass = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.MatrixInitiativePass,
-					"matrixinitiativepass", ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Matrix Initiative Pass modifiers.
-			if (bonusNode.LocalName == ("matrixinitiativepassadd"))
-			{
-				Log.Info("matrixinitiativepassadd");
-				Log.Info("matrixinitiativepassadd = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.MatrixInitiativePass,
-					strUnique,
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Lifestyle cost modifiers.
-			if (bonusNode.LocalName == ("lifestylecost"))
-			{
-				Log.Info("lifestylecost");
-				Log.Info("lifestylecost = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.LifestyleCost, strUnique,
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for basic Lifestyle cost modifiers.
-			if (bonusNode.LocalName == ("basiclifestylecost"))
-			{
-				Log.Info("basiclifestylecost");
-				Log.Info("basiclifestylecost = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.BasicLifestyleCost, strUnique,
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Genetech Cost modifiers.
-			if (bonusNode.LocalName == ("genetechcostmultiplier"))
-			{
-				Log.Info("genetechcostmultiplier");
-				Log.Info("genetechcostmultiplier = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.GenetechCostMultiplier,
-					strUnique, ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Genetech: Transgenics Cost modifiers.
-			if (bonusNode.LocalName == ("transgenicsgenetechcost"))
-			{
-				Log.Info("transgenicsgenetechcost");
-				Log.Info("transgenicsgenetechcost = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.TransgenicsBiowareCost,
-					strUnique, ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Basic Bioware Essence Cost modifiers.
-			if (bonusNode.LocalName == ("basicbiowareessmultiplier"))
-			{
-				Log.Info("basicbiowareessmultiplier");
-				Log.Info("basicbiowareessmultiplier = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.BasicBiowareEssCost,
-					strUnique,
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Bioware Essence Cost modifiers.
-			if (bonusNode.LocalName == ("biowareessmultiplier"))
-			{
-				Log.Info("biowareessmultiplier");
-				Log.Info("biowareessmultiplier = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.BiowareEssCost, strUnique,
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Cybeware Essence Cost modifiers.
-			if (bonusNode.LocalName == ("cyberwareessmultiplier"))
-			{
-				Log.Info("cyberwareessmultiplier");
-				Log.Info("cyberwareessmultiplier = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.CyberwareEssCost, strUnique,
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Uneducated modifiers.
-			if (bonusNode.LocalName == ("uneducated"))
-			{
-				Log.Info("uneducated");
-				Log.Info("uneducated = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Uneducated, strUnique);
-				_objCharacter.SkillsSection.Uneducated = true;
-			}
-
-			// Check for College Education modifiers.
-			if (bonusNode.LocalName == ("collegeeducation"))
-			{
-				Log.Info("collegeeducation");
-				Log.Info("collegeeducation = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.CollegeEducation, strUnique);
-				_objCharacter.SkillsSection.CollegeEducation = true;
-			}
-
-			// Check for Jack Of All Trades modifiers.
-			if (bonusNode.LocalName == ("jackofalltrades"))
-			{
-				Log.Info("jackofalltrades");
-				Log.Info("jackofalltrades = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.JackOfAllTrades, strUnique);
-				_objCharacter.SkillsSection.JackOfAllTrades = true;
-			}
-
-			// Check for Prototype Transhuman modifiers.
-			if (bonusNode.LocalName == ("prototypetranshuman"))
-			{
-				Log.Info("prototypetranshuman");
-				Log.Info("prototypetranshuman = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.PrototypeTranshuman, strUnique);
-				_objCharacter.PrototypeTranshuman = Convert.ToDecimal(bonusNode.InnerText);
-
-			}
-			// Check for Uncouth modifiers.
-			if (bonusNode.LocalName == ("uncouth"))
-			{
-				Log.Info("uncouth");
-				Log.Info("uncouth = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Uncouth, strUnique);
-				_objCharacter.SkillsSection.Uncouth = true;
-			}
-
-			// Check for Friends In High Places modifiers.
-			if (bonusNode.LocalName == ("friendsinhighplaces"))
-			{
-				Log.Info("friendsinhighplaces");
-				Log.Info("friendsinhighplaces = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FriendsInHighPlaces,
-					strUnique);
-				_objCharacter.FriendsInHighPlaces = true;
-			}
-			// Check for School of Hard Knocks modifiers.
-			if (bonusNode.LocalName == ("schoolofhardknocks"))
-			{
-				Log.Info("schoolofhardknocks");
-				Log.Info("schoolofhardknocks = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.SchoolOfHardKnocks, strUnique);
-				_objCharacter.SkillsSection.SchoolOfHardKnocks = true;
-			}
-			// Check for ExCon modifiers.
-			if (bonusNode.LocalName == ("excon"))
-			{
-				Log.Info("ExCon");
-				Log.Info("ExCon = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.ExCon, strUnique);
-				_objCharacter.ExCon = true;
-			}
-
-			// Check for TrustFund modifiers.
-			if (bonusNode.LocalName == ("trustfund"))
-			{
-				Log.Info("TrustFund");
-				Log.Info("TrustFund = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.TrustFund,
-					strUnique,
-					ValueToInt(bonusNode.InnerText, intRating));
-				_objCharacter.TrustFund = ValueToInt(bonusNode.InnerText, intRating);
-			}
-
-			// Check for Tech School modifiers.
-			if (bonusNode.LocalName == ("techschool"))
-			{
-				Log.Info("techschool");
-				Log.Info("techschool = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.TechSchool, strUnique);
-				_objCharacter.SkillsSection.TechSchool = true;
-			}
-			// Check for MadeMan modifiers.
-			if (bonusNode.LocalName == ("mademan"))
-			{
-				Log.Info("MadeMan");
-				Log.Info("MadeMan = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.MadeMan, strUnique);
-				_objCharacter.MadeMan = true;
-			}
-
-			// Check for Linguist modifiers.
-			if (bonusNode.LocalName == ("linguist"))
-			{
-				Log.Info("Linguist");
-				Log.Info("Linguist = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Linguist, strUnique);
-				_objCharacter.SkillsSection.Linguist = true;
-			}
-
-			// Check for LightningReflexes modifiers.
-			if (bonusNode.LocalName == ("lightningreflexes"))
-			{
-				Log.Info("LightningReflexes");
-				Log.Info("LightningReflexes = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.LightningReflexes, strUnique);
-				_objCharacter.LightningReflexes = true;
-			}
-
-			// Check for Fame modifiers.
-			if (bonusNode.LocalName == ("fame"))
-			{
-				Log.Info("Fame");
-				Log.Info("Fame = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Fame, strUnique);
-				_objCharacter.Fame = true;
-			}
-			// Check for BornRich modifiers.
-			if (bonusNode.LocalName == ("bornrich"))
-			{
-				Log.Info("BornRich");
-				Log.Info("BornRich = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.BornRich, strUnique);
-				_objCharacter.BornRich = true;
-			}
-			// Check for Erased modifiers.
-			if (bonusNode.LocalName == ("erased"))
-			{
-				Log.Info("Erased");
-				Log.Info("Erased = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Erased, strUnique);
-				_objCharacter.Erased = true;
-			}
-			// Check for Erased modifiers.
-			if (bonusNode.LocalName == ("overclocker"))
-			{
-				Log.Info("OverClocker");
-				Log.Info("Overclocker = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Overclocker, strUnique);
-				_objCharacter.Overclocker = true;
-			}
-
-			// Check for Restricted Gear modifiers.
-			if (bonusNode.LocalName == ("restrictedgear"))
-			{
-				Log.Info("restrictedgear");
-				Log.Info("restrictedgear = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.RestrictedGear, strUnique);
-				_objCharacter.RestrictedGear = true;
-			}
-
-			// Check for Adept Linguistics.
-			if (bonusNode.LocalName == ("adeptlinguistics"))
-			{
-				Log.Info("adeptlinguistics");
-				Log.Info("adeptlinguistics = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.AdeptLinguistics, strUnique,
-					1);
-			}
-
-			// Check for Weapon Category DV modifiers.
-			if (bonusNode.LocalName == ("weaponcategorydv"))
-			{
-				//TODO: FIX THIS
-				/*
-				 * I feel like talking a little bit about improvementmanager at
-				 * this point. It is an intresting class. First of all, it 
-				 * manages to throw out everything we ever learned about OOP
-				 * and create a class based on functional programming.
-				 * 
-				 * That is true, it is a class, based on manipulating a single
-				 * list on another class.
-				 * 
-				 * But atleast there is a reference to it somewhere right?
-				 * 
-				 * No, you create one wherever you need it, meaning there are
-				 * tens of instances of this class, all operating on the same 
-				 * list
-				 * 
-				 * After that, it is just plain stupid.
-				 * If you have an list of xmlNodes and some might be the same
-				 * it checks if a specific node exists (sometimes even by text
-				 * comparison on .OuterXml) and then runs specific code for 
-				 * each. If it is there multiple times either of those 2 things
-				 * happen.
-				 * 
-				 * 1. Sad, nothing we can do, guess you have to survive
-				 * 2. Lets create a foreach in that specific part of the code
-				 * 
-				 * Fuck ImprovementManager, kill it with fire, burn the ashes
-				 * and feed what remains to a dragon that eats unholy 
-				 * abominations
-				 */
-
-
-				Log.Info("weaponcategorydv");
-				Log.Info("weaponcategorydv = " + bonusNode.OuterXml.ToString());
-				XmlNodeList objXmlCategoryList = bonusNode.SelectNodes("weaponcategorydv");
-				XmlNode nodWeapon = bonusNode;
-
-				if (NodeExists(nodWeapon, "selectskill"))
-				{
-					// Display the Select Skill window and record which Skill was selected.
-					frmSelectItem frmPickCategory = new frmSelectItem();
-					List<ListItem> lstGeneralItems = new List<ListItem>();
-
-					ListItem liBlades = new ListItem();
-					liBlades.Name = "Blades";
-					liBlades.Value = "Blades";
-
-					ListItem liClubs = new ListItem();
-					liClubs.Name = "Clubs";
-					liClubs.Value = "Clubs";
-
-					ListItem liUnarmed = new ListItem();
-					liUnarmed.Name = "Unarmed";
-					liUnarmed.Value = "Unarmed";
-
-					ListItem liAstral = new ListItem();
-					liAstral.Name = "Astral Combat";
-					liAstral.Value = "Astral Combat";
-
-					ListItem liExotic = new ListItem();
-					liExotic.Name = "Exotic Melee Weapons";
-					liExotic.Value = "Exotic Melee Weapons";
-
-					lstGeneralItems.Add(liAstral);
-					lstGeneralItems.Add(liBlades);
-					lstGeneralItems.Add(liClubs);
-					lstGeneralItems.Add(liExotic);
-					lstGeneralItems.Add(liUnarmed);
-					frmPickCategory.GeneralItems = lstGeneralItems;
-
-					if (strFriendlyName != "")
-						frmPickCategory.Description =
-							LanguageManager.Instance.GetString("String_Improvement_SelectSkillNamed").Replace("{0}", strFriendlyName);
-					else
-						frmPickCategory.Description = LanguageManager.Instance.GetString("Title_SelectWeaponCategory");
-
-					Log.Info("_strForcedValue = " + _strForcedValue);
-
-					if (_strForcedValue.StartsWith("Adept:") || _strForcedValue.StartsWith("Magician:"))
-						_strForcedValue = "";
-
-					if (_strForcedValue != "")
-					{
-						frmPickCategory.Opacity = 0;
-					}
-					frmPickCategory.ShowDialog();
-
-					// Make sure the dialogue window was not canceled.
-					if (frmPickCategory.DialogResult == DialogResult.Cancel)
-					{
-						Rollback();
-						_strForcedValue = "";
-						_strLimitSelection = "";
-						return false;
-					}
-
-					_strSelectedValue = frmPickCategory.SelectedItem;
-
-					Log.Info("strSelected = " + _strSelectedValue);
-
-					foreach (Power objPower in _objCharacter.Powers)
-					{
-						if (objPower.InternalId == strSourceName)
-						{
-							objPower.Extra = _strSelectedValue;
-						}
-					}
-
-					Log.Info("Calling CreateImprovement");
-					CreateImprovement(_strSelectedValue, objImprovementSource, strSourceName,
-						Improvement.ImprovementType.WeaponCategoryDV, strUnique, ValueToInt(nodWeapon["bonus"].InnerXml, intRating));
-				}
-				else
-				{
-					// Run through each of the Skill Groups since there may be more than one affected.
-					foreach (XmlNode objXmlCategory in objXmlCategoryList)
-					{
-						Log.Info("Calling CreateImprovement");
-						CreateImprovement(objXmlCategory["name"].InnerText, objImprovementSource, strSourceName,
-							Improvement.ImprovementType.WeaponCategoryDV, strUnique, ValueToInt(objXmlCategory["bonus"].InnerXml, intRating));
-					}
-				}
-			}
-
-			// Check for Mentor Spirit bonuses.
-			if (bonusNode.LocalName == ("selectmentorspirit"))
-			{
-				Log.Info("selectmentorspirit");
-				Log.Info("selectmentorspirit = " + bonusNode.OuterXml.ToString());
-				frmSelectMentorSpirit frmPickMentorSpirit = new frmSelectMentorSpirit(_objCharacter);
-				frmPickMentorSpirit.ShowDialog();
-
-				// Make sure the dialogue window was not canceled.
-				if (frmPickMentorSpirit.DialogResult == DialogResult.Cancel)
-				{
-					Rollback();
-					_strForcedValue = "";
-					_strLimitSelection = "";
-					return false;
-				}
-
-				_strSelectedValue = frmPickMentorSpirit.SelectedMentor;
-
-				string strHoldValue = _strSelectedValue;
-				if (blnConcatSelectedValue)
-					strSourceName += " (" + _strSelectedValue + ")";
-
-				Log.Info("_strSelectedValue = " + _strSelectedValue);
-				Log.Info("strSourceName = " + strSourceName);
-
-				if (frmPickMentorSpirit.BonusNode != null)
-				{
-					if (!CreateImprovements(objImprovementSource, strSourceName, frmPickMentorSpirit.BonusNode,
-						blnConcatSelectedValue, intRating, strFriendlyName))
-					{
-						Rollback();
-						_strForcedValue = "";
-						_strLimitSelection = "";
-						return false;
-					}
-				}
-
-				if (frmPickMentorSpirit.Choice1BonusNode != null)
-				{
-					Log.Info("frmPickMentorSpirit.Choice1BonusNode = " + frmPickMentorSpirit.Choice1BonusNode.OuterXml.ToString());
-					string strForce = _strForcedValue;
-					if (!frmPickMentorSpirit.Choice1.StartsWith("Adept:") && !frmPickMentorSpirit.Choice1.StartsWith("Magician:"))
-						_strForcedValue = frmPickMentorSpirit.Choice1;
-					else
-						_strForcedValue = "";
-					Log.Info("Calling CreateImprovement");
-					bool blnSuccess = CreateImprovements(objImprovementSource, strSourceName, frmPickMentorSpirit.Choice1BonusNode,
-						blnConcatSelectedValue, intRating, strFriendlyName);
-					if (!blnSuccess)
-					{
-						Rollback();
-						_strForcedValue = "";
-						_strLimitSelection = "";
-						return false;
-					}
-					_strForcedValue = strForce;
-					_objCharacter.Improvements.Last().Notes = frmPickMentorSpirit.Choice1;
-				}
-
-				if (frmPickMentorSpirit.Choice2BonusNode != null)
-				{
-					Log.Info("frmPickMentorSpirit.Choice2BonusNode = " + frmPickMentorSpirit.Choice2BonusNode.OuterXml.ToString());
-					string strForce = _strForcedValue;
-					if (!frmPickMentorSpirit.Choice2.StartsWith("Adept:") && !frmPickMentorSpirit.Choice2.StartsWith("Magician:"))
-						_strForcedValue = frmPickMentorSpirit.Choice2;
-					else
-						_strForcedValue = "";
-					Log.Info("Calling CreateImprovement");
-					bool blnSuccess = CreateImprovements(objImprovementSource, strSourceName, frmPickMentorSpirit.Choice2BonusNode,
-						blnConcatSelectedValue, intRating, strFriendlyName);
-					if (!blnSuccess)
-					{
-						Rollback();
-						_strForcedValue = "";
-						_strLimitSelection = "";
-						return false;
-					}
-					_strForcedValue = strForce;
-					_objCharacter.Improvements.Last().Notes = frmPickMentorSpirit.Choice2;
-				}
-
-				_strSelectedValue = strHoldValue;
-				Log.Info("_strSelectedValue = " + _strSelectedValue);
-				Log.Info("_strForcedValue = " + _strForcedValue);
-			}
-
-			// Check for Paragon bonuses.
-			if (bonusNode.LocalName == ("selectparagon"))
-			{
-				Log.Info("selectparagon");
-				Log.Info("selectparagon = " + bonusNode.OuterXml.ToString());
-				frmSelectMentorSpirit frmPickMentorSpirit = new frmSelectMentorSpirit(_objCharacter);
-				frmPickMentorSpirit.XmlFile = "paragons.xml";
-				frmPickMentorSpirit.ShowDialog();
-
-				// Make sure the dialogue window was not canceled.
-				if (frmPickMentorSpirit.DialogResult == DialogResult.Cancel)
-				{
-					Rollback();
-					_strForcedValue = "";
-					_strLimitSelection = "";
-					return false;
-				}
-
-				_strSelectedValue = frmPickMentorSpirit.SelectedMentor;
-				string strHoldValue = _strSelectedValue;
-				if (blnConcatSelectedValue)
-					strSourceName += " (" + _strSelectedValue + ")";
-
-				if (frmPickMentorSpirit.BonusNode != null)
-				{
-					bool blnSuccess = CreateImprovements(objImprovementSource, strSourceName, frmPickMentorSpirit.BonusNode,
-						blnConcatSelectedValue, intRating, strFriendlyName);
-					if (!blnSuccess)
-					{
-						Rollback();
-						_strForcedValue = "";
-						_strLimitSelection = "";
-						return false;
-					}
-				}
-
-				if (frmPickMentorSpirit.Choice1BonusNode != null)
-				{
-					string strForce = _strForcedValue;
-					_strForcedValue = frmPickMentorSpirit.Choice1;
-					bool blnSuccess = CreateImprovements(objImprovementSource, strSourceName, frmPickMentorSpirit.Choice1BonusNode,
-						blnConcatSelectedValue, intRating, strFriendlyName);
-					if (!blnSuccess)
-					{
-						Rollback();
-						_strForcedValue = "";
-						_strLimitSelection = "";
-						return false;
-					}
-					_strForcedValue = strForce;
-					_objCharacter.Improvements.Last().Notes = frmPickMentorSpirit.Choice1;
-				}
-
-				if (frmPickMentorSpirit.Choice2BonusNode != null)
-				{
-					string strForce = _strForcedValue;
-					_strForcedValue = frmPickMentorSpirit.Choice2;
-					bool blnSuccess = CreateImprovements(objImprovementSource, strSourceName, frmPickMentorSpirit.Choice2BonusNode,
-						blnConcatSelectedValue, intRating, strFriendlyName);
-					if (!blnSuccess)
-					{
-						Rollback();
-						_strForcedValue = "";
-						_strLimitSelection = "";
-						return false;
-					}
-					_strForcedValue = strForce;
-					_objCharacter.Improvements.Last().Notes = frmPickMentorSpirit.Choice2;
-				}
-
-				_strSelectedValue = strHoldValue;
-			}
-
-			// Check for Smartlink bonus.
-			if (bonusNode.LocalName == ("smartlink"))
-			{
-				Log.Info("smartlink");
-				Log.Info("smartlink = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Smartlink, "smartlink");
-			}
-
-			// Check for Adapsin bonus.
-			if (bonusNode.LocalName == ("adapsin"))
-			{
-				Log.Info("adapsin");
-				Log.Info("adapsin = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Adapsin, "adapsin");
-			}
-
-			// Check for SoftWeave bonus.
-			if (bonusNode.LocalName == ("softweave"))
-			{
-				Log.Info("softweave");
-				Log.Info("softweave = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.SoftWeave, "softweave");
-			}
-
-			// Check for Sensitive System.
-			if (bonusNode.LocalName == ("sensitivesystem"))
-			{
-				Log.Info("sensitivesystem");
-				Log.Info("sensitivesystem = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.SensitiveSystem,
-					"sensitivesystem");
-			}
-
-			// Check for Movement Percent.
-			if (bonusNode.LocalName == ("movementpercent"))
-			{
-				Log.Info("movementpercent");
-				Log.Info("movementpercent = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.MovementPercent, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Swim Percent.
-			if (bonusNode.LocalName == ("swimpercent"))
-			{
-				Log.Info("swimpercent");
-				Log.Info("swimpercent = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.SwimPercent, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Fly Percent.
-			if (bonusNode.LocalName == ("flypercent"))
-			{
-				Log.Info("flypercent");
-				Log.Info("flypercent = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FlyPercent, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Fly Speed.
-			if (bonusNode.LocalName == ("flyspeed"))
-			{
-				Log.Info("flyspeed");
-				Log.Info("flyspeed = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FlySpeed, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for free Positive Qualities.
-			if (bonusNode.LocalName == ("freepositivequalities"))
-			{
-				Log.Info("freepositivequalities");
-				Log.Info("freepositivequalities = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FreePositiveQualities, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for free Negative Qualities.
-			if (bonusNode.LocalName == ("freenegativequalities"))
-			{
-				Log.Info("freenegativequalities");
-				Log.Info("freenegativequalities = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FreeNegativeQualities, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Select Side.
-			if (bonusNode.LocalName == ("selectside"))
-			{
-				Log.Info("selectside");
-				Log.Info("selectside = " + bonusNode.OuterXml.ToString());
-				frmSelectSide frmPickSide = new frmSelectSide();
-				frmPickSide.Description = LanguageManager.Instance.GetString("Label_SelectSide").Replace("{0}", strFriendlyName);
-				if (_strForcedValue != "")
-					frmPickSide.ForceValue(_strForcedValue);
-				else
-					frmPickSide.ShowDialog();
-
-				// Make sure the dialogue window was not canceled.
-				if (frmPickSide.DialogResult == DialogResult.Cancel)
-				{
-					Rollback();
-					_strForcedValue = "";
-					_strLimitSelection = "";
-					return false;
-				}
-
-				_strSelectedValue = frmPickSide.SelectedSide;
-				Log.Info("_strSelectedValue = " + _strSelectedValue);
-			}
-
-			// Check for Free Spirit Power Points.
-			if (bonusNode.LocalName == ("freespiritpowerpoints"))
-			{
-				Log.Info("freespiritpowerpoints");
-				Log.Info("freespiritpowerpoints = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FreeSpiritPowerPoints, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Adept Power Points.
-			if (bonusNode.LocalName == ("adeptpowerpoints"))
-			{
-				Log.Info("adeptpowerpoints");
-				Log.Info("adeptpowerpoints = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.AdeptPowerPoints, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Adept Powers
-			if (bonusNode.LocalName == ("specificpower"))
-			{
-				//TODO: Probably broken
-				Log.Info("specificpower");
-				Log.Info("specificpower = " + bonusNode.OuterXml.ToString());
-				// If the character isn't an adept or mystic adept, skip the rest of this.
-				if (_objCharacter.AdeptEnabled)
-				{
-					string strSelection = "";
-					_strForcedValue = "";
-
-
-					Log.Info("objXmlSpecificPower = " + bonusNode.OuterXml.ToString());
-
-					string strPowerName = bonusNode["name"].InnerText;
-					int intLevels = 0;
-					if (bonusNode["val"] != null)
-						intLevels = Convert.ToInt32(bonusNode["val"].InnerText);
-					bool blnFree = false;
-					if (bonusNode["free"] != null)
-						blnFree = (bonusNode["free"].InnerText == "yes");
-
-					string strPowerNameLimit = strPowerName;
-					if (bonusNode["selectlimit"] != null)
-					{
-						Log.Info("selectlimit = " + bonusNode["selectlimit"].OuterXml.ToString());
-						_strForcedValue = "";
-						// Display the Select Limit window and record which Limit was selected.
-						frmSelectLimit frmPickLimit = new frmSelectLimit();
-						if (strFriendlyName != "")
-							frmPickLimit.Description = LanguageManager.Instance.GetString("String_Improvement_SelectLimitNamed")
-								.Replace("{0}", strFriendlyName);
-						else
-							frmPickLimit.Description = LanguageManager.Instance.GetString("String_Improvement_SelectLimit");
-
-						if (bonusNode["selectlimit"].InnerXml.Contains("<limit>"))
-						{
-							List<string> strValue = new List<string>();
-							foreach (XmlNode objXmlAttribute in bonusNode["selectlimit"].SelectNodes("limit"))
-								strValue.Add(objXmlAttribute.InnerText);
-							frmPickLimit.LimitToList(strValue);
-						}
-
-						if (bonusNode["selectlimit"].InnerXml.Contains("<excludelimit>"))
-						{
-							List<string> strValue = new List<string>();
-							foreach (XmlNode objXmlAttribute in bonusNode["selectlimit"].SelectNodes("excludelimit"))
-								strValue.Add(objXmlAttribute.InnerText);
-							frmPickLimit.RemoveFromList(strValue);
-						}
-
-						// Check to see if there is only one possible selection because of _strLimitSelection.
-						if (_strForcedValue != "")
-							_strLimitSelection = _strForcedValue;
-
-						Log.Info("_strForcedValue = " + _strForcedValue);
-						Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-						if (_strLimitSelection != "")
-						{
-							frmPickLimit.SingleLimit(_strLimitSelection);
-							frmPickLimit.Opacity = 0;
-						}
-
-						frmPickLimit.ShowDialog();
-
-						// Make sure the dialogue window was not canceled.
-						if (frmPickLimit.DialogResult == DialogResult.Cancel)
-						{
-							Rollback();
-							_strForcedValue = "";
-							_strLimitSelection = "";
-							return false;
-						}
-
-						_strSelectedValue = frmPickLimit.SelectedLimit;
-						strSelection = _strSelectedValue;
-						_strForcedValue = _strSelectedValue;
-
-						Log.Info("_strForcedValue = " + _strForcedValue);
-						Log.Info("_strLimitSelection = " + _strLimitSelection);
-					}
-
-					if (bonusNode["selectskill"] != null)
-					{
-						Log.Info("selectskill = " + bonusNode["selectskill"].OuterXml.ToString());
-						XmlNode nodSkill = bonusNode;
-						// Display the Select Skill window and record which Skill was selected.
-						frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
-						if (strFriendlyName != "")
-							frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillNamed")
-								.Replace("{0}", strFriendlyName);
-						else
-							frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkill");
-
-						if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("skillgroup"))
-							frmPickSkill.OnlySkillGroup = nodSkill.SelectSingleNode("selectskill").Attributes["skillgroup"].InnerText;
-						else if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("skillcategory"))
-							frmPickSkill.OnlyCategory = nodSkill.SelectSingleNode("selectskill").Attributes["skillcategory"].InnerText;
-						else if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("excludecategory"))
-							frmPickSkill.ExcludeCategory = nodSkill.SelectSingleNode("selectskill").Attributes["excludecategory"].InnerText;
-						else if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("limittoskill"))
-							frmPickSkill.LimitToSkill = nodSkill.SelectSingleNode("selectskill").Attributes["limittoskill"].InnerText;
-
-						if (_strForcedValue.StartsWith("Adept:") || _strForcedValue.StartsWith("Magician:"))
-							_strForcedValue = "";
-
-						Log.Info("_strForcedValue = " + _strForcedValue);
-						Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-						if (_strForcedValue != "")
-						{
-							frmPickSkill.OnlySkill = _strForcedValue;
-							frmPickSkill.Opacity = 0;
-						}
-						frmPickSkill.ShowDialog();
-
-						// Make sure the dialogue window was not canceled.
-						if (frmPickSkill.DialogResult == DialogResult.Cancel)
-						{
-							Rollback();
-							_strForcedValue = "";
-							_strLimitSelection = "";
-							return false;
-						}
-
-						_strSelectedValue = frmPickSkill.SelectedSkill;
-						_strForcedValue = _strSelectedValue;
-						strSelection = _strSelectedValue;
-
-						Log.Info("_strForcedValue = " + _strForcedValue);
-						Log.Info("_strSelectedValue = " + _strSelectedValue);
-						Log.Info("strSelection = " + strSelection);
-					}
-
-					if (bonusNode["selecttext"] != null)
-					{
-						Log.Info("selecttext = " + bonusNode["selecttext"].OuterXml.ToString());
-						frmSelectText frmPickText = new frmSelectText();
-
-
-						if (_objCharacter.Pushtext.Count > 0)
-						{
-							strSelection = _objCharacter.Pushtext.Pop();
-						}
-						else
-						{
-							frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
-								.Replace("{0}", strFriendlyName);
-
-							Log.Info("_strForcedValue = " + _strForcedValue);
-							Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-							if (_strLimitSelection != "")
-							{
-								frmPickText.SelectedValue = _strLimitSelection;
-								frmPickText.Opacity = 0;
-							}
-
-							frmPickText.ShowDialog();
-
-							// Make sure the dialogue window was not canceled.
-							if (frmPickText.DialogResult == DialogResult.Cancel)
-							{
-								Rollback();
-								_strForcedValue = "";
-								_strLimitSelection = "";
-								return false;
-							}
-
-							strSelection = frmPickText.SelectedValue;
-							_strLimitSelection = strSelection;
-						}
-						Log.Info("_strLimitSelection = " + _strLimitSelection);
-						Log.Info("strSelection = " + strSelection);
-					}
-
-					if (bonusNode["specificattribute"] != null)
-					{
-						Log.Info("specificattribute = " + bonusNode["specificattribute"].OuterXml.ToString());
-						strSelection = bonusNode["specificattribute"]["name"].InnerText.ToString();
-						Log.Info(
-							"strSelection = " + strSelection);
-					}
-
-					if (bonusNode["selectattribute"] != null)
-					{
-						Log.Info("selectattribute = " + bonusNode["selectattribute"].OuterXml.ToString());
-						XmlNode nodSkill = bonusNode;
-						if (_strForcedValue.StartsWith("Adept"))
-							_strForcedValue = "";
-
-						// Display the Select CharacterAttribute window and record which CharacterAttribute was selected.
-						frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
-						if (strFriendlyName != "")
-							frmPickAttribute.Description =
-								LanguageManager.Instance.GetString("String_Improvement_SelectAttributeNamed").Replace("{0}", strFriendlyName);
-						else
-							frmPickAttribute.Description = LanguageManager.Instance.GetString("String_Improvement_SelectAttribute");
-
-						// Add MAG and/or RES to the list of Attributes if they are enabled on the form.
-						if (_objCharacter.MAGEnabled)
-							frmPickAttribute.AddMAG();
-						if (_objCharacter.RESEnabled)
-							frmPickAttribute.AddRES();
-
-						if (nodSkill["selectattribute"].InnerXml.Contains("<attribute>"))
-						{
-							List<string> strValue = new List<string>();
-							foreach (XmlNode objXmlAttribute in nodSkill["selectattribute"].SelectNodes("attribute"))
-								strValue.Add(objXmlAttribute.InnerText);
-							frmPickAttribute.LimitToList(strValue);
-						}
-
-						if (nodSkill["selectattribute"].InnerXml.Contains("<excludeattribute>"))
-						{
-							List<string> strValue = new List<string>();
-							foreach (XmlNode objXmlAttribute in nodSkill["selectattribute"].SelectNodes("excludeattribute"))
-								strValue.Add(objXmlAttribute.InnerText);
-							frmPickAttribute.RemoveFromList(strValue);
-						}
-
-						// Check to see if there is only one possible selection because of _strLimitSelection.
-						if (_strForcedValue != "")
-							_strLimitSelection = _strForcedValue;
-
-						Log.Info("_strForcedValue = " + _strForcedValue);
-						Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-						if (_strLimitSelection != "")
-						{
-							frmPickAttribute.SingleAttribute(_strLimitSelection);
-							frmPickAttribute.Opacity = 0;
-						}
-
-						frmPickAttribute.ShowDialog();
-
-						// Make sure the dialogue window was not canceled.
-						if (frmPickAttribute.DialogResult == DialogResult.Cancel)
-						{
-							Rollback();
-							_strForcedValue = "";
-							_strLimitSelection = "";
-							return false;
-						}
-
-						_strSelectedValue = frmPickAttribute.SelectedAttribute;
-						if (blnConcatSelectedValue)
-							strSourceName += " (" + _strSelectedValue + ")";
-						strSelection = _strSelectedValue;
-						_strForcedValue = _strSelectedValue;
-
-						Log.Info("_strSelectedValue = " + _strSelectedValue);
-						Log.Info("strSourceName = " + strSourceName);
-						Log.Info("_strForcedValue = " + _strForcedValue);
-					}
-
-					// Check if the character already has this power
-					Log.Info("strSelection = " + strSelection);
-					bool blnHasPower = false;
-					Power objPower = new Power(_objCharacter);
-					foreach (Power power in _objCharacter.Powers)
-					{
-						if (power.Name == strPowerNameLimit)
-						{
-							if (power.Extra != "" && power.Extra == strSelection)
-							{
-								blnHasPower = true;
-								objPower = power;
-							}
-							else if (power.Extra == "")
-							{
-								blnHasPower = true;
-								objPower = power;
-							}
-						}
-					}
-
-					Log.Info("blnHasPower = " + blnHasPower);
-
-					if (blnHasPower)
-					{
-						// If yes, mark it free or give it free levels
-						if (blnFree)
-						{
-							objPower.Free = true;
-						}
-						else
-						{
-							objPower.FreeLevels += intLevels;
-							if (objPower.Rating < objPower.FreeLevels)
-								objPower.Rating = objPower.FreeLevels;
-						}
-					}
-					else
-					{
-						Log.Info("Adding Power " + strPowerName);
-						// If no, add the power and mark it free or give it free levels
-						objPower = new Power(_objCharacter);
-						_objCharacter.Powers.Add(objPower);
-
-						// Get the Power information
-						XmlDocument objXmlDocument = new XmlDocument();
-						objXmlDocument = XmlManager.Instance.Load("powers.xml");
-						XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + strPowerName + "\"]");
-						Log.Info("objXmlPower = " + objXmlPower.OuterXml.ToString());
-
-						bool blnLevels = false;
-						if (objXmlPower["levels"] != null)
-							blnLevels = (objXmlPower["levels"].InnerText == "yes");
-						objPower.LevelsEnabled = blnLevels;
-						objPower.Name = strPowerNameLimit;
-						objPower.PointsPerLevel = Convert.ToDecimal(objXmlPower["points"].InnerText, GlobalOptions.Instance.CultureInfo);
-						objPower.Source = objXmlPower["source"].InnerText;
-						objPower.Page = objXmlPower["page"].InnerText;
-						if (strSelection != string.Empty)
-							objPower.Extra = strSelection;
-						if (objXmlPower["doublecost"] != null)
-							objPower.DoubleCost = false;
-
-						if (blnFree)
-						{
-							objPower.Free = true;
-						}
-						else
-						{
-							objPower.FreeLevels += intLevels;
-							if (objPower.Rating < intLevels)
-								objPower.Rating = objPower.FreeLevels;
-						}
-
-						if (objXmlPower.InnerXml.Contains("bonus"))
-						{
-							objPower.Bonus = objXmlPower["bonus"];
-							Log.Info("Calling CreateImprovements");
-							if (
-								!CreateImprovements(Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, false,
-									Convert.ToInt32(objPower.Rating), objPower.DisplayNameShort))
-							{
-								_objCharacter.Powers.Remove(objPower);
-							}
-						}
-					}
-					_strSelectedValue = "";
-					_strForcedValue = "";
-					strSelection = "";
-				}
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.AdeptPower, "");
-			}
-
-			// Select a Power.
-			if (bonusNode.LocalName == ("selectpowers"))
-			{
-				XmlNodeList objXmlPowerList = bonusNode.SelectNodes("selectpower");
-				foreach (XmlNode objNode in objXmlPowerList)
-				{
-					Log.Info("selectpower");
-					Log.Info("_strSelectedValue = " + _strSelectedValue);
-					Log.Info("_strForcedValue = " + _strForcedValue);
-
-					//Gerry: These unfortunately did not work in any case of multiple bonuses
-					// Switched the setting of powerpoints and levels to ADDING them
-					// Remove resetting powerpoints.
-					bool blnExistingPower = false;
-					foreach (Power objExistingPower in _objCharacter.Powers)
-					{
-						if (objExistingPower.Name.StartsWith("Improved Reflexes"))
-						{
-							if (objExistingPower.Name.EndsWith("1"))
-							{
-								if (objExistingPower.Name.EndsWith("1"))
-								{
-									if (intRating >= 6)
-										objExistingPower.FreePoints += 1.5M;
-									//else
-									//	objExistingPower.FreePoints = 0;
-								}
-								else if (objExistingPower.Name.EndsWith("2"))
-								{
-									if (intRating >= 10)
-										objExistingPower.FreePoints += 2.5M;
-									else if (intRating >= 4)
-										objExistingPower.FreePoints += 1.0M;
-									//else
-									//	objExistingPower.FreePoints = 0;
-								}
-								else
-								{
-									if (intRating >= 14)
-										objExistingPower.FreePoints += 3.5M;
-									else if (intRating >= 8)
-										objExistingPower.FreePoints += 2.0M;
-									else if (intRating >= 4)
-										objExistingPower.FreePoints += 1.0M;
-									//else
-									//	objExistingPower.FreePoints = 0;
-								}
-							}
-							else
-							{
-								// we have to adjust the number of free levels.
-								decimal decLevels = Convert.ToDecimal(intRating)/4;
-								decLevels = Math.Floor(decLevels/objExistingPower.PointsPerLevel);
-								objExistingPower.FreeLevels += Convert.ToInt32(decLevels);
-								if (objExistingPower.Rating < intRating)
-									objExistingPower.Rating = objExistingPower.FreeLevels;
-								break;
-							}
-						}
-						else
-						{
-							// we have to adjust the number of free levels.
-							decimal decLevels = Convert.ToDecimal(intRating)/4;
-							decLevels = Math.Floor(decLevels/objExistingPower.PointsPerLevel);
-							objExistingPower.FreeLevels = Convert.ToInt32(decLevels);
-							if (objExistingPower.Rating < intRating)
-								objExistingPower.Rating = objExistingPower.FreeLevels;
-							break;
-						}
-						//}
-					}
-
-					if (!blnExistingPower)
-					{
-						// Display the Select Skill window and record which Skill was selected.
-						frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
-						Log.Info("selectpower = " + objNode.OuterXml.ToString());
-
-						if (objNode.OuterXml.Contains("limittopowers"))
-							frmPickPower.LimitToPowers = objNode.Attributes["limittopowers"].InnerText;
-						frmPickPower.ShowDialog();
-
-						// Make sure the dialogue window was not canceled.
-						if (frmPickPower.DialogResult == DialogResult.Cancel)
-						{
-							Rollback();
-							_strForcedValue = "";
-							_strLimitSelection = "";
-							return false;
-						}
-
-						_strSelectedValue = frmPickPower.SelectedPower;
-						if (blnConcatSelectedValue)
-							strSourceName += " (" + _strSelectedValue + ")";
-
-						XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
-						XmlNode objXmlPower =
-							objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + _strSelectedValue + "\"]");
-						string strSelection = "";
-
-						Log.Info("_strSelectedValue = " + _strSelectedValue);
-						Log.Info("strSourceName = " + strSourceName);
-
-						XmlNode objBonus = objXmlPower["bonus"];
-
-						string strPowerNameLimit = _strSelectedValue;
-						if (objBonus != null)
-						{
-							if (objBonus["selectlimit"] != null)
-							{
-								Log.Info("selectlimit = " + objBonus["selectlimit"].OuterXml.ToString());
-								_strForcedValue = "";
-								// Display the Select Limit window and record which Limit was selected.
-								frmSelectLimit frmPickLimit = new frmSelectLimit();
-								if (strFriendlyName != "")
-									frmPickLimit.Description = LanguageManager.Instance.GetString("String_Improvement_SelectLimitNamed")
-										.Replace("{0}", strFriendlyName);
-								else
-									frmPickLimit.Description = LanguageManager.Instance.GetString("String_Improvement_SelectLimit");
-
-								if (objBonus["selectlimit"].InnerXml.Contains("<limit>"))
-								{
-									List<string> strValue = new List<string>();
-									foreach (XmlNode objXmlAttribute in objBonus["selectlimit"].SelectNodes("limit"))
-										strValue.Add(objXmlAttribute.InnerText);
-									frmPickLimit.LimitToList(strValue);
-								}
-
-								if (objBonus["selectlimit"].InnerXml.Contains("<excludelimit>"))
-								{
-									List<string> strValue = new List<string>();
-									foreach (XmlNode objXmlAttribute in objBonus["selectlimit"].SelectNodes("excludelimit"))
-										strValue.Add(objXmlAttribute.InnerText);
-									frmPickLimit.RemoveFromList(strValue);
-								}
-
-								// Check to see if there is only one possible selection because of _strLimitSelection.
-								if (_strForcedValue != "")
-									_strLimitSelection = _strForcedValue;
-
-								Log.Info("_strForcedValue = " + _strForcedValue);
-								Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-								if (_strLimitSelection != "")
-								{
-									frmPickLimit.SingleLimit(_strLimitSelection);
-									frmPickLimit.Opacity = 0;
-								}
-
-								frmPickLimit.ShowDialog();
-
-								// Make sure the dialogue window was not canceled.
-								if (frmPickLimit.DialogResult == DialogResult.Cancel)
-								{
-									Rollback();
-									_strForcedValue = "";
-									_strLimitSelection = "";
-									return false;
-								}
-
-								_strSelectedValue = frmPickLimit.SelectedLimit;
-								strSelection = _strSelectedValue;
-								_strForcedValue = _strSelectedValue;
-
-								Log.Info("_strForcedValue = " + _strForcedValue);
-								Log.Info("_strLimitSelection = " + _strLimitSelection);
-							}
-
-							if (objBonus["selectskill"] != null)
-							{
-								Log.Info("selectskill = " + objBonus["selectskill"].OuterXml.ToString());
-								XmlNode nodSkill = objBonus;
-								// Display the Select Skill window and record which Skill was selected.
-								frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
-								if (strFriendlyName != "")
-									frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillNamed")
-										.Replace("{0}", strFriendlyName);
-								else
-									frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkill");
-
-								if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("skillgroup"))
-									frmPickSkill.OnlySkillGroup = nodSkill.SelectSingleNode("selectskill").Attributes["skillgroup"].InnerText;
-								else if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("skillcategory"))
-									frmPickSkill.OnlyCategory = nodSkill.SelectSingleNode("selectskill").Attributes["skillcategory"].InnerText;
-								else if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("excludecategory"))
-									frmPickSkill.ExcludeCategory = nodSkill.SelectSingleNode("selectskill").Attributes["excludecategory"].InnerText;
-								else if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("limittoskill"))
-									frmPickSkill.LimitToSkill = nodSkill.SelectSingleNode("selectskill").Attributes["limittoskill"].InnerText;
-
-								if (_strForcedValue.StartsWith("Adept:") || _strForcedValue.StartsWith("Magician:"))
-									_strForcedValue = "";
-
-								Log.Info("_strForcedValue = " + _strForcedValue);
-								Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-								if (_strForcedValue != "")
-								{
-									frmPickSkill.OnlySkill = _strForcedValue;
-									frmPickSkill.Opacity = 0;
-								}
-								frmPickSkill.ShowDialog();
-
-								// Make sure the dialogue window was not canceled.
-								if (frmPickSkill.DialogResult == DialogResult.Cancel)
-								{
-									Rollback();
-									_strForcedValue = "";
-									_strLimitSelection = "";
-									return false;
-								}
-
-								_strSelectedValue = frmPickSkill.SelectedSkill;
-								_strForcedValue = _strSelectedValue;
-								strSelection = _strSelectedValue;
-
-								Log.Info("_strForcedValue = " + _strForcedValue);
-								Log.Info("_strSelectedValue = " + _strSelectedValue);
-								Log.Info("strSelection = " + strSelection);
-							}
-
-							if (objBonus["selecttext"] != null)
-							{
-								Log.Info("selecttext = " + objBonus["selecttext"].OuterXml.ToString());
-								frmSelectText frmPickText = new frmSelectText();
-								frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
-									.Replace("{0}", strFriendlyName);
-
-								Log.Info("_strForcedValue = " + _strForcedValue);
-								Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-								if (_strLimitSelection != "")
-								{
-									frmPickText.SelectedValue = _strLimitSelection;
-									frmPickText.Opacity = 0;
-								}
-
-								frmPickText.ShowDialog();
-
-								// Make sure the dialogue window was not canceled.
-								if (frmPickText.DialogResult == DialogResult.Cancel)
-								{
-									Rollback();
-									_strForcedValue = "";
-									_strLimitSelection = "";
-									return false;
-								}
-
-								strSelection = frmPickText.SelectedValue;
-								_strLimitSelection = strSelection;
-
-								Log.Info("_strLimitSelection = " + _strLimitSelection);
-								Log.Info("strSelection = " + strSelection);
-							}
-
-							if (objBonus["specificattribute"] != null)
-							{
-								Log.Info("specificattribute = " + objBonus["specificattribute"].OuterXml.ToString());
-								strSelection = objBonus["specificattribute"]["name"].InnerText.ToString();
-								Log.Info("strSelection = " + strSelection);
-							}
-
-							if (objBonus["selectattribute"] != null)
-							{
-								Log.Info("selectattribute = " + objBonus["selectattribute"].OuterXml.ToString());
-								XmlNode nodSkill = objBonus;
-								if (_strForcedValue.StartsWith("Adept"))
-									_strForcedValue = "";
-
-								// Display the Select CharacterAttribute window and record which CharacterAttribute was selected.
-								frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
-								if (strFriendlyName != "")
-									frmPickAttribute.Description =
-										LanguageManager.Instance.GetString("String_Improvement_SelectAttributeNamed").Replace("{0}", strFriendlyName);
-								else
-									frmPickAttribute.Description = LanguageManager.Instance.GetString("String_Improvement_SelectAttribute");
-
-								// Add MAG and/or RES to the list of Attributes if they are enabled on the form.
-								if (_objCharacter.MAGEnabled)
-									frmPickAttribute.AddMAG();
-								if (_objCharacter.RESEnabled)
-									frmPickAttribute.AddRES();
-
-								if (nodSkill["selectattribute"].InnerXml.Contains("<attribute>"))
-								{
-									List<string> strValue = new List<string>();
-									foreach (XmlNode objXmlAttribute in nodSkill["selectattribute"].SelectNodes("attribute"))
-										strValue.Add(objXmlAttribute.InnerText);
-									frmPickAttribute.LimitToList(strValue);
-								}
-
-								if (nodSkill["selectattribute"].InnerXml.Contains("<excludeattribute>"))
-								{
-									List<string> strValue = new List<string>();
-									foreach (XmlNode objXmlAttribute in nodSkill["selectattribute"].SelectNodes("excludeattribute"))
-										strValue.Add(objXmlAttribute.InnerText);
-									frmPickAttribute.RemoveFromList(strValue);
-								}
-
-								// Check to see if there is only one possible selection because of _strLimitSelection.
-								if (_strForcedValue != "")
-									_strLimitSelection = _strForcedValue;
-
-								Log.Info("_strForcedValue = " + _strForcedValue);
-								Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-								if (_strLimitSelection != "")
-								{
-									frmPickAttribute.SingleAttribute(_strLimitSelection);
-									frmPickAttribute.Opacity = 0;
-								}
-
-								frmPickAttribute.ShowDialog();
-
-								// Make sure the dialogue window was not canceled.
-								if (frmPickAttribute.DialogResult == DialogResult.Cancel)
-								{
-									Rollback();
-									_strForcedValue = "";
-									_strLimitSelection = "";
-									return false;
-								}
-
-								_strSelectedValue = frmPickAttribute.SelectedAttribute;
-								if (blnConcatSelectedValue)
-									strSourceName += " (" + _strSelectedValue + ")";
-								strSelection = _strSelectedValue;
-								_strForcedValue = _strSelectedValue;
-
-								Log.Info("_strSelectedValue = " + _strSelectedValue);
-								Log.Info("strSourceName = " + strSourceName);
-								Log.Info("_strForcedValue = " + _strForcedValue);
-							}
-						}
-
-						// If no, add the power and mark it free or give it free levels
-						Power objPower = new Power(_objCharacter);
-						bool blnHasPower = false;
-
-						foreach (Power power in _objCharacter.Powers)
-						{
-							if (power.Name == objXmlPower["name"].InnerText)
-							{
-								if (power.Extra != "" && power.Extra == strSelection)
-								{
-									blnHasPower = true;
-									objPower = power;
-								}
-								else if (power.Extra == "")
-								{
-									blnHasPower = true;
-									objPower = power;
-								}
-							}
-						}
-
-						Log.Info("blnHasPower = " + blnHasPower);
-
-						if (blnHasPower)
-						{
-							// If yes, mark it free or give it free levels
-							if (objXmlPower["levels"].InnerText == "no")
-							{
-								if (objPower.Name.StartsWith("Improved Reflexes"))
-								{
-									if (objPower.Name.EndsWith("1"))
-									{
-										if (intRating >= 6)
-											objPower.FreePoints = 1.5M;
-										else
-											objPower.FreePoints = 0;
-									}
-									else if (objPower.Name.EndsWith("2"))
-									{
-										if (intRating >= 10)
-											objPower.FreePoints = 2.5M;
-										else if (intRating >= 4)
-											objPower.FreePoints = 1.0M;
-										else
-											objPower.FreePoints = 0;
-									}
-									else
-									{
-										if (intRating >= 14)
-											objPower.FreePoints = 3.5M;
-										else if (intRating >= 8)
-											objPower.FreePoints = 2.0M;
-										else if (intRating >= 4)
-											objPower.FreePoints = 1.0M;
-										else
-											objPower.FreePoints = 0;
-									}
-								}
-								else
-								{
-									objPower.Free = true;
-								}
-							}
-							else
-							{
-								decimal decLevels = Convert.ToDecimal(intRating)/4;
-								decLevels = Math.Floor(decLevels/objPower.PointsPerLevel);
-								objPower.FreeLevels += Convert.ToInt32(decLevels);
-								objPower.Rating += Convert.ToInt32(decLevels);
-							}
-							objPower.BonusSource = strSourceName;
-						}
-						else
-						{
-							Log.Info("Adding Power " + _strSelectedValue);
-							// Get the Power information
-							_objCharacter.Powers.Add(objPower);
-							Log.Info("objXmlPower = " + objXmlPower.OuterXml.ToString());
-
-							bool blnLevels = false;
-							if (objXmlPower["levels"] != null)
-								blnLevels = (objXmlPower["levels"].InnerText == "yes");
-							objPower.LevelsEnabled = blnLevels;
-							objPower.Name = objXmlPower["name"].InnerText;
-							objPower.PointsPerLevel = Convert.ToDecimal(objXmlPower["points"].InnerText, GlobalOptions.Instance.CultureInfo);
-							objPower.Source = objXmlPower["source"].InnerText;
-							objPower.Page = objXmlPower["page"].InnerText;
-							objPower.BonusSource = strSourceName;
-							if (strSelection != string.Empty)
-								objPower.Extra = strSelection;
-							if (objXmlPower["doublecost"] != null)
-								objPower.DoubleCost = false;
-
-							if (objXmlPower["levels"].InnerText == "no")
-							{
-								if (objPower.Name.StartsWith("Improved Reflexes"))
-								{
-									if (objPower.Name.EndsWith("1"))
-									{
-										if (intRating >= 6)
-											objPower.FreePoints = 1.5M;
-										else
-											objPower.FreePoints = 0;
-									}
-									else if (objPower.Name.EndsWith("2"))
-									{
-										if (intRating >= 10)
-											objPower.FreePoints = 2.5M;
-										else if (intRating >= 4)
-											objPower.FreePoints = 1.0M;
-										else
-											objPower.FreePoints = 0;
-									}
-									else
-									{
-										if (intRating >= 14)
-											objPower.FreePoints = 3.5M;
-										else if (intRating >= 8)
-											objPower.FreePoints = 2.0M;
-										else if (intRating >= 4)
-											objPower.FreePoints = 1.0M;
-										else
-											objPower.FreePoints = 0;
-									}
-								}
-								else
-								{
-									objPower.Free = true;
-								}
-							}
-							else
-							{
-								decimal decLevels = Convert.ToDecimal(intRating)/4;
-								decLevels = Math.Floor(decLevels/objPower.PointsPerLevel);
-								objPower.FreeLevels += Convert.ToInt32(decLevels);
-								if (objPower.Rating < intRating)
-									objPower.Rating = objPower.FreeLevels;
-							}
-
-							if (objXmlPower.InnerXml.Contains("bonus"))
-							{
-								objPower.Bonus = objXmlPower["bonus"];
-								Log.Info("Calling CreateImprovements");
-								if (
-									!CreateImprovements(Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, false,
-										Convert.ToInt32(objPower.Rating), objPower.DisplayNameShort))
-								{
-									_objCharacter.Powers.Remove(objPower);
-								}
-							}
-						}
-					}
-				}
-			}
-
-			// Check for Armor Encumbrance Penalty.
-			if (bonusNode.LocalName == ("armorencumbrancepenalty"))
-			{
-				Log.Info("armorencumbrancepenalty");
-				Log.Info("armorencumbrancepenalty = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.ArmorEncumbrancePenalty, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Initiation.
-			if (bonusNode.LocalName == ("initiation"))
-			{
-				Log.Info("initiation");
-				Log.Info("initiation = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Initiation, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-				_objCharacter.InitiateGrade += ValueToInt(bonusNode.InnerText, intRating);
-			}
-
-			// Check for Submersion.
-			if (bonusNode.LocalName == ("submersion"))
-			{
-				Log.Info("submersion");
-				Log.Info("submersion = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Submersion, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-				_objCharacter.SubmersionGrade += ValueToInt(bonusNode.InnerText, intRating);
-			}
-
-			// Check for Skillwires.
-			if (bonusNode.LocalName == ("skillwire"))
-			{
-				Log.Info("skillwire");
-				Log.Info("skillwire = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Skillwire, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Hardwires.
-			if (bonusNode.LocalName == ("hardwires"))
-			{
-				Log.Info("hardwire");
-				Log.Info("hardwire = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				Cyberware objCyberware = new Cyberware(_objCharacter);
-				CommonFunctions _objFunctions = new CommonFunctions();
-				objCyberware = _objFunctions.FindCyberware(strSourceName, _objCharacter.Cyberware);
-				if (objCyberware == null)
-				{
-					Log.Info("_strSelectedValue = " + _strSelectedValue);
-					Log.Info("_strForcedValue = " + _strForcedValue);
-
-					// Display the Select Skill window and record which Skill was selected.
-					frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
-					if (strFriendlyName != "")
-						frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillNamed")
-							.Replace("{0}", strFriendlyName);
-					else
-						frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkill");
-
-					Log.Info("selectskill = " + bonusNode.OuterXml.ToString());
-					if (bonusNode.OuterXml.Contains("skillgroup"))
-						frmPickSkill.OnlySkillGroup = bonusNode.Attributes["skillgroup"].InnerText;
-					else if (bonusNode.OuterXml.Contains("skillcategory"))
-						frmPickSkill.OnlyCategory = bonusNode.Attributes["skillcategory"].InnerText;
-					else if (bonusNode.OuterXml.Contains("excludecategory"))
-						frmPickSkill.ExcludeCategory = bonusNode.Attributes["excludecategory"].InnerText;
-					else if (bonusNode.OuterXml.Contains("limittoskill"))
-						frmPickSkill.LimitToSkill = bonusNode.Attributes["limittoskill"].InnerText;
-					else if (bonusNode.OuterXml.Contains("limittoattribute"))
-						frmPickSkill.LinkedAttribute = bonusNode.Attributes["limittoattribute"].InnerText;
-
-					if (_strForcedValue != "")
-					{
-						frmPickSkill.OnlySkill = _strForcedValue;
-						frmPickSkill.Opacity = 0;
-					}
-					frmPickSkill.ShowDialog();
-
-					// Make sure the dialogue window was not canceled.
-					if (frmPickSkill.DialogResult == DialogResult.Cancel)
-					{
-						Rollback();
-						_strForcedValue = "";
-						_strLimitSelection = "";
-						return false;
-					}
-
-					_strSelectedValue = frmPickSkill.SelectedSkill;
-				}
-				else
-				{
-					_strSelectedValue = objCyberware.Location;
-				}
-				if (blnConcatSelectedValue)
-					strSourceName += " (" + _strSelectedValue + ")";
-
-				Log.Info("_strSelectedValue = " + _strSelectedValue);
-				Log.Info("strSourceName = " + strSourceName);
-				CreateImprovement(_strSelectedValue, objImprovementSource, strSourceName, Improvement.ImprovementType.Hardwire, _strSelectedValue,
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Damage Resistance.
-			if (bonusNode.LocalName == ("damageresistance"))
-			{
-				Log.Info("damageresistance");
-				Log.Info("damageresistance = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.DamageResistance,"", 
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Restricted Item Count.
-			if (bonusNode.LocalName == ("restricteditemcount"))
-			{
-				Log.Info("restricteditemcount");
-				Log.Info("restricteditemcount = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.RestrictedItemCount, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Judge Intentions.
-			if (bonusNode.LocalName == ("judgeintentions"))
-			{
-				Log.Info("judgeintentions");
-				Log.Info("judgeintentions = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.JudgeIntentions, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Composure.
-			if (bonusNode.LocalName == ("composure"))
-			{
-				Log.Info("composure");
-				Log.Info("composure = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Composure, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Lift and Carry.
-			if (bonusNode.LocalName == ("liftandcarry"))
-			{
-				Log.Info("liftandcarry");
-				Log.Info("liftandcarry = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.LiftAndCarry, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Memory.
-			if (bonusNode.LocalName == ("memory"))
-			{
-				Log.Info("memory");
-				Log.Info("memory = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Memory, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Concealability.
-			if (bonusNode.LocalName == ("concealability"))
-			{
-				Log.Info("concealability");
-				Log.Info("concealability = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Concealability, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Drain Resistance.
-			if (bonusNode.LocalName == ("drainresist"))
-			{
-				Log.Info("drainresist");
-				Log.Info("drainresist = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.DrainResistance, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Fading Resistance.
-			if (bonusNode.LocalName == ("fadingresist"))
-			{
-				Log.Info("fadingresist");
-				Log.Info("fadingresist = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FadingResistance, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Notoriety.
-			if (bonusNode.LocalName == ("notoriety"))
-			{
-				Log.Info("notoriety");
-				Log.Info("notoriety = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Notoriety, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Complex Form Limit.
-			if (bonusNode.LocalName == ("complexformlimit"))
-			{
-				Log.Info("complexformlimit");
-				Log.Info("complexformlimit = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.ComplexFormLimit, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Spell Limit.
-			if (bonusNode.LocalName == ("spelllimit"))
-			{
-				Log.Info("spelllimit");
-				Log.Info("spelllimit = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.SpellLimit, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Spell Category bonuses.
-			if (bonusNode.LocalName == ("spellcategory"))
-			{
-				Log.Info("spellcategory");
-				Log.Info("spellcategory = " + bonusNode.OuterXml.ToString());
-
-				string strUseUnique = strUnique;
-				if (bonusNode["name"].Attributes["precedence"] != null)
-					strUseUnique = "precedence" + bonusNode["name"].Attributes["precedence"].InnerText;
-
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement(bonusNode["name"].InnerText, objImprovementSource, strSourceName,
-					Improvement.ImprovementType.SpellCategory, strUseUnique, ValueToInt(bonusNode["val"].InnerText, intRating));
-			}
-
-			// Check for Throwing Range bonuses.
-			if (bonusNode.LocalName == ("throwrange"))
-			{
-				Log.Info("throwrange");
-				Log.Info("throwrange = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.ThrowRange, strUnique,
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Throwing STR bonuses.
-			if (bonusNode.LocalName == ("throwstr"))
-			{
-				Log.Info("throwstr");
-				Log.Info("throwstr = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.ThrowSTR, strUnique,
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Skillsoft access.
-			if (bonusNode.LocalName == ("skillsoftaccess"))
-			{
-				Log.Info("skillsoftaccess");
-				Log.Info("skillsoftaccess = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.SkillsoftAccess, "");
-				_objCharacter.SkillsSection.KnowledgeSkills.AddRange(_objCharacter.SkillsSection.KnowsoftSkills);
-			}
-
-			// Check for Quickening Metamagic.
-			if (bonusNode.LocalName == ("quickeningmetamagic"))
-			{
-				Log.Info("quickeningmetamagic");
-				Log.Info("quickeningmetamagic = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.QuickeningMetamagic, "");
-			}
-
-			// Check for ignore Stun CM Penalty.
-			if (bonusNode.LocalName == ("ignorecmpenaltystun"))
-			{
-				Log.Info("ignorecmpenaltystun");
-				Log.Info("ignorecmpenaltystun = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.IgnoreCMPenaltyStun, "");
-			}
-
-			// Check for ignore Physical CM Penalty.
-			if (bonusNode.LocalName == ("ignorecmpenaltyphysical"))
-			{
-				Log.Info("ignorecmpenaltyphysical");
-				Log.Info("ignorecmpenaltyphysical = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.IgnoreCMPenaltyPhysical, "");
-			}
-
-			// Check for a Cyborg Essence which will permanently set the character's ESS to 0.1.
-			if (bonusNode.LocalName == ("cyborgessence"))
-			{
-				Log.Info("cyborgessence");
-				Log.Info("cyborgessence = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.CyborgEssence, "");
-			}
-
-			// Check for Maximum Essence which will permanently modify the character's Maximum Essence value.
-			if (bonusNode.LocalName == ("essencemax"))
-			{
-				Log.Info("essencemax");
-				Log.Info("essencemax = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.EssenceMax, "",
-					ValueToInt(bonusNode.InnerText, intRating));
-			}
-
-			// Check for Select Sprite.
-			if (bonusNode.LocalName == ("selectsprite"))
-			{
-				Log.Info("selectsprite");
-				Log.Info("selectsprite = " + bonusNode.OuterXml.ToString());
-				XmlDocument objXmlDocument = XmlManager.Instance.Load("critters.xml");
-				XmlNodeList objXmlNodeList =
-					objXmlDocument.SelectNodes("/chummer/metatypes/metatype[contains(category, \"Sprites\")]");
-				List<ListItem> lstCritters = new List<ListItem>();
-				foreach (XmlNode objXmlNode in objXmlNodeList)
-				{
-					ListItem objItem = new ListItem();
-					if (objXmlNode["translate"] != null)
-						objItem.Name = objXmlNode["translate"].InnerText;
-					else
-						objItem.Name = objXmlNode["name"].InnerText;
-					objItem.Value = objItem.Name;
-					lstCritters.Add(objItem);
-				}
-
-				frmSelectItem frmPickItem = new frmSelectItem();
-				frmPickItem.GeneralItems = lstCritters;
-				frmPickItem.ShowDialog();
-
-				if (frmPickItem.DialogResult == DialogResult.Cancel)
-				{
-					Rollback();
-					_strForcedValue = "";
-					_strLimitSelection = "";
-					return false;
-				}
-
-				_strSelectedValue = frmPickItem.SelectedItem;
-
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement(frmPickItem.SelectedItem, objImprovementSource, strSourceName,
-					Improvement.ImprovementType.AddSprite,
-					"");
-			}
-
-			// Check for Black Market Discount.
-			if (bonusNode.LocalName == ("blackmarketdiscount"))
-			{
-				Log.Info("blackmarketdiscount");
-				Log.Info("blackmarketdiscount = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.BlackMarketDiscount,
-					strUnique);
-				_objCharacter.BlackMarketDiscount = true;
-			}
-			// Select Armor (Mostly used for Custom Fit (Stack)).
-			if (bonusNode.LocalName == ("selectarmor"))
-			{
-				Log.Info("selectarmor");
-				Log.Info("selectarmor = " + bonusNode.OuterXml.ToString());
-				string strSelectedValue = "";
-				if (_strForcedValue != "")
-					_strLimitSelection = _strForcedValue;
-
-				// Display the Select Item window and record the value that was entered.
-
-				List<ListItem> lstArmors = new List<ListItem>();
-				foreach (Armor objArmor in _objCharacter.Armor)
-				{
-					foreach (ArmorMod objMod in objArmor.ArmorMods)
-					{
-						if (objMod.Name.StartsWith("Custom Fit"))
-						{
-							ListItem objItem = new ListItem();
-							objItem.Value = objArmor.Name;
-							objItem.Name = objArmor.DisplayName;
-							lstArmors.Add(objItem);
-						}
-					}
-				}
-
-				if (lstArmors.Count > 0)
-				{
-
-					frmSelectItem frmPickItem = new frmSelectItem();
-					frmPickItem.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText").Replace("{0}", strFriendlyName);
-					frmPickItem.GeneralItems = lstArmors;
-
-					Log.Info( "_strLimitSelection = " + _strLimitSelection);
-					Log.Info( "_strForcedValue = " + _strForcedValue);
-
-					if (_strLimitSelection != "")
-					{
-						frmPickItem.ForceItem = _strLimitSelection;
-						frmPickItem.Opacity = 0;
-					}
-
-					frmPickItem.ShowDialog();
-
-					// Make sure the dialogue window was not canceled.
-					if (frmPickItem.DialogResult == DialogResult.Cancel)
-					{
-						Rollback();
-						_strForcedValue = "";
-						_strLimitSelection = "";
-						return false;
-					}
-
-					_strSelectedValue = frmPickItem.SelectedItem;
-					if (blnConcatSelectedValue)
-						strSourceName += " (" + _strSelectedValue + ")";
-
-					strSelectedValue = frmPickItem.SelectedItem;
-					Log.Info( "_strSelectedValue = " + _strSelectedValue);
-					Log.Info( "strSelectedValue = " + strSelectedValue);
-				}
-
-			}
-
-			// Select Weapon (custom entry for things like Spare Clip).
-			if (bonusNode.LocalName == ("selectweapon"))
-			{
-				Log.Info("selectweapon");
-				Log.Info("selectweapon = " + bonusNode.OuterXml.ToString());
-				string strSelectedValue = "";
-				if (_strForcedValue != "")
-					_strLimitSelection = _strForcedValue;
-
-				if (_objCharacter == null)
-				{
-					// If the character is null (this is a Vehicle), the user must enter their own string.
-					// Display the Select Item window and record the value that was entered.
-					frmSelectText frmPickText = new frmSelectText();
-					frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
-						.Replace("{0}", strFriendlyName);
-
-					Log.Info("_strLimitSelection = " + _strLimitSelection);
-					Log.Info("_strForcedValue = " + _strForcedValue);
-
-					if (_strLimitSelection != "")
-					{
-						frmPickText.SelectedValue = _strLimitSelection;
-						frmPickText.Opacity = 0;
-					}
-
-					frmPickText.ShowDialog();
-
-					// Make sure the dialogue window was not canceled.
-					if (frmPickText.DialogResult == DialogResult.Cancel)
-					{
-						Rollback();
-						_strForcedValue = "";
-						_strLimitSelection = "";
-						return false;
-					}
-
-					_strSelectedValue = frmPickText.SelectedValue;
-					if (blnConcatSelectedValue)
-						strSourceName += " (" + _strSelectedValue + ")";
-
-					strSelectedValue = frmPickText.SelectedValue;
-					Log.Info("_strSelectedValue = " + _strSelectedValue);
-					Log.Info("strSelectedValue = " + strSelectedValue);
-				}
-				else
-				{
-					List<ListItem> lstWeapons = new List<ListItem>();
-					foreach (Weapon objWeapon in _objCharacter.Weapons)
-					{
-						ListItem objItem = new ListItem();
-						objItem.Value = objWeapon.Name;
-						objItem.Name = objWeapon.DisplayName;
-						lstWeapons.Add(objItem);
-					}
-
-					frmSelectItem frmPickItem = new frmSelectItem();
-					frmPickItem.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
-						.Replace("{0}", strFriendlyName);
-					frmPickItem.GeneralItems = lstWeapons;
-
-					Log.Info("_strLimitSelection = " + _strLimitSelection);
-					Log.Info("_strForcedValue = " + _strForcedValue);
-
-					if (_strLimitSelection != "")
-					{
-						frmPickItem.ForceItem = _strLimitSelection;
-						frmPickItem.Opacity = 0;
-					}
-
-					frmPickItem.ShowDialog();
-
-					// Make sure the dialogue window was not canceled.
-					if (frmPickItem.DialogResult == DialogResult.Cancel)
-					{
-						Rollback();
-						_strForcedValue = "";
-						_strLimitSelection = "";
-						return false;
-					}
-
-					_strSelectedValue = frmPickItem.SelectedItem;
-					if (blnConcatSelectedValue)
-						strSourceName += " (" + _strSelectedValue + ")";
-
-					strSelectedValue = frmPickItem.SelectedItem;
-					Log.Info("_strSelectedValue = " + _strSelectedValue);
-					Log.Info("strSelectedValue = " + strSelectedValue);
-				}
-
-				// Create the Improvement.
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement(strSelectedValue, objImprovementSource, strSourceName, Improvement.ImprovementType.Text, strUnique);
-			}
-
-			// Select an Optional Power.
-			if (bonusNode.LocalName == ("optionalpowers"))
-			{
-				XmlNodeList objXmlPowerList = bonusNode.SelectNodes("optionalpower");
-				//Log.Info("selectoptionalpower");
-				// Display the Select Attribute window and record which Skill was selected.
-				frmSelectOptionalPower frmPickPower = new frmSelectOptionalPower();
-				frmPickPower.Description = LanguageManager.Instance.GetString("String_Improvement_SelectOptionalPower");
-				string strForcedValue = "";
-
-				List<KeyValuePair<string, string>> lstValue = new List<KeyValuePair<string,string>>();
-				foreach (XmlNode objXmlOptionalPower in objXmlPowerList)
-				{
-					string strQuality = objXmlOptionalPower.InnerText;
-					if (objXmlOptionalPower.Attributes["select"] != null)
-					{
-						strForcedValue = objXmlOptionalPower.Attributes["select"].InnerText;
-					}
-					lstValue.Add(new KeyValuePair<string, string>(strQuality,strForcedValue));
-				}
-				frmPickPower.LimitToList(lstValue);
-
-
-				// Check to see if there is only one possible selection because of _strLimitSelection.
-				if (_strForcedValue != "")
-					_strLimitSelection = _strForcedValue;
-
-				Log.Info( "_strForcedValue = " + _strForcedValue);
-				Log.Info( "_strLimitSelection = " + _strLimitSelection);
-
-				if (_strLimitSelection != "")
-				{
-					frmPickPower.SinglePower(_strLimitSelection);
-					frmPickPower.Opacity = 0;
-				}
-
-				frmPickPower.ShowDialog();
-
-				// Make sure the dialogue window was not canceled.
-				if (frmPickPower.DialogResult == DialogResult.Cancel)
-				{
-					Rollback();
-					_strForcedValue = "";
-					_strLimitSelection = "";
-					return false;
-				}
-
-				_strSelectedValue = frmPickPower.SelectedPower;
-				// Record the improvement.
-				XmlDocument objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
-				XmlNode objXmlPowerNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + _strSelectedValue + "\"]");
-				TreeNode objPowerNode = new TreeNode();
-				CritterPower objPower = new CritterPower(_objCharacter);
-				
-                objPower.Create(objXmlPowerNode, _objCharacter, objPowerNode, 0, strForcedValue);
-				_objCharacter.CritterPowers.Add(objPower);
-			}
-
-			if (bonusNode.LocalName == "publicawareness")
-			{
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.PublicAwareness, strUnique, ValueToInt(bonusNode.InnerText,1));
-			}
-
-			if (bonusNode.LocalName == "dealerconnection")
-			{
-				Log.Info("dealerconnection");
-				frmSelectItem frmPickItem = new frmSelectItem();
-				List<ListItem> lstItems = new List<ListItem>();
-				XmlNodeList objXmlList = bonusNode.SelectNodes("category");
-				foreach (XmlNode objNode in objXmlList)
-				{
-					ListItem objItem = new ListItem();
-					objItem.Value = objNode.InnerText;
-					objItem.Name = objNode.InnerText;
-					lstItems.Add(objItem);
-				}
-				frmPickItem.GeneralItems = lstItems;
-				frmPickItem.AllowAutoSelect = false;
-				frmPickItem.ShowDialog();
-				// Make sure the dialogue window was not canceled.
-				if (frmPickItem.DialogResult == DialogResult.Cancel)
-				{
-					Rollback();
-					_strForcedValue = "";
-					_strLimitSelection = "";
-					return false;
-				}
-
-				_strSelectedValue = frmPickItem.SelectedItem;
-				if (blnConcatSelectedValue)
-					strSourceName += " (" + _strSelectedValue + ")";
-
-				Log.Info("_strSelectedValue = " + _strSelectedValue);
-				Log.Info("strSourceName = " + strSourceName);
-
-				// Create the Improvement.
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement(frmPickItem.SelectedItem, objImprovementSource, strSourceName,
-					Improvement.ImprovementType.DealerConnection, strUnique);
-			}
-
-			if (bonusNode.LocalName == "unlockskills")
-			{
-				List<string> options = bonusNode.InnerText.Split(',').Select(x => x.Trim()).ToList();
-				string final;
-				if (options.Count == 0)
-				{
-					Utils.BreakIfDebug();
-					return false;
-				}
-				else if (options.Count == 1)
-				{
-					final = options[0];
-				}
-				else
-				{
-					frmSelectItem frmSelect = new frmSelectItem
-					{
-						AllowAutoSelect = true,
-						GeneralItems = options.Select(x => new ListItem(x, x)).ToList()
-					};
-					
-					if (_objCharacter.Pushtext.Count > 0)
-					{
-						frmSelect.ForceItem = _objCharacter.Pushtext.Pop();
-					}
-
-					if (frmSelect.ShowDialog() == DialogResult.Cancel)
-					{
-						return false;
-					}
-
-					final = frmSelect.SelectedItem;
-				}
-				
-				SkillsSection.FilterOptions skills;
-				if (Enum.TryParse(final, out skills))
-				{
-					_objCharacter.SkillsSection.AddSkills(skills);
-					CreateImprovement(skills.ToString(), Improvement.ImprovementSource.Quality, strSourceName,
-						Improvement.ImprovementType.SpecialSkills, strUnique);
-				}
-				else
-				{
-					Utils.BreakIfDebug();
-					Log.Info(new[] {"Failed to parse", "specialskills", bonusNode.OuterXml});
-				}
-			}
-
-			//nothing went wrong, so return true
-			return true;
-		}
-
-		/// <summary>
-		/// Remove all of the Improvements for an XML Node.
-		/// </summary>
-		/// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
-		/// <param name="strSourceName">Name of the item that granted these Improvements.</param>
-		public void RemoveImprovements(Improvement.ImprovementSource objImprovementSource, string strSourceName)
-		{
-            Log.Enter("RemoveImprovements");
-			Log.Info("objImprovementSource = " + objImprovementSource.ToString());
-			Log.Info("strSourceName = " + strSourceName);
-
-            // If there is no character object, don't try to remove any Improvements.
-            if (_objCharacter == null)
-            {
-                Log.Exit("RemoveImprovements");
-                return;
             }
 
-			// A List of Improvements to hold all of the items that will eventually be deleted.
-			List<Improvement> objImprovementList = new List<Improvement>();
-			foreach (Improvement objImprovement in _objCharacter.Improvements)
-			{
-				if (objImprovement.ImproveSource == objImprovementSource && objImprovement.SourceName == strSourceName)
-					objImprovementList.Add(objImprovement);
-			}
+            // If we've made it this far, everything went OK, so commit the Improvements.
+            
+            if (blnAddImprovementsToCharacter)
+            {
+                Log.Info("Calling Commit");
+                Commit(objCharacter);
+                Log.Info("Returned from Commit");
+            }
+            else
+            {
+                Log.Info("Calling scheduled Rollback due to blnAddImprovementsToCharacter = false");
+                Rollback(objCharacter);
+                Log.Info("Returned from scheduled Rollback");
+            }
 
-			// Now that we have all of the applicable Improvements, remove them from the character.
-			foreach (Improvement objImprovement in objImprovementList)
-			{
-				// Remove the Improvement.
-				_objCharacter.Improvements.Remove(objImprovement);
+            // Clear the Forced Value and Limit Selection strings once we're done to prevent these from forcing their values on other Improvements.
+            s_StrForcedValue = string.Empty;
+            s_StrLimitSelection = string.Empty;
 
-				if (objImprovement.ImproveType == Improvement.ImprovementType.SkillLevel)
-				{
-					//TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills? //Didn't this handle the collapsing knowledge skills thing?
-					//for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
-					//{
-					//	//wrote as foreach first, modify collection, not want rename
-					//	Skill skill = _objCharacter.SkillsSection.Skills[i];
-					//	for (int j = skill.Fold.Count - 1; j >= 0; j--)
-					//	{
-					//		Skill fold = skill.Fold[i];
-					//		if (fold.Id.ToString() == objImprovement.ImprovedName)
-					//		{
-					//			skill.Free(fold);
-					//			_objCharacter.SkillsSection.Skills.Remove(fold);
-					//		}
-					//	}
+            /*}
+            catch (Exception ex)
+            {
+                objFunctions.LogWrite(CommonFunctions.LogType.Error, "Chummer.ImprovementManager", "ERROR Message = " + ex.Message);
+                objFunctions.LogWrite(CommonFunctions.LogType.Error, "Chummer.ImprovementManager", "ERROR Source  = " + ex.Source);
+                objFunctions.LogWrite(CommonFunctions.LogType.Error, "Chummer.ImprovementManager",
+                    "ERROR Trace   = " + ex.StackTrace.ToString());
 
-					//	if (skill.Id.ToString() == objImprovement.ImprovedName)
-					//	{
-					//		while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
-					//		//empty list, can't call clear as exposed list is RO
+                Rollback();
+                throw;
+            }*/
+            Log.Exit("CreateImprovements");
+            return true;
 
-					//		_objCharacter.SkillsSection.Skills.Remove(skill);
-					//	}
-					//}
-				}
-
-				if (objImprovement.ImproveType == Improvement.ImprovementType.SkillsoftAccess)
-			    {
-					_objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(_objCharacter.SkillsSection.KnowsoftSkills.Contains);
-			    }
-
-                if (objImprovement.ImproveType == Improvement.ImprovementType.SkillKnowledgeForced)
-                {
-	                Guid guid = Guid.Parse(objImprovement.ImprovedName);
-	                _objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(skill => skill.Id == guid);
-	                _objCharacter.SkillsSection.KnowsoftSkills.RemoveAll(skill => skill.Id == guid);
-                }
-
-                // Remove "free" adept powers if any.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower)
-                {
-					// Load the power from XML.
-					// objImprovement.Notes = name of the mentor spirit choice. Find the power name from here.
-					// TODO: Fix this properly. Generates a null exception if multiple adept powers are added by the improvement, as with the Dragonslayer Mentor Spirit. 
-	                try
-	                {
-		                XmlDocument objXmlMentorDocument = new XmlDocument();
-		                objXmlMentorDocument = XmlManager.Instance.Load("mentors.xml");
-		                XmlNode objXmlMentorBonus =
-			                objXmlMentorDocument.SelectSingleNode("/chummer/mentors/mentor/choices/choice[name = \"" +
-			                                                      objImprovement.Notes +
-			                                                      "\"]");
-		                XmlNodeList objXmlPowerList = objXmlMentorBonus["bonus"].SelectNodes("specificpower");
-		                foreach (XmlNode objXmlSpecificPower in objXmlPowerList)
-		                {
-			                // Get the Power information
-			                XmlDocument objXmlDocument = new XmlDocument();
-			                objXmlDocument = XmlManager.Instance.Load("powers.xml");
-
-			                string strPowerName = objXmlSpecificPower["name"].InnerText;
-
-			                // Find the power (if it still exists)
-			                foreach (Power objPower in _objCharacter.Powers)
-			                {
-				                if (objPower.Name == strPowerName)
-				                {
-					                // Disable the free property and remove any free levels.
-					                objPower.Free = false;
-					                objPower.FreeLevels = 0;
-				                }
-			                }
-		                }
-	                }
-	                catch
-	                {
-
-	                }
-                }
-                if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute)
-                {
-                    CharacterAttrib objChangedAttribute = null;
-                    switch (objImprovement.ImprovedName)
-                    {
-                        case "AGI":
-                            objChangedAttribute = _objCharacter.AGI;
-                            break;
-                        case "REA":
-                            objChangedAttribute = _objCharacter.REA;
-                            break;
-                        case "STR":
-                            objChangedAttribute = _objCharacter.STR;
-                            break;
-                        case "CHA":
-                            objChangedAttribute = _objCharacter.CHA;
-                            break;
-                        case "INT":
-                            objChangedAttribute = _objCharacter.INT;
-                            break;
-                        case "LOG":
-                            objChangedAttribute = _objCharacter.LOG;
-                            break;
-                        case "WIL":
-                            objChangedAttribute = _objCharacter.WIL;
-                            break;
-                        case "EDG":
-                            objChangedAttribute = _objCharacter.EDG;
-                            break;
-                        case "MAG":
-                            objChangedAttribute = _objCharacter.MAG;
-                            break;
-                        case "RES":
-                            objChangedAttribute = _objCharacter.RES;
-                            break;
-                        case "DEP":
-                            objChangedAttribute = _objCharacter.DEP;
-                            break;
-                        case "BOD":
-                        default:
-                            objChangedAttribute = _objCharacter.BOD;
-                            break;
-                    }
-                    if (objImprovement.Minimum > 0)
-                    {
-                        objChangedAttribute.Value -= objImprovement.Minimum;
-                    }
-                }
-                // Determine if access to any Special Attributes have been lost.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
-				    objImprovement.UniqueName == "enableattribute")
-				{
-					if (objImprovement.ImprovedName == "MAG")
-					{
-						// See if the character has anything else that is granting them access to MAG.
-						bool blnFound = false;
-						foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-						{
-							// Skip items from the current Improvement source.
-							if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-							{
-								if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
-								    objCharacterImprovement.UniqueName == "enableattribute" && objCharacterImprovement.ImprovedName == "MAG")
-								{
-									blnFound = true;
-									break;
-								}
-							}
-						}
-
-						if (!blnFound)
-							_objCharacter.MAGEnabled = false;
-					}
-					else if (objImprovement.ImprovedName == "RES")
-					{
-						// See if the character has anything else that is granting them access to RES.
-						bool blnFound = false;
-						foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-						{
-							// Skip items from the current Improvement source.
-							if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-							{
-								if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
-								    objCharacterImprovement.UniqueName == "enableattribute" && objCharacterImprovement.ImprovedName == "RES")
-								{
-									blnFound = true;
-									break;
-								}
-							}
-						}
-
-						if (!blnFound)
-							_objCharacter.RESEnabled = false;
-					}
-				}
-
-				// Determine if access to any special tabs have been lost.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.SpecialTab && objImprovement.UniqueName == "enabletab")
-				{
-					bool blnFound = false;
-					switch (objImprovement.ImprovedName)
-					{
-						case "Magician":
-							// See if the character has anything else that is granting them access to the Magician tab.
-							foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-							{
-								// Skip items from the current Improvement source.
-								if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-								{
-									if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.SpecialTab &&
-									    objCharacterImprovement.UniqueName == "enabletab" && objCharacterImprovement.ImprovedName == "Magician")
-									{
-										blnFound = true;
-										break;
-									}
-								}
-							}
-							
-							if (!blnFound)
-								_objCharacter.MagicianEnabled = false;
-							break;
-						case "Adept":
-							// See if the character has anything else that is granting them access to the Adept tab.
-							foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-							{
-								// Skip items from the current Improvement source.
-								if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-								{
-									if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.SpecialTab &&
-									    objCharacterImprovement.UniqueName == "enabletab" && objCharacterImprovement.ImprovedName == "Adept")
-									{
-										blnFound = true;
-										break;
-									}
-								}
-							}
-
-							if (!blnFound)
-								_objCharacter.AdeptEnabled = false;
-							break;
-						case "Technomancer":
-							// See if the character has anything else that is granting them access to the Technomancer tab.
-							foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-							{
-								// Skip items from the current Improvement source.
-								if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-								{
-									if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.SpecialTab &&
-									    objCharacterImprovement.UniqueName == "enabletab" && objCharacterImprovement.ImprovedName == "Technomancer")
-									{
-										blnFound = true;
-										break;
-									}
-								}
-							}
-
-							if (!blnFound)
-								_objCharacter.TechnomancerEnabled = false;
-							break;
-						case "Critter":
-							// See if the character has anything else that is granting them access to the Critter tab.
-							foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-							{
-								// Skip items from the current Improvement source.
-								if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-								{
-									if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.SpecialTab &&
-									    objCharacterImprovement.UniqueName == "enabletab" && objCharacterImprovement.ImprovedName == "Critter")
-									{
-										blnFound = true;
-										break;
-									}
-								}
-							}
-
-							if (!blnFound)
-								_objCharacter.CritterEnabled = false;
-							break;
-						case "Initiation":
-							// See if the character has anything else that is granting them access to the Initiation tab.
-							foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-							{
-								// Skip items from the current Improvement source.
-								if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-								{
-									if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.SpecialTab &&
-									    objCharacterImprovement.UniqueName == "enabletab" && objCharacterImprovement.ImprovedName == "Initiation")
-									{
-										blnFound = true;
-										break;
-									}
-								}
-							}
-
-							if (!blnFound)
-								_objCharacter.InitiationEnabled = false;
-							break;
-					}
-				}
-
-				// Turn of the Black Market flag if it is being removed.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount)
-				{
-					bool blnFound = false;
-					// See if the character has anything else that is granting them access to Black Market.
-					foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-					{
-						// Skip items from the current Improvement source.
-						if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-						{
-							if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount)
-							{
-								blnFound = true;
-								break;
-							}
-						}
-					}
-
-					if (!blnFound)
-					{
-						_objCharacter.BlackMarketDiscount = false;
-						if (!_objCharacter.Created)
-						{
-							foreach (Vehicle objVehicle in _objCharacter.Vehicles)
-							{
-								objVehicle.BlackMarketDiscount = false;
-								foreach (Weapon objWeapon in objVehicle.Weapons)
-								{
-									objWeapon.DiscountCost = false;
-									foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
-									{
-										objWeaponAccessory.DiscountCost = false;
-									}
-								}
-								foreach (Gear objGear in objVehicle.Gear)
-								{
-									objGear.DiscountCost = false;
-								}
-								foreach (VehicleMod objMod in objVehicle.Mods)
-								{
-									objMod.DiscountCost = false;
-								}
-							}
-							foreach (Weapon objWeapon in _objCharacter.Weapons)
-							{
-								objWeapon.DiscountCost = false;
-								foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
-								{
-									objWeaponAccessory.DiscountCost = false;
-								}
-							}
-							foreach (Gear objGear in _objCharacter.Gear)
-							{
-								objGear.DiscountCost = false;
-
-								foreach (Gear objChild in objGear.Children)
-								{
-									objGear.DiscountCost = false;
-								}
-							}
-						}
-					}
-				}
-
-				// Turn of the Uneducated flag if it is being removed.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.Uneducated)
-				{
-					bool blnFound = false;
-					// See if the character has anything else that is granting them access to Uneducated.
-					foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-					{
-						// Skip items from the current Improvement source.
-						if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-						{
-							if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Uneducated)
-							{
-								blnFound = true;
-								break;
-							}
-						}
-					}
-
-					if (!blnFound)
-						_objCharacter.SkillsSection.Uneducated = false;
-				}
-
-				// Turn off the Uncouth flag if it is being removed.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.Uncouth)
-				{
-					bool blnFound = false;
-					// See if the character has anything else that is granting them access to Uncouth.
-					foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-					{
-						// Skip items from the current Improvement source.
-						if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-						{
-							if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Uncouth)
-							{
-								blnFound = true;
-								break;
-							}
-						}
-					}
-
-					if (!blnFound)
-						_objCharacter.SkillsSection.Uncouth = false;
-                }
-
-                // Turn off the FriendsInHighPlaces flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.FriendsInHighPlaces)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to FriendsInHighPlaces.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.FriendsInHighPlaces)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.FriendsInHighPlaces = false;
-                }
-
-                // Turn off the SchoolOfHardKnocks flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.SchoolOfHardKnocks)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to SchoolOfHardKnocks.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.SchoolOfHardKnocks)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.SkillsSection.SchoolOfHardKnocks = false;
-                }
-
-                //Turn off the Ex-Con flag if it is being removed
-			    if (objImprovement.ImproveType == Improvement.ImprovementType.ExCon)
-			    {
-                     bool blnFound = false;
-                     // See if the character has anything else that is granting them access to SchoolOfHardKnocks.
-                     foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                     {
-                         // Skip items from the current Improvement source.
-                         if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                         {
-                             if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.ExCon)
-                             {
-                                 blnFound = true;
-                                 break;
-                             }
-                         }
-                     }
- 
-                     if (!blnFound)
-                         _objCharacter.ExCon = false;
- 			    }
-
-                // Turn off the FriendsInHighPlaces flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.FriendsInHighPlaces)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to FriendsInHighPlaces.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.FriendsInHighPlaces)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.FriendsInHighPlaces = false;
-                }
-                // Turn off the JackOfAllTrades flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.JackOfAllTrades)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to JackOfAllTrades.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.JackOfAllTrades)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.SkillsSection.JackOfAllTrades = false;
-				}
-				// Turn off the prototypetranshuman flag if it is being removed.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.PrototypeTranshuman)
-				{
-					bool blnFound = false;
-					// See if the character has anything else that is granting them access to prototypetranshuman.
-					foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-					{
-						// Skip items from the current Improvement source.
-						if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-						{
-							if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.PrototypeTranshuman)
-							{
-								blnFound = true;
-								break;
-							}
-						}
-					}
-
-					if (!blnFound)
-						_objCharacter.PrototypeTranshuman = 0;
-				}
-				// Turn off the CollegeEducation flag if it is being removed.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.CollegeEducation)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to CollegeEducation.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.CollegeEducation)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.SkillsSection.CollegeEducation = false;
-                }
-                // Turn off the Erased flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.Erased)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to Erased.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Erased)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.Erased = false;
-                }
-                // Turn off the BornRich flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.BornRich)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to BornRich.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.BornRich)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.BornRich = false;
-                }
-                // Turn off the Fame flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.Fame)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to Fame.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Fame)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.Fame = false;
-                }
-                // Turn off the LightningReflexes flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.LightningReflexes)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to LightningReflexes.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.LightningReflexes)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.LightningReflexes = false;
-                }
-                // Turn off the Linguist flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.Linguist)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to Linguist.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Linguist)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.SkillsSection.Linguist = false;
-                }
-                // Turn off the MadeMan flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.MadeMan)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to MadeMan.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.MadeMan)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.MadeMan = false;
-                }
-                // Turn off the Overclocker flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.Overclocker)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to Overclocker.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Overclocker)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.Overclocker = false;
-                }
-                // Turn off the RestrictedGear flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.RestrictedGear)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to RestrictedGear.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.RestrictedGear)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.RestrictedGear = false;
-                }
-                // Turn off the TechSchool flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.TechSchool)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to TechSchool.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.TechSchool)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.SkillsSection.TechSchool = false;
-                }
-                // Turn off the TrustFund flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.TrustFund)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to TrustFund.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.TrustFund)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.TrustFund = 0;
-                }
-                // Turn off the ExCon flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.ExCon)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to ExCon.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.ExCon)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-                        _objCharacter.ExCon = false;
-                }
-				// Turn off the BlackMarketDiscount flag if it is being removed.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount)
-                {
-                    bool blnFound = false;
-                    // See if the character has anything else that is granting them access to BlackMarket.
-                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-                    {
-                        // Skip items from the current Improvement source.
-                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-                        {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!blnFound)
-	                {
-		                _objCharacter.BlackMarketDiscount = false;
-	                }
-                }
-                // If the last instance of Adapsin is being removed, convert all Adapsin Cyberware Grades to their non-Adapsin version.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.Adapsin)
-				{
-					if (!_objCharacter.AdapsinEnabled)
-					{
-						foreach (Cyberware objCyberware in _objCharacter.Cyberware)
-						{
-							if (objCyberware.Grade.Adapsin)
-							{
-								// Determine which GradeList to use for the Cyberware.
-								GradeList objGradeList;
-								if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-									objGradeList = GlobalOptions.BiowareGrades;
-								else
-									objGradeList = GlobalOptions.CyberwareGrades;
-
-								objCyberware.Grade = objGradeList.GetGrade(objCyberware.Grade.Name.Replace("(Adapsin)", string.Empty).Trim());
-							}
-						}
-					}
-				}
-
-                // Remove MadeMan tag from a contact
-				if (objImprovement.ImproveType == Improvement.ImprovementType.ContactMadeMan)
-			    {
-			        Contact contact = (from c in _objCharacter.Contacts
-			            where c.GUID == objImprovement.ImprovedName
-			            select c).First();
-
-			        contact.MadeMan = false;
-				}
-
-				if (objImprovement.ImproveType == Improvement.ImprovementType.AddContact)
-				{
-					Contact contact = (from c in _objCharacter.Contacts
-									   where c.GUID == objImprovement.ImprovedName
-									   select c).First();
-
-					_objCharacter.Contacts.Remove(contact);
-				}
-
-				// Decrease the character's Initiation Grade.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.Initiation)
-					_objCharacter.InitiateGrade -= objImprovement.Value;
-
-				// Decrease the character's Submersion Grade.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.Submersion)
-					_objCharacter.SubmersionGrade -= objImprovement.Value;
-				
-				//Remove special (magical/resonance) skills
-				if (objImprovement.ImproveType == Improvement.ImprovementType.SpecialSkills)
-				{
-					_objCharacter.SkillsSection.RemoveSkills((SkillsSection.FilterOptions)Enum.Parse(typeof(SkillsSection.FilterOptions), objImprovement.ImprovedName));
-				}
-			}
-
-
-			_objCharacter.ImprovementHook(objImprovementList, this);
-
-			Log.Exit("RemoveImprovements");
         }
 
-		/// <summary>
-		/// Create a new Improvement and add it to the Character.
-		/// </summary>
-		/// <param name="strImprovedName">Speicific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
-		/// <param name="objImprovementSource">Type of object that grants this Improvement.</param>
-		/// <param name="strSourceName">Name of the item that grants this Improvement.</param>
-		/// <param name="objImprovementType">Type of object the Improvement applies to.</param>
-		/// <param name="strUnique">Name of the pool this Improvement should be added to - only the single higest value in the pool will be applied to the character.</param>
-		/// <param name="intValue">Set a Value for the Improvement.</param>
-		/// <param name="intRating">Set a Rating for the Improvement - typically used for Adept Powers.</param>
-		/// <param name="intMinimum">Improve the Minimum for an CharacterAttribute by the given amount.</param>
-		/// <param name="intMaximum">Improve the Maximum for an CharacterAttribute by the given amount.</param>
-		/// <param name="intAugmented">Improve the Augmented value for an CharacterAttribute by the given amount.</param>
-		/// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an CharacterAttribute by the given amount.</param>
-		/// <param name="strExclude">A list of child items that should not receive the Improvement's benefit (typically for Skill Groups).</param>
-		/// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
-		public void CreateImprovement(string strImprovedName, Improvement.ImprovementSource objImprovementSource,
-			string strSourceName, Improvement.ImprovementType objImprovementType, string strUnique,
-			int intValue = 0, int intRating = 1, int intMinimum = 0, int intMaximum = 0, int intAugmented = 0,
-			int intAugmentedMaximum = 0, string strExclude = "", bool blnAddToRating = false)
-		{
+        private static bool ProcessBonus(Character objCharacter, Improvement.ImprovementSource objImprovementSource, ref string strSourceName,
+            bool blnConcatSelectedValue, int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique, bool blnIgnoreMethodNotFound = false)
+        {
+            if (bonusNode == null)
+                return false;
+            //As this became a really big nest of **** that it searched past, several places having equal paths just adding a different improvement, a more flexible method was chosen.
+            //So far it is just a slower Dictionar<string, Action> but should (in theory...) be able to leverage this in the future to do it smarter with methods that are the same but
+            //getting a different parameter injected
+
+            AddImprovementCollection container = new AddImprovementCollection(objCharacter, objImprovementSource,
+                strSourceName, strUnique, s_StrForcedValue, s_StrLimitSelection, SelectedValue, blnConcatSelectedValue,
+                strFriendlyName, intRating);
+
+            Action<XmlNode> objImprovementMethod = ImprovementMethods.GetMethod(bonusNode.Name.ToUpperInvariant(), container);
+            if (objImprovementMethod != null)
+            {
+                try
+                {
+                    objImprovementMethod.Invoke(bonusNode);
+                }
+                catch (AbortedException)
+                {
+                    Rollback(objCharacter);
+                    return false;
+                }
+
+                strSourceName = container.SourceName;
+                s_StrForcedValue = container.ForcedValue;
+                s_StrLimitSelection = container.LimitSelection;
+                s_StrSelectedValue = container.SelectedValue;
+            }
+            else if (blnIgnoreMethodNotFound || bonusNode.ChildNodes.Count == 0)
+            {
+                return true;
+            }
+            else if (bonusNode.NodeType != XmlNodeType.Comment)
+            {
+                Utils.BreakIfDebug();
+                Log.Warning(new object[] {"Tried to get unknown bonus", bonusNode.OuterXml});
+                return false;
+            }
+            return true;
+        }
+
+        public static void EnableImprovements(Character objCharacter, IList<Improvement> objImprovementList)
+        {
+            foreach (Improvement objImprovement in objImprovementList)
+            {
+                // Enable the Improvement.
+                objImprovement.Enabled = true;
+            }
+
+            bool blnCharacterHasSkillsoftAccess = ValueOf(objCharacter, Improvement.ImprovementType.SkillsoftAccess) > 0;
+            // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
+            foreach (Improvement objImprovement in objImprovementList)
+            {
+                switch (objImprovement.ImproveType)
+                {
+                    case Improvement.ImprovementType.SkillLevel:
+                        //TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills? //Didn't this handle the collapsing knowledge skills thing?
+                        //for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
+                        //{
+                        //    //wrote as foreach first, modify collection, not want rename
+                        //    Skill skill = _objCharacter.SkillsSection.Skills[i];
+                        //    for (int j = skill.Fold.Count - 1; j >= 0; j--)
+                        //    {
+                        //        Skill fold = skill.Fold[i];
+                        //        if (fold.Id.ToString() == objImprovement.ImprovedName)
+                        //        {
+                        //            skill.Free(fold);
+                        //            _objCharacter.SkillsSection.Skills.Remove(fold);
+                        //        }
+                        //    }
+
+                        //    if (skill.Id.ToString() == objImprovement.ImprovedName)
+                        //    {
+                        //        while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
+                        //        //empty list, can't call clear as exposed list is RO
+
+                        //        _objCharacter.SkillsSection.Skills.Remove(skill);
+                        //    }
+                        //}
+                        break;
+                    case Improvement.ImprovementType.SkillsoftAccess:
+                        foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
+                        {
+                            if (!objCharacter.SkillsSection.KnowledgeSkills.Contains(objKnowledgeSkill))
+                                objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
+                        }
+                        break;
+                    case Improvement.ImprovementType.Skillsoft:
+                        {
+                            foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills.Where(x => x.InternalId == objImprovement.ImprovedName).ToList())
+                            {
+                                if (blnCharacterHasSkillsoftAccess && !objCharacter.SkillsSection.KnowledgeSkills.Contains(objKnowledgeSkill))
+                                    objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.Attribute:
+                        // Determine if access to any Special Attributes have been lost.
+                        if (objImprovement.UniqueName == "enableattribute")
+                        {
+                            switch (objImprovement.ImprovedName)
+                            {
+                                case "MAG":
+                                    objCharacter.MAGEnabled = true;
+                                    break;
+                                case "RES":
+                                    objCharacter.RESEnabled = true;
+                                    break;
+                                case "DEP":
+                                    objCharacter.DEPEnabled = true;
+                                    break;
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.SpecialTab:
+                        // Determine if access to any special tabs have been lost.
+                        if (objImprovement.UniqueName == "enabletab")
+                        {
+                            switch (objImprovement.ImprovedName)
+                            {
+                                case "Magician":
+                                    objCharacter.MagicianEnabled = true;
+                                    break;
+                                case "Adept":
+                                    objCharacter.AdeptEnabled = true;
+                                    break;
+                                case "Technomancer":
+                                    objCharacter.TechnomancerEnabled = true;
+                                    break;
+                                case "Advanced Programs":
+                                    objCharacter.AdvancedProgramsEnabled = true;
+                                    break;
+                                case "Critter":
+                                    objCharacter.CritterEnabled = true;
+                                    break;
+                            }
+                        }
+                        // Determine if access to any special tabs has been regained
+                        else if (objImprovement.UniqueName == "disabletab")
+                        {
+                            switch (objImprovement.ImprovedName)
+                            {
+                                case "Cyberware":
+                                    objCharacter.CyberwareDisabled = true;
+                                    break;
+                                case "Initiation":
+                                    objCharacter.InitiationForceDisabled = true;
+                                    break;
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.PrototypeTranshuman:
+                        string strImprovedName = objImprovement.ImprovedName;
+                        // Legacy compatibility
+                        if (string.IsNullOrEmpty(strImprovedName))
+                            objCharacter.PrototypeTranshuman = 1;
+                        else
+                            objCharacter.PrototypeTranshuman += Convert.ToDecimal(strImprovedName);
+                        break;
+                    case Improvement.ImprovementType.Adapsin:
+                        break;
+                    case Improvement.ImprovementType.AddContact:
+                        Contact NewContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
+                        if (NewContact != null)
+                        {
+                            // TODO: Add code to enable disabled contact
+                        }
+                        break;
+                    case Improvement.ImprovementType.Initiation:
+                        objCharacter.InitiateGrade += objImprovement.Value;
+                        break;
+                    case Improvement.ImprovementType.Submersion:
+                        objCharacter.SubmersionGrade += objImprovement.Value;
+                        break;
+                    case Improvement.ImprovementType.Metamagic:
+                    case Improvement.ImprovementType.Echo:
+                        Metamagic objMetamagic = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objMetamagic != null)
+                        {
+                            Improvement.ImprovementSource eSource = objImprovement.ImproveType == Improvement.ImprovementType.Metamagic ? Improvement.ImprovementSource.Metamagic : Improvement.ImprovementSource.Echo;
+                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == eSource && x.SourceName == objMetamagic.InternalId && x.Enabled).ToList());
+                        }
+                        break;
+                    case Improvement.ImprovementType.CritterPower:
+                        CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName || (x.Name == objImprovement.ImprovedName && x.Extra == objImprovement.UniqueName));
+                        if (objCritterPower != null)
+                        {
+                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.CritterPower && x.SourceName == objCritterPower.InternalId && x.Enabled).ToList());
+                        }
+                        break;
+                    case Improvement.ImprovementType.MentorSpirit:
+                    case Improvement.ImprovementType.Paragon:
+                        MentorSpirit objMentor = objCharacter.MentorSpirits.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objMentor != null)
+                        {
+                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MentorSpirit && x.SourceName == objMentor.InternalId && x.Enabled).ToList());
+                        }
+                        break;
+                    case Improvement.ImprovementType.Gear:
+                        Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        objGear?.ChangeEquippedStatus(true);
+                        break;
+                    case Improvement.ImprovementType.Weapon:
+                        // TODO: Re-equip Weapons;
+                        break;
+                    case Improvement.ImprovementType.Spell:
+                        Spell objSpell = objCharacter.Spells.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objSpell != null)
+                        {
+                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Spell && x.SourceName == objSpell.InternalId && x.Enabled).ToList());
+                        }
+                        break;
+                    case Improvement.ImprovementType.ComplexForm:
+                        ComplexForm objComplexForm = objCharacter.ComplexForms.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objComplexForm != null)
+                        {
+                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ComplexForm && x.SourceName == objComplexForm.InternalId && x.Enabled).ToList());
+                        }
+                        break;
+                    case Improvement.ImprovementType.MartialArt:
+                        MartialArt objMartialArt = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objMartialArt != null)
+                        {
+                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MartialArt && x.SourceName == objMartialArt.InternalId && x.Enabled).ToList());
+                            // Remove the Improvements for any Advantages for the Martial Art that is being removed.
+                            foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
+                            {
+                                EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MartialArtTechnique && x.SourceName == objTechnique.InternalId && x.Enabled).ToList());
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.SpecialSkills:
+                        {
+                            string strCategory;
+                            switch ((FilterOptions)Enum.Parse(typeof(FilterOptions), objImprovement.ImprovedName))
+                            {
+                                case FilterOptions.Magician:
+                                case FilterOptions.Sorcery:
+                                case FilterOptions.Conjuring:
+                                case FilterOptions.Enchanting:
+                                case FilterOptions.Adept:
+                                    strCategory = "Magical Active";
+                                    break;
+                                case FilterOptions.Technomancer:
+                                    strCategory = "Resonance Active";
+                                    break;
+                                default:
+                                    continue;
+                            }
+
+                            foreach (Skill objSkill in objCharacter.SkillsSection.Skills.Where(x => x.SkillCategory == strCategory).ToList())
+                            {
+                                objSkill.ForceDisabled = false;
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.SpecificQuality:
+                        Quality objQuality = objCharacter.Qualities.FirstOrDefault(objLoopQuality => objLoopQuality.InternalId == objImprovement.ImprovedName);
+                        if (objQuality != null)
+                        {
+                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Quality && x.SourceName == objQuality.InternalId && x.Enabled).ToList());
+                        }
+                        break;
+                    /*
+                    case Improvement.ImprovementType.SkillSpecialization:
+                        {
+                            Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(objImprovement.ImprovedName);
+                            SkillSpecialization objSkillSpec = objSkill?.Specializations.FirstOrDefault(x => x.Name == objImprovement.UniqueName);
+                            //if (objSkillSpec != null)
+                            // TODO: Add temporarily removde skill specialization
+                        }
+                        break;
+                        */
+                    case Improvement.ImprovementType.AIProgram:
+                        AIProgram objProgram = objCharacter.AIPrograms.FirstOrDefault(objLoopProgram => objLoopProgram.InternalId == objImprovement.ImprovedName);
+                        if (objProgram != null)
+                        {
+                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.AIProgram && x.SourceName == objProgram.InternalId && x.Enabled).ToList());
+                        }
+                        break;
+                    case Improvement.ImprovementType.MagiciansWayDiscount:
+                        foreach (Power objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
+                        {
+                            objLoopPower.RefreshDiscountedAdeptWay(objLoopPower.AdeptWayDiscountEnabled);
+                        }
+                        break;
+                    case Improvement.ImprovementType.FreeWare:
+                        {
+                            Cyberware objCyberware = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == objImprovement.ImprovedName);
+                            objCyberware?.ChangeModularEquip(true);
+                        }
+                        break;
+                }
+            }
+
+            objImprovementList.ProcessRelevantEvents();
+        }
+
+        public static void DisableImprovements(Character objCharacter, IList<Improvement> objImprovementList)
+        {
+            foreach (Improvement objImprovement in objImprovementList)
+            {
+                // Disable the Improvement.
+                objImprovement.Enabled = false;
+            }
+
+            // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
+            foreach (Improvement objImprovement in objImprovementList)
+            {
+                bool blnHasDuplicate = objCharacter.Improvements.Any(x => x.UniqueName == objImprovement.UniqueName && x.ImprovedName == objImprovement.ImprovedName && x.ImproveType == objImprovement.ImproveType && x.SourceName != objImprovement.SourceName && x.Enabled);
+
+                switch (objImprovement.ImproveType)
+                {
+                    case Improvement.ImprovementType.SkillLevel:
+                        //TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills? //Didn't this handle the collapsing knowledge skills thing?
+                        //for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
+                        //{
+                        //    //wrote as foreach first, modify collection, not want rename
+                        //    Skill skill = _objCharacter.SkillsSection.Skills[i];
+                        //    for (int j = skill.Fold.Count - 1; j >= 0; j--)
+                        //    {
+                        //        Skill fold = skill.Fold[i];
+                        //        if (fold.Id.ToString() == objImprovement.ImprovedName)
+                        //        {
+                        //            skill.Free(fold);
+                        //            _objCharacter.SkillsSection.Skills.Remove(fold);
+                        //        }
+                        //    }
+
+                        //    if (skill.Id.ToString() == objImprovement.ImprovedName)
+                        //    {
+                        //        while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
+                        //        //empty list, can't call clear as exposed list is RO
+
+                        //        _objCharacter.SkillsSection.Skills.Remove(skill);
+                        //    }
+                        //}
+                        break;
+                    case Improvement.ImprovementType.SkillsoftAccess:
+                        if (!blnHasDuplicate)
+                        {
+                            foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
+                            {
+                                objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.Skillsoft:
+                        if (!blnHasDuplicate)
+                        {
+                            foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills.Where(x => x.InternalId == objImprovement.ImprovedName).ToList())
+                            {
+                                objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.Attribute:
+                        // Determine if access to any Special Attributes have been lost.
+                        if (objImprovement.UniqueName == "enableattribute" && !blnHasDuplicate)
+                        {
+                            switch (objImprovement.ImprovedName)
+                            {
+                                case "MAG":
+                                    objCharacter.MAGEnabled = false;
+                                    break;
+                                case "RES":
+                                    objCharacter.RESEnabled = false;
+                                    break;
+                                case "DEP":
+                                    objCharacter.DEPEnabled = false;
+                                    break;
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.SpecialTab:
+                        // Determine if access to any special tabs have been lost.
+                        if (!blnHasDuplicate)
+                        {
+                            if (objImprovement.UniqueName == "enabletab")
+                            {
+                                switch (objImprovement.ImprovedName)
+                                {
+                                    case "Magician":
+                                        objCharacter.MagicianEnabled = false;
+                                        break;
+                                    case "Adept":
+                                        objCharacter.AdeptEnabled = false;
+                                        break;
+                                    case "Technomancer":
+                                        objCharacter.TechnomancerEnabled = false;
+                                        break;
+                                    case "Advanced Programs":
+                                        objCharacter.AdvancedProgramsEnabled = false;
+                                        break;
+                                    case "Critter":
+                                        objCharacter.CritterEnabled = false;
+                                        break;
+                                }
+                            }
+                            // Determine if access to any special tabs has been regained
+                            else if (objImprovement.UniqueName == "disabletab")
+                            {
+                                switch (objImprovement.ImprovedName)
+                                {
+                                    case "Cyberware":
+                                        objCharacter.CyberwareDisabled = false;
+                                        break;
+                                    case "Initiation":
+                                        objCharacter.InitiationForceDisabled = false;
+                                        break;
+                                }
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.PrototypeTranshuman:
+                        string strImprovedName = objImprovement.ImprovedName;
+                        // Legacy compatibility
+                        if (string.IsNullOrEmpty(strImprovedName))
+                        {
+                            if (!blnHasDuplicate)
+                                objCharacter.PrototypeTranshuman = 0;
+                        }
+                        else
+                            objCharacter.PrototypeTranshuman -= Convert.ToDecimal(strImprovedName);
+                        break;
+                    case Improvement.ImprovementType.Adapsin:
+                        break;
+                    case Improvement.ImprovementType.AddContact:
+                        Contact NewContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
+                        if (NewContact != null)
+                        {
+                            // TODO: Add code to disable contact
+                        }
+                        break;
+                    case Improvement.ImprovementType.Initiation:
+                        objCharacter.InitiateGrade -= objImprovement.Value;
+                        break;
+                    case Improvement.ImprovementType.Submersion:
+                        objCharacter.SubmersionGrade -= objImprovement.Value;
+                        break;
+                    case Improvement.ImprovementType.Metamagic:
+                    case Improvement.ImprovementType.Echo:
+                        Metamagic objMetamagic = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objMetamagic != null)
+                        {
+                            Improvement.ImprovementSource eSource = objImprovement.ImproveType == Improvement.ImprovementType.Metamagic ? Improvement.ImprovementSource.Metamagic : Improvement.ImprovementSource.Echo;
+                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == eSource && x.SourceName == objMetamagic.InternalId && x.Enabled).ToList());
+                        }
+                        break;
+                    case Improvement.ImprovementType.CritterPower:
+                        CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName || (x.Name == objImprovement.ImprovedName && x.Extra == objImprovement.UniqueName));
+                        if (objCritterPower != null)
+                        {
+                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.CritterPower && x.SourceName == objCritterPower.InternalId && x.Enabled).ToList());
+                        }
+                        break;
+                    case Improvement.ImprovementType.MentorSpirit:
+                    case Improvement.ImprovementType.Paragon:
+                        MentorSpirit objMentor = objCharacter.MentorSpirits.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objMentor != null)
+                        {
+                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MentorSpirit && x.SourceName == objMentor.InternalId && x.Enabled).ToList());
+                        }
+                        break;
+                    case Improvement.ImprovementType.Gear:
+                        Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        objGear?.ChangeEquippedStatus(false);
+                        break;
+                    case Improvement.ImprovementType.Weapon:
+                        // TODO: Unequip Weapons;
+                        break;
+                    case Improvement.ImprovementType.Spell:
+                        Spell objSpell = objCharacter.Spells.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objSpell != null)
+                        {
+                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Spell && x.SourceName == objSpell.InternalId && x.Enabled).ToList());
+                        }
+                        break;
+                    case Improvement.ImprovementType.ComplexForm:
+                        ComplexForm objComplexForm = objCharacter.ComplexForms.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objComplexForm != null)
+                        {
+                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ComplexForm && x.SourceName == objComplexForm.InternalId && x.Enabled).ToList());
+                        }
+                        break;
+                    case Improvement.ImprovementType.MartialArt:
+                        MartialArt objMartialArt = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objMartialArt != null)
+                        {
+                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MartialArt && x.SourceName == objMartialArt.InternalId && x.Enabled).ToList());
+                            // Remove the Improvements for any Advantages for the Martial Art that is being removed.
+                            foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
+                            {
+                                DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MartialArtTechnique && x.SourceName == objTechnique.InternalId && x.Enabled).ToList());
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.SpecialSkills:
+                        if (!blnHasDuplicate)
+                        {
+                            string strCategory;
+                            switch ((FilterOptions)Enum.Parse(typeof(FilterOptions), objImprovement.ImprovedName))
+                            {
+                                case FilterOptions.Magician:
+                                case FilterOptions.Sorcery:
+                                case FilterOptions.Conjuring:
+                                case FilterOptions.Enchanting:
+                                case FilterOptions.Adept:
+                                    strCategory = "Magical Active";
+                                    break;
+                                case FilterOptions.Technomancer:
+                                    strCategory = "Resonance Active";
+                                    break;
+                                default:
+                                    continue;
+                            }
+
+                            string strLoopCategory = string.Empty;
+                            foreach (Improvement objLoopImprovement in objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.SpecialSkills && x.Enabled))
+                            {
+                                FilterOptions eLoopFilter = (FilterOptions)Enum.Parse(typeof(FilterOptions), objLoopImprovement.ImprovedName);
+                                switch (eLoopFilter)
+                                {
+                                    case FilterOptions.Magician:
+                                    case FilterOptions.Sorcery:
+                                    case FilterOptions.Conjuring:
+                                    case FilterOptions.Enchanting:
+                                    case FilterOptions.Adept:
+                                        strLoopCategory = "Magical Active";
+                                        break;
+                                    case FilterOptions.Technomancer:
+                                        strLoopCategory = "Resonance Active";
+                                        break;
+                                }
+                                if (strLoopCategory == strCategory)
+                                    break;
+                            }
+                            if (strLoopCategory == strCategory)
+                                continue;
+
+                            foreach (Skill objSkill in objCharacter.SkillsSection.Skills.Where(x => x.SkillCategory == strCategory).ToList())
+                            {
+                                objSkill.ForceDisabled = true;
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.SpecificQuality:
+                        Quality objQuality = objCharacter.Qualities.FirstOrDefault(objLoopQuality => objLoopQuality.InternalId == objImprovement.ImprovedName);
+                        if (objQuality != null)
+                        {
+                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Quality && x.SourceName == objQuality.InternalId && x.Enabled).ToList());
+                        }
+                        break;
+                    /*
+                    case Improvement.ImprovementType.SkillSpecialization:
+                        {
+                            Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(objImprovement.ImprovedName);
+                            SkillSpecialization objSkillSpec = objSkill?.Specializations.FirstOrDefault(x => x.Name == objImprovement.UniqueName);
+                            //if (objSkillSpec != null)
+                                // TODO: Temporarily remove skill specialization
+                        }
+                        break;
+                        */
+                    case Improvement.ImprovementType.AIProgram:
+                        AIProgram objProgram = objCharacter.AIPrograms.FirstOrDefault(objLoopProgram => objLoopProgram.InternalId == objImprovement.ImprovedName);
+                        if (objProgram != null)
+                        {
+                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.AIProgram && x.SourceName == objProgram.InternalId && x.Enabled).ToList());
+                        }
+                        break;
+                    case Improvement.ImprovementType.MagiciansWayDiscount:
+                        foreach (Power objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
+                        {
+                            objLoopPower.RefreshDiscountedAdeptWay(objLoopPower.AdeptWayDiscountEnabled);
+                        }
+                        break;
+                    case Improvement.ImprovementType.FreeWare:
+                        {
+                            Cyberware objCyberware = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == objImprovement.ImprovedName);
+                            objCyberware?.ChangeModularEquip(false);
+                        }
+                        break;
+                }
+            }
+
+            objImprovementList.ProcessRelevantEvents();
+        }
+
+        /// <summary>
+        /// Remove all of the Improvements for an XML Node.
+        /// </summary>
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
+        /// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
+        /// <param name="strSourceName">Name of the item that granted these Improvements.</param>
+        public static decimal RemoveImprovements(Character objCharacter, Improvement.ImprovementSource objImprovementSource, string strSourceName = "")
+        {
+            // If there is no character object, don't try to remove any Improvements.
+            if (objCharacter == null)
+            {
+                return 0;
+            }
+
+            Log.Info("objImprovementSource = " + objImprovementSource.ToString());
+            Log.Info("strSourceName = " + strSourceName);
+            // A List of Improvements to hold all of the items that will eventually be deleted.
+            List<Improvement> objImprovementList = string.IsNullOrEmpty(strSourceName)
+                ? objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource).ToList()
+                : objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource && objImprovement.SourceName == strSourceName).ToList();
+            return RemoveImprovements(objCharacter, objImprovementList);
+        }
+
+        /// <summary>
+        /// Remove all of the Improvements for an XML Node.
+        /// </summary>
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
+        /// <param name="objImprovementList">List of improvements to delete.</param>
+        /// <param name="blnReapplyImprovements">Whether we're reapplying Improvements.</param>
+        /// <param name="blnAllowDuplicatesFromSameSource">If we ignore checking whether a potential duplicate improvement has the same SourceName</param>
+        public static decimal RemoveImprovements(Character objCharacter, IList<Improvement> objImprovementList, bool blnReapplyImprovements = false, bool blnAllowDuplicatesFromSameSource = false)
+        {
+            Log.Enter("RemoveImprovements");
+
+            // If there is no character object, don't try to remove any Improvements.
+            if (objCharacter == null)
+            {
+                Log.Exit("RemoveImprovements");
+                return 0;
+            }
+
+            // Note: As attractive as it may be to replace objImprovementList with an IEnumerable, we need to iterate through it twice for performance reasons
+
+            // Now that we have all of the applicable Improvements, remove them from the character.
+            foreach (Improvement objImprovement in objImprovementList)
+            {
+                // Remove the Improvement.
+                objCharacter.Improvements.Remove(objImprovement);
+                ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName);
+            }
+            decimal decReturn = 0;
+            // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
+            foreach (Improvement objImprovement in objImprovementList)
+            {
+                // See if the character has anything else that is granting them the same bonus as this improvement
+                bool blnHasDuplicate = objCharacter.Improvements.Any(x => x.UniqueName == objImprovement.UniqueName && x.ImprovedName == objImprovement.ImprovedName && x.ImproveType == objImprovement.ImproveType && (blnAllowDuplicatesFromSameSource || x.SourceName != objImprovement.SourceName));
+
+                switch (objImprovement.ImproveType)
+                {
+                    case Improvement.ImprovementType.SkillLevel:
+                    //TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills? //Didn't this handle the collapsing knowledge skills thing?
+                    //for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
+                    //{
+                    //    //wrote as foreach first, modify collection, not want rename
+                    //    Skill skill = _objCharacter.SkillsSection.Skills[i];
+                    //    for (int j = skill.Fold.Count - 1; j >= 0; j--)
+                    //    {
+                    //        Skill fold = skill.Fold[i];
+                    //        if (fold.Id.ToString() == objImprovement.ImprovedName)
+                    //        {
+                    //            skill.Free(fold);
+                    //            _objCharacter.SkillsSection.Skills.Remove(fold);
+                    //        }
+                    //    }
+
+                    //    if (skill.Id.ToString() == objImprovement.ImprovedName)
+                    //    {
+                    //        while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
+                    //        //empty list, can't call clear as exposed list is RO
+
+                    //        _objCharacter.SkillsSection.Skills.Remove(skill);
+                    //    }
+                    //}
+                        break;
+                    case Improvement.ImprovementType.SkillsoftAccess:
+                        if (!blnHasDuplicate)
+                        {
+                            foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
+                            {
+                                objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.Skillsoft:
+                        if (!blnHasDuplicate)
+                        {
+                            foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowledgeSkills.Where(x => x.InternalId == objImprovement.ImprovedName).ToList())
+                            {
+                                objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
+                            }
+                            for (int i = objCharacter.SkillsSection.KnowsoftSkills.Count - 1; i >= 0; --i)
+                            {
+                                KnowledgeSkill objSkill = objCharacter.SkillsSection.KnowsoftSkills[i];
+                                if (objSkill.InternalId == objImprovement.ImprovedName)
+                                {
+                                    objCharacter.SkillsSection.KnowledgeSkills.Remove(objSkill);
+                                    objSkill.UnbindSkill();
+                                    objCharacter.SkillsSection.KnowsoftSkills.RemoveAt(i);
+                                }
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.Attribute:
+                        // Determine if access to any Special Attributes have been lost.
+                        if (objImprovement.UniqueName == "enableattribute" && !blnHasDuplicate && !blnReapplyImprovements)
+                        {
+                            switch (objImprovement.ImprovedName)
+                            {
+                                case "MAG":
+                                    objCharacter.MAGEnabled = false;
+                                    break;
+                                case "RES":
+                                    objCharacter.RESEnabled = false;
+                                    break;
+                                case "DEP":
+                                    objCharacter.DEPEnabled = false;
+                                    break;
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.SpecialTab:
+                        // Determine if access to any special tabs have been lost.
+                        if (!blnHasDuplicate && !blnReapplyImprovements)
+                        {
+                            if (objImprovement.UniqueName == "enabletab")
+                            {
+                                switch (objImprovement.ImprovedName)
+                                {
+                                    case "Magician":
+                                        objCharacter.MagicianEnabled = false;
+                                        break;
+                                    case "Adept":
+                                        objCharacter.AdeptEnabled = false;
+                                        break;
+                                    case "Technomancer":
+                                        objCharacter.TechnomancerEnabled = false;
+                                        break;
+                                    case "Advanced Programs":
+                                        objCharacter.AdvancedProgramsEnabled = false;
+                                        break;
+                                    case "Critter":
+                                        objCharacter.CritterEnabled = false;
+                                        break;
+                                }
+                            }
+                            // Determine if access to any special tabs has been regained
+                            else if (objImprovement.UniqueName == "disabletab")
+                            {
+                                switch (objImprovement.ImprovedName)
+                                {
+                                    case "Cyberware":
+                                        objCharacter.CyberwareDisabled = false;
+                                        break;
+                                    case "Initiation":
+                                        objCharacter.InitiationForceDisabled = false;
+                                        break;
+                                }
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.PrototypeTranshuman:
+                        string strImprovedName = objImprovement.ImprovedName;
+                        // Legacy compatibility
+                        if (string.IsNullOrEmpty(strImprovedName))
+                        {
+                            if (!blnHasDuplicate)
+                                objCharacter.PrototypeTranshuman = 0;
+                        }
+                        else
+                        {
+                            objCharacter.PrototypeTranshuman -= Convert.ToDecimal(strImprovedName);
+
+                            if (objCharacter.PrototypeTranshuman <= 0 && !blnReapplyImprovements)
+                            {
+                                foreach (Cyberware objCyberware in objCharacter.Cyberware)
+                                    if (objCyberware.PrototypeTranshuman)
+                                        objCyberware.PrototypeTranshuman = false;
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.Adapsin:
+                        {
+                            if (!blnHasDuplicate && !blnReapplyImprovements)
+                            {
+                                foreach (Cyberware objCyberware in objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Grade.Adapsin))
+                                {
+                                    string strNewName = objCyberware.Grade.Name.FastEscapeOnceFromEnd("(Adapsin)").Trim();
+                                    // Determine which GradeList to use for the Cyberware.
+                                    objCyberware.Grade = objCharacter.GetGradeList(objCyberware.SourceType, true).FirstOrDefault(x => x.Name == strNewName);
+                                }
+                            }
+                        }
+                        break;
+                    case Improvement.ImprovementType.AddContact:
+                        Contact NewContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
+                        if (NewContact != null)
+                            objCharacter.Contacts.Remove(NewContact);
+                        break;
+                    case Improvement.ImprovementType.Initiation:
+                        objCharacter.InitiateGrade -= objImprovement.Value;
+                        break;
+                    case Improvement.ImprovementType.Submersion:
+                        objCharacter.SubmersionGrade -= objImprovement.Value;
+                        break;
+                    case Improvement.ImprovementType.Metamagic:
+                    case Improvement.ImprovementType.Echo:
+                        Metamagic objMetamagic = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objMetamagic != null)
+                        {
+                            decReturn += RemoveImprovements(objCharacter, objImprovement.ImproveType == Improvement.ImprovementType.Metamagic ? Improvement.ImprovementSource.Metamagic : Improvement.ImprovementSource.Echo, objMetamagic.InternalId);
+                            objCharacter.Metamagics.Remove(objMetamagic);
+                        }
+                        break;
+                    case Improvement.ImprovementType.LimitModifier:
+                        LimitModifier limitMod = objCharacter.LimitModifiers.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (limitMod != null)
+                        {
+                            objCharacter.LimitModifiers.Remove(limitMod);
+                        }
+                        break;
+                    case Improvement.ImprovementType.CritterPower:
+                        CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName || ( x.Name == objImprovement.ImprovedName && x.Extra == objImprovement.UniqueName));
+                        if (objCritterPower != null)
+                        {
+                            decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower, objCritterPower.InternalId);
+                            objCharacter.CritterPowers.Remove(objCritterPower);
+                        }
+                        break;
+                    case Improvement.ImprovementType.MentorSpirit:
+                    case Improvement.ImprovementType.Paragon:
+                        MentorSpirit objMentor = objCharacter.MentorSpirits.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objMentor != null)
+                        {
+                            decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.MentorSpirit, objMentor.InternalId);
+                            objCharacter.MentorSpirits.Remove(objMentor);
+                        }
+                        break;
+                    case Improvement.ImprovementType.Gear:
+                        Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objGear != null)
+                        {
+                            decReturn += objGear.DeleteGear();
+                            decReturn += objGear.TotalCost;
+                            objCharacter.Gear.Remove(objGear);
+                        }
+                        break;
+                    case Improvement.ImprovementType.Weapon:
+                    {
+                        Vehicle objVehicle = null;
+                        WeaponMount objWeaponMount = null;
+                        VehicleMod objVehicleMod = null;
+                        Weapon objWeapon = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.ImprovedName) ??
+                                           objCharacter.Vehicles.FindVehicleWeapon(objImprovement.ImprovedName, out objVehicle, out objWeaponMount, out objVehicleMod);
+                        if (objWeapon != null)
+                        {
+                            decReturn += objWeapon.DeleteWeapon();
+                            decReturn += objWeapon.TotalCost;
+                            Weapon objParent = objWeapon.Parent;
+                            if (objParent != null)
+                                objParent.Children.Remove(objWeapon);
+                            else if (objVehicleMod != null)
+                                objVehicleMod.Weapons.Remove(objWeapon);
+                            else if (objWeaponMount != null)
+                                objWeaponMount.Weapons.Remove(objWeapon);
+                            else if (objVehicle != null)
+                                objVehicle.Weapons.Remove(objWeapon);
+                            else
+                                objCharacter.Weapons.Remove(objWeapon);
+                        }
+                    }
+                        break;
+                    case Improvement.ImprovementType.Spell:
+                        Spell objSpell = objCharacter.Spells.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objSpell != null)
+                        {
+                            decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell, objSpell.InternalId);
+                            objCharacter.Spells.Remove(objSpell);
+                        }
+                        break;
+                    case Improvement.ImprovementType.ComplexForm:
+                        ComplexForm objComplexForm = objCharacter.ComplexForms.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objComplexForm != null)
+                        {
+                            decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId);
+                            objCharacter.ComplexForms.Remove(objComplexForm);
+                        }
+                        break;
+                    case Improvement.ImprovementType.MartialArt:
+                        MartialArt objMartialArt = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objMartialArt != null)
+                        {
+                            decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
+                            // Remove the Improvements for any Advantages for the Martial Art that is being removed.
+                            foreach (MartialArtTechnique objAdvantage in objMartialArt.Techniques)
+                            {
+                                decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArtTechnique, objAdvantage.InternalId);
+                            }
+                            objCharacter.MartialArts.Remove(objMartialArt);
+                        }
+                        break;
+                    case Improvement.ImprovementType.SpecialSkills:
+                        if (!blnHasDuplicate)
+                            objCharacter.SkillsSection.RemoveSkills((FilterOptions)Enum.Parse(typeof(FilterOptions), objImprovement.ImprovedName), !blnReapplyImprovements);
+                        break;
+                    case Improvement.ImprovementType.SpecificQuality:
+                        Quality objQuality = objCharacter.Qualities.FirstOrDefault(objLoopQuality => objLoopQuality.InternalId == objImprovement.ImprovedName);
+                        if (objQuality != null)
+                        {
+                            decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.Quality, objQuality.InternalId);
+                            objCharacter.Qualities.Remove(objQuality);
+                        }
+                        break;
+                    case Improvement.ImprovementType.SkillSpecialization:
+                        {
+                            Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(objImprovement.ImprovedName);
+                            SkillSpecialization objSkillSpec = objSkill?.Specializations.FirstOrDefault(x => x.Name == objImprovement.UniqueName);
+                            if (objSkillSpec != null)
+                                objSkill.Specializations.Remove(objSkillSpec);
+                        }
+                        break;
+                    case Improvement.ImprovementType.AIProgram:
+                        AIProgram objProgram = objCharacter.AIPrograms.FirstOrDefault(objLoopProgram => objLoopProgram.InternalId == objImprovement.ImprovedName);
+                        if (objProgram != null)
+                        {
+                            decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.AIProgram, objProgram.InternalId);
+                            objCharacter.AIPrograms.Remove(objProgram);
+                        }
+                        break;
+                    case Improvement.ImprovementType.AdeptPowerFreeLevels:
+                    case Improvement.ImprovementType.AdeptPowerFreePoints:
+                        // Get the power improved by this improvement
+                        Power objImprovedPower = objCharacter.Powers.FirstOrDefault(objPower => objPower.Name == objImprovement.ImprovedName &&
+                                        objPower.Extra == objImprovement.UniqueName);
+                        if (objImprovedPower != null)
+                        {
+                            if (objImprovedPower.TotalRating <= 0)
+                            {
+                                objImprovedPower.DeletePower();
+                                objImprovedPower.UnbindPower();
+                            }
+
+                            objImprovedPower.OnPropertyChanged(nameof(objImprovedPower.TotalRating));
+                            objImprovedPower.OnPropertyChanged(objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels
+                                ? nameof(Power.FreeLevels) : nameof(Power.FreePoints));
+                        }
+                        break;
+                    case Improvement.ImprovementType.MagiciansWayDiscount:
+                        foreach (Power objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
+                        {
+                            objLoopPower.RefreshDiscountedAdeptWay(objLoopPower.AdeptWayDiscountEnabled);
+                        }
+                        break;
+                    case Improvement.ImprovementType.FreeWare:
+                        {
+                            Cyberware objCyberware = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == objImprovement.ImprovedName);
+                            if (objCyberware != null)
+                            {
+                                decReturn += objCyberware.DeleteCyberware();
+                                decReturn += objCyberware.TotalCost;
+                                objCharacter.Cyberware.Remove(objCyberware);
+                            }
+                        }
+                        break;
+                }
+            }
+            objImprovementList.ProcessRelevantEvents();
+
+            Log.Exit("RemoveImprovements");
+            return decReturn;
+        }
+
+        /// <summary>
+        /// Create a new Improvement and add it to the Character.
+        /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="strImprovedName">Speicific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
+        /// <param name="objImprovementSource">Type of object that grants this Improvement.</param>
+        /// <param name="strSourceName">Name of the item that grants this Improvement.</param>
+        /// <param name="objImprovementType">Type of object the Improvement applies to.</param>
+        /// <param name="strUnique">Name of the pool this Improvement should be added to - only the single higest value in the pool will be applied to the character.</param>
+        /// <param name="intValue">Set a Value for the Improvement.</param>
+        /// <param name="intRating">Set a Rating for the Improvement - typically used for Adept Powers.</param>
+        /// <param name="intMinimum">Improve the Minimum for an CharacterAttribute by the given amount.</param>
+        /// <param name="intMaximum">Improve the Maximum for an CharacterAttribute by the given amount.</param>
+        /// <param name="intAugmented">Improve the Augmented value for an CharacterAttribute by the given amount.</param>
+        /// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an CharacterAttribute by the given amount.</param>
+        /// <param name="strExclude">A list of child items that should not receive the Improvement's benefit (typically for Skill Groups).</param>
+        /// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
+        /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
+        /// <param name="strCondition">Condition for when the bonus is applied.</param>
+        public static void CreateImprovement(Character objCharacter, string strImprovedName, Improvement.ImprovementSource objImprovementSource,
+            string strSourceName, Improvement.ImprovementType objImprovementType, string strUnique,
+            int intValue = 0, int intRating = 1, int intMinimum = 0, int intMaximum = 0, int intAugmented = 0,
+            int intAugmentedMaximum = 0, string strExclude = "", bool blnAddToRating = false, string strTarget = "", string strCondition = "")
+        {
             Log.Enter("CreateImprovement");
-			Log.Info(
-				"strImprovedName = " + strImprovedName);
-			Log.Info(
-				"objImprovementSource = " + objImprovementSource.ToString());
-			Log.Info(
-				"strSourceName = " + strSourceName);
-			Log.Info(
-				"objImprovementType = " + objImprovementType.ToString());
+            Log.Info(
+                "strImprovedName = " + strImprovedName);
+            Log.Info(
+                "objImprovementSource = " + objImprovementSource.ToString());
+            Log.Info(
+                "strSourceName = " + strSourceName);
+            Log.Info(
+                "objImprovementType = " + objImprovementType.ToString());
             Log.Info( "strUnique = " + strUnique);
-			Log.Info(
-				"intValue = " + intValue.ToString());
-			Log.Info(
-				"intRating = " + intRating.ToString());
-			Log.Info(
-				"intMinimum = " + intMinimum.ToString());
-			Log.Info(
-				"intMaximum = " + intMaximum.ToString());
-			Log.Info(
-				"intAugmented = " + intAugmented.ToString());
-			Log.Info(
-				"intAugmentedMaximum = " + intAugmentedMaximum.ToString());
+            Log.Info(
+                "intValue = " + intValue.ToString());
+            Log.Info(
+                "intRating = " + intRating.ToString());
+            Log.Info(
+                "intMinimum = " + intMinimum.ToString());
+            Log.Info(
+                "intMaximum = " + intMaximum.ToString());
+            Log.Info(
+                "intAugmented = " + intAugmented.ToString());
+            Log.Info(
+                "intAugmentedMaximum = " + intAugmentedMaximum.ToString());
             Log.Info( "strExclude = " + strExclude);
-			Log.Info(
-				"blnAddToRating = " + blnAddToRating.ToString());
-            
-            // Record the improvement.
-			Improvement objImprovement = new Improvement();
-			objImprovement.ImprovedName = strImprovedName;
-			objImprovement.ImproveSource = objImprovementSource;
-			objImprovement.SourceName = strSourceName;
-			objImprovement.ImproveType = objImprovementType;
-			objImprovement.UniqueName = strUnique;
-			objImprovement.Value = intValue;
-			objImprovement.Rating = intRating;
-			objImprovement.Minimum = intMinimum;
-			objImprovement.Maximum = intMaximum;
-			objImprovement.Augmented = intAugmented;
-			objImprovement.AugmentedMaximum = intAugmentedMaximum;
-			objImprovement.Exclude = strExclude;
-			objImprovement.AddToRating = blnAddToRating;
+            Log.Info(
+                "blnAddToRating = " + blnAddToRating.ToString());
+            Log.Info("strCondition = " + strCondition);
 
-			// Do not attempt to add the Improvements if the Character is null (as a result of Cyberware being added to a VehicleMod).
-			if (_objCharacter != null)
-			{
-				// Add the Improvement to the list.
-				_objCharacter.Improvements.Add(objImprovement);
+            // Do not attempt to add the Improvements if the Character is null (as a result of Cyberware being added to a VehicleMod).
+            if (objCharacter != null)
+            {
+                // Record the improvement.
+                Improvement objImprovement = new Improvement(objCharacter)
+                {
+                    ImprovedName = strImprovedName,
+                    ImproveSource = objImprovementSource,
+                    SourceName = strSourceName,
+                    ImproveType = objImprovementType,
+                    UniqueName = strUnique,
+                    Value = intValue,
+                    Rating = intRating,
+                    Minimum = intMinimum,
+                    Maximum = intMaximum,
+                    Augmented = intAugmented,
+                    AugmentedMaximum = intAugmentedMaximum,
+                    Exclude = strExclude,
+                    AddToRating = blnAddToRating,
+                    Target = strTarget,
+                    Condition = strCondition
+                };
 
-				// Add the Improvement to the Transaction List.
-				_lstTransaction.Add(objImprovement);
-			}
+                // Add the Improvement to the list.
+                objCharacter.Improvements.Add(objImprovement);
+                ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName);
+
+                // Add the Improvement to the Transaction List.
+                if (!s_DictionaryTransactions.TryAdd(objCharacter, new List<TransactingImprovement> { new TransactingImprovement(objImprovement) }))
+                    s_DictionaryTransactions[objCharacter].Add(new TransactingImprovement(objImprovement));
+            }
 
             Log.Exit("CreateImprovement");
         }
 
-		/// <summary>
-		/// Clear all of the Improvements from the Transaction List.
-		/// </summary>
-		public void Commit()
-		{
+        /// <summary>
+        /// Clear all of the Improvements from the Transaction List.
+        /// </summary>
+        public static void Commit(Character objCharacter)
+        {
             Log.Enter("Commit");
             // Clear all of the Improvements from the Transaction List.
+            if (s_DictionaryTransactions.TryGetValue(objCharacter, out List<TransactingImprovement> lstTransaction))
+            {
+                List<Improvement> lstImprovementsToProcess = new List<Improvement>();
+                foreach (TransactingImprovement objLoopTransactingImprovement in lstTransaction)
+                {
+                    if (!objLoopTransactingImprovement.IsCommitting)
+                    {
+                        objLoopTransactingImprovement.IsCommitting = true;
+                        lstImprovementsToProcess.Add(objLoopTransactingImprovement.ImprovementObject);
+                    }
+                }
+                lstImprovementsToProcess.ProcessRelevantEvents();
+                lstTransaction.Clear();
+            }
 
-			_objCharacter.ImprovementHook(_lstTransaction, this);
-			_lstTransaction.Clear();
             Log.Exit("Commit");
         }
 
-		/// <summary>
-		/// Rollback all of the Improvements from the Transaction List.
-		/// </summary>
-		private void Rollback()
-		{
+        /// <summary>
+        /// Rollback all of the Improvements from the Transaction List.
+        /// </summary>
+        private static void Rollback(Character objCharacter)
+        {
             Log.Enter("Rollback");
-            // Remove all of the Improvements that were added.
-			foreach (Improvement objImprovement in _lstTransaction)
-				RemoveImprovements(objImprovement.ImproveSource, objImprovement.SourceName);
+            if (s_DictionaryTransactions.TryGetValue(objCharacter, out List<TransactingImprovement> lstTransaction))
+            {
+                // Remove all of the Improvements that were added.
+                foreach (TransactingImprovement objTransactingImprovement in lstTransaction)
+                {
+                    RemoveImprovements(objCharacter, objTransactingImprovement.ImprovementObject.ImproveSource, objTransactingImprovement.ImprovementObject.SourceName);
+                    ClearCachedValue(objCharacter, objTransactingImprovement.ImprovementObject.ImproveType, objTransactingImprovement.ImprovementObject.ImprovedName);
+                }
 
-			_lstTransaction.Clear();
+                lstTransaction.Clear();
+            }
+
             Log.Exit("Rollback");
         }
 
-		#endregion
-	}
-
-	public static class ImprovementExtensions
-	{
-		public static bool HaveSkillPoints(this CharacterBuildMethod method)
-		{
-			return method == CharacterBuildMethod.Priority || method == CharacterBuildMethod.SumtoTen;
-		}
-	}
+        /// <summary>
+        /// Fire off all events relevant to an enumerable of improvements, making sure each event is only fired once.
+        /// </summary>
+        /// <param name="lstImprovements">Enumerable of improvements whose events to fire</param>
+        public static void ProcessRelevantEvents(this IEnumerable<Improvement> lstImprovements)
+        {
+            // Create a hashset of events to fire to make sure we only ever fire each event once
+            Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicPropertiesChanged = new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
+            foreach (Improvement objImprovement in lstImprovements)
+            {
+                foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in objImprovement.GetRelevantPropertyChangers())
+                {
+                    if (dicPropertiesChanged.TryGetValue(tuplePropertyChanged.Item1, out HashSet<string> setLoopPropertiesChanged))
+                    {
+                        setLoopPropertiesChanged.Add(tuplePropertyChanged.Item2);
+                    }
+                    else
+                    {
+                        dicPropertiesChanged.Add(tuplePropertyChanged.Item1, new HashSet<string> { tuplePropertyChanged.Item2 });
+                    }
+                }
+            }
+            // Fire each event once
+            foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> pairPropertiesChanged in dicPropertiesChanged)
+                pairPropertiesChanged.Key.OnMultiplePropertyChanged(pairPropertiesChanged.Value.ToArray());
+        }
+        #endregion
+    }
 }

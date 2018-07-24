@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -17,170 +18,174 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer>
-	<version>0</version>
-	<categories>
-		<category>Inanimate Vessels</category>
-	</categories>
-	<metatypes>
-		<metatype>
-			<name>Plasteel Homunculus</name>
-			<category>Inanimate Vessels</category>
-			<bp>0</bp>
-			<bodmin>8</bodmin>
-			<bodmax>8</bodmax>
-			<bodaug>8</bodaug>
-			<agimin>-1</agimin>
-			<agimax>-1</agimax>
-			<agiaug>-1</agiaug>
-			<reamin>-1</reamin>
-			<reamax>-1</reamax>
-			<reaaug>-1</reaaug>
-			<strmin>8</strmin>
-			<strmax>8</strmax>
-			<straug>8</straug>
-			<chamin>0</chamin>
-			<chamax>0</chamax>
-			<chaaug>0</chaaug>
-			<intmin>0</intmin>
-			<intmax>0</intmax>
-			<intaug>0</intaug>
-			<logmin>0</logmin>
-			<logmax>0</logmax>
-			<logaug>0</logaug>
-			<wilmin>0</wilmin>
-			<wilmax>0</wilmax>
-			<wilaug>0</wilaug>
-			<inimin>0</inimin>
-			<inimax>0</inimax>
-			<iniaug>0</iniaug>
-			<edgmin>0</edgmin>
-			<edgmax>0</edgmax>
-			<edgaug>0</edgaug>
-			<magmin>0</magmin>
-			<magmax>0</magmax>
-			<magaug>0</magaug>
-			<resmin>0</resmin>
-			<resmax>0</resmax>
-			<resaug>0</resaug>
-			<essmin>0</essmin>
-			<essmax>0</essmax>
-			<essaug>0</essaug>
-			<movement>10/25</movement>
-			<bonus />
-			<powers>
-				<power rating="8">Armor (Ballistic)</power>
-				<power rating="8">Armor (Impact)</power>
-				<power select="Fists: DV (F+7)P, AP 0">Natural Weapon</power>
-			</powers>
-			<source>SM</source>
-			<page>87</page>
-		</metatype>
-		<metatype>
-			<name>Stone Homunculus</name>
-			<category>Inanimate Vessels</category>
-			<bp>0</bp>
-			<bodmin>6</bodmin>
-			<bodmax>6</bodmax>
-			<bodaug>6</bodaug>
-			<agimin>-3</agimin>
-			<agimax>-3</agimax>
-			<agiaug>-3</agiaug>
-			<reamin>0</reamin>
-			<reamax>0</reamax>
-			<reaaug>0</reaaug>
-			<strmin>6</strmin>
-			<strmax>6</strmax>
-			<straug>6</straug>
-			<chamin>0</chamin>
-			<chamax>0</chamax>
-			<chaaug>0</chaaug>
-			<intmin>0</intmin>
-			<intmax>0</intmax>
-			<intaug>0</intaug>
-			<logmin>0</logmin>
-			<logmax>0</logmax>
-			<logaug>0</logaug>
-			<wilmin>0</wilmin>
-			<wilmax>0</wilmax>
-			<wilaug>0</wilaug>
-			<inimin>0</inimin>
-			<inimax>0</inimax>
-			<iniaug>0</iniaug>
-			<edgmin>0</edgmin>
-			<edgmax>0</edgmax>
-			<edgaug>0</edgaug>
-			<magmin>0</magmin>
-			<magmax>0</magmax>
-			<magaug>0</magaug>
-			<resmin>0</resmin>
-			<resmax>0</resmax>
-			<resaug>0</resaug>
-			<essmin>0</essmin>
-			<essmax>0</essmax>
-			<essaug>0</essaug>
-			<movement>5/10</movement>
-			<bonus />
-			<powers>
-				<power rating="5">Armor (Ballistic)</power>
-				<power rating="6">Armor (Impact)</power>
-				<power select="Fists: DV (F+5)P, AP 0">Natural Weapon</power>
-			</powers>
-			<source>SM</source>
-			<page>87</page>
-		</metatype>
-		<metatype>
-			<name>Wicker Man</name>
-			<category>Inanimate Vessels</category>
-			<bp>0</bp>
-			<bodmin>2</bodmin>
-			<bodmax>2</bodmax>
-			<bodaug>2</bodaug>
-			<agimin>1</agimin>
-			<agimax>1</agimax>
-			<agiaug>1</agiaug>
-			<reamin>1</reamin>
-			<reamax>1</reamax>
-			<reaaug>1</reaaug>
-			<strmin>2</strmin>
-			<strmax>2</strmax>
-			<straug>2</straug>
-			<chamin>0</chamin>
-			<chamax>0</chamax>
-			<chaaug>0</chaaug>
-			<intmin>0</intmin>
-			<intmax>0</intmax>
-			<intaug>0</intaug>
-			<logmin>0</logmin>
-			<logmax>0</logmax>
-			<logaug>0</logaug>
-			<wilmin>0</wilmin>
-			<wilmax>0</wilmax>
-			<wilaug>0</wilaug>
-			<inimin>0</inimin>
-			<inimax>0</inimax>
-			<iniaug>0</iniaug>
-			<edgmin>0</edgmin>
-			<edgmax>0</edgmax>
-			<edgaug>0</edgaug>
-			<magmin>0</magmin>
-			<magmax>0</magmax>
-			<magaug>0</magaug>
-			<resmin>0</resmin>
-			<resmax>0</resmax>
-			<resaug>0</resaug>
-			<essmin>0</essmin>
-			<essmax>0</essmax>
-			<essaug>0</essaug>
-			<movement>15/30</movement>
-			<bonus>
-				<reach>1</reach>
-			</bonus>
-			<powers>
-				<power select="Fire, Severe">Allergy</power>
-			</powers>
-			<source>SM</source>
-			<page>87</page>
-		</metatype>
-	</metatypes>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema vessels.xsd">
+  <version>0</version>
+  <categories>
+    <category>Inanimate Vessels</category>
+  </categories>
+  <metatypes>
+    <metatype>
+      <id>523fff8a-2875-4830-b390-5a965a3ca468</id>
+      <name>Plasteel Homunculus</name>
+      <category>Inanimate Vessels</category>
+      <bp>0</bp>
+      <bodmin>8</bodmin>
+      <bodmax>8</bodmax>
+      <bodaug>8</bodaug>
+      <agimin>-1</agimin>
+      <agimax>-1</agimax>
+      <agiaug>-1</agiaug>
+      <reamin>-1</reamin>
+      <reamax>-1</reamax>
+      <reaaug>-1</reaaug>
+      <strmin>8</strmin>
+      <strmax>8</strmax>
+      <straug>8</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>0</intmin>
+      <intmax>0</intmax>
+      <intaug>0</intaug>
+      <logmin>0</logmin>
+      <logmax>0</logmax>
+      <logaug>0</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>0</wilmax>
+      <wilaug>0</wilaug>
+      <inimin>0</inimin>
+      <inimax>0</inimax>
+      <iniaug>0</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <essmin>0</essmin>
+      <essmax>0</essmax>
+      <essaug>0</essaug>
+      <movement>10/25</movement>
+      <bonus />
+      <powers>
+        <power rating="8">Armor (Ballistic)</power>
+        <power rating="8">Armor (Impact)</power>
+        <power select="Fists: DV (F+7)P, AP 0">Natural Weapon</power>
+      </powers>
+      <source>SM</source>
+      <page>87</page>
+    </metatype>
+    <metatype>
+      <id>81ff437c-9482-41f1-bb05-991561962234</id>
+      <name>Stone Homunculus</name>
+      <category>Inanimate Vessels</category>
+      <bp>0</bp>
+      <bodmin>6</bodmin>
+      <bodmax>6</bodmax>
+      <bodaug>6</bodaug>
+      <agimin>-3</agimin>
+      <agimax>-3</agimax>
+      <agiaug>-3</agiaug>
+      <reamin>0</reamin>
+      <reamax>0</reamax>
+      <reaaug>0</reaaug>
+      <strmin>6</strmin>
+      <strmax>6</strmax>
+      <straug>6</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>0</intmin>
+      <intmax>0</intmax>
+      <intaug>0</intaug>
+      <logmin>0</logmin>
+      <logmax>0</logmax>
+      <logaug>0</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>0</wilmax>
+      <wilaug>0</wilaug>
+      <inimin>0</inimin>
+      <inimax>0</inimax>
+      <iniaug>0</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <essmin>0</essmin>
+      <essmax>0</essmax>
+      <essaug>0</essaug>
+      <movement>5/10</movement>
+      <bonus />
+      <powers>
+        <power rating="5">Armor (Ballistic)</power>
+        <power rating="6">Armor (Impact)</power>
+        <power select="Fists: DV (F+5)P, AP 0">Natural Weapon</power>
+      </powers>
+      <source>SM</source>
+      <page>87</page>
+    </metatype>
+    <metatype>
+      <id>aa573527-2e55-4ef7-8351-de0d10b32ce2</id>
+      <name>Wicker Man</name>
+      <category>Inanimate Vessels</category>
+      <bp>0</bp>
+      <bodmin>2</bodmin>
+      <bodmax>2</bodmax>
+      <bodaug>2</bodaug>
+      <agimin>1</agimin>
+      <agimax>1</agimax>
+      <agiaug>1</agiaug>
+      <reamin>1</reamin>
+      <reamax>1</reamax>
+      <reaaug>1</reaaug>
+      <strmin>2</strmin>
+      <strmax>2</strmax>
+      <straug>2</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>0</intmin>
+      <intmax>0</intmax>
+      <intaug>0</intaug>
+      <logmin>0</logmin>
+      <logmax>0</logmax>
+      <logaug>0</logaug>
+      <wilmin>0</wilmin>
+      <wilmax>0</wilmax>
+      <wilaug>0</wilaug>
+      <inimin>0</inimin>
+      <inimax>0</inimax>
+      <iniaug>0</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <essmin>0</essmin>
+      <essmax>0</essmax>
+      <essaug>0</essaug>
+      <movement>15/30</movement>
+      <bonus>
+        <reach>1</reach>
+      </bonus>
+      <powers>
+        <power select="Fire, Severe">Allergy</power>
+      </powers>
+      <source>SM</source>
+      <page>87</page>
+    </metatype>
+  </metatypes>
 </chummer>

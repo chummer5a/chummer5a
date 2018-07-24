@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmSelectSpell
     {
@@ -13,9 +13,9 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -28,8 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.treSpells = new System.Windows.Forms.TreeView();
+            this.lstSpells = new System.Windows.Forms.ListBox();
             this.lblDescriptorsLabel = new System.Windows.Forms.Label();
             this.lblDescriptors = new System.Windows.Forms.Label();
             this.lblTypeLabel = new System.Windows.Forms.Label();
@@ -50,21 +49,22 @@
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.chkLimited = new System.Windows.Forms.CheckBox();
-            this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.chkExtended = new System.Windows.Forms.CheckBox();
             this.chkAlchemical = new System.Windows.Forms.CheckBox();
+            this.chkFreeBonus = new System.Windows.Forms.CheckBox();
+            this.lblCategory = new System.Windows.Forms.Label();
+            this.cboCategory = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
-            // treSpells
+            // lstSpells
             // 
-            this.treSpells.FullRowSelect = true;
-            this.treSpells.HideSelection = false;
-            this.treSpells.Location = new System.Drawing.Point(12, 12);
-            this.treSpells.Name = "treSpells";
-            this.treSpells.Size = new System.Drawing.Size(264, 536);
-            this.treSpells.TabIndex = 17;
-            this.treSpells.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treSpells_AfterSelect);
-            this.treSpells.DoubleClick += new System.EventHandler(this.treSpells_DoubleClick);
+            this.lstSpells.FormattingEnabled = true;
+            this.lstSpells.Location = new System.Drawing.Point(12, 36);
+            this.lstSpells.Name = "lstSpells";
+            this.lstSpells.Size = new System.Drawing.Size(264, 512);
+            this.lstSpells.TabIndex = 17;
+            this.lstSpells.SelectedIndexChanged += new System.EventHandler(this.lstSpells_SelectedIndexChanged);
+            this.lstSpells.DoubleClick += new System.EventHandler(this.treSpells_DoubleClick);
             // 
             // lblDescriptorsLabel
             // 
@@ -205,9 +205,9 @@
             // 
             // txtSearch
             // 
-            this.txtSearch.Location = new System.Drawing.Point(366, 9);
+            this.txtSearch.Location = new System.Drawing.Point(332, 9);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(174, 20);
+            this.txtSearch.Size = new System.Drawing.Size(208, 20);
             this.txtSearch.TabIndex = 1;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyDown);
@@ -216,7 +216,7 @@
             // lblSearchLabel
             // 
             this.lblSearchLabel.AutoSize = true;
-            this.lblSearchLabel.Location = new System.Drawing.Point(316, 12);
+            this.lblSearchLabel.Location = new System.Drawing.Point(282, 12);
             this.lblSearchLabel.Name = "lblSearchLabel";
             this.lblSearchLabel.Size = new System.Drawing.Size(44, 13);
             this.lblSearchLabel.TabIndex = 0;
@@ -242,7 +242,7 @@
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 16;
             this.lblSource.Text = "[Source]";
-            this.lblSource.Click += new System.EventHandler(this.lblSource_Click);
+            this.lblSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblSourceLabel
             // 
@@ -263,19 +263,8 @@
             this.chkLimited.TabIndex = 14;
             this.chkLimited.Tag = "Checkbox_SelectSpell_LimitedSpell";
             this.chkLimited.Text = "Limited Spell";
-            this.tipTooltip.SetToolTip(this.chkLimited, "Limited Spells require a Fetish to cast but add +2 dice to the Drain Resistance T" +
-        "est after casting this Spell.");
             this.chkLimited.UseVisualStyleBackColor = true;
             this.chkLimited.CheckedChanged += new System.EventHandler(this.chkLimited_CheckedChanged);
-            // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
             // 
             // chkExtended
             // 
@@ -287,8 +276,6 @@
             this.chkExtended.TabIndex = 21;
             this.chkExtended.Tag = "Checkbox_SelectSpell_ExtendedSpell";
             this.chkExtended.Text = "Extended Spell";
-            this.tipTooltip.SetToolTip(this.chkExtended, "Extended range Spells have a range of (Force x MAG x 10) meters but have their DV" +
-        " increased by +2.");
             this.chkExtended.UseVisualStyleBackColor = true;
             this.chkExtended.Visible = false;
             this.chkExtended.CheckedChanged += new System.EventHandler(this.chkExtended_CheckedChanged);
@@ -302,9 +289,38 @@
             this.chkAlchemical.TabIndex = 15;
             this.chkAlchemical.Tag = "Checkbox_SelectSpell_Alchemical";
             this.chkAlchemical.Text = "Alchemical Preparation";
-            this.tipTooltip.SetToolTip(this.chkAlchemical, "Extended range Spells have a range of (Force x MAG x 10) meters but have their DV" +
-        " increased by +2.");
             this.chkAlchemical.UseVisualStyleBackColor = true;
+            // 
+            // chkFreeBonus
+            // 
+            this.chkFreeBonus.AutoSize = true;
+            this.chkFreeBonus.Location = new System.Drawing.Point(282, 286);
+            this.chkFreeBonus.Name = "chkFreeBonus";
+            this.chkFreeBonus.Size = new System.Drawing.Size(50, 17);
+            this.chkFreeBonus.TabIndex = 22;
+            this.chkFreeBonus.Tag = "Checkbox_Free";
+            this.chkFreeBonus.Text = "Free!";
+            this.chkFreeBonus.UseVisualStyleBackColor = true;
+            // 
+            // lblCategory
+            // 
+            this.lblCategory.AutoSize = true;
+            this.lblCategory.Location = new System.Drawing.Point(12, 12);
+            this.lblCategory.Name = "lblCategory";
+            this.lblCategory.Size = new System.Drawing.Size(52, 13);
+            this.lblCategory.TabIndex = 37;
+            this.lblCategory.Tag = "Label_Category";
+            this.lblCategory.Text = "Category:";
+            // 
+            // cboCategory
+            // 
+            this.cboCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboCategory.FormattingEnabled = true;
+            this.cboCategory.Location = new System.Drawing.Point(70, 9);
+            this.cboCategory.Name = "cboCategory";
+            this.cboCategory.Size = new System.Drawing.Size(206, 21);
+            this.cboCategory.TabIndex = 38;
+            this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
             // 
             // frmSelectSpell
             // 
@@ -313,6 +329,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(548, 560);
+            this.Controls.Add(this.lblCategory);
+            this.Controls.Add(this.cboCategory);
+            this.Controls.Add(this.chkFreeBonus);
             this.Controls.Add(this.chkAlchemical);
             this.Controls.Add(this.chkExtended);
             this.Controls.Add(this.chkLimited);
@@ -335,7 +354,7 @@
             this.Controls.Add(this.lblTypeLabel);
             this.Controls.Add(this.lblDescriptors);
             this.Controls.Add(this.lblDescriptorsLabel);
-            this.Controls.Add(this.treSpells);
+            this.Controls.Add(this.lstSpells);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -352,7 +371,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TreeView treSpells;
+        private System.Windows.Forms.ListBox lstSpells;
         private System.Windows.Forms.Label lblDescriptorsLabel;
         private System.Windows.Forms.Label lblDescriptors;
         private System.Windows.Forms.Label lblTypeLabel;
@@ -367,14 +386,16 @@
         private System.Windows.Forms.Label lblDV;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Button cmdCancel;
-		private System.Windows.Forms.TextBox txtSearch;
-		private System.Windows.Forms.Label lblSearchLabel;
-		private System.Windows.Forms.Button cmdOKAdd;
-		private System.Windows.Forms.Label lblSource;
-		private System.Windows.Forms.Label lblSourceLabel;
-		private System.Windows.Forms.CheckBox chkLimited;
-		private System.Windows.Forms.ToolTip tipTooltip;
-		private System.Windows.Forms.CheckBox chkExtended;
+        private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.Label lblSearchLabel;
+        private System.Windows.Forms.Button cmdOKAdd;
+        private System.Windows.Forms.Label lblSource;
+        private System.Windows.Forms.Label lblSourceLabel;
+        private System.Windows.Forms.CheckBox chkLimited;
+        private System.Windows.Forms.CheckBox chkExtended;
         private System.Windows.Forms.CheckBox chkAlchemical;
+        private System.Windows.Forms.CheckBox chkFreeBonus;
+        private System.Windows.Forms.Label lblCategory;
+        private System.Windows.Forms.ComboBox cboCategory;
     }
 }

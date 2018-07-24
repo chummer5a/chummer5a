@@ -21,67 +21,63 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-	public partial class frmNotes : Form
-	{
-		private static int _intWidth = 534;
-		private static int _intHeight = 278;
-		private readonly bool _blnLoading = false;
+    public partial class frmNotes : Form
+    {
+        private static int s_IntWidth = 534;
+        private static int s_IntHeight = 278;
+        private readonly bool _blnLoading;
 
-		#region Control Events
-		public frmNotes()
-		{
-			InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-			_blnLoading = true;
-			this.Width = _intWidth;
-			this.Height = _intHeight;
-			_blnLoading = false;
-		}
+        #region Control Events
+        public frmNotes()
+        {
+            InitializeComponent();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            _blnLoading = true;
+            Width = s_IntWidth;
+            Height = s_IntHeight;
+            _blnLoading = false;
+        }
 
-		private void frmNotes_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			this.DialogResult = DialogResult.OK;
-		}
+        private void frmNotes_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            DialogResult = DialogResult.OK;
+        }
 
-		private void txtNotes_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Escape)
-				this.DialogResult = DialogResult.OK;
+        private void txtNotes_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+                DialogResult = DialogResult.OK;
 
-			if (e.Control && e.KeyCode == Keys.A)
-			{
-				e.SuppressKeyPress = true;
-                if (sender != null)
-					((TextBox)sender).SelectAll();
-			}
-		}
+            if (e.Control && e.KeyCode == Keys.A)
+            {
+                e.SuppressKeyPress = true;
+                ((TextBox) sender)?.SelectAll();
+            }
+        }
 
-		private void frmNotes_Resize(object sender, EventArgs e)
-		{
-			if (_blnLoading)
-				return;
+        private void frmNotes_Resize(object sender, EventArgs e)
+        {
+            if (_blnLoading)
+                return;
 
-			_intWidth = this.Width;
-			_intHeight = this.Height;
-		}
-		#endregion
+            s_IntWidth = Width;
+            s_IntHeight = Height;
+        }
+        #endregion
 
-		#region Properties
-		/// <summary>
-		/// Notes.
-		/// </summary>
-		public string Notes
-		{
-			get
-			{
-				return txtNotes.Text;
-			}
-			set
-			{
-				txtNotes.Text = value;
-				txtNotes.Select(txtNotes.Text.Length, 0);
-			}
-		}
-		#endregion
-	}
+        #region Properties
+        /// <summary>
+        /// Notes.
+        /// </summary>
+        public string Notes
+        {
+            get => txtNotes.Text;
+            set
+            {
+                txtNotes.Text = value;
+                txtNotes.Select(value.Length, 0);
+            }
+        }
+        #endregion
+    }
 }

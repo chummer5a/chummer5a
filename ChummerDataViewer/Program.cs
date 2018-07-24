@@ -1,6 +1,9 @@
-﻿using System;
+using System;
+using System.IO;
 using System.Windows.Forms;
+using ChummerDataViewer.Model;
 
+[assembly: CLSCompliant(true)]
 namespace ChummerDataViewer
 {
 	static class Program
@@ -9,11 +12,25 @@ namespace ChummerDataViewer
 		/// The main entry point for the application.
 		/// </summary>
 		[STAThread]
-		static void Main()
+		static void Main(string[] args)
 		{
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new Mainform());
+		    if (args.Length > 0)
+		    {
+		        if (args[0] == "decrypt")
+		        {
+		            string file = args[1];
+		            byte[] fileContents = File.ReadAllBytes(file);
+		            byte[] decrypted = DownloaderWorker.Decrypt(args[2], fileContents);
+		            string newPath = Path.GetFileNameWithoutExtension(file) + ".zip";
+		            File.WriteAllBytes(newPath, decrypted);
+		        }
+		    }
+		    else
+		    {
+		        Application.EnableVisualStyles();
+		        Application.SetCompatibleTextRenderingDefault(false);
+		        Application.Run(new Mainform());
+		    }
 		}
 	}
 }

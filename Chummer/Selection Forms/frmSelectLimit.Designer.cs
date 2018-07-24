@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmSelectLimit
     {
@@ -88,7 +88,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Choose a Limit";
             this.Load += new System.EventHandler(this.frmSelectLimit_Load);
-            this.Shown += new System.EventHandler(this.frmSelectLimit_Shown);
             this.ResumeLayout(false);
 
         }

@@ -16,90 +16,84 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+ using System.Diagnostics;
+ using System.Text;
 
 namespace Chummer
 {
-	static class Timekeeper
-	{
-		static Stopwatch time = new Stopwatch();
-		private static readonly Dictionary<String, TimeSpan> Starts = new Dictionary<string, TimeSpan>(); 
-		private static readonly Dictionary<string, Tuple<TimeSpan, int>> Statistics = new Dictionary<string, Tuple<TimeSpan, int>>();
+    static class Timekeeper
+    {
+        private static readonly Stopwatch s_Time = new Stopwatch();
+        private static readonly ConcurrentDictionary<string, TimeSpan> s_DictionaryStarts = new ConcurrentDictionary<string, TimeSpan>();
+        private static readonly ConcurrentDictionary<string, Tuple<TimeSpan, int>> s_DictionaryStatistics = new ConcurrentDictionary<string, Tuple<TimeSpan, int>>();
 
-		static Timekeeper ()
-		{
-			time.Start();
-		}
+        static Timekeeper ()
+        {
+            s_Time.Start();
+        }
 
-		public static void Start(string taskname)
-		{
-			if (!Starts.ContainsKey(taskname))
-			{
-				Starts.Add(taskname, time.Elapsed);
-			}
-		}
+        public static void Start(string taskname)
+        {
+            s_DictionaryStarts.TryAdd(taskname, s_Time.Elapsed);
+        }
 
-		public static TimeSpan Elapsed(string taskname)
-		{
-			if (Starts.ContainsKey(taskname))
-			{
-				return time.Elapsed - Starts[taskname];
-			}
-			else
-			{
-				return TimeSpan.Zero;
-			}
-		}
+        public static TimeSpan Elapsed(string taskname)
+        {
+            if (s_DictionaryStarts.TryGetValue(taskname, out TimeSpan objStartTimeSpan))
+            {
+                return s_Time.Elapsed - objStartTimeSpan;
+            }
+            else
+            {
+                return TimeSpan.Zero;
+            }
+        }
 
-		public static TimeSpan Finish(string taskname)
-		{
-			if (Starts.ContainsKey(taskname))
-			{
-				TimeSpan final = time.Elapsed - Starts[taskname];
+        public static TimeSpan Finish(string taskname)
+        {
+            if (s_DictionaryStarts.TryRemove(taskname, out TimeSpan objStartTimeSpan))
+            {
+                TimeSpan final = s_Time.Elapsed - objStartTimeSpan;
 
-				Starts.Remove(taskname);
-				string logentry = $"Task \"{taskname}\" finished in {final}";
+                string logentry = $"Task \"{taskname}\" finished in {final}";
                 Chummer.Log.Info(logentry);
 
-				Debug.WriteLine(logentry);
-				
-				if (Statistics.ContainsKey(taskname))
-				{
-					Tuple<TimeSpan, int> existing = Statistics[taskname];
-					Statistics[taskname] = new Tuple<TimeSpan, int>(existing.Item1 + final, existing.Item2 + 1);
-				}
-				else
-				{
-					Statistics.Add(taskname, new Tuple<TimeSpan, int>(final, 1));
-				}
-				
-				return final;
-			}
-			else
-			{
-				Debug.WriteLine("Non started task \"" + taskname + "\" finished");
-				return TimeSpan.Zero;
-			}
-		}
+                Debug.WriteLine(logentry);
 
-		public static void Log()
-		{
-			StringBuilder sb = new StringBuilder("Time statistics\n");
+                if (s_DictionaryStatistics.TryGetValue(taskname, out Tuple<TimeSpan, int> existing))
+                {
+                    s_DictionaryStatistics[taskname] = new Tuple<TimeSpan, int>(existing.Item1 + final, existing.Item2 + 1);
+                }
+                else
+                {
+                    s_DictionaryStatistics.TryAdd(taskname, new Tuple<TimeSpan, int>(final, 1));
+                }
 
-			foreach (KeyValuePair<string, Tuple<TimeSpan, int>> keyValuePair in Statistics)
-			{
-				sb.AppendLine($"\t{keyValuePair.Key}({keyValuePair.Value.Item2}) = {keyValuePair.Value.Item1}");
-			}
+                return final;
+            }
+            else
+            {
+                Debug.WriteLine("Non started task \"" + taskname + "\" finished");
+                return TimeSpan.Zero;
+            }
+        }
 
-			string strined = sb.ToString();
-			Debug.WriteLine(strined);
-			Chummer.Log.Info(strined);
-		}
+        public static void Log()
+        {
+            StringBuilder sb = new StringBuilder("Time statistics" + Environment.NewLine);
 
-	}
+            foreach (KeyValuePair<string, Tuple<TimeSpan, int>> keyValuePair in s_DictionaryStatistics)
+            {
+                sb.AppendLine($"\t{keyValuePair.Key}({keyValuePair.Value.Item2}) = {keyValuePair.Value.Item1}");
+            }
+
+            string strined = sb.ToString();
+            Debug.WriteLine(strined);
+            Chummer.Log.Info(strined);
+        }
+
+    }
 }

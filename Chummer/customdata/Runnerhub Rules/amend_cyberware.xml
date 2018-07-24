@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<grades>
+		<grade>
+			<name>Used (Adapsin)</name>
+      		<ess>1.1</ess>
+		</grade>
+		<grade>
+			<name>Omegaware</name>
+			<hide />
+		</grade>
+		<grade>
+			<name>Omegaware (Adapsin)</name>
+			<hide />
+		</grade>
+		<grade>
+			<name>Gammaware</name>
+			<hide />
+		</grade>
+		<grade>
+			<name>Gammaware (Adapsin)</name>
+			<hide />
+		</grade>
+	</grades>
+	<cyberwares>
+		<cyberware>
+			<name>Retractable Climbing Claws (Hands)</name>
+			<notes>
+				- The bonuses provided by a pair of climbing claws is a +1 dice pool bonuses for all climbing tests instead of a “climbing skill bonus” as mentioned in the description. 
+			</notes>
+		</cyberware>
+		<cyberware>
+			<name>Retractable Climbing Claws (Feet)</name>
+			<notes>
+				- The bonuses provided by a pair of climbing claws is a +1 dice pool bonuses for all climbing tests instead of a “climbing skill bonus” as mentioned in the description. 
+			</notes>
+		</cyberware>
+		<cyberware>
+			<name>Targeting Laser</name>
+			<notes>
+				- The targeting laser's bonuses only apply to weapons that could normally mount and benefit from a laser sight. Thrown weapons, for example, do not receive the bonuses.  
+			</notes>
+		</cyberware>
+		
+		<cyberware>
+			<name>Targeting Laser (Infrared)</name>
+			<notes>
+				- The targeting laser's bonuses only apply to weapons that could normally mount and benefit from a laser sight. Thrown weapons, for example, do not receive the bonuses. 
+			</notes>
+		</cyberware>
+		<cyberware>
+			<name>Internal Router</name>
+			<notes>
+				- This piece of ‘ware can only provide wireless functionality for a character’s cyberware and devices with a direct physical connection, such as a smartgun system connected to a datajack via a cable. Wired Reflexes and Reaction Enhancers can be used together via an Internal Router.
+			</notes>
+		</cyberware>
+
+		<cyberware>
+		  <id>e23ea4d0-a02c-4691-a045-708b3018aae2</id>
+		  <name>One-shot Dartgun</name>
+		  <limit>False</limit>
+		  <category>Cyber Implant Weapon</category>
+		  <ess>0.2</ess>
+		  <capacity>[2]</capacity>
+		  <avail>8R</avail>
+		  <cost>2000</cost>
+		  <source>CF</source>
+		  <page>91</page>
+		  <addweapon>One-shot Dartgun</addweapon>
+		</cyberware>
+
+		<cyberware>
+			<name>Cyberlimb Optimization</name>
+			<notes>
+				- This can be taken for the arms with any Weapon skill and in such a case they will apply to the weapon's Accuracy. Any weapon can be wielded in 2 hands (even knives and holdout pistols ) unless the circumstances dictate otherwise (e.g. carrying something in your off-hand, dual-wielding, trying to use a weapon in the same initiative pass as a Right Back At Ya! action, etc.) Other uses of Cyberlimb Optimization are still case-by-case. 
+			</notes>
+		</cyberware>
+		<cyberware>
+			<name>Liminal Body, Wheeled (Full)</name>
+			<hide />
+		</cyberware>
+		<cyberware>
+			<name>Liminal Body, Centaur</name>
+			<hide />
+		</cyberware>
+		<cyberware>
+			<name>Liminal Body, Tank (Full)</name>
+			<hide />
+		</cyberware>
+		<cyberware>
+			<name>Armor</name>
+			<required>
+			  <parentdetails>
+			    <OR>
+			      <name operation="contains">Full Leg</name>
+			      <name operation="contains">Full Arm</name>
+			    </OR>
+			  </parentdetails>
+			</required>
+		</cyberware>
+		<cyberware>
+		  <id>85b926f6-16ee-4d57-83c5-94e41351bcc1</id>
+		  <name>Armor (Lower arms/legs)</name>
+		  <limit>False</limit>
+		  <category>Cyberlimb Enhancement</category>
+		  <ess>0</ess>
+		  <capacity>[Rating]</capacity>
+		  <avail>Rating * 5</avail>
+		  <cost>Rating * 3000</cost>
+		  <source>SR5</source>
+		  <page>456</page>
+		  <bonus>
+		    <armor>Rating</armor>
+		  </bonus>
+		  <rating>1</rating>
+		  <requireparent />
+		  <required>
+		    <parentdetails>
+		      <OR>
+		        <name operation="contains">Lower Arm</name>
+		        <name operation="contains">Lower Leg</name>
+		      </OR>
+		    </parentdetails>
+		  </required>
+		</cyberware>
+	</cyberwares>
+</chummer>
