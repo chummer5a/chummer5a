@@ -12228,7 +12228,7 @@ namespace Chummer
                     continue;
                 if (blnIgnoreSecondHand && objWareGrade.SecondHand)
                     continue;
-                if (CharacterObject.AdapsinEnabled)
+                if (CharacterObject.AdapsinEnabled && !blnBioware)
                 {
                     if (!objWareGrade.Adapsin && objGradeList.Any(x => objWareGrade.Name.Contains(x.Name)))
                     {
