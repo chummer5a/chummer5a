@@ -31,6 +31,7 @@ Application Changes:
 - Fixed missing deletion confirmation prompts for many items.
 - Fixed an issue with initiation grades not properly removing themselves.
 - Fixed incorrect behaviour with Adapasin and grades in create mode causing the Grade list to not load.
+- Fixed inability to remove custom improvement groups in career mode.
 
 Data Changes:
 

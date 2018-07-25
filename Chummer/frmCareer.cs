@@ -5477,7 +5477,7 @@ namespace Chummer
 
                 IsCharacterUpdateRequested = true;
             }
-            else if (treImprovements.SelectedNode.Level > 0 && treImprovements.SelectedNode?.Tag is string strSelectedId)
+            else if (treImprovements.SelectedNode?.Tag is string strSelectedId)
             {
                 if (strSelectedId == "Node_SelectedImprovements")
                     return;
