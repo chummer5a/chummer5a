@@ -32,6 +32,7 @@ Application Changes:
 - Fixed an issue with initiation grades not properly removing themselves.
 - Fixed incorrect behaviour with Adapasin and grades in create mode causing the Grade list to not load.
 - Fixed inability to remove custom improvement groups in career mode.
+- Added exceptions for the 'saves' directory and any .chum5 files from being deleted when updating Chummer.
 
 Data Changes:
 
