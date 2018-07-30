@@ -1809,6 +1809,7 @@
             <xsl:value-of select="rating"/>
           </xsl:if>
           <xsl:if test="location != ''"> (<xsl:value-of select="location"/>)</xsl:if>
+          <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
         </td>
         <td style="text-align: center"><xsl:value-of select="ess"/></td>
         <td style="text-align: center"><xsl:value-of select="grade"/></td>

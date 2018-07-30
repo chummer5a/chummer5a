@@ -670,7 +670,8 @@
     <xsl:for-each select="cyberwares/cyberware">
       <xsl:sort select="name"/>
       <br/><xsl:value-of select="name"/>
-        <xsl:if test="rating != 0"> <xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
+        <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
+        <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
         <xsl:if test="location != ''"> (<xsl:value-of select="location"/>)</xsl:if>
         <xsl:if test="children/cyberware">
           <xsl:for-each select="children/cyberware">
