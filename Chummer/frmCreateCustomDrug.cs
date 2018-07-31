@@ -100,58 +100,19 @@ namespace Chummer
 
 		private void UpdateCustomDrugStats()
         {
-			_objDrug = new Drug();
-            _objDrug.Name = txtDrugName.Text;
-			_objDrug.Category = "Custom Drug";
-			DrugEffect objDrugEffect = new DrugEffect();
-			_objDrug.Effects.Add(objDrugEffect);
-			_objDrug.Grade = cboGrade.SelectedValue.ToString();
+            _objDrug = new Drug
+            {
+                Name = txtDrugName.Text,
+                Category = "Custom Drug",
+                Grade = cboGrade.SelectedValue.ToString()
+            };
 
             foreach (clsNodeData objNodeData in lstSelectedDrugComponents)
             {
                 DrugComponent objDrugComponent = objNodeData.objDrugComponent;
-				_objDrug.Components.Add(objDrugComponent);
                 objDrugComponent.Level = objNodeData.level;
-                objDrugEffect = objDrugComponent.DrugEffects[objDrugComponent.Level];
-
-                foreach (var item in objDrugEffect.attributes.ToList())
-                {
-                    int value;
-                    objDrugEffect.attributes.TryGetValue(item.Key, out value);
-                    objDrugEffect.attributes[item.Key] = value + item.Value;
-                }
-
-                foreach (var item in objDrugEffect.limits.ToList())
-				{
-                    int value;
-                    objDrugEffect.limits.TryGetValue(item.Key, out value);
-                    objDrugEffect.limits[item.Key] = value + item.Value;
-                }
-
-                foreach (string quality in objDrugEffect.qualities.ToList())
-				{
-                    if (!objDrugEffect.qualities.Contains(quality))
-                        objDrugEffect.qualities.Add(quality);
-                }
-
-                foreach (string info in objDrugEffect.infos.ToList())
-				{
-                    objDrugEffect.infos.Add(info);
-                }
-
-                objDrugEffect.ini += objDrugEffect.ini;
-                objDrugEffect.iniDice += objDrugEffect.iniDice;
-                objDrugEffect.speed += objDrugEffect.speed;
-                objDrugEffect.duration += objDrugEffect.duration;
-                objDrugEffect.crashDamage += objDrugEffect.crashDamage;
-
-                _objDrug.AddictionRating += objDrugComponent.AddictionRating;
-				_objDrug.AddictionThreshold += objDrugComponent.AddictionThreshold;
-				_objDrug.Availability += objDrugComponent.Availability;
-				_objDrug.Cost += objDrugComponent.Cost;
+                _objDrug.Components.Add(objDrugComponent);
             }
-			_objDrug.Cost = Convert.ToInt32((Convert.ToDouble(_objDrug.Cost, GlobalOptions.CultureInfo) * _dblCostMultiplier));
-			_objDrug.AddictionThreshold += _intAddictionThreshold;
         }
 
         private int FindRootNodeIndexForCategory(string category)
@@ -194,25 +155,19 @@ namespace Chummer
             }
 
             //prevent adding same component twice
-            foreach (clsNodeData objSelectedDrugComponentData in lstSelectedDrugComponents)
+            if (lstSelectedDrugComponents.Any(c => c.objDrugComponent.Name == objNodeData.objDrugComponent.Name))
             {
-                if (objSelectedDrugComponentData.objDrugComponent.Name == objNodeData.objDrugComponent.Name)
-                {
-                    MessageBox.Show(this, "You cannot add the same component twice");
-                    return;
-                }
+                MessageBox.Show(this, LanguageManager.GetString("Message_DuplicateDrugComponentWarning"));
+                return;
             }
 
             //drug can have only one foundation
             if (objNodeData.objDrugComponent.Category == "Foundation")
             {
-                foreach (clsNodeData objSelectedDrugComponentData in lstSelectedDrugComponents)
+                if (lstSelectedDrugComponents.Any(c => c.objDrugComponent.Category == "Foundation"))
                 {
-                    if (objSelectedDrugComponentData.objDrugComponent.Category == "Foundation")
-                    {
-                        MessageBox.Show(this, "Drug can only have one foundation");
-                        return;
-                    }
+                    MessageBox.Show(this, LanguageManager.GetString("Message_DuplicateDrugFoundationWarning"));
+                    return;
                 }
             }
 
@@ -223,13 +178,12 @@ namespace Chummer
                 {
                     if (objFoundationNodeData.objDrugComponent.Category != "Foundation")
                         continue;
-                    var dctFoundationAttributes = objFoundationNodeData.objDrugComponent.DrugEffects[0].attributes;
-                    var dctBlockAttributes = objNodeData.objDrugComponent.DrugEffects[objNodeData.level].attributes;
+                    var dctFoundationAttributes = objFoundationNodeData.objDrugComponent.DrugEffects[0].Attributes;
+                    var dctBlockAttributes = objNodeData.objDrugComponent.DrugEffects[objNodeData.level].Attributes;
                     foreach (var item in dctFoundationAttributes)
                     {
-                        int blockAttrValue = 0;
                         if (item.Value < 0 &&
-                            dctBlockAttributes.TryGetValue(item.Key, out blockAttrValue) &&
+                            dctBlockAttributes.TryGetValue(item.Key, out var blockAttrValue) &&
                             blockAttrValue > 0)
                         {
                             string message = new StringBuilder("The maximum level of a block that positively modifies an Attribute that the chosen foundation negatively modifies is Level 2. (CF 191)").

@@ -21,7 +21,7 @@
   <version>-350</version>
   <name>English (en-US)</name>
   <strings>
-	<!-- Meta Strings -->
+	  <!-- Region Meta Strings -->
 	<string>
 		<key>Message_Insufficient_Permissions_Warning</key>
 		<text>Chummer5 is currently not being run with proper permissions! If you are not running Chummer5 as an administrator, please move it to a folder owned by your user.</text>
@@ -34,7 +34,8 @@
 		<key>Message_File_Cannot_Be_Accessed</key>
 		<text>Chummer5 cannot access the file for writing. Please make sure it has permission to write to the location and that the file is not currently in use.</text>
 	</string>
-  <!-- Region File Dialog Filter Strings -->
+    <!-- End Region -->
+    <!-- Region File Dialog Filter Strings -->
   <string>
       <key>DialogFilter_Chum5</key>
       <text>Chummer5 Files (*.chum5)|*.chum5</text>
@@ -4785,7 +4786,19 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Node_SelectedDrugs</key>
       <text>Selected Drugs</text>
     </string>
-    <!-- End Region -->
+    <string>
+      <key>Message_DuplicateDrugComponentWarning</key>
+      <text>You cannot add the same component twice.</text>
+    </string>
+    <string>
+      <key>Message_DuplicateDrugFoundationWarning</key>
+      <text>You cannot add more than one Foundation to a drug.</text>
+    </string>
+    <string>
+      <key>String_MaximumDrugBlockLevel</key>
+      <text>The maximum level of a block that positively modifies an Attribute that the chosen foundation negatively modifies is Level 2. (CF 191)</text>
+    </string>
+      <!-- End Region -->
     <!-- Region Street Gear/Gear Tab -->
     <string>
       <key>Button_AddGear</key>

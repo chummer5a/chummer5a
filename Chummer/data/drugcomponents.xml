@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -47,7 +47,8 @@
       <name>Tank</name>
       <category>Foundation</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>BOD</name>
             <value>2</value>
@@ -61,7 +62,7 @@
             <name>CHA</name>
             <value>-2</value>
           </attribute>
-        </level>
+        </effect>
       </effects>
       <availability>4</availability>
       <cost>75</cost>
@@ -74,7 +75,8 @@
       <name>Defender</name>
       <category>Foundation</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>AGI</name>
             <value>1</value>
@@ -95,7 +97,7 @@
             <name>LOG</name>
             <value>-1</value>
           </attribute>
-        </level>
+        </effect>
       </effects>
       <availability>4</availability>
       <cost>75</cost>
@@ -108,7 +110,8 @@
       <name>Genius</name>
       <category>Foundation</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>LOG</name>
             <value>2</value>
@@ -125,7 +128,7 @@
             <name>REA</name>
             <value>-1</value>
           </attribute>
-        </level>
+        </effect>
       </effects>
       <availability>4</availability>
       <cost>75</cost>
@@ -138,7 +141,8 @@
       <name>Charmer</name>
       <category>Foundation</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>CHA</name>
             <value>1</value>
@@ -151,7 +155,7 @@
             <name>AGI</name>
             <value>-1</value>
           </attribute>
-        </level>
+        </effect>
       </effects>
       <availability>4</availability>
       <cost>75</cost>
@@ -164,7 +168,8 @@
       <name>Warrior</name>
       <category>Foundation</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>STR</name>
             <value>1</value>
@@ -181,7 +186,7 @@
             <name>WIL</name>
             <value>-1</value>
           </attribute>
-        </level>
+        </effect>
       </effects>
       <availability>4</availability>
       <cost>75</cost>
@@ -196,7 +201,8 @@
       <name>Crush</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>STR</name>
             <value>1</value>
@@ -205,8 +211,9 @@
             <name>INT</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>STR</name>
             <value>2</value>
@@ -216,8 +223,9 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>2</level>
           <attribute>
             <name>STR</name>
             <value>3</value>
@@ -228,7 +236,7 @@
           </attribute>
           <quality>Low Pain Tolerance</quality>
           <crashdamage>2</crashdamage>
-        </level>
+        </effect>
       </effects>
       <availability>1</availability>
       <cost>20</cost>
@@ -239,7 +247,8 @@
       <name>Brute</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>BOD</name>
             <value>1</value>
@@ -248,8 +257,9 @@
             <name>LOG</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>BOD</name>
             <value>2</value>
@@ -259,8 +269,9 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>2</level>
           <attribute>
             <name>BOD</name>
             <value>3</value>
@@ -274,7 +285,7 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
+        </effect>
       </effects>
       <availability>1</availability>
       <cost>20</cost>
@@ -285,7 +296,8 @@
       <name>Strike</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>AGI</name>
             <value>1</value>
@@ -294,8 +306,9 @@
             <name>STR</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>AGI</name>
             <value>2</value>
@@ -305,8 +318,9 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>2</level>
           <attribute>
             <name>AGI</name>
             <value>3</value>
@@ -317,7 +331,7 @@
           </attribute>
           <quality>Unsteady Hands</quality>
           <crashdamage>2</crashdamage>
-        </level>
+        </effect>
       </effects>
       <availability>1</availability>
       <cost>20</cost>
@@ -328,7 +342,8 @@
       <name>Lighting</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>REA</name>
             <value>1</value>
@@ -337,8 +352,9 @@
             <name>LOG</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>REA</name>
             <value>2</value>
@@ -351,8 +367,9 @@
             <name>WIL</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>2</level>
           <attribute>
             <name>REA</name>
             <value>3</value>
@@ -366,7 +383,7 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
+        </effect>
       </effects>
       <availability>1</availability>
       <cost>20</cost>
@@ -377,7 +394,8 @@
       <name>Einstein</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>LOG</name>
             <value>1</value>
@@ -386,8 +404,9 @@
             <name>WIL</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>LOG</name>
             <value>2</value>
@@ -400,8 +419,9 @@
             <name>INT</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>2</level>
           <attribute>
             <name>LOG</name>
             <value>3</value>
@@ -415,7 +435,7 @@
             <value>-1</value>
           </attribute>
           <info>Crash Effect: -1d6 initiative dice</info>
-        </level>
+        </effect>
       </effects>
       <availability>1</availability>
       <cost>20</cost>
@@ -426,7 +446,8 @@
       <name>Gut Check</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>INT</name>
             <value>1</value>
@@ -435,8 +456,9 @@
             <name>STR</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>INT</name>
             <value>2</value>
@@ -449,8 +471,9 @@
             <name>REA</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>2</level>
           <attribute>
             <name>INT</name>
             <value>3</value>
@@ -464,7 +487,7 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
+        </effect>
       </effects>
       <availability>1</availability>
       <cost>20</cost>
@@ -475,7 +498,8 @@
       <name>Stonewall</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>WIL</name>
             <value>1</value>
@@ -484,8 +508,9 @@
             <name>BOD</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>WIL</name>
             <value>2</value>
@@ -498,8 +523,9 @@
             <name>AGI</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>2</level>
           <attribute>
             <name>WIL</name>
             <value>3</value>
@@ -516,7 +542,7 @@
             <name>STR</name>
             <value>-1</value>
           </attribute>
-        </level>
+        </effect>
       </effects>
       <availability>1</availability>
       <cost>20</cost>
@@ -527,7 +553,8 @@
       <name>Smoothtalk</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>CHA</name>
             <value>1</value>
@@ -536,8 +563,9 @@
             <name>STR</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>CHA</name>
             <value>2</value>
@@ -547,8 +575,9 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>2</level>
           <attribute>
             <name>CHA</name>
             <value>3</value>
@@ -559,7 +588,7 @@
           </attribute>
           <quality>Uncouth</quality>
           <crashdamage>2</crashdamage>
-        </level>
+        </effect>
       </effects>
       <availability>1</availability>
       <cost>20</cost>
@@ -570,11 +599,13 @@
       <name>Shock and Awe</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <initiativedice>1</initiativedice>
           <crashdamage>4</crashdamage>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <initiativedice>2</initiativedice>
           <limit>
             <name>Physical</name>
@@ -589,8 +620,9 @@
             <value>-1</value>
           </limit>
           <crashdamage>4</crashdamage>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>2</level>
           <initiativedice>3</initiativedice>
           <limit>
             <name>Physical</name>
@@ -605,7 +637,7 @@
             <value>-2</value>
           </limit>
           <crashdamage>8</crashdamage>
-        </level>
+        </effect>
       </effects>
       <availability>2</availability>
       <cost>40</cost>
@@ -616,7 +648,8 @@
       <name>Razor Mind</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>INT</name>
             <value>1</value>
@@ -630,8 +663,9 @@
             <value>-1</value>
           </attribute>
           <crashdamage>1</crashdamage>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>INT</name>
             <value>2</value>
@@ -645,7 +679,7 @@
             <value>-2</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
+        </effect>
       </effects>
       <availability>2</availability>
       <cost>30</cost>
@@ -656,7 +690,8 @@
       <name>The General</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>CHA</name>
             <value>1</value>
@@ -670,8 +705,9 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>CHA</name>
             <value>2</value>
@@ -689,7 +725,7 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
+        </effect>
       </effects>
       <availability>2</availability>
       <cost>30</cost>
@@ -700,7 +736,8 @@
       <name>Resist</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>BOD</name>
             <value>1</value>
@@ -714,8 +751,9 @@
             <value>-1</value>
           </attribute>
           <crashdamage>1</crashdamage>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>BOD</name>
             <value>2</value>
@@ -733,7 +771,7 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
+        </effect>
       </effects>
       <availability>2</availability>
       <cost>30</cost>
@@ -744,7 +782,8 @@
       <name>Speed Demon</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>AGI</name>
             <value>1</value>
@@ -758,8 +797,9 @@
             <value>-1</value>
           </attribute>
           <crashdamage>1</crashdamage>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>AGI</name>
             <value>2</value>
@@ -777,7 +817,7 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
+        </effect>
       </effects>
       <availability>2</availability>
       <cost>30</cost>
@@ -790,9 +830,9 @@
       <name>Ingestion Enhancer</name>
       <category>Enhancer</category>
       <effects>
-        <level>
+        <effect>
           <info>Ingestion Vector</info>
-        </level>
+        </effect>
       </effects>
       <availability>1</availability>
       <cost>50</cost>
@@ -805,9 +845,9 @@
       <name>Inhalation Enhancer</name>
       <category>Enhancer</category>
       <effects>
-        <level>
+        <effect>
           <info>Inhalation Vector</info>
-        </level>
+        </effect>
       </effects>
       <availability>1</availability>
       <cost>50</cost>
@@ -820,9 +860,9 @@
       <name>Speed Enhancer</name>
       <category>Enhancer</category>
       <effects>
-        <level>
+        <effect>
           <speed>1</speed>
-        </level>
+        </effect>
       </effects>
       <availability>1</availability>
       <cost>50</cost>
@@ -836,9 +876,9 @@
       <category>Enhancer</category>
       <availability>1</availability>
       <effects>
-        <level>
+        <effect>
           <duration>1</duration>
-        </level>
+        </effect>
       </effects>
       <cost>50</cost>
       <rating>1</rating>
