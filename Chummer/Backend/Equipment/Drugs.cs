@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -7,146 +9,178 @@ using System.Xml;
 
 namespace Chummer.Backend.Equipment
 {
-	public class Drug : Object
-	{
-		private Guid _guiID = new Guid();
-		private string _strName = "";
-		private string _strCategory = "";
-		private string _strDescription;
-		private List<DrugComponent> _lstDrugComponents = new List<DrugComponent>();
-		private List<DrugEffect> _lstDrugEffects = new List<DrugEffect>();
-		private string _strGrade = "";
-		private int _intCost;
-		private int _intAvailability;
-		private int _intAddictionThreshold;
-		private int _intAddictionRating;
-		private int _intQty;
-		private string _strAltName = "";
-	    private readonly Dictionary<string, int> _limits = new Dictionary<string, int>();
-	    private readonly List<string> _qualities = new List<string>();
+    public class Drug : Object
+    {
+        private Guid _guiID = new Guid();
+        private string _strName = "";
+        private string _strCategory = "";
+        private string _strDescription;
+        private ObservableCollection<DrugComponent> _lstDrugComponents = new ObservableCollection<DrugComponent>();
+        private Dictionary<string, int> _cachedAttributes = new Dictionary<string, int>();
+        private List<string> _cachedInfos = new List<string>();
+        private Dictionary<string, int> _cachedLimits = new Dictionary<string, int>();
+        private List<string> _cachedQualities = new List<string>();
+        private string _strGrade = "";
+        private int _intCost;
+        private int _intAvailability;
+        private int _intAddictionThreshold;
+        private int _intAddictionRating;
+        private int _intQty;
+        private string _strAltName = "";
 
-	    #region Constructor, Create, Save, Load, and Print Methods
-		public Drug()
-		{
-			// Create the GUID for the new Drug.
-			_guiID = Guid.NewGuid();
-		}
-		public void Load(XmlNode objXmlData)
-		{
-			_guiID = Guid.Parse(objXmlData["guid"].InnerText);
-			objXmlData.TryGetField("name", out _strName);
-			objXmlData.TryGetField("category", out _strCategory);
-			foreach (XmlNode objXmlLevel in objXmlData.SelectNodes("drugcomponents/drugcomponent"))
-			{
-				DrugComponent c = new DrugComponent();
+        #region Constructor, Create, Save, Load, and Print Methods
+
+        public Drug()
+        {
+            // Create the GUID for the new Drug.
+            _guiID = Guid.NewGuid();
+            _lstDrugComponents.CollectionChanged += ComponentsChanged;
+
+        }
+
+        private void ComponentsChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            _cachedCrashDamage = int.MinValue;
+            _cachedDuration = int.MinValue;
+            _cachedInitiative = int.MinValue;
+            _cachedInitiativeDice = int.MinValue;
+            _cachedSpeed = int.MinValue;
+            _cachedQualityFlag = false;
+            _cachedLimitFlag = false;
+            _cachedAttributeFlag = false;
+        }
+
+        public void Load(XmlNode objXmlData)
+        {
+            _guiID = Guid.Parse(objXmlData["guid"].InnerText);
+            objXmlData.TryGetField("name", out _strName);
+            objXmlData.TryGetField("category", out _strCategory);
+            foreach (XmlNode objXmlLevel in objXmlData.SelectNodes("drugcomponents/drugcomponent"))
+            {
+                DrugComponent c = new DrugComponent();
                 c.Load(objXmlLevel);
-				Components.Add(c);
-			}
-			objXmlData.TryGetField("availability", out _intAvailability);
-			objXmlData.TryGetField("cost", out _intCost);
-			objXmlData.TryGetField("quantity", out _intQty);
-			objXmlData.TryGetField("rating", out _intAddictionRating);
-			objXmlData.TryGetField("threshold", out _intAddictionThreshold);
-			//objXmlData.TryGetField("source", out _strSource);
-			//objXmlData.TryGetField("page", out _strPage);
-		}
+                Components.Add(c);
+            }
 
-		public void Save(XmlWriter objXmlWriter)
-		{
-			objXmlWriter.WriteStartElement("drug");
-			objXmlWriter.WriteElementString("guid", _guiID.ToString());
-			objXmlWriter.WriteElementString("name", _strName);
-			objXmlWriter.WriteElementString("category", _strCategory);
-			objXmlWriter.WriteElementString("quantity", _intQty.ToString());
-			objXmlWriter.WriteStartElement("drugcomponents");
-			foreach (DrugComponent objDrugComponent in _lstDrugComponents)
-			{
-				objXmlWriter.WriteStartElement("drugcomponent");
-					objDrugComponent.Save(objXmlWriter);
-				objXmlWriter.WriteEndElement();
-			}
-			objXmlWriter.WriteEndElement();
-			if (_intAvailability != 0)
-				objXmlWriter.WriteElementString("availability", _intAvailability.ToString());
-			if (_intCost != 0)
-				objXmlWriter.WriteElementString("cost", _intCost.ToString());
-			if (_intAddictionRating != 0)
-				objXmlWriter.WriteElementString("rating", _intAddictionRating.ToString());
-			if (_intAddictionThreshold != 0)
-				objXmlWriter.WriteElementString("threshold", _intAddictionThreshold.ToString());
-			/*if (source != null)
-				objXmlWriter.WriteElementString("source", source);
-			if (page != 0)
-				objXmlWriter.WriteElementString("page", page.ToString());*/
-			objXmlWriter.WriteEndElement();
-		}
-		#endregion
-		#region Properties
+            objXmlData.TryGetField("availability", out _intAvailability);
+            objXmlData.TryGetField("cost", out _intCost);
+            objXmlData.TryGetField("quantity", out _intQty);
+            objXmlData.TryGetField("rating", out _intAddictionRating);
+            objXmlData.TryGetField("threshold", out _intAddictionThreshold);
+            //objXmlData.TryGetField("source", out _strSource);
+            //objXmlData.TryGetField("page", out _strPage);
+        }
 
-		public Guid GUID
-		{
-			get => _guiID;
-		    set => _guiID = value;
-		}
+        public void Save(XmlWriter objXmlWriter)
+        {
+            objXmlWriter.WriteStartElement("drug");
+            objXmlWriter.WriteElementString("guid", _guiID.ToString());
+            objXmlWriter.WriteElementString("name", _strName);
+            objXmlWriter.WriteElementString("category", _strCategory);
+            objXmlWriter.WriteElementString("quantity", _intQty.ToString());
+            objXmlWriter.WriteStartElement("drugcomponents");
+            foreach (DrugComponent objDrugComponent in _lstDrugComponents)
+            {
+                objXmlWriter.WriteStartElement("drugcomponent");
+                objDrugComponent.Save(objXmlWriter);
+                objXmlWriter.WriteEndElement();
+            }
 
-		/// <summary>
-		/// Internal identifier which will be used to identify this item.
-		/// </summary>
-		public string InternalId => _guiID.ToString();
+            objXmlWriter.WriteEndElement();
+            if (_intAvailability != 0)
+                objXmlWriter.WriteElementString("availability", _intAvailability.ToString());
+            if (_intCost != 0)
+                objXmlWriter.WriteElementString("cost", _intCost.ToString());
+            if (_intAddictionRating != 0)
+                objXmlWriter.WriteElementString("rating", _intAddictionRating.ToString());
+            if (_intAddictionThreshold != 0)
+                objXmlWriter.WriteElementString("threshold", _intAddictionThreshold.ToString());
+            /*if (source != null)
+                objXmlWriter.WriteElementString("source", source);
+            if (page != 0)
+                objXmlWriter.WriteElementString("page", page.ToString());*/
+            objXmlWriter.WriteEndElement();
+        }
 
-	    /// <summary>
-		/// Grade of the Drug.
-		/// </summary>
-		public string Grade
-		{
-			get => _strGrade;
-	        set => _strGrade = value;
-	    }
-		/// <summary>
-		/// Internal identifier which will be used to identify this item.
-		/// </summary>
-		public string Description
-		{
-			get => _strDescription.ToString();
-		    set => _strDescription = value;
-		}
+        #endregion
 
-		/// <summary>
-		/// Components of the Drug.
-		/// </summary>
-		public List<DrugComponent> Components
-		{
-			get => _lstDrugComponents;
-		    set => _lstDrugComponents = value;
-		}
+        #region Properties
 
-		/// <summary>
-		/// Name of the Drug.
-		/// </summary>
-		public string Name
-		{
-			get => _strName;
-		    set => _strName = value;
-		}
+        public Guid GUID
+        {
+            get => _guiID;
+            set => _guiID = value;
+        }
 
-		/// <summary>
-		/// Category of the Drug. 
-		/// </summary>
-		public string Category
-		{
-			get => _strCategory;
-		    set => _strCategory = value;
-		}
+        /// <summary>
+        /// Internal identifier which will be used to identify this item.
+        /// </summary>
+        public string InternalId => _guiID.ToString();
 
-		/// <summary>
-		/// Base cost of the Drug.
-		/// </summary>
-		public int Cost => Components.Sum(d => d.Cost);
+        /// <summary>
+        /// Grade of the Drug.
+        /// </summary>
+        public string Grade
+        {
+            get => _strGrade;
+            set => _strGrade = value;
+        }
 
-		/// <summary>
+        /// <summary>
+        /// Internal identifier which will be used to identify this item.
+        /// </summary>
+        public string Description
+        {
+            get => _strDescription.ToString();
+            set => _strDescription = value;
+        }
+
+        /// <summary>
+        /// Components of the Drug.
+        /// </summary>
+        public ObservableCollection<DrugComponent> Components
+        {
+            get => _lstDrugComponents;
+            set => _lstDrugComponents = value;
+        }
+
+        /// <summary>
+        /// Name of the Drug.
+        /// </summary>
+        public string Name
+        {
+            get => _strName;
+            set => _strName = value;
+        }
+
+        /// <summary>
+        /// Category of the Drug. 
+        /// </summary>
+        public string Category
+        {
+            get => _strCategory;
+            set => _strCategory = value;
+        }
+
+        private int _intCachedCost = int.MinValue;
+
+        /// <summary>
+        /// Base cost of the Drug.
+        /// </summary>
+        public int Cost
+        {
+            get
+            {
+                if (_intCachedCost != int.MinValue) return _intCachedCost;
+                _intCachedCost = Components.Sum(d => d.Cost);
+                return _intCachedCost;
+            }
+        }
+
+        /// <summary>
 		/// Total cost of the Drug.
 		/// </summary>
-		public int TotalCost => _intCost * _intQty;
+		public int TotalCost => Cost * _intQty;
 
 	    /// <summary>
 		/// Total amount of the Drug held by the character.
@@ -157,105 +191,185 @@ namespace Chummer.Backend.Equipment
 	        set => _intQty = value;
 	    }
 
-		/// <summary>
-		/// Availability of the Drug.
-		/// </summary>
-		public int Availability => Components.Sum(d => d.Availability);
+        private int _intCachedAvailability = int.MinValue;
+
+        /// <summary>
+        /// Availability of the Drug.
+        /// </summary>
+        public int Availability
+        {
+            get
+            {
+                if (_intCachedAvailability != int.MinValue) return _intCachedAvailability;
+                _intCachedAvailability = Components.Sum(d => d.Availability);
+                return _intCachedAvailability;
+            }
+        }
+
+        private int _intCachedAddictionThreshold = int.MinValue;
 
         /// <summary>
         /// Addiction Threshold of the Drug.
         /// </summary>
-        public int AddictionThreshold => Components.Sum(d => d.AddictionThreshold);
+        public int AddictionThreshold
+        {
+            get
+            {
+                if (_intCachedAddictionThreshold != int.MinValue) return _intCachedAddictionThreshold;
+                _intCachedAddictionThreshold = Components.Sum(d => d.AddictionThreshold);
+                return _intCachedAddictionThreshold;
+            }
+        }
 
+        private int _intCachedAddictionRating = int.MinValue;
         /// <summary>
         /// Addiction Rating of the Drug.
         /// </summary>
-        public int AddictionRating => Components.Sum(d => d.AddictionRating);
+        public int AddictionRating
+        {
+            get
+            {
+                if (_intCachedAddictionRating != int.MinValue) return _intCachedAddictionRating;
+                _intCachedAddictionRating = Components.Sum(d => d.AddictionRating);
+                return _intCachedAddictionRating;
+            }
+        }
 
-        public Dictionary<string, int> Limits =>
-           (Components.Where(d => d.ActiveDrugEffect.Limits.Count > 0)
-                      .SelectMany(d => d.ActiveDrugEffect.Limits)
-                      .GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.Sum(y => y.Value)));
+        private bool _cachedLimitFlag = false;
+        public Dictionary<string, int> Limits
+        {
+            get
+            {
+                if (_cachedLimitFlag) return _cachedLimits;
+                _cachedLimits = Components.Where(d => d.ActiveDrugEffect.Limits.Count > 0)
+                    .SelectMany(d => d.ActiveDrugEffect.Limits)
+                    .GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.Sum(y => y.Value));
+                _cachedLimitFlag = true;
+                return _cachedLimits;
 
+            }
+        }
+
+        private bool _cachedQualityFlag = false;
         public List<string> Qualities
 	    {
 	        get
 	        {
-	            List<string> newList = new List<string>();
+	            if (_cachedQualityFlag) return _cachedQualities;
 	            foreach (DrugComponent d in Components)
 	            {
-	                newList.AddRange(d.ActiveDrugEffect.Qualities);
+	                _cachedQualities.AddRange(d.ActiveDrugEffect.Qualities);
                 }
 
-	            return newList.Distinct().ToList();
+	            _cachedQualities = _cachedQualities.Distinct().ToList();
+	            _cachedQualityFlag = true;
+                return _cachedQualities;
 	        }
 	    }
 
+        private bool _cachedInfoFlag = false;
         public List<string> Infos
 	    {
 	        get
 	        {
-                List<string> newList = new List<string>();
+	            if (_cachedInfoFlag) return _cachedInfos;
 	            foreach (DrugComponent d in Components)
 	            {
-	                newList.AddRange(d.ActiveDrugEffect.Infos);
+	                _cachedInfos.AddRange(d.ActiveDrugEffect.Infos);
                 }
 
-	            return newList.Distinct().ToList();
+	            _cachedInfos = _cachedInfos.Distinct().ToList();
+	            _cachedInfoFlag = true;
+                return _cachedInfos;
 	        }
 	    }
 
-        public int Initiative => Components.Sum(d => d.ActiveDrugEffect.Initiative);
+        private int _cachedInitiative = int.MinValue;
 
-	    public int InitiativeDice => Components.Sum(d => d.ActiveDrugEffect.InitiativeDice);
+        public int Initiative
+        {
+            get
+            {
+                if (_cachedInitiative != int.MinValue) return _cachedInitiative;
+                _cachedInitiative = Components.Sum(d => d.ActiveDrugEffect.Initiative);
+                return _cachedInitiative;
+            }
+        }
 
-	    public int Speed => Components.Sum(d => d.ActiveDrugEffect.Speed);
+        private int _cachedInitiativeDice = int.MinValue;
+        public int InitiativeDice
+        {
+            get
+            {
+                if (_cachedInitiativeDice != int.MinValue) return _cachedInitiativeDice;
+                _cachedInitiativeDice = Components.Sum(d => d.ActiveDrugEffect.InitiativeDice);
+                return _cachedInitiativeDice;
+            }
+        }
 
-        public int Duration => Components.Sum(d => d.ActiveDrugEffect.Duration);
+        private int _cachedSpeed = int.MinValue;
+        public int Speed
+        {
+            get
+            {
+                if (_cachedSpeed != int.MinValue) return _cachedSpeed;
+                _cachedSpeed = Components.Sum(d => d.ActiveDrugEffect.Speed);
+                return _cachedSpeed;
+            }
+        }
 
-	    public int CrashDamage => Components.Sum(d => d.ActiveDrugEffect.CrashDamage);
+        private int _cachedDuration = int.MinValue;
+        public int Duration
+        {
+            get
+            {
+                if (_cachedDuration != int.MinValue) return _cachedDuration;
+                _cachedDuration = Components.Sum(d => d.ActiveDrugEffect.Duration);
+                return _cachedDuration;
+            }
+        }
+
+        private int _cachedCrashDamage = int.MinValue;
+        public int CrashDamage
+        {
+            get
+            {
+                if (_cachedCrashDamage != int.MinValue) return _cachedCrashDamage;
+                _cachedCrashDamage = Components.Sum(d => d.ActiveDrugEffect.Duration);
+                return _cachedCrashDamage;
+            }
+        }
 
         public string Notes { get; internal set; }
 
 		/// <summary>
 		/// The name of the object as it should appear on printouts (translated name only).
 		/// </summary>
-		public string DisplayNameShort
-		{
-			get
-			{
-				string strReturn = _strName;
-				if (_strAltName != string.Empty)
-					strReturn = _strAltName;
+		public string DisplayNameShort => _strAltName != string.Empty ? _strAltName : _strName;
 
-				return strReturn;
-			}
-		}
-
-		/// <summary>
+        /// <summary>
 		/// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
 		/// </summary>
-		public string DisplayName
-		{
-			get
-			{
-				string strReturn = DisplayNameShort;
+		public string DisplayName => _intQty > 1 ? _intQty + " " + DisplayNameShort : DisplayNameShort;
 
-				if (_intQty > 1)
-					strReturn = _intQty + " " + strReturn;
+        private bool _cachedAttributeFlag = false;
+        public Dictionary<string, int> Attributes
+        {
+            get
+            {
+                if (_cachedAttributeFlag) return _cachedAttributes;
+                _cachedAttributes =
+                    (from d in Components
+                        from de in d.DrugEffects.Where(de => de.Level == d.Level)
+                        where de.Attributes.Count > 0
+                        from attribute in de.Attributes
+                        select attribute).GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.Sum(y => y.Value));
+                _cachedAttributeFlag = true;
+                return _cachedAttributes;
+            }
+        }
 
-				return strReturn;
-			}
-		}
-
-	    public Dictionary<string, int> Attributes =>
-	        (from d in Components
-	            from de in d.DrugEffects.Where(de => de.Level == d.Level)
-	            where de.Attributes.Count > 0
-	            from attribute in de.Attributes
-	            select attribute).GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.Sum(y => y.Value));
-
-	    #endregion
+        #endregion
         #region Methods
         public String GenerateDescription(int level = -1)
 		{
@@ -521,7 +635,7 @@ namespace Chummer.Backend.Equipment
 		}
 		public List<DrugEffect> DrugEffects => _lstEffects;
 
-	    public DrugEffect ActiveDrugEffect => DrugEffects.First(effect => effect.Level == Level);
+	    public DrugEffect ActiveDrugEffect => DrugEffects.FirstOrDefault(effect => effect.Level == Level);
 
 	    public int Cost
 		{
