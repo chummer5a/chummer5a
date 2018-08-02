@@ -1292,7 +1292,7 @@ namespace Chummer.Backend.Equipment
                 if (strArmorCapacity != "0" && !string.IsNullOrEmpty(strArmorCapacity)) // && _objCharacter.Options.ArmorSuitCapacity)
                 {
                     // Run through its Armor Mods and deduct the Capacity costs.
-                    foreach (ArmorMod objMod in ArmorMods)
+                    foreach (ArmorMod objMod in ArmorMods.Where(mod => !mod.IncludedInArmor))
                     {
                         bool blnSoftweave = false;
                         if (objMod.Bonus != null)
@@ -1325,7 +1325,7 @@ namespace Chummer.Backend.Equipment
                     {
                         object decCapacityLock = new object();
                         // Run through its Children and deduct the Capacity costs.
-                        Parallel.ForEach(Gear, objChildGear =>
+                        Parallel.ForEach(Gear.Where(gear => gear.IncludedInParent), objChildGear =>
                         {
                             decimal decLoop = objChildGear.PluginArmorCapacity * objChildGear.Quantity;
                             lock (decCapacityLock)
@@ -1337,7 +1337,7 @@ namespace Chummer.Backend.Equipment
                 else // if (_objCharacter.Options.MaximumArmorModifications)
                 {
                     // Run through its Armor Mods and deduct the Rating (or 1 if it has no Rating).
-                    foreach (ArmorMod objMod in ArmorMods)
+                    foreach (ArmorMod objMod in ArmorMods.Where(mod => !mod.IncludedInArmor))
                     {
                         if (objMod.Rating > 0)
                             decCapacity -= objMod.Rating;
@@ -1346,7 +1346,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Run through its Gear and deduct the Rating (or 1 if it has no Rating).
-                    foreach (Gear objGear in Gear)
+                    foreach (Gear objGear in Gear.Where(gear => gear.IncludedInParent))
                     {
                         if (objGear.Rating > 0)
                             decCapacity -= objGear.Rating;

@@ -12191,7 +12191,6 @@
       <id>fda72df6-5f5a-4125-ae77-308cfed00fba</id>
       <name>Krime Shiv</name>
       <category>Blades</category>
-      <hide />
       <type>Melee</type>
       <conceal>+2</conceal>
       <accuracy>5</accuracy>

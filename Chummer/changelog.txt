@@ -33,6 +33,7 @@ Application Changes:
 - Fixed incorrect behaviour with Adapasin and grades in create mode causing the Grade list to not load.
 - Fixed inability to remove custom improvement groups in career mode.
 - Added exceptions for the 'saves' directory and any .chum5 files from being deleted when updating Chummer.
+- Fixed calculation of armor capacity to not include items that are included in the armor.
 
 Data Changes:
 
@@ -48,6 +49,7 @@ Data Changes:
 - Added an amend entry to allow Bone Lacing to apply directly to Body instead of just damage resistance due to ambiguity in RAW. Closes #2884
 - Fixed the Shiawase Arms Simoom's ammo category to be Light Pistols.
 - Corrected the metageneticlimit bonus for Changeling I and II to be 30.
+- Fixed incorrect hidden status of the Krime Shiv. 
 
 New Strings:
 
