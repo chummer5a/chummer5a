@@ -115,14 +115,10 @@ namespace Chummer
         /// <param name="lstGear">List of Gear to search.</param>
         public static Drug FindDrug(string strGuid, List<Drug> lstGear)
         {
-            Drug objReturn = new Drug();
             foreach (Drug objDrug in lstGear)
             {
                 if (objDrug.InternalId == strGuid)
-                    objReturn = objDrug;
-
-                if (objReturn.InternalId != Guid.Empty.ToString() && objReturn.Name != "")
-                    return objReturn;
+                    return objDrug;
             }
 
             return null;

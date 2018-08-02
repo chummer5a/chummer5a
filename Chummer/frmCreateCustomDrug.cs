@@ -19,7 +19,7 @@ namespace Chummer
         private readonly List<clsNodeData> lstSelectedDrugComponents;
 		private readonly List<ListItem> _lstGrade = new List<ListItem>();
 		private readonly Character _objCharacter;
-	    private Drug _objDrug = new Drug();
+	    private Drug _objDrug;
 	    readonly XmlDocument _objXmlDocument = XmlManager.Load("drugcomponents.xml");
 		private double _dblCostMultiplier;
 		private int _intAddictionThreshold;
@@ -28,7 +28,7 @@ namespace Chummer
         {
 	        if (objDrug == null)
 	        {
-				objDrug = new Drug();
+				objDrug = new Drug(objCharacter);
 				objDrug.GUID = new Guid();
 	        }
 	        _objCharacter = objCharacter;
@@ -100,7 +100,7 @@ namespace Chummer
 
 		private void UpdateCustomDrugStats()
         {
-            _objDrug = new Drug
+            _objDrug = new Drug(_objCharacter)
             {
                 Name = txtDrugName.Text,
                 Category = "Custom Drug",

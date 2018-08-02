@@ -12277,7 +12277,7 @@ namespace Chummer
             {
                 _blnSkipRefresh = true;
                 lblDrugName.Text = objDrug.Name;
-                lblDrugAvail.Text = objDrug.Availability.ToString();
+                lblDrugAvail.Text = objDrug.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language).ToString();
                 lblDrugGrade.Text = objDrug.Grade;
                 lblDrugCost.Text = String.Format("{0:###,###,##0¥}", objDrug.Cost);
                 lblDrugCategory.Text = objDrug.Category;

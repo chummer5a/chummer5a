@@ -295,6 +295,7 @@ namespace Chummer
             CharacterObject.ImprovementGroups.CollectionChanged += ImprovementGroupCollectionChanged;
             CharacterObject.Calendar.ListChanged += CalendarWeekListChanged;
             CharacterObjectOptions.PropertyChanged += OptionsChanged;
+            CharacterObject.Drugs.CollectionChanged += DrugCollectionChanged;
 
             // Populate the Magician Traditions list.
             XPathNavigator xmlTraditionsBaseChummerNode = XmlManager.Load("traditions.xml").GetFastNavigator().SelectSingleNode("/chummer");
@@ -816,6 +817,11 @@ namespace Chummer
             RefreshFociFromGear(treFoci, null, notifyCollectionChangedEventArgs);
         }
 
+        private void DrugCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RefreshDrugs(treCustomDrugs, notifyCollectionChangedEventArgs);
+        }
+
         private void GearLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             RefreshGearLocations(treGear, cmsGearLocation, notifyCollectionChangedEventArgs);
@@ -898,6 +904,7 @@ namespace Chummer
                 CharacterObject.ImprovementGroups.CollectionChanged -= ImprovementGroupCollectionChanged;
                 CharacterObject.Calendar.ListChanged -= CalendarWeekListChanged;
                 CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
+                CharacterObject.Drugs.CollectionChanged -= DrugCollectionChanged;
 
                 treGear.ItemDrag -= treGear_ItemDrag;
                 treGear.DragEnter -= treGear_DragEnter;
@@ -12511,9 +12518,16 @@ namespace Chummer
                 cmdDeleteImprovement_Click(sender, e);
             }
         }
-#endregion
+        #endregion
 
-#region Splitter Resize Events
+        #region Additional Drug Tab Control Events
+        private void treCustomDrugs_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            RefreshSelectedDrug();
+        }
+        #endregion
+
+        #region Splitter Resize Events
         private void splitKarmaNuyen_Panel1_Resize(object sender, EventArgs e)
         {
             lstKarma.Width = splitKarmaNuyen.Panel1.Width;
@@ -12903,7 +12917,56 @@ namespace Chummer
             else
                 lblPossessed.Visible = false;
         }
-        
+
+        /// <summary>
+        /// Refresh the currently-selected Drug.
+        /// </summary>
+        private void RefreshSelectedDrug()
+        {
+            bool blnClear = false;
+
+            try
+            {
+                if (treCustomDrugs.SelectedNode.Level == 0)
+                    blnClear = true;
+            }
+            catch
+            {
+                blnClear = true;
+            }
+
+            if (blnClear)
+            {
+                lblDrugAvail.Text = "";
+                lblDrugGrade.Text = "";
+                lblDrugCost.Text = "";
+                lblDrugCategory.Text = "";
+                lblDrugAddictionRating.Text = "";
+                lblDrugAddictionThreshold.Text = "";
+                lblDrugComponents.Text = "";
+            }
+
+            // Locate the selected Vehicle.
+            if (treCustomDrugs.SelectedNode?.Tag is Drug objDrug)
+            {
+                _blnSkipRefresh = true;
+                lblDrugName.Text = objDrug.Name;
+                lblDrugAvail.Text = objDrug.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language).ToString();
+                lblDrugGrade.Text = objDrug.Grade;
+                lblDrugCost.Text = String.Format("{0:###,###,##0¥}", objDrug.Cost);
+                lblDrugCategory.Text = objDrug.Category;
+                lblDrugAddictionRating.Text = objDrug.AddictionRating.ToString();
+                lblDrugAddictionThreshold.Text = objDrug.AddictionThreshold.ToString();
+
+                lblDrugComponents.Text = "";
+                foreach (DrugComponent objComponent in objDrug.Components)
+                {
+                    lblDrugComponents.Text += objComponent.DisplayName + "\n";
+                }
+                _blnSkipRefresh = false;
+
+            }
+        }
         private void LiveUpdateFromCharacterFile(object sender, EventArgs e)
         {
             if (IsDirty || !GlobalOptions.LiveUpdateCleanCharacterFiles || _blnLoading || _blnSkipUpdate || IsCharacterUpdateRequested)
@@ -17489,6 +17552,89 @@ namespace Chummer
         private void OpenSourceFromLabel(object sender, EventArgs e)
         {
             CommonFunctions.OpenPDFFromControl(sender, e);
+        }
+
+        private void btnCreateCustomDrug_Click(object sender, EventArgs e)
+        {
+            frmCreateCustomDrug form = new frmCreateCustomDrug(CharacterObject);
+            form.ShowDialog(this);
+
+            if (form.DialogResult == DialogResult.Cancel)
+                return;
+
+            Drug objCustomDrug = form.CustomDrug;
+            objCustomDrug.Quantity = 0;
+            CharacterObject.Drugs.Add(objCustomDrug);
+        }
+
+        private void btnIncreaseDrugQty_Click(object sender, EventArgs e)
+        {
+            TreeNode objSelectedNode = treCustomDrugs.SelectedNode;
+            if (!(objSelectedNode?.Tag is Drug selectedDrug)) return;
+            
+            decimal decCost = selectedDrug.TotalCost;
+            /* Apply a markup if applicable.
+            if (frmPickArmor.Markup != 0)
+            {
+                decCost *= 1 + (frmPickArmor.Markup / 100.0m);
+            }*/
+
+            // Multiply the cost if applicable.
+            char chrAvail = selectedDrug.TotalAvailTuple().Suffix;
+            if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
+                decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
+            if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
+                decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+
+            // Check the item's Cost and make sure the character can afford it.
+            if (decCost > CharacterObject.Nuyen)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
+            // Create the Expense Log Entry.
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+            objExpense.Create(decCost * -1,
+                LanguageManager.GetString("String_ExpensePurchaseDrug", GlobalOptions.Language) +
+                LanguageManager.GetString("String_Space", GlobalOptions.Language) +
+                selectedDrug.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+            CharacterObject.Nuyen -= decCost;
+
+            ExpenseUndo objUndo = new ExpenseUndo();
+            objUndo.CreateNuyen(NuyenExpenseType.AddGear, selectedDrug.InternalId);
+            objExpense.Undo = objUndo;
+        }
+
+        private void btnDecreaseDrugQty_Click(object sender, EventArgs e)
+        {
+            TreeNode objSelectedNode = treCustomDrugs.SelectedNode;
+            if (!(objSelectedNode?.Tag is Drug objDrug)) return;
+
+            frmSelectNumber frmPickNumber = new frmSelectNumber()
+            {
+                Minimum = 0,
+                Maximum = objDrug.Quantity,
+                Description = LanguageManager.GetString("String_ReduceGear", GlobalOptions.Language)
+            };
+            frmPickNumber.ShowDialog(this);
+
+            if (frmPickNumber.DialogResult == DialogResult.Cancel)
+                return;
+
+            decimal decSelectedValue = frmPickNumber.SelectedValue;
+
+            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_ReduceQty", GlobalOptions.Language).Replace("{0}", decSelectedValue.ToString(GlobalOptions.CultureInfo))))
+                return;
+
+            objDrug.Quantity -= decSelectedValue;
+            objSelectedNode.Text = objDrug.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+
+            IsCharacterUpdateRequested = true;
+
+            IsDirty = true;
         }
     }
 }

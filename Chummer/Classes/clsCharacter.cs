@@ -2563,7 +2563,7 @@ namespace Chummer
             objXmlNodeList = objXmlDocument.SelectNodes("/character/drugs/drug");
             foreach (XmlNode objXmlDrug in objXmlNodeList)
             {
-                Drug objDrug = new Drug();
+                Drug objDrug = new Drug(this);
                 objDrug.Load(objXmlDrug);
                 _lstDrugs.Add(objDrug);
             }

@@ -836,9 +836,6 @@ namespace Chummer
 			this.label16 = new System.Windows.Forms.Label();
 			this.panEnemies = new System.Windows.Forms.FlowLayoutPanel();
 			this.cmdAddEnemy = new SplitButton();
-			this.tabPets = new System.Windows.Forms.TabPage();
-			this.panPets = new System.Windows.Forms.FlowLayoutPanel();
-			this.cmdAddPet = new SplitButton();
 			this.tabInfo = new System.Windows.Forms.TabControl();
 			this.tabBPSummary = new System.Windows.Forms.TabPage();
 			this.tlpKarmaSummary = new System.Windows.Forms.TableLayoutPanel();

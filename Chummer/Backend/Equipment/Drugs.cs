@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -14,6 +16,7 @@ namespace Chummer.Backend.Equipment
         private Guid _guiID = new Guid();
         private string _strName = "";
         private string _strCategory = "";
+        private string _strAvailability = "0";
         private string _strDescription;
         private ObservableCollection<DrugComponent> _lstDrugComponents = new ObservableCollection<DrugComponent>();
         private Dictionary<string, int> _cachedAttributes = new Dictionary<string, int>();
@@ -22,16 +25,17 @@ namespace Chummer.Backend.Equipment
         private List<string> _cachedQualities = new List<string>();
         private string _strGrade = "";
         private int _intCost;
-        private int _intAvailability;
         private int _intAddictionThreshold;
         private int _intAddictionRating;
-        private int _intQty;
+        private decimal _decQty;
         private string _strAltName = "";
+        public Character Character;
 
         #region Constructor, Create, Save, Load, and Print Methods
 
-        public Drug()
+        public Drug(Character objCharacter)
         {
+            Character = objCharacter;
             // Create the GUID for the new Drug.
             _guiID = Guid.NewGuid();
             _lstDrugComponents.CollectionChanged += ComponentsChanged;
@@ -53,8 +57,8 @@ namespace Chummer.Backend.Equipment
         public void Load(XmlNode objXmlData)
         {
             _guiID = Guid.Parse(objXmlData["guid"].InnerText);
-            objXmlData.TryGetField("name", out _strName);
-            objXmlData.TryGetField("category", out _strCategory);
+            objXmlData.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
             foreach (XmlNode objXmlLevel in objXmlData.SelectNodes("drugcomponents/drugcomponent"))
             {
                 DrugComponent c = new DrugComponent();
@@ -62,11 +66,11 @@ namespace Chummer.Backend.Equipment
                 Components.Add(c);
             }
 
-            objXmlData.TryGetField("availability", out _intAvailability);
-            objXmlData.TryGetField("cost", out _intCost);
-            objXmlData.TryGetField("quantity", out _intQty);
-            objXmlData.TryGetField("rating", out _intAddictionRating);
-            objXmlData.TryGetField("threshold", out _intAddictionThreshold);
+            objXmlData.TryGetStringFieldQuickly("availability", ref _strAvailability);
+            objXmlData.TryGetInt32FieldQuickly("cost", ref _intCost);
+            objXmlData.TryGetDecFieldQuickly("quantity", ref _decQty);
+            objXmlData.TryGetInt32FieldQuickly("rating", ref _intAddictionRating);
+            objXmlData.TryGetInt32FieldQuickly("threshold", ref _intAddictionThreshold);
             //objXmlData.TryGetField("source", out _strSource);
             //objXmlData.TryGetField("page", out _strPage);
         }
@@ -77,7 +81,7 @@ namespace Chummer.Backend.Equipment
             objXmlWriter.WriteElementString("guid", _guiID.ToString());
             objXmlWriter.WriteElementString("name", _strName);
             objXmlWriter.WriteElementString("category", _strCategory);
-            objXmlWriter.WriteElementString("quantity", _intQty.ToString());
+            objXmlWriter.WriteElementString("quantity", _decQty.ToString(GlobalOptions.DefaultLanguage));
             objXmlWriter.WriteStartElement("drugcomponents");
             foreach (DrugComponent objDrugComponent in _lstDrugComponents)
             {
@@ -87,8 +91,7 @@ namespace Chummer.Backend.Equipment
             }
 
             objXmlWriter.WriteEndElement();
-            if (_intAvailability != 0)
-                objXmlWriter.WriteElementString("availability", _intAvailability.ToString());
+            objXmlWriter.WriteElementString("availability", _strAvailability);
             if (_intCost != 0)
                 objXmlWriter.WriteElementString("cost", _intCost.ToString());
             if (_intAddictionRating != 0)
@@ -167,7 +170,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Base cost of the Drug.
         /// </summary>
-        public int Cost
+        public decimal Cost
         {
             get
             {
@@ -180,30 +183,79 @@ namespace Chummer.Backend.Equipment
         /// <summary>
 		/// Total cost of the Drug.
 		/// </summary>
-		public int TotalCost => Cost * _intQty;
+		public decimal TotalCost => Cost * _decQty;
 
 	    /// <summary>
 		/// Total amount of the Drug held by the character.
 		/// </summary>
-		public int Quantity
+		public decimal Quantity
 		{
-			get => _intQty;
-	        set => _intQty = value;
+			get => _decQty;
+	        set => _decQty = value;
 	    }
-
-        private int _intCachedAvailability = int.MinValue;
-
+        
         /// <summary>
         /// Availability of the Drug.
         /// </summary>
-        public int Availability
+        public string Availability => _strAvailability;
+
+        /// <summary>
+        /// Total Availability.
+        /// </summary>
+        public string TotalAvail(CultureInfo objCulture, string strLanguage)
         {
-            get
+            return TotalAvailTuple().ToString(objCulture, strLanguage);
+        }
+
+        /// <summary>
+        /// Total Availability as a triple.
+        /// </summary>
+        public AvailabilityValue TotalAvailTuple(bool blnCheckChildren = true)
+        {
+            bool blnModifyParentAvail = false;
+            string strAvail = Availability;
+            char chrLastAvailChar = ' ';
+            int intAvail = 0;
+            if (strAvail.Length > 0)
             {
-                if (_intCachedAvailability != int.MinValue) return _intCachedAvailability;
-                _intCachedAvailability = Components.Sum(d => d.Availability);
-                return _intCachedAvailability;
+                chrLastAvailChar = strAvail[strAvail.Length - 1];
+                if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
+                {
+                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
+                }
+
+                blnModifyParentAvail = strAvail.StartsWith('+', '-');
+                StringBuilder objAvail = new StringBuilder(strAvail.TrimStart('+'));
+                /*
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                {
+                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
+                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
+                }*/
+
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    intAvail += Convert.ToInt32(objProcess);
             }
+            if (blnCheckChildren)
+            {
+                // Run through the Accessories and add in their availability.
+                foreach (DrugComponent objComponent in Components)
+                {
+                    AvailabilityValue objLoopAvail = objComponent.TotalAvailTuple();
+                    if (objLoopAvail.AddToParent)
+                        intAvail += objLoopAvail.Value;
+                    if (objLoopAvail.Suffix == 'F')
+                        chrLastAvailChar = 'F';
+                    else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
+                        chrLastAvailChar = 'R';
+                }
+            }
+
+            if (intAvail < 0)
+                intAvail = 0;
+
+            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
         }
 
         private int _intCachedAddictionThreshold = int.MinValue;
@@ -347,10 +399,18 @@ namespace Chummer.Backend.Equipment
 		/// </summary>
 		public string DisplayNameShort => _strAltName != string.Empty ? _strAltName : _strName;
 
+
         /// <summary>
-		/// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
-		/// </summary>
-		public string DisplayName => _intQty > 1 ? _intQty + " " + DisplayNameShort : DisplayNameShort;
+        /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
+        /// </summary>
+        public string DisplayName(CultureInfo objCulture, string strLanguage)
+        {
+            string strReturn = DisplayNameShort;
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
+            if (Quantity != 1)
+                strReturn = Quantity.ToString("#,0.##", objCulture) + strSpaceCharacter + strReturn;
+            return strReturn;
+        }
 
         private bool _cachedAttributeFlag = false;
         public Dictionary<string, int> Attributes
@@ -369,6 +429,47 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        #endregion
+
+
+        #region UI Methods
+        /// <summary>
+        /// Add a piece of Armor to the Armor TreeView.
+        /// </summary>
+        public TreeNode CreateTreeNode()
+        {
+            //if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+            //return null;
+
+            TreeNode objNode = new TreeNode
+            {
+                Name = InternalId,
+                Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language),
+                Tag = this,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
+            };
+
+            TreeNodeCollection lstChildNodes = objNode.Nodes;
+
+            if (lstChildNodes.Count > 0)
+                objNode.Expand();
+
+            return objNode;
+        }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+
+                return SystemColors.WindowText;
+            }
+        }
         #endregion
         #region Methods
         public String GenerateDescription(int level = -1)
@@ -440,14 +541,14 @@ namespace Chummer.Backend.Equipment
 				description.Append("Addiction rating: ").Append(AddictionRating * (level + 1)).AppendLine();
 				description.Append("Addiction threshold: ").Append(AddictionThreshold * (level + 1)).AppendLine();
 				description.Append("Cost: ").Append(Cost * (level + 1)).Append("¥").AppendLine();
-				description.Append("Availability: ").Append(Availability * (level + 1)).AppendLine();
+				description.Append($"Availability: {TotalAvail(GlobalOptions.CultureInfo,GlobalOptions.Language)}").AppendLine();
 			}
 			else
 			{
 				description.Append("Addiction rating: ").Append(AddictionRating).Append(" per level").AppendLine();
 				description.Append("Addiction threshold: ").Append(AddictionThreshold).Append(" per level").AppendLine();
 				description.Append("Cost: ").Append(Cost).Append("¥ per level").AppendLine();
-				description.Append("Availability: ").Append(Availability).Append(" per level").AppendLine();
+				description.Append("Availability: ").Append(TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language)).Append(" per level").AppendLine();
 			}
 
 			return description.ToString();
@@ -461,8 +562,8 @@ namespace Chummer.Backend.Equipment
 	{
 		private string _strName;
 		private string _strCategory;
-		private readonly List<DrugEffect> _lstEffects;
-		private int availability = 0;
+	    private string _strAvailability = "0";
+        private readonly List<DrugEffect> _lstEffects;
 		private int cost = 0;
 		private int addictionRating = 0;
 		private int addictionThreshold = 0;
@@ -470,7 +571,6 @@ namespace Chummer.Backend.Equipment
 		private string source;
 		private int page = 0;
 		private int _intCost;
-		private int _intAvailability;
 		private int _intAddictionThreshold;
 		private int _intAddictionRating;
 
@@ -532,7 +632,7 @@ namespace Chummer.Backend.Equipment
 				}
 				_lstEffects.Add(objDrugEffect);
 			}
-			objXmlData.TryGetField("availability", out _intAvailability);
+			objXmlData.TryGetStringFieldQuickly("availability", ref _strAvailability);
 			objXmlData.TryGetField("cost", out _intCost);
 			objXmlData.TryGetField("rating", out _intAddictionRating);
 			objXmlData.TryGetField("threshold", out _intAddictionThreshold);
@@ -585,8 +685,7 @@ namespace Chummer.Backend.Equipment
 			}
 			objXmlWriter.WriteEndElement();
 
-			if (availability != 0)
-				objXmlWriter.WriteElementString("availability", availability.ToString());
+		    objXmlWriter.WriteElementString("availability", _strAvailability);
 			if (cost != 0)
 				objXmlWriter.WriteElementString("cost", cost.ToString());
 			if (addictionRating != 0)
@@ -642,13 +741,50 @@ namespace Chummer.Backend.Equipment
 			get => _intCost;
 	        set => _intCost = value;
 	    }
-		public int Availability
+		public string Availability
 		{
-			get => _intAvailability;
-		    set => _intAvailability = value;
-		}
+			get => _strAvailability;
+		    set => _strAvailability = value;
+        }
 
-		public int AddictionThreshold
+        /// <summary>
+        /// Total Availability as a triple.
+        /// </summary>
+        public AvailabilityValue TotalAvailTuple(bool blnCheckChildren = true)
+        {
+            bool blnModifyParentAvail = false;
+            string strAvail = Availability;
+            char chrLastAvailChar = ' ';
+            int intAvail = 0;
+            if (strAvail.Length > 0)
+            {
+                chrLastAvailChar = strAvail[strAvail.Length - 1];
+                if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
+                {
+                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
+                }
+                
+                blnModifyParentAvail = strAvail.StartsWith('+', '-');
+                StringBuilder objAvail = new StringBuilder(strAvail.TrimStart('+'));
+                /*
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                {
+                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
+                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
+                }*/
+
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    intAvail += Convert.ToInt32(objProcess);
+            }
+
+            if (intAvail < 0)
+                intAvail = 0;
+
+            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
+        }
+
+        public int AddictionThreshold
 		{
 			get => _intAddictionThreshold;
 		    set => _intAddictionThreshold = value;
@@ -741,14 +877,14 @@ namespace Chummer.Backend.Equipment
 				description.Append("Addiction rating: ").Append(addictionRating * (level + 1)).AppendLine();
 				description.Append("Addiction threshold: ").Append(addictionThreshold * (level + 1)).AppendLine();
 				description.Append("Cost: ").Append(cost * (level + 1)).Append("¥").AppendLine();
-				description.Append("Availability: ").Append(availability * (level + 1)).AppendLine();
+				description.Append("Availability: ").Append(Availability).AppendLine();
 			}
 			else
 			{
 				description.Append("Addiction rating: ").Append(addictionRating).Append(" per level").AppendLine();
 				description.Append("Addiction threshold: ").Append(addictionThreshold).Append(" per level").AppendLine();
 				description.Append("Cost: ").Append(cost).Append("¥ per level").AppendLine();
-				description.Append("Availability: ").Append(availability).Append(" per level").AppendLine();
+				description.Append("Availability: ").Append(Availability).Append(" per level").AppendLine();
 			}
 
 			return description.ToString();

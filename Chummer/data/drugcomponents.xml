@@ -64,7 +64,7 @@
           </attribute>
         </effect>
       </effects>
-      <availability>4</availability>
+      <availability>+4R</availability>
       <cost>75</cost>
       <rating>6</rating>
       <threshold>2</threshold>
@@ -99,7 +99,7 @@
           </attribute>
         </effect>
       </effects>
-      <availability>4</availability>
+      <availability>+4R</availability>
       <cost>75</cost>
       <rating>6</rating>
       <threshold>2</threshold>
@@ -130,7 +130,7 @@
           </attribute>
         </effect>
       </effects>
-      <availability>4</availability>
+      <availability>+4R</availability>
       <cost>75</cost>
       <rating>6</rating>
       <threshold>2</threshold>
@@ -157,7 +157,7 @@
           </attribute>
         </effect>
       </effects>
-      <availability>4</availability>
+      <availability>+4R</availability>
       <cost>75</cost>
       <rating>6</rating>
       <threshold>2</threshold>
@@ -188,7 +188,7 @@
           </attribute>
         </effect>
       </effects>
-      <availability>4</availability>
+      <availability>+4R</availability>
       <cost>75</cost>
       <rating>6</rating>
       <threshold>2</threshold>
@@ -238,7 +238,7 @@
           <crashdamage>2</crashdamage>
         </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>20</cost>
       <source>CF</source>
       <page>190</page>
@@ -287,7 +287,7 @@
           <crashdamage>2</crashdamage>
         </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>20</cost>
       <source>CF</source>
       <page>190</page>
@@ -333,7 +333,7 @@
           <crashdamage>2</crashdamage>
         </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>20</cost>
       <source>CF</source>
       <page>190</page>
@@ -385,7 +385,7 @@
           <crashdamage>2</crashdamage>
         </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>20</cost>
       <source>CF</source>
       <page>190</page>
@@ -437,7 +437,7 @@
           <info>Crash Effect: -1d6 initiative dice</info>
         </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>20</cost>
       <source>CF</source>
       <page>190</page>
@@ -489,7 +489,7 @@
           <crashdamage>2</crashdamage>
         </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>20</cost>
       <source>CF</source>
       <page>190</page>
@@ -544,7 +544,7 @@
           </attribute>
         </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>20</cost>
       <source>CF</source>
       <page>191</page>
@@ -590,7 +590,7 @@
           <crashdamage>2</crashdamage>
         </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>20</cost>
       <source>CF</source>
       <page>191</page>
@@ -639,7 +639,7 @@
           <crashdamage>8</crashdamage>
         </effect>
       </effects>
-      <availability>2</availability>
+      <availability>+2</availability>
       <cost>40</cost>
       <source>CF</source>
       <page>191</page>
@@ -681,7 +681,7 @@
           <crashdamage>2</crashdamage>
         </effect>
       </effects>
-      <availability>2</availability>
+      <availability>+2</availability>
       <cost>30</cost>
       <source>CF</source>
       <page>191</page>
@@ -727,7 +727,7 @@
           <crashdamage>2</crashdamage>
         </effect>
       </effects>
-      <availability>2</availability>
+      <availability>+2</availability>
       <cost>30</cost>
       <source>CF</source>
       <page>191</page>
@@ -773,7 +773,7 @@
           <crashdamage>2</crashdamage>
         </effect>
       </effects>
-      <availability>2</availability>
+      <availability>+2</availability>
       <cost>30</cost>
       <source>CF</source>
       <page>191</page>
@@ -819,7 +819,7 @@
           <crashdamage>2</crashdamage>
         </effect>
       </effects>
-      <availability>2</availability>
+      <availability>+2</availability>
       <cost>30</cost>
       <source>CF</source>
       <page>191</page>
@@ -834,7 +834,7 @@
           <info>Ingestion Vector</info>
         </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>50</cost>
       <rating>1</rating>
       <threshold>1</threshold>
@@ -849,7 +849,7 @@
           <info>Inhalation Vector</info>
         </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>50</cost>
       <rating>1</rating>
       <threshold>1</threshold>
@@ -864,7 +864,7 @@
           <speed>1</speed>
         </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>50</cost>
       <rating>1</rating>
       <threshold>1</threshold>
@@ -874,7 +874,7 @@
     <drugcomponent>
       <name>Duration Enhancer</name>
       <category>Enhancer</category>
-      <availability>1</availability>
+      <availability>+1</availability>
       <effects>
         <effect>
           <duration>1</duration>
