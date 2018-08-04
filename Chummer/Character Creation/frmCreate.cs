@@ -312,6 +312,7 @@ namespace Chummer
             CharacterObject.WeaponLocations.CollectionChanged += WeaponLocationCollectionChanged;
             CharacterObject.Gear.CollectionChanged += GearCollectionChanged;
             CharacterObject.GearLocations.CollectionChanged += GearLocationCollectionChanged;
+            CharacterObject.Drugs.CollectionChanged += DrugCollectionChanged;
             CharacterObject.Cyberware.CollectionChanged += CyberwareCollectionChanged;
             CharacterObject.Vehicles.CollectionChanged += VehicleCollectionChanged;
             CharacterObject.VehicleLocations.CollectionChanged += VehicleLocationCollectionChanged;
@@ -713,6 +714,7 @@ namespace Chummer
                 CharacterObject.Armor.CollectionChanged -= ArmorCollectionChanged;
                 CharacterObject.ArmorLocations.CollectionChanged -= ArmorLocationCollectionChanged;
                 CharacterObject.Weapons.CollectionChanged -= WeaponCollectionChanged;
+                CharacterObject.Drugs.CollectionChanged -= DrugCollectionChanged;
                 CharacterObject.WeaponLocations.CollectionChanged -= WeaponLocationCollectionChanged;
                 CharacterObject.Gear.CollectionChanged -= GearCollectionChanged;
                 CharacterObject.GearLocations.CollectionChanged -= GearLocationCollectionChanged;
@@ -12269,6 +12271,7 @@ namespace Chummer
                 lblDrugAddictionRating.Text = "";
                 lblDrugAddictionThreshold.Text = "";
                 lblDrugComponents.Text = "";
+                lblDrugEffect.Text = "";
                 nudDrugQty.Visible = false;
             }
 
@@ -12283,6 +12286,7 @@ namespace Chummer
                 lblDrugCategory.Text = objDrug.Category;
                 lblDrugAddictionRating.Text = objDrug.AddictionRating.ToString();
                 lblDrugAddictionThreshold.Text = objDrug.AddictionThreshold.ToString();
+                lblDrugEffect.Text = objDrug.EffectDescription;
                 nudDrugQty.Enabled = true;
                 nudDrugQty.Visible = true;
                 nudDrugQty.Value = objDrug.Quantity;
@@ -15496,6 +15500,11 @@ namespace Chummer
             RefreshWeaponLocations(treWeapons, cmsWeaponLocation, notifyCollectionChangedEventArgs);
         }
 
+        private void DrugCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RefreshDrugs(treCustomDrugs, notifyCollectionChangedEventArgs);
+        }
+
         private void GearCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked, notifyCollectionChangedEventArgs);
@@ -15779,9 +15788,6 @@ namespace Chummer
                 return;
 
             Drug objCustomDrug = form.CustomDrug;
-            TreeNode node = treCustomDrugs.Nodes[0].Nodes.Add(objCustomDrug.Name);
-            node.Tag = objCustomDrug;
-            node.EnsureVisible();
             CharacterObject.Drugs.Add(objCustomDrug);
         }
 		private void OpenSourceFromLabel(object sender, EventArgs e)

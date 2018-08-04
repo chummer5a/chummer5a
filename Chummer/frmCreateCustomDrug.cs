@@ -66,7 +66,7 @@ namespace Chummer
             treChoosenComponents.ExpandAll();
 	        PopulateGrades();
 			UpdateCustomDrugStats();
-            lblDrugDescription.Text = objDrug.GenerateDescription(0);
+            lblDrugDescription.Text = objDrug.Description;
         }
 
         private void LoadData()

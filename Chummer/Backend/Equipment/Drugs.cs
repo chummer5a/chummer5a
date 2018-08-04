@@ -17,7 +17,8 @@ namespace Chummer.Backend.Equipment
         private string _strName = "";
         private string _strCategory = "";
         private string _strAvailability = "0";
-        private string _strDescription;
+        private string _strDescription = string.Empty;
+        private string _strEffectDescription = string.Empty;
         private ObservableCollection<DrugComponent> _lstDrugComponents = new ObservableCollection<DrugComponent>();
         private Dictionary<string, int> _cachedAttributes = new Dictionary<string, int>();
         private List<string> _cachedInfos = new List<string>();
@@ -52,6 +53,7 @@ namespace Chummer.Backend.Equipment
             _cachedQualityFlag = false;
             _cachedLimitFlag = false;
             _cachedAttributeFlag = false;
+            _strDescription = string.Empty;
         }
 
         public void Load(XmlNode objXmlData)
@@ -130,12 +132,31 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Internal identifier which will be used to identify this item.
+        /// Compiled description of the drug.
         /// </summary>
         public string Description
         {
-            get => _strDescription.ToString();
+            get
+            {
+                if (_strDescription == string.Empty)
+                    _strDescription = GenerateDescription(0);
+                return _strDescription;
+            }
             set => _strDescription = value;
+        }
+
+        /// <summary>
+        /// Compiled description of the drug's Effects.
+        /// </summary>
+        public string EffectDescription
+        {
+            get
+            {
+                if (_strEffectDescription == string.Empty)
+                    _strEffectDescription = GenerateDescription(0, true);
+                return _strEffectDescription;
+            }
+            set => _strEffectDescription = value;
         }
 
         /// <summary>
@@ -472,12 +493,12 @@ namespace Chummer.Backend.Equipment
         }
         #endregion
         #region Methods
-        public String GenerateDescription(int level = -1)
-		{
+
+        public String GenerateDescription(int level = -1, bool effectsOnly = false)
+        {
             StringBuilder description = new StringBuilder();
 			bool newLineFlag = false;
-
-			description.Append(Category).Append(": ").Append(Name).AppendLine();
+            if (!effectsOnly) description.Append(Category).Append(": ").Append(Name).AppendLine();
 
 			if (level != -1)
 			{
@@ -537,21 +558,25 @@ namespace Chummer.Backend.Equipment
 
 				if (CrashDamage != 0)
 					description.Append("Crash Effect: ").Append(CrashDamage).Append("S damage, unresisted").AppendLine();
-
-				description.Append("Addiction rating: ").Append(AddictionRating * (level + 1)).AppendLine();
-				description.Append("Addiction threshold: ").Append(AddictionThreshold * (level + 1)).AppendLine();
-				description.Append("Cost: ").Append(Cost * (level + 1)).Append("¥").AppendLine();
-				description.Append($"Availability: {TotalAvail(GlobalOptions.CultureInfo,GlobalOptions.Language)}").AppendLine();
+			    if (!effectsOnly)
+			    {
+			        description.Append("Addiction rating: ").Append(AddictionRating * (level + 1)).AppendLine();
+			        description.Append("Addiction threshold: ").Append(AddictionThreshold * (level + 1)).AppendLine();
+			        description.Append("Cost: ").Append(Cost * (level + 1)).Append("¥").AppendLine();
+			        description.Append($"Availability: {TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language)}")
+			            .AppendLine();
+			    }
 			}
-			else
-			{
+			else if (!effectsOnly)
+            {
 				description.Append("Addiction rating: ").Append(AddictionRating).Append(" per level").AppendLine();
 				description.Append("Addiction threshold: ").Append(AddictionThreshold).Append(" per level").AppendLine();
 				description.Append("Cost: ").Append(Cost).Append("¥ per level").AppendLine();
 				description.Append("Availability: ").Append(TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language)).Append(" per level").AppendLine();
 			}
 
-			return description.ToString();
+            _strDescription = description.ToString();
+			return _strDescription;
 		}
 		#endregion
 	}
@@ -719,7 +744,7 @@ namespace Chummer.Backend.Equipment
 				{
 					return _strName;
 				}
-				strReturn = "{0} (Level {1})".Replace("{0}", _strName).Replace("{1}", _intLevel.ToString());
+				strReturn = $"{_strName} (Level {_intLevel})";
 				return strReturn;
 			}
 			set => _strName = value;

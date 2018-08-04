@@ -12944,6 +12944,7 @@ namespace Chummer
                 lblDrugAddictionRating.Text = "";
                 lblDrugAddictionThreshold.Text = "";
                 lblDrugComponents.Text = "";
+                lblDrugEffect.Text = "";
             }
 
             // Locate the selected Vehicle.
@@ -12957,12 +12958,15 @@ namespace Chummer
                 lblDrugCategory.Text = objDrug.Category;
                 lblDrugAddictionRating.Text = objDrug.AddictionRating.ToString();
                 lblDrugAddictionThreshold.Text = objDrug.AddictionThreshold.ToString();
-
+                lblDrugEffect.Text = objDrug.EffectDescription;
                 lblDrugComponents.Text = "";
                 foreach (DrugComponent objComponent in objDrug.Components)
                 {
                     lblDrugComponents.Text += objComponent.DisplayName + "\n";
                 }
+
+                btnIncreaseDrugQty.Enabled = objDrug.Cost <= CharacterObject.Nuyen;
+                btnDecreaseDrugQty.Enabled = objDrug.Quantity != 0;
                 _blnSkipRefresh = false;
 
             }
@@ -17572,7 +17576,7 @@ namespace Chummer
             TreeNode objSelectedNode = treCustomDrugs.SelectedNode;
             if (!(objSelectedNode?.Tag is Drug selectedDrug)) return;
             
-            decimal decCost = selectedDrug.TotalCost;
+            decimal decCost = selectedDrug.Cost;
             /* Apply a markup if applicable.
             if (frmPickArmor.Markup != 0)
             {
@@ -17602,7 +17606,8 @@ namespace Chummer
                 selectedDrug.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Nuyen -= decCost;
-
+            selectedDrug.Quantity++;
+            objSelectedNode.Text = selectedDrug.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
             ExpenseUndo objUndo = new ExpenseUndo();
             objUndo.CreateNuyen(NuyenExpenseType.AddGear, selectedDrug.InternalId);
             objExpense.Undo = objUndo;
