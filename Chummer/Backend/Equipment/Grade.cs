@@ -36,7 +36,8 @@ namespace Chummer.Backend.Equipment
         private int _intAvail;
         private string _strSource = "SR5";
         private int _intDeviceRating = 2;
-        private readonly Improvement.ImprovementSource _eSource;
+	    private int _intAddictionThreshold = 0;
+		private readonly Improvement.ImprovementSource _eSource;
 
         #region Constructor and Load Methods
         public Grade(Improvement.ImprovementSource eSource)
@@ -62,7 +63,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetDecFieldQuickly("cost", ref _decCost);
             objNode.TryGetInt32FieldQuickly("avail", ref _intAvail);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
-            if (!objNode.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating))
+            objNode.TryGetField("addictionthreshold", out _intAddictionThreshold);
+			if (!objNode.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating))
             {
                 if (Name.Contains("Alphaware"))
                     _intDeviceRating = 3;
@@ -167,6 +169,14 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool SecondHand => _strName.Contains("Used");
 
-        #endregion
-    }
+        /// <summary>
+        /// The Grade's Addiction Threshold Modifier. Used for Drugs.
+        /// </summary>
+        public int AddictionThreshold
+        {
+            get { return _intAddictionThreshold; }
+            set { _intAddictionThreshold = value; }
+        }
+		#endregion
+	}
 }

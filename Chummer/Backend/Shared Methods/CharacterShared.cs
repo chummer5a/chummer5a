@@ -3387,7 +3387,112 @@ namespace Chummer
                     treGear.SelectedNode = objNode;
             }
         }
-        
+        protected void RefreshDrugs(TreeView treGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        {
+            string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+
+            TreeNode nodRoot = null;
+
+            if (notifyCollectionChangedEventArgs == null)
+            {
+                treGear.Nodes.Clear();
+
+                // Add Gear.
+                foreach (Drug d in CharacterObject.Drugs)
+                {
+                    AddToTree(d, -1, false);
+                }
+
+                treGear.SelectedNode = treGear.FindNode(strSelectedId);
+            }
+            else
+            {
+                nodRoot = treGear.FindNode("Node_SelectedDrugs", false);
+
+                switch (notifyCollectionChangedEventArgs.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        {
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (Drug d in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AddToTree(d, intNewIndex);
+                                intNewIndex += 1;
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (Drug d in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                treGear.FindNode(d.InternalId)?.Remove();
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (Drug d in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                treGear.FindNode(d.InternalId)?.Remove();
+                            }
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (Drug d in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AddToTree(d, intNewIndex);
+                                intNewIndex += 1;
+                            }
+                            treGear.SelectedNode = treGear.FindNode(strSelectedId);
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Move:
+                        {
+                            foreach (Drug d in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                treGear.FindNode(d.InternalId)?.Remove();
+                            }
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (Drug d in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AddToTree(d, intNewIndex);
+                                intNewIndex += 1;
+                            }
+                            treGear.SelectedNode = treGear.FindNode(strSelectedId);
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshDrugs(treGear);
+                        }
+                        break;
+                }
+            }
+
+            void AddToTree(Drug objGear, int intIndex = -1, bool blnSingleAdd = true)
+            {
+                TreeNode objNode = objGear.CreateTreeNode();
+                if (objNode == null)
+                    return;
+                TreeNode nodParent = null;
+                if (nodRoot == null)
+                {
+                    nodRoot = new TreeNode
+                    {
+                        Tag = "Node_SelectedGear",
+                        Text = LanguageManager.GetString("Node_SelectedGear", GlobalOptions.Language)
+                    };
+                    treGear.Nodes.Insert(0, nodRoot);
+                }
+                nodParent = nodRoot;
+
+                if (intIndex >= 0)
+                    nodParent.Nodes.Insert(intIndex, objNode);
+                else
+                    nodParent.Nodes.Add(objNode);
+                nodParent.Expand();
+                if (blnSingleAdd)
+                    treGear.SelectedNode = objNode;
+            }
+        }
         protected void RefreshCyberware(TreeView treCyberware, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             string strSelectedId = (treCyberware.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;

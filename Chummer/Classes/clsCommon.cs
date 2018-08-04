@@ -109,14 +109,29 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Locate a piece of Gear within the character's Vehicles.
+        /// Locate a piece of Gear by matching on its Weapon ID.
         /// </summary>
-        /// <param name="strGuid">InternalId of the Gear to find.</param>
-        /// <param name="lstVehicles">List of Vehicles to search.</param>
-        /// <param name="objFoundVehicle">Vehicle that the Gear was found in.</param>
-        /// <param name="objFoundWeaponAccessory">Weapon Accessory that the Gear was found in.</param>
-        /// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
-        public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware)
+        /// <param name="strGuid">InternalId of the Weapon to find.</param>
+        /// <param name="lstGear">List of Gear to search.</param>
+        public static Drug FindDrug(string strGuid, List<Drug> lstGear)
+        {
+            foreach (Drug objDrug in lstGear)
+            {
+                if (objDrug.InternalId == strGuid)
+                    return objDrug;
+            }
+
+            return null;
+        }
+		/// <summary>
+		/// Locate a piece of Gear within the character's Vehicles.
+		/// </summary>
+		/// <param name="strGuid">InternalId of the Gear to find.</param>
+		/// <param name="lstVehicles">List of Vehicles to search.</param>
+		/// <param name="objFoundVehicle">Vehicle that the Gear was found in.</param>
+		/// <param name="objFoundWeaponAccessory">Weapon Accessory that the Gear was found in.</param>
+		/// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
+		public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware)
         {
             if (!string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
             {

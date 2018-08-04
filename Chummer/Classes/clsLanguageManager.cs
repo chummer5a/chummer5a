@@ -372,6 +372,16 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Overload for standard GetString method, using GlobalOptions.Language as default string.
+        /// </summary>
+        /// <param name="strKey">Key to retrieve.</param>
+        /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
+        /// <returns></returns>
+        public static string GetString(string strKey, bool blnReturnError = true)
+        {
+            return GetString(strKey, GlobalOptions.Language, blnReturnError);
+        }
+        /// <summary>
         /// Retrieve a string from the language file.
         /// </summary>
         /// <param name="strKey">Key to retrieve.</param>

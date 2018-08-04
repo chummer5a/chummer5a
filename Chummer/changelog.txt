@@ -54,7 +54,8 @@ Data Changes:
 New Strings:
 
 - Message_DeleteWeaponMount
-
+- String_ExpensePurchaseDrug
+- Label_DrugEffect
 Build 201
 
 Application Changes:
@@ -2769,6 +2770,7 @@ Application Changes:
 - Fixed a bug where spending any karma on a skill prevented getting a specialization with skillpoints
 - Fixed a weird bug where German knowledge skill types would appear sorted but would actually use the English order.
 - Fixed a bug where deleting a knowledge skill would not restore the spent points/ karma.
+- Made a bunch of drugs.
 
 Data Changes:
 - Fixed a crash when creating an e-ghost AI. Fixes #918.

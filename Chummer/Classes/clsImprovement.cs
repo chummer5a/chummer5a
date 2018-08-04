@@ -340,6 +340,7 @@ namespace Chummer
             AIProgram,
             SpiritFettering,
             MentorSpirit,
+            Drug,
             NumImprovementSources // 🡐 This one should always be the last defined enum
         }
 
