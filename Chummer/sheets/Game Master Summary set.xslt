@@ -510,6 +510,7 @@
                   <xsl:sort select="name" />
                   <xsl:value-of select="name" />
                   <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="$lang.Rating"/><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
+                  <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
                   <xsl:if test="children/cyberware">
                     (<xsl:for-each select="children/cyberware">
                       <xsl:value-of select="name" />

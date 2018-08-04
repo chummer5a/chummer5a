@@ -1387,6 +1387,7 @@
       <xsl:otherwise>
         <xsl:value-of select="name" />
         <xsl:if test="rating &gt; 0"> [R<xsl:value-of select="rating" />]</xsl:if>
+        <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
         <xsl:call-template name="print_source_page" />
         <xsl:call-template name="print_notes" />
       </xsl:otherwise>
