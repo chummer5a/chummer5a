@@ -558,8 +558,8 @@ namespace Chummer
                     return objImprovementAdder.naturalweapon;
                 case "SINLEVEL":
                     return objImprovementAdder.sinlevel;
-                case "MULTIPLESKILLSLEVEL":
-                    return objImprovementAdder.multipleskillslevel;
+                case "MULTIPLESKILLS":
+                    return objImprovementAdder.multipleskills;
                 // No method matches, return a null pointer
                 default:
                     return null;

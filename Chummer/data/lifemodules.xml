@@ -60,7 +60,41 @@
               <group>Language</group>
               <val>2</val>
             </knowledgeskilllevel>
-			<sinlevel select="United Canadian American States">SINner (National)</sinlevel>
+			<sinlevel select="United Canadian American States">
+				<options>
+					<national>SINner (National)</national>
+					<criminal>SINner (Criminal)</criminal>
+				</options>
+			</sinlevel>
+			<attributelevel>
+          <options>
+            <bod>BOD</bod>
+            <agi>AGI</agi>
+            <rea>REA</rea>
+            <str>STR</str>
+            <log>LOG</log>
+            <int>INT</int>
+            <wil>WIL</wil>
+          </options>
+        </attributelevel>
+		<attributelevel>
+          <options>
+            <bod>BOD</bod>
+            <agi>AGI</agi>
+            <rea>REA</rea>
+            <str>STR</str>
+            <log>LOG</log>
+            <int>INT</int>
+            <wil>WIL</wil>
+          </options>
+		  <count>3</count>
+        </attributelevel>
+		<addqualities>
+			<addquality><name>Tough as Nails (Physical)</name></addquality>
+			<addquality><name>Tough as Nails (Physical)</name></addquality>
+			<addquality><name>Tough as Nails (Physical)</name></addquality>
+			<addquality><name>Tough as Nails (Physical)</name></addquality>
+		</addqualities>
           </bonus>
         </version>
         <version>
@@ -154,9 +188,10 @@
         </version>
       </versions>
       <bonus>
-        <skilllevel>
-          <name>Computer</name>
-        </skilllevel>
+        <addskillspecialization>
+          <skill>Computer</skill>
+		  <spec>Hackx0r</spec>
+        </addskillspecialization>
         <knowledgeskilllevel>
           <name>History</name>
           <group>Academic</group>
@@ -799,9 +834,7 @@
           <name>[Corporation]</name>
         </knowledgeskilllevel>
         <freenegativequalities>-15</freenegativequalities>
-        <addqualities>
-          <addquality>SINner (Corporate Limited)</addquality>
-        </addqualities>
+        <sinlevel>SINner (National)</sinlevel>
       </bonus>
       <story>$real was  $LUCK  enough to grow up in an Arcology: a corporate fortress city that $ARCOLOGY.</story>
       <source>RF</source>

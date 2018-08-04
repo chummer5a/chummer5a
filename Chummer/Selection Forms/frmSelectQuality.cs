@@ -39,12 +39,27 @@ namespace Chummer
 
         private static string s_StrSelectCategory = string.Empty;
 
+        private int intForcedValue;
+
         #region Control Events
-        public frmSelectQuality(Character objCharacter)
+        public frmSelectQuality(Character objCharacter, int forcedValue = 0)
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
+            intForcedValue = forcedValue;
+
+            if (intForcedValue != 0)
+            {
+                label1.Visible = false;
+                lblMinimumBP.Visible = false;
+                label2.Visible = false;
+                label3.Visible = false;
+
+                nudMinimumBP.Visible = false;
+                nudMaximumBP.Visible = false;
+                nudValueBP.Visible = false;
+            }
 
             MoveControls();
             // Load the Quality information.
@@ -360,7 +375,12 @@ namespace Chummer
             {
                 strFilter.Append(" and not(metagenetic = 'True') and not(required/oneof[contains(., 'Changeling')])");
             }
-            if (nudValueBP.Value != 0)
+            if (intForcedValue != 0)
+            {
+                strFilter.Append(" and karma = ");
+                strFilter.Append(intForcedValue);
+            }
+            else if (nudValueBP.Value != 0)
             {
                 strFilter.Append(" and karma = ");
                 strFilter.Append(nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo));

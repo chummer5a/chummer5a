@@ -9293,6 +9293,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 	  <text>Any</text>
 	</string>
 	<string>
+	  <key>String_Select_Number_From</key>
+	  <text>{0} from</text>
+	</string>
+	<string>
 	  <key>Message_SelectLifeModule_Restriction</key>
 	  <text>You have already selected a Life Module of that stage and can select only one.</text>
 	</string>
@@ -9306,7 +9310,15 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
 	<string>
       <key>Message_LifeModule_SelectKnowledgeSkill_Theme</key>
-      <text>Select or write a Knowledge skill which fits {0}:</text>
+      <text>Select a {0} Knowledge skill which fits {1}:</text>
+    </string>
+	<string>
+      <key>Message_LifeModule_SelectKnowledgeSkill_Options</key>
+      <text>Select a {0} Knowledge skill:</text>
+    </string>
+	<string>
+      <key>Message_LifeModule_SelectSIN</key>
+      <text>Select a SIN:</text>
     </string>
 	<!-- End Region -->
   </strings>

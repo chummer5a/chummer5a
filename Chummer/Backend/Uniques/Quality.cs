@@ -822,7 +822,7 @@ namespace Chummer
 
         private string GetLifeModuleEffect()
         {
-            if (_eQualityType != QualityType.LifeModule || _nodBonus == null || _nodBonus == null & !_nodBonus.HasChildNodes)
+            if (_eQualityType != QualityType.LifeModule || _nodBonus == null || !_nodBonus.HasChildNodes)
                 return string.Empty;
             
             string attributes = string.Empty;
@@ -855,10 +855,24 @@ namespace Chummer
                 }
                 if (bonusNode.Name == "sinlevel")
                 {
-                    string qualityName = bonusNode.InnerText;
-                    XmlNode xmlQualityNode = XmlManager.Load("qualities.xml", strLanguage)
-                        .SelectSingleNode("/chummer/qualities/quality[name = \"" + qualityName + "\"]");
-                    qualities += indent + (xmlQualityNode?["translate"]?.InnerText ?? qualityName) + Environment.NewLine;
+                    string qualityName = string.Empty;
+                    if (bonusNode["options"] != null)
+                    {
+                        foreach (XmlNode childNode in bonusNode["options"].ChildNodes)
+                        {
+                            XmlNode xmlQualityNode = XmlManager.Load("qualities.xml", strLanguage)
+                                .SelectSingleNode("/chummer/qualities/quality[name = \"" + childNode.InnerText + "\"]");
+                            qualityName += xmlQualityNode?["translate"]?.InnerText ?? childNode.InnerText + '/';
+                        }
+                        qualityName = qualityName.Substring(0, qualityName.Length - 1);
+                    }
+                    else
+                    {
+                        XmlNode xmlQualityNode = XmlManager.Load("qualities.xml", strLanguage)
+                            .SelectSingleNode("/chummer/qualities/quality[name = \"" + bonusNode.InnerText + "\"]");
+                        qualityName = xmlQualityNode?["translate"]?.InnerText ?? bonusNode.InnerText;
+                    }
+                    qualities += indent + qualityName + Environment.NewLine;
                 }
                 XmlDocument xmlSkillDocument = XmlManager.Load("skills.xml", strLanguage);
                 switch (bonusNode.Name)
@@ -871,18 +885,17 @@ namespace Chummer
                         }
                         else if (bonusNode["options"] != null)
                         {
-                            if (bonusNode["options"]["any"] != null)
+                            if (bonusNode["count"] != null)
                             {
-                                s = LanguageManager.GetString("String_Any", strLanguage);
+                                s = LanguageManager.GetString("String_Select_Number_From", strLanguage)
+                                    .Replace("{0}", bonusNode["count"].InnerText) + LanguageManager.GetString("String_Space", strLanguage);
                             }
-                            else
-                            {
-                                s = bonusNode["options"].ChildNodes.Cast<XmlNode>()
-                                    .Aggregate(s,
-                                        (current, optionsNode) => current + LanguageManager.GetString("String_Attribute" + optionsNode.InnerText + "Long",
-                                                                       strLanguage) + "/");
-                                s = s.Substring(0, s.Length - 1);
-                            }
+                            s = bonusNode["options"].ChildNodes.Cast<XmlNode>()
+                                .Aggregate(s, (current, optionsNode) => current + LanguageManager.GetString(
+                                                                  "String_Attribute" + optionsNode.InnerText + "Long",
+                                                                  strLanguage) + "/");
+                            s = s.Substring(0, s.Length - 1);
+
                         }
                         attributes += indent + s + " +" + (bonusNode["val"]?.InnerText ?? "1") + Environment.NewLine;
                         break;
@@ -897,7 +910,7 @@ namespace Chummer
                                     xmlSkillDocument.SelectSingleNode("/chummer/skills/skill/specs/spec[. = \"" +
                                                                       bonusNode["spec"].InnerText + "\"]");
                                 s += LanguageManager.GetString("String_Space", strLanguage) + '(' +
-                                     (xmlSkillNode?.Attributes?["translate"]?.Value ?? bonusNode["spec"]?.InnerText) +
+                                     (xmlSkillNode?.Attributes?["translate"]?.Value ?? bonusNode["spec"].InnerText) +
                                      ' ' + LanguageManager.GetString("String_ExpenseSpecialization", strLanguage) +
                                      ")";
                             }
@@ -978,7 +991,7 @@ namespace Chummer
             }
             if (!string.IsNullOrEmpty(qualities))
             {
-                work += LanguageManager.GetString("String_Quality", strLanguage) + ":" + Environment.NewLine;
+                work += LanguageManager.GetString("String_Qualities", strLanguage) + ":" + Environment.NewLine;
                 work += qualities;
             }
             return work;

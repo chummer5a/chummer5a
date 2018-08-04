@@ -2004,8 +2004,6 @@ namespace Chummer.Classes
                 foreach (XmlNode objSubNode in bonusNode["options"])
                     lstAbbrevs.Add(objSubNode.InnerText);
 
-                if (!string.IsNullOrEmpty(SelectedValue))
-                    lstAbbrevs.Remove(SelectedValue);
                 lstAbbrevs.Remove("ESS");
                 if (!_objCharacter.MAGEnabled)
                 {
@@ -2031,36 +2029,41 @@ namespace Chummer.Classes
                 {
                     lstAbbrevs.RemoveAll(x => x != LimitSelection);
                 }
-
-                frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
+                for (int i = 0; i < ImprovementManager.ValueToInt(_objCharacter, bonusNode["count"]?.InnerText ?? "1", 0); i++)
                 {
-                    Description = !string.IsNullOrEmpty(_strFriendlyName)
-                        ? LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
-                        : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language)
-                };
+                    frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
+                    {
+                        Description = !string.IsNullOrEmpty(_strFriendlyName)
+                            ? LanguageManager.GetString("String_Improvement_SelectAttributeNamed",
+                                GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                            : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language)
+                    };
 
-                Log.Info("attributelevel = " + bonusNode.OuterXml);
+                    Log.Info("attributelevel = " + bonusNode.OuterXml);
 
-                frmPickAttribute.ShowDialog();
+                    frmPickAttribute.ShowDialog();
 
-                // Make sure the dialogue window was not canceled.
-                if (frmPickAttribute.DialogResult == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickAttribute.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    SelectedValue = frmPickAttribute.SelectedAttribute;
+                    if (_blnConcatSelectedValue)
+                        SourceName += " (" + SelectedValue + ')';
+
+                    Log.Info("_strSelectedValue = " + frmPickAttribute.SelectedAttribute);
+                    Log.Info("SourceName = " + SourceName);
+
+                    CreateImprovement(frmPickAttribute.SelectedAttribute, _objImprovementSource, SourceName,
+                        Improvement.ImprovementType.Attributelevel, _strUnique, value);
+                    lstAbbrevs.Remove(SelectedValue);
                 }
-
-                SelectedValue = frmPickAttribute.SelectedAttribute;
-                if (_blnConcatSelectedValue)
-                    SourceName += " (" + SelectedValue + ')';
-
-                Log.Info("_strSelectedValue = " + frmPickAttribute.SelectedAttribute);
-                Log.Info("SourceName = " + SourceName);
-
-                CreateImprovement(frmPickAttribute.SelectedAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.Attributelevel, _strUnique, value);
             }
             else
             {
-                Log.Error(new object[] { "attributelevel", bonusNode.OuterXml });
+                Log.Error(new object[] {"attributelevel", bonusNode.OuterXml});
             }
         }
 
@@ -2084,7 +2087,22 @@ namespace Chummer.Classes
                     throw new AbortedException();
                 }
             }
+
+            Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strSkill);
+            int intImprovedSum = objSkill.FreeKarma + objSkill.FreeBase;
+            if (intImprovedSum + intValue > objSkill.RatingMaximum)
+            {
+                //TODO LifeModules Skill >7 verhindern
+            }
             CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, intValue);
+
+            string strSpec = string.Empty;
+            if (bonusNode.TryGetStringFieldQuickly("spec", ref strSpec))
+            {
+                CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, strSpec);
+                SkillSpecialization nspec = new SkillSpecialization(strSpec, true, objSkill);
+                objSkill.Specializations.Add(nspec);
+            }
         }
 
         public void pushtext(XmlNode bonusNode)
@@ -2206,22 +2224,31 @@ namespace Chummer.Classes
             {
                 strSkill = bonusNode["name"].InnerText;
             }
-            else if (bonusNode["options"] != null)
-            {
-                bool isKnowledge = true;
-                strSkill = ImprovementManager.DoSelectSkill(bonusNode["options"], _objCharacter, _intRating, String.Empty, ref isKnowledge);
-            }
-            else if(bonusNode["theme"] != null)
-            {
-                bool isKnowledge = true;
-                string descrition = LanguageManager.GetString("Message_LifeModule_SelectKnowledgeSkill_Theme", GlobalOptions.Language).Replace("{0}", '[' + bonusNode["theme"].InnerText + ']');
-                strSkill = ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, descrition, ref isKnowledge);
-            }
             else
             {
-                Log.Error(new object[] { "knowledgeskilllevel", bonusNode.OuterXml });
-                throw new AbortedException();
+                XmlNode xmlCategoryNode = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectSingleNode($"/chummer/categories/category[. = \"{strSkillType}\"]");
+                string strSkillTypeTranslated = xmlCategoryNode?.Attributes?["translate"]?.Value ?? strSkillType;
+                bool isKnowledge = true;
+                if (bonusNode["options"] != null)
+                {
+                    string descrition = LanguageManager.GetString("Message_LifeModule_SelectKnowledgeSkill_Options", GlobalOptions.Language)
+                        .Replace("{0}", strSkillTypeTranslated);
+                    strSkill = ImprovementManager.DoSelectSkill(bonusNode["options"], _objCharacter, _intRating,descrition, ref isKnowledge);
+                }
+                else if (bonusNode["theme"] != null)
+                {
+                    string descrition = LanguageManager.GetString("Message_LifeModule_SelectKnowledgeSkill_Theme", GlobalOptions.Language)
+                        .Replace("{0}", strSkillType).Replace("{1}", '[' + bonusNode["theme"].InnerText + ']');
+                    strSkill = ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, descrition, ref isKnowledge);
+                }
+                else
+                {
+                    Log.Error(new object[] {"knowledgeskilllevel", bonusNode.OuterXml});
+                    throw new AbortedException();
+                }
             }
+
+            //TODO LifeModules KnowledgeSkill >9 verhindern
 
             KnowledgeSkill knoSkill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == strSkill);
             bool isNativeLanguage = val == 0 && strSkillType == "Language";
@@ -2235,6 +2262,13 @@ namespace Chummer.Classes
                     Type = strSkillType,
                     Deletable = false
                 };
+                string strSpec = string.Empty;
+                if (bonusNode.TryGetStringFieldQuickly("spec", ref strSpec))
+                {
+                    CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, strSpec);
+                    SkillSpecialization nspec = new SkillSpecialization(strSpec, true, knoSkill);
+                    knoSkill.Specializations.Add(nspec);
+                }
                 _objCharacter.SkillsSection.KnowledgeSkills.Add(knoSkill);
             }
             else if (!_objCharacter.Improvements.Any(x => x.ImprovedName == strSkill && x.Value == 0))
@@ -2256,6 +2290,15 @@ namespace Chummer.Classes
                 CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, val);
                 knoSkill.UnbindSkill();
                 _objCharacter.SkillsSection.KnowledgeSkills.Remove(knoSkill);
+                
+
+                string strSpec = string.Empty;
+                if (bonusNode.TryGetStringFieldQuickly("spec", ref strSpec))
+                {
+                    CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, strSpec);
+                    SkillSpecialization nspec = new SkillSpecialization(strSpec, true, knoSkillCopy);
+                    knoSkillCopy.Specializations.Add(nspec);
+                }
                 _objCharacter.SkillsSection.KnowledgeSkills.Add(knoSkillCopy);
             }
         }
@@ -6091,8 +6134,36 @@ namespace Chummer.Classes
         public void sinlevel(XmlNode bonusNode)
         {
             Log.Info("sinlevel");
-            string strSINType = bonusNode.InnerText;
-            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
+            string strSINType;
+            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml", GlobalOptions.Language);
+            if (bonusNode["options"] != null && bonusNode["options"].HasChildNodes)
+            {
+                List<ListItem> lstOptions = new List<ListItem>();
+                foreach (XmlNode childNode in bonusNode["options"].ChildNodes)
+                {
+                    string data =
+                        objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + childNode.InnerText +
+                                                        "\"]/translate")?.InnerText ?? childNode.InnerText;
+                    lstOptions.Add(new ListItem(childNode.InnerText, data));
+                }
+                frmSelectItem frmPickItem = new frmSelectItem
+                {
+                    GeneralItems = lstOptions,
+                    Description = LanguageManager.GetString("Message_LifeModule_SelectSIN", GlobalOptions.Language)
+                };
+                frmPickItem.ShowDialog();
+
+                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                strSINType = frmPickItem.SelectedItem;
+            }
+            else
+            {
+                strSINType = bonusNode.InnerText;
+            }
             XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strSINType + "\"]");
 
             string strForceValue = bonusNode.Attributes?["select"]?.Value ?? string.Empty;
@@ -6112,12 +6183,12 @@ namespace Chummer.Classes
                 }
                 strForceValue = frmPickText.SelectedValue;
             }
-            int karmaValue = -1 * ImprovementManager.ValueToInt(_objCharacter, objXmlSelectedQuality?["karma"]?.InnerText ?? "0", _intRating);
+            int karmaValue = ImprovementManager.ValueToInt(_objCharacter, objXmlSelectedQuality?["karma"]?.InnerText ?? "0", _intRating);
             CreateImprovement(strSINType, _objImprovementSource, SourceName, Improvement.ImprovementType.Sinlevel, _strFriendlyName, karmaValue, 1 ,0, 0, 0, 0, string.Empty, false, strForceValue);
 
             Quality maxKarmaSIN = _objCharacter.Qualities.FirstOrDefault(x => x.Name.Contains("SIN"));
             XmlNode objXmlSIN = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + maxKarmaSIN?.Name + "\"]");
-            if (maxKarmaSIN == null || -1 * Convert.ToInt32(objXmlSIN?["karma"]?.InnerText) < karmaValue || maxKarmaSIN.OriginSource == QualitySource.Selected)
+            if (maxKarmaSIN == null || karmaValue < Convert.ToInt32(objXmlSIN?["karma"]?.InnerText) || maxKarmaSIN.OriginSource == QualitySource.Selected)
             {
                 if (maxKarmaSIN != null)
                 {
@@ -6129,12 +6200,17 @@ namespace Chummer.Classes
                 objAddSIN.BP = 0;
                 objAddSIN.ContributeToLimit = false;
                 _objCharacter.Qualities.Add(objAddSIN);
+            } else if (Convert.ToInt32(objXmlSIN?["karma"]?.InnerText) == karmaValue)
+            {
+                frmSelectQuality frmPickSubstitue = new frmSelectQuality(_objCharacter, karmaValue);
+                frmPickSubstitue.ForceCategory = "Negative";
+                frmPickSubstitue.ShowDialog();
             }
         }
 
-        public void multipleskillslevel(XmlNode bonusNode)
+        public void multipleskills(XmlNode bonusNode)
         {
-            
+
         }
     }
 
