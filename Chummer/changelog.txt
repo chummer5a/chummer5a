@@ -37,6 +37,7 @@ Application Changes:
 - Added the ability to create custom drugs.
 - Added support for <throwrangestr /> to the Improvement Manager which effectively raises a character's STR for the purpose of determining the range of Thrown Weapons.
 - Fixed a crash when adding Metahuman Adjustment modifications to a vehicle with Increased Seating. Fixes #2857
+- Fixed a crash when changing the primary text of a knowledge skill if a specialisation has been entered.
 
 Data Changes:
 

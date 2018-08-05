@@ -168,7 +168,7 @@ namespace Chummer.UI.Skills
                     all = true;
                     goto case nameof(Skill.CGLSpecializations);
                 case nameof(Skill.CGLSpecializations):
-                    string strOldSpec = cboSpec.SelectedValue?.ToString();
+                    string strOldSpec = _skill.CGLSpecializations.Count != 0 ? cboSpec.SelectedItem?.ToString() : cboSpec.Text;
                     cboSpec.SuspendLayout();
                     cboSpec.DataSource = null;
                     cboSpec.DisplayMember = nameof(ListItem.Name);
