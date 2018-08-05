@@ -13396,7 +13396,11 @@
       <costdiscount>
         <required>
           <oneof>
+            <quality>Apprentice</quality>
             <quality>Aspected Magician</quality>
+            <quality>Aware</quality>
+            <quality>Enchanter</quality>
+            <quality>Explorer</quality>
           </oneof>
         </required>
         <value>-5</value>
@@ -13429,7 +13433,11 @@
       <costdiscount>
         <required>
           <oneof>
+            <quality>Apprentice</quality>
             <quality>Aspected Magician</quality>
+            <quality>Aware</quality>
+            <quality>Enchanter</quality>
+            <quality>Explorer</quality>
           </oneof>
         </required>
         <value>-5</value>
