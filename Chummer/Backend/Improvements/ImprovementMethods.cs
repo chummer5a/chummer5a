@@ -401,6 +401,8 @@ namespace Chummer
                     return objImprovementAdder.spellcategorydamage;
                 case "THROWRANGE":
                     return objImprovementAdder.throwrange;
+                case "THROWRANGESTR":
+                    return objImprovementAdder.throwrangestr;
                 case "THROWSTR":
                     return objImprovementAdder.throwstr;
                 case "SKILLSOFTACCESS":

@@ -3245,7 +3245,10 @@ namespace Chummer.Backend.Equipment
                 }
 
                 if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
+                {
                     intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR);
+                    intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRangeSTR);
+                }
             }
 
             foreach (string strAttribute in AttributeSection.AttributeStrings)

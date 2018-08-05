@@ -1656,7 +1656,7 @@
       <source>HT</source>
       <page>190</page>
       <bonus>
-        <throwrange>Rating*2</throwrange>
+        <throwrangestr>Rating*2</throwrangestr>
       </bonus>
       <maxlevels>3</maxlevels>
     </power>

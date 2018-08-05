@@ -129,6 +129,7 @@ namespace Chummer
             SpellCategoryDamage,
             SpellCategoryDrain,
             ThrowRange,
+            ThrowRangeSTR,
             SkillsoftAccess,
             AddSprite,
             BlackMarketDiscount,

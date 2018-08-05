@@ -35,6 +35,7 @@ Application Changes:
 - Added exceptions for the 'saves' directory and any .chum5 files from being deleted when updating Chummer.
 - Fixed calculation of armor capacity to not include items that are included in the armor.
 - Added the ability to create custom drugs.
+- Added support for <throwrangestr /> to the Improvement Manager which effectively raises a character's STR for the purpose of determining the range of Thrown Weapons.
 
 Data Changes:
 
@@ -52,6 +53,7 @@ Data Changes:
 - Corrected the metageneticlimit bonus for Changeling I and II to be 30.
 - Fixed incorrect hidden status of the Krime Shiv. 
 - Added missing costdiscount properties for the Dedciated Conjurer and Dedicated Spellslinger.
+- Ambidextrous quality can now be taken up to three times to support the Shiva Arms quality. Fixes #2893
 
 New Strings:
 

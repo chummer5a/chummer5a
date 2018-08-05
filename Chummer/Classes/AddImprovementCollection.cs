@@ -4563,6 +4563,16 @@ namespace Chummer.Classes
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
+        // Check for Throwing Range bonuses.
+        public void throwrangestr(XmlNode bonusNode)
+        {
+            Log.Info("throwrange");
+            Log.Info("throwrange = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ThrowRangeSTR, _strUnique,
+                ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
         // Check for Throwing STR bonuses.
         public void throwstr(XmlNode bonusNode)
         {
