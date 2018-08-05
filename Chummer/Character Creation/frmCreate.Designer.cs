@@ -7538,11 +7538,11 @@ namespace Chummer
 			// 
 			this.treCustomDrugs.Location = new System.Drawing.Point(6, 35);
 			this.treCustomDrugs.Name = "treCustomDrugs";
-			treeNode22.Name = "Node0";
-			treeNode22.Tag = "Node_SelectedDrugs";
-			treeNode22.Text = "Selected Drugs";
+			treeNode24.Name = "treeNode24";
+			treeNode24.Tag = "Node_SelectedDrugs";
+			treeNode24.Text = "Selected Drugs";
 			this.treCustomDrugs.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode22});
+            treeNode24});
 			this.treCustomDrugs.Size = new System.Drawing.Size(264, 538);
 			this.treCustomDrugs.TabIndex = 2;
 			this.treCustomDrugs.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCustomDrugs_AfterSelect);
