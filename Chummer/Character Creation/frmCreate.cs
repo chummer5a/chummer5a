@@ -11958,11 +11958,11 @@ namespace Chummer
                 {
                     if (objMod.MaxRating == "Seats")
                     {
-                        objMod.MaxRating = objMod.Parent.Seats.ToString();
+                        objMod.MaxRating = objMod.Parent.TotalSeats.ToString();
                     }
                     if (objMod.MaxRating == "body")
                     {
-                        objMod.MaxRating = objMod.Parent.Body.ToString();
+                        objMod.MaxRating = objMod.Parent.TotalBody.ToString();
                     }
                     if (Convert.ToInt32(objMod.MaxRating) > 0)
                     {

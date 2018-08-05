@@ -36,6 +36,7 @@ Application Changes:
 - Fixed calculation of armor capacity to not include items that are included in the armor.
 - Added the ability to create custom drugs.
 - Added support for <throwrangestr /> to the Improvement Manager which effectively raises a character's STR for the purpose of determining the range of Thrown Weapons.
+- Fixed a crash when adding Metahuman Adjustment modifications to a vehicle with Increased Seating. Fixes #2857
 
 Data Changes:
 
