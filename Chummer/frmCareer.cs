@@ -641,15 +641,9 @@ namespace Chummer
             SpecialAttributes.CollectionChanged += AttributeCollectionChanged;
 
             // Condition Monitor.
-            int intCMPhysical = CharacterObject.PhysicalCM;
-            int intCMStun = CharacterObject.StunCM;
-            int intCMOverflow = CharacterObject.CMOverflow;
-            int intCMThreshold = CharacterObject.CMThreshold;
-            int intStunCMThresholdOffset = CharacterObject.StunCMThresholdOffset;
-            int intPhysicalCMThresholdOffset = CharacterObject.PhysicalCMThresholdOffset;
+            ProcessCharacterConditionMonitorBoxDisplays(panPhysicalCM, CharacterObject.PhysicalCM, CharacterObject.CMThreshold, CharacterObject.PhysicalCMThresholdOffset, CharacterObject.CMOverflow, chkPhysicalCM_CheckedChanged, true, CharacterObject.PhysicalCMFilled);
+            ProcessCharacterConditionMonitorBoxDisplays(panStunCM, CharacterObject.StunCM, CharacterObject.CMThreshold, CharacterObject.StunCMThresholdOffset, 0, chkStunCM_CheckedChanged, true, CharacterObject.StunCMFilled);
 
-            ProcessCharacterConditionMonitorBoxDisplays(panPhysicalCM, intCMPhysical, intCMThreshold, intPhysicalCMThresholdOffset, intCMOverflow, true, CharacterObject.PhysicalCMFilled);
-            ProcessCharacterConditionMonitorBoxDisplays(panStunCM, intCMStun, intCMThreshold, intStunCMThresholdOffset, 0, true, CharacterObject.StunCMFilled);
             IsCharacterUpdateRequested = true;
             // Directly calling here so that we can properly unset the dirty flag after the update
             UpdateCharacterInfo();
@@ -1044,7 +1038,23 @@ namespace Chummer
                 case nameof(Character.SpiritHealth):
                 case nameof(Character.SpiritIllusion):
                 case nameof(Character.SpiritManipulation):
+
                     IsCharacterUpdateRequested = true;
+                    break;
+                case nameof(Character.CMOverflow):
+                case nameof(Character.CMThreshold):
+                case nameof(Character.CMThresholdOffsets):
+                case nameof(Character.StunCM):
+                case nameof(Character.StunCMFilled):
+                case nameof(Character.StunCMThresholdOffset):
+                case nameof(Character.PhysicalCM):
+                case nameof(Character.PhysicalCMFilled):
+                case nameof(Character.PhysicalCMThresholdOffset):
+                    ProcessCharacterConditionMonitorBoxDisplays(panPhysicalCM, CharacterObject.PhysicalCM, CharacterObject.CMThreshold,
+                        CharacterObject.PhysicalCMThresholdOffset, CharacterObject.CMOverflow, chkPhysicalCM_CheckedChanged, true, CharacterObject.PhysicalCMFilled);
+                    ProcessCharacterConditionMonitorBoxDisplays(panStunCM, CharacterObject.StunCM, CharacterObject.CMThreshold,
+                        CharacterObject.StunCMThresholdOffset, 0, chkStunCM_CheckedChanged, true, CharacterObject.StunCMFilled);
+
                     break;
                 case nameof(Character.MAGEnabled):
                     {
@@ -12649,13 +12659,34 @@ namespace Chummer
         /// <param name="intOverflow">Number of overflow boxes to show (set to 0 if none, like for the stun condition monitor).</param>
         /// <param name="check">Whether or not to check the checkbox when finished processing. Expected to only be called on load.</param>
         /// <param name="value">Tag value of the checkbox to enable when using the check parameter. Expected to be the StunCMFilled or PhysicalCMFilled properties.</param>
-        private void ProcessCharacterConditionMonitorBoxDisplays(Control pnlConditionMonitorPanel, int intConditionMax, int intThreshold, int intThresholdOffset, int intOverflow, bool check = false, int value = 0)
+        private void ProcessCharacterConditionMonitorBoxDisplays(Control pnlConditionMonitorPanel, int intConditionMax, int intThreshold, int intThresholdOffset, int intOverflow, EventHandler button_Click, bool check = false, int value = 0)
         {
             pnlConditionMonitorPanel.SuspendLayout();
             CheckBox currentBox = null;
             if (intConditionMax > 0)
             {
                 pnlConditionMonitorPanel.Visible = true;
+                if (pnlConditionMonitorPanel.Controls.OfType<CheckBox>().Count() < intConditionMax)
+                {
+                    int max = 0;
+                    if (pnlConditionMonitorPanel.Controls.OfType<CheckBox>().Count() > 0)
+                    {
+                        max = pnlConditionMonitorPanel.Controls.OfType<CheckBox>().Max(x => Convert.ToInt32(x.Tag));
+                    }
+                    for (int i = max; i < intConditionMax; i++)
+                    {
+                        CheckBox cb = new CheckBox
+                        {
+                            Tag = i,
+                            Appearance = System.Windows.Forms.Appearance.Button,
+                            Size = new System.Drawing.Size(24, 24),
+                            TextAlign = System.Drawing.ContentAlignment.MiddleRight,
+                            UseVisualStyleBackColor = true
+                        };
+                        cb.Click += button_Click;
+                        pnlConditionMonitorPanel.Controls.Add(cb);
+                    }
+                }
                 foreach (CheckBox chkCmBox in pnlConditionMonitorPanel.Controls.OfType<CheckBox>())
                 {
                     int intCurrentBoxTag = Convert.ToInt32(chkCmBox.Tag);
@@ -13027,14 +13058,6 @@ namespace Chummer
             
             string strModifiers = LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language);
 
-            // Condition Monitor.
-            int intCMPhysical = CharacterObject.PhysicalCM;
-            int intCMStun = CharacterObject.StunCM;
-            int intCMOverflow = CharacterObject.CMOverflow;
-            int intCMThreshold = CharacterObject.CMThreshold;
-            int intStunCMThresholdOffset = CharacterObject.StunCMThresholdOffset;
-            int intPhysicalCMThresholdOffset = CharacterObject.PhysicalCMThresholdOffset;
-
             // Update the Condition Monitor labels.
             bool blnIsAI = CharacterObject.IsAI;
             if (blnIsAI)
@@ -13109,9 +13132,6 @@ namespace Chummer
                     strCM += " + " + strModifiers + " (" + intBonus.ToString() + ')';
                 lblCMStun.SetToolTip(strCM);
             }
-
-            ProcessCharacterConditionMonitorBoxDisplays(panPhysicalCM, intCMPhysical, intCMThreshold, intPhysicalCMThresholdOffset, intCMOverflow);
-            ProcessCharacterConditionMonitorBoxDisplays(panStunCM, intCMStun, intCMThreshold, intStunCMThresholdOffset, 0);
             
             int intINTAttributeModifiers = CharacterObject.INT.AttributeModifiers;
             int intREAAttributeModifiers = CharacterObject.REA.AttributeModifiers;
@@ -16287,9 +16307,7 @@ namespace Chummer
             intWidth = Math.Max(intWidth, lblMovementLabel.Width);
             intWidth = Math.Max(intWidth, lblSwimLabel.Width);
             intWidth = Math.Max(intWidth, lblFlyLabel.Width);
-
-            lblCMPhysical.Left = lblPhysicalCMLabel.Left + intWidth + 6;
-            lblCMStun.Left = lblCMPhysical.Left;
+            
             lblINI.Left = lblCMPhysical.Left;
             lblMatrixINI.Left = lblCMPhysical.Left;
             lblAstralINI.Left = lblCMPhysical.Left;

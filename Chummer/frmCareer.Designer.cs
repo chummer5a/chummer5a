@@ -54,12 +54,12 @@ namespace Chummer
 			System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Selected Armor");
 			System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Selected Weapons");
 			System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
-            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Selected Drugs");
-            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Selected Vehicles");
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Selected Improvements");
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCareer));
+			System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Selected Drugs");
+			System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Selected Vehicles");
+			System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+			System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+			System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Selected Improvements");
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCareer));
 			this.lblTraditionSource = new System.Windows.Forms.Label();
 			this.lblTraditionSourceLabel = new System.Windows.Forms.Label();
 			this.tabPowerUc = new Chummer.UI.Powers.PowersTabUserControl();
@@ -192,52 +192,6 @@ namespace Chummer
 			this.tsBoltHole = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsSafehouse = new System.Windows.Forms.ToolStripMenuItem();
 			this.lblArmor = new Chummer.LabelWithToolTip();
-			this.panStunCM = new System.Windows.Forms.Panel();
-			this.lblStunCMLabel = new System.Windows.Forms.Label();
-			this.chkStunCM18 = new System.Windows.Forms.CheckBox();
-			this.chkStunCM17 = new System.Windows.Forms.CheckBox();
-			this.chkStunCM16 = new System.Windows.Forms.CheckBox();
-			this.chkStunCM15 = new System.Windows.Forms.CheckBox();
-			this.chkStunCM14 = new System.Windows.Forms.CheckBox();
-			this.chkStunCM13 = new System.Windows.Forms.CheckBox();
-			this.chkStunCM12 = new System.Windows.Forms.CheckBox();
-			this.chkStunCM11 = new System.Windows.Forms.CheckBox();
-			this.chkStunCM10 = new System.Windows.Forms.CheckBox();
-			this.chkStunCM9 = new System.Windows.Forms.CheckBox();
-			this.chkStunCM8 = new System.Windows.Forms.CheckBox();
-			this.chkStunCM7 = new System.Windows.Forms.CheckBox();
-			this.chkStunCM6 = new System.Windows.Forms.CheckBox();
-			this.chkStunCM5 = new System.Windows.Forms.CheckBox();
-			this.chkStunCM4 = new System.Windows.Forms.CheckBox();
-			this.chkStunCM3 = new System.Windows.Forms.CheckBox();
-			this.chkStunCM2 = new System.Windows.Forms.CheckBox();
-			this.chkStunCM1 = new System.Windows.Forms.CheckBox();
-			this.panPhysicalCM = new System.Windows.Forms.Panel();
-			this.chkPhysicalCM24 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM23 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM22 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM21 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM20 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM19 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM18 = new System.Windows.Forms.CheckBox();
-			this.lblPhysicalCMLabel = new System.Windows.Forms.Label();
-			this.chkPhysicalCM17 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM16 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM15 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM14 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM13 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM12 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM11 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM10 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM9 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM8 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM7 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM6 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM5 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM4 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM3 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM2 = new System.Windows.Forms.CheckBox();
-			this.chkPhysicalCM1 = new System.Windows.Forms.CheckBox();
 			this.tabInfo = new System.Windows.Forms.TabControl();
 			this.tabOtherInfo = new System.Windows.Forms.TabPage();
 			this.lblRiggingINI = new System.Windows.Forms.Label();
@@ -262,11 +216,17 @@ namespace Chummer
 			this.lblCMStun = new System.Windows.Forms.Label();
 			this.lblCMPhysical = new System.Windows.Forms.Label();
 			this.tabConditionMonitor = new System.Windows.Forms.TabPage();
-			this.lblEDGInfo = new System.Windows.Forms.Label();
+			this.tblCMTab = new System.Windows.Forms.TableLayoutPanel();
+			this.grpCMStun = new System.Windows.Forms.GroupBox();
+			this.panStunCM = new System.Windows.Forms.FlowLayoutPanel();
+			this.lblCMPenalty = new System.Windows.Forms.Label();
 			this.lblCMDamageResistancePool = new Chummer.LabelWithToolTip();
 			this.lblCMArmor = new Chummer.LabelWithToolTip();
-			this.label1 = new System.Windows.Forms.Label();
-			this.lblCMPenalty = new System.Windows.Forms.Label();
+			this.grpPhysicalCM = new System.Windows.Forms.GroupBox();
+			this.panPhysicalCM = new System.Windows.Forms.FlowLayoutPanel();
+			this.grpCMEdge = new System.Windows.Forms.GroupBox();
+			this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+			this.lblEDGInfo = new System.Windows.Forms.Label();
 			this.tabDefences = new System.Windows.Forms.TabPage();
 			this.tlpSpellDefense = new System.Windows.Forms.TableLayoutPanel();
 			this.nudCounterspellingDice = new System.Windows.Forms.NumericUpDown();
@@ -849,6 +809,8 @@ namespace Chummer
 			this.cmdDeleteLifestyle = new System.Windows.Forms.Button();
 			this.tabDrugs = new System.Windows.Forms.TabPage();
 			this.tblDrugDescription = new System.Windows.Forms.TableLayoutPanel();
+			this.lblDrugEffectsLabel = new System.Windows.Forms.Label();
+			this.lblDrugEffect = new System.Windows.Forms.Label();
 			this.lblDrugNameLabel = new System.Windows.Forms.Label();
 			this.lblDrugCategoryLabel = new System.Windows.Forms.Label();
 			this.lblDrugQtyLabel = new System.Windows.Forms.Label();
@@ -1220,8 +1182,6 @@ namespace Chummer
 			this.tsVehicleWeaponMountAddUnderbarrel = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsVehicleWeaponMountNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsWeaponMountLocation = new System.Windows.Forms.ToolStripMenuItem();
-			this.lblDrugEffect = new System.Windows.Forms.Label();
-			this.lblDrugEffectsLabel = new System.Windows.Forms.Label();
 			this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();
@@ -1240,11 +1200,14 @@ namespace Chummer
 			this.cmsVehicle.SuspendLayout();
 			this.cmdVehicleAmmoExpense.SuspendLayout();
 			this.cmsDeleteVehicle.SuspendLayout();
-			this.panStunCM.SuspendLayout();
-			this.panPhysicalCM.SuspendLayout();
 			this.tabInfo.SuspendLayout();
 			this.tabOtherInfo.SuspendLayout();
 			this.tabConditionMonitor.SuspendLayout();
+			this.tblCMTab.SuspendLayout();
+			this.grpCMStun.SuspendLayout();
+			this.grpPhysicalCM.SuspendLayout();
+			this.grpCMEdge.SuspendLayout();
+			this.flowLayoutPanel2.SuspendLayout();
 			this.tabDefences.SuspendLayout();
 			this.tlpSpellDefense.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).BeginInit();
@@ -1537,9 +1500,11 @@ namespace Chummer
 			// lblCMPenaltyLabel
 			// 
 			this.lblCMPenaltyLabel.AutoSize = true;
-			this.lblCMPenaltyLabel.Location = new System.Drawing.Point(3, 10);
+			this.lblCMPenaltyLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblCMPenaltyLabel.Location = new System.Drawing.Point(3, 3);
+			this.lblCMPenaltyLabel.Margin = new System.Windows.Forms.Padding(3);
 			this.lblCMPenaltyLabel.Name = "lblCMPenaltyLabel";
-			this.lblCMPenaltyLabel.Size = new System.Drawing.Size(64, 13);
+			this.lblCMPenaltyLabel.Size = new System.Drawing.Size(112, 13);
 			this.lblCMPenaltyLabel.TabIndex = 37;
 			this.lblCMPenaltyLabel.Tag = "Label_CMCMPenalty";
 			this.lblCMPenaltyLabel.Text = "CM Penalty:";
@@ -1547,9 +1512,11 @@ namespace Chummer
 			// lblCMArmorLabel
 			// 
 			this.lblCMArmorLabel.AutoSize = true;
-			this.lblCMArmorLabel.Location = new System.Drawing.Point(3, 31);
+			this.lblCMArmorLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblCMArmorLabel.Location = new System.Drawing.Point(3, 22);
+			this.lblCMArmorLabel.Margin = new System.Windows.Forms.Padding(3);
 			this.lblCMArmorLabel.Name = "lblCMArmorLabel";
-			this.lblCMArmorLabel.Size = new System.Drawing.Size(37, 13);
+			this.lblCMArmorLabel.Size = new System.Drawing.Size(112, 13);
 			this.lblCMArmorLabel.TabIndex = 66;
 			this.lblCMArmorLabel.Tag = "Label_CMArmor";
 			this.lblCMArmorLabel.Text = "Armor:";
@@ -1557,7 +1524,9 @@ namespace Chummer
 			// lblCMDamageResistancePoolLabel
 			// 
 			this.lblCMDamageResistancePoolLabel.AutoSize = true;
-			this.lblCMDamageResistancePoolLabel.Location = new System.Drawing.Point(3, 73);
+			this.lblCMDamageResistancePoolLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblCMDamageResistancePoolLabel.Location = new System.Drawing.Point(3, 41);
+			this.lblCMDamageResistancePoolLabel.Margin = new System.Windows.Forms.Padding(3);
 			this.lblCMDamageResistancePoolLabel.Name = "lblCMDamageResistancePoolLabel";
 			this.lblCMDamageResistancePoolLabel.Size = new System.Drawing.Size(112, 13);
 			this.lblCMDamageResistancePoolLabel.TabIndex = 70;
@@ -1608,7 +1577,7 @@ namespace Chummer
 			// 
 			this.cmdEdgeGained.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.cmdEdgeGained.Image = global::Chummer.Properties.Resources.add;
-			this.cmdEdgeGained.Location = new System.Drawing.Point(30, 537);
+			this.cmdEdgeGained.Location = new System.Drawing.Point(28, 3);
 			this.cmdEdgeGained.Name = "cmdEdgeGained";
 			this.cmdEdgeGained.Size = new System.Drawing.Size(24, 24);
 			this.cmdEdgeGained.TabIndex = 64;
@@ -1620,7 +1589,7 @@ namespace Chummer
 			// 
 			this.cmdEdgeSpent.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.cmdEdgeSpent.Image = global::Chummer.Properties.Resources.delete;
-			this.cmdEdgeSpent.Location = new System.Drawing.Point(60, 537);
+			this.cmdEdgeSpent.Location = new System.Drawing.Point(58, 3);
 			this.cmdEdgeSpent.Name = "cmdEdgeSpent";
 			this.cmdEdgeSpent.Size = new System.Drawing.Size(24, 24);
 			this.cmdEdgeSpent.TabIndex = 63;
@@ -2602,584 +2571,6 @@ namespace Chummer
 			this.lblArmor.Text = "0";
 			this.lblArmor.ToolTipText = "";
 			// 
-			// panStunCM
-			// 
-			this.panStunCM.Controls.Add(this.lblStunCMLabel);
-			this.panStunCM.Controls.Add(this.chkStunCM18);
-			this.panStunCM.Controls.Add(this.chkStunCM17);
-			this.panStunCM.Controls.Add(this.chkStunCM16);
-			this.panStunCM.Controls.Add(this.chkStunCM15);
-			this.panStunCM.Controls.Add(this.chkStunCM14);
-			this.panStunCM.Controls.Add(this.chkStunCM13);
-			this.panStunCM.Controls.Add(this.chkStunCM12);
-			this.panStunCM.Controls.Add(this.chkStunCM11);
-			this.panStunCM.Controls.Add(this.chkStunCM10);
-			this.panStunCM.Controls.Add(this.chkStunCM9);
-			this.panStunCM.Controls.Add(this.chkStunCM8);
-			this.panStunCM.Controls.Add(this.chkStunCM7);
-			this.panStunCM.Controls.Add(this.chkStunCM6);
-			this.panStunCM.Controls.Add(this.chkStunCM5);
-			this.panStunCM.Controls.Add(this.chkStunCM4);
-			this.panStunCM.Controls.Add(this.chkStunCM3);
-			this.panStunCM.Controls.Add(this.chkStunCM2);
-			this.panStunCM.Controls.Add(this.chkStunCM1);
-			this.panStunCM.Location = new System.Drawing.Point(6, 321);
-			this.panStunCM.Name = "panStunCM";
-			this.panStunCM.Size = new System.Drawing.Size(134, 163);
-			this.panStunCM.TabIndex = 0;
-			// 
-			// lblStunCMLabel
-			// 
-			this.lblStunCMLabel.AutoSize = true;
-			this.lblStunCMLabel.Location = new System.Drawing.Point(0, 0);
-			this.lblStunCMLabel.Name = "lblStunCMLabel";
-			this.lblStunCMLabel.Size = new System.Drawing.Size(29, 13);
-			this.lblStunCMLabel.TabIndex = 19;
-			this.lblStunCMLabel.Tag = "Label_CMStun";
-			this.lblStunCMLabel.Text = "Stun";
-			// 
-			// chkStunCM18
-			// 
-			this.chkStunCM18.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkStunCM18.Location = new System.Drawing.Point(51, 136);
-			this.chkStunCM18.Name = "chkStunCM18";
-			this.chkStunCM18.Size = new System.Drawing.Size(24, 24);
-			this.chkStunCM18.TabIndex = 17;
-			this.chkStunCM18.Tag = "18";
-			this.chkStunCM18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkStunCM18.UseVisualStyleBackColor = true;
-			this.chkStunCM18.CheckedChanged += new System.EventHandler(this.chkStunCM_CheckedChanged);
-			// 
-			// chkStunCM17
-			// 
-			this.chkStunCM17.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkStunCM17.Location = new System.Drawing.Point(27, 136);
-			this.chkStunCM17.Name = "chkStunCM17";
-			this.chkStunCM17.Size = new System.Drawing.Size(24, 24);
-			this.chkStunCM17.TabIndex = 16;
-			this.chkStunCM17.Tag = "17";
-			this.chkStunCM17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkStunCM17.UseVisualStyleBackColor = true;
-			this.chkStunCM17.CheckedChanged += new System.EventHandler(this.chkStunCM_CheckedChanged);
-			// 
-			// chkStunCM16
-			// 
-			this.chkStunCM16.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkStunCM16.Location = new System.Drawing.Point(3, 136);
-			this.chkStunCM16.Name = "chkStunCM16";
-			this.chkStunCM16.Size = new System.Drawing.Size(24, 24);
-			this.chkStunCM16.TabIndex = 15;
-			this.chkStunCM16.Tag = "16";
-			this.chkStunCM16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkStunCM16.UseVisualStyleBackColor = true;
-			this.chkStunCM16.CheckedChanged += new System.EventHandler(this.chkStunCM_CheckedChanged);
-			// 
-			// chkStunCM15
-			// 
-			this.chkStunCM15.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkStunCM15.Location = new System.Drawing.Point(51, 112);
-			this.chkStunCM15.Name = "chkStunCM15";
-			this.chkStunCM15.Size = new System.Drawing.Size(24, 24);
-			this.chkStunCM15.TabIndex = 14;
-			this.chkStunCM15.Tag = "15";
-			this.chkStunCM15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkStunCM15.UseVisualStyleBackColor = true;
-			this.chkStunCM15.CheckedChanged += new System.EventHandler(this.chkStunCM_CheckedChanged);
-			// 
-			// chkStunCM14
-			// 
-			this.chkStunCM14.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkStunCM14.Location = new System.Drawing.Point(27, 112);
-			this.chkStunCM14.Name = "chkStunCM14";
-			this.chkStunCM14.Size = new System.Drawing.Size(24, 24);
-			this.chkStunCM14.TabIndex = 13;
-			this.chkStunCM14.Tag = "14";
-			this.chkStunCM14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkStunCM14.UseVisualStyleBackColor = true;
-			this.chkStunCM14.CheckedChanged += new System.EventHandler(this.chkStunCM_CheckedChanged);
-			// 
-			// chkStunCM13
-			// 
-			this.chkStunCM13.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkStunCM13.Location = new System.Drawing.Point(3, 112);
-			this.chkStunCM13.Name = "chkStunCM13";
-			this.chkStunCM13.Size = new System.Drawing.Size(24, 24);
-			this.chkStunCM13.TabIndex = 12;
-			this.chkStunCM13.Tag = "13";
-			this.chkStunCM13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkStunCM13.UseVisualStyleBackColor = true;
-			this.chkStunCM13.CheckedChanged += new System.EventHandler(this.chkStunCM_CheckedChanged);
-			// 
-			// chkStunCM12
-			// 
-			this.chkStunCM12.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkStunCM12.Location = new System.Drawing.Point(51, 88);
-			this.chkStunCM12.Name = "chkStunCM12";
-			this.chkStunCM12.Size = new System.Drawing.Size(24, 24);
-			this.chkStunCM12.TabIndex = 11;
-			this.chkStunCM12.Tag = "12";
-			this.chkStunCM12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkStunCM12.UseVisualStyleBackColor = true;
-			this.chkStunCM12.CheckedChanged += new System.EventHandler(this.chkStunCM_CheckedChanged);
-			// 
-			// chkStunCM11
-			// 
-			this.chkStunCM11.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkStunCM11.Location = new System.Drawing.Point(27, 88);
-			this.chkStunCM11.Name = "chkStunCM11";
-			this.chkStunCM11.Size = new System.Drawing.Size(24, 24);
-			this.chkStunCM11.TabIndex = 10;
-			this.chkStunCM11.Tag = "11";
-			this.chkStunCM11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkStunCM11.UseVisualStyleBackColor = true;
-			this.chkStunCM11.CheckedChanged += new System.EventHandler(this.chkStunCM_CheckedChanged);
-			// 
-			// chkStunCM10
-			// 
-			this.chkStunCM10.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkStunCM10.Location = new System.Drawing.Point(3, 88);
-			this.chkStunCM10.Name = "chkStunCM10";
-			this.chkStunCM10.Size = new System.Drawing.Size(24, 24);
-			this.chkStunCM10.TabIndex = 9;
-			this.chkStunCM10.Tag = "10";
-			this.chkStunCM10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkStunCM10.UseVisualStyleBackColor = true;
-			this.chkStunCM10.CheckedChanged += new System.EventHandler(this.chkStunCM_CheckedChanged);
-			// 
-			// chkStunCM9
-			// 
-			this.chkStunCM9.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkStunCM9.Location = new System.Drawing.Point(51, 64);
-			this.chkStunCM9.Name = "chkStunCM9";
-			this.chkStunCM9.Size = new System.Drawing.Size(24, 24);
-			this.chkStunCM9.TabIndex = 8;
-			this.chkStunCM9.Tag = "9";
-			this.chkStunCM9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkStunCM9.UseVisualStyleBackColor = true;
-			this.chkStunCM9.CheckedChanged += new System.EventHandler(this.chkStunCM_CheckedChanged);
-			// 
-			// chkStunCM8
-			// 
-			this.chkStunCM8.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkStunCM8.Location = new System.Drawing.Point(27, 64);
-			this.chkStunCM8.Name = "chkStunCM8";
-			this.chkStunCM8.Size = new System.Drawing.Size(24, 24);
-			this.chkStunCM8.TabIndex = 7;
-			this.chkStunCM8.Tag = "8";
-			this.chkStunCM8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkStunCM8.UseVisualStyleBackColor = true;
-			this.chkStunCM8.CheckedChanged += new System.EventHandler(this.chkStunCM_CheckedChanged);
-			// 
-			// chkStunCM7
-			// 
-			this.chkStunCM7.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkStunCM7.Location = new System.Drawing.Point(3, 64);
-			this.chkStunCM7.Name = "chkStunCM7";
-			this.chkStunCM7.Size = new System.Drawing.Size(24, 24);
-			this.chkStunCM7.TabIndex = 6;
-			this.chkStunCM7.Tag = "7";
-			this.chkStunCM7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkStunCM7.UseVisualStyleBackColor = true;
-			this.chkStunCM7.CheckedChanged += new System.EventHandler(this.chkStunCM_CheckedChanged);
-			// 
-			// chkStunCM6
-			// 
-			this.chkStunCM6.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkStunCM6.Location = new System.Drawing.Point(51, 40);
-			this.chkStunCM6.Name = "chkStunCM6";
-			this.chkStunCM6.Size = new System.Drawing.Size(24, 24);
-			this.chkStunCM6.TabIndex = 5;
-			this.chkStunCM6.Tag = "6";
-			this.chkStunCM6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkStunCM6.UseVisualStyleBackColor = true;
-			this.chkStunCM6.CheckedChanged += new System.EventHandler(this.chkStunCM_CheckedChanged);
-			// 
-			// chkStunCM5
-			// 
-			this.chkStunCM5.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkStunCM5.Location = new System.Drawing.Point(27, 40);
-			this.chkStunCM5.Name = "chkStunCM5";
-			this.chkStunCM5.Size = new System.Drawing.Size(24, 24);
-			this.chkStunCM5.TabIndex = 4;
-			this.chkStunCM5.Tag = "5";
-			this.chkStunCM5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkStunCM5.UseVisualStyleBackColor = true;
-			this.chkStunCM5.CheckedChanged += new System.EventHandler(this.chkStunCM_CheckedChanged);
-			// 
-			// chkStunCM4
-			// 
-			this.chkStunCM4.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkStunCM4.Location = new System.Drawing.Point(3, 40);
-			this.chkStunCM4.Name = "chkStunCM4";
-			this.chkStunCM4.Size = new System.Drawing.Size(24, 24);
-			this.chkStunCM4.TabIndex = 3;
-			this.chkStunCM4.Tag = "4";
-			this.chkStunCM4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkStunCM4.UseVisualStyleBackColor = true;
-			this.chkStunCM4.CheckedChanged += new System.EventHandler(this.chkStunCM_CheckedChanged);
-			// 
-			// chkStunCM3
-			// 
-			this.chkStunCM3.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkStunCM3.Location = new System.Drawing.Point(51, 16);
-			this.chkStunCM3.Name = "chkStunCM3";
-			this.chkStunCM3.Size = new System.Drawing.Size(24, 24);
-			this.chkStunCM3.TabIndex = 2;
-			this.chkStunCM3.Tag = "3";
-			this.chkStunCM3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkStunCM3.UseVisualStyleBackColor = true;
-			this.chkStunCM3.CheckedChanged += new System.EventHandler(this.chkStunCM_CheckedChanged);
-			// 
-			// chkStunCM2
-			// 
-			this.chkStunCM2.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkStunCM2.Location = new System.Drawing.Point(27, 16);
-			this.chkStunCM2.Name = "chkStunCM2";
-			this.chkStunCM2.Size = new System.Drawing.Size(24, 24);
-			this.chkStunCM2.TabIndex = 1;
-			this.chkStunCM2.Tag = "2";
-			this.chkStunCM2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkStunCM2.UseVisualStyleBackColor = true;
-			this.chkStunCM2.CheckedChanged += new System.EventHandler(this.chkStunCM_CheckedChanged);
-			// 
-			// chkStunCM1
-			// 
-			this.chkStunCM1.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkStunCM1.Location = new System.Drawing.Point(3, 16);
-			this.chkStunCM1.Name = "chkStunCM1";
-			this.chkStunCM1.Size = new System.Drawing.Size(24, 24);
-			this.chkStunCM1.TabIndex = 0;
-			this.chkStunCM1.Tag = "1";
-			this.chkStunCM1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkStunCM1.UseVisualStyleBackColor = true;
-			this.chkStunCM1.CheckedChanged += new System.EventHandler(this.chkStunCM_CheckedChanged);
-			// 
-			// panPhysicalCM
-			// 
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM24);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM23);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM22);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM21);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM20);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM19);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM18);
-			this.panPhysicalCM.Controls.Add(this.lblPhysicalCMLabel);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM17);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM16);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM15);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM14);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM13);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM12);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM11);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM10);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM9);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM8);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM7);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM6);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM5);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM4);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM3);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM2);
-			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM1);
-			this.panPhysicalCM.Location = new System.Drawing.Point(6, 100);
-			this.panPhysicalCM.Name = "panPhysicalCM";
-			this.panPhysicalCM.Size = new System.Drawing.Size(134, 215);
-			this.panPhysicalCM.TabIndex = 36;
-			// 
-			// chkPhysicalCM24
-			// 
-			this.chkPhysicalCM24.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM24.Location = new System.Drawing.Point(51, 184);
-			this.chkPhysicalCM24.Name = "chkPhysicalCM24";
-			this.chkPhysicalCM24.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM24.TabIndex = 24;
-			this.chkPhysicalCM24.Tag = "24";
-			this.chkPhysicalCM24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM24.UseVisualStyleBackColor = true;
-			// 
-			// chkPhysicalCM23
-			// 
-			this.chkPhysicalCM23.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM23.Location = new System.Drawing.Point(27, 184);
-			this.chkPhysicalCM23.Name = "chkPhysicalCM23";
-			this.chkPhysicalCM23.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM23.TabIndex = 23;
-			this.chkPhysicalCM23.Tag = "23";
-			this.chkPhysicalCM23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM23.UseVisualStyleBackColor = true;
-			// 
-			// chkPhysicalCM22
-			// 
-			this.chkPhysicalCM22.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM22.Location = new System.Drawing.Point(3, 184);
-			this.chkPhysicalCM22.Name = "chkPhysicalCM22";
-			this.chkPhysicalCM22.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM22.TabIndex = 22;
-			this.chkPhysicalCM22.Tag = "22";
-			this.chkPhysicalCM22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM22.UseVisualStyleBackColor = true;
-			// 
-			// chkPhysicalCM21
-			// 
-			this.chkPhysicalCM21.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM21.Location = new System.Drawing.Point(51, 160);
-			this.chkPhysicalCM21.Name = "chkPhysicalCM21";
-			this.chkPhysicalCM21.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM21.TabIndex = 21;
-			this.chkPhysicalCM21.Tag = "21";
-			this.chkPhysicalCM21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM21.UseVisualStyleBackColor = true;
-			// 
-			// chkPhysicalCM20
-			// 
-			this.chkPhysicalCM20.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM20.Location = new System.Drawing.Point(27, 160);
-			this.chkPhysicalCM20.Name = "chkPhysicalCM20";
-			this.chkPhysicalCM20.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM20.TabIndex = 20;
-			this.chkPhysicalCM20.Tag = "20";
-			this.chkPhysicalCM20.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM20.UseVisualStyleBackColor = true;
-			// 
-			// chkPhysicalCM19
-			// 
-			this.chkPhysicalCM19.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM19.Location = new System.Drawing.Point(3, 160);
-			this.chkPhysicalCM19.Name = "chkPhysicalCM19";
-			this.chkPhysicalCM19.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM19.TabIndex = 19;
-			this.chkPhysicalCM19.Tag = "19";
-			this.chkPhysicalCM19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM19.UseVisualStyleBackColor = true;
-			// 
-			// chkPhysicalCM18
-			// 
-			this.chkPhysicalCM18.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM18.Location = new System.Drawing.Point(51, 136);
-			this.chkPhysicalCM18.Name = "chkPhysicalCM18";
-			this.chkPhysicalCM18.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM18.TabIndex = 17;
-			this.chkPhysicalCM18.Tag = "18";
-			this.chkPhysicalCM18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM18.UseVisualStyleBackColor = true;
-			this.chkPhysicalCM18.CheckedChanged += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
-			// 
-			// lblPhysicalCMLabel
-			// 
-			this.lblPhysicalCMLabel.AutoSize = true;
-			this.lblPhysicalCMLabel.Location = new System.Drawing.Point(0, 0);
-			this.lblPhysicalCMLabel.Name = "lblPhysicalCMLabel";
-			this.lblPhysicalCMLabel.Size = new System.Drawing.Size(46, 13);
-			this.lblPhysicalCMLabel.TabIndex = 18;
-			this.lblPhysicalCMLabel.Tag = "Label_CMPhysical";
-			this.lblPhysicalCMLabel.Text = "Physical";
-			// 
-			// chkPhysicalCM17
-			// 
-			this.chkPhysicalCM17.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM17.Location = new System.Drawing.Point(27, 136);
-			this.chkPhysicalCM17.Name = "chkPhysicalCM17";
-			this.chkPhysicalCM17.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM17.TabIndex = 16;
-			this.chkPhysicalCM17.Tag = "17";
-			this.chkPhysicalCM17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM17.UseVisualStyleBackColor = true;
-			this.chkPhysicalCM17.CheckedChanged += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
-			// 
-			// chkPhysicalCM16
-			// 
-			this.chkPhysicalCM16.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM16.Location = new System.Drawing.Point(3, 136);
-			this.chkPhysicalCM16.Name = "chkPhysicalCM16";
-			this.chkPhysicalCM16.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM16.TabIndex = 15;
-			this.chkPhysicalCM16.Tag = "16";
-			this.chkPhysicalCM16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM16.UseVisualStyleBackColor = true;
-			this.chkPhysicalCM16.CheckedChanged += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
-			// 
-			// chkPhysicalCM15
-			// 
-			this.chkPhysicalCM15.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM15.Location = new System.Drawing.Point(51, 112);
-			this.chkPhysicalCM15.Name = "chkPhysicalCM15";
-			this.chkPhysicalCM15.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM15.TabIndex = 14;
-			this.chkPhysicalCM15.Tag = "15";
-			this.chkPhysicalCM15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM15.UseVisualStyleBackColor = true;
-			this.chkPhysicalCM15.CheckedChanged += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
-			// 
-			// chkPhysicalCM14
-			// 
-			this.chkPhysicalCM14.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM14.Location = new System.Drawing.Point(27, 112);
-			this.chkPhysicalCM14.Name = "chkPhysicalCM14";
-			this.chkPhysicalCM14.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM14.TabIndex = 13;
-			this.chkPhysicalCM14.Tag = "14";
-			this.chkPhysicalCM14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM14.UseVisualStyleBackColor = true;
-			this.chkPhysicalCM14.CheckedChanged += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
-			// 
-			// chkPhysicalCM13
-			// 
-			this.chkPhysicalCM13.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM13.Location = new System.Drawing.Point(3, 112);
-			this.chkPhysicalCM13.Name = "chkPhysicalCM13";
-			this.chkPhysicalCM13.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM13.TabIndex = 12;
-			this.chkPhysicalCM13.Tag = "13";
-			this.chkPhysicalCM13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM13.UseVisualStyleBackColor = true;
-			this.chkPhysicalCM13.CheckedChanged += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
-			// 
-			// chkPhysicalCM12
-			// 
-			this.chkPhysicalCM12.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM12.Location = new System.Drawing.Point(51, 88);
-			this.chkPhysicalCM12.Name = "chkPhysicalCM12";
-			this.chkPhysicalCM12.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM12.TabIndex = 11;
-			this.chkPhysicalCM12.Tag = "12";
-			this.chkPhysicalCM12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM12.UseVisualStyleBackColor = true;
-			this.chkPhysicalCM12.CheckedChanged += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
-			// 
-			// chkPhysicalCM11
-			// 
-			this.chkPhysicalCM11.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM11.Location = new System.Drawing.Point(27, 88);
-			this.chkPhysicalCM11.Name = "chkPhysicalCM11";
-			this.chkPhysicalCM11.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM11.TabIndex = 10;
-			this.chkPhysicalCM11.Tag = "11";
-			this.chkPhysicalCM11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM11.UseVisualStyleBackColor = true;
-			this.chkPhysicalCM11.CheckedChanged += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
-			// 
-			// chkPhysicalCM10
-			// 
-			this.chkPhysicalCM10.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM10.Location = new System.Drawing.Point(3, 88);
-			this.chkPhysicalCM10.Name = "chkPhysicalCM10";
-			this.chkPhysicalCM10.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM10.TabIndex = 9;
-			this.chkPhysicalCM10.Tag = "10";
-			this.chkPhysicalCM10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM10.UseVisualStyleBackColor = true;
-			this.chkPhysicalCM10.CheckedChanged += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
-			// 
-			// chkPhysicalCM9
-			// 
-			this.chkPhysicalCM9.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM9.Location = new System.Drawing.Point(51, 64);
-			this.chkPhysicalCM9.Name = "chkPhysicalCM9";
-			this.chkPhysicalCM9.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM9.TabIndex = 8;
-			this.chkPhysicalCM9.Tag = "9";
-			this.chkPhysicalCM9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM9.UseVisualStyleBackColor = true;
-			this.chkPhysicalCM9.CheckedChanged += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
-			// 
-			// chkPhysicalCM8
-			// 
-			this.chkPhysicalCM8.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM8.Location = new System.Drawing.Point(27, 64);
-			this.chkPhysicalCM8.Name = "chkPhysicalCM8";
-			this.chkPhysicalCM8.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM8.TabIndex = 7;
-			this.chkPhysicalCM8.Tag = "8";
-			this.chkPhysicalCM8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM8.UseVisualStyleBackColor = true;
-			this.chkPhysicalCM8.CheckedChanged += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
-			// 
-			// chkPhysicalCM7
-			// 
-			this.chkPhysicalCM7.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM7.Location = new System.Drawing.Point(3, 64);
-			this.chkPhysicalCM7.Name = "chkPhysicalCM7";
-			this.chkPhysicalCM7.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM7.TabIndex = 6;
-			this.chkPhysicalCM7.Tag = "7";
-			this.chkPhysicalCM7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM7.UseVisualStyleBackColor = true;
-			this.chkPhysicalCM7.CheckedChanged += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
-			// 
-			// chkPhysicalCM6
-			// 
-			this.chkPhysicalCM6.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM6.Location = new System.Drawing.Point(51, 40);
-			this.chkPhysicalCM6.Name = "chkPhysicalCM6";
-			this.chkPhysicalCM6.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM6.TabIndex = 5;
-			this.chkPhysicalCM6.Tag = "6";
-			this.chkPhysicalCM6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM6.UseVisualStyleBackColor = true;
-			this.chkPhysicalCM6.CheckedChanged += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
-			// 
-			// chkPhysicalCM5
-			// 
-			this.chkPhysicalCM5.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM5.Location = new System.Drawing.Point(27, 40);
-			this.chkPhysicalCM5.Name = "chkPhysicalCM5";
-			this.chkPhysicalCM5.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM5.TabIndex = 4;
-			this.chkPhysicalCM5.Tag = "5";
-			this.chkPhysicalCM5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM5.UseVisualStyleBackColor = true;
-			this.chkPhysicalCM5.CheckedChanged += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
-			// 
-			// chkPhysicalCM4
-			// 
-			this.chkPhysicalCM4.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM4.Location = new System.Drawing.Point(3, 40);
-			this.chkPhysicalCM4.Name = "chkPhysicalCM4";
-			this.chkPhysicalCM4.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM4.TabIndex = 3;
-			this.chkPhysicalCM4.Tag = "4";
-			this.chkPhysicalCM4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM4.UseVisualStyleBackColor = true;
-			this.chkPhysicalCM4.CheckedChanged += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
-			// 
-			// chkPhysicalCM3
-			// 
-			this.chkPhysicalCM3.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM3.Location = new System.Drawing.Point(51, 16);
-			this.chkPhysicalCM3.Name = "chkPhysicalCM3";
-			this.chkPhysicalCM3.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM3.TabIndex = 2;
-			this.chkPhysicalCM3.Tag = "3";
-			this.chkPhysicalCM3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM3.UseVisualStyleBackColor = true;
-			this.chkPhysicalCM3.CheckedChanged += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
-			// 
-			// chkPhysicalCM2
-			// 
-			this.chkPhysicalCM2.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM2.Location = new System.Drawing.Point(27, 16);
-			this.chkPhysicalCM2.Name = "chkPhysicalCM2";
-			this.chkPhysicalCM2.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM2.TabIndex = 1;
-			this.chkPhysicalCM2.Tag = "2";
-			this.chkPhysicalCM2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM2.UseVisualStyleBackColor = true;
-			this.chkPhysicalCM2.CheckedChanged += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
-			// 
-			// chkPhysicalCM1
-			// 
-			this.chkPhysicalCM1.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkPhysicalCM1.BackColor = System.Drawing.SystemColors.ControlDark;
-			this.chkPhysicalCM1.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			this.chkPhysicalCM1.Location = new System.Drawing.Point(3, 16);
-			this.chkPhysicalCM1.Name = "chkPhysicalCM1";
-			this.chkPhysicalCM1.Size = new System.Drawing.Size(24, 24);
-			this.chkPhysicalCM1.TabIndex = 0;
-			this.chkPhysicalCM1.Tag = "1";
-			this.chkPhysicalCM1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkPhysicalCM1.UseVisualStyleBackColor = false;
-			this.chkPhysicalCM1.CheckedChanged += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
-			// 
 			// tabInfo
 			// 
 			this.tabInfo.Controls.Add(this.tabOtherInfo);
@@ -3441,18 +2832,7 @@ namespace Chummer
 			// tabConditionMonitor
 			// 
 			this.tabConditionMonitor.BackColor = System.Drawing.SystemColors.Control;
-			this.tabConditionMonitor.Controls.Add(this.lblEDGInfo);
-			this.tabConditionMonitor.Controls.Add(this.lblCMDamageResistancePool);
-			this.tabConditionMonitor.Controls.Add(this.lblCMDamageResistancePoolLabel);
-			this.tabConditionMonitor.Controls.Add(this.lblCMArmor);
-			this.tabConditionMonitor.Controls.Add(this.lblCMArmorLabel);
-			this.tabConditionMonitor.Controls.Add(this.label1);
-			this.tabConditionMonitor.Controls.Add(this.panStunCM);
-			this.tabConditionMonitor.Controls.Add(this.lblCMPenalty);
-			this.tabConditionMonitor.Controls.Add(this.panPhysicalCM);
-			this.tabConditionMonitor.Controls.Add(this.lblCMPenaltyLabel);
-			this.tabConditionMonitor.Controls.Add(this.cmdEdgeGained);
-			this.tabConditionMonitor.Controls.Add(this.cmdEdgeSpent);
+			this.tabConditionMonitor.Controls.Add(this.tblCMTab);
 			this.tabConditionMonitor.Location = new System.Drawing.Point(4, 22);
 			this.tabConditionMonitor.Name = "tabConditionMonitor";
 			this.tabConditionMonitor.Padding = new System.Windows.Forms.Padding(3);
@@ -3461,22 +2841,80 @@ namespace Chummer
 			this.tabConditionMonitor.Tag = "Tab_ConditionMonitor";
 			this.tabConditionMonitor.Text = "Condition Monitor";
 			// 
-			// lblEDGInfo
+			// tblCMTab
 			// 
-			this.lblEDGInfo.AutoSize = true;
-			this.lblEDGInfo.Location = new System.Drawing.Point(6, 516);
-			this.lblEDGInfo.Name = "lblEDGInfo";
-			this.lblEDGInfo.Size = new System.Drawing.Size(105, 13);
-			this.lblEDGInfo.TabIndex = 72;
-			this.lblEDGInfo.Tag = "Label_CMEdge";
-			this.lblEDGInfo.Text = "Regain/Spend Edge";
+			this.tblCMTab.AutoSize = true;
+			this.tblCMTab.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.tblCMTab.ColumnCount = 2;
+			this.tblCMTab.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tblCMTab.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tblCMTab.Controls.Add(this.grpCMStun, 0, 4);
+			this.tblCMTab.Controls.Add(this.lblCMPenaltyLabel, 0, 0);
+			this.tblCMTab.Controls.Add(this.lblCMPenalty, 1, 0);
+			this.tblCMTab.Controls.Add(this.lblCMDamageResistancePool, 1, 2);
+			this.tblCMTab.Controls.Add(this.lblCMArmorLabel, 0, 1);
+			this.tblCMTab.Controls.Add(this.lblCMDamageResistancePoolLabel, 0, 2);
+			this.tblCMTab.Controls.Add(this.lblCMArmor, 1, 1);
+			this.tblCMTab.Controls.Add(this.grpPhysicalCM, 0, 3);
+			this.tblCMTab.Controls.Add(this.grpCMEdge, 0, 5);
+			this.tblCMTab.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tblCMTab.Location = new System.Drawing.Point(3, 3);
+			this.tblCMTab.Name = "tblCMTab";
+			this.tblCMTab.RowCount = 6;
+			this.tblCMTab.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tblCMTab.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tblCMTab.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tblCMTab.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tblCMTab.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tblCMTab.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tblCMTab.Size = new System.Drawing.Size(233, 666);
+			this.tblCMTab.TabIndex = 73;
+			// 
+			// grpCMStun
+			// 
+			this.grpCMStun.AutoSize = true;
+			this.grpCMStun.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.tblCMTab.SetColumnSpan(this.grpCMStun, 2);
+			this.grpCMStun.Controls.Add(this.panStunCM);
+			this.grpCMStun.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.grpCMStun.Location = new System.Drawing.Point(3, 116);
+			this.grpCMStun.MinimumSize = new System.Drawing.Size(0, 50);
+			this.grpCMStun.Name = "grpCMStun";
+			this.grpCMStun.Size = new System.Drawing.Size(227, 50);
+			this.grpCMStun.TabIndex = 74;
+			this.grpCMStun.TabStop = false;
+			this.grpCMStun.Tag = "Label_CMStun";
+			this.grpCMStun.Text = "Stun";
+			// 
+			// panStunCM
+			// 
+			this.panStunCM.AutoSize = true;
+			this.panStunCM.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.panStunCM.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panStunCM.Location = new System.Drawing.Point(3, 16);
+			this.panStunCM.Name = "panStunCM";
+			this.panStunCM.Size = new System.Drawing.Size(221, 31);
+			this.panStunCM.TabIndex = 1;
+			// 
+			// lblCMPenalty
+			// 
+			this.lblCMPenalty.AutoSize = true;
+			this.lblCMPenalty.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblCMPenalty.Location = new System.Drawing.Point(121, 3);
+			this.lblCMPenalty.Margin = new System.Windows.Forms.Padding(3);
+			this.lblCMPenalty.Name = "lblCMPenalty";
+			this.lblCMPenalty.Size = new System.Drawing.Size(109, 13);
+			this.lblCMPenalty.TabIndex = 38;
+			this.lblCMPenalty.Text = "[0]";
 			// 
 			// lblCMDamageResistancePool
 			// 
 			this.lblCMDamageResistancePool.AutoSize = true;
-			this.lblCMDamageResistancePool.Location = new System.Drawing.Point(121, 73);
+			this.lblCMDamageResistancePool.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblCMDamageResistancePool.Location = new System.Drawing.Point(121, 41);
+			this.lblCMDamageResistancePool.Margin = new System.Windows.Forms.Padding(3);
 			this.lblCMDamageResistancePool.Name = "lblCMDamageResistancePool";
-			this.lblCMDamageResistancePool.Size = new System.Drawing.Size(19, 13);
+			this.lblCMDamageResistancePool.Size = new System.Drawing.Size(109, 13);
 			this.lblCMDamageResistancePool.TabIndex = 71;
 			this.lblCMDamageResistancePool.Text = "[0]";
 			this.lblCMDamageResistancePool.ToolTipText = "";
@@ -3484,31 +2922,78 @@ namespace Chummer
 			// lblCMArmor
 			// 
 			this.lblCMArmor.AutoSize = true;
-			this.lblCMArmor.Location = new System.Drawing.Point(121, 31);
+			this.lblCMArmor.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblCMArmor.Location = new System.Drawing.Point(121, 22);
+			this.lblCMArmor.Margin = new System.Windows.Forms.Padding(3);
 			this.lblCMArmor.Name = "lblCMArmor";
-			this.lblCMArmor.Size = new System.Drawing.Size(19, 13);
+			this.lblCMArmor.Size = new System.Drawing.Size(109, 13);
 			this.lblCMArmor.TabIndex = 67;
 			this.lblCMArmor.Text = "[0]";
 			this.lblCMArmor.ToolTipText = "";
 			// 
-			// label1
+			// grpPhysicalCM
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(6, 497);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(105, 13);
-			this.label1.TabIndex = 65;
-			this.label1.Tag = "Label_CMEdge";
-			this.label1.Text = "Regain/Spend Edge";
+			this.grpPhysicalCM.AutoSize = true;
+			this.tblCMTab.SetColumnSpan(this.grpPhysicalCM, 2);
+			this.grpPhysicalCM.Controls.Add(this.panPhysicalCM);
+			this.grpPhysicalCM.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.grpPhysicalCM.Location = new System.Drawing.Point(3, 60);
+			this.grpPhysicalCM.MinimumSize = new System.Drawing.Size(0, 50);
+			this.grpPhysicalCM.Name = "grpPhysicalCM";
+			this.grpPhysicalCM.Size = new System.Drawing.Size(227, 50);
+			this.grpPhysicalCM.TabIndex = 72;
+			this.grpPhysicalCM.TabStop = false;
+			this.grpPhysicalCM.Tag = "Label_CMPhysical";
+			this.grpPhysicalCM.Text = "Physical";
 			// 
-			// lblCMPenalty
+			// panPhysicalCM
 			// 
-			this.lblCMPenalty.AutoSize = true;
-			this.lblCMPenalty.Location = new System.Drawing.Point(121, 10);
-			this.lblCMPenalty.Name = "lblCMPenalty";
-			this.lblCMPenalty.Size = new System.Drawing.Size(19, 13);
-			this.lblCMPenalty.TabIndex = 38;
-			this.lblCMPenalty.Text = "[0]";
+			this.panPhysicalCM.AutoSize = true;
+			this.panPhysicalCM.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.panPhysicalCM.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panPhysicalCM.Location = new System.Drawing.Point(3, 16);
+			this.panPhysicalCM.Name = "panPhysicalCM";
+			this.panPhysicalCM.Size = new System.Drawing.Size(221, 31);
+			this.panPhysicalCM.TabIndex = 0;
+			// 
+			// grpCMEdge
+			// 
+			this.grpCMEdge.AutoSize = true;
+			this.grpCMEdge.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.tblCMTab.SetColumnSpan(this.grpCMEdge, 2);
+			this.grpCMEdge.Controls.Add(this.flowLayoutPanel2);
+			this.grpCMEdge.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.grpCMEdge.Location = new System.Drawing.Point(3, 172);
+			this.grpCMEdge.Name = "grpCMEdge";
+			this.grpCMEdge.Size = new System.Drawing.Size(227, 491);
+			this.grpCMEdge.TabIndex = 75;
+			this.grpCMEdge.TabStop = false;
+			this.grpCMEdge.Tag = "Label_CMEdge";
+			this.grpCMEdge.Text = "Spend/Regain Edge";
+			// 
+			// flowLayoutPanel2
+			// 
+			this.flowLayoutPanel2.AutoSize = true;
+			this.flowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.flowLayoutPanel2.Controls.Add(this.lblEDGInfo);
+			this.flowLayoutPanel2.Controls.Add(this.cmdEdgeGained);
+			this.flowLayoutPanel2.Controls.Add(this.cmdEdgeSpent);
+			this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 16);
+			this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+			this.flowLayoutPanel2.Size = new System.Drawing.Size(221, 472);
+			this.flowLayoutPanel2.TabIndex = 0;
+			// 
+			// lblEDGInfo
+			// 
+			this.lblEDGInfo.AutoSize = true;
+			this.lblEDGInfo.Location = new System.Drawing.Point(3, 0);
+			this.lblEDGInfo.Name = "lblEDGInfo";
+			this.lblEDGInfo.Size = new System.Drawing.Size(19, 13);
+			this.lblEDGInfo.TabIndex = 72;
+			this.lblEDGInfo.Tag = "Label_CMEdge";
+			this.lblEDGInfo.Text = "[0]";
+			this.lblEDGInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// tabDefences
 			// 
@@ -4927,8 +4412,8 @@ namespace Chummer
 			this.treLimit.ShowNodeToolTips = true;
 			this.treLimit.ShowPlusMinus = false;
 			this.treLimit.ShowRootLines = false;
-            this.treLimit.Size = new System.Drawing.Size(299, 638);
-            this.treLimit.TabIndex = 79;
+			this.treLimit.Size = new System.Drawing.Size(299, 0);
+			this.treLimit.TabIndex = 79;
 			this.treLimit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treLimit_KeyDown);
 			// 
 			// cmdDeleteLimitModifier
@@ -5011,8 +4496,8 @@ namespace Chummer
 			this.treMartialArts.ShowNodeToolTips = true;
 			this.treMartialArts.ShowPlusMinus = false;
 			this.treMartialArts.ShowRootLines = false;
-            this.treMartialArts.Size = new System.Drawing.Size(315, 633);
-            this.treMartialArts.TabIndex = 2;
+			this.treMartialArts.Size = new System.Drawing.Size(315, 0);
+			this.treMartialArts.TabIndex = 2;
 			this.treMartialArts.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMartialArts_AfterSelect);
 			this.treMartialArts.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treMartialArts_KeyDown);
 			this.treMartialArts.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
@@ -5571,7 +5056,7 @@ namespace Chummer
 			this.panSpirits.AutoScroll = true;
 			this.panSpirits.Location = new System.Drawing.Point(11, 449);
 			this.panSpirits.Name = "panSpirits";
-			this.panSpirits.Size = new System.Drawing.Size(824, 217);
+			this.panSpirits.Size = new System.Drawing.Size(824, 0);
 			this.panSpirits.TabIndex = 4;
 			// 
 			// lblSelectedSpells
@@ -5874,7 +5359,7 @@ namespace Chummer
 			this.panSprites.AutoScroll = true;
 			this.panSprites.Location = new System.Drawing.Point(8, 445);
 			this.panSprites.Name = "panSprites";
-			this.panSprites.Size = new System.Drawing.Size(850, 224);
+			this.panSprites.Size = new System.Drawing.Size(850, 0);
 			this.panSprites.TabIndex = 25;
 			// 
 			// cmdAddComplexForm
@@ -6262,7 +5747,7 @@ namespace Chummer
 			this.treCritterPowers.ShowNodeToolTips = true;
 			this.treCritterPowers.ShowPlusMinus = false;
 			this.treCritterPowers.ShowRootLines = false;
-			this.treCritterPowers.Size = new System.Drawing.Size(333, 634);
+			this.treCritterPowers.Size = new System.Drawing.Size(333, 0);
 			this.treCritterPowers.TabIndex = 15;
 			this.treCritterPowers.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCritterPowers_AfterSelect);
 			this.treCritterPowers.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCritterPowers_KeyDown);
@@ -6413,7 +5898,7 @@ namespace Chummer
 			this.treMetamagic.Location = new System.Drawing.Point(8, 75);
 			this.treMetamagic.Name = "treMetamagic";
 			this.treMetamagic.ShowNodeToolTips = true;
-			this.treMetamagic.Size = new System.Drawing.Size(351, 591);
+			this.treMetamagic.Size = new System.Drawing.Size(351, 0);
 			this.treMetamagic.TabIndex = 96;
 			this.treMetamagic.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMetamagic_AfterSelect);
 			this.treMetamagic.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treMetamagic_KeyDown);
@@ -7527,7 +7012,7 @@ namespace Chummer
             treeNode18});
 			this.treCyberware.ShowNodeToolTips = true;
 			this.treCyberware.ShowRootLines = false;
-			this.treCyberware.Size = new System.Drawing.Size(295, 633);
+			this.treCyberware.Size = new System.Drawing.Size(295, 0);
 			this.treCyberware.TabIndex = 28;
 			this.treCyberware.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCyberware_AfterSelect);
 			this.treCyberware.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCyberware_KeyDown);
@@ -8249,12 +7734,12 @@ namespace Chummer
 			this.treFoci.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
 			this.treFoci.CheckBoxes = true;
-			this.treFoci.Location = new System.Drawing.Point(307, 351);
+			this.treFoci.Location = new System.Drawing.Point(310, 351);
 			this.treFoci.Name = "treFoci";
 			this.treFoci.ShowLines = false;
 			this.treFoci.ShowPlusMinus = false;
 			this.treFoci.ShowRootLines = false;
-			this.treFoci.Size = new System.Drawing.Size(308, 292);
+			this.treFoci.Size = new System.Drawing.Size(308, 598);
 			this.treFoci.TabIndex = 91;
 			this.treFoci.BeforeCheck += new System.Windows.Forms.TreeViewCancelEventHandler(this.treFoci_BeforeCheck);
 			this.treFoci.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treFoci_AfterCheck);
@@ -8548,7 +8033,7 @@ namespace Chummer
 			this.tabArmor.Location = new System.Drawing.Point(4, 22);
 			this.tabArmor.Name = "tabArmor";
 			this.tabArmor.Padding = new System.Windows.Forms.Padding(3);
-			this.tabArmor.Size = new System.Drawing.Size(1086, 646);
+			this.tabArmor.Size = new System.Drawing.Size(184, 48);
 			this.tabArmor.TabIndex = 1;
 			this.tabArmor.Tag = "Tab_Armor";
 			this.tabArmor.Text = "Armor";
@@ -9002,7 +8487,7 @@ namespace Chummer
 			this.tabWeapons.Controls.Add(this.cmdFireWeapon);
 			this.tabWeapons.Location = new System.Drawing.Point(4, 22);
 			this.tabWeapons.Name = "tabWeapons";
-			this.tabWeapons.Size = new System.Drawing.Size(1086, 646);
+			this.tabWeapons.Size = new System.Drawing.Size(184, 48);
 			this.tabWeapons.TabIndex = 2;
 			this.tabWeapons.Tag = "Tab_Weapons";
 			this.tabWeapons.Text = "Weapons";
@@ -9847,7 +9332,7 @@ namespace Chummer
 			this.treWeapons.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode21});
 			this.treWeapons.ShowNodeToolTips = true;
-			this.treWeapons.Size = new System.Drawing.Size(295, 607);
+			this.treWeapons.Size = new System.Drawing.Size(295, 1205);
 			this.treWeapons.TabIndex = 29;
 			this.treWeapons.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treWeapons_AfterSelect);
 			this.treWeapons.DragOver += new System.Windows.Forms.DragEventHandler(this.treWeapons_DragOver);
@@ -10118,7 +9603,7 @@ namespace Chummer
 			this.tabLifestyle.Location = new System.Drawing.Point(4, 22);
 			this.tabLifestyle.Name = "tabLifestyle";
 			this.tabLifestyle.Padding = new System.Windows.Forms.Padding(3);
-			this.tabLifestyle.Size = new System.Drawing.Size(1086, 646);
+			this.tabLifestyle.Size = new System.Drawing.Size(184, 48);
 			this.tabLifestyle.TabIndex = 0;
 			this.tabLifestyle.Tag = "Tab_Lifestyle";
 			this.tabLifestyle.Text = "Lifestyle";
@@ -10332,7 +9817,7 @@ namespace Chummer
             treeNode22});
 			this.treLifestyles.ShowNodeToolTips = true;
 			this.treLifestyles.ShowRootLines = false;
-			this.treLifestyles.Size = new System.Drawing.Size(295, 604);
+			this.treLifestyles.Size = new System.Drawing.Size(295, 1202);
 			this.treLifestyles.TabIndex = 80;
 			this.treLifestyles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treLifestyles_AfterSelect);
 			this.treLifestyles.DragOver += new System.Windows.Forms.DragEventHandler(this.treLifestyles_DragOver);
@@ -10362,7 +9847,7 @@ namespace Chummer
 			this.tabDrugs.Location = new System.Drawing.Point(4, 22);
 			this.tabDrugs.Name = "tabDrugs";
 			this.tabDrugs.Padding = new System.Windows.Forms.Padding(3);
-			this.tabDrugs.Size = new System.Drawing.Size(1086, 646);
+			this.tabDrugs.Size = new System.Drawing.Size(184, 48);
 			this.tabDrugs.TabIndex = 7;
 			this.tabDrugs.Tag = "Tab_Drugs";
 			this.tabDrugs.Text = "Drugs";
@@ -10409,6 +9894,30 @@ namespace Chummer
 			this.tblDrugDescription.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tblDrugDescription.Size = new System.Drawing.Size(179, 208);
 			this.tblDrugDescription.TabIndex = 109;
+			// 
+			// lblDrugEffectsLabel
+			// 
+			this.lblDrugEffectsLabel.AutoSize = true;
+			this.lblDrugEffectsLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblDrugEffectsLabel.Location = new System.Drawing.Point(3, 191);
+			this.lblDrugEffectsLabel.Margin = new System.Windows.Forms.Padding(3);
+			this.lblDrugEffectsLabel.Name = "lblDrugEffectsLabel";
+			this.lblDrugEffectsLabel.Size = new System.Drawing.Size(72, 14);
+			this.lblDrugEffectsLabel.TabIndex = 98;
+			this.lblDrugEffectsLabel.Tag = "Label_DrugEffects";
+			this.lblDrugEffectsLabel.Text = "[Components]";
+			// 
+			// lblDrugEffect
+			// 
+			this.lblDrugEffect.AutoSize = true;
+			this.lblDrugEffect.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblDrugEffect.Location = new System.Drawing.Point(81, 191);
+			this.lblDrugEffect.Margin = new System.Windows.Forms.Padding(3);
+			this.lblDrugEffect.Name = "lblDrugEffect";
+			this.lblDrugEffect.Size = new System.Drawing.Size(95, 14);
+			this.lblDrugEffect.TabIndex = 97;
+			this.lblDrugEffect.Tag = "";
+			this.lblDrugEffect.Text = "[Effects]";
 			// 
 			// lblDrugNameLabel
 			// 
@@ -10670,12 +10179,12 @@ namespace Chummer
 			// 
 			this.treCustomDrugs.Location = new System.Drawing.Point(6, 35);
 			this.treCustomDrugs.Name = "treCustomDrugs";
-            treeNode25.Name = "nodSelectedDrug";
-            treeNode25.Tag = "Node_SelectedDrugs";
-            treeNode25.Text = "Selected Drugs";
-            this.treCustomDrugs.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-                treeNode25});
-            this.treCustomDrugs.Size = new System.Drawing.Size(264, 538);
+			treeNode23.Name = "nodSelectedDrug";
+			treeNode23.Tag = "Node_SelectedDrugs";
+			treeNode23.Text = "Selected Drugs";
+			this.treCustomDrugs.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode23});
+			this.treCustomDrugs.Size = new System.Drawing.Size(264, 538);
 			this.treCustomDrugs.TabIndex = 2;
 			this.treCustomDrugs.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCustomDrugs_AfterSelect);
 			// 
@@ -12868,15 +12377,15 @@ namespace Chummer
 			this.treVehicles.HideSelection = false;
 			this.treVehicles.Location = new System.Drawing.Point(8, 36);
 			this.treVehicles.Name = "treVehicles";
-            treeNode23.Name = "nodVehiclesRoot";
-            treeNode23.Tag = "Node_SelectedVehicles";
-            treeNode23.Text = "Selected Vehicles";
-            this.treVehicles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-                treeNode23});
-            this.treVehicles.ShowNodeToolTips = true;
-            this.treVehicles.ShowRootLines = false;
-            this.treVehicles.Size = new System.Drawing.Size(403, 633);
-            this.treVehicles.TabIndex = 30;
+			treeNode24.Name = "nodVehiclesRoot";
+			treeNode24.Tag = "Node_SelectedVehicles";
+			treeNode24.Text = "Selected Vehicles";
+			this.treVehicles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode24});
+			this.treVehicles.ShowNodeToolTips = true;
+			this.treVehicles.ShowRootLines = false;
+			this.treVehicles.Size = new System.Drawing.Size(403, 0);
+			this.treVehicles.TabIndex = 30;
 			this.treVehicles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treVehicles_AfterSelect);
 			this.treVehicles.DragOver += new System.Windows.Forms.DragEventHandler(this.treVehicles_DragOver);
 			this.treVehicles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treVehicles_KeyDown);
@@ -13657,8 +13166,8 @@ namespace Chummer
 			// 
 			this.cmdChangeStartWeek.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.cmdChangeStartWeek.AutoSize = true;
-            this.cmdChangeStartWeek.Location = new System.Drawing.Point(-9155, 6);
-            this.cmdChangeStartWeek.Name = "cmdChangeStartWeek";
+			this.cmdChangeStartWeek.Location = new System.Drawing.Point(-10959, 6);
+			this.cmdChangeStartWeek.Name = "cmdChangeStartWeek";
 			this.cmdChangeStartWeek.Size = new System.Drawing.Size(119, 23);
 			this.cmdChangeStartWeek.TabIndex = 4;
 			this.cmdChangeStartWeek.Tag = "Button_ChangeStartWeek";
@@ -13704,8 +13213,8 @@ namespace Chummer
 			this.lstCalendar.Location = new System.Drawing.Point(8, 35);
 			this.lstCalendar.MultiSelect = false;
 			this.lstCalendar.Name = "lstCalendar";
-            this.lstCalendar.Size = new System.Drawing.Size(1080, 631);
-            this.lstCalendar.TabIndex = 1;
+			this.lstCalendar.Size = new System.Drawing.Size(0, 0);
+			this.lstCalendar.TabIndex = 1;
 			this.lstCalendar.UseCompatibleStateImageBehavior = false;
 			this.lstCalendar.View = System.Windows.Forms.View.Details;
 			this.lstCalendar.DoubleClick += new System.EventHandler(this.lstCalendar_DoubleClick);
@@ -13877,14 +13386,14 @@ namespace Chummer
 			this.treImprovements.HideSelection = false;
 			this.treImprovements.Location = new System.Drawing.Point(8, 35);
 			this.treImprovements.Name = "treImprovements";
-            treeNode24.Name = "nodImprovementsRoot";
-            treeNode24.Tag = "Node_SelectedImprovements";
-            treeNode24.Text = "Selected Improvements";
-            this.treImprovements.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-                treeNode24});
-            this.treImprovements.ShowNodeToolTips = true;
-            this.treImprovements.Size = new System.Drawing.Size(295, 634);
-            this.treImprovements.TabIndex = 81;
+			treeNode25.Name = "nodImprovementsRoot";
+			treeNode25.Tag = "Node_SelectedImprovements";
+			treeNode25.Text = "Selected Improvements";
+			this.treImprovements.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode25});
+			this.treImprovements.ShowNodeToolTips = true;
+			this.treImprovements.Size = new System.Drawing.Size(295, 0);
+			this.treImprovements.TabIndex = 81;
 			this.treImprovements.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treImprovements_AfterSelect);
 			this.treImprovements.DragOver += new System.Windows.Forms.DragEventHandler(this.treImprovements_DragOver);
 			this.treImprovements.DoubleClick += new System.EventHandler(this.treImprovements_DoubleClick);
@@ -14054,8 +13563,8 @@ namespace Chummer
 			this.tabEnemies.Location = new System.Drawing.Point(4, 22);
 			this.tabEnemies.Name = "tabEnemies";
 			this.tabEnemies.Padding = new System.Windows.Forms.Padding(3);
-            this.tabEnemies.Size = new System.Drawing.Size(1080, 640);
-            this.tabEnemies.TabIndex = 1;
+			this.tabEnemies.Size = new System.Drawing.Size(178, 42);
+			this.tabEnemies.TabIndex = 1;
 			this.tabEnemies.Tag = "Label_Enemies";
 			this.tabEnemies.Text = "Enemies";
 			// 
@@ -14097,7 +13606,7 @@ namespace Chummer
 			this.panEnemies.AutoScroll = true;
 			this.panEnemies.Location = new System.Drawing.Point(6, 49);
 			this.panEnemies.Name = "panEnemies";
-			this.panEnemies.Size = new System.Drawing.Size(1068, 585);
+			this.panEnemies.Size = new System.Drawing.Size(1970, 1183);
 			this.panEnemies.TabIndex = 41;
 			this.panEnemies.Click += new System.EventHandler(this.panEnemies_Click);
 			// 
@@ -14121,8 +13630,8 @@ namespace Chummer
 			this.tabPets.Location = new System.Drawing.Point(4, 22);
 			this.tabPets.Name = "tabPets";
 			this.tabPets.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPets.Size = new System.Drawing.Size(1080, 640);
-            this.tabPets.TabIndex = 4;
+			this.tabPets.Size = new System.Drawing.Size(178, 42);
+			this.tabPets.TabIndex = 4;
 			this.tabPets.Tag = "Tab_Pets";
 			this.tabPets.Text = "Pets and Cohorts";
 			// 
@@ -14135,7 +13644,7 @@ namespace Chummer
 			this.panPets.Location = new System.Drawing.Point(6, 33);
 			this.panPets.Margin = new System.Windows.Forms.Padding(0);
 			this.panPets.Name = "panPets";
-			this.panPets.Size = new System.Drawing.Size(1071, 604);
+			this.panPets.Size = new System.Drawing.Size(1973, 1202);
 			this.panPets.TabIndex = 25;
 			// 
 			// cmdAddPet
@@ -14597,30 +14106,6 @@ namespace Chummer
 			this.tsWeaponMountLocation.Tag = "Menu_RenameLocation";
 			this.tsWeaponMountLocation.Text = "Rename &Location";
 			// 
-			// lblDrugEffect
-			// 
-			this.lblDrugEffect.AutoSize = true;
-			this.lblDrugEffect.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblDrugEffect.Location = new System.Drawing.Point(81, 191);
-			this.lblDrugEffect.Margin = new System.Windows.Forms.Padding(3);
-			this.lblDrugEffect.Name = "lblDrugEffect";
-			this.lblDrugEffect.Size = new System.Drawing.Size(95, 14);
-			this.lblDrugEffect.TabIndex = 97;
-			this.lblDrugEffect.Tag = "";
-			this.lblDrugEffect.Text = "[Effects]";
-			// 
-			// lblDrugEffectsLabel
-			// 
-			this.lblDrugEffectsLabel.AutoSize = true;
-			this.lblDrugEffectsLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblDrugEffectsLabel.Location = new System.Drawing.Point(3, 191);
-			this.lblDrugEffectsLabel.Margin = new System.Windows.Forms.Padding(3);
-			this.lblDrugEffectsLabel.Name = "lblDrugEffectsLabel";
-			this.lblDrugEffectsLabel.Size = new System.Drawing.Size(72, 14);
-			this.lblDrugEffectsLabel.TabIndex = 98;
-			this.lblDrugEffectsLabel.Tag = "Label_DrugEffects";
-			this.lblDrugEffectsLabel.Text = "[Components]";
-			// 
 			// frmCareer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -14660,15 +14145,21 @@ namespace Chummer
 			this.cmsVehicle.ResumeLayout(false);
 			this.cmdVehicleAmmoExpense.ResumeLayout(false);
 			this.cmsDeleteVehicle.ResumeLayout(false);
-			this.panStunCM.ResumeLayout(false);
-			this.panStunCM.PerformLayout();
-			this.panPhysicalCM.ResumeLayout(false);
-			this.panPhysicalCM.PerformLayout();
 			this.tabInfo.ResumeLayout(false);
 			this.tabOtherInfo.ResumeLayout(false);
 			this.tabOtherInfo.PerformLayout();
 			this.tabConditionMonitor.ResumeLayout(false);
 			this.tabConditionMonitor.PerformLayout();
+			this.tblCMTab.ResumeLayout(false);
+			this.tblCMTab.PerformLayout();
+			this.grpCMStun.ResumeLayout(false);
+			this.grpCMStun.PerformLayout();
+			this.grpPhysicalCM.ResumeLayout(false);
+			this.grpPhysicalCM.PerformLayout();
+			this.grpCMEdge.ResumeLayout(false);
+			this.grpCMEdge.PerformLayout();
+			this.flowLayoutPanel2.ResumeLayout(false);
+			this.flowLayoutPanel2.PerformLayout();
 			this.tabDefences.ResumeLayout(false);
 			this.tlpSpellDefense.ResumeLayout(false);
 			this.tlpSpellDefense.PerformLayout();
@@ -14882,48 +14373,8 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem cmsVehicleAmmoSuppressiveFire;
         private System.Windows.Forms.ContextMenuStrip cmsLifestyle;
         private System.Windows.Forms.ToolStripMenuItem tsAdvancedLifestyle;
-        private System.Windows.Forms.Panel panStunCM;
-        private System.Windows.Forms.CheckBox chkStunCM18;
-        private System.Windows.Forms.CheckBox chkStunCM17;
-        private System.Windows.Forms.CheckBox chkStunCM16;
-        private System.Windows.Forms.CheckBox chkStunCM15;
-        private System.Windows.Forms.CheckBox chkStunCM14;
-        private System.Windows.Forms.CheckBox chkStunCM13;
-        private System.Windows.Forms.CheckBox chkStunCM12;
-        private System.Windows.Forms.CheckBox chkStunCM11;
-        private System.Windows.Forms.CheckBox chkStunCM10;
-        private System.Windows.Forms.CheckBox chkStunCM9;
-        private System.Windows.Forms.CheckBox chkStunCM8;
-        private System.Windows.Forms.CheckBox chkStunCM7;
-        private System.Windows.Forms.CheckBox chkStunCM6;
-        private System.Windows.Forms.CheckBox chkStunCM5;
-        private System.Windows.Forms.CheckBox chkStunCM4;
-        private System.Windows.Forms.CheckBox chkStunCM3;
-        private System.Windows.Forms.CheckBox chkStunCM2;
-        private System.Windows.Forms.CheckBox chkStunCM1;
-        private System.Windows.Forms.Panel panPhysicalCM;
-        private System.Windows.Forms.CheckBox chkPhysicalCM18;
-        private System.Windows.Forms.CheckBox chkPhysicalCM17;
-        private System.Windows.Forms.CheckBox chkPhysicalCM16;
-        private System.Windows.Forms.CheckBox chkPhysicalCM15;
-        private System.Windows.Forms.CheckBox chkPhysicalCM14;
-        private System.Windows.Forms.CheckBox chkPhysicalCM13;
-        private System.Windows.Forms.CheckBox chkPhysicalCM12;
-        private System.Windows.Forms.CheckBox chkPhysicalCM11;
-        private System.Windows.Forms.CheckBox chkPhysicalCM10;
-        private System.Windows.Forms.CheckBox chkPhysicalCM9;
-        private System.Windows.Forms.CheckBox chkPhysicalCM8;
-        private System.Windows.Forms.CheckBox chkPhysicalCM7;
-        private System.Windows.Forms.CheckBox chkPhysicalCM6;
-        private System.Windows.Forms.CheckBox chkPhysicalCM5;
-        private System.Windows.Forms.CheckBox chkPhysicalCM4;
-        private System.Windows.Forms.CheckBox chkPhysicalCM3;
-        private System.Windows.Forms.CheckBox chkPhysicalCM2;
-        private System.Windows.Forms.CheckBox chkPhysicalCM1;
         private System.Windows.Forms.Label lblCMPenalty;
         private System.Windows.Forms.Label lblCMPenaltyLabel;
-        private System.Windows.Forms.Label lblStunCMLabel;
-        private System.Windows.Forms.Label lblPhysicalCMLabel;
         private System.Windows.Forms.TabPage tabConditionMonitor;
         private System.Windows.Forms.ToolStripMenuItem tsWeaponName;
         private System.Windows.Forms.ToolStripMenuItem tsWeaponAddUnderbarrel;
@@ -14931,19 +14382,12 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsAddComplexFormOption;
         private System.Windows.Forms.Button cmdEdgeGained;
         private System.Windows.Forms.Button cmdEdgeSpent;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ContextMenuStrip cmsGearButton;
         private System.Windows.Forms.ToolStripMenuItem tsGearButtonAddAccessory;
         private System.Windows.Forms.Label lblCareerKarma;
         private System.Windows.Forms.Label lblCareerKarmaLabel;
         private System.Windows.Forms.Label lblMovement;
         private System.Windows.Forms.Label lblMovementLabel;
-        private System.Windows.Forms.CheckBox chkPhysicalCM24;
-        private System.Windows.Forms.CheckBox chkPhysicalCM23;
-        private System.Windows.Forms.CheckBox chkPhysicalCM22;
-        private System.Windows.Forms.CheckBox chkPhysicalCM21;
-        private System.Windows.Forms.CheckBox chkPhysicalCM20;
-        private System.Windows.Forms.CheckBox chkPhysicalCM19;
         private System.Windows.Forms.ContextMenuStrip cmsUndoKarmaExpense;
         private System.Windows.Forms.ToolStripMenuItem tsUndoKarmaExpense;
         private System.Windows.Forms.ContextMenuStrip cmsUndoNuyenExpense;
@@ -15968,5 +15412,12 @@ namespace Chummer
         private Button btnDecreaseDrugQty;
         private Label lblDrugEffectsLabel;
         private Label lblDrugEffect;
+        private TableLayoutPanel tblCMTab;
+        private GroupBox grpCMStun;
+        private GroupBox grpPhysicalCM;
+        private GroupBox grpCMEdge;
+        private FlowLayoutPanel flowLayoutPanel2;
+        private FlowLayoutPanel panStunCM;
+        private FlowLayoutPanel panPhysicalCM;
     }
 }
