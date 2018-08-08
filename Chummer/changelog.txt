@@ -38,6 +38,9 @@ Application Changes:
 - Added support for <throwrangestr /> to the Improvement Manager which effectively raises a character's STR for the purpose of determining the range of Thrown Weapons.
 - Fixed a crash when adding Metahuman Adjustment modifications to a vehicle with Increased Seating. Fixes #2857
 - Fixed a crash when changing the primary text of a knowledge skill if a specialisation has been entered.
+- Workaround for a bug in the powertabusercontrol that caused free levels to make power ratings revert on load.
+- Fixed the condition monitor control to run when relevant events are fired, rather than on updatecharacterinfo.
+- Condition Monitor checkboxes for characters are now generated on demand, allowing for characters with >24 condition monitor boxes.
 
 Data Changes:
 
@@ -56,6 +59,8 @@ Data Changes:
 - Fixed incorrect hidden status of the Krime Shiv. 
 - Added missing costdiscount properties for the Dedciated Conjurer and Dedicated Spellslinger.
 - Ambidextrous quality can now be taken up to three times to support the Shiva Arms quality. Fixes #2893
+- The Cavalier Flash can now add a Hidden Arm Slide accessory.  Fixes #2908
+- Added missing Recoil Compensation for the Colt M23A2. Fixes #2907
 
 New Strings:
 

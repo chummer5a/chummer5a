@@ -13241,7 +13241,7 @@
       <damage>9P</damage>
       <ap>-2</ap>
       <mode>SA/BF/FA</mode>
-      <rc>0</rc>
+      <rc>1</rc>
       <ammo>40(c)</ammo>
       <avail>10R</avail>
       <cost>3150</cost>
@@ -14253,7 +14253,10 @@
       <cost>350</cost>
       <required>
         <weapondetails>
-          <conceal operation="lessthanequals">-2</conceal>
+          <OR>
+            <conceal operation="lessthanequals">-2</conceal>
+            <name>Cavalier Flash</name>
+          </OR>
         </weapondetails>
       </required>
       <source>SR5</source>
