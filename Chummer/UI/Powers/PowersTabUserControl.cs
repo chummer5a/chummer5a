@@ -282,28 +282,38 @@ namespace Chummer.UI.Powers
             TableColumn<Power> ratingColumn = new TableColumn<Power>(() => new SpinnerTableCell<Power>(_table)
             {
                 EnabledExtractor = (p => p.LevelsEnabled),
-                MinExtractor = (p => p.FreeLevels),
-                MaxExtractor = (p => p.TotalMaximumLevels),
+                MaxExtractor = (p => Math.Max(p.TotalMaximumLevels - p.FreeLevels, 0)),
                 ValueUpdater = (p, newRating) =>
                 {
-                    int delta = ((int)newRating) - p.TotalRating;
+                    int delta = ((int)newRating) - p.Rating;
                     if (delta != 0)
                     {
-                        p.TotalRating += delta;
+                        p.Rating += delta;
                     }
 
                 },
-                ValueGetter = (p => p.TotalRating),
+                MinExtractor = (p => 0),
+                ValueGetter = (p => p.Rating),
             })
             {
                 Text = "Rating",
                 Tag = "String_Rating",
                 Sorter = (o1, o2) => ((Power)o1).Rating - ((Power)o2).Rating
             };
+
+
             ratingColumn.AddDependency(nameof(Power.LevelsEnabled));
             ratingColumn.AddDependency(nameof(Power.FreeLevels));
             ratingColumn.AddDependency(nameof(Power.TotalMaximumLevels));
             ratingColumn.AddDependency(nameof(Power.TotalRating));
+            TableColumn<Power> totalRatingColumn = new TableColumn<Power>(() => new TextTableCell())
+            {
+                Text = "Total Rating",
+                Extractor = (power => power.TotalRating),
+                Tag = "String_TotalRating",
+                Sorter = (o1, o2) => ((Power)o1).TotalRating - ((Power)o2).TotalRating
+            };
+            totalRatingColumn.AddDependency(nameof(Power.TotalRating));
 
             TableColumn<Power> powerPointsColumn = new TableColumn<Power>(() => new TextTableCell())
             {
@@ -403,6 +413,7 @@ namespace Chummer.UI.Powers
             _table.Columns.Add(nameColumn);
             _table.Columns.Add(actionColumn);
             _table.Columns.Add(ratingColumn);
+            _table.Columns.Add(totalRatingColumn);
             _table.Columns.Add(powerPointsColumn);
             _table.Columns.Add(adeptWayColumn);
             //_table.Columns.Add(geasColumn);
