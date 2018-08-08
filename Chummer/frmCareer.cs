@@ -12639,8 +12639,7 @@ namespace Chummer
 #region Condition Monitors
         private void chkPhysicalCM_CheckedChanged(object sender, EventArgs e)
         {
-            if (sender is CheckBox objBox)
-                ProcessConditionMonitorCheckedChanged(objBox, i => CharacterObject.PhysicalCMFilled = i);
+
         }
 
         private void chkStunCM_CheckedChanged(object sender, EventArgs e)

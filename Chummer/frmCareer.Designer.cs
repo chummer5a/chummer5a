@@ -219,11 +219,59 @@ namespace Chummer
 			this.tblCMTab = new System.Windows.Forms.TableLayoutPanel();
 			this.grpCMStun = new System.Windows.Forms.GroupBox();
 			this.panStunCM = new System.Windows.Forms.FlowLayoutPanel();
+			this.chkStunCM1 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM2 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM3 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM4 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM5 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM6 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM7 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM8 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM9 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM10 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM11 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM12 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM13 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM14 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM15 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM16 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM17 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM18 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM19 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM20 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM21 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM22 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM23 = new System.Windows.Forms.CheckBox();
+			this.chkStunCM24 = new System.Windows.Forms.CheckBox();
 			this.lblCMPenalty = new System.Windows.Forms.Label();
 			this.lblCMDamageResistancePool = new Chummer.LabelWithToolTip();
 			this.lblCMArmor = new Chummer.LabelWithToolTip();
 			this.grpPhysicalCM = new System.Windows.Forms.GroupBox();
 			this.panPhysicalCM = new System.Windows.Forms.FlowLayoutPanel();
+			this.chkPhysicalCM1 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM2 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM3 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM4 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM5 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM6 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM7 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM8 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM9 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM10 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM11 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM12 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM13 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM14 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM15 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM16 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM17 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM18 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM19 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM20 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM21 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM22 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM23 = new System.Windows.Forms.CheckBox();
+			this.chkPhysicalCM24 = new System.Windows.Forms.CheckBox();
 			this.grpCMEdge = new System.Windows.Forms.GroupBox();
 			this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
 			this.lblEDGInfo = new System.Windows.Forms.Label();
@@ -1205,7 +1253,9 @@ namespace Chummer
 			this.tabConditionMonitor.SuspendLayout();
 			this.tblCMTab.SuspendLayout();
 			this.grpCMStun.SuspendLayout();
+			this.panStunCM.SuspendLayout();
 			this.grpPhysicalCM.SuspendLayout();
+			this.panPhysicalCM.SuspendLayout();
 			this.grpCMEdge.SuspendLayout();
 			this.flowLayoutPanel2.SuspendLayout();
 			this.tabDefences.SuspendLayout();
@@ -2848,7 +2898,7 @@ namespace Chummer
 			this.tblCMTab.ColumnCount = 2;
 			this.tblCMTab.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tblCMTab.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tblCMTab.Controls.Add(this.grpCMStun, 0, 4);
+			this.tblCMTab.Controls.Add(this.grpCMStun, 1, 3);
 			this.tblCMTab.Controls.Add(this.lblCMPenaltyLabel, 0, 0);
 			this.tblCMTab.Controls.Add(this.lblCMPenalty, 1, 0);
 			this.tblCMTab.Controls.Add(this.lblCMDamageResistancePool, 1, 2);
@@ -2860,13 +2910,14 @@ namespace Chummer
 			this.tblCMTab.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tblCMTab.Location = new System.Drawing.Point(3, 3);
 			this.tblCMTab.Name = "tblCMTab";
-			this.tblCMTab.RowCount = 6;
+			this.tblCMTab.RowCount = 7;
 			this.tblCMTab.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tblCMTab.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tblCMTab.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tblCMTab.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tblCMTab.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tblCMTab.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tblCMTab.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tblCMTab.Size = new System.Drawing.Size(233, 666);
 			this.tblCMTab.TabIndex = 73;
 			// 
@@ -2874,13 +2925,12 @@ namespace Chummer
 			// 
 			this.grpCMStun.AutoSize = true;
 			this.grpCMStun.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.tblCMTab.SetColumnSpan(this.grpCMStun, 2);
 			this.grpCMStun.Controls.Add(this.panStunCM);
 			this.grpCMStun.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.grpCMStun.Location = new System.Drawing.Point(3, 116);
+			this.grpCMStun.Location = new System.Drawing.Point(121, 60);
 			this.grpCMStun.MinimumSize = new System.Drawing.Size(0, 50);
 			this.grpCMStun.Name = "grpCMStun";
-			this.grpCMStun.Size = new System.Drawing.Size(227, 50);
+			this.grpCMStun.Size = new System.Drawing.Size(109, 229);
 			this.grpCMStun.TabIndex = 74;
 			this.grpCMStun.TabStop = false;
 			this.grpCMStun.Tag = "Label_CMStun";
@@ -2890,11 +2940,396 @@ namespace Chummer
 			// 
 			this.panStunCM.AutoSize = true;
 			this.panStunCM.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.panStunCM.Controls.Add(this.chkStunCM1);
+			this.panStunCM.Controls.Add(this.chkStunCM2);
+			this.panStunCM.Controls.Add(this.chkStunCM3);
+			this.panStunCM.Controls.Add(this.chkStunCM4);
+			this.panStunCM.Controls.Add(this.chkStunCM5);
+			this.panStunCM.Controls.Add(this.chkStunCM6);
+			this.panStunCM.Controls.Add(this.chkStunCM7);
+			this.panStunCM.Controls.Add(this.chkStunCM8);
+			this.panStunCM.Controls.Add(this.chkStunCM9);
+			this.panStunCM.Controls.Add(this.chkStunCM10);
+			this.panStunCM.Controls.Add(this.chkStunCM11);
+			this.panStunCM.Controls.Add(this.chkStunCM12);
+			this.panStunCM.Controls.Add(this.chkStunCM13);
+			this.panStunCM.Controls.Add(this.chkStunCM14);
+			this.panStunCM.Controls.Add(this.chkStunCM15);
+			this.panStunCM.Controls.Add(this.chkStunCM16);
+			this.panStunCM.Controls.Add(this.chkStunCM17);
+			this.panStunCM.Controls.Add(this.chkStunCM18);
+			this.panStunCM.Controls.Add(this.chkStunCM19);
+			this.panStunCM.Controls.Add(this.chkStunCM20);
+			this.panStunCM.Controls.Add(this.chkStunCM21);
+			this.panStunCM.Controls.Add(this.chkStunCM22);
+			this.panStunCM.Controls.Add(this.chkStunCM23);
+			this.panStunCM.Controls.Add(this.chkStunCM24);
 			this.panStunCM.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panStunCM.Location = new System.Drawing.Point(3, 16);
+			this.panStunCM.MaximumSize = new System.Drawing.Size(80, 0);
 			this.panStunCM.Name = "panStunCM";
-			this.panStunCM.Size = new System.Drawing.Size(221, 31);
+			this.panStunCM.Size = new System.Drawing.Size(80, 210);
 			this.panStunCM.TabIndex = 1;
+			// 
+			// chkStunCM1
+			// 
+			this.chkStunCM1.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM1.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM1.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM1.Location = new System.Drawing.Point(1, 1);
+			this.chkStunCM1.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM1.Name = "chkStunCM1";
+			this.chkStunCM1.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM1.TabIndex = 26;
+			this.chkStunCM1.Tag = "1";
+			this.chkStunCM1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM1.UseVisualStyleBackColor = false;
+			this.chkStunCM1.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM2
+			// 
+			this.chkStunCM2.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM2.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM2.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM2.Location = new System.Drawing.Point(27, 1);
+			this.chkStunCM2.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM2.Name = "chkStunCM2";
+			this.chkStunCM2.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM2.TabIndex = 27;
+			this.chkStunCM2.Tag = "2";
+			this.chkStunCM2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM2.UseVisualStyleBackColor = false;
+			this.chkStunCM2.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM3
+			// 
+			this.chkStunCM3.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM3.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM3.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM3.Location = new System.Drawing.Point(53, 1);
+			this.chkStunCM3.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM3.Name = "chkStunCM3";
+			this.chkStunCM3.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM3.TabIndex = 28;
+			this.chkStunCM3.Tag = "3";
+			this.chkStunCM3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM3.UseVisualStyleBackColor = false;
+			this.chkStunCM3.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM4
+			// 
+			this.chkStunCM4.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM4.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM4.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM4.Location = new System.Drawing.Point(1, 27);
+			this.chkStunCM4.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM4.Name = "chkStunCM4";
+			this.chkStunCM4.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM4.TabIndex = 29;
+			this.chkStunCM4.Tag = "4";
+			this.chkStunCM4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM4.UseVisualStyleBackColor = false;
+			this.chkStunCM4.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM5
+			// 
+			this.chkStunCM5.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM5.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM5.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM5.Location = new System.Drawing.Point(27, 27);
+			this.chkStunCM5.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM5.Name = "chkStunCM5";
+			this.chkStunCM5.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM5.TabIndex = 30;
+			this.chkStunCM5.Tag = "5";
+			this.chkStunCM5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM5.UseVisualStyleBackColor = false;
+			this.chkStunCM5.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM6
+			// 
+			this.chkStunCM6.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM6.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM6.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM6.Location = new System.Drawing.Point(53, 27);
+			this.chkStunCM6.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM6.Name = "chkStunCM6";
+			this.chkStunCM6.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM6.TabIndex = 31;
+			this.chkStunCM6.Tag = "6";
+			this.chkStunCM6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM6.UseVisualStyleBackColor = false;
+			this.chkStunCM6.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM7
+			// 
+			this.chkStunCM7.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM7.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM7.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM7.Location = new System.Drawing.Point(1, 53);
+			this.chkStunCM7.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM7.Name = "chkStunCM7";
+			this.chkStunCM7.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM7.TabIndex = 32;
+			this.chkStunCM7.Tag = "7";
+			this.chkStunCM7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM7.UseVisualStyleBackColor = false;
+			this.chkStunCM7.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM8
+			// 
+			this.chkStunCM8.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM8.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM8.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM8.Location = new System.Drawing.Point(27, 53);
+			this.chkStunCM8.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM8.Name = "chkStunCM8";
+			this.chkStunCM8.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM8.TabIndex = 33;
+			this.chkStunCM8.Tag = "8";
+			this.chkStunCM8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM8.UseVisualStyleBackColor = false;
+			this.chkStunCM8.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM9
+			// 
+			this.chkStunCM9.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM9.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM9.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM9.Location = new System.Drawing.Point(53, 53);
+			this.chkStunCM9.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM9.Name = "chkStunCM9";
+			this.chkStunCM9.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM9.TabIndex = 34;
+			this.chkStunCM9.Tag = "9";
+			this.chkStunCM9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM9.UseVisualStyleBackColor = false;
+			this.chkStunCM9.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM10
+			// 
+			this.chkStunCM10.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM10.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM10.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM10.Location = new System.Drawing.Point(1, 79);
+			this.chkStunCM10.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM10.Name = "chkStunCM10";
+			this.chkStunCM10.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM10.TabIndex = 35;
+			this.chkStunCM10.Tag = "10";
+			this.chkStunCM10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM10.UseVisualStyleBackColor = false;
+			this.chkStunCM10.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM11
+			// 
+			this.chkStunCM11.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM11.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM11.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM11.Location = new System.Drawing.Point(27, 79);
+			this.chkStunCM11.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM11.Name = "chkStunCM11";
+			this.chkStunCM11.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM11.TabIndex = 36;
+			this.chkStunCM11.Tag = "11";
+			this.chkStunCM11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM11.UseVisualStyleBackColor = false;
+			this.chkStunCM11.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM12
+			// 
+			this.chkStunCM12.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM12.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM12.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM12.Location = new System.Drawing.Point(53, 79);
+			this.chkStunCM12.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM12.Name = "chkStunCM12";
+			this.chkStunCM12.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM12.TabIndex = 37;
+			this.chkStunCM12.Tag = "12";
+			this.chkStunCM12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM12.UseVisualStyleBackColor = false;
+			this.chkStunCM12.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM13
+			// 
+			this.chkStunCM13.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM13.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM13.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM13.Location = new System.Drawing.Point(1, 105);
+			this.chkStunCM13.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM13.Name = "chkStunCM13";
+			this.chkStunCM13.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM13.TabIndex = 38;
+			this.chkStunCM13.Tag = "13";
+			this.chkStunCM13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM13.UseVisualStyleBackColor = false;
+			this.chkStunCM13.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM14
+			// 
+			this.chkStunCM14.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM14.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM14.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM14.Location = new System.Drawing.Point(27, 105);
+			this.chkStunCM14.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM14.Name = "chkStunCM14";
+			this.chkStunCM14.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM14.TabIndex = 39;
+			this.chkStunCM14.Tag = "14";
+			this.chkStunCM14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM14.UseVisualStyleBackColor = false;
+			this.chkStunCM14.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM15
+			// 
+			this.chkStunCM15.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM15.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM15.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM15.Location = new System.Drawing.Point(53, 105);
+			this.chkStunCM15.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM15.Name = "chkStunCM15";
+			this.chkStunCM15.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM15.TabIndex = 40;
+			this.chkStunCM15.Tag = "15";
+			this.chkStunCM15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM15.UseVisualStyleBackColor = false;
+			this.chkStunCM15.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM16
+			// 
+			this.chkStunCM16.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM16.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM16.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM16.Location = new System.Drawing.Point(1, 131);
+			this.chkStunCM16.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM16.Name = "chkStunCM16";
+			this.chkStunCM16.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM16.TabIndex = 41;
+			this.chkStunCM16.Tag = "16";
+			this.chkStunCM16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM16.UseVisualStyleBackColor = false;
+			this.chkStunCM16.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM17
+			// 
+			this.chkStunCM17.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM17.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM17.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM17.Location = new System.Drawing.Point(27, 131);
+			this.chkStunCM17.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM17.Name = "chkStunCM17";
+			this.chkStunCM17.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM17.TabIndex = 42;
+			this.chkStunCM17.Tag = "17";
+			this.chkStunCM17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM17.UseVisualStyleBackColor = false;
+			this.chkStunCM17.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM18
+			// 
+			this.chkStunCM18.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM18.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM18.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM18.Location = new System.Drawing.Point(53, 131);
+			this.chkStunCM18.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM18.Name = "chkStunCM18";
+			this.chkStunCM18.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM18.TabIndex = 43;
+			this.chkStunCM18.Tag = "18";
+			this.chkStunCM18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM18.UseVisualStyleBackColor = false;
+			this.chkStunCM18.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM19
+			// 
+			this.chkStunCM19.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM19.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM19.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM19.Location = new System.Drawing.Point(1, 157);
+			this.chkStunCM19.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM19.Name = "chkStunCM19";
+			this.chkStunCM19.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM19.TabIndex = 44;
+			this.chkStunCM19.Tag = "19";
+			this.chkStunCM19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM19.UseVisualStyleBackColor = false;
+			this.chkStunCM19.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM20
+			// 
+			this.chkStunCM20.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM20.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM20.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM20.Location = new System.Drawing.Point(27, 157);
+			this.chkStunCM20.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM20.Name = "chkStunCM20";
+			this.chkStunCM20.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM20.TabIndex = 45;
+			this.chkStunCM20.Tag = "20";
+			this.chkStunCM20.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM20.UseVisualStyleBackColor = false;
+			this.chkStunCM20.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM21
+			// 
+			this.chkStunCM21.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM21.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM21.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM21.Location = new System.Drawing.Point(53, 157);
+			this.chkStunCM21.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM21.Name = "chkStunCM21";
+			this.chkStunCM21.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM21.TabIndex = 46;
+			this.chkStunCM21.Tag = "21";
+			this.chkStunCM21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM21.UseVisualStyleBackColor = false;
+			this.chkStunCM21.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM22
+			// 
+			this.chkStunCM22.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM22.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM22.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM22.Location = new System.Drawing.Point(1, 183);
+			this.chkStunCM22.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM22.Name = "chkStunCM22";
+			this.chkStunCM22.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM22.TabIndex = 47;
+			this.chkStunCM22.Tag = "22";
+			this.chkStunCM22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM22.UseVisualStyleBackColor = false;
+			this.chkStunCM22.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM23
+			// 
+			this.chkStunCM23.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM23.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM23.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM23.Location = new System.Drawing.Point(27, 183);
+			this.chkStunCM23.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM23.Name = "chkStunCM23";
+			this.chkStunCM23.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM23.TabIndex = 48;
+			this.chkStunCM23.Tag = "23";
+			this.chkStunCM23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM23.UseVisualStyleBackColor = false;
+			this.chkStunCM23.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
+			// 
+			// chkStunCM24
+			// 
+			this.chkStunCM24.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkStunCM24.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkStunCM24.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkStunCM24.Location = new System.Drawing.Point(53, 183);
+			this.chkStunCM24.Margin = new System.Windows.Forms.Padding(1);
+			this.chkStunCM24.Name = "chkStunCM24";
+			this.chkStunCM24.Size = new System.Drawing.Size(24, 24);
+			this.chkStunCM24.TabIndex = 49;
+			this.chkStunCM24.Tag = "24";
+			this.chkStunCM24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkStunCM24.UseVisualStyleBackColor = false;
+			this.chkStunCM24.Click += new System.EventHandler(this.chkStunCM_CheckedChanged);
 			// 
 			// lblCMPenalty
 			// 
@@ -2934,13 +3369,12 @@ namespace Chummer
 			// grpPhysicalCM
 			// 
 			this.grpPhysicalCM.AutoSize = true;
-			this.tblCMTab.SetColumnSpan(this.grpPhysicalCM, 2);
 			this.grpPhysicalCM.Controls.Add(this.panPhysicalCM);
 			this.grpPhysicalCM.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.grpPhysicalCM.Location = new System.Drawing.Point(3, 60);
 			this.grpPhysicalCM.MinimumSize = new System.Drawing.Size(0, 50);
 			this.grpPhysicalCM.Name = "grpPhysicalCM";
-			this.grpPhysicalCM.Size = new System.Drawing.Size(227, 50);
+			this.grpPhysicalCM.Size = new System.Drawing.Size(112, 229);
 			this.grpPhysicalCM.TabIndex = 72;
 			this.grpPhysicalCM.TabStop = false;
 			this.grpPhysicalCM.Tag = "Label_CMPhysical";
@@ -2950,13 +3384,391 @@ namespace Chummer
 			// 
 			this.panPhysicalCM.AutoSize = true;
 			this.panPhysicalCM.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM1);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM2);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM3);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM4);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM5);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM6);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM7);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM8);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM9);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM10);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM11);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM12);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM13);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM14);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM15);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM16);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM17);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM18);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM19);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM20);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM21);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM22);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM23);
+			this.panPhysicalCM.Controls.Add(this.chkPhysicalCM24);
 			this.panPhysicalCM.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panPhysicalCM.Location = new System.Drawing.Point(3, 16);
+			this.panPhysicalCM.MaximumSize = new System.Drawing.Size(80, 0);
 			this.panPhysicalCM.Name = "panPhysicalCM";
-			this.panPhysicalCM.Size = new System.Drawing.Size(221, 31);
+			this.panPhysicalCM.Padding = new System.Windows.Forms.Padding(1);
+			this.panPhysicalCM.Size = new System.Drawing.Size(80, 210);
 			this.panPhysicalCM.TabIndex = 0;
 			// 
+			// chkPhysicalCM1
+			// 
+			this.chkPhysicalCM1.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM1.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.chkPhysicalCM1.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.chkPhysicalCM1.Location = new System.Drawing.Point(2, 2);
+			this.chkPhysicalCM1.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM1.Name = "chkPhysicalCM1";
+			this.chkPhysicalCM1.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM1.TabIndex = 25;
+			this.chkPhysicalCM1.Tag = "1";
+			this.chkPhysicalCM1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM1.UseVisualStyleBackColor = false;
+			this.chkPhysicalCM1.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM2
+			// 
+			this.chkPhysicalCM2.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM2.Location = new System.Drawing.Point(28, 2);
+			this.chkPhysicalCM2.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM2.Name = "chkPhysicalCM2";
+			this.chkPhysicalCM2.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM2.TabIndex = 26;
+			this.chkPhysicalCM2.Tag = "2";
+			this.chkPhysicalCM2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM2.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM2.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM3
+			// 
+			this.chkPhysicalCM3.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM3.Location = new System.Drawing.Point(54, 2);
+			this.chkPhysicalCM3.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM3.Name = "chkPhysicalCM3";
+			this.chkPhysicalCM3.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM3.TabIndex = 27;
+			this.chkPhysicalCM3.Tag = "3";
+			this.chkPhysicalCM3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM3.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM3.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM4
+			// 
+			this.chkPhysicalCM4.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM4.Location = new System.Drawing.Point(2, 28);
+			this.chkPhysicalCM4.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM4.Name = "chkPhysicalCM4";
+			this.chkPhysicalCM4.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM4.TabIndex = 28;
+			this.chkPhysicalCM4.Tag = "4";
+			this.chkPhysicalCM4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM4.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM4.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM5
+			// 
+			this.chkPhysicalCM5.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM5.Location = new System.Drawing.Point(28, 28);
+			this.chkPhysicalCM5.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM5.Name = "chkPhysicalCM5";
+			this.chkPhysicalCM5.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM5.TabIndex = 29;
+			this.chkPhysicalCM5.Tag = "5";
+			this.chkPhysicalCM5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM5.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM5.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM6
+			// 
+			this.chkPhysicalCM6.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM6.Location = new System.Drawing.Point(54, 28);
+			this.chkPhysicalCM6.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM6.Name = "chkPhysicalCM6";
+			this.chkPhysicalCM6.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM6.TabIndex = 30;
+			this.chkPhysicalCM6.Tag = "6";
+			this.chkPhysicalCM6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM6.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM6.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM7
+			// 
+			this.chkPhysicalCM7.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM7.Location = new System.Drawing.Point(2, 54);
+			this.chkPhysicalCM7.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM7.Name = "chkPhysicalCM7";
+			this.chkPhysicalCM7.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM7.TabIndex = 31;
+			this.chkPhysicalCM7.Tag = "7";
+			this.chkPhysicalCM7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM7.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM7.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM8
+			// 
+			this.chkPhysicalCM8.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM8.Location = new System.Drawing.Point(28, 54);
+			this.chkPhysicalCM8.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM8.Name = "chkPhysicalCM8";
+			this.chkPhysicalCM8.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM8.TabIndex = 32;
+			this.chkPhysicalCM8.Tag = "8";
+			this.chkPhysicalCM8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM8.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM8.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM9
+			// 
+			this.chkPhysicalCM9.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM9.Location = new System.Drawing.Point(54, 54);
+			this.chkPhysicalCM9.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM9.Name = "chkPhysicalCM9";
+			this.chkPhysicalCM9.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM9.TabIndex = 33;
+			this.chkPhysicalCM9.Tag = "9";
+			this.chkPhysicalCM9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM9.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM9.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM10
+			// 
+			this.chkPhysicalCM10.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM10.Location = new System.Drawing.Point(2, 80);
+			this.chkPhysicalCM10.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM10.Name = "chkPhysicalCM10";
+			this.chkPhysicalCM10.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM10.TabIndex = 34;
+			this.chkPhysicalCM10.Tag = "10";
+			this.chkPhysicalCM10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM10.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM10.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM11
+			// 
+			this.chkPhysicalCM11.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM11.Location = new System.Drawing.Point(28, 80);
+			this.chkPhysicalCM11.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM11.Name = "chkPhysicalCM11";
+			this.chkPhysicalCM11.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM11.TabIndex = 35;
+			this.chkPhysicalCM11.Tag = "11";
+			this.chkPhysicalCM11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM11.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM11.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM12
+			// 
+			this.chkPhysicalCM12.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM12.Location = new System.Drawing.Point(54, 80);
+			this.chkPhysicalCM12.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM12.Name = "chkPhysicalCM12";
+			this.chkPhysicalCM12.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM12.TabIndex = 36;
+			this.chkPhysicalCM12.Tag = "12";
+			this.chkPhysicalCM12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM12.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM12.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM13
+			// 
+			this.chkPhysicalCM13.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM13.Location = new System.Drawing.Point(2, 106);
+			this.chkPhysicalCM13.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM13.Name = "chkPhysicalCM13";
+			this.chkPhysicalCM13.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM13.TabIndex = 37;
+			this.chkPhysicalCM13.Tag = "13";
+			this.chkPhysicalCM13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM13.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM13.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM14
+			// 
+			this.chkPhysicalCM14.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM14.Location = new System.Drawing.Point(28, 106);
+			this.chkPhysicalCM14.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM14.Name = "chkPhysicalCM14";
+			this.chkPhysicalCM14.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM14.TabIndex = 38;
+			this.chkPhysicalCM14.Tag = "14";
+			this.chkPhysicalCM14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM14.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM14.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM15
+			// 
+			this.chkPhysicalCM15.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM15.Location = new System.Drawing.Point(54, 106);
+			this.chkPhysicalCM15.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM15.Name = "chkPhysicalCM15";
+			this.chkPhysicalCM15.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM15.TabIndex = 39;
+			this.chkPhysicalCM15.Tag = "15";
+			this.chkPhysicalCM15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM15.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM15.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM16
+			// 
+			this.chkPhysicalCM16.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM16.Location = new System.Drawing.Point(2, 132);
+			this.chkPhysicalCM16.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM16.Name = "chkPhysicalCM16";
+			this.chkPhysicalCM16.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM16.TabIndex = 40;
+			this.chkPhysicalCM16.Tag = "16";
+			this.chkPhysicalCM16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM16.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM16.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM17
+			// 
+			this.chkPhysicalCM17.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM17.Location = new System.Drawing.Point(28, 132);
+			this.chkPhysicalCM17.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM17.Name = "chkPhysicalCM17";
+			this.chkPhysicalCM17.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM17.TabIndex = 41;
+			this.chkPhysicalCM17.Tag = "17";
+			this.chkPhysicalCM17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM17.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM17.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM18
+			// 
+			this.chkPhysicalCM18.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM18.Location = new System.Drawing.Point(54, 132);
+			this.chkPhysicalCM18.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM18.Name = "chkPhysicalCM18";
+			this.chkPhysicalCM18.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM18.TabIndex = 42;
+			this.chkPhysicalCM18.Tag = "18";
+			this.chkPhysicalCM18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM18.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM18.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM19
+			// 
+			this.chkPhysicalCM19.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM19.Location = new System.Drawing.Point(2, 158);
+			this.chkPhysicalCM19.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM19.Name = "chkPhysicalCM19";
+			this.chkPhysicalCM19.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM19.TabIndex = 43;
+			this.chkPhysicalCM19.Tag = "19";
+			this.chkPhysicalCM19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM19.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM19.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM20
+			// 
+			this.chkPhysicalCM20.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM20.Location = new System.Drawing.Point(28, 158);
+			this.chkPhysicalCM20.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM20.Name = "chkPhysicalCM20";
+			this.chkPhysicalCM20.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM20.TabIndex = 44;
+			this.chkPhysicalCM20.Tag = "20";
+			this.chkPhysicalCM20.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM20.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM20.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM21
+			// 
+			this.chkPhysicalCM21.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM21.Location = new System.Drawing.Point(54, 158);
+			this.chkPhysicalCM21.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM21.Name = "chkPhysicalCM21";
+			this.chkPhysicalCM21.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM21.TabIndex = 45;
+			this.chkPhysicalCM21.Tag = "21";
+			this.chkPhysicalCM21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM21.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM21.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM22
+			// 
+			this.chkPhysicalCM22.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM22.Location = new System.Drawing.Point(2, 184);
+			this.chkPhysicalCM22.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM22.Name = "chkPhysicalCM22";
+			this.chkPhysicalCM22.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM22.TabIndex = 46;
+			this.chkPhysicalCM22.Tag = "22";
+			this.chkPhysicalCM22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM22.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM22.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM23
+			// 
+			this.chkPhysicalCM23.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM23.Location = new System.Drawing.Point(28, 184);
+			this.chkPhysicalCM23.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM23.Name = "chkPhysicalCM23";
+			this.chkPhysicalCM23.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM23.TabIndex = 47;
+			this.chkPhysicalCM23.Tag = "23";
+			this.chkPhysicalCM23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM23.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM23.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
+			// chkPhysicalCM24
+			// 
+			this.chkPhysicalCM24.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkPhysicalCM24.Location = new System.Drawing.Point(54, 184);
+			this.chkPhysicalCM24.Margin = new System.Windows.Forms.Padding(1);
+			this.chkPhysicalCM24.Name = "chkPhysicalCM24";
+			this.chkPhysicalCM24.Size = new System.Drawing.Size(24, 24);
+			this.chkPhysicalCM24.TabIndex = 48;
+			this.chkPhysicalCM24.Tag = "24";
+			this.chkPhysicalCM24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkPhysicalCM24.UseVisualStyleBackColor = true;
+			this.chkPhysicalCM24.Click += new System.EventHandler(this.chkPhysicalCM_CheckedChanged);
+			// 
 			// grpCMEdge
+			// 
+			this.grpCMEdge.AutoSize = true;
+			this.grpCMEdge.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.tblCMTab.SetColumnSpan(this.grpCMEdge, 2);
+			this.grpCMEdge.Controls.Add(this.flowLayoutPanel2);
+			this.grpCMEdge.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.grpCMEdge.Location = new System.Drawing.Point(3, 295);
+			this.grpCMEdge.Name = "grpCMEdge";
+			this.grpCMEdge.Size = new System.Drawing.Size(227, 49);
+			this.grpCMEdge.TabIndex = 75;
+			this.grpCMEdge.TabStop = false;
+			this.grpCMEdge.Tag = "Label_CMEdge";
+			this.grpCMEdge.Text = "Spend/Regain Edge";
+			// 
+			// flowLayoutPanel2
+			// 
+			this.flowLayoutPanel2.AutoSize = true;
+			this.flowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.flowLayoutPanel2.Controls.Add(this.lblEDGInfo);
+			this.flowLayoutPanel2.Controls.Add(this.cmdEdgeGained);
+			this.flowLayoutPanel2.Controls.Add(this.cmdEdgeSpent);
+			this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 16);
+			this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+			this.flowLayoutPanel2.Size = new System.Drawing.Size(221, 30);
+			this.flowLayoutPanel2.TabIndex = 0;
+			// 
+			// lblEDGInfo
+			// 
+			this.lblEDGInfo.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.lblEDGInfo.AutoSize = true;
+			this.lblEDGInfo.Location = new System.Drawing.Point(3, 8);
+			this.lblEDGInfo.Name = "lblEDGInfo";
+			this.lblEDGInfo.Size = new System.Drawing.Size(19, 13);
+			this.lblEDGInfo.TabIndex = 72;
+			this.lblEDGInfo.Tag = "Label_CMEdge";
+			this.lblEDGInfo.Text = "[0]";
+			this.lblEDGInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			this.grpCMEdge.AutoSize = true;
 			this.grpCMEdge.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -4496,7 +5308,7 @@ namespace Chummer
 			this.treMartialArts.ShowNodeToolTips = true;
 			this.treMartialArts.ShowPlusMinus = false;
 			this.treMartialArts.ShowRootLines = false;
-			this.treMartialArts.Size = new System.Drawing.Size(315, 0);
+			this.treMartialArts.Size = new System.Drawing.Size(315, 633);
 			this.treMartialArts.TabIndex = 2;
 			this.treMartialArts.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMartialArts_AfterSelect);
 			this.treMartialArts.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treMartialArts_KeyDown);
@@ -5056,8 +5868,8 @@ namespace Chummer
 			this.panSpirits.AutoScroll = true;
 			this.panSpirits.Location = new System.Drawing.Point(11, 449);
 			this.panSpirits.Name = "panSpirits";
-			this.panSpirits.Size = new System.Drawing.Size(824, 0);
-			this.panSpirits.TabIndex = 4;
+            this.panSpirits.Size = new System.Drawing.Size(824, 217);
+            this.panSpirits.TabIndex = 4;
 			// 
 			// lblSelectedSpells
 			// 
@@ -5359,8 +6171,8 @@ namespace Chummer
 			this.panSprites.AutoScroll = true;
 			this.panSprites.Location = new System.Drawing.Point(8, 445);
 			this.panSprites.Name = "panSprites";
-			this.panSprites.Size = new System.Drawing.Size(850, 0);
-			this.panSprites.TabIndex = 25;
+            this.panSprites.Size = new System.Drawing.Size(850, 224);
+            this.panSprites.TabIndex = 25;
 			// 
 			// cmdAddComplexForm
 			// 
@@ -5747,8 +6559,8 @@ namespace Chummer
 			this.treCritterPowers.ShowNodeToolTips = true;
 			this.treCritterPowers.ShowPlusMinus = false;
 			this.treCritterPowers.ShowRootLines = false;
-			this.treCritterPowers.Size = new System.Drawing.Size(333, 0);
-			this.treCritterPowers.TabIndex = 15;
+            this.treCritterPowers.Size = new System.Drawing.Size(333, 634);
+            this.treCritterPowers.TabIndex = 15;
 			this.treCritterPowers.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCritterPowers_AfterSelect);
 			this.treCritterPowers.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCritterPowers_KeyDown);
 			this.treCritterPowers.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
@@ -5898,8 +6710,8 @@ namespace Chummer
 			this.treMetamagic.Location = new System.Drawing.Point(8, 75);
 			this.treMetamagic.Name = "treMetamagic";
 			this.treMetamagic.ShowNodeToolTips = true;
-			this.treMetamagic.Size = new System.Drawing.Size(351, 0);
-			this.treMetamagic.TabIndex = 96;
+            this.treMetamagic.Size = new System.Drawing.Size(351, 591);
+            this.treMetamagic.TabIndex = 96;
 			this.treMetamagic.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMetamagic_AfterSelect);
 			this.treMetamagic.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treMetamagic_KeyDown);
 			this.treMetamagic.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
@@ -7012,8 +7824,8 @@ namespace Chummer
             treeNode18});
 			this.treCyberware.ShowNodeToolTips = true;
 			this.treCyberware.ShowRootLines = false;
-			this.treCyberware.Size = new System.Drawing.Size(295, 0);
-			this.treCyberware.TabIndex = 28;
+            this.treCyberware.Size = new System.Drawing.Size(295, 633);
+            this.treCyberware.TabIndex = 28;
 			this.treCyberware.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCyberware_AfterSelect);
 			this.treCyberware.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCyberware_KeyDown);
 			this.treCyberware.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
@@ -8033,8 +8845,8 @@ namespace Chummer
 			this.tabArmor.Location = new System.Drawing.Point(4, 22);
 			this.tabArmor.Name = "tabArmor";
 			this.tabArmor.Padding = new System.Windows.Forms.Padding(3);
-			this.tabArmor.Size = new System.Drawing.Size(184, 48);
-			this.tabArmor.TabIndex = 1;
+            this.tabArmor.Size = new System.Drawing.Size(1086, 646);
+            this.tabArmor.TabIndex = 1;
 			this.tabArmor.Tag = "Tab_Armor";
 			this.tabArmor.Text = "Armor";
 			// 
@@ -8336,8 +9148,8 @@ namespace Chummer
 			this.treArmor.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode20});
 			this.treArmor.ShowNodeToolTips = true;
-			this.treArmor.Size = new System.Drawing.Size(295, 604);
-			this.treArmor.TabIndex = 69;
+            this.treArmor.Size = new System.Drawing.Size(295, 604);
+            this.treArmor.TabIndex = 69;
 			this.treArmor.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treArmor_AfterSelect);
 			this.treArmor.DragOver += new System.Windows.Forms.DragEventHandler(this.treArmor_DragOver);
 			this.treArmor.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treArmor_KeyDown);
@@ -8487,8 +9299,8 @@ namespace Chummer
 			this.tabWeapons.Controls.Add(this.cmdFireWeapon);
 			this.tabWeapons.Location = new System.Drawing.Point(4, 22);
 			this.tabWeapons.Name = "tabWeapons";
-			this.tabWeapons.Size = new System.Drawing.Size(184, 48);
-			this.tabWeapons.TabIndex = 2;
+            this.tabWeapons.Size = new System.Drawing.Size(1086, 646);
+            this.tabWeapons.TabIndex = 2;
 			this.tabWeapons.Tag = "Tab_Weapons";
 			this.tabWeapons.Text = "Weapons";
 			// 
@@ -9332,8 +10144,8 @@ namespace Chummer
 			this.treWeapons.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode21});
 			this.treWeapons.ShowNodeToolTips = true;
-			this.treWeapons.Size = new System.Drawing.Size(295, 1205);
-			this.treWeapons.TabIndex = 29;
+            this.treWeapons.Size = new System.Drawing.Size(295, 607);
+            this.treWeapons.TabIndex = 29;
 			this.treWeapons.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treWeapons_AfterSelect);
 			this.treWeapons.DragOver += new System.Windows.Forms.DragEventHandler(this.treWeapons_DragOver);
 			this.treWeapons.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treWeapons_KeyDown);
@@ -9603,8 +10415,8 @@ namespace Chummer
 			this.tabLifestyle.Location = new System.Drawing.Point(4, 22);
 			this.tabLifestyle.Name = "tabLifestyle";
 			this.tabLifestyle.Padding = new System.Windows.Forms.Padding(3);
-			this.tabLifestyle.Size = new System.Drawing.Size(184, 48);
-			this.tabLifestyle.TabIndex = 0;
+            this.tabLifestyle.Size = new System.Drawing.Size(1086, 646);
+            this.tabLifestyle.TabIndex = 0;
 			this.tabLifestyle.Tag = "Tab_Lifestyle";
 			this.tabLifestyle.Text = "Lifestyle";
 			// 
@@ -9817,8 +10629,8 @@ namespace Chummer
             treeNode22});
 			this.treLifestyles.ShowNodeToolTips = true;
 			this.treLifestyles.ShowRootLines = false;
-			this.treLifestyles.Size = new System.Drawing.Size(295, 1202);
-			this.treLifestyles.TabIndex = 80;
+            this.treLifestyles.Size = new System.Drawing.Size(295, 604);
+            this.treLifestyles.TabIndex = 80;
 			this.treLifestyles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treLifestyles_AfterSelect);
 			this.treLifestyles.DragOver += new System.Windows.Forms.DragEventHandler(this.treLifestyles_DragOver);
 			this.treLifestyles.DoubleClick += new System.EventHandler(this.treLifestyles_DoubleClick);
@@ -9847,8 +10659,8 @@ namespace Chummer
 			this.tabDrugs.Location = new System.Drawing.Point(4, 22);
 			this.tabDrugs.Name = "tabDrugs";
 			this.tabDrugs.Padding = new System.Windows.Forms.Padding(3);
-			this.tabDrugs.Size = new System.Drawing.Size(184, 48);
-			this.tabDrugs.TabIndex = 7;
+            this.tabDrugs.Size = new System.Drawing.Size(1086, 646);
+            this.tabDrugs.TabIndex = 7;
 			this.tabDrugs.Tag = "Tab_Drugs";
 			this.tabDrugs.Text = "Drugs";
 			// 
@@ -12384,8 +13196,8 @@ namespace Chummer
             treeNode24});
 			this.treVehicles.ShowNodeToolTips = true;
 			this.treVehicles.ShowRootLines = false;
-			this.treVehicles.Size = new System.Drawing.Size(403, 0);
-			this.treVehicles.TabIndex = 30;
+            this.treVehicles.Size = new System.Drawing.Size(403, 633);
+            this.treVehicles.TabIndex = 30;
 			this.treVehicles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treVehicles_AfterSelect);
 			this.treVehicles.DragOver += new System.Windows.Forms.DragEventHandler(this.treVehicles_DragOver);
 			this.treVehicles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treVehicles_KeyDown);
@@ -13392,8 +14204,8 @@ namespace Chummer
 			this.treImprovements.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode25});
 			this.treImprovements.ShowNodeToolTips = true;
-			this.treImprovements.Size = new System.Drawing.Size(295, 0);
-			this.treImprovements.TabIndex = 81;
+            this.treImprovements.Size = new System.Drawing.Size(295, 634);
+            this.treImprovements.TabIndex = 81;
 			this.treImprovements.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treImprovements_AfterSelect);
 			this.treImprovements.DragOver += new System.Windows.Forms.DragEventHandler(this.treImprovements_DragOver);
 			this.treImprovements.DoubleClick += new System.EventHandler(this.treImprovements_DoubleClick);
@@ -13606,8 +14418,8 @@ namespace Chummer
 			this.panEnemies.AutoScroll = true;
 			this.panEnemies.Location = new System.Drawing.Point(6, 49);
 			this.panEnemies.Name = "panEnemies";
-			this.panEnemies.Size = new System.Drawing.Size(1970, 1183);
-			this.panEnemies.TabIndex = 41;
+            this.panEnemies.Size = new System.Drawing.Size(1068, 585);
+            this.panEnemies.TabIndex = 41;
 			this.panEnemies.Click += new System.EventHandler(this.panEnemies_Click);
 			// 
 			// cmdAddEnemy
@@ -13644,8 +14456,8 @@ namespace Chummer
 			this.panPets.Location = new System.Drawing.Point(6, 33);
 			this.panPets.Margin = new System.Windows.Forms.Padding(0);
 			this.panPets.Name = "panPets";
-			this.panPets.Size = new System.Drawing.Size(1973, 1202);
-			this.panPets.TabIndex = 25;
+            this.panPets.Size = new System.Drawing.Size(1071, 604);
+            this.panPets.TabIndex = 25;
 			// 
 			// cmdAddPet
 			// 
@@ -14154,8 +14966,10 @@ namespace Chummer
 			this.tblCMTab.PerformLayout();
 			this.grpCMStun.ResumeLayout(false);
 			this.grpCMStun.PerformLayout();
+			this.panStunCM.ResumeLayout(false);
 			this.grpPhysicalCM.ResumeLayout(false);
 			this.grpPhysicalCM.PerformLayout();
+			this.panPhysicalCM.ResumeLayout(false);
 			this.grpCMEdge.ResumeLayout(false);
 			this.grpCMEdge.PerformLayout();
 			this.flowLayoutPanel2.ResumeLayout(false);
@@ -15419,5 +16233,53 @@ namespace Chummer
         private FlowLayoutPanel flowLayoutPanel2;
         private FlowLayoutPanel panStunCM;
         private FlowLayoutPanel panPhysicalCM;
+        private CheckBox chkStunCM1;
+        private CheckBox chkStunCM2;
+        private CheckBox chkStunCM3;
+        private CheckBox chkStunCM4;
+        private CheckBox chkStunCM5;
+        private CheckBox chkStunCM6;
+        private CheckBox chkStunCM7;
+        private CheckBox chkStunCM8;
+        private CheckBox chkStunCM9;
+        private CheckBox chkStunCM10;
+        private CheckBox chkStunCM11;
+        private CheckBox chkStunCM12;
+        private CheckBox chkStunCM13;
+        private CheckBox chkStunCM14;
+        private CheckBox chkStunCM15;
+        private CheckBox chkStunCM16;
+        private CheckBox chkStunCM17;
+        private CheckBox chkStunCM18;
+        private CheckBox chkStunCM19;
+        private CheckBox chkStunCM20;
+        private CheckBox chkStunCM21;
+        private CheckBox chkStunCM22;
+        private CheckBox chkStunCM23;
+        private CheckBox chkStunCM24;
+        private CheckBox chkPhysicalCM1;
+        private CheckBox chkPhysicalCM2;
+        private CheckBox chkPhysicalCM3;
+        private CheckBox chkPhysicalCM4;
+        private CheckBox chkPhysicalCM5;
+        private CheckBox chkPhysicalCM6;
+        private CheckBox chkPhysicalCM7;
+        private CheckBox chkPhysicalCM8;
+        private CheckBox chkPhysicalCM9;
+        private CheckBox chkPhysicalCM10;
+        private CheckBox chkPhysicalCM11;
+        private CheckBox chkPhysicalCM12;
+        private CheckBox chkPhysicalCM13;
+        private CheckBox chkPhysicalCM14;
+        private CheckBox chkPhysicalCM15;
+        private CheckBox chkPhysicalCM16;
+        private CheckBox chkPhysicalCM17;
+        private CheckBox chkPhysicalCM18;
+        private CheckBox chkPhysicalCM19;
+        private CheckBox chkPhysicalCM20;
+        private CheckBox chkPhysicalCM21;
+        private CheckBox chkPhysicalCM22;
+        private CheckBox chkPhysicalCM23;
+        private CheckBox chkPhysicalCM24;
     }
 }
