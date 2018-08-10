@@ -10771,6 +10771,8 @@ namespace Chummer
                 objSelectedGear.SetSourceDetail(lblArmorSource);
                 chkArmorEquipped.Checked = objSelectedGear.Equipped;
                 chkArmorEquipped.Enabled = true;
+                chkIncludedInArmor.Enabled = false;
+                chkIncludedInArmor.Checked = objSelectedGear.IncludedInParent;
                 if (objSelectedGear.MaxRating > 1)
                 {
                     nudArmorRating.Maximum = objSelectedGear.MaxRating;

@@ -41,6 +41,7 @@ Application Changes:
 - Workaround for a bug in the powertabusercontrol that caused free levels to make power ratings revert on load.
 - Fixed the condition monitor control to run when relevant events are fired, rather than on updatecharacterinfo.
 - Condition Monitor checkboxes for characters are now generated on demand, allowing for characters with >24 condition monitor boxes.
+- Fixed missing checked states for Gear that can be included in the parent. Fixes #2667
 
 Data Changes:
 

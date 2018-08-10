@@ -13921,6 +13921,8 @@ namespace Chummer
                 lblArmorCost.Text = objSelectedGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 chkArmorEquipped.Checked = objSelectedGear.Equipped;
                 chkArmorEquipped.Enabled = true;
+                chkIncludedInArmor.Enabled = false;
+                chkIncludedInArmor.Checked = objSelectedGear.IncludedInParent;
                 lblArmorRating.Text = objSelectedGear.Rating.ToString();
 
                 lblArmorDeviceRating.Text = objSelectedGear.GetTotalMatrixAttribute("Device Rating").ToString();
