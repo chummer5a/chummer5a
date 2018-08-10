@@ -1321,17 +1321,15 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Run through its Gear and deduct the Armor Capacity costs.
-                    if (Gear.Count > 0)
+                    if (Gear.Count <= 0) return decCapacity;
+                    object decCapacityLock = new object();
+                    // Run through its Children and deduct the Capacity costs.
+                    Parallel.ForEach(Gear.Where(gear => !gear.IncludedInParent), objChildGear =>
                     {
-                        object decCapacityLock = new object();
-                        // Run through its Children and deduct the Capacity costs.
-                        Parallel.ForEach(Gear.Where(gear => gear.IncludedInParent), objChildGear =>
-                        {
-                            decimal decLoop = objChildGear.PluginArmorCapacity * objChildGear.Quantity;
-                            lock (decCapacityLock)
-                                decCapacity -= decLoop;
-                        });
-                    }
+                        decimal decLoop = objChildGear.PluginArmorCapacity * objChildGear.Quantity;
+                        lock (decCapacityLock)
+                            decCapacity -= decLoop;
+                    });
                 }
                 // Calculate the remaining Capacity for a standard piece of Armor using the Maximum Armor Modifications rules.
                 else // if (_objCharacter.Options.MaximumArmorModifications)
@@ -1346,7 +1344,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Run through its Gear and deduct the Rating (or 1 if it has no Rating).
-                    foreach (Gear objGear in Gear.Where(gear => gear.IncludedInParent))
+                    foreach (Gear objGear in Gear.Where(gear => !gear.IncludedInParent))
                     {
                         if (objGear.Rating > 0)
                             decCapacity -= objGear.Rating;
