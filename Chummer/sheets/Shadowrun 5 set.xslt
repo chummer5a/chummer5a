@@ -2446,7 +2446,7 @@
 
   <xsl:template name="resistances">
     <tr>
-      <td>
+      <td style="width: 50%;">
         <table class="tablestyle">
           <tr>
             <th style="text-align: center; vertical-align: middle; width: 40%;">
@@ -2474,8 +2474,161 @@
           </tr>
         </table>
       </td>
+      <td rowspan="4" style="width: 50%;">
+        <table class="tablestyle">
+          <tr>
+            <th colspan="2" style="text-align: center; vertical-align: middle; width: 70%;">
+              <xsl:value-of select="$lang.Resistance"/> - <xsl:value-of select="$lang.Spells"/>
+            </th>
+            <th style="text-align: center; vertical-align: middle; width: 30%;">
+              <xsl:value-of select="$lang.Pool"/>
+            </th>
+          </tr>
+          <tr>
+            <td style="text-align: right; padding-right: 0.5em; vertical-align: middle;" rowspan="3">
+              <xsl:value-of select="$lang.CombatSpells"/>
+            </td>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.Direct"/>, <xsl:value-of select="$lang.Mana"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="directmanaresist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.Direct"/>, <xsl:value-of select="$lang.Physical"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="directphysicalresist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.Indirect"/>, <xsl:value-of select="$lang.Defense"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="indirectdefenseresist"/>
+            </td>
+          </tr>
+          <tr bgcolor="#e4e4e4">
+            <td style="text-align: right; padding-right: 0.5em; vertical-align: middle;">
+              <xsl:value-of select="$lang.DetectionSpells"/>
+            </td>
+            <td />
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="detectionspellresist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: right; padding-right: 0.5em; vertical-align: middle;" rowspan="8">
+              <xsl:value-of select="$lang.HealthSpells"/>
+            </td>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Body"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="decreasebodresist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Agility"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="decreaseagiresist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Reaction"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="decreaserearesist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Strength"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="decreasestrresist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Charisma"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="decreasecharesist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Intuition"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="decreaseintresist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Logic"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="decreaselogresist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Willpower"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="decreasewilresist"/>
+            </td>
+          </tr>
+          <tr bgcolor="#e4e4e4">
+            <td style="text-align: right; padding-right: 0.5em; vertical-align: middle;" rowspan="2">
+              <xsl:value-of select="$lang.IllusionSpells"/>
+            </td>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.Mana"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="illusionmanaresist"/>
+            </td>
+          </tr>
+          <tr bgcolor="#e4e4e4">
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.Physical"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="illusionphysicalresist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: right; padding-right: 0.5em; vertical-align: middle;" rowspan="2">
+              <xsl:value-of select="$lang.ManipulationSpells"/>
+            </td>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.Mental"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="manipulationmentalresist"/>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: middle;">
+              <xsl:value-of select="$lang.Physical"/>
+            </td>
+            <td style="text-align: center; vertical-align: middle;">
+              <xsl:value-of select="manipulationphysicalresist"/>
+            </td>
+          </tr>
+        </table>
+      </td>
     </tr>
-    <tr>
+	<tr>
       <td>
         <table class="tablestyle" style="margin-top:0.2em;">
           <tr>
@@ -2667,161 +2820,6 @@
             </td>
             <td style="text-align: center; vertical-align: middle;">
               <xsl:value-of select="psychologicaladdictionresistfirsttime"/>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <table class="tablestyle" style="margin-top:0.2em;">
-          <tr>
-            <th colspan="2" style="text-align: center; vertical-align: middle; width: 40%;">
-              <xsl:value-of select="$lang.Resistance"/> - <xsl:value-of select="$lang.Spells"/>
-            </th>
-            <th style="text-align: center; vertical-align: middle; width: 60%;">
-              <xsl:value-of select="$lang.Pool"/>
-            </th>
-          </tr>
-          <tr>
-            <td style="text-align: right; padding-right: 0.5em; vertical-align: middle;" rowspan="3">
-              <xsl:value-of select="$lang.CombatSpells"/>
-            </td>
-            <td style="text-align: left; vertical-align: middle;">
-              <xsl:value-of select="$lang.Direct"/>, <xsl:value-of select="$lang.Mana"/>
-            </td>
-            <td style="text-align: center; vertical-align: middle;">
-              <xsl:value-of select="directmanaresist"/>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left; vertical-align: middle;">
-              <xsl:value-of select="$lang.Direct"/>, <xsl:value-of select="$lang.Physical"/>
-            </td>
-            <td style="text-align: center; vertical-align: middle;">
-              <xsl:value-of select="directphysicalresist"/>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left; vertical-align: middle;">
-              <xsl:value-of select="$lang.Indirect"/>, <xsl:value-of select="$lang.Defense"/>
-            </td>
-            <td style="text-align: center; vertical-align: middle;">
-              <xsl:value-of select="indirectdefenseresist"/>
-            </td>
-          </tr>
-          <tr bgcolor="#e4e4e4">
-            <td style="text-align: right; padding-right: 0.5em; vertical-align: middle;">
-              <xsl:value-of select="$lang.DetectionSpells"/>
-            </td>
-            <td />
-            <td style="text-align: center; vertical-align: middle;">
-              <xsl:value-of select="detectionspellresist"/>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: right; padding-right: 0.5em; vertical-align: middle;" rowspan="8">
-              <xsl:value-of select="$lang.HealthSpells"/>
-            </td>
-            <td style="text-align: left; vertical-align: middle;">
-              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Body"/>
-            </td>
-            <td style="text-align: center; vertical-align: middle;">
-              <xsl:value-of select="decreasebodresist"/>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left; vertical-align: middle;">
-              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Agility"/>
-            </td>
-            <td style="text-align: center; vertical-align: middle;">
-              <xsl:value-of select="decreaseagiresist"/>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left; vertical-align: middle;">
-              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Reaction"/>
-            </td>
-            <td style="text-align: center; vertical-align: middle;">
-              <xsl:value-of select="decreaserearesist"/>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left; vertical-align: middle;">
-              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Strength"/>
-            </td>
-            <td style="text-align: center; vertical-align: middle;">
-              <xsl:value-of select="decreasestrresist"/>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left; vertical-align: middle;">
-              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Charisma"/>
-            </td>
-            <td style="text-align: center; vertical-align: middle;">
-              <xsl:value-of select="decreasecharesist"/>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left; vertical-align: middle;">
-              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Intuition"/>
-            </td>
-            <td style="text-align: center; vertical-align: middle;">
-              <xsl:value-of select="decreaseintresist"/>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left; vertical-align: middle;">
-              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Logic"/>
-            </td>
-            <td style="text-align: center; vertical-align: middle;">
-              <xsl:value-of select="decreaselogresist"/>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left; vertical-align: middle;">
-              <xsl:value-of select="$lang.DecreaseAttribute"/> - <xsl:value-of select="$lang.Willpower"/>
-            </td>
-            <td style="text-align: center; vertical-align: middle;">
-              <xsl:value-of select="decreasewilresist"/>
-            </td>
-          </tr>
-          <tr bgcolor="#e4e4e4">
-            <td style="text-align: right; padding-right: 0.5em; vertical-align: middle;" rowspan="2">
-              <xsl:value-of select="$lang.IllusionSpells"/>
-            </td>
-            <td style="text-align: left; vertical-align: middle;">
-              <xsl:value-of select="$lang.Mana"/>
-            </td>
-            <td style="text-align: center; vertical-align: middle;">
-              <xsl:value-of select="illusionmanaresist"/>
-            </td>
-          </tr>
-          <tr bgcolor="#e4e4e4">
-            <td style="text-align: left; vertical-align: middle;">
-              <xsl:value-of select="$lang.Physical"/>
-            </td>
-            <td style="text-align: center; vertical-align: middle;">
-              <xsl:value-of select="illusionphysicalresist"/>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: right; padding-right: 0.5em; vertical-align: middle;" rowspan="2">
-              <xsl:value-of select="$lang.ManipulationSpells"/>
-            </td>
-            <td style="text-align: left; vertical-align: middle;">
-              <xsl:value-of select="$lang.Mental"/>
-            </td>
-            <td style="text-align: center; vertical-align: middle;">
-              <xsl:value-of select="manipulationmentalresist"/>
-            </td>
-          </tr>
-          <tr>
-            <td style="text-align: left; vertical-align: middle;">
-              <xsl:value-of select="$lang.Physical"/>
-            </td>
-            <td style="text-align: center; vertical-align: middle;">
-              <xsl:value-of select="manipulationphysicalresist"/>
             </td>
           </tr>
         </table>
