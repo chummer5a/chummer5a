@@ -3429,17 +3429,17 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (Parent == null)
+            if (ParentVehicle != null)
             {
-                characterObject.Cyberware.Remove(this);
+                characterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == InternalId,
+                    out VehicleMod objMod);
+                objMod.Cyberware.Remove(this);
             }
             else if (Parent != null)
                 Parent.Children.Remove(this);
             else
             {
-                characterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == InternalId,
-                        out VehicleMod objMod);
-                objMod.Cyberware.Remove(this);
+                characterObject.Cyberware.Remove(this);
             }
 
             DeleteCyberware();
