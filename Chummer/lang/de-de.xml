@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -8968,7 +8968,51 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_HideCharacterRoster</key>
-			<text>Hide the Character Roster</text>
+			<text>Charakterverzeichnis verbergen</text>
+		</string>
+		<string>
+			<key>Button_CreateCustomDrug</key>
+			<text>Maßgeschneiderte Droge erstellen</text>
+		</string>
+		<string>
+			<key>Label_AddictionThreshold</key>
+			<text>Schwellwert</text>
+		</string>
+		<string>
+			<key>Label_DrugEffects</key>
+			<text>Effekte:</text>
+		</string>
+		<string>
+			<key>Label_DrugComponents</key>
+			<text>Bausteine:</text>
+		</string>
+		<string>
+			<key>Message_DeleteWeaponMount</key>
+			<text>Möchsten Sie diese Waffenhalterung wirklich löschen?</text>
+		</string>
+		<string>
+			<key>Message_DuplicateDrugComponentWarning</key>
+			<text>Sie können denselben Baustein nicht zweimal hinzufügen.</text>
+		</string>
+		<string>
+			<key>Message_DuplicateDrugFoundationWarning</key>
+			<text>Sie können nicht mehr als eine Basis zu einer Droge hinzufügen.</text>
+		</string>
+		<string>
+			<key>MessageTitle_NoValidWeaponMount</key>
+			<text>Keine gültige Waffenhalterung gefunden</text>
+		</string>
+		<string>
+			<key>Node_SelectedDrugs</key>
+			<text>Drogen</text>
+		</string>
+		<string>
+			<key>String_ExpensePurchaseDrug</key>
+			<text>Gekaufte Droge</text>
+		</string>
+		<string>
+			<key>Tab_Drugs</key>
+			<text>Drogen</text>
 		</string>
 	</strings>
 </chummer>
