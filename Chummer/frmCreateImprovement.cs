@@ -33,14 +33,16 @@ namespace Chummer
         private readonly Character _objCharacter;
         private readonly XmlDocument _objDocument;
         private string _strSelect = string.Empty;
+        private readonly string _strCustomGroup;
         private Improvement _objEditImprovement;
 
         #region Control Events
-        public frmCreateImprovement(Character objCharacter)
+        public frmCreateImprovement(Character objCharacter, string strCustomGroup = "")
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
+            _strCustomGroup = strCustomGroup;
             MoveControls();
             _objDocument = XmlManager.Load("improvements.xml");
         }
@@ -456,6 +458,7 @@ namespace Chummer
                 objImprovement.Custom = true;
                 objImprovement.Notes = strNotes;
                 objImprovement.SortOrder = intOrder;
+                objImprovement.CustomGroup = _strCustomGroup;
                 NewImprovement = objImprovement;
             }
             else {Utils.BreakIfDebug();}

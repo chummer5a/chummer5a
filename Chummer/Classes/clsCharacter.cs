@@ -5611,27 +5611,16 @@ namespace Chummer
         /// <param name="nodOldNode">Node of improvement to move.</param>
         public void MoveImprovementNode(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode)
         {
-            string strSelectedId = nodOldNode?.Tag.ToString();
-            int intOldIndex = -1;
-            for (int i = 0; i < Improvements.Count; ++i)
-            {
-                if (Improvements[i].SourceName == strSelectedId)
-                {
-                    intOldIndex = i;
-                    break;
-                }
-            }
-
-            if (intOldIndex != -1)
+            if (nodOldNode?.Tag is Improvement objImprovement)
             {
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0)
                     objNewParent = objNewParent.Parent;
 
-                Improvement objImprovement = Improvements[intOldIndex];
-                // Change the Group on the Custom Improvement.
-                objImprovement.CustomGroup = objNewParent.Text;
-                Improvements[intOldIndex] = objImprovement;
+                objImprovement.CustomGroup = objNewParent?.Tag.ToString() == "Node_SelectedImprovements"
+                    ? string.Empty
+                    : objNewParent.Text;
+                Improvements[Improvements.IndexOf(objImprovement)] = objImprovement;
             }
         }
 

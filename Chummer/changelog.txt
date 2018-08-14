@@ -1,7 +1,9 @@
 Future Build 203
 
 Application Changes:
+
 - Fixed an issue with inability to remove cyberware added to vehicle plugins. Fixes #2918
+- Fixed behaviour of custom improvement cxreation not properly connecting to a group.
 
 Build 202
 

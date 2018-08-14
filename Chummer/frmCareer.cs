@@ -5340,20 +5340,19 @@ namespace Chummer
 
         private void cmdAddImprovement_Click(object sender, EventArgs e)
         {
-            frmCreateImprovement frmPickImprovement = new frmCreateImprovement(CharacterObject);
+            string location = treImprovements.SelectedNode?.Tag is string strSelectedId && strSelectedId != "Node_SelectedImprovements"
+                ? strSelectedId
+                : string.Empty;
+            frmCreateImprovement frmPickImprovement = new frmCreateImprovement(CharacterObject, location);
             frmPickImprovement.ShowDialog(this);
 
             if (frmPickImprovement.DialogResult == DialogResult.Cancel)
                 return;
-            TreeNode newNode = treImprovements.FindNode(frmPickImprovement.NewImprovement.InternalId);
-
-            if (newNode != null)
+            if (!string.IsNullOrWhiteSpace(location))
             {
-                newNode.Text = frmPickImprovement.NewImprovement.CustomName;
-                newNode.ForeColor = frmPickImprovement.NewImprovement.PreferredColor;
-                newNode.ToolTipText = frmPickImprovement.NewImprovement.Notes;
+                //TODO: Improvement system interface needs a better handler for 
+                RefreshCustomImprovements(treImprovements,treLimit,cmsImprovementLocation,cmsImprovement,cmsLimitModifier);
             }
-            else {Utils.BreakIfDebug();}
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
@@ -5478,7 +5477,31 @@ namespace Chummer
 
         private void cmdEditImprovement_Click(object sender, EventArgs e)
         {
-            treImprovements_DoubleClick(sender, e);
+            // Edit the selected Improvement.
+            if (!(treImprovements.SelectedNode?.Tag is Improvement objImprovement)) return;
+            frmCreateImprovement frmPickImprovement = new frmCreateImprovement(CharacterObject,objImprovement.CustomGroup)
+            {
+                EditImprovementObject = objImprovement
+            };
+            frmPickImprovement.ShowDialog(this);
+
+            if (frmPickImprovement.DialogResult == DialogResult.Cancel) return;
+
+            TreeNode newNode = treImprovements.FindNode(frmPickImprovement.NewImprovement.InternalId);
+
+            if (newNode != null)
+            {
+                newNode.Text = frmPickImprovement.NewImprovement.CustomName;
+                newNode.ForeColor = frmPickImprovement.NewImprovement.PreferredColor;
+                newNode.ToolTipText = frmPickImprovement.NewImprovement.Notes;
+            }
+            else
+            {
+                Utils.BreakIfDebug();
+            }
+
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
         }
 
         private void cmdDeleteImprovement_Click(object sender, EventArgs e)
@@ -12296,27 +12319,11 @@ namespace Chummer
         {
             if (treImprovements.SelectedNode?.Tag is Improvement objImprovement)
             {
-                // Edit the selected Improvement.
-                frmCreateImprovement frmPickImprovement = new frmCreateImprovement(CharacterObject)
-                {
-                    EditImprovementObject = objImprovement
-                };
-                frmPickImprovement.ShowDialog(this);
-
-                if (frmPickImprovement.DialogResult == DialogResult.Cancel) return;
-
-                TreeNode newNode = treImprovements.FindNode(frmPickImprovement.NewImprovement.InternalId);
-
-                if (newNode != null)
-                {
-                    newNode.Text = frmPickImprovement.NewImprovement.CustomName;
-                    newNode.ForeColor = frmPickImprovement.NewImprovement.PreferredColor;
-                    newNode.ToolTipText = frmPickImprovement.NewImprovement.Notes;
-                }
-                else { Utils.BreakIfDebug(); }
-
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
+                cmdEditImprovement_Click(sender, e);
+            }
+            else
+            {
+                cmdAddImprovement_Click(sender, e);
             }
         }
 
@@ -12325,22 +12332,16 @@ namespace Chummer
             if (_blnSkipRefresh)
                 return;
 
-            if (treImprovements.SelectedNode?.Level > 0)
+            if (treImprovements.SelectedNode?.Tag is Improvement objImprovement)
             {
-                string strSelectedId = treImprovements.SelectedNode?.Tag.ToString();
-                Improvement objImprovement = CharacterObject.Improvements.FirstOrDefault(x => x.SourceName == strSelectedId);
+                if (chkImprovementActive.Checked)
+                    ImprovementManager.EnableImprovements(CharacterObject, new List<Improvement> { objImprovement });
+                else
+                    ImprovementManager.DisableImprovements(CharacterObject, new List<Improvement> { objImprovement });
 
-                if (objImprovement != null)
-                {
-                    if (chkImprovementActive.Checked)
-                        ImprovementManager.EnableImprovements(CharacterObject, new List<Improvement> { objImprovement });
-                    else
-                        ImprovementManager.DisableImprovements(CharacterObject, new List<Improvement> { objImprovement });
+                IsCharacterUpdateRequested = true;
 
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
-                }
+                IsDirty = true;
             }
         }
 
