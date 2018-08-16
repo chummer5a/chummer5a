@@ -919,6 +919,12 @@ namespace Chummer.Backend.Equipment
             get
             {
                 decimal decReturn = 0;
+
+                if (!TrustFund)
+                {
+                    decReturn += BaseCost;
+                }
+
                 decReturn += Area * CostForArea;
                 decReturn += Comforts * CostForComforts;
                 decReturn += Security * CostForSecurity;
@@ -934,11 +940,11 @@ namespace Chummer.Backend.Equipment
                         decExtraAssetCost += objQuality.Cost;
                 }
 
-                if (!TrustFund)
-                {
-                    decReturn += BaseCost;
-                }
                 decReturn += decExtraAssetCost;
+
+                //Qualities may have reduced the cost below zero. No spooky mansion payouts here, so clamp it to zero or higher. 
+                decReturn = Math.Max(decReturn, 0);
+
                 decReturn *= CostMultiplier + 1.0m;
                 if (!PrimaryTenant)
                 {
