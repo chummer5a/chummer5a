@@ -1,11 +1,16 @@
 Future Build 203
 
 Application Changes:
+
 - Fixed an issue with inability to remove cyberware added to vehicle plugins. Fixes #2918
 - Fixed behaviour of custom improvement cxreation not properly connecting to a group.
 - Fixed an issue with powers when toggling between rulesets with the option to use a second magic attribute for MysAds. Might be a fix for #2919 and #2917?
 - Fixed the Household Gremlins lifestyle quality causing low-price houses to generate money.
 - Fixed an issue with inability to remove metamagics or initiate grades in create mode.
+
+Data Changes:
+
+- Added missing Transgenic Alteration bioware from Chrome Flesh. 
 
 Build 202
 

@@ -2604,6 +2604,21 @@
       <page>164</page>
     </bioware>
     <bioware>
+      <id>a950129b-00a6-4445-a1b6-d82f158e83dc</id>
+      <name>Transgenic Alteration</name>
+      <category>Genemods</category>
+      <ess>0.3</ess>
+      <capacity>0</capacity>
+      <avail>10</avail>
+      <cost>Variable(30000-1000000)</cost>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <forcegrade>None</forcegrade>
+      <source>CF</source>
+      <page>164</page>
+    </bioware>
+    <bioware>
       <id>5c277258-ea34-46a3-b10a-323e0eed4dfa</id>
       <name>Control Rig Optimization</name>
       <category>Genemods</category>

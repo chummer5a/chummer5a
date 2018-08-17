@@ -55,10 +55,10 @@ namespace Chummer
 			System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Selected Gear");
 			System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Selected Armor");
 			System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Selected Weapons");
-            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
-            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Selected Vehicles");
-            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Custom Drugs");
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCreate));
+			System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Selected Drugs");
+			System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
+			System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Selected Vehicles");
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCreate));
 			this.StatusStrip = new System.Windows.Forms.StatusStrip();
 			this.tssBPLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.tssBP = new System.Windows.Forms.ToolStripStatusLabel();
@@ -634,50 +634,50 @@ namespace Chummer
 			this.lblWeaponRC = new System.Windows.Forms.Label();
 			this.lblWeaponAvailLabel = new System.Windows.Forms.Label();
 			this.cmdAddWeapon = new SplitButton();
-            this.tabLifestyle = new System.Windows.Forms.TabPage();
-            this.tblLifestyleDetails = new System.Windows.Forms.TableLayoutPanel();
-            this.lblLifestyleCostLabel = new System.Windows.Forms.Label();
-            this.lblLifestyleCost = new System.Windows.Forms.Label();
-            this.lblLifestyleQualities = new System.Windows.Forms.Label();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.nudLifestyleMonths = new System.Windows.Forms.NumericUpDown();
-            this.lblLifestyleMonthsLabel = new System.Windows.Forms.Label();
-            this.lblLifestyleTotalCost = new System.Windows.Forms.Label();
-            this.lblLifestyleQualitiesLabel = new System.Windows.Forms.Label();
-            this.lblLifestyleSourceLabel = new System.Windows.Forms.Label();
-            this.lblLifestyleStartingNuyen = new System.Windows.Forms.Label();
-            this.lblLifestyleStartingNuyenLabel = new System.Windows.Forms.Label();
-            this.lblBaseLifestyle = new System.Windows.Forms.Label();
-            this.lblLifestyleSource = new System.Windows.Forms.Label();
-            this.lblLifestyleComfortsLabel = new System.Windows.Forms.Label();
-            this.cmdAddLifestyle = new SplitButton();
-            this.treLifestyles = new System.Windows.Forms.TreeView();
-            this.cmdDeleteLifestyle = new System.Windows.Forms.Button();
-            this.tabPets = new System.Windows.Forms.TabPage();
-            this.panPets = new System.Windows.Forms.FlowLayoutPanel();
-            this.cmdAddPet = new SplitButton();
-            this.tabDrugs = new System.Windows.Forms.TabPage();
-			this.nudDrugQty = new System.Windows.Forms.NumericUpDown();
-			this.lblDrugQtyLabel = new System.Windows.Forms.Label();
-			this.lblDrugGrade = new System.Windows.Forms.Label();
-			this.lblDrugGradeLabel = new System.Windows.Forms.Label();
-			this.lblDrugAddictionThresholdLabel = new System.Windows.Forms.Label();
-			this.lblDrugComponentsLabel = new System.Windows.Forms.Label();
-			this.lblDrugAddictionRatingLabel = new System.Windows.Forms.Label();
-			this.lblDrugAddictionRating = new System.Windows.Forms.Label();
-			this.lblDrugAddictionThreshold = new System.Windows.Forms.Label();
-			this.lblDrugComponents = new System.Windows.Forms.Label();
-			this.lblDrugCost = new System.Windows.Forms.Label();
-			this.lblDrugCostLabel = new System.Windows.Forms.Label();
-			this.lblDrugAvail = new System.Windows.Forms.Label();
-			this.lblDrugAvailabel = new System.Windows.Forms.Label();
-			this.lblDrugCategory = new System.Windows.Forms.Label();
-			this.lblDrugCategoryLabel = new System.Windows.Forms.Label();
-			this.lblDrugName = new System.Windows.Forms.Label();
+			this.tabDrugs = new System.Windows.Forms.TabPage();
+			this.tblDrugInfo = new System.Windows.Forms.TableLayoutPanel();
 			this.lblDrugNameLabel = new System.Windows.Forms.Label();
+			this.lblDrugComponents = new System.Windows.Forms.Label();
+			this.lblDrugComponentsLabel = new System.Windows.Forms.Label();
+			this.lblDrugAddictionThresholdLabel = new System.Windows.Forms.Label();
+			this.lblDrugAddictionRating = new System.Windows.Forms.Label();
+			this.lblDrugAddictionRatingLabel = new System.Windows.Forms.Label();
+			this.lblDrugGrade = new System.Windows.Forms.Label();
+			this.lblDrugQtyLabel = new System.Windows.Forms.Label();
+			this.lblDrugAddictionThreshold = new System.Windows.Forms.Label();
+			this.lblDrugGradeLabel = new System.Windows.Forms.Label();
+			this.nudDrugQty = new System.Windows.Forms.NumericUpDown();
+			this.lblDrugName = new System.Windows.Forms.Label();
+			this.lblDrugCategoryLabel = new System.Windows.Forms.Label();
+			this.lblDrugCostLabel = new System.Windows.Forms.Label();
+			this.lblDrugCost = new System.Windows.Forms.Label();
+			this.lblDrugCategory = new System.Windows.Forms.Label();
+			this.lblDrugAvailabel = new System.Windows.Forms.Label();
+			this.lblDrugAvail = new System.Windows.Forms.Label();
+			this.lblDrugEffectLabel = new System.Windows.Forms.Label();
+			this.lblDrugEffect = new System.Windows.Forms.Label();
 			this.btnDeleteCustomDrug = new System.Windows.Forms.Button();
 			this.treCustomDrugs = new System.Windows.Forms.TreeView();
 			this.btnCreateCustomDrug = new System.Windows.Forms.Button();
+			this.tabLifestyle = new System.Windows.Forms.TabPage();
+			this.tblLifestyleDetails = new System.Windows.Forms.TableLayoutPanel();
+			this.lblLifestyleCostLabel = new System.Windows.Forms.Label();
+			this.lblLifestyleCost = new System.Windows.Forms.Label();
+			this.lblLifestyleQualities = new System.Windows.Forms.Label();
+			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+			this.nudLifestyleMonths = new System.Windows.Forms.NumericUpDown();
+			this.lblLifestyleMonthsLabel = new System.Windows.Forms.Label();
+			this.lblLifestyleTotalCost = new System.Windows.Forms.Label();
+			this.lblLifestyleQualitiesLabel = new System.Windows.Forms.Label();
+			this.lblLifestyleSourceLabel = new System.Windows.Forms.Label();
+			this.lblLifestyleStartingNuyen = new System.Windows.Forms.Label();
+			this.lblLifestyleStartingNuyenLabel = new System.Windows.Forms.Label();
+			this.lblBaseLifestyle = new System.Windows.Forms.Label();
+			this.lblLifestyleSource = new System.Windows.Forms.Label();
+			this.lblLifestyleComfortsLabel = new System.Windows.Forms.Label();
+			this.cmdAddLifestyle = new SplitButton();
+			this.treLifestyles = new System.Windows.Forms.TreeView();
+			this.cmdDeleteLifestyle = new System.Windows.Forms.Button();
 			this.tabVehicles = new System.Windows.Forms.TabPage();
 			this.lblVehicleWeaponAccuracyLabel = new System.Windows.Forms.Label();
 			this.lblVehicleWeaponAccuracy = new System.Windows.Forms.Label();
@@ -836,6 +836,9 @@ namespace Chummer
 			this.label16 = new System.Windows.Forms.Label();
 			this.panEnemies = new System.Windows.Forms.FlowLayoutPanel();
 			this.cmdAddEnemy = new SplitButton();
+			this.tabPets = new System.Windows.Forms.TabPage();
+			this.panPets = new System.Windows.Forms.FlowLayoutPanel();
+			this.cmdAddPet = new SplitButton();
 			this.tabInfo = new System.Windows.Forms.TabControl();
 			this.tabBPSummary = new System.Windows.Forms.TabPage();
 			this.tlpKarmaSummary = new System.Windows.Forms.TableLayoutPanel();
@@ -929,9 +932,6 @@ namespace Chummer
 			this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsGearAllowRename = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsGearAllowRenameExtra = new System.Windows.Forms.ToolStripMenuItem();
-			this.tblDrugInfo = new System.Windows.Forms.TableLayoutPanel();
-			this.lblDrugEffectLabel = new System.Windows.Forms.Label();
-			this.lblDrugEffect = new System.Windows.Forms.Label();
 			this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();
@@ -998,6 +998,7 @@ namespace Chummer
 			((System.ComponentModel.ISupportInitialize)(this.nudArmorRating)).BeginInit();
 			this.tabWeapons.SuspendLayout();
 			this.tabDrugs.SuspendLayout();
+			this.tblDrugInfo.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudDrugQty)).BeginInit();
 			this.tabLifestyle.SuspendLayout();
 			this.tblLifestyleDetails.SuspendLayout();
@@ -1030,7 +1031,6 @@ namespace Chummer
 			this.cmsTechnique.SuspendLayout();
 			this.cmsAdvancedProgram.SuspendLayout();
 			this.cmsGearAllowRename.SuspendLayout();
-			this.tblDrugInfo.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// StatusStrip
@@ -7309,6 +7309,164 @@ namespace Chummer
 			this.tabDrugs.Tag = "Tab_Drugs";
 			this.tabDrugs.Text = "Drugs";
 			// 
+			// tblDrugInfo
+			// 
+			this.tblDrugInfo.AutoSize = true;
+			this.tblDrugInfo.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.tblDrugInfo.ColumnCount = 2;
+			this.tblDrugInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tblDrugInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tblDrugInfo.Controls.Add(this.lblDrugNameLabel, 0, 0);
+			this.tblDrugInfo.Controls.Add(this.lblDrugComponents, 1, 8);
+			this.tblDrugInfo.Controls.Add(this.lblDrugComponentsLabel, 0, 8);
+			this.tblDrugInfo.Controls.Add(this.lblDrugAddictionThresholdLabel, 0, 6);
+			this.tblDrugInfo.Controls.Add(this.lblDrugAddictionRating, 1, 7);
+			this.tblDrugInfo.Controls.Add(this.lblDrugAddictionRatingLabel, 0, 7);
+			this.tblDrugInfo.Controls.Add(this.lblDrugGrade, 1, 3);
+			this.tblDrugInfo.Controls.Add(this.lblDrugQtyLabel, 0, 2);
+			this.tblDrugInfo.Controls.Add(this.lblDrugAddictionThreshold, 1, 6);
+			this.tblDrugInfo.Controls.Add(this.lblDrugGradeLabel, 0, 3);
+			this.tblDrugInfo.Controls.Add(this.nudDrugQty, 1, 2);
+			this.tblDrugInfo.Controls.Add(this.lblDrugName, 1, 0);
+			this.tblDrugInfo.Controls.Add(this.lblDrugCategoryLabel, 0, 1);
+			this.tblDrugInfo.Controls.Add(this.lblDrugCostLabel, 0, 5);
+			this.tblDrugInfo.Controls.Add(this.lblDrugCost, 1, 5);
+			this.tblDrugInfo.Controls.Add(this.lblDrugCategory, 1, 1);
+			this.tblDrugInfo.Controls.Add(this.lblDrugAvailabel, 0, 4);
+			this.tblDrugInfo.Controls.Add(this.lblDrugAvail, 1, 4);
+			this.tblDrugInfo.Controls.Add(this.lblDrugEffectLabel, 0, 9);
+			this.tblDrugInfo.Controls.Add(this.lblDrugEffect, 1, 9);
+			this.tblDrugInfo.Location = new System.Drawing.Point(276, 35);
+			this.tblDrugInfo.Name = "tblDrugInfo";
+			this.tblDrugInfo.RowCount = 10;
+			this.tblDrugInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tblDrugInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tblDrugInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tblDrugInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tblDrugInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tblDrugInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tblDrugInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tblDrugInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tblDrugInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tblDrugInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tblDrugInfo.Size = new System.Drawing.Size(153, 197);
+			this.tblDrugInfo.TabIndex = 97;
+			// 
+			// lblDrugNameLabel
+			// 
+			this.lblDrugNameLabel.AutoSize = true;
+			this.lblDrugNameLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblDrugNameLabel.Location = new System.Drawing.Point(3, 3);
+			this.lblDrugNameLabel.Margin = new System.Windows.Forms.Padding(3);
+			this.lblDrugNameLabel.Name = "lblDrugNameLabel";
+			this.lblDrugNameLabel.Size = new System.Drawing.Size(69, 13);
+			this.lblDrugNameLabel.TabIndex = 73;
+			this.lblDrugNameLabel.Tag = "Label_Name";
+			this.lblDrugNameLabel.Text = "Name:";
+			// 
+			// lblDrugComponents
+			// 
+			this.lblDrugComponents.AutoSize = true;
+			this.lblDrugComponents.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblDrugComponents.Location = new System.Drawing.Point(78, 162);
+			this.lblDrugComponents.Margin = new System.Windows.Forms.Padding(3);
+			this.lblDrugComponents.Name = "lblDrugComponents";
+			this.lblDrugComponents.Size = new System.Drawing.Size(72, 13);
+			this.lblDrugComponents.TabIndex = 84;
+			this.lblDrugComponents.Text = "[Components]";
+			// 
+			// lblDrugComponentsLabel
+			// 
+			this.lblDrugComponentsLabel.AutoSize = true;
+			this.lblDrugComponentsLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblDrugComponentsLabel.Location = new System.Drawing.Point(3, 162);
+			this.lblDrugComponentsLabel.Margin = new System.Windows.Forms.Padding(3);
+			this.lblDrugComponentsLabel.Name = "lblDrugComponentsLabel";
+			this.lblDrugComponentsLabel.Size = new System.Drawing.Size(69, 13);
+			this.lblDrugComponentsLabel.TabIndex = 91;
+			this.lblDrugComponentsLabel.Tag = "Label_DrugComponents";
+			this.lblDrugComponentsLabel.Text = "Components:";
+			// 
+			// lblDrugAddictionThresholdLabel
+			// 
+			this.lblDrugAddictionThresholdLabel.AutoSize = true;
+			this.lblDrugAddictionThresholdLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblDrugAddictionThresholdLabel.Location = new System.Drawing.Point(3, 124);
+			this.lblDrugAddictionThresholdLabel.Margin = new System.Windows.Forms.Padding(3);
+			this.lblDrugAddictionThresholdLabel.Name = "lblDrugAddictionThresholdLabel";
+			this.lblDrugAddictionThresholdLabel.Size = new System.Drawing.Size(69, 13);
+			this.lblDrugAddictionThresholdLabel.TabIndex = 92;
+			this.lblDrugAddictionThresholdLabel.Tag = "Label_AddictionThreshold";
+			this.lblDrugAddictionThresholdLabel.Text = "Threshold:";
+			// 
+			// lblDrugAddictionRating
+			// 
+			this.lblDrugAddictionRating.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblDrugAddictionRating.Location = new System.Drawing.Point(78, 143);
+			this.lblDrugAddictionRating.Margin = new System.Windows.Forms.Padding(3);
+			this.lblDrugAddictionRating.Name = "lblDrugAddictionRating";
+			this.lblDrugAddictionRating.Size = new System.Drawing.Size(72, 13);
+			this.lblDrugAddictionRating.TabIndex = 88;
+			this.lblDrugAddictionRating.Text = "[Rating]";
+			// 
+			// lblDrugAddictionRatingLabel
+			// 
+			this.lblDrugAddictionRatingLabel.AutoSize = true;
+			this.lblDrugAddictionRatingLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblDrugAddictionRatingLabel.Location = new System.Drawing.Point(3, 143);
+			this.lblDrugAddictionRatingLabel.Margin = new System.Windows.Forms.Padding(3);
+			this.lblDrugAddictionRatingLabel.Name = "lblDrugAddictionRatingLabel";
+			this.lblDrugAddictionRatingLabel.Size = new System.Drawing.Size(69, 13);
+			this.lblDrugAddictionRatingLabel.TabIndex = 90;
+			this.lblDrugAddictionRatingLabel.Tag = "Label_Rating";
+			this.lblDrugAddictionRatingLabel.Text = "Rating:";
+			// 
+			// lblDrugGrade
+			// 
+			this.lblDrugGrade.AutoSize = true;
+			this.lblDrugGrade.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblDrugGrade.Location = new System.Drawing.Point(78, 67);
+			this.lblDrugGrade.Margin = new System.Windows.Forms.Padding(3);
+			this.lblDrugGrade.Name = "lblDrugGrade";
+			this.lblDrugGrade.Size = new System.Drawing.Size(72, 13);
+			this.lblDrugGrade.TabIndex = 94;
+			this.lblDrugGrade.Text = "[Grade]";
+			// 
+			// lblDrugQtyLabel
+			// 
+			this.lblDrugQtyLabel.AutoSize = true;
+			this.lblDrugQtyLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblDrugQtyLabel.Location = new System.Drawing.Point(3, 41);
+			this.lblDrugQtyLabel.Margin = new System.Windows.Forms.Padding(3);
+			this.lblDrugQtyLabel.Name = "lblDrugQtyLabel";
+			this.lblDrugQtyLabel.Size = new System.Drawing.Size(69, 20);
+			this.lblDrugQtyLabel.TabIndex = 95;
+			this.lblDrugQtyLabel.Tag = "Label_Qty";
+			this.lblDrugQtyLabel.Text = "Qty:";
+			// 
+			// lblDrugAddictionThreshold
+			// 
+			this.lblDrugAddictionThreshold.AutoSize = true;
+			this.lblDrugAddictionThreshold.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblDrugAddictionThreshold.Location = new System.Drawing.Point(78, 124);
+			this.lblDrugAddictionThreshold.Margin = new System.Windows.Forms.Padding(3);
+			this.lblDrugAddictionThreshold.Name = "lblDrugAddictionThreshold";
+			this.lblDrugAddictionThreshold.Size = new System.Drawing.Size(72, 13);
+			this.lblDrugAddictionThreshold.TabIndex = 86;
+			this.lblDrugAddictionThreshold.Text = "[Threshold]";
+			// 
+			// lblDrugGradeLabel
+			// 
+			this.lblDrugGradeLabel.AutoSize = true;
+			this.lblDrugGradeLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblDrugGradeLabel.Location = new System.Drawing.Point(3, 67);
+			this.lblDrugGradeLabel.Margin = new System.Windows.Forms.Padding(3);
+			this.lblDrugGradeLabel.Name = "lblDrugGradeLabel";
+			this.lblDrugGradeLabel.Size = new System.Drawing.Size(69, 13);
+			this.lblDrugGradeLabel.TabIndex = 93;
+			this.lblDrugGradeLabel.Tag = "Label_Grade";
+			this.lblDrugGradeLabel.Text = "Grade:";
+			// 
 			// nudDrugQty
 			// 
 			this.nudDrugQty.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -7329,165 +7487,16 @@ namespace Chummer
             0});
 			this.nudDrugQty.ValueChanged += new System.EventHandler(this.nudDrugQty_ValueChanged);
 			// 
-			// lblDrugQtyLabel
+			// lblDrugName
 			// 
-			this.lblDrugQtyLabel.AutoSize = true;
-			this.lblDrugQtyLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblDrugQtyLabel.Location = new System.Drawing.Point(3, 41);
-			this.lblDrugQtyLabel.Margin = new System.Windows.Forms.Padding(3);
-			this.lblDrugQtyLabel.Name = "lblDrugQtyLabel";
-			this.lblDrugQtyLabel.Size = new System.Drawing.Size(69, 20);
-			this.lblDrugQtyLabel.TabIndex = 95;
-			this.lblDrugQtyLabel.Tag = "Label_Qty";
-			this.lblDrugQtyLabel.Text = "Qty:";
-			// 
-			// lblDrugGrade
-			// 
-			this.lblDrugGrade.AutoSize = true;
-			this.lblDrugGrade.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblDrugGrade.Location = new System.Drawing.Point(78, 67);
-			this.lblDrugGrade.Margin = new System.Windows.Forms.Padding(3);
-			this.lblDrugGrade.Name = "lblDrugGrade";
-			this.lblDrugGrade.Size = new System.Drawing.Size(72, 13);
-			this.lblDrugGrade.TabIndex = 94;
-			this.lblDrugGrade.Text = "[Grade]";
-			// 
-			// lblDrugGradeLabel
-			// 
-			this.lblDrugGradeLabel.AutoSize = true;
-			this.lblDrugGradeLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblDrugGradeLabel.Location = new System.Drawing.Point(3, 67);
-			this.lblDrugGradeLabel.Margin = new System.Windows.Forms.Padding(3);
-			this.lblDrugGradeLabel.Name = "lblDrugGradeLabel";
-			this.lblDrugGradeLabel.Size = new System.Drawing.Size(69, 13);
-			this.lblDrugGradeLabel.TabIndex = 93;
-			this.lblDrugGradeLabel.Tag = "Label_Grade";
-			this.lblDrugGradeLabel.Text = "Grade:";
-			// 
-			// lblDrugAddictionThresholdLabel
-			// 
-			this.lblDrugAddictionThresholdLabel.AutoSize = true;
-			this.lblDrugAddictionThresholdLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblDrugAddictionThresholdLabel.Location = new System.Drawing.Point(3, 124);
-			this.lblDrugAddictionThresholdLabel.Margin = new System.Windows.Forms.Padding(3);
-			this.lblDrugAddictionThresholdLabel.Name = "lblDrugAddictionThresholdLabel";
-			this.lblDrugAddictionThresholdLabel.Size = new System.Drawing.Size(69, 13);
-			this.lblDrugAddictionThresholdLabel.TabIndex = 92;
-			this.lblDrugAddictionThresholdLabel.Tag = "Label_AddictionThreshold";
-			this.lblDrugAddictionThresholdLabel.Text = "Threshold:";
-			// 
-			// lblDrugComponentsLabel
-			// 
-			this.lblDrugComponentsLabel.AutoSize = true;
-			this.lblDrugComponentsLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblDrugComponentsLabel.Location = new System.Drawing.Point(3, 162);
-			this.lblDrugComponentsLabel.Margin = new System.Windows.Forms.Padding(3);
-			this.lblDrugComponentsLabel.Name = "lblDrugComponentsLabel";
-			this.lblDrugComponentsLabel.Size = new System.Drawing.Size(69, 13);
-			this.lblDrugComponentsLabel.TabIndex = 91;
-			this.lblDrugComponentsLabel.Tag = "Label_DrugComponents";
-			this.lblDrugComponentsLabel.Text = "Components:";
-			// 
-			// lblDrugAddictionRatingLabel
-			// 
-			this.lblDrugAddictionRatingLabel.AutoSize = true;
-			this.lblDrugAddictionRatingLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblDrugAddictionRatingLabel.Location = new System.Drawing.Point(3, 143);
-			this.lblDrugAddictionRatingLabel.Margin = new System.Windows.Forms.Padding(3);
-			this.lblDrugAddictionRatingLabel.Name = "lblDrugAddictionRatingLabel";
-			this.lblDrugAddictionRatingLabel.Size = new System.Drawing.Size(69, 13);
-			this.lblDrugAddictionRatingLabel.TabIndex = 90;
-			this.lblDrugAddictionRatingLabel.Tag = "Label_Rating";
-			this.lblDrugAddictionRatingLabel.Text = "Rating:";
-			// 
-			// lblDrugAddictionRating
-			// 
-			this.lblDrugAddictionRating.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblDrugAddictionRating.Location = new System.Drawing.Point(78, 143);
-			this.lblDrugAddictionRating.Margin = new System.Windows.Forms.Padding(3);
-			this.lblDrugAddictionRating.Name = "lblDrugAddictionRating";
-			this.lblDrugAddictionRating.Size = new System.Drawing.Size(72, 13);
-			this.lblDrugAddictionRating.TabIndex = 88;
-			this.lblDrugAddictionRating.Text = "[Rating]";
-			// 
-			// lblDrugAddictionThreshold
-			// 
-			this.lblDrugAddictionThreshold.AutoSize = true;
-			this.lblDrugAddictionThreshold.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblDrugAddictionThreshold.Location = new System.Drawing.Point(78, 124);
-			this.lblDrugAddictionThreshold.Margin = new System.Windows.Forms.Padding(3);
-			this.lblDrugAddictionThreshold.Name = "lblDrugAddictionThreshold";
-			this.lblDrugAddictionThreshold.Size = new System.Drawing.Size(72, 13);
-			this.lblDrugAddictionThreshold.TabIndex = 86;
-			this.lblDrugAddictionThreshold.Text = "[Threshold]";
-			// 
-			// lblDrugComponents
-			// 
-			this.lblDrugComponents.AutoSize = true;
-			this.lblDrugComponents.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblDrugComponents.Location = new System.Drawing.Point(78, 162);
-			this.lblDrugComponents.Margin = new System.Windows.Forms.Padding(3);
-			this.lblDrugComponents.Name = "lblDrugComponents";
-			this.lblDrugComponents.Size = new System.Drawing.Size(72, 13);
-			this.lblDrugComponents.TabIndex = 84;
-			this.lblDrugComponents.Text = "[Components]";
-			// 
-			// lblDrugCost
-			// 
-			this.lblDrugCost.AutoSize = true;
-			this.lblDrugCost.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblDrugCost.Location = new System.Drawing.Point(78, 105);
-			this.lblDrugCost.Margin = new System.Windows.Forms.Padding(3);
-			this.lblDrugCost.Name = "lblDrugCost";
-			this.lblDrugCost.Size = new System.Drawing.Size(72, 13);
-			this.lblDrugCost.TabIndex = 80;
-			this.lblDrugCost.Text = "[Cost]";
-			// 
-			// lblDrugCostLabel
-			// 
-			this.lblDrugCostLabel.AutoSize = true;
-			this.lblDrugCostLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblDrugCostLabel.Location = new System.Drawing.Point(3, 105);
-			this.lblDrugCostLabel.Margin = new System.Windows.Forms.Padding(3);
-			this.lblDrugCostLabel.Name = "lblDrugCostLabel";
-			this.lblDrugCostLabel.Size = new System.Drawing.Size(69, 13);
-			this.lblDrugCostLabel.TabIndex = 79;
-			this.lblDrugCostLabel.Tag = "Label_Cost";
-			this.lblDrugCostLabel.Text = "Cost:";
-			// 
-			// lblDrugAvail
-			// 
-			this.lblDrugAvail.AutoSize = true;
-			this.lblDrugAvail.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblDrugAvail.Location = new System.Drawing.Point(78, 86);
-			this.lblDrugAvail.Margin = new System.Windows.Forms.Padding(3);
-			this.lblDrugAvail.Name = "lblDrugAvail";
-			this.lblDrugAvail.Size = new System.Drawing.Size(72, 13);
-			this.lblDrugAvail.TabIndex = 78;
-			this.lblDrugAvail.Text = "[Avail]";
-			// 
-			// lblDrugAvailabel
-			// 
-			this.lblDrugAvailabel.AutoSize = true;
-			this.lblDrugAvailabel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblDrugAvailabel.Location = new System.Drawing.Point(3, 86);
-			this.lblDrugAvailabel.Margin = new System.Windows.Forms.Padding(3);
-			this.lblDrugAvailabel.Name = "lblDrugAvailabel";
-			this.lblDrugAvailabel.Size = new System.Drawing.Size(69, 13);
-			this.lblDrugAvailabel.TabIndex = 77;
-			this.lblDrugAvailabel.Tag = "Label_Avail";
-			this.lblDrugAvailabel.Text = "Avail:";
-			// 
-			// lblDrugCategory
-			// 
-			this.lblDrugCategory.AutoSize = true;
-			this.lblDrugCategory.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblDrugCategory.Location = new System.Drawing.Point(78, 22);
-			this.lblDrugCategory.Margin = new System.Windows.Forms.Padding(3);
-			this.lblDrugCategory.Name = "lblDrugCategory";
-			this.lblDrugCategory.Size = new System.Drawing.Size(72, 13);
-			this.lblDrugCategory.TabIndex = 76;
-			this.lblDrugCategory.Text = "[Category]";
+			this.lblDrugName.AutoSize = true;
+			this.lblDrugName.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblDrugName.Location = new System.Drawing.Point(78, 3);
+			this.lblDrugName.Margin = new System.Windows.Forms.Padding(3);
+			this.lblDrugName.Name = "lblDrugName";
+			this.lblDrugName.Size = new System.Drawing.Size(72, 13);
+			this.lblDrugName.TabIndex = 74;
+			this.lblDrugName.Text = "[Name]";
 			// 
 			// lblDrugCategoryLabel
 			// 
@@ -7501,28 +7510,84 @@ namespace Chummer
 			this.lblDrugCategoryLabel.Tag = "Label_Category";
 			this.lblDrugCategoryLabel.Text = "Category:";
 			// 
-			// lblDrugName
+			// lblDrugCostLabel
 			// 
-			this.lblDrugName.AutoSize = true;
-			this.lblDrugName.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblDrugName.Location = new System.Drawing.Point(78, 3);
-			this.lblDrugName.Margin = new System.Windows.Forms.Padding(3);
-			this.lblDrugName.Name = "lblDrugName";
-			this.lblDrugName.Size = new System.Drawing.Size(72, 13);
-			this.lblDrugName.TabIndex = 74;
-			this.lblDrugName.Text = "[Name]";
+			this.lblDrugCostLabel.AutoSize = true;
+			this.lblDrugCostLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblDrugCostLabel.Location = new System.Drawing.Point(3, 105);
+			this.lblDrugCostLabel.Margin = new System.Windows.Forms.Padding(3);
+			this.lblDrugCostLabel.Name = "lblDrugCostLabel";
+			this.lblDrugCostLabel.Size = new System.Drawing.Size(69, 13);
+			this.lblDrugCostLabel.TabIndex = 79;
+			this.lblDrugCostLabel.Tag = "Label_Cost";
+			this.lblDrugCostLabel.Text = "Cost:";
 			// 
-			// lblDrugNameLabel
+			// lblDrugCost
 			// 
-			this.lblDrugNameLabel.AutoSize = true;
-			this.lblDrugNameLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblDrugNameLabel.Location = new System.Drawing.Point(3, 3);
-			this.lblDrugNameLabel.Margin = new System.Windows.Forms.Padding(3);
-			this.lblDrugNameLabel.Name = "lblDrugNameLabel";
-			this.lblDrugNameLabel.Size = new System.Drawing.Size(69, 13);
-			this.lblDrugNameLabel.TabIndex = 73;
-			this.lblDrugNameLabel.Tag = "Label_Name";
-			this.lblDrugNameLabel.Text = "Name:";
+			this.lblDrugCost.AutoSize = true;
+			this.lblDrugCost.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblDrugCost.Location = new System.Drawing.Point(78, 105);
+			this.lblDrugCost.Margin = new System.Windows.Forms.Padding(3);
+			this.lblDrugCost.Name = "lblDrugCost";
+			this.lblDrugCost.Size = new System.Drawing.Size(72, 13);
+			this.lblDrugCost.TabIndex = 80;
+			this.lblDrugCost.Text = "[Cost]";
+			// 
+			// lblDrugCategory
+			// 
+			this.lblDrugCategory.AutoSize = true;
+			this.lblDrugCategory.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblDrugCategory.Location = new System.Drawing.Point(78, 22);
+			this.lblDrugCategory.Margin = new System.Windows.Forms.Padding(3);
+			this.lblDrugCategory.Name = "lblDrugCategory";
+			this.lblDrugCategory.Size = new System.Drawing.Size(72, 13);
+			this.lblDrugCategory.TabIndex = 76;
+			this.lblDrugCategory.Text = "[Category]";
+			// 
+			// lblDrugAvailabel
+			// 
+			this.lblDrugAvailabel.AutoSize = true;
+			this.lblDrugAvailabel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblDrugAvailabel.Location = new System.Drawing.Point(3, 86);
+			this.lblDrugAvailabel.Margin = new System.Windows.Forms.Padding(3);
+			this.lblDrugAvailabel.Name = "lblDrugAvailabel";
+			this.lblDrugAvailabel.Size = new System.Drawing.Size(69, 13);
+			this.lblDrugAvailabel.TabIndex = 77;
+			this.lblDrugAvailabel.Tag = "Label_Avail";
+			this.lblDrugAvailabel.Text = "Avail:";
+			// 
+			// lblDrugAvail
+			// 
+			this.lblDrugAvail.AutoSize = true;
+			this.lblDrugAvail.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblDrugAvail.Location = new System.Drawing.Point(78, 86);
+			this.lblDrugAvail.Margin = new System.Windows.Forms.Padding(3);
+			this.lblDrugAvail.Name = "lblDrugAvail";
+			this.lblDrugAvail.Size = new System.Drawing.Size(72, 13);
+			this.lblDrugAvail.TabIndex = 78;
+			this.lblDrugAvail.Text = "[Avail]";
+			// 
+			// lblDrugEffectLabel
+			// 
+			this.lblDrugEffectLabel.AutoSize = true;
+			this.lblDrugEffectLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblDrugEffectLabel.Location = new System.Drawing.Point(3, 181);
+			this.lblDrugEffectLabel.Margin = new System.Windows.Forms.Padding(3);
+			this.lblDrugEffectLabel.Name = "lblDrugEffectLabel";
+			this.lblDrugEffectLabel.Size = new System.Drawing.Size(69, 13);
+			this.lblDrugEffectLabel.TabIndex = 97;
+			this.lblDrugEffectLabel.Text = "Effects:";
+			// 
+			// lblDrugEffect
+			// 
+			this.lblDrugEffect.AutoSize = true;
+			this.lblDrugEffect.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lblDrugEffect.Location = new System.Drawing.Point(78, 181);
+			this.lblDrugEffect.Margin = new System.Windows.Forms.Padding(3);
+			this.lblDrugEffect.Name = "lblDrugEffect";
+			this.lblDrugEffect.Size = new System.Drawing.Size(72, 13);
+			this.lblDrugEffect.TabIndex = 98;
+			this.lblDrugEffect.Text = "[0]";
 			// 
 			// btnDeleteCustomDrug
 			// 
@@ -7538,12 +7603,12 @@ namespace Chummer
 			// 
 			this.treCustomDrugs.Location = new System.Drawing.Point(6, 35);
 			this.treCustomDrugs.Name = "treCustomDrugs";
-			treeNode24.Name = "treeNode24";
-			treeNode24.Tag = "Node_SelectedDrugs";
-			treeNode24.Text = "Selected Drugs";
+			treeNode22.Name = "treeNode24";
+			treeNode22.Tag = "Node_SelectedDrugs";
+			treeNode22.Text = "Selected Drugs";
 			this.treCustomDrugs.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode24});
-			this.treCustomDrugs.Size = new System.Drawing.Size(264, 538);
+            treeNode22});
+			this.treCustomDrugs.Size = new System.Drawing.Size(264, 547);
 			this.treCustomDrugs.TabIndex = 2;
 			this.treCustomDrugs.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCustomDrugs_AfterSelect);
 			// 
@@ -7800,12 +7865,12 @@ namespace Chummer
 			this.treLifestyles.HideSelection = false;
 			this.treLifestyles.Location = new System.Drawing.Point(6, 36);
 			this.treLifestyles.Name = "treLifestyles";
-            treeNode22.Name = "nodLifestylesRoot";
-            treeNode22.Tag = "Node_SelectedLifestyles";
-            treeNode22.Text = "Selected Lifestyles";
-            this.treLifestyles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-                treeNode22});
-            this.treLifestyles.ShowNodeToolTips = true;
+			treeNode23.Name = "nodLifestylesRoot";
+			treeNode23.Tag = "Node_SelectedLifestyles";
+			treeNode23.Text = "Selected Lifestyles";
+			this.treLifestyles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode23});
+			this.treLifestyles.ShowNodeToolTips = true;
 			this.treLifestyles.ShowRootLines = false;
 			this.treLifestyles.Size = new System.Drawing.Size(296, 546);
 			this.treLifestyles.TabIndex = 80;
@@ -8869,15 +8934,15 @@ namespace Chummer
 			this.treVehicles.HideSelection = false;
 			this.treVehicles.Location = new System.Drawing.Point(8, 36);
 			this.treVehicles.Name = "treVehicles";
-            treeNode23.Name = "nodVehiclesRoot";
-            treeNode23.Tag = "Node_SelectedVehicles";
-            treeNode23.Text = "Selected Vehicles";
-            this.treVehicles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-                treeNode23});
-            this.treVehicles.ShowNodeToolTips = true;
-            this.treVehicles.ShowRootLines = false;
-            this.treVehicles.Size = new System.Drawing.Size(403, 575);
-            this.treVehicles.TabIndex = 30;
+			treeNode24.Name = "nodVehiclesRoot";
+			treeNode24.Tag = "Node_SelectedVehicles";
+			treeNode24.Text = "Selected Vehicles";
+			this.treVehicles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode24});
+			this.treVehicles.ShowNodeToolTips = true;
+			this.treVehicles.ShowRootLines = false;
+			this.treVehicles.Size = new System.Drawing.Size(403, 575);
+			this.treVehicles.TabIndex = 30;
 			this.treVehicles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treVehicles_AfterSelect);
 			this.treVehicles.DragOver += new System.Windows.Forms.DragEventHandler(this.treVehicles_DragOver);
 			this.treVehicles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treVehicles_KeyDown);
@@ -9519,8 +9584,8 @@ namespace Chummer
 			this.tabEnemies.Location = new System.Drawing.Point(4, 22);
 			this.tabEnemies.Name = "tabEnemies";
 			this.tabEnemies.Padding = new System.Windows.Forms.Padding(3);
-            this.tabEnemies.Size = new System.Drawing.Size(826, 582);
-            this.tabEnemies.TabIndex = 1;
+			this.tabEnemies.Size = new System.Drawing.Size(826, 582);
+			this.tabEnemies.TabIndex = 1;
 			this.tabEnemies.Tag = "Label_Enemies";
 			this.tabEnemies.Text = "Enemies";
 			// 
@@ -9588,8 +9653,8 @@ namespace Chummer
 			this.tabPets.Location = new System.Drawing.Point(4, 22);
 			this.tabPets.Name = "tabPets";
 			this.tabPets.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPets.Size = new System.Drawing.Size(826, 582);
-            this.tabPets.TabIndex = 4;
+			this.tabPets.Size = new System.Drawing.Size(826, 582);
+			this.tabPets.TabIndex = 4;
 			this.tabPets.Tag = "Tab_Pets";
 			this.tabPets.Text = "Pets and Cohorts";
 			// 
@@ -10684,71 +10749,6 @@ namespace Chummer
 			this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
 			this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
 			// 
-			// tblDrugInfo
-			// 
-			this.tblDrugInfo.AutoSize = true;
-			this.tblDrugInfo.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.tblDrugInfo.ColumnCount = 2;
-			this.tblDrugInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tblDrugInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tblDrugInfo.Controls.Add(this.lblDrugNameLabel, 0, 0);
-			this.tblDrugInfo.Controls.Add(this.lblDrugComponents, 1, 8);
-			this.tblDrugInfo.Controls.Add(this.lblDrugComponentsLabel, 0, 8);
-			this.tblDrugInfo.Controls.Add(this.lblDrugAddictionThresholdLabel, 0, 6);
-			this.tblDrugInfo.Controls.Add(this.lblDrugAddictionRating, 1, 7);
-			this.tblDrugInfo.Controls.Add(this.lblDrugAddictionRatingLabel, 0, 7);
-			this.tblDrugInfo.Controls.Add(this.lblDrugGrade, 1, 3);
-			this.tblDrugInfo.Controls.Add(this.lblDrugQtyLabel, 0, 2);
-			this.tblDrugInfo.Controls.Add(this.lblDrugAddictionThreshold, 1, 6);
-			this.tblDrugInfo.Controls.Add(this.lblDrugGradeLabel, 0, 3);
-			this.tblDrugInfo.Controls.Add(this.nudDrugQty, 1, 2);
-			this.tblDrugInfo.Controls.Add(this.lblDrugName, 1, 0);
-			this.tblDrugInfo.Controls.Add(this.lblDrugCategoryLabel, 0, 1);
-			this.tblDrugInfo.Controls.Add(this.lblDrugCostLabel, 0, 5);
-			this.tblDrugInfo.Controls.Add(this.lblDrugCost, 1, 5);
-			this.tblDrugInfo.Controls.Add(this.lblDrugCategory, 1, 1);
-			this.tblDrugInfo.Controls.Add(this.lblDrugAvailabel, 0, 4);
-			this.tblDrugInfo.Controls.Add(this.lblDrugAvail, 1, 4);
-			this.tblDrugInfo.Controls.Add(this.lblDrugEffectLabel, 0, 9);
-			this.tblDrugInfo.Controls.Add(this.lblDrugEffect, 1, 9);
-			this.tblDrugInfo.Location = new System.Drawing.Point(276, 35);
-			this.tblDrugInfo.Name = "tblDrugInfo";
-			this.tblDrugInfo.RowCount = 10;
-			this.tblDrugInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tblDrugInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tblDrugInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tblDrugInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tblDrugInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tblDrugInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tblDrugInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tblDrugInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tblDrugInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tblDrugInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tblDrugInfo.Size = new System.Drawing.Size(153, 197);
-			this.tblDrugInfo.TabIndex = 97;
-			// 
-			// lblDrugEffectLabel
-			// 
-			this.lblDrugEffectLabel.AutoSize = true;
-			this.lblDrugEffectLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblDrugEffectLabel.Location = new System.Drawing.Point(3, 181);
-			this.lblDrugEffectLabel.Margin = new System.Windows.Forms.Padding(3);
-			this.lblDrugEffectLabel.Name = "lblDrugEffectLabel";
-			this.lblDrugEffectLabel.Size = new System.Drawing.Size(69, 13);
-			this.lblDrugEffectLabel.TabIndex = 97;
-			this.lblDrugEffectLabel.Text = "Effects:";
-			// 
-			// lblDrugEffect
-			// 
-			this.lblDrugEffect.AutoSize = true;
-			this.lblDrugEffect.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblDrugEffect.Location = new System.Drawing.Point(78, 181);
-			this.lblDrugEffect.Margin = new System.Windows.Forms.Padding(3);
-			this.lblDrugEffect.Name = "lblDrugEffect";
-			this.lblDrugEffect.Size = new System.Drawing.Size(72, 13);
-			this.lblDrugEffect.TabIndex = 98;
-			this.lblDrugEffect.Text = "[0]";
-			// 
 			// frmCreate
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -10851,6 +10851,8 @@ namespace Chummer
 			this.tabWeapons.PerformLayout();
 			this.tabDrugs.ResumeLayout(false);
 			this.tabDrugs.PerformLayout();
+			this.tblDrugInfo.ResumeLayout(false);
+			this.tblDrugInfo.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudDrugQty)).EndInit();
 			this.tabLifestyle.ResumeLayout(false);
 			this.tabLifestyle.PerformLayout();
@@ -10897,8 +10899,6 @@ namespace Chummer
 			this.cmsTechnique.ResumeLayout(false);
 			this.cmsAdvancedProgram.ResumeLayout(false);
 			this.cmsGearAllowRename.ResumeLayout(false);
-			this.tblDrugInfo.ResumeLayout(false);
-			this.tblDrugInfo.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
