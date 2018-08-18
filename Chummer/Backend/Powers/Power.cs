@@ -585,7 +585,7 @@ namespace Chummer
                         intReturn += 1;
                     }
                 }
-                return _intCachedFreeLevels = Math.Min(intReturn, MAGAttributeObject.TotalValue);
+                return _intCachedFreeLevels = Math.Min(intReturn, MAGAttributeObject?.TotalValue ?? 0);
             }
         }
 
@@ -825,7 +825,7 @@ namespace Chummer
                 if (intReturn == 0)
                 {
                     // if unspecified, max rating = MAG
-                    intReturn = MAGAttributeObject.TotalValue;
+                    intReturn = MAGAttributeObject?.TotalValue ?? 0;
                 }
                 if (BoostedSkill != null)
                 {
@@ -834,7 +834,7 @@ namespace Chummer
                 }
                 if (!CharacterObject.IgnoreRules)
                 {
-                    intReturn = Math.Min(intReturn, MAGAttributeObject.TotalValue);
+                    intReturn = Math.Min(intReturn, MAGAttributeObject?.TotalValue ?? 0);
                 }
                 return intReturn;
             }
