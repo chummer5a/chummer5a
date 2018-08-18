@@ -7810,6 +7810,12 @@
 				<translate>Steinbeißer</translate>
 				<altpage>209</altpage>
 			</metatype>
+			<metatype>
+				<id>7086b5a8-c5f4-4cb5-9b01-6854790aa02a</id>
+				<name>SOX-Termite</name>
+				<translate>SOX-Termite</translate>
+				<altpage>208</altpage>
+			</metatype>
 		</metatypes>
 	</chummer>
 	<chummer file="cyberware.xml">
@@ -9799,14 +9805,14 @@
 			<cyberware>
 				<id>8af5027d-a504-484e-8089-c542a95d4831</id>
 				<name>Centaur Front Leg</name>
-				<translate>Centaur Front Leg</translate>
-				<altpage>87</altpage>
+				<translate>Zentaur Vorderbein</translate>
+				<altpage>92</altpage>
 			</cyberware>
 			<cyberware>
 				<id>fb43afdc-7176-4640-baba-6087b15acca3</id>
 				<name>Centaur Rear Leg</name>
-				<translate>Centaur Rear Leg</translate>
-				<altpage>87</altpage>
+				<translate>Zentaur Hinterbein</translate>
+				<altpage>92</altpage>
 			</cyberware>
 			<cyberware>
 				<id>85bd6c32-d0c3-4d1b-99ad-833aad376a54</id>
@@ -23860,18 +23866,6 @@
 				<translate>Befehlsstimme</translate>
 				<altpage>207</altpage>
 			</power>
-			<!--<power>
-				<id>489a28c7-c4a2-4071-9f5a-35c0e333f589</id>
-				<name>Keratin Control</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</power>
-			<power>
-				<id>57d6a5ba-44f0-458a-8db5-40acf479065c</id>
-				<name>Living Focus</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</power>-->
 			<power>
 				<id>87f0f97d-cbcf-4427-9259-baf376c9f55a</id>
 				<name>Adept Spell</name>
@@ -32996,6 +32990,12 @@
 					<spec translate="Lingo">Lingo</spec>
 				</specs>
 			</skill>
+			<skill>
+				<id>8879baa1-4e10-4667-bd00-62f4f594dbbb</id>
+				<name>Area Knowledge: Neo-Tokyo</name>
+				<translate>Ortskenntnis: Neo-Tokyo</translate>
+				<specs />
+			</skill>
 		</knowledgeskills>
 	</chummer>
 	<chummer file="spells.xml">
@@ -35516,6 +35516,12 @@
 				<name>Storm Children</name>
 				<translate>Sturmkinder</translate>
 				<altpage>169</altpage>
+			</tradition>
+			<tradition>
+				<id>a0c2d67d-158a-4fdf-9c45-7f420fbdce8e</id>
+				<name>Druid [Alt]</name>
+				<translate>Druidisch [alternativ]</translate>
+				<altpage>64</altpage>
 			</tradition>
 		</traditions>
 		<spirits>
@@ -41997,10 +42003,10 @@
 				<translate>Gewehrschaft-Kriegskeule (Als Wurfwaffe)</translate>
 				<altpage>22</altpage>
 			</weapon>
-			<weapon>
+			<weapon translated="True">
 				<id>559655cd-a883-4beb-9d19-ed59b51d27a5</id>
 				<name>Krime Gloves</name>
-				<translate>Krime Handschuhe</translate>
+				<translate>Krime Handschuhe: Schlagring</translate>
 				<altpage>23</altpage>
 			</weapon>
 			<weapon>
@@ -42326,6 +42332,102 @@
 				<name>Lone Star Bates-Brown Tactical Combat Boots</name>
 				<translate>Taktische Kampfstiefel</translate>
 				<altpage>138</altpage>
+			</weapon>
+			<weapon>
+				<id>c7031809-01ae-4477-87fb-608eb64a927e</id>
+				<name>Krime Reaver Knob</name>
+				<translate>Krime Reaver Knüppel</translate>
+				<altpage>20</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>fda72df6-5f5a-4125-ae77-308cfed00fba</id>
+				<name>Krime Shiv</name>
+				<translate>Krime Shiv</translate>
+				<altpage>20</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>56639654-5143-4bba-9354-9ae19ed7d658</id>
+				<name>Nodachi</name>
+				<translate>Nodachi</translate>
+				<altpage>21</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>cf1b2de4-957b-4d5d-9c38-d81d080e92d8</id>
+				<name>Nunchaku</name>
+				<translate>Nunchaku</translate>
+				<altpage>22</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>e135106e-5809-4d3f-a7b8-7a83acbdefb1</id>
+				<name>Tonfa</name>
+				<translate>Tonfa</translate>
+				<altpage>23</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>912ef37a-37b2-459c-a4c9-f84f33e4c4d9</id>
+				<name>Winchester Airbow</name>
+				<translate>Winchester Airbow</translate>
+				<altpage>25</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>ced53705-2d9c-4ee6-b612-550f6ae63980</id>
+				<name>Krime Tingler</name>
+				<translate>Krime Tingler</translate>
+				<altpage>25</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>da54338e-e0c8-4f16-8a05-25431f13bccb</id>
+				<name>Raecor Sting</name>
+				<translate>Raecor Sting</translate>
+				<altpage>26</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>0ad1526d-39e8-4918-9be3-54abb9dbaaf3</id>
+				<name>Browning Ghost</name>
+				<translate>Browning Ghost</translate>
+				<altpage>27</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>0e2d3c7b-d092-45fa-8136-4a9a9c99e2f1</id>
+				<name>Colt Coral Snake</name>
+				<translate>Colt Coral Snake</translate>
+				<altpage>28</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>3a4f4008-8d0c-430f-abe1-b4142d337da1</id>
+				<name>WW Infiltrator</name>
+				<translate>WW Infiltrator</translate>
+				<altpage>34</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>dd591e1f-2ebf-40ba-be8e-ccd4c5b8daf8</id>
+				<name>Esprit Tsunami</name>
+				<translate>Esprit Tsunami</translate>
+				<altpage>35</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>f1f2016a-8e4d-43d4-847d-a2eb007c52f0</id>
+				<name>Cavalier Frontier</name>
+				<translate>Cavalier Frontier</translate>
+				<altpage>38</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>68e50fee-0025-4981-9931-2014fa1c3073</id>
+				<name>HK 82A1</name>
+				<translate>HK 82A1</translate>
+				<altpage>42</altpage>
+			</weapon>
+			<weapon>
+				<id>15c98062-1ac9-45d5-a1f6-6e414b97ea4e</id>
+				<name>Krime Stun-O-Net</name>
+				<translate>Krime Betäubungsbajonett</translate>
+				<altpage>46</altpage>
+			</weapon>
+			<weapon>
+				<id>47c4da06-fa71-4784-b0c6-f85002589b94</id>
+				<name>Minigrenade: MCT/Winchester-Howe Hornet Direct-Fire</name>
+				<translate>Minigranate: MCT/Winchester-Howe Hornet</translate>
+				<altpage>139</altpage>
 			</weapon>
 		</weapons>
 		<accessories>
@@ -43043,6 +43145,12 @@
 				<translate>Rotpunktvisier</translate>
 				<altpage>47</altpage>
 			</accessory>
+			<accessory>
+				<id>f52db08a-a2f5-482b-8cd0-4cf3045e0d60</id>
+				<name>Krime Stun-O-Net</name>
+				<translate>Krime Betäubungsbajonett</translate>
+				<altpage>46</altpage>
+			</accessory>
 		</accessories>
 	</chummer>
 	<chummer file="complexforms.xml">
@@ -43262,18 +43370,6 @@
 				<altpage>Adjusts the value for all of the Skills linked to an Attribute by the value entered. Positive numbers increase the Skills. Negative numbers decrease the Skills. Select a linked Attribute to affect by clicking the Select Value button. The modifier can be applied to the Skills' Ratings by selecting Apply to Rating, otherwise the modifier is applied as a dice pool modifier.</altpage>
 			</improvement>
 			<improvement>
-				<id>armorb</id>
-				<name>Armor, Ballistic</name>
-				<translate>Panzerung, ballisitisch</translate>
-				<altpage>Adjusts the character's Ballistic Armor Rating by the value entered. Positive numbers improve Ballistic Armor. Negative numbers reduce Ballistic Armor.</altpage>
-			</improvement>
-			<improvement>
-				<id>armori</id>
-				<name>Armor, Impact</name>
-				<translate>Panzerung, Stoß</translate>
-				<altpage>Adjusts the character's Impact Armor Rating by the value entered. Positive numbers improve Impact Armor. Negative numbers reduce Impact Armor.</altpage>
-			</improvement>
-			<improvement>
 				<id>reach</id>
 				<name>Reach</name>
 				<translate>Reichweite</translate>
@@ -43450,7 +43546,7 @@
 			<improvement>
 				<id>quickeningmetamagic</id>
 				<name>Quickening</name>
-				<translate>Quickening</translate>
+				<translate>Intensivierung</translate>
 				<altpage>Grants the character access to Quickening in the same manner as the Quickening Metamagic.</altpage>
 			</improvement>
 			<improvement>
@@ -43540,13 +43636,13 @@
 			<improvement>
 				<id>attributelevel</id>
 				<name>Attribute Level</name>
-				<translate>Attribute Level</translate>
+				<translate>Attributstufe</translate>
 				<altpage>Adds to the selected attribute's base Value, increasing Karma costs for subsequent purchases.</altpage>
 			</improvement>
 			<improvement>
 				<id>skilllevel</id>
 				<name>Skill Level</name>
-				<translate>Skill Level</translate>
+				<translate>Fertigkeitsstufe</translate>
 				<altpage>Adds to the selected attribute's base Value, increasing Karma costs for subsequent purchases.</altpage>
 			</improvement>
 			<improvement>
@@ -43558,13 +43654,13 @@
 			<improvement>
 				<id>specificpower</id>
 				<name>Adept Power</name>
-				<translate>Adept Power</translate>
+				<translate>Adeptenkraft</translate>
 				<altpage>Creates a free Adept Power. If the selected power already exists, the power will either be marked as free, or have free levels added to it.</altpage>
 			</improvement>
 			<improvement>
 				<id>initiativediceadd</id>
 				<name>Initiative Dice</name>
-				<translate>Initiative Dice</translate>
+				<translate>Initiativwürfel</translate>
 				<altpage>Adjusts the number of Initiative Dice the character receives by the value entered. Positive numbers increase the number of Initiative Dice. Negative numbers reduce the number of Initiative Dice.</altpage>
 			</improvement>
 			<improvement>
@@ -43584,6 +43680,12 @@
 				<name>Bonus Street Cred</name>
 				<translate>Bonus Straßenruf</translate>
 				<altpage>Increases the character's Street Cred by the listed value.</altpage>
+			</improvement>
+			<improvement>
+				<id>armor</id>
+				<name>Armor</name>
+				<translate>Panzerung</translate>
+				<altpage>Adjusts the character's Armor Rating by the value entered. Positive numbers improve Armor. Negative numbers reduce Armor.</altpage>
 			</improvement>
 		</improvements>
 	</chummer>
