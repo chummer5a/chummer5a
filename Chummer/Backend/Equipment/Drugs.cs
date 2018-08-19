@@ -13,6 +13,7 @@ namespace Chummer.Backend.Equipment
 {
     public class Drug : Object
     {
+        private Guid _sourceID = Guid.Empty;
         private Guid _guiID = new Guid();
         private string _strName = "";
         private string _strCategory = "";
@@ -68,6 +69,11 @@ namespace Chummer.Backend.Equipment
                 Components.Add(c);
             }
 
+            if (objXmlData["sourceid"] == null || !objXmlData.TryGetField("sourceid", Guid.TryParse, out _sourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetField("id", Guid.TryParse, out _sourceID);
+            }
             objXmlData.TryGetStringFieldQuickly("availability", ref _strAvailability);
             objXmlData.TryGetInt32FieldQuickly("cost", ref _intCost);
             objXmlData.TryGetDecFieldQuickly("quantity", ref _decQty);
@@ -80,6 +86,7 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlWriter objXmlWriter)
         {
             objXmlWriter.WriteStartElement("drug");
+            objXmlWriter.WriteElementString("id", _sourceID.ToString("D"));
             objXmlWriter.WriteElementString("guid", _guiID.ToString());
             objXmlWriter.WriteElementString("name", _strName);
             objXmlWriter.WriteElementString("category", _strCategory);
@@ -434,6 +441,9 @@ namespace Chummer.Backend.Equipment
         }
 
         private bool _cachedAttributeFlag = false;
+        private XmlNode _objCachedMyXmlNode;
+        private string _strCachedXmlNodeLanguage;
+
         public Dictionary<string, int> Attributes
         {
             get
@@ -449,6 +459,19 @@ namespace Chummer.Backend.Equipment
                 return _cachedAttributes;
             }
         }
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+
+                return SystemColors.WindowText;
+            }
+        }
+        public Guid SourceID => _sourceID;
 
         #endregion
 
@@ -478,21 +501,18 @@ namespace Chummer.Backend.Equipment
 
             return objNode;
         }
-
-        public Color PreferredColor
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(Notes))
-                {
-                    return Color.SaddleBrown;
-                }
-
-                return SystemColors.WindowText;
-            }
-        }
         #endregion
         #region Methods
+
+        public XmlNode GetNode(string strLanguage)
+        {
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            {
+                _objCachedMyXmlNode = XmlManager.Load("armor.xml", strLanguage).SelectSingleNode("/chummer/armors/armor[id = \"" + SourceID.ToString("D") + "\"]");
+                _strCachedXmlNodeLanguage = strLanguage;
+            }
+            return _objCachedMyXmlNode;
+        }
 
         public String GenerateDescription(int level = -1, bool effectsOnly = false)
         {
@@ -585,7 +605,8 @@ namespace Chummer.Backend.Equipment
 	/// </summary>
 	public class DrugComponent : object
 	{
-		private string _strName;
+	    private Guid _sourceID;
+        private string _strName;
 		private string _strCategory;
 	    private string _strAvailability = "0";
         private readonly List<DrugEffect> _lstEffects;
@@ -598,8 +619,10 @@ namespace Chummer.Backend.Equipment
 		private int _intCost;
 		private int _intAddictionThreshold;
 		private int _intAddictionRating;
+	    private XmlNode _objCachedMyXmlNode;
+	    private string _strCachedXmlNodeLanguage;
 
-		public DrugComponent()
+	    public DrugComponent()
 		{
 			_lstEffects = new List<DrugEffect>();
 		}
@@ -607,7 +630,8 @@ namespace Chummer.Backend.Equipment
 		#region Constructor, Create, Save, Load, and Print Methods
 		public void Load(XmlNode objXmlData)
 		{
-			objXmlData.TryGetField("name", out _strName);
+		    objXmlData.TryGetField("id", Guid.TryParse, out _sourceID);
+            objXmlData.TryGetField("name", out _strName);
 			objXmlData.TryGetField("category", out _strCategory);
 			foreach (XmlNode objXmlLevel in objXmlData.SelectNodes("effects/effect"))
 			{
@@ -666,8 +690,9 @@ namespace Chummer.Backend.Equipment
 		}
 
 		public void Save(XmlWriter objXmlWriter)
-		{
-			objXmlWriter.WriteElementString("name", _strName);
+        {
+            objXmlWriter.WriteElementString("id", _sourceID.ToString("D"));
+            objXmlWriter.WriteElementString("name", _strName);
 			objXmlWriter.WriteElementString("category", _strCategory);
 
 			objXmlWriter.WriteStartElement("effects");
@@ -825,10 +850,23 @@ namespace Chummer.Backend.Equipment
 		{
 			get => _intLevel;
 		    set => _intLevel = value;
-		}
-		#endregion
-		#region Methods
-		public String GenerateDescription(int level = -1)
+	    }
+
+	    public Guid SourceID => _sourceID;
+        #endregion
+        #region Methods
+
+        public XmlNode GetNode(string strLanguage)
+	    {
+	        if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+	        {
+	            _objCachedMyXmlNode = XmlManager.Load("armor.xml", strLanguage).SelectSingleNode("/chummer/armors/armor[id = \"" + SourceID.ToString("D") + "\"]");
+	            _strCachedXmlNodeLanguage = strLanguage;
+	        }
+	        return _objCachedMyXmlNode;
+	    }
+
+	    public String GenerateDescription(int level = -1)
 		{
 			if (level >= _lstEffects.Count)
 				return null;

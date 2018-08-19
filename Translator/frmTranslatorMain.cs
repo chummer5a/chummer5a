@@ -669,6 +669,7 @@ namespace Translator
             ProcessCritterPowers,
             ProcessCritters,
             ProcessCyberware,
+            ProcessDrugs,
             ProcessEchoes,
             ProcessGameplayOptions,
             ProcessGear,
@@ -2463,6 +2464,182 @@ namespace Translator
             {
                 xmlRootCyberwareFileNode.RemoveChild(xmlRemoveNode);
             }
+        }
+
+        private static void ProcessDrugs(XmlDocument objDataDoc, BackgroundWorker objWorker)
+        {
+            XmlDocument xmlDataDocument = new XmlDocument();
+            xmlDataDocument.Load(Path.Combine(PATH, "data", "drugcomponents.xml"));
+            XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
+
+            XmlNode xmlRootNode = objDataDoc.SelectSingleNode("/chummer");
+            if (xmlRootNode == null)
+            {
+                xmlRootNode = objDataDoc.CreateElement("chummer");
+                objDataDoc.AppendChild(xmlRootNode);
+            }
+
+            XmlNode xmlRootDrugFileNode = objDataDoc.SelectSingleNode("/chummer/chummer[@file = \"drugcomponents.xml\"]");
+            if (xmlRootDrugFileNode == null)
+            {
+                xmlRootDrugFileNode = objDataDoc.CreateElement("chummer");
+                XmlAttribute xmlAttribute = objDataDoc.CreateAttribute("file");
+                xmlAttribute.Value = "drugcomponents.xml";
+                xmlRootDrugFileNode.Attributes?.Append(xmlAttribute);
+                xmlRootNode.AppendChild(xmlRootDrugFileNode);
+            }
+
+            // Process Categories
+
+            XmlNode xmlCategoryNodesParent = xmlRootDrugFileNode.SelectSingleNode("categories");
+
+            if (xmlCategoryNodesParent == null)
+            {
+                xmlCategoryNodesParent = objDataDoc.CreateElement("categories");
+                xmlRootDrugFileNode.AppendChild(xmlCategoryNodesParent);
+            }
+
+            XPathNavigator xmlDataCategoryNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("categories");
+            if (xmlDataCategoryNodeList != null)
+            {
+                foreach (XPathNavigator xmlDataCategoryNode in xmlDataCategoryNodeList.Select("category"))
+                {
+                    if (objWorker.CancellationPending)
+                        return;
+                    if (xmlCategoryNodesParent.SelectSingleNode("category[text()=\"" + xmlDataCategoryNode.Value + "\"]") == null)
+                    {
+                        XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
+                        xmlCategoryNode.InnerText = xmlDataCategoryNode.Value;
+                        XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
+                        xmlTranslateAttribute.Value = xmlDataCategoryNode.Value;
+                        xmlCategoryNode.Attributes?.Append(xmlTranslateAttribute);
+                        xmlCategoryNodesParent.AppendChild(xmlCategoryNode);
+                    }
+                }
+            }
+
+            using (XmlNodeList xmlCategoryNodeList = xmlCategoryNodesParent.SelectNodes("category"))
+                if (xmlCategoryNodeList?.Count > 0)
+                    foreach (XmlNode xmlCategoryNode in xmlCategoryNodeList)
+                    {
+                        if (objWorker.CancellationPending)
+                            return;
+                        if (xmlDataCategoryNodeList?.SelectSingleNode("category[text() = \"" + xmlCategoryNode.InnerText + "\"]") == null)
+                        {
+                            xmlCategoryNodesParent.RemoveChild(xmlCategoryNode);
+                        }
+                    }
+            #region Process Drug Components
+
+            XmlNode xmlDrugComponentNodesParent = xmlRootDrugFileNode.SelectSingleNode("drugcomponents");
+            if (xmlDrugComponentNodesParent == null)
+            {
+                xmlDrugComponentNodesParent = objDataDoc.CreateElement("drugcomponents");
+                xmlRootDrugFileNode.AppendChild(xmlDrugComponentNodesParent);
+            }
+
+            XPathNavigator xmlDataDrugComponentNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("drugcomponents");
+            if (xmlDataDrugComponentNodeList != null)
+            {
+                foreach (XPathNavigator xmlDataDrugComponentNode in xmlDataDrugComponentNodeList.Select("drugcomponent"))
+                {
+                    if (objWorker.CancellationPending)
+                        return;
+                    string strDataDrugComponentName = xmlDataDrugComponentNode.SelectSingleNode("name")?.Value ?? string.Empty;
+                    string strDataDrugComponentId = xmlDataDrugComponentNode.SelectSingleNode("id")?.Value ?? string.Empty;
+                    XmlNode xmlDrugComponentNode = xmlDrugComponentNodesParent.SelectSingleNode("drugcomponent[id=\"" + strDataDrugComponentId + "\"]");
+                    if (xmlDrugComponentNode != null)
+                    {
+                        if (xmlDrugComponentNode["id"] == null)
+                        {
+                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            xmlIdElement.InnerText = strDataDrugComponentId;
+                            xmlDrugComponentNode.PrependChild(xmlIdElement);
+                        }
+
+                        if (xmlDrugComponentNode["name"] == null)
+                        {
+                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            xmlNameElement.InnerText = strDataDrugComponentName;
+                            xmlDrugComponentNode.AppendChild(xmlNameElement);
+                        }
+
+                        if (xmlDrugComponentNode["translate"] == null)
+                        {
+                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            xmlTranslateElement.InnerText = strDataDrugComponentName;
+                            xmlDrugComponentNode.AppendChild(xmlTranslateElement);
+                        }
+
+                        XmlNode xmlPage = xmlDrugComponentNode["page"];
+                        if (xmlDrugComponentNode["altpage"] == null)
+                        {
+                            string strPage = xmlPage?.InnerText ?? xmlDataDrugComponentNode.SelectSingleNode("page")?.Value ?? string.Empty;
+                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            xmlIdElement.InnerText = strPage;
+                            xmlDrugComponentNode.AppendChild(xmlIdElement);
+                        }
+
+                        if (xmlPage != null)
+                        {
+                            xmlDrugComponentNode.RemoveChild(xmlPage);
+                        }
+                    }
+                    else
+                    {
+                        xmlDrugComponentNode = objDataDoc.CreateElement("drugcomponent");
+
+                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        xmlIdElement.InnerText = strDataDrugComponentId;
+                        xmlDrugComponentNode.AppendChild(xmlIdElement);
+
+                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        xmlNameElement.InnerText = strDataDrugComponentName;
+                        xmlDrugComponentNode.AppendChild(xmlNameElement);
+
+                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        xmlTranslateElement.InnerText = strDataDrugComponentName;
+                        xmlDrugComponentNode.AppendChild(xmlTranslateElement);
+
+                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        xmlPageElement.InnerText = xmlDataDrugComponentNode.SelectSingleNode("page")?.Value ?? string.Empty;
+                        xmlDrugComponentNode.AppendChild(xmlPageElement);
+
+                        xmlDrugComponentNodesParent.AppendChild(xmlDrugComponentNode);
+                    }
+                }
+            }
+
+            using (XmlNodeList xmlDrugComponentNodeList = xmlDrugComponentNodesParent.SelectNodes("drugcomponent"))
+                if (xmlDrugComponentNodeList?.Count > 0)
+                    foreach (XmlNode xmlDrugComponentNode in xmlDrugComponentNodeList)
+                    {
+                        if (objWorker.CancellationPending)
+                            return;
+                        if (xmlDrugComponentNode.Attributes != null)
+                            for (int i = xmlDrugComponentNode.Attributes.Count - 1; i >= 0; --i)
+                            {
+                                XmlAttribute xmlAttribute = xmlDrugComponentNode.Attributes[i];
+                                if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:"))
+                                    xmlDrugComponentNode.Attributes.RemoveAt(i);
+                            }
+
+                        if (xmlDataDrugComponentNodeList?.SelectSingleNode("drugcomponent[id = \"" + xmlDrugComponentNode["id"]?.InnerText + "\"]") == null)
+                        {
+#if !DELETE
+                            {
+                                XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
+                                xmlExistsAttribute.Value = "False";
+                                xmlDrugComponentNode.Attributes?.Append(xmlExistsAttribute);
+                            }
+#else
+                            {
+                                xmlDrugComponentNodesParent.RemoveChild(xmlDrugComponentNode);
+                            }
+#endif
+                        }
+                    }
+            #endregion
         }
 
         private static void ProcessEchoes(XmlDocument objDataDoc, BackgroundWorker objWorker)
