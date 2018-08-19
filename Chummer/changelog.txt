@@ -10,6 +10,7 @@ Application Changes:
 - Fixed a crash when removing a mentor spirit quality if an adept character has changed their priority to mundane. Caused by MAG attribute being null. Fixes #2928
 - Added support for drugcomponents.xml in the translator.
 - Added missing Source detail for adept powers.
+- Fixed a crash when loading old characters that have a Total Rating greater than the Total Maximum Levels on load.
 
 Data Changes:
 

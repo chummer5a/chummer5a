@@ -280,13 +280,15 @@ namespace Chummer
             }
 
             //TODO: Seems that the MysAd Second Attribute house rule gets accidentally enabled sometimes?
-            if (LevelsEnabled)
+            if (Rating > TotalMaximumLevels)
             {
-                if (Rating > TotalMaximumLevels)
-                {
-                    Utils.BreakIfDebug();
-                    Rating = TotalMaximumLevels;
-                }
+                Utils.BreakIfDebug();
+                Rating = TotalMaximumLevels;
+            }
+            else if (Rating + FreeLevels > TotalMaximumLevels)
+            {
+                Utils.BreakIfDebug();
+                TotalRating = TotalMaximumLevels;
             }
             SourceDetail = new SourceString(_strSource, _strPage);
         }
