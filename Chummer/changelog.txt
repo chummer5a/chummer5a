@@ -9,6 +9,7 @@ Application Changes:
 - Fixed an issue with inability to remove metamagics or initiate grades in create mode.
 - Fixed a crash when removing a mentor spirit quality if an adept character has changed their priority to mundane. Caused by MAG attribute being null. Fixes #2928
 - Added support for drugcomponents.xml in the translator.
+- Added missing Source detail for adept powers.
 
 Data Changes:
 

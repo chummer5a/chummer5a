@@ -325,6 +325,15 @@ namespace Chummer.UI.Powers
             powerPointsColumn.AddDependency(nameof(Power.DisplayPoints));
             powerPointsColumn.AddDependency(nameof(Power.ToolTip));
 
+            TableColumn<Power> sourceColumn = new TableColumn<Power>(() => new TextTableCell())
+            {
+                Text = "Source",
+                Extractor = (power => power.SourceDetail),
+                Tag = "Label_Source",
+                ToolTipExtractor = (item => item.SourceDetail.LanguageBookTooltip)
+            };
+            powerPointsColumn.AddDependency(nameof(Power.Source));
+
             TableColumn<Power> adeptWayColumn = new TableColumn<Power>(() => new CheckBoxTableCell<Power>()
             {
                 ValueGetter = (p => p.DiscountedAdeptWay),
@@ -418,6 +427,7 @@ namespace Chummer.UI.Powers
             _table.Columns.Add(adeptWayColumn);
             //_table.Columns.Add(geasColumn);
             _table.Columns.Add(noteColumn);
+            _table.Columns.Add(sourceColumn);
             _table.Columns.Add(deleteColumn);
             LanguageManager.TranslateWinForm(GlobalOptions.Language, _table);
 
