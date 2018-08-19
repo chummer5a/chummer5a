@@ -11,6 +11,7 @@ Application Changes:
 - Added support for drugcomponents.xml in the translator.
 - Added missing Source detail for adept powers.
 - Fixed a crash when loading old characters that have a Total Rating greater than the Total Maximum Levels on load.
+- Fixed an issue with editing custom improvements causing them to visibly appear is if they had fallen out of their group.
 
 Data Changes:
 

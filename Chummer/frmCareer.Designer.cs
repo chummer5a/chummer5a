@@ -6132,10 +6132,10 @@ namespace Chummer
 			this.panSprites.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
 			this.panSprites.AutoScroll = true;
-			this.panSprites.Location = new System.Drawing.Point(8, 445);
-			this.panSprites.Name = "panSprites";
-			this.panSprites.Size = new System.Drawing.Size(850, 224);
-			this.panSprites.TabIndex = 25;
+            this.panSprites.Location = new System.Drawing.Point(8, 445);
+            this.panSprites.Name = "panSprites";
+            this.panSprites.Size = new System.Drawing.Size(850, 224);
+            this.panSprites.TabIndex = 25;
 			// 
 			// cmdAddComplexForm
 			// 
@@ -13941,7 +13941,7 @@ namespace Chummer
 			// 
 			this.cmdChangeStartWeek.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.cmdChangeStartWeek.AutoSize = true;
-			this.cmdChangeStartWeek.Location = new System.Drawing.Point(-11861, 6);
+			this.cmdChangeStartWeek.Location = new System.Drawing.Point(-12763, 6);
 			this.cmdChangeStartWeek.Name = "cmdChangeStartWeek";
 			this.cmdChangeStartWeek.Size = new System.Drawing.Size(119, 23);
 			this.cmdChangeStartWeek.TabIndex = 4;
@@ -14167,7 +14167,7 @@ namespace Chummer
 			this.treImprovements.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode25});
 			this.treImprovements.ShowNodeToolTips = true;
-			this.treImprovements.Size = new System.Drawing.Size(295, 36);
+			this.treImprovements.Size = new System.Drawing.Size(295, 634);
 			this.treImprovements.TabIndex = 81;
 			this.treImprovements.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treImprovements_AfterSelect);
 			this.treImprovements.DragOver += new System.Windows.Forms.DragEventHandler(this.treImprovements_DragOver);
@@ -14381,7 +14381,7 @@ namespace Chummer
 			this.panEnemies.AutoScroll = true;
 			this.panEnemies.Location = new System.Drawing.Point(6, 49);
 			this.panEnemies.Name = "panEnemies";
-			this.panEnemies.Size = new System.Drawing.Size(1970, 1183);
+			this.panEnemies.Size = new System.Drawing.Size(2872, 1781);
 			this.panEnemies.TabIndex = 41;
 			this.panEnemies.Click += new System.EventHandler(this.panEnemies_Click);
 			// 
@@ -14419,7 +14419,7 @@ namespace Chummer
 			this.panPets.Location = new System.Drawing.Point(6, 33);
 			this.panPets.Margin = new System.Windows.Forms.Padding(0);
 			this.panPets.Name = "panPets";
-			this.panPets.Size = new System.Drawing.Size(1973, 1202);
+			this.panPets.Size = new System.Drawing.Size(2875, 1800);
 			this.panPets.TabIndex = 25;
 			// 
 			// cmdAddPet

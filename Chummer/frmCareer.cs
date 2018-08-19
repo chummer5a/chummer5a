@@ -5500,6 +5500,13 @@ namespace Chummer
                 Utils.BreakIfDebug();
             }
 
+            //TODO: This is currently necessary because the Custom Improvement refresh fires before the improvement is assigned a custom group.
+            // Simplest way to fix this would be to make the customgroup a variable in the CreateImprovements method, but that's spooky. 
+            if (!string.IsNullOrWhiteSpace(frmPickImprovement.NewImprovement.CustomGroup))
+            {
+                RefreshCustomImprovements(treImprovements, treLimit, cmsImprovementLocation, cmsImprovement, cmsLimitModifier, null);
+            }
+
             IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
