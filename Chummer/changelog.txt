@@ -15,6 +15,8 @@ Data Changes:
 
 - Added missing Transgenic Alteration bioware from Chrome Flesh. 
 - Fixed incorrect price and availability for the Krime Trollbow at Ratings 11 and 12. Fixes #2929
+- Fixed accuracy on the osmium mace.
+- Added missing storage compartment to the Renraku Pelican.
 
 Build 202
 

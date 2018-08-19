@@ -4318,6 +4318,9 @@
           <maxrating>3</maxrating>
         </gear>
       </gears>
+      <mods>
+        <name select="Storage Compartment">Special Equipment</name>
+      </mods>
       <modslots>1</modslots>
     </vehicle>
     <vehicle>
@@ -5064,7 +5067,7 @@
     </vehicle>
     <vehicle>
       <id>17d1e41b-6650-45e2-b898-d047c3b8702a</id>
-      <name>Shiawase I-Doll</name>
+      <name>Shiawase i-Doll</name>
       <page>148</page>
       <source>R5</source>
       <accel>1</accel>

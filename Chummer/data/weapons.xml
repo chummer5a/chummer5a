@@ -12018,7 +12018,7 @@
       <category>Clubs</category>
       <type>Melee</type>
       <conceal>0</conceal>
-      <accuracy>3+number({STRAugmented} >= 5)+number({STRAugmented} >= 7)</accuracy>
+      <accuracy>3+number({STR} >= 5)+number({STR} >= 7)</accuracy>
       <reach>2</reach>
       <damage>(STR+2+(2*number(STR >= 5))+(2*number(STR >= 7)))P</damage>
       <ap>-1</ap>
