@@ -1130,7 +1130,7 @@ namespace Chummer
                             tsMetamagicAddRitual.Visible = false;
                             string strInitTip = LanguageManager.GetString("Tip_ImproveSubmersionGrade", GlobalOptions.Language).Replace("{0}", (CharacterObject.SubmersionGrade + 1).ToString()).Replace("{1}", (CharacterObjectOptions.KarmaInititationFlat + ((CharacterObject.SubmersionGrade + 1) * CharacterObjectOptions.KarmaInitiation)).ToString());
                             cmdAddMetamagic.SetToolTip(strInitTip);
-                            chkJoinGroup.Visible = false;
+                            chkJoinGroup.Visible = true;
                             chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedNetwork", GlobalOptions.Language);
 
                             treMetamagic.Top = chkInitiationSchooling.Top + chkInitiationSchooling.Height + 6;

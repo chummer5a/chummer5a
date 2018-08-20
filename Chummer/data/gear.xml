@@ -1363,6 +1363,243 @@
       <addweapon>Missile: High Explosive</addweapon>
       <cost>2100</cost>
     </gear>
+    <!-- Region Kill Code-->
+
+      <gear>
+          <id>7e104b61-69b3-4a7e-8221-a6190314c411</id>
+          <name>Ammo: Zapper</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>12R</avail>
+          <cost>140</cost>
+          <costfor>10</costfor>
+          <weaponbonus>
+              <damagetype>(M)</damagetype>
+          </weaponbonus>
+      </gear>
+      <gear>
+          <id>b8ad4fef-4092-42ac-87ad-518dd8b60fb7</id>
+          <name>Ammo: Looper</name>
+          <category>Ammunition</category>
+          <rating>6</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>FixedValues(7R,8R,9R,10R,11R,12R)</avail>
+          <cost>FixedValues(20,30,40,50,100,200)</cost>
+          <costfor>10</costfor>
+          <weaponbonus>
+              <userange>Light Pistol</userange>
+          </weaponbonus>
+      </gear>
+      <gear>
+          <id>c40a91b0-7896-4ad1-b1e6-f39c9c93bf1b</id>
+          <name>Ammo: Fuzzy</name>
+          <category>Ammunition</category>
+          <rating>2</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>FixedValues(10R,12R)</avail>
+          <cost>FixedValues(30,50)</cost>
+          <costfor>10</costfor>
+          <weaponbonus>
+              <userange>Light Pistol</userange>
+          </weaponbonus>
+      </gear>
+      <gear>
+          <id>efa87c80-d712-41d8-813e-768a2f4ffcf7</id>
+          <name>Ammo: E0-E0 (Public Grid)</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>5R</avail>
+          <cost>50</cost>
+          <costfor>10</costfor>
+          <weaponbonus>
+              <damagetype>(M)</damagetype>
+              <userange>Light Pistol</userange>
+          </weaponbonus>
+      </gear>
+      <gear>
+          <id>f4be287a-2ed8-4e7b-8244-32243905fe84</id>
+          <name>Ammo: E0-E0 (Local Grid)</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>5R</avail>
+          <cost>60</cost>
+          <bonus>
+              <selecttext />
+          </bonus>
+          <costfor>10</costfor>
+          <weaponbonus>
+              <damagetype>(M)</damagetype>
+              <userange>Light Pistol</userange>
+          </weaponbonus>
+      </gear>
+      <gear>
+          <id>8ddf2080-2444-4d9a-a601-5be4147b183d</id>
+          <name>Ammo: E0-E0 (Megacorporate Grid)</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>5R</avail>
+          <cost>100</cost>
+          <bonus>
+              <selecttext />
+          </bonus>
+          <costfor>10</costfor>
+          <weaponbonus>
+              <damagetype>(M)</damagetype>
+              <userange>Light Pistol</userange>
+          </weaponbonus>
+      </gear>
+      <gear>
+          <id>bf9001db-6484-47ab-9449-5f068f5fe04b</id>
+          <name>Ammo: E0-E0 Rifle (Public Grid)</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>5R</avail>
+          <cost>50</cost>
+          <costfor>10</costfor>
+          <weaponbonus>
+              <damagetype>(M)</damagetype>
+              <userange>Light Pistol</userange>
+          </weaponbonus>
+      </gear>
+      <gear>
+          <id>d1e0807b-6c6e-44bb-a230-c6f328ee26a5</id>
+          <name>Ammo: E0-E0 Rifle (Local Grid)</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>5R</avail>
+          <cost>60</cost>
+          <bonus>
+              <selecttext />
+          </bonus>
+          <costfor>10</costfor>
+          <weaponbonus>
+              <damagetype>(M)</damagetype>
+              <userange>Light Pistol</userange>
+          </weaponbonus>
+      </gear>
+      <gear>
+          <id>b580d8fc-9987-403a-9be5-760b1d88f926</id>
+          <name>Ammo: E0-E0 Rifle (Megacorporate Grid)</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>5R</avail>
+          <cost>100</cost>
+          <bonus>
+              <selecttext />
+          </bonus>
+          <costfor>10</costfor>
+          <weaponbonus>
+              <damage>-4</damage>
+              <ap>-4</ap>
+              <damagetype>(M)</damagetype>
+              <userange>Light Pistol</userange>
+          </weaponbonus>
+      </gear>
+      <gear>
+          <id>05a9f4e2-b7c0-4bf8-8614-33b1ee0f406d</id>
+          <name>Arrow: Arrowlink (50m)</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>6R</avail>
+          <cost>25</cost>
+      </gear>
+      <gear>
+          <id>2d3b26aa-a2c1-4514-915e-62aa08203456</id>
+          <name>Arrow: Arrowlink (100m)</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>8R</avail>
+          <cost>75</cost>
+      </gear>
+      <gear>
+          <id>74906d00-018e-4d1a-8a9c-4b77918de761</id>
+          <name>Arrow: Arrowlink (200m)</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>10R</avail>
+          <cost>200</cost>
+      </gear>
+      <gear>
+          <id>65a853d4-52d6-44c7-a867-10ea1beaece3</id>
+          <name>Arrow: Arrowlink (500m)</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>12R</avail>
+          <cost>400</cost>
+      </gear>
+      <gear>
+          <id>6ba6d631-7d8c-45df-ab05-2b7b1f013821</id>
+          <name>Grenade: Fuzzy Boom Boom Bunnies</name>
+          <category>Ammunition</category>
+          <rating>20</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>10R</avail>
+          <cost>Rating*20</cost>
+          <!-- TODO: Grenade weapons
+          <addweapon>Grenade: Fuzzy Boom Boom Bunnies</addweapon>-->
+      </gear>
+      <gear>
+          <id>6ba6d631-7d8c-45df-ab05-2b7b1f013821</id>
+          <name>Grenade: COS</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>10R</avail>
+          <cost>500</cost>
+          <!-- TODO: Grenade weapons
+          <addweapon>Grenade: COS</addweapon>-->
+      </gear>
+    <gear>
+      <id>c4e8dea4-5954-4703-a435-33234a8c743f</id>
+      <name>Grenade: Douser</name>
+      <category>Ammunition</category>
+      <rating>10</rating>
+      <source>KC</source>
+      <page>48</page>
+      <avail>Rating*2F</avail>
+      <cost>Rating*50</cost>
+      <!-- TODO: Grenade weapons
+      <addweapon>Grenade: Douser</addweapon>-->
+    </gear>
+    <gear>
+      <id>c4e8dea4-5954-4703-a435-33234a8c743f</id>
+      <name>Grenade: DumDum</name>
+      <category>Ammunition</category>
+      <rating>10</rating>
+      <source>KC</source>
+      <page>48</page>
+      <avail>Rating*2R</avail>
+      <cost>Rating*50</cost>
+      <!-- TODO: Grenade weapons
+      <addweapon>Grenade: DumDum</addweapon>-->
+    </gear>
+    <!-- End Region -->
     <!-- End Region -->
     <!-- Region Explosives -->
     <gear>
