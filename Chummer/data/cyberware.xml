@@ -7972,5 +7972,50 @@
       <rating>0</rating>
     </cyberware>
     <!-- End Region -->
+    <!-- Region Kill Code-->
+    <cyberware>
+      <id>d9a05e96-3913-4d40-ae1a-397da8a6f344</id>
+      <name>Datajack Plus</name>
+      <limit>False</limit>
+      <category>Headware</category>
+      <ess>0.15</ess>
+      <capacity>0</capacity>
+      <avail>4</avail>
+      <cost>Rating*3500</cost>
+      <rating>3</rating>
+      <gears>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+      </gears>
+      <source>KC</source>
+      <page>65</page>
+    </cyberware>
+    <cyberware>
+      <id>d9a05e96-3913-4d40-ae1a-397da8a6f344</id>
+      <name>Enhanced Augmented Reality Reflex System</name>
+      <limit>1</limit>
+      <category>Headware</category>
+      <ess>0.75</ess>
+      <capacity>0</capacity>
+      <avail>10R</avail>
+      <cost>30000</cost>
+      <source>KC</source>
+      <page>65</page>
+    </cyberware>
+    <cyberware>
+      <id>ba91b21a-2c8d-466f-a353-64293e09a9a8</id>
+      <name>Cranial Shield</name>
+      <limit>1</limit>
+      <category>Headware</category>
+      <ess>0.5</ess>
+      <capacity>0</capacity>
+      <avail>12</avail>
+      <cost>5000</cost>
+      <source>KC</source>
+      <page>65</page>
+    </cyberware>
+    <!-- End Region -->
   </cyberwares>
 </chummer>

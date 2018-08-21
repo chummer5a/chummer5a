@@ -84,6 +84,8 @@
     <category blackmarket="Drugs">Toxins</category>
     <category blackmarket="Electronics">Vision Devices</category>
     <category blackmarket="Electronics">Vision Enhancements</category>
+    <category blackmarket="Electronics">Matrix Accessories</category>
+    <category blackmarket="Electronics">Booster Chips</category>
   </categories>
   <gears>
     <!-- Region Ammo -->
@@ -1980,6 +1982,32 @@
       <avail>16F</avail>
       <cost>Variable(2000-15000)</cost>
     </gear>
+    <gear>
+      <id>d05a6375-7c82-4d32-952e-cc356b5b079d</id>
+      <name>Faceless - Specific Face</name>
+      <category>Disguises</category>
+      <rating>10</rating>
+      <source>KC</source>
+      <page>57</page>
+      <avail>(Rating*2)+4F</avail>
+      <cost>(Rating*500)+5000</cost>
+      <bonus>
+        <selecttext />
+      </bonus>
+    </gear>
+    <gear>
+      <id>d05a6375-7c82-4d32-952e-cc356b5b079d</id>
+      <name>Faceless - Generic</name>
+      <category>Disguises</category>
+      <rating>10</rating>
+      <source>KC</source>
+      <page>57</page>
+      <avail>(Rating*2)+2F</avail>
+      <cost>(Rating*500)+1000</cost>
+      <bonus>
+        <selecttext />
+      </bonus>
+    </gear>
     <!-- End Region -->
     <!-- Region Commlinks and Cyberdecks -->
     <gear>
@@ -2649,6 +2677,693 @@
       <devicerating>6</devicerating>
       <attributearray>9,8,7,6</attributearray>
       <programs>6</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>d2c64947-9d23-4ec8-916a-e5345b94b96b</id>
+      <name>Fuchi Cyber-N</name>
+      <category>Cyberdecks</category>
+      <rating>100000</rating>
+      <source>KC</source>
+      <page>60</page>
+      <avail>Rating*2R</avail>
+      <capacity>0</capacity>
+      <cost>Rating*10000</cost>
+      <devicerating>Rating</devicerating>
+	  <!-- TODO: This should have a more robust method to lock the attribute array. -->
+      <attributearray>0,0,0,0</attributearray>
+      <programs>1</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Attack</name>
+          <category>Fuchi Cyber-N Attributes</category>
+        </usegear>
+        <usegear>
+          <name>Sleaze</name>
+          <category>Fuchi Cyber-N Attributes</category>
+        </usegear>
+        <usegear>
+          <name>Data Processing</name>
+          <category>Fuchi Cyber-N Attributes</category>
+        </usegear>
+        <usegear>
+          <name>Firewall</name>
+          <category>Fuchi Cyber-N Attributes</category>
+        </usegear>
+      </gears>
+      <addoncategory>Fuchi Cyber-N Attributes</addoncategory>
+    </gear>
+    <gear>
+      <id>00ccda48-98a0-42b1-a997-1e1cf1f5269a</id>
+      <name>Fuchi Cyber-Ex</name>
+      <category>Cyberdecks</category>
+      <rating>100000</rating>
+      <source>KC</source>
+      <page>60</page>
+      <avail>Rating*2R</avail>
+      <capacity>0</capacity>
+      <cost>Rating*10000</cost>
+      <devicerating>Rating</devicerating>
+      <!-- TODO: This should have a more robust method to lock the attribute array. -->
+      <attributearray>0,0,0,0</attributearray>
+      <programs>Rating+2</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Attack</name>
+          <category>Fuchi Cyber-N Attributes</category>
+        </usegear>
+        <usegear>
+          <name>Sleaze</name>
+          <category>Fuchi Cyber-N Attributes</category>
+        </usegear>
+        <usegear>
+          <name>Data Processing</name>
+          <category>Fuchi Cyber-N Attributes</category>
+        </usegear>
+        <usegear>
+          <name>Firewall</name>
+          <category>Fuchi Cyber-N Attributes</category>
+        </usegear>
+      </gears>
+      <addoncategory>Fuchi Cyber-N Attributes</addoncategory>
+    </gear>
+    <gear>
+      <id>f860ec1a-b688-4975-95f4-4c11648b04f0</id>
+      <name>Attack</name>
+      <category>Fuchi Cyber-N Attributes</category>
+      <rating>100000</rating>
+      <source>KC</source>
+      <page>60</page>
+      <avail>0</avail>
+      <armorcapacity>[2]</armorcapacity>
+      <cost>(Rating*Rating*Rating)*500</cost>
+	  <hide />
+      <modattack>Rating</modattack>
+      <required>
+        <geardetails>
+            <name>Fuchi Cyber-N</name>
+        </geardetails>
+      </required>
+    </gear>
+    <gear>
+      <id>f860ec1a-b688-4975-95f4-4c11648b04f0</id>
+      <name>Sleaze</name>
+      <category>Fuchi Cyber-N Attributes</category>
+      <rating>100000</rating>
+      <source>KC</source>
+      <page>60</page>
+      <avail>0</avail>
+      <armorcapacity>[2]</armorcapacity>
+      <cost>(Rating*Rating)*500</cost>
+	  <hide />
+      <modsleaze>Rating</modsleaze>
+      <required>
+        <geardetails>
+            <name>Fuchi Cyber-N</name>
+        </geardetails>
+      </required>
+    </gear>
+    <gear>
+      <id>f860ec1a-b688-4975-95f4-4c11648b04f0</id>
+      <name>Data Processing</name>
+      <category>Fuchi Cyber-N Attributes</category>
+      <rating>100000</rating>
+      <source>KC</source>
+      <page>60</page>
+      <avail>0</avail>
+      <armorcapacity>[2]</armorcapacity>
+      <cost>(Rating*Rating)*500</cost>
+      <moddataprocessing>Rating</moddataprocessing>
+	  <hide />
+      <required>
+        <geardetails>
+            <name>Fuchi Cyber-N</name>
+        </geardetails>
+      </required>
+    </gear>
+    <gear>
+      <id>f860ec1a-b688-4975-95f4-4c11648b04f0</id>
+      <name>Firewall</name>
+      <category>Fuchi Cyber-N Attributes</category>
+      <rating>100000</rating>
+      <source>KC</source>
+      <page>60</page>
+      <avail>(Rating*4)R</avail>
+      <armorcapacity>[2]</armorcapacity>
+      <cost>(Rating*Rating*Rating)*500</cost>
+      <modfirewall>Rating</modfirewall>
+	  <hide />
+      <required>
+        <geardetails>
+            <name>Fuchi Cyber-N</name>
+        </geardetails>
+      </required>
+    </gear>
+    <!-- Region Security Decks -->
+    <gear>
+      <id>51ca2b4d-fdbb-48cc-89b3-9d56757d1682</id>
+      <name>Security Deck: Guard</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>61</page>
+      <avail>3R</avail>
+      <capacity>0</capacity>
+      <cost>39000</cost>
+      <devicerating>2</devicerating>
+      <attack>3</attack>
+      <sleaze>1</sleaze>
+      <dataprocessing>2</dataprocessing>
+      <firewall>4</firewall>
+      <programs>1</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Encryption</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>81206ac6-631a-4ec7-8013-96050510726f</id>
+      <name>Security Deck: Shield</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>61</page>
+      <avail>6R</avail>
+      <capacity>0</capacity>
+      <cost>98000</cost>
+      <devicerating>4</devicerating>
+      <attack>4</attack>
+      <sleaze>1</sleaze>
+      <dataprocessing>3</dataprocessing>
+      <firewall>5</firewall>
+      <programs>2</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Encryption</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Shell</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>737f6986-d565-4f65-9f83-8142d1f72b56</id>
+      <name>Security Deck: Fortress</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>61</page>
+      <avail>9R</avail>
+      <capacity>0</capacity>
+      <cost>377000</cost>
+      <devicerating>6</devicerating>
+      <attack>6</attack>
+      <sleaze>1</sleaze>
+      <dataprocessing>5</dataprocessing>
+      <firewall>8</firewall>
+      <programs>3</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Encryption</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Shell</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Armor</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>49482a90-ffc4-449a-b6b5-21ab0bcd3879</id>
+      <name>Security Deck: Great Wall</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>61</page>
+      <avail>12R</avail>
+      <capacity>0</capacity>
+      <cost>774000</cost>
+      <devicerating>8</devicerating>
+      <attack>8</attack>
+      <sleaze>1</sleaze>
+      <dataprocessing>6</dataprocessing>
+      <firewall>10</firewall>
+      <programs>4</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Encryption</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Shell</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Armor</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Biofeedback Filter</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+<!-- End Region -->
+<!-- Region Hunter Decks -->
+    <gear>
+      <id>17003ab0-8e96-4661-898d-8d57963a6e8d</id>
+      <name>Hunter Deck: Fox</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>62</page>
+      <avail>4R</avail>
+      <capacity>0</capacity>
+      <cost>68500</cost>
+      <devicerating>2</devicerating>
+      <attack>4</attack>
+      <sleaze>1</sleaze>
+      <dataprocessing>3</dataprocessing>
+      <firewall>4</firewall>
+      <programs>3</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Track</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Shell</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Hammer</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>26171ce4-fadc-4dae-85e0-5d165d312f56</id>
+      <name>Hunter Deck: Wolf</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>61</page>
+      <avail>8R</avail>
+      <capacity>0</capacity>
+      <cost>133000</cost>
+      <devicerating>4</devicerating>
+      <attack>5</attack>
+      <sleaze>1</sleaze>
+      <dataprocessing>4</dataprocessing>
+      <firewall>5</firewall>
+      <programs>4</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Track</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Shell</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Hammer</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Decryption</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>b705d027-1ba6-4322-9710-b951278c6b3f</id>
+      <name>Hunter Deck: Tiger</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>61</page>
+      <avail>12R</avail>
+      <capacity>0</capacity>
+      <cost>530000</cost>
+      <devicerating>6</devicerating>
+      <attack>8</attack>
+      <sleaze>1</sleaze>
+      <dataprocessing>6</dataprocessing>
+      <firewall>8</firewall>
+      <programs>5</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Track</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Shell</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Hammer</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Decryption</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Hammer</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>7bd2d975-c4c7-41f4-ba28-be8431e22c36</id>
+      <name>Hunter Deck: Shark</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>61</page>
+      <avail>16R</avail>
+      <capacity>0</capacity>
+      <cost>1032000</cost>
+      <devicerating>8</devicerating>
+      <attack>10</attack>
+      <sleaze>1</sleaze>
+      <dataprocessing>8</dataprocessing>
+      <firewall>10</firewall>
+      <programs>6</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Track</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Shell</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Hammer</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Decryption</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Hammer</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Fork</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Biofeedback Filter</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+<!-- End Region -->
+    <gear>
+      <id>96ce16be-8fca-4b3a-af65-0e3c38280b1d</id>
+      <name>Aztechnology Shadow Warrior</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>62</page>
+      <avail>10R</avail>
+      <capacity>0</capacity>
+      <cost>225000</cost>
+      <devicerating>3</devicerating>
+      <attributearray>6,5,4,3</attributearray>
+      <programs>3</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>3927e552-374f-4f41-a304-9be621b2dac8</id>
+      <name>Evo Sublime</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>62</page>
+      <avail>12R</avail>
+      <capacity>0</capacity>
+      <cost>375000</cost>
+      <devicerating>4</devicerating>
+      <attributearray>7,6,5,5</attributearray>
+      <programs>4</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>b00002dd-2aed-47d7-9ecf-88c7fafb4746</id>
+      <name>Fairlight Destiny Blade</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>62</page>
+      <avail>12R</avail>
+      <capacity>0</capacity>
+      <cost>400000</cost>
+      <devicerating>4</devicerating>
+      <attributearray>7,6,5,5</attributearray>
+      <programs>4</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>dcfe2e17-fe33-4bb2-876d-64ee419b9ff6</id>
+      <name>Aztechnology Defender</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>62</page>
+      <avail>14R</avail>
+      <capacity>0</capacity>
+      <cost>560000</cost>
+      <devicerating>5</devicerating>
+      <attributearray>8,7,5,5</attributearray>
+      <programs>5</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>7cd53ac3-c79f-4854-9bda-e1d75cf276f8</id>
+      <name>Kitbashed Sleeper</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>62</page>
+      <avail>14F</avail>
+      <capacity>0</capacity>
+      <cost>375000</cost>
+      <devicerating>4</devicerating>
+      <attributearray>7,5,5,4</attributearray>
+      <programs>4</programs>
       <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
@@ -5014,6 +5729,92 @@
         <selecttext />
       </bonus>
       <cost>Rating * 500</cost>
+    </gear>
+    <!-- End Region -->
+    <!-- Region Booster Chips-->
+    <gear>
+      <id>b8ad45b8-35f7-4c2c-b9cd-29fbeb59b8e9</id>
+      <name>Attack Booster</name>
+      <category>Booster Chips</category>
+      <rating>2</rating>
+      <source>KC</source>
+      <page>59</page>
+      <avail>0</avail>
+      <cost>Rating*50</cost>
+    </gear>
+    <gear>
+      <id>666dbb45-2898-4262-aab6-94e80954b480</id>
+      <name>Sleaze Booster</name>
+      <category>Booster Chips</category>
+      <rating>2</rating>
+      <source>KC</source>
+      <page>59</page>
+      <avail>0</avail>
+      <cost>Rating*50</cost>
+    </gear>
+    <gear>
+      <id>f5b287cc-98c1-479e-8e54-e5155fa6917a</id>
+      <name>Data Processing Booster</name>
+      <category>Booster Chips</category>
+      <rating>2</rating>
+      <source>KC</source>
+      <page>59</page>
+      <avail>0</avail>
+      <cost>Rating*50</cost>
+    </gear>
+    <gear>
+      <id>c29db797-db4b-4f14-b662-622935c3204e</id>
+      <name>Firewall Booster</name>
+      <category>Booster Chips</category>
+      <rating>2</rating>
+      <source>KC</source>
+      <page>59</page>
+      <avail>0</avail>
+      <cost>Rating*50</cost>
+    </gear>
+    <gear>
+      <id>3d107000-9bfc-46f6-9a1e-99e6cecc3897</id>
+      <name>Armor Defeating</name>
+      <category>Booster Chips</category>
+      <rating>4</rating>
+      <source>KC</source>
+      <page>59</page>
+      <avail>Rating*4R</avail>
+      <cost>Rating*250</cost>
+	  <minrating>3</minrating>
+    </gear>
+    <gear>
+      <id>8dfceac4-1c5a-4b30-bcd2-81b16553c6ce</id>
+      <name>Slick Willy</name>
+      <category>Booster Chips</category>
+      <rating></rating>
+      <source>KC</source>
+      <page>59</page>
+      <avail>Rating*4R</avail>
+      <cost>Rating*250</cost>
+	  <minrating>3</minrating>
+    </gear>
+    <gear>
+      <id>0ee14c43-e334-4ca5-a87c-c99d94bfe31a</id>
+      <name>Data Dynamo</name>
+      <category>Booster Chips</category>
+      <rating>4</rating>
+      <source>KC</source>
+      <page>59</page>
+      <avail>Rating*4R</avail>
+      <cost>Rating*250</cost>
+	  <minrating>3</minrating>
+    </gear>
+    <gear>
+      <id>7b8e0c95-375d-4982-b523-576952aced75</id>
+      <name>Fortified</name>
+      <category>Booster Chips</category>
+      <rating></rating>
+      <source>KC</source>
+      <page>59</page>
+      <avail>Rating*4R</avail>
+      <cost>Rating*250</cost>
+	  <minrating>3</minrating>
     </gear>
     <!-- End Region -->
     <!-- Region Software Tweaks -->
@@ -10903,6 +11704,36 @@
         </geardetails>
       </required>
     </gear>
+    <gear>
+      <id>55e05d6a-bc67-469f-b16c-648b4688eb37</id>
+      <name>Multiprogram Operating System</name>
+      <category>Commlink Accessories</category>
+      <rating>4</rating>
+      <source>KC</source>
+      <page>58</page>
+      <avail>3</avail>
+      <armorcapacity>[0]</armorcapacity>
+      <cost>400</cost>
+      <addoncategory>Common Programs</addoncategory>
+      <addoncategory>Hacking Programs</addoncategory>
+      <devicerating>0</devicerating>
+      <programs>Rating</programs>
+      <gears>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+      </gears>
+      <required>
+        <geardetails>
+          <OR>
+            <category>Cyberdecks</category>
+            <category>Cyberterminals</category>
+            <category>Custom</category>
+          </OR>
+        </geardetails>
+      </required>
+    </gear>
     <!-- End Region -->
     <!-- Region Commlink and Cyberdeck Form Factors -->
     <gear>
@@ -14610,6 +15441,168 @@
       <page>184</page>
       <avail>0</avail>
       <cost>235</cost>
+    </gear>
+    <!-- End Region -->
+    <!-- Region Matrix Accessories -->
+    <gear>
+      <id>ae96a184-0615-463a-b10d-bf994ac75cab</id>
+      <name>Booster Cloud [Brute Force]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>250</cost>
+    </gear>
+    <gear>
+      <id>2ba507c4-5f5c-4675-96fd-890d52df27e1</id>
+      <name>Booster Cloud [Control Device]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>200</cost>
+    </gear>
+    <gear>
+      <id>182d3050-c14c-4d47-b02a-ea6d9828e3e7</id>
+      <name>Booster Cloud [Crack File]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>150</cost>
+    </gear>
+    <gear>
+      <id>59795250-558e-47f5-b5d7-db410b36a23a</id>
+      <name>Booster Cloud [Crash Program]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>150</cost>
+    </gear>
+    <gear>
+      <id>1797a4a7-c59e-4264-a360-2aa00adadd65</id>
+      <name>Booster Cloud [Data Spike]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>8R</avail>
+      <cost>300</cost>
+    </gear>
+    <gear>
+      <id>44726953-66fa-4619-8168-85794bfca8f0</id>
+      <name>Booster Cloud [Edit File]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>0</avail>
+      <cost>150</cost>
+    </gear>
+    <gear>
+      <id>2d6d3555-3f3d-4f6d-9b48-897d3f5be68b</id>
+      <name>Booster Cloud [Erase Mark]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>150</cost>
+    </gear>
+    <gear>
+      <id>9bd48bd3-ad36-4f34-96bc-37afd97dc520</id>
+      <name>Booster Cloud [Hack on the Fly]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>250</cost>
+    </gear>
+    <gear>
+      <id>93ce7855-436d-47db-b8bc-ae7ba35efc2d</id>
+      <name>Booster Cloud [Hide]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>150</cost>
+    </gear>
+    <gear>
+      <id>5e801a2b-03b1-4f2f-bacd-cf7951c770c3</id>
+      <name>Booster Cloud [Jam Signals]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>150</cost>
+    </gear>
+    <gear>
+      <id>bfcfe6d3-b341-427c-be65-1fa21e043b0a</id>
+      <name>Booster Cloud [Matrix Perception]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>0</avail>
+      <cost>100</cost>
+    </gear>
+    <gear>
+      <id>d7dc17cc-7e55-4cbc-89e7-7e8468687e75</id>
+      <name>Booster Cloud [Reboot Device]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>250</cost>
+    </gear>
+    <gear>
+      <id>ad9307c3-3dc0-4733-bfb2-11c9af467fd8</id>
+      <name>Booster Cloud [Snoop]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>200</cost>
+    </gear>
+    <gear>
+      <id>04aaca9c-42e6-4cb8-a73e-1b36ffab2104</id>
+      <name>Booster Cloud [Spoof Command]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>250</cost>
+    </gear>
+    <gear>
+      <id>4a7731f9-3534-4d5c-92e4-02025ac5c4da</id>
+      <name>Booster Cloud [Trace Icon]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>8R</avail>
+      <cost>200</cost>
+    </gear>
+    <gear>
+      <id>8646d733-4017-4efb-8c89-ff9b72217e54</id>
+      <name>Booster Cloud [Custom Case]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6</avail>
+      <cost>200</cost>
     </gear>
     <!-- End Region -->
     <gear>
