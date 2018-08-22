@@ -3658,5 +3658,18 @@
       <page>205</page>
     </bioware>
     <!-- Ende SR5 2050 -->
+    <!-- Region Kill Code -->
+    <bioware>
+      <id>b5af679d-e70d-43f3-9aa4-f3638796e948</id>
+      <name>MCT Biolink</name>
+      <category>Basic</category>
+      <ess>0.5</ess>
+      <capacity>0</capacity>
+      <avail>10</avail>
+      <cost>15000</cost>
+      <source>KC</source>
+      <page>67</page>
+    </bioware>
+    <!-- End Region -->
   </biowares>
 </chummer>

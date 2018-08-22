@@ -1676,6 +1676,11 @@ namespace Chummer.Backend.Equipment
                 strDamageType = "S";
                 strDamage = strDamage.FastEscape('S');
             }
+            else if (strDamage.Contains("(M)"))
+            {
+                strDamageType = "M";
+                strDamage = strDamage.FastEscape("(M)");
+            }
             // Place any extra text like (e) and (f) in a string and remove it from the expression.
             if (strDamage.Contains("(e)"))
             {
@@ -1874,6 +1879,11 @@ namespace Chummer.Backend.Equipment
                     strDamageType = "S";
                     strDamage = strDamage.FastEscape('S');
                 }
+                else if (strDamage.Contains("(M)"))
+                {
+                    strDamageType = "M";
+                    strDamage = strDamage.FastEscape("(M)");
+                }
                 // Place any extra text like (e) and (f) in a string and remove it from the expression.
                 if (strDamage.Contains("(e)"))
                 {
@@ -1937,7 +1947,8 @@ namespace Chummer.Backend.Equipment
                     .CheapReplace("Radius", () => LanguageManager.GetString("String_DamageRadius", strLanguage))
                     .CheapReplace("As Drug/Toxin", () => LanguageManager.GetString("String_DamageAsDrugToxin", strLanguage))
                     .CheapReplace("as round", () => LanguageManager.GetString("String_DamageAsRound", strLanguage))
-                    .CheapReplace("/m", () => '/' + LanguageManager.GetString("String_DamageMeter", strLanguage));
+                    .CheapReplace("/m", () => '/' + LanguageManager.GetString("String_DamageMeter", strLanguage))
+                    .CheapReplace("(M)", () => LanguageManager.GetString("String_DamageMatrix", strLanguage));
             }
 
             return strReturn;
