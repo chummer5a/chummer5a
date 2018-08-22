@@ -1554,7 +1554,7 @@
           <cost>400</cost>
       </gear>
       <gear>
-          <id>6ba6d631-7d8c-45df-ab05-2b7b1f013821</id>
+          <id>051ceea6-65c2-4058-95bd-f63d86a45984</id>
           <name>Grenade: Fuzzy Boom Boom Bunnies</name>
           <category>Ammunition</category>
           <rating>20</rating>
@@ -1566,7 +1566,7 @@
           <addweapon>Grenade: Fuzzy Boom Boom Bunnies</addweapon>-->
       </gear>
       <gear>
-          <id>6ba6d631-7d8c-45df-ab05-2b7b1f013821</id>
+          <id>7470ed31-0d81-4992-bae6-38f9de198020</id>
           <name>Grenade: COS</name>
           <category>Ammunition</category>
           <rating>0</rating>
@@ -1578,7 +1578,7 @@
           <addweapon>Grenade: COS</addweapon>-->
       </gear>
     <gear>
-      <id>c4e8dea4-5954-4703-a435-33234a8c743f</id>
+      <id>0c98750a-4286-4ec5-9035-b76f36c03ce4</id>
       <name>Grenade: Douser</name>
       <category>Ammunition</category>
       <rating>10</rating>
@@ -1590,7 +1590,7 @@
       <addweapon>Grenade: Douser</addweapon>-->
     </gear>
     <gear>
-      <id>c4e8dea4-5954-4703-a435-33234a8c743f</id>
+      <id>965ccb60-f9e2-4a44-8a11-05e6c5bd4457</id>
       <name>Grenade: DumDum</name>
       <category>Ammunition</category>
       <rating>10</rating>
@@ -1996,7 +1996,7 @@
       </bonus>
     </gear>
     <gear>
-      <id>d05a6375-7c82-4d32-952e-cc356b5b079d</id>
+      <id>3cc7b3d8-0f5f-4598-b9a0-96083966e6f9</id>
       <name>Faceless - Generic</name>
       <category>Disguises</category>
       <rating>10</rating>
@@ -2788,7 +2788,7 @@
       <addoncategory>Fuchi Cyber-N Attributes</addoncategory>
     </gear>
     <gear>
-      <id>f860ec1a-b688-4975-95f4-4c11648b04f0</id>
+      <id>101acb97-2528-4812-a852-a8591b68145f</id>
       <name>Attack</name>
       <category>Fuchi Cyber-N Attributes</category>
       <rating>100000</rating>
@@ -2806,7 +2806,7 @@
       </required>
     </gear>
     <gear>
-      <id>f860ec1a-b688-4975-95f4-4c11648b04f0</id>
+      <id>cc6cb58a-a6a1-441d-84f6-a0ea3091317e</id>
       <name>Sleaze</name>
       <category>Fuchi Cyber-N Attributes</category>
       <rating>100000</rating>
@@ -2824,7 +2824,7 @@
       </required>
     </gear>
     <gear>
-      <id>f860ec1a-b688-4975-95f4-4c11648b04f0</id>
+      <id>c4760ef1-5fe0-477b-8579-a457aaf16bf9</id>
       <name>Data Processing</name>
       <category>Fuchi Cyber-N Attributes</category>
       <rating>100000</rating>
@@ -2842,7 +2842,7 @@
       </required>
     </gear>
     <gear>
-      <id>f860ec1a-b688-4975-95f4-4c11648b04f0</id>
+      <id>37c5f8bc-025a-4eca-93a8-1e93e0cabcd9</id>
       <name>Firewall</name>
       <category>Fuchi Cyber-N Attributes</category>
       <rating>100000</rating>
@@ -3877,6 +3877,72 @@
             </usegear>
           </gears>
         </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>a6c0cc9d-d63c-44b3-a668-5c9eb2c9e457</id>
+      <name>Saeder-Krupp Last Chance Link</name>
+      <category>Commlinks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>68</page>
+      <avail>11</avail>
+      <capacity>0</capacity>
+      <cost>5000</cost>
+      <devicerating>3</devicerating>
+      <dataprocessing>3</dataprocessing>
+      <firewall>4</firewall>
+      <programs>3</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>22a38a8a-7298-416c-bf92-5f572e3f09b2</id>
+      <name>Horizon Flow</name>
+      <category>Commlinks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>68</page>
+      <avail></avail>
+      <capacity>0</capacity>
+      <cost></cost>
+      <devicerating>2</devicerating>
+      <dataprocessing>3</dataprocessing>
+      <firewall>3</firewall>
+      <programs>2</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>d4b0d4b5-291f-435e-9b61-cd4324c5b1c0</id>
+      <name>Wuxing Frequency</name>
+      <category>Commlinks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>68</page>
+      <avail></avail>
+      <capacity>0</capacity>
+      <cost></cost>
+      <devicerating>2</devicerating>
+      <dataprocessing>3</dataprocessing>
+      <firewall>3</firewall>
+      <programs>2</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
         <usegear>
           <name>Commlink Functionality</name>
           <category>Electronics Accessories</category>
@@ -4985,6 +5051,50 @@
         </usegear>
       </gears>
     </gear>
+    <gear>
+      <id>e265d7a1-8046-406d-b92b-7c9eea8682bd</id>
+      <name>Shiawase Cyber-6</name>
+      <category>Rigger Command Consoles</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>68</page>
+      <avail>12R</avail>
+      <capacity>0</capacity>
+      <cost>72000</cost>
+      <devicerating>5</devicerating>
+      <dataprocessing>5</dataprocessing>
+      <firewall>5</firewall>
+      <programs>5</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>42414f23-7a0e-4e4f-87f8-29a90b0c72d0</id>
+      <name>Spinrad Global Skirmisher</name>
+      <category>Rigger Command Consoles</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>68</page>
+      <avail>8R</avail>
+      <capacity>0</capacity>
+      <cost>50000</cost>
+      <devicerating>2</devicerating>
+      <dataprocessing>3</dataprocessing>
+      <firewall>3</firewall>
+      <programs>2</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
     <!-- End Region -->
     <!-- Region Commlink Apps -->
     <gear>
@@ -5465,6 +5575,76 @@
       <page>57</page>
       <avail>4R</avail>
       <cost>250</cost>
+    </gear>
+    <gear>
+      <id>d900aa9c-5914-4e5b-baa4-b4e0c0625123</id>
+      <name>Pantheon Industries "Co-Pilot" Mk I</name>
+      <category>Pi-Tac Programs</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>70</page>
+      <avail>12R</avail>
+      <cost>400</cost>
+    </gear>
+    <gear>
+      <id>5294813b-3421-46b6-b30a-de8cab38f89f</id>
+      <name>Pantheon Industries "Co-Pilot" Mk II</name>
+      <category>Pi-Tac Programs</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>70</page>
+      <avail>12R</avail>
+      <cost>400</cost>
+    </gear>
+    <gear>
+      <id>3727d9a2-c556-4133-8083-d1c61f239034</id>
+      <name>Pantheon Industries "Co-Pilot" Mk III</name>
+      <category>Pi-Tac Programs</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>70</page>
+      <avail>12R</avail>
+      <cost>400</cost>
+    </gear>
+    <gear>
+      <id>cf954b05-0c06-4fdd-8af6-15b03770bccc</id>
+      <name>Pantheon Industries "Door Gunner"</name>
+      <category>Pi-Tac Programs</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>70</page>
+      <avail>12R</avail>
+      <cost>200</cost>
+    </gear>
+    <gear>
+      <id>52adb8cf-22a4-4581-a354-0f7b9bcf6999</id>
+      <name>Pantheon Industries "ECM-Warrior"</name>
+      <category>Pi-Tac Programs</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>70</page>
+      <avail>12R</avail>
+      <cost>200</cost>
+    </gear>
+    <gear>
+      <id>4b7ec6a4-243b-490c-92f5-d337e5cc36de</id>
+      <name>Pantheon Industries Mobile CNC</name>
+      <category>Pi-Tac Programs</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>70</page>
+      <avail>12R</avail>
+      <cost>300</cost>
+    </gear>
+    <gear>
+      <id>a9edf32b-dea2-4939-9fa1-016ed3693a23</id>
+      <name>Pantheon Industries Shield Wall</name>
+      <category>Pi-Tac Programs</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>70</page>
+      <avail>12R</avail>
+      <cost>200</cost>
     </gear>
     <!-- End Region -->
     <!-- Region Software-->
@@ -6084,6 +6264,16 @@
       <avail>0</avail>
       <armorcapacity>[0]</armorcapacity>
       <cost>50</cost>
+    </gear>
+    <gear>
+      <id>77f02897-28c1-4d53-86b4-eae1dbd85f35</id>
+      <name>Pantheon Industries Tactical Program Dongle</name>
+      <category>Electronics Accessories</category>
+      <rating>100</rating>
+      <source>KC</source>
+      <page>70</page>
+      <avail>10R</avail>
+      <cost>Rating*200</cost>
     </gear>
     <!-- End Region -->
     <!-- Region Grids (Mainly for TranslateExtra) -->
@@ -17563,6 +17753,29 @@
       <page>48</page>
       <avail>-</avail>
       <cost>750</cost>
+    </gear>
+    <!-- End Region -->
+    <!-- Region Kill Code -->
+    <gear>
+      <id>06d57f7d-c372-433b-8a81-c33229a19f9b</id>
+      <name>Pantheon Industries "Mercury-Alpha" Battlefield Signal Booster</name>
+      <category>PI-Tac</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>73</page>
+      <avail>12R</avail>
+      <cost>3500</cost>
+      <devicerating>5</devicerating>
+    </gear>
+    <gear>
+      <id>60f11ea5-297d-4898-9fec-a0f67b4d517e</id>
+      <name>Pantheon Industries Micro-Dish Transmitter</name>
+      <category>PI-Tac</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>73</page>
+      <avail>10R</avail>
+      <cost>1200</cost>
     </gear>
     <!-- End Region -->
   </gears>

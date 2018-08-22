@@ -6058,6 +6058,14 @@ namespace Chummer.Classes
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MetageneticLimit, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
+
+        public void cyberadeptdaemon(XmlNode bonusNode)
+        {
+            //TODO: I'm not happy with this. 
+            Log.Info("cyberadeptdaemon");
+            decimal final = Math.Min((decimal) Math.Ceiling(0.5 * _objCharacter.SubmersionGrade), _objCharacter.CyberwareEssence);
+            CreateImprovement("RES", _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute, _strUnique, (int) final);
+        }
         #endregion
     }
 
