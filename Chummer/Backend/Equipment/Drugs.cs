@@ -90,7 +90,7 @@ namespace Chummer.Backend.Equipment
             objXmlWriter.WriteElementString("guid", _guiID.ToString());
             objXmlWriter.WriteElementString("name", _strName);
             objXmlWriter.WriteElementString("category", _strCategory);
-            objXmlWriter.WriteElementString("quantity", _decQty.ToString(GlobalOptions.DefaultLanguage));
+            objXmlWriter.WriteElementString("quantity", _decQty.ToString(GlobalOptions.InvariantCultureInfo));
             objXmlWriter.WriteStartElement("drugcomponents");
             foreach (DrugComponent objDrugComponent in _lstDrugComponents)
             {
