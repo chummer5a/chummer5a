@@ -237,5 +237,10 @@
 		  <name>Street Lethal</name>
 		  <code>SL</code>
 	  </book>
+    <book>
+      <id>35f513da-865a-45ce-a8f9-eb0336e47427</id>
+      <name>Kill Code</name>
+      <code>KC</code>
+    </book>
   </books>
 </chummer>
