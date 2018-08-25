@@ -552,7 +552,7 @@ namespace Chummer
             List<ListItem> lstSheets = new List<ListItem>();
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            using (XmlNodeList lstSheetNodes = XmlManager.Load("sheets.xml").SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]"))
+            using (XmlNodeList lstSheetNodes = XmlManager.Load("sheets.xml",strLanguage,true).SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]"))
                 if (lstSheetNodes != null)
                     foreach (XmlNode xmlSheet in lstSheetNodes)
                     {
