@@ -19,6 +19,7 @@ Data Changes:
 - Fixed incorrect price and availability for the Krime Trollbow at Ratings 11 and 12. Fixes #2929
 - Fixed accuracy on the osmium mace.
 - Added missing storage compartment to the Renraku Pelican.
+- Corrected Avail of the Krime Whammy.
 
 Build 202
 

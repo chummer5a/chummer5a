@@ -16789,6 +16789,22 @@
       <source>KC</source>
       <page>0</page>
     </quality>
+    <quality>
+      <id>c5311ee0-8a9b-41b9-857f-28541090968a</id>
+      <name>Paragon</name>
+      <karma>0</karma>
+      <category>Positive</category>
+      <bonus>
+        <selectparagon />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>SR5</source>
+      <page>76</page>
+    </quality>
     <!-- End Region -->
     <!-- Region Negative Qualities -->
     <quality>
