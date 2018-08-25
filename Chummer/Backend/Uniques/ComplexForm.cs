@@ -133,6 +133,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("complexform");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", DisplayName);
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("duration", DisplayDuration(strLanguageToPrint));
             objWriter.WriteElementString("fv", DisplayFV(strLanguageToPrint));

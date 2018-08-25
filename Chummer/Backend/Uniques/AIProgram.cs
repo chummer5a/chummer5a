@@ -119,6 +119,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("aiprogram");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", DisplayName);
             objWriter.WriteElementString("name_english", Name);
             if (string.IsNullOrEmpty(_strRequiresProgram) || _strRequiresProgram == LanguageManager.GetString("String_None", strLanguageToPrint))
                 objWriter.WriteElementString("requiresprogram", LanguageManager.GetString("String_None", strLanguageToPrint));

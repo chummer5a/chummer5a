@@ -888,12 +888,12 @@
               </tr>
               <xsl:variable name="sortedcopy">
                 <xsl:for-each select="weapons/weapon[type = 'Melee']">
-                  <xsl:sort select="name"/>
+                  <xsl:sort select="fullname"/>
                   <xsl:copy-of select="current()"/>
                 </xsl:for-each>
               </xsl:variable>
               <xsl:for-each select="msxsl:node-set($sortedcopy)/weapon">
-                <xsl:if test="position()=1 or name != preceding-sibling::weapon[1]/name">
+                <xsl:if test="position()=1 or fullname != preceding-sibling::weapon[1]/fullname">
                   <xsl:call-template name="meleeweapons">
                     <xsl:with-param name="weapon" select="weapons/weapon"/>
                   </xsl:call-template>

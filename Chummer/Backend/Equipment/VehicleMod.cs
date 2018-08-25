@@ -381,6 +381,7 @@ namespace Chummer.Backend.Equipment
         {
             objWriter.WriteStartElement("mod");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("limit", Limit);
             objWriter.WriteElementString("slots", Slots);

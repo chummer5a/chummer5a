@@ -303,6 +303,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("power");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", DisplayName);
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("pointsperlevel", PointsPerLevel.ToString(objCulture));
             objWriter.WriteElementString("adeptway", AdeptWayDiscount.ToString(objCulture));

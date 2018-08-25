@@ -318,6 +318,7 @@ namespace Chummer.Backend.Equipment
                 return;
             objWriter.WriteStartElement("quality");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("formattedname", FormattedDisplayName(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("lp", LP.ToString(objCulture));

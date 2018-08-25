@@ -730,6 +730,7 @@ namespace Chummer.Backend.Equipment
         {
             objWriter.WriteStartElement("vehicle");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("handling", TotalHandling);
             objWriter.WriteElementString("accel", TotalAccel);
