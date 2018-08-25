@@ -20,6 +20,7 @@ Data Changes:
 - Fixed accuracy on the osmium mace.
 - Added missing storage compartment to the Renraku Pelican.
 - Corrected Avail of the Krime Whammy.
+- Fixed missing spirits for the Planar Magic tradition. Fixes #2937
 
 Build 202
 

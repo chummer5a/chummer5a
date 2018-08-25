@@ -630,11 +630,11 @@
       <source>FA</source>
       <page>87</page>
       <spirits>
-        <spiritcombat>Spirit of </spiritcombat>
-        <spiritdetection>Spirit of </spiritdetection>
-        <spirithealth>Spirit of </spirithealth>
-        <spiritillusion>Spirit of </spiritillusion>
-        <spiritmanipulation>Spirit of </spiritmanipulation>
+        <spiritcombat>Guardian Spirit</spiritcombat>
+        <spiritdetection>Guidance Spirit</spiritdetection>
+        <spirithealth>Spirit of Water</spirithealth>
+        <spiritillusion>Spirit of Air</spiritillusion>
+        <spiritmanipulation>Task Spirit</spiritmanipulation>
       </spirits>
     </tradition>
     <tradition>
