@@ -10351,6 +10351,7 @@ namespace Chummer
                 // This is a standard Weapon, so consume traditional Ammunition.
                 lstAmmo.AddRange(gears.DeepWhere(x => x.Children, x =>
                     x.Quantity > 0 && (x.Category == "Ammunition" && x.Extra == weapon.AmmoCategory ||
+                                       !string.IsNullOrWhiteSpace(weapon.AmmoName) && x.Name == weapon.AmmoName ||
                                        string.IsNullOrEmpty(x.Extra) && setAmmoPrefixStringSet.Any(y => x.Name.StartsWith(y)) ||
                                        weapon.UseSkill == "Throwing Weapons" && weapon.Name == x.Name)));
 

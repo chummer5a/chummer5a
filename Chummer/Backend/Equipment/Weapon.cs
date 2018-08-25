@@ -49,6 +49,7 @@ namespace Chummer.Backend.Equipment
         private string _strRC = string.Empty;
         private string _strAmmo = string.Empty;
         private string _strAmmoCategory = string.Empty;
+        private string _strAmmoName = string.Empty;
         private int _intConceal;
         private List<Clip> _lstAmmo = new List<Clip>();
         //private int _intAmmoRemaining = 0;
@@ -193,6 +194,7 @@ namespace Chummer.Backend.Equipment
             if (!objXmlWeapon.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlWeapon.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlWeapon.TryGetStringFieldQuickly("ammocategory", ref _strAmmoCategory);
+            objXmlWeapon.TryGetStringFieldQuickly("ammoname", ref _strAmmoName);
             objXmlWeapon.TryGetStringFieldQuickly("rc", ref _strRC);
             objXmlWeapon.TryGetInt32FieldQuickly("conceal", ref _intConceal);
             objXmlWeapon.TryGetStringFieldQuickly("avail", ref _strAvail);
@@ -441,6 +443,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("ammo", _strAmmo);
             objWriter.WriteElementString("cyberware", _blnCyberware.ToString());
             objWriter.WriteElementString("ammocategory", _strAmmoCategory);
+            objWriter.WriteElementString("ammoname", _strAmmoName);
             objWriter.WriteElementString("sizecategory", _strSizeCategory);
             objWriter.WriteElementString("firingmode",_eFiringMode.ToString());
             objWriter.WriteStartElement("clips");
@@ -603,6 +606,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("ammo", ref _strAmmo);
             objNode.TryGetBoolFieldQuickly("cyberware", ref _blnCyberware);
             objNode.TryGetStringFieldQuickly("ammocategory", ref _strAmmoCategory);
+            objNode.TryGetStringFieldQuickly("ammoname", ref _strAmmoName);
             objNode.TryGetStringFieldQuickly("sizecategory", ref _strSizeCategory);
             objNode.TryGetInt32FieldQuickly("conceal", ref _intConceal);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
@@ -1027,6 +1031,18 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Translated Ammo Category.
+        /// </summary>
+        public string DisplayAmmoName(string strLanguage)
+        {
+            // Get the translated name if applicable.
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return AmmoName;
+
+            return XmlManager.Load("gear.xml", strLanguage).SelectSingleNode("/chummer/gears/gear[name = \"" + AmmoName + "\"]/@translate")?.InnerText ?? AmmoName;
+        }
+
+        /// <summary>
         /// Category.
         /// </summary>
         public string Category
@@ -1128,6 +1144,17 @@ namespace Chummer.Backend.Equipment
                     return _strAmmoCategory;
 
                 return Category;
+            }
+        }
+
+        /// <summary>
+        /// Category of Ammo the Weapon uses.
+        /// </summary>
+        public string AmmoName
+        {
+            get
+            {
+                return _strAmmoName;
             }
         }
 

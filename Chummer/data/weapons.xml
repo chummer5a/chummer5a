@@ -12631,6 +12631,7 @@
         <mount>Stock</mount>
         <mount>Side</mount>
       </accessorymounts>
+      <ammoname>Ammo: Injection Darts</ammoname>
       <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
