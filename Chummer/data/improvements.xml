@@ -694,5 +694,12 @@
       <xml><![CDATA[{val}]]></xml>
       <page>Increases the character's Street Cred by the listed value.</page>
     </improvement>
+    <improvement>
+      <name>Dodge</name>
+      <id>dodge</id>
+      <internal>dodge</internal>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Increases the character's Dodge pool by the listed value.</page>
+    </improvement>
   </improvements>
 </chummer>
