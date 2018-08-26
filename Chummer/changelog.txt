@@ -26,6 +26,8 @@ Data Changes:
 - Fixed missing spirits for the Planar Magic tradition. Fixes #2937
 - Fixed incorrect mount location for the Terracotta Arms Pup's silencer.
 - Added Dodge custom improvement type.
+- Removed incorrect accessory mount locations from all light pistols and holdouts per Run and Gun page 51 ("Some types of weapons have further limitations—for example, light pistols can only take top and barrel-mounted accessories, while hold-outs can’t take accessories at all"). Any existing weapons that have been given accessories using these mounts should be grandfathered in without issue.
+- Changed the concealment of the Altmayr SPX2 to be +2 instead of +6.
 
 Build 202
 
