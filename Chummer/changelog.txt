@@ -24,6 +24,7 @@ Data Changes:
 - Added missing storage compartment to the Renraku Pelican.
 - Corrected Avail of the Krime Whammy.
 - Fixed missing spirits for the Planar Magic tradition. Fixes #2937
+- Fixed incorrect mount location for the Terracotta Arms Pup's silencer.
 
 Build 202
 

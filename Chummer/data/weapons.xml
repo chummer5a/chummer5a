@@ -16109,7 +16109,7 @@
     <accessory>
       <id>5fac79b3-5eff-44f8-a13c-e1eba38df873</id>
       <name>Terracotta Arms Pup Silencer</name>
-      <mount>Barrel</mount>
+      <mount />
       <forbidden>
         <oneof>
           <accessory>Ceramic/Plasteel Components</accessory>
