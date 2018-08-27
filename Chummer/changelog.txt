@@ -15,6 +15,7 @@ Application Changes:
 - Exposed the DisplayName of objects to the Print method. Allows for melee weapons that have different names to be shown separately on a character sheet.
 - Added an AmmoName property to weapons that allows using a specifically named gear to be used as ammo.
 - Fixed an issue with custom sheets entries not loading properly when using custom_ file masks.
+- Fixed an issue with removing qualities with levels not displaying properly. Fixes #2950
 
 Data Changes:
 

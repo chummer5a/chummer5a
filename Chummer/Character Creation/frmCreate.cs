@@ -4184,8 +4184,22 @@ namespace Chummer
 
             // Fix for legacy characters with old addqualities improvements.
             RemoveAddedQualities(objXmlDeleteQuality?.SelectNodes("addqualities/addquality"));
+            if (objSelectedQuality.Levels > 1 && blnCompleteDelete)
+            {
+                for (int i = CharacterObject.Qualities.Count-1; i >= 0; i--)
+                {
+                    if (CharacterObject.Qualities[i].QualityId == objSelectedQuality.QualityId && CharacterObject.Qualities[i].Extra == objSelectedQuality.Extra &&
+                        CharacterObject.Qualities[i].SourceName == objSelectedQuality.SourceName)
+                    {
+                        CharacterObject.Qualities.RemoveAt(i);
+                    }
+                }
+            }
+            else
+            {
+                CharacterObject.Qualities.Remove(objSelectedQuality);
+            }
 
-            CharacterObject.Qualities.Remove(objSelectedQuality);
             return true;
         }
 
