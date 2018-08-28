@@ -12662,7 +12662,8 @@ namespace Chummer
 #region Condition Monitors
         private void chkPhysicalCM_CheckedChanged(object sender, EventArgs e)
         {
-
+            if (sender is CheckBox objBox)
+                ProcessConditionMonitorCheckedChanged(objBox, i => CharacterObject.PhysicalCMFilled = i);
         }
 
         private void chkStunCM_CheckedChanged(object sender, EventArgs e)
@@ -12921,11 +12922,11 @@ namespace Chummer
             {
                 if (panVehicleCM.SelectedIndex == 0)
                 {
-                    ProcessConditionMonitorCheckedChanged(objBox, i => objVehicle.PhysicalCMFilled = i, false);
+                    ProcessConditionMonitorCheckedChanged(objBox, i => objVehicle.PhysicalCMFilled = i, true);
                 }
                 else
                 {
-                    ProcessConditionMonitorCheckedChanged(objBox, i => objVehicle.MatrixCMFilled = i, false);
+                    ProcessConditionMonitorCheckedChanged(objBox, i => objVehicle.MatrixCMFilled = i, true);
                 }
             }
         }
