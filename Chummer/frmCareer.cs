@@ -12848,8 +12848,6 @@ namespace Chummer
                 funcPropertyToUpdate?.Invoke(intFillCount);
             }
 
-            IsCharacterUpdateRequested = true;
-
             IsDirty = true;
         }
 
