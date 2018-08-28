@@ -460,7 +460,7 @@ namespace Chummer
             get => Math.Min(_intConnection, ConnectionMaximum);
             set
             {
-                value = Math.Min(value, ConnectionMaximum);
+                value = Math.Max(Math.Min(value, ConnectionMaximum), 1);
                 if (_intConnection != value)
                 {
                     _intConnection = value;
@@ -486,7 +486,7 @@ namespace Chummer
             {
                 if (_intLoyalty != value)
                 {
-                    _intLoyalty = value;
+                    _intLoyalty = Math.Max(value, 1);
                     OnPropertyChanged();
                 }
             }
