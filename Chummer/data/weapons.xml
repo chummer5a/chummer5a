@@ -8620,8 +8620,9 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
-      <range>Light Pistols</range>
-      <useskill>Pistols</useskill>
+      <range>Submachine Guns</range>
+	  <spec>Submachine Guns</spec>
+      <useskill>Automatics</useskill>
     </weapon>
     <weapon>
       <id>e8324402-ac55-49c8-8286-40486a5ec8b6</id>
