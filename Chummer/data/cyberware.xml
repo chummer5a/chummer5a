@@ -968,13 +968,24 @@
       <cost>FixedValues(39000,149000,217000)</cost>
       <source>SR5</source>
       <page>455</page>
-      <bonus>
+        <bonus>
         <initiativepass precedence="0">Rating</initiativepass>
         <specificattribute>
           <name precedence="0">REA</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
+      <wirelesspairbonus>
+        <initiativepass precedence="0">Rating</initiativepass>
+        <specificattribute>
+          <name precedence="0">REA</name>
+          <val>Rating</val>
+          <aug>1</aug>
+        </specificattribute>
+      </wirelesspairbonus>
+      <pairinclude>
+        <name>Reaction Enhancers</name>
+      </pairinclude>
       <minrating>1</minrating>
       <rating>3</rating>
     </cyberware>
