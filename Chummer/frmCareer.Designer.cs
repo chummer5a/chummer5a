@@ -1230,6 +1230,7 @@ namespace Chummer
 			this.tsVehicleWeaponMountAddUnderbarrel = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsVehicleWeaponMountNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsWeaponMountLocation = new System.Windows.Forms.ToolStripMenuItem();
+			this.chkCyberwareWireless = new System.Windows.Forms.CheckBox();
 			this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();
@@ -5187,8 +5188,8 @@ namespace Chummer
 			this.treLimit.ShowNodeToolTips = true;
 			this.treLimit.ShowPlusMinus = false;
 			this.treLimit.ShowRootLines = false;
-			this.treLimit.Size = new System.Drawing.Size(299, 638);
-			this.treLimit.TabIndex = 79;
+            this.treLimit.Size = new System.Drawing.Size(299, 638);
+            this.treLimit.TabIndex = 79;
 			this.treLimit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treLimit_KeyDown);
 			// 
 			// cmdDeleteLimitModifier
@@ -6132,10 +6133,10 @@ namespace Chummer
 			this.panSprites.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
 			this.panSprites.AutoScroll = true;
-            this.panSprites.Location = new System.Drawing.Point(8, 445);
-            this.panSprites.Name = "panSprites";
-            this.panSprites.Size = new System.Drawing.Size(850, 224);
-            this.panSprites.TabIndex = 25;
+			this.panSprites.Location = new System.Drawing.Point(8, 445);
+			this.panSprites.Name = "panSprites";
+			this.panSprites.Size = new System.Drawing.Size(850, 224);
+			this.panSprites.TabIndex = 25;
 			// 
 			// cmdAddComplexForm
 			// 
@@ -6706,6 +6707,7 @@ namespace Chummer
 			// tabCyberware
 			// 
 			this.tabCyberware.BackColor = System.Drawing.SystemColors.ButtonFace;
+			this.tabCyberware.Controls.Add(this.chkCyberwareWireless);
 			this.tabCyberware.Controls.Add(this.chkCyberwareActiveCommlink);
 			this.tabCyberware.Controls.Add(this.chkCyberwareHomeNode);
 			this.tabCyberware.Controls.Add(this.cmdCyberwareChangeMount);
@@ -14881,10 +14883,23 @@ namespace Chummer
 			this.tsWeaponMountLocation.Tag = "Menu_RenameLocation";
 			this.tsWeaponMountLocation.Text = "Rename &Location";
 			// 
+			// chkCyberwareWireless
+			// 
+			this.chkCyberwareWireless.AutoSize = true;
+			this.chkCyberwareWireless.Location = new System.Drawing.Point(591, 293);
+			this.chkCyberwareWireless.Name = "chkCyberwareWireless";
+			this.chkCyberwareWireless.Size = new System.Drawing.Size(83, 17);
+			this.chkCyberwareWireless.TabIndex = 246;
+			this.chkCyberwareWireless.Tag = "Checkbox_Wireless";
+			this.chkCyberwareWireless.Text = "Home Node";
+			this.chkCyberwareWireless.UseVisualStyleBackColor = true;
+			this.chkCyberwareWireless.Visible = false;
+			this.chkCyberwareWireless.CheckedChanged += new System.EventHandler(this.chkCyberwareWireless_CheckedChanged);
+			// 
 			// frmCareer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.ClientSize = new System.Drawing.Size(1353, 722);
 			this.Controls.Add(this.splitMain);
@@ -16244,5 +16259,6 @@ namespace Chummer
         private CheckBox chkPhysicalCM22;
         private CheckBox chkPhysicalCM23;
         private CheckBox chkPhysicalCM24;
+        private CheckBox chkCyberwareWireless;
     }
 }

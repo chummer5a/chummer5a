@@ -290,6 +290,7 @@
     <Compile Include="Interfaces\IHasName.cs" />
     <Compile Include="Interfaces\IHasNotes.cs" />
     <Compile Include="Interfaces\IHasSource.cs" />
+    <Compile Include="Interfaces\IHasWirelessBonus.cs" />
     <Compile Include="Interfaces\INotifyMultiplePropertyChanged.cs" />
     <Compile Include="lang\language.cs">
       <DependentUpon>language.xsd</DependentUpon>

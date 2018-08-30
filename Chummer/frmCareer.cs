@@ -13273,6 +13273,8 @@ namespace Chummer
             cmdDeleteCyberware.Enabled = treCyberware.SelectedNode != null && treCyberware.SelectedNode.Level != 0;
             cmdCyberwareChangeMount.Visible = false;
             tabCyberwareCM.Visible = false;
+            chkCyberwareWireless.Visible = false;
+            chkCyberwareWireless.Checked = false;
 
             chkCyberwareActiveCommlink.Visible = false;
             chkCyberwareHomeNode.Visible = false;
@@ -13301,6 +13303,13 @@ namespace Chummer
             {
                 selected.SetSourceDetail(lblCyberwareSource);
             }
+
+            if (treCyberware.SelectedNode?.Tag is IHasWirelessBonus obj)
+            {
+                chkCyberwareWireless.Visible = true;
+                chkCyberwareWireless.Checked = obj.WirelessOn;
+            }
+
             // Locate the selected piece of Cyberware.
             if (treCyberware.SelectedNode?.Tag is Cyberware objCyberware)
             {
@@ -17681,6 +17690,24 @@ namespace Chummer
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
+        }
+
+        private void chkGearWireless_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_blnSkipRefresh) return;
+            if (treGear.SelectedNode.Tag is IHasWirelessBonus obj)
+            {
+                //obj.WirelessOn = chkGearWireless.Checked;
+            }
+        }
+
+        private void chkCyberwareWireless_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_blnSkipRefresh) return;
+            if (treCyberware.SelectedNode.Tag is IHasWirelessBonus obj)
+            {
+                obj.WirelessOn = chkCyberwareWireless.Checked;
+            }
         }
     }
 }

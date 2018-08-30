@@ -479,6 +479,10 @@
       <text>Home Node</text>
     </string>
     <string>
+      <key>Checkbox_Wireless</key>
+      <text>Wireless Enabled</text>
+    </string>
+    <string>
       <key>Checkbox_Commlinks</key>
       <text>Only show Commlinks</text>
     </string>
