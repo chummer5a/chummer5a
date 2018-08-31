@@ -161,6 +161,7 @@ namespace Chummer
             this.cmsWeapon = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsCreateNaturalWeapon = new System.Windows.Forms.ToolStripMenuItem();
             this.tsWeaponAddAccessory = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsWeaponAccessoryAddAccessory = new System.Windows.Forms.ToolStripMenuItem();
             this.tsWeaponAddUnderbarrel = new System.Windows.Forms.ToolStripMenuItem();
             this.tsWeaponName = new System.Windows.Forms.ToolStripMenuItem();
             this.tsWeaponNotes = new System.Windows.Forms.ToolStripMenuItem();
@@ -2349,6 +2350,15 @@ namespace Chummer
             this.tsWeaponAddAccessory.Text = "&Add Accessory";
             this.tsWeaponAddAccessory.Click += new System.EventHandler(this.tsWeaponAddAccessory_Click);
             // 
+            // tsWeaponAccessoryAddAccessory
+            // 
+            this.tsWeaponAccessoryAddAccessory.Image = global::Chummer.Properties.Resources.brick_add;
+            this.tsWeaponAccessoryAddAccessory.Name = "tsWeaponAccessoryAddAccessory";
+            this.tsWeaponAccessoryAddAccessory.Size = new System.Drawing.Size(208, 22);
+            this.tsWeaponAccessoryAddAccessory.Tag = "Menu_AddAccessory";
+            this.tsWeaponAccessoryAddAccessory.Text = "&Add Accessory";
+            this.tsWeaponAccessoryAddAccessory.Click += new System.EventHandler(this.tsWeaponAccessoryAddAccessory_Click);
+            // 
             // tsWeaponAddUnderbarrel
             // 
             this.tsWeaponAddUnderbarrel.Image = global::Chummer.Properties.Resources.award_star2_add;
@@ -3218,6 +3228,7 @@ namespace Chummer
             // cmsWeaponAccessory
             // 
             this.cmsWeaponAccessory.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsWeaponAccessoryAddAccessory,
             this.tsWeaponAccessoryAddGear,
             this.tsWeaponAccessoryNotes});
             this.cmsWeaponAccessory.Name = "cmsWeaponAccessory";
@@ -14015,6 +14026,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblGearRatingLabel;
         private System.Windows.Forms.ContextMenuStrip cmsWeapon;
         private System.Windows.Forms.ToolStripMenuItem tsWeaponAddAccessory;
+        private System.Windows.Forms.ToolStripMenuItem tsWeaponAccessoryAddAccessory;
         private System.Windows.Forms.TabPage tabVehicles;
         private System.Windows.Forms.ContextMenuStrip cmsArmor;
         private System.Windows.Forms.ToolStripMenuItem tsAddArmorMod;

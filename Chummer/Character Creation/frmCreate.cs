@@ -4662,6 +4662,120 @@ namespace Chummer
             while (blnAddAgain);
         }
 
+        private void tsWeaponAccessoryAddAccessory_Click(object sender, EventArgs e)
+        {
+            if (!(treWeapons.SelectedNode?.Tag is WeaponAccessory objParent))
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponAccessory", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // Open the Weapons XML file and locate the selected Weapon.
+            XmlNode objXmlWeapon = objParent.GetNode();
+            if (objXmlWeapon == null)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_CannotFindWeapon", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotModifyWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            bool blnAddAgain;
+            do
+            {
+                // Make sure the Weapon Accessory allows Accessories to be added to it.
+                if (!objParent.AllowAccessories)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_CannotModifyWeapon", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotModifyWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    break;
+                }
+
+                if (objParent.Accessories.Count >= objParent.AccessoryLimit)
+                {
+                    //TODO: Translate the string
+                    MessageBox.Show("Yo, you're over the limit for accessories", LanguageManager.GetString("MessageTitle_CannotModifyWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    break;
+                }
+
+                List<string> lstAllowedMounts = new List<string>();
+
+                foreach (XmlNode objXmlMount in objParent.GetNode().SelectNodes("accessorymounts/mount"))
+                {
+                    string strLoopMount = objXmlMount.InnerText;
+                    if (strLoopMount == "Inherit")
+                    {
+                        strLoopMount = objParent.Mount;
+                    }
+                    // Run through the Weapon's currenct Accessories and filter out any used up Mount points.
+                    if (!objParent.Accessories.Any(objMod =>
+                        objMod.Mount == strLoopMount || objMod.ExtraMount == strLoopMount))
+                    {
+                        lstAllowedMounts.Add(strLoopMount);
+                    }
+                }
+
+                frmSelectWeaponAccessory frmPickWeaponAccessory = new frmSelectWeaponAccessory(CharacterObject, objParent.Parent, objParent.Parent.Category)
+                {
+                    AllowedMounts = lstAllowedMounts
+                };
+
+                frmPickWeaponAccessory.ShowDialog();
+
+                if (frmPickWeaponAccessory.DialogResult == DialogResult.Cancel)
+                {
+                    frmPickWeaponAccessory.Dispose();
+                    break;
+                }
+                blnAddAgain = frmPickWeaponAccessory.AddAgain;
+
+                // Locate the selected piece.
+                objXmlWeapon = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/accessories/accessory[id = \"" + frmPickWeaponAccessory.SelectedAccessory + "\"]");
+
+                WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
+                objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.SelectedMount, frmPickWeaponAccessory.SelectedRating);
+                objAccessory.DiscountCost = frmPickWeaponAccessory.BlackMarketDiscount;
+
+                if (frmPickWeaponAccessory.FreeCost)
+                {
+                    objAccessory.Cost = "0";
+                }
+                else if (objAccessory.Cost.StartsWith("Variable("))
+                {
+                    decimal decMin;
+                    decimal decMax = decimal.MaxValue;
+                    string strCost = objAccessory.Cost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
+                    if (strCost.Contains('-'))
+                    {
+                        string[] strValues = strCost.Split('-');
+                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
+                    }
+                    else
+                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
+
+                    if (decMin != 0 || decMax != decimal.MaxValue)
+                    {
+                        frmSelectNumber frmPickNumber = new frmSelectNumber(CharacterObjectOptions.NuyenDecimals);
+                        if (decMax > 1000000)
+                            decMax = 1000000;
+                        frmPickNumber.Minimum = decMin;
+                        frmPickNumber.Maximum = decMax;
+                        frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), objAccessory.DisplayNameShort(GlobalOptions.Language));
+                        frmPickNumber.AllowCancel = false;
+                        frmPickNumber.ShowDialog();
+                        objAccessory.Cost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
+                    }
+                }
+                objParent.Accessories.Add(objAccessory);
+
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
+
+                frmPickWeaponAccessory.Dispose();
+            }
+            while (blnAddAgain && objParent.Accessories.Count < objParent.AccessoryLimit);
+        }
+
         private void tsWeaponAddAccessory_Click(object sender, EventArgs e)
         {
             if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon))
@@ -4695,9 +4809,20 @@ namespace Chummer
                     MessageBox.Show(LanguageManager.GetString("Message_CannotModifyWeapon", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotModifyWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
                 }
-                frmSelectWeaponAccessory frmPickWeaponAccessory = new frmSelectWeaponAccessory(CharacterObject)
+                List<string> _lstAllowedMounts = new List<string>();
+                foreach (XmlNode objXmlMount in objWeapon.GetNode().SelectNodes("accessorymounts/mount"))
                 {
-                    ParentWeapon = objWeapon
+                    string strLoopMount = objXmlMount.InnerText;
+                    // Run through the Weapon's currenct Accessories and filter out any used up Mount points.
+                    if (!objWeapon.WeaponAccessories.Any(objMod =>
+                        objMod.Mount == strLoopMount || objMod.ExtraMount == strLoopMount))
+                    {
+                        _lstAllowedMounts.Add(strLoopMount);
+                    }
+                }
+                frmSelectWeaponAccessory frmPickWeaponAccessory = new frmSelectWeaponAccessory(CharacterObject, objWeapon, objWeapon.Category)
+                {
+                    AllowedMounts =  _lstAllowedMounts
                 };
                 frmPickWeaponAccessory.ShowDialog();
 
@@ -5104,10 +5229,20 @@ namespace Chummer
                     MessageBox.Show(LanguageManager.GetString("Message_CannotModifyWeapon", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotModifyWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-
-                frmSelectWeaponAccessory frmPickWeaponAccessory = new frmSelectWeaponAccessory(CharacterObject)
+                List<string> _lstAllowedMounts = new List<string>();
+                foreach (XmlNode objXmlMount in objWeapon.GetNode().SelectNodes("accessorymounts/mount"))
                 {
-                    ParentWeapon = objWeapon
+                    string strLoopMount = objXmlMount.InnerText;
+                    // Run through the Weapon's currenct Accessories and filter out any used up Mount points.
+                    if (!objWeapon.WeaponAccessories.Any(objMod =>
+                        objMod.Mount == strLoopMount || objMod.ExtraMount == strLoopMount))
+                    {
+                        _lstAllowedMounts.Add(strLoopMount);
+                    }
+                }
+                frmSelectWeaponAccessory frmPickWeaponAccessory = new frmSelectWeaponAccessory(CharacterObject, objWeapon, objWeapon.Category)
+                {
+                    AllowedMounts = _lstAllowedMounts
                 };
                 frmPickWeaponAccessory.ShowDialog();
 

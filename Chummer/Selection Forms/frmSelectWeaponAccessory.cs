@@ -35,8 +35,8 @@ namespace Chummer
         private int _intSelectedRating;
 
         private bool _blnLoading = true;
-        private readonly List<string> _lstAllowedMounts = new List<string>();
-        private Weapon _objParentWeapon;
+        private List<string> _lstAllowedMounts = new List<string>();
+        private readonly Weapon _objParentWeapon;
         private bool _blnIsParentWeaponBlackMarketAllowed;
         private bool _blnAddAgain;
 
@@ -46,7 +46,7 @@ namespace Chummer
         private readonly HashSet<string> _setBlackMarketMaps;
 
         #region Control Events
-        public frmSelectWeaponAccessory(Character objCharacter)
+        public frmSelectWeaponAccessory(Character objCharacter, Weapon objWeapon, string strBlackMarketCategory)
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
@@ -56,8 +56,13 @@ namespace Chummer
             _objCharacter = objCharacter;
             // Load the Weapon information.
             XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
+            _objParentWeapon = objWeapon;
             _xmlBaseChummerNode = objXmlDocument.GetFastNavigator().SelectSingleNode("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(objXmlDocument);
+
+            _blnIsParentWeaponBlackMarketAllowed = _objCharacter.BlackMarketDiscount &&
+                                                   (!string.IsNullOrEmpty(strBlackMarketCategory) &&
+                                                    _setBlackMarketMaps.Contains(strBlackMarketCategory));
         }
 
         private void frmSelectWeaponAccessory_Load(object sender, EventArgs e)
@@ -298,38 +303,11 @@ namespace Chummer
         /// Rating of the Accessory.
         /// </summary>
         public int SelectedRating => _intSelectedRating;
-
-        /// <summary>
-        /// GUID of the current weapon for which the accessory is being selected
-        /// </summary>
-        public Weapon ParentWeapon
+        
+        public List<string> AllowedMounts
         {
-            set
-            {
-                _objParentWeapon = value;
-                _lstAllowedMounts.Clear();
-                foreach (XPathNavigator objXmlMount in _xmlBaseChummerNode.Select("weapons/weapon[id = \"" + value.SourceID.ToString("D") + "\"]/accessorymounts/mount"))
-                {
-                    string strLoopMount = objXmlMount.Value;
-                    // Run through the Weapon's currenct Accessories and filter out any used up Mount points.
-                    if (!_objParentWeapon.WeaponAccessories.Any(objMod =>
-                        objMod.Mount == strLoopMount || objMod.ExtraMount == strLoopMount))
-                    {
-                        _lstAllowedMounts.Add(strLoopMount);
-                    }
-                }
-
-                //TODO: Accessories don't use a category mapping, so we use parent weapon's category instead.
-                if (_objCharacter.BlackMarketDiscount)
-                {
-                    string strCategory = value.GetNode()?.SelectSingleNode("category")?.InnerText ?? string.Empty;
-                    _blnIsParentWeaponBlackMarketAllowed = !string.IsNullOrEmpty(strCategory) && _setBlackMarketMaps.Contains(strCategory);
-                }
-                else
-                {
-                    _blnIsParentWeaponBlackMarketAllowed = false;
-                }
-            }
+            get => _lstAllowedMounts;
+            set => _lstAllowedMounts = value;
         }
 
         /// <summary>

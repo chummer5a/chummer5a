@@ -68,7 +68,9 @@ namespace Chummer.Backend.Equipment
         private bool _blnDeployable;
         private bool _blnDiscountCost;
         private bool _blnIncludedInWeapon;
+        private bool _blnCanMountAccessories;
         private bool _blnEquipped = true;
+        private bool _blnDetachable;
         private int _intAccessoryCostMultiplier = 1;
         private string _strExtra = string.Empty;
         private int _intRangeBonus;
@@ -158,6 +160,7 @@ namespace Chummer.Backend.Equipment
                 objXmlAccessory.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlAccessory.TryGetStringFieldQuickly("rc", ref _strRC);
             objXmlAccessory.TryGetBoolFieldQuickly("rcdeployable", ref _blnDeployable);
+            objXmlAccessory.TryGetBoolFieldQuickly("detachable", ref _blnDetachable);
             objXmlAccessory.TryGetInt32FieldQuickly("rcgroup", ref _intRCGroup);
             objXmlAccessory.TryGetStringFieldQuickly("conceal", ref _strConceal);
             objXmlAccessory.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots);
@@ -179,6 +182,24 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetStringFieldQuickly("extra", ref _strExtra);
             objXmlAccessory.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
             objXmlAccessory.TryGetInt32FieldQuickly("accessorycostmultiplier", ref _intAccessoryCostMultiplier);
+            objXmlAccessory.TryGetInt32FieldQuickly("accessorylimit", ref _accessoryLimit);
+            objXmlAccessory.TryGetBoolFieldQuickly("allowaccessories", ref _allowAccessories);
+            if (objXmlAccessory["accessorymounts"] != null)
+            {
+                XmlNodeList objXmlMountList = objXmlAccessory.SelectNodes("accessorymounts/mount");
+                if (objXmlMountList?.Count > 0)
+                {
+                    StringBuilder strMounts = new StringBuilder();
+                    foreach (XmlNode objXmlMount in objXmlMountList)
+                    {
+                        strMounts.Append(objXmlMount.InnerText);
+                        strMounts.Append('/');
+                    }
+                    if (strMounts.Length > 0)
+                        strMounts.Length -= 1;
+                    _strMountLocations = strMounts.ToString();
+                }
+            }
 
             // Add any Gear that comes with the Weapon Accessory.
             XmlNode xmlGearsNode = objXmlAccessory["gears"];
@@ -189,40 +210,76 @@ namespace Chummer.Backend.Equipment
                     if (xmlGearsList != null)
                         foreach (XmlNode objXmlAccessoryGear in xmlGearsList)
                         {
-                            XmlNode objXmlAccessoryGearName = objXmlAccessoryGear["name"];
-                            XmlAttributeCollection objXmlAccessoryGearNameAttributes = objXmlAccessoryGearName?.Attributes;
-                            int intGearRating = 0;
-                            decimal decGearQty = 1;
-                            string strChildForceSource = objXmlAccessoryGear["source"]?.InnerText ?? string.Empty;
-                            string strChildForcePage = objXmlAccessoryGear["page"]?.InnerText ?? string.Empty;
-                            string strChildForceValue = objXmlAccessoryGearNameAttributes?["select"]?.InnerText ?? string.Empty;
-                            bool blnChildCreateChildren = objXmlAccessoryGearNameAttributes?["createchildren"]?.InnerText != bool.FalseString;
-                            bool blnAddChildImprovements = objXmlAccessoryGearNameAttributes?["addimprovements"]?.InnerText != bool.FalseString && blnCreateImprovements;
-                            if (objXmlAccessoryGear["rating"] != null)
-                                intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText);
-                            if (objXmlAccessoryGearNameAttributes?["qty"] != null)
-                                decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
-
-                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlAccessoryGearName?.InnerText.CleanXPath() + " and category = " + objXmlAccessoryGear["category"].InnerText.CleanXPath() + "]");
-                            Gear objGear = new Gear(_objCharacter);
-
                             List<Weapon> lstWeapons = new List<Weapon>();
 
-                            objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue, blnAddChildImprovements, blnChildCreateChildren);
-
-                            objGear.Quantity = decGearQty;
-                            objGear.Cost = "0";
-                            objGear.ParentID = InternalId;
-                            if (!string.IsNullOrEmpty(strChildForceSource))
-                                objGear.Source = strChildForceSource;
-                            if (!string.IsNullOrEmpty(strChildForcePage))
-                                objGear.Page = strChildForcePage;
-                            _lstGear.Add(objGear);
-
-                            // Change the Capacity of the child if necessary.
-                            if (objXmlAccessoryGear["capacity"] != null)
-                                objGear.Capacity = '[' + objXmlAccessoryGear["capacity"].InnerText + ']';
+                            Gear objGear = new Gear(_objCharacter);
+                            objGear.CreateFromNode(objXmlGearDocument, objXmlAccessoryGear, lstWeapons);
                         }
+            }
+
+            // If there are any Accessories that come with the Weapon, add them.
+            XmlNode xmlAccessoriesNode = objXmlAccessory["accessories"];
+            if (xmlAccessoriesNode != null && blnCreateChildren)
+            {
+                XmlNodeList objXmlAccessoryList = xmlAccessoriesNode.SelectNodes("accessory");
+                Debug.Assert(objXmlAccessoryList != null, nameof(objXmlAccessoryList) + " != null");
+                List<Weapon> lstWeapons = new List<Weapon>();
+                XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
+                foreach (XmlNode objXmlWeaponAccessory in objXmlAccessoryList)
+                {
+                    WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
+                    objAccessory.CreateFromParent(objAccessory, objXmlWeaponAccessory, true, blnCreateImprovements,
+                        lstWeapons, objXmlDocument);
+                    objAccessory.IncludedInWeapon = true;
+                    objAccessory.Parent = Parent;
+                    _lstAccessories.Add(objAccessory);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Build an accessory from the accessory's parent object XML. 
+        /// </summary>
+        /// <param name="objXmlWeaponAccessory"></param>
+        /// <param name="blnCreateChildren"></param>
+        /// <param name="blnCreateImprovements"></param>
+        /// <param name="lstWeapons"></param>
+        /// <param name="objXmlDocument"></param>
+        public void CreateFromParent(WeaponAccessory objAccessory, XmlNode objXmlWeaponAccessory, bool blnCreateChildren, bool blnCreateImprovements,
+            IList<Weapon> lstWeapons, XmlDocument objXmlDocument)
+        {
+            XmlNode objXmlAccessory = null;
+            if (objXmlWeaponAccessory["name"] != null)
+                objXmlAccessory = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlWeaponAccessory["name"]?.InnerText + "\"]");
+            else if (objXmlWeaponAccessory["id"] != null)
+                objXmlAccessory = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[id = \"" + objXmlWeaponAccessory["id"]?.InnerText + "\"]");
+
+            if (objXmlAccessory == null) return;
+            
+            int intAccessoryRating = 0;
+            if (objXmlWeaponAccessory["rating"] != null)
+            {
+                intAccessoryRating = Convert.ToInt32(objXmlWeaponAccessory["rating"].InnerText);
+            }
+            if (objXmlWeaponAccessory.InnerXml.Contains("mount"))
+            {
+                objAccessory.Create(objXmlAccessory,
+                    objXmlWeaponAccessory.InnerXml.Contains("<extramount>")
+                        ? new Tuple<string, string>(objXmlAccessory["mount"].InnerText, objXmlAccessory["extramount"].InnerText)
+                        : new Tuple<string, string>(objXmlAccessory["mount"].InnerText, "None"), intAccessoryRating, false, blnCreateChildren, blnCreateImprovements);
+            }
+            else
+            {
+                objAccessory.Create(objXmlAccessory, new Tuple<string, string>("Internal", "None"), intAccessoryRating, false, blnCreateChildren, blnCreateImprovements);
+            }
+            // Add any extra Gear that comes with the Weapon Accessory.
+            XmlNode xmlGearsNode = objXmlWeaponAccessory["gears"];
+            if (xmlGearsNode == null) return;
+            XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
+            foreach (XmlNode objXmlAccessoryGear in xmlGearsNode.SelectNodes("usegear"))
+            {
+                Gear objGear = new Gear(_objCharacter);
+                objGear.CreateFromNode(objXmlGearDocument, objXmlAccessoryGear, lstWeapons);
             }
         }
 
@@ -281,6 +338,13 @@ namespace Chummer.Backend.Equipment
                 {
                     objGear.Save(objWriter);
                 }
+                objWriter.WriteEndElement();
+            }
+            if (_lstAccessories.Count > 0)
+            {
+                objWriter.WriteStartElement("accessories");
+                foreach (WeaponAccessory objAccessory in _lstAccessories)
+                    objAccessory.Save(objWriter);
                 objWriter.WriteEndElement();
             }
             objWriter.WriteElementString("ammoslots", _intAmmoSlots.ToString());
@@ -362,6 +426,21 @@ namespace Chummer.Backend.Equipment
                             _lstGear.Add(objGear);
                         }
             }
+
+            XmlNode xmlAccessoriesNode = objNode["accessories"];
+            if (xmlAccessoriesNode != null)
+            {
+                using (XmlNodeList nodChildren = xmlAccessoriesNode.SelectNodes("accessory"))
+                    if (nodChildren != null)
+                        foreach (XmlNode nodChild in nodChildren)
+                        {
+                            WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
+                            objAccessory.Load(nodChild, blnCopy);
+                            objAccessory.Parent = Parent;
+                            _lstAccessories.Add(objAccessory);
+                        }
+            }
+
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
 
@@ -413,6 +492,15 @@ namespace Chummer.Backend.Equipment
             {
                 objWriter.WriteStartElement("gears");
                 foreach (Gear objGear in Gear)
+                {
+                    objGear.Print(objWriter, objCulture, strLanguageToPrint);
+                }
+                objWriter.WriteEndElement();
+            }
+            if (Accessories.Count > 0)
+            {
+                objWriter.WriteStartElement("accessories");
+                foreach (WeaponAccessory objGear in Accessories)
                 {
                     objGear.Print(objWriter, objCulture, strLanguageToPrint);
                 }
@@ -645,6 +733,15 @@ namespace Chummer.Backend.Equipment
                         objChild.Rating = objChild.Rating;
                     }
                 }
+                /* TODO: Accessories don't have a min/max rating currently as they don't need them for anything.
+                if (Accessories.Count > 0)
+                {
+                    foreach (WeaponAccessory objChild in Accessories.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
+                    {
+                        // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                        objChild.Rating = objChild.Rating;
+                    }
+                }*/
             }
         }
 
@@ -820,6 +917,20 @@ namespace Chummer.Backend.Equipment
                             chrLastAvailChar = 'R';
                     }
                 }
+                // Run through gear children and increase the Avail by any Mod whose Avail starts with "+" or "-".
+                foreach (WeaponAccessory objAccessory in Accessories)
+                {
+                    if (!objAccessory.IncludedInWeapon)
+                    {
+                        AvailabilityValue objLoopAvailTuple = objAccessory.TotalAvailTuple();
+                        if (objLoopAvailTuple.AddToParent)
+                            intAvail += objLoopAvailTuple.Value;
+                        if (objLoopAvailTuple.Suffix == 'F')
+                            chrLastAvailChar = 'F';
+                        else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
+                            chrLastAvailChar = 'R';
+                    }
+                }
             }
 
             // Avail cannot go below 0. This typically happens when an item with Avail 0 is given the Second Hand category.
@@ -896,6 +1007,9 @@ namespace Chummer.Backend.Equipment
                 // Add in the cost of any Gear the Weapon Accessory has attached to it.
                 foreach (Gear objGear in Gear)
                     decReturn += objGear.TotalCost;
+
+                foreach (WeaponAccessory objAccessory in Accessories)
+                    decReturn += objAccessory.TotalCost;
 
                 return decReturn;
             }
@@ -1022,9 +1136,15 @@ namespace Chummer.Backend.Equipment
             get => _intSortOrder;
             set => _intSortOrder = value;
         }
+
+        private List<WeaponAccessory> _lstAccessories = new List<WeaponAccessory>();
+        public List<WeaponAccessory> Accessories => _lstAccessories;
         
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
+        private int _accessoryLimit;
+        private bool _allowAccessories;
+        private string _strMountLocations;
 
         public XmlNode GetNode()
         {
@@ -1049,6 +1169,8 @@ namespace Chummer.Backend.Equipment
             // Remove any children the Gear may have.
             foreach (Gear objLoopGear in Gear)
                 decReturn += objLoopGear.DeleteGear();
+            foreach (WeaponAccessory objAccessory in Accessories)
+                decReturn += objAccessory.DeleteWeaponAccessory();
 
             return decReturn;
         }
@@ -1073,11 +1195,16 @@ namespace Chummer.Backend.Equipment
             foreach (Gear objGear in Gear)
             {
                 TreeNode objLoopNode = objGear.CreateTreeNode(cmsWeaponAccessoryGear);
-                if (objLoopNode != null)
-                {
-                    lstChildNodes.Add(objLoopNode);
-                    objNode.Expand();
-                }
+                if (objLoopNode == null) continue;
+                lstChildNodes.Add(objLoopNode);
+                objNode.Expand();
+            }
+            foreach (WeaponAccessory objAccessory in Accessories)
+            {
+                TreeNode objLoopNode = objAccessory.CreateTreeNode(cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                if (objLoopNode == null) continue;
+                lstChildNodes.Add(objLoopNode);
+                objNode.Expand();
             }
 
             return objNode;
@@ -1099,6 +1226,19 @@ namespace Chummer.Backend.Equipment
                 return SystemColors.WindowText;
             }
         }
+
+        public bool AllowAccessories
+        {
+            get => _allowAccessories;
+            set => _allowAccessories = value;
+        }
+
+        public int AccessoryLimit
+        {
+            get => _accessoryLimit;
+            set => _accessoryLimit = value;
+        }
+
         #endregion
         #endregion
 

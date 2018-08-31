@@ -15162,6 +15162,11 @@
       <rating>0</rating>
       <avail>4</avail>
       <cost>500</cost>
+      <accessorymounts>
+        <mount>Inherit</mount>
+      </accessorymounts>
+      <allowaccessories>True</allowaccessories>
+      <accessorylimit>1</accessorylimit>
       <source>RG</source>
       <page>52</page>
     </accessory>

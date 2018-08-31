@@ -6045,11 +6045,22 @@ namespace Chummer
                     MessageBox.Show(LanguageManager.GetString("Message_CannotModifyWeapon", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotModifyWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
                 }
-
-                frmSelectWeaponAccessory frmPickWeaponAccessory = new frmSelectWeaponAccessory(CharacterObject)
+                List<string> _lstAllowedMounts = new List<string>();
+                foreach (XPathNavigator objXmlMount in objWeapon.GetNode().SelectNodes("accessorymounts/mount"))
                 {
-                    ParentWeapon = objWeapon
+                    string strLoopMount = objXmlMount.Value;
+                    // Run through the Weapon's currenct Accessories and filter out any used up Mount points.
+                    if (!objWeapon.WeaponAccessories.Any(objMod =>
+                        objMod.Mount == strLoopMount || objMod.ExtraMount == strLoopMount))
+                    {
+                        _lstAllowedMounts.Add(strLoopMount);
+                    }
+                }
+                frmSelectWeaponAccessory frmPickWeaponAccessory = new frmSelectWeaponAccessory(CharacterObject, objWeapon, objWeapon.Category)
+                {
+                    AllowedMounts = _lstAllowedMounts
                 };
+
                 frmPickWeaponAccessory.ShowDialog();
 
                 if (frmPickWeaponAccessory.DialogResult == DialogResult.Cancel)
@@ -6745,10 +6756,22 @@ namespace Chummer
                     return;
                 }
 
-                frmSelectWeaponAccessory frmPickWeaponAccessory = new frmSelectWeaponAccessory(CharacterObject)
+                List<string> _lstAllowedMounts = new List<string>();
+                foreach (XPathNavigator objXmlMount in objWeapon.GetNode().SelectNodes("accessorymounts/mount"))
                 {
-                    ParentWeapon = objWeapon
+                    string strLoopMount = objXmlMount.Value;
+                    // Run through the Weapon's currenct Accessories and filter out any used up Mount points.
+                    if (!objWeapon.WeaponAccessories.Any(objMod =>
+                        objMod.Mount == strLoopMount || objMod.ExtraMount == strLoopMount))
+                    {
+                        _lstAllowedMounts.Add(strLoopMount);
+                    }
+                }
+                frmSelectWeaponAccessory frmPickWeaponAccessory = new frmSelectWeaponAccessory(CharacterObject, objWeapon, objWeapon.Category)
+                {
+                    AllowedMounts = _lstAllowedMounts
                 };
+
                 frmPickWeaponAccessory.ShowDialog();
 
                 if (frmPickWeaponAccessory.DialogResult == DialogResult.Cancel)
