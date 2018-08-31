@@ -16602,7 +16602,9 @@
       <karma></karma>
       <category>Positive</category>
       <bonus>
-        <livingpersonaattack>2</livingpersonaattack>
+        <livingpersona>
+          <attack>2</attack>
+        </livingpersona>
       </bonus>
       <required>
         <oneof>
@@ -16618,7 +16620,9 @@
       <karma></karma>
       <category>Positive</category>
       <bonus>
-        <livingpersonadataprocessing>2</livingpersonadataprocessing>
+        <livingpersona>
+          <dataprocessing>2</dataprocessing>
+        </livingpersona>
       </bonus>
       <required>
         <oneof>
@@ -16634,7 +16638,9 @@
       <karma></karma>
       <category>Positive</category>
       <bonus>
-        <livingpersonafirewall>2</livingpersonafirewall>
+        <livingpersona>
+          <firewall>2</firewall>
+        </livingpersona>
       </bonus>
       <required>
         <oneof>
@@ -16650,7 +16656,9 @@
       <karma></karma>
       <category>Positive</category>
       <bonus>
-        <livingpersonasleaze>2</livingpersonasleaze>
+        <livingpersona>
+          <sleaze>2</sleaze>
+        </livingpersona>
       </bonus>
       <required>
         <oneof>
