@@ -5199,9 +5199,7 @@ namespace Chummer
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                 return;
 
-            string strLocation = frmPickText.SelectedValue;
-            Location objLocation = new Location(CharacterObject, CharacterObject.GearLocations);
-            objLocation.Name = strLocation;
+            Location objLocation = new Location(CharacterObject, CharacterObject.GearLocations, frmPickText.SelectedValue);
 
             IsDirty = true;
         }
@@ -5218,9 +5216,7 @@ namespace Chummer
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                 return;
 
-            string strLocation = frmPickText.SelectedValue;
-            Location objLocation = new Location(CharacterObject, CharacterObject.WeaponLocations);
-            objLocation.Name = strLocation;
+            Location objLocation = new Location(CharacterObject, CharacterObject.WeaponLocations, frmPickText.SelectedValue);
 
             IsDirty = true;
         }
@@ -5572,9 +5568,7 @@ namespace Chummer
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                 return;
 
-            string strLocation = frmPickText.SelectedValue;
-            Location objLocation = new Location(CharacterObject, CharacterObject.ArmorLocations);
-            objLocation.Name = strLocation;
+            Location objLocation = new Location(CharacterObject, CharacterObject.ArmorLocations, frmPickText.SelectedValue);
 
             IsDirty = true;
         }

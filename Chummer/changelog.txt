@@ -16,6 +16,8 @@ Application Changes:
 - Added an AmmoName property to weapons that allows using a specifically named gear to be used as ammo.
 - Fixed an issue with custom sheets entries not loading properly when using custom_ file masks.
 - Fixed an issue with removing qualities with levels not displaying properly. Fixes #2950
+- Fixed issues with Locations not setting their location text properly in career mode. 
+- The Reload form now shows the Rating of ammo if greater than zero.
 
 Data Changes:
 
