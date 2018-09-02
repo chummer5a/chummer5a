@@ -14327,7 +14327,7 @@
     </accessory>
     <accessory>
       <id>0da6149e-982f-4051-825b-52c1b79c7e52</id>
-      <name>Silencer</name>
+      <name>Silencer/Suppressor</name>
       <mount>Barrel</mount>
       <rating>0</rating>
       <avail>9F</avail>
@@ -14356,6 +14356,7 @@
       <rating>0</rating>
       <avail>9F</avail>
       <cost>500</cost>
+      <hide />
       <forbidden>
         <weapondetails>
           <OR>
