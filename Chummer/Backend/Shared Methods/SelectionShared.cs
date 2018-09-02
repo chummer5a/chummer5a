@@ -1697,8 +1697,15 @@ namespace Chummer
                 case "metamagicart":
                 case "art":
                     {
+                        // Street Grimoire adds High Arts, which group metamagics and such together. If we're ignoring this requirement 
                         if (objCharacter.Options.IgnoreArt)
                         {
+                            // If we're looking for an art, return true. 
+                            if (xmlNode.Name == "art")
+                            {
+                                return true;
+                            }
+
                             XPathNavigator xmlMetamagicDoc = XmlManager.Load("metamagic.xml").GetFastNavigator().SelectSingleNode("/chummer");
                             if (blnShowMessage)
                             {
@@ -1707,13 +1714,10 @@ namespace Chummer
                                     ? $"{Environment.NewLine}\t{strTranslateArt} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})"
                                     : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})";
                             }
-                            if (xmlNode.Name == "art")
-                            {
-                                return true;
-                            }
 
                             if (xmlMetamagicDoc != null)
                             {
+                                // Loop through the data file for each metamagic to find the Required and Forbidden nodes. 
                                 foreach (Metamagic metamagic in objCharacter.Metamagics)
                                 {
                                     XPathNavigator xmlMetamagicNode = xmlMetamagicDoc.SelectSingleNode($"metamagics/metamagic[name = \"{metamagic.Name}\"]");
@@ -1729,6 +1733,17 @@ namespace Chummer
                                             return false;
                                         }
                                     }
+                                    else
+                                    {
+                                        // We couldn't find a metamagic with this name, so it's probably an art. Try and find the node.
+                                        // If we can't, it's probably a data entry error. 
+                                        xmlMetamagicNode =
+                                            xmlMetamagicDoc.SelectSingleNode($"arts/art[name = \"{metamagic.Name}\"]");
+                                        if (xmlMetamagicNode == null)
+                                            Utils.BreakIfDebug();
+                                        else
+                                            return true;
+                                    }
                                 }
                             }
                         }
@@ -1741,14 +1756,23 @@ namespace Chummer
                                     strName = objArt.DisplayNameShort(GlobalOptions.Language);
                                 return true;
                             }
-                        }
-                        if (blnShowMessage)
-                        {
-                            string strTranslate = XmlManager.Load("metamagic.xml").SelectSingleNode($"/chummer/arts/art[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
-                            strName = !string.IsNullOrEmpty(strTranslate)
-                                ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})"
-                                : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})";
-                        }
+                            // In some cases, we want to proxy metamagics for arts. If we haven't found a match yet, check it here. 
+                            if (xmlNode.Name == "metamagicart")
+                            {
+                                Metamagic objMetamagic = objCharacter.Metamagics.FirstOrDefault(x => x.Name == strNodeInnerText);
+                                if (objMetamagic != null)
+                                {
+                                    if (blnShowMessage)
+                                        strName = objMetamagic.DisplayNameShort(GlobalOptions.Language);
+                                    return true;
+                                }
+                            }
+
+                        if (!blnShowMessage) return false;
+                        string strTranslate = XmlManager.Load("metamagic.xml").SelectSingleNode($"/chummer/arts/art[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                        strName = !string.IsNullOrEmpty(strTranslate)
+                            ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})"
+                            : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})";
                         return false;
                     }
                 case "metatype":
