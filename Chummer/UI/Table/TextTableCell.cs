@@ -32,6 +32,7 @@ namespace Chummer.UI.Table
             Controls.Add(_label);
             _label.AutoSize = true;
             MinimumSize = _label.Size;
+            _label.Click += CommonFunctions.OpenPDFFromControl;
         }
 
         protected internal override void UpdateValue(object newValue)

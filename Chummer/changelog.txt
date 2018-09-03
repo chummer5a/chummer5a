@@ -18,6 +18,7 @@ Application Changes:
 - Fixed an issue with removing qualities with levels not displaying properly. Fixes #2950
 - Fixed issues with Locations not setting their location text properly in career mode. 
 - The Reload form now shows the Rating of ammo if greater than zero.
+- Fixed the inability to click on the Source control for adept powers to open the linked PDF. Fixes #2952
 
 Data Changes:
 
