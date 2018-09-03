@@ -67,6 +67,10 @@
   <!-- End Region -->
     <!-- Region Common Strings -->
     <string>
+      <key>String_Wireless</key>
+      <text>Wireless</text>
+    </string>
+    <string>
       <key>String_Version</key>
       <text>Version</text>
     </string>

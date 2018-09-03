@@ -1782,7 +1782,7 @@ namespace Chummer.Backend.Equipment
                 if (intCount % 2 == 1)
                 {
                     ImprovementManager.CreateImprovements(_objCharacter, SourceType,
-                        InternalId + "WirelessPair", WirelessPairBonus, false, Rating,
+                        _guiID.ToString("D") + "WirelessPair", WirelessPairBonus, false, Rating,
                         DisplayNameShort(GlobalOptions.Language));
                 }
             }

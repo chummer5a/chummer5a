@@ -4340,18 +4340,36 @@ namespace Chummer
         public string GetObjectName(Improvement objImprovement, string strLanguage)
         {
             string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
+            string strImprovedGuid = objImprovement.SourceName;
+            bool wireless = false;
+
+            if (strImprovedGuid.EndsWith("WirelessPair"))
+            {
+                wireless = true;
+                strImprovedGuid = strImprovedGuid.Replace("WirelessPair","");
+            }
+            else if (strImprovedGuid.EndsWith("Wireless"))
+            {
+                wireless = true;
+                strImprovedGuid = strImprovedGuid.Replace("Wireless", "");
+            }
+
             switch (objImprovement.ImproveSource)
             {
                 case Improvement.ImprovementSource.Bioware:
                 case Improvement.ImprovementSource.Cyberware:
                     Cyberware objReturnCyberware = Cyberware.DeepFirstOrDefault(x => x.Children,
-                        x => x.InternalId == objImprovement.SourceName);
+                        x => x.InternalId == strImprovedGuid);
                     if (objReturnCyberware != null)
                     {
                         string strWareReturn = objReturnCyberware.DisplayNameShort(strLanguage);
                         if (objReturnCyberware.Parent != null)
                             strWareReturn += strSpaceCharacter + '(' +
                                              objReturnCyberware.Parent.DisplayNameShort(strLanguage) + ')';
+                        if (wireless)
+                        {
+                            strWareReturn += strSpaceCharacter + LanguageManager.GetString("String_Wireless");
+                        }
                         return strWareReturn;
                     }
 
@@ -4375,6 +4393,10 @@ namespace Chummer
                                                      objVehicle.DisplayNameShort(strLanguage) + ',' +
                                                      strSpaceCharacter + objVehicleMod.DisplayNameShort(strLanguage) +
                                                      ')';
+                                if (wireless)
+                                {
+                                    strWareReturn += LanguageManager.GetString("String_Wireless");
+                                }
                                 return strWareReturn;
                             }
                         }
@@ -4389,6 +4411,10 @@ namespace Chummer
                         string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                         if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
                             strGearReturn += " (" + parent.DisplayNameShort(strLanguage) + ')';
+                        if (wireless)
+                        {
+                            strGearReturn += LanguageManager.GetString("String_Wireless");
+                        }
                         return strGearReturn;
                     }
 
@@ -4411,6 +4437,10 @@ namespace Chummer
                                     strGearReturn += strSpaceCharacter + '(' + objWeapon.DisplayNameShort(strLanguage) +
                                                      ',' + strSpaceCharacter +
                                                      objAccessory.DisplayNameShort(strLanguage) + ')';
+                                if (wireless)
+                                {
+                                    strGearReturn += LanguageManager.GetString("String_Wireless");
+                                }
                                 return strGearReturn;
                             }
                         }
@@ -4428,6 +4458,10 @@ namespace Chummer
                                                  ',' + strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
                             else
                                 strGearReturn += strSpaceCharacter + '(' + objArmor.DisplayNameShort(strLanguage) + ')';
+                            if (wireless)
+                            {
+                                strGearReturn += LanguageManager.GetString("String_Wireless");
+                            }
                             return strGearReturn;
                         }
                     }
@@ -4445,6 +4479,10 @@ namespace Chummer
                             else
                                 strGearReturn += strSpaceCharacter + '(' + objCyberware.DisplayNameShort(strLanguage) +
                                                  ')';
+                            if (wireless)
+                            {
+                                strGearReturn += LanguageManager.GetString("String_Wireless");
+                            }
                             return strGearReturn;
                         }
                     }
@@ -4462,6 +4500,10 @@ namespace Chummer
                             else
                                 strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) +
                                                  ')';
+                            if (wireless)
+                            {
+                                strGearReturn += LanguageManager.GetString("String_Wireless");
+                            }
                             return strGearReturn;
                         }
 
@@ -4488,6 +4530,10 @@ namespace Chummer
                                                          strSpaceCharacter + objWeapon.DisplayNameShort(strLanguage) +
                                                          ',' + strSpaceCharacter +
                                                          objAccessory.DisplayNameShort(strLanguage) + ')';
+                                    if (wireless)
+                                    {
+                                        strGearReturn += LanguageManager.GetString("String_Wireless");
+                                    }
                                     return strGearReturn;
                                 }
                             }
@@ -4525,6 +4571,10 @@ namespace Chummer
                                                              objWeapon.DisplayNameShort(strLanguage) + ',' +
                                                              strSpaceCharacter +
                                                              objAccessory.DisplayNameShort(strLanguage) + ')';
+                                        if (wireless)
+                                        {
+                                            strGearReturn += LanguageManager.GetString("String_Wireless");
+                                        }
                                         return strGearReturn;
                                     }
                                 }
@@ -4553,6 +4603,10 @@ namespace Chummer
                                                          objVehicleMod.DisplayNameShort(strLanguage) + ',' +
                                                          strSpaceCharacter +
                                                          objCyberware.DisplayNameShort(strLanguage) + ')';
+                                    if (wireless)
+                                    {
+                                        strGearReturn += LanguageManager.GetString("String_Wireless");
+                                    }
                                     return strGearReturn;
                                 }
                             }
@@ -4626,6 +4680,10 @@ namespace Chummer
                     {
                         if (objArmor.InternalId == objImprovement.SourceName)
                         {
+                            if (wireless)
+                            {
+                                return $"{objArmor.DisplayNameShort(strLanguage)} ({LanguageManager.GetString("String_Wireless")})";
+                            }
                             return objArmor.DisplayNameShort(strLanguage);
                         }
                     }
@@ -4638,8 +4696,7 @@ namespace Chummer
                         {
                             if (objMod.InternalId == objImprovement.SourceName)
                             {
-                                return objMod.DisplayNameShort(strLanguage) + strSpaceCharacter + '(' +
-                                       objArmor.DisplayNameShort(strLanguage) + ')';
+                                return $"{objMod.DisplayNameShort(strLanguage)} ({objArmor.DisplayNameShort(strLanguage)}) ({LanguageManager.GetString("String_Wireless")})";
                             }
                         }
                     }
