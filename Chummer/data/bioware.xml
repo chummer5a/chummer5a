@@ -224,10 +224,7 @@
       <avail>12</avail>
       <cost>24000</cost>
       <bonus>
-        <limitmodifier>
-          <limit>Physical</limit>
-          <value>1</value>
-        </limitmodifier>
+        <physicallimit>1</physicallimit>
         <specificskill>
           <name>Escape Artist</name>
           <bonus>1</bonus>

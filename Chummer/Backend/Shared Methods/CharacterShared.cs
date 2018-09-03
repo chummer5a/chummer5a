@@ -356,7 +356,7 @@ namespace Chummer
                 {
                     if (objSpell.Grade > 0)
                     {
-                        treMetamagic.FindNode(objSpell.InternalId)?.Remove();
+                        treMetamagic.FindNodeByTag(objSpell)?.Remove();
                     }
                     AddToTree(objSpell, false);
                 }
@@ -386,7 +386,7 @@ namespace Chummer
                         {
                             foreach (Spell objSpell in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objNode = treSpells.FindNode(objSpell.InternalId);
+                                TreeNode objNode = treSpells.FindNodeByTag(objSpell);
                                 if (objNode != null)
                                 {
                                     TreeNode objParent = objNode.Parent;
@@ -411,7 +411,7 @@ namespace Chummer
                             List<TreeNode> lstOldParents = new List<TreeNode>();
                             foreach (Spell objSpell in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objNode = treSpells.FindNode(objSpell.InternalId);
+                                TreeNode objNode = treSpells.FindNodeByTag(objSpell);
                                 if (objNode != null)
                                 {
                                     lstOldParents.Add(objNode.Parent);
@@ -551,7 +551,7 @@ namespace Chummer
                     InitiationGrade objGrade = _objCharacter.InitiationGrades.FirstOrDefault(x => x.Grade == objSpell.Grade);
                     if (objGrade != null)
                     {
-                        TreeNode nodMetamagicParent = treMetamagic.FindNode(objGrade.InternalId);
+                        TreeNode nodMetamagicParent = treMetamagic.FindNodeByTag(objGrade);
                         if (nodMetamagicParent != null)
                         {
                             TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
@@ -631,7 +631,7 @@ namespace Chummer
                         {
                             foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objNode = treAIPrograms.FindNode(objAIProgram.InternalId);
+                                TreeNode objNode = treAIPrograms.FindNodeByTag(objAIProgram);
                                 if (objNode != null)
                                 {
                                     TreeNode objParent = objNode.Parent;
@@ -652,7 +652,7 @@ namespace Chummer
                             List<TreeNode> lstOldParents = new List<TreeNode>();
                             foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objNode = treAIPrograms.FindNode(objAIProgram.InternalId);
+                                TreeNode objNode = treAIPrograms.FindNodeByTag(objAIProgram);
                                 if (objNode != null)
                                 {
                                     lstOldParents.Add(objNode.Parent);
@@ -727,7 +727,7 @@ namespace Chummer
                 {
                     if (objComplexForm.Grade > 0)
                     {
-                        treMetamagic.FindNode(objComplexForm.InternalId)?.Remove();
+                        treMetamagic.FindNodeByTag(objComplexForm)?.Remove();
                     }
                     AddToTree(objComplexForm, false);
                 }
@@ -752,7 +752,7 @@ namespace Chummer
                         {
                             foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objNode = treComplexForms.FindNode(objComplexForm.InternalId);
+                                TreeNode objNode = treComplexForms.FindNodeByTag(objComplexForm);
                                 if (objNode != null)
                                 {
                                     TreeNode objParent = objNode.Parent;
@@ -762,7 +762,7 @@ namespace Chummer
                                 }
                                 if (objComplexForm.Grade > 0)
                                 {
-                                    treMetamagic.FindNode(objComplexForm.InternalId)?.Remove();
+                                    treMetamagic.FindNodeByTag(objComplexForm)?.Remove();
                                 }
                             }
                             break;
@@ -772,7 +772,7 @@ namespace Chummer
                             List<TreeNode> lstOldParents = new List<TreeNode>();
                             foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objNode = treComplexForms.FindNode(objComplexForm.InternalId);
+                                TreeNode objNode = treComplexForms.FindNodeByTag(objComplexForm);
                                 if (objNode != null)
                                 {
                                     lstOldParents.Add(objNode.Parent);
@@ -780,7 +780,7 @@ namespace Chummer
                                 }
                                 if (objComplexForm.Grade > 0)
                                 {
-                                    treMetamagic.FindNode(objComplexForm.InternalId)?.Remove();
+                                    treMetamagic.FindNodeByTag(objComplexForm)?.Remove();
                                 }
                             }
                             foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.NewItems)
@@ -822,7 +822,7 @@ namespace Chummer
                     InitiationGrade objGrade = _objCharacter.InitiationGrades.FirstOrDefault(x => x.Grade == objComplexForm.Grade);
                     if (objGrade != null)
                     {
-                        TreeNode nodMetamagicParent = treMetamagic.FindNode(objGrade.InternalId);
+                        TreeNode nodMetamagicParent = treMetamagic.FindNodeByTag(objGrade);
                         if (nodMetamagicParent != null)
                         {
                             TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
@@ -980,7 +980,7 @@ namespace Chummer
                         {
                             foreach (LimitModifier objLimitModifier in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objNode = treLimit.FindNode(objLimitModifier.InternalId);
+                                TreeNode objNode = treLimit.FindNodeByTag(objLimitModifier);
                                 if (objNode != null)
                                 {
                                     TreeNode objParent = objNode.Parent;
@@ -996,7 +996,7 @@ namespace Chummer
                             List<TreeNode> lstOldParentNodes = new List<TreeNode>();
                             foreach (LimitModifier objLimitModifier in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objNode = treLimit.FindNode(objLimitModifier.InternalId);
+                                TreeNode objNode = treLimit.FindNodeByTag(objLimitModifier);
                                 if (objNode != null)
                                 {
                                     lstOldParentNodes.Add(objNode.Parent);
@@ -1197,7 +1197,7 @@ namespace Chummer
                         {
                             foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                treMetamagic.FindNode(objGrade.InternalId)?.Remove();
+                                treMetamagic.FindNodeByTag(objGrade)?.Remove();
                                 // Remove the child objects (arts, metamagics, enhancements, enchantments, rituals)
                                 // Arts
                                 List<Art> lstRemoveArts = CharacterObject.Arts.Where(o => o.Grade == objGrade.Grade).ToList();
@@ -1259,7 +1259,7 @@ namespace Chummer
                         {
                             foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                treMetamagic.FindNode(objGrade.InternalId)?.Remove();
+                                treMetamagic.FindNodeByTag(objGrade)?.Remove();
                             }
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.NewItems)
@@ -1274,7 +1274,7 @@ namespace Chummer
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode nodGrade = treMetamagic.FindNode(objGrade.InternalId);
+                                TreeNode nodGrade = treMetamagic.FindNodeByTag(objGrade);
                                 if (nodGrade != null)
                                 {
                                     nodGrade.Remove();
@@ -1453,7 +1453,7 @@ namespace Chummer
                     {
                         foreach (Art objArt in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            treMetamagic.FindNode(objArt.InternalId)?.Remove();
+                            treMetamagic.FindNodeByTag(objArt)?.Remove();
                         }
                     }
                     break;
@@ -1461,7 +1461,7 @@ namespace Chummer
                     {
                         foreach (Art objArt in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            treMetamagic.FindNode(objArt.InternalId)?.Remove();
+                            treMetamagic.FindNodeByTag(objArt)?.Remove();
                         }
                         foreach (Art objArt in notifyCollectionChangedEventArgs.NewItems)
                         {
@@ -1482,7 +1482,7 @@ namespace Chummer
 
                 if (objGrade != null)
                 {
-                    TreeNode nodMetamagicParent = treMetamagic.FindNode(objGrade.InternalId);
+                    TreeNode nodMetamagicParent = treMetamagic.FindNodeByTag(objGrade);
                     if (nodMetamagicParent != null)
                     {
                         TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
@@ -1526,7 +1526,7 @@ namespace Chummer
                     {
                         foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            treMetamagic.FindNode(objEnhancement.InternalId)?.Remove();
+                            treMetamagic.FindNodeByTag(objEnhancement)?.Remove();
                         }
                     }
                     break;
@@ -1534,7 +1534,7 @@ namespace Chummer
                     {
                         foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            treMetamagic.FindNode(objEnhancement.InternalId)?.Remove();
+                            treMetamagic.FindNodeByTag(objEnhancement)?.Remove();
                         }
                         foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.NewItems)
                         {
@@ -1555,7 +1555,7 @@ namespace Chummer
 
                 if (objGrade != null)
                 {
-                    TreeNode nodMetamagicParent = treMetamagic.FindNode(objGrade.InternalId);
+                    TreeNode nodMetamagicParent = treMetamagic.FindNodeByTag(objGrade);
                     if (nodMetamagicParent != null)
                     {
                         TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
@@ -1632,7 +1632,7 @@ namespace Chummer
                     {
                         foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            treMetamagic.FindNode(objMetamagic.InternalId)?.Remove();
+                            treMetamagic.FindNodeByTag(objMetamagic)?.Remove();
                         }
                     }
                     break;
@@ -1640,7 +1640,7 @@ namespace Chummer
                     {
                         foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            treMetamagic.FindNode(objMetamagic.InternalId)?.Remove();
+                            treMetamagic.FindNodeByTag(objMetamagic)?.Remove();
                         }
                         foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.NewItems)
                         {
@@ -1683,7 +1683,7 @@ namespace Chummer
 
                     if (objGrade != null)
                     {
-                        TreeNode nodMetamagicParent = treMetamagic.FindNode(objGrade.InternalId);
+                        TreeNode nodMetamagicParent = treMetamagic.FindNodeByTag(objGrade);
                         if (nodMetamagicParent != null)
                         {
                             TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
@@ -1750,7 +1750,7 @@ namespace Chummer
                         {
                             foreach (CritterPower objPower in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objNode = treCritterPowers.FindNode(objPower.InternalId);
+                                TreeNode objNode = treCritterPowers.FindNodeByTag(objPower);
                                 if (objNode != null)
                                 {
                                     TreeNode objParent = objNode.Parent;
@@ -2103,7 +2103,7 @@ namespace Chummer
                     {
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode nodLocation = treWeapons.FindNode(objLocation?.InternalId, false);
+                            TreeNode nodLocation = treWeapons.FindNodeByTag(objLocation, false);
                             if (nodLocation != null)
                             {
                                 if (nodLocation.Nodes.Count > 0)
@@ -2132,15 +2132,15 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Replace:
                     {
                         int intNewItemsIndex = 0;
-                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objLocation = treWeapons.FindNode(strLocation, false);
-                            if (objLocation != null)
+                            TreeNode objNode = treWeapons.FindNodeByTag(objLocation, false);
+                            if (objNode != null)
                             {
-                                if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is string strNewLocation)
+                                if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is Location objNewLocation)
                                 {
-                                    objLocation.Tag = strNewLocation;
-                                    objLocation.Text = strNewLocation;
+                                    objNode.Tag = objNewLocation;
+                                    objNode.Text = objNewLocation.DisplayName(GlobalOptions.Language);
                                 }
                                 intNewItemsIndex += 1;
                             }
@@ -2149,20 +2149,20 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Move:
                     {
-                        List<Tuple<string, TreeNode>> lstMoveNodes = new List<Tuple<string, TreeNode>>();
-                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
+                        List<Tuple<Location, TreeNode>> lstMoveNodes = new List<Tuple<Location, TreeNode>>();
+                        foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objLocation = treWeapons.FindNode(strLocation, false);
+                            TreeNode objNode = treWeapons.FindNodeByTag(objLocation, false);
                             if (objLocation != null)
                             {
-                                lstMoveNodes.Add(new Tuple<string, TreeNode>(strLocation, objLocation));
-                                objLocation.Remove();
+                                lstMoveNodes.Add(new Tuple<Location, TreeNode>(objLocation, objNode));
+                                objLocation.Remove(_objCharacter,false);
                             }
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                        foreach (string strLocation in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Location objLocation in notifyCollectionChangedEventArgs.NewItems)
                         {
-                            Tuple<string, TreeNode> objLocationTuple = lstMoveNodes.FirstOrDefault(x => x.Item1 == strLocation);
+                            Tuple<Location, TreeNode> objLocationTuple = lstMoveNodes.FirstOrDefault(x => x.Item1 == objLocation);
                             if (objLocationTuple != null)
                             {
                                 treWeapons.Nodes.Insert(intNewIndex, objLocationTuple.Item2);
@@ -2601,6 +2601,10 @@ namespace Chummer
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
                             TreeNode objNode = treArmor.FindNode(objLocation.InternalId, false);
+                            if (objNode == null)
+                            {
+                                objNode = treArmor.FindNodeByTag(objLocation);
+                            }
                             if (objNode != null)
                             {
                                 objNode.Remove();
@@ -2623,7 +2627,7 @@ namespace Chummer
                                     }
                                 }
                             }
-                            objLocation.Remove(_objCharacter);
+                            objLocation.Remove(_objCharacter, false);
                         }
                     }
                     break;
@@ -3012,7 +3016,7 @@ namespace Chummer
                     {
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objNode = treGear.FindNode(objLocation.InternalId, false);
+                            TreeNode objNode = treGear.FindNodeByTag(objLocation, false);
                             if (objNode != null)
                             {
                                 objNode.Remove();
@@ -3044,7 +3048,7 @@ namespace Chummer
                         int intNewItemsIndex = 0;
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objNode = treGear.FindNode(objLocation.InternalId, false);
+                            TreeNode objNode = treGear.FindNodeByTag(objLocation, false);
                             if (objLocation != null)
                             {
                                 if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is Location objNewLocation)
@@ -3062,7 +3066,7 @@ namespace Chummer
                         List<Tuple<Location, TreeNode>> lstMoveNodes = new List<Tuple<Location, TreeNode>>();
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objNode = treGear.FindNode(objLocation.InternalId, false);
+                            TreeNode objNode = treGear.FindNodeByTag(objLocation, false);
                             if (objLocation != null)
                             {
                                 lstMoveNodes.Add(new Tuple<Location, TreeNode>(objLocation, objNode));
@@ -3086,7 +3090,7 @@ namespace Chummer
                     {
                         foreach (Location objLocation in _objCharacter.GearLocations)
                         {
-                            TreeNode nodLocation = treGear.FindNode(objLocation?.InternalId, false);
+                            TreeNode nodLocation = treGear.FindNodeByTag(objLocation, false);
                             if (nodLocation != null)
                             {
                                 nodLocation.Remove();
@@ -3166,7 +3170,7 @@ namespace Chummer
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 SetupChildrenGearsCollectionChanged(false, treGear, objGear);
-                                treGear.FindNode(objGear.InternalId)?.Remove();
+                                treGear.FindNodeByTag(objGear)?.Remove();
                             }
                         }
                         break;
@@ -3175,7 +3179,7 @@ namespace Chummer
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 SetupChildrenGearsCollectionChanged(false, treGear, objGear, cmsGear);
-                                treGear.FindNode(objGear.InternalId)?.Remove();
+                                treGear.FindNodeByTag(objGear)?.Remove();
                             }
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
@@ -3192,7 +3196,7 @@ namespace Chummer
                         {
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                treGear.FindNode(objGear.InternalId)?.Remove();
+                                treGear.FindNodeByTag(objGear)?.Remove();
                             }
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
@@ -3222,7 +3226,7 @@ namespace Chummer
                 TreeNode nodParent = null;
                 if (objGear.Location != null)
                 {
-                    nodParent = treGear.FindNode(objGear.Location.InternalId, false);
+                    nodParent = treGear.FindNodeByTag(objGear.Location, false);
                 }
                 if (nodParent == null)
                 {
@@ -3276,7 +3280,7 @@ namespace Chummer
             if (notifyCollectionChangedEventArgs == null)
                 return;
 
-            TreeNode nodParent = treGear.FindNode(objParent.InternalId);
+            TreeNode nodParent = treGear.FindNodeByTag(objParent);
             if (nodParent == null)
                 return;
 
@@ -3300,7 +3304,7 @@ namespace Chummer
                         foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                         {
                             SetupChildrenGearsCollectionChanged(false, treGear, objGear);
-                            nodParent.FindNode(objGear.InternalId)?.Remove();
+                            nodParent.FindNodeByTag(objGear)?.Remove();
                         }
                     }
                     break;
@@ -3310,7 +3314,7 @@ namespace Chummer
                         foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                         {
                             SetupChildrenGearsCollectionChanged(false, treGear, objGear);
-                            nodParent.FindNode(objGear.InternalId)?.Remove();
+                            nodParent.FindNodeByTag(objGear)?.Remove();
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
@@ -3329,7 +3333,7 @@ namespace Chummer
                         string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
                         foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            nodParent.FindNode(objGear.InternalId)?.Remove();
+                            nodParent.FindNodeByTag(objGear)?.Remove();
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
@@ -3364,7 +3368,7 @@ namespace Chummer
                 }
                 else
                 {
-                    TreeNode nodLocation = nodParent.FindNode(objGear.Location?.InternalId, false);
+                    TreeNode nodLocation = nodParent.FindNodeByTag(objGear.Location, false);
                     if (nodLocation != null)
                     {
                         if (intIndex >= 0)
@@ -3425,7 +3429,7 @@ namespace Chummer
                         {
                             foreach (Drug d in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                treGear.FindNode(d.InternalId)?.Remove();
+                                treGear.FindNodeByTag(d)?.Remove();
                             }
                         }
                         break;
@@ -3433,7 +3437,7 @@ namespace Chummer
                         {
                             foreach (Drug d in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                treGear.FindNode(d.InternalId)?.Remove();
+                                treGear.FindNodeByTag(d)?.Remove();
                             }
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Drug d in notifyCollectionChangedEventArgs.NewItems)
@@ -3448,7 +3452,7 @@ namespace Chummer
                         {
                             foreach (Drug d in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                treGear.FindNode(d.InternalId)?.Remove();
+                                treGear.FindNodeByTag(d)?.Remove();
                             }
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Drug d in notifyCollectionChangedEventArgs.NewItems)
@@ -3536,7 +3540,7 @@ namespace Chummer
                             foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 SetupChildrenCyberwareCollectionChanged(false, treCyberware, objCyberware);
-                                TreeNode objNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID ? treCyberware.FindNode(Cyberware.EssenceHoleGUID.ToString("D")) : treCyberware.FindNode(objCyberware.InternalId);
+                                TreeNode objNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID ? treCyberware.FindNode(Cyberware.EssenceHoleGUID.ToString("D")) : treCyberware.FindNodeByTag(objCyberware);
                                 if (objNode != null)
                                 {
                                     TreeNode objParent = objNode.Parent;
@@ -3554,7 +3558,7 @@ namespace Chummer
                             foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 SetupChildrenCyberwareCollectionChanged(false, treCyberware, objCyberware);
-                                TreeNode objNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID ? treCyberware.FindNode(Cyberware.EssenceHoleGUID.ToString("D")) : treCyberware.FindNode(objCyberware.InternalId);
+                                TreeNode objNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID ? treCyberware.FindNode(Cyberware.EssenceHoleGUID.ToString("D")) : treCyberware.FindNodeByTag(objCyberware);
                                 if (objNode != null)
                                 {
                                     TreeNode objParent = objNode.Parent;
@@ -3705,7 +3709,7 @@ namespace Chummer
             if (notifyCollectionChangedEventArgs == null)
                 return;
 
-            TreeNode nodParent = treCyberware.FindNode(objParent.InternalId);
+            TreeNode nodParent = treCyberware.FindNodeByTag(objParent);
             if (nodParent == null)
                 return;
 
@@ -3729,7 +3733,7 @@ namespace Chummer
                         foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
                         {
                             SetupChildrenCyberwareCollectionChanged(false, treCyberware, objCyberware);
-                            nodParent.FindNode(objCyberware.InternalId)?.Remove();
+                            nodParent.FindNodeByTag(objCyberware)?.Remove();
                         }
                     }
                     break;
@@ -3739,7 +3743,7 @@ namespace Chummer
                         foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
                         {
                             SetupChildrenCyberwareCollectionChanged(false, treCyberware, objCyberware);
-                            nodParent.FindNode(objCyberware.InternalId)?.Remove();
+                            nodParent.FindNodeByTag(objCyberware)?.Remove();
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
@@ -3758,7 +3762,7 @@ namespace Chummer
                         string strSelectedId = (treCyberware.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
                         foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            nodParent.FindNode(objCyberware.InternalId)?.Remove();
+                            nodParent.FindNodeByTag(objCyberware)?.Remove();
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
@@ -3825,7 +3829,7 @@ namespace Chummer
                     {
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objNode = treVehicles.FindNode(objLocation.InternalId, false);
+                            TreeNode objNode = treVehicles.FindNodeByTag(objLocation, false);
                             if (objNode != null)
                             {
                                 objNode.Remove();
@@ -3857,7 +3861,7 @@ namespace Chummer
                         int intNewItemsIndex = 0;
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objNode = treVehicles.FindNode(objLocation.InternalId, false);
+                            TreeNode objNode = treVehicles.FindNodeByTag(objLocation, false);
                             if (objLocation != null)
                             {
                                 if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is Location objNewLocation)
@@ -3875,7 +3879,7 @@ namespace Chummer
                         List<Tuple<Location, TreeNode>> lstMoveNodes = new List<Tuple<Location, TreeNode>>();
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objNode = treVehicles.FindNode(objLocation.InternalId, false);
+                            TreeNode objNode = treVehicles.FindNodeByTag(objLocation, false);
                             if (objLocation != null)
                             {
                                 lstMoveNodes.Add(new Tuple<Location, TreeNode>(objLocation, objNode));
@@ -3899,7 +3903,7 @@ namespace Chummer
                     {
                         foreach (Location objLocation in _objCharacter.WeaponLocations)
                         {
-                            TreeNode nodLocation = treVehicles.FindNode(objLocation?.InternalId, false);
+                            TreeNode nodLocation = treVehicles.FindNodeByTag(objLocation, false);
                             if (nodLocation == null) continue;
                             if (nodLocation.Nodes.Count > 0)
                             {
@@ -3935,7 +3939,7 @@ namespace Chummer
 
             string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
-            TreeNode nodRoot = treVehicles.FindNode(objVehicle.InternalId);
+            TreeNode nodRoot = treVehicles.FindNodeByTag(objVehicle);
             if (nodRoot == null)
                 return;
 
@@ -3963,7 +3967,7 @@ namespace Chummer
                     {
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objNode = treVehicles.FindNode(objLocation?.InternalId, false);
+                            TreeNode objNode = treVehicles.FindNodeByTag(objLocation, false);
                             if (objNode != null)
                             {
                                 objNode.Remove();
@@ -3980,15 +3984,15 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Replace:
                     {
                         int intNewItemsIndex = 0;
-                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objLocation = treVehicles.FindNode(strLocation, false);
+                            TreeNode objNode = treVehicles.FindNodeByTag(objLocation, false);
                             if (objLocation != null)
                             {
-                                if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is string strNewLocation)
+                                if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is Location objNewLocation)
                                 {
-                                    objLocation.Tag = strNewLocation;
-                                    objLocation.Text = strNewLocation;
+                                    objNode.Tag = objLocation;
+                                    objNode.Text = objLocation.DisplayName(GlobalOptions.Language);
                                 }
                                 intNewItemsIndex += 1;
                             }
@@ -3997,22 +4001,22 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Move:
                     {
-                        List<Tuple<string, TreeNode>> lstMoveNodes = new List<Tuple<string, TreeNode>>();
-                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
+                        List<Tuple<Location, TreeNode>> lstMoveNodes = new List<Tuple<Location, TreeNode>>();
+                        foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objLocation = treVehicles.FindNode(strLocation, false);
-                            if (objLocation != null)
+                            TreeNode objNode = treVehicles.FindNodeByTag(objLocation, false);
+                            if (objNode != null)
                             {
-                                lstMoveNodes.Add(new Tuple<string, TreeNode>(strLocation, objLocation));
-                                objLocation.Remove();
+                                lstMoveNodes.Add(new Tuple<Location, TreeNode>(objLocation, objNode));
+                                objNode.Remove();
                             }
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
                             intNewIndex += funcOffset.Invoke();
-                        foreach (string strLocation in notifyCollectionChangedEventArgs.NewItems)
+                        foreach (Location objLocation in notifyCollectionChangedEventArgs.NewItems)
                         {
-                            Tuple<string, TreeNode> objLocationTuple = lstMoveNodes.FirstOrDefault(x => x.Item1 == strLocation);
+                            Tuple<Location, TreeNode> objLocationTuple = lstMoveNodes.FirstOrDefault(x => x.Item1 == objLocation);
                             if (objLocationTuple != null)
                             {
                                 treVehicles.Nodes.Insert(intNewIndex, objLocationTuple.Item2);
@@ -4026,7 +4030,7 @@ namespace Chummer
                     {
                         foreach (Location objLocation in objVehicle.Locations)
                         {
-                            TreeNode objNode = treVehicles.FindNode(objLocation?.InternalId, false);
+                            TreeNode objNode = treVehicles.FindNodeByTag(objLocation, false);
                             if (objNode != null)
                             {
                                 objNode.Remove();
@@ -4050,7 +4054,7 @@ namespace Chummer
             if (notifyCollectionChangedEventArgs == null)
                 return;
 
-            TreeNode nodParent = treVehicles.FindNode(objParent.InternalId);
+            TreeNode nodParent = treVehicles.FindNodeByTag(objParent);
             if (nodParent == null)
                 return;
 
@@ -4084,7 +4088,7 @@ namespace Chummer
                             objVehicleMod.Weapons.RemoveTaggedCollectionChanged(treVehicles);
                             foreach (Weapon objWeapon in objVehicleMod.Weapons)
                                 SetupChildrenWeaponsCollectionChanged(false, treVehicles, objWeapon);
-                            nodParent.FindNode(objVehicleMod.InternalId)?.Remove();
+                            nodParent.FindNodeByTag(objVehicleMod)?.Remove();
                         }
                     }
                     break;
@@ -4099,7 +4103,7 @@ namespace Chummer
                             objVehicleMod.Weapons.RemoveTaggedCollectionChanged(treVehicles);
                             foreach (Weapon objWeapon in objVehicleMod.Weapons)
                                 SetupChildrenWeaponsCollectionChanged(false, treVehicles, objWeapon);
-                            nodParent.FindNode(objVehicleMod.InternalId)?.Remove();
+                            nodParent.FindNodeByTag(objVehicleMod)?.Remove();
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
@@ -4123,7 +4127,7 @@ namespace Chummer
                         string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
                         foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            nodParent.FindNode(objVehicleMod.InternalId)?.Remove();
+                            nodParent.FindNodeByTag(objVehicleMod)?.Remove();
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
@@ -4164,7 +4168,7 @@ namespace Chummer
             if (notifyCollectionChangedEventArgs == null)
                 return;
 
-            TreeNode nodVehicleParent = treVehicles.FindNode(objParent.InternalId);
+            TreeNode nodVehicleParent = treVehicles.FindNodeByTag(objParent);
             if (nodVehicleParent == null)
                 return;
             TreeNode nodParent = nodVehicleParent.FindNode("String_WeaponMounts", false);
@@ -4214,7 +4218,7 @@ namespace Chummer
                             }
                             if (nodParent != null)
                             {
-                                nodParent.FindNode(objWeaponMount.InternalId)?.Remove();
+                                nodParent.FindNodeByTag(objWeaponMount)?.Remove();
                                 if (nodParent.Nodes.Count == 0)
                                     nodParent.Remove();
                             }
@@ -4239,7 +4243,7 @@ namespace Chummer
                                 foreach (Weapon objWeapon in objMod.Weapons)
                                     SetupChildrenWeaponsCollectionChanged(false, treVehicles, objWeapon);
                             }
-                            nodParent?.FindNode(objWeaponMount.InternalId)?.Remove();
+                            nodParent?.FindNodeByTag(objWeaponMount)?.Remove();
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.NewItems)
@@ -4269,7 +4273,7 @@ namespace Chummer
                         string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
                         foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            nodParent?.FindNode(objWeaponMount.InternalId)?.Remove();
+                            nodParent?.FindNodeByTag(objWeaponMount)?.Remove();
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.NewItems)
@@ -4458,7 +4462,7 @@ namespace Chummer
                                 foreach (Gear objGear in objVehicle.Gear)
                                     SetupChildrenGearsCollectionChanged(false, treVehicles, objGear);
                                 objVehicle.Locations.RemoveTaggedCollectionChanged(treVehicles);
-                                treVehicles.FindNode(objVehicle.InternalId)?.Remove();
+                                treVehicles.FindNodeByTag(objVehicle)?.Remove();
                             }
                         }
                         break;
@@ -4500,7 +4504,7 @@ namespace Chummer
                                 foreach (Gear objGear in objVehicle.Gear)
                                     SetupChildrenGearsCollectionChanged(false, treVehicles, objGear);
                                 objVehicle.Locations.RemoveTaggedCollectionChanged(treVehicles);
-                                treVehicles.FindNode(objVehicle.InternalId)?.Remove();
+                                treVehicles.FindNodeByTag(objVehicle)?.Remove();
                             }
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.NewItems)
@@ -4550,7 +4554,7 @@ namespace Chummer
                         {
                             foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                treVehicles.FindNode(objVehicle.InternalId)?.Remove();
+                                treVehicles.FindNodeByTag(objVehicle)?.Remove();
                             }
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.NewItems)
@@ -4578,7 +4582,7 @@ namespace Chummer
                 TreeNode nodParent = null;
                 if (objVehicle.Location != null)
                 {
-                    nodParent = treVehicles.FindNode(objVehicle.Location.InternalId, false);
+                    nodParent = treVehicles.FindNodeByTag(objVehicle.Location, false);
                 }
                 if (nodParent == null)
                 {
@@ -4788,7 +4792,7 @@ namespace Chummer
                                                     }
                                                 }
                                             }
-                                            treFoci.FindNode(objGear.InternalId)?.Remove();
+                                            treFoci.FindNodeByTag(objGear)?.Remove();
                                         }
                                         break;
                                     case "Stacked Focus":
@@ -4801,7 +4805,7 @@ namespace Chummer
                                                     if (objStack.GearId == objGear.InternalId)
                                                     {
                                                         _objCharacter.StackedFoci.RemoveAt(i);
-                                                        treFoci.FindNode(objStack.InternalId)?.Remove();
+                                                        treFoci.FindNodeByTag(objStack)?.Remove();
                                                     }
                                                 }
                                             }
@@ -4831,7 +4835,7 @@ namespace Chummer
                                                     }
                                                 }
                                             }
-                                            treFoci.FindNode(objGear.InternalId)?.Remove();
+                                            treFoci.FindNodeByTag(objGear)?.Remove();
                                         }
                                         break;
                                     case "Stacked Focus":
@@ -4844,7 +4848,7 @@ namespace Chummer
                                                     if (objStack.GearId == objGear.InternalId)
                                                     {
                                                         _objCharacter.StackedFoci.RemoveAt(i);
-                                                        treFoci.FindNode(objStack.InternalId)?.Remove();
+                                                        treFoci.FindNodeByTag(objStack)?.Remove();
                                                     }
                                                 }
                                             }
@@ -4995,7 +4999,7 @@ namespace Chummer
                 case "Foci":
                 case "Metamagic Foci":
                 {
-                    TreeNode nodFocus = treFoci.FindNode(objFocusGear.InternalId);
+                    TreeNode nodFocus = treFoci.FindNodeByTag(objFocusGear);
                     if (nodFocus != null)
                     {
                         nodFocus.Text = objFocusGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language).Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
@@ -5064,7 +5068,7 @@ namespace Chummer
                             foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 objMartialArt.Techniques.RemoveTaggedCollectionChanged(treMartialArts);
-                                TreeNode objNode = treMartialArts.FindNode(objMartialArt.InternalId);
+                                TreeNode objNode = treMartialArts.FindNodeByTag(objMartialArt);
                                 if (objNode != null)
                                 {
                                     TreeNode objParent = objNode.Parent;
@@ -5082,7 +5086,7 @@ namespace Chummer
                             {
                                 objMartialArt.Techniques.RemoveTaggedCollectionChanged(treMartialArts);
 
-                                TreeNode objNode = treMartialArts.FindNode(objMartialArt.InternalId);
+                                TreeNode objNode = treMartialArts.FindNodeByTag(objMartialArt);
                                 if (objNode != null)
                                 {
                                     lstOldParents.Add(objNode.Parent);
@@ -5171,7 +5175,7 @@ namespace Chummer
         {
             if (notifyCollectionChangedEventArgs == null)
                 return;
-            TreeNode nodMartialArt = treMartialArts.FindNode(objMartialArt.InternalId);
+            TreeNode nodMartialArt = treMartialArts.FindNodeByTag(objMartialArt);
             if (nodMartialArt == null)
                 return;
 
@@ -5189,7 +5193,7 @@ namespace Chummer
                     {
                         foreach (MartialArtTechnique objTechnique in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            nodMartialArt.FindNode(objTechnique.InternalId)?.Remove();
+                            nodMartialArt.FindNodeByTag(objTechnique)?.Remove();
                         }
                     }
                     break;
@@ -5197,7 +5201,7 @@ namespace Chummer
                     {
                         foreach (MartialArtTechnique objTechnique in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            nodMartialArt.FindNode(objTechnique.InternalId)?.Remove();
+                            nodMartialArt.FindNodeByTag(objTechnique)?.Remove();
                         }
                         foreach (MartialArtTechnique objTechnique in notifyCollectionChangedEventArgs.NewItems)
                         {
@@ -5325,7 +5329,7 @@ namespace Chummer
                             {
                                 if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
                                 {
-                                    TreeNode objNode = treImprovements.FindNode(objImprovement.InternalId);
+                                    TreeNode objNode = treImprovements.FindNodeByTag(objImprovement);
                                     if (objNode != null)
                                     {
                                         TreeNode objParent = objNode.Parent;
@@ -5333,7 +5337,7 @@ namespace Chummer
                                         if (objParent.Tag.ToString() == "Node_SelectedImprovements" && objParent.Nodes.Count == 0)
                                             objParent.Remove();
                                     }
-                                    objNode = treLimit.FindNode(objImprovement.InternalId);
+                                    objNode = treLimit.FindNodeByTag(objImprovement);
                                     if (objNode != null)
                                     {
                                         TreeNode objParent = objNode.Parent;
@@ -5357,13 +5361,13 @@ namespace Chummer
                             {
                                 if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
                                 {
-                                    TreeNode objNode = treImprovements.FindNode(objImprovement.SourceName);
+                                    TreeNode objNode = treImprovements.FindNodeByTag(objImprovement);
                                     if (objNode != null)
                                     {
                                         lstOldParents.Add(objNode.Parent);
                                         objNode.Remove();
                                     }
-                                    objNode = treLimit.FindNode(objImprovement.SourceName);
+                                    objNode = treLimit.FindNodeByTag(objImprovement);
                                     if (objNode != null)
                                     {
                                         lstOldParents.Add(objNode.Parent);
@@ -5573,13 +5577,13 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     {
-                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objLocation = treImprovements.FindNode(strLocation, false);
-                            if (objLocation != null)
+                            TreeNode objNode = treImprovements.FindNodeByTag(objLocation, false);
+                            if (objNode != null)
                             {
-                                objLocation.Remove();
-                                if (objLocation.Nodes.Count > 0)
+                                objNode.Remove();
+                                if (objNode.Nodes.Count > 0)
                                 {
                                     if (nodRoot == null)
                                     {
@@ -5590,9 +5594,9 @@ namespace Chummer
                                         };
                                         treImprovements.Nodes.Insert(0, nodRoot);
                                     }
-                                    for (int i = objLocation.Nodes.Count - 1; i >= 0; --i)
+                                    for (int i = objNode.Nodes.Count - 1; i >= 0; --i)
                                     {
-                                        TreeNode nodImprovement = objLocation.Nodes[i];
+                                        TreeNode nodImprovement = objNode.Nodes[i];
                                         nodImprovement.Remove();
                                         nodRoot.Nodes.Add(nodImprovement);
                                     }
@@ -5604,15 +5608,15 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Replace:
                     {
                         int intNewItemsIndex = 0;
-                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objLocation = treImprovements.FindNode(strLocation, false);
-                            if (objLocation != null)
+                            TreeNode objNode = treImprovements.FindNodeByTag(objLocation, false);
+                            if (objNode != null)
                             {
-                                if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is string strNewLocation)
+                                if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is Location objNewLocation)
                                 {
-                                    objLocation.Tag = strNewLocation;
-                                    objLocation.Text = strNewLocation;
+                                    objNode.Tag = objNewLocation;
+                                    objNode.Text = objNewLocation.DisplayName(GlobalOptions.Language);
                                 }
                                 intNewItemsIndex += 1;
                             }
@@ -5715,7 +5719,7 @@ namespace Chummer
                         {
                             foreach (Lifestyle objLifestyle in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objNode = treLifestyles.FindNode(objLifestyle.InternalId);
+                                TreeNode objNode = treLifestyles.FindNodeByTag(objLifestyle);
                                 if (objNode != null)
                                 {
                                     TreeNode objParent = objNode.Parent;
@@ -5736,7 +5740,7 @@ namespace Chummer
                             foreach (Lifestyle objLifestyle in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 TreeNode objOldParent = null;
-                                TreeNode objNode = treLifestyles.FindNode(objLifestyle.InternalId);
+                                TreeNode objNode = treLifestyles.FindNodeByTag(objLifestyle);
                                 if (objNode != null)
                                 {
                                     objOldParent = objNode.Parent;

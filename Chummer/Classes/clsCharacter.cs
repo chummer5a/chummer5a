@@ -5367,18 +5367,26 @@ namespace Chummer
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
         /// <param name="objGearNode">Node of gear to move.</param>
-        public void MoveGearNode(int intNewIndex, TreeNode objDestination, TreeNode objGearNode)
+        public void MoveGearNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove)
         {
-            if (objGearNode?.Tag is Gear objGear)
+            if (nodeToMove?.Tag is Gear objGear)
             {
                 TreeNode objNewParent = objDestination;
-                while (objNewParent.Level > 0)
+                while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                     objNewParent = objNewParent.Parent;
 
-                // Change the Location on the Gear item.
-                objGear.Location = (objNewParent.Tag is Location objLocation) ? objLocation : null;
-
-                Gear.Move(Gear.IndexOf(objGear), intNewIndex);
+                if (objNewParent.Tag is Location objLocation)
+                {
+                    nodeToMove.Remove();
+                    objGear.Location = objLocation;
+                    objNewParent.Nodes.Insert(0, nodeToMove);
+                }
+                else if (objNewParent.Tag is string)
+                {
+                    objGear.Location = null;
+                    intNewIndex = Math.Min(intNewIndex, Gear.Count);
+                    Gear.Move(Gear.IndexOf(objGear), intNewIndex);
+                }
             }
         }
 
@@ -5433,19 +5441,27 @@ namespace Chummer
         /// </summary>
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
-        /// <param name="nodArmorNode">Node of armor to move.</param>
-        public void MoveArmorNode(int intNewIndex, TreeNode objDestination, TreeNode nodArmorNode)
+        /// <param name="nodeToMove">Node of armor to move.</param>
+        public void MoveArmorNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove)
         {
-            if (nodArmorNode?.Tag is Armor objArmor)
+            if (nodeToMove?.Tag is Armor objArmor)
             {
                 TreeNode objNewParent = objDestination;
-                while (objNewParent.Level > 0)
+                while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                     objNewParent = objNewParent.Parent;
 
-                // Change the Location on the Armor item.
-                objArmor.Location = objNewParent.Tag is Location objLocation ? objLocation : null;
-
-                Armor.Move(Armor.IndexOf(objArmor), intNewIndex);
+                if (objNewParent.Tag is Location objLocation)
+                {
+                    nodeToMove.Remove();
+                    objArmor.Location = objLocation;
+                    objNewParent.Nodes.Insert(0, nodeToMove);
+                }
+                else if (objNewParent.Tag is string)
+                {
+                    objArmor.Location = null;
+                    intNewIndex = Math.Min(intNewIndex, Armor.Count);
+                    Armor.Move(Armor.IndexOf(objArmor), intNewIndex);
+                }
             }
         }
 
@@ -5477,19 +5493,27 @@ namespace Chummer
         /// </summary>
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
-        /// <param name="nodWeaponNode">Node of weapon to move.</param>
-        public void MoveWeaponNode(int intNewIndex, TreeNode objDestination, TreeNode nodWeaponNode)
+        /// <param name="nodeToMove">Node of weapon to move.</param>
+        public void MoveWeaponNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove)
         {
-            if (nodWeaponNode?.Tag is Weapon objWeapon)
+            if (nodeToMove?.Tag is Weapon objWeapon)
             {
                 TreeNode objNewParent = objDestination;
-                while (objNewParent.Level > 0)
+                while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                     objNewParent = objNewParent.Parent;
 
-                // Change the Location on the Armor item.
-                objWeapon.Location = objNewParent.Tag is Location objLocation ? objLocation : null;
-
-                Weapons.Move(Weapons.IndexOf(objWeapon), intNewIndex);
+                if (objNewParent.Tag is Location objLocation)
+                {
+                    nodeToMove.Remove();
+                    objWeapon.Location = objLocation;
+                    objNewParent.Nodes.Insert(0, nodeToMove);
+                }
+                else if (objNewParent.Tag is string)
+                {
+                    objWeapon.Location = null;
+                    intNewIndex = Math.Min(intNewIndex, Weapons.Count);
+                    Weapons.Move(Weapons.IndexOf(objWeapon), intNewIndex);
+                }
             }
         }
 
@@ -5522,18 +5546,26 @@ namespace Chummer
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
         /// <param name="nodVehicleNode">Node of vehicle to move.</param>
-        public void MoveVehicleNode(int intNewIndex, TreeNode objDestination, TreeNode nodVehicleNode)
+        public void MoveVehicleNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove)
         {
-            if (nodVehicleNode?.Tag is Vehicle objVehicle)
+            if (nodeToMove?.Tag is Vehicle objVehicle)
             {
                 TreeNode objNewParent = objDestination;
-                while (objNewParent.Level > 0)
+                while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                     objNewParent = objNewParent.Parent;
 
-                // Change the Location on the Armor item.
-                objVehicle.Location = objNewParent.Tag is Location objLocation ? objLocation : null;
-
-                Vehicles.Move(Vehicles.IndexOf(objVehicle), intNewIndex);
+                if (objNewParent.Tag is Location objLocation)
+                {
+                    nodeToMove.Remove();
+                    objVehicle.Location = objLocation;
+                    objNewParent.Nodes.Insert(0, nodeToMove);
+                }
+                else if (objNewParent.Tag is string)
+                {
+                    objVehicle.Location = null;
+                    intNewIndex = Math.Min(intNewIndex, Weapons.Count);
+                    Vehicles.Move(Vehicles.IndexOf(objVehicle), intNewIndex);
+                }
             }
         }
 
