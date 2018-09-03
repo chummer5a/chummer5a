@@ -33,6 +33,8 @@ Data Changes:
 - Changed the concealment of the Altmayr SPX2 to be +2 instead of +6.
 - Corrected the required node for the Summon Great Form spell to work correctly when ignoring Art requirements.
 - Renamed the Silencer to Silencer/Suppressor. Hid the Suppressor. Fixes #2955
+- Elastic Joints, Enhanced Articulation and Smart Articulation are now exclusive of each other. Fixes #2965
+- Removed the Limit Condition from Enhanced Articulation. Fixes #2964
 
 Build 202
 
