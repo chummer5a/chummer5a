@@ -102,8 +102,8 @@ namespace Chummer
                     }
                 }
             }
-            int intTotalFreeNonTouchSpellsCount = _objCharacter.Spells.Count(spell => spell.FreeBonus && spell.Range != "T");
-            int intTotalFreeTouchOnlySpellsCount = _objCharacter.Spells.Count(spell => spell.FreeBonus && spell.Range == "T");
+            int intTotalFreeNonTouchSpellsCount = _objCharacter.Spells.Count(spell => spell.FreeBonus && (spell.Range != "T" && spell.Range != "T (A)"));
+            int intTotalFreeTouchOnlySpellsCount = _objCharacter.Spells.Count(spell => spell.FreeBonus && (spell.Range == "T" || spell.Range == "T (A)"));
             if (intFreeTouchOnlySpells > intTotalFreeTouchOnlySpellsCount)
             {
                 _blnCanTouchOnlySpellBeFree = true;

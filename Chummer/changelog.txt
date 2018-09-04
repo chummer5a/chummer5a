@@ -36,6 +36,7 @@ Data Changes:
 - Renamed the Silencer to Silencer/Suppressor. Hid the Suppressor. Fixes #2955
 - Elastic Joints, Enhanced Articulation and Smart Articulation are now exclusive of each other. Fixes #2965
 - Removed the Limit Condition from Enhanced Articulation. Fixes #2964
+- Barehanded Adept now allows T and T(A) spells to be free instead of just T. Fixes #2967
 
 Build 202
 
