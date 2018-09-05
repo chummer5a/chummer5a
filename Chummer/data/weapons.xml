@@ -5619,7 +5619,7 @@
       <page>429</page>
       <accessories>
         <accessory>
-          <name>Silencer</name>
+          <name>Silencer/Suppressor</name>
         </accessory>
         <accessory>
           <name>Imaging Scope</name>
@@ -9665,7 +9665,7 @@
       </accessorymounts>
       <accessories>
         <accessory>
-          <name>Silencer</name>
+          <name>Silencer/Suppressor</name>
         </accessory>
       </accessories>
       <source>2050</source>
@@ -9835,7 +9835,7 @@
           <name>Laser Sight</name>
         </accessory>
         <accessory>
-          <name>Silencer</name>
+          <name>Silencer/Suppressor</name>
         </accessory>
       </accessories>
       <source>2050</source>
@@ -10113,7 +10113,7 @@
       </accessorymounts>
       <accessories>
         <accessory>
-          <name>Silencer</name>
+          <name>Silencer/Suppressor</name>
         </accessory>
         <accessory>
           <name>Imaging Scope (2050)</name>
@@ -11318,7 +11318,7 @@
           <name>Electronic Firing</name>
         </accessory>
         <accessory>
-          <name>Silencer</name>
+          <name>Silencer/Suppressor</name>
         </accessory>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -11752,7 +11752,7 @@
           <name>Easy Breakdown (Unpowered)</name>
         </accessory>
         <accessory>
-          <name>Silencer</name>
+          <name>Silencer/Suppressor</name>
         </accessory>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -12912,7 +12912,7 @@
           <rating>6</rating>
         </accessory>
         <accessory>
-          <name>Silencer</name>
+          <name>Silencer/Suppressor</name>
         </accessory>
       </accessories>
     </weapon>
