@@ -4149,9 +4149,19 @@ namespace Chummer
                 objReplaceQuality.BP *= -1;
                 // If a Negative Quality is being bought off, the replacement one is Positive.
                 if (objSelectedQuality.Type == QualityType.Positive)
-                    objSelectedQuality.Type = QualityType.Negative;
+                {
+                    objReplaceQuality.Type = QualityType.Negative;
+                    if (!string.IsNullOrEmpty(objReplaceQuality.Extra))
+                        objReplaceQuality.Extra += ',' + LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                    objReplaceQuality.Extra += LanguageManager.GetString("String_ExpenseRemovePositiveQuality", GlobalOptions.Language);
+                }
                 else
+                {
                     objReplaceQuality.Type = QualityType.Positive;
+                    if (!string.IsNullOrEmpty(objReplaceQuality.Extra))
+                        objReplaceQuality.Extra += ',' + LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                    objReplaceQuality.Extra += LanguageManager.GetString("String_ExpenseRemoveNegativeQuality", GlobalOptions.Language);
+                }
                 // The replacement Quality does not count towards the BP limit of the new type, nor should it be printed.
                 objReplaceQuality.AllowPrint = false;
                 objReplaceQuality.ContributeToLimit = false;

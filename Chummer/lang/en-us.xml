@@ -3322,6 +3322,10 @@
       <text>Gained Positive Quality</text>
     </string>
     <string>
+      <key>String_ExpenseRemovePositiveQuality</key>
+      <text>Removed Positive Quality</text>
+    </string>
+    <string>
       <key>String_ExpenseSwapPositiveQuality</key>
       <text>Swapped Positive Quality {0} for {1}</text>
     </string>

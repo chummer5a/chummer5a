@@ -21,6 +21,7 @@ Application Changes:
 - Fixed the inability to click on the Source control for adept powers to open the linked PDF. Fixes #2952
 - The spirits to which a tradition has access will now also be displayed on characters who are not using a Custom tradition, though they cannot be changed.
 - Traditions can now apply improvements/bonuses, just like qualities, gear, mentor spirits, etc.
+- Fixed an issue where removing Metatype Removable qualities at character creation would not sometimes not end up altering the quality list and/or character karma properly. Fixes #2876.
 
 Data Changes:
 
@@ -42,6 +43,10 @@ Data Changes:
 - Fixed a bug where various traditions with Guidance Spirit set as one of their five spirits did not have Guidance Spirit show up properly in their lists.
 - Characters following the Elder God tradition will now properly get a -2 dicepool modifier to drain resistance rolls and a +3 dicepool modifier to casting Illusion spells.
 - Characters following the Missionist tradition will now properly get a +2 dicepool modifier to casting Health spells and a -2 dicepool modifier to casting Combat spells.
+
+New Strings:
+
+- String_ExpenseRemovePositiveQuality
 
 Build 202
 
@@ -113,6 +118,7 @@ New Strings:
 - Message_DeleteWeaponMount
 - String_ExpensePurchaseDrug
 - Label_DrugEffect
+
 Build 201
 
 Application Changes:
