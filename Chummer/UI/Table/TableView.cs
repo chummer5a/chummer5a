@@ -115,7 +115,7 @@ namespace Chummer.UI.Table
                 for (int i = 0; i < widths.Length; i++)
                 {
                     Control header = _table._cells[i].header;
-                    header.Location = new System.Drawing.Point(x, 0);
+                    header.Location = new Point(x, 0);
                     header.Size = new Size(widths[i], y);
                     x += widths[i];
                 }
@@ -138,7 +138,7 @@ namespace Chummer.UI.Table
                         for (int i = 0; i < _table._columns.Count; i++)
                         {
                             TableCell cell = _table._cells[i].cells[index];
-                            cell.Location = new System.Drawing.Point(x, row.Margin.Top);
+                            cell.Location = new Point(x, row.Margin.Top);
                             if (dy < cell.Height)
                             {
                                 dy = cell.Height;
@@ -185,38 +185,36 @@ namespace Chummer.UI.Table
         private TableLayoutEngine _layoutEngine;
         private readonly List<ColumnHolder> _cells = new List<ColumnHolder>();
         private readonly Dictionary<string, List<int>> _observedProperties = new Dictionary<string, List<int>>();
-        private List<int> _permutation = new List<int>();
-        private List<TableRow> _rowCells = new List<TableRow>();
+        private readonly List<int> _permutation = new List<int>();
+        private readonly List<TableRow> _rowCells = new List<TableRow>();
         private SortOrder _sortType = SortOrder.None;
-        private object _sortPausedSender = null;
+        private object _sortPausedSender;
         private int _selectedIndex = -1;
 
         public TableView()
         {
             _columns = new TableColumnCollection<T>(this);
-            _defaultFilter = (item) => true;
+            _defaultFilter = item => true;
             _filter = _defaultFilter;
             InitializeComponent();
         }
 
-        private void ItemPropertyChanged(int index, T item, string property)
+        private void ItemPropertyChanged(int intIndex, T objItem, string strProperty)
         {
             SuspendLayout();
-            if (property == null || property == String.Empty)
+            if (string.IsNullOrEmpty(strProperty))
             {
                 // update all cells
-                UpdateRow(index, item);
+                UpdateRow(intIndex, objItem);
             }
             else
             {
                 // update cells in columns that have the column as dependency
-                List<int> columns;
-
-                if (_observedProperties.TryGetValue(property, out columns))
+                if (_observedProperties.TryGetValue(strProperty, out List<int> lstColumns))
                 {
-                    foreach (int columnIndex in columns)
+                    foreach (int intColumnIndex in lstColumns)
                     {
-                        UpdateCell(_columns[columnIndex], _cells[columnIndex].cells[index], item);
+                        UpdateCell(_columns[intColumnIndex], _cells[intColumnIndex].cells[intIndex], objItem);
                     }
                 }
             }
@@ -237,7 +235,7 @@ namespace Chummer.UI.Table
                 // prevent sort for focus loss when disposing
                 if (_items != null && _permutation.Count == _items.Count) 
                 {
-                    Sort(true);
+                    Sort();
                 }
             }
         }
@@ -276,7 +274,7 @@ namespace Chummer.UI.Table
             {
                 Control content = cell.Content;
                 string text = tooltipExtractor(item);
-                tooltip.SetToolTip(content == null ? cell : content, text);
+                tooltip.SetToolTip(content ?? cell, text);
             }
         }
 
@@ -568,7 +566,7 @@ namespace Chummer.UI.Table
                             _permutation[i] = value + delta;
                         }
                     }
-                    Sort(true);
+                    Sort();
                     break;
             }
         }

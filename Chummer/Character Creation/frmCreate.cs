@@ -3583,8 +3583,7 @@ namespace Chummer
             if (treLimit.SelectedNode == null || treLimit.SelectedNode.Level <= 0)
                 return;
 
-            LimitModifier objLimitModifier = treLimit.SelectedNode?.Tag as LimitModifier;
-            if (objLimitModifier == null)
+            if (!(treLimit.SelectedNode?.Tag is LimitModifier objLimitModifier))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_CannotDeleteLimitModifier", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;

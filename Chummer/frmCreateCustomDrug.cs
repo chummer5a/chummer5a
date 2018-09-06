@@ -28,8 +28,10 @@ namespace Chummer
         {
 	        if (objDrug == null)
 	        {
-				objDrug = new Drug(objCharacter);
-				objDrug.GUID = new Guid();
+	            objDrug = new Drug(objCharacter)
+	            {
+	                GUID = new Guid()
+	            };
 	        }
 	        _objCharacter = objCharacter;
             InitializeComponent();
@@ -74,7 +76,7 @@ namespace Chummer
             dictDrugComponents = new Dictionary<string, DrugComponent>();
             foreach (XmlNode objXmlComponent in _objXmlDocument.SelectNodes("chummer/drugcomponents/drugcomponent"))
             {
-                DrugComponent objDrugComponent = new DrugComponent();
+                DrugComponent objDrugComponent = new DrugComponent(_objCharacter);
                 objDrugComponent.Load(objXmlComponent);
                 dictDrugComponents[objDrugComponent.Name] = objDrugComponent;
 			}

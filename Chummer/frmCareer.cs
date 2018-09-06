@@ -4822,8 +4822,7 @@ namespace Chummer
 
             XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
             XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmPickQuality.SelectedQuality + "\"]");
-
-            List<Weapon> lstWeapons = new List<Weapon>();
+            
             Quality objNewQuality = new Quality(CharacterObject);
 
             if (objNewQuality.Swap(objQuality, CharacterObject, objXmlQuality))
@@ -5524,7 +5523,7 @@ namespace Chummer
         private void cmdDeleteImprovement_Click(object sender, EventArgs e)
         {
             TreeNode nodSelectedImprovement = treImprovements.SelectedNode;
-            if (treImprovements.SelectedNode?.Tag is Improvement objImprovement)
+            if (nodSelectedImprovement?.Tag is Improvement objImprovement)
             {
                 if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteImprovement", GlobalOptions.Language)))
                     return;
@@ -5534,7 +5533,7 @@ namespace Chummer
 
                 IsCharacterUpdateRequested = true;
             }
-            else if (treImprovements.SelectedNode?.Tag is string strSelectedId)
+            else if (nodSelectedImprovement?.Tag is string strSelectedId)
             {
                 if (strSelectedId == "Node_SelectedImprovements")
                     return;

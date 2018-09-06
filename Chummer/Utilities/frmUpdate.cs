@@ -35,7 +35,6 @@ namespace Chummer
         private bool _blnSilentMode;
         private string _strDownloadFile = string.Empty;
         private string _strLatestVersion = string.Empty;
-        private readonly string _strCurrentVersion;
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private string _strTempPath = string.Empty;
         private readonly string _strTempUpdatePath;
@@ -53,7 +52,7 @@ namespace Chummer
             Log.Info("frmUpdate");
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _strCurrentVersion = $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
+            CurrentVersion = $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
             _blnPreferNightly = GlobalOptions.PreferNightlyBuilds;
             _strTempUpdatePath = Path.Combine(Path.GetTempPath(), "changelog.txt");
 
@@ -372,7 +371,7 @@ namespace Chummer
         /// <summary>
         /// Latest release build number located on Github.
         /// </summary>
-        public string CurrentVersion => _strCurrentVersion;
+        public string CurrentVersion { get; }
 
         public void DoVersionTextUpdate()
         {
@@ -393,12 +392,12 @@ namespace Chummer
             if (intResult > 0)
             {
                 lblUpdaterStatus.Text = string.Format(LanguageManager.GetString("String_Update_Available", GlobalOptions.Language), strLatestVersion) + strSpaceCharacter +
-                                        string.Format(LanguageManager.GetString("String_Currently_Installed_Version", GlobalOptions.Language), _strCurrentVersion);
+                                        string.Format(LanguageManager.GetString("String_Currently_Installed_Version", GlobalOptions.Language), CurrentVersion);
             }
             else
             {
                 lblUpdaterStatus.Text = LanguageManager.GetString("String_Up_To_Date", GlobalOptions.Language) + strSpaceCharacter +
-                                        string.Format(LanguageManager.GetString("String_Currently_Installed_Version", GlobalOptions.Language), _strCurrentVersion) + strSpaceCharacter +
+                                        string.Format(LanguageManager.GetString("String_Currently_Installed_Version", GlobalOptions.Language), CurrentVersion) + strSpaceCharacter +
                                         string.Format(LanguageManager.GetString("String_Latest_Version", GlobalOptions.Language), LanguageManager.GetString(_blnPreferNightly ? "String_Nightly" : "String_Stable", GlobalOptions.Language), strLatestVersion);
                 if (intResult < 0)
                 {
@@ -445,7 +444,7 @@ namespace Chummer
                          !strFilePath.StartsWith("lang") && !strFilePath.StartsWith("sheets") &&
                          !strFilePath.StartsWith("saves") && !strFilePath.StartsWith("Utils") &&
                          !string.IsNullOrEmpty(strFilePath.TrimEndOnce(strFileName))) ||
-                        strFileName?.EndsWith(".old") != false || strFileName?.EndsWith(".chum5") == true ||
+                        strFileName?.EndsWith(".old") != false || strFileName.EndsWith(".chum5") ||
                         strFileName.StartsWith("custom") || strFileName.StartsWith("override") ||
                         strFileName.StartsWith("amend") ||
                         (strFilePath.Contains("sheets") && strTopLevelFolder != "de" && strTopLevelFolder != "fr" &&
@@ -499,7 +498,7 @@ namespace Chummer
                         !strFilePath.StartsWith("sheets") &&
                         !strFilePath.StartsWith("Utils") &&
                         !string.IsNullOrEmpty(strFilePath.TrimEndOnce(strFileName)) ||
-                        strFileName?.EndsWith(".old") != false || strFileName?.EndsWith(".chum5") == true)
+                        strFileName?.EndsWith(".old") != false || strFileName.EndsWith(".chum5"))
                         lstFilesToNotDelete.Add(strFileToDelete);
                 }
                 lstFilesToDelete.RemoveWhere(x => lstFilesToNotDelete.Contains(x));

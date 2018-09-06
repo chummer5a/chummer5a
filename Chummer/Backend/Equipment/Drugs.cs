@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Equipment
 {
@@ -21,39 +22,38 @@ namespace Chummer.Backend.Equipment
         private string _strDescription = string.Empty;
         private string _strEffectDescription = string.Empty;
         private ObservableCollection<DrugComponent> _lstDrugComponents = new ObservableCollection<DrugComponent>();
-        private Dictionary<string, int> _cachedAttributes = new Dictionary<string, int>();
-        private List<string> _cachedInfos = new List<string>();
-        private Dictionary<string, int> _cachedLimits = new Dictionary<string, int>();
-        private List<string> _cachedQualities = new List<string>();
+        private Dictionary<string, int> _dicCachedAttributes = new Dictionary<string, int>();
+        private List<string> _lstCachedInfos = new List<string>();
+        private Dictionary<string, int> _dicCachedLimits = new Dictionary<string, int>();
+        private List<string> _lstCachedQualities = new List<string>();
         private string _strGrade = "";
-        private int _intCost;
+        private decimal _decCost;
         private int _intAddictionThreshold;
         private int _intAddictionRating;
         private decimal _decQty;
         private string _strAltName = "";
-        public Character Character;
+        private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
 
         public Drug(Character objCharacter)
         {
-            Character = objCharacter;
+            _objCharacter = objCharacter;
             // Create the GUID for the new Drug.
             _guiID = Guid.NewGuid();
             _lstDrugComponents.CollectionChanged += ComponentsChanged;
-
         }
 
         private void ComponentsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            _cachedCrashDamage = int.MinValue;
-            _cachedDuration = int.MinValue;
-            _cachedInitiative = int.MinValue;
-            _cachedInitiativeDice = int.MinValue;
-            _cachedSpeed = int.MinValue;
-            _cachedQualityFlag = false;
-            _cachedLimitFlag = false;
-            _cachedAttributeFlag = false;
+            _intCachedCrashDamage = int.MinValue;
+            _intCachedDuration = int.MinValue;
+            _intCachedInitiative = int.MinValue;
+            _intCachedInitiativeDice = int.MinValue;
+            _intCachedSpeed = int.MinValue;
+            _blnCachedQualityFlag = false;
+            _blnCachedLimitFlag = false;
+            _blnCachedAttributeFlag = false;
             _strDescription = string.Empty;
         }
 
@@ -64,7 +64,7 @@ namespace Chummer.Backend.Equipment
             objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
             foreach (XmlNode objXmlLevel in objXmlData.SelectNodes("drugcomponents/drugcomponent"))
             {
-                DrugComponent c = new DrugComponent();
+                DrugComponent c = new DrugComponent(_objCharacter);
                 c.Load(objXmlLevel);
                 Components.Add(c);
             }
@@ -75,7 +75,7 @@ namespace Chummer.Backend.Equipment
                 node?.TryGetField("id", Guid.TryParse, out _sourceID);
             }
             objXmlData.TryGetStringFieldQuickly("availability", ref _strAvailability);
-            objXmlData.TryGetInt32FieldQuickly("cost", ref _intCost);
+            objXmlData.TryGetDecFieldQuickly("cost", ref _decCost);
             objXmlData.TryGetDecFieldQuickly("quantity", ref _decQty);
             objXmlData.TryGetInt32FieldQuickly("rating", ref _intAddictionRating);
             objXmlData.TryGetInt32FieldQuickly("threshold", ref _intAddictionThreshold);
@@ -101,8 +101,8 @@ namespace Chummer.Backend.Equipment
 
             objXmlWriter.WriteEndElement();
             objXmlWriter.WriteElementString("availability", _strAvailability);
-            if (_intCost != 0)
-                objXmlWriter.WriteElementString("cost", _intCost.ToString());
+            if (_decCost != 0)
+                objXmlWriter.WriteElementString("cost", _decCost.ToString(GlobalOptions.InvariantCultureInfo));
             if (_intAddictionRating != 0)
                 objXmlWriter.WriteElementString("rating", _intAddictionRating.ToString());
             if (_intAddictionThreshold != 0)
@@ -193,7 +193,7 @@ namespace Chummer.Backend.Equipment
             set => _strCategory = value;
         }
 
-        private int _intCachedCost = int.MinValue;
+        private decimal _decCachedCost = decimal.MinValue;
 
         /// <summary>
         /// Base cost of the Drug.
@@ -202,16 +202,16 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_intCachedCost != int.MinValue) return _intCachedCost;
-                _intCachedCost = Components.Sum(d => d.Cost);
-                return _intCachedCost;
+                if (_decCachedCost != decimal.MinValue) return _decCachedCost;
+                _decCachedCost = Components.Sum(d => d.CostPerLevel);
+                return _decCachedCost;
             }
         }
 
         /// <summary>
 		/// Total cost of the Drug.
 		/// </summary>
-		public decimal TotalCost => Cost * _decQty;
+		public decimal TotalCost => Cost * Quantity;
 
 	    /// <summary>
 		/// Total amount of the Drug held by the character.
@@ -315,35 +315,35 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private bool _cachedLimitFlag = false;
+        private bool _blnCachedLimitFlag = false;
         public Dictionary<string, int> Limits
         {
             get
             {
-                if (_cachedLimitFlag) return _cachedLimits;
-                _cachedLimits = Components.Where(d => d.ActiveDrugEffect.Limits.Count > 0)
+                if (_blnCachedLimitFlag) return _dicCachedLimits;
+                _dicCachedLimits = Components.Where(d => d.ActiveDrugEffect.Limits.Count > 0)
                     .SelectMany(d => d.ActiveDrugEffect.Limits)
                     .GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.Sum(y => y.Value));
-                _cachedLimitFlag = true;
-                return _cachedLimits;
+                _blnCachedLimitFlag = true;
+                return _dicCachedLimits;
 
             }
         }
 
-        private bool _cachedQualityFlag = false;
+        private bool _blnCachedQualityFlag = false;
         public List<string> Qualities
 	    {
 	        get
 	        {
-	            if (_cachedQualityFlag) return _cachedQualities;
+	            if (_blnCachedQualityFlag) return _lstCachedQualities;
 	            foreach (DrugComponent d in Components)
 	            {
-	                _cachedQualities.AddRange(d.ActiveDrugEffect.Qualities);
+	                _lstCachedQualities.AddRange(d.ActiveDrugEffect.Qualities);
                 }
 
-	            _cachedQualities = _cachedQualities.Distinct().ToList();
-	            _cachedQualityFlag = true;
-                return _cachedQualities;
+	            _lstCachedQualities = _lstCachedQualities.Distinct().ToList();
+	            _blnCachedQualityFlag = true;
+                return _lstCachedQualities;
 	        }
 	    }
 
@@ -352,71 +352,71 @@ namespace Chummer.Backend.Equipment
 	    {
 	        get
 	        {
-	            if (_cachedInfoFlag) return _cachedInfos;
+	            if (_cachedInfoFlag) return _lstCachedInfos;
 	            foreach (DrugComponent d in Components)
 	            {
-	                _cachedInfos.AddRange(d.ActiveDrugEffect.Infos);
+	                _lstCachedInfos.AddRange(d.ActiveDrugEffect.Infos);
                 }
 
-	            _cachedInfos = _cachedInfos.Distinct().ToList();
+	            _lstCachedInfos = _lstCachedInfos.Distinct().ToList();
 	            _cachedInfoFlag = true;
-                return _cachedInfos;
+                return _lstCachedInfos;
 	        }
 	    }
 
-        private int _cachedInitiative = int.MinValue;
+        private int _intCachedInitiative = int.MinValue;
 
         public int Initiative
         {
             get
             {
-                if (_cachedInitiative != int.MinValue) return _cachedInitiative;
-                _cachedInitiative = Components.Sum(d => d.ActiveDrugEffect.Initiative);
-                return _cachedInitiative;
+                if (_intCachedInitiative != int.MinValue) return _intCachedInitiative;
+                _intCachedInitiative = Components.Sum(d => d.ActiveDrugEffect.Initiative);
+                return _intCachedInitiative;
             }
         }
 
-        private int _cachedInitiativeDice = int.MinValue;
+        private int _intCachedInitiativeDice = int.MinValue;
         public int InitiativeDice
         {
             get
             {
-                if (_cachedInitiativeDice != int.MinValue) return _cachedInitiativeDice;
-                _cachedInitiativeDice = Components.Sum(d => d.ActiveDrugEffect.InitiativeDice);
-                return _cachedInitiativeDice;
+                if (_intCachedInitiativeDice != int.MinValue) return _intCachedInitiativeDice;
+                _intCachedInitiativeDice = Components.Sum(d => d.ActiveDrugEffect.InitiativeDice);
+                return _intCachedInitiativeDice;
             }
         }
 
-        private int _cachedSpeed = int.MinValue;
+        private int _intCachedSpeed = int.MinValue;
         public int Speed
         {
             get
             {
-                if (_cachedSpeed != int.MinValue) return _cachedSpeed;
-                _cachedSpeed = Components.Sum(d => d.ActiveDrugEffect.Speed);
-                return _cachedSpeed;
+                if (_intCachedSpeed != int.MinValue) return _intCachedSpeed;
+                _intCachedSpeed = Components.Sum(d => d.ActiveDrugEffect.Speed);
+                return _intCachedSpeed;
             }
         }
 
-        private int _cachedDuration = int.MinValue;
+        private int _intCachedDuration = int.MinValue;
         public int Duration
         {
             get
             {
-                if (_cachedDuration != int.MinValue) return _cachedDuration;
-                _cachedDuration = Components.Sum(d => d.ActiveDrugEffect.Duration);
-                return _cachedDuration;
+                if (_intCachedDuration != int.MinValue) return _intCachedDuration;
+                _intCachedDuration = Components.Sum(d => d.ActiveDrugEffect.Duration);
+                return _intCachedDuration;
             }
         }
 
-        private int _cachedCrashDamage = int.MinValue;
+        private int _intCachedCrashDamage = int.MinValue;
         public int CrashDamage
         {
             get
             {
-                if (_cachedCrashDamage != int.MinValue) return _cachedCrashDamage;
-                _cachedCrashDamage = Components.Sum(d => d.ActiveDrugEffect.Duration);
-                return _cachedCrashDamage;
+                if (_intCachedCrashDamage != int.MinValue) return _intCachedCrashDamage;
+                _intCachedCrashDamage = Components.Sum(d => d.ActiveDrugEffect.Duration);
+                return _intCachedCrashDamage;
             }
         }
 
@@ -440,7 +440,7 @@ namespace Chummer.Backend.Equipment
             return strReturn;
         }
 
-        private bool _cachedAttributeFlag = false;
+        private bool _blnCachedAttributeFlag = false;
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage;
 
@@ -448,15 +448,15 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_cachedAttributeFlag) return _cachedAttributes;
-                _cachedAttributes =
+                if (_blnCachedAttributeFlag) return _dicCachedAttributes;
+                _dicCachedAttributes =
                     (from d in Components
                         from de in d.DrugEffects.Where(de => de.Level == d.Level)
                         where de.Attributes.Count > 0
                         from attribute in de.Attributes
                         select attribute).GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.Sum(y => y.Value));
-                _cachedAttributeFlag = true;
-                return _cachedAttributes;
+                _blnCachedAttributeFlag = true;
+                return _dicCachedAttributes;
             }
         }
         public Color PreferredColor
@@ -582,7 +582,7 @@ namespace Chummer.Backend.Equipment
 			    {
 			        description.Append("Addiction rating: ").Append(AddictionRating * (level + 1)).AppendLine();
 			        description.Append("Addiction threshold: ").Append(AddictionThreshold * (level + 1)).AppendLine();
-			        description.Append("Cost: ").Append(Cost * (level + 1)).Append("¥").AppendLine();
+			        description.Append("Cost: ").Append((Cost * (level + 1)).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)).Append("¥").AppendLine();
 			        description.Append($"Availability: {TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language)}")
 			            .AppendLine();
 			    }
@@ -591,7 +591,7 @@ namespace Chummer.Backend.Equipment
             {
 				description.Append("Addiction rating: ").Append(AddictionRating).Append(" per level").AppendLine();
 				description.Append("Addiction threshold: ").Append(AddictionThreshold).Append(" per level").AppendLine();
-				description.Append("Cost: ").Append(Cost).Append("¥ per level").AppendLine();
+				description.Append("Cost: ").Append(Cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)).Append("¥ per level").AppendLine();
 				description.Append("Availability: ").Append(TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language)).Append(" per level").AppendLine();
 			}
 
@@ -610,29 +610,28 @@ namespace Chummer.Backend.Equipment
 		private string _strCategory;
 	    private string _strAvailability = "0";
         private readonly List<DrugEffect> _lstEffects;
-		private int cost = 0;
-		private int addictionRating = 0;
-		private int addictionThreshold = 0;
 		private int _intLevel = 0;
-		private string source;
-		private int page = 0;
-		private int _intCost;
+		private string _strSource;
+		private string _strPage;
+		private string _strCost;
 		private int _intAddictionThreshold;
 		private int _intAddictionRating;
 	    private XmlNode _objCachedMyXmlNode;
 	    private string _strCachedXmlNodeLanguage;
+	    private readonly Character _objCharacter;
 
-	    public DrugComponent()
-		{
-			_lstEffects = new List<DrugEffect>();
+	    public DrugComponent(Character objCharacter)
+	    {
+	        _objCharacter = objCharacter;
+            _lstEffects = new List<DrugEffect>();
 		}
 
 		#region Constructor, Create, Save, Load, and Print Methods
 		public void Load(XmlNode objXmlData)
 		{
 		    objXmlData.TryGetField("id", Guid.TryParse, out _sourceID);
-            objXmlData.TryGetField("name", out _strName);
-			objXmlData.TryGetField("category", out _strCategory);
+            objXmlData.TryGetStringFieldQuickly("name", ref _strName);
+			objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
 			foreach (XmlNode objXmlLevel in objXmlData.SelectNodes("effects/effect"))
 			{
 				DrugEffect objDrugEffect = new DrugEffect();
@@ -682,11 +681,11 @@ namespace Chummer.Backend.Equipment
 				_lstEffects.Add(objDrugEffect);
 			}
 			objXmlData.TryGetStringFieldQuickly("availability", ref _strAvailability);
-			objXmlData.TryGetField("cost", out _intCost);
+			objXmlData.TryGetStringFieldQuickly("cost", ref _strCost);
 			objXmlData.TryGetField("rating", out _intAddictionRating);
 			objXmlData.TryGetField("threshold", out _intAddictionThreshold);
-			//objXmlData.TryGetField("source", out _strSource);
-			//objXmlData.TryGetField("page", out _strPage);
+			objXmlData.TryGetStringFieldQuickly("source", ref _strSource);
+			objXmlData.TryGetStringFieldQuickly("page", ref _strPage);
 		}
 
 		public void Save(XmlWriter objXmlWriter)
@@ -736,17 +735,14 @@ namespace Chummer.Backend.Equipment
 			objXmlWriter.WriteEndElement();
 
 		    objXmlWriter.WriteElementString("availability", _strAvailability);
-			if (cost != 0)
-				objXmlWriter.WriteElementString("cost", cost.ToString());
-			if (addictionRating != 0)
-				objXmlWriter.WriteElementString("rating", addictionRating.ToString());
-			if (addictionThreshold != 0)
-				objXmlWriter.WriteElementString("threshold", addictionThreshold.ToString());
-			if (source != null)
-				objXmlWriter.WriteElementString("source", source);
-			if (page != 0)
-				objXmlWriter.WriteElementString("page", page.ToString());
-		}
+            objXmlWriter.WriteElementString("cost", _strCost);
+            if (_intAddictionRating != 0)
+				objXmlWriter.WriteElementString("rating", _intAddictionRating.ToString());
+			if (_intAddictionThreshold != 0)
+				objXmlWriter.WriteElementString("threshold", _intAddictionThreshold.ToString());
+            objXmlWriter.WriteElementString("source", _strSource);
+            objXmlWriter.WriteElementString("page", _strPage);
+        }
 		#endregion
 		#region Properties
 		/// <summary>
@@ -782,16 +778,66 @@ namespace Chummer.Backend.Equipment
 			get => _strCategory;
 		    set => _strCategory = value;
 		}
-		public List<DrugEffect> DrugEffects => _lstEffects;
+	    /// <summary>
+	    /// Sourcebook.
+	    /// </summary>
+	    public string Source
+	    {
+	        get => _strSource;
+	        set => _strSource = value;
+	    }
+	    /// <summary>
+	    /// Sourcebook Page Number.
+	    /// </summary>
+	    public string Page(string strLanguage)
+	    {
+	        if (strLanguage == GlobalOptions.DefaultLanguage)
+	            return _strPage;
+
+	        return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
+	    }
+
+        public List<DrugEffect> DrugEffects => _lstEffects;
 
 	    public DrugEffect ActiveDrugEffect => DrugEffects.FirstOrDefault(effect => effect.Level == Level);
 
-	    public int Cost
+	    public string Cost
 		{
-			get => _intCost;
-	        set => _intCost = value;
-	    }
-		public string Availability
+	        get => _strCost;
+	        set => _strCost = value;
+        }
+
+        /// <summary>
+        /// Cost of the drug component per level
+        /// </summary>
+        public decimal CostPerLevel
+        {
+            get
+            {
+                string strCostExpression = Cost;
+
+                if (strCostExpression.StartsWith("FixedValues("))
+                {
+                    string[] strValues = strCostExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    strCostExpression = strValues[Math.Max(Math.Min(Level, strValues.Length) - 1, 0)].Trim('[', ']');
+                }
+                
+                if (string.IsNullOrEmpty(strCostExpression))
+                    return 0;
+
+                StringBuilder objCost = new StringBuilder(strCostExpression.TrimStart('+'));
+                objCost.Replace("Level", Level.ToString());
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                {
+                    objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
+                    objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
+                }
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
+                return blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
+            }
+        }
+
+        public string Availability
 		{
 			get => _strAvailability;
 		    set => _strAvailability = value;
@@ -866,91 +912,91 @@ namespace Chummer.Backend.Equipment
 	        return _objCachedMyXmlNode;
 	    }
 
-	    public String GenerateDescription(int level = -1)
+	    public string GenerateDescription(int intLevel = -1)
 		{
-			if (level >= _lstEffects.Count)
+			if (intLevel >= _lstEffects.Count)
 				return null;
 
-			StringBuilder description = new StringBuilder();
-			bool newLineFlag = false;
+			StringBuilder strbldDescription = new StringBuilder();
+			bool blnNewLineFlag = false;
 
-			description.Append(_strCategory).Append(": ").Append(_strName).AppendLine();
+			strbldDescription.Append(_strCategory).Append(": ").Append(_strName).AppendLine();
 
-			if (level != -1)
+			if (intLevel != -1)
 			{
-				var objDrugEffect = _lstEffects.ElementAt(level);
+				DrugEffect objDrugEffect = _lstEffects.ElementAt(intLevel);
 
-				foreach (var objAttribute in objDrugEffect.Attributes)
+				foreach (KeyValuePair<string, int> objAttribute in objDrugEffect.Attributes)
 				{
 					if (objAttribute.Value != 0)
 					{
-						description.Append(objAttribute.Key).Append(objAttribute.Value.ToString("+#;-#")).Append("; ");
-						newLineFlag = true;
+						strbldDescription.Append(objAttribute.Key).Append(objAttribute.Value.ToString("+#;-#")).Append("; ");
+						blnNewLineFlag = true;
 					}
 				}
-				if (newLineFlag)
+				if (blnNewLineFlag)
 				{
-					newLineFlag = false;
-					description.AppendLine();
+					blnNewLineFlag = false;
+					strbldDescription.AppendLine();
 				}
 
-				foreach (var objLimit in objDrugEffect.Limits)
+				foreach (KeyValuePair<string, int> objLimit in objDrugEffect.Limits)
 				{
 					if (objLimit.Value != 0)
 					{
-						description.Append(objLimit.Key).Append(" limit ").Append(objLimit.Value.ToString("+#;-#")).Append("; ");
-						newLineFlag = true;
+						strbldDescription.Append(objLimit.Key).Append(" limit ").Append(objLimit.Value.ToString("+#;-#")).Append("; ");
+						blnNewLineFlag = true;
 					}
 				}
-				if (newLineFlag)
+				if (blnNewLineFlag)
 				{
-					newLineFlag = false;
-					description.AppendLine();
+					blnNewLineFlag = false;
+					strbldDescription.AppendLine();
 				}
 
 				if (objDrugEffect.Initiative != 0 || objDrugEffect.InitiativeDice != 0)
 				{
-					description.Append("Initiative ");
+					strbldDescription.Append("Initiative ");
 					if (objDrugEffect.Initiative != 0)
-						description.Append(objDrugEffect.Initiative.ToString("+#;-#"));
+						strbldDescription.Append(objDrugEffect.Initiative.ToString("+#;-#"));
 					if (objDrugEffect.InitiativeDice != 0)
-						description.Append(objDrugEffect.InitiativeDice.ToString("+#;-#"));
-					description.AppendLine();
+						strbldDescription.Append(objDrugEffect.InitiativeDice.ToString("+#;-#"));
+					strbldDescription.AppendLine();
 				}
 
 				foreach (string quality in objDrugEffect.Qualities)
-					description.Append(quality).Append(" quality").AppendLine();
+					strbldDescription.Append(quality).Append(" quality").AppendLine();
 				foreach (string info in objDrugEffect.Infos)
-					description.Append(info).AppendLine();
+					strbldDescription.Append(info).AppendLine();
 
 				if (_strCategory == "Custom Drug" || objDrugEffect.Duration != 0)
-					description.Append("Duration: 10 x ").Append(objDrugEffect.Duration + 1).Append("d6 minutes").AppendLine();
+					strbldDescription.Append("Duration: 10 x ").Append(objDrugEffect.Duration + 1).Append("d6 minutes").AppendLine();
 
 				if (_strCategory == "Custom Drug" || objDrugEffect.Speed != 0)
 				{
 					if (3 - objDrugEffect.Speed == 0)
-						description.Append("Speed: Immediate").AppendLine();
+						strbldDescription.Append("Speed: Immediate").AppendLine();
 					else
-						description.Append("Speed: ").Append(3 - objDrugEffect.Speed).Append(" combat turns").AppendLine();
+						strbldDescription.Append("Speed: ").Append(3 - objDrugEffect.Speed).Append(" combat turns").AppendLine();
 				}
 
 				if (objDrugEffect.CrashDamage != 0)
-					description.Append("Crash Effect: ").Append(objDrugEffect.CrashDamage).Append("S damage, unresisted").AppendLine();
+					strbldDescription.Append("Crash Effect: ").Append(objDrugEffect.CrashDamage).Append("S damage, unresisted").AppendLine();
 
-				description.Append("Addiction rating: ").Append(addictionRating * (level + 1)).AppendLine();
-				description.Append("Addiction threshold: ").Append(addictionThreshold * (level + 1)).AppendLine();
-				description.Append("Cost: ").Append(cost * (level + 1)).Append("¥").AppendLine();
-				description.Append("Availability: ").Append(Availability).AppendLine();
+				strbldDescription.Append("Addiction rating: ").Append(AddictionRating * (intLevel + 1)).AppendLine();
+				strbldDescription.Append("Addiction threshold: ").Append(AddictionThreshold * (intLevel + 1)).AppendLine();
+				strbldDescription.Append("Cost: ").Append((CostPerLevel * (intLevel + 1)).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)).Append("¥").AppendLine();
+				strbldDescription.Append("Availability: ").Append(Availability).AppendLine();
 			}
 			else
 			{
-				description.Append("Addiction rating: ").Append(addictionRating).Append(" per level").AppendLine();
-				description.Append("Addiction threshold: ").Append(addictionThreshold).Append(" per level").AppendLine();
-				description.Append("Cost: ").Append(cost).Append("¥ per level").AppendLine();
-				description.Append("Availability: ").Append(Availability).Append(" per level").AppendLine();
+				strbldDescription.Append("Addiction rating: ").Append(AddictionRating).Append(" per level").AppendLine();
+				strbldDescription.Append("Addiction threshold: ").Append(AddictionThreshold).Append(" per level").AppendLine();
+				strbldDescription.Append("Cost: ").Append(CostPerLevel.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)).Append("¥ per level").AppendLine();
+				strbldDescription.Append("Availability: ").Append(Availability).Append(" per level").AppendLine();
 			}
 
-			return description.ToString();
+			return strbldDescription.ToString();
 		}
 		#endregion
 	}
