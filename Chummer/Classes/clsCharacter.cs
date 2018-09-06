@@ -7216,7 +7216,27 @@ namespace Chummer
                     else
                     {
                         if (!RESEnabled)
+                        {
                             ClearInitiations();
+                            MagicTradition.ResetTradition();
+                        }
+                        else
+                        {
+                            XmlNode xmlTraditionListDataNode = XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions/");
+                            if (xmlTraditionListDataNode != null)
+                            {
+                                XmlNode xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"Default\"]");
+                                if (xmlTraditionDataNode != null)
+                                {
+                                    if (!MagicTradition.Create(xmlTraditionDataNode, true))
+                                        MagicTradition.ResetTradition();
+                                }
+                                else
+                                    MagicTradition.ResetTradition();
+                            }
+                            else
+                                MagicTradition.ResetTradition();
+                        }
                         if (!Created && !RESEnabled && !DEPEnabled)
                             EssenceAtSpecialStart = decimal.MinValue;
                     }
@@ -7421,7 +7441,7 @@ namespace Chummer
                                 XmlNode xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[id = \"" + Tradition.CustomMagicalTraditionGuid + "\"]");
                                 if (xmlTraditionDataNode != null)
                                 {
-                                    if (!MagicTradition.Create(xmlTraditionDataNode, true))
+                                    if (!MagicTradition.Create(xmlTraditionDataNode))
                                         MagicTradition.ResetTradition();
                                 }
                                 else
