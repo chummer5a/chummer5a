@@ -1771,11 +1771,6 @@ namespace Chummer.Backend.Equipment
                         _guiID.ToString("D") + "WirelessPair", WirelessPairBonus, false, Rating,
                         DisplayNameShort(GlobalOptions.Language));
                 }
-
-                foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
-                {
-                    objPairableCyberware.ToggleWirelessBonuses(true);
-                }
             }
             else
             {

@@ -930,11 +930,15 @@
       </bonus>
       <wirelesspairbonus mode="replace">
         <specificattribute>
-          <name>REA</name>
+          <name precedence="1">REA</name>
           <val>Rating</val>
+          <aug>FixedValues(0,0,1)</aug>
         </specificattribute>
       </wirelesspairbonus>
       <rating>3</rating>
+      <wirelesspairinclude>
+        <name>Wired Reflexes</name>
+      </wirelesspairinclude>
     </cyberware>
     <cyberware>
       <id>60485c4e-042f-44f6-ad89-324003223f73</id>
@@ -982,11 +986,11 @@
         </specificattribute>
       </bonus>
       <wirelesspairbonus mode="replace">
-        <initiativepass>Rating</initiativepass>
+        <initiativepass precedence="1">Rating</initiativepass>
         <specificattribute>
-          <name>REA</name>
+          <name precedence="1">REA</name>
           <val>Rating</val>
-          <aug>1</aug>
+          <aug>FixedValues(0,0,1)</aug>
         </specificattribute>
       </wirelesspairbonus>
       <wirelesspairinclude>
