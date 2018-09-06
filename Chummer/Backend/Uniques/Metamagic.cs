@@ -38,7 +38,7 @@ namespace Chummer
         private bool _blnPaidWithKarma;
         private int _intGrade;
         private XmlNode _nodBonus;
-        private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Metamagic;
+        private Improvement.ImprovementSource _eImprovementSource = Improvement.ImprovementSource.Metamagic;
         private string _strNotes = string.Empty;
 
         private readonly Character _objCharacter;
@@ -61,7 +61,7 @@ namespace Chummer
                 _objCachedMyXmlNode = null;
             objXmlMetamagicNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlMetamagicNode.TryGetStringFieldQuickly("page", ref _strPage);
-            _objImprovementSource = objSource;
+            _eImprovementSource = objSource;
             objXmlMetamagicNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             if (!objXmlMetamagicNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlMetamagicNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -72,7 +72,7 @@ namespace Chummer
 
                 string strOldFocedValue = ImprovementManager.ForcedValue;
                 string strOldSelectedValue = ImprovementManager.SelectedValue;
-                ImprovementManager.ForcedValue = strOldFocedValue;
+                ImprovementManager.ForcedValue = strForcedValue;
                 if (!ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString("D"), _nodBonus, true, intRating, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
@@ -118,7 +118,7 @@ namespace Chummer
                 objWriter.WriteRaw(_nodBonus.OuterXml);
             else
                 objWriter.WriteElementString("bonus", string.Empty);
-            objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
+            objWriter.WriteElementString("improvementsource", _eImprovementSource.ToString());
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
             _objCharacter.SourceProcess(_strSource);
@@ -161,7 +161,7 @@ namespace Chummer
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteElementString("grade", Grade.ToString(objCulture));
-            objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
+            objWriter.WriteElementString("improvementsource", _eImprovementSource.ToString());
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
@@ -188,13 +188,13 @@ namespace Chummer
         /// </summary>
         public Improvement.ImprovementSource SourceType
         {
-            get => _objImprovementSource;
+            get => _eImprovementSource;
             set
             {
-                if (_objImprovementSource != value)
+                if (_eImprovementSource != value)
                 {
                     _objCachedMyXmlNode = null;
-                    _objImprovementSource = value;
+                    _eImprovementSource = value;
                 }
             }
         }
@@ -297,7 +297,7 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = _objImprovementSource == Improvement.ImprovementSource.Metamagic
+                _objCachedMyXmlNode = _eImprovementSource == Improvement.ImprovementSource.Metamagic
                     ? XmlManager.Load("metamagic.xml", strLanguage).SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + Name + "\"]")
                     : XmlManager.Load("echoes.xml", strLanguage).SelectSingleNode("/chummer/echoes/echo[name = \"" + Name + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;

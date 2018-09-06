@@ -284,13 +284,13 @@
             <xsl:call-template name="qualities"/>
           </xsl:if>
 
-          <xsl:if test="tradition/name != ''">
+          <xsl:if test="tradition and tradition/istechnomancertradition = 'False'">
             <br/>
             <br/>== <xsl:value-of select="$lang.Tradition"/> ==
             <br/>
             <xsl:value-of select="tradition/name"/>,
             <xsl:value-of select="$lang.ResistDrain"/>:
-            <xsl:value-of select="tradition/drain"/>
+            <xsl:value-of select="tradition/drainvalue"/>
           </xsl:if>
 
           <xsl:if test="spells/spell">
@@ -308,7 +308,7 @@
           <xsl:if test="complexforms/complexform">
             <br/>
             <br/>== <xsl:value-of select="$lang.ComplexForms"/> ==
-            <br/>(<xsl:value-of select="$lang.Tradition"/>: <xsl:value-of select="stream"/>, <xsl:value-of select="$lang.ResistFading"/> <xsl:value-of select="drainattributes"/> = <xsl:value-of select="drain"/>)
+            <br/>(<xsl:value-of select="$lang.Tradition"/>: <xsl:value-of select="tradition/name"/>, <xsl:value-of select="$lang.ResistFading"/> <xsl:value-of select="tradition/drainattributes"/> = <xsl:value-of select="tradition/drainvalue"/>)
             <xsl:call-template name="complexforms"/>
           </xsl:if>
 

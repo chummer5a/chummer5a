@@ -1773,7 +1773,7 @@
           </xsl:choose>
         </strong></td>
       </tr>
-      <xsl:if test="tradition/name != ''">
+      <xsl:if test="tradition and tradition/istechnomancertradition = 'False'">
         <tr>
           <td><xsl:value-of select="$lang.Tradition"/></td>
           <td colspan="3">
@@ -1794,7 +1794,7 @@
         </tr>
         <tr>
           <td><xsl:value-of select="$lang.Manipulation"/></td><td><strong><xsl:value-of select="tradition/spiritmanipulation" /></strong></td>
-          <td><xsl:value-of select="$lang.Drain"/></td><td><strong><xsl:value-of select="tradition/drain" /></strong></td>
+          <td><xsl:value-of select="$lang.Drain"/></td><td><strong><xsl:value-of select="tradition/drainvalue" /></strong></td>
         </tr>
       </xsl:if>
     </table>

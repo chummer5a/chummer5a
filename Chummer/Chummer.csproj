@@ -216,6 +216,7 @@
     <Compile Include="Backend\Uniques\Spell.cs" />
     <Compile Include="Backend\Uniques\Spirit.cs" />
     <Compile Include="Backend\Uniques\StackedFocus.cs" />
+    <Compile Include="Backend\Uniques\Tradition.cs" />
     <Compile Include="Character Creation\frmSelectLifeModule.cs">
       <SubType>Form</SubType>
     </Compile>

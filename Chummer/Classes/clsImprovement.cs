@@ -31,6 +31,7 @@ using System.Drawing;
 using System.Text;
 using static Chummer.Backend.Skills.SkillsSection;
 using System.ComponentModel;
+using Chummer.Backend.Uniques;
 
 namespace Chummer
 {
@@ -261,6 +262,7 @@ namespace Chummer
             ActiveSkillKarmaCost,
             SkillGroupKarmaCost,
             SkillGroupDisable,
+            SkillDisable,
             KnowledgeSkillKarmaCost,
             SkillCategorySpecializationKarmaCostMultiplier,
             SkillCategorySpecializationKarmaCost,
@@ -342,6 +344,7 @@ namespace Chummer
             SpiritFettering,
             MentorSpirit,
             Drug,
+            Tradition,
             NumImprovementSources // 🡐 This one should always be the last defined enum
         }
 
@@ -1053,13 +1056,9 @@ namespace Chummer
                 }
                     break;
                 case ImprovementType.DrainResistance:
-                {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.TraditionDrainValue));
-                }
-                    break;
                 case ImprovementType.FadingResistance:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.TechnomancerFadingValue));
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter.MagicTradition, nameof(Tradition.DrainValue));
                 }
                     break;
                 case ImprovementType.Composure:

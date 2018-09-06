@@ -1026,7 +1026,7 @@
         *                      *
 -->
       <xsl:if test="magenabled = 'True'">
-        <xsl:if test="tradition/name != ''">
+        <xsl:if test="tradition and tradition/istechnomancertradition = 'False'">
           <div class="block" id="TraditionBlock">
             <table class="tablestyle">
               <tr>
@@ -1250,9 +1250,9 @@
               <th width="10%"/>
             </tr>
             <tr>
-              <td><xsl:value-of select="stream"/></td>
+              <td><xsl:value-of select="tradition/name"/></td>
               <td style="text-align:center;">
-			    <xsl:value-of select="drainattributes"/> (<xsl:value-of select="drain"/>)
+			    <xsl:value-of select="tradition/drainattributes"/> (<xsl:value-of select="tradition/drainvalue"/>)
 			  </td>
               <td/>
               <td style="text-align:center;">
@@ -2024,7 +2024,7 @@
         </xsl:if>
       </td>
       <td style="vertical-align:top; text-align:center;">
-        <xsl:value-of select="tradition/drainattributes" /> (<xsl:value-of select="tradition/drain" />)
+        <xsl:value-of select="tradition/drainattributes" /> (<xsl:value-of select="tradition/drainvalue" />)
       </td>
       <td style="vertical-align:top; text-align:center;">
         <xsl:value-of select="tradition/spiritcombat" />

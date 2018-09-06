@@ -6736,7 +6736,7 @@ namespace Chummer
                     objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                     objSpiritControl.DeleteSpirit += DeleteSpirit;
 
-                    objSpiritControl.RebuildSpiritList(blnIsSpirit ? CharacterObject.MagicTradition : CharacterObject.TechnomancerStream);
+                    objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
 
                     if (blnIsSpirit)
                     {
@@ -6769,7 +6769,7 @@ namespace Chummer
                                 objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                 objSpiritControl.DeleteSpirit += DeleteSpirit;
 
-                                objSpiritControl.RebuildSpiritList(blnIsSpirit ? CharacterObject.MagicTradition : CharacterObject.TechnomancerStream);
+                                objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
 
                                 if (blnIsSpirit)
                                 {
@@ -6897,7 +6897,7 @@ namespace Chummer
                                 objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                 objSpiritControl.DeleteSpirit += DeleteSpirit;
 
-                                objSpiritControl.RebuildSpiritList(blnIsSpirit ? CharacterObject.MagicTradition : CharacterObject.TechnomancerStream);
+                                objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
 
                                 if (blnIsSpirit)
                                 {

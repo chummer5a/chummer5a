@@ -669,6 +669,12 @@ namespace Chummer
                     case "Right":
                         strReturn = GetString("String_Improvement_SideRight", strIntoLanguage);
                         break;
+                    case "All":
+                        strReturn = GetString("String_All", strIntoLanguage);
+                        break;
+                    case "None":
+                        strReturn = GetString("String_None", strIntoLanguage);
+                        break;
                     default:
                         string strExtraNoQuotes = strExtra.FastEscape('\"');
 
@@ -806,6 +812,16 @@ namespace Chummer
                 if (strExtra == GetString("String_Improvement_SideRight", strFromLanguage))
                 {
                     return "Right";
+                }
+
+                if (strExtra == GetString("String_All", strFromLanguage))
+                {
+                    return "All";
+                }
+
+                if (strExtra == GetString("String_None", strFromLanguage))
+                {
+                    return "None";
                 }
 
                 string strExtraNoQuotes = strExtra.FastEscape('\"');

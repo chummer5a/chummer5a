@@ -25,6 +25,8 @@ using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
+using Chummer.Backend.Uniques;
+
 // ReSharper disable InconsistentNaming
 
 namespace Chummer.Classes
@@ -331,7 +333,7 @@ namespace Chummer.Classes
                     {
                         string strName = xmlTradition.SelectSingleNode("name")?.Value;
                         if (!string.IsNullOrEmpty(strName))
-                            lstTraditions.Add(new ListItem(strName,
+                            lstTraditions.Add(new ListItem(xmlTradition.SelectSingleNode("id")?.Value ?? strName,
                                 xmlTradition.SelectSingleNode("translate")?.Value ?? strName));
                     }
                 }
@@ -344,9 +346,9 @@ namespace Chummer.Classes
                 frmSelectItem frmPickItem = new frmSelectItem
                 {
                     DropdownItems = lstTraditions,
-                    SelectedItem = _objCharacter.MagicTradition
+                    SelectedItem = _objCharacter.MagicTradition.SourceID,
+                    AllowAutoSelect = false
                 };
-                frmPickItem.AllowAutoSelect = false;
                 frmPickItem.ShowDialog();
 
                 // Make sure the dialogue window was not canceled.

@@ -19,6 +19,8 @@ Application Changes:
 - Fixed issues with Locations not setting their location text properly in career mode. 
 - The Reload form now shows the Rating of ammo if greater than zero.
 - Fixed the inability to click on the Source control for adept powers to open the linked PDF. Fixes #2952
+- The spirits to which a tradition has access will now also be displayed on characters who are not using a Custom tradition, though they cannot be changed.
+- Traditions can now apply improvements/bonuses, just like qualities, gear, mentor spirits, etc.
 
 Data Changes:
 
@@ -37,6 +39,9 @@ Data Changes:
 - Elastic Joints, Enhanced Articulation and Smart Articulation are now exclusive of each other. Fixes #2965
 - Removed the Limit Condition from Enhanced Articulation. Fixes #2964
 - Barehanded Adept now allows T and T(A) spells to be free instead of just T. Fixes #2967
+- Fixed a bug where various traditions with Guidance Spirit set as one of their five spirits did not have Guidance Spirit show up properly in their lists.
+- Characters following the Elder God tradition will now properly get a -2 dicepool modifier to drain resistance rolls and a +3 dicepool modifier to casting Illusion spells.
+- Characters following the Missionist tradition will now properly get a +2 dicepool modifier to casting Health spells and a -2 dicepool modifier to casting Combat spells.
 
 Build 202
 

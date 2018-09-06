@@ -970,7 +970,7 @@ namespace Chummer
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})";
                         }
-                        return objCharacter.MagicTradition == strNodeInnerText;
+                        return objCharacter.MagicTradition.Name == strNodeInnerText;
                     }
                 default:
                     Utils.BreakIfDebug();
@@ -2037,7 +2037,7 @@ namespace Chummer
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})";
                         }
-                        return objCharacter.MagicTradition == strNodeInnerText;
+                        return objCharacter.MagicTradition.Name == strNodeInnerText;
                     }
                 default:
                     Utils.BreakIfDebug();
