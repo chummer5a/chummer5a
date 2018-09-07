@@ -16,16 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Windows.Forms;
 
 namespace Chummer
 {
     public partial class frmSelectCalendarStart : Form
     {
-        private int _intSelectedYear = 2072;
+        private int _intSelectedYear = DateTime.UtcNow.Year + 62;
         private int _intSelectedWeek = 1;
-        private readonly CalendarWeek objDefaultWeek = new CalendarWeek();
 
         #region Control Events
         public frmSelectCalendarStart()
@@ -111,24 +110,13 @@ namespace Chummer
         /// <summary>
         /// Selected year.
         /// </summary>
-        public int SelectedYear
-        {
-            get
-            {
-                return _intSelectedYear;
-            }
-        }
+        public int SelectedYear => _intSelectedYear;
 
         /// <summary>
         /// Selected week.
         /// </summary>
-        public int SelectedWeek
-        {
-            get
-            {
-                return _intSelectedWeek;
-            }
-        }
+        public int SelectedWeek => _intSelectedWeek;
+
         #endregion
     }
 }

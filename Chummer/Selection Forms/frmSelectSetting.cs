@@ -16,10 +16,11 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
+ using System.Text;
+ using System.Windows.Forms;
 using System.Xml;
 
 namespace Chummer
@@ -45,9 +46,23 @@ namespace Chummer
             {
                 // Load the file so we can get the Setting name.
                 XmlDocument objXmlDocument = new XmlDocument();
-                objXmlDocument.Load(strFileName);
+                try
+                {
+                    using (StreamReader objStreamReader = new StreamReader(strFileName, Encoding.UTF8, true))
+                    {
+                        objXmlDocument.Load(objStreamReader);
+                    }
+                }
+                catch (IOException)
+                {
+                    continue;
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
 
-                lstSettings.Add(new ListItem(Path.GetFileName(strFileName), objXmlDocument.SelectSingleNode("/settings/name").InnerText));
+                lstSettings.Add(new ListItem(Path.GetFileName(strFileName), objXmlDocument.SelectSingleNode("/settings/name")?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
             }
             lstSettings.Sort(CompareListItems.CompareNames);
             cboSetting.BeginUpdate();
@@ -85,13 +100,8 @@ namespace Chummer
         /// <summary>
         /// Settings file that was selected in the dialogue.
         /// </summary>
-        public string SettingsFile
-        {
-            get
-            {
-                return _strSettingsFile;
-            }
-        }
+        public string SettingsFile => _strSettingsFile;
+
         #endregion
     }
 }

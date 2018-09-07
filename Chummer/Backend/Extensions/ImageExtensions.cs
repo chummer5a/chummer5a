@@ -24,7 +24,7 @@ using System.Runtime.CompilerServices;
 
 namespace Chummer
 {
-    static class ImageExtensions
+    public static class ImageExtensions
     {
         /// <summary>
         /// Converts a Base64 String into an Image.
@@ -67,7 +67,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string ToBase64String(this Image imgToConvert)
         {
-            string strReturn = string.Empty;
+            string strReturn;
             using (MemoryStream objImageStream = new MemoryStream())
             {
                 try

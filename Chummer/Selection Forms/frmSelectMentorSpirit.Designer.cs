@@ -13,9 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -40,7 +40,6 @@ namespace Chummer
             this.lblChoice2 = new System.Windows.Forms.Label();
             this.cboChoice1 = new System.Windows.Forms.ComboBox();
             this.cboChoice2 = new System.Windows.Forms.ComboBox();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.chkMentorMask = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
@@ -167,20 +166,6 @@ namespace Chummer
             this.cboChoice2.TabIndex = 8;
             this.cboChoice2.Visible = false;
             // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AllowLinksHandling = true;
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.BaseStylesheet = null;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipTooltip.OwnerDraw = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.TooltipCssClass = "htmltooltip";
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
-            // 
             // chkMentorMask
             // 
             this.chkMentorMask.AutoSize = true;
@@ -238,7 +223,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblChoice2;
         private System.Windows.Forms.ComboBox cboChoice1;
         private System.Windows.Forms.ComboBox cboChoice2;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.CheckBox chkMentorMask;
     }
 }

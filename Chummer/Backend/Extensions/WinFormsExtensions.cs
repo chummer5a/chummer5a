@@ -17,15 +17,13 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-    static class WinFormsExtensions
+    public static class WinFormsExtensions
     {
         #region Controls Extensions
         /// <summary>
@@ -64,23 +62,19 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Node to find.</param>
         /// <param name="objNode">TreeNode to search.</param>
+        /// <param name="blnDeep">Whether to look at grandchildren and greater descendents of this node.</param>
         public static TreeNode FindNode(this TreeNode objNode, string strGuid, bool blnDeep = true)
         {
-            if (objNode != null && !string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
+            if (objNode == null || string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid()) return null;
+            foreach (TreeNode objChild in objNode.Nodes)
             {
-                TreeNode objFound;
-                foreach (TreeNode objChild in objNode.Nodes)
-                {
-                    if (objChild.Tag.ToString() == strGuid)
-                        return objChild;
+                if (objChild.Tag is IHasInternalId idNode && idNode.InternalId == strGuid || objChild.Tag is string s && s == strGuid)
+                    return objChild;
 
-                    if (blnDeep)
-                    {
-                        objFound = objChild.FindNode(strGuid);
-                        if (objFound != null)
-                            return objFound;
-                    }
-                }
+                if (!blnDeep) continue;
+                var objFound = objChild.FindNode(strGuid);
+                if (objFound != null)
+                    return objFound;
             }
             return null;
         }
@@ -88,8 +82,9 @@ namespace Chummer
         /// <summary>
         /// Find a TreeNode in a TreeNode based on its Tag.
         /// </summary>
-        /// <param name="strGuid">InternalId of the Node to find.</param>
         /// <param name="objNode">TreeNode to search.</param>
+        /// <param name="objTag">Tag to look for.</param>
+        /// <param name="blnDeep">Whether to look at grandchildren and greater descendents of this node.</param>
         public static TreeNode FindNodeByTag(this TreeNode objNode, object objTag, bool blnDeep = true)
         {
             if (objNode != null && objTag != null)
@@ -110,20 +105,42 @@ namespace Chummer
             }
             return null;
         }
+
+        /// <summary>
+        /// Gets the rightmost edge of the node or any of its descendents.
+        /// </summary>
+        /// <returns></returns>
+        public static int GetRightMostEdge(this TreeNode objNode)
+        {
+            if (objNode.Nodes.Count == 0)
+            {
+                return objNode.Bounds.Right;
+            }
+            int intReturn = 0;
+            foreach (TreeNode objChild in objNode.Nodes)
+            {
+                int intLoopEdge = objChild.GetRightMostEdge();
+                if (intLoopEdge > intReturn)
+                    intReturn = intLoopEdge;
+            }
+            return intReturn;
+        }
         #endregion
 
         #region TreeView Extensions
+
         /// <summary>
         /// Sort the contents of a TreeView alphabetically within each group Node.
         /// </summary>
         /// <param name="treView">TreeView to sort.</param>
+        /// <param name="strSelectedNodeTag">String of the tag to select after sorting.</param>
         public static void SortCustom(this TreeView treView, string strSelectedNodeTag = "")
         {
             TreeNodeCollection lstTreeViewNodes = treView?.Nodes;
             if (lstTreeViewNodes == null)
                 return;
             if (string.IsNullOrEmpty(strSelectedNodeTag))
-                strSelectedNodeTag = treView.SelectedNode?.Tag.ToString();
+                strSelectedNodeTag = (treView.SelectedNode?.Tag as IHasInternalId)?.InternalId;
             for (int i = 0; i < lstTreeViewNodes.Count; ++i)
             {
                 TreeNode objLoopNode = lstTreeViewNodes[i];
@@ -150,6 +167,7 @@ namespace Chummer
         /// Sort the contents of a TreeView alphabetically within each group Node.
         /// </summary>
         /// <param name="treView">TreeView to sort.</param>
+        /// <param name="objSelectedNodeTag">String of the tag to select after sorting.</param>
         public static void SortCustom(this TreeView treView, object objSelectedNodeTag = null)
         {
             TreeNodeCollection lstTreeViewNodes = treView?.Nodes;
@@ -182,7 +200,7 @@ namespace Chummer
         /// <summary>
         /// Clear the background colour for all TreeNodes except the one currently being hovered over during a drag-and-drop operation.
         /// </summary>
-        /// <param name="treTree">TreeView to check.</param>
+        /// <param name="treView">Base TreeView whose nodes should get their background color cleared.</param>
         /// <param name="objHighlighted">TreeNode that is currently being hovered over.</param>
         public static void ClearNodeBackground(this TreeView treView, TreeNode objHighlighted)
         {
@@ -194,23 +212,19 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Node to find.</param>
         /// <param name="treTree">TreeView to search.</param>
+        /// <param name="blnDeep">Whether to look at grandchildren and greater descendents of this node.</param>
         public static TreeNode FindNode(this TreeView treTree, string strGuid, bool blnDeep = true)
         {
-            if (treTree != null && !string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
+            if (treTree == null || string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid()) return null;
+            foreach (TreeNode objNode in treTree.Nodes)
             {
-                TreeNode objFound;
-                foreach (TreeNode objNode in treTree.Nodes)
-                {
-                    if (objNode.Tag.ToString() == strGuid)
-                        return objNode;
+                if (objNode.Tag is IHasInternalId node && node.InternalId == strGuid || objNode.Tag.ToString() == strGuid)
+                    return objNode;
 
-                    if (blnDeep)
-                    {
-                        objFound = objNode.FindNode(strGuid);
-                        if (objFound != null)
-                            return objFound;
-                    }
-                }
+                if (!blnDeep) continue;
+                var objFound = objNode.FindNode(strGuid);
+                if (objFound != null)
+                    return objFound;
             }
             return null;
         }
@@ -218,8 +232,9 @@ namespace Chummer
         /// <summary>
         /// Find a TreeNode in a TreeView based on its Tag.
         /// </summary>
-        /// <param name="strGuid">InternalId of the Node to find.</param>
         /// <param name="treTree">TreeView to search.</param>
+        /// <param name="objTag">Tag to look for.</param>
+        /// <param name="blnDeep">Whether to look at grandchildren and greater descendents of this node.</param>
         public static TreeNode FindNodeByTag(this TreeView treTree, object objTag, bool blnDeep = true)
         {
             if (treTree != null && objTag != null)
@@ -239,6 +254,27 @@ namespace Chummer
                 }
             }
             return null;
+        }
+
+        /// <summary>
+        /// Gets the rightmost edge of the tree or any of its descendents.
+        /// </summary>
+        /// <param name="treTree"></param>
+        /// <returns></returns>
+        public static int GetRightMostEdge(this TreeView treTree)
+        {
+            if (treTree.Nodes.Count == 0)
+            {
+                return treTree.Bounds.Right;
+            }
+            int intReturn = 0;
+            foreach (TreeNode objChild in treTree.Nodes)
+            {
+                int intLoopEdge = objChild.GetRightMostEdge();
+                if (intLoopEdge > intReturn)
+                    intReturn = intLoopEdge;
+            }
+            return intReturn;
         }
         #endregion
 

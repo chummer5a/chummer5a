@@ -61,12 +61,9 @@
                                         <xs:element name="minrating" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="programs" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element ref="required" minOccurs="0" maxOccurs="1" />
-                                        <xs:element name="response" type="xs:string" minOccurs="0" maxOccurs="1" />
-                                        <xs:element name="signal" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="skill" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="sleaze" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="modsleaze" type="xs:string" minOccurs="0" maxOccurs="1" />
-                                        <xs:element name="system" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="tags" minOccurs="0" maxOccurs="unbounded">
                                             <xs:complexType>
                                                 <xs:sequence>

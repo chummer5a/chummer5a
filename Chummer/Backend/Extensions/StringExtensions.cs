@@ -17,14 +17,12 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Chummer
 {
-    static class StringExtensions
+    public static class StringExtensions
     {
         public static string EmptyGuid { get; } = Guid.Empty.ToString("D");
 
@@ -41,7 +39,9 @@ namespace Chummer
         /// <returns>New string with characters removed</returns>
         public static string FastEscape(this string strInput, char chrToDelete)
         {
-            int intLength = strInput?.Length ?? 0;
+            if (strInput == null)
+                return string.Empty;
+            int intLength = strInput.Length;
             if (intLength == 0)
                 return strInput;
             char[] achrNewChars = new char[intLength];
@@ -65,10 +65,12 @@ namespace Chummer
         /// <returns>New string with characters removed</returns>
         public static string FastEscape(this string strInput, params char[] achrToDelete)
         {
+            if (strInput == null)
+                return string.Empty;
             int intDeleteLength = achrToDelete.Length;
             if (intDeleteLength == 0)
                 return strInput;
-            int intLength = strInput?.Length ?? 0;
+            int intLength = strInput.Length;
             if (intLength == 0)
                 return strInput;
             char[] achrNewChars = new char[intLength];
@@ -85,23 +87,170 @@ namespace Chummer
                     }
                 }
                 achrNewChars[intCurrent++] = chrLoop;
-                SkipChar:;
+            SkipChar:;
             }
             // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
             return new string(achrNewChars, 0, intCurrent);
         }
 
         /// <summary>
+        /// Method to quickly remove all instances of a substring from a string (should be faster than using Replace() with an empty string)
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="strSubstringToDelete">Substring to remove</param>
+        /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
+        /// <returns>New string with <paramref name="strSubstringToDelete"/> removed</returns>
+        public static string FastEscape(this string strInput, string strSubstringToDelete, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            if (strSubstringToDelete == null)
+                return strInput;
+            int intToDeleteLength = strSubstringToDelete.Length;
+            if (intToDeleteLength == 0)
+                return strInput;
+            if (intToDeleteLength == 1)
+                return strInput.FastEscape(strSubstringToDelete[0]);
+            if (strInput == null)
+                return string.Empty;
+            int intLength = strInput.Length;
+            if (intLength < intToDeleteLength)
+                return strInput;
+
+            // Quickly exit if no instance of the substring is found
+            int intCurrentEnd = strInput.IndexOf(strSubstringToDelete, 0, eComparison);
+            if (intCurrentEnd == -1)
+                return strInput;
+
+            // Create CharArray in which we will store the new string
+            char[] achrNewChars = new char[intLength];
+
+            // Logic is to read the input string into the CharArray up to the next instance of the substring, then jump over the substring's length and repeat until no more substrings are found
+            int intCurrentLength = 0;
+            int intCurrentReadPosition = 0;
+            do
+            {
+                for (; intCurrentReadPosition < intCurrentEnd; ++intCurrentReadPosition)
+                {
+                    achrNewChars[intCurrentLength++] = strInput[intCurrentReadPosition];
+                }
+
+                intCurrentReadPosition += intToDeleteLength;
+                intCurrentEnd = strInput.IndexOf(strSubstringToDelete, intCurrentReadPosition, eComparison);
+            }
+            while (intCurrentEnd != -1);
+
+            // Copy the remainder of the string once there are no more needles to remove
+            for (; intCurrentReadPosition < intLength; ++intCurrentReadPosition)
+            {
+                achrNewChars[intCurrentLength++] = strInput[intCurrentReadPosition];
+            }
+
+            // Create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
+            return new string(achrNewChars, 0, intCurrentLength);
+        }
+
+        /// <summary>
+        /// Method to quickly remove the first instance of a substring from a string.
+        /// </summary>
+        /// <param name="strInput">String on which to operate.</param>
+        /// <param name="intStartIndex">Index from which to begin searching.</param>
+        /// <param name="strSubstringToDelete">Substring to remove.</param>
+        /// <param name="eComparison">Comparison rules by which to find the substring to remove. Useful for when case-insensitive removal is required.</param>
+        /// <returns>New string with the first instance of <paramref name="strSubstringToDelete"/> removed starting from <paramref name="intStartIndex"/>.</returns>
+        public static string FastEscapeOnceFromStart(this string strInput, string strSubstringToDelete, int intStartIndex = 0, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            if (strSubstringToDelete == null)
+                return strInput;
+            int intToDeleteLength = strSubstringToDelete.Length;
+            if (intToDeleteLength == 0)
+                return strInput;
+            if (strInput == null)
+                return string.Empty;
+            if (strInput.Length < intToDeleteLength)
+                return strInput;
+
+            int intIndexToBeginRemove = strInput.IndexOf(strSubstringToDelete, intStartIndex, eComparison);
+            return intIndexToBeginRemove == -1 ? strInput : strInput.Remove(intIndexToBeginRemove, intToDeleteLength);
+        }
+
+        /// <summary>
+        /// Method to quickly remove the last instance of a substring from a string.
+        /// </summary>
+        /// <param name="strInput">String on which to operate.</param>
+        /// <param name="intStartIndex">Index from which to begin searching (proceeding towards the beginning of the string).</param>
+        /// <param name="strSubstringToDelete">Substring to remove.</param>
+        /// <param name="eComparison">Comparison rules by which to find the substring to remove. Useful for when case-insensitive removal is required.</param>
+        /// <returns>New string with the last instance of <paramref name="strSubstringToDelete"/> removed starting from <paramref name="intStartIndex"/>.</returns>
+        public static string FastEscapeOnceFromEnd(this string strInput, string strSubstringToDelete, int intStartIndex = -1, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            if (strSubstringToDelete == null)
+                return strInput;
+            int intToDeleteLength = strSubstringToDelete.Length;
+            if (intToDeleteLength == 0)
+                return strInput;
+            if (strInput == null)
+                return string.Empty;
+            if (intStartIndex < 0)
+                intStartIndex += strInput.Length;
+            if (intStartIndex < intToDeleteLength - 1)
+                return strInput;
+
+            int intIndexToBeginRemove = strInput.LastIndexOf(strSubstringToDelete, intStartIndex, eComparison);
+            return intIndexToBeginRemove == -1 ? strInput : strInput.Remove(intIndexToBeginRemove, intToDeleteLength);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for string::IndexOfAny that uses params in its argument for the char array.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="anyOf">Array of characters to match with IndexOfAny</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, params char[] anyOf)
+        {
+            return strHaystack.IndexOfAny(anyOf);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for string::Split that uses one separator char in its argument in addition to StringSplitOptions.
+        /// </summary>
+        /// <param name="strInput">String to search.</param>
+        /// <param name="chrSeparator">Separator to use.</param>
+        /// <param name="eSplitOptions">String split options.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string[] Split(this string strInput, char chrSeparator, StringSplitOptions eSplitOptions)
+        {
+            return strInput.Split(new []{chrSeparator}, eSplitOptions);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for a version of Contains(char) for strings that is faster than messing with Linq
+        /// </summary>
+        /// <param name="strHaystack">Input string to search.</param>
+        /// <param name="chrNeedle">Character for which to look.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Contains(this string strHaystack, char chrNeedle)
+        {
+            return strHaystack.IndexOf(chrNeedle) != -1;
+        }
+
+        /// <summary>
         /// Normalises whitespace for a given textblock, removing extra spaces and trimming the string in the process.
         /// </summary>
         /// <param name="strInput">Input textblock</param>
-        /// <param name="chrWhiteSpace">Whitespace character to use</param>
-        /// <returns>New string with any excess whitespace removed</returns>
-        public static string NormalizeWhiteSpace(this string strInput, char chrWhiteSpace = ' ')
+        /// <param name="chrWhiteSpace">Whitespace character to use when replacing chars.</param>
+        /// <param name="funcIsWhiteSpace">Custom function with which to check if a character should count as whitespace. If null, defaults to char::IsWhiteSpace.</param>
+        /// <returns>New string with any chars that return true from <paramref name="funcIsWhiteSpace"/> replaced with <paramref name="chrWhiteSpace"/> and any excess whitespace removed.</returns>
+        public static string NormalizeWhiteSpace(this string strInput, char chrWhiteSpace = ' ', Func<char, bool> funcIsWhiteSpace = null)
         {
-            int intLength = strInput?.Length ?? 0;
+            if (strInput == null)
+                return string.Empty;
+            int intLength = strInput.Length;
             if (intLength == 0)
                 return strInput;
+            if (funcIsWhiteSpace == null)
+                funcIsWhiteSpace = char.IsWhiteSpace;
             char[] achrNewChars = new char[intLength];
             // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but processing whitespace characters differently...
             int intCurrent = 0;
@@ -111,7 +260,7 @@ namespace Chummer
             {
                 char chrLoop = strInput[i];
                 // If we encounter a block of whitespace chars, we replace the first instance with chrWhiteSpace, then skip over the rest until we encounter a char that isn't whitespace
-                if (char.IsWhiteSpace(chrLoop))
+                if (funcIsWhiteSpace(chrLoop))
                 {
                     if (!blnLastCharWasWhiteSpace)
                         achrNewChars[intCurrent++] = chrWhiteSpace;
@@ -130,21 +279,118 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Trims a substring out of a string if the string begins with it.
+        /// Returns whether a string contains only legal characters.
+        /// </summary>
+        /// <param name="strInput">String to check.</param>
+        /// <param name="blnWhitelist">Whether the list of chars is a whitelist and the string can only contain characters in the list (true) or a blacklist and the string cannot contain any characts in the list (false).</param>
+        /// <param name="achrChars">List of chars against which to check the string.</param>
+        /// <returns>True if the string contains only legal characters, false if the string contains at least one illegal character.</returns>
+        public static bool IsLegalCharsOnly(this string strInput, bool blnWhitelist, params char[] achrChars)
+        {
+            if (strInput == null)
+                return false;
+            int intLength = strInput.Length;
+            if (intLength == 0)
+                return true;
+            int intLegalCharsLength = achrChars.Length;
+            if (intLegalCharsLength == 0)
+                return true;
+            for (int i = 0; i < intLength; ++i)
+            {
+                char chrLoop = strInput[i];
+                bool blnCharIsInList = false;
+                for (int j = 0; j < intLegalCharsLength; ++j)
+                {
+                    if (chrLoop == achrChars[j])
+                    {
+                        blnCharIsInList = true;
+                        break;
+                    }
+                }
+
+                if (blnCharIsInList != blnWhitelist)
+                    return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Trims a substring out of the beginning of a string. If the substring appears multiple times at the beginning, all instances of it will be trimmed.
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
-        /// <param name="strStringToTrim">Substring to trim</param>
-        /// <param name="blnOmitCheck">If we already know that the string begins with the substring</param>
+        /// <param name="strToTrim">Substring to trim</param>
+        /// <param name="eComparison">Comparison rules by which to find the substring to remove. Useful for when case-insensitive removal is required.</param>
         /// <returns>Trimmed String</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string TrimStart(this string strInput, string strStringToTrim, bool blnOmitCheck = false)
+        public static string TrimStart(this string strInput, string strToTrim, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            if (string.IsNullOrEmpty(strInput) || string.IsNullOrEmpty(strToTrim))
+                return strInput;
+            int intTrimLength = strToTrim.Length;
+            if (intTrimLength == 1)
+                return strInput.TrimStart(strToTrim[0]);
+
+            int i = strInput.IndexOf(strToTrim, eComparison);
+            if (i == -1)
+                return strInput;
+
+            int intAmountToTrim = 0;
+            do
+            {
+                intAmountToTrim += intTrimLength;
+                i = strInput.IndexOf(strToTrim, intAmountToTrim, eComparison);
+            }
+            while (i != -1);
+            return strInput.Substring(intAmountToTrim);
+        }
+
+        /// <summary>
+        /// Trims a substring out of the end of a string. If the substring appears multiple times at the end, all instances of it will be trimmed.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="strToTrim">Substring to trim</param>
+        /// <param name="eComparison">Comparison rules by which to find the substring to remove. Useful for when case-insensitive removal is required.</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimEnd(this string strInput, string strToTrim, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            if (string.IsNullOrEmpty(strInput) || string.IsNullOrEmpty(strToTrim))
+                return strInput;
+            int intTrimLength = strToTrim.Length;
+            if (intTrimLength == 1)
+                return strInput.TrimEnd(strToTrim[0]);
+
+            int i = strInput.LastIndexOf(strToTrim, eComparison);
+            if (i == -1)
+                return strInput;
+
+            int intInputLastIndex = strInput.Length - 1;
+            int intAmountToTrim = 0;
+            do
+            {
+                intAmountToTrim += intTrimLength;
+                i = strInput.LastIndexOf(strToTrim, intInputLastIndex - intAmountToTrim, eComparison);
+            }
+            while (i != -1);
+            return strInput.Substring(0, intInputLastIndex - intTrimLength);
+        }
+
+        /// <summary>
+        /// Escapes a substring once out of a string if the string begins with it.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="strToTrim">Substring to escape</param>
+        /// <param name="blnOmitCheck">If we already know that the string begins with the substring</param>
+        /// <returns>String with <paramref name="strToTrim"/> escaped out once from the beginning of it.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimStartOnce(this string strInput, string strToTrim, bool blnOmitCheck = false)
         {
             if (!string.IsNullOrEmpty(strInput))
             {
                 // Need to make sure string actually starts with the substring, otherwise we don't want to be cutting out the beginning of the string
-                if (blnOmitCheck || strInput.StartsWith(strStringToTrim))
+                if (blnOmitCheck || strInput.StartsWith(strToTrim))
                 {
-                    int intTrimLength = strStringToTrim.Length;
+                    int intTrimLength = strToTrim.Length;
                     return strInput.Substring(intTrimLength, strInput.Length - intTrimLength);
                 }
             }
@@ -155,71 +401,148 @@ namespace Chummer
         /// Trims a substring out of a string if the string ends with it.
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
-        /// <param name="strStringToTrim">Substring to trim</param>
+        /// <param name="strToTrim">Substring to trim</param>
         /// <param name="blnOmitCheck">If we already know that the string ends with the substring</param>
         /// <returns>Trimmed String</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string TrimEnd(this string strInput, string strStringToTrim, bool blnOmitCheck = false)
+        public static string TrimEndOnce(this string strInput, string strToTrim, bool blnOmitCheck = false)
         {
             if (!string.IsNullOrEmpty(strInput))
             {
                 // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
-                if (blnOmitCheck || strInput.EndsWith(strStringToTrim))
+                if (blnOmitCheck || strInput.EndsWith(strToTrim))
                 {
-                    return strInput.Substring(0, strInput.Length - strStringToTrim.Length);
+                    return strInput.Substring(0, strInput.Length - strToTrim.Length);
                 }
             }
             return strInput;
         }
 
         /// <summary>
-        /// If a string begins with any substrings, the one with which it begins is trimmed out of the string.
+        /// If a string begins with any substrings, the one with which it begins is trimmed out of the string once.
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
-        /// <param name="astrStringToTrim">Substrings to trim</param>
+        /// <param name="astrToTrim">Substrings to trim</param>
         /// <returns>Trimmed String</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string TrimStart(this string strInput, params string[] astrStringToTrim)
+        public static string TrimStartOnce(this string strInput, params string[] astrToTrim)
         {
-            if (!string.IsNullOrEmpty(strInput))
+            if (strInput == null)
+                return string.Empty;
+            if (!string.IsNullOrEmpty(strInput) && astrToTrim != null)
             {
-                int intLength = astrStringToTrim.Length;
+                // Without this we could trim a smaller string just because it was found first, this makes sure we find the largest one
+                int intHowMuchToTrim = 0;
+
+                int intLength = astrToTrim.Length;
                 for (int i = 0; i < intLength; ++i)
                 {
-                    string strStringToTrim = astrStringToTrim[i];
+                    string strStringToTrim = astrToTrim[i];
                     // Need to make sure string actually starts with the substring, otherwise we don't want to be cutting out the beginning of the string
-                    if (strInput.StartsWith(strStringToTrim))
+                    if (strStringToTrim.Length > intHowMuchToTrim && strInput.StartsWith(strStringToTrim))
                     {
-                        int intTrimLength = strStringToTrim.Length;
-                        return strInput.Substring(intTrimLength, strInput.Length - intTrimLength);
+                        intHowMuchToTrim = strStringToTrim.Length;
                     }
                 }
+
+                if (intHowMuchToTrim > 0)
+                    return strInput.Substring(intHowMuchToTrim);
             }
             return strInput;
         }
 
         /// <summary>
-        /// If a string ends with any substrings, the one with which it begins is trimmed out of the string.
+        /// If a string ends with any substrings, the one with which it begins is trimmed out of the string once.
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
-        /// <param name="astrStringToTrim">Substrings to trim</param>
+        /// <param name="astrToTrim">Substrings to trim</param>
         /// <returns>Trimmed String</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string TrimEnd(this string strInput, params string[] astrStringToTrim)
+        public static string TrimEndOnce(this string strInput, params string[] astrToTrim)
+        {
+            if (strInput == null)
+                return string.Empty;
+            if (!string.IsNullOrEmpty(strInput) && astrToTrim != null)
+            {
+                // Without this we could trim a smaller string just because it was found first, this makes sure we find the largest one
+                int intHowMuchToTrim = 0;
+
+                int intLength = astrToTrim.Length;
+                for (int i = 0; i < intLength; ++i)
+                {
+                    string strStringToTrim = astrToTrim[i];
+                    // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
+                    if (strStringToTrim.Length > intHowMuchToTrim && strInput.EndsWith(strStringToTrim))
+                    {
+                        intHowMuchToTrim = strStringToTrim.Length;
+                    }
+                }
+
+                if (intHowMuchToTrim > 0)
+                    return strInput.Substring(0, strInput.Length - intHowMuchToTrim);
+            }
+            return strInput;
+        }
+
+        /// <summary>
+        /// Escapes a char once out of a string if the string begins with it.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="chrToTrim">Char to escape</param>
+        /// <returns>String with <paramref name="chrToTrim"/> escaped out once from the beginning of it.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimStartOnce(this string strInput, char chrToTrim)
+        {
+            if (!string.IsNullOrEmpty(strInput) && strInput[0] == chrToTrim)
+            {
+                return strInput.Substring(1, strInput.Length - 1);
+            }
+            return strInput;
+        }
+
+        /// <summary>
+        /// Trims a char out of a string if the string ends with it.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="chrToTrim">Char to trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimEndOnce(this string strInput, char chrToTrim)
         {
             if (!string.IsNullOrEmpty(strInput))
             {
-                int intLength = astrStringToTrim.Length;
-                for (int i = 0; i < intLength; ++i)
-                {
-                    string strStringToTrim = astrStringToTrim[i];
-                    // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
-                    if (strInput.EndsWith(strStringToTrim))
-                    {
-                        return strInput.Substring(0, strInput.Length - strStringToTrim.Length);
-                    }
-                }
+                int intLength = strInput.Length;
+                if (strInput[intLength - 1] == chrToTrim)
+                    return strInput.Substring(0, intLength - 1);
             }
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string begins with any chars, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="achrToTrim">Chars to trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimStartOnce(this string strInput, params char[] achrToTrim)
+        {
+            if (strInput.StartsWith(achrToTrim))
+                return strInput.Substring(1, strInput.Length - 1);
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string ends with any chars, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="achrToTrim">Chars to trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimEndOnce(this string strInput, params char[] achrToTrim)
+        {
+            if (strInput.EndsWith(achrToTrim))
+                return strInput.Substring(0, strInput.Length - 1);
             return strInput;
         }
 
@@ -227,43 +550,47 @@ namespace Chummer
         /// Determines whether the first char of this string instance matches the specified char.
         /// </summary>
         /// <param name="strInput">String to check.</param>
-        /// <param name="chrCharToCheck">Char to check.</param>
+        /// <param name="chrToCheck">Char to check.</param>
         /// <returns>True if string has a non-zero length and begins with the char, false otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool StartsWith(this string strInput, char chrCharToCheck)
+        public static bool StartsWith(this string strInput, char chrToCheck)
         {
-            return (strInput?.Length > 0 && strInput[0] == chrCharToCheck);
+            return (strInput?.Length > 0 && strInput[0] == chrToCheck);
         }
 
         /// <summary>
         /// Determines whether the last char of this string instance matches the specified char.
         /// </summary>
         /// <param name="strInput">String to check.</param>
-        /// <param name="chrCharToCheck">Char to check.</param>
+        /// <param name="chrToCheck">Char to check.</param>
         /// <returns>True if string has a non-zero length and ends with the char, false otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool EndsWith(this string strInput, char chrCharToCheck)
+        public static bool EndsWith(this string strInput, char chrToCheck)
         {
-            int intLength = strInput?.Length ?? 0;
-            return (intLength > 0 && strInput[intLength - 1] == chrCharToCheck);
+            if (strInput == null)
+                return false;
+            int intLength = strInput.Length;
+            return (intLength > 0 && strInput[intLength - 1] == chrToCheck);
         }
 
         /// <summary>
         /// Determines whether the first char of this string instance matches any of the specified chars.
         /// </summary>
         /// <param name="strInput">String to check.</param>
-        /// <param name="achrCharToCheck">Chars to check.</param>
+        /// <param name="achrToCheck">Chars to check.</param>
         /// <returns>True if string has a non-zero length and begins with any of the specified chars, false otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool StartsWith(this string strInput, params char[] achrCharToCheck)
+        public static bool StartsWith(this string strInput, params char[] achrToCheck)
         {
-            if (strInput?.Length == 0)
+            if (strInput == null || achrToCheck == null)
+                return false;
+            if (strInput.Length == 0)
                 return false;
             char chrCharToCheck = strInput[0];
-            int intParamsLength = achrCharToCheck.Length;
+            int intParamsLength = achrToCheck.Length;
             for (int i = 0; i < intParamsLength; ++i)
             {
-                if (chrCharToCheck == achrCharToCheck[i])
+                if (chrCharToCheck == achrToCheck[i])
                     return true;
             }
             return false;
@@ -273,19 +600,21 @@ namespace Chummer
         /// Determines whether the last char of this string instance matches any of the specified chars.
         /// </summary>
         /// <param name="strInput">String to check.</param>
-        /// <param name="achrCharToCheck">Chars to check.</param>
+        /// <param name="achrToCheck">Chars to check.</param>
         /// <returns>True if string has a non-zero length and ends with any of the specified chars, false otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool EndsWith(this string strInput, params char[] achrCharToCheck)
+        public static bool EndsWith(this string strInput, params char[] achrToCheck)
         {
-            int intLength = strInput?.Length ?? 0;
+            if (strInput == null || achrToCheck == null)
+                return false;
+            int intLength = strInput.Length;
             if (intLength == 0)
                 return false;
             char chrCharToCheck = strInput[intLength - 1];
-            int intParamsLength = achrCharToCheck.Length;
+            int intParamsLength = achrToCheck.Length;
             for (int i = 0; i < intParamsLength; ++i)
             {
-                if (chrCharToCheck == achrCharToCheck[i])
+                if (chrCharToCheck == achrToCheck[i])
                     return true;
             }
             return false;
@@ -295,17 +624,17 @@ namespace Chummer
         /// Determines whether the beginning of this string instance matches any of the specified strings.
         /// </summary>
         /// <param name="strInput">String to check.</param>
-        /// <param name="astrStringsToCheck">Strings to check.</param>
+        /// <param name="astrToCheck">Strings to check.</param>
         /// <returns>True if string has a non-zero length and begins with any of the specified chars, false otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool StartsWith(this string strInput, params string[] astrStringsToCheck)
+        public static bool StartsWith(this string strInput, params string[] astrToCheck)
         {
-            if (!string.IsNullOrEmpty(strInput))
+            if (!string.IsNullOrEmpty(strInput) && astrToCheck != null)
             {
-                int intLength = astrStringsToCheck.Length;
+                int intLength = astrToCheck.Length;
                 for (int i = 0; i < intLength; ++i)
                 {
-                    if (strInput.StartsWith(astrStringsToCheck[i]))
+                    if (strInput.StartsWith(astrToCheck[i]))
                     {
                         return true;
                     }
@@ -318,17 +647,17 @@ namespace Chummer
         /// Determines whether the end of this string instance matches any of the specified strings.
         /// </summary>
         /// <param name="strInput">String to check.</param>
-        /// <param name="astrStringsToCheck">Strings to check.</param>
+        /// <param name="astrToCheck">Strings to check.</param>
         /// <returns>True if string has a non-zero length and ends with any of the specified chars, false otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool EndsWith(this string strInput, params string[] astrStringsToCheck)
+        public static bool EndsWith(this string strInput, params string[] astrToCheck)
         {
-            if (!string.IsNullOrEmpty(strInput))
+            if (!string.IsNullOrEmpty(strInput) && astrToCheck != null)
             {
-                int intLength = astrStringsToCheck.Length;
+                int intLength = astrToCheck.Length;
                 for (int i = 0; i < intLength; ++i)
                 {
-                    if (strInput.EndsWith(astrStringsToCheck[i]))
+                    if (strInput.EndsWith(astrToCheck[i]))
                     {
                         return true;
                     }
@@ -381,83 +710,84 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Tests whether a given string is a Guid. Returns false if not. 
+        /// Tests whether a given string is a Guid. Returns false if not.
         /// </summary>
-        /// <param name="value">String to test</param>
+        /// <param name="strGuid">String to test.</param>
         /// <returns>True if string is a Guid, false if not.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsGuid(this string strGuid)
         {
-            return Guid.TryParse(strGuid, out Guid guidDummy);
+            return Guid.TryParse(strGuid, out Guid _);
         }
 
         /// <summary>
         /// Word wraps the given text to fit within the specified width.
         /// </summary>
-        /// <param name="text">Text to be word wrapped</param>
-        /// <param name="width">Width, in characters, to which the text
-        /// should be word wrapped</param>
+        /// <param name="strText">Text to be word wrapped</param>
+        /// <param name="intWidth">Width, in characters, to which the text should be word wrapped</param>
         /// <returns>The modified text</returns>
-        public static string WordWrap(this string text, int width)
+        public static string WordWrap(this string strText, int intWidth)
         {
             // Lucidity checks
-            if (width < 1)
-                return text;
-            if (string.IsNullOrEmpty(text))
-                return text;
+            if (string.IsNullOrEmpty(strText))
+                return strText;
+            if (intWidth >= strText.Length)
+                return strText;
 
-            int next = 0;
-            StringBuilder sb = new StringBuilder(text.Length);
-
+            int intNextPosition;
+            StringBuilder objReturn = new StringBuilder(strText.Length);
+            string strNewLine = Environment.NewLine;
             // Parse each line of text
-            for (int pos = 0; pos < text.Length; pos = next)
+            for (int intCurrentPosition = 0; intCurrentPosition < strText.Length; intCurrentPosition = intNextPosition)
             {
                 // Find end of line
-                int eol = text.IndexOf(Environment.NewLine, pos, StringComparison.Ordinal);
-                if (eol == -1)
-                    next = eol = text.Length;
+                int intEndOfLinePosition = strText.IndexOf(strNewLine, intCurrentPosition, StringComparison.Ordinal);
+                if (intEndOfLinePosition == -1)
+                    intNextPosition = intEndOfLinePosition = strText.Length;
                 else
-                    next = eol + Environment.NewLine.Length;
+                    intNextPosition = intEndOfLinePosition + strNewLine.Length;
 
                 // Copy this line of text, breaking into smaller lines as needed
-                if (eol > pos)
+                if (intEndOfLinePosition > intCurrentPosition)
                 {
                     do
                     {
-                        int len = eol - pos;
-                        if (len > width)
-                            len = text.BreakLine(pos, width);
-                        sb.Append(text, pos, len);
-                        sb.Append(Environment.NewLine);
+                        int intLengthToRead = intEndOfLinePosition - intCurrentPosition;
+                        if (intLengthToRead > intWidth)
+                            intLengthToRead = strText.BreakLine(intCurrentPosition, intWidth);
+                        objReturn.Append(strText, intCurrentPosition, intLengthToRead);
+                        objReturn.Append(strNewLine);
 
                         // Trim whitespace following break
-                        pos += len;
-                        while (pos < eol && char.IsWhiteSpace(text[pos]))
-                            pos += 1;
+                        intCurrentPosition += intLengthToRead;
+                        while (intCurrentPosition < intEndOfLinePosition && char.IsWhiteSpace(strText[intCurrentPosition]))
+                            intCurrentPosition += 1;
                     }
-                    while (eol > pos);
+                    while (intEndOfLinePosition > intCurrentPosition);
                 }
-                else sb.Append(Environment.NewLine); // Empty line
+                else objReturn.Append(strNewLine); // Empty line
             }
-            return sb.ToString();
+            return objReturn.ToString();
         }
 
         /// <summary>
         /// Locates position to break the given line so as to avoid
         /// breaking words.
         /// </summary>
-        /// <param name="text">String that contains line of text</param>
-        /// <param name="pos">Index where line of text starts</param>
-        /// <param name="max">Maximum line length</param>
+        /// <param name="strText">String that contains line of text</param>
+        /// <param name="intPosition">Index where line of text starts</param>
+        /// <param name="intMax">Maximum line length</param>
         /// <returns>The modified line length</returns>
-        private static int BreakLine(this string text, int pos, int max)
+        private static int BreakLine(this string strText, int intPosition, int intMax)
         {
-            if (max + pos >= text?.Length)
-                return max;
+            if (strText == null)
+                return intMax;
+            if (intMax + intPosition >= strText.Length)
+                return intMax;
             // Find last whitespace in line
-            for (int i = max; i >= 0; --i)
+            for (int i = intMax; i >= 0; --i)
             {
-                char chrLoop = text[pos + i];
+                char chrLoop = strText[intPosition + i];
                 if (char.IsWhiteSpace(chrLoop))
                 {
                     // Return length of text before whitespace
@@ -466,7 +796,32 @@ namespace Chummer
             }
 
             // If no whitespace found, break at maximum length
-            return max;
+            return intMax;
+        }
+
+        /// <summary>
+        /// Clean an XPath string.
+        /// </summary>
+        /// <param name="strSearch">String to clean.</param>
+        public static string CleanXPath(this string strSearch)
+        {
+            int intQuotePos = strSearch.IndexOf('"');
+            if (intQuotePos == -1)
+            {
+                return '\"' + strSearch + '\"';
+            }
+
+            StringBuilder objReturn = new StringBuilder("concat(\"");
+            for (; intQuotePos != -1; intQuotePos = strSearch.IndexOf('"'))
+            {
+                string strSubstring = strSearch.Substring(0, intQuotePos);
+                objReturn.Append(strSubstring);
+                objReturn.Append("\", '\"', \"");
+                strSearch = strSearch.Substring(intQuotePos + 1);
+            }
+            objReturn.Append(strSearch);
+            objReturn.Append("\")");
+            return objReturn.ToString();
         }
     }
 }

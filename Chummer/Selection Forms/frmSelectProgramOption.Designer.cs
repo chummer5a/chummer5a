@@ -13,9 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -37,7 +37,6 @@ namespace Chummer
             this.lblCommonSkill = new System.Windows.Forms.Label();
             this.lblCommonSkillLabel = new System.Windows.Forms.Label();
             this.lstOptions = new System.Windows.Forms.ListBox();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.SuspendLayout();
             // 
             // cmdOKAdd
@@ -124,15 +123,6 @@ namespace Chummer
             this.lstOptions.SelectedIndexChanged += new System.EventHandler(this.lstOptions_SelectedIndexChanged);
             this.lstOptions.DoubleClick += new System.EventHandler(this.lstOptions_DoubleClick);
             // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
-            // 
             // frmSelectProgramOption
             // 
             this.AcceptButton = this.cmdOK;
@@ -172,6 +162,5 @@ namespace Chummer
         private System.Windows.Forms.Label lblCommonSkill;
         private System.Windows.Forms.Label lblCommonSkillLabel;
         private System.Windows.Forms.ListBox lstOptions;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
     }
 }

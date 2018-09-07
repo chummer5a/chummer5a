@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml;
@@ -29,7 +29,7 @@ namespace Chummer
         private string _strForceValue = string.Empty;
         private string _strExcludeCategory = string.Empty;
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
 
         #region Control Events
         public frmSelectSkillGroup()
@@ -46,31 +46,27 @@ namespace Chummer
             if (string.IsNullOrEmpty(_strForceValue))
             {
                 // Build the list of Skill Groups found in the Skills file.
-                XmlNodeList objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skillgroups/name");
-                foreach (XmlNode objXmlSkill in objXmlSkillList)
-                {
-                    bool blnAdd = true;
-                    if (!string.IsNullOrEmpty(_strExcludeCategory))
-                    {
-                        blnAdd = false;
-                        string[] strExcludes = _strExcludeCategory.Split(',');
-                        string strExclude = string.Empty;
-                        for (int i = 0; i <= strExcludes.Length - 1; i++)
-                            strExclude += "category != \"" + strExcludes[i].Trim() + "\" and ";
-                        // Remove the trailing " and ";
-                        strExclude = strExclude.Substring(0, strExclude.Length - 5);
+                using (XmlNodeList objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skillgroups/name"))
+                    if (objXmlSkillList != null)
+                        foreach (XmlNode objXmlSkill in objXmlSkillList)
+                        {
+                            if (!string.IsNullOrEmpty(_strExcludeCategory))
+                            {
+                                string[] strExcludes = _strExcludeCategory.Split(',');
+                                string strExclude = string.Empty;
+                                for (int i = 0; i <= strExcludes.Length - 1; i++)
+                                    strExclude += "category != \"" + strExcludes[i].Trim() + "\" and ";
+                                // Remove the trailing " and ";
+                                strExclude = strExclude.Substring(0, strExclude.Length - 5);
 
-                        XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + strExclude + " and skillgroup = \"" + objXmlSkill.InnerText + "\"]");
-                        if (objXmlNodeList != null)
-                            blnAdd = objXmlNodeList.Count > 0;
-                    }
+                                XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + strExclude + " and skillgroup = \"" + objXmlSkill.InnerText + "\"]");
+                                if (objXmlNodeList == null || objXmlNodeList.Count == 0)
+                                    continue;
+                            }
 
-                    if (blnAdd)
-                    {
-                        string strInnerText = objXmlSkill.InnerText;
-                        lstGroups.Add(new ListItem(strInnerText, objXmlSkill.Attributes?["translate"]?.InnerText ?? strInnerText));
-                    }
-                }
+                            string strInnerText = objXmlSkill.InnerText;
+                            lstGroups.Add(new ListItem(strInnerText, objXmlSkill.Attributes?["translate"]?.InnerText ?? strInnerText));
+                        }
             }
             else
             {
@@ -104,21 +100,12 @@ namespace Chummer
 
         #region Properties
         // Skill Group that was selected in the dialogue.
-        public string SelectedSkillGroup
-        {
-            get
-            {
-                return _strReturnValue;
-            }
-        }
+        public string SelectedSkillGroup => _strReturnValue;
 
         // Description to show in the window.
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
         /// <summary>
@@ -126,10 +113,7 @@ namespace Chummer
         /// </summary>
         public string OnlyGroup
         {
-            set
-            {
-                _strForceValue = value;
-            }
+            set => _strForceValue = value;
         }
 
         /// <summary>
@@ -137,10 +121,7 @@ namespace Chummer
         /// </summary>
         public string ExcludeCategory
         {
-            set
-            {
-                _strExcludeCategory = value;
-            }
+            set => _strExcludeCategory = value;
         }
         #endregion
     }

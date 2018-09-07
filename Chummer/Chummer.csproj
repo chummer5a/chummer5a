@@ -90,22 +90,29 @@
   <PropertyGroup />
   <PropertyGroup />
   <ItemGroup>
-    <Reference Include="HtmlRenderer, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlRenderer.Core.1.5.1-beta1\lib\net45\HtmlRenderer.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="HtmlRenderer, Version=1.5.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlRenderer.Core.1.5.0.6\lib\net45\HtmlRenderer.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlRenderer.WinForms, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlRenderer.WinForms.1.5.1-beta1\lib\net45\HtmlRenderer.WinForms.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="HtmlRenderer.PdfSharp, Version=1.5.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlRenderer.PdfSharp.1.5.0.6\lib\net45\HtmlRenderer.PdfSharp.dll</HintPath>
     </Reference>
-    <Reference Include="itextsharp, Version=5.5.12.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\iTextSharp.5.5.12\lib\itextsharp.dll</HintPath>
+    <Reference Include="HtmlRenderer.WinForms, Version=1.5.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlRenderer.WinForms.1.5.0.6\lib\net45\HtmlRenderer.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="MersenneTwister, Version=1.0.6146.4688, Culture=neutral, PublicKeyToken=9c84633ec57842f3, processorArchitecture=MSIL">
       <HintPath>..\packages\MersenneTwister.1.0.5\lib\portable-net45+netcore45+win8+wp8\MersenneTwister.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PdfSharp, Version=1.32.3057.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp.1.32.3057.0\lib\net20\PdfSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="PdfSharp.Charting, Version=1.32.3057.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp.1.32.3057.0\lib\net20\PdfSharp.Charting.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -130,27 +137,40 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backend\Attributes\AttributeSection.cs" />
-    <Compile Include="Backend\Datastructures\AvailabilityString.cs" />
+    <Compile Include="Backend\Datastructures\AvailabilityValue.cs" />
+    <Compile Include="Backend\Datastructures\CachedBindingList.cs" />
+    <Compile Include="Backend\Datastructures\DependancyGraphNodeWithCondition.cs" />
+    <Compile Include="Backend\Datastructures\MostRecentlyUsedCollection.cs" />
+    <Compile Include="Backend\Datastructures\ObservableCollectionWithMaxSize.cs" />
     <Compile Include="Backend\Datastructures\NuyenString.cs" />
+    <Compile Include="Backend\Datastructures\DependancyGraph.cs" />
     <Compile Include="Backend\Datastructures\SourceString.cs" />
+    <Compile Include="Backend\Datastructures\TaggedObservableCollection.cs" />
+    <Compile Include="Backend\Datastructures\TextEventArgs.cs" />
+    <Compile Include="Backend\Datastructures\ThreadSafeRandom.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
+    <Compile Include="Backend\Extensions\ListExtensions.cs" />
     <Compile Include="Backend\Extensions\ImageExtensions.cs" />
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />
+    <Compile Include="Backend\Extensions\ObservableCollectionExtensions.cs" />
+    <Compile Include="Backend\Extensions\RandomExtensions.cs" />
     <Compile Include="Backend\Extensions\StringExtensions.cs" />
     <Compile Include="Backend\Extensions\WinFormsExtensions.cs" />
+    <Compile Include="Backend\Extensions\XPathNavigatorExtensions.cs" />
     <Compile Include="Backend\Improvements\ImprovementMethods.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ImprovementMethods.tt</DependentUpon>
     </Compile>
     <Compile Include="Backend\Shared Methods\CharacterShared.cs" />
-    <Compile Include="Backend\Datastructures\ReverseTree.cs" />
+    <Compile Include="Backend\Datastructures\DependancyGraphNode.cs" />
     <Compile Include="Backend\Datastructures\TranslatedField.cs" />
     <Compile Include="Backend\Debugging\CrashHandler.cs" />
     <Compile Include="Backend\Debugging\ExceptionHeatMap.cs" />
     <Compile Include="Backend\Equipment\Armor.cs" />
     <Compile Include="Backend\Equipment\CapacityStyle.cs" />
     <Compile Include="Backend\Equipment\Cyberware.cs" />
+    <Compile Include="Backend\Equipment\Drugs.cs" />
     <Compile Include="Backend\Equipment\Gear.cs" />
     <Compile Include="Backend\Equipment\Grade.cs" />
     <Compile Include="Backend\Equipment\Lifestyle.cs" />
@@ -162,7 +182,7 @@
     <Compile Include="Backend\Equipment\WeaponAccessory.cs" />
     <Compile Include="Backend\Extensions\BindingListExtensions.cs" />
     <Compile Include="Backend\Extensions\BitArrayExtensions.cs" />
-    <Compile Include="Backend\Extensions\IEnumerableExtensions.cs" />
+    <Compile Include="Backend\Extensions\EnumerableExtensions.cs" />
     <Compile Include="Backend\Debugging\PerformanceDebugUtils.cs" />
     <Compile Include="Backend\Shared Methods\SelectionShared.cs" />
     <Compile Include="Backend\Powers\PowerSorters.cs" />
@@ -174,6 +194,29 @@
     <Compile Include="Backend\Skills\SkillGroup.cs" />
     <Compile Include="Backend\Skills\SkillSorters.cs" />
     <Compile Include="Backend\Skills\SkillsSection.cs" />
+    <Compile Include="Backend\Stories\Story.cs" />
+    <Compile Include="Backend\Stories\StoryModule.cs" />
+    <Compile Include="Backend\Uniques\AIProgram.cs" />
+    <Compile Include="Backend\Uniques\Art.cs" />
+    <Compile Include="Backend\Uniques\CalendarWeek.cs" />
+    <Compile Include="Backend\Uniques\ComplexForm.cs" />
+    <Compile Include="Backend\Uniques\Contact.cs" />
+    <Compile Include="Backend\Uniques\CritterPower.cs" />
+    <Compile Include="Backend\Uniques\Enhancement.cs" />
+    <Compile Include="Backend\Uniques\Focus.cs" />
+    <Compile Include="Backend\Uniques\InitiationGrade.cs" />
+    <Compile Include="Backend\Uniques\LimitModifier.cs" />
+    <Compile Include="Backend\Uniques\Location.cs" />
+    <Compile Include="Backend\Uniques\MartialArt.cs" />
+    <Compile Include="Backend\Uniques\MartialArtManeuver.cs" />
+    <Compile Include="Backend\Uniques\MartialArtTechnique.cs" />
+    <Compile Include="Backend\Uniques\MentorSpirit.cs" />
+    <Compile Include="Backend\Uniques\Metamagic.cs" />
+    <Compile Include="Backend\Uniques\Quality.cs" />
+    <Compile Include="Backend\Uniques\Spell.cs" />
+    <Compile Include="Backend\Uniques\Spirit.cs" />
+    <Compile Include="Backend\Uniques\StackedFocus.cs" />
+    <Compile Include="Backend\Uniques\Tradition.cs" />
     <Compile Include="Character Creation\frmSelectLifeModule.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -199,15 +242,16 @@
     <Compile Include="Classes\clsParameterAttribute.cs" />
     <Compile Include="Classes\clsStoryBuilder.cs" />
     <Compile Include="Classes\clsTimekeeper.cs" />
-    <Compile Include="Classes\clsUnique.cs" />
     <Compile Include="Classes\clsUtils.cs" />
     <Compile Include="Classes\clsXmlExtensions.cs" />
     <Compile Include="Classes\clsXmlManager.cs" />
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
     <Compile Include="Backend\Powers\Power.cs" />
+    <Compile Include="Classes\ITranslatable.cs" />
     <Compile Include="Classes\RemoveImprovementCollection.cs">
       <DependentUpon>clsImprovement.cs</DependentUpon>
     </Compile>
+    <Compile Include="Classes\TooltipFactory.cs" />
     <Compile Include="frmCharacterRoster.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -220,6 +264,7 @@
     <Compile Include="frmCreateWeaponMount.Designer.cs">
       <DependentUpon>frmCreateWeaponMount.cs</DependentUpon>
     </Compile>
+    <Compile Include="helpers\DataGridViewTextBoxColumnTranslated.cs" />
     <Compile Include="helpers\ElasticComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -232,11 +277,21 @@
     <Compile Include="helpers\NumericUpDownEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Interfaces\ICanEquip.cs" />
+    <Compile Include="Interfaces\ICanRemove.cs" />
+    <Compile Include="Interfaces\IHasConditionMonitor.cs" />
+    <Compile Include="Interfaces\IHasCustomName.cs" />
+    <Compile Include="Interfaces\ICanSell.cs" />
     <Compile Include="Interfaces\IHasChildren.cs" />
+    <Compile Include="Interfaces\IHasChildrenAndCost.cs" />
+    <Compile Include="Interfaces\IHasLocation.cs" />
     <Compile Include="Interfaces\IHasMatrixAttributes.cs" />
     <Compile Include="Interfaces\IHasMugshots.cs" />
     <Compile Include="Interfaces\IHasInternalId.cs" />
     <Compile Include="Interfaces\IHasName.cs" />
+    <Compile Include="Interfaces\IHasNotes.cs" />
+    <Compile Include="Interfaces\IHasSource.cs" />
+    <Compile Include="Interfaces\INotifyMultiplePropertyChanged.cs" />
     <Compile Include="lang\language.cs">
       <DependentUpon>language.xsd</DependentUpon>
     </Compile>
@@ -258,12 +313,12 @@
     <Compile Include="Controls\ContactControl.Designer.cs">
       <DependentUpon>ContactControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\DiceRollerControl.cs">
+    <None Include="Controls\DiceRollerControl.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\DiceRollerControl.Designer.cs">
+    </None>
+    <None Include="Controls\DiceRollerControl.Designer.cs">
       <DependentUpon>DiceRollerControl.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="frmAddToken.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -281,6 +336,12 @@
     </Compile>
     <Compile Include="frmAbout.Designer.cs">
       <DependentUpon>frmAbout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmCreateCustomDrug.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCreateCustomDrug.Designer.cs">
+      <DependentUpon>frmCreateCustomDrug.cs</DependentUpon>
     </Compile>
     <Compile Include="frmCreateCyberwareSuite.cs">
       <SubType>Form</SubType>
@@ -306,12 +367,15 @@
     <Compile Include="frmCreateSpell.Designer.cs">
       <DependentUpon>frmCreateSpell.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmGMDashboard.cs">
+    <None Include="data\drugcomponents.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="frmGMDashboard.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmGMDashboard.Designer.cs">
+    </None>
+    <None Include="frmGMDashboard.Designer.cs">
       <DependentUpon>frmGMDashboard.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="Selection Forms\frmSelectOptionalPower.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -391,6 +455,57 @@
     <Compile Include="UI\Skills\SkillsTabUserControl.Designer.cs">
       <DependentUpon>SkillsTabUserControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Table\Alignment.cs" />
+    <Compile Include="UI\Table\ButtonTableCell.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\ButtonTableCell.Designer.cs">
+      <DependentUpon>ButtonTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\CheckBoxTableCell.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\CheckBoxTableCell.Designer.cs">
+      <DependentUpon>CheckBoxTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\HeaderCell.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\HeaderCell.Designer.cs">
+      <DependentUpon>HeaderCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\SpinnerTableCell.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\SpinnerTableCell.Designer.cs">
+      <DependentUpon>SpinnerTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\TableCell.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\TableCell.Designer.cs">
+      <DependentUpon>TableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\TableColumn.cs" />
+    <Compile Include="UI\Table\TableColumnCollection.cs" />
+    <Compile Include="UI\Table\TableRow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\TableRow.Designer.cs">
+      <DependentUpon>TableRow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\TableView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\TableView.Designer.cs">
+      <DependentUpon>TableView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Table\TextTableCell.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Table\TextTableCell.Designer.cs">
+      <DependentUpon>TextTableCell.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\frmDiceHits.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -457,54 +572,54 @@
     <Compile Include="frmNotes.Designer.cs">
       <DependentUpon>frmNotes.cs</DependentUpon>
     </Compile>
-    <Compile Include="Omae\frmOmae.cs">
+    <None Include="Omae\frmOmae.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmae.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmae.Designer.cs">
       <DependentUpon>frmOmae.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Omae\frmOmaeAccount.cs">
+    </None>
+    <None Include="Omae\frmOmaeAccount.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmaeAccount.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmaeAccount.Designer.cs">
       <DependentUpon>frmOmaeAccount.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Omae\frmOmaeCompress.cs">
+    </None>
+    <None Include="Omae\frmOmaeCompress.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmaeCompress.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmaeCompress.Designer.cs">
       <DependentUpon>frmOmaeCompress.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUpload.cs">
+    </None>
+    <None Include="Omae\frmOmaeUpload.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUpload.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmaeUpload.Designer.cs">
       <DependentUpon>frmOmaeUpload.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUploadData.cs">
+    </None>
+    <None Include="Omae\frmOmaeUploadData.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUploadData.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmaeUploadData.Designer.cs">
       <DependentUpon>frmOmaeUploadData.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUploadLanguage.cs">
+    </None>
+    <None Include="Omae\frmOmaeUploadLanguage.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUploadLanguage.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmaeUploadLanguage.Designer.cs">
       <DependentUpon>frmOmaeUploadLanguage.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUploadSheet.cs">
+    </None>
+    <None Include="Omae\frmOmaeUploadSheet.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Omae\frmOmaeUploadSheet.Designer.cs">
+    </None>
+    <None Include="Omae\frmOmaeUploadSheet.Designer.cs">
       <DependentUpon>frmOmaeUploadSheet.cs</DependentUpon>
-    </Compile>
-    <Compile Include="frmPlayerDashboard.cs">
+    </None>
+    <None Include="frmPlayerDashboard.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmPlayerDashboard.Designer.cs">
+    </None>
+    <None Include="frmPlayerDashboard.Designer.cs">
       <DependentUpon>frmPlayerDashboard.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="frmPrintMultiple.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -601,18 +716,18 @@
     <Compile Include="Selection Forms\frmSelectMartialArt.Designer.cs">
       <DependentUpon>frmSelectMartialArt.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectMartialArtAdvantage.cs">
+    <Compile Include="Selection Forms\frmSelectMartialArtTechnique.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectMartialArtAdvantage.Designer.cs">
-      <DependentUpon>frmSelectMartialArtAdvantage.cs</DependentUpon>
+    <Compile Include="Selection Forms\frmSelectMartialArtTechnique.Designer.cs">
+      <DependentUpon>frmSelectMartialArtTechnique.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectMartialArtManeuver.cs">
+    <None Include="Selection Forms\frmSelectMartialArtManeuver.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Selection Forms\frmSelectMartialArtManeuver.Designer.cs">
+    </None>
+    <None Include="Selection Forms\frmSelectMartialArtManeuver.Designer.cs">
       <DependentUpon>frmSelectMartialArtManeuver.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="Selection Forms\frmSelectMentorSpirit.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -625,12 +740,12 @@
     <Compile Include="Selection Forms\frmSelectMetamagic.Designer.cs">
       <DependentUpon>frmSelectMetamagic.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectNexus.cs">
+    <None Include="Selection Forms\frmSelectNexus.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Selection Forms\frmSelectNexus.Designer.cs">
+    </None>
+    <None Include="Selection Forms\frmSelectNexus.Designer.cs">
       <DependentUpon>frmSelectNexus.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="Selection Forms\frmSelectNumber.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -643,12 +758,12 @@
     <Compile Include="Selection Forms\frmSelectPACKSKit.Designer.cs">
       <DependentUpon>frmSelectPACKSKit.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectProgramOption.cs">
+    <None Include="Selection Forms\frmSelectProgramOption.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Selection Forms\frmSelectProgramOption.Designer.cs">
+    </None>
+    <None Include="Selection Forms\frmSelectProgramOption.Designer.cs">
       <DependentUpon>frmSelectProgramOption.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="Selection Forms\frmSelectQuality.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -733,11 +848,11 @@
     <Compile Include="Selection Forms\frmSelectPower.Designer.cs">
       <DependentUpon>frmSelectPower.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectProgram.cs">
+    <Compile Include="Selection Forms\frmSelectComplexForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectProgram.Designer.cs">
-      <DependentUpon>frmSelectProgram.cs</DependentUpon>
+    <Compile Include="Selection Forms\frmSelectComplexForm.Designer.cs">
+      <DependentUpon>frmSelectComplexForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Selection Forms\frmSelectSpell.cs">
       <SubType>Form</SubType>
@@ -799,23 +914,17 @@
     <Compile Include="Controls\InitiativeUserControl.Designer.cs">
       <DependentUpon>InitiativeUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Omae\OmaeRecord.cs">
+    <None Include="Omae\OmaeRecord.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Omae\OmaeRecord.Designer.cs">
+    </None>
+    <None Include="Omae\OmaeRecord.Designer.cs">
       <DependentUpon>OmaeRecord.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="Controls\PetControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\PetControl.Designer.cs">
       <DependentUpon>PetControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Powers\PowerControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Powers\PowerControl.Designer.cs">
-      <DependentUpon>PowerControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Service References\OmaeService\Reference.cs">
       <AutoGen>True</AutoGen>
@@ -891,6 +1000,9 @@
       <DependentUpon>frmAbout.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmCreateCustomDrug.resx">
+      <DependentUpon>frmCreateCustomDrug.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmCreateCyberwareSuite.resx">
       <DependentUpon>frmCreateCyberwareSuite.cs</DependentUpon>
     </EmbeddedResource>
@@ -944,6 +1056,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Skills\SkillsTabUserControl.resx">
       <DependentUpon>SkillsTabUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Table\TableRow.resx">
+      <DependentUpon>TableRow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Utilities\frmDiceHits.resx">
       <DependentUpon>frmDiceHits.cs</DependentUpon>
@@ -1052,8 +1167,8 @@
     <EmbeddedResource Include="Selection Forms\frmSelectMartialArt.resx">
       <DependentUpon>frmSelectMartialArt.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectMartialArtAdvantage.resx">
-      <DependentUpon>frmSelectMartialArtAdvantage.cs</DependentUpon>
+    <EmbeddedResource Include="Selection Forms\frmSelectMartialArtTechnique.resx">
+      <DependentUpon>frmSelectMartialArtTechnique.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectMartialArtManeuver.resx">
       <DependentUpon>frmSelectMartialArtManeuver.cs</DependentUpon>
@@ -1118,8 +1233,8 @@
     <EmbeddedResource Include="Selection Forms\frmSelectPower.resx">
       <DependentUpon>frmSelectPower.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectProgram.resx">
-      <DependentUpon>frmSelectProgram.cs</DependentUpon>
+    <EmbeddedResource Include="Selection Forms\frmSelectComplexForm.resx">
+      <DependentUpon>frmSelectComplexForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectSpell.resx">
       <DependentUpon>frmSelectSpell.cs</DependentUpon>
@@ -1157,9 +1272,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\PetControl.resx">
       <DependentUpon>PetControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Powers\PowerControl.resx">
-      <DependentUpon>PowerControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Character Creation\frmCreate.resx">
       <DependentUpon>frmCreate.cs</DependentUpon>
@@ -1365,9 +1477,6 @@
     <None Include="lang\language.xss">
       <DependentUpon>language.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="nuget.config">
-      <SubType>Designer</SubType>
     </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
@@ -1624,16 +1733,97 @@
     <Content Include="customdata\Adapsin Applied as Multiplier, Not Grade\amend_AdapsinMultiplier_bioware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Bone Lacing Adds to Body\amend_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\College Education Qualities Stack\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Cyberlimb Customisation Does Not Incur Grade Costs\amend_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Cyberlimbs Cannot Add Headware\amend_cyberlimbheadware_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_armor.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_bioware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_critterpowers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_martialarts.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_mentors.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_powers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_priorities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_skills.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_streams.xml" />
+    <Content Include="customdata\Delnar Skills Remake\amend_traditions.xml" />
+    <Content Include="customdata\Delnar Skills Remake\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Education Qualities Apply Karma Discount in Create Mode\amend_qualities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\German Data Changes - Exotic Weapons Use Standard Skills\amend_weapons.xml" />
-    <Content Include="customdata\German Data Changes - Growth Spell Category\amend_spells.xml" />
-    <Content Include="customdata\German Data Changes - Gyro-Stablisation Vehicle Mod\override_gyro-stabilization_vehicles.xml" />
+    <Content Include="customdata\German Data Changes - Commanding Voice in Street Grimoire\amend_commandingvoice_powers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Commlink App Prices\amend_commlinkappsprices_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Electronic Firing Barrel to Internal Slot\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="customdata\German Data Changes - Exotic Weapons Use Standard Skills\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Garage Capacity\amend_garagecapacity_lifestyles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Garage Capacity\custom_garagecapacity_lifestyles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Growth Spell Category\amend_spells.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Gyro-Stablisation Vehicle Mod\override_gyro-stabilization_vehicles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\German Data Changes - Heightened Concentration has Levels\amend_heightenedconcentration_powers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Ingram Smartgun X\amend_smartgunxstock_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Poseidon RCC\amend_poseidonrcc_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Rigger 5 Mods - Catalina 2\amend_vehicles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Seeker Shaft and Monotip Head Cost and Avail\amend_arrows_gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Radar Sensor as Sensor Function\custom_radarsensorfunction_gear.xml">
@@ -1705,7 +1895,12 @@
     <Content Include="customdata\SR Missions 1.4 Rules\amend_cyberware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\SR Missions 1.4 Rules\amend_weapons.xml" />
+    <Content Include="customdata\SR Missions 1.4 Rules\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\SR Missions Animal Prices\amend_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="data\sheets.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -2753,31 +2948,25 @@
     <Content Include="sheets\de-de\Fancy Blocks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
+    <Content Include="sheets\de-de\Shadowrun 5 %28Base Skills grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Shadowrun 5 %28Grouped by Category%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\de-de\Shadowrun 5 %28Grouped Skills by Name and Category%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\de-de\Shadowrun 5 %28Grouped Skills by Rating and Category%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\de-de\Shadowrun 5 %28Rating greater 0%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\de-de\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\de-de\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
+    <Content Include="sheets\de-de\Shadowrun 5 %28Core Skills grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\de-de\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Shadowrun 5 %28Rating greater 0, Grouped by Category%29.xsl">
+    <Content Include="sheets\de-de\Shadowrun 5 %28Skills by Rating greater 0 within Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\de-de\Shadowrun 5 %28Skills by Rating within Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\de-de\Shadowrun 5 %28Skills grouped by Rating greater 0%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\de-de\Shadowrun 5 %28Skills grouped by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\de-de\Shadowrun 5 set CSS.xslt">
@@ -2845,31 +3034,25 @@
     <Content Include="sheets\fr-fr\Game Master Summary.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Base Skills grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Core Skills grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sheets\fr-fr\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr-fr\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Skills by Rating greater 0 within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr-fr\Shadowrun 5 %28Grouped by Category%29.xsl">
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Skills by Rating within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr-fr\Shadowrun 5 %28Grouped Skills by Name and Category%29.xsl">
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Skills grouped by Rating greater 0%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr-fr\Shadowrun 5 %28Grouped Skills by Rating and Category%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\fr-fr\Shadowrun 5 %28Rating greater 0%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\fr-fr\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\fr-fr\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\fr-fr\Shadowrun 5 %28Rating greater 0, Grouped by Category%29.xsl">
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Skills grouped by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\fr-fr\Shadowrun 5 set CSS.xslt">
@@ -2920,31 +3103,25 @@
     <Content Include="sheets\ja-jp\Notes.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Base Skills grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Core Skills grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sheets\ja-jp\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\ja-jp\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Skills by Rating greater 0 within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\ja-jp\Shadowrun 5 %28Grouped by Category%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Skills by Rating within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\ja-jp\Shadowrun 5 %28Grouped Skills by Name and Category%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Skills grouped by Rating greater 0%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\ja-jp\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\ja-jp\Shadowrun 5 %28Grouped Skills by Rating and Category%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\ja-jp\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\ja-jp\Shadowrun 5 %28Rating greater 0%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\ja-jp\Shadowrun 5 %28Rating greater 0, Grouped by Category%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Skills grouped by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\ja-jp\Shadowrun 5 set CSS.xslt">
@@ -2995,31 +3172,25 @@
     <Content Include="sheets\pt-br\Notes.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Base Skills grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Core Skills grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sheets\pt-br\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\pt-br\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Skills by Rating greater 0 within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\pt-br\Shadowrun 5 %28Grouped by Category%29.xsl">
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Skills by Rating within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\pt-br\Shadowrun 5 %28Grouped Skills by Name and Category%29.xsl">
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Skills grouped by Rating greater 0%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\pt-br\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\pt-br\Shadowrun 5 %28Grouped Skills by Rating and Category%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\pt-br\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\pt-br\Shadowrun 5 %28Rating greater 0%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\pt-br\Shadowrun 5 %28Rating greater 0, Grouped by Category%29.xsl">
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Skills grouped by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\pt-br\Shadowrun 5 set CSS.xslt">
@@ -3037,31 +3208,25 @@
     <Content Include="sheets\pt-br\xz.language.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
+    <Content Include="sheets\Shadowrun 5 %28Base Skills grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\Shadowrun 5 %28Core Skills grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\Shadowrun 5 %28Grouped Skills by Name and Category%29.xsl">
+    <Content Include="sheets\Shadowrun 5 %28Skills by Rating greater 0 within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
+    <Content Include="sheets\Shadowrun 5 %28Skills by Rating within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\Shadowrun 5 %28Grouped Skills by Rating and Category%29.xsl">
+    <Content Include="sheets\Shadowrun 5 %28Skills grouped by Rating greater 0%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\Shadowrun 5 %28Rating greater 0, Grouped by Category%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\Shadowrun 5 %28Rating greater 0%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\Shadowrun 5 %28Grouped by Category%29.xsl">
+    <Content Include="sheets\Shadowrun 5 %28Skills grouped by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\Shadowrun 5 set.xslt">
@@ -3089,7 +3254,7 @@
     <Content Include="sheets\xs.SkillsGroupedAssorted.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\xs.SkillsGroupedByName.xslt">
+    <Content Include="sheets\xs.SkillsGroupedByPool.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\xs.SkillsGroupedByRating.xslt">
@@ -3101,11 +3266,17 @@
     <Content Include="sheets\xt.Calendar.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="sheets\xt.ComplexForms.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sheets\xt.ConditionMonitor.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="sheets\xt.Contacts.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\xt.CritterPowers.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\xt.Expenses.xslt">
@@ -3141,6 +3312,9 @@
     <Content Include="sheets\xt.RuleLine.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="sheets\xt.SkillCategory.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sheets\xt.SkillGroups.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -3159,22 +3333,31 @@
     <Content Include="sheets\zh-cn\Game Master Summary.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Base Skills grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\Shadowrun 5 %28Grouped by Category%29.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Core Skills grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\Shadowrun 5 %28Grouped Skills by Name and Category%29.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\Shadowrun 5 %28Grouped Skills by Rating and Category%29.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Skills by Rating greater 0 within Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\Shadowrun 5 %28Rating greater 0, Grouped by Category%29.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Skills by Rating within Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Skills grouped by Rating greater 0%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Skills grouped by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\zh-cn\Shadowrun 5 set CSS.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\zh-cn\Shadowrun 5.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\zh-cn\xz.language.xslt">
@@ -3196,21 +3379,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\zh-cn\Calendar.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\zh-cn\Shadowrun 5.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\zh-cn\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\zh-cn\Shadowrun 5 %28Rating greater 0%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\zh-cn\Shadowrun 5 %28Core%29.xsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sheets\zh-cn\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\zh-cn\Formatted Text-Only.xsl">
@@ -3266,6 +3434,9 @@
     <Content Include="data\cyberware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
+    </Content>
+    <Content Include="data\drugcomponents.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\echoes.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -13,9 +13,10 @@ namespace Chummer.UI.Attributes
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                components?.Dispose();
+                UnbindAttributeControl();
             }
             base.Dispose(disposing);
         }
@@ -49,19 +50,20 @@ namespace Chummer.UI.Attributes
             this.cmdImproveATT.Size = new System.Drawing.Size(24, 24);
             this.cmdImproveATT.TabIndex = 75;
             this.cmdImproveATT.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.cmdImproveATT.TooltipText = "";
+            this.cmdImproveATT.ToolTipText = "";
             this.cmdImproveATT.UseVisualStyleBackColor = true;
             this.cmdImproveATT.Click += new System.EventHandler(this.cmdImproveATT_Click);
             // 
             // lblValue
             // 
             this.lblValue.AutoSize = true;
+            this.lblValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblValue.Location = new System.Drawing.Point(226, 5);
             this.lblValue.Name = "lblValue";
-            this.lblValue.Size = new System.Drawing.Size(19, 13);
+            this.lblValue.Size = new System.Drawing.Size(22, 13);
             this.lblValue.TabIndex = 74;
             this.lblValue.Text = "[0]";
-            this.lblValue.TooltipText = null;
+            this.lblValue.ToolTipText = null;
             // 
             // lblName
             // 
@@ -71,7 +73,7 @@ namespace Chummer.UI.Attributes
             this.lblName.Size = new System.Drawing.Size(61, 13);
             this.lblName.TabIndex = 71;
             this.lblName.Text = "Attrib (ATT)";
-            this.lblName.TooltipText = null;
+            this.lblName.ToolTipText = null;
             // 
             // lblLimits
             // 
@@ -81,7 +83,7 @@ namespace Chummer.UI.Attributes
             this.lblLimits.Size = new System.Drawing.Size(45, 13);
             this.lblLimits.TabIndex = 72;
             this.lblLimits.Text = "1 / 6 (9)";
-            this.lblLimits.TooltipText = null;
+            this.lblLimits.ToolTipText = null;
             // 
             // cmdBurnEdge
             // 
@@ -92,7 +94,7 @@ namespace Chummer.UI.Attributes
             this.cmdBurnEdge.Size = new System.Drawing.Size(24, 24);
             this.cmdBurnEdge.TabIndex = 78;
             this.cmdBurnEdge.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.cmdBurnEdge.TooltipText = "";
+            this.cmdBurnEdge.ToolTipText = "";
             this.cmdBurnEdge.UseVisualStyleBackColor = true;
             this.cmdBurnEdge.Click += new System.EventHandler(this.cmdBurnEdge_Click);
             // 

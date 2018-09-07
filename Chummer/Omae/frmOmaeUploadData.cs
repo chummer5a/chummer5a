@@ -185,7 +185,7 @@ namespace Chummer
             foreach (string strSource in lstSource)
             {
                 if (!string.IsNullOrEmpty(strSource))
-                    strMessage += "\n\t" + strSource;
+                    strMessage += Environment.NewLine + '\t' + strSource;
             }
             if (!string.IsNullOrEmpty(strMessage))
             {

@@ -16,15 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+ using System;
+ using System.IO;
+ using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -33,8 +27,6 @@ namespace Chummer
         // used when the user has filled out the information
         private readonly InitiativeUserControl parentControl;
         private Character _character;
-        private readonly Random _objRandom = MersenneTwister.SfmtRandom.Create();
-        private int _intModuloTemp = 0;
 
         public frmAddToken(InitiativeUserControl init)
         {
@@ -42,7 +34,7 @@ namespace Chummer
             //LanguageManager.Load(GlobalOptions.Language, this);
             CenterToParent();
             parentControl = init;
-            
+
         }
 
         /// <summary>
@@ -52,7 +44,7 @@ namespace Chummer
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*"
+                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
             };
 
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
@@ -80,7 +72,8 @@ namespace Chummer
 
                 nudInit.Value = objCharacter.InitiativeDice;
                 txtName.Text = objCharacter.Name;
-                nudInitStart.Value = Int32.Parse(objCharacter.Initiative.Split(' ')[0]);
+                if (int.TryParse(objCharacter.Initiative.Split(' ')[0], out int intTemp))
+                    nudInitStart.Value = intTemp;
                 _character = objCharacter;
                 Cursor = Cursors.Default;
             }
@@ -103,55 +96,36 @@ namespace Chummer
         /// <param name="e"></param>
         private void btnOK_Click(object sender, EventArgs e)
         {
-            Random objRandom = MersenneTwister.SfmtRandom.Create();
             if (_character != null)
             {
-                _character.InitialInit = (int)nudInitStart.Value;
-                _character.Delayed = false;
-                _character.InitPasses = (int)nudInit.Value;
-                if (chkAutoRollInit.Checked)
-                {
-                    int intInitRoll = 0;
-                    for (int j = 0; j < _character.InitPasses; j++)
-                    {
-                        do
-                        {
-                            _intModuloTemp = _objRandom.Next();
-                        }
-                        while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
-                        intInitRoll += 1 + _intModuloTemp % 6;
-                    }
-                    _character.InitRoll = intInitRoll + _character.InitialInit;
-                }
-                else
-                    _character.InitRoll = int.MinValue;
                 _character.Name = txtName.Text;
+                _character.InitPasses = (int)nudInit.Value;
+                _character.Delayed = false;
+                _character.InitialInit = (int)nudInitStart.Value;
             }
             else
             {
-                _character = new Character()
+                _character = new Character
                 {
                     Name = txtName.Text,
                     InitPasses = (int)nudInit.Value,
-                    InitRoll = int.MinValue,
                     Delayed = false,
                     InitialInit = (int)nudInitStart.Value
                 };
-                if (chkAutoRollInit.Checked)
-                {
-                    int intInitRoll = 0;
-                    for (int j = 0; j < _character.InitPasses; j++)
-                    {
-                        do
-                        {
-                            _intModuloTemp = _objRandom.Next();
-                        }
-                        while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
-                        intInitRoll += 1 + _intModuloTemp % 6;
-                    }
-                    _character.InitRoll = intInitRoll + _character.InitialInit;
-                }
             }
+            if (chkAutoRollInit.Checked)
+            {
+                int intInitPasses = _character.InitPasses;
+                int intInitRoll = intInitPasses;
+                for (int j = 0; j < intInitPasses; ++j)
+                {
+                    intInitRoll += GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                }
+                _character.InitRoll = intInitRoll + _character.InitialInit;
+            }
+            else
+                _character.InitRoll = int.MinValue;
+
             parentControl.AddToken(_character);
             Close();
         }

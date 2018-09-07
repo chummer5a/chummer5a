@@ -13,9 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -49,7 +49,6 @@ namespace Chummer
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.chkLimited = new System.Windows.Forms.CheckBox();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.chkExtended = new System.Windows.Forms.CheckBox();
             this.chkAlchemical = new System.Windows.Forms.CheckBox();
             this.chkFreeBonus = new System.Windows.Forms.CheckBox();
@@ -264,24 +263,8 @@ namespace Chummer
             this.chkLimited.TabIndex = 14;
             this.chkLimited.Tag = "Checkbox_SelectSpell_LimitedSpell";
             this.chkLimited.Text = "Limited Spell";
-            this.tipTooltip.SetToolTip(this.chkLimited, "Limited Spells require a Fetish to cast but add +2 dice to the Drain Resistance T" +
-        "est after casting this Spell.");
             this.chkLimited.UseVisualStyleBackColor = true;
             this.chkLimited.CheckedChanged += new System.EventHandler(this.chkLimited_CheckedChanged);
-            // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AllowLinksHandling = true;
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.BaseStylesheet = null;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipTooltip.OwnerDraw = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.TooltipCssClass = "htmltooltip";
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
             // 
             // chkExtended
             // 
@@ -293,8 +276,6 @@ namespace Chummer
             this.chkExtended.TabIndex = 21;
             this.chkExtended.Tag = "Checkbox_SelectSpell_ExtendedSpell";
             this.chkExtended.Text = "Extended Spell";
-            this.tipTooltip.SetToolTip(this.chkExtended, "Extended range Spells have a range of (Force x MAG x 10) meters but have their DV" +
-        " increased by +2.");
             this.chkExtended.UseVisualStyleBackColor = true;
             this.chkExtended.Visible = false;
             this.chkExtended.CheckedChanged += new System.EventHandler(this.chkExtended_CheckedChanged);
@@ -308,8 +289,6 @@ namespace Chummer
             this.chkAlchemical.TabIndex = 15;
             this.chkAlchemical.Tag = "Checkbox_SelectSpell_Alchemical";
             this.chkAlchemical.Text = "Alchemical Preparation";
-            this.tipTooltip.SetToolTip(this.chkAlchemical, "Extended range Spells have a range of (Force x MAG x 10) meters but have their DV" +
-        " increased by +2.");
             this.chkAlchemical.UseVisualStyleBackColor = true;
             // 
             // chkFreeBonus
@@ -413,7 +392,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.CheckBox chkLimited;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.CheckBox chkExtended;
         private System.Windows.Forms.CheckBox chkAlchemical;
         private System.Windows.Forms.CheckBox chkFreeBonus;

@@ -22,7 +22,7 @@ using System.Linq;
 
 namespace Chummer
 {
-    static class LinqExtensions
+    public static class LinqExtensions
     {
         /// <summary>
         /// Similar to Linq's Aggregate(), but deep searches the list, applying the aggregator to the parents, the parents' children, their children's children, etc.
@@ -146,12 +146,11 @@ namespace Chummer
         /// </summary>
         public static T DeepFirst<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
         {
-            T objReturn = default(T);
             foreach (T objLoopChild in objParentList)
             {
                 if (predicate(objLoopChild))
                     return objLoopChild;
-                objReturn = funcGetChildrenMethod(objLoopChild).DeepFirstOrDefault(funcGetChildrenMethod, predicate);
+                T objReturn = funcGetChildrenMethod(objLoopChild).DeepFirstOrDefault(funcGetChildrenMethod, predicate);
                 if (objReturn?.Equals(default(T)) == false)
                     return objReturn;
             }
@@ -163,12 +162,11 @@ namespace Chummer
         /// </summary>
         public static T DeepFirstOrDefault<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
         {
-            T objReturn = default(T);
             foreach (T objLoopChild in objParentList)
             {
                 if (predicate(objLoopChild))
                     return objLoopChild;
-                objReturn = funcGetChildrenMethod(objLoopChild).DeepFirstOrDefault(funcGetChildrenMethod, predicate);
+                T objReturn = funcGetChildrenMethod(objLoopChild).DeepFirstOrDefault(funcGetChildrenMethod, predicate);
                 if (objReturn?.Equals(default(T)) == false)
                     return objReturn;
             }
@@ -192,12 +190,11 @@ namespace Chummer
         public static T DeepLastOrDefault<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
         {
             T objReturn = default(T);
-            T objTemp = default(T);
             foreach (T objLoopChild in objParentList)
             {
                 if (predicate(objLoopChild))
                     objReturn = objLoopChild;
-                objTemp = funcGetChildrenMethod(objLoopChild).DeepLastOrDefault(funcGetChildrenMethod, predicate);
+                T objTemp = funcGetChildrenMethod(objLoopChild).DeepLastOrDefault(funcGetChildrenMethod, predicate);
                 if (objTemp?.Equals(default(T)) == false)
                     objReturn = objTemp;
             }
@@ -221,9 +218,12 @@ namespace Chummer
         public static T DeepLastOrDefault<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod)
         {
             T objReturn = objParentList.LastOrDefault();
-            T objTemp = funcGetChildrenMethod(objReturn).DeepLastOrDefault(funcGetChildrenMethod);
-            if (objTemp?.Equals(default(T)) == false)
-                return objTemp;
+            if (funcGetChildrenMethod(objReturn).Any())
+            {
+                T objTemp = funcGetChildrenMethod(objReturn).DeepLastOrDefault(funcGetChildrenMethod);
+                if (objTemp?.Equals(default(T)) == false)
+                    return objTemp;
+            }
             return objReturn;
         }
 

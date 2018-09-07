@@ -16,17 +16,11 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+ using System;
+ using System.Diagnostics;
 ﻿using System.IO;
-﻿using System.Linq;
-﻿using System.Net;
-﻿using System.Reflection;
-﻿using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using System.Xml;
-using System.Xml.XPath;
+ using System.Reflection;
+ using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -42,17 +36,11 @@ namespace Chummer
 
         public static bool IsRunningInVisualStudio => Process.GetCurrentProcess().ProcessName == "devenv";
 
-        private static Version s_VersionCachedGitVersion = null;
+        private static Version s_VersionCachedGitVersion;
         public static Version CachedGitVersion
         {
-            get
-            {
-                return s_VersionCachedGitVersion;
-            }
-            set
-            {
-                s_VersionCachedGitVersion = value;
-            }
+            get => s_VersionCachedGitVersion;
+            set => s_VersionCachedGitVersion = value;
         }
 
         public static int GitUpdateAvailable()
@@ -65,6 +53,7 @@ namespace Chummer
         /// <summary>
         /// Restarts Chummer5a.
         /// </summary>
+        /// <param name="strLanguage">Language in which to display any prompts or warnings.</param>
         /// <param name="strText">Text to display in the prompt to restart. If empty, no prompt is displayed.</param>
         public static void RestartApplication(string strLanguage, string strText)
         {
@@ -123,6 +112,15 @@ namespace Chummer
             };
             Application.Exit();
             Process.Start(startInfo);
+        }
+
+        public static void DoDatabinding(Control objControl, string PropertyName, object dataSource, string dataMember)
+        {
+            if (!objControl.IsHandleCreated)
+            {
+                objControl.CreateControl();
+            }
+            objControl.DataBindings.Add(PropertyName, dataSource, dataMember, false, DataSourceUpdateMode.OnPropertyChanged);
         }
     }
 }

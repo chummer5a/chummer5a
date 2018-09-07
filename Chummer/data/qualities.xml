@@ -2,24 +2,24 @@
 
 <!--This file is part of Chummer5a.
 
-    Chummer5a is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  Chummer5a is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    Chummer5a is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  Chummer5a is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with Chummer5a.  If not, see <http://www.gnu.org/licenses />.
+  You should have received a copy of the GNU General Public License
+  along with Chummer5a.  If not, see <http://www.gnu.org/licenses />.
 
-    You can obtain the full source code for Chummer5a at
-    https://github.com/chummer5a/chummer5a
+  You can obtain the full source code for Chummer5a at
+  https://github.com/chummer5a/chummer5a
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema qualities.xsd">
+     xsi:schemaLocation="http://www.w3.org/2001/XMLSchema qualities.xsd">
   <version>0</version>
   <categories>
     <category>Positive</category>
@@ -32,6 +32,7 @@
       <name>Ambidextrous</name>
       <karma>4</karma>
       <category>Positive</category>
+      <limit>3</limit>
       <bonus>
         <ambidextrous />
       </bonus>
@@ -226,7 +227,7 @@
       <limit>3</limit>
       <bonus>
         <conditionmonitor>
-          <thresholdoffset precedence="0">1</thresholdoffset>
+          <thresholdoffset>1</thresholdoffset>
         </conditionmonitor>
       </bonus>
       <forbidden>
@@ -827,6 +828,7 @@
       </forbidden>
       <source>SR5</source>
       <page>69</page>
+      <nameonpage>Magicians</nameonpage>
     </quality>
     <quality>
       <id>55247bdc-c313-4614-ae15-5012308096ff</id>
@@ -858,6 +860,7 @@
       </forbidden>
       <source>SR5</source>
       <page>69</page>
+      <nameonpage>Adepts</nameonpage>
     </quality>
     <quality>
       <id>9d53e1e4-3f31-40cb-bfbe-4b94f5ba757e</id>
@@ -890,6 +893,7 @@
       </forbidden>
       <source>SR5</source>
       <page>69</page>
+      <nameonpage>Mystic Adepts</nameonpage>
     </quality>
     <quality>
       <id>c4b35412-bd91-45b4-b428-29da7edd5ff4</id>
@@ -958,6 +962,7 @@
       </forbidden>
       <source>SR5</source>
       <page>69</page>
+      <nameonpage>Aspected Magicians</nameonpage>
     </quality>
     <quality>
       <id>dea0e693-05c5-422d-bd1b-f1d1eac9cd30</id>
@@ -965,7 +970,6 @@
       <karma>15</karma>
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
-      <hide />
       <onlyprioritygiven />
       <bonus>
         <enableattribute>
@@ -1038,7 +1042,10 @@
       <bonus>
         <notoriety>1</notoriety>
         <selecttext />
-        <sociallimit>-3</sociallimit>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>-3</bonus>
+        </skillcategory>
       </bonus>
       <source>SR5</source>
       <page>78</page>
@@ -2491,6 +2498,9 @@
       <karma>10</karma>
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
+      <bonus>
+        <metageneticlimit>30</metageneticlimit>
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Changeling (Class II SURGE)</quality>
@@ -2507,6 +2517,9 @@
       <karma>15</karma>
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
+      <bonus>
+        <metageneticlimit>30</metageneticlimit>
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
@@ -2523,6 +2536,9 @@
       <karma>30</karma>
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
+      <bonus>
+        <metageneticlimit>30</metageneticlimit>
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
@@ -2570,7 +2586,7 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus>
-        <bornrich />
+        <nuyenmaxbp>30</nuyenmaxbp>
       </bonus>
       <source>RF</source>
       <page>145</page>
@@ -2596,6 +2612,16 @@
           <min>3</min>
           <condition>career</condition>
         </skillcategorykarmacost>
+        <skillcategorykarmacostmultiplier>
+          <name>Academic</name>
+          <val>50</val>
+          <condition>create</condition>
+        </skillcategorykarmacostmultiplier>
+        <skillcategoryspecializationkarmacostmultiplier>
+          <name>Academic</name>
+          <val>50</val>
+          <condition>create</condition>
+        </skillcategoryspecializationkarmacostmultiplier>
         <skillcategorypointcostmultiplier>
           <name>Academic</name>
           <val>50</val>
@@ -2893,11 +2919,13 @@
       <category>Positive</category>
       <bonus>
         <mademan />
-        <selectcontact>
-          <forceloyalty />
-          <loyalty>3</loyalty>
-          <type>group</type>
-        </selectcontact>
+        <addcontact>
+          <forcedloyalty>3</forcedloyalty>
+          <free />
+          <group />
+          <forcegroup />
+          <canwrite />
+        </addcontact>
       </bonus>
       <source>RF</source>
       <page>148</page>
@@ -2985,8 +3013,63 @@
     </quality>
     <quality>
       <id>c15df7f5-2108-4be2-9500-86045221be0a</id>
-      <name>Rank</name>
-      <karma>Variable(5-30)</karma>
+      <name>Rank (Neither Military nor Law Enforcement) I</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>RF</source>
+      <page>86</page>
+    </quality>
+    <quality>
+      <id>53bd1804-1029-4ebe-9464-a82d91be5dd9</id>
+      <name>Rank (Neither Military nor Law Enforcement) II</name>
+      <karma>10</karma>
+      <category>Positive</category>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>RF</source>
+      <page>86</page>
+    </quality>
+    <quality>
+      <id>fe414583-aa74-4a50-8132-27887ec341d6</id>
+      <name>Rank (Neither Military nor Law Enforcement) III</name>
+      <karma>15</karma>
+      <category>Positive</category>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>RF</source>
+      <page>86</page>
+    </quality>
+    <quality>
+      <id>49a9c3a8-538a-4d4e-a4e8-8bf837687d25</id>
+      <name>Rank (Military or Law Enforcement) I</name>
+      <karma>20</karma>
+      <category>Positive</category>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>RF</source>
+      <page>86</page>
+    </quality>
+    <quality>
+      <id>6ccdc691-30cb-40f0-a283-6321703b018f</id>
+      <name>Rank (Military or Law Enforcement) II</name>
+      <karma>25</karma>
+      <category>Positive</category>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>RF</source>
+      <page>86</page>
+    </quality>
+    <quality>
+      <id>aa9fbb62-1c5c-4c4f-acfd-34880cf61600</id>
+      <name>Rank (Military or Law Enforcement) III</name>
+      <karma>30</karma>
       <category>Positive</category>
       <bonus>
         <selecttext />
@@ -5868,6 +5951,7 @@
       <name>Natural Venom (Exhaled, Deadly)</name>
       <karma>18</karma>
       <category>Positive</category>
+      <metagenetic>True</metagenetic>
       <bonus />
       <forbidden>
         <oneof>
@@ -6932,6 +7016,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <critterpowers>
           <power>Adaptive Coloration</power>
           <power select="Sunlight, Mild">Allergy</power>
@@ -6943,7 +7028,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <reach>1</reach>
         <replaceattributes>
           <replaceattribute>
@@ -7338,9 +7422,10 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
-          <power>Corrosive Secretions</power>
+          <power select="Corrosive">Secretion/Substance Extrusion</power>
           <power>Magical Guard</power>
           <power>Dual Natured</power>
           <power select="Air Pollution, Moderate">Allergy</power>
@@ -7354,7 +7439,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <reach>1</reach>
         <replaceattributes>
           <replaceattribute>
@@ -7467,6 +7551,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -7481,7 +7566,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -7601,6 +7685,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -7615,7 +7700,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -7735,6 +7819,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -7749,7 +7834,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -7869,6 +7953,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -7883,7 +7968,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8003,6 +8087,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -8017,7 +8102,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8137,6 +8221,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
           <power>Dual Natured</power>
@@ -8151,7 +8236,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8261,6 +8345,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
           <power select="Vermin">Animal Control</power>
@@ -8277,7 +8362,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <replaceattributes>
           <replaceattribute>
             <name>BOD</name>
@@ -8543,6 +8627,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>1</armor>
         <critterpowers>
           <power>Animal Control</power>
@@ -8561,7 +8646,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <initiative>1</initiative>
         <optionalpowers>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
@@ -8688,6 +8772,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>2</armor>
         <critterpowers>
           <power>Movement</power>
@@ -8703,7 +8788,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <initiative>1</initiative>
         <initiativepass precedence="-1">1</initiativepass>
         <replaceattributes>
@@ -8837,6 +8921,7 @@
         </naturalweapon>
       </naturalweapons>
       <bonus>
+        <essencepenalty>-1</essencepenalty>
         <armor>2</armor>
         <critterpowers>
           <power>Movement</power>
@@ -8855,7 +8940,6 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <essencepenalty>-1</essencepenalty>
         <initiative>1</initiative>
         <initiativepass precedence="-1">1</initiativepass>
         <replaceattributes>
@@ -9197,7 +9281,7 @@
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
-            <max>8</max>
+            <max>7</max>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
@@ -9217,7 +9301,7 @@
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
-            <max>7</max>
+            <max>8</max>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
@@ -10523,9 +10607,9 @@
       <category>Positive</category>
       <bonus>
         <addcontact>
-          <loyalty>3</loyalty>
           <connection>5</connection>
-          <forceloyalty />
+          <loyalty>1</loyalty>
+          <forcedloyalty>3</forcedloyalty>
           <free />
           <group />
         </addcontact>
@@ -10612,6 +10696,11 @@
       <karma>7</karma>
       <category>Positive</category>
       <bonus />
+      <required>
+        <oneof>
+          <critterpower>Essence Drain</critterpower>
+        </oneof>
+      </required>
       <source>DTR</source>
       <page>164</page>
     </quality>
@@ -11949,6 +12038,7 @@
       <name>Latent Dracomorphosis</name>
       <karma>5</karma>
       <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
       <refundkarmaonremove />
       <bonus />
       <forbidden>
@@ -13228,11 +13318,11 @@
       <bonus>
         <spellcategorydamage>
           <category>Combat</category>
-          <val>Rating</val>
+          <val>1</val>
         </spellcategorydamage>
         <spellcategorydrain>
           <category>Combat</category>
-          <val>Rating</val>
+          <val>1</val>
         </spellcategorydrain>
       </bonus>
       <forbidden>
@@ -13279,8 +13369,7 @@
           <val>1</val>
         </spellcategorydrain>
         <weaponcategorydv>
-          <selectskill skillcategory="Combat Active">
-          </selectskill>
+          <selectskill limittoskill="Astral Combat,Blades,Clubs,Exotic Melee Weapon,Unarmed Combat" />
           <bonus>1</bonus>
         </weaponcategorydv>
       </bonus>
@@ -13308,7 +13397,11 @@
       <costdiscount>
         <required>
           <oneof>
+            <quality>Apprentice</quality>
             <quality>Aspected Magician</quality>
+            <quality>Aware</quality>
+            <quality>Enchanter</quality>
+            <quality>Explorer</quality>
           </oneof>
         </required>
         <value>-5</value>
@@ -13341,7 +13434,11 @@
       <costdiscount>
         <required>
           <oneof>
+            <quality>Apprentice</quality>
             <quality>Aspected Magician</quality>
+            <quality>Aware</quality>
+            <quality>Enchanter</quality>
+            <quality>Explorer</quality>
           </oneof>
         </required>
         <value>-5</value>
@@ -13349,7 +13446,7 @@
       <doublecareer>False</doublecareer>
       <bonus>
         <freespells skill="Spellcasting" />
-        <newspellkarmacost>-1</newspellkarmacost>
+        <newspellkarmacost type="Spells">-1</newspellkarmacost>
       </bonus>
       <required>
         <allof>
@@ -13619,6 +13716,10 @@
           </attribute>
         </allof>
         <oneof>
+          <skill>
+            <name>Spellcasting</name>
+            <val>6</val>
+          </skill>
           <skill>
             <name>Spellcasting</name>
             <val>4</val>
@@ -13906,7 +14007,7 @@
           <group>
             <skill>
               <name>Alchemy</name>
-              <val>6</val>
+              <val>4</val>
             </skill>
             <tradition>Islam</tradition>
           </group>
@@ -15929,7 +16030,7 @@
         <limitspellcategory />
         <skillgroupdisable>Conjuring</skillgroupdisable>
         <spellcategorydrain>
-          <val>2</val>
+          <val>-2</val>
         </spellcategorydrain>
       </bonus>
       <required>
@@ -16175,6 +16276,879 @@
       <source>TSG</source>
       <page>30</page>
     </quality>
+    <!-- End Region -->
+    <!-- Region Street Lethal -->
+    <!-- Region Positive Qualities -->
+    <!-- TODO: FixedValues for quality karma values based on level? -->
+    <quality>
+      <id>21e19949-5481-47a6-939b-d3522ba3a7c8</id>
+      <name>Corporate Loyalist</name>
+      <karma>7</karma>
+      <category>Positive</category>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SL</source>
+      <page>126</page>
+    </quality>
+    <quality>
+      <id>07916773-5aa2-4c8b-b239-932a9359428a</id>
+      <name>Location Attunement I</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SL</source>
+      <page>126</page>
+    </quality>
+    <quality>
+      <id>257afab2-b281-4e27-b6d2-1b02b409637a</id>
+      <name>Location Attunement II</name>
+      <karma>7</karma>
+      <category>Positive</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SL</source>
+      <page>126</page>
+    </quality>
+    <quality>
+      <id>3619084e-9c13-48d0-b985-0d15aa9d885a</id>
+      <name>Location Attunement III</name>
+      <karma>9</karma>
+      <category>Positive</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SL</source>
+      <page>126</page>
+    </quality>
+    <quality>
+      <id>52d00c91-76d5-4b06-b475-f49637ea9763</id>
+      <name>Natural Leader</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>SL</source>
+      <page>127</page>
+    </quality>
+    <quality>
+      <id>e9a11971-48a2-4c9a-89b4-16c844e197ba</id>
+      <name>Observant</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>SL</source>
+      <page>127</page>
+    </quality>
+    <quality>
+      <id>8d9cc4fa-ce95-423a-8db8-724372903b3d</id>
+      <name>Battle Hardened</name>
+      <karma>2</karma>
+      <category>Positive</category>
+      <limit>3</limit>
+      <bonus />
+      <source>SL</source>
+      <page>181</page>
+    </quality>
+    <!-- End Region -->
+    <!-- Region Negative Qualities -->
+    <quality>
+      <id>0d1d5e5d-5a11-4dff-9776-3cf088ab8ea7</id>
+      <name>Corporate Pariah I</name>
+      <karma>-7</karma>
+      <category>Negative</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SL</source>
+      <page>127</page>
+    </quality>
+    <quality>
+      <id>7bce4053-611b-4b58-8e1d-fc9dde20fd9f</id>
+      <name>Corporate Pariah II</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SL</source>
+      <page>127</page>
+    </quality>
+    <quality>
+      <id>bb0cd874-a7bb-4863-b393-23ef0eda6313</id>
+      <name>Every Man For Himself</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>SL</source>
+      <page>181</page>
+    </quality>
+    <quality>
+      <id>7b051d98-e95b-48f9-8fbb-dae69a739913</id>
+      <name>No Man Left Behind</name>
+      <karma>-7</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>SL</source>
+      <page>181</page>
+    </quality>
+    <quality>
+      <id>e4956c8e-119f-4670-9dcf-30f4709863ae</id>
+      <name>Stay Out of My Way</name>
+      <karma>-9</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>SL</source>
+      <page>127</page>
+    </quality>
+    <quality>
+      <id>a3c1f52d-edee-4927-899f-18265e75de1c</id>
+      <name>This Is Your Last Chance</name>
+      <karma>-3</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>SL</source>
+      <page>127</page>
+    </quality>
+    <quality>
+      <id>0f9a0d45-a3c5-454d-8581-a5a1804e522e</id>
+      <name>Thousand-Yard Stare</name>
+      <karma>-3</karma>
+      <category>Negative</category>
+      <limit>3</limit>
+      <bonus />
+      <source>SL</source>
+      <page>181</page>
+    </quality>
+    <!-- End Region -->
+    <!-- End Region -->
+    <!-- Region Kill Code -->
+    <!-- Region Positive Qualities -->
+    <quality>
+      <id>d85c6437-7611-47d3-b4c7-4e581e5349a4</id>
+      <name>Deck Builder</name>
+      <karma>4</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>7ac54323-a913-4a8e-803e-c6ac2d4ba359</id>
+      <name>Impenetrable Logic</name>
+      <karma>3</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>fb8bce41-05ea-48af-a45b-dc80dc392f23</id>
+      <name>Rootkit</name>
+      <karma>8</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>eefe6c28-5d7b-403d-8c24-5bc26536b52b</id>
+      <name>Silence is Golden</name>
+      <karma>9</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>8e16f569-a1b1-499c-8046-85d25fb00041</id>
+      <name>AVRse</name>
+      <karma>-9</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>19042705-1c57-4973-bf2e-45186ea2b8d5</id>
+      <name>Basement Dweller</name>
+      <karma>-8</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>2c3a3f51-53c5-4d47-b991-0c64f31472d3</id>
+      <name>Big Baby</name>
+      <karma>-4</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>6bbeb733-a7cc-4427-924b-8c6174399051</id>
+      <name>Buddy System</name>
+      <karma>-9</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>a3d131f2-5ed9-42d0-86c2-396e50a9117d</id>
+      <name>Discombobulated</name>
+      <karma>-12</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>282c446f-8156-4268-8baa-5d7e732fcd53</id>
+      <name>Down the Rabbit Hole</name>
+      <karma>-2</karma>
+      <category>Negative</category>
+      <limit>4</limit>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>1638946e-7e2e-4e57-a7cb-d20f2e4eead1</id>
+      <name>Echo Chamber</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>356eabd2-7d97-46bb-81a1-ac913a670364</id>
+      <name>Frostbite</name>
+      <karma>-3</karma>
+      <category>Negative</category>
+      <bonus>
+        <selectskill limittoskill="Computer, Cybercombat, Decompiling, Electronic Warfare, Hacking, Registering, Software"></selectskill>
+      </bonus>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>96322f26-94cf-4d2c-9282-6525f9008fec</id>
+      <name>Information Auctioneer</name>
+      <karma>-4</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>c4dab0b4-32c4-4840-9713-aa46c2412835</id>
+      <name>Lazy Fingers</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>f4a052dc-17ca-4bec-a9bf-30e6da80285e</id>
+      <name>Malware Infection</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>ba1644ab-2191-4366-8f5f-13c21eca1cc4</id>
+      <name>Matrix Troll</name>
+      <karma>-7</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>5e75a946-b14e-488d-93ea-cd82e648286d</id>
+      <name>Sloppy Code</name>
+      <karma>-3</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>b45b2d09-80d4-4e24-b96c-1e1f3665dee3</id>
+      <name>Well, Actually...</name>
+      <karma>-12</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>522dbfb5-5ea0-4707-a7e8-1ac777b3aff7</id>
+      <name>Better on the Net [Attack]</name>
+      <karma></karma>
+      <category>Positive</category>
+      <bonus>
+        <livingpersona>
+          <attack>2</attack>
+        </livingpersona>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>39139f84-b8ab-4523-ac02-851350e3f2b6</id>
+      <name>Better on the Net [Data Processing]</name>
+      <karma></karma>
+      <category>Positive</category>
+      <bonus>
+        <livingpersona>
+          <dataprocessing>2</dataprocessing>
+        </livingpersona>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>25d34c52-6927-44dd-85bd-684e9add1f89</id>
+      <name>Better on the Net [Firewall]</name>
+      <karma></karma>
+      <category>Positive</category>
+      <bonus>
+        <livingpersona>
+          <firewall>2</firewall>
+        </livingpersona>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>59436ccc-5e4b-481d-8d63-d3ba912f2d8a</id>
+      <name>Better on the Net [Sleaze]</name>
+      <karma></karma>
+      <category>Positive</category>
+      <bonus>
+        <livingpersona>
+          <sleaze>2</sleaze>
+        </livingpersona>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>63fd5450-5f3d-4090-933e-ad0cf39ef0e2</id>
+      <name>Brilliant Heuristics</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>cc967d0f-6b7a-4c62-b202-37f94242169c</id>
+      <name>Groveler</name>
+      <karma>10</karma>
+      <category>Positive</category>
+      <bonus />
+      <required>
+        <allof>
+          <quality>Technomancer</quality>
+        </allof>
+      </required>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>ad8d9751-d82f-4d80-b351-c102cd60c2b1</id>
+      <name>Hold the Door</name>
+      <karma>7</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>530062d2-6dbe-4e19-b16a-82953c72745d</id>
+      <name>Fractal Punch</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>ca9b24ba-3a2e-41cd-8434-b33f91d691aa</id>
+      <name>Lone Wolf</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+      <forbidden>
+        <oneof>
+          <quality>Team Player</quality>
+        </oneof>
+      </forbidden>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>be396e6b-55f8-46ac-b6d8-866985b3cffd</id>
+      <name>Natural Hacker</name>
+      <karma>14</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>c80d0f3d-5be7-4d63-8891-ae3bccbfe48f</id>
+      <name>Reverberant</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+      <forbidden>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </forbidden>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>adf86253-baaf-4c03-87fe-aba3a453b3b5</id>
+      <name>Team Player</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>0b8c9e67-6767-48d3-b14d-8a9b2024447a</id>
+      <name>Trust Data, Not Lore</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+      <forbidden>
+        <oneof>
+          <quality>Trust Lore, Not Data</quality>
+        </oneof>
+      </forbidden>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>223bad23-027c-4ea3-ac0b-1ccccace61fe</id>
+      <name>Trust Lore, Not Data</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+      <forbidden>
+        <oneof>
+          <quality>Trust Data, Not Lore</quality>
+        </oneof>
+      </forbidden>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>ad35c6ec-664c-46a3-8dc5-ac48dfddd0cf</id>
+      <name>Unique Avatar</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+      <forbidden>
+        <oneof>
+          <quality>Digital Doppelganger</quality>
+        </oneof>
+      </forbidden>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>c5311ee0-8a9b-41b9-857f-28541090968a</id>
+      <name>Paragon</name>
+      <karma>0</karma>
+      <category>Positive</category>
+      <bonus>
+        <selectparagon />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>SR5</source>
+      <page>76</page>
+    </quality>
+    <!-- End Region -->
+    <!-- Region Negative Qualities -->
+    <quality>
+      <id>d40aee6b-80b7-43f5-b335-dabf8f1ad14d</id>
+      <name>Brittle [Attack]</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>cb5bd1e5-b9ef-434f-af17-0e7b4decaa46</id>
+      <name>Brittle [Sleaze]</name>
+      <karma></karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>64d430b1-6d6a-4abc-9ef8-3ddaee2352ce</id>
+      <name>Brittle [Data Processing]</name>
+      <karma></karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>a1530804-a35b-4d2f-ae3e-50d647016903</id>
+      <name>Brittle [Firewall]</name>
+      <karma></karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>d3ed1f43-ffd8-4c96-8faf-de8bbf4c3c83</id>
+      <name>Code of Honor: Black Hat</name>
+      <karma>-15</karma>
+      <category>Negative</category>
+      <!--<forbidden>
+	  <oneof>
+	  <quality>Code of Honor: White Hat</quality>
+	  </oneof>
+	  </forbidden>-->
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>7e172644-9b48-4822-8636-b45827ff6938</id>
+      <name>Data Hog</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>2cafaee0-fb4b-4b56-90e2-8eb864c5a033</id>
+      <name>Escaped Custody</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Records on File</quality>
+        </oneof>
+      </required>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>57e260d7-7e08-4dae-a3e3-0d174bf61689</id>
+      <name>Know Your Limit</name>
+      <karma>-4</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>ff939676-0195-4885-ba91-5ee536719b2f</id>
+      <name>On the Wagon</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus />
+      <forbidden>
+        <oneof>
+          <quality>Addiction (Mild)</quality>
+          <quality>Addiction (Moderate)</quality>
+          <quality>Addiction (Severe)</quality>
+          <quality>Addiction (Burnout)</quality>
+        </oneof>
+      </forbidden>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>f6a8d504-db7a-47eb-ace5-604de21c80fd</id>
+      <name>Resonant Burnout</name>
+      <karma>-15</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>4116d691-86f0-4fb5-bf78-f2059514956a</id>
+      <name>Sprite Combustion</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>153dc4b0-199d-4fc7-9b94-b8cf05afdf56</id>
+      <name>Taint of Dissonance</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>2509cf19-002f-4f24-a52f-f1441dd4d614</id>
+      <name>'Ware Intolerance</name>
+      <karma>-15</karma>
+      <category>Negative</category>
+      <bonus>
+        <biowareessmultiplier>120</biowareessmultiplier>
+        <cyberwareessmultiplier>120</cyberwareessmultiplier>
+      </bonus>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>102c4f07-f82c-4976-89bd-bcd3b906fb68</id>
+      <name>Wired User</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus />
+      <required>
+        <oneof>
+          <quality>Addiction (Mild)</quality>
+          <quality>Addiction (Moderate)</quality>
+          <quality>Addiction (Severe)</quality>
+          <quality>Addiction (Burnout)</quality>
+        </oneof>
+      </required>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <!-- End Region -->
+    <!-- Region Streams -->
+    <quality>
+      <id>d2873478-d265-45bb-8a9f-320b8d0d33d3</id>
+      <name>Resonant Stream: Cyberadept</name>
+      <karma>20</karma>
+      <category>Positive</category>
+      <doublecareer>False</doublecareer>
+      <bonus />
+      <forbidden>
+        <oneof>
+          <quality>Resonant Stream: Machinist</quality>
+          <quality>Resonant Stream: Sourceror</quality>
+          <quality>Resonant Stream: Technoshaman</quality>
+          <quality>Dissonant Stream: Apophenian</quality>
+          <quality>Dissonant Stream: Erisian</quality>
+          <quality>Dissonant Stream: Morphinae</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>e3d04705-b90a-4d94-90d0-4ad2c7adfa79</id>
+      <name>Resonant Stream: Machinist</name>
+      <karma>20</karma>
+      <category>Positive</category>
+      <doublecareer>False</doublecareer>
+      <bonus />
+      <forbidden>
+        <oneof>
+          <quality>Resonant Stream: Cyberadept</quality>
+          <quality>Resonant Stream: Sourceror</quality>
+          <quality>Resonant Stream: Technoshaman</quality>
+          <quality>Dissonant Stream: Apophenian</quality>
+          <quality>Dissonant Stream: Erisian</quality>
+          <quality>Dissonant Stream: Morphinae</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>11d6c3b6-47c4-4765-a625-7a5907ba1b4a</id>
+      <name>Resonant Stream: Sourceror</name>
+      <karma>20</karma>
+      <category>Positive</category>
+      <doublecareer>False</doublecareer>
+      <bonus />
+      <forbidden>
+        <oneof>
+          <quality>Resonant Stream: Cyberadept</quality>
+          <quality>Resonant Stream: Machinist</quality>
+          <quality>Resonant Stream: Technoshaman</quality>
+          <quality>Dissonant Stream: Apophenian</quality>
+          <quality>Dissonant Stream: Erisian</quality>
+          <quality>Dissonant Stream: Morphinae</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>71511c8f-85f1-4e35-aeaa-be8fa3a45331</id>
+      <name>Resonant Stream: Technoshaman</name>
+      <karma>20</karma>
+      <category>Positive</category>
+      <doublecareer>False</doublecareer>
+      <bonus />
+      <forbidden>
+        <oneof>
+          <quality>Resonant Stream: Cyberadept</quality>
+          <quality>Resonant Stream: Machinist</quality>
+          <quality>Resonant Stream: Sourceror</quality>
+          <quality>Dissonant Stream: Apophenian</quality>
+          <quality>Dissonant Stream: Erisian</quality>
+          <quality>Dissonant Stream: Morphinae</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>e40e318d-ecde-4a20-bfc5-36d341a644b5</id>
+      <name>Dissonant Stream: Apophenian</name>
+      <karma>20</karma>
+      <category>Positive</category>
+      <doublecareer>False</doublecareer>
+      <bonus />
+      <forbidden>
+        <oneof>
+          <quality>Resonant Stream: Cyberadept</quality>
+          <quality>Resonant Stream: Machinist</quality>
+          <quality>Resonant Stream: Sourceror</quality>
+          <quality>Resonant Stream: Technoshaman</quality>
+          <quality>Dissonant Stream: Erisian</quality>
+          <quality>Dissonant Stream: Morphinae</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>ee5d131f-5606-4a40-8035-9970aa3b5b29</id>
+      <name>Dissonant Stream: Erisian</name>
+      <karma>20</karma>
+      <category>Positive</category>
+      <doublecareer>False</doublecareer>
+      <bonus />
+      <forbidden>
+        <oneof>
+          <quality>Resonant Stream: Cyberadept</quality>
+          <quality>Resonant Stream: Machinist</quality>
+          <quality>Resonant Stream: Sourceror</quality>
+          <quality>Resonant Stream: Technoshaman</quality>
+          <quality>Dissonant Stream: Apophenian</quality>
+          <quality>Dissonant Stream: Morphinae</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <quality>
+      <id>580c8ae5-899b-4fa9-8f2d-600c9ac758f9</id>
+      <name>Dissonant Stream: Morphinae</name>
+      <karma>20</karma>
+      <category>Positive</category>
+      <doublecareer>False</doublecareer>
+      <bonus />
+      <forbidden>
+        <oneof>
+          <quality>Resonant Stream: Cyberadept</quality>
+          <quality>Resonant Stream: Machinist</quality>
+          <quality>Resonant Stream: Sourceror</quality>
+          <quality>Resonant Stream: Technoshaman</quality>
+          <quality>Dissonant Stream: Apophenian</quality>
+          <quality>Dissonant Stream: Erisian</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>KC</source>
+      <page>0</page>
+    </quality>
+    <!-- End Region -->
     <!-- End Region -->
   </qualities>
 </chummer>

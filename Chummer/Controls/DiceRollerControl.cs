@@ -16,13 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
+ using System.Text;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -30,7 +26,7 @@ namespace Chummer
     public partial class DiceRollerControl : UserControl
     {
         private static readonly Random s_ObjRandom = MersenneTwister.SfmtRandom.Create();
-        private int _intModuloTemp = 0;
+        private int _intModuloTemp;
 
         #region Properties
         private enum EdgeUses
@@ -49,14 +45,8 @@ namespace Chummer
         /// </summary>
         public int Threshold 
         {
-            get
-            {
-                return decimal.ToInt32(nudThreshold.Value);
-            }
-            set
-            {
-                nudThreshold.Value = value;
-            }
+            get => decimal.ToInt32(nudThreshold.Value);
+            set => nudThreshold.Value = value;
         }
 
         /// <summary>
@@ -64,14 +54,8 @@ namespace Chummer
         /// </summary>
         public int Gremlins 
         {
-            get
-            {
-                return decimal.ToInt32(nudGremlins.Value);
-            }
-            set
-            {
-                nudGremlins.Value = value;
-            }
+            get => decimal.ToInt32(nudGremlins.Value);
+            set => nudGremlins.Value = value;
         }
 
         /// <summary>
@@ -79,14 +63,8 @@ namespace Chummer
         /// </summary>
         public int NumberOfDice 
         {
-            get
-            {
-                return decimal.ToInt32(nudDice.Value);
-            }
-            set
-            {
-                nudDice.Value = value;
-            }
+            get => decimal.ToInt32(nudDice.Value);
+            set => nudDice.Value = value;
         }
 
         /// <summary>
@@ -122,14 +100,8 @@ namespace Chummer
         /// </summary>
         public int Limit 
         {
-            get
-            {
-                return decimal.ToInt32(nudLimit.Value);
-            }
-            set
-            {
-                nudLimit.Value = value;
-            }
+            get => decimal.ToInt32(nudLimit.Value);
+            set => nudLimit.Value = value;
         }
 
         #endregion
@@ -137,10 +109,10 @@ namespace Chummer
         public DiceRollerControl()
         {
             InitializeComponent();
-            nudDice.Maximum = Int32.MaxValue;
-            nudGremlins.Maximum = Int32.MaxValue;
-            nudLimit.Maximum = Int32.MaxValue;
-            nudThreshold.Maximum = Int32.MaxValue;
+            nudDice.Maximum = int.MaxValue;
+            nudGremlins.Maximum = int.MaxValue;
+            nudLimit.Maximum = int.MaxValue;
+            nudThreshold.Maximum = int.MaxValue;
             List<EdgeUses> edge = new List<EdgeUses>() 
             { 
                 EdgeUses.None, 
@@ -160,7 +132,6 @@ namespace Chummer
         {
             // TODO roll the dice
             List<int> results = new List<int>();
-            int val = 0;
             for (int i = 0; i < NumberOfDice; i++)
             {
                 do
@@ -168,7 +139,7 @@ namespace Chummer
                     _intModuloTemp = s_ObjRandom.Next();
                 }
                 while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
-                val = 1 + _intModuloTemp % 6;
+                int val = 1 + _intModuloTemp % 6;
                 results.Add(val);
 
                 // check for pushing the limit
@@ -221,32 +192,47 @@ namespace Chummer
             txtResults.Text = sb.ToString();
 
             // calculate if we glitched or critically glitched (using gremlins)
-            bool glitch = false, criticalGlitch = false;
-            glitch = glitches + Gremlins > 0 && results.Count / (glitches + Gremlins) < 2;
-
-            if (glitch && hits == 0)
-                criticalGlitch = true;
-            int limitAppliedHits = hits;
-            if (limitAppliedHits > Limit && EdgeUse != EdgeUses.PushTheLimit)
-                limitAppliedHits = Limit;
+            bool glitch = glitches + Gremlins > 0 && results.Count / (glitches + Gremlins) < 2;
             
+            int limitAppliedHits = hits;
+            string strLimitString = string.Empty;
+            if (limitAppliedHits > Limit && EdgeUse != EdgeUses.PushTheLimit)
+            {
+                limitAppliedHits = Limit;
+                strLimitString = ", " + LanguageManager.GetString("String_Limit", GlobalOptions.Language) + ' ' + limitAppliedHits.ToString();
+            }
+
             // show the results
             // we have not gone over our limit
-            sb = new StringBuilder();
-            if (hits > 0 && limitAppliedHits == hits)
-                sb.Append("Results: " + hits + " Hits!");
-            if (limitAppliedHits < hits)
-                sb.Append("Results: " + limitAppliedHits + " Hits by Limit!");
-            if (glitch && !criticalGlitch)
-                sb.Append(" Glitch!");   // we glitched though...
-            if (criticalGlitch)
-                sb.Append("Results: Critical Glitch!");   // we crited!
-            if (hits == 0 && !glitch)
-                sb.Append("Results: 0 Hits.");   // we have no hits and no glitches
-
-            if (Threshold > 0)
-                if (hits >= Threshold || limitAppliedHits >= Threshold)
-                    lblThreshold.Text = "Success! Threshold:";   // we succeded on the threshold test...
+            sb = new StringBuilder(LanguageManager.GetString("Label_DiceRoller_Result", GlobalOptions.Language) + ' ');
+            if (glitch)
+            {
+                if (hits > 0)
+                {
+                    if (Threshold > 0)
+                    {
+                        sb.AppendFormat(LanguageManager.GetString(hits >= Threshold || limitAppliedHits >= Threshold ? "String_DiceRoller_Success" : "String_DiceRoller_Failure", GlobalOptions.Language) +
+                                        " (" + LanguageManager.GetString("String_DiceRoller_Glitch", GlobalOptions.Language) + strLimitString + ')', hits.ToString());
+                    }
+                    else
+                    {
+                        sb.AppendFormat(LanguageManager.GetString("String_DiceRoller_Glitch", GlobalOptions.Language) + strLimitString, hits.ToString());
+                    }
+                }
+                else
+                {
+                    sb.Append(LanguageManager.GetString("String_DiceRoller_CriticalGlitch", GlobalOptions.Language));
+                }
+            }
+            else if (Threshold > 0)
+            {
+                sb.AppendFormat(LanguageManager.GetString(hits >= Threshold || limitAppliedHits >= Threshold ? "String_DiceRoller_Success" : "String_DiceRoller_Failure", GlobalOptions.Language) +
+                                " (" + LanguageManager.GetString("String_DiceRoller_Hits", GlobalOptions.Language) + strLimitString + ')', hits.ToString());
+            }
+            else
+            {
+                sb.AppendFormat(LanguageManager.GetString("String_DiceRoller_Hits", GlobalOptions.Language) + strLimitString, hits.ToString());
+            }
 
             lblResults.Text = sb.ToString();
         }

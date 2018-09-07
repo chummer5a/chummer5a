@@ -386,6 +386,14 @@
       <text>週</text>
     </string>
     <string>
+      <key>String_Month</key>
+      <text>月</text>
+    </string>
+    <string>
+      <key>String_Months</key>
+      <text>月</text>
+    </string>
+    <string>
       <key>String_Hour</key>
       <text>時間</text>
     </string>
@@ -1199,14 +1207,6 @@
       <text>パワーレベル</text>
     </string>
     <string>
-      <key>Message_MartialArtAdvantageLimit</key>
-      <text>{0} のレーティング1につき選択できる利点は1つのみです.</text>
-    </string>
-    <string>
-      <key>MessageTitle_MartialArtAdvantageLimit</key>
-      <text>利点の最大数</text>
-    </string>
-    <string>
       <key>Message_MartialArtManeuverLimit</key>
       <text>「格闘技」のレーティング1につき習得できる格闘動作は2つまでです.</text>
     </string>
@@ -1215,11 +1215,11 @@
       <text>格闘動作の最大数</text>
     </string>
     <string>
-      <key>Message_SelectMartialArtAdvantage</key>
+      <key>Message_SelectMartialArtTechnique</key>
       <text>利点を追加する格闘技を先に選択してください.</text>
     </string>
     <string>
-      <key>MessageTitle_SelectMartialArtAdvantage</key>
+      <key>MessageTitle_SelectMartialArtTechnique</key>
       <text>格闘技の選択</text>
     </string>
     <string>
@@ -2935,6 +2935,14 @@
       <key>Button_AddPower</key>
       <text>パワーを追加 (&amp;A)</text>
     </string>
+    <string>
+      <key>ColumnHeader_Action</key>
+      <text>行動</text>
+    </string>
+    <string>
+      <key>ColumnHeader_Power_Points</key>
+      <text>パワーポイント</text>
+    </string>
     <!-- Technomancer Tab -->
     <string>
       <key>Label_ComplexForms</key>
@@ -3137,8 +3145,8 @@
     </string>
     <!-- Street Gear/Lifestyle Tab -->
     <string>
-      <key>Label_LifestyleMonths</key>
-      <text>月数 (100 ヶ月で永久に買う)</text>
+      <key>Label_LifestylePermanent</key>
+      <text> ({0} ヶ月で永久に買う)</text>
     </string>
     <string>
       <key>Label_LifestyleQualities</key>
@@ -3154,11 +3162,11 @@
     </string>
     <string>
       <key>Tab_IncreaseLifestyleMonths</key>
-      <text>ライフスタイルの支払い済み月数を追加.</text>
+      <text>ライフスタイルの支払い済み{0}数を追加.</text>
     </string>
     <string>
       <key>Tab_DecreaseLifestyleMonths</key>
-      <text>ライフスタイルの支払い済み月数を減少.</text>
+      <text>ライフスタイルの支払い済み{0}数を減少.</text>
     </string>
     <string>
       <key>String_Roommates</key>
@@ -3675,10 +3683,6 @@
       <text>イニシエーションﾝ</text>
     </string>
     <string>
-      <key>Label_SummaryManeuvers</key>
-      <text>格闘動作</text>
-    </string>
-    <string>
       <key>Tip_BuildSpecialAttributes</key>
       <text>特殊能力値は【エッジ】, 【魔力】, 【共振力】です.</text>
     </string>
@@ -3693,10 +3697,6 @@
     <string>
       <key>Tip_BuildFoci</key>
       <text>収束具の結合には, 【フォース】1点につき {0} BP必要です.</text>
-    </string>
-    <string>
-      <key>Tip_BuildManeuvers</key>
-      <text>格闘動作は1つにつき {0} BP必要です.</text>
     </string>
     <!-- Other Info Tab -->
     <string>
@@ -4214,7 +4214,7 @@
     </string>
     <string>
       <key>Message_CyberwareSuite_DuplicateName</key>
-      <text>"{0}" という名前のスイートはデータファイル "{1}" にすでに存在します. 別の名前にしてください</text>
+      <text>"{0}" という名前のスイートはデータファイルにすでに存在します. 別の名前にしてください</text>
     </string>
     <string>
       <key>MessageTitle_CyberwareSuite_DuplicateName</key>
@@ -4319,7 +4319,7 @@
     </string>
     <string>
       <key>Message_CreatePACKSKit_DuplicateName</key>
-      <text>"{0}" という名前のKitはデータファイル "{1}" にすでに存在します. 別の名前にしてください</text>
+      <text>"{0}" という名前のKitはデータファイルにすでに存在します. 別の名前にしてください</text>
     </string>
     <string>
       <key>MessageTitle_CreatePACKSKit_DuplicateName</key>
@@ -5560,11 +5560,11 @@
       <text>高度なライフスタイルを作成</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_PositiveQualities</key>
+      <key>Node_SelectAdvancedLifestyle_PositiveQualities</key>
       <text>有利な資質</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_NegativeQualities</key>
+      <key>Node_SelectAdvancedLifestyle_NegativeQualities</key>
       <text>不利な資質</text>
     </string>
     <string>
@@ -5842,7 +5842,7 @@
     </string>
     <!-- Select Martial Art Advantage Window -->
     <string>
-      <key>Title_SelectMartialArtAdvantage</key>
+      <key>Title_SelectMartialArtTechnique</key>
       <text>利点を選択</text>
     </string>
     <!-- Select Martial Art Maneuver Window -->
@@ -6050,7 +6050,7 @@
     </string>
     <!-- Select Program Window -->
     <string>
-      <key>Title_SelectProgram</key>
+      <key>Title_SelectComplexForm</key>
       <text>プログラムを選択</text>
     </string>
     <string>
@@ -6154,7 +6154,7 @@
     </string>
     <string>
       <key>Checkbox_SelectSpell_LimitedSpell</key>
-      <text>制限呪文</text>
+      <text>制限呪文 (SG 212)</text>
     </string>
     <string>
       <key>Tip_SelectSpell_LimitedSpell</key>
@@ -6877,10 +6877,6 @@
       <text>Cannot Delete</text>
     </string>
     <string>
-      <key>Message_SelectLimitModifier</key>
-      <text>You must select a Limit to add a Modifier to.</text>
-    </string>
-    <string>
       <key>MessageTitle_SelectLimitModifier</key>
       <text>Select Limit Modifier</text>
     </string>
@@ -7313,15 +7309,15 @@
       <text>Power Point</text>
     </string>
     <string>
-      <key>Label_SelectProgram_Target</key>
+      <key>Label_SelectComplexForm_Target</key>
       <text>Target:</text>
     </string>
     <string>
-      <key>Label_SelectProgram_Duration</key>
+      <key>Label_SelectComplexForm_Duration</key>
       <text>Duration:</text>
     </string>
     <string>
-      <key>Label_SelectProgram_FV</key>
+      <key>Label_SelectComplexForm_FV</key>
       <text>FV:</text>
     </string>
     <string>

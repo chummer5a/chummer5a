@@ -16,10 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
  using System.Collections.Generic;
  using System.IO;
- using System.Linq;
  using System.Text;
  using System.Windows.Forms;
 using System.Xml;
@@ -31,9 +30,9 @@ namespace Chummer
 {
     public partial class frmExport : Form
     {
-        private readonly XmlDocument _objCharacterXML = null;
+        private readonly XmlDocument _objCharacterXML;
         private readonly Dictionary<string,string> _dictCache = new Dictionary<string, string>();
-        private bool _blnSelected = false;
+        private bool _blnSelected;
 
         #region Control Events
         public frmExport(XmlDocument objCharacterXML)
@@ -46,6 +45,7 @@ namespace Chummer
 
         private void frmExport_Load(object sender, EventArgs e)
         {
+            cboXSLT.Items.Add("Export JSON");
             // Populate the XSLT list with all of the XSL files found in the sheets directory.
             string exportDirectoryPath = Path.Combine(Application.StartupPath, "export");
             foreach (string strFile in Directory.GetFiles(exportDirectoryPath))
@@ -57,8 +57,6 @@ namespace Chummer
                     cboXSLT.Items.Add(strFileName);
                 }
             }
-
-            cboXSLT.Items.Add("Export JSON");
 
             if (cboXSLT.Items.Count > 0)
                 cboXSLT.SelectedIndex = 0;
@@ -129,14 +127,14 @@ namespace Chummer
         private void ExportNormal()
         {
             // Look for the file extension information.
-            string strLine = string.Empty;
+            string strLine;
             string strExtension = "xml";
             string exportSheetPath = Path.Combine(Application.StartupPath, "export", cboXSLT.Text + ".xsl");
-            StreamReader objFile = new StreamReader(exportSheetPath);
+            StreamReader objFile = new StreamReader(exportSheetPath, Encoding.UTF8, true);
             while ((strLine = objFile.ReadLine()) != null)
             {
                 if (strLine.StartsWith("<!-- ext:"))
-                    strExtension = strLine.TrimStart("<!-- ext:", true).Replace("-->", string.Empty).Trim();
+                    strExtension = strLine.TrimStartOnce("<!-- ext:", true).FastEscapeOnceFromEnd("-->").Trim();
             }
             objFile.Close();
 
@@ -147,10 +145,10 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
-            
+
             File.WriteAllText(strSaveFile, rtbText.Text); // Change this to a proper path.
 
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
         private void GenerateXml()
@@ -171,7 +169,7 @@ namespace Chummer
             objStream.Position = 0;
 
             // Read in the resulting code and pass it to the browser.
-            StreamReader objReader = new StreamReader(objStream);
+            StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
             rtbText.Text = objReader.ReadToEnd();
 
             if (!_dictCache.ContainsKey(cboXSLT.Text))
@@ -196,8 +194,8 @@ namespace Chummer
         {
             SaveFileDialog1.AddExtension = true;
             SaveFileDialog1.DefaultExt = "json";
-            SaveFileDialog1.Filter = "JSON File|*.json";
-            SaveFileDialog1.Title = "Save JSON as";
+            SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Json", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language);
+            SaveFileDialog1.Title = LanguageManager.GetString("Button_Export_SaveJsonAs", GlobalOptions.Language);
             SaveFileDialog1.ShowDialog();
 
             if (string.IsNullOrWhiteSpace(SaveFileDialog1.FileName))
@@ -205,7 +203,7 @@ namespace Chummer
 
             File.WriteAllText(SaveFileDialog1.FileName, rtbText.Text, Encoding.UTF8);
 
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
         #endregion
         #endregion

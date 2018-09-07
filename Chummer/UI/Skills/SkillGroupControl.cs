@@ -20,7 +20,6 @@ using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Chummer.Backend.Skills;
-using System.ComponentModel;
 
 namespace Chummer.UI.Skills
 {
@@ -35,74 +34,83 @@ namespace Chummer.UI.Skills
             //This is apparently a factor 30 faster than placed in load. NFI why
             Stopwatch sw = Stopwatch.StartNew();
             SuspendLayout();
-            lblName.DataBindings.Add("Text", _skillGroup, "DisplayName");
+            lblName.DataBindings.Add("Text", _skillGroup, nameof(SkillGroup.DisplayName), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblName.DataBindings.Add("ToolTipText", _skillGroup, nameof(SkillGroup.ToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
 
-            _skillGroup.PropertyChanged += SkillGroup_PropertyChanged;
-            tipToolTip.SetToolTip(lblName, _skillGroup.ToolTip);
+            nudSkill.Visible = !skillGroup.CharacterObject.Created && skillGroup.CharacterObject.BuildMethodHasSkillPoints;
+            nudKarma.Visible = !skillGroup.CharacterObject.Created;
 
-            if (_skillGroup.Character.Created)
+            btnCareerIncrease.Visible = skillGroup.CharacterObject.Created;
+            lblGroupRating.Visible = skillGroup.CharacterObject.Created;
+
+            if (_skillGroup.CharacterObject.Created)
             {
-                nudKarma.Visible = false;
-                nudSkill.Visible = false;
-
-                btnCareerIncrease.Visible = true;
                 btnCareerIncrease.DataBindings.Add("Enabled", _skillGroup, nameof(SkillGroup.CareerCanIncrease), false, DataSourceUpdateMode.OnPropertyChanged);
-                tipToolTip.SetToolTip(btnCareerIncrease, _skillGroup.UpgradeToolTip);
+                btnCareerIncrease.DataBindings.Add("ToolTipText", _skillGroup, nameof(SkillGroup.UpgradeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
 
-                lblGroupRating.Visible = true;
                 lblGroupRating.DataBindings.Add("Text", _skillGroup, nameof(SkillGroup.DisplayRating), false, DataSourceUpdateMode.OnPropertyChanged);
             }
             else
             {
-                nudKarma.DataBindings.Add("Value", _skillGroup, "Karma", false, DataSourceUpdateMode.OnPropertyChanged);
-                nudKarma.DataBindings.Add("Enabled", _skillGroup, "KarmaUnbroken", false, DataSourceUpdateMode.OnPropertyChanged);
-                nudKarma.DataBindings.Add("InterceptMouseWheel", _skillGroup.Character.Options, nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudKarma.DataBindings.Add("Value", _skillGroup, nameof(SkillGroup.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudKarma.DataBindings.Add("Enabled", _skillGroup, nameof(SkillGroup.KarmaUnbroken), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudKarma.DataBindings.Add("InterceptMouseWheel", _skillGroup.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
 
-                nudSkill.DataBindings.Add("Value", _skillGroup, "Base", false, DataSourceUpdateMode.OnPropertyChanged);
-                nudSkill.DataBindings.Add("Enabled", _skillGroup, "BaseUnbroken", false, DataSourceUpdateMode.OnPropertyChanged);
-                nudSkill.DataBindings.Add("InterceptMouseWheel", _skillGroup.Character.Options, nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
-
-                if (_skillGroup.Character.BuildMethod == CharacterBuildMethod.Karma ||
-                    _skillGroup.Character.BuildMethod == CharacterBuildMethod.LifeModule)
-                {
-                    nudSkill.Enabled = false;
-                }
+                nudSkill.DataBindings.Add("Visible", _skillGroup.CharacterObject, nameof(Character.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudSkill.DataBindings.Add("Value", _skillGroup, nameof(SkillGroup.Base), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudSkill.DataBindings.Add("Enabled", _skillGroup, nameof(SkillGroup.BaseUnbroken), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudSkill.DataBindings.Add("InterceptMouseWheel", _skillGroup.CharacterObject.Options, nameof(CharacterOptions.InterceptMode), false, DataSourceUpdateMode.OnPropertyChanged);
             }
             ResumeLayout();
             sw.TaskEnd("Create skillgroup");
         }
 
+        public void UnbindSkillGroupControl()
+        {
+            foreach (Control objControl in Controls)
+            {
+                objControl.DataBindings.Clear();
+            }
+        }
+
+        #region Control Events
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
             string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
-                    _skillGroup.DisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost());
+                    _skillGroup.DisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost);
 
-            if (!_skillGroup.Character.ConfirmKarmaExpense(confirmstring))
+            if (!_skillGroup.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
 
             _skillGroup.Upgrade();
         }
+        #endregion
 
-        private void SkillGroup_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        #region Properties
+        public int NameWidth => lblName.PreferredWidth;
+        public int RatingWidth => _skillGroup.CharacterObject.Created ? lblGroupRating.PreferredWidth : nudSkill.Width;
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Update the position of controls.
+        /// </summary>
+        /// <param name="nameWidth">Width of the Name label</param>
+        /// <param name="ratingWidth">Width of the Rating label. Expected to be the width of the localised Label_SkillGroup_Broken string.</param>
+        public void MoveControls(int nameWidth, int ratingWidth)
         {
-            //I learned something from this but i'm not sure it is a good solution
-            //scratch that, i'm sure it is a bad solution. (Tooltip manager from tooltip, properties from reflection?
-
-            //if name of changed is null it does magic to change all, otherwise it only does one.
-            bool all = false;
-            switch (propertyChangedEventArgs?.PropertyName)
+            lblName.Width = nameWidth;
+            if (_skillGroup.CharacterObject.Created)
             {
-                case null:
-                    all = true;
-                    goto case nameof(SkillGroup.ToolTip);
-                case nameof(SkillGroup.ToolTip):
-                    tipToolTip.SetToolTip(lblName, _skillGroup.ToolTip);
-                    if (all) { goto case nameof(Skill.UpgradeToolTip); }
-                    break;
-                case nameof(SkillGroup.UpgradeToolTip):
-                    tipToolTip.SetToolTip(btnCareerIncrease, _skillGroup.UpgradeToolTip);
-                    break;
+                lblGroupRating.Left = lblName.Left + nameWidth + 6;
+                btnCareerIncrease.Left = lblGroupRating.Left + ratingWidth + 6;
+            }
+            else
+            {
+                nudSkill.Left = lblName.Left + nameWidth + 6;
+                nudKarma.Left = nudSkill.Left + ratingWidth + 6;
             }
         }
+        #endregion
     }
 }

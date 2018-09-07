@@ -17,7 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 
 namespace Chummer.Backend.Skills
@@ -26,22 +25,22 @@ namespace Chummer.Backend.Skills
     {
         public static int TotalCostSp(this IEnumerable<Skill> list)
         {
-            return list.Sum(skill => skill.CurrentSpCost());
+            return list.Sum(skill => skill.CurrentSpCost);
         }
 
         public static int TotalCostKarma(this IEnumerable<Skill> list)
         {
-            return list.Sum(skill => skill.CurrentKarmaCost());
+            return list.Sum(skill => skill.CurrentKarmaCost);
         }
 
         public static int TotalCostSp(this IEnumerable<SkillGroup> list)
         {
-            return list.Sum(skill => skill.CurrentSpCost());
+            return list.Sum(skill => skill.CurrentSpCost);
         }
 
         public static int TotalCostKarma(this IEnumerable<SkillGroup> list)
         {
-            return list.Sum(skill => skill.CurrentKarmaCost());
+            return list.Sum(skill => skill.CurrentKarmaCost);
         }
 
     }

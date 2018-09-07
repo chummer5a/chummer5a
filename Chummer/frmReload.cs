@@ -18,7 +18,6 @@
  */
  using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
  using Chummer.Backend.Equipment;
 
@@ -45,18 +44,22 @@ namespace Chummer
             foreach (Gear objGear in _lstAmmo)
             {
                 string strName = objGear.DisplayNameShort(GlobalOptions.Language) + " x" + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
-                if (objGear.Parent != null)
+                if (objGear.Rating > 0)
+                    strName += $" ({LanguageManager.GetString("String_Rating", GlobalOptions.Language)} {objGear.Rating})";
+
+                if (objGear.Parent is Gear objParent)
                 {
-                    if (!string.IsNullOrEmpty(objGear.Parent.DisplayNameShort(GlobalOptions.Language)))
+                    if (!string.IsNullOrEmpty(objParent.DisplayNameShort(GlobalOptions.Language)))
                     {
-                        strName += " (" + objGear.Parent.DisplayNameShort(GlobalOptions.Language);
-                        if (!string.IsNullOrEmpty(objGear.Parent.Location))
-                            strName += " @ " + objGear.Parent.Location;
+                        strName += " (" + objParent.DisplayNameShort(GlobalOptions.Language);
+                        if (objParent.Location != null)
+                            strName += " @ " + objParent.Location.DisplayName(GlobalOptions.Language);
                         strName += ')';
                     }
                 }
-                else if (!string.IsNullOrEmpty(objGear.Location))
-                    strName += " (" + objGear.Location + ')';
+                else if (objGear.Location != null)
+                    strName += " (" + objGear.Location.DisplayName(GlobalOptions.Language) + ')';
+                
                 // Retrieve the plugin information if it has any.
                 if (objGear.Children.Count > 0)
                 {
@@ -98,26 +101,6 @@ namespace Chummer
         {
             AcceptForm();
         }
-
-        private void cboAmmo_DropDown(object sender, EventArgs e)
-        {
-            // Resize the width of the DropDown so that the longest name fits.
-            ComboBox objSender = (ComboBox)sender;
-            int intWidth = objSender.DropDownWidth;
-            Graphics objGraphics = objSender.CreateGraphics();
-            Font objFont = objSender.Font;
-            int intScrollWidth = (objSender.Items.Count > objSender.MaxDropDownItems) ? SystemInformation.VerticalScrollBarWidth : 0;
-            int intNewWidth;
-            foreach (ListItem objItem in objSender.Items)
-            {
-                intNewWidth = (int)objGraphics.MeasureString(objItem.Name, objFont).Width + intScrollWidth;
-                if (intWidth < intNewWidth)
-                {
-                    intWidth = intNewWidth;
-                }
-            }
-            objSender.DropDownWidth = intWidth;
-        }
         #endregion
 
         #region Properties
@@ -126,44 +109,27 @@ namespace Chummer
         /// </summary>
         public List<Gear> Ammo
         {
-            set
-            {
-                _lstAmmo = value;
-            }
+            set => _lstAmmo = value;
         }
-        
+
         /// <summary>
         /// List of ammunition that the user can select.
         /// </summary>
         public List<string> Count
         {
-            set
-            {
-                _lstCount = value;
-            }
+            set => _lstCount = value;
         }
 
         /// <summary>
         /// Name of the ammunition that was selected.
         /// </summary>
-        public string SelectedAmmo
-        {
-            get
-            {
-                return cboAmmo.SelectedValue?.ToString() ?? string.Empty;
-            }
-        }
+        public string SelectedAmmo => cboAmmo.SelectedValue?.ToString() ?? string.Empty;
 
         /// <summary>
         /// Number of rounds that were selected to be loaded.
         /// </summary>
-        public int SelectedCount
-        {
-            get
-            {
-                return Convert.ToInt32(cboType.Text);
-            }
-        }
+        public int SelectedCount => Convert.ToInt32(cboType.Text);
+
         #endregion
 
         #region Methods

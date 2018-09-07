@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -43,7 +43,11 @@
 		</string>
 		<string>
 			<key>String_Of</key>
-			<text>von</text>
+			<text xml:space="preserve"> von </text>
+		</string>
+		<string>
+			<key>String_Space</key>
+			<text xml:space="preserve"> </text>
 		</string>
 		<string>
 			<key>String_Remaining</key>
@@ -114,6 +118,26 @@
 			<text>LP:</text>
 		</string>
 		<string>
+			<key>Label_BonusLP</key>
+			<text>Bonus LP:</text>
+		</string>
+		<string>
+			<key>Label_QualityLP</key>
+			<text>Gabe LP:</text>
+		</string>
+		<string>
+			<key>Label_QualityCost</key>
+			<text>Gabe Kosten:</text>
+		</string>
+		<string>
+			<key>Label_QualitySource</key>
+			<text>Gabe Quelle:</text>
+		</string>
+		<string>
+			<key>Checkbox_Randomize1D6</key>
+			<text>Zufällig 1W6</text>
+		</string>
+		<string>
 			<key>Label_KarmaRemaining</key>
 			<text>verbleibendes Karma:</text>
 		</string>
@@ -175,7 +199,7 @@
 		</string>
 		<string>
 			<key>Label_Slots</key>
-			<text>Sitzplätze:</text>
+			<text>Plätze:</text>
 		</string>
 		<string>
 			<key>Label_Rating</key>
@@ -356,6 +380,14 @@
 		<string>
 			<key>String_Weeks</key>
 			<text>Wochen</text>
+		</string>
+		<string>
+			<key>String_Month</key>
+			<text>Monat</text>
+		</string>
+		<string>
+			<key>String_Months</key>
+			<text>Monate</text>
 		</string>
 		<string>
 			<key>String_Hour</key>
@@ -899,7 +931,7 @@
 		</string>
 		<string>
 			<key>Message_NegativeQualityLimit</key>
-			<text>Sie können nicht mehr als {0} aus Handicaps bekommen</text>
+			<text>Sie können nicht mehr als {0} aus Nachteilen bekommen</text>
 		</string>
 		<string>
 			<key>MessageTitle_NegativeQualityLimit</key>
@@ -1026,14 +1058,6 @@
 			<text>Kraftstufe</text>
 		</string>
 		<string>
-			<key>Message_MartialArtAdvantageLimit</key>
-			<text>Sie können nur eine Gabe für jeweils eine Stufe von {0} wählen</text>
-		</string>
-		<string>
-			<key>MessageTitle_MartialArtAdvantageLimit</key>
-			<text>Maximale Anzahl an Gaben</text>
-		</string>
-		<string>
 			<key>Message_MartialArtManeuverLimit</key>
 			<text>Sie dürfen bis zu 2 Manöver pro Kampfkunstpunkt wählen</text>
 		</string>
@@ -1042,20 +1066,20 @@
 			<text>Maximale Anzahl von Manövern</text>
 		</string>
 		<string>
-			<key>Message_SelectMartialArtAdvantage</key>
+			<key>Message_SelectMartialArtTechnique</key>
 			<text>Sie müssen eine Kampfsportart wählen für die Sie eine Gabe hinzufügen wollen</text>
 		</string>
 		<string>
-			<key>MessageTitle_SelectMartialArtAdvantage</key>
+			<key>MessageTitle_SelectMartialArtTechnique</key>
 			<text>Kampfkunst auswählen</text>
 		</string>
 		<string>
 			<key>Message_PositiveQualityLimit</key>
-			<text>Sie können nicht mehr als {0} für Gaben ausgeben</text>
+			<text>Sie können nicht mehr als {0} für Vorteile ausgeben</text>
 		</string>
 		<string>
 			<key>MessageTitle_PositiveQualityLimit</key>
-			<text>Gaben</text>
+			<text>Vorteile</text>
 		</string>
 		<string>
 			<key>Message_MetavariantQuality</key>
@@ -1083,7 +1107,7 @@
 		</string>
 		<string>
 			<key>Message_BoundSpiritLimit</key>
-			<text>Die Anzahl gebundener Geister kann Ihr Charisma-Attribut nicht überschreiten.</text>
+			<text>Die Anzahl gebundener Geister kann Ihr Charisma nicht überschreiten.</text>
 		</string>
 		<string>
 			<key>MessageTitle_BoundSpiritLimit</key>
@@ -1091,7 +1115,7 @@
 		</string>
 		<string>
 			<key>Message_RegisteredSpriteLimit</key>
-			<text>Die Anzahl registrierter Sprites kann Ihr Charisma-Attribut nicht überschreiten.</text>
+			<text>Die Anzahl registrierter Sprites kann Ihr Logik-Attribut nicht überschreiten.</text>
 		</string>
 		<string>
 			<key>MessageTitle_RegisteredSpriteLimit</key>
@@ -1107,11 +1131,11 @@
 		</string>
 		<string>
 			<key>Message_ComplexFormLimit</key>
-			<text>Sie können nicht mehr Komplexe Formen beherrschen, als Ihrem doppelten Logik-Attribut entsprechen.</text>
+			<text>Sie können nicht mehr Komplexe Formen beherrschen als zweimal ihr RES-Wert. Siehe Seite 98, SR5 Grundregelwerk (Errata).</text>
 		</string>
 		<string>
 			<key>MessageTitle_ComplexFormLimit</key>
-			<text>Maximale Anzahl Complexe Formen</text>
+			<text>Maximale Anzahl Komplexer Formen</text>
 		</string>
 		<string>
 			<key>Message_CannotRemoveCyberweapon</key>
@@ -1163,7 +1187,7 @@
 		</string>
 		<string>
 			<key>MessageTitle_AdditionalMetamagic</key>
-			<text>Metamagie Hinzufügen</text>
+			<text>Metamagie hinzufügen</text>
 		</string>
 		<string>
 			<key>Message_AdditionalEcho</key>
@@ -1327,7 +1351,7 @@
 		</string>
 		<string>
 			<key>Message_SelectComplexForm</key>
-			<text>Sie müssen erst die komplexe Form auswählen, der Sie eine Option hinzufügen wollen.</text>
+			<text>Sie müssen erst die Komplexe Form auswählen, der Sie eine Option hinzufügen wollen.</text>
 		</string>
 		<string>
 			<key>MessageTitle_SelectComplexForm</key>
@@ -1787,7 +1811,7 @@
 		</string>
 		<string>
 			<key>String_ExpensePurchaseGear</key>
-			<text>Erworbene Ausrüstung</text>
+			<text>Gekaufte Ausrüstung</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldGear</key>
@@ -1819,7 +1843,7 @@
 		</string>
 		<string>
 			<key>String_ExpensePurchaseWeapon</key>
-			<text>Erworbene Waffe</text>
+			<text>Gekaufte Waffe</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldWeapon</key>
@@ -1827,7 +1851,7 @@
 		</string>
 		<string>
 			<key>String_ExpensePurchaseWeaponAccessory</key>
-			<text>Waffenzubehör gekauft</text>
+			<text>Gekauftes Waffenzubehör</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldWeaponAccessory</key>
@@ -1835,7 +1859,7 @@
 		</string>
 		<string>
 			<key>String_ExpensePurchaseWeaponMod</key>
-			<text>Waffenmodifikation gekauft</text>
+			<text>Gekaufte Waffenmodifikation</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldWeaponMod</key>
@@ -1843,7 +1867,7 @@
 		</string>
 		<string>
 			<key>String_ExpensePurchaseVehicle</key>
-			<text>Fahrzeug gekauft</text>
+			<text>Gekauftes Fahrzeug</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldVehicle</key>
@@ -1851,7 +1875,7 @@
 		</string>
 		<string>
 			<key>String_ExpensePurchaseVehicleMod</key>
-			<text>Fahrzeugmodifikation gekauft</text>
+			<text>Gekaufte Fahrzeugmodifikation</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldVehicleMod</key>
@@ -1859,7 +1883,7 @@
 		</string>
 		<string>
 			<key>String_ExpensePurchaseVehicleGear</key>
-			<text>Fahrzeugausrüstung gekauft</text>
+			<text>Gekaufte Fahrzeugausrüstung</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldVehicleGear</key>
@@ -1867,7 +1891,7 @@
 		</string>
 		<string>
 			<key>String_ExpensePurchaseVehicleWeapon</key>
-			<text>Fahrzeugwaffe gekauft</text>
+			<text>Gekaufte Fahrzeugwaffe</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldVehicleWeapon</key>
@@ -1875,7 +1899,7 @@
 		</string>
 		<string>
 			<key>String_ExpensePurchaseVehicleWeaponAccessory</key>
-			<text>Fahrzeugwaffen-Zubehör gekauft</text>
+			<text>Gekauftes Fahrzeugwaffen-Zubehör</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldVehicleWeaponAccessory</key>
@@ -1883,7 +1907,7 @@
 		</string>
 		<string>
 			<key>String_ExpensePurchaseVehicleWeaponMod</key>
-			<text>Fahrzeugwaffen-Modifikation gekauft</text>
+			<text>Gekaufte Fahrzeugwaffen-Modifikation</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldVehicleWeaponMod</key>
@@ -1891,7 +1915,7 @@
 		</string>
 		<string>
 			<key>String_ExpensePurchaseVehicleCyberware</key>
-			<text>Fahrzeug-Cyberware gekauft</text>
+			<text>Gekaufte Fahrzeug-Cyberware</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldVehicleCyberware</key>
@@ -1916,6 +1940,14 @@
 		<string>
 			<key>String_ExpenseLifestyle</key>
 			<text>Gekaufter Lebensstil</text>
+		</string>
+		<string>
+			<key>String_ExpenseDecreaseLifestyle</key>
+			<text>Verringerter Lebensstil</text>
+		</string>
+		<string>
+			<key>String_ExpenseModifiedLifestyle</key>
+			<text>Modifizierter Lebensstil</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseCyberware</key>
@@ -2382,6 +2414,10 @@
 			<text>Gabe austauschen</text>
 		</string>
 		<string>
+			<key>Button_DeleteQuality</key>
+			<text>Gabe entfernen</text>
+		</string>
+		<string>
 			<key>Button_AddContact</key>
 			<text>Connection &amp;hinzufügen</text>
 		</string>
@@ -2391,11 +2427,11 @@
 		</string>
 		<string>
 			<key>Node_SelectedPositiveQualities</key>
-			<text>Gabe auswählen</text>
+			<text>Vorteile</text>
 		</string>
 		<string>
 			<key>Node_SelectedNegativeQualities</key>
-			<text>Handicap auswählen</text>
+			<text>Nachteile</text>
 		</string>
 		<string>
 			<key>Tip_CommonAttributes</key>
@@ -2403,11 +2439,11 @@
 		</string>
 		<string>
 			<key>Tip_CommonAttributesBase</key>
-			<text>Natürlicher Attributswert.</text>
+			<text>Natürliche Attributwerte.</text>
 		</string>
 		<string>
 			<key>Tip_CommonAttributesAug</key>
-			<text>Verstärkter Attributswert.</text>
+			<text>Verstärkte Attributwerte.</text>
 		</string>
 		<string>
 			<key>Tip_CommonAttributesMetatypeLimits</key>
@@ -2467,7 +2503,7 @@
 		</string>
 		<string>
 			<key>Label_CustomKnowledgeSkillsReminder</key>
-			<text>Erinnern sie daran, dass Sie eigene Fähigkeiten und Spezialisierungen immer einfügen dürfen!</text>
+			<text>Denken sie daran, dass sie auch eigene Fertigkeiten und Spezialisierungen eintragen können!</text>
 		</string>
 		<string>
 			<key>Button_AddSkill</key>
@@ -2479,15 +2515,15 @@
 		</string>
 		<string>
 			<key>Tip_SkillsSkillGroups</key>
-			<text>Fertigkeitsgruppen kosten 10 GP pro Stufe.</text>
+			<text>Fertigkeitsgruppen kosten {0} Karma pro neue Stufe.</text>
 		</string>
 		<string>
 			<key>Tip_SkillsActiveSkills</key>
-			<text>Fertigkeiten kosten 4 GP pro Stufe und 2 GP für eine Spezialisierung. Charaktere können eine Aktionsfertigkeit auf Stufe 6 oder zwei auf Stufe 5 haben. Der Rest muss 4 oder weniger betragen.</text>
+			<text>Fertigkeiten kosten {0} Karma pro neue Stufe und {1} Karma für eine Spezialisierung.</text>
 		</string>
 		<string>
 			<key>Tip_SkillsKnowledgeSkills</key>
-			<text>Charaktere erhalten (INT + LOG) x 3 freie Punkte, um Sie für allgemeine Wissenfertigkeiten und Sprachen auszugeben. Zusätzliche Stufen in Wissensfertigkeiten kosten je 2 BP. Eine Sprache mit der Stufe 0 wird als Ihre Muttersprache angesehen.</text>
+			<text>Charaktere erhalten (INT + LOG) × {0} freie Punkte, um Sie für allgemeine Wissenfertigkeiten und Sprachen auszugeben. Zusätzliche Stufen in Wissensfertigkeiten kosten {1} Karma pro neue Stufe. Eine Sprache mit der Stufe 0 wird als Ihre Muttersprache angesehen.</text>
 		</string>
 		<string>
 			<key>Skill_SortAlphabetical</key>
@@ -2537,11 +2573,11 @@
 		</string>
 		<string>
 			<key>Node_SelectedMartialArts</key>
-			<text>Ausgewählte Kampfkunst</text>
+			<text>Kampfkünste</text>
 		</string>
 		<string>
 			<key>Node_SelectedManeuvers</key>
-			<text>Ausgewählte Manöver</text>
+			<text>Manöver</text>
 		</string>
 		<string>
 			<key>Label_SelectedSpells</key>
@@ -2557,7 +2593,7 @@
 		</string>
 		<string>
 			<key>Label_ResistDrain</key>
-			<text>Entzug wiederstehen:</text>
+			<text>Entzug widerstehen:</text>
 		</string>
 		<string>
 			<key>Label_MentorSpirit</key>
@@ -2573,23 +2609,23 @@
 		</string>
 		<string>
 			<key>Node_SelectedCombatSpells</key>
-			<text>Ausgewählte Kampfzauber</text>
+			<text>Kampfzauber</text>
 		</string>
 		<string>
 			<key>Node_SelectedDetectionSpells</key>
-			<text>Ausgewählte Wahrnehmungszauber</text>
+			<text>Wahrnehmungszauber</text>
 		</string>
 		<string>
 			<key>Node_SelectedHealthSpells</key>
-			<text>Ausgewählte Heilzauber</text>
+			<text>Heilzauber</text>
 		</string>
 		<string>
 			<key>Node_SelectedIllusionSpells</key>
-			<text>Ausgewählte Illusionszauber</text>
+			<text>Illusionszauber</text>
 		</string>
 		<string>
 			<key>Node_SelectedManipulationSpells</key>
-			<text>Ausgewählte Manipulationszauber</text>
+			<text>Manipulationszauber</text>
 		</string>
 		<string>
 			<key>Tip_SpellsSelectedSpells</key>
@@ -2606,6 +2642,18 @@
 		<string>
 			<key>Button_AddPower</key>
 			<text>Kraft &amp;hinzufügen</text>
+		</string>
+		<string>
+			<key>ColumnHeader_Action</key>
+			<text>Handlung</text>
+		</string>
+		<string>
+			<key>ColumnHeader_Power_Points</key>
+			<text>Kraftpunkte</text>
+		</string>
+		<string>
+			<key>ColumnHeader_Notes</key>
+			<text>Notizen</text>
 		</string>
 		<string>
 			<key>Label_ComplexForms</key>
@@ -2673,11 +2721,11 @@
 		</string>
 		<string>
 			<key>Node_CritterPowers</key>
-			<text>AusgewählteCritter-Kraft</text>
+			<text>Critter-Kräfte</text>
 		</string>
 		<string>
 			<key>Node_CritterWeaknesses</key>
-			<text>Ausgewählte Schwäche</text>
+			<text>Schwächen</text>
 		</string>
 		<string>
 			<key>Label_InitiationGrade</key>
@@ -2725,7 +2773,7 @@
 		</string>
 		<string>
 			<key>Button_AddMetamagic</key>
-			<text>Metamagie Hinzufügen</text>
+			<text>Metamagie hinzufügen</text>
 		</string>
 		<string>
 			<key>Button_AddEcho</key>
@@ -2741,15 +2789,15 @@
 		</string>
 		<string>
 			<key>Node_SelectedCyberware</key>
-			<text>Cyberware auswählen</text>
+			<text>Cyberware</text>
 		</string>
 		<string>
 			<key>Node_SelectedBioware</key>
-			<text>Bioware auswählen</text>
+			<text>Bioware</text>
 		</string>
 		<string>
-			<key>Label_LifestyleMonths</key>
-			<text>Monate (100 zum Kaufen)</text>
+			<key>Label_LifestylePermanent</key>
+			<text> ({0} zum Kaufen)</text>
 		</string>
 		<string>
 			<key>Label_LifestyleQualities</key>
@@ -2761,15 +2809,15 @@
 		</string>
 		<string>
 			<key>Node_SelectedLifestyles</key>
-			<text>Lebensstil auswählen</text>
+			<text>Lebensstile</text>
 		</string>
 		<string>
 			<key>Tab_IncreaseLifestyleMonths</key>
-			<text>Anzahl der bezahlten Monate für diesen Lebensstil erhöhen.</text>
+			<text>Anzahl der bezahlten {0} für diesen Lebensstil erhöhen.</text>
 		</string>
 		<string>
 			<key>Tab_DecreaseLifestyleMonths</key>
-			<text>Anzahl der bezahlten Monate für diesen Lebensstil senken.</text>
+			<text>Anzahl der bezahlten {0} für diesen Lebensstil senken.</text>
 		</string>
 		<string>
 			<key>Label_BondedFoci</key>
@@ -2785,7 +2833,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedArmor</key>
-			<text>Panzerung auswählen</text>
+			<text>Panzerungen</text>
 		</string>
 		<string>
 			<key>Tip_ArmorEquipped</key>
@@ -2873,7 +2921,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedWeapons</key>
-			<text>Ausgewählte Waffen</text>
+			<text>Waffen</text>
 		</string>
 		<string>
 			<key>Tip_WeaponInstalled</key>
@@ -2925,7 +2973,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedGear</key>
-			<text>Ausrüstung wählen.</text>
+			<text>Ausrüstungen</text>
 		</string>
 		<string>
 			<key>Tip_IncreaseGearQty</key>
@@ -2969,7 +3017,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedVehicles</key>
-			<text>Fahrzeug auswählen</text>
+			<text>Fahrzeuge</text>
 		</string>
 		<string>
 			<key>Tip_TransferToInventory</key>
@@ -3009,7 +3057,7 @@
 		</string>
 		<string>
 			<key>Label_Height</key>
-			<text>Grösse:</text>
+			<text>Größe:</text>
 		</string>
 		<string>
 			<key>Label_Weight</key>
@@ -3113,11 +3161,11 @@
 		</string>
 		<string>
 			<key>Label_SummaryPositiveQualities</key>
-			<text>Gaben</text>
+			<text>Vorteile</text>
 		</string>
 		<string>
 			<key>Label_SummaryNegativeQualities</key>
-			<text>Handicaps</text>
+			<text>Nachteile</text>
 		</string>
 		<string>
 			<key>Label_SummaryContacts</key>
@@ -3168,28 +3216,16 @@
 			<text>Initiation/Wandlung</text>
 		</string>
 		<string>
-			<key>Label_SummaryManeuvers</key>
-			<text>Kampfkunstmanöver</text>
-		</string>
-		<string>
 			<key>Tip_BuildSpecialAttributes</key>
 			<text>Spezialattribute sind EDG, MAG und RES.</text>
 		</string>
 		<string>
 			<key>Tip_BuildPositiveQualities</key>
-			<text>Charaktere können maximal 35 GP für Gaben ausgeben. Dunkelrot markierte Gaben zählen nicht in dieses Limit.</text>
+			<text>Charaktere können maximal 35 GP für Vorteile ausgeben. Dunkelrot markierte Vorteile zählen nicht in dieses Limit.</text>
 		</string>
 		<string>
 			<key>Tip_BuildNegativeQualities</key>
-			<text>Charaktere können maximal 35 GP für Handicaps erhalten. Dunkelrot markierte Gaben zählen nicht in dieses Limit.</text>
-		</string>
-		<string>
-			<key>Tip_BuildFoci</key>
-			<text>Jeder gebundene Fokus kostet GP in Höhe seiner Kraftstufe.</text>
-		</string>
-		<string>
-			<key>Tip_BuildManeuvers</key>
-			<text>Jedes Kampfkunstmanöver kostet 2 BP.</text>
+			<text>Charaktere können maximal 35 GP für Nachteile erhalten. Dunkelrot markierte Nachteile zählen nicht in dieses Limit.</text>
 		</string>
 		<string>
 			<key>Label_OtherPhysicalCM</key>
@@ -3297,7 +3333,7 @@
 		</string>
 		<string>
 			<key>Tip_OtherAstralInitiative</key>
-			<text>Die Astrale Initiative errechnet sich durch INT x 2.</text>
+			<text>Die Astrale Initiative errechnet sich durch INT × 2.</text>
 		</string>
 		<string>
 			<key>Tip_OtherAstralInitiativePasses</key>
@@ -3305,11 +3341,11 @@
 		</string>
 		<string>
 			<key>Tip_OtherBallisticArmor</key>
-			<text>Nur der höchste Wert der Ballistischen Panzerung wird benutzt. Wenn der Wert aller Panzerungsteile über KON x 2 liegt, unterliegen Sie einem Abzug von -1 auf GES für jeweils 2 Punkte Überhang.</text>
+			<text>Nur der höchste Wert der Ballistischen Panzerung wird benutzt. Wenn der Wert aller Panzerungsteile über KON × 2 liegt, unterliegen Sie einem Abzug von -1 auf GES für jeweils 2 Punkte Überhang.</text>
 		</string>
 		<string>
 			<key>Tip_OtherImpactArmor</key>
-			<text>Nur der höchste Wert der Stoßpanzerung wird benutzt. Wenn der aller Panzerungsteile über KON x 2 liegt, unterliegen Sie einem Abzug von -1 auf GES für jeweils 2 Punkte Überhang.</text>
+			<text>Nur der höchste Wert der Stoßpanzerung wird benutzt. Wenn der aller Panzerungsteile über KON × 2 liegt, unterliegen Sie einem Abzug von -1 auf GES für jeweils 2 Punkte Überhang.</text>
 		</string>
 		<string>
 			<key>Tip_OtherEssence</key>
@@ -3385,7 +3421,7 @@
 		</string>
 		<string>
 			<key>Tip_CMDamageResistance</key>
-			<text>Anzahl der Würfel um den Schadenswiderstandswurf auszuwürfen</text>
+			<text>Anzahl der Würfel um den Schadenswiderstandswurf auszuwürfeln</text>
 		</string>
 		<string>
 			<key>Tip_CMRegainEdge</key>
@@ -3584,6 +3620,10 @@
 			<text>Wunden</text>
 		</string>
 		<string>
+			<key>Tip_Skill_OffHand</key>
+			<text>Nebenhand</text>
+		</string>
+		<string>
 			<key>Tip_SkillGroup_Skills</key>
 			<text>Fertigkeiten in dieser Gruppe</text>
 		</string>
@@ -3609,19 +3649,19 @@
 		</string>
 		<string>
 			<key>Tip_Spirit_LinkSpirit</key>
-			<text>Chummer Datei für diesen Sprite laden.</text>
+			<text>Diesen Geist mit einer Chummer Datei verknüpfen.</text>
 		</string>
 		<string>
 			<key>Tip_Sprite_LinkSprite</key>
-			<text>Chummer Datei für diesen Geist laden.</text>
+			<text>Diesen Sprite mit einer Chummer Datei verknüpfen.</text>
 		</string>
 		<string>
 			<key>Tip_Spirit_OpenFile</key>
-			<text>Chummer Datei für diesen Geist laden.</text>
+			<text>Verknüpfte Chummer Datei für diesen Geist öffnen.</text>
 		</string>
 		<string>
 			<key>Tip_Sprite_OpenFile</key>
-			<text>Chummer Datei für diesen Sprite laden.</text>
+			<text>Verknüpfte Chummer Datei für diesen Sprite öffnen.</text>
 		</string>
 		<string>
 			<key>Tip_Spirit_EditNotes</key>
@@ -3665,7 +3705,7 @@
 		</string>
 		<string>
 			<key>Message_CyberwareSuite_DuplicateName</key>
-			<text>Ein Cyberware-Set mit dem Namen "{0}" existiert bereits in der Datei "{1}". Bitte wählen Sie einen anderen Namen.</text>
+			<text>Ein Cyberware-Set mit dem Namen "{0}" existiert bereits in einer Datendatei. Bitte wählen Sie einen anderen Namen.</text>
 		</string>
 		<string>
 			<key>MessageTitle_CyberwareSuite_DuplicateName</key>
@@ -3769,7 +3809,7 @@
 		</string>
 		<string>
 			<key>Message_CreatePACKSKit_DuplicateName</key>
-			<text>Ein Kit mit dem Namen "{0}" existiert bereits in der Datei "{1}". Bitte wählen Sie einen anderen Namen.</text>
+			<text>Ein Kit mit dem Namen "{0}" existiert bereits in einer Datendatei. Bitte wählen Sie einen anderen Namen.</text>
 		</string>
 		<string>
 			<key>MessageTitle_CreatePACKSKit_DuplicateName</key>
@@ -4265,23 +4305,23 @@
 		</string>
 		<string>
 			<key>Label_Options_NewRating</key>
-			<text>x neuer Wert</text>
+			<text>× neuer Wert</text>
 		</string>
 		<string>
 			<key>Label_Options_NewRatingPlus</key>
-			<text>x neuer Wert) +</text>
+			<text>× neuer Wert) +</text>
 		</string>
 		<string>
 			<key>Label_Options_BPCost</key>
-			<text>x GP Kosten</text>
+			<text>× GP Kosten</text>
 		</string>
 		<string>
 			<key>Label_Options_Rating</key>
-			<text>x Stufe</text>
+			<text>× Stufe</text>
 		</string>
 		<string>
 			<key>Label_Options_ServicesOwed</key>
-			<text>x geschuldete Dienste</text>
+			<text>× geschuldete Dienste</text>
 		</string>
 		<string>
 			<key>Label_Options_PerKarma</key>
@@ -4289,7 +4329,7 @@
 		</string>
 		<string>
 			<key>Label_Options_ConnectionLoyalty</key>
-			<text>x (Connection + Loyalität)</text>
+			<text>× (Connection + Loyalität)</text>
 		</string>
 		<string>
 			<key>Label_Options_Maximum</key>
@@ -4381,7 +4421,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_LimitSkills</key>
-			<text>Begrenze Würfelpools auf 20 Würfel oder 2 x (natürliches Attribut + Fertigkeitswert) (SR4 83).</text>
+			<text>Begrenze Würfelpools auf 20 Würfel oder 2 × (natürliches Attribut + Fertigkeitswert) (SR4 83).</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_SkillRegroup</key>
@@ -4401,7 +4441,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_FreeContactPointsKarma</key>
-			<text>Freie Connection-Punkte: CHA x </text>
+			<text>Freie Connection-Punkte: CHA ×</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_FreeContactPointsBP</key>
@@ -4409,7 +4449,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_FreeKnowledgeSkills</key>
-			<text>Generieren mit Karma: Kostenlose Wissensfertigkeiten wie im GP-System</text>
+			<text>Karma-Generieren: Kostenlose Wissensfertigkeiten wie im Prioritätensystem</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_MaxSpiritForce</key>
@@ -4433,7 +4473,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_AllowCyberwareESSDiscounts</key>
-			<text>Vergünstigungen für Cyberware-Essenzkosten erlauben</text>
+			<text>Anpassungen für Cyberware-Essenzkosten erlauben</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_StrengthAffectsRecoil</key>
@@ -4473,15 +4513,15 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedPositiveQualities</key>
-			<text>Charakteren gestatten, mehr als 35 GP für Gaben auszugeben</text>
+			<text>Charakteren gestatten, mehr als 35 GP für Vorteile auszugeben</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedNegativeQualities</key>
-			<text>Charakteren gestatten, mehr als 35 GP für Handicaps zu erhalten</text>
+			<text>Charakteren gestatten, mehr als 35 GP für Nachteile zu erhalten</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedNegativeQualitiesLimit</key>
-			<text>Charaktere können maximal 35 GP für Handicaps erhalten</text>
+			<text>Charaktere können maximal 35 GP für Nachteile erhalten</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_StartupFullscreen</key>
@@ -4524,12 +4564,12 @@
 			<text>Erstelle erweiterten Lebensstil</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_PositiveQualities</key>
-			<text>Gaben</text>
+			<key>Node_SelectAdvancedLifestyle_PositiveQualities</key>
+			<text>Vorteile</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_NegativeQualities</key>
-			<text>Handicaps</text>
+			<key>Node_SelectAdvancedLifestyle_NegativeQualities</key>
+			<text>Nachteile</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Comforts</key>
@@ -4705,7 +4745,7 @@
 		</string>
 		<string>
 			<key>Title_SelectExoticSkill</key>
-			<text>Wählen Sie eine exotische Aktionsfertigkeit</text>
+			<text>Exotische Aktionsfertigkeit auswählen</text>
 		</string>
 		<string>
 			<key>Label_SelectExoticSkill_Description</key>
@@ -4713,7 +4753,7 @@
 		</string>
 		<string>
 			<key>Title_SelectGear</key>
-			<text>Ausrüstung wählen</text>
+			<text>Ausrüstung auswählen</text>
 		</string>
 		<string>
 			<key>Label_SelectGear_DoItYourself</key>
@@ -4733,11 +4773,11 @@
 		</string>
 		<string>
 			<key>Title_SelectItem</key>
-			<text>Wähle einen Gegenstand</text>
+			<text>Gegenstand auswählen</text>
 		</string>
 		<string>
 			<key>Title_SelectLifestyle</key>
-			<text>Wähle einen Lebensstil</text>
+			<text>Lebensstil auswählen</text>
 		</string>
 		<string>
 			<key>Label_SelectLifestyle_CostPerMonth</key>
@@ -4753,11 +4793,11 @@
 		</string>
 		<string>
 			<key>Title_SelectMartialArt</key>
-			<text>Wähle eine Kampfkunst</text>
+			<text>Kampfkunst auswählen</text>
 		</string>
 		<string>
-			<key>Title_SelectMartialArtAdvantage</key>
-			<text>Wähle eine Gabe</text>
+			<key>Title_SelectMartialArtTechnique</key>
+			<text>Technik auswählen</text>
 		</string>
 		<string>
 			<key>Title_SelectMartialArtManeuver</key>
@@ -4765,7 +4805,7 @@
 		</string>
 		<string>
 			<key>Title_SelectMentorSpirit</key>
-			<text>Mentor auswählen</text>
+			<text>Schutzgeist auswählen</text>
 		</string>
 		<string>
 			<key>Title_SelectMentorSpirit_Paragon</key>
@@ -4837,11 +4877,11 @@
 		</string>
 		<string>
 			<key>Title_SelectNumber</key>
-			<text>Wählen Sie eine Ziffer</text>
+			<text>Zahl auswählen</text>
 		</string>
 		<string>
 			<key>Title_SelectPACKSKit</key>
-			<text>Wählen Sie ein PACKS Kit</text>
+			<text>PACKS Kit auswählen</text>
 		</string>
 		<string>
 			<key>Label_SelectPACKSKit_Contents</key>
@@ -4933,7 +4973,7 @@
 		</string>
 		<string>
 			<key>Title_SelectPower</key>
-			<text>Kraft wählen</text>
+			<text>Kraft auswählen</text>
 		</string>
 		<string>
 			<key>Label_SelectPower_PowerPoints</key>
@@ -4948,8 +4988,8 @@
 			<text>Kraft Anforderungen</text>
 		</string>
 		<string>
-			<key>Title_SelectProgram</key>
-			<text>Wähle ein Programm</text>
+			<key>Title_SelectComplexForm</key>
+			<text>Programm auswählen</text>
 		</string>
 		<string>
 			<key>Label_SelectProgram_CommonlyUsedSkill</key>
@@ -4957,15 +4997,19 @@
 		</string>
 		<string>
 			<key>Title_SelectProgramOption</key>
-			<text>Wähle eine Programmeinstellung</text>
+			<text>Programmeinstellung auswählen</text>
 		</string>
 		<string>
 			<key>Title_SelectQuality</key>
 			<text>Gabe auswählen</text>
 		</string>
 		<string>
+			<key>Label_FilterByKarma</key>
+			<text>Filtern nach Karma:</text>
+		</string>
+		<string>
 			<key>Checkbox_SelectQuality_LimitList</key>
-			<text>Nur Gaben/Handicaps, die ich auswählen kann</text>
+			<text>Nur Gaben, die ich auswählen kann</text>
 		</string>
 		<string>
 			<key>Checkbox_SelectQuality_Metagenetic</key>
@@ -4981,7 +5025,7 @@
 		</string>
 		<string>
 			<key>MessageTitle_SelectQuality_QualityLimit</key>
-			<text>Limit für Gaben/Handicaps</text>
+			<text>Limit für Gaben</text>
 		</string>
 		<string>
 			<key>Message_SelectQuality_QualityRestriction</key>
@@ -5025,7 +5069,7 @@
 		</string>
 		<string>
 			<key>Title_SelectSide</key>
-			<text>Wähle eine Seite</text>
+			<text>Seite auswählen</text>
 		</string>
 		<string>
 			<key>Label_SelectSide</key>
@@ -5045,7 +5089,7 @@
 		</string>
 		<string>
 			<key>Checkbox_SelectSpell_LimitedSpell</key>
-			<text>Eingeschränkter Zauberspruch</text>
+			<text>Eingeschränkter Zauberspruch (SG 212)</text>
 		</string>
 		<string>
 			<key>Tip_SelectSpell_LimitedSpell</key>
@@ -5053,11 +5097,11 @@
 		</string>
 		<string>
 			<key>Title_SelectText</key>
-			<text>Wähle einen Wert</text>
+			<text>Wert auswählen</text>
 		</string>
 		<string>
 			<key>Title_SelectVehicle</key>
-			<text>Wähle ein Fahrzeug</text>
+			<text>Fahrzeug auswählen</text>
 		</string>
 		<string>
 			<key>Checkbox_SelectVehicle_UsedVehicle</key>
@@ -5085,11 +5129,11 @@
 		</string>
 		<string>
 			<key>Title_SelectWeaponAccessory</key>
-			<text>Wähle ein Waffenzubehör</text>
+			<text>Waffenzubehör auswählen</text>
 		</string>
 		<string>
 			<key>Title_SelectWeaponCategory</key>
-			<text>Wähle eine Waffenkategorie</text>
+			<text>Waffenkategorie auswählen</text>
 		</string>
 		<string>
 			<key>Title_SellItem</key>
@@ -5233,7 +5277,7 @@
 		</string>
 		<string>
 			<key>Label_Options_Force</key>
-			<text>x Kraftstufe</text>
+			<text>× Kraftstufe</text>
 		</string>
 		<string>
 			<key>Label_Options_AnchoringFocus</key>
@@ -5353,7 +5397,7 @@
 		</string>
 		<string>
 			<key>Title_SelectSkillCategory</key>
-			<text>Bitte wählen sie eine Fertigkeitskategorie</text>
+			<text>Fertigkeitskategorie auswählen</text>
 		</string>
 		<string>
 			<key>Title_CreateImprovement</key>
@@ -5366,6 +5410,10 @@
 		<string>
 			<key>Label_CreateImprovementValue</key>
 			<text>Wert:</text>
+		</string>
+		<string>
+			<key>Label_CreateImprovementExactly</key>
+			<text>Exakt:</text>
 		</string>
 		<string>
 			<key>Label_CreateImprovementMinimum</key>
@@ -5421,39 +5469,39 @@
 		</string>
 		<string>
 			<key>Node_SelectedAdvancedComplexForms</key>
-			<text>Erweiterte komplexe Form wählen</text>
+			<text>Erweiterte Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedAREComplexForms</key>
-			<text>ARE-Komplexe Form wählen</text>
+			<text>ARE-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedAutosoftComplexForms</key>
-			<text>Autosoft-Komplexe Form wählen</text>
+			<text>Autosoft-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedCommonUseComplexForms</key>
-			<text>Gewöhnliche-Nutzung-Komplexe Form wählen</text>
+			<text>Gewöhnliche-Nutzung-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedHackingComplexForms</key>
-			<text>Hacking-Komplexe Form wählen</text>
+			<text>Hacking-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedMalwareComplexForms</key>
-			<text>Schadsoftware-Komplexe Form wählen</text>
+			<text>Schadsoftware-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedSensorComplexForms</key>
-			<text>Sensoren-Komplexe Form wählen</text>
+			<text>Sensoren-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedSkillsoftsComplexForms</key>
-			<text>Talentsoft-Komplexe Form wählen</text>
+			<text>Talentsoft-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedTacticalARComplexForms</key>
-			<text>Taktische AR-Komplexe Form wählen</text>
+			<text>Taktische AR-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Tab_Options_BPCosts</key>
@@ -5710,7 +5758,7 @@
 		</string>
 		<string>
 			<key>Checkbox_HealthSpell2</key>
-			<text>Erhöht die Inintiationsdurchgänge</text>
+			<text>Erhöht die Initiativdurchgänge</text>
 		</string>
 		<string>
 			<key>Checkbox_HealthSpell3</key>
@@ -5879,7 +5927,7 @@
 		</string>
 		<string>
 			<key>Title_SelectSpellCategory</key>
-			<text>Wählen Sie eine Spruchkategorie</text>
+			<text>Spruchkategorie auswählen</text>
 		</string>
 		<!-- Version 317 -->
 		<string>
@@ -5913,7 +5961,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedImprovements</key>
-			<text>Verbesserung auswählen</text>
+			<text>Verbesserungen</text>
 		</string>
 		<string>
 			<key>Button_EditImprovement</key>
@@ -6163,11 +6211,11 @@
 		<!-- Version 345 -->
 		<string>
 			<key>Checkbox_Metatype_PossessionTradition</key>
-			<text>Beschworen durch eine auf Bessessenheit basierenden Tradition</text>
+			<text>Beschworen durch eine auf Besessenheit basierenden Tradition</text>
 		</string>
 		<string>
 			<key>Tip_Metatype_PossessionTradition</key>
-			<text>Geister die durch eine Bessenseinheit basierenden Tradition beschworen wurden erhalten die mit der Besessenheit verbundenen Critter Kräfte anstelle der Materialisierung</text>
+			<text>Geister die durch eine Besessenheit basierenden Tradition beschworen wurden erhalten die mit der Besessenheit verbundenen Critter Kräfte anstelle der Materialisierung</text>
 		</string>
 		<!-- Version 347 -->
 		<string>
@@ -6239,7 +6287,7 @@
 		</string>
 		<string>
 			<key>String_ExpensePurchaseCyberwearGear</key>
-			<text>Erworbene Cyberwareausrüstung</text>
+			<text>Gekaufte Cyberwareausrüstung</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldCyberwareGear</key>
@@ -6251,7 +6299,7 @@
 		</string>
 		<string>
 			<key>String_ExpensePurchaseWeaponGear</key>
-			<text>Erworbene Waffenausrüstung</text>
+			<text>Gekaufte Waffenausrüstung</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldWeaponGear</key>
@@ -6436,7 +6484,7 @@
 		</string>
 		<string>
 			<key>Title_SelectBiowareSuite</key>
-			<text>Wählen Sie eine Bioware Zusammenstellung</text>
+			<text>Bioware Zusammenstellung auswählen</text>
 		</string>
 		<string>
 			<key>Label_SelectBiowareSuite_PartsInSuite</key>
@@ -6448,7 +6496,7 @@
 		</string>
 		<string>
 			<key>Message_DeleteWeaponLocation</key>
-			<text>Möchten Sie diesen Ort wirklich löschen? Die gesamte Ausrüstung wird in den Hauptreiter verschoben.</text>
+			<text>Möchten Sie diesen Ort wirklich löschen? Die gesamte Ausrüstung wird in den Hauptkontainer verschoben.</text>
 		</string>
 		<!-- Version 405 -->
 		<string>
@@ -6466,7 +6514,7 @@
 		<!-- Version 408 -->
 		<string>
 			<key>Checkbox_Option_FreeSpiritPowerPointsMAG</key>
-			<text>Frei Geister erhalten ihre Powerpunkte basierend auf ihrem MAG Attribute, nicht Edge</text>
+			<text>Frei Geister erhalten ihre Kraftpunkte basierend auf ihrem MAG Attribut, nicht Edge</text>
 		</string>
 		<!-- Version 413 -->
 		<string>
@@ -6475,7 +6523,7 @@
 		</string>
 		<string>
 			<key>Checkbox_DiceRoller_RushedJob</key>
-			<text>Hastige Arbeit (Glitch bei 1 und 2)</text>
+			<text>Hastige Arbeit (Patzer bei 1 und 2)</text>
 		</string>
 		<!-- Version 416 -->
 		<string>
@@ -6511,7 +6559,7 @@
 		</string>
 		<string>
 			<key>Tip_ActiveCommlink</key>
-			<text>Dieses ausgewählte Kommlink als das gerade aktive makieren. Die Matrix Initiative wird mit diesem Kommlink berechnet.</text>
+			<text>Dieses ausgewählte Kommlink als das gerade aktive markieren. Die Matrix Initiative wird mit diesem Kommlink berechnet.</text>
 		</string>
 		<!-- Version 429 -->
 		<string>
@@ -6529,7 +6577,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedGeomancyRituals</key>
-			<text>Ausgewählte Rituale</text>
+			<text>Rituale</text>
 		</string>
 		<!-- Version 439 -->
 		<string>
@@ -6550,7 +6598,7 @@
 		</string>
 		<string>
 			<key>Label_Options_EssenceDecimals</key>
-			<text>Nach wievielen Stellen hinter dem Komma soll für die Essenz-Berechnung gerundet werden?</text>
+			<text>Auf wie vielen Stellen hinter dem Komma soll für die Essenz-Berechnung gerundet werden?</text>
 		</string>
 		<!-- Version 445 -->
 		<string>
@@ -6610,7 +6658,7 @@
 		</string>
 		<string>
 			<key>String_ExpensePurchaseCyberwareSuite</key>
-			<text>Cyberware-Set erwerben</text>
+			<text>Gekauftes Cyberware-Set</text>
 		</string>
 		<string>
 			<key>Message_IncorrectGameVersion_SR4</key>
@@ -6638,7 +6686,7 @@
 		</string>
 		<string>
 			<key>String_DiceRoller_Failure</key>
-			<text>Fehlschalg</text>
+			<text>Fehlschlag</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_LocalisedUpdatesOnly</key>
@@ -6654,11 +6702,11 @@
 		</string>
 		<string>
 			<key>Checkbox_SelectSpell_ExtendedSpell</key>
-			<text>Ausgedehnter Spruch</text>
+			<text>Ausgedehnter Spruch (SR5 285)</text>
 		</string>
 		<string>
 			<key>Tip_SelectSpell_ExtendedSpell</key>
-			<text>Sprüche mit ausgedehnter Reichweite haben eine Reichweite von (Kraft x MAG x 10) Metern aber einen um +2 erhöten Entzugswert.</text>
+			<text>Sprüche mit ausgedehnter Reichweite haben eine Reichweite von (Kraft × MAG × 10) Metern aber einen um +2 erhöten Entzugswert.</text>
 		</string>
 		<string>
 			<key>String_BuyWithKarma</key>
@@ -6846,7 +6894,7 @@
 		</string>
 		<string>
 			<key>Message_DeleteGrade</key>
-			<text>You must delete the highest grade first.</text>
+			<text>Sie müssen den höchsten Grad zuerst entfernen.</text>
 		</string>
 		<string>
 			<key>Message_DeleteLimitModifier</key>
@@ -6870,15 +6918,11 @@
 		</string>
 		<string>
 			<key>Message_CannotDeleteLimitModifier</key>
-			<text>You must delete the source of this modifier to delete this item.</text>
+			<text>Sie müssen die Quelle dieses Modifikators löschen, um dieses Element zu löschen.</text>
 		</string>
 		<string>
 			<key>MessageTitle_CannotDeleteLimitModifier</key>
 			<text>Kann nicht gelöscht werden</text>
-		</string>
-		<string>
-			<key>Message_SelectLimitModifier</key>
-			<text>Sie müssen ein Limit auswählen, um einen Modifikator hinzuzufügen.</text>
 		</string>
 		<string>
 			<key>MessageTitle_SelectLimitModifier</key>
@@ -6886,15 +6930,15 @@
 		</string>
 		<string>
 			<key>Message_PositiveQualityMoreThanNegativeQuality</key>
-			<text>You cannot spend more on Positive Qualities than Negative Qualities.</text>
+			<text>Sie können nicht mehr für Vorteile und Nachteile ausgeben.</text>
 		</string>
 		<string>
 			<key>Message_PrioritySpellLimit</key>
-			<text>You cannot have more spells than allowed by your selected Talent priority.</text>
+			<text>Die Anzahl Sprüche darf durch die ausgewählte Talentpriorität definierte Anzahl nicht überschreiten.</text>
 		</string>
 		<string>
 			<key>Message_PriorityComplexFormLimit</key>
-			<text>Your number of Complex Forms cannot exceed the number defined by your selected Talent priority.</text>
+			<text>Die Anzahl an Komplexen Formen darf die durch die ausgewählte Talentpriorität definierte Anzahl nicht überschreiten.</text>
 		</string>
 		<string>
 			<key>Message_InvalidAttributeExcess</key>
@@ -6926,7 +6970,7 @@
 		</string>
 		<string>
 			<key>Message_NotEnoughMagic</key>
-			<text>You do not have enough Magic for this improvement.</text>
+			<text>Sie haben nicht genug Magie für diese Verbesserung.</text>
 		</string>
 		<string>
 			<key>MessageTitle_NotEnoughMagic</key>
@@ -6938,7 +6982,7 @@
 		</string>
 		<string>
 			<key>Message_UndoNotHighestGrade</key>
-			<text>You must undo the the entries for initiate grades above this one first.</text>
+			<text>Sie müssen zuerst die Einträge für Initiatengrade oberhalb dieses rückgängig machen.</text>
 		</string>
 		<string>
 			<key>MessageTitle_NotHighestGrade</key>
@@ -6946,7 +6990,7 @@
 		</string>
 		<string>
 			<key>String_SpellAlchemical</key>
-			<text>Alchemisch</text>
+			<text>Alchemistisch</text>
 		</string>
 		<string>
 			<key>String_ExpenseLearnTechnique</key>
@@ -7002,7 +7046,7 @@
 		</string>
 		<string>
 			<key>Label_ValAugmented</key>
-			<text>Val (Aug)</text>
+			<text>Wert (Verb)</text>
 		</string>
 		<string>
 			<key>Tip_OptionsUnarmedSkillImprovements</key>
@@ -7021,12 +7065,8 @@
 			<text>Aktivierung dieser Hausregel erlaubt es Charakteren im Karrieremodus, Vorteile zu kaufen und Nachteile abzubauen, ohne dafür die doppelten Kosten zu zahlen. </text>
 		</string>
 		<string>
-			<key>Tip_OptionsExceptionalAttribute</key>
-			<text>Aktivierung dieser Hausregel erlaubt es, Attributspunkte auf ein durch Aussergewöhnliches Attribut erhöhtes Attribut zu verteilen.</text>
-		</string>
-		<string>
 			<key>Tip_OptionsExceptionalNotMaxed</key>
-			<text>Aktivierung dieser Hausregel erlaubt es, bis zu zwei Attribute and das Metatyp-Limit zu steigern, wenn eines der Attribute durch Aussergewöhnliches Attribut gesteigert wurde.</text>
+			<text>Aktivierung dieser Hausregel erlaubt es, bis zu zwei Attribute und das Metatyp-Limit zu steigern, wenn eines der Attribute durch Außergewöhnliches Attribut gesteigert wurde.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsUsePointsOnBrokenGroups</key>
@@ -7070,7 +7110,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedEnchantments</key>
-			<text>Ausgewählte Verzauberungen</text>
+			<text>Verzauberungen</text>
 		</string>
 		<string>
 			<key>Tab_Limits</key>
@@ -7186,7 +7226,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_ContactPoints</key>
-			<text>Connection Punkte anstatt fester Anzahl von Connections.(RC 40)</text>
+			<text>Connection-Punkte anstatt fester Anzahl von Connections (RC 40)</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_UseLogging</key>
@@ -7198,7 +7238,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_Knucks</key>
-			<text>Schlagringe erhalten Boni, die Waffenlosenkampf betreffen</text>
+			<text>Schlagringe erhalten Boni, die waffenlosen Kampf betreffen</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_DontDoubleQualities</key>
@@ -7234,11 +7274,11 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_DroneArmorMultiplier</key>
-			<text>Begrenze Dronen Panzerungsverbesserung auf Dronen-Panzerung</text>
+			<text>Begrenze Drohnen Panzerungsverbesserung auf Drohnen-Panzerung</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_SpecialKarmaCost</key>
-			<text>Karma cost for increasing Special Attributes is not reduced with Essence Loss</text>
+			<text>Karmakosten zum erhöhen von Spezialattributen wird bei Essenzverlust nicht reduziert</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Qualities</key>
@@ -7254,7 +7294,7 @@
 		</string>
 		<string>
 			<key>Title_SelectArt</key>
-			<text>Select an Art</text>
+			<text>Wähle eine Kunst</text>
 		</string>
 		<string>
 			<key>Title_SelectEnhancement</key>
@@ -7302,7 +7342,7 @@
 		</string>
 		<string>
 			<key>Checkbox_SelectArt_LimitList</key>
-			<text>Show only Arts I can take</text>
+			<text>Zeige nur Künste die ich wählen kann</text>
 		</string>
 		<string>
 			<key>Checkbox_SelectEnhancement_LimitList</key>
@@ -7321,20 +7361,20 @@
 			<text>Kraftpunkt</text>
 		</string>
 		<string>
-			<key>Label_SelectProgram_Target</key>
+			<key>Label_SelectComplexForm_Target</key>
 			<text>Ziel:</text>
 		</string>
 		<string>
-			<key>Label_SelectProgram_Duration</key>
+			<key>Label_SelectComplexForm_Duration</key>
 			<text>Dauer:</text>
 		</string>
 		<string>
-			<key>Label_SelectProgram_FV</key>
+			<key>Label_SelectComplexForm_FV</key>
 			<text>Schwund:</text>
 		</string>
 		<string>
 			<key>Checkbox_SelectSpell_Alchemical</key>
-			<text>Alchemistisches Erzeugnis</text>
+			<text>Alchemistisches Erzeugnis (SR5 305)</text>
 		</string>
 		<string>
 			<key>String_Improvement_SelectLimitNamed</key>
@@ -7486,7 +7526,7 @@
 		</string>
 		<string>
 			<key>Label_SpellDefenceManipMental</key>
-			<text>Manipulation - Mental</text>
+			<text>Manipulation - Geistig</text>
 		</string>
 		<string>
 			<key>Label_SpellDefenceManipPhysical</key>
@@ -7528,7 +7568,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedAIPrograms</key>
-			<text>Ausgewählte KI Programme und fortgeschrittene Programme</text>
+			<text>KI Programme und fortgeschrittene Programme</text>
 		</string>
 		<!-- End Region-->
 		<!-- Select AI Program Window -->
@@ -7663,15 +7703,11 @@
 			<text>Datenverarbeitung</text>
 		</string>
 		<string>
-			<key>Label_SpellDicePool</key>
-			<text>Würfelpool:</text>
-		</string>
-		<string>
 			<key>Node_SelectAdvancedLifestyle_Entertainments</key>
 			<text>Unterhaltungen</text>
 		</string>
 		<string>
-			<key>String_No_Update_Found</key>
+			<key>String_Error</key>
 			<text>Fehler</text>
 		</string>
 		<string>
@@ -7728,7 +7764,7 @@
 		</string>
 		<string>
 			<key>MessageTitle_NoContactFound</key>
-			<text>No Available Contacts Found</text>
+			<text>Keine verfügbaren Connections gefunden</text>
 		</string>
 		<string>
 			<key>Label_Options_PDFParameters</key>
@@ -7836,7 +7872,7 @@
 		</string>
 		<string>
 			<key>Label_Powertrain</key>
-			<text>Kraft:</text>
+			<text>Antrieb:</text>
 		</string>
 		<string>
 			<key>Label_SelectBP_StartingKarma</key>
@@ -8131,6 +8167,10 @@
 			<text>Hauptmieter</text>
 		</string>
 		<string>
+			<key>Label_SelectAdvancedLifestyle_LPContribution</key>
+			<text>Trägt zu Lebensstilpunkten bei</text>
+		</string>
+		<string>
 			<key>Message_File_Cannot_Be_Accessed</key>
 			<text>Chummer5 kann nicht schreibend auf die Datei zugreifen. Stellen Sie sicher, dass die Berechtigung zum Schreiben in den Speicherort vorhanden ist und dass die Datei derzeit nicht verwendet wird.</text>
 		</string>
@@ -8196,11 +8236,11 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_ContactMultiplier</key>
-			<text>Freie Connection-Punkte gleich Charisma</text>
+			<text>Überschreibe Connection-Punkte Charisma Multiplikator</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_KnowledgeMultiplier</key>
-			<text>Freie Wissensfertigkeitenpunkte gleich (INT+LOG)</text>
+			<text>Überschreibe Wissensfertigkeitenpunkte (INT+LOG) Multiplikator</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_SearchInCategoryOnly</key>
@@ -8232,7 +8272,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedQualities</key>
-			<text>Ausgewählte Gaben</text>
+			<text>Gaben</text>
 		</string>
 		<string>
 			<key>Label_QualityLevel</key>
@@ -8256,7 +8296,723 @@
 		</string>
 		<string>
 			<key>Checkbox_Spirit_Fettered</key>
-			<text>Gefesselt</text>
+			<text>gefesselt</text>
+		</string>
+		<string>
+			<key>Button_AddCustomDirectory</key>
+			<text>Verzeichnis hinzufügen</text>
+		</string>
+		<string>
+			<key>Button_AddMod</key>
+			<text>Mod hinzufügen</text>
+		</string>
+		<string>
+			<key>String_Ambidextrous</key>
+			<text>Beidhändig</text>
+		</string>
+		<string>
+			<key>Button_RemoveCustomDirectory</key>
+			<text>Verzeichnis entfernen</text>
+		</string>
+		<string>
+			<key>Checkbox_PrototypeTranshuman</key>
+			<text>Prototyp des Transhumanismus</text>
+		</string>
+		<string>
+			<key>Label_Control</key>
+			<text>Bedienung:</text>
+		</string>
+		<string>
+			<key>Label_Visibility</key>
+			<text>Sichtbarkeit:</text>
+		</string>
+		<string>
+			<key>Label_Flexibility</key>
+			<text>Montage:</text>
+		</string>
+		<string>
+			<key>Label_Size</key>
+			<text>Größe:</text>
+		</string>
+		<string>
+			<key>Button_DeleteMod</key>
+			<text>Mod entfernen</text>
+		</string>
+		<string>
+			<key>Label_SelectLifestyle_CostPerDay</key>
+			<text>Kosten/Tag:</text>
+		</string>
+		<string>
+			<key>Menu_AddFromFile</key>
+			<text>Aus Datei &amp;hinzufügen</text>
+		</string>
+		<string>
+			<key>Menu_SpecialChangeOptions</key>
+			<text>Ändere &amp;Einstellungsdatei</text>
+		</string>
+		<string>
+			<key>Node_AdditionalMods</key>
+			<text>Zusätzliche Mods</text>
+		</string>
+		<string>
+			<key>String_EssenceLoss</key>
+			<text>Essenzverlust</text>
+		</string>
+		<string>
+			<key>String_EssenceLossChargen</key>
+			<text>Essenzverlust (Charaktererstellung)</text>
+		</string>
+		<string>
+			<key>String_Power</key>
+			<text>Kraft</text>
+		</string>
+		<string>
+			<key>Title_CreateWeaponMount</key>
+			<text>Waffenhalterung erstellung</text>
+		</string>
+		<string>
+			<key>Title_SelectGeneric</key>
+			<text>Wähle {0}</text>
+		</string>
+		<string>
+			<key>Title_ChooseCharacterPriorities</key>
+			<text>Charakterprioritäten auswählen</text>
+		</string>
+		<string>
+			<key>Tab_MatrixConditionMonitor</key>
+			<text>Matrix Zustandsmonitor</text>
+		</string>
+		<string>
+			<key>Tab_PhysicalConditionMonitor</key>
+			<text>Körperlicher Zustandsmonitor</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_AllowPointBuySpecializationsOnKarmaSkills</key>
+			<text>Erlaube Fertigkeitspunkte für Spezialisierungen zu mit Karma gekauften Fertigkeiten</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_DontDoubleQualityPurchases</key>
+			<text>Kosten zum kaufen von Vorteile im Karrieremodus nicht verdoppeln</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_DontDoubleNegativeQualityRefunds</key>
+			<text>Kosten zum entfernen von Nachteilen im Karrieremodus nicht verdoppeln</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_EnemyKarmaQualityLimit</key>
+			<text>Für Feinde ausgegebenes Karma zählt im Erschaffungsmodus gegen das Limit für Nachteile</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_ExceedPositiveQualitiesCostDoubled</key>
+			<text>Verdopple die Karmakosten von Vorteilen oberhalb des Limits</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_FreeKarmaContacts</key>
+			<text>Karma-Generieren: Kostenlose Connections wie im Prioritätensystem</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_Missions</key>
+			<text>Gaben verbergen, die für Missions verboten sind</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_PreferNightlyBuilds</key>
+			<text>Bevorzuge Nightly-Versionen</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_ReverseAttributePriorityOrder</key>
+			<text>Karma für Attribute vor Prioritätspunkten ausgeben</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_StrictSkillGroups</key>
+			<text>Strenge Interpretation für gebrochene Fertigkeitsgruppen im Erschaffungsmodus</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_UseTotalValueForFreeKnowledge</key>
+			<text>Freie Wissensfertigkeitenpunkte werden mit verbesserten LOG+INT Werten berechnet.</text>
+		</string>
+		<string>
+			<key>Checkbox_SelectGeneric_LimitList</key>
+			<text>Nur {0}, die ich auswählen kann</text>
+		</string>
+		<string>
+			<key>Checkbox_SelectLifeModule_LimitList</key>
+			<text>Nur Lebensmodule, die ich auswählen kann</text>
+		</string>
+		<string>
+			<key>Checkbox_ShowOnlyAffordItems</key>
+			<text>Nur Gegenstände, die ich mir leisten kann</text>
+		</string>
+		<string>
+			<key>Button_DecreaseCustomDirectoryLoadOrder</key>
+			<text>Ladereihenfolge verringern</text>
+		</string>
+		<string>
+			<key>Button_Download</key>
+			<text>Herunterladen</text>
+		</string>
+		<string>
+			<key>Button_IncreaseCustomDirectoryLoadOrder</key>
+			<text>Ladereihenfolge erhöhen</text>
+		</string>
+		<string>
+			<key>Button_Install_Restart</key>
+			<text>Installieren und neu starten</text>
+		</string>
+		<string>
+			<key>Button_Export_SaveJsonAs</key>
+			<text>Speichere JSON als</text>
+		</string>
+		<string>
+			<key>Button_Clean_Reinstall</key>
+			<text>Saubere Neuinstallation</text>
+		</string>
+		<string>
+			<key>Button_Redownload</key>
+			<text>Erneut Herunterladen</text>
+		</string>
+		<string>
+			<key>Button_RenameCustomDataDirectory</key>
+			<text>Eintrag umbenennen</text>
+		</string>
+		<string>
+			<key>Button_Up_To_Date</key>
+			<text>Bereits aktuell</text>
+		</string>
+		<string>
+			<key>Checkbox_Contact_Blackmail</key>
+			<text>Erpressung</text>
+		</string>
+		<string>
+			<key>Checkbox_HideBannedCyberwareGrades</key>
+			<text>Verbotene Cyberware-Grade verbergen</text>
+		</string>
+		<string>
+			<key>Checkbox_HideOverAvailLimit</key>
+			<text>Über Verfügbarkeitslimit verbergen ({0})</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_OpenPDFsAsUnix</key>
+			<text>Verwende Unix-Style Parameter beim Öffnen von PDFs</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_OpenPDFsAsURLs</key>
+			<text>Öffne PDFs als URLs (für Verwendung in Browsern)</text>
+		</string>
+		<string>
+			<key>DialogFilter_All</key>
+			<text>Alle Dateien (*.*)|*.*</text>
+		</string>
+		<string>
+			<key>DialogFilter_Chum5</key>
+			<text>Chummer5 Dateien (*.chum5)|*.chum5</text>
+		</string>
+		<string>
+			<key>DialogFilter_Exe</key>
+			<text>Ausführbare Dateien (*.exe)|*.exe</text>
+		</string>
+		<string>
+			<key>DialogFilter_Html</key>
+			<text>HTML Dateien (*.htm;*.html)|*.htm;*.html</text>
+		</string>
+		<string>
+			<key>DialogFilter_Json</key>
+			<text>JSON Dateien (*.json)|*.json</text>
+		</string>
+		<string>
+			<key>DialogFilter_Pdf</key>
+			<text>PDF Dateien (*.pdf)|*.pdf</text>
+		</string>
+		<string>
+			<key>DialogFilter_Xml</key>
+			<text>XML Dateien (*.xml)|*.xml</text>
+		</string>
+		<string>
+			<key>InitRoller_Description</key>
+			<text>Bitte gib die Summe der Ergebnisse der W6 ein.</text>
+		</string>
+		<string>
+			<key>Label_Bodymod</key>
+			<text>Rumpf Mods:</text>
+		</string>
+		<string>
+			<key>Label_Cosmetic</key>
+			<text>Kosmetik:</text>
+		</string>
+		<string>
+			<key>Label_Protection</key>
+			<text>Schutz:</text>
+		</string>
+		<string>
+			<key>Label_Electromagnetic</key>
+			<text>Elektronik:</text>
+		</string>
+		<string>
+			<key>Label_Options_CharacterRoster</key>
+			<text>Charakterverzeichnis Überwachter Ordner</text>
+		</string>
+		<string>
+			<key>Label_Options_URLApplicationPath</key>
+			<text>Pfad zum Webbrowser:</text>
+		</string>
+		<string>
+			<key>Label_Overclocker</key>
+			<text>Übertakter:</text>
+		</string>
+		<string>
+			<key>Label_PrototypeTranshuman</key>
+			<text>Prototyp des Transhumanismus:</text>
+		</string>
+		<string>
+			<key>Label_SelectBP_MaxNuyen</key>
+			<text>Max Nuyen Karma</text>
+		</string>
+		<string>
+			<key>Label_SelectSkillSpecialization_Description</key>
+			<text>Wähle eine Fertigkeitsspezialisierung, um sie deinem Charakter hinzuzufügen.</text>
+		</string>
+		<string>
+			<key>Main_Menu_GM_Dash</key>
+			<text>SL Dashboard</text>
+		</string>
+		<string>
+			<key>Main_Menu_Player_Dash</key>
+			<text>Spieler Dashboard</text>
+		</string>
+		<string>
+			<key>Menu_RenameExtraText</key>
+			<text>Zusatztext &amp;umbenennen</text>
+		</string>
+		<string>
+			<key>Message_BannedGrade</key>
+			<text>Sie haben einen Grad ausgewählt, der in deinen Spieloptionen gesperrt wurde. Bitte wählen Sie einen gültigen Grad.</text>
+		</string>
+		<string>
+			<key>Message_CannotFindWeapon</key>
+			<text>Waffe wurde nicht gefunden. Bitte entferne die Waffe und füge sie erneut hinzu, da sich der Name oder andere Details möglicherweise geändert haben.</text>
+		</string>
+		<string>
+			<key>Message_CharacterOptions_OpenOptions</key>
+			<text>Dies scheint der erste Start von Chummer zu sein, da keine Einstellungsdatei vorhanden ist. Möchten Sie den Optionsdialog jetzt öffnen?</text>
+		</string>
+		<string>
+			<key>Message_ConfirmKarmaExpenseLowerLevel</key>
+			<text>Möchten Sie wirklich {1} Karma für das Entfernen einer Stufe von {0} ausgeben?</text>
+		</string>
+		<string>
+			<key>Message_DeleteVehicleLocationBase</key>
+			<text>Möchten Sie diesen Ort wirklich löschen? Alle Fahrzeuge an diesem Ort werden dann dem ausgewählten Behälter zugeordnet.</text>
+		</string>
+		<string>
+			<key>Message_ExtraPoints</key>
+			<text>Sie haben noch {0} Punkte für {1}.\nSind Sie sicher, dass Sie diese zusätzlichen Punkte verlieren möchten?</text>
+		</string>
+		<string>
+			<key>Message_HighContact</key>
+			<text>Sie können keinen Kontakt mit mehr als 7 Punkten bei der Charaktergenerierung haben.</text>
+		</string>
+		<string>
+			<key>Message_ImprovementQuality</key>
+			<text>Diese Gabe wurde durch {0} hinzugefügt. Sie müssen die Quelle entfernen um diese Gabe zu entfernen.</text>
+		</string>
+		<string>
+			<key>Message_InvalidCyberwareGrades</key>
+			<text>Limit für Cyber/Bioware Grad wurde für folgenden Elemente überschritten:</text>
+		</string>
+		<string>
+			<key>Message_KarmaNuyenExchange</key>
+			<text>Nuyen kann nur in Vielfachen von 2,000¥ getauscht werden.</text>
+		</string>
+		<string>
+			<key>Message_MissingSourceBooks</key>
+			<text>Der Charakter wurde mit den folgenden nicht aktivierten Quellenbüchern erstellt:\n\n{0}\n\nDies kann zu Problemen führen. Möchten Sie den Charakter trotzdem laden?</text>
+		</string>
+		<string>
+			<key>Message_NegativeQualityAndMetatypeLimit</key>
+			<text>Sie können nicht mehr als {0} aus Nachteilen und Metatyp bekommen</text>
+		</string>
+		<string>
+			<key>Message_NoContactFound</key>
+			<text>Keine auswählbaren Connections gefunden. Bitte erstellen sie eine Connection und versuchen es erneut.</text>
+		</string>
+		<string>
+			<key>Message_Options_CloseForms</key>
+			<text>Einstellungen werden nur beim Laden des Charakters angewendet. Sollten die Anwendung neu gestarten werden?</text>
+		</string>
+		<string>
+			<key>Message_Options_Restart</key>
+			<text>Sind Sie sicher das die neu starten wollen?</text>
+		</string>
+		<string>
+			<key>Message_Options_SaveForms</key>
+			<text>Möchten Sie Änderungen an den Einstellungen speichern?</text>
+		</string>
+		<string>
+			<key>Message_Options_ValidationResults</key>
+			<text>Die Ergebnisse wurden nach {0} geschrieben.</text>
+		</string>
+		<string>
+			<key>Message_Options_SettingsName</key>
+			<text>Sie müssen der Einstellungsdatei einen Namen geben.</text>
+		</string>
+		<string>
+			<key>Message_OverLanguageLimit</key>
+			<text>Zu viele Sprachen als Muttersprache geführt. Aktuell: {0} Maximum: {1}</text>
+		</string>
+		<string>
+			<key>Message_OverNegativeMetagenicQualities</key>
+			<text>Zu viele metagenetische Nachteile. Aktuell: {0} Maximum: {1}</text>
+		</string>
+		<string>
+			<key>Message_OverCapacityLimit</key>
+			<text>Die Kapazität des Gegenstandes ist für den übergeordneten Gegenstand zu hoch: Maximale Kapazität {0}, {1} benötigt</text>
+		</string>
+		<string>
+			<key>Message_OverPositiveMetagenicQualities</key>
+			<text>Zu viele metagenetische Vorteile. Aktuell: {0} Maximum: {1}</text>
+		</string>
+		<string>
+			<key>Message_OverPrototypeLimit</key>
+			<text>Biowarelimit für Prototyp des Transhumanismus überschritten. Aktuell: {0} Maximum: {1}</text>
+		</string>
+		<string>
+			<key>Message_RestrictedGearUsed</key>
+			<text>Eingeschränkte Ausrüstung wurde verwendet:\n{0}</text>
+		</string>
+		<string>
+			<key>Message_SelectQuality_RequireESSGradeAbove</key>
+			<text>Mindestens {0} Essenz verbraucht von {1} Grad: Sie haben {2}</text>
+		</string>
+		<string>
+			<key>Message_SelectQuality_RequireESSGradeBelow</key>
+			<text>Weniger als {0} Essenz verbraucht von {1} Grad: Sie haben {2}</text>
+		</string>
+		<string>
+			<key>Message_SumtoTen</key>
+			<text>Deine Prioritätenauswahl muss gleich {0} sein. Aktuell ist es {1}.</text>
+		</string>
+		<string>
+			<key>Message_SumtoTenComplexFormLimit</key>
+			<text>Die Anzahl an Komplexen Formen darf die durch die ausgewählte Talentpriorität definierte Anzahl nicht überschreiten.</text>
+		</string>
+		<string>
+			<key>Message_SumtoTenSpellLimit</key>
+			<text>Die Anzahl Sprüche darf durch die ausgewählte Talentpriorität definierte Anzahl nicht überschreiten.</text>
+		</string>
+		<string>
+			<key>MessageTitle_BannedGrade</key>
+			<text>Verbotene Grade!</text>
+		</string>
+		<string>
+			<key>MessageTitle_KarmaValue</key>
+			<text>Charakter Karmawert</text>
+		</string>
+		<string>
+			<key>MessageTitle_Options_SettingsName</key>
+			<text>Chummer Einstellungen</text>
+		</string>
+		<string>
+			<key>MessageTitle_Options_ValidationResults</key>
+			<text>Validierungsergebnisse</text>
+		</string>
+		<string>
+			<key>MessageTitle_Updater_CleanReinstallPrompt</key>
+			<text>Saubere Neuinstallation?</text>
+		</string>
+		<string>
+			<key>Skill_NativeLanguageShort</key>
+			<text>M</text>
+		</string>
+		<string>
+			<key>String_CharacterRoster</key>
+			<text>Charakterverzeichnis</text>
+		</string>
+		<string>
+			<key>String_Checking_For_Update</key>
+			<text>Suche nach Updates ...</text>
+		</string>
+		<string>
+			<key>String_Currently_Installed_Version</key>
+			<text>Aktuell installierte Version ist {0}.</text>
+		</string>
+		<string>
+			<key>String_D6</key>
+			<text>W6</text>
+		</string>
+		<string>
+			<key>String_DealerConnection_Drones</key>
+			<text>Drohnen</text>
+		</string>
+		<string>
+			<key>String_DealerConnection_Groundcraft</key>
+			<text>Bodenfahrzeuge</text>
+		</string>
+		<string>
+			<key>String_DealerConnection_Aircraft</key>
+			<text>Flugzeuge</text>
+		</string>
+		<string>
+			<key>String_DealerConnection_Watercraft</key>
+			<text>Wasserfahrzeuge</text>
+		</string>
+		<string>
+			<key>String_ExpenseFetteredSpirit</key>
+			<text>Einen Geist gefesselt</text>
+		</string>
+		<string>
+			<key>String_ExpensePurchaseCritterPower</key>
+			<text>Gekaufte Critter-Kraft</text>
+		</string>
+		<string>
+			<key>String_Generating_Sheet</key>
+			<text>Erzeuge Blätter ...</text>
+		</string>
+		<string>
+			<key>String_Improvement_SelectOptionalPower</key>
+			<text>Zu bekommende Kraft auswählen.</text>
+		</string>
+		<string>
+			<key>String_Latest_Version</key>
+			<text>Letzte {0} Version von Chummer5 ist {1}.</text>
+		</string>
+		<string>
+			<key>String_LifeModules</key>
+			<text>Lebensmodule</text>
+		</string>
+		<string>
+			<key>String_MetamagicSkillType_grouped</key>
+			<text>Fertigkeitsgruppe(n)</text>
+		</string>
+		<string>
+			<key>String_MetamagicSkillType_active</key>
+			<text>Aktionsfertigkei(en)</text>
+		</string>
+		<string>
+			<key>String_MetamagicSkillType_magic</key>
+			<text>Magische Fertigkeit(en)</text>
+		</string>
+		<string>
+			<key>String_MetamagicSkillType_matrix</key>
+			<text>Matrixfertigkeit(en)</text>
+		</string>
+		<string>
+			<key>String_MetamagicSkillType_resonance</key>
+			<text>Resonanzfertigkeit(en)</text>
+		</string>
+		<string>
+			<key>String_MetamagicSkillType_specific</key>
+			<text>Spezifische Fertigkeit(en)</text>
+		</string>
+		<string>
+			<key>String_MutantCritter</key>
+			<text>Mundaner Critter</text>
+		</string>
+		<string>
+			<key>String_ReduceGear</key>
+			<text>Gebe die Anzahl zu entfernender Gegenstände an.</text>
+		</string>
+		<string>
+			<key>String_SelectBP_LifeModuleSummary</key>
+			<text>Geben Sie die maximale Verfügbarkeit und das Karma ein, mit der Ihr Charakter erschaffen werden soll (Standard {0})</text>
+		</string>
+		<string>
+			<key>String_SpiritFettering</key>
+			<text>Geist fesseln</text>
+		</string>
+		<string>
+			<key>String_Total</key>
+			<text>Gesamt</text>
+		</string>
+		<string>
+			<key>String_Unknown</key>
+			<text>Unbekannt</text>
+		</string>
+		<string>
+			<key>String_Up_To_Date</key>
+			<text>Chummer5 ist aktuell.</text>
+		</string>
+		<string>
+			<key>String_Update_Available</key>
+			<text>Update auf Version {0} verfügbar!</text>
+		</string>
+		<string>
+			<key>Tip_CalculatedMovement</key>
+			<text>Gehen: GES × 2 ({0} m/KR) / ({1} km/h)\nLaufen: GES × 4 ({2} m/KR) / ({3} km/h)</text>
+		</string>
+		<string>
+			<key>Tip_CombineItems</key>
+			<text>Sie haben mehrere Fertigkeiten mit dem gleichen Namen. Sie können diese zu einer kombinieren</text>
+		</string>
+		<string>
+			<key>Tip_OptionsDontDoubleQualityPurchases</key>
+			<text>Ermöglicht es Charakteren im Karrieremodus, Vorteile zum normalen Preis zu erwerben, anstatt sie zu verdoppeln.</text>
+		</string>
+		<string>
+			<key>Tip_OptionsDontDoubleQualityRefunds</key>
+			<text>Ermöglicht es Charakteren im Karrieremodus, Nachteile zum normalen Preis zu entfernen, anstatt sie zu verdoppeln.</text>
+		</string>
+		<string>
+			<key>Tip_OptionStrictSkillGroups</key>
+			<text>Brechen von Fertigkeitsgruppen im Erschaffungsmodus nicht erlauben</text>
+		</string>
+		<string>
+			<key>Tip_RecoilAccessories</key>
+			<text>{0} ({1} (bereitstellbar))</text>
+		</string>
+		<string>
+			<key>Tip_SelectKarma_IgnoreRules</key>
+			<text>Wenn diese Option aktiviert ist, werden alle Karma- und Attribute/Fertigkeits-Maximalregeln ignoriert. Nur für Spielleiter / NSC geeignet.</text>
+		</string>
+		<string>
+			<key>Title_SelectSkillSpecialization</key>
+			<text>Fertigkeitsspezialisierung auswählen</text>
+		</string>
+		<string>
+			<key>Treenode_Roster_WatchFolder</key>
+			<text>Überwachter Ordner</text>
+		</string>
+		<string>
+			<key>Button_RemoveEcho</key>
+			<text>Echo entfernen</text>
+		</string>
+		<string>
+			<key>Button_RemoveInitiateGrade</key>
+			<text>Initiatengrad entfernen</text>
+		</string>
+		<string>
+			<key>Button_RemoveMetamagic</key>
+			<text>Metamagie entfernen</text>
+		</string>
+		<string>
+			<key>Button_RemoveSubmersionGrade</key>
+			<text>Wandlungsgrad entfernen</text>
+		</string>
+		<string>
+			<key>Label_OtherCoreCM</key>
+			<text>Kern Zustandsmonitor:</text>
+		</string>
+		<string>
+			<key>Label_OtherMatrixCM</key>
+			<text>Matrix Zustandsmonitor:</text>
+		</string>
+		<string>
+			<key>Message_SelectGeneric_CareerOnlyRestriction</key>
+			<text>Sie können diese {0} nicht auswählen, weil der Charakter noch nicht erstellt wurde.</text>
+		</string>
+		<string>
+			<key>Message_SelectGeneric_ChargenRestriction</key>
+			<text>Sie können diese {0} nicht auswählen, weil der Charakter bereits erstellt wurde.</text>
+		</string>
+		<string>
+			<key>String_CannotFindLifestyle</key>
+			<text>Der Basislebensstilname für Lebensstil {0} wurde nicht gefunden. Bitte wählen Sie den entsprechenden Namen aus der folgenden Liste.</text>
+		</string>
+		<string>
+			<key>String_CannotFindLifestyleQuality</key>
+			<text>Die Qualität {0} konnte nicht gefunden werden. Bitte wählen Sie die entsprechende Qualität aus der folgenden Liste.</text>
+		</string>
+		<string>
+			<key>String_ComplexFormLevel</key>
+			<text>S</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetDevice</key>
+			<text>Gerät</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetFile</key>
+			<text>Datei</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetPersona</key>
+			<text>Persona</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetIC</key>
+			<text>IC</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetHost</key>
+			<text>Host</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetSprite</key>
+			<text>Sprite</text>
+		</string>
+		<string>
+			<key>String_DeviceRating</key>
+			<text>Gerätestufe</text>
+		</string>
+		<string>
+			<key>String_Level</key>
+			<text>Stufe</text>
+		</string>
+		<string>
+			<key>String_TotalComparisonWithPointBuy</key>
+			<text>Gesamt (Für Vergleich mit Punktekauf)</text>
+		</string>
+		<string>
+			<key>Tip_ComplexFormFadingBase</key>
+			<text>Basis Schwund für</text>
+		</string>
+		<string>
+			<key>Tip_ComplexFormFadingSeeDescription</key>
+			<text>Siehe Beschreibung der Komplexem Form</text>
+		</string>
+		<string>
+			<key>Label_Options_KarmaMysticAdeptPowerPoint</key>
+			<text>Magieradept Kraftpunkt</text>
+		</string>
+		<string>
+			<key>String_VehicleBody</key>
+			<text>Rumpf</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_HideCharacterRoster</key>
+			<text>Charakterverzeichnis verbergen</text>
+		</string>
+		<string>
+			<key>Button_CreateCustomDrug</key>
+			<text>Maßgeschneiderte Droge erstellen</text>
+		</string>
+		<string>
+			<key>Label_AddictionThreshold</key>
+			<text>Schwellwert</text>
+		</string>
+		<string>
+			<key>Label_DrugEffects</key>
+			<text>Effekte:</text>
+		</string>
+		<string>
+			<key>Label_DrugComponents</key>
+			<text>Bausteine:</text>
+		</string>
+		<string>
+			<key>Message_DeleteWeaponMount</key>
+			<text>Möchsten Sie diese Waffenhalterung wirklich löschen?</text>
+		</string>
+		<string>
+			<key>Message_DuplicateDrugComponentWarning</key>
+			<text>Sie können denselben Baustein nicht zweimal hinzufügen.</text>
+		</string>
+		<string>
+			<key>Message_DuplicateDrugFoundationWarning</key>
+			<text>Sie können nicht mehr als eine Basis zu einer Droge hinzufügen.</text>
+		</string>
+		<string>
+			<key>MessageTitle_NoValidWeaponMount</key>
+			<text>Keine gültige Waffenhalterung gefunden</text>
+		</string>
+		<string>
+			<key>Node_SelectedDrugs</key>
+			<text>Drogen</text>
+		</string>
+		<string>
+			<key>String_ExpensePurchaseDrug</key>
+			<text>Gekaufte Droge</text>
+		</string>
+		<string>
+			<key>Tab_Drugs</key>
+			<text>Drogen</text>
 		</string>
 	</strings>
 </chummer>

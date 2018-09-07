@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmReload
     {
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.lblAmmoLabel = new System.Windows.Forms.Label();
-            this.cboAmmo = new System.Windows.Forms.ComboBox();
+            this.cboAmmo = new ElasticComboBox();
             this.lblTypeLabel = new System.Windows.Forms.Label();
             this.cboType = new System.Windows.Forms.ComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -55,7 +55,6 @@
             this.cboAmmo.Name = "cboAmmo";
             this.cboAmmo.Size = new System.Drawing.Size(252, 21);
             this.cboAmmo.TabIndex = 1;
-            this.cboAmmo.DropDown += new System.EventHandler(this.cboAmmo_DropDown);
             // 
             // lblTypeLabel
             // 
@@ -129,7 +128,7 @@
         #endregion
 
         private System.Windows.Forms.Label lblAmmoLabel;
-        private System.Windows.Forms.ComboBox cboAmmo;
+        private ElasticComboBox cboAmmo;
         private System.Windows.Forms.Label lblTypeLabel;
         private System.Windows.Forms.ComboBox cboType;
         private System.Windows.Forms.Button cmdCancel;

@@ -50,6 +50,7 @@
                 <xs:complexType>
                   <xs:simpleContent msdata:ColumnName="category_Text" msdata:Ordinal="0">
                     <xs:extension base="xs:string">
+                      <xs:attribute name="blackmarket" type="xs:string" use="optional" />
                     </xs:extension>
                   </xs:simpleContent>
                 </xs:complexType>
@@ -64,6 +65,7 @@
                 <xs:complexType>
                   <xs:simpleContent msdata:ColumnName="category_Text" msdata:Ordinal="0">
                     <xs:extension base="xs:string">
+                      <xs:attribute name="blackmarket" type="xs:string" use="optional" />
                     </xs:extension>
                   </xs:simpleContent>
                 </xs:complexType>
@@ -158,6 +160,14 @@
                                 <xs:element name="flexibility" minOccurs="1" maxOccurs="1"/>
                                 <xs:element name="size" minOccurs="1" maxOccurs="1"/>
                                 <xs:element name="visibility" minOccurs="1" maxOccurs="1"/>
+	                              <xs:element name="allowedweapons" type="xs:string" minOccurs="0" maxOccurs="1" />
+	                              <xs:element name="mods" minOccurs="0" maxOccurs="unbounded">
+		                              <xs:complexType>
+			                              <xs:sequence>
+				                              <xs:element name="mod" minOccurs="1" maxOccurs="unbounded"/>
+			                              </xs:sequence>
+		                              </xs:complexType>
+	                              </xs:element>
                               </xs:sequence>
                             </xs:complexType>
                           </xs:element>
@@ -254,9 +264,6 @@
         <xs:element name="optionaldrone" minOccurs="0" maxOccurs="1" />
         <xs:element name="pilot" type="xs:integer" minOccurs="0" maxOccurs="1" />
         <xs:element ref="required" minOccurs="0" maxOccurs="1" />
-        <xs:element name="response" type="xs:integer" minOccurs="0" maxOccurs="1" />
-        <xs:element name="signal" type="xs:integer" minOccurs="0" maxOccurs="1" />
-        <xs:element name="system" type="xs:integer" minOccurs="0" maxOccurs="1" />
         <xs:element name="subsystems" minOccurs="0" maxOccurs="unbounded">
           <xs:complexType>
             <xs:sequence>

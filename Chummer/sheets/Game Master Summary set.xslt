@@ -378,7 +378,7 @@
                                 <xsl:value-of select="name" />
                                 <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
                                 <xsl:if test="rating != 0"> <xsl:value-of select="$lang.Rating"/> <xsl:value-of select="rating" /></xsl:if>
-                                <xsl:if test="qty &gt; 1"> x<xsl:value-of select="qty" /></xsl:if>
+                                <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
                                 <xsl:if test="children/gear">
                                   (<xsl:for-each select="children/gear">
                                     <xsl:value-of select="name" />
@@ -410,9 +410,9 @@
                 <xsl:for-each select="martialarts/martialart">
                   <xsl:sort select="name" />
                   <xsl:value-of select="name" />
-                  <xsl:if test="martialartadvantages/martialartadvantage">
+                  <xsl:if test="martialarttechniques/martialarttechnique">
                   (
-                  <xsl:for-each select="martialartadvantages/martialartadvantage">
+                  <xsl:for-each select="martialarttechniques/martialarttechnique">
                     <xsl:value-of select="." /><xsl:if test="position() != last()">, </xsl:if>
                   </xsl:for-each>
                   )
@@ -510,6 +510,7 @@
                   <xsl:sort select="name" />
                   <xsl:value-of select="name" />
                   <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="$lang.Rating"/><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
+                  <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
                   <xsl:if test="children/cyberware">
                     (<xsl:for-each select="children/cyberware">
                       <xsl:value-of select="name" />
@@ -526,7 +527,7 @@
                 <xsl:for-each select="gears/gear">
                   <xsl:sort select="name" />
                   <xsl:value-of select="name" />
-                  <xsl:if test="qty &gt; 1"> x<xsl:value-of select="qty" /></xsl:if>
+                  <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
                   <xsl:if test="children/gear">
                     [<xsl:call-template name="gearplugin">
                     <xsl:with-param name="gear" select="." />

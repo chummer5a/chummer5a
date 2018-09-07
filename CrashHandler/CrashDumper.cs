@@ -1,5 +1,4 @@
 using System;
-using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
@@ -18,13 +16,12 @@ using System.Web.Script.Serialization;
 
 namespace CrashHandler
 {
-	public class CrashDumper : IDisposable
+	public sealed class CrashDumper : IDisposable
 	{
-		public List<string> FilesList => _filesList;
 		public Dictionary<string, string> PretendFiles => _pretendFiles;
 		public Dictionary<string, string> Attributes => _attributes;
 		public CrashDumperProgress Progress => _progress;
-		public Action<object, CrashDumperProgressChangedEventArgs> CrashDumperProgressChanged { get; set; }
+	    public event Action<object, CrashDumperProgressChangedEventArgs> CrashDumperProgressChanged;
 		public string WorkingDirectory { get; }
 		public Process Process { get; private set; }
 		public bool DoCleanUp { get; set; } = true;
@@ -39,8 +36,8 @@ namespace CrashHandler
 		private readonly BackgroundWorker _worker = new BackgroundWorker();
 		private readonly ManualResetEvent _startSendEvent = new ManualResetEvent(false);
         private string _strLatestDumpName = string.Empty;
-	    
-	    private TextWriter CrashLogWriter;
+
+	    private readonly TextWriter CrashLogWriter;
 
         /// <summary>
         /// 
@@ -59,7 +56,7 @@ namespace CrashHandler
             CrashLogWriter.WriteLine("This file contains information on a crash report for Chummer5A.\n" +
                                      "You can safely delete this file, but a developer might want to look at it");
             CrashLogWriter.Flush();
-		    
+
 
 			if (!Deserialize(b64Json, out _procId, out _filesList, out _pretendFiles, out _attributes, out _threadId, out _exceptionPrt))
 			{
@@ -214,7 +211,7 @@ namespace CrashHandler
 		private bool CreateDump(Process process, IntPtr exceptionInfo, uint threadId, bool debugger)
 		{
 
-            bool ret = false;
+            bool ret;
             _strLatestDumpName = "crashdump-" + DateTime.Now.ToFileTimeUtc().ToString() + ".dmp";
             using (FileStream file = File.Create(Path.Combine(WorkingDirectory, _strLatestDumpName)))
 			{
@@ -233,20 +230,20 @@ namespace CrashHandler
 				                      MINIDUMP_TYPE.MiniDumpWithUnloadedModules;
 
 				bool extraInfo = !(exceptionInfo == IntPtr.Zero || threadId == 0 || !debugger);
-				
+
 				if (extraInfo)
 				{
 					dtype |= 0;
-					ret = !(NativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle.DangerousGetHandle(),
+					ret = !(NativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle?.DangerousGetHandle() ?? IntPtr.Zero,
 						dtype, ref info, IntPtr.Zero, IntPtr.Zero));
-					
+
 				}
-				else if (NativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle.DangerousGetHandle(),
+				else if (NativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle?.DangerousGetHandle() ?? IntPtr.Zero,
 					dtype, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero))
 				{
 					ret = false;
-					
-					//Might solve the problem if crashhandler stops working on remote (hah)					
+
+					//Might solve the problem if crashhandler stops working on remote (hah)
 					Attributes["debug-debug-exception-info"] = exceptionInfo.ToString();
 					Attributes["debug-debug-thread-id"] = threadId.ToString();
 				}
@@ -286,7 +283,7 @@ namespace CrashHandler
 			{
 				if(!File.Exists(file)) continue;
 
-				string name = Path.GetFileName(file);
+				string name = Path.GetFileName(file) ?? string.Empty;
 				string destination = Path.Combine(WorkingDirectory, name);
 				File.Copy(file, destination);
 			}
@@ -294,7 +291,7 @@ namespace CrashHandler
 
 		private byte[] GetZip()
 		{
-            byte[] objReturn = null;
+            byte[] objReturn;
             MemoryStream mem = new MemoryStream();
             // archive.Dispose() should call mem.Dispose()
             using (ZipArchive archive = new ZipArchive(mem, ZipArchiveMode.Create, false))
@@ -333,8 +330,7 @@ namespace CrashHandler
 			}
             finally
             {
-                if (managed != null)
-                    managed.Dispose();
+                managed?.Dispose();
             }
 
 			return encrypted;
@@ -386,11 +382,10 @@ namespace CrashHandler
 			string payload = new JavaScriptSerializer().Serialize(upload);
 
 			HttpClient client = new HttpClient();
-			HttpResponseMessage msg = client.PostAsync("https://ccbysveroa.execute-api.eu-central-1.amazonaws.com/prod/ChummerCrashService",
-				new StringContent(payload)).Result;
+		    client.PostAsync("https://ccbysveroa.execute-api.eu-central-1.amazonaws.com/prod/ChummerCrashService", new StringContent(payload));
+		    //HttpResponseMessage msg = client.PostAsync("https://ccbysveroa.execute-api.eu-central-1.amazonaws.com/prod/ChummerCrashService", new StringContent(payload)).Result;
 
-			string result = msg.Content.ReadAsStringAsync().Result;
-
+		    //string result = msg.Content.ReadAsStringAsync().Result;
 		}
 
 		private void Clean()
@@ -431,7 +426,7 @@ namespace CrashHandler
 		//	}
 		//}
 
-		static bool Deserialize(string base64json, 
+		static bool Deserialize(string base64json,
 			out short processId, 
 			out List<string> filesList,
 			out Dictionary<string, string> pretendFiles, 
@@ -445,13 +440,11 @@ namespace CrashHandler
             object obj = new JavaScriptSerializer().DeserializeObject(Encoding.UTF8.GetString(tempBytes));
 
 			Dictionary<string, object> parts = obj as Dictionary<string, object>;
-			if (parts?["processid"] is int)
+			if (parts?["_intProcessId"] is int pid)
 			{
-				int pid = (int) parts["processid"];
-
-				filesList = ((object[])parts["capturefiles"]).Select(x => x.ToString()).ToList();
-				attributes = ((Dictionary<string, object>) parts["attributes"]).ToDictionary(x => x.Key, y => y.Value.ToString());
-				pretendFiles = ((Dictionary<string, object>)parts["pretendfiles"]).ToDictionary(x => x.Key, y => y.Value.ToString());
+			    filesList = parts["_dicCapturedFiles"] as List<string>;
+				attributes = ((Dictionary<string, object>) parts["_dicAttributes"]).ToDictionary(x => x.Key, y => y.Value.ToString());
+				pretendFiles = ((Dictionary<string, object>)parts["_dicPretendFiles"]).ToDictionary(x => x.Key, y => y.Value.ToString());
 
 				processId = (short) pid;
 			    string s = "0";
@@ -462,7 +455,7 @@ namespace CrashHandler
 
 				exceptionPrt = new IntPtr(int.Parse(s));
 
-				threadId = uint.Parse(parts["threadId"]?.ToString() ?? "0");
+				threadId = uint.Parse(parts["_uintThreadId"]?.ToString() ?? "0");
 
 				return true;
 			}
@@ -483,17 +476,16 @@ namespace CrashHandler
 		}
 
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private bool disposedValue; // To detect redundant calls
 
-        protected virtual void Dispose(bool disposing)
+	    private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
                 if (disposing)
                 {
                     _startSendEvent.Dispose();
-                    if (CrashLogWriter != null)
-                        CrashLogWriter.Dispose();
+                    CrashLogWriter?.Dispose();
                 }
 
                 disposedValue = true;

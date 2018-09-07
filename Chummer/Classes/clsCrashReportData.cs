@@ -31,6 +31,8 @@ namespace Chummer
 {
     public sealed class CrashReportData
     {
+        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedParameter.Local
         private static void BuildFromException(object sender, UnhandledExceptionEventArgs e)
         {
             if (Debugger.IsAttached)
@@ -38,19 +40,19 @@ namespace Chummer
 
             CrashReportData report = new CrashReportData(Guid.NewGuid()).AddDefaultData().AddData("exception.txt", e.ExceptionObject.ToString());
 
-            Log.Kill(); //Make sure log object is not used
+            Log.IsLoggerEnabled = false; //Make sure log object is not used
 
             try
             {
                 string strFile = Path.Combine(Application.StartupPath, "chummerlog.txt");
-                report.AddData("chummerlog.txt", new StreamReader(strFile).BaseStream);
+                report.AddData("chummerlog.txt", new StreamReader(strFile, Encoding.UTF8, true).BaseStream);
             }
             catch(Exception ex)
             {
                 report.AddData("chummerlog.txt", ex.ToString());
             }
 
-            //Considering doing some magic with 
+            //Considering doing some magic with
             //Application.OpenForms
             //And reflection to all savefiles
             //here
@@ -59,7 +61,7 @@ namespace Chummer
             try
             {
                 string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
-                report.AddData("default.xml", new StreamReader(strFilePath).BaseStream);
+                report.AddData("default.xml", new StreamReader(strFilePath, Encoding.UTF8, true).BaseStream);
             }
             catch (Exception ex)
             {
@@ -68,15 +70,15 @@ namespace Chummer
 
 
             report.Send();
-            MessageBox.Show("Crash report sent.\nPlease refer to the crash id " + report.Id);
+            MessageBox.Show("Crash report sent." + Environment.NewLine + "Please refer to the crash id " + report.Id);
         }
 
-        private readonly List<KeyValuePair<string, Stream>> values; 
+        private readonly List<KeyValuePair<string, Stream>> values;
 
         /// <summary>
         /// Unique ID for the crash report, makes a user able to refer to a specific report
         /// </summary>
-        public Guid Id { get; private set; }
+        public Guid Id { get; }
 
         private string _subject;
         public string Subject
@@ -88,10 +90,7 @@ namespace Chummer
 
                 return _subject;
             }
-            set
-            {
-                _subject = value;
-            }
+            set => _subject = value;
         }
 
         public CrashReportData(Guid repordGuid)
@@ -134,13 +133,16 @@ namespace Chummer
                         {
                             //on 32 bit builds?
                             //cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion");
-
+                            cv.Close();
                             cv = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
                         }
 
-                        String[] keys = cv.GetValueNames();
-                        report.AppendFormat("Machine ID Primary= {0}", cv.GetValue("ProductId"));
-                        report.AppendLine();
+                        if (cv != null)
+                        {
+                            report.AppendFormat("Machine ID Primary= {0}", cv.GetValue("ProductId"));
+                            report.AppendLine();
+                            cv.Close();
+                        }
                     }
                 }
 
@@ -149,13 +151,15 @@ namespace Chummer
 
                 report.AppendFormat("Version={0}", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
             }
-            finally
+            catch (Exception ex)
             {
+                report.AppendLine();
+                report.AppendFormat("CrashHandlerException={0}", ex);
             }
             return report.ToString();
         }
 
-        public CrashReportData AddData(String title, String contents)
+        public CrashReportData AddData(string title, string contents)
         {
             //Convert string to stream
             MemoryStream stream = new MemoryStream();
@@ -167,7 +171,7 @@ namespace Chummer
             return AddData(title, stream);
         }
 
-        public CrashReportData AddData(String title, Stream contents)
+        public CrashReportData AddData(string title, Stream contents)
         {
             values.Add(new KeyValuePair<string, Stream>(title, contents));
             return this;
@@ -179,7 +183,7 @@ namespace Chummer
             {
                 //Not worried about password, but don't want to place it in clear. Not that this is going to stop anybody
                 //But hopefully this barrier keeps it above the lowest hanging fruits
-                String password = Encoding.ASCII.GetString(Convert.FromBase64String("Y3Jhc2hkdW1wd29yZHBhc3M="));
+                string password = Encoding.ASCII.GetString(Convert.FromBase64String("Y3Jhc2hkdW1wd29yZHBhc3M="));
 
                 MailAddress address = new MailAddress("chummercrashdumps@gmail.com");
                 SmtpClient client = new SmtpClient
@@ -193,7 +197,7 @@ namespace Chummer
                 };
 
                 MailMessage message = new MailMessage(address, address);
-                
+
                 //Forwarding rule used instead?
                 message.CC.Add("chummer5isalive+chummerdump@gmail.com");
 

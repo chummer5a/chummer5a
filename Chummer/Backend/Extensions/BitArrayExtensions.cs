@@ -18,9 +18,9 @@
  */
 using System.Collections;
 
-namespace Chummer.Backend
+namespace Chummer
 {
-    static class BitArrayExtensions
+    public static class BitArrayExtensions
     {
         public static int FirstMatching(this BitArray array, bool value, int skip = 0, int max = int.MaxValue)
         {

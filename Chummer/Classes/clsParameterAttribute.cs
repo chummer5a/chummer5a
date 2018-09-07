@@ -16,13 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Text.RegularExpressions;
+ using System.Text.RegularExpressions;
  using Chummer.Backend.Equipment;
 
 namespace Chummer
@@ -42,17 +38,17 @@ namespace Chummer
          //Keep a single regex to not create one for each class.
         //This might not be thread save if winforms ever gets multithreaded
         private static readonly Regex FixedExtract = new Regex(@"FixedValues\(([^)]*)\)");
-        private Gear _gear;
-        private String _attribute;
-        private double[] fixedDoubles;
+        private readonly Gear _gear;
+        private readonly string _attribute;
+        private readonly double[] fixedDoubles;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="gear"></param>
         /// <param name="attribute"></param>
-        public ParameterAttribute(Gear gear, String attribute)
+        public ParameterAttribute(Gear gear, string attribute)
         {
-            
+
             _gear = gear;
             _attribute = attribute;
 
@@ -63,10 +59,10 @@ namespace Chummer
             {
                 //Regex to extracxt anything between ( ) in Param
                 Match m = FixedExtract.Match(_attribute);
-                String vals = m.Groups[1].Value;
+                string vals = m.Groups[1].Value;
 
                 //Regex to extract anything inbetween [ ]
-                //Not sure why i don't just split by , and remove it durring 
+                //Not sure why i don't just split by , and remove it durring
                 //next phase
                 MatchCollection m2 = Regex.Matches(vals, @"\[([^\]]*)\]");
 
@@ -83,21 +79,15 @@ namespace Chummer
             }
             else
             {
-                
+
             }
 
             
         }
 
-        public Gear Gear
-        {
-            get { return _gear; }
-        }
+        public Gear Gear => _gear;
 
-        public String AttributeString
-        {
-            get { return _attribute; }
-        }
+        public string AttributeString => _attribute;
 
         public double AttributeDouble
         {
@@ -130,11 +120,6 @@ namespace Chummer
             }
         }
 
-        public int AttributeInt
-        {
-            get { return (int) AttributeDouble; }
-        }
-
-
+        public int AttributeInt => (int) AttributeDouble;
     }
 }

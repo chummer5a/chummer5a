@@ -16,20 +16,18 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+ using System.Diagnostics;
+ using System.Text;
 
 namespace Chummer
 {
     static class Timekeeper
     {
         private static readonly Stopwatch s_Time = new Stopwatch();
-        private static readonly ConcurrentDictionary<String, TimeSpan> s_DictionaryStarts = new ConcurrentDictionary<string, TimeSpan>(); 
+        private static readonly ConcurrentDictionary<string, TimeSpan> s_DictionaryStarts = new ConcurrentDictionary<string, TimeSpan>();
         private static readonly ConcurrentDictionary<string, Tuple<TimeSpan, int>> s_DictionaryStatistics = new ConcurrentDictionary<string, Tuple<TimeSpan, int>>();
 
         static Timekeeper ()
@@ -85,7 +83,7 @@ namespace Chummer
 
         public static void Log()
         {
-            StringBuilder sb = new StringBuilder("Time statistics\n");
+            StringBuilder sb = new StringBuilder("Time statistics" + Environment.NewLine);
 
             foreach (KeyValuePair<string, Tuple<TimeSpan, int>> keyValuePair in s_DictionaryStatistics)
             {

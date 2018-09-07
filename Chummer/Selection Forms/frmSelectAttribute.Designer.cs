@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmSelectAttribute
     {
@@ -109,7 +109,6 @@
             this.Tag = "Title_SelectAttribute";
             this.Text = "Choose an Attribute";
             this.Load += new System.EventHandler(this.frmSelectAttribute_Load);
-            this.Shown += new System.EventHandler(this.frmSelectAttribute_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -16,20 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+ using System;
+ using System.Windows.Forms;
 
 namespace Chummer
 {
     public partial class frmInitRoller : Form
     {
-        private int dice = 0;
+        private int dice;
 
         #region Control Events
         public frmInitRoller()
@@ -41,7 +35,7 @@ namespace Chummer
 
         private void frmInitRoller_Load(object sender, EventArgs e)
         {
-            lblDice.Text += ' ' + dice.ToString() + "D6: ";
+            lblDice.Text += ' ' + dice.ToString() + LanguageManager.GetString("String_D6", GlobalOptions.Language) + ": ";
             nudDiceResult.Maximum = dice * 6;
             nudDiceResult.Minimum = dice;
             MoveControls();
@@ -60,14 +54,8 @@ namespace Chummer
         /// </summary>
         public int Dice
         {
-            get
-            {
-                return dice;
-            }
-            set
-            {
-                dice = value;
-            }
+            get => dice;
+            set => dice = value;
         }
 
         /// <summary>
@@ -75,10 +63,7 @@ namespace Chummer
         /// </summary>
         public string Title
         {
-            set
-            {
-                Text = value;
-            }
+            set => Text = value;
         }
 
         /// <summary>
@@ -86,22 +71,14 @@ namespace Chummer
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
 
         /// <summary>
         /// Dice roll result.
         /// </summary>
-        public int Result
-        {
-            get
-            {
-                return decimal.ToInt32(nudDiceResult.Value);
-            }
-        }
+        public int Result => decimal.ToInt32(nudDiceResult.Value);
+
         #endregion
 
         #region Methods

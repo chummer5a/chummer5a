@@ -16,48 +16,43 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.ComponentModel;
-using System.Diagnostics;
- using System.Globalization;
  using System.IO;
  using System.IO.Compression;
  using System.Net;
 using System.Text;
 using System.Windows.Forms;
 using System.Reflection;
-﻿using System.Windows;
-﻿using Application = System.Windows.Forms.Application;
-﻿using MessageBox = System.Windows.Forms.MessageBox;
+ using Application = System.Windows.Forms.Application;
+ using MessageBox = System.Windows.Forms.MessageBox;
 using System.Collections.Generic;
 
 namespace Chummer
 {
     public partial class frmUpdate : Form
     {
-
         private bool _blnSilentMode;
-        private bool _blnSilentCheck;
         private string _strDownloadFile = string.Empty;
         private string _strLatestVersion = string.Empty;
-        private string _strCurrentVersion = string.Empty;
-        private Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+        private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private string _strTempPath = string.Empty;
-        private string _strTempUpdatePath = string.Empty;
+        private readonly string _strTempUpdatePath;
         private readonly string _strAppPath = Application.StartupPath;
-        private bool _blnPreferNightly = false;
+        private readonly bool _blnPreferNightly;
         private bool _blnIsConnected = true;
         private readonly bool _blnChangelogDownloaded = false;
         private readonly BackgroundWorker _workerConnectionLoader = new BackgroundWorker();
         private readonly WebClient _clientDownloader = new WebClient();
         private readonly WebClient _clientChangelogDownloader = new WebClient();
+        private string _strExceptionString;
 
         public frmUpdate()
         {
             Log.Info("frmUpdate");
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            _strCurrentVersion = $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
+            CurrentVersion = $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
             _blnPreferNightly = GlobalOptions.PreferNightlyBuilds;
             _strTempUpdatePath = Path.Combine(Path.GetTempPath(), "changelog.txt");
 
@@ -90,7 +85,7 @@ namespace Chummer
             if (blnHasDuplicate)
             {
                 Log.Info("More than one instance, exiting");
-                if (!_blnSilentMode && !_blnSilentCheck)
+                if (!SilentMode)
                     MessageBox.Show(LanguageManager.GetString("Message_Update_MultipleInstances", GlobalOptions.Language), LanguageManager.GetString("Title_Update", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 Log.Info("frmUpdate_Load");
                 Close();
@@ -102,7 +97,7 @@ namespace Chummer
             Log.Exit("frmUpdate_Load");
         }
 
-        private bool _blnIsClosing = false;
+        private bool _blnIsClosing;
         private void frmUpdate_FormClosing(object sender, FormClosingEventArgs e)
         {
             _blnIsClosing = true;
@@ -121,7 +116,7 @@ namespace Chummer
             }
             if (!_clientDownloader.IsBusy)
                 cmdUpdate.Enabled = true;
-            if (_blnSilentMode)
+            if (SilentMode)
             {
                 cmdDownload_Click(sender, e);
             }
@@ -133,6 +128,7 @@ namespace Chummer
                                                     .Replace("&", "&amp;")
                                                     .Replace("<", "&lt;")
                                                     .Replace(">", "&gt;")
+                                                    .Replace(Environment.NewLine, "<br />")
                                                     .Replace("\n", "<br />") + "</font>";
             }
             DoVersionTextUpdate();
@@ -143,142 +139,152 @@ namespace Chummer
             if (_clientChangelogDownloader.IsBusy)
                 return;
             bool blnChummerVersionGotten = true;
+            string strError = LanguageManager.GetString("String_Error", GlobalOptions.Language).Trim();
+            _strExceptionString = string.Empty;
+            LatestVersion = strError;
+            string strUpdateLocation = _blnPreferNightly
+                ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
+                : "https://api.github.com/repos/chummer5a/chummer5a/releases/latest";
+
+            HttpWebRequest request = null;
+            try
             {
-                LatestVersion = LanguageManager.GetString("String_No_Update_Found", GlobalOptions.Language);
-                string strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases/latest";
-                if (_blnPreferNightly)
-                {
-                    strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases";
-                }
-                HttpWebRequest request = null;
+                WebRequest objTemp = WebRequest.Create(strUpdateLocation);
+                request = objTemp as HttpWebRequest;
+            }
+            catch (System.Security.SecurityException)
+            {
+                blnChummerVersionGotten = false;
+            }
+            if (request == null)
+                blnChummerVersionGotten = false;
+            if (blnChummerVersionGotten)
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
+                request.Accept = "application/json";
+                request.Timeout = 5000;
+
+                // Get the response.
+                HttpWebResponse response = null;
                 try
                 {
-                    WebRequest objTemp = WebRequest.Create(strUpdateLocation);
-                    request = objTemp as HttpWebRequest;
+                    response = request.GetResponse() as HttpWebResponse;
                 }
-                catch (System.Security.SecurityException)
+                catch (WebException ex)
                 {
                     blnChummerVersionGotten = false;
+                    string strException = ex.ToString();
+                    int intNewLineLocation = strException.IndexOf(Environment.NewLine, StringComparison.Ordinal);
+                    if (intNewLineLocation == -1)
+                        intNewLineLocation = strException.IndexOf('\n');
+                    if (intNewLineLocation != -1)
+                        strException = strException.Substring(0, intNewLineLocation);
+                    _strExceptionString = strException;
                 }
-                if (request == null)
+
+                if (_workerConnectionLoader.CancellationPending)
+                {
+                    e.Cancel = true;
+                    response?.Close();
+                    return;
+                }
+
+                // Get the stream containing content returned by the server.
+                Stream dataStream = response?.GetResponseStream();
+                if (dataStream == null)
                     blnChummerVersionGotten = false;
                 if (blnChummerVersionGotten)
                 {
-                    request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
-                    request.Accept = "application/json";
-                    request.Timeout = 5000;
-
-                    // Get the response.
-                    HttpWebResponse response = null;
-                    try
+                    if (_workerConnectionLoader.CancellationPending)
                     {
-                        response = request.GetResponse() as HttpWebResponse;
+                        e.Cancel = true;
+                        dataStream.Close();
+                        response.Close();
+                        return;
                     }
-                    catch (WebException)
-                    {
-                        blnChummerVersionGotten = false;
-                    }
+                    // Open the stream using a StreamReader for easy access.
+                    StreamReader reader = new StreamReader(dataStream, Encoding.UTF8, true);
+                    // Read the content.
 
                     if (_workerConnectionLoader.CancellationPending)
                     {
                         e.Cancel = true;
-                        response?.Close();
+                        reader.Close();
+                        response.Close();
                         return;
                     }
 
-                    // Get the stream containing content returned by the server.
-                    Stream dataStream = response?.GetResponseStream();
-                    if (dataStream == null)
-                        blnChummerVersionGotten = false;
-                    if (blnChummerVersionGotten)
+                    string responseFromServer = reader.ReadToEnd();
+
+                    if (_workerConnectionLoader.CancellationPending)
+                    {
+                        e.Cancel = true;
+                        reader.Close();
+                        response.Close();
+                        return;
+                    }
+
+                    string[] stringSeparators = { "," };
+
+                    if (_workerConnectionLoader.CancellationPending)
+                    {
+                        e.Cancel = true;
+                        reader.Close();
+                        response.Close();
+                        return;
+                    }
+
+                    string[] result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+                    bool blnFoundTag = false;
+                    bool blnFoundArchive = false;
+                    foreach (string line in result)
                     {
                         if (_workerConnectionLoader.CancellationPending)
                         {
                             e.Cancel = true;
-                            dataStream.Close();
-                            response.Close();
-                            return;
-                        }
-                        // Open the stream using a StreamReader for easy access.
-                        StreamReader reader = new StreamReader(dataStream);
-                        // Read the content.
-
-                        if (_workerConnectionLoader.CancellationPending)
-                        {
-                            e.Cancel = true;
                             reader.Close();
                             response.Close();
                             return;
                         }
-
-                        string responseFromServer = reader.ReadToEnd();
-
-                        if (_workerConnectionLoader.CancellationPending)
+                        if (!blnFoundTag && line.Contains("tag_name"))
                         {
-                            e.Cancel = true;
-                            reader.Close();
-                            response.Close();
-                            return;
+                            _strLatestVersion = line.Split(':')[1];
+                            LatestVersion = _strLatestVersion.Split('}')[0].FastEscape('\"').Trim();
+                            blnFoundTag = true;
+                            if (blnFoundArchive)
+                                break;
                         }
-
-                        string[] stringSeparators = new string[] { "," };
-
-                        if (_workerConnectionLoader.CancellationPending)
+                        if (!blnFoundArchive && line.Contains("browser_download_url"))
                         {
-                            e.Cancel = true;
-                            reader.Close();
-                            response.Close();
-                            return;
+                            _strDownloadFile = line.Split(':')[2];
+                            _strDownloadFile = _strDownloadFile.Substring(2);
+                            _strDownloadFile = _strDownloadFile.Split('}')[0].FastEscape('\"');
+                            _strDownloadFile = "https://" + _strDownloadFile;
+                            blnFoundArchive = true;
+                            if (blnFoundTag)
+                                break;
                         }
-
-                        string[] result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
-
-                        bool blnFoundTag = false;
-                        bool blnFoundArchive = false;
-                        foreach (string line in result)
-                        {
-                            if (_workerConnectionLoader.CancellationPending)
-                            {
-                                e.Cancel = true;
-                                reader.Close();
-                                response.Close();
-                                return;
-                            }
-                            if (!blnFoundTag && line.Contains("tag_name"))
-                            {
-                                _strLatestVersion = line.Split(':')[1];
-                                LatestVersion = _strLatestVersion.Split('}')[0].FastEscape('\"');
-                                blnFoundTag = true;
-                                if (blnFoundArchive)
-                                    break;
-                            }
-                            if (!blnFoundArchive && line.Contains("browser_download_url"))
-                            {
-                                _strDownloadFile = line.Split(':')[2];
-                                _strDownloadFile = _strDownloadFile.Substring(2);
-                                _strDownloadFile = _strDownloadFile.Split('}')[0].FastEscape('\"');
-                                _strDownloadFile = "https://" + _strDownloadFile;
-                                blnFoundArchive = true;
-                                if (blnFoundTag)
-                                    break;
-                            }
-                        }
-                        if (!blnFoundArchive || !blnFoundTag)
-                            blnChummerVersionGotten = false;
-                        // Cleanup the streams and the response.
-                        reader.Close();
                     }
-                    dataStream.Close();
-                    response.Close();
+                    if (!blnFoundArchive || !blnFoundTag)
+                        blnChummerVersionGotten = false;
+                    // Cleanup the streams and the response.
+                    reader.Close();
                 }
+                dataStream?.Close();
+                response?.Close();
             }
-            if (!blnChummerVersionGotten)
+            if (!blnChummerVersionGotten || LatestVersion == strError)
             {
-                MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect", GlobalOptions.Language), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    string.IsNullOrEmpty(_strExceptionString)
+                        ? LanguageManager.GetString("Warning_Update_CouldNotConnect", GlobalOptions.Language)
+                        : string.Format(LanguageManager.GetString("Warning_Update_CouldNotConnectException", GlobalOptions.Language), _strExceptionString), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _blnIsConnected = false;
                 e.Cancel = true;
             }
-            else if (LatestVersion != LanguageManager.GetString("String_No_Update_Found", GlobalOptions.Language))
+            else
             {
                 if (File.Exists(_strTempUpdatePath))
                 {
@@ -287,52 +293,49 @@ namespace Chummer
                     File.Move(_strTempUpdatePath, _strTempUpdatePath + ".old");
                 }
                 string strURL = "https://raw.githubusercontent.com/chummer5a/chummer5a/" + LatestVersion + "/Chummer/changelog.txt";
-                if (Uri.TryCreate(strURL, UriKind.Absolute, out Uri uriConnectionAddress))
+                try
                 {
-                    try
+                    Uri uriConnectionAddress = new Uri(strURL);
+                    if (File.Exists(_strTempUpdatePath + ".tmp"))
+                        File.Delete(_strTempUpdatePath + ".tmp");
+                    _clientChangelogDownloader.DownloadFileAsync(uriConnectionAddress, _strTempUpdatePath + ".tmp");
+                    while (_clientChangelogDownloader.IsBusy)
                     {
-                        if (File.Exists(_strTempUpdatePath + ".tmp"))
-                            File.Delete(_strTempUpdatePath + ".tmp");
-                        _clientChangelogDownloader.DownloadFileAsync(uriConnectionAddress, _strTempUpdatePath + ".tmp");
-                        while (_clientChangelogDownloader.IsBusy)
+                        if (_workerConnectionLoader.CancellationPending)
                         {
-                            if (_workerConnectionLoader.CancellationPending)
-                            {
-                                _clientChangelogDownloader.CancelAsync();
-                                e.Cancel = true;
-                                return;
-                            }
+                            _clientChangelogDownloader.CancelAsync();
+                            e.Cancel = true;
+                            return;
                         }
-                        File.Move(_strTempUpdatePath + ".tmp", _strTempUpdatePath);
                     }
-                    catch (WebException)
-                    {
-                        MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect", GlobalOptions.Language), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        _blnIsConnected = false;
-                        e.Cancel = true;
-                    }
+                    File.Move(_strTempUpdatePath + ".tmp", _strTempUpdatePath);
                 }
-                else
+                catch (WebException ex)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect", GlobalOptions.Language), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    string strException = ex.ToString();
+                    int intNewLineLocation = strException.IndexOf(Environment.NewLine, StringComparison.Ordinal);
+                    if (intNewLineLocation == -1)
+                        intNewLineLocation = strException.IndexOf('\n');
+                    if (intNewLineLocation != -1)
+                        strException = strException.Substring(0, intNewLineLocation);
+                    _strExceptionString = strException;
+                    MessageBox.Show(string.Format(LanguageManager.GetString("Warning_Update_CouldNotConnectException", GlobalOptions.Language), strException), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     _blnIsConnected = false;
                     e.Cancel = true;
                 }
-            }
-        }
-
-        /// <summary>
-        /// When checking if a new version is available, don't show the update window.
-        /// </summary>
-        public bool SilentCheck
-        {
-            get
-            {
-                return _blnSilentCheck;
-            }
-            set
-            {
-                _blnSilentCheck = value;
+                catch (UriFormatException ex)
+                {
+                    string strException = ex.ToString();
+                    int intNewLineLocation = strException.IndexOf(Environment.NewLine, StringComparison.Ordinal);
+                    if (intNewLineLocation == -1)
+                        intNewLineLocation = strException.IndexOf('\n');
+                    if (intNewLineLocation != -1)
+                        strException = strException.Substring(0, intNewLineLocation);
+                    _strExceptionString = strException;
+                    MessageBox.Show(string.Format(LanguageManager.GetString("Warning_Update_CouldNotConnectException", GlobalOptions.Language), strException), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    _blnIsConnected = false;
+                    e.Cancel = true;
+                }
             }
         }
 
@@ -341,14 +344,11 @@ namespace Chummer
         /// </summary>
         public bool SilentMode
         {
-            get
-            {
-                return _blnSilentMode;
-            }
+            get => _blnSilentMode;
             set
             {
                 _blnSilentMode = value;
-                if (value)
+                if (value && !_workerConnectionLoader.IsBusy)
                 {
                     _workerConnectionLoader.RunWorkerAsync();
                 }
@@ -360,10 +360,7 @@ namespace Chummer
         /// </summary>
         public string LatestVersion
         {
-            get
-            {
-                return _strLatestVersion;
-            }
+            get => _strLatestVersion;
             set
             {
                 _strLatestVersion = value;
@@ -374,34 +371,34 @@ namespace Chummer
         /// <summary>
         /// Latest release build number located on Github.
         /// </summary>
-        public string CurrentVersion
-        {
-            get
-            {
-                return _strCurrentVersion;
-            }
-        }
+        public string CurrentVersion { get; }
 
         public void DoVersionTextUpdate()
         {
-            string strLatestVersion = LatestVersion.Trim().TrimStart("Nightly-v");
+            string strLatestVersion = LatestVersion.TrimStartOnce("Nightly-v");
             lblUpdaterStatus.Left = lblUpdaterStatusLabel.Left + lblUpdaterStatusLabel.Width + 6;
-            if (strLatestVersion == LanguageManager.GetString("String_No_Update_Found", GlobalOptions.Language).Trim())
+            if (strLatestVersion == LanguageManager.GetString("String_Error", GlobalOptions.Language).Trim())
             {
-                lblUpdaterStatus.Text = LanguageManager.GetString("Warning_Update_CouldNotConnect", GlobalOptions.Language);
+                lblUpdaterStatus.Text = string.IsNullOrEmpty(_strExceptionString)
+                    ? LanguageManager.GetString("Warning_Update_CouldNotConnect", GlobalOptions.Language)
+                    : string.Format(LanguageManager.GetString("Warning_Update_CouldNotConnectException", GlobalOptions.Language).NormalizeWhiteSpace(), _strExceptionString);
                 cmdUpdate.Enabled = false;
                 return;
             }
             Version.TryParse(strLatestVersion, out Version objLatestVersion);
             int intResult = objLatestVersion?.CompareTo(_objCurrentVersion) ?? 0;
 
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             if (intResult > 0)
             {
-                lblUpdaterStatus.Text = LanguageManager.GetString("String_Update_Available", GlobalOptions.Language).Replace("{0}", strLatestVersion).Replace("{1}", _strCurrentVersion);
+                lblUpdaterStatus.Text = string.Format(LanguageManager.GetString("String_Update_Available", GlobalOptions.Language), strLatestVersion) + strSpaceCharacter +
+                                        string.Format(LanguageManager.GetString("String_Currently_Installed_Version", GlobalOptions.Language), CurrentVersion);
             }
             else
             {
-                lblUpdaterStatus.Text = LanguageManager.GetString("String_Up_To_Date", GlobalOptions.Language).Replace("{0}", _strCurrentVersion).Replace("{1}", LanguageManager.GetString(_blnPreferNightly ? "String_Nightly" : "String_Stable", GlobalOptions.Language)).Replace("{2}", strLatestVersion);
+                lblUpdaterStatus.Text = LanguageManager.GetString("String_Up_To_Date", GlobalOptions.Language) + strSpaceCharacter +
+                                        string.Format(LanguageManager.GetString("String_Currently_Installed_Version", GlobalOptions.Language), CurrentVersion) + strSpaceCharacter +
+                                        string.Format(LanguageManager.GetString("String_Latest_Version", GlobalOptions.Language), LanguageManager.GetString(_blnPreferNightly ? "String_Nightly" : "String_Stable", GlobalOptions.Language), strLatestVersion);
                 if (intResult < 0)
                 {
                     cmdRestart.Text = LanguageManager.GetString("Button_Up_To_Date", GlobalOptions.Language);
@@ -410,7 +407,7 @@ namespace Chummer
                 cmdUpdate.Text = LanguageManager.GetString("Button_Redownload", GlobalOptions.Language);
             }
             if (_blnPreferNightly)
-                lblUpdaterStatus.Text += ' ' + LanguageManager.GetString("String_Nightly_Changelog_Warning", GlobalOptions.Language);
+                lblUpdaterStatus.Text += strSpaceCharacter + LanguageManager.GetString("String_Nightly_Changelog_Warning", GlobalOptions.Language);
         }
 
         private void cmdDownload_Click(object sender, EventArgs e)
@@ -440,16 +437,26 @@ namespace Chummer
                 foreach (string strFileToDelete in lstFilesToDelete)
                 {
                     string strFileName = Path.GetFileName(strFileToDelete);
-                    string strFilePath = Path.GetDirectoryName(strFileToDelete).TrimStart(_strAppPath);
+                    string strFilePath = Path.GetDirectoryName(strFileToDelete).TrimStartOnce(_strAppPath);
                     int intSeparatorIndex = strFilePath.LastIndexOf(Path.DirectorySeparatorChar);
                     string strTopLevelFolder = intSeparatorIndex != -1 ? strFilePath.Substring(intSeparatorIndex + 1) : string.Empty;
-                    if ((!strFilePath.StartsWith("data") && !strFilePath.StartsWith("export") && !strFilePath.StartsWith("lang") && !strFilePath.StartsWith("sheets") && !strFilePath.StartsWith("Utils") && !string.IsNullOrEmpty(strFilePath.TrimEnd(strFileName))) ||
-                        strFileName.EndsWith(".old") ||
-                        strFileName.StartsWith("custom") ||
-                        strFileName.StartsWith("override") ||
+                    if ((!strFilePath.StartsWith("data") && !strFilePath.StartsWith("export") &&
+                         !strFilePath.StartsWith("lang") && !strFilePath.StartsWith("sheets") &&
+                         !strFilePath.StartsWith("saves") && !strFilePath.StartsWith("Utils") &&
+                         !string.IsNullOrEmpty(strFilePath.TrimEndOnce(strFileName))) ||
+                        strFileName?.EndsWith(".old") != false || strFileName.EndsWith(".chum5") ||
+                        strFileName.StartsWith("custom") || strFileName.StartsWith("override") ||
                         strFileName.StartsWith("amend") ||
-                        (strFilePath.Contains("sheets") && strTopLevelFolder != "de" && strTopLevelFolder != "fr" && strTopLevelFolder != "jp" && strTopLevelFolder != "zh") ||
-                        (strTopLevelFolder == "lang" && strFileName != "de.xml" && strFileName != "fr.xml" && strFileName != "jp.xml" && strFileName != "zh.xml" && strFileName != "de_data.xml" && strFileName != "fr_data.xml" && strFileName != "jp_data.xml" && strFileName != "zh_data.xml"))
+                        (strFilePath.Contains("sheets") && strTopLevelFolder != "de" && strTopLevelFolder != "fr" &&
+                         strTopLevelFolder != "jp" && strTopLevelFolder != "zh") || (strTopLevelFolder == "lang" &&
+                                                                                     strFileName != "de.xml" &&
+                                                                                     strFileName != "fr.xml" &&
+                                                                                     strFileName != "jp.xml" &&
+                                                                                     strFileName != "zh.xml" &&
+                                                                                     strFileName != "de_data.xml" &&
+                                                                                     strFileName != "fr_data.xml" &&
+                                                                                     strFileName != "jp_data.xml" &&
+                                                                                     strFileName != "zh_data.xml"))
                         lstFilesToNotDelete.Add(strFileToDelete);
                 }
                 lstFilesToDelete.RemoveWhere(x => lstFilesToNotDelete.Contains(x));
@@ -481,18 +488,17 @@ namespace Chummer
                 foreach (string strFileToDelete in lstFilesToDelete)
                 {
                     string strFileName = Path.GetFileName(strFileToDelete);
-                    string strFilePath = Path.GetDirectoryName(strFileToDelete).TrimStart(_strAppPath);
-                    int intSeparatorIndex = strFilePath.LastIndexOf(Path.DirectorySeparatorChar);
-                    string strTopLevelFolder = intSeparatorIndex != -1 ? strFilePath.Substring(intSeparatorIndex + 1) : string.Empty;
-                    if ((!strFilePath.StartsWith("customdata") &&
+                    string strFilePath = Path.GetDirectoryName(strFileToDelete).TrimStartOnce(_strAppPath);
+                    if (!strFilePath.StartsWith("customdata") &&
                         !strFilePath.StartsWith("data") &&
                         !strFilePath.StartsWith("export") &&
                         !strFilePath.StartsWith("lang") &&
+                        !strFilePath.StartsWith("saves") &&
                         !strFilePath.StartsWith("settings") &&
                         !strFilePath.StartsWith("sheets") &&
                         !strFilePath.StartsWith("Utils") &&
-                        !string.IsNullOrEmpty(strFilePath.TrimEnd(strFileName))) ||
-                        strFileName.EndsWith(".old"))
+                        !string.IsNullOrEmpty(strFilePath.TrimEndOnce(strFileName)) ||
+                        strFileName?.EndsWith(".old") != false || strFileName.EndsWith(".chum5"))
                         lstFilesToNotDelete.Add(strFileToDelete);
                 }
                 lstFilesToDelete.RemoveWhere(x => lstFilesToNotDelete.Contains(x));
@@ -503,9 +509,9 @@ namespace Chummer
 
         private bool CreateBackupZip()
         {
-            //Create a backup file in the temp directory. 
+            //Create a backup file in the temp directory.
             string strBackupZipPath = Path.Combine(Path.GetTempPath(), "chummer" + CurrentVersion + ".zip");
-            Log.Info("Creating archive from application path: ", _strAppPath);
+            Log.Info("Creating archive from application path: " + _strAppPath);
             try
             {
                 if (!File.Exists(strBackupZipPath))
@@ -520,12 +526,12 @@ namespace Chummer
             }
             catch (IOException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + Path.GetFileName(strBackupZipPath));
+                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + Environment.NewLine + Environment.NewLine + Path.GetFileName(strBackupZipPath));
                 return false;
             }
             catch (NotSupportedException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + Path.GetFileName(strBackupZipPath));
+                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + Environment.NewLine + Environment.NewLine + Path.GetFileName(strBackupZipPath));
                 return false;
             }
             return true;
@@ -535,7 +541,7 @@ namespace Chummer
         {
             bool blnDoRestart = true;
             // Copy over the archive from the temp directory.
-            Log.Info("Extracting downloaded archive into application path: ", strZipPath);
+            Log.Info("Extracting downloaded archive into application path: " + strZipPath);
             try
             {
                 using (ZipArchive archive = ZipFile.Open(strZipPath, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
@@ -548,7 +554,9 @@ namespace Chummer
                         string strLoopPath = Path.Combine(_strAppPath, entry.FullName);
                         try
                         {
-                            Directory.CreateDirectory(Path.GetDirectoryName(strLoopPath));
+                            string strLoopDirectory = Path.GetDirectoryName(strLoopPath);
+                            if (!string.IsNullOrEmpty(strLoopDirectory))
+                                Directory.CreateDirectory(strLoopDirectory);
                             if (File.Exists(strLoopPath))
                             {
                                 if (File.Exists(strLoopPath + ".old"))
@@ -559,13 +567,13 @@ namespace Chummer
                         }
                         catch (IOException)
                         {
-                            MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + Path.GetFileName(strLoopPath));
+                            MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + Environment.NewLine + Environment.NewLine + Path.GetFileName(strLoopPath));
                             blnDoRestart = false;
                             break;
                         }
                         catch (NotSupportedException)
                         {
-                            MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + Path.GetFileName(strLoopPath));
+                            MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + Environment.NewLine + Environment.NewLine + Path.GetFileName(strLoopPath));
                             blnDoRestart = false;
                             break;
                         }
@@ -581,12 +589,12 @@ namespace Chummer
             }
             catch (IOException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + strZipPath);
+                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + Environment.NewLine + Environment.NewLine + strZipPath);
                 blnDoRestart = false;
             }
             catch (NotSupportedException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + strZipPath);
+                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + Environment.NewLine + Environment.NewLine + strZipPath);
                 blnDoRestart = false;
             }
             catch (UnauthorizedAccessException)
@@ -638,10 +646,16 @@ namespace Chummer
             {
                 _clientDownloader.DownloadFileAsync(uriDownloadFileAddress, _strTempPath);
             }
-            catch (WebException)
+            catch (WebException ex)
             {
+                string strException = ex.ToString();
+                int intNewLineLocation = strException.IndexOf(Environment.NewLine, StringComparison.Ordinal);
+                if (intNewLineLocation == -1)
+                    intNewLineLocation = strException.IndexOf('\n');
+                if (intNewLineLocation != -1)
+                    strException = strException.Substring(0, intNewLineLocation);
                 // Show the warning even if we're in silent mode, because the user should still know that the update check could not be performed
-                MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect", GlobalOptions.Language), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(string.Format(LanguageManager.GetString("Warning_Update_CouldNotConnectException", GlobalOptions.Language), strException), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 cmdUpdate.Enabled = true;
             }
         }
@@ -669,7 +683,7 @@ namespace Chummer
                 cmdRestart.Enabled = true;
             cmdCleanReinstall.Enabled = true;
             Log.Exit("wc_DownloadExeFileCompleted");
-            if (_blnSilentMode)
+            if (SilentMode)
             {
                 string text = LanguageManager.GetString("Message_Update_CloseForms", GlobalOptions.Language);
                 string caption = LanguageManager.GetString("Title_Update", GlobalOptions.Language);
@@ -681,7 +695,7 @@ namespace Chummer
                 else
                 {
                     _blnIsConnected = false;
-                    this.DoThreadSafe(new Action(() => Close()));
+                    this.DoThreadSafe(Close);
                 }
             }
         }

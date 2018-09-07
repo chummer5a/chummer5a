@@ -137,8 +137,10 @@ namespace Chummer
                 XmlNode xmlBaseCharacterNode = xmlCharacterDocument.SelectSingleNode("/document/public/character");
                 if (xmlBaseCharacterNode != null)
                 {
-                    HeroLabCharacterCache objCache = new HeroLabCharacterCache();
-                    objCache.PlayerName = xmlBaseCharacterNode.Attributes["playername"]?.InnerText;
+                    HeroLabCharacterCache objCache = new HeroLabCharacterCache
+                    {
+                        PlayerName = xmlBaseCharacterNode.Attributes["playername"]?.InnerText
+                    };
                     string strNameString = xmlBaseCharacterNode.Attributes["name"]?.InnerText;
                     objCache.CharacterId = strNameString;
                     if (!string.IsNullOrEmpty(strNameString))

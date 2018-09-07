@@ -45,12 +45,6 @@ namespace Chummer
 
         private void frmSelectMartialArtManeuver_Load(object sender, EventArgs e)
         {
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
             List<ListItem> lstManeuver = new List<ListItem>();
 
             // Populate the Martial Art Maneuver list.
@@ -72,7 +66,10 @@ namespace Chummer
         private void cmdOK_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(lstManeuvers.Text))
+            {
+                _blnAddAgain = false;
                 AcceptForm();
+            }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -87,20 +84,34 @@ namespace Chummer
 
         private void lstMartialArts_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Populate the Maneuvers list.
-            XmlNode objXmlManeuver = _objXmlDocument.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + lstManeuvers.SelectedValue + "\"]");
+            string strSelectedId = lstManeuvers.SelectedValue?.ToString();
+            XmlNode xmlManeuver = null;
+            if (!string.IsNullOrEmpty(strSelectedId))
+                xmlManeuver = _objXmlDocument.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + strSelectedId + "\"]");
 
-            string strBook = CommonFunctions.LanguageBookShort(objXmlManeuver["source"].InnerText, GlobalOptions.Language);
-            string strPage = objXmlManeuver["altpage"]?.InnerText ?? objXmlManeuver["page"].InnerText;
-            lblSource.Text = strBook + ' ' + strPage;
+            if (xmlManeuver != null)
+            {
+                string strSource = xmlManeuver["source"].InnerText;
+                string strPage = xmlManeuver["altpage"]?.InnerText ?? xmlManeuver["page"].InnerText;
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                ToolTipFactory.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+            }
+            else
+            {
+                lblSource.Text = string.Empty;
 
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlManeuver["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                ToolTipFactory.SetToolTip(lblSource, string.Empty);
+            }
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
-            _blnAddAgain = true;
-            cmdOK_Click(sender, e);
+            if (!string.IsNullOrEmpty(lstManeuvers.Text))
+            {
+                _blnAddAgain = true;
+                AcceptForm();
+            }
         }
         #endregion
 

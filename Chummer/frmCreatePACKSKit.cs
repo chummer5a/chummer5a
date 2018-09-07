@@ -54,7 +54,7 @@ namespace Chummer
                 MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_FileName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CreatePACKSKit_FileName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            
+
             // Make sure the file name starts with custom and ends with _packs.xml.
             if (!txtFileName.Text.StartsWith("custom") || !txtFileName.Text.EndsWith("_packs.xml"))
             {
@@ -62,30 +62,45 @@ namespace Chummer
                 return;
             }
 
-            // See if a Kit with this name already exists for the Custom category. This is done without the XmlManager since we need to check each file individually.
-            XmlDocument objXmlDocument = new XmlDocument();
-            string strCustomPath = Path.Combine(Application.StartupPath, "data");
-            foreach (string strFile in Directory.GetFiles(strCustomPath, "custom*_packs.xml"))
+            // See if a Kit with this name already exists for the Custom category.
+            // This was originally done without the XmlManager, but because amends and overrides and toggling custom data directories can change names, we need to use it.
+            string strName = txtName.Text;
+            if (XmlManager.Load("packs.xml", GlobalOptions.Language).SelectSingleNode("/chummer/packs/pack[name = \"" + strName + "\" and category = \"Custom\"]") != null)
             {
-                objXmlDocument.Load(strFile);
-                XmlNodeList objXmlPACKSList = objXmlDocument.SelectNodes("/chummer/packs/pack[name = \"" + txtName.Text + "\" and category = \"Custom\"]");
-                if (objXmlPACKSList.Count > 0)
+                MessageBox.Show(
+                    LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName", GlobalOptions.Language).Replace("{0}", strName),
+                    LanguageManager.GetString("MessageTitle_CreatePACKSKit_DuplicateName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            string strPath = Path.Combine(Application.StartupPath, "data", txtFileName.Text);
+
+            // If this is not a new file, read in the existing contents.
+            XmlDocument objXmlCurrentDocument = null;
+            if (File.Exists(strPath))
+            {
+                try
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName", GlobalOptions.Language).Replace("{0}", txtName.Text).Replace("{1}", strFile.Replace(strCustomPath + Path.DirectorySeparatorChar, string.Empty)), LanguageManager.GetString("MessageTitle_CreatePACKSKit_DuplicateName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    objXmlCurrentDocument = new XmlDocument();
+                    using (StreamReader objStreamReader = new StreamReader(strPath, Encoding.UTF8, true))
+                    {
+                        objXmlCurrentDocument.Load(objStreamReader);
+                    }
+                }
+                catch (IOException ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                    return;
+                }
+                catch (XmlException ex)
+                {
+                    MessageBox.Show(ex.ToString());
                     return;
                 }
             }
 
-            string strPath = Path.Combine(strCustomPath, txtFileName.Text);
-            bool blnNewFile = !File.Exists(strPath);
-
-            // If this is not a new file, read in the existing contents.
-            XmlDocument objXmlCurrentDocument = new XmlDocument();
-            if (!blnNewFile)
-                objXmlCurrentDocument.Load(strPath);
-
             FileStream objStream = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
             {
                 Formatting = Formatting.Indented,
                 Indentation = 1,
@@ -99,11 +114,12 @@ namespace Chummer
             objWriter.WriteStartElement("packs");
 
             // If this is not a new file, write out the current contents.
-            if (!blnNewFile)
+            if (objXmlCurrentDocument != null)
             {
-                XmlNodeList objXmlNodeList = objXmlCurrentDocument.SelectNodes("/chummer/*");
-                foreach (XmlNode objXmlNode in objXmlNodeList)
-                    objXmlNode.WriteContentTo(objWriter);
+                using (XmlNodeList objXmlNodeList = objXmlCurrentDocument.SelectNodes("/chummer/*"))
+                    if (objXmlNodeList?.Count > 0)
+                        foreach (XmlNode objXmlNode in objXmlNodeList)
+                            objXmlNode.WriteContentTo(objWriter);
             }
 
             // <pack>
@@ -246,7 +262,7 @@ namespace Chummer
                 //        // </skill>
                 //        objWriter.WriteEndElement();
                 //    }
-                //}  
+                //}
 
                 // Skill Groups.
                 //foreach (SkillGroup objSkillGroup in _objCharacter.SkillGroups)
@@ -301,11 +317,11 @@ namespace Chummer
                     objWriter.WriteStartElement("martialart");
                     objWriter.WriteElementString("name", objArt.Name);
                     objWriter.WriteElementString("rating", objArt.Rating.ToString());
-                    if (objArt.Advantages.Count > 0)
+                    if (objArt.Techniques.Count > 0)
                     {
                         // <advantages>
                         objWriter.WriteStartElement("advantages");
-                        foreach (MartialArtAdvantage objAdvantage in objArt.Advantages)
+                        foreach (MartialArtTechnique objAdvantage in objArt.Techniques)
                             objWriter.WriteElementString("advantage", objAdvantage.Name);
                         // </advantages>
                         objWriter.WriteEndElement();
@@ -313,8 +329,10 @@ namespace Chummer
                     // </martialart>
                     objWriter.WriteEndElement();
                 }
+                #if LEGACY
                 foreach (MartialArtManeuver objManeuver in _objCharacter.MartialArtManeuvers)
                     objWriter.WriteElementString("maneuver", objManeuver.Name);
+                #endif
                 // </martialarts>
                 objWriter.WriteEndElement();
             }
@@ -455,7 +473,7 @@ namespace Chummer
                     // <lifestyle>
                     objWriter.WriteStartElement("lifestyle");
                     objWriter.WriteElementString("name", objLifestyle.Name);
-                    objWriter.WriteElementString("months", objLifestyle.Months.ToString());
+                    objWriter.WriteElementString("months", objLifestyle.Increments.ToString());
                     if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
                     {
                         // This is an Advanced Lifestyle, so write out its properties.
@@ -531,7 +549,7 @@ namespace Chummer
                         // <weapon>
                         objWriter.WriteStartElement("weapon");
                         objWriter.WriteElementString("name", objWeapon.Name);
-                        
+
                         // Weapon Accessories.
                         if (objWeapon.WeaponAccessories.Count > 0)
                         {
@@ -707,9 +725,9 @@ namespace Chummer
         {
             DialogResult = DialogResult.Cancel;
         }
-        #endregion
+#endregion
 
-        #region Methods
+#region Methods
         /// <summary>
         /// Recursively write out all Gear information since these can be nested pretty deep.
         /// </summary>
@@ -754,6 +772,6 @@ namespace Chummer
             txtFileName.Left = lblFileNameLabel.Left + intWidth + 6;
             txtFileName.Width = Width - txtFileName.Left - 19;
         }
-        #endregion
+#endregion
     }
 }

@@ -1569,6 +1569,15 @@
       <specs />
     </skill>
     <skill>
+      <id>8879baa1-4e10-4667-bd00-62f4f594dbbb</id>
+      <name>Area Knowledge: Neo-Tokyo</name>
+      <attribute>INT</attribute>
+      <category>Street</category>
+      <default>False</default>
+      <skillgroup />
+      <specs />
+    </skill>
+    <skill>
       <id>f9f9badb-0f5e-4662-8b34-fdd8e2994caa</id>
       <name>Area Knowledge: Portland</name>
       <attribute>INT</attribute>

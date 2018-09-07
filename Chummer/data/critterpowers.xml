@@ -40,7 +40,7 @@
       <category>Mundane</category>
       <type>M</type>
       <action>Simple</action>
-      <range>MAG x 50</range>
+      <range>MAG × 50</range>
       <duration>Always</duration>
       <source>SG</source>
       <page>198</page>
@@ -810,7 +810,7 @@
     <power>
       <id>d9fdc768-9ce4-4c19-8744-b46833349cea</id>
       <name>Sonic Projection</name>
-      <category>Paranroaml</category>
+      <category>Paranormal</category>
       <type>P</type>
       <action>Complex</action>
       <range>Special</range>
@@ -1511,7 +1511,7 @@
       <type>File</type>
       <action>Special</action>
       <range />
-      <duration>F x 10 Combat Turns</duration>
+      <duration>F × 10 Combat Turns</duration>
       <source>SR5</source>
       <page>257</page>
     </power>
@@ -2610,7 +2610,23 @@
       <action>Complex</action>
       <range>LOS</range>
       <karma>14</karma>
-      <bonus />
+      <bonus>
+        <movementreplace>
+          <category>Fly</category>
+          <speed>walk</speed>
+          <val>3</val>
+        </movementreplace>
+        <movementreplace>
+          <category>Fly</category>
+          <speed>run</speed>
+          <val>6</val>
+        </movementreplace>
+        <movementreplace>
+          <category>Fly</category>
+          <speed>sprint</speed>
+          <val>500</val>
+        </movementreplace>
+      </bonus>
       <required>
         <oneof>
           <quality>Dracoform (Eastern Drake)</quality>

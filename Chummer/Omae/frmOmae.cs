@@ -553,6 +553,7 @@ namespace Chummer
                         GlobalOptions.OmaeAutoLogin = chkAutoLogin.Checked;
                         objRegistry.SetValue("omaeautologin", chkAutoLogin.Checked.ToString());
                     }
+                    objRegistry.Close();
                 }
                 else
                     MessageBox.Show(LanguageManager.GetString("Message_Omae_CannotLogin", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Omae_OmaeLogin", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);

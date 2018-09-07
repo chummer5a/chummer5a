@@ -16,30 +16,31 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections;
-using System.Windows.Forms;
-using System.Xml;
+ using System.Diagnostics;
+ using System.Windows.Forms;
 
 namespace Chummer
 {
     /// <summary>
     /// ListItem class to make populating a DropDownList from a DataSource easier.
     /// </summary>
+    [DebuggerDisplay("{Name} {Value?.ToString() ?? \"\"}")]
     public struct ListItem
     {
         public static readonly ListItem Blank = new ListItem(string.Empty, string.Empty);
 
-        public ListItem(string strValue, string strName)
+        public ListItem(object objValue, string strName)
         {
-            Value = strValue;
+            Value = objValue;
             Name = strName;
         }
 
         /// <summary>
         /// Value.
         /// </summary>
-        public string Value { get; }
+        public object Value { get; }
 
         /// <summary>
         /// Name.
@@ -48,17 +49,37 @@ namespace Chummer
 
         public override bool Equals(object obj)
         {
-            return Value.Equals(obj.ToString());
+            return Value.Equals(obj);
         }
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return Value.GetHashCode();
         }
 
         public override string ToString()
         {
-            return Value;
+            return Value.ToString();
+        }
+
+        public static bool operator ==(ListItem x, object y)
+        {
+            return x.Equals(y);
+        }
+
+        public static bool operator !=(ListItem x, object y)
+        {
+            return !x.Equals(y);
+        }
+
+        public static bool operator ==(object x, ListItem y)
+        {
+            return x?.Equals(y) ?? y == null;
+        }
+
+        public static bool operator !=(object x, ListItem y)
+        {
+            return !(x?.Equals(y) ?? y == null);
         }
     }
 
@@ -90,7 +111,7 @@ namespace Chummer
             }
         }
     }
-    
+
     public static class CompareListViewItems
     {
         /// <summary>
@@ -98,16 +119,18 @@ namespace Chummer
         /// </summary>
         public static int CompareTextAsDates(ListViewItem lx, ListViewItem ly)
         {
-            if (lx == null)
+            DateTime datY;
+            if (lx == null || !DateTime.TryParse(lx.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out DateTime datX))
             {
-                if (ly == null)
+                if (ly == null || !DateTime.TryParse(ly.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out datY))
                     return 0;
                 else
                     return -1;
             }
-            else if (ly == null)
+            else if (ly == null || !DateTime.TryParse(ly.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out datY))
                 return 1;
-            return DateTime.Compare(DateTime.Parse(ly.Text, GlobalOptions.CultureInfo), DateTime.Parse(lx.Text, GlobalOptions.CultureInfo));
+
+            return DateTime.Compare(datY, datX);
         }
     }
 
@@ -129,7 +152,7 @@ namespace Chummer
     {
         private int _intColumnToSort;
         private SortOrder _objOrderOfSort;
-        
+
         public int Compare(object x, object y)
         {
             if (_objOrderOfSort == SortOrder.None)
@@ -142,19 +165,21 @@ namespace Chummer
             ListViewItem listviewY = (ListViewItem)y;
 
             // Compare the two items
-            string strX = listviewX.SubItems[_intColumnToSort].Text.FastEscape('¥');
-            string strY = listviewY.SubItems[_intColumnToSort].Text.FastEscape('¥');
             if (_intColumnToSort == 0)
-                intCompareResult = DateTime.Compare(DateTime.Parse(strX, GlobalOptions.CultureInfo), DateTime.Parse(strY, GlobalOptions.CultureInfo));
+            {
+                intCompareResult = CompareListViewItems.CompareTextAsDates(listviewX, listviewY);
+            }
             else
             {
+                string strX = listviewX?.SubItems[_intColumnToSort].Text.FastEscape('¥');
+                string strY = listviewY?.SubItems[_intColumnToSort].Text.FastEscape('¥');
                 if (decimal.TryParse(strX, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decX) &&
                     decimal.TryParse(strY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decY))
                     intCompareResult = decimal.Compare(decX, decY);
                 else
                     intCompareResult = string.Compare(strX, strY, true, GlobalOptions.CultureInfo);
             }
-            
+
             // Calculate correct return value based on object comparison
             if (_objOrderOfSort == SortOrder.Ascending)
                 return intCompareResult;
@@ -166,14 +191,8 @@ namespace Chummer
         /// </summary>
         public int SortColumn
         {
-            get
-            {
-                return _intColumnToSort;
-            }
-            set
-            {
-                _intColumnToSort = value;
-            }
+            get => _intColumnToSort;
+            set => _intColumnToSort = value;
         }
 
         /// <summary>
@@ -181,14 +200,8 @@ namespace Chummer
         /// </summary>
         public SortOrder Order
         {
-            get
-            {
-                return _objOrderOfSort;
-            }
-            set
-            {
-                _objOrderOfSort = value;
-            }
+            get => _objOrderOfSort;
+            set => _objOrderOfSort = value;
         }
     }
 
@@ -212,14 +225,14 @@ namespace Chummer
             DataGridViewRow datagridviewrowY = (DataGridViewRow)y;
 
             // Compare the two items
-            string strX = datagridviewrowX.Cells[_intColumnToSort].Value.ToString();
-            string strY = datagridviewrowY.Cells[_intColumnToSort].Value.ToString();
-            string strNumberX = datagridviewrowX.Cells[_intColumnToSort].Value.ToString().FastEscape('¥')
-                .Replace(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language), string.Empty)
-                .Replace(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language), string.Empty);
-            string strNumberY = datagridviewrowY.Cells[_intColumnToSort].Value.ToString().FastEscape('¥')
-                .Replace(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language), string.Empty)
-                .Replace(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language), string.Empty);
+            string strX = datagridviewrowX?.Cells[_intColumnToSort].Value.ToString();
+            string strY = datagridviewrowY?.Cells[_intColumnToSort].Value.ToString();
+            string strNumberX = datagridviewrowX?.Cells[_intColumnToSort].Value.ToString().TrimEnd('¥', '+')
+                .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language))
+                .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language));
+            string strNumberY = datagridviewrowY?.Cells[_intColumnToSort].Value.ToString().TrimEnd('¥', '+')
+                .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language))
+                .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language));
             if (decimal.TryParse(strNumberX, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decX))
             {
                 if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decY))
@@ -228,7 +241,7 @@ namespace Chummer
                 else
                     intCompareResult = -1;
             }
-            else if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decY))
+            else if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal _))
             {
                 intCompareResult = 1;
             }
@@ -246,14 +259,8 @@ namespace Chummer
         /// </summary>
         public int SortColumn
         {
-            get
-            {
-                return _intColumnToSort;
-            }
-            set
-            {
-                _intColumnToSort = value;
-            }
+            get => _intColumnToSort;
+            set => _intColumnToSort = value;
         }
 
         /// <summary>
@@ -261,14 +268,8 @@ namespace Chummer
         /// </summary>
         public SortOrder Order
         {
-            get
-            {
-                return _objOrderOfSort;
-            }
-            set
-            {
-                _objOrderOfSort = value;
-            }
+            get => _objOrderOfSort;
+            set => _objOrderOfSort = value;
         }
     }
     #endregion

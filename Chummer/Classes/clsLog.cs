@@ -16,12 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+ using System;
+ using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
+ using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Windows.Forms;
@@ -30,31 +28,41 @@ namespace Chummer
 {
     static class Log
     {
-        private static readonly StreamWriter s_LogWriter;
-        private static readonly StringBuilder s_TimeStamper;  //This will break in case of multithreading
-        private static bool s_BlnLogEnabled = false;
+        private static StreamWriter s_LogWriter;
+        private static readonly object s_LogWriterLock = new object();
         static Log()
         {
             Stopwatch sw = Stopwatch.StartNew();
-            if (GlobalOptions.UseLogging)
-            {
-                //TODO: Add listner to UseLogging to be able to start it mid run
-                string strFile = Path.Combine(Application.StartupPath, "chummerlog.txt");
-                s_LogWriter = new StreamWriter(strFile);
-                s_TimeStamper = new StringBuilder();
-                s_BlnLogEnabled = true;
-            }
+            IsLoggerEnabled = GlobalOptions.UseLogging;
             sw.TaskEnd("log open");
         }
 
-        /// <summary>
-        /// This will disabled logging and free any resources used by it
-        /// </summary>
-        public static void Kill()
+        private static bool s_blnIsLoggerEnabled;
+        public static bool IsLoggerEnabled
         {
-            s_LogWriter.Flush();
-            s_LogWriter.Close();
-            s_BlnLogEnabled = false;
+            get => s_blnIsLoggerEnabled;
+            set
+            {
+                lock (s_LogWriterLock)
+                {
+                    if (s_blnIsLoggerEnabled != value)
+                    {
+                        // Sets up logging information
+                        if (value)
+                        {
+                            s_LogWriter = new StreamWriter(Path.Combine(Application.StartupPath, "chummerlog.txt"));
+                        }
+                        // This will disabled logging and free any resources used by it
+                        else if (s_LogWriter != null)
+                        {
+                            s_LogWriter.Flush();
+                            s_LogWriter.Close();
+                        }
+
+                        s_blnIsLoggerEnabled = value;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -174,27 +182,21 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(new object[]{info},file, method, line, "Error     ");
+            writeLog(new[]{info},file, method, line, "Error     ");
         }
 
         /// <summary>
         /// Log an exception has occoured
         /// </summary>
-        /// <param name="info">An optional array of objects providing additional data</param>
-        /// <param name="file">Do not use this</param>
-        /// <param name="method">Do not use this</param>
-        /// <param name="line">Do not use this</param>
-        public static void Exception
-        (
-            Exception exception
-        )
+        /// <param name="exception">Exception to log.</param>
+        public static void Exception(Exception exception)
         {
-            if(!s_BlnLogEnabled)
+            if(!IsLoggerEnabled)
                 return;
 
             writeLog(
                 new object[]{exception, exception.StackTrace},
-                exception.Source, 
+                exception.Source,
                 exception.TargetSite.Name, 
                 (new StackTrace(exception, true)).GetFrame(0).GetFileLineNumber(), 
                 "Exception ");
@@ -245,7 +247,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(new object[]{info},file, method, line, "Warning   ");
+            writeLog(new[]{info},file, method, line, "Warning   ");
         }
 
         /// <summary>
@@ -281,7 +283,7 @@ namespace Chummer
         /// <param name="line">Do not use this</param>
         public static void Info
             (
-            String info = null,
+            string info = null,
 #if LEGACY
             string file = "LEGACY",
             string method = "LEGACY",
@@ -298,46 +300,48 @@ namespace Chummer
 
         private static void writeLog(object[] info, string file, string method, int line, string pre)
         {
-            if (!s_BlnLogEnabled)
+            if (!IsLoggerEnabled)
                 return;
 
             Stopwatch sw = Stopwatch.StartNew();
             //TODO: Add timestamp to logs
 
-            s_TimeStamper.Clear();
-            s_TimeStamper.Append(pre);
-            string[] classPath = file.Split(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
-            s_TimeStamper.Append(classPath[classPath.Length - 1]);
-            s_TimeStamper.Append('.');
-            s_TimeStamper.Append(method);
-            s_TimeStamper.Append(':');
-            s_TimeStamper.Append(line);
+            StringBuilder objTimeStamper = new StringBuilder(pre);
+            string[] classPath = file.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            objTimeStamper.Append(classPath[classPath.Length - 1]);
+            objTimeStamper.Append('.');
+            objTimeStamper.Append(method);
+            objTimeStamper.Append(':');
+            objTimeStamper.Append(line);
 
-            if (info != null)
+            if (info?.Length > 0)
             {
-                s_TimeStamper.Append(' ');
-                foreach (object o in info)
+                objTimeStamper.Append(' ');
+                for (int i = 0; i < info.Length; ++i)
                 {
-                    s_TimeStamper.Append(o);
-                    s_TimeStamper.Append(", ");
+                    objTimeStamper.Append(info[i]);
+                    objTimeStamper.Append(", ");
                 }
 
-                s_TimeStamper.Length -= 2;
+                objTimeStamper.Length -= 2;
             }
 
             sw.TaskEnd("makeentry");
 
-            s_LogWriter.WriteLine(s_TimeStamper.ToString());
+            string strTimeStamp = objTimeStamper.ToString();
+            lock (s_LogWriterLock)
+                s_LogWriter?.WriteLine(strTimeStamp);
             sw.TaskEnd("filewrite");
-            Trace.WriteLine(s_TimeStamper.ToString());
+            Trace.WriteLine(strTimeStamp);
             sw.TaskEnd("screenwrite");
         }
 
         public static void FirstChanceException(object sender, FirstChanceExceptionEventArgs e)
         {
-            if (s_BlnLogEnabled)
+            if (IsLoggerEnabled)
             {
-                s_LogWriter?.WriteLine("First chance exception: " + e?.Exception);
+                lock (s_LogWriterLock)
+                    s_LogWriter?.WriteLine("First chance exception: " + e?.Exception);
             }
         }
     }

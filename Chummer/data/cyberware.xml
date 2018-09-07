@@ -400,7 +400,7 @@
       <source>SR5</source>
       <page>452</page>
       <bonus>
-        <skillsoftaccess />
+        <skillsoftaccess precedence="0">Rating</skillsoftaccess>
       </bonus>
       <rating>6</rating>
     </cyberware>
@@ -415,7 +415,7 @@
       <source>SR5G</source>
       <page>452</page>
       <bonus>
-        <skillsoftaccess />
+        <skillsoftaccess precedence="0">Rating</skillsoftaccess>
       </bonus>
       <rating>6</rating>
     </cyberware>
@@ -934,14 +934,14 @@
       <id>60485c4e-042f-44f6-ad89-324003223f73</id>
       <name>Skillwires</name>
       <category>Bodyware</category>
-      <ess>Rating * 0.1</ess>
+      <ess>Rating * 0.2</ess>
       <capacity>0</capacity>
       <avail>(Rating * 3)</avail>
       <cost>Rating * 20000</cost>
       <source>SR5</source>
       <page>455</page>
       <bonus>
-        <skillwire>Rating</skillwire>
+        <skillwire precedence="0">Rating</skillwire>
       </bonus>
       <rating>6</rating>
     </cyberware>
@@ -2714,7 +2714,7 @@
       <bonus>
         <initiative precedence="0">FixedValues(3,6,9)</initiative>
         <initiativepass precedence="0">FixedValues(0,1,1)</initiativepass>
-        <skillwire>Rating * 2</skillwire>
+        <skillwire precedence="0">Rating * 2</skillwire>
         <sociallimit>-Rating</sociallimit>
         <specificattribute>
           <name precedence="0">REA</name>
@@ -5198,10 +5198,10 @@
           <value>Rating</value>
           <condition>Only with Intuition-linked skills</condition>
         </limitmodifier>
-        <skillattribute>
+        <skilllinkedattribute>
           <name>INT</name>
           <bonus>1</bonus>
-        </skillattribute>
+        </skilllinkedattribute>
       </bonus>
       <forcegrade>None</forcegrade>
       <rating>3</rating>
@@ -5223,10 +5223,10 @@
           <value>Rating</value>
           <condition>Only with Logic-linked skills</condition>
         </limitmodifier>
-        <skillattribute>
+        <skilllinkedattribute>
           <name>LOG</name>
           <bonus>1</bonus>
-        </skillattribute>
+        </skilllinkedattribute>
       </bonus>
       <forcegrade>None</forcegrade>
       <rating>3</rating>
@@ -5367,10 +5367,16 @@
           <rating>1</rating>
         </cyberware>
         <cyberware>
-          <name>Cyberfins</name>
+          <name>Cyberfins (Hands)</name>
         </cyberware>
         <cyberware>
-          <name>Cyberfins</name>
+          <name>Cyberfins (Hands)</name>
+        </cyberware>
+        <cyberware>
+          <name>Cyberfins (Feet)</name>
+        </cyberware>
+        <cyberware>
+          <name>Cyberfins (Feet)</name>
         </cyberware>
         <cyberware>
           <name>OXSYS Cybergill</name>
@@ -6396,11 +6402,11 @@
           <rating>3</rating>
         </cyberware>
         <bioware>
-          <name>Reflex Recorder (Skill)</name>
+          <name>Reflex Recorder</name>
           <forced>Locksmith</forced>
         </bioware>
         <bioware>
-          <name>Reflex Recorder (Skill)</name>
+          <name>Reflex Recorder</name>
           <forced>Pistols</forced>
         </bioware>
         <cyberware>
@@ -6457,11 +6463,11 @@
           <rating>3</rating>
         </bioware>
         <bioware>
-          <name>Reflex Recorder (Skill)</name>
+          <name>Reflex Recorder</name>
           <forced>Automatics</forced>
         </bioware>
         <bioware>
-          <name>Reflex Recorder (Skill)</name>
+          <name>Reflex Recorder</name>
           <forced>Unarmed Combat</forced>
         </bioware>
         <bioware>
@@ -6613,11 +6619,11 @@
           <rating>4</rating>
         </bioware>
         <bioware>
-          <name>Reflex Recorder (Skill)</name>
+          <name>Reflex Recorder</name>
           <forced>Pistols</forced>
         </bioware>
         <bioware>
-          <name>Reflex Recorder (Skill)</name>
+          <name>Reflex Recorder</name>
           <forced>Unarmed Combat</forced>
         </bioware>
         <bioware>
@@ -6761,7 +6767,7 @@
       <source>2050</source>
       <page>199</page>
       <bonus>
-        <skillsoftaccess />
+        <skillsoftaccess precedence="0">Rating</skillsoftaccess>
       </bonus>
       <rating>4</rating>
     </cyberware>
@@ -7964,6 +7970,51 @@
       <hide />
       <page>30</page>
       <rating>0</rating>
+    </cyberware>
+    <!-- End Region -->
+    <!-- Region Kill Code-->
+    <cyberware>
+      <id>8496afd6-ad34-4e73-b3f4-191ef11e121c</id>
+      <name>Datajack Plus</name>
+      <limit>False</limit>
+      <category>Headware</category>
+      <ess>0.15</ess>
+      <capacity>0</capacity>
+      <avail>4</avail>
+      <cost>Rating*3500</cost>
+      <rating>3</rating>
+      <gears>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+      </gears>
+      <source>KC</source>
+      <page>65</page>
+    </cyberware>
+    <cyberware>
+      <id>d9a05e96-3913-4d40-ae1a-397da8a6f344</id>
+      <name>Enhanced Augmented Reality Reflex System</name>
+      <limit>1</limit>
+      <category>Headware</category>
+      <ess>0.75</ess>
+      <capacity>0</capacity>
+      <avail>10R</avail>
+      <cost>30000</cost>
+      <source>KC</source>
+      <page>65</page>
+    </cyberware>
+    <cyberware>
+      <id>ba91b21a-2c8d-466f-a353-64293e09a9a8</id>
+      <name>Cranial Shield</name>
+      <limit>1</limit>
+      <category>Headware</category>
+      <ess>0.5</ess>
+      <capacity>0</capacity>
+      <avail>12</avail>
+      <cost>5000</cost>
+      <source>KC</source>
+      <page>65</page>
     </cyberware>
     <!-- End Region -->
   </cyberwares>

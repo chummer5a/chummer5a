@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Diagnostics;
 using System.Xml;
 
 namespace Chummer.Backend.Equipment
@@ -24,17 +25,19 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Grade of Cyberware or Bioware.
     /// </summary>
+    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Grade : IHasName, IHasInternalId, IHasXmlNode
     {
         private Guid _guidSourceId = Guid.Empty;
-        private Guid _guidId = Guid.Empty;
+        private Guid _guidId;
         private string _strName = "Standard";
         private decimal _decEss = 1.0m;
         private decimal _decCost = 1.0m;
-        private int _intAvail = 0;
+        private int _intAvail;
         private string _strSource = "SR5";
         private int _intDeviceRating = 2;
-        private readonly Improvement.ImprovementSource _eSource;
+	    private int _intAddictionThreshold = 0;
+		private readonly Improvement.ImprovementSource _eSource;
 
         #region Constructor and Load Methods
         public Grade(Improvement.ImprovementSource eSource)
@@ -52,7 +55,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             if (!objNode.TryGetField("id", Guid.TryParse, out _guidSourceId))
             {
-                XmlNode xmlDataNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml", GlobalOptions.Language)?.SelectSingleNode("/chummer/grades/grade[name = \"" + Name + "\"]");
+                XmlNode xmlDataNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml", GlobalOptions.Language).SelectSingleNode("/chummer/grades/grade[name = \"" + Name + "\"]");
                 if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guidSourceId) != true)
                     _guidSourceId = Guid.NewGuid();
             }
@@ -60,7 +63,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetDecFieldQuickly("cost", ref _decCost);
             objNode.TryGetInt32FieldQuickly("avail", ref _intAvail);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
-            if (!objNode.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating))
+            objNode.TryGetField("addictionthreshold", out _intAddictionThreshold);
+			if (!objNode.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating))
             {
                 if (Name.Contains("Alphaware"))
                     _intDeviceRating = 3;
@@ -75,7 +79,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private XmlNode _objCachedMyXmlNode = null;
+        private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()
@@ -87,7 +91,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml", strLanguage)?.SelectSingleNode("/chummer/grades/grade[id = \"" + SourceId.ToString("D") + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml", strLanguage).SelectSingleNode("/chummer/grades/grade[id = \"" + SourceId.ToString("D") + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -98,38 +102,20 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Internal identifier which will be used to identify this grade.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guidId == Guid.Empty ? string.Empty : _guidId.ToString("D");
-            }
-        }
+        public string InternalId => _guidId == Guid.Empty ? string.Empty : _guidId.ToString("D");
 
         /// <summary>
         /// Identifier of the grade within data files.
         /// </summary>
-        public Guid SourceId
-        {
-            get
-            {
-                return _guidSourceId;
-            }
-        }
+        public Guid SourceId => _guidSourceId;
 
         /// <summary>
         /// The English name of the Grade.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            get => _strName;
+            set => _strName = value;
         }
 
         /// <summary>
@@ -146,90 +132,51 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Grade's Essence cost multiplier.
         /// </summary>
-        public decimal Essence
-        {
-            get
-            {
-                return _decEss;
-            }
-        }
+        public decimal Essence => _decEss;
 
         /// <summary>
         /// Device rating of the grade.
         /// </summary>
-        public int DeviceRating
-        {
-            get
-            {
-                return _intDeviceRating;
-            }
-        }
+        public int DeviceRating => _intDeviceRating;
 
         /// <summary>
         /// The Grade's cost multiplier.
         /// </summary>
-        public decimal Cost
-        {
-            get
-            {
-                return _decCost;
-            }
-        }
+        public decimal Cost => _decCost;
 
         /// <summary>
         /// The Grade's Availability modifier.
         /// </summary>
-        public int Avail
-        {
-            get
-            {
-                return _intAvail;
-            }
-        }
+        public int Avail => _intAvail;
 
         /// <summary>
         /// Sourcebook.
         /// </summary>
-        public string Source
-        {
-            get
-            {
-                return _strSource;
-            }
-        }
+        public string Source => _strSource;
 
         /// <summary>
         /// Whether or not the Grade is for Adapsin.
         /// </summary>
-        public bool Adapsin
-        {
-            get
-            {
-                return _strName.Contains("(Adapsin)");
-            }
-        }
+        public bool Adapsin => _strName.Contains("(Adapsin)");
 
         /// <summary>
         /// Whether or not the Grade is for the Burnout's Way.
         /// </summary>
-        public bool Burnout
-        {
-            get
-            {
-                return _strName.Contains("Burnout's Way");
-            }
-        }
+        public bool Burnout => _strName.Contains("Burnout's Way");
 
         /// <summary>
         /// Whether or not this is a Second-Hand Grade.
         /// </summary>
-        public bool SecondHand
+        public bool SecondHand => _strName.Contains("Used");
+
+        /// <summary>
+        /// The Grade's Addiction Threshold Modifier. Used for Drugs.
+        /// </summary>
+        public int AddictionThreshold
         {
-            get
-            {
-                return _strName.Contains("Used");
-            }
+            get { return _intAddictionThreshold; }
+            set { _intAddictionThreshold = value; }
         }
-        #endregion
-    }
+		#endregion
+	}
 }

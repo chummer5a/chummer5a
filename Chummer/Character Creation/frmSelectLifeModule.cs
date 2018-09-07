@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Backend;
+
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -29,15 +29,15 @@ namespace Chummer
     {
         public bool AddAgain { get; private set; }
         private readonly Character _objCharacter;
-        private int _intStage;
-        private String _strDefaultStageName;
+        private readonly int _intStage;
+        private string _strDefaultStageName;
         private XmlDocument _xmlDocument;
-        private String _selectedId;
+        private string _selectedId;
         private Regex searchRegex;
 
 
-        private String _strWorkStage = null;
-        
+        private string _strWorkStage;
+
         public frmSelectLifeModule(Character objCharacter, int stage)
         {
             InitializeComponent();
@@ -52,7 +52,7 @@ namespace Chummer
             MoveControls();
 
             _xmlDocument = XmlManager.Load("lifemodules.xml");
-            String selectString = "chummer/stages/stage[@order = \"" + _intStage + "\"]";
+            string selectString = "chummer/stages/stage[@order = \"" + _intStage + "\"]";
 
             XmlNode stageNode = _xmlDocument.SelectSingleNode(selectString);
             if (stageNode != null)
@@ -67,7 +67,7 @@ namespace Chummer
             }
         }
 
-        private void BuildTree(String stageString)
+        private void BuildTree(string stageString)
         {
             XmlNodeList matches = _xmlDocument.SelectNodes("chummer/modules/module" + stageString);
             treModules.Nodes.Clear();
@@ -87,7 +87,7 @@ namespace Chummer
 
                     TreeNode treNode = new TreeNode
                     {
-                        Text = xmlNode["name"].InnerText
+                        Text = xmlNode["name"]?.InnerText ?? string.Empty
                     };
                     if (xmlNode["versions"] != null)
                     {
@@ -95,7 +95,7 @@ namespace Chummer
                             BuildList(xmlNode.SelectNodes("versions/version[" + _objCharacter.Options.BookXPath() + "or not(source)]")));
                     }
 
-                    treNode.Tag = xmlNode["id"].InnerText;
+                    treNode.Tag = xmlNode["id"]?.InnerText;
                     if (searchRegex != null)
                     {
                         if (searchRegex.IsMatch(treNode.Text))
@@ -111,7 +111,7 @@ namespace Chummer
                     {
                         nodes.Add(treNode);
                     }
-                    
+
                 }
             }
 
@@ -155,7 +155,7 @@ namespace Chummer
             else
             {
                 //Select any node that have an id node equal to tag
-                String selectString = "//*[id = \"" + e.Node.Tag + "\"]/selectable";
+                string selectString = "//*[id = \"" + e.Node.Tag + "\"]/selectable";
                 XmlNode node = _xmlDocument.SelectSingleNode(selectString);
                 //if it contains >selectable>True</selectable>, yes or </selectable>
                 //set button to selectable, otherwise not
@@ -171,15 +171,14 @@ namespace Chummer
                 cmdOKAdd.Enabled = blnSelectAble;
 
                 lblBP.Text = selectedNodeInfo["karma"]?.InnerText ?? string.Empty;
-                lblSource.Text = selectedNodeInfo["source"]?.InnerText ?? string.Empty + ' ' + selectedNodeInfo["page"]?.InnerText ?? string.Empty;
-
+                lblSource.Text = selectedNodeInfo["source"]?.InnerText ?? string.Empty + LanguageManager.GetString("String_Space", GlobalOptions.Language) + selectedNodeInfo["page"]?.InnerText;
                 lblStage.Text = selectedNodeInfo["stage"]?.InnerText ?? string.Empty;
             }
             else
             {
-                lblBP.Text = "ERROR";
-                lblStage.Text = "ERROR";
-                lblSource.Text = "ERROR";
+                lblBP.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
+                lblStage.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
+                lblSource.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
 
                 cmdOK.Enabled = false;
                 cmdOKAdd.Enabled = false;
@@ -187,10 +186,7 @@ namespace Chummer
 
         }
 
-        public XmlNode SelectedNode
-        {
-            get { return Quality.GetNodeOverrideable(_selectedId, XmlManager.Load("lifemodules.xml", GlobalOptions.Language)); }
-        }
+        public XmlNode SelectedNode => Quality.GetNodeOverrideable(_selectedId, XmlManager.Load("lifemodules.xml", GlobalOptions.Language));
 
         private void treModules_DoubleClick(object sender, EventArgs e)
         {
@@ -216,42 +212,36 @@ namespace Chummer
                         new ListItem("0", LanguageManager.GetString("String_All", GlobalOptions.Language))
                     };
 
-                    XmlNodeList xnodes = _xmlDocument.SelectNodes("/chummer/stages/stage");
-                    foreach (XmlNode xnode in xnodes)
-                    {
-                        XmlAttribute attrib = xnode.Attributes["order"];
-                        if (attrib != null)
-                        {
-                            Stages.Add(new ListItem(xnode.Attributes["order"].Value, xnode.InnerText));
-                        }
-                    }
+                    using (XmlNodeList xnodes = _xmlDocument.SelectNodes("/chummer/stages/stage"))
+                        if (xnodes != null)
+                            foreach (XmlNode xnode in xnodes)
+                            {
+                                string strOrder = xnode.Attributes?["order"]?.Value;
+                                if (!string.IsNullOrEmpty(strOrder))
+                                {
+                                    Stages.Add(new ListItem(strOrder, xnode.InnerText));
+                                }
+                            }
 
                     //Sort based on integer value of key
                     Stages.Sort((x, y) =>
                     {
-                        int yint = 0;
-                        if (int.TryParse(x.Value, out int xint))
+                        if (int.TryParse(x.Value.ToString(), out int xint))
                         {
-                            if (int.TryParse(y.Value, out yint))
+                            if (int.TryParse(y.Value.ToString(), out int yint))
                             {
                                 return xint - yint;
                             }
-                            else
-                            {
-                                return 1;
-                            }
+
+                            return 1;
                         }
-                        else
+
+                        if (int.TryParse(y.Value.ToString(), out int _))
                         {
-                            if (int.TryParse(y.Value, out yint))
-                            {
-                                return -1;
-                            }
-                            else
-                            {
-                                return 0;
-                            }
+                            return -1;
                         }
+
+                        return 0;
                     });
 
                     cboStage.ValueMember = "Value";
@@ -259,7 +249,7 @@ namespace Chummer
                     cboStage.DataSource = Stages;
                 }
 
-                ListItem selectedItem = ((List<ListItem>) cboStage.DataSource).Find(x => x.Value == _intStage.ToString());
+                ListItem selectedItem = ((List<ListItem>) cboStage.DataSource).Find(x => x.Value.ToString() == _intStage.ToString());
                 if (!string.IsNullOrEmpty(selectedItem.Name))
                     cboStage.SelectedItem = selectedItem;
 
@@ -282,11 +272,10 @@ namespace Chummer
             }
             else
             {
-                string strNodeSelect = "chummer/stages/stage[@order = \"" + strSelected + "\"]";
-                _strWorkStage = _xmlDocument.SelectSingleNode(strNodeSelect).InnerText;
+                _strWorkStage = _xmlDocument.SelectSingleNode("chummer/stages/stage[@order = \"" + strSelected + "\"]")?.InnerText;
                 BuildTree(GetSelectString());
             }
-            
+
         }
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
@@ -305,7 +294,7 @@ namespace Chummer
                     //No other way to check for a valid regex that i know of
                 }
             }
-            
+
             BuildTree(GetSelectString());
         }
 
@@ -313,8 +302,8 @@ namespace Chummer
         {
             string working = "[(" + _objCharacter.Options.BookXPath();
 
-            ///chummer/modules/module//name[contains(., "C")]/..["" = string.Empty]
-            /// /chummer/modules/module//name[contains(., "can")]/..[id]
+            //chummer/modules/module//name[contains(., "C")]/..["" = string.Empty]
+            // /chummer/modules/module//name[contains(., "can")]/..[id]
 
             //if (!string.IsNullOrWhiteSpace(_strSearch))
             //{
@@ -323,7 +312,7 @@ namespace Chummer
             //}
             if (!string.IsNullOrWhiteSpace(_strWorkStage))
             {
-                working += ") and stage = \"" + _strWorkStage + '\"';
+                working += ") and (stage = \"" + _strWorkStage + '\"';
             }
             working += ")]";
 
