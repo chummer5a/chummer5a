@@ -30,7 +30,6 @@ using Chummer.Backend.Attributes;
 using System.Drawing;
 using System.Text;
 using static Chummer.Backend.Skills.SkillsSection;
-using System.ComponentModel;
 using Chummer.Backend.Uniques;
 
 namespace Chummer

@@ -346,7 +346,7 @@ namespace Chummer
                     }
                     if (_setDealerConnectionMaps != null)
                     {
-                        if (_setDealerConnectionMaps.Any(set => objXmlVehicle.SelectSingleNode("category").Value.StartsWith(set)))
+                        if (_setDealerConnectionMaps.Any(set => objXmlVehicle.SelectSingleNode("category")?.Value.StartsWith(set) == true))
                         {
                             decCost *= 0.9m;
                         }

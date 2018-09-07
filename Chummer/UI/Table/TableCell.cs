@@ -23,7 +23,7 @@ namespace Chummer.UI.Table
 {
     public partial class TableCell : UserControl
     {
-        private object _value;
+        private object _objValue;
         protected Control contentField;
 
         public TableCell(Control content = null)
@@ -40,10 +40,8 @@ namespace Chummer.UI.Table
 
         public object Value
         {
-            get => _value;
-            private set {
-                _value = value;
-            }
+            get => _objValue;
+            private set => _objValue = value;
         }
 
         /// <summary>

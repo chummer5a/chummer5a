@@ -1188,7 +1188,7 @@ namespace Chummer
                             }
                         case "technique":
                             {
-                                List<MartialArtTechnique> objTempList = null;
+                                List<MartialArtTechnique> objTempList;
                                 if (objParent is MartialArt objArt)
                                 {
                                     objTempList = new List<MartialArtTechnique>(objArt.Techniques.Count);

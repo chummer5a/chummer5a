@@ -22,24 +22,24 @@ namespace Chummer.UI.Table
 {
     public partial class TextTableCell : TableCell
     {
-        private Label _label;
+        private readonly Label _lblText;
         
         public TextTableCell()
         {
             InitializeComponent();
-            _label = new Label();
-            contentField = _label;
-            Controls.Add(_label);
-            _label.AutoSize = true;
-            MinimumSize = _label.Size;
-            _label.Click += CommonFunctions.OpenPDFFromControl;
+            _lblText = new Label();
+            contentField = _lblText;
+            Controls.Add(_lblText);
+            _lblText.AutoSize = true;
+            MinimumSize = _lblText.Size;
+            _lblText.Click += CommonFunctions.OpenPDFFromControl;
         }
 
         protected internal override void UpdateValue(object newValue)
         {
             base.UpdateValue(newValue);
-            _label.Text = newValue == null ? "" : newValue.ToString();
-            MinimumSize = _label.Size;
+            _lblText.Text = newValue?.ToString() ?? string.Empty;
+            MinimumSize = _lblText.Size;
         }
     }
 }

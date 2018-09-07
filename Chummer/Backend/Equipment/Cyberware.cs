@@ -3479,24 +3479,24 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnFree"></param>
         /// <param name="strExpenseString"></param>
         /// <returns></returns>
-        public bool Purchase(Cyberware objCyberware, XmlNode objNode, Improvement.ImprovementSource objImprovementSource, Grade objGrade, int intRating, Character objCharacter, Vehicle objVehicle, TaggedObservableCollection<Cyberware> lstCyberwareCollection, ObservableCollection<Vehicle> lstVehicleCollection, TaggedObservableCollection<Weapon> lstWeaponCollection, decimal decMarkup = 0, bool blnFree = false, string strExpenseString = "String_ExpensePurchaseCyberware")
+        public bool Purchase(XmlNode objNode, Improvement.ImprovementSource objImprovementSource, Grade objGrade, int intRating, Character objCharacter, Vehicle objVehicle, TaggedObservableCollection<Cyberware> lstCyberwareCollection, ObservableCollection<Vehicle> lstVehicleCollection, TaggedObservableCollection<Weapon> lstWeaponCollection, decimal decMarkup = 0, bool blnFree = false, string strExpenseString = "String_ExpensePurchaseCyberware")
         {
             // Create the Cyberware object.
             List<Weapon> lstWeapons = new List<Weapon>();
             List<Vehicle> lstVehicles = new List<Vehicle>();
-            objCyberware.Create(objNode, objCharacter, objGrade, objImprovementSource, intRating, lstWeapons, lstVehicles, true, true, string.Empty, null, objVehicle);
-            if (objCyberware.InternalId.IsEmptyGuid())
+            Create(objNode, objCharacter, objGrade, objImprovementSource, intRating, lstWeapons, lstVehicles, true, true, string.Empty, null, objVehicle);
+            if (InternalId.IsEmptyGuid())
             {
                 return false;
             }
 
             if (blnFree)
-                objCyberware.Cost = "0";
+                Cost = "0";
 
-            decimal decCost = objCyberware.TotalCost;
+            decimal decCost = TotalCost;
 
             // Multiply the cost if applicable.
-            char chrAvail = objCyberware.TotalAvailTuple().Suffix;
+            char chrAvail = TotalAvailTuple().Suffix;
             if (chrAvail == 'R' && objCharacter.Options.MultiplyRestrictedCost)
                 decCost *= objCharacter.Options.RestrictedCostMultiplier;
             if (chrAvail == 'F' && objCharacter.Options.MultiplyForbiddenCost)
@@ -3524,17 +3524,17 @@ namespace Chummer.Backend.Equipment
                     string strEntry = LanguageManager.GetString(strExpenseString, GlobalOptions.Language);
                     objExpense.Create(decCost * -1,
                         strEntry + LanguageManager.GetString("String_Space", GlobalOptions.Language) +
-                        objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     objCharacter.ExpenseEntries.AddWithSort(objExpense);
                     objCharacter.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateNuyen(NuyenExpenseType.AddVehicleModCyberware, objCyberware.InternalId);
+                    objUndo.CreateNuyen(NuyenExpenseType.AddVehicleModCyberware, InternalId);
                     objExpense.Undo = objUndo;
                 }
             }
 
-            lstCyberwareCollection.Add(objCyberware);
+            lstCyberwareCollection.Add(this);
 
             foreach (Weapon objWeapon in lstWeapons)
             {
