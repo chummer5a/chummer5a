@@ -14368,115 +14368,39 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_quality");
-            AttributeSection.Load(objXmlCharacter);
+            AttributeSection.LoadFromHeroLab(xmlStatBlockBaseNode);
             RefreshAttributeBindings();
             Timekeeper.Start("load_char_misc2");
 
+            /* TODO: Find some way to get Mystic Adept PPs from Hero Lab files
             // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
             if (_blnAdeptEnabled && _blnMagicianEnabled)
             {
                 xmlCharacterNavigator.TryGetInt32FieldQuickly("magsplitadept", ref _intMAGAdept);
                 xmlCharacterNavigator.TryGetInt32FieldQuickly("magsplitmagician", ref _intMAGMagician);
             }
+            */
 
-            // Attempt to load in the character's tradition (or equivalent for Technomancers)
-            string strTemp = string.Empty;
-            if (xmlCharacterNavigator.TryGetStringFieldQuickly("stream", ref strTemp) && !string.IsNullOrEmpty(strTemp) && RESEnabled)
+            // Attempt to load in the character's tradition
+            if (xmlStatBlockBaseNode.SelectSingleNode("magic/tradition") != null)
             {
-                // Legacy load a Technomancer tradition
-                XmlNode xmlTraditionListDataNode = XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions");
-                if (xmlTraditionListDataNode != null)
-                {
-                    XmlNode xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"" + strTemp + "\"]");
-                    if (xmlTraditionDataNode != null)
-                    {
-                        if (!_objTradition.Create(xmlTraditionDataNode, true))
-                            _objTradition.ResetTradition();
-                    }
-                    else
-                    {
-                        xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"Default\"]");
-                        if (xmlTraditionDataNode != null)
-                        {
-                            if (!_objTradition.Create(xmlTraditionDataNode, true))
-                                _objTradition.ResetTradition();
-                        }
-                        else
-                        {
-                            xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition");
-                            if (xmlTraditionDataNode != null)
-                            {
-                                if (!_objTradition.Create(xmlTraditionDataNode, true))
-                                    _objTradition.ResetTradition();
-                            }
-                        }
-                    }
-                }
-
-                if (_objTradition.Type != TraditionType.None)
-                {
-                    _objTradition.LegacyLoad(xmlCharacterNavigator);
-                }
-            }
-            else
-            {
-                XPathNavigator xpathTraditionNavigator = xmlCharacterNavigator.SelectSingleNode("tradition");
-                // Regular tradition load
-                if (xpathTraditionNavigator?.SelectSingleNode("id") != null)
-                {
-                    _objTradition.Load(objXmlCharacter.SelectSingleNode("tradition"));
-                }
-                // Not null but doesn't have children -> legacy load a magical tradition
-                else if (xpathTraditionNavigator != null && MAGEnabled)
-                {
-                    XmlNode xmlTraditionListDataNode = XmlManager.Load("traditions.xml").SelectSingleNode("/chummer/traditions");
-                    if (xmlTraditionListDataNode != null)
-                    {
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("tradition", ref strTemp);
-                        XmlNode xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"" + strTemp + "\"]");
-                        if (xmlTraditionDataNode != null)
-                        {
-                            if (!_objTradition.Create(xmlTraditionDataNode))
-                                _objTradition.ResetTradition();
-                        }
-                        else
-                        {
-                            xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[id = \"" + Tradition.CustomMagicalTraditionGuid + "\"]");
-                            if (xmlTraditionDataNode != null)
-                            {
-                                if (!_objTradition.Create(xmlTraditionDataNode))
-                                    _objTradition.ResetTradition();
-                            }
-                        }
-                    }
-
-                    if (_objTradition.Type != TraditionType.None)
-                    {
-                        _objTradition.LegacyLoad(xmlCharacterNavigator);
-                    }
-                }
+                _objTradition.LoadFromHeroLab(xmlStatBlockBaseNode.SelectSingleNode("magic/tradition"));
             }
 
             // Attempt to load Condition Monitor Progress.
-            xmlCharacterNavigator.TryGetInt32FieldQuickly("physicalcmfilled", ref _intPhysicalCMFilled);
-            xmlCharacterNavigator.TryGetInt32FieldQuickly("stuncmfilled", ref _intStunCMFilled);
+            XmlNode xmlPhysicalCMFilledNode = xmlLeadsBaseNode.SelectSingleNode("usagepool[@id = \"DmgNet\" and @pickindex=\"5\"]/@quantity");
+            if (xmlPhysicalCMFilledNode != null)
+                int.TryParse(xmlPhysicalCMFilledNode.InnerText, out _intPhysicalCMFilled);
+            XmlNode xmlStunCMFilledNode = xmlLeadsBaseNode.SelectSingleNode("usagepool[@id = \"DmgNet\" and @pickindex=\"6\"]/@quantity");
+            if (xmlStunCMFilledNode != null)
+                int.TryParse(xmlStunCMFilledNode.InnerText, out _intStunCMFilled);
             Timekeeper.Finish("load_char_misc2");
             Timekeeper.Start("load_char_skills"); //slightly messy
-
-            _oldSkillsBackup = objXmlCharacter.SelectSingleNode("skills")?.Clone();
-            _oldSkillGroupBackup = objXmlCharacter.SelectSingleNode("skillgroups")?.Clone();
-
-            XmlNode objSkillNode = objXmlCharacter.SelectSingleNode("newskills");
-            if (objSkillNode != null)
-            {
-                SkillsSection.Load(objSkillNode);
-            }
-            else
-            {
-                SkillsSection.Load(objXmlCharacter, true);
-            }
+            
+            SkillsSection.LoadFromHeroLab(xmlStatBlockBaseNode.SelectSingleNode("skills"));
 
             Timekeeper.Finish("load_char_skills");
+            /* TODO: Add support for locations from HeroLab
             Timekeeper.Start("load_char_loc");
 
             // Locations.
@@ -14563,6 +14487,7 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_wloc");
+            */
             Timekeeper.Start("load_char_contacts");
 
             // Contacts.
@@ -15204,8 +15129,8 @@ namespace Chummer
             Timekeeper.Start("load_char_ware");
 
             // Cyberware/Bioware.
-            objXmlNodeList = objXmlCharacter.SelectNodes("cyberwares/cyberware");
-            foreach (XmlNode objXmlCyberware in objXmlNodeList)
+            XmlNodeList xmlNodeList = objXmlCharacter.SelectNodes("cyberwares/cyberware");
+            foreach (XmlNode xmlCyberware in xmlNodeList)
             {
                 Cyberware objCyberware = new Cyberware(this);
                 objCyberware.Load(objXmlCyberware);
@@ -15216,12 +15141,250 @@ namespace Chummer
             Timekeeper.Start("load_char_spells");
 
             // Spells.
-            objXmlNodeList = objXmlCharacter.SelectNodes("spells/spell");
-            foreach (XmlNode objXmlSpell in objXmlNodeList)
+            xmlNodeList = xmlStatBlockBaseNode.SelectNodes("magic/spells/spell");
+            XmlDocument xmlSpellDocument = XmlManager.Load("spells.xml");
+            foreach (XmlNode xmlHeroLabSpell in xmlNodeList)
             {
-                Spell objSpell = new Spell(this);
-                objSpell.Load(objXmlSpell);
-                _lstSpells.Add(objSpell);
+                string strSpellName = xmlHeroLabSpell.Attributes["name"]?.InnerText;
+                if (!string.IsNullOrEmpty(strSpellName))
+                {
+                    bool blnIsLimited = strSpellName.EndsWith(" (limited)");
+                    if (blnIsLimited)
+                        strSpellName = strSpellName.TrimEndOnce(" (limited)");
+                    string strForcedValue = string.Empty;
+                    switch (strSpellName)
+                    {
+                        case "Increase Body":
+                            strForcedValue = "BOD";
+                            strSpellName = "Increase [Attribute]";
+                            break;
+                        case "Increase Agility":
+                            strForcedValue = "AGI";
+                            strSpellName = "Increase [Attribute]";
+                            break;
+                        case "Increase Reaction":
+                            strForcedValue = "REA";
+                            strSpellName = "Increase [Attribute]";
+                            break;
+                        case "Increase Strength":
+                            strForcedValue = "STR";
+                            strSpellName = "Increase [Attribute]";
+                            break;
+                        case "Increase Charisma":
+                            strForcedValue = "CHA";
+                            strSpellName = "Increase [Attribute]";
+                            break;
+                        case "Increase Intuition":
+                            strForcedValue = "INT";
+                            strSpellName = "Increase [Attribute]";
+                            break;
+                        case "Increase Logic":
+                            strForcedValue = "LOG";
+                            strSpellName = "Increase [Attribute]";
+                            break;
+                        case "Increase Willpower":
+                            strForcedValue = "WIL";
+                            strSpellName = "Increase [Attribute]";
+                            break;
+                        case "Decrease Body":
+                            strForcedValue = "BOD";
+                            strSpellName = "Decrease [Attribute]";
+                            break;
+                        case "Decrease Agility":
+                            strForcedValue = "AGI";
+                            strSpellName = "Decrease [Attribute]";
+                            break;
+                        case "Decrease Reaction":
+                            strForcedValue = "REA";
+                            strSpellName = "Decrease [Attribute]";
+                            break;
+                        case "Decrease Strength":
+                            strForcedValue = "STR";
+                            strSpellName = "Decrease [Attribute]";
+                            break;
+                        case "Decrease Charisma":
+                            strForcedValue = "CHA";
+                            strSpellName = "Decrease [Attribute]";
+                            break;
+                        case "Decrease Intuition":
+                            strForcedValue = "INT";
+                            strSpellName = "Decrease [Attribute]";
+                            break;
+                        case "Decrease Logic":
+                            strForcedValue = "LOG";
+                            strSpellName = "Decrease [Attribute]";
+                            break;
+                        case "Decrease Willpower":
+                            strForcedValue = "WIL";
+                            strSpellName = "Decrease [Attribute]";
+                            break;
+                    }
+                    if (strSpellName.StartsWith("Detect ") &&
+                        strSpellName != "Detect Life" &&
+                        strSpellName != "Detect Life, Extended" &&
+                        strSpellName != "Detect Magic" &&
+                        strSpellName != "Detect Magic, Extended" &&
+                        strSpellName != "Detect Enemies" &&
+                        strSpellName != "Detect Enemies, Extended" &&
+                        strSpellName != "Detect Individual" &&
+                        strSpellName != "Detect Life, Extended")
+                    {
+                        strForcedValue = strSpellName.TrimStartOnce("Clean ").TrimEndOnce(", Extended");
+                        if (xmlHeroLabSpell.Attributes["type"]?.InnerText == "Physical")
+                            strSpellName = "Detect [Object]";
+                        else if (strSpellName.EndsWith(", Extended"))
+                            strSpellName = "Detect [Life Form], Extended";
+                        else
+                            strSpellName = "Detect [Life Form]";
+                    }
+                    else if (strSpellName.StartsWith("Corrode "))
+                    {
+                        strForcedValue = strSpellName.TrimStartOnce("Corrode ");
+                        strSpellName = "Corrode [Object]";
+                    }
+                    else if (strSpellName.StartsWith("Melt "))
+                    {
+                        strForcedValue = strSpellName.TrimStartOnce("Melt ");
+                        strSpellName = "Melt [Object]";
+                    }
+                    else if (strSpellName.StartsWith("Sludge "))
+                    {
+                        strForcedValue = strSpellName.TrimStartOnce("Sludge ");
+                        strSpellName = "Sludge [Object]";
+                    }
+                    else if (strSpellName.StartsWith("Disrupt "))
+                    {
+                        strForcedValue = strSpellName.TrimStartOnce("Disrupt ");
+                        strSpellName = "Disrupt [Object]";
+                    }
+                    else if (strSpellName.StartsWith("Destroy "))
+                    {
+                        strForcedValue = strSpellName.TrimStartOnce("Destroy ");
+                        if (xmlHeroLabSpell.Attributes["type"]?.InnerText == "Physical")
+                            strSpellName = "Destroy [Vehicle]";
+                        else
+                            strSpellName = "Destroy [Free Spirit]";
+                    }
+                    else if (strSpellName.StartsWith("Insecticide "))
+                    {
+                        strForcedValue = strSpellName.TrimStartOnce("Insecticide ");
+                        strSpellName = "Insecticide [Insect Spirit]";
+                    }
+                    else if (strSpellName.StartsWith("One Less "))
+                    {
+                        strForcedValue = strSpellName.TrimStartOnce("One Less ");
+                        strSpellName = "One Less [Metatype/Species]";
+                    }
+                    else if (strSpellName.StartsWith("Slay "))
+                    {
+                        strForcedValue = strSpellName.TrimStartOnce("Slay ");
+                        strSpellName = "Slay [Metatype/Species]";
+                    }
+                    else if (strSpellName.StartsWith("Slaughter "))
+                    {
+                        strForcedValue = strSpellName.TrimStartOnce("Slaughter ");
+                        strSpellName = "Slaughter [Metatype/Species]";
+                    }
+                    else if (strSpellName.StartsWith("Ram "))
+                    {
+                        strForcedValue = strSpellName.TrimStartOnce("Ram ");
+                        strSpellName = "Ram [Object]";
+                    }
+                    else if (strSpellName.StartsWith("Wreck "))
+                    {
+                        strForcedValue = strSpellName.TrimStartOnce("Wreck ");
+                        strSpellName = "Wreck [Object]";
+                    }
+                    else if (strSpellName.StartsWith("Demolish "))
+                    {
+                        strForcedValue = strSpellName.TrimStartOnce("Demolish ");
+                        strSpellName = "Demolish [Object]";
+                    }
+                    else if (strSpellName.EndsWith(" Cryptesthesia"))
+                    {
+                        strForcedValue = strSpellName.TrimEndOnce(" Cryptesthesia");
+                        strSpellName = "[Sense] Cryptesthesia";
+                    }
+                    else if (strSpellName.EndsWith(" Removal"))
+                    {
+                        strForcedValue = strSpellName.TrimStartOnce("Mass ").TrimEndOnce(" Removal");
+                        strSpellName = strSpellName.StartsWith("Mass ") ? "Mass [Sense] Removal" : "[Sense] Removal";
+                    }
+                    else if (strSpellName.StartsWith("Alleviate ") && strSpellName != "Alleviate Addiction")
+                    {
+                        strForcedValue = strSpellName.TrimStartOnce("Alleviate ");
+                        strSpellName = "Alleviate [Allergy]";
+                    }
+                    else if (strSpellName.StartsWith("Clean "))
+                    {
+                        strForcedValue = strSpellName.TrimStartOnce("Clean ");
+                        strSpellName = "Clean [Element]";
+                    }
+                    else if (strSpellName.EndsWith(" Grenade"))
+                    {
+                        strForcedValue = strSpellName.TrimEndOnce(" Grenade");
+                        strSpellName = "[Element] Grenade";
+                    }
+                    else if (strSpellName.EndsWith(" Aura"))
+                    {
+                        strForcedValue = strSpellName.TrimEndOnce(" Aura");
+                        strSpellName = "[Element] Aura";
+                    }
+                    else if (strSpellName != "Napalm Wall" && strSpellName.EndsWith(" Wall"))
+                    {
+                        strForcedValue = strSpellName.TrimEndOnce(" Wall");
+                        strSpellName = "[Element] Wall";
+                    }
+                    else if (strSpellName.StartsWith("Shape "))
+                    {
+                        strForcedValue = strSpellName.TrimStartOnce("Shape ");
+                        strSpellName = "Shape [Material]";
+                    }
+                    else if (strSpellName.EndsWith(" Form"))
+                    {
+                        strForcedValue = strSpellName.TrimEndOnce(" Form");
+                        strSpellName = "[Critter] Form";
+                    }
+                    else if (strSpellName.StartsWith("Calling "))
+                    {
+                        strForcedValue = strSpellName.TrimStartOnce("Calling ");
+                        strSpellName = "Calling [Spirit Type]";
+                    }
+                    else if (strSpellName != "Symbolic Link" && strSpellName.EndsWith(" Link"))
+                    {
+                        strForcedValue = strSpellName.TrimEndOnce(" Link");
+                        strSpellName = "[Sense] Link";
+                    }
+                    string strSpellCategory = xmlHeroLabSpell.Attributes["category"]?.InnerText;
+                    XmlNode xmlSpellData = xmlArmorDocument.SelectSingleNode("chummer/spells/spell[category = \"" + strSpellCategory + "\" and name = \"" + strSpellName + "\"]");
+                    if (xmlSpellData == null)
+                    {
+                        string[] astrOriginalNameSplit = strSpellName.Split(':');
+                        if (astrOriginalNameSplit.Length > 1)
+                        {
+                            string strName = astrOriginalNameSplit[0].Trim();
+                            xmlSpellData = xmlWeaponDocument.SelectSingleNode("/chummer/spells/spell[category = \"" + strSpellCategory + "\" and name = \"" + strName + "\"]");
+                        }
+
+                        if (xmlSpellData == null)
+                        {
+                            astrOriginalNameSplit = strSpellName.Split(',');
+                            if (astrOriginalNameSplit.Length > 1)
+                            {
+                                string strName = astrOriginalNameSplit[0].Trim();
+                                xmlSpellData = xmlWeaponDocument.SelectSingleNode("/chummer/spells/spell[category = \"" + strSpellCategory + "\" and name = \"" + strName + "\"]");
+                            }
+                        }
+                    }
+
+                    if (xmlSpellData != null)
+                    {
+                        Spell objSpell = new Spell(this);
+                        objSpell.Create(xmlSpellData, strForcedValue, blnIsLimited);
+                        objSpell.Notes = xmlHeroLabSpell["description"]?.InnerText;
+                        _lstSpells.Add(objSpell);
+                    }
+                }
             }
 
             Timekeeper.Finish("load_char_spells");
@@ -15230,12 +15393,12 @@ namespace Chummer
             // Powers.
             bool blnDoEnhancedAccuracyRefresh = LastSavedVersion <= new Version("5.198.26");
             List<ListItem> lstPowerOrder = new List<ListItem>();
-            objXmlNodeList = objXmlCharacter.SelectNodes("powers/power");
+            xmlNodeList = objXmlCharacter.SelectNodes("powers/power");
             // Sort the Powers in alphabetical order.
-            foreach (XmlNode xmlPower in objXmlNodeList)
+            foreach (XmlNode xmlHeroLabPower in xmlNodeList)
             {
-                string strGuid = xmlPower["guid"]?.InnerText;
-                string strPowerName = xmlPower["name"]?.InnerText ?? string.Empty;
+                string strGuid = xmlHeroLabPower["guid"]?.InnerText;
+                string strPowerName = xmlHeroLabPower["name"]?.InnerText ?? string.Empty;
                 if (blnDoEnhancedAccuracyRefresh && strPowerName == "Enhanced Accuracy (skill)")
                 {
                     _lstInternalIdsNeedingReapplyImprovements.Add(strGuid);
@@ -15243,11 +15406,11 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(strGuid))
                     lstPowerOrder.Add(new ListItem(strGuid,
-                        strPowerName + (xmlPower["extra"]?.InnerText ?? string.Empty)));
+                        strPowerName + (xmlHeroLabPower["extra"]?.InnerText ?? string.Empty)));
                 else
                 {
                     Power objPower = new Power(this);
-                    objPower.Load(xmlPower);
+                    objPower.Load(xmlHeroLabPower);
                     _lstPowers.Add(objPower);
                 }
             }
@@ -15281,23 +15444,23 @@ namespace Chummer
             Timekeeper.Start("load_char_complex");
 
             // Compex Forms/Technomancer Programs.
-            objXmlNodeList = objXmlCharacter.SelectNodes("complexforms/complexform");
-            foreach (XmlNode objXmlComplexForm in objXmlNodeList)
+            xmlNodeList = objXmlCharacter.SelectNodes("complexforms/complexform");
+            foreach (XmlNode xmlHeroLabComplexForm in xmlNodeList)
             {
                 ComplexForm objComplexForm = new ComplexForm(this);
-                objComplexForm.Load(objXmlComplexForm);
+                objComplexForm.Load(xmlHeroLabComplexForm);
                 _lstComplexForms.Add(objComplexForm);
             }
 
             Timekeeper.Finish("load_char_complex");
             Timekeeper.Start("load_char_aiprogram");
 
-            // Compex Forms/Technomancer Programs.
+            // AI Advanced Programs.
             objXmlNodeList = objXmlCharacter.SelectNodes("aiprograms/aiprogram");
-            foreach (XmlNode objXmlProgram in objXmlNodeList)
+            foreach (XmlNode xmlHeroLabProgram in xmlNodeList)
             {
                 AIProgram objProgram = new AIProgram(this);
-                objProgram.Load(objXmlProgram);
+                objProgram.Load(xmlHeroLabProgram);
                 _lstAIPrograms.Add(objProgram);
             }
 
@@ -15305,11 +15468,11 @@ namespace Chummer
             Timekeeper.Start("load_char_marts");
 
             // Martial Arts.
-            objXmlNodeList = objXmlCharacter.SelectNodes("martialarts/martialart");
-            foreach (XmlNode objXmlArt in objXmlNodeList)
+            xmlNodeList = objXmlCharacter.SelectNodes("martialarts/martialart");
+            foreach (XmlNode xmlHeroLabArt in xmlNodeList)
             {
                 MartialArt objMartialArt = new MartialArt(this);
-                objMartialArt.Load(objXmlArt);
+                objMartialArt.Load(xmlHeroLabArt);
                 _lstMartialArts.Add(objMartialArt);
             }
 
@@ -15332,10 +15495,10 @@ namespace Chummer
 
             // Lifestyles.
             objXmlNodeList = objXmlCharacter.SelectNodes("lifestyles/lifestyle");
-            foreach (XmlNode objXmlLifestyle in objXmlNodeList)
+            foreach (XmlNode xmlHeroLabLifestyle in xmlNodeList)
             {
                 Lifestyle objLifestyle = new Lifestyle(this);
-                objLifestyle.Load(objXmlLifestyle);
+                objLifestyle.Load(xmlHeroLabLifestyle);
                 _lstLifestyles.Add(objLifestyle);
             }
 
@@ -15368,22 +15531,22 @@ namespace Chummer
             Timekeeper.Start("load_char_car");
 
             // Vehicles.
-            objXmlNodeList = objXmlCharacter.SelectNodes("vehicles/vehicle");
-            foreach (XmlNode objXmlVehicle in objXmlNodeList)
+            xmlNodeList = objXmlCharacter.SelectNodes("vehicles/vehicle");
+            foreach (XmlNode xmlHeroLabVehicle in xmlNodeList)
             {
                 Vehicle objVehicle = new Vehicle(this);
-                objVehicle.Load(objXmlVehicle);
+                objVehicle.Load(xmlHeroLabVehicle);
                 _lstVehicles.Add(objVehicle);
             }
 
             Timekeeper.Finish("load_char_car");
             Timekeeper.Start("load_char_mmagic");
             // Metamagics/Echoes.
-            objXmlNodeList = objXmlCharacter.SelectNodes("metamagics/metamagic");
-            foreach (XmlNode objXmlMetamagic in objXmlNodeList)
+            xmlNodeList = objXmlCharacter.SelectNodes("metamagics/metamagic");
+            foreach (XmlNode xmlHeroLabMetamagic in xmlNodeList)
             {
                 Metamagic objMetamagic = new Metamagic(this);
-                objMetamagic.Load(objXmlMetamagic);
+                objMetamagic.Load(xmlHeroLabMetamagic);
                 _lstMetamagics.Add(objMetamagic);
             }
 
@@ -15391,11 +15554,11 @@ namespace Chummer
             Timekeeper.Start("load_char_arts");
 
             // Arts
-            objXmlNodeList = objXmlCharacter.SelectNodes("arts/art");
-            foreach (XmlNode objXmlArt in objXmlNodeList)
+            xmlNodeList = objXmlCharacter.SelectNodes("arts/art");
+            foreach (XmlNode xmlHeroLabArt in xmlNodeList)
             {
                 Art objArt = new Art(this);
-                objArt.Load(objXmlArt);
+                objArt.Load(xmlHeroLabArt);
                 _lstArts.Add(objArt);
             }
 
@@ -15403,11 +15566,11 @@ namespace Chummer
             Timekeeper.Start("load_char_ench");
 
             // Enhancements
-            objXmlNodeList = objXmlCharacter.SelectNodes("enhancements/enhancement");
-            foreach (XmlNode objXmlEnhancement in objXmlNodeList)
+            xmlNodeList = objXmlCharacter.SelectNodes("enhancements/enhancement");
+            foreach (XmlNode xmlHeroLabEnhancement in objXmlNodeList)
             {
                 Enhancement objEnhancement = new Enhancement(this);
-                objEnhancement.Load(objXmlEnhancement);
+                objEnhancement.Load(xmlHeroLabEnhancement);
                 _lstEnhancements.Add(objEnhancement);
             }
 
@@ -15415,11 +15578,11 @@ namespace Chummer
             Timekeeper.Start("load_char_cpow");
 
             // Critter Powers.
-            objXmlNodeList = objXmlCharacter.SelectNodes("critterpowers/critterpower");
-            foreach (XmlNode objXmlPower in objXmlNodeList)
+            xmlNodeList = objXmlCharacter.SelectNodes("critterpowers/critterpower");
+            foreach (XmlNode xmlHeroLabPower in xmlNodeList)
             {
                 CritterPower objPower = new CritterPower(this);
-                objPower.Load(objXmlPower);
+                objPower.Load(xmlHeroLabPower);
                 _lstCritterPowers.Add(objPower);
             }
 
@@ -15427,11 +15590,11 @@ namespace Chummer
             Timekeeper.Start("load_char_foci");
 
             // Foci.
-            objXmlNodeList = objXmlCharacter.SelectNodes("foci/focus");
-            foreach (XmlNode objXmlFocus in objXmlNodeList)
+            xmlNodeList = objXmlCharacter.SelectNodes("foci/focus");
+            foreach (XmlNode xmlHeroLabFocus in xmlNodeList)
             {
                 Focus objFocus = new Focus(this);
-                objFocus.Load(objXmlFocus);
+                objFocus.Load(xmlHeroLabFocus);
                 _lstFoci.Add(objFocus);
             }
 
@@ -15439,11 +15602,11 @@ namespace Chummer
             Timekeeper.Start("load_char_init");
 
             // Initiation Grades.
-            objXmlNodeList = objXmlCharacter.SelectNodes("initiationgrades/initiationgrade");
-            foreach (XmlNode objXmlGrade in objXmlNodeList)
+            xmlNodeList = objXmlCharacter.SelectNodes("initiationgrades/initiationgrade");
+            foreach (XmlNode xmlHeroLabGrade in xmlNodeList)
             {
                 InitiationGrade objGrade = new InitiationGrade(this);
-                objGrade.Load(objXmlGrade);
+                objGrade.Load(xmlHeroLabGrade);
                 _lstInitiationGrades.Add(objGrade);
             }
 
@@ -15451,11 +15614,11 @@ namespace Chummer
             Timekeeper.Start("load_char_elog");
 
             // Expense Log Entries.
-            XmlNodeList objXmlExpenseList = objXmlCharacter.SelectNodes("expenses/expense");
-            foreach (XmlNode objXmlExpense in objXmlExpenseList)
+            XmlNodeList xmlExpenseList = objXmlCharacter.SelectNodes("expenses/expense");
+            foreach (XmlNode xmlHeroLabExpense in xmlExpenseList)
             {
                 ExpenseLogEntry objExpenseLogEntry = new ExpenseLogEntry(this);
-                objExpenseLogEntry.Load(objXmlExpense);
+                objExpenseLogEntry.Load(xmlHeroLabExpense);
                 _lstExpenseLog.Add(objExpenseLogEntry);
             }
 

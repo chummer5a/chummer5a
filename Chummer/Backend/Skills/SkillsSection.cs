@@ -361,6 +361,114 @@ namespace Chummer.Backend.Skills
             Timekeeper.Finish("load_char_skills");
         }
 
+        internal void LoadFromHeroLab(XmlNode xmlSkillNode)
+        {
+            Timekeeper.Start("load_char_skills_groups");
+            List<SkillGroup> lstLoadingSkillGroups = new List<SkillGroup>();
+            using (XmlNodeList xmlGroupsList = xmlSkillNode.SelectNodes("groups/skill"))
+                if (xmlGroupsList != null)
+                    foreach (XmlNode xmlNode in xmlGroupsList)
+                    {
+                        SkillGroup objGroup = new SkillGroup(_objCharacter);
+                        objGroup.LoadFromHeroLab(xmlNode);
+                        lstLoadingSkillGroups.Add(objGroup);
+                    }
+            lstLoadingSkillGroups.Sort((i1, i2) => string.Compare(i2.DisplayName, i1.DisplayName, StringComparison.Ordinal));
+            foreach (SkillGroup skillgroup in lstLoadingSkillGroups)
+            {
+                SkillGroups.Add(skillgroup);
+            }
+            Timekeeper.Finish("load_char_skills_groups");
+            Timekeeper.Start("load_char_skills");
+            
+            List<Skill> lstTempSkillList = new List<Skill>();
+            using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("active/skill"))
+                if (xmlSkillsList?.Count > 0)
+                    foreach (XmlNode xmlNode in xmlSkillsList)
+                    {
+                        Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, false);
+                        if (objSkill != null)
+                            lstTempSkillList.Add(objSkill);
+                    }
+            using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("knowledge/skill"))
+                if (xmlSkillsList?.Count > 0)
+                    foreach (XmlNode xmlNode in xmlSkillsList)
+                    {
+                        Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true);
+                        if (objSkill != null)
+                            lstTempSkillList.Add(objSkill);
+                    }
+            using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("language/skill"))
+                if (xmlSkillsList?.Count > 0)
+                    foreach (XmlNode xmlNode in xmlSkillsList)
+                    {
+                        Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true, "Language");
+                        if (objSkill != null)
+                            lstTempSkillList.Add(objSkill);
+                    }
+
+            List<Skill> lstUnsortedSkills = new List<Skill>();
+
+            //Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
+            bool OldSkillFilter(Skill skill)
+            {
+                if (skill.Rating > 0)
+                    return true;
+
+                if (skill.SkillCategory == "Resonance Active" && !_objCharacter.RESEnabled)
+                    return false;
+
+                //This could be more fine grained, but frankly i don't care
+                if (skill.SkillCategory == "Magical Active" && !_objCharacter.MAGEnabled)
+                    return false;
+
+                return true;
+            }
+
+            foreach (Skill objSkill in lstTempSkillList)
+            {
+                if (objSkill is KnowledgeSkill objKnoSkill)
+                {
+                    KnowledgeSkills.Add(objKnoSkill);
+                }
+                else if (OldSkillFilter(objSkill))
+                {
+                    lstUnsortedSkills.Add(objSkill);
+                }
+            }
+
+            lstUnsortedSkills.Sort(CompareSkills);
+
+            foreach (Skill objSkill in lstUnsortedSkills)
+            {
+                _lstSkills.Add(objSkill);
+                _dicSkills.Add(objSkill.IsExoticSkill ? objSkill.Name + " (" + objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')' : objSkill.Name, objSkill);
+            }
+
+            UpdateUndoList(xmlSkillNode);
+
+            //This might give subtle bugs in the future,
+            //but right now it needs to be run once when upgrading or it might crash.
+            //As some didn't they crashed on loading skills.
+            //After this have run, it won't (for the crash i'm aware)
+            //TODO: Move it to the other side of the if someday?
+
+            if (!_objCharacter.Created)
+            {
+                // zero out any skillgroups whose skills did not make the final cut
+                foreach (SkillGroup objSkillGroup in SkillGroups)
+                {
+                    if (!objSkillGroup.SkillList.Any(x => SkillsDictionary.ContainsKey(x.Name)))
+                    {
+                        objSkillGroup.Base = 0;
+                        objSkillGroup.Karma = 0;
+                    }
+                }
+            }
+
+            Timekeeper.Finish("load_char_skills");
+        }
+
         private void UpdateUndoList(XmlNode skillNode)
         {
             //Hacky way of converting Expense entries to guid based skill identification
