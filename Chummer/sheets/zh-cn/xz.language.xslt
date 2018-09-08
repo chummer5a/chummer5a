@@ -266,6 +266,7 @@
   <xsl:variable name="lang.CoreTrack"  select="'Core Damage Track'"/>
   <xsl:variable name="lang.CritterPowers"    select="'怪物能力'"/>
   <xsl:variable name="lang.CurrentEdge"    select="'当前极限点'"/>
+  <xsl:variable name="lang.CurrentForm"    select="'当前形'"/>
   <xsl:variable name="lang.DamageType"  select="'Damage Type'"/>
   <xsl:variable name="lang.DataProc"      select="'数据处理'"/>
   <xsl:variable name="lang.DataProcessing"  select="'数据处理'"/>
