@@ -35,8 +35,8 @@ namespace Chummer.UI.Skills
             InitializeComponent();
 
             //Display
-            lblModifiedRating.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.DisplayPool), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblModifiedRating.DataBindings.Add("ToolTipText", skill, nameof(Skill.PoolToolTip));
+            Utils.DoDatabinding(lblModifiedRating, "Text", skill, nameof(KnowledgeSkill.DisplayPool));
+            Utils.DoDatabinding(lblModifiedRating, "ToolTipText", skill, nameof(KnowledgeSkill.PoolToolTip));
 
             List<ListItem> lstTypes = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language).ToList();
             lstTypes.Sort(CompareListItems.CompareNames);

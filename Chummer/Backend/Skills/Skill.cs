@@ -102,7 +102,7 @@ namespace Chummer.Backend.Skills
         {
             objWriter.WriteStartElement("skill");
 
-            int intRating = PoolOtherAttribute(AttributeObject.TotalValue, Attribute);
+            int intRating = PoolOtherAttribute(AttributeModifiers, Attribute);
             int intSpecRating = Specializations.Count == 0 || CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && x.UniqueName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled)
                 ? intRating
                 : (!IsKnowledgeSkill && Name == "Artisan" &&
@@ -124,7 +124,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("ratingmax", RatingMaximum.ToString(objCulture));
             objWriter.WriteElementString("specializedrating", intSpecRating.ToString(objCulture));
             objWriter.WriteElementString("specbonus", (intSpecRating - intRating).ToString(objCulture));
-            objWriter.WriteElementString("total", PoolOtherAttribute(AttributeObject.TotalValue, Attribute).ToString(objCulture));
+            objWriter.WriteElementString("total", PoolOtherAttribute(AttributeModifiers, Attribute).ToString(objCulture));
             objWriter.WriteElementString("knowledge", IsKnowledgeSkill.ToString());
             objWriter.WriteElementString("exotic", IsExoticSkill.ToString());
             objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString());
@@ -398,7 +398,10 @@ namespace Chummer.Backend.Skills
                             new DependancyGraphNode<string>(nameof(Specialization))
                         ),
                         new DependancyGraphNode<string>(nameof(Pool),
-                            new DependancyGraphNode<string>(nameof(AttributeObject)),
+                            new DependancyGraphNode<string>(nameof(AttributeModifiers),
+                                new DependancyGraphNode<string>(nameof(AttributeObject))
+                            ),
+                            new DependancyGraphNode<string>(nameof(PoolOtherAttribute)),
                             new DependancyGraphNode<string>(nameof(Attribute))
                         )
                     )
@@ -570,7 +573,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// The total, general pourpose dice pool for this skill
         /// </summary>
-        public int Pool => PoolOtherAttribute(AttributeObject.TotalValue, Attribute);
+        public int Pool => PoolOtherAttribute(AttributeModifiers, Attribute);
 
         public bool Leveled => Rating > 0;
 
@@ -1120,7 +1123,7 @@ namespace Chummer.Backend.Skills
             return strReturn ?? SkillCategory;
         }
 
-        public virtual string DisplayPool => DisplayOtherAttribute(AttributeObject.TotalValue, Attribute);
+        public virtual string DisplayPool => DisplayOtherAttribute(AttributeModifiers, Attribute);
 
         public string DisplayOtherAttribute(int intAttributeTotalValue, string strAttribute)
         {
