@@ -22,6 +22,7 @@ Application Changes:
 - The spirits to which a tradition has access will now also be displayed on characters who are not using a Custom tradition, though they cannot be changed.
 - Traditions can now apply improvements/bonuses, just like qualities, gear, mentor spirits, etc.
 - Fixed an issue where removing Metatype Removable qualities at character creation would not sometimes not end up altering the quality list and/or character karma properly. Fixes #2876.
+- Fixed an issue where completely deleting certain qualities with levels attached to them would only remove the improvements originating from the first level until the character was loaded from a save file (at which point the orphaned improvements would have gotten culled). Fixes #2972.
 
 Data Changes:
 
