@@ -260,11 +260,11 @@ namespace Chummer.Backend.Attributes
             return null;
 		}
 
-		internal void ForceAttributePropertyChangedNotificationAll(string name)
+		internal void ForceAttributePropertyChangedNotificationAll(params string[] lstNames)
 		{
 			foreach (CharacterAttrib att in AttributeList)
 			{
-				att.OnPropertyChanged(name);
+				att.OnMultiplePropertyChanged(lstNames);
 			}
 		}
 

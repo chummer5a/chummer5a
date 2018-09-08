@@ -17580,8 +17580,8 @@ namespace Chummer
         private void cboAttributeCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             CharacterObject.AttributeSection.AttributeCategory = AttributeSection.ConvertAttributeCategory(cboAttributeCategory.SelectedValue.ToString());
-            CharacterObject.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalAugmentedMaximum));
             CharacterObject.AttributeSection.ResetBindings();
+            CharacterObject.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.MetatypeMaximum), nameof(CharacterAttrib.MetatypeMinimum));
             MakeDirtyWithCharacterUpdate(this, EventArgs.Empty);
         }
 
