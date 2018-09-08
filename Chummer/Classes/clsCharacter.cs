@@ -15356,14 +15356,14 @@ namespace Chummer
                         strSpellName = "[Sense] Link";
                     }
                     string strSpellCategory = xmlHeroLabSpell.Attributes["category"]?.InnerText;
-                    XmlNode xmlSpellData = xmlArmorDocument.SelectSingleNode("chummer/spells/spell[category = \"" + strSpellCategory + "\" and name = \"" + strSpellName + "\"]");
+                    XmlNode xmlSpellData = xmlSpellDocument.SelectSingleNode("chummer/spells/spell[category = \"" + strSpellCategory + "\" and name = \"" + strSpellName + "\"]");
                     if (xmlSpellData == null)
                     {
                         string[] astrOriginalNameSplit = strSpellName.Split(':');
                         if (astrOriginalNameSplit.Length > 1)
                         {
                             string strName = astrOriginalNameSplit[0].Trim();
-                            xmlSpellData = xmlWeaponDocument.SelectSingleNode("/chummer/spells/spell[category = \"" + strSpellCategory + "\" and name = \"" + strName + "\"]");
+                            xmlSpellData = xmlSpellDocument.SelectSingleNode("/chummer/spells/spell[category = \"" + strSpellCategory + "\" and name = \"" + strName + "\"]");
                         }
 
                         if (xmlSpellData == null)
@@ -15372,7 +15372,7 @@ namespace Chummer
                             if (astrOriginalNameSplit.Length > 1)
                             {
                                 string strName = astrOriginalNameSplit[0].Trim();
-                                xmlSpellData = xmlWeaponDocument.SelectSingleNode("/chummer/spells/spell[category = \"" + strSpellCategory + "\" and name = \"" + strName + "\"]");
+                                xmlSpellData = xmlSpellDocument.SelectSingleNode("/chummer/spells/spell[category = \"" + strSpellCategory + "\" and name = \"" + strName + "\"]");
                             }
                         }
                     }
@@ -15391,41 +15391,42 @@ namespace Chummer
             Timekeeper.Start("load_char_powers");
 
             // Powers.
-            bool blnDoEnhancedAccuracyRefresh = LastSavedVersion <= new Version("5.198.26");
-            List<ListItem> lstPowerOrder = new List<ListItem>();
-            xmlNodeList = objXmlCharacter.SelectNodes("powers/power");
-            // Sort the Powers in alphabetical order.
+            xmlNodeList = xmlStatBlockBaseNode.SelectNodes("magic/adeptpowers/adeptpower");
+            XmlDocument xmlPowersDocument = XmlManager.Load("powers.xml");
             foreach (XmlNode xmlHeroLabPower in xmlNodeList)
             {
-                string strGuid = xmlHeroLabPower["guid"]?.InnerText;
-                string strPowerName = xmlHeroLabPower["name"]?.InnerText ?? string.Empty;
-                if (blnDoEnhancedAccuracyRefresh && strPowerName == "Enhanced Accuracy (skill)")
+                string strPowerName = xmlHeroLabPower.Attributes["name"]?.InnerText;
+                if (!string.IsNullOrEmpty(strPowerName))
                 {
-                    _lstInternalIdsNeedingReapplyImprovements.Add(strGuid);
-                }
+                    string strForcedValue = string.Empty;
+                    XmlNode xmlPowerData = xmlArmorDocument.SelectSingleNode("chummer/powers/power[name = \"" + strPowerName + "\"]");
+                    if (xmlPowerData == null)
+                    {
+                        string[] astrOriginalNameSplit = strPowerName.Split(':');
+                        if (astrOriginalNameSplit.Length > 1)
+                        {
+                            string strName = astrOriginalNameSplit[0].Trim();
+                            xmlPowerData = xmlWeaponDocument.SelectSingleNode("/chummer/powers/power[name = \"" + strPowerName + "\"]");
+                        }
 
-                if (!string.IsNullOrEmpty(strGuid))
-                    lstPowerOrder.Add(new ListItem(strGuid,
-                        strPowerName + (xmlHeroLabPower["extra"]?.InnerText ?? string.Empty)));
-                else
-                {
-                    Power objPower = new Power(this);
-                    objPower.Load(xmlHeroLabPower);
-                    _lstPowers.Add(objPower);
-                }
-            }
+                        if (xmlPowerData == null)
+                        {
+                            astrOriginalNameSplit = strPowerName.Split(',');
+                            if (astrOriginalNameSplit.Length > 1)
+                            {
+                                string strName = astrOriginalNameSplit[0].Trim();
+                                xmlPowerData = xmlWeaponDocument.SelectSingleNode("/chummer/powers/power[name = \"" + strPowerName + "\"]");
+                            }
+                        }
+                    }
 
-            lstPowerOrder.Sort(CompareListItems.CompareNames);
-
-            foreach (ListItem objItem in lstPowerOrder)
-            {
-                XmlNode objNode =
-                    objXmlCharacter.SelectSingleNode("powers/power[guid = \"" + objItem.Value.ToString() + "\"]");
-                if (objNode != null)
-                {
-                    Power objPower = new Power(this);
-                    objPower.Load(objNode);
-                    _lstPowers.Add(objPower);
+                    if (xmlPowerData != null)
+                    {
+                        Power objPower = new Power(this);
+                        objPower.Create(xmlPowerData, strForcedValue, blnIsLimited);
+                        objPower.Notes = xmlHeroLabPower["description"]?.InnerText;
+                        _lstPowers.Add(objPower);
+                    }
                 }
             }
 
