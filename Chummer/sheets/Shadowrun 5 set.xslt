@@ -1947,6 +1947,7 @@
       </xsl:if>
       <td>
         <xsl:value-of select="name"/>
+        <xsl:if test="gearname != ''"> "<xsl:value-of select="gearname"/>"</xsl:if>
         <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
       </td>
       <td style="text-align: center">

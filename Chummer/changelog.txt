@@ -25,7 +25,8 @@ Application Changes:
 - Fixed an issue where completely deleting certain qualities with levels attached to them would only remove the improvements originating from the first level until the character was loaded from a save file (at which point the orphaned improvements would have gotten culled). Fixes #2972.
 - Fixed a crash that occured when getting the Ex-Con quality while having any 'ware that would get removed due to being banned under the Ex-Con quality. Fixes #2969.
 - Fixed a bug where the displayed dicepools for skills would often not get updated properly when the attribute assigned to the skill was changed. Fixes #2885.
-- Character sheets of shapeshifter characters will now show which form the character currently has at the time the sheet is created, and they will now also properly display attributes associated with the form currently being displayed. Fixes #2824. 
+- Character sheets of shapeshifter characters will now show which form the character currently has at the time the sheet is created, and they will now also properly display attributes associated with the form currently being displayed. Fixes #2824.
+- Custom names for Matrix devices will now show up properly in the Devices/Programs block in the Shadowrun 5 character sheet set. Fixes #2943.
 
 Data Changes:
 
