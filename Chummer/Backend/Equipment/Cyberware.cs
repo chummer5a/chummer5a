@@ -1757,16 +1757,12 @@ namespace Chummer.Backend.Equipment
                     intCount = intCount > 0 ? 1 : 0;
                 }
 
-                if (WirelessPairBonus?.Attributes?.Count > 0)
+                if (WirelessPairBonus?.Attributes?.Count > 0 && intCount % 2 == 1)
                 {
                     if (WirelessPairBonus.Attributes["mode"].InnerText == "replace")
                     {
                         ImprovementManager.RemoveImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId).ToList());
                     }
-                }
-
-                if (intCount % 2 == 1)
-                {
                     ImprovementManager.CreateImprovements(_objCharacter, SourceType,
                         _guiID.ToString("D") + "WirelessPair", WirelessPairBonus, false, Rating,
                         DisplayNameShort(GlobalOptions.Language));

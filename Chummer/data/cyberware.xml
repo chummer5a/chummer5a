@@ -349,6 +349,9 @@
           <category>Tools</category>
         </usegear>
       </gears>
+      <!--<wirelessbonus>
+        <noiserereduction>1</noiserereduction>
+      </wirelessbonus> -->
       <source>SR5</source>
       <page>452</page>
     </cyberware>
@@ -1986,6 +1989,12 @@
           <condition>Only for Perception</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </wirelessbonus>
     </cyberware>
     <cyberware>
       <id>80ba030a-7be4-4edb-96d6-c5cfd85806d5</id>
@@ -2082,6 +2091,12 @@
           <condition>Only for Navigation</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <specificskill>
+          <name>Navigation</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </wirelessbonus>
     </cyberware>
     <cyberware>
       <id>1b0084ee-6334-4a66-bee3-8b45c5cc63d2</id>
