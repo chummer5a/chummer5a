@@ -3391,6 +3391,7 @@ namespace Chummer
                     treGear.SelectedNode = objNode;
             }
         }
+
         protected void RefreshDrugs(TreeView treGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;

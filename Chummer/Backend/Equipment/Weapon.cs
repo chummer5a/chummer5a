@@ -371,8 +371,6 @@ namespace Chummer.Backend.Equipment
 
                             objGear.Quantity = decGearQty;
                             objGear.Cost = "0";
-                            objGear.MinRating = intGearRating;
-                            objGear.MaxRating = intGearRating;
                             objGear.ParentID = InternalId;
 
                             if (!string.IsNullOrEmpty(strChildForceSource))

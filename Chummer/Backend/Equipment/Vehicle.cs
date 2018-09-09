@@ -1221,7 +1221,6 @@ namespace Chummer.Backend.Equipment
                 {
                     if (objGear.Category == "Sensors" && objGear.Name == "Sensor Array" && objGear.IncludedInParent)
                     {
-                        objGear.MaxRating = Math.Max(intSensor, 0);
                         objGear.Rating = Math.Max(intSensor, 0);
                     }
                     break;

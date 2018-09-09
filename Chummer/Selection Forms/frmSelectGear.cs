@@ -39,6 +39,7 @@ namespace Chummer
         private readonly int _intAvailModifier;
         private readonly int _intCostMultiplier;
 
+        private readonly object _objGearParent;
         private readonly XPathNavigator _objParentNode;
         private decimal _decMaximumCapacity = -1;
         private static string s_StrSelectCategory = string.Empty;
@@ -56,7 +57,7 @@ namespace Chummer
         private readonly HashSet<string> _setBlackMarketMaps;
 
         #region Control Events
-        public frmSelectGear(Character objCharacter, int intAvailModifier = 0, int intCostMultiplier = 1, XmlNode objParentNode = null, string strAllowedCategories = "")
+        public frmSelectGear(Character objCharacter, int intAvailModifier = 0, int intCostMultiplier = 1, object objGearParent = null, string strAllowedCategories = "")
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
@@ -66,7 +67,8 @@ namespace Chummer
             _intAvailModifier = intAvailModifier;
             _intCostMultiplier = intCostMultiplier;
             _objCharacter = objCharacter;
-            _objParentNode = objParentNode?.CreateNavigator();
+            _objGearParent = objGearParent;
+            _objParentNode = (_objGearParent as IHasXmlNode)?.GetNode().CreateNavigator();
             // Stack Checkbox is only available in Career Mode.
             if (!_objCharacter.Created)
             {
@@ -831,15 +833,73 @@ namespace Chummer
             }
 
             // Rating.
-            int intRating = Convert.ToInt32(objXmlGear.SelectSingleNode("rating")?.Value);
-            if (intRating > 0)
+            string strExpression = objXmlGear.SelectSingleNode("rating")?.Value ?? string.Empty;
+            if (strExpression == "0")
+                strExpression = string.Empty;
+            int intRating = int.MaxValue;
+            if (!string.IsNullOrEmpty(strExpression))
+            {
+                if (strExpression.StartsWith("FixedValues("))
+                {
+                    string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    strExpression = strValues[Math.Max(Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1, 0)].Trim('[', ']');
+                }
+
+                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                {
+                    StringBuilder objValue = new StringBuilder(strExpression);
+                    objValue.Replace("{Rating}", decimal.ToInt32(nudRating.Value).ToString(GlobalOptions.InvariantCultureInfo));
+                    objValue.CheapReplace(strExpression, "{Parent Rating}", () => (_objGearParent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo) ?? int.MaxValue.ToString(GlobalOptions.InvariantCultureInfo));
+                    foreach (string strCharAttributeName in Backend.Attributes.AttributeSection.AttributeStrings)
+                    {
+                        objValue.CheapReplace(strExpression, '{' + strCharAttributeName + '}', () => _objCharacter.GetAttribute(strCharAttributeName).TotalValue.ToString());
+                        objValue.CheapReplace(strExpression, '{' + strCharAttributeName + "Base}", () => _objCharacter.GetAttribute(strCharAttributeName).TotalBase.ToString());
+                    }
+
+                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                    objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out blnIsSuccess);
+                    intRating = blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double) objProcess)) : 0;
+                }
+                else
+                    int.TryParse(strExpression, out intRating);
+            }
+            
+            if (intRating > 0 && intRating != int.MaxValue)
             {
                 nudRating.Maximum = intRating;
                 XPathNavigator xmlMinRatingNode = objXmlGear.SelectSingleNode("minrating");
                 if (xmlMinRatingNode != null)
                 {
                     decimal decOldMinimum = nudRating.Minimum;
-                    nudRating.Minimum = Convert.ToInt32(xmlMinRatingNode.Value);
+                    strExpression = xmlMinRatingNode.Value;
+                    int intMinimumRating = 0;
+                    if (!string.IsNullOrEmpty(strExpression))
+                    {
+                        if (strExpression.StartsWith("FixedValues("))
+                        {
+                            string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                            strExpression = strValues[Math.Max(Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1, 0)].Trim('[', ']');
+                        }
+
+                        if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                        {
+                            StringBuilder objValue = new StringBuilder(strExpression);
+                            objValue.Replace("{Rating}", decimal.ToInt32(nudRating.Value).ToString(GlobalOptions.InvariantCultureInfo));
+                            objValue.CheapReplace(strExpression, "{Parent Rating}", () => (_objGearParent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
+                            foreach (string strCharAttributeName in Backend.Attributes.AttributeSection.AttributeStrings)
+                            {
+                                objValue.CheapReplace(strExpression, '{' + strCharAttributeName + '}', () => _objCharacter.GetAttribute(strCharAttributeName).TotalValue.ToString());
+                                objValue.CheapReplace(strExpression, '{' + strCharAttributeName + "Base}", () => _objCharacter.GetAttribute(strCharAttributeName).TotalBase.ToString());
+                            }
+
+                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                            objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out blnIsSuccess);
+                            intMinimumRating = blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
+                        }
+                        else
+                            int.TryParse(strExpression, out intMinimumRating);
+                    }
+                    nudRating.Minimum = intMinimumRating;
                     if (decOldMinimum > nudRating.Minimum)
                     {
                         nudRating.Value -= decOldMinimum - nudRating.Minimum;

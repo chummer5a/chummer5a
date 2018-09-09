@@ -43,6 +43,7 @@
     <category>Critter Gear</category>
     <category>Currency</category>
     <category>Custom</category>
+    <category blackmarket="Electronics">Custom Cyberdeck Attributes</category>
     <category blackmarket="Electronics">Cyberdeck Modules</category>
     <category blackmarket="Electronics">Cyberdecks</category>
     <category blackmarket="Electronics">Cyberterminals</category>
@@ -2703,9 +2704,12 @@
       <avail>Rating*2R</avail>
       <capacity>0</capacity>
       <cost>Rating*10000</cost>
-      <devicerating>Rating</devicerating>
+      <devicerating>{Rating}</devicerating>
 	  <!-- TODO: This should have a more robust method to lock the attribute array. -->
-      <attributearray>0,0,0,0</attributearray>
+      <attack>0</attack>
+      <sleaze>0</sleaze>
+      <dataprocessing>0</dataprocessing>
+      <firewall>0</firewall>
       <programs>1</programs>
       <canformpersona>Self</canformpersona>
       <gears>
@@ -2721,24 +2725,7 @@
           <name>Commlink Functionality</name>
           <category>Electronics Accessories</category>
         </usegear>
-        <usegear>
-          <name>Attack</name>
-          <category>Fuchi Cyber-N Attributes</category>
-        </usegear>
-        <usegear>
-          <name>Sleaze</name>
-          <category>Fuchi Cyber-N Attributes</category>
-        </usegear>
-        <usegear>
-          <name>Data Processing</name>
-          <category>Fuchi Cyber-N Attributes</category>
-        </usegear>
-        <usegear>
-          <name>Firewall</name>
-          <category>Fuchi Cyber-N Attributes</category>
-        </usegear>
       </gears>
-      <addoncategory>Fuchi Cyber-N Attributes</addoncategory>
     </gear>
     <gear>
       <id>00ccda48-98a0-42b1-a997-1e1cf1f5269a</id>
@@ -2750,10 +2737,13 @@
       <avail>Rating*2R</avail>
       <capacity>0</capacity>
       <cost>Rating*10000</cost>
-      <devicerating>Rating</devicerating>
+      <devicerating>{Rating}</devicerating>
       <!-- TODO: This should have a more robust method to lock the attribute array. -->
-      <attributearray>0,0,0,0</attributearray>
-      <programs>Rating+2</programs>
+      <attack>0</attack>
+      <sleaze>0</sleaze>
+      <dataprocessing>0</dataprocessing>
+      <firewall>0</firewall>
+      <programs>{Rating}+2</programs>
       <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
@@ -2768,94 +2758,85 @@
           <name>Commlink Functionality</name>
           <category>Electronics Accessories</category>
         </usegear>
-        <usegear>
-          <name>Attack</name>
-          <category>Fuchi Cyber-N Attributes</category>
-        </usegear>
-        <usegear>
-          <name>Sleaze</name>
-          <category>Fuchi Cyber-N Attributes</category>
-        </usegear>
-        <usegear>
-          <name>Data Processing</name>
-          <category>Fuchi Cyber-N Attributes</category>
-        </usegear>
-        <usegear>
-          <name>Firewall</name>
-          <category>Fuchi Cyber-N Attributes</category>
-        </usegear>
       </gears>
-      <addoncategory>Fuchi Cyber-N Attributes</addoncategory>
     </gear>
     <gear>
       <id>101acb97-2528-4812-a852-a8591b68145f</id>
-      <name>Attack</name>
-      <category>Fuchi Cyber-N Attributes</category>
-      <rating>100000</rating>
+      <name>[Custom Cyberdeck] Attack</name>
+      <category>Custom Cyberdeck Attributes</category>
+      <rating>{Parent Rating}</rating>
       <source>KC</source>
       <page>60</page>
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>(Rating*Rating*Rating)*500</cost>
-	  <hide />
-      <modattack>Rating</modattack>
+      <modattack>{Rating}</modattack>
       <required>
         <geardetails>
-            <name>Fuchi Cyber-N</name>
+            <OR>
+              <name>Fuchi Cyber-N</name>
+              <name>Fuchi Cyber-Ex</name>
+            </OR>
         </geardetails>
       </required>
     </gear>
     <gear>
       <id>cc6cb58a-a6a1-441d-84f6-a0ea3091317e</id>
-      <name>Sleaze</name>
-      <category>Fuchi Cyber-N Attributes</category>
-      <rating>100000</rating>
+      <name>[Custom Cyberdeck] Sleaze</name>
+      <category>Custom Cyberdeck Attributes</category>
+      <rating>{Parent Rating}</rating>
       <source>KC</source>
       <page>60</page>
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>(Rating*Rating)*500</cost>
-	  <hide />
-      <modsleaze>Rating</modsleaze>
+      <modsleaze>{Rating}</modsleaze>
       <required>
         <geardetails>
-            <name>Fuchi Cyber-N</name>
+            <OR>
+              <name>Fuchi Cyber-N</name>
+              <name>Fuchi Cyber-Ex</name>
+            </OR>
         </geardetails>
       </required>
     </gear>
     <gear>
       <id>c4760ef1-5fe0-477b-8579-a457aaf16bf9</id>
-      <name>Data Processing</name>
-      <category>Fuchi Cyber-N Attributes</category>
-      <rating>100000</rating>
+      <name>[Custom Cyberdeck] Data Processing</name>
+      <category>Custom Cyberdeck Attributes</category>
+      <rating>{Parent Rating}</rating>
       <source>KC</source>
       <page>60</page>
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>(Rating*Rating)*500</cost>
-      <moddataprocessing>Rating</moddataprocessing>
-	  <hide />
+      <moddataprocessing>{Rating}</moddataprocessing>
       <required>
         <geardetails>
-            <name>Fuchi Cyber-N</name>
+            <OR>
+              <name>Fuchi Cyber-N</name>
+              <name>Fuchi Cyber-Ex</name>
+            </OR>
         </geardetails>
       </required>
     </gear>
     <gear>
       <id>37c5f8bc-025a-4eca-93a8-1e93e0cabcd9</id>
-      <name>Firewall</name>
-      <category>Fuchi Cyber-N Attributes</category>
-      <rating>100000</rating>
+      <name>[Custom Cyberdeck] Firewall</name>
+      <category>Custom Cyberdeck Attributes</category>
+      <rating>{Parent Rating}</rating>
       <source>KC</source>
       <page>60</page>
       <avail>(Rating*4)R</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>(Rating*Rating*Rating)*500</cost>
-      <modfirewall>Rating</modfirewall>
-	  <hide />
+      <modfirewall>{Rating}</modfirewall>
       <required>
         <geardetails>
-            <name>Fuchi Cyber-N</name>
+            <OR>
+              <name>Fuchi Cyber-N</name>
+              <name>Fuchi Cyber-Ex</name>
+            </OR>
         </geardetails>
       </required>
     </gear>
@@ -12256,6 +12237,10 @@
             <attack operation="exists" NOT="" />
             <attack>0</attack>
           </OR>
+          <OR NOT="">
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
       <addoncategory>Electronic Modification</addoncategory>
@@ -12277,6 +12262,10 @@
           <OR>
             <sleaze operation="exists" NOT="" />
             <sleaze>0</sleaze>
+          </OR>
+          <OR NOT="">
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -12314,6 +12303,8 @@
             <attributearray operation="exists" />
             <sleaze operation="greaterthan">0</sleaze>
             <name>Add Sleaze Modification</name>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -12336,6 +12327,8 @@
             <attributearray operation="exists" />
             <attack operation="greaterthan">0</attack>
             <name>Add Attack Modification</name>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -12357,6 +12350,8 @@
           <OR>
             <attributearray operation="exists" />
             <dataprocessing operation="greaterthan">0</dataprocessing>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -12378,6 +12373,8 @@
           <OR>
             <attributearray operation="exists" />
             <firewall operation="greaterthan">0</firewall>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -12400,6 +12397,8 @@
           <OR>
             <attributearray operation="exists" />
             <sleaze operation="greaterthan">0</sleaze>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -12422,6 +12421,8 @@
           <OR>
             <attributearray operation="exists" />
             <attack operation="greaterthan">0</attack>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -12444,6 +12445,8 @@
           <OR>
             <attributearray operation="exists" />
             <dataprocessing operation="greaterthan">0</dataprocessing>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -12466,6 +12469,8 @@
           <OR>
             <attributearray operation="exists" />
             <firewall operation="greaterthan">0</firewall>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -12484,8 +12489,14 @@
       <modsleaze>-1</modsleaze>
       <required>
         <geardetails>
-          <attack operation="greaterthan">0</attack>
-          <sleaze operation="greaterthan">0</sleaze>
+          <OR>
+            <AND>
+              <attack operation="greaterthan">0</attack>
+              <sleaze operation="greaterthan">0</sleaze>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12503,8 +12514,14 @@
       <moddataprocessing>-1</moddataprocessing>
       <required>
         <geardetails>
-          <attack operation="greaterthan">0</attack>
-          <dataprocessing operation="greaterthan">0</dataprocessing>
+          <OR>
+            <AND>
+              <attack operation="greaterthan">0</attack>
+              <dataprocessing operation="greaterthan">0</sleaze>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12522,8 +12539,14 @@
       <modfirewall>-1</modfirewall>
       <required>
         <geardetails>
-          <attack operation="greaterthan">0</attack>
-          <firewall operation="greaterthan">0</firewall>
+          <OR>
+            <AND>
+              <attack operation="greaterthan">0</attack>
+              <firewall operation="greaterthan">0</sleaze>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12541,8 +12564,14 @@
       <modsleaze>1</modsleaze>
       <required>
         <geardetails>
-          <attack operation="greaterthan">0</attack>
-          <sleaze operation="greaterthan">0</sleaze>
+          <OR>
+            <AND>
+              <attack operation="greaterthan">0</attack>
+              <sleaze operation="greaterthan">0</sleaze>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12560,8 +12589,14 @@
       <moddataprocessing>-1</moddataprocessing>
       <required>
         <geardetails>
-          <sleaze operation="greaterthan">0</sleaze>
-          <dataprocessing operation="greaterthan">0</dataprocessing>
+          <OR>
+            <AND>
+              <sleaze operation="greaterthan">0</attack>
+              <dataprocessing operation="greaterthan">0</sleaze>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12579,8 +12614,14 @@
       <modfirewall>-1</modfirewall>
       <required>
         <geardetails>
-          <sleaze operation="greaterthan">0</sleaze>
-          <firewall operation="greaterthan">0</firewall>
+          <OR>
+            <AND>
+              <sleaze operation="greaterthan">0</attack>
+              <firewall operation="greaterthan">0</sleaze>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12598,8 +12639,14 @@
       <moddataprocessing>1</moddataprocessing>
       <required>
         <geardetails>
-          <attack operation="greaterthan">0</attack>
-          <dataprocessing operation="greaterthan">0</dataprocessing>
+          <OR>
+            <AND>
+              <attack operation="greaterthan">0</attack>
+              <dataprocessing operation="greaterthan">0</sleaze>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12617,8 +12664,14 @@
       <moddataprocessing>1</moddataprocessing>
       <required>
         <geardetails>
-          <sleaze operation="greaterthan">0</sleaze>
-          <dataprocessing operation="greaterthan">0</dataprocessing>
+          <OR>
+            <AND>
+              <sleaze operation="greaterthan">0</attack>
+              <dataprocessing operation="greaterthan">0</sleaze>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12636,8 +12689,14 @@
       <modfirewall>-1</modfirewall>
       <required>
         <geardetails>
-          <dataprocessing operation="greaterthan">0</dataprocessing>
-          <firewall operation="greaterthan">0</firewall>
+          <OR>
+            <AND>
+              <dataprocessing operation="greaterthan">0</attack>
+              <firewall operation="greaterthan">0</sleaze>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12655,8 +12714,14 @@
       <modfirewall>1</modfirewall>
       <required>
         <geardetails>
-          <attack operation="greaterthan">0</attack>
-          <firewall operation="greaterthan">0</firewall>
+          <OR>
+            <AND>
+              <attack operation="greaterthan">0</attack>
+              <firewall operation="greaterthan">0</sleaze>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12674,8 +12739,14 @@
       <modfirewall>1</modfirewall>
       <required>
         <geardetails>
-          <sleaze operation="greaterthan">0</sleaze>
-          <firewall operation="greaterthan">0</firewall>
+          <OR>
+            <AND>
+              <sleaze operation="greaterthan">0</attack>
+              <firewall operation="greaterthan">0</sleaze>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12693,8 +12764,14 @@
       <modfirewall>1</modfirewall>
       <required>
         <geardetails>
-          <dataprocessing operation="greaterthan">0</dataprocessing>
-          <firewall operation="greaterthan">0</firewall>
+          <OR>
+            <AND>
+              <dataprocessing operation="greaterthan">0</attack>
+              <firewall operation="greaterthan">0</sleaze>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>

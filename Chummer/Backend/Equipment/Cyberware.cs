@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Cyberware.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Cyberware : IHasChildren<Cyberware>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell
+    public class Cyberware : IHasChildren<Cyberware>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating
     {
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
@@ -302,7 +302,6 @@ namespace Chummer.Backend.Equipment
                     lstPropertiesToChange.Add(EssencePropertyName);
                 if (blnDoMovementUpdate)
                     lstPropertiesToChange.Add(nameof(Character.GetMovement));
-
                 if (lstPropertiesToChange.Count > 0)
                     _objCharacter.OnMultiplePropertyChanged(lstPropertiesToChange.ToArray());
             }
@@ -745,8 +744,6 @@ namespace Chummer.Backend.Equipment
                     objGear.Capacity = "[0]";
                     objGear.ArmorCapacity = "[0]";
                     objGear.Cost = "0";
-                    objGear.MaxRating = objGear.Rating;
-                    objGear.MinRating = objGear.Rating;
                     objGear.ParentID = InternalId;
                 }
                 lstWeapons.AddRange(lstChildWeapons);
@@ -1785,6 +1782,15 @@ namespace Chummer.Backend.Equipment
                         _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
                     else if (blnDoEssenceUpdate)
                         _objCharacter.OnPropertyChanged(EssencePropertyName);
+
+                    if (Gear.Count > 0)
+                    {
+                        foreach (Gear objChild in Gear.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
+                        {
+                            // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                            objChild.Rating = objChild.Rating;
+                        }
+                    }
                 }
             }
         }
