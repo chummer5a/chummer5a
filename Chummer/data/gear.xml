@@ -2009,6 +2009,16 @@
         <selecttext />
       </bonus>
     </gear>
+    <gear>
+      <id>4d36bc74-d75e-46ce-9739-9b58ca72b518</id>
+      <name>Faceless - Blurred Face</name>
+      <category>Disguises</category>
+      <rating>10</rating>
+      <source>KC</source>
+      <page>57</page>
+      <avail>Rating*2</avail>
+      <cost>Rating*500</cost>
+    </gear>
     <!-- End Region -->
     <!-- Region Commlinks and Cyberdecks -->
     <gear>
@@ -3309,7 +3319,7 @@
       <category>Cyberdecks</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>62</page>
+      <page>63</page>
       <avail>14R</avail>
       <capacity>0</capacity>
       <cost>560000</cost>
@@ -3338,7 +3348,7 @@
       <category>Cyberdecks</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>62</page>
+      <page>63</page>
       <avail>14F</avail>
       <capacity>0</capacity>
       <cost>375000</cost>
@@ -3876,8 +3886,7 @@
       <cost>5000</cost>
       <devicerating>3</devicerating>
       <dataprocessing>3</dataprocessing>
-      <firewall>4</firewall>
-      <programs>3</programs>
+      <firewall>3</firewall>
       <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
@@ -3893,13 +3902,12 @@
       <rating>0</rating>
       <source>KC</source>
       <page>68</page>
-      <avail></avail>
+      <avail>12</avail>
       <capacity>0</capacity>
-      <cost></cost>
-      <devicerating>2</devicerating>
-      <dataprocessing>3</dataprocessing>
-      <firewall>3</firewall>
-      <programs>2</programs>
+      <cost>4000</cost>
+      <devicerating>5</devicerating>
+      <dataprocessing>5</dataprocessing>
+      <firewall>5</firewall>
       <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
@@ -3915,13 +3923,13 @@
       <rating>0</rating>
       <source>KC</source>
       <page>68</page>
-      <avail></avail>
+      <avail>10</avail>
       <capacity>0</capacity>
-      <cost></cost>
-      <devicerating>2</devicerating>
-      <dataprocessing>3</dataprocessing>
-      <firewall>3</firewall>
-      <programs>2</programs>
+      <cost>3500</cost>
+      <devicerating>4</devicerating>
+      <dataprocessing>4</dataprocessing>
+      <firewall>4</firewall>
+      <programs>4</programs>
       <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
@@ -5064,10 +5072,10 @@
       <avail>8R</avail>
       <capacity>0</capacity>
       <cost>50000</cost>
-      <devicerating>2</devicerating>
-      <dataprocessing>3</dataprocessing>
-      <firewall>3</firewall>
-      <programs>2</programs>
+      <devicerating>4</devicerating>
+      <dataprocessing>5</dataprocessing>
+      <firewall>5</firewall>
+      <programs>4</programs>
       <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
@@ -5942,7 +5950,7 @@
       <page>59</page>
       <avail>Rating*4R</avail>
       <cost>Rating*250</cost>
-	  <minrating>3</minrating>
+      <minrating>3</minrating>
     </gear>
     <gear>
       <id>8dfceac4-1c5a-4b30-bcd2-81b16553c6ce</id>
@@ -5953,7 +5961,7 @@
       <page>59</page>
       <avail>Rating*4R</avail>
       <cost>Rating*250</cost>
-	  <minrating>3</minrating>
+      <minrating>3</minrating>
     </gear>
     <gear>
       <id>0ee14c43-e334-4ca5-a87c-c99d94bfe31a</id>
@@ -5964,7 +5972,7 @@
       <page>59</page>
       <avail>Rating*4R</avail>
       <cost>Rating*250</cost>
-	  <minrating>3</minrating>
+      <minrating>3</minrating>
     </gear>
     <gear>
       <id>7b8e0c95-375d-4982-b523-576952aced75</id>
@@ -5975,7 +5983,7 @@
       <page>59</page>
       <avail>Rating*4R</avail>
       <cost>Rating*250</cost>
-	  <minrating>3</minrating>
+      <minrating>3</minrating>
     </gear>
     <!-- End Region -->
     <!-- Region Software Tweaks -->
@@ -11882,9 +11890,9 @@
       <rating>4</rating>
       <source>KC</source>
       <page>58</page>
-      <avail>3</avail>
+      <avail>6</avail>
       <armorcapacity>[0]</armorcapacity>
-      <cost>400</cost>
+      <cost>Rating * 4000</cost>
       <addoncategory>Common Programs</addoncategory>
       <addoncategory>Hacking Programs</addoncategory>
       <devicerating>0</devicerating>

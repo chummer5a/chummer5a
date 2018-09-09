@@ -7983,6 +7983,7 @@
       <avail>4</avail>
       <cost>Rating*3500</cost>
       <rating>3</rating>
+      <programs>Rating</programs>
       <gears>
         <usegear>
           <name>Universal Connector Cord (Meter)</name>
@@ -8002,7 +8003,7 @@
       <avail>10R</avail>
       <cost>30000</cost>
       <source>KC</source>
-      <page>65</page>
+      <page>66</page>
     </cyberware>
     <cyberware>
       <id>ba91b21a-2c8d-466f-a353-64293e09a9a8</id>
@@ -8014,7 +8015,7 @@
       <avail>12</avail>
       <cost>5000</cost>
       <source>KC</source>
-      <page>65</page>
+      <page>66</page>
     </cyberware>
     <!-- End Region -->
   </cyberwares>
