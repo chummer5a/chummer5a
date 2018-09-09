@@ -260,7 +260,7 @@ namespace Chummer
                     {
                         XmlNode objXmlLifestyleQuality = _objXmlDocument.SelectSingleNode($"/chummer/qualities/quality[id = \"{objNode.Tag}\"]");
                         LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                        objQuality.Create(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected, objNode.Text);
+                        objQuality.Create(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
                         _objLifestyle.LifestyleQualities.Add(objQuality);
                     }
                 }
