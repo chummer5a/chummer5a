@@ -109,7 +109,7 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            if (objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 _guiID = Guid.NewGuid();
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("limit", ref _strLimit);
@@ -257,11 +257,11 @@ namespace Chummer
         }
         #endregion
 
-        public bool Remove(Character characterObject, bool confirmDelete = true)
+        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
             if (characterObject.LimitModifiers.Any(limitMod => limitMod == this))
             {
-                if (confirmDelete)
+                if (blnConfirmDelete)
                 {
                     return characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier",
                                GlobalOptions.Language)) && characterObject.LimitModifiers.Remove(this);

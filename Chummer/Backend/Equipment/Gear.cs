@@ -982,7 +982,7 @@ namespace Chummer.Backend.Equipment
                 if (!Equipped)
                     ChangeEquippedStatus(false);
             }
-            else if (!Equipped && (Bonus != null || WirelessBonus != null) && !_objCharacter.Improvements.Any(x => x.ImproveSource == Improvement.ImprovementSource.Gear && x.UniqueName == InternalId))
+            else if (!Equipped && (Bonus != null || WirelessBonus != null) && !_objCharacter.Improvements.Any(x => x.ImproveSource == Improvement.ImprovementSource.Gear && x.SourceName == InternalId))
             {
                 bool blnAddImprovement = true;
                 // If this is a Focus which is not bonded, don't do anything.
@@ -2665,9 +2665,9 @@ namespace Chummer.Backend.Equipment
         #endregion
         #endregion
 
-        public bool Remove(Character characterObject, bool confirmDelete = true)
+        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
-            if (confirmDelete)
+            if (blnConfirmDelete)
             {
                 if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteGear",
                     GlobalOptions.Language)))

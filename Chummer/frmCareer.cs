@@ -3278,18 +3278,12 @@ namespace Chummer
 
         private void cmdDeleteGear_Click(object sender, EventArgs e)
         {
-            if (treGear.SelectedNode?.Tag is ICanRemove objSelectedGear)
+            if (treGear.SelectedNode?.Tag is ICanRemove objSelectedGear && objSelectedGear.Remove(CharacterObject, CharacterObjectOptions.ConfirmDelete))
             {
-                objSelectedGear.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete);
-            }
-            else
-            {
-                return;
-            }
+                IsCharacterUpdateRequested = true;
 
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
+                IsDirty = true;
+            }
         }
 
         private bool AddVehicle(Location objLocation = null)

@@ -30,6 +30,8 @@ Application Changes:
 - Fixed an issue where the karma cost check for whether a character could afford adding a new exotic skill did not take karma cost modifiers from improvements into account. Fixes #2976.
 - Fixed a UI issue where the display for lifestyle qualities would sometimes get cut off. Fixes #2940.
 - Fixed an issue where lifestyle qualities of non-advanced lifestyles would end up with their full names added as "Extra" strings, causing all manner of UI issues. Existing characters with these issues will need to re-add the affected lifestyle qualities.
+- Fixed an issue where the internal IDs of improvements and limit modifiers were not getting loaded properly from save files. Part of fix for #2975.
+- Fixed an issue where certain legacy conversion code related to loading improvements from unequipped gear was improperly running for non-legacy save files. Fixes #2975.
 
 Data Changes:
 

@@ -362,11 +362,11 @@ namespace Chummer
             return true;
         }
 
-        public bool Remove(Character objCharacter, bool confirmDelete = true)
+        public bool Remove(Character objCharacter, bool blnConfirmDelete = true)
         {
             // Delete the selected Martial Art.
             if (IsQuality) return false;
-            if (confirmDelete)
+            if (blnConfirmDelete)
             {
                 if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt",
                     GlobalOptions.Language)))

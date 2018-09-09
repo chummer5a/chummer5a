@@ -4663,10 +4663,10 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public bool Remove(Character characterObject, bool confirmDelete = true)
+        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
             if (!CanBeRemoved()) return false;
-            if (confirmDelete)
+            if (blnConfirmDelete)
             {
                 if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon",
                     GlobalOptions.Language)))

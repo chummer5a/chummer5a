@@ -205,9 +205,9 @@ namespace Chummer
             }
         }
 
-        public bool Remove(Character character, bool confirmDelete = true)
+        public bool Remove(Character character, bool blnConfirmDelete = true)
         {
-            if (confirmDelete)
+            if (blnConfirmDelete)
             {
                 character.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation", GlobalOptions.Language));
             }

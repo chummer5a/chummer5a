@@ -3403,7 +3403,7 @@ namespace Chummer.Backend.Equipment
         #endregion
         #endregion
 
-        public bool Remove(Character characterObject, bool confirmDelete = true)
+        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
             if (Capacity == "[*]" && Parent != null && (!characterObject.IgnoreRules || characterObject.Created))
             {
@@ -3413,7 +3413,7 @@ namespace Chummer.Backend.Equipment
                 return false;
             }
 
-            if (confirmDelete)
+            if (blnConfirmDelete)
             {
                 if (SourceType == Improvement.ImprovementSource.Bioware)
                 {
