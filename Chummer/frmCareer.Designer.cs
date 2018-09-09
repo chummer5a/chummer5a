@@ -10789,6 +10789,7 @@ namespace Chummer
             // 
             // lblLifestyleCost
             // 
+            this.lblLifestyleCost.AutoSize = true;
             this.lblLifestyleCost.Location = new System.Drawing.Point(75, 3);
             this.lblLifestyleCost.Margin = new System.Windows.Forms.Padding(3);
             this.lblLifestyleCost.Name = "lblLifestyleCost";
@@ -10798,21 +10799,23 @@ namespace Chummer
             // 
             // lblLifestyleQualities
             // 
+            this.lblLifestyleQualities.AutoSize = true;
             this.lblLifestyleQualities.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblLifestyleQualities.Location = new System.Drawing.Point(75, 96);
             this.lblLifestyleQualities.Margin = new System.Windows.Forms.Padding(3);
             this.lblLifestyleQualities.Name = "lblLifestyleQualities";
-            this.lblLifestyleQualities.Size = new System.Drawing.Size(442, 448);
+            this.lblLifestyleQualities.MaximumSize = new System.Drawing.Size(442, 0);
             this.lblLifestyleQualities.TabIndex = 115;
             this.lblLifestyleQualities.Text = "[0]";
             // 
             // lblBaseLifestyle
             // 
+            this.lblBaseLifestyle.AutoSize = true;
             this.lblBaseLifestyle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblBaseLifestyle.Location = new System.Drawing.Point(75, 77);
             this.lblBaseLifestyle.Margin = new System.Windows.Forms.Padding(3);
             this.lblBaseLifestyle.Name = "lblBaseLifestyle";
-            this.lblBaseLifestyle.Size = new System.Drawing.Size(442, 13);
+            this.lblBaseLifestyle.MaximumSize = new System.Drawing.Size(442, 0);
             this.lblBaseLifestyle.TabIndex = 117;
             this.lblBaseLifestyle.Text = "[0]";
             // 
@@ -10918,11 +10921,12 @@ namespace Chummer
             // 
             // lblLifestyleSource
             // 
+            this.lblLifestyleSource.AutoSize = true;
             this.lblLifestyleSource.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblLifestyleSource.Location = new System.Drawing.Point(75, 58);
             this.lblLifestyleSource.Margin = new System.Windows.Forms.Padding(3);
             this.lblLifestyleSource.Name = "lblLifestyleSource";
-            this.lblLifestyleSource.Size = new System.Drawing.Size(442, 13);
+            this.lblLifestyleSource.MaximumSize = new System.Drawing.Size(442, 0);
             this.lblLifestyleSource.TabIndex = 88;
             this.lblLifestyleSource.Text = "[Source]";
             this.lblLifestyleSource.Click += new System.EventHandler(this.OpenSourceFromLabel);

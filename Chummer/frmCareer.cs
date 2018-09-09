@@ -14981,14 +14981,14 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
             {
-                string strQualities = string.Join(", ", objLifestyle.LifestyleQualities.Select(r => r.FormattedDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)));
+                string strQualities = string.Join(",\n", objLifestyle.LifestyleQualities.Select(r => r.FormattedDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)));
 
                 lblLifestyleQualities.Text = string.Empty;
 
                 foreach (Improvement objImprovement in CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LifestyleCost && x.Enabled))
                 {
                     if (strQualities.Length > 0)
-                        strQualities += ", ";
+                        strQualities += ",\n";
 
                     strQualities += objImprovement.Value > 0
                         ? objImprovement.ImproveSource + " [+" + objImprovement.Value + "%]"
@@ -14998,10 +14998,9 @@ namespace Chummer
                 if (objLifestyle.FreeGrids.Count > 0)
                 {
                     if (strQualities.Length > 0)
-                        strQualities += ", ";
+                        strQualities += ",\n";
 
-                    strQualities += string.Join(", ",
-                        objLifestyle.FreeGrids.Select(r => r.DisplayName(GlobalOptions.Language)));
+                    strQualities += string.Join(",\n", objLifestyle.FreeGrids.Select(r => r.DisplayName(GlobalOptions.Language)));
                 }
 
                 lblBaseLifestyle.Text = objLifestyle.DisplayNameShort(GlobalOptions.Language);

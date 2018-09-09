@@ -7686,21 +7686,23 @@ namespace Chummer
             // 
             // lblLifestyleCost
             // 
+            this.lblLifestyleCost.AutoSize = true;
             this.lblLifestyleCost.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblLifestyleCost.Location = new System.Drawing.Point(89, 3);
             this.lblLifestyleCost.Margin = new System.Windows.Forms.Padding(3);
             this.lblLifestyleCost.Name = "lblLifestyleCost";
-            this.lblLifestyleCost.Size = new System.Drawing.Size(427, 13);
+            this.lblLifestyleCost.MaximumSize = new System.Drawing.Size(427, 0);
             this.lblLifestyleCost.TabIndex = 84;
             this.lblLifestyleCost.Text = "[Cost]";
             // 
             // lblLifestyleQualities
             // 
+            this.lblLifestyleQualities.AutoSize = true;
             this.lblLifestyleQualities.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblLifestyleQualities.Location = new System.Drawing.Point(89, 111);
             this.lblLifestyleQualities.Margin = new System.Windows.Forms.Padding(3);
             this.lblLifestyleQualities.Name = "lblLifestyleQualities";
-            this.lblLifestyleQualities.Size = new System.Drawing.Size(427, 433);
+            this.lblLifestyleQualities.MaximumSize = new System.Drawing.Size(427, 0);
             this.lblLifestyleQualities.TabIndex = 103;
             this.lblLifestyleQualities.Text = "[0]";
             // 
@@ -7757,6 +7759,7 @@ namespace Chummer
             // 
             // lblLifestyleTotalCost
             // 
+            this.lblLifestyleTotalCost.AutoSize = true;
             this.lblLifestyleTotalCost.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblLifestyleTotalCost.Location = new System.Drawing.Point(231, 0);
             this.lblLifestyleTotalCost.Name = "lblLifestyleTotalCost";
@@ -7791,11 +7794,12 @@ namespace Chummer
             // 
             // lblLifestyleStartingNuyen
             // 
+            this.lblLifestyleStartingNuyen.AutoSize = true;
             this.lblLifestyleStartingNuyen.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblLifestyleStartingNuyen.Location = new System.Drawing.Point(89, 92);
             this.lblLifestyleStartingNuyen.Margin = new System.Windows.Forms.Padding(3);
             this.lblLifestyleStartingNuyen.Name = "lblLifestyleStartingNuyen";
-            this.lblLifestyleStartingNuyen.Size = new System.Drawing.Size(427, 13);
+            this.lblLifestyleStartingNuyen.MaximumSize = new System.Drawing.Size(427, 0);
             this.lblLifestyleStartingNuyen.TabIndex = 89;
             this.lblLifestyleStartingNuyen.Text = "[Starting Nuyen]";
             // 
@@ -7813,6 +7817,7 @@ namespace Chummer
             // 
             // lblBaseLifestyle
             // 
+            this.lblBaseLifestyle.AutoSize = true;
             this.lblBaseLifestyle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblBaseLifestyle.Location = new System.Drawing.Point(89, 73);
             this.lblBaseLifestyle.Margin = new System.Windows.Forms.Padding(3);
@@ -7823,6 +7828,7 @@ namespace Chummer
             // 
             // lblLifestyleSource
             // 
+            this.lblBaseLifestyle.AutoSize = true;
             this.lblLifestyleSource.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblLifestyleSource.Location = new System.Drawing.Point(89, 54);
             this.lblLifestyleSource.Margin = new System.Windows.Forms.Padding(3);

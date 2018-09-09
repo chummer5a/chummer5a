@@ -28,6 +28,8 @@ Application Changes:
 - Character sheets of shapeshifter characters will now show which form the character currently has at the time the sheet is created, and they will now also properly display attributes associated with the form currently being displayed. Fixes #2824.
 - Custom names for Matrix devices will now show up properly in the Devices/Programs block in the Shadowrun 5 character sheet set. Fixes #2943.
 - Fixed an issue where the karma cost check for whether a character could afford adding a new exotic skill did not take karma cost modifiers from improvements into account. Fixes #2976.
+- Fixed a UI issue where the display for lifestyle qualities would sometimes get cut off. Fixes #2940.
+- Fixed an issue where lifestyle qualities of non-advanced lifestyles would end up with their full names added as "Extra" strings, causing all manner of UI issues. Existing characters with these issues will need to re-add the affected lifestyle qualities.
 
 Data Changes:
 
