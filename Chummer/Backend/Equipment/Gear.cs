@@ -57,7 +57,7 @@ namespace Chummer.Backend.Equipment
         private string _strCanFormPersona = string.Empty;
         private bool _blnBonded;
         private bool _blnEquipped = true;
-        private bool _blnWirelessOn = true;
+        private bool _blnWirelessOn = false;
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
         private XmlNode _nodWeaponBonus;
@@ -153,7 +153,7 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetStringFieldQuickly("cost", ref _strCost);
             _nodBonus = objXmlGear["bonus"];
             _nodWirelessBonus = objXmlGear["wirelessbonus"];
-            _blnWirelessOn = _nodWirelessBonus != null;
+            _blnWirelessOn = false;
             objXmlGear.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
             objXmlGear.TryGetInt32FieldQuickly("minrating", ref _intMinRating);
             if (!objXmlGear.TryGetStringFieldQuickly("altnotes", ref _strNotes))
@@ -816,7 +816,7 @@ namespace Chummer.Backend.Equipment
             _nodBonus = objNode["bonus"];
             _nodWirelessBonus = objNode["wirelessbonus"];
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
-                _blnWirelessOn = _nodWirelessBonus != null;
+                _blnWirelessOn = false;
             _nodWeaponBonus = objNode["weaponbonus"];
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);

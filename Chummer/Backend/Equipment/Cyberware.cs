@@ -71,7 +71,7 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodWirelessPairBonus;
         private readonly HashSet<string> _lstIncludeInPairBonus = new HashSet<string>();
         private readonly HashSet<string> _lstIncludeInWirelessPairBonus = new HashSet<string>();
-        private bool _blnWirelessOn = true;
+        private bool _blnWirelessOn = false;
         private XmlNode _nodAllowGear;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Cyberware;
         private string _strNotes = string.Empty;
@@ -369,7 +369,7 @@ namespace Chummer.Backend.Equipment
             _nodPairBonus = objXmlCyberware["pairbonus"];
             _nodWirelessBonus = objXmlCyberware["wirelessbonus"];
             _nodWirelessPairBonus = objXmlCyberware["wirelesspairbonus"];
-            _blnWirelessOn = _nodWirelessBonus != null || _nodWirelessPairBonus != null;
+            _blnWirelessOn = false || _nodWirelessPairBonus != null;
             _nodAllowGear = objXmlCyberware["allowgear"];
             if (objXmlCyberware.TryGetField("id", Guid.TryParse, out _guiSourceID))
                 _objCachedMyXmlNode = null;
@@ -985,7 +985,7 @@ namespace Chummer.Backend.Equipment
             _nodWirelessBonus = objNode["wirelessbonus"];
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
             {
-                _blnWirelessOn = _nodWirelessBonus != null;
+                _blnWirelessOn = false;
             }
             _nodAllowGear = objNode["allowgear"];
             // Legacy Sweep

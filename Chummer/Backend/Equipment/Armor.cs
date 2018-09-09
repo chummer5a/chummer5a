@@ -62,7 +62,7 @@ namespace Chummer.Backend.Equipment
         private Location _objLocation;
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
-        private bool _blnWirelessOn = true;
+        private bool _blnWirelessOn = false;
         private bool _blnDiscountCost;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -164,7 +164,7 @@ namespace Chummer.Backend.Equipment
                 objXmlArmorNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             _nodBonus = objXmlArmorNode["bonus"];
             _nodWirelessBonus = objXmlArmorNode["wirelessbonus"];
-            _blnWirelessOn = _nodWirelessBonus != null;
+            _blnWirelessOn = false;
 
             objXmlArmorNode.TryGetStringFieldQuickly("cost", ref _strCost);
 
@@ -499,7 +499,7 @@ namespace Chummer.Backend.Equipment
             _nodBonus = objNode["bonus"];
             _nodWirelessBonus = objNode["wirelessbonus"];
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
-                _blnWirelessOn = _nodWirelessBonus != null;
+                _blnWirelessOn = false;
             XmlNode xmlChildrenNode = objNode["armormods"];
             if (xmlChildrenNode != null)
             {

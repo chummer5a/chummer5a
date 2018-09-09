@@ -342,7 +342,10 @@ namespace Chummer
             SpiritFettering,
             MentorSpirit,
             Drug,
+            Weapon,
+            WeaponAccessory,
             NumImprovementSources // 🡐 This one should always be the last defined enum
+            ,
         }
 
         private readonly Character _objCharacter;
