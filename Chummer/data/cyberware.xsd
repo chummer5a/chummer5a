@@ -55,6 +55,7 @@
                                         <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
                                         <xs:element name="ess" type="xs:string" minOccurs="1" maxOccurs="1" />
                                         <xs:element name="capacity" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="addtoparentcapacity" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
                                         <xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
                                         <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -89,7 +90,7 @@
 										<xs:element name="mountsto" type="xs:string" minOccurs="0" maxOccurs="1" />
 										<xs:element name="modularmount" type="xs:string" minOccurs="0" maxOccurs="1" />
 										<xs:element name="blocksmounts" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="addtoparentess" type="xs:string" minOccurs="1" maxOccurs="1" />
+										<xs:element name="addtoparentess" type="xs:string" minOccurs="0" maxOccurs="1" />
 										<xs:element name="requireparent" type="xs:string" minOccurs="1" maxOccurs="1" />
 										<xs:element name="nosecondhand" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="inheritattributes" type="xs:string" minOccurs="0" maxOccurs="1" />

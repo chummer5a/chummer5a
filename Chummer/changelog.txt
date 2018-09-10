@@ -34,6 +34,8 @@ Application Changes:
 - Fixed an issue where certain legacy conversion code related to loading improvements from unequipped gear was improperly running for non-legacy save files. Fixes #2975.
 - Gears can now define minimum rating, maximum rating, and Matrix attributes based on the rating of their parent object via the "{Parent Rating}" phrase for Matrix attributes and the "Parent Rating" phrase for minimum and maximum ratings (minimum and maximum ratings don't use curly brackets for legacy reasons).
 - Fixed an issue where gear that came with a piece of cyberware or a piece of armor would create improvements when the item was selected while browsing through items to add, even if the item did not eventually get added.
+- Cyberware and bioware can now be flagged to increase the capacity cost of its parent 'ware instead of attempting to occupy capacity.
+- Accessories for cyber implant weapons now have their own category and will need to be added to cyber implant weapons as plugins. Previously, they needed to be added alongside cyber implant weapons and tracking which cyber implant weapon had which accessories needed to be done manually. Fixed #2882.
 
 Data Changes:
 
@@ -58,6 +60,7 @@ Data Changes:
 - Fixed incorrect Availability for the Faceless - Blurred Face gear item.
 - Fixed incorrect and missing karma values for several drake optional powers.
 - Fixed an incorrect availability value for Urban Explorer Daedalus: Helmet.
+- Fixed the category entry of Retractable Spurs, Fixed Spurs, and Retractable Hand Razorsfrom the Shadowrun 2050 sourcebook to be Cyber Implant Weapon instead of Bodyware.
 
 New Strings:
 
