@@ -33,6 +33,7 @@ Application Changes:
 - Fixed an issue where the internal IDs of improvements and limit modifiers were not getting loaded properly from save files. Part of fix for #2975.
 - Fixed an issue where certain legacy conversion code related to loading improvements from unequipped gear was improperly running for non-legacy save files. Fixes #2975.
 - Gears can now define minimum rating, maximum rating, and Matrix attributes based on the rating of their parent object via the "{Parent Rating}" phrase for Matrix attributes and the "Parent Rating" phrase for minimum and maximum ratings (minimum and maximum ratings don't use curly brackets for legacy reasons).
+- Fixed an issue where gear that came with a piece of cyberware or a piece of armor would create improvements when the item was selected while browsing through items to add, even if the item did not eventually get added.
 
 Data Changes:
 
@@ -56,6 +57,7 @@ Data Changes:
 - Characters following the Missionist tradition will now properly get a +2 dicepool modifier to casting Health spells and a -2 dicepool modifier to casting Combat spells.
 - Fixed incorrect Availability for the Faceless - Blurred Face gear item.
 - Fixed incorrect and missing karma values for several drake optional powers.
+- Fixed an incorrect availability value for Urban Explorer Daedalus: Helmet.
 
 New Strings:
 

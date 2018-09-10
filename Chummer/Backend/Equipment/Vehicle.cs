@@ -300,8 +300,9 @@ namespace Chummer.Backend.Equipment
                     foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                     {
                         Gear objGear = new Gear(_objCharacter);
-                        if (objGear.CreateFromNode(objXmlDocument, objXmlVehicleGear, lstWeapons, _lstGear))
+                        if (objGear.CreateFromNode(objXmlDocument, objXmlVehicleGear, lstWeapons))
                         {
+                            Gear.Add(objGear);
                             foreach (Weapon objWeapon in lstWeapons)
                             {
                                 objWeapon.ParentVehicle = this;

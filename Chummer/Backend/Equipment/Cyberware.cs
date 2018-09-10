@@ -735,7 +735,8 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                 {
                     Gear objGear = new Gear(_objCharacter);
-                    if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons, _lstGear)) continue;
+                    if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons, blnCreateImprovements))
+                        continue;
                     foreach (Weapon objWeapon in lstChildWeapons)
                     {
                         objWeapon.ParentID = InternalId;
@@ -745,6 +746,8 @@ namespace Chummer.Backend.Equipment
                     objGear.ArmorCapacity = "[0]";
                     objGear.Cost = "0";
                     objGear.ParentID = InternalId;
+                    Gear.Add(objGear);
+                    lstChildWeapons.AddRange(lstWeapons);
                 }
                 lstWeapons.AddRange(lstChildWeapons);
             }
@@ -2227,6 +2230,8 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
+                if (blnModifyParentAvail)
+                    intAvail = 0;
                 StringBuilder objAvail = new StringBuilder(strAvail.TrimStart('+'));
                 objAvail.CheapReplace(strAvail, "MinRating", () => MinRating.ToString());
                 objAvail.CheapReplace(strAvail, "Rating", () => Rating.ToString());

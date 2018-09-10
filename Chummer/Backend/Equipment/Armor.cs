@@ -353,7 +353,8 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                 {
                     Gear objGear = new Gear(_objCharacter);
-                    if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons, _lstGear)) continue;
+                    if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons, blnSkipSelectForms))
+                        continue;
                     foreach (Weapon objWeapon in lstChildWeapons)
                     {
                         objWeapon.ParentID = InternalId;
@@ -362,6 +363,7 @@ namespace Chummer.Backend.Equipment
                     objGear.Capacity = "[0]";
                     objGear.ArmorCapacity = "[0]";
                     objGear.ParentID = InternalId;
+                    Gear.Add(objGear);
                     lstChildWeapons.AddRange(lstWeapons);
                 }
                 lstWeapons.AddRange(lstChildWeapons);
