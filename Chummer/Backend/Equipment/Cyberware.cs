@@ -741,7 +741,7 @@ namespace Chummer.Backend.Equipment
                     {
                         objWeapon.ParentID = InternalId;
                     }
-                    
+                    objGear.Parent = this;
                     objGear.ParentID = InternalId;
                     Gear.Add(objGear);
                     lstChildWeapons.AddRange(lstWeapons);

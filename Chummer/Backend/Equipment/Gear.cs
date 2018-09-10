@@ -563,6 +563,7 @@ namespace Chummer.Backend.Equipment
                         if (objChildGear.CreateFromNode(xmlGearsDocument, xmlChildGearNode, lstWeapons, blnAddImprovements))
                         {
                             objChildGear.ParentID = InternalId;
+                            objChildGear.Parent = this;
                             lstChildGears.Add(objChildGear);
                         }
                         else
@@ -579,8 +580,18 @@ namespace Chummer.Backend.Equipment
             {
                 Create(xmlGearDataNode, intRating, lstWeapons, strForceValue, blnAddImprovements);
 
-                Capacity = "[0]";
-                ArmorCapacity = "[0]";
+                string strOldCapacity = Capacity;
+                int intSlashIndex = strOldCapacity?.IndexOf("/[") ?? -1;
+                if (intSlashIndex == -1)
+                    Capacity = "[0]";
+                else
+                    Capacity = (strOldCapacity?.Substring(0, intSlashIndex) ?? "0") + "/[0]";
+                strOldCapacity = ArmorCapacity;
+                intSlashIndex = strOldCapacity?.IndexOf("/[") ?? -1;
+                if (intSlashIndex == -1)
+                    ArmorCapacity = "[0]";
+                else
+                    ArmorCapacity = (strOldCapacity?.Substring(0, intSlashIndex) ?? "0") + "/[0]";
                 Cost = "0";
                 Quantity = decQty;
                 if (!string.IsNullOrEmpty(strMaxRating))
@@ -2242,7 +2253,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
-                int intParentMultiplier = ((IHasChildrenAndCost<Gear>)Parent)?.ChildCostMultiplier ?? 1;
+                int intParentMultiplier = (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1;
 
                 decReturn = (decReturn * Quantity * intParentMultiplier) / CostFor;
                 // Add in the cost of the plugins separate since their value is not based on the Cost For number (it is always cost x qty).
@@ -2255,7 +2266,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The cost of just the Gear itself.
         /// </summary>
-        public decimal OwnCost => (OwnCostPreMultipliers * ((IHasChildrenAndCost<Gear>)Parent)?.ChildCostMultiplier ?? 1) / CostFor;
+        public decimal OwnCost => (OwnCostPreMultipliers * (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1) / CostFor;
 
         /// <summary>
         /// The Gear's Capacity cost if used as a plugin.
