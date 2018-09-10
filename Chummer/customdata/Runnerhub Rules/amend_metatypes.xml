@@ -38,8 +38,8 @@
 				<metavariant>
 					<name>Hobgoblin</name>
 					<qualities>
-					  <negative>
-					    <quality>Distinctive Style</quality>
+					  <negative xpathfilter="not(quality = 'Distinctive Style')">
+					    <quality amendoperation="addnode">Distinctive Style</quality>
 					  </negative>
 					</qualities>
 				</metavariant>
@@ -80,9 +80,9 @@
 			<metavariants>
 				<metavariant>
 					<name>Hobgoblin</name>
-					<qualities amendoperation="append">
-						<negative>
-						  <quality select="Metahuman Form Only">Distinctive Style</quality>
+					<qualities>
+						<negative xpathfilter="not(quality = 'Distinctive Style')">
+						  <quality select="Metahuman Form Only" amendoperation="addnode">Distinctive Style</quality>
 						</negative>
 					</qualities>
 				</metavariant>

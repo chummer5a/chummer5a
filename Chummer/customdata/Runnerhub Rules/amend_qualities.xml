@@ -24,7 +24,7 @@
     -->
     <quality>
       <name>Alibi</name>
-      <bonus>
+      <bonus amendoperation="replace" addifnotfound="True">
         <specificskill>
           <name>Con</name>
           <bonus>2</bonus>
@@ -125,7 +125,7 @@
     </quality>
     <quality>
       <name>Corporate Loyalist</name>
-      <required>
+      <required amendoperation="replace" addifnotfound="True">
         <oneof>
           <quality>SINner (Corporate)</quality>
           <quality>SINner (Corporate Limited)</quality>
@@ -186,11 +186,10 @@
     </quality>
     <quality>
       <name>Thousand-Yard Stare</name>
-      <notes>Due to concerns over potentially distasteful application, this quality may be denied by CCD without further comment.
+      <notes>Due to concerns over potentially distasteful application, this quality may be denied by CCD without further comment.</notes>
     </quality>
-    <quality>
-      <name>Corporate Pariah I</name>
-      <required>
+    <quality xpathfilter="starts-with(name,'Corporate Pariah')">
+      <required amendoperation="replace" addifnotfound="True">
         <oneof>          
           <quality>SINner (Corporate)</quality>
           <quality>SINner (Corporate Limited)</quality>
@@ -242,7 +241,7 @@
         - Elves and Dwarves live for hundreds of years, while Orks and Trolls live a fraction of the human lifespan. A character's age must be adjusted accordingly, and Elves and Dwarves may not be pre-Spike Baby ages. This means you cannot play an aged Dwarf or Elf. 
 
       </notes>
-      <forbidden>
+      <forbidden amendoperation="replace" addifnotfound="True">
         <oneof>
           <metatype>Elf</metatype>
           <metatype>Dwarf</metatype>
@@ -725,21 +724,21 @@
       <hide />
     </quality>  
 
-    <quality xpathfilter="starts-with(name, 'Carrier')" amendoperation="append">
+    <quality xpathfilter="starts-with(name, 'Carrier')">
       <hide />
     </quality>
 
     <!--
       Banned Crystals
     -->
-    <quality xpathfilter="starts-with(name, 'Crystal')" amendoperation="append">
+    <quality xpathfilter="starts-with(name, 'Crystal')">
       <hide />
     </quality>
 
     <!--
       Banned Dracoforms
     -->
-    <quality xpathfilter="starts-with(name, 'Draco')" amendoperation="append">
+    <quality xpathfilter="starts-with(name, 'Draco')">
       <hide />
     </quality>
 
@@ -764,45 +763,20 @@
       Overrides
     -->
 
-    <quality amendoperation="replace">
+    <quality>
       <id>9d53e1e4-3f31-40cb-bfbe-4b94f5ba757e</id>
       <name>Mystic Adept</name>
-      <karma>35</karma>
-      <category>Positive</category>
-      <contributetolimit>False</contributetolimit>
-      <onlyprioritygiven />
       <bonus>
-        <enableattribute>
-          <name>MAG</name>
-        </enableattribute>
-        <enabletab>
-          <name>magician</name>
-          <name>adept</name>
-        </enabletab>
-        <unlockskills>Sorcery</unlockskills>
-        <unlockskills>Conjuring</unlockskills>
+        <unlockskills amendoperation="remove" />
+        <unlockskills amendoperation="addnode">Sorcery</unlockskills>
+        <unlockskills amendoperation="addnode">Conjuring</unlockskills>
       </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Aware</quality>
-          <quality>Magician</quality>
-          <quality>Adept</quality>
-          <quality>Aspected Magician</quality>
-          <quality>Enchanter</quality>
-          <quality>Explorer</quality>
-          <quality>Apprentice</quality>
-          <quality>Technomancer</quality>
-        </oneof>
-      </forbidden>
-      <source>SR5</source>
-      <page>69</page>
-      <nameonpage>Mystic Adepts</nameonpage>
     </quality>
 
     <quality>
       <id>45be40cc-a21a-4771-b47d-a532ea60b205</id>
       <name>Made Man</name>
-      <bonus amendoperation="replace">
+      <bonus amendoperation="replace" addifnotfound="True">
         <mademan />
         <addcontact>
           <connection>4</connection>
@@ -815,7 +789,7 @@
     <quality>
       <id>7297d8b0-8bb8-4d7a-ab10-2d4e4381e5d0</id>
       <name>Prime Datahaven Membership</name>
-      <bonus amendoperation="replace">
+      <bonus amendoperation="replace" addifnotfound="True">
         <addcontact>
           <connection>5</connection>
           <loyalty>3</loyalty>
@@ -828,23 +802,13 @@
       <id>aaac8dfd-dee6-4277-b967-9ec9089260a7</id>
       <name>Cyber-snob</name>
       <karma>-6</karma>
-      <bonus amendoperation="replace">
-        <disablebiowaregrade>Standard</disablebiowaregrade>
-        <disablebiowaregrade>Standard (Burnout's Way)</disablebiowaregrade>
-        <disablebiowaregrade>Used</disablebiowaregrade>
-        <disablebiowaregrade>Omegaware</disablebiowaregrade>
-        <disablecyberwaregrade>Standard</disablecyberwaregrade>
-        <disablecyberwaregrade>Standard (Burnout's Way)</disablecyberwaregrade>
-        <disablecyberwaregrade>Used</disablecyberwaregrade>
-        <disablecyberwaregrade>Omegaware</disablecyberwaregrade>
-        <disablecyberwaregrade>Standard (Adapsin)</disablecyberwaregrade>
-        <disablecyberwaregrade>Standard (Burnout's Way) (Adapsin)</disablecyberwaregrade>
-        <disablecyberwaregrade>Used (Adapsin)</disablecyberwaregrade>
-        <disablecyberwaregrade>Omegaware (Adapsin)</disablecyberwaregrade>
+      <bonus>
+        <disablebiowaregrade xpathfilter="contains(text(),'Alphaware')" amendoperation="remove" />
+        <disablecyberwaregrade xpathfilter="contains(text(),'Alphaware')" amendoperation="remove" />
       </bonus>
-      <required amendoperation="replace">
+      <required>
         <oneof>
-          <ess grade="Alphaware">1</ess>
+          <ess xpathfilter="@grade = 'Betaware'" amendoperation="replace" grade="Alphaware">1</ess>
         </oneof>
       </required>
     </quality>
@@ -852,8 +816,6 @@
     <quality>
       <id>a030d7e2-755b-4f71-b848-ad9772fba242</id>
       <name>Distinctive Style</name>
-      <karma>-5</karma>
-      <category>Negative</category>
       <bonus>
         <publicawareness>2</publicawareness>
       </bonus>
@@ -863,11 +825,11 @@
       <id>727e5ca7-0b64-462f-a3dc-254c451db3a1</id>
       <name>Pacifist Adept</name>
       <required>
-        <oneof amendoperation="replace">
-          <quality>Pacifist I</quality>
+        <oneof>
+          <quality xpathfilter="text() = 'Pacifist II'" amendoperation="remove" />
         </oneof>
       </required>
-      <forbidden amendoperation="replace">
+      <forbidden amendoperation="replace" addifnotfound="True">
         <oneof>
           <quality>Pacifist II</quality>
         </oneof>
