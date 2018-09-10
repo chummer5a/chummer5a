@@ -32,7 +32,7 @@
 			<name>BMW Luxus</name>
 			<avail>24F</avail>
 		</vehicle>
-		<vehicle xpathfilter="(category = 'Cars' or category = 'Bikes' or category = 'Trucks' or category = 'Boats' or category = 'Corpsec/Police/Military' or category='Fixed-Wing Aircraft' or category = 'LTAV' or category = 'Rotorcraft' or category = 'VTOL/VSTOL') and pilot > 0"  amendoperation="append">
+		<vehicle xpathfilter="(category = 'Cars' or category = 'Bikes' or category = 'Trucks' or category = 'Boats' or category = 'Corpsec/Police/Military' or category='Fixed-Wing Aircraft' or category = 'LTAV' or category = 'Rotorcraft' or category = 'VTOL/VSTOL') and pilot > 0">
 			<mods xpathfilter="not(name = 'GridLink')">
 				<name amendoperation="addnode">GridLink</name>
 			</mods>
