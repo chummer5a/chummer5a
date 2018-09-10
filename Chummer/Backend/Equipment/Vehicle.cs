@@ -302,6 +302,7 @@ namespace Chummer.Backend.Equipment
                         Gear objGear = new Gear(_objCharacter);
                         if (objGear.CreateFromNode(objXmlDocument, objXmlVehicleGear, lstWeapons))
                         {
+                            objGear.ParentID = InternalId;
                             Gear.Add(objGear);
                             foreach (Weapon objWeapon in lstWeapons)
                             {
