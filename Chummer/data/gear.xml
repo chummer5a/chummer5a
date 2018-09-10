@@ -12525,7 +12525,7 @@
           <OR>
             <AND>
               <attack operation="greaterthan">0</attack>
-              <dataprocessing operation="greaterthan">0</sleaze>
+              <dataprocessing operation="greaterthan">0</dataprocessing>
             </AND>
             <name>Fuchi Cyber-N</name>
             <name>Fuchi Cyber-Ex</name>
@@ -12550,7 +12550,7 @@
           <OR>
             <AND>
               <attack operation="greaterthan">0</attack>
-              <firewall operation="greaterthan">0</sleaze>
+              <firewall operation="greaterthan">0</firewall>
             </AND>
             <name>Fuchi Cyber-N</name>
             <name>Fuchi Cyber-Ex</name>
@@ -12599,8 +12599,8 @@
         <geardetails>
           <OR>
             <AND>
-              <sleaze operation="greaterthan">0</attack>
-              <dataprocessing operation="greaterthan">0</sleaze>
+              <sleaze operation="greaterthan">0</sleaze>
+              <dataprocessing operation="greaterthan">0</dataprocessing>
             </AND>
             <name>Fuchi Cyber-N</name>
             <name>Fuchi Cyber-Ex</name>
@@ -12624,8 +12624,8 @@
         <geardetails>
           <OR>
             <AND>
-              <sleaze operation="greaterthan">0</attack>
-              <firewall operation="greaterthan">0</sleaze>
+              <sleaze operation="greaterthan">0</sleaze>
+              <firewall operation="greaterthan">0</firewall>
             </AND>
             <name>Fuchi Cyber-N</name>
             <name>Fuchi Cyber-Ex</name>
@@ -12650,7 +12650,7 @@
           <OR>
             <AND>
               <attack operation="greaterthan">0</attack>
-              <dataprocessing operation="greaterthan">0</sleaze>
+              <dataprocessing operation="greaterthan">0</dataprocessing>
             </AND>
             <name>Fuchi Cyber-N</name>
             <name>Fuchi Cyber-Ex</name>
@@ -12674,8 +12674,8 @@
         <geardetails>
           <OR>
             <AND>
-              <sleaze operation="greaterthan">0</attack>
-              <dataprocessing operation="greaterthan">0</sleaze>
+              <sleaze operation="greaterthan">0</sleaze>
+              <dataprocessing operation="greaterthan">0</dataprocessing>
             </AND>
             <name>Fuchi Cyber-N</name>
             <name>Fuchi Cyber-Ex</name>
@@ -12699,8 +12699,8 @@
         <geardetails>
           <OR>
             <AND>
-              <dataprocessing operation="greaterthan">0</attack>
-              <firewall operation="greaterthan">0</sleaze>
+              <dataprocessing operation="greaterthan">0</dataprocessing>
+              <firewall operation="greaterthan">0</firewall>
             </AND>
             <name>Fuchi Cyber-N</name>
             <name>Fuchi Cyber-Ex</name>
@@ -12725,7 +12725,7 @@
           <OR>
             <AND>
               <attack operation="greaterthan">0</attack>
-              <firewall operation="greaterthan">0</sleaze>
+              <firewall operation="greaterthan">0</firewall>
             </AND>
             <name>Fuchi Cyber-N</name>
             <name>Fuchi Cyber-Ex</name>
@@ -12749,8 +12749,8 @@
         <geardetails>
           <OR>
             <AND>
-              <sleaze operation="greaterthan">0</attack>
-              <firewall operation="greaterthan">0</sleaze>
+              <sleaze operation="greaterthan">0</sleaze>
+              <firewall operation="greaterthan">0</firewall>
             </AND>
             <name>Fuchi Cyber-N</name>
             <name>Fuchi Cyber-Ex</name>
@@ -12774,8 +12774,8 @@
         <geardetails>
           <OR>
             <AND>
-              <dataprocessing operation="greaterthan">0</attack>
-              <firewall operation="greaterthan">0</sleaze>
+              <dataprocessing operation="greaterthan">0</dataprocessing>
+              <firewall operation="greaterthan">0</firewall>
             </AND>
             <name>Fuchi Cyber-N</name>
             <name>Fuchi Cyber-Ex</name>
