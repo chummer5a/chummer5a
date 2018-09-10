@@ -10619,7 +10619,7 @@
     </gear>
     <gear>
       <id>875bf273-1a0d-4a42-80ab-6547d7a1235a</id>
-      <name>Narcoject</name>
+      <name>Narcojet</name>
       <category>Toxins</category>
       <rating>0</rating>
       <source>SR5</source>
@@ -17856,8 +17856,18 @@
       <rating>0</rating>
       <source>SL</source>
       <page>48</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <cost>750</cost>
+    </gear>
+    <gear>
+      <id>d2a1cc9b-72e3-49df-957c-8ed6fb47a813</id>
+      <name>Narcojet Dazzler</name>
+      <category>Survival Gear</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>46</page>
+      <avail>15R</avail>
+      <cost>1000</cost>
     </gear>
     <!-- End Region -->
     <!-- Region Kill Code -->

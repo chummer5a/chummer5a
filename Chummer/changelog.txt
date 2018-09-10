@@ -61,6 +61,10 @@ Data Changes:
 - Fixed incorrect and missing karma values for several drake optional powers.
 - Fixed an incorrect availability value for Urban Explorer Daedalus: Helmet.
 - Fixed the category entry of Retractable Spurs, Fixed Spurs, and Retractable Hand Razorsfrom the Shadowrun 2050 sourcebook to be Cyber Implant Weapon instead of Bodyware.
+- Fixed a typo in the name of "Narcojet".
+- Added a gear entry for the Narcojet Dazzler for when a character buys it on its own as a Heavy Pistol-sized item instead of a weapon accessory.
+- Fixed the source entry for Narcojet Trackstopper to properly reference its entry in Street Lethal instead of a non-existent one in the core rulebook.
+- Fixed entries for the Krime Stun-O-Net, Additional Clip/Magazine, Narcoject Dazzler, and Red Dot Sight weapon accessories from Street Lethal. They are now all purchasable with appropriate stats, and in the case of Additional Clip/Magazine, it now properly can only be purchased on pistols that also use either a clip or internal magazine. Fixes #2983 and one of the bugs in #2978.
 
 New Strings:
 
