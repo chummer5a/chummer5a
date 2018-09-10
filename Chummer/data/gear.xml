@@ -12257,12 +12257,16 @@
             <attack operation="exists" NOT="" />
             <attack>0</attack>
           </OR>
-          <OR NOT="">
+        </geardetails>
+      </required>
+      <forbidden>
+        <geardetails>
+          <OR>
             <name>Fuchi Cyber-N</name>
             <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
-      </required>
+      </forbidden>
       <addoncategory>Electronic Modification</addoncategory>
     </gear>
     <gear>
@@ -12283,12 +12287,16 @@
             <sleaze operation="exists" NOT="" />
             <sleaze>0</sleaze>
           </OR>
-          <OR NOT="">
+        </geardetails>
+      </required>
+      <forbidden>
+        <geardetails>
+          <OR>
             <name>Fuchi Cyber-N</name>
             <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
-      </required>
+      </forbidden>
       <addoncategory>Electronic Modification</addoncategory>
     </gear>
     <gear>
