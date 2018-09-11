@@ -64,7 +64,7 @@ namespace Chummer
             this.lblCritterPowerSource.Size = new System.Drawing.Size(47, 13);
             this.lblCritterPowerSource.TabIndex = 16;
             this.lblCritterPowerSource.Text = "[Source]";
-            this.lblCritterPowerSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
+            this.lblCritterPowerSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
             // 
             // lblCritterPowerSourceLabel
             // 

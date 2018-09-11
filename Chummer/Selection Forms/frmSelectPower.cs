@@ -277,6 +277,11 @@ namespace Chummer
             lblSource.Left = lblSourceLabel.Left + lblSourceLabel.Width + 6;
             lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
         }
+
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
+        }
         #endregion
     }
 }

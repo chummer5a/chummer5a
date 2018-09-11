@@ -486,6 +486,11 @@ namespace Chummer
             lblCritterPowerSource.Left = lblCritterPowerSourceLabel.Left + intWidth + 6;
             lblPowerPoints.Left = lblPowerPointsLabel.Left + intWidth + 6;
         }
+
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
+        }
         #endregion
 
         #region Properties

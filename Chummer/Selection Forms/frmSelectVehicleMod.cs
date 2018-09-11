@@ -729,6 +729,11 @@ namespace Chummer
 
             return objInputBuilder.ToString();
         }
+
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
+        }
         #endregion
     }
 }

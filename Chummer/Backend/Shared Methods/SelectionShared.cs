@@ -1047,6 +1047,50 @@ namespace Chummer
             return intAvail <= objCharacter.MaximumAvailability;
         }
 
+        public static bool CheckNuyenRestriction(XmlNode objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m)
+        {
+            // Cost.
+            decimal decCost = 0.0m;
+            XmlNode objCostNode = objXmlGear["cost"];
+            int intRating = 1;
+            if (objCostNode == null)
+            {
+                intRating = int.MaxValue;
+                foreach (XmlNode objLoopNode in objXmlGear.SelectNodes("*"))
+                {
+                    if (objLoopNode.Name.StartsWith("cost"))
+                    {
+                        string strLoopCostString = objLoopNode.Name.Substring(4);
+                        if (int.TryParse(strLoopCostString, out int intTmp))
+                        {
+                            intRating = Math.Min(intRating, intTmp);
+                        }
+                    }
+                }
+                objCostNode = objXmlGear.SelectSingleNode("cost" + intRating.ToString(GlobalOptions.InvariantCultureInfo));
+            }
+            string strCost = objCostNode?.InnerText;
+            if (!string.IsNullOrEmpty(strCost))
+            {
+                if (strCost.StartsWith("FixedValues("))
+                {
+                    string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
+                }
+                else if (strCost.StartsWith("Variable"))
+                {
+                    strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
+                    int intHyphenIndex = strCost.IndexOf('-');
+                    strCost = intHyphenIndex != -1 ? strCost.Substring(0, intHyphenIndex) : strCost.FastEscape('+');
+                }
+
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    decCost = Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo);
+            }
+            return decMaxNuyen >= decCost * decCostMultiplier;
+        }
+
         //TODO: Might be a better location for this; Class names are screwy.
         /// <summary>Evaluates requirements of a given node against a given Character object.</summary>
         /// <param name="xmlNode">XmlNode of the object.</param>

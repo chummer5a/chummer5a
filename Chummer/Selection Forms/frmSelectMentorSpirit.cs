@@ -245,6 +245,11 @@ namespace Chummer
                 DialogResult = DialogResult.OK;
             }
         }
+
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
+        }
         #endregion
     }
 }

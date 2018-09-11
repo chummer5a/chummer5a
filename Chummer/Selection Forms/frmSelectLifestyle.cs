@@ -394,6 +394,11 @@ namespace Chummer
             txtLifestyleName.Left = intLeft + 6;
             cboLifestyle.Left = intLeft + 6;
         }
+
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
+        }
         #endregion
     }
 }
