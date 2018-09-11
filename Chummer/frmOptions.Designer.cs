@@ -3114,7 +3114,7 @@ namespace Chummer
             this.chkExceedPositiveQualitiesCostDoubled.Size = new System.Drawing.Size(305, 17);
             this.chkExceedPositiveQualitiesCostDoubled.TabIndex = 16;
             this.chkExceedPositiveQualitiesCostDoubled.Tag = "Checkbox_Options_ExceedPositiveQualitiesCostDoubled";
-            this.chkExceedPositiveQualitiesCostDoubled.Text = "Double all Positive Quality karma costs in excess of the limit";
+            this.chkExceedPositiveQualitiesCostDoubled.Text = "Use Career costs for all Positive Quality karma costs in excess of the limit";
             this.chkExceedPositiveQualitiesCostDoubled.UseVisualStyleBackColor = true;
             this.chkExceedPositiveQualitiesCostDoubled.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 

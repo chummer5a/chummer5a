@@ -9188,13 +9188,44 @@ namespace Chummer
             int intPositiveQualities = intGroupContacts; // group contacts are positive qualities
             int intNegativeQualities = intEnemyPoints;   // enemies are negative qualities
             int intLifeModuleQualities = 0;
+            int intUnlimitedPositive = 0;
+            int intUnlimitedNegative = 0;
+            // Used to make sure Positive Qualities that aren't doubled in Career mode don't get added into the total until after that step has been checked.
+            int intPositiveQualitiesNoDoubleExcess = 0;
 
-            intPositiveQualities += CharacterObject.Qualities.Where(q => q.Type == QualityType.Positive && q.ContributeToBP && q.ContributeToLimit).Sum(q => q.BP * CharacterObjectOptions.KarmaQuality);
-            int unlimitedPositive = CharacterObject.Qualities.Where(q => q.Type == QualityType.Positive && q.ContributeToBP && !q.ContributeToLimit).Sum(q => q.BP * CharacterObjectOptions.KarmaQuality);
-            intNegativeQualities += CharacterObject.Qualities.Where(q => q.Type == QualityType.Negative && q.ContributeToBP && q.ContributeToLimit).Sum(q => q.BP * CharacterObjectOptions.KarmaQuality);
-            int unlimitedNegative = CharacterObject.Qualities.Where(q => q.Type == QualityType.Negative && q.ContributeToBP && !q.ContributeToLimit).Sum(q => q.BP * CharacterObjectOptions.KarmaQuality);
-            intLifeModuleQualities += CharacterObject.Qualities.Where(q => q.Type == QualityType.LifeModule && q.ContributeToBP && q.ContributeToLimit).Sum(q => q.BP * CharacterObjectOptions.KarmaQuality);
-
+            foreach (Quality objLoopQuality in CharacterObject.Qualities)
+            {
+                if (objLoopQuality.ContributeToBP)
+                {
+                    if (objLoopQuality.ContributeToLimit)
+                    {
+                        if (objLoopQuality.Type == QualityType.Positive)
+                        {
+                            if (objLoopQuality.DoubleCost)
+                                intPositiveQualitiesNoDoubleExcess += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
+                            else
+                                intPositiveQualities += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
+                        }
+                        else if (objLoopQuality.Type == QualityType.Negative)
+                        {
+                            intNegativeQualities += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
+                        }
+                        else if (objLoopQuality.Type == QualityType.LifeModule)
+                        {
+                            intLifeModuleQualities += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
+                        }
+                    }
+                    else if (objLoopQuality.Type == QualityType.Positive)
+                    {
+                        intUnlimitedPositive += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
+                    }
+                    else if (objLoopQuality.Type == QualityType.Negative)
+                    {
+                        intUnlimitedNegative += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
+                    }
+                }
+            }
+            
             // Deduct the amounts for free Qualities.
             int intPositiveFree = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreePositiveQualities) * CharacterObjectOptions.KarmaQuality;
             int intNegativeFree = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeNegativeQualities) * CharacterObjectOptions.KarmaQuality;
@@ -9221,8 +9252,10 @@ namespace Chummer
                     intPositiveQualities += intPositiveQualityExcess;
                 }
             }
+            // Now we add in the karma from qualities that are not doubled in career mode
+            intPositiveQualities += intPositiveQualitiesNoDoubleExcess;
 
-            int intQualityPointsUsed = intLifeModuleQualities + intNegativeQualities + intPositiveQualities + unlimitedPositive + unlimitedNegative;
+            int intQualityPointsUsed = intLifeModuleQualities + intNegativeQualities + intPositiveQualities + intUnlimitedPositive + intUnlimitedNegative;
 
             intKarmaPointsRemain -= intQualityPointsUsed;
             intFreestyleBP += intQualityPointsUsed;
@@ -9711,12 +9744,12 @@ namespace Chummer
                 lblContactPoints.Text = strContactPoints;
                 lblEnemiesBP.Text = intEnemyPoints.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
 
-                lblPositiveQualitiesBP.Text = unlimitedPositive > 0
-                   ? $"{intPositiveQualities}/{CharacterObject.GameplayOptionQualityLimit}{strSpaceCharacter}{strPoints}{strSpaceCharacter}({intPositiveQualities + unlimitedPositive})"
+                lblPositiveQualitiesBP.Text = intUnlimitedPositive > 0
+                   ? $"{intPositiveQualities}/{CharacterObject.GameplayOptionQualityLimit}{strSpaceCharacter}{strPoints}{strSpaceCharacter}({intPositiveQualities + intUnlimitedPositive})"
                    : $"{intPositiveQualities}/{CharacterObject.GameplayOptionQualityLimit}{strSpaceCharacter}{strPoints}";
 
-                lblNegativeQualitiesBP.Text = unlimitedNegative > 0
-                    ? $"{intNegativeQualities * -1}/{CharacterObject.GameplayOptionQualityLimit}{strSpaceCharacter}{strPoints}{strSpaceCharacter}({intNegativeQualities + unlimitedNegative})"
+                lblNegativeQualitiesBP.Text = intUnlimitedNegative > 0
+                    ? $"{intNegativeQualities * -1}/{CharacterObject.GameplayOptionQualityLimit}{strSpaceCharacter}{strPoints}{strSpaceCharacter}({intNegativeQualities + intUnlimitedNegative})"
                     : $"{intNegativeQualities * -1}/{CharacterObject.GameplayOptionQualityLimit}{strSpaceCharacter}{strPoints}";
 
                 lblAttributesBP.Text = BuildAttributes(CharacterObject.AttributeSection.AttributeList);
