@@ -16098,7 +16098,38 @@
     <accessory>
       <id>d2a1cc9b-72e3-49df-957c-8ed6fb47a813</id>
       <name>Additional Clip/Magazine</name>
-      <ammoslots>2</ammoslots>
+      <ammoslots>1</ammoslots>
+      <mount>Side</mount>
+      <rating>0</rating>
+      <conceal>+2</conceal>
+      <avail>10R</avail>
+      <cost>Weapon Cost</cost>
+      <required>
+        <weapondetails>
+          <OR>
+            <ammo operation="contains">(c)</ammo>
+            <ammo operation="contains">(m)</ammo>
+          </OR>
+        </weapondetails>
+      </required>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <category>Holdouts</category>
+            <category>Light Pistols</category>
+            <category>Heavy Pistols</category>
+            <category>Machine Pistols</category>
+          </OR>
+        </weapondetails>
+      </forbidden>
+      <source>SL</source>
+      <page>45</page>
+    </accessory>
+    <accessory>
+      <id>20d18222-448c-47f8-bb4e-be307a0cd995</id>
+      <name>Additional Clip/Magazine (Pistol)</name>
+      <ammoslots>1</ammoslots>
+      <modifyammocapacity>* 3 div 4</modifyammocapacity>
       <mount>Side</mount>
       <rating>0</rating>
       <conceal>+2</conceal>

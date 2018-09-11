@@ -36,6 +36,7 @@ Application Changes:
 - Fixed an issue where gear that came with a piece of cyberware or a piece of armor would create improvements when the item was selected while browsing through items to add, even if the item did not eventually get added.
 - Cyberware and bioware can now be flagged to increase the capacity cost of its parent 'ware instead of attempting to occupy capacity.
 - Accessories for cyber implant weapons now have their own category and will need to be added to cyber implant weapons as plugins. Previously, they needed to be added alongside cyber implant weapons and tracking which cyber implant weapon had which accessories needed to be done manually. Fixed #2882.
+- Weapon accessories can now modify their parent's total ammo size through the modifyammocapacity element.
 
 Data Changes:
 
@@ -64,7 +65,7 @@ Data Changes:
 - Fixed a typo in the name of "Narcojet".
 - Added a gear entry for the Narcojet Dazzler for when a character buys it on its own as a Heavy Pistol-sized item instead of a weapon accessory.
 - Fixed the source entry for Narcojet Trackstopper to properly reference its entry in Street Lethal instead of a non-existent one in the core rulebook.
-- Fixed entries for the Krime Stun-O-Net, Additional Clip/Magazine, Narcoject Dazzler, and Red Dot Sight weapon accessories from Street Lethal. They are now all purchasable with appropriate stats, and in the case of Additional Clip/Magazine, it now properly can only be purchased on pistols that also use either a clip or internal magazine. Fixes #2983 and one of the bugs in #2978.
+- Fixed entries for the Krime Stun-O-Net, Additional Clip/Magazine, Narcoject Dazzler, and Red Dot Sight weapon accessories from Street Lethal. They are now all purchasable with appropriate stats, and in the case of Additional Clip/Magazine, it now properly adjusts the maximum capacity on pistols and can only be takeon on weapons with a clip or internal magazine. Fixes #2983 and one of the bugs in #2978.
 
 New Strings:
 

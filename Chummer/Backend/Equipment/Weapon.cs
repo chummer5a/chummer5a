@@ -2036,6 +2036,25 @@ namespace Chummer.Backend.Equipment
                         strPrepend = strThisAmmo.Substring(0, intPos + 1);
                         strThisAmmo = strThisAmmo.Substring(intPos + 1, strThisAmmo.Length - (intPos + 1));
                     }
+                    if (WeaponAccessories.Count != 0)
+                    {
+                        foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                        {
+                            if (objAccessory.Equipped)
+                            {
+                                string strModifyAmmoCapacity = objAccessory.ModifyAmmoCapacity;
+                                if (!string.IsNullOrEmpty(strModifyAmmoCapacity))
+                                {
+                                    strThisAmmo = '(' + strThisAmmo + strModifyAmmoCapacity + ')';
+                                    int AddParenthesesCount = strModifyAmmoCapacity.Count(x => x == ')') - strModifyAmmoCapacity.Count(x => x == '(');
+                                    for (int i = 0; i < AddParenthesesCount; ++i)
+                                        strThisAmmo = '(' + strThisAmmo;
+                                    for (int i = 0; i < -AddParenthesesCount; ++i)
+                                        strThisAmmo += ')';
+                                }
+                            }
+                        }
+                    }
                     strThisAmmo = strThisAmmo.CheapReplace("Weapon", () => Ammo);
                     // If this is an Underbarrel Weapons that has been added, cut the Ammo capacity in half.
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strThisAmmo, out bool blnIsSuccess);
