@@ -67,6 +67,10 @@
   <!-- End Region -->
     <!-- Region Common Strings -->
     <string>
+      <key>String_NotApplicable</key>
+      <text>N/A</text>
+    </string>
+    <string>
       <key>String_Version</key>
       <text>Version</text>
     </string>

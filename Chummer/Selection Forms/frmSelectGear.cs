@@ -527,6 +527,7 @@ namespace Chummer
                 lblCapacityLabel.Visible = false;
                 lblRatingLabel.Visible = false;
                 nudRating.Visible = false;
+                lblRatingNALabel.Visible = false;
                 lblGearQtyLabel.Visible = false;
                 nudGearQty.Visible = false;
                 chkStack.Visible = false;
@@ -557,6 +558,7 @@ namespace Chummer
                 lblCapacityLabel.Visible = false;
                 lblRatingLabel.Visible = false;
                 nudRating.Visible = false;
+                lblRatingNALabel.Visible = false;
                 lblGearQtyLabel.Visible = false;
                 nudGearQty.Visible = false;
                 chkStack.Visible = false;
@@ -956,17 +958,19 @@ namespace Chummer
                     }
                 }
 
+                lblRatingLabel.Visible = true;
                 nudRating.Enabled = nudRating.Minimum != nudRating.Maximum;
                 nudRating.Visible = true;
-                lblRatingLabel.Visible = true;
+                lblRatingNALabel.Visible = false;
             }
             else
             {
+                lblRatingLabel.Visible = true;
+                lblRatingNALabel.Visible = true;
                 nudRating.Minimum = 0;
                 nudRating.Maximum = 0;
                 nudRating.Enabled = false;
                 nudRating.Visible = false;
-                lblRatingLabel.Visible = false;
             }
         }
 

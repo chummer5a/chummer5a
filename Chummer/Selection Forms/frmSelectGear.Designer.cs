@@ -63,14 +63,18 @@ namespace Chummer
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.lblCapacityLabel = new System.Windows.Forms.Label();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblRatingNALabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdCancel
             // 
+            this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Location = new System.Drawing.Point(478, 378);
             this.cmdCancel.Name = "cmdCancel";
@@ -83,6 +87,7 @@ namespace Chummer
             // 
             // cmdOK
             // 
+            this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdOK.Location = new System.Drawing.Point(559, 378);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
@@ -94,6 +99,8 @@ namespace Chummer
             // 
             // lstGear
             // 
+            this.lstGear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstGear.FormattingEnabled = true;
             this.lstGear.Location = new System.Drawing.Point(12, 33);
             this.lstGear.Name = "lstGear";
@@ -124,10 +131,8 @@ namespace Chummer
             // 
             // nudRating
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.nudRating, 2);
-            this.nudRating.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudRating.Enabled = false;
-            this.nudRating.Location = new System.Drawing.Point(88, 78);
+            this.nudRating.Location = new System.Drawing.Point(3, 3);
             this.nudRating.Maximum = new decimal(new int[] {
             1000000,
             0,
@@ -227,6 +232,8 @@ namespace Chummer
             // 
             // txtSearch
             // 
+            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSearch.Location = new System.Drawing.Point(433, 6);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(201, 20);
@@ -237,6 +244,7 @@ namespace Chummer
             // 
             // cmdOKAdd
             // 
+            this.cmdOKAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cmdOKAdd.Location = new System.Drawing.Point(362, 378);
             this.cmdOKAdd.Name = "cmdOKAdd";
             this.cmdOKAdd.Size = new System.Drawing.Size(75, 23);
@@ -507,6 +515,8 @@ namespace Chummer
             // 
             // tableLayoutPanel1
             // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.ColumnCount = 5;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 85F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 55F));
@@ -532,13 +542,13 @@ namespace Chummer
             this.tableLayoutPanel1.Controls.Add(this.nudGearQty, 1, 4);
             this.tableLayoutPanel1.Controls.Add(this.lblRatingLabel, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.lblGearQtyLabel, 0, 4);
-            this.tableLayoutPanel1.Controls.Add(this.nudRating, 1, 3);
             this.tableLayoutPanel1.Controls.Add(this.chkDoItYourself, 2, 5);
             this.tableLayoutPanel1.Controls.Add(this.chkStack, 3, 4);
             this.tableLayoutPanel1.Controls.Add(this.lblTest, 3, 1);
             this.tableLayoutPanel1.Controls.Add(this.lblGearDeviceRating, 1, 8);
             this.tableLayoutPanel1.Controls.Add(this.nudMarkup, 1, 7);
             this.tableLayoutPanel1.Controls.Add(this.lblCost, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 1, 3);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(364, 33);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 13;
@@ -583,11 +593,38 @@ namespace Chummer
             this.lblMarkupPercentLabel.TabIndex = 21;
             this.lblMarkupPercentLabel.Text = "%";
             // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 2);
+            this.flowLayoutPanel1.Controls.Add(this.nudRating);
+            this.flowLayoutPanel1.Controls.Add(this.lblRatingNALabel);
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(85, 75);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(100, 26);
+            this.flowLayoutPanel1.TabIndex = 67;
+            this.flowLayoutPanel1.WrapContents = false;
+            // 
+            // lblRatingNALabel
+            // 
+            this.lblRatingNALabel.AutoSize = true;
+            this.lblRatingNALabel.Location = new System.Drawing.Point(103, 6);
+            this.lblRatingNALabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 7);
+            this.lblRatingNALabel.Name = "lblRatingNALabel";
+            this.lblRatingNALabel.Size = new System.Drawing.Size(27, 13);
+            this.lblRatingNALabel.TabIndex = 12;
+            this.lblRatingNALabel.Tag = "String_NotApplicable";
+            this.lblRatingNALabel.Text = "N/A";
+            this.lblRatingNALabel.Visible = false;
+            // 
             // frmSelectGear
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(646, 414);
             this.Controls.Add(this.cmdOKAdd);
@@ -599,6 +636,7 @@ namespace Chummer
             this.Controls.Add(this.lblCategory);
             this.Controls.Add(this.cboCategory);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -613,6 +651,8 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -655,5 +695,7 @@ namespace Chummer
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label lblCapacityLabel;
         private System.Windows.Forms.Label lblMarkupPercentLabel;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Label lblRatingNALabel;
     }
 }
