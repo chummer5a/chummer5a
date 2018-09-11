@@ -16599,7 +16599,7 @@
     <quality>
       <id>522dbfb5-5ea0-4707-a7e8-1ac777b3aff7</id>
       <name>Better on the Net [Attack]</name>
-      <karma></karma>
+      <karma>9</karma>
       <category>Positive</category>
       <bonus>
         <livingpersona>
@@ -16612,12 +16612,12 @@
         </oneof>
       </required>
       <source>KC</source>
-      <page>0</page>
+      <page>96</page>
     </quality>
     <quality>
       <id>39139f84-b8ab-4523-ac02-851350e3f2b6</id>
       <name>Better on the Net [Data Processing]</name>
-      <karma></karma>
+      <karma>9</karma>
       <category>Positive</category>
       <bonus>
         <livingpersona>
@@ -16630,12 +16630,12 @@
         </oneof>
       </required>
       <source>KC</source>
-      <page>0</page>
+      <page>96</page>
     </quality>
     <quality>
       <id>25d34c52-6927-44dd-85bd-684e9add1f89</id>
       <name>Better on the Net [Firewall]</name>
-      <karma></karma>
+      <karma>9</karma>
       <category>Positive</category>
       <bonus>
         <livingpersona>
@@ -16648,12 +16648,12 @@
         </oneof>
       </required>
       <source>KC</source>
-      <page>0</page>
+      <page>96</page>
     </quality>
     <quality>
       <id>59436ccc-5e4b-481d-8d63-d3ba912f2d8a</id>
       <name>Better on the Net [Sleaze]</name>
-      <karma></karma>
+      <karma>9</karma>
       <category>Positive</category>
       <bonus>
         <livingpersona>
@@ -16666,7 +16666,7 @@
         </oneof>
       </required>
       <source>KC</source>
-      <page>0</page>
+      <page>96</page>
     </quality>
     <quality>
       <id>63fd5450-5f3d-4090-933e-ad0cf39ef0e2</id>
@@ -16674,8 +16674,13 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus />
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
-      <page>0</page>
+      <page>96</page>
     </quality>
     <quality>
       <id>cc967d0f-6b7a-4c62-b202-37f94242169c</id>
@@ -16689,7 +16694,7 @@
         </allof>
       </required>
       <source>KC</source>
-      <page>0</page>
+      <page>96</page>
     </quality>
     <quality>
       <id>ad8d9751-d82f-4d80-b351-c102cd60c2b1</id>
@@ -16697,8 +16702,13 @@
       <karma>7</karma>
       <category>Positive</category>
       <bonus />
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
-      <page>0</page>
+      <page>96</page>
     </quality>
     <quality>
       <id>530062d2-6dbe-4e19-b16a-82953c72745d</id>
@@ -16706,8 +16716,13 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus />
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
-      <page>0</page>
+      <page>96</page>
     </quality>
     <quality>
       <id>ca9b24ba-3a2e-41cd-8434-b33f91d691aa</id>
@@ -16720,8 +16735,13 @@
           <quality>Team Player</quality>
         </oneof>
       </forbidden>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
-      <page>0</page>
+      <page>96</page>
     </quality>
     <quality>
       <id>be396e6b-55f8-46ac-b6d8-866985b3cffd</id>
@@ -16729,8 +16749,28 @@
       <karma>14</karma>
       <category>Positive</category>
       <bonus />
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
-      <page>0</page>
+      <page>97</page>
+    </quality>
+    <quality>
+      <id>8bdd4868-191c-4c28-800b-526cb39f7786</id>
+      <name>One With the Matrix</name>
+      <karma>FixedValues(2,8,10)</karma>
+      <category>Positive</category>
+      <limit>3</limit>
+      <bonus />
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>KC</source>
+      <page>97</page>
     </quality>
     <quality>
       <id>c80d0f3d-5be7-4d63-8891-ae3bccbfe48f</id>
@@ -16744,7 +16784,7 @@
         </oneof>
       </forbidden>
       <source>KC</source>
-      <page>0</page>
+      <page>97</page>
     </quality>
     <quality>
       <id>adf86253-baaf-4c03-87fe-aba3a453b3b5</id>
@@ -16752,6 +16792,11 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus />
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
       <page>0</page>
     </quality>
@@ -16766,8 +16811,13 @@
           <quality>Trust Lore, Not Data</quality>
         </oneof>
       </forbidden>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
-      <page>0</page>
+      <page>97</page>
     </quality>
     <quality>
       <id>223bad23-027c-4ea3-ac0b-1ccccace61fe</id>
@@ -16780,8 +16830,13 @@
           <quality>Trust Data, Not Lore</quality>
         </oneof>
       </forbidden>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
-      <page>0</page>
+      <page>97</page>
     </quality>
     <quality>
       <id>ad35c6ec-664c-46a3-8dc5-ac48dfddd0cf</id>
@@ -16794,8 +16849,13 @@
           <quality>Digital Doppelganger</quality>
         </oneof>
       </forbidden>
+        <required>
+            <oneof>
+                <quality>Technomancer</quality>
+            </oneof>
+        </required>
       <source>KC</source>
-      <page>0</page>
+      <page>98</page>
     </quality>
     <quality>
       <id>c5311ee0-8a9b-41b9-857f-28541090968a</id>
@@ -16820,36 +16880,72 @@
       <name>Brittle [Attack]</name>
       <karma>-5</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <livingpersona>
+          <attack>-1</attack>
+        </livingpersona>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
-      <page>0</page>
+      <page>99</page>
     </quality>
     <quality>
       <id>cb5bd1e5-b9ef-434f-af17-0e7b4decaa46</id>
       <name>Brittle [Sleaze]</name>
-      <karma></karma>
+      <karma>-5</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <livingpersona>
+          <sleaze>-1</sleaze>
+        </livingpersona>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
-      <page>0</page>
+      <page>99</page>
     </quality>
     <quality>
       <id>64d430b1-6d6a-4abc-9ef8-3ddaee2352ce</id>
       <name>Brittle [Data Processing]</name>
-      <karma></karma>
+      <karma>-5</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <livingpersona>
+          <dataprocessing>-1</dataprocessing>
+        </livingpersona>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
-      <page>0</page>
+      <page>99</page>
     </quality>
     <quality>
       <id>a1530804-a35b-4d2f-ae3e-50d647016903</id>
       <name>Brittle [Firewall]</name>
-      <karma></karma>
+      <karma>-5</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <livingpersona>
+          <firewall>-1</firewall>
+        </livingpersona>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
-      <page>0</page>
+      <page>99</page>
     </quality>
     <quality>
       <id>d3ed1f43-ffd8-4c96-8faf-de8bbf4c3c83</id>
@@ -16861,8 +16957,13 @@
 	  <quality>Code of Honor: White Hat</quality>
 	  </oneof>
 	  </forbidden>-->
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
-      <page>0</page>
+      <page>99</page>
     </quality>
     <quality>
       <id>7e172644-9b48-4822-8636-b45827ff6938</id>
@@ -16870,8 +16971,13 @@
       <karma>-10</karma>
       <category>Negative</category>
       <bonus />
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
-      <page>0</page>
+      <page>99</page>
     </quality>
     <quality>
       <id>2cafaee0-fb4b-4b56-90e2-8eb864c5a033</id>
@@ -16882,12 +16988,13 @@
         <selecttext />
       </bonus>
       <required>
-        <oneof>
+        <allof>
           <quality>Records on File</quality>
-        </oneof>
+          <quality>Technomancer</quality>
+        </allof>
       </required>
       <source>KC</source>
-      <page>0</page>
+      <page>99</page>
     </quality>
     <quality>
       <id>57e260d7-7e08-4dae-a3e3-0d174bf61689</id>
@@ -16895,8 +17002,13 @@
       <karma>-4</karma>
       <category>Negative</category>
       <bonus />
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
-      <page>0</page>
+      <page>99</page>
     </quality>
     <quality>
       <id>ff939676-0195-4885-ba91-5ee536719b2f</id>
@@ -16912,8 +17024,13 @@
           <quality>Addiction (Burnout)</quality>
         </oneof>
       </forbidden>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
-      <page>0</page>
+      <page>99</page>
     </quality>
     <quality>
       <id>f6a8d504-db7a-47eb-ace5-604de21c80fd</id>
@@ -16921,6 +17038,11 @@
       <karma>-15</karma>
       <category>Negative</category>
       <bonus />
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
       <page>0</page>
     </quality>
@@ -16930,8 +17052,13 @@
       <karma>-5</karma>
       <category>Negative</category>
       <bonus />
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
-      <page>0</page>
+      <page>99</page>
     </quality>
     <quality>
       <id>153dc4b0-199d-4fc7-9b94-b8cf05afdf56</id>
@@ -16939,8 +17066,13 @@
       <karma>-5</karma>
       <category>Negative</category>
       <bonus />
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
-      <page>0</page>
+      <page>100</page>
     </quality>
     <quality>
       <id>2509cf19-002f-4f24-a52f-f1441dd4d614</id>
@@ -16952,7 +17084,7 @@
         <cyberwareessmultiplier>120</cyberwareessmultiplier>
       </bonus>
       <source>KC</source>
-      <page>0</page>
+      <page>100</page>
     </quality>
     <quality>
       <id>102c4f07-f82c-4976-89bd-bcd3b906fb68</id>
@@ -16961,6 +17093,9 @@
       <category>Negative</category>
       <bonus />
       <required>
+        <allof>
+          <quality>Technomancer</quality>
+        </allof>
         <oneof>
           <quality>Addiction (Mild)</quality>
           <quality>Addiction (Moderate)</quality>
@@ -16969,7 +17104,7 @@
         </oneof>
       </required>
       <source>KC</source>
-      <page>0</page>
+      <page>100</page>
     </quality>
     <!-- End Region -->
     <!-- Region Streams -->
