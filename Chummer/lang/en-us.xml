@@ -728,7 +728,7 @@
     </string>
     <string>
       <key>Label_DeviceRating</key>
-      <text>DeviceRating:</text>
+      <text>Device Rating:</text>
     </string>
     <string>
       <key>Label_Signal</key>
@@ -7417,7 +7417,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_Options_ExceedPositiveQualitiesCostDoubled</key>
-      <text>Double all Positive Quality karma costs in excess of the limit</text>
+      <text>Use Career costs for all Positive Quality karma costs in excess of the limit</text>
     </string>
     <string>
       <key>Checkbox_Options_ExceedNegativeQualities</key>
