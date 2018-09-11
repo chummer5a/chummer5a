@@ -490,6 +490,15 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Vehicle Mod capacity.
+        /// </summary>
+        public string Capacity
+        {
+            get => _strCapacity;
+            set => _strCapacity = value;
+        }
+
+        /// <summary>
         /// Rating.
         /// </summary>
         public int Rating

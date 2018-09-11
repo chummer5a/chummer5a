@@ -68,7 +68,7 @@ namespace Chummer
             _intCostMultiplier = intCostMultiplier;
             _objCharacter = objCharacter;
             _objGearParent = objGearParent;
-            _objParentNode = (_objGearParent as IHasXmlNode)?.GetNode().CreateNavigator();
+            _objParentNode = (_objGearParent as IHasXmlNode)?.GetNode()?.CreateNavigator();
             // Stack Checkbox is only available in Career Mode.
             if (!_objCharacter.Created)
             {
@@ -951,7 +951,7 @@ namespace Chummer
                 strFilter.Append(" and (not(contains(capacity, \"[\")) or category = \"Custom\")");
             else if (ShowNegativeCapacityOnly)
                 strFilter.Append(" and (contains(capacity, \"[\") or category = \"Custom\")");
-            if (_objParentNode == null)
+            if (_objGearParent == null)
                 strFilter.Append(" and not(requireparent)");
             foreach (string strPrefix in ForceItemPrefixStrings)
                 strFilter.Append(" and starts-with(name,\"" + strPrefix + "\")");

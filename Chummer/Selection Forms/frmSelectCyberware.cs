@@ -54,6 +54,7 @@ namespace Chummer
         private bool _blnOldGradeEnabled = true;
         private bool _blnIgnoreSecondHand;
         private string _strForceGrade = string.Empty;
+        private readonly object _objParentObject;
         private readonly XPathNavigator _objParentNode;
         private readonly HashSet<string> _setBlackMarketMaps;
         private readonly XPathNavigator _xmlBaseCyberwareDataNode;
@@ -65,12 +66,13 @@ namespace Chummer
         }
 
         #region Control Events
-        public frmSelectCyberware(Character objCharacter, Improvement.ImprovementSource objWareSource, XmlNode objParentNode = null)
+        public frmSelectCyberware(Character objCharacter, Improvement.ImprovementSource objWareSource, object objParentNode = null)
         {
             InitializeComponent();
 
             _objCharacter = objCharacter;
-            _objParentNode = objParentNode?.CreateNavigator();
+            _objParentObject = objParentNode;
+            _objParentNode = (_objParentObject as IHasXmlNode)?.GetNode()?.CreateNavigator();
 
             switch (objWareSource)
             {
@@ -801,6 +803,7 @@ namespace Chummer
                 lblEssence.Text = (0.0m).ToString(_objCharacter.Options.EssenceFormat, GlobalOptions.CultureInfo);
 
             // Capacity.
+            bool blnAddToParentCapacity = objXmlCyberware.SelectSingleNode("addtoparentcapacity") != null;
             // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
             string strCapacity = objXmlCyberware.SelectSingleNode("capacity")?.Value ?? string.Empty;
             bool blnSquareBrackets = strCapacity.StartsWith('[');
@@ -837,7 +840,7 @@ namespace Chummer
 
                         strSecondHalf = strSecondHalf.Trim('[', ']');
                         objProcess = CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)), out blnIsSuccess);
-                        strSecondHalf = '[' + (blnIsSuccess ? objProcess.ToString() : strSecondHalf) + ']';
+                        strSecondHalf = (blnAddToParentCapacity ? "+[" : "[") + (blnIsSuccess ? objProcess.ToString() : strSecondHalf) + ']';
 
                         lblCapacity.Text += '/' + strSecondHalf;
                     }
@@ -848,7 +851,7 @@ namespace Chummer
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                         lblCapacity.Text = blnIsSuccess ? objProcess.ToString() : strCapacity;
                         if (blnSquareBrackets)
-                            lblCapacity.Text = $"[{lblCapacity.Text}]";
+                            lblCapacity.Text = blnAddToParentCapacity ? $"+[{lblCapacity.Text}]" : $"[{lblCapacity.Text}]";
                     }
                 }
             }
@@ -1100,9 +1103,10 @@ namespace Chummer
             if (objCyberwareNode == null)
                 return;
 
-            if (_objCharacter.Options.EnforceCapacity && _objParentNode != null)
+            if (_objCharacter.Options.EnforceCapacity && _objParentObject != null)
             {
                 // Capacity.
+                bool blnAddToParentCapacity = objCyberwareNode.SelectSingleNode("addtoparentcapacity") != null;
                 // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
                 string strCapacity = objCyberwareNode.SelectSingleNode("capacity")?.Value;
                 if (strCapacity?.Contains('[') == true)
@@ -1123,11 +1127,13 @@ namespace Chummer
                             decCapacity = Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo);
                     }
 
-                    if (MaximumCapacity - decCapacity < 0)
+                    decimal decMaximumCapacityUsed = blnAddToParentCapacity ? (_objParentObject as Cyberware)?.Parent?.CapacityRemaining ?? decimal.MaxValue : MaximumCapacity;
+
+                    if (decMaximumCapacityUsed - decCapacity < 0)
                     {
                         MessageBox.Show(
                             LanguageManager.GetString("Message_OverCapacityLimit", GlobalOptions.Language)
-                                .Replace("{0}", MaximumCapacity.ToString("#,0.##", GlobalOptions.CultureInfo))
+                                .Replace("{0}", decMaximumCapacityUsed.ToString("#,0.##", GlobalOptions.CultureInfo))
                                 .Replace("{1}", decCapacity.ToString("#,0.##", GlobalOptions.CultureInfo)),
                             LanguageManager.GetString("MessageTitle_OverCapacityLimit", GlobalOptions.Language),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
