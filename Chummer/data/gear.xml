@@ -5645,7 +5645,7 @@
       <source>SR5</source>
       <page>246</page>
       <avail>Rating * 3</avail>
-      <cost>FixedValues([1000],[2000],[3000],[8000],[10000],[12000])</cost>
+      <cost>FixedValues(1000,2000,3000,8000,10000,12000)</cost>
     </gear>
     <gear>
       <id>c4da5448-0069-447c-b3e4-4147e6bf4ca7</id>
@@ -8887,7 +8887,7 @@
       <source>BB</source>
       <page>17</page>
       <avail>6</avail>
-      <cost>FixedValues([100],[400],[900],[1600],[2500],[3600])</cost>
+      <cost>FixedValues(100,400,900,1600,2500,3600)</cost>
     </gear>
     <gear>
       <id>47e12d78-cb99-4e20-aff5-11cbed1e715e</id>
@@ -15517,7 +15517,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15531,7 +15531,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15545,7 +15545,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15559,7 +15559,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15573,7 +15573,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15587,7 +15587,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15601,7 +15601,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15615,7 +15615,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15629,7 +15629,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>149</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15643,7 +15643,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>149</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15657,7 +15657,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>149</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15671,7 +15671,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>149</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15685,7 +15685,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>149</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15699,7 +15699,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>149</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15713,7 +15713,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
