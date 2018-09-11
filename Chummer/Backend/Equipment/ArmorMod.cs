@@ -793,7 +793,7 @@ namespace Chummer.Backend.Equipment
                 // Run through its Children and deduct the Capacity costs.
                 foreach (Gear objChildGear in Gear)
                 {
-                    string strCapacity = objChildGear.CalculatedCapacity;
+                    string strCapacity = objChildGear.CalculatedArmorCapacity;
                     intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                     if (intPos != -1)
                     {

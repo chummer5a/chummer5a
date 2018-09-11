@@ -376,7 +376,7 @@ namespace Chummer
             }
             else
             {
-                if (objTradition.GetNode().SelectSingleNode("spirits/spirit[. = \"All\"]") != null)
+                if (objTradition.GetNode()?.SelectSingleNode("spirits/spirit[. = \"All\"]") != null)
                 {
                     if (lstLimitCategories.Count == 0)
                     {
@@ -399,7 +399,7 @@ namespace Chummer
                 }
                 else
                 {
-                    using (XmlNodeList xmlSpiritList = objTradition.GetNode().SelectSingleNode("spirits")?.ChildNodes)
+                    using (XmlNodeList xmlSpiritList = objTradition.GetNode()?.SelectSingleNode("spirits")?.ChildNodes)
                         if (xmlSpiritList != null)
                             foreach (XmlNode objXmlSpirit in xmlSpiritList)
                             {

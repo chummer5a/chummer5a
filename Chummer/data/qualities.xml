@@ -535,14 +535,14 @@
       <category>Positive</category>
       <hide />
       <bonus>
-        <pathogencontactresist>1</pathogencontactresist>
-        <pathogeningestionresist>1</pathogeningestionresist>
-        <pathogeninhalationresist>1</pathogeninhalationresist>
-        <pathogeninjectionresist>1</pathogeninjectionresist>
-        <toxincontactresist>1</toxincontactresist>
-        <toxiningestionresist>1</toxiningestionresist>
-        <toxininhalationresist>1</toxininhalationresist>
-        <toxininjectionresist>1</toxininjectionresist>
+        <pathogencontactresist>2</pathogencontactresist>
+        <pathogeningestionresist>2</pathogeningestionresist>
+        <pathogeninhalationresist>2</pathogeninhalationresist>
+        <pathogeninjectionresist>2</pathogeninjectionresist>
+        <toxincontactresist>2</toxincontactresist>
+        <toxiningestionresist>2</toxiningestionresist>
+        <toxininhalationresist>2</toxininhalationresist>
+        <toxininjectionresist>2</toxininjectionresist>
       </bonus>
       <source>SR5</source>
       <page>77</page>
@@ -553,14 +553,14 @@
       <karma>8</karma>
       <category>Positive</category>
       <bonus>
-        <pathogencontactresist>2</pathogencontactresist>
-        <pathogeningestionresist>2</pathogeningestionresist>
-        <pathogeninhalationresist>2</pathogeninhalationresist>
-        <pathogeninjectionresist>2</pathogeninjectionresist>
-        <toxincontactresist>2</toxincontactresist>
-        <toxiningestionresist>2</toxiningestionresist>
-        <toxininhalationresist>2</toxininhalationresist>
-        <toxininjectionresist>2</toxininjectionresist>
+        <pathogencontactresist>1</pathogencontactresist>
+        <pathogeningestionresist>1</pathogeningestionresist>
+        <pathogeninhalationresist>1</pathogeninhalationresist>
+        <pathogeninjectionresist>1</pathogeninjectionresist>
+        <toxincontactresist>1</toxincontactresist>
+        <toxiningestionresist>1</toxiningestionresist>
+        <toxininhalationresist>1</toxininhalationresist>
+        <toxininjectionresist>1</toxininjectionresist>
       </bonus>
       <forbidden>
         <oneof>

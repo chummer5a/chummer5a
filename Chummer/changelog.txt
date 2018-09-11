@@ -33,6 +33,8 @@ Application Changes:
 - Fixed an issue where the internal IDs of improvements and limit modifiers were not getting loaded properly from save files. Part of fix for #2975.
 - Fixed an issue where certain legacy conversion code related to loading improvements from unequipped gear was improperly running for non-legacy save files. Fixes #2975.
 - Gears can now define minimum rating, maximum rating, and Matrix attributes based on the rating of their parent object via the "{Parent Rating}" phrase for Matrix attributes and the "Parent Rating" phrase for minimum and maximum ratings (minimum and maximum ratings don't use curly brackets for legacy reasons).
+- Fixed an issue with Armor Mod Gear plugins using the incorrect Capacity calculation. 
+- Fixed a crash when attempting to add spirits if the None tradition is selected. Fixes #2981
 
 Data Changes:
 
@@ -56,6 +58,8 @@ Data Changes:
 - Characters following the Missionist tradition will now properly get a +2 dicepool modifier to casting Health spells and a -2 dicepool modifier to casting Combat spells.
 - Fixed incorrect Availability for the Faceless - Blurred Face gear item.
 - Fixed incorrect and missing karma values for several drake optional powers.
+- Added missing Trode Patch from Kill Code. I'm assuming that the Rating refers to the Device Rating, but this may be incorrect. Fixes #2979
+- Swapped the bonuses for the Resistance to Pathogens/Toxins and Resistance to Pathogens and Toxins qualities. Fixes #2984
 
 New Strings:
 
