@@ -7691,7 +7691,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>        
     <string>
       <key>Label_SelectAdvancedLifestyle_Base_Lifestyle</key>
-      <text>Lifestyle:</text>
+      <text>[{0}/{1}]</text>
     </string>
     <string>
       <key>Node_SelectAdvancedLifestyle_PositiveQualities</key>
@@ -7703,7 +7703,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Base_Comforts</key>
-      <text>Comforts: [{0}/{1}]</text>
+      <text>[{0}/{1}]</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Comforts</key>
@@ -7731,11 +7731,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Base_Area</key>
-      <text>Area: [{0}/{1}]</text>
+      <text>[{0}/{1}]</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Base_Security</key>
-      <text>Security: [{0}/{1}]</text>
+      <text>[{0}/{1}]</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Security</key>

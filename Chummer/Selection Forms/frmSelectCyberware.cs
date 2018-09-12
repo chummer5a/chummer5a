@@ -369,10 +369,6 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            if (chkShowOnlyAffordItems.Checked)
-            {
-                RefreshList(_strSelectedCategory);
-            }
             UpdateCyberwareInfo();
         }
 
@@ -385,7 +381,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            if (chkShowOnlyAffordItems.Checked)
+            if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
             {
                 RefreshList(_strSelectedCategory);
             }

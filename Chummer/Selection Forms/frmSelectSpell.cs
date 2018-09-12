@@ -30,6 +30,7 @@ namespace Chummer
     {
         private string _strSelectedSpell = string.Empty;
 
+        private bool _blnLoading = true;
         private bool _blnAddAgain;
         private bool _blnIgnoreRequirements;
         private string _strLimitCategory = string.Empty;
@@ -154,6 +155,7 @@ namespace Chummer
 
             // Don't show the Extended Spell checkbox if the option to Extend any Detection Spell is diabled.
             chkExtended.Visible = _objCharacter.Options.ExtendAnyDetectionSpell;
+            _blnLoading = false;
             BuildSpellList();
         }
 
@@ -359,11 +361,17 @@ namespace Chummer
             }
 
             lstSpellItems.Sort(CompareListItems.CompareNames);
+            string strOldSelected = lstSpells.SelectedValue?.ToString();
+            _blnLoading = true;
             lstSpells.BeginUpdate();
-            lstSpells.DataSource = null;
             lstSpells.ValueMember = "Value";
             lstSpells.DisplayMember = "Name";
             lstSpells.DataSource = lstSpellItems;
+            _blnLoading = false;
+            if (!string.IsNullOrEmpty(strOldSelected))
+                lstSpells.SelectedValue = strOldSelected;
+            else
+                lstSpells.SelectedIndex = -1;
             lstSpells.EndUpdate();
         }
 
@@ -437,22 +445,6 @@ namespace Chummer
 
         private void MoveControls()
         {
-            int intWidth = Math.Max(lblDescriptorsLabel.Width, lblTypeLabel.Width);
-            intWidth = Math.Max(intWidth, lblTypeLabel.Width);
-            intWidth = Math.Max(intWidth, lblRangeLabel.Width);
-            intWidth = Math.Max(intWidth, lblDamageLabel.Width);
-            intWidth = Math.Max(intWidth, lblDurationLabel.Width);
-            intWidth = Math.Max(intWidth, lblDVLabel.Width);
-
-            lblDescriptors.Left = lblDescriptorsLabel.Left + intWidth + 6;
-            lblType.Left = lblTypeLabel.Left + intWidth + 6;
-            lblRange.Left = lblRangeLabel.Left + intWidth + 6;
-            lblDamage.Left = lblDamageLabel.Left + intWidth + 6;
-            lblDuration.Left = lblDurationLabel.Left + intWidth + 6;
-            lblDV.Left = lblDVLabel.Left + intWidth + 6;
-
-            lblSource.Left = lblSourceLabel.Left + lblSourceLabel.Width + 6;
-
             lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
         }
 
@@ -463,6 +455,9 @@ namespace Chummer
 
         private void UpdateSpellInfo()
         {
+            if (_blnLoading)
+                return;
+            
             XPathNavigator xmlSpell = null;
             string strSelectedSpellId = lstSpells.SelectedValue?.ToString();
             _blnRefresh = true;
@@ -476,18 +471,25 @@ namespace Chummer
             }
             if (xmlSpell == null)
             {
+                lblDescriptorsLabel.Visible = false;
+                chkAlchemical.Visible = false;
+                lblTypeLabel.Visible = false;
+                lblDurationLabel.Visible = false;
+                chkExtended.Visible = false;
+                lblRangeLabel.Visible = false;
+                lblDamageLabel.Visible = false;
+                lblDVLabel.Visible = false;
+                chkFreeBonus.Visible = false;
+                lblSourceLabel.Visible = false;
                 lblDescriptors.Text = string.Empty;
-                chkAlchemical.Enabled = false;
                 chkAlchemical.Checked = false;
                 lblType.Text = string.Empty;
                 lblDuration.Text = string.Empty;
                 chkExtended.Checked = false;
-                chkExtended.Enabled = false;
                 lblRange.Text = string.Empty;
                 lblDamage.Text = string.Empty;
                 lblDV.Text = string.Empty;
                 chkFreeBonus.Checked = false;
-                chkFreeBonus.Visible = false;
                 lblSource.Text = string.Empty;
                 lblSource.SetToolTip(string.Empty);
                 return;
@@ -629,16 +631,20 @@ namespace Chummer
 
             if (blnAlchemicalFound)
             {
+                chkAlchemical.Visible = true;
                 chkAlchemical.Enabled = false;
                 chkAlchemical.Checked = true;
             }
             else if (xmlSpell.SelectSingleNode("category")?.Value == "Rituals")
             {
-                chkAlchemical.Enabled = false;
+                chkAlchemical.Visible = false;
                 chkAlchemical.Checked = false;
             }
             else
+            {
+                chkAlchemical.Visible = true;
                 chkAlchemical.Enabled = true;
+            }
 
             // If Extended Area was not found and the Extended checkbox is checked, add Extended Area to the list of Descriptors.
             if (chkExtended.Checked && !blnExtendedFound)
@@ -657,6 +663,7 @@ namespace Chummer
             if (objDescriptors.Length > 2)
                 objDescriptors.Length -= 2;
             lblDescriptors.Text = objDescriptors.ToString();
+            lblDescriptorsLabel.Visible = !string.IsNullOrEmpty(lblDescriptors.Text);
 
             switch (xmlSpell.SelectSingleNode("type")?.Value)
             {
@@ -667,6 +674,7 @@ namespace Chummer
                     lblType.Text = LanguageManager.GetString("String_SpellTypePhysical", GlobalOptions.Language);
                     break;
             }
+            lblTypeLabel.Visible = !string.IsNullOrEmpty(lblType.Text);
 
             switch (xmlSpell.SelectSingleNode("duration")?.Value)
             {
@@ -680,20 +688,23 @@ namespace Chummer
                     lblDuration.Text = LanguageManager.GetString("String_SpellDurationInstant", GlobalOptions.Language);
                     break;
             }
+            lblDurationLabel.Visible = !string.IsNullOrEmpty(lblDuration.Text);
 
             if (blnExtendedFound)
             {
+                chkExtended.Visible = true;
                 chkExtended.Checked = true;
                 chkExtended.Enabled = false;
             }
             else if (xmlSpell.SelectSingleNode("category")?.Value == "Detection")
             {
+                chkExtended.Visible = true;
                 chkExtended.Enabled = true;
             }
             else
             {
                 chkExtended.Checked = false;
-                chkExtended.Enabled = false;
+                chkExtended.Visible = false;
             }
 
             string strRange = xmlSpell.SelectSingleNode("range")?.Value ?? string.Empty;
@@ -707,6 +718,7 @@ namespace Chummer
                     .CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language));
             }
             lblRange.Text = strRange;
+            lblRangeLabel.Visible = !string.IsNullOrEmpty(lblRange.Text);
 
             switch (xmlSpell.SelectSingleNode("damage")?.Value)
             {
@@ -790,6 +802,7 @@ namespace Chummer
             }
 
             lblDV.Text = strDV;
+            lblDVLabel.Visible = !string.IsNullOrEmpty(lblDV.Text);
 
             if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled && _blnCanTouchOnlySpellBeFree && xmlSpell.SelectSingleNode("range")?.Value == "T")
             {
@@ -810,6 +823,7 @@ namespace Chummer
             lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
             lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter +
                                  LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             _blnRefresh = false;
         }
         #endregion

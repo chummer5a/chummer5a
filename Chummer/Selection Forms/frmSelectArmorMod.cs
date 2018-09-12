@@ -120,7 +120,7 @@ namespace Chummer
 
         private void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
-            if (chkShowOnlyAffordItems.Checked)
+            if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
             {
                 BuildModList();
             }
@@ -204,10 +204,6 @@ namespace Chummer
         #region Methods
         private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkShowOnlyAffordItems.Checked)
-            {
-                BuildModList();
-            }
             UpdateSelectedArmor();
         }
         /// <summary>
@@ -252,6 +248,17 @@ namespace Chummer
             if (chkHideOverAvailLimit.Checked)
             {
                 while (nudRating.Maximum > 1 && !SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                {
+                    nudRating.Maximum -= 1;
+                }
+            }
+
+            if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
+            {
+                decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                if (_setBlackMarketMaps.Contains(objXmlMod.SelectSingleNode("category")?.Value))
+                    decCostMultiplier *= 0.9m;
+                while (nudRating.Maximum > 1 && !SelectionShared.CheckNuyenRestriction(objXmlMod, _objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
                 {
                     nudRating.Maximum -= 1;
                 }

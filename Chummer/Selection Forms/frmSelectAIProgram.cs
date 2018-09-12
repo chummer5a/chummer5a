@@ -266,6 +266,9 @@ namespace Chummer
                 lblSource.Text = string.Empty;
                 lblSource.SetToolTip(string.Empty);
             }
+
+            lblRequiresProgramLabel.Visible = !string.IsNullOrEmpty(lblRequiresProgram.Text);
+            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
         /// <summary>

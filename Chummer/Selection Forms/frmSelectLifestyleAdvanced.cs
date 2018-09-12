@@ -773,6 +773,8 @@ namespace Chummer
                 lblSource.SetToolTip(string.Empty);
             }
 
+            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+
             // Characters with the Trust Fund Quality can have the lifestyle discounted.
             if (_objLifestyle.IsTrustFundEligible)
             {
@@ -903,7 +905,7 @@ namespace Chummer
             Label_SelectAdvancedLifestyle_Base_Comforts.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Comforts", GlobalOptions.Language)
                 .Replace("{0}", (nudComforts.Value + intMinComfort).ToString(GlobalOptions.CultureInfo))
                 .Replace("{1}", (nudComforts.Maximum + intMinComfort).ToString(GlobalOptions.CultureInfo));
-            Label_SelectAdvancedLifestyle_Base_Securities.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Security", GlobalOptions.Language)
+            Label_SelectAdvancedLifestyle_Base_Security.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Security", GlobalOptions.Language)
                 .Replace("{0}", (nudSecurity.Value + intMinSec).ToString(GlobalOptions.CultureInfo))
                 .Replace("{1}", (nudSecurity.Maximum + intMinSec).ToString(GlobalOptions.CultureInfo));
             Label_SelectAdvancedLifestyle_Base_Area.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Area", GlobalOptions.Language)
@@ -952,6 +954,8 @@ namespace Chummer
             decNuyen += decExtraCostContracts;
             lblTotalLP.Text = intLP.ToString();
             lblCost.Text = decNuyen.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+            lblTotalLPLabel.Visible = !string.IsNullOrEmpty(lblTotalLP.Text);
+            lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
         }
 
         /// <summary>

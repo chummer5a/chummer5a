@@ -198,6 +198,8 @@ namespace Chummer
                 lblSource.Text = string.Empty;
                 lblSource.SetToolTip(string.Empty);
             }
+
+            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
         #endregion
@@ -302,6 +304,8 @@ namespace Chummer
                         lblSource.SetToolTip(LanguageManager.GetString("String_Unknown", GlobalOptions.Language));
                     }
 
+                    lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+
                     // Add the flat costs from qualities
                     foreach (TreeNode objNode in treQualities.Nodes)
                     {
@@ -354,6 +358,8 @@ namespace Chummer
                 decDiscount = decDiscount * (nudPercentage.Value / 100);
                 lblCost.Text += " (" + decDiscount.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥)";
             }
+
+            lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
         }
 
         /// <summary>

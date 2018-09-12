@@ -167,10 +167,20 @@ namespace Chummer
                             nudRating.Maximum -= 1;
                         }
                     }
+
+                    if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
+                    {
+                        decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                        if (_setBlackMarketMaps.Contains(xmlArmor.SelectSingleNode("category")?.Value))
+                            decCostMultiplier *= 0.9m;
+                        while (nudRating.Maximum > 1 && !SelectionShared.CheckNuyenRestriction(xmlArmor, _objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
+                        {
+                            nudRating.Maximum -= 1;
+                        }
+                    }
                     lblRatingLabel.Visible = true;
                     nudRating.Minimum = 1;
                     nudRating.Value = 1;
-                    lblRatingLabel.Visible = true;
                     nudRating.Enabled = nudRating.Minimum != nudRating.Maximum;
                     nudRating.Visible = true;
                     lblRatingNALabel.Visible = false;
@@ -227,10 +237,6 @@ namespace Chummer
 
         private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkShowOnlyAffordItems.Checked)
-            {
-                RefreshList();
-            }
             UpdateArmorInfo();
         }
 
@@ -241,7 +247,7 @@ namespace Chummer
 
         private void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
-            if (chkShowOnlyAffordItems.Checked)
+            if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
             {
                 RefreshList();
             }

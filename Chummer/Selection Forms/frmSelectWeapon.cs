@@ -432,7 +432,7 @@ namespace Chummer
 
         private void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
-            if (chkShowOnlyAffordItems.Checked)
+            if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
             {
                 RefreshList();
             }
@@ -489,10 +489,6 @@ namespace Chummer
 
         private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkShowOnlyAffordItems.Checked)
-            {
-                RefreshList();
-            }
             UpdateWeaponInfo();
         }
         #endregion

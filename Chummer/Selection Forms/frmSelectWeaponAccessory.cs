@@ -236,6 +236,8 @@ namespace Chummer
 
         private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
+            if (chkShowOnlyAffordItems.Checked)
+                BuildAccessoryList();
             UpdateGearInfo();
         }
 
@@ -246,6 +248,8 @@ namespace Chummer
 
         private void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
+            if (chkShowOnlyAffordItems.Checked  && !chkFreeItem.Checked)
+                BuildAccessoryList();
             UpdateGearInfo();
         }
 
@@ -433,10 +437,6 @@ namespace Chummer
             }
             if (int.TryParse(xmlAccessory.SelectSingleNode("rating")?.Value, out int intMaxRating) && intMaxRating > 0)
             {
-                nudRating.Enabled = true;
-                nudRating.Visible = true;
-                lblRatingLabel.Visible = true;
-                lblRatingNALabel.Visible = false;
                 nudRating.Maximum = intMaxRating;
                 if (chkHideOverAvailLimit.Checked)
                 {
@@ -445,6 +445,20 @@ namespace Chummer
                         nudRating.Maximum -= 1;
                     }
                 }
+                if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
+                {
+                    decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                    if (_setBlackMarketMaps.Contains(xmlAccessory.SelectSingleNode("category")?.Value))
+                        decCostMultiplier *= 0.9m;
+                    while (nudRating.Maximum > nudRating.Minimum && !SelectionShared.CheckNuyenRestriction(xmlAccessory, _objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
+                    {
+                        nudRating.Maximum -= 1;
+                    }
+                }
+                nudRating.Enabled = nudRating.Maximum != nudRating.Minimum;
+                nudRating.Visible = true;
+                lblRatingLabel.Visible = true;
+                lblRatingNALabel.Visible = false;
             }
             else
             {

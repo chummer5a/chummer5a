@@ -7027,7 +7027,7 @@
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Base_Lifestyle</key>
-      <text>Estilo de Vida:</text>
+      <text>[{0}/{1}]</text>
     </string>
     <string>
       <key>Node_SelectAdvancedLifestyle_PositiveQualities</key>
@@ -7039,7 +7039,7 @@
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Base_Comforts</key>
-      <text>Confortos: [{0}/{1}]</text>
+      <text>[{0}/{1}]</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Comforts</key>
@@ -7067,11 +7067,11 @@
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Base_Area</key>
-      <text>Área: [{0}/{1}]</text>
+      <text>[{0}/{1}]</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Base_Security</key>
-      <text>Segurança: [{0}/{1}]</text>
+      <text>[{0}/{1}]</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Security</key>

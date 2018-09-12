@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -7696,7 +7696,7 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Comforts</key>
-			<text>Komfort: [{0}/{1}]</text>
+			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>String_DataProcessing</key>
@@ -7740,7 +7740,7 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Lifestyle</key>
-			<text>Lebensstil:</text>
+			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>String_Limit</key>
@@ -7804,7 +7804,7 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Security</key>
-			<text>Sicherheit: [{0}/{1}]</text>
+			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>String_KnowledgeSkillFilterAll</key>
@@ -7892,7 +7892,7 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Area</key>
-			<text>Gegend: [{0}/{1}]</text>
+			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_UnusedLP</key>

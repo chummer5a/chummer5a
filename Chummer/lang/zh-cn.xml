@@ -7296,7 +7296,7 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Lifestyle</key>
-			<text>生活方式：</text>
+			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>Label_SkillGroup_Broken</key>
@@ -7676,7 +7676,7 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Comforts</key>
-			<text>舒适度：[{0}/{1}]</text>
+			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Rating</key>
@@ -7684,7 +7684,7 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Security</key>
-			<text>安全：[{0}/{1}]</text>
+			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_UnusedLP</key>
@@ -8210,7 +8210,7 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Area</key>
-			<text>街区：[{0}/{1}]</text>
+			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>Button_Download</key>

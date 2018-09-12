@@ -124,9 +124,10 @@ namespace Chummer
                 lblCost.Visible = false;
                 lblCostLabel.Visible = false;
                 lblBP.Text = string.Empty;
+                lblBPLabel.Visible = false;
                 lblSource.Text = string.Empty;
                 lblSource.SetToolTip(string.Empty);
-
+                lblSourceLabel.Visible = false;
                 return;
             }
 
@@ -138,15 +139,17 @@ namespace Chummer
                 lblCost.Visible = false;
                 lblCostLabel.Visible = false;
                 lblBP.Text = string.Empty;
+                lblBPLabel.Visible = false;
                 lblSource.Text = string.Empty;
                 lblSource.SetToolTip(string.Empty);
-
+                lblSourceLabel.Visible = false;
                 return;
             }
 
             int intBP = 0;
             objXmlQuality.TryGetInt32FieldQuickly("lp", ref intBP);
             lblBP.Text = chkFree.Checked ? LanguageManager.GetString("Checkbox_Free", GlobalOptions.Language) : intBP.ToString();
+            lblBPLabel.Visible = !string.IsNullOrEmpty(lblBP.Text);
 
             string strSource = objXmlQuality["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             string strPage = objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
@@ -161,6 +164,8 @@ namespace Chummer
                 lblSource.Text = string.Empty;
                 lblSource.SetToolTip(string.Empty);
             }
+
+            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             if (objXmlQuality["allowed"] != null)
             {
                 lblMinimum.Text = GetMinimumRequirement(objXmlQuality["allowed"].InnerText);

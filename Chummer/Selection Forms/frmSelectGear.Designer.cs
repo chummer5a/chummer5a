@@ -102,7 +102,7 @@ namespace Chummer
             this.lstGear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.lstGear.FormattingEnabled = true;
-            this.lstGear.Location = new System.Drawing.Point(12, 33);
+            this.lstGear.Location = new System.Drawing.Point(12, 36);
             this.lstGear.Name = "lstGear";
             this.lstGear.Size = new System.Drawing.Size(300, 394);
             this.lstGear.TabIndex = 35;
@@ -507,7 +507,7 @@ namespace Chummer
             this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(3, 305);
             this.chkShowOnlyAffordItems.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkShowOnlyAffordItems.Name = "chkShowOnlyAffordItems";
-            this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(164, 58);
+            this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(164, 55);
             this.chkShowOnlyAffordItems.TabIndex = 66;
             this.chkShowOnlyAffordItems.Tag = "Checkbox_ShowOnlyAffordItems";
             this.chkShowOnlyAffordItems.Text = "Show Only Items I Can Afford";
@@ -523,7 +523,7 @@ namespace Chummer
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 45F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 52F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 54F));
             this.tableLayoutPanel1.Controls.Add(this.chkShowOnlyAffordItems, 0, 12);
             this.tableLayoutPanel1.Controls.Add(this.lblMarkupPercentLabel, 3, 7);
             this.tableLayoutPanel1.Controls.Add(this.lblCapacity, 1, 0);
@@ -550,7 +550,7 @@ namespace Chummer
             this.tableLayoutPanel1.Controls.Add(this.nudMarkup, 1, 7);
             this.tableLayoutPanel1.Controls.Add(this.lblCost, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 1, 3);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(318, 33);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(318, 36);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 13;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -566,7 +566,7 @@ namespace Chummer
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(294, 367);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(294, 364);
             this.tableLayoutPanel1.TabIndex = 67;
             // 
             // lblMarkupPercentLabel
