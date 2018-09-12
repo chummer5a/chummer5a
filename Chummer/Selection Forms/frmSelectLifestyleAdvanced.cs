@@ -978,6 +978,11 @@ namespace Chummer
             lblQualityCost.Left = lblQualityCostLabel.Left + lblQualityCostLabel.Width + 6;
             lblQualitySource.Left = lblQualitySourceLabel.Left + lblQualitySourceLabel.Width + 6;
         }
+
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
+        }
         #endregion
     }
 }

@@ -1,3 +1,5 @@
+using System.Windows.Forms;
+
 namespace Chummer
 {
     partial class frmSelectLifestyleAdvanced
@@ -28,10 +30,10 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Positive Qualities");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Negative Qualities");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Entertainments");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Positive Qualities");
+            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Negative Qualities");
+            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Entertainments");
+            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
             this.Label_SelectAdvancedLifestyle_Upgrade_Comforts = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -218,6 +220,7 @@ namespace Chummer
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 21;
             this.lblSource.Text = "[Source]";
+            this.lblSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
             // 
             // lblSourceLabel
             // 
@@ -371,23 +374,23 @@ namespace Chummer
             this.treLifestyleQualities.HideSelection = false;
             this.treLifestyleQualities.Location = new System.Drawing.Point(12, 41);
             this.treLifestyleQualities.Name = "treLifestyleQualities";
-            treeNode1.Name = "nodPositiveLifestyleQualities";
-            treeNode1.Tag = "Node_SelectAdvancedLifestyle_PositiveQualities";
-            treeNode1.Text = "Positive Qualities";
-            treeNode2.Name = "nodNegativeLifestyleQualities";
-            treeNode2.Tag = "Node_SelectAdvancedLifestyle_NegativeQualities";
-            treeNode2.Text = "Negative Qualities";
-            treeNode3.Name = "nodLifestyleEntertainments";
-            treeNode3.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
-            treeNode3.Text = "Entertainments";
-            treeNode4.Name = "nodFreeMatrixGrids";
-            treeNode4.Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids";
-            treeNode4.Text = "Free Matrix Grids";
+            treeNode9.Name = "nodPositiveLifestyleQualities";
+            treeNode9.Tag = "Node_SelectAdvancedLifestyle_PositiveQualities";
+            treeNode9.Text = "Positive Qualities";
+            treeNode10.Name = "nodNegativeLifestyleQualities";
+            treeNode10.Tag = "Node_SelectAdvancedLifestyle_NegativeQualities";
+            treeNode10.Text = "Negative Qualities";
+            treeNode11.Name = "nodLifestyleEntertainments";
+            treeNode11.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
+            treeNode11.Text = "Entertainments";
+            treeNode12.Name = "nodFreeMatrixGrids";
+            treeNode12.Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids";
+            treeNode12.Text = "Free Matrix Grids";
             this.treLifestyleQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3,
-            treeNode4});
+            treeNode9,
+            treeNode10,
+            treeNode11,
+            treeNode12});
             this.treLifestyleQualities.Size = new System.Drawing.Size(238, 433);
             this.treLifestyleQualities.TabIndex = 53;
             this.treLifestyleQualities.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treLifestyleQualities_AfterSelect);
@@ -436,6 +439,7 @@ namespace Chummer
             this.lblQualitySource.Size = new System.Drawing.Size(47, 13);
             this.lblQualitySource.TabIndex = 69;
             this.lblQualitySource.Text = "[Source]";
+            this.lblQualitySource.Click += new System.EventHandler(this.OpenSourceFromLabel);
             // 
             // lblQualitySourceLabel
             // 

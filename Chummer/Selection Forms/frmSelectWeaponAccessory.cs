@@ -590,7 +590,11 @@ namespace Chummer
 
             lblSource.Left = lblSourceLabel.Left + lblSourceLabel.Width + 6;
         }
-        #endregion
 
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
+        }
+        #endregion
     }
 }

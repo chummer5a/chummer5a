@@ -1728,9 +1728,6 @@ namespace Chummer.Backend.Equipment
                 strDamage = strDamage.FastEscape(strSplash).Trim();
             }
 
-            // Replace the division sign with "div" since we're using XPath.
-            strDamage = strDamage.Replace("/", " div ");
-
             // Include WeaponCategoryDV Improvements.
             int intImprove = 0;
             if (_objCharacter != null)
@@ -1865,6 +1862,8 @@ namespace Chummer.Backend.Equipment
                     strReturn = strDamageType + strDamageExtra;
                 else
                 {
+                    // Replace the division sign with "div" since we're using XPath.
+                    strDamage = strDamage.Replace("/", " div ");
                     try
                     {
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strDamage, out bool blnIsSuccess);
@@ -1928,13 +1927,12 @@ namespace Chummer.Backend.Equipment
                 {
                     // Replace the division sign with "div" since we're using XPath.
                     strDamage = strDamage.Replace("/", " div ");
-
                     try
                     {
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strDamage, out bool blnIsSuccess);
                         if (blnIsSuccess)
                         {
-                            int intDamage = Convert.ToInt32(Math.Ceiling((double) objProcess));
+                            int intDamage = Convert.ToInt32(Math.Ceiling((double)objProcess));
                             intDamage += intBonus;
                             if (Name == "Unarmed Attack (Smashing Blow)")
                                 intDamage *= 2;
@@ -2056,6 +2054,8 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                     strThisAmmo = strThisAmmo.CheapReplace("Weapon", () => Ammo);
+                    // Replace the division sign with "div" since we're using XPath.
+                    strThisAmmo = strThisAmmo.Replace("/", " div ");
                     // If this is an Underbarrel Weapons that has been added, cut the Ammo capacity in half.
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strThisAmmo, out bool blnIsSuccess);
                     if (blnIsSuccess)
@@ -2365,6 +2365,8 @@ namespace Chummer.Backend.Equipment
                         objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                     }
 
+                    // Replace the division sign with "div" since we're using XPath.
+                    objCost.Replace("/", " div ");
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
                     decimal decReturn = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
 
@@ -2577,7 +2579,8 @@ namespace Chummer.Backend.Equipment
             int intAP;
             try
             {
-
+                // Replace the division sign with "div" since we're using XPath.
+                objAP.Replace("/", " div ");
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAP.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intAP = Convert.ToInt32(objProcess);
@@ -2994,6 +2997,8 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
+                // Replace the division sign with "div" since we're using XPath.
+                objAccuracy.Replace("/", " div ");
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAccuracy.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intAccuracy = Convert.ToInt32(objProcess);
@@ -3827,6 +3832,8 @@ namespace Chummer.Backend.Equipment
                     objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                 }
 
+                // Replace the division sign with "div" since we're using XPath.
+                objAvail.Replace("/", " div ");
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intAvail += Convert.ToInt32(objProcess);
@@ -4607,6 +4614,8 @@ namespace Chummer.Backend.Equipment
                     objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "}", () => _objCharacter.GetAttribute(strCharAttributeName).TotalValue.ToString());
                     objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "Base}", () => _objCharacter.GetAttribute(strCharAttributeName).TotalBase.ToString());
                 }
+                // Replace the division sign with "div" since we're using XPath.
+                objValue.Replace("/", " div ");
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
                 return blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;

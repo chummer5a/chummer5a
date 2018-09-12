@@ -8985,7 +8985,7 @@
       <spec>Injector Pen</spec>
       <accuracy>4</accuracy>
       <reach>0</reach>
-      <damage>As drug/toxin</damage>
+      <damage>As Drug/Toxin</damage>
       <ap>-2</ap>
       <mode>-</mode>
       <rc>0</rc>
@@ -9027,7 +9027,7 @@
       <spec>Modified Spray Pen</spec>
       <accuracy>3</accuracy>
       <reach>0</reach>
-      <damage>As drug/toxin</damage>
+      <damage>As Drug/Toxin</damage>
       <ap>0</ap>
       <mode>SS</mode>
       <rc>0</rc>

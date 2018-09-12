@@ -40,6 +40,9 @@ Application Changes:
 - Fixed an issue with Armor Mod Gear plugins using the incorrect Capacity calculation. 
 - Fixed a crash when attempting to add spirits if the None tradition is selected. Fixes #2981.
 - The optional rule where positive quality karma in excess of the limit is doubled will now instead use a given quality's Career mode cost, so qualities like Adept Ways or Forbidden Arcana's Mastery qualities do not get their karma costs doubled when this option is turned on.
+- Fixed an issue where the Add Armor screen only displayed an item's sourcebook, not its page.
+- Added options to the Add Armor, Add Armor Mod, and Add Weapon screens to only display items that the character can afford.
+- Fixed an issue that sometimes prevented "As Drug/Toxin" from getting properly translated in damage codes.
 
 Data Changes:
 
@@ -77,6 +80,7 @@ Data Changes:
 New Strings:
 
 - String_ExpenseRemovePositiveQuality
+- String_NotApplicable
 
 Changed Strings:
 
