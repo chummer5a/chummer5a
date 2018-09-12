@@ -43,12 +43,12 @@ Application Changes:
 - Fixed an issue where the Add Armor screen only displayed an item's sourcebook, not its page.
 - Added options to the Add Armor, Add Armor Mod, Add Weapon, Add Weapon Accessory, Add Cyberware, and Add Bioware screens to only display items that the character can afford.
 - Fixed an issue that sometimes prevented "As Drug/Toxin" from getting properly translated in damage codes.
-- Added usable search bars to the Add Armor Mod, Add Weapon Accessory, Add Martial Art, and Add Martial Arts Technique screens.
+- Added usable search bars to the Add Armor Mod, Add Weapon Accessory, Add Martial Art, Add Martial Arts Technique, Add Art, Add Critter Power, Add Mentor Spirit, and Add Metamagic screens.
 - Fixed a bug where the Add Martial Arts Technique screen would display techniques from sourcebooks that were not enabled.
 - Re-enabled the Add & More button in the Add Martial Art and Add Martial Arts Technique screens.
 - Fixed a bug where characters in Career mode could add Martial Arts to their sheet even if they did not have enough karma.
 - Fixed a bug where quality-exclusive Martial Arts (e.g. One Trick Pony) would still be displayed alongside other Martial Arts in the Add Martial Arts screen.
-- The Add Martial Arts, Add Art, Add Critter Power, Add Mentor Spirit, and Add Metamagic screens now displays the selected Martial Art's karma cost and also lists all the techniques that can be learned under that martial art.
+- The Add Martial Arts screen now displays the selected item's karma cost and also lists all the techniques that can be learned under that martial art.
 
 Data Changes:
 
