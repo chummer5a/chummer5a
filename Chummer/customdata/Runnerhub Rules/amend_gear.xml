@@ -89,7 +89,10 @@
       <cost>80</cost>
       <required>
         <parentdetails>
-          <category>Rigger Command Consoles</category>
+          <OR>
+            <NONE />
+            <category>Rigger Command Consoles</category>
+          </OR>
         </parentdetails>
       </required>
     </gear>
@@ -105,7 +108,10 @@
       <cost>80</cost>
       <required>
         <parentdetails>
-          <category>Rigger Command Consoles</category>
+          <OR>
+            <NONE />
+            <category>Rigger Command Consoles</category>
+          </OR>
         </parentdetails>
       </required>
     </gear>
@@ -121,7 +127,10 @@
       <cost>80</cost>
       <required>
         <parentdetails>
-          <category>Rigger Command Consoles</category>
+          <OR>
+            <NONE />
+            <category>Rigger Command Consoles</category>
+          </OR>
         </parentdetails>
       </required>
     </gear>
@@ -138,7 +147,10 @@
       <cost>80</cost>
       <required>
         <parentdetails>
-          <category>Rigger Command Consoles</category>
+          <OR>
+            <NONE />
+            <category>Rigger Command Consoles</category>
+          </OR>
         </parentdetails>
       </required>
     </gear>
@@ -154,7 +166,10 @@
       <cost>250</cost>
       <required>
         <parentdetails>
-          <category>Rigger Command Consoles</category>
+          <OR>
+            <NONE />
+            <category>Rigger Command Consoles</category>
+          </OR>
         </parentdetails>
       </required>
     </gear>
@@ -170,7 +185,10 @@
       <cost>250</cost>
       <required>
         <parentdetails>
-          <category>Rigger Command Consoles</category>
+          <OR>
+            <NONE />
+            <category>Rigger Command Consoles</category>
+          </OR>
         </parentdetails>
       </required>
     </gear>
@@ -186,7 +204,10 @@
       <cost>250</cost>
       <required>
         <parentdetails>
-          <category>Rigger Command Consoles</category>
+          <OR>
+            <NONE />
+            <category>Rigger Command Consoles</category>
+          </OR>
         </parentdetails>
       </required>
     </gear>
@@ -218,7 +239,10 @@
       <cost>250</cost>
       <required>
         <parentdetails>
-          <category>Rigger Command Consoles</category>
+          <OR>
+            <NONE />
+            <category>Rigger Command Consoles</category>
+          </OR>
         </parentdetails>
       </required>
     </gear>
@@ -234,7 +258,10 @@
       <cost>250</cost>
       <required>
         <parentdetails>
-          <category>Rigger Command Consoles</category>
+          <OR>
+            <NONE />
+            <category>Rigger Command Consoles</category>
+          </OR>
         </parentdetails>
       </required>
     </gear>
@@ -250,7 +277,10 @@
       <cost>250</cost>
       <required>
         <parentdetails>
-          <category>Rigger Command Consoles</category>
+          <OR>
+            <NONE />
+            <category>Rigger Command Consoles</category>
+          </OR>
         </parentdetails>
       </required>
     </gear>
