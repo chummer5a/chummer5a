@@ -16759,11 +16759,57 @@
     </quality>
     <quality>
       <id>8bdd4868-191c-4c28-800b-526cb39f7786</id>
-      <name>One With the Matrix</name>
-      <karma>FixedValues(2,8,10)</karma>
+      <name>One With the Matrix I</name>
+      <karma>2</karma>
       <category>Positive</category>
       <limit>3</limit>
       <bonus />
+      <forbidden>
+        <oneof>
+          <quality>One With the Matrix III</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>KC</source>
+      <page>97</page>
+    </quality>
+    <quality>
+      <id>3c83d73e-7aa7-4fe5-8f03-6e983648e2eb</id>
+      <name>One With the Matrix II</name>
+      <karma>8</karma>
+      <category>Positive</category>
+      <limit>3</limit>
+      <bonus />
+      <forbidden>
+        <oneof>
+          <quality>One With the Matrix III</quality>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>KC</source>
+      <page>97</page>
+    </quality>
+    <quality>
+      <id>b705a89c-219c-432c-ab47-98ff6c975b4a</id>
+      <name>One With the Matrix III</name>
+      <karma>10</karma>
+      <category>Positive</category>
+      <limit>3</limit>
+      <bonus />
+      <forbidden>
+        <oneof>
+          <quality>One With the Matrix I</quality>
+          <quality>One With the Matrix II</quality>
+        </oneof>
+      </forbidden>
       <required>
         <oneof>
           <quality>Technomancer</quality>
