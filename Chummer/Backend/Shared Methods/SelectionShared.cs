@@ -1047,27 +1047,26 @@ namespace Chummer
             return intAvail <= objCharacter.MaximumAvailability;
         }
 
-        public static bool CheckNuyenRestriction(XmlNode objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m)
+        public static bool CheckNuyenRestriction(XmlNode objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1)
         {
             // Cost.
             decimal decCost = 0.0m;
             XmlNode objCostNode = objXmlGear["cost"];
-            int intRating = 1;
             if (objCostNode == null)
             {
-                intRating = int.MaxValue;
+                int intCostRating = 1;
                 foreach (XmlNode objLoopNode in objXmlGear.SelectNodes("*"))
                 {
                     if (objLoopNode.Name.StartsWith("cost"))
                     {
                         string strLoopCostString = objLoopNode.Name.Substring(4);
-                        if (int.TryParse(strLoopCostString, out int intTmp))
+                        if (int.TryParse(strLoopCostString, out int intTmp) && intTmp <= intRating)
                         {
-                            intRating = Math.Min(intRating, intTmp);
+                            intCostRating = Math.Max(intCostRating, intTmp);
                         }
                     }
                 }
-                objCostNode = objXmlGear.SelectSingleNode("cost" + intRating.ToString(GlobalOptions.InvariantCultureInfo));
+                objCostNode = objXmlGear.SelectSingleNode("cost" + intCostRating.ToString(GlobalOptions.InvariantCultureInfo));
             }
             string strCost = objCostNode?.InnerText;
             if (!string.IsNullOrEmpty(strCost))
@@ -2150,27 +2149,27 @@ namespace Chummer
             return intAvail <= objCharacter.MaximumAvailability;
         }
 
-        public static bool CheckNuyenRestriction(XPathNavigator objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m)
+        public static bool CheckNuyenRestriction(XPathNavigator objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1)
         {
             // Cost.
             decimal decCost = 0.0m;
             XPathNavigator objCostNode = objXmlGear.SelectSingleNode("cost");
-            int intRating = 1;
             if (objCostNode == null)
             {
-                intRating = int.MaxValue;
-                foreach (XPathNavigator objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
+                int intCostRating = 1;
+                foreach (XmlNode objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
                 {
                     if (objLoopNode.Name.StartsWith("cost"))
                     {
                         string strLoopCostString = objLoopNode.Name.Substring(4);
-                        if (int.TryParse(strLoopCostString, out int intTmp))
+                        if (int.TryParse(strLoopCostString, out int intTmp) && intTmp <= intRating)
                         {
-                            intRating = Math.Min(intRating, intTmp);
+                            intCostRating = Math.Max(intCostRating, intTmp);
                         }
                     }
                 }
-                objCostNode = objXmlGear.SelectSingleNode("cost" + intRating.ToString(GlobalOptions.InvariantCultureInfo));
+                
+                objCostNode = objXmlGear.SelectSingleNode("cost" + intCostRating.ToString(GlobalOptions.InvariantCultureInfo));
             }
             string strCost = objCostNode?.Value;
             if (!string.IsNullOrEmpty(strCost))

@@ -26,6 +26,7 @@ namespace Chummer
 {
     public partial class frmSelectArmorMod : Form
     {
+        private bool _blnLoading = true;
         private string _strSelectedArmorMod = string.Empty;
 
         private string _strAllowedCategories = string.Empty;
@@ -71,6 +72,7 @@ namespace Chummer
                 lblMarkupPercentLabel.Visible = false;
             }
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
+            _blnLoading = false;
             BuildModList();
         }
 
@@ -213,6 +215,9 @@ namespace Chummer
         /// </summary>
         private void UpdateSelectedArmor()
         {
+            if (_blnLoading)
+                return;
+
             string strSelectedId = lstMod.SelectedValue?.ToString();
             XmlNode objXmlMod = null;
             if (!string.IsNullOrEmpty(strSelectedId))
@@ -405,6 +410,7 @@ namespace Chummer
             {
                 strMount += "category = \"General\"";
             }
+            strMount += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
 
             using (XmlNodeList objXmlModList = _objXmlDocument.SelectNodes("/chummer/mods/mod[" + strMount + " and (" + _objCharacter.Options.BookXPath() + ")]"))
                 if (objXmlModList?.Count > 0)
@@ -425,10 +431,17 @@ namespace Chummer
                         }
                     }
             lstMods.Sort(CompareListItems.CompareNames);
+            string strOldSelected = lstMod.SelectedValue?.ToString();
+            _blnLoading = true;
             lstMod.BeginUpdate();
             lstMod.ValueMember = "Value";
             lstMod.DisplayMember = "Name";
             lstMod.DataSource = lstMods;
+            _blnLoading = false;
+            if (!string.IsNullOrEmpty(strOldSelected))
+                lstMod.SelectedValue = strOldSelected;
+            else
+                lstMod.SelectedIndex = -1;
             lstMod.EndUpdate();
         }
 
@@ -454,6 +467,11 @@ namespace Chummer
         #endregion
 
         private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e)
+        {
+            BuildModList();
+        }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             BuildModList();
         }

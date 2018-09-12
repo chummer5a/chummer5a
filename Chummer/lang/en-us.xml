@@ -4188,6 +4188,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Node_SelectedManeuvers</key>
       <text>Selected Maneuvers</text>
     </string>
+    <string>
+      <key>Label_SelectMartialArt_IncludedTechniques</key>
+      <text>Enables Learning the Following Techniques:</text>
+    </string>
     <!-- End Region -->
     <!-- Region Spells Tab -->
     <string>

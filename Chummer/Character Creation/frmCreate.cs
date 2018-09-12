@@ -5153,22 +5153,28 @@ namespace Chummer
                 return;
             }
 
-            frmSelectMartialArtTechnique frmPickMartialArtTechnique = new frmSelectMartialArtTechnique(CharacterObject, objMartialArt);
-            frmPickMartialArtTechnique.ShowDialog(this);
+            bool blnAddAgain;
+            do
+            {
+                frmSelectMartialArtTechnique frmPickMartialArtTechnique = new frmSelectMartialArtTechnique(CharacterObject, objMartialArt);
+                frmPickMartialArtTechnique.ShowDialog(this);
 
-            if (frmPickMartialArtTechnique.DialogResult == DialogResult.Cancel)
-                return;
+                if (frmPickMartialArtTechnique.DialogResult == DialogResult.Cancel)
+                    return;
 
-            // Open the Martial Arts XML file and locate the selected piece.
-            XmlNode xmlTechnique = XmlManager.Load("martialarts.xml").SelectSingleNode("/chummer/techniques/technique[id = \"" + frmPickMartialArtTechnique.SelectedTechnique + "\"]");
+                blnAddAgain = frmPickMartialArtTechnique.AddAgain;
 
-            // Create the Improvements for the Advantage if there are any.
-            MartialArtTechnique objAdvantage = new MartialArtTechnique(CharacterObject);
-            objAdvantage.Create(xmlTechnique);
-            if (objAdvantage.InternalId.IsEmptyGuid())
-                return;
+                // Open the Martial Arts XML file and locate the selected piece.
+                XmlNode xmlTechnique = XmlManager.Load("martialarts.xml").SelectSingleNode("/chummer/techniques/technique[id = \"" + frmPickMartialArtTechnique.SelectedTechnique + "\"]");
 
-            objMartialArt.Techniques.Add(objAdvantage);
+                // Create the Improvements for the Advantage if there are any.
+                MartialArtTechnique objAdvantage = new MartialArtTechnique(CharacterObject);
+                objAdvantage.Create(xmlTechnique);
+                if (objAdvantage.InternalId.IsEmptyGuid())
+                    return;
+
+                objMartialArt.Techniques.Add(objAdvantage);
+            } while (blnAddAgain);
 
             IsCharacterUpdateRequested = true;
 

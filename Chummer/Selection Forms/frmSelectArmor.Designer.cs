@@ -31,13 +31,13 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle29 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle30 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle31 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle32 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle33 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle34 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle35 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle19 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle20 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle21 = new System.Windows.Forms.DataGridViewCellStyle();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.lblCategory = new System.Windows.Forms.Label();
@@ -161,9 +161,9 @@ namespace Chummer
             // 
             this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSearch.Location = new System.Drawing.Point(338, 6);
+            this.txtSearch.Location = new System.Drawing.Point(352, 6);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(270, 20);
+            this.txtSearch.Size = new System.Drawing.Size(256, 20);
             this.txtSearch.TabIndex = 1;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyDown);
@@ -172,7 +172,7 @@ namespace Chummer
             // lblSearchLabel
             // 
             this.lblSearchLabel.AutoSize = true;
-            this.lblSearchLabel.Location = new System.Drawing.Point(288, 9);
+            this.lblSearchLabel.Location = new System.Drawing.Point(302, 9);
             this.lblSearchLabel.Name = "lblSearchLabel";
             this.lblSearchLabel.Size = new System.Drawing.Size(44, 13);
             this.lblSearchLabel.TabIndex = 0;
@@ -183,8 +183,8 @@ namespace Chummer
             // 
             this.dgvArmor.AllowUserToAddRows = false;
             this.dgvArmor.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle29.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.dgvArmor.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle29;
+            dataGridViewCellStyle15.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.dgvArmor.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle15;
             this.dgvArmor.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvArmor.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
             this.dgvArmor.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -206,7 +206,7 @@ namespace Chummer
             this.dgvArmor.RowTemplate.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopLeft;
             this.dgvArmor.RowTemplate.DefaultCellStyle.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dgvArmor.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvArmor.Size = new System.Drawing.Size(585, 335);
+            this.dgvArmor.Size = new System.Drawing.Size(586, 335);
             this.dgvArmor.TabIndex = 37;
             this.dgvArmor.DoubleClick += new System.EventHandler(this.dgvArmor_DoubleClick);
             // 
@@ -222,8 +222,8 @@ namespace Chummer
             // 
             this.ArmorName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.ArmorName.DataPropertyName = "ArmorName";
-            dataGridViewCellStyle30.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.ArmorName.DefaultCellStyle = dataGridViewCellStyle30;
+            dataGridViewCellStyle16.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.ArmorName.DefaultCellStyle = dataGridViewCellStyle16;
             this.ArmorName.HeaderText = "Name";
             this.ArmorName.Name = "ArmorName";
             this.ArmorName.ReadOnly = true;
@@ -259,8 +259,8 @@ namespace Chummer
             // 
             this.Special.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Special.DataPropertyName = "Special";
-            dataGridViewCellStyle31.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.Special.DefaultCellStyle = dataGridViewCellStyle31;
+            dataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.Special.DefaultCellStyle = dataGridViewCellStyle17;
             this.Special.HeaderText = "Special";
             this.Special.Name = "Special";
             this.Special.ReadOnly = true;
@@ -295,10 +295,10 @@ namespace Chummer
             // 
             this.Cost.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Cost.DataPropertyName = "Cost";
-            dataGridViewCellStyle32.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle32.Format = "#,0.##¥";
-            dataGridViewCellStyle32.NullValue = null;
-            this.Cost.DefaultCellStyle = dataGridViewCellStyle32;
+            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+            dataGridViewCellStyle18.Format = "#,0.##¥";
+            dataGridViewCellStyle18.NullValue = null;
+            this.Cost.DefaultCellStyle = dataGridViewCellStyle18;
             this.Cost.FillWeight = 60F;
             this.Cost.HeaderText = "Cost";
             this.Cost.Name = "Cost";
@@ -712,7 +712,7 @@ namespace Chummer
             this.tabBrowse.Location = new System.Drawing.Point(4, 22);
             this.tabBrowse.Name = "tabBrowse";
             this.tabBrowse.Padding = new System.Windows.Forms.Padding(3);
-            this.tabBrowse.Size = new System.Drawing.Size(591, 341);
+            this.tabBrowse.Size = new System.Drawing.Size(592, 341);
             this.tabBrowse.TabIndex = 0;
             this.tabBrowse.Tag = "Title_Browse";
             this.tabBrowse.Text = "Browse";
@@ -726,8 +726,8 @@ namespace Chummer
             // 
             this.dataGridViewTextBoxColumnTranslated1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dataGridViewTextBoxColumnTranslated1.DataPropertyName = "ArmorName";
-            dataGridViewCellStyle33.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumnTranslated1.DefaultCellStyle = dataGridViewCellStyle33;
+            dataGridViewCellStyle19.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewTextBoxColumnTranslated1.DefaultCellStyle = dataGridViewCellStyle19;
             this.dataGridViewTextBoxColumnTranslated1.HeaderText = "Name";
             this.dataGridViewTextBoxColumnTranslated1.Name = "dataGridViewTextBoxColumnTranslated1";
             this.dataGridViewTextBoxColumnTranslated1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -757,8 +757,8 @@ namespace Chummer
             // 
             this.dataGridViewTextBoxColumnTranslated4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dataGridViewTextBoxColumnTranslated4.DataPropertyName = "Special";
-            dataGridViewCellStyle34.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumnTranslated4.DefaultCellStyle = dataGridViewCellStyle34;
+            dataGridViewCellStyle20.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewTextBoxColumnTranslated4.DefaultCellStyle = dataGridViewCellStyle20;
             this.dataGridViewTextBoxColumnTranslated4.HeaderText = "Special";
             this.dataGridViewTextBoxColumnTranslated4.Name = "dataGridViewTextBoxColumnTranslated4";
             this.dataGridViewTextBoxColumnTranslated4.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -787,10 +787,10 @@ namespace Chummer
             // 
             this.dataGridViewTextBoxColumnTranslated7.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dataGridViewTextBoxColumnTranslated7.DataPropertyName = "Cost";
-            dataGridViewCellStyle35.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle35.Format = "#,0.##¥";
-            dataGridViewCellStyle35.NullValue = null;
-            this.dataGridViewTextBoxColumnTranslated7.DefaultCellStyle = dataGridViewCellStyle35;
+            dataGridViewCellStyle21.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+            dataGridViewCellStyle21.Format = "#,0.##¥";
+            dataGridViewCellStyle21.NullValue = null;
+            this.dataGridViewTextBoxColumnTranslated7.DefaultCellStyle = dataGridViewCellStyle21;
             this.dataGridViewTextBoxColumnTranslated7.FillWeight = 60F;
             this.dataGridViewTextBoxColumnTranslated7.HeaderText = "Cost";
             this.dataGridViewTextBoxColumnTranslated7.Name = "dataGridViewTextBoxColumnTranslated7";

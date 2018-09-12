@@ -33,6 +33,7 @@ namespace Chummer
         private string _strSelectedWeapon = string.Empty;
         private decimal _decMarkup;
 
+        private bool _blnLoading = true;
         private bool _blnSkipUpdate;
         private bool _blnAddAgain;
         private bool _blnBlackMarketDiscount;
@@ -118,7 +119,8 @@ namespace Chummer
                 cboCategory.SelectedIndex = 0;
             cboCategory.EndUpdate();
 
-            cboCategory_SelectedIndexChanged(sender, e);
+            _blnLoading = false;
+            RefreshList();
         }
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -128,6 +130,9 @@ namespace Chummer
 
         private void lstWeapon_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_blnLoading || _blnSkipUpdate)
+                return;
+            
             // Retireve the information for the selected Weapon.
             XmlNode xmlWeapon = null;
             string strSelectedId = lstWeapon.SelectedValue?.ToString();
@@ -147,7 +152,7 @@ namespace Chummer
 
         private void UpdateWeaponInfo()
         {
-            if (_blnSkipUpdate)
+            if (_blnLoading || _blnSkipUpdate)
                 return;
             _blnSkipUpdate = true;
             if (_objSelectedWeapon != null)
@@ -377,16 +382,19 @@ namespace Chummer
                     }
                     lstWeapons.Add(new ListItem(objXmlWeapon["id"]?.InnerText, objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"]?.InnerText));
                 }
-
-                string strSelectedId = lstWeapon.SelectedValue?.ToString();
+                
                 lstWeapons.Sort(CompareListItems.CompareNames);
+                string strOldSelected = lstWeapon.SelectedValue?.ToString();
+                _blnLoading = true;
                 lstWeapon.BeginUpdate();
-                lstWeapon.DataSource = null;
                 lstWeapon.ValueMember = "Value";
                 lstWeapon.DisplayMember = "Name";
                 lstWeapon.DataSource = lstWeapons;
-                if (!string.IsNullOrEmpty(strSelectedId))
-                    lstWeapon.SelectedValue = strSelectedId;
+                _blnLoading = false;
+                if (!string.IsNullOrEmpty(strOldSelected))
+                    lstWeapon.SelectedValue = strOldSelected;
+                else
+                    lstWeapon.SelectedIndex = -1;
                 lstWeapon.EndUpdate();
             }
         }

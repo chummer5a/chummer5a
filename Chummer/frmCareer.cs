@@ -6772,40 +6772,49 @@ namespace Chummer
                     treMartialArts.SelectedNode = treMartialArts.SelectedNode.Parent;
 
                 if (!(treMartialArts.SelectedNode?.Tag is MartialArt objMartialArt)) return;
-                frmSelectMartialArtTechnique frmPickMartialArtTechnique = new frmSelectMartialArtTechnique(CharacterObject, objMartialArt);
-                frmPickMartialArtTechnique.ShowDialog(this);
 
-                if (frmPickMartialArtTechnique.DialogResult == DialogResult.Cancel)
-                    return;
-
-                // Open the Martial Arts XML file and locate the selected piece.
-                XmlNode xmlTechnique = XmlManager.Load("martialarts.xml").SelectSingleNode("/chummer/techniques/technique[id = \"" + frmPickMartialArtTechnique.SelectedTechnique + "\"]");
-
-                if (xmlTechnique != null)
+                bool blnAddAgain = false;
+                do
                 {
-                    // Create the Improvements for the Advantage if there are any.
-                    MartialArtTechnique objAdvantage = new MartialArtTechnique(CharacterObject);
-                    objAdvantage.Create(xmlTechnique);
-                    if (objAdvantage.InternalId.IsEmptyGuid())
+                    frmSelectMartialArtTechnique frmPickMartialArtTechnique = new frmSelectMartialArtTechnique(CharacterObject, objMartialArt);
+                    frmPickMartialArtTechnique.ShowDialog(this);
+
+                    if (frmPickMartialArtTechnique.DialogResult == DialogResult.Cancel)
                         return;
 
-                    int karmaCost = objMartialArt.Techniques.Count > 0 ? CharacterObjectOptions.KarmaManeuver : 0;
-                            objMartialArt.Techniques.Add(objAdvantage);
+                    // Open the Martial Arts XML file and locate the selected piece.
+                    XmlNode xmlTechnique = XmlManager.Load("martialarts.xml").SelectSingleNode("/chummer/techniques/technique[id = \"" + frmPickMartialArtTechnique.SelectedTechnique + "\"]");
+
+                    if (xmlTechnique != null)
+                    {
+                        // Create the Improvements for the Advantage if there are any.
+                        MartialArtTechnique objAdvantage = new MartialArtTechnique(CharacterObject);
+                        objAdvantage.Create(xmlTechnique);
+                        if (objAdvantage.InternalId.IsEmptyGuid())
+                            return;
+
+                        blnAddAgain = frmPickMartialArtTechnique.AddAgain;
+
+                        int karmaCost = objMartialArt.Techniques.Count > 0 ? CharacterObjectOptions.KarmaManeuver : 0;
+                        objMartialArt.Techniques.Add(objAdvantage);
 
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                        objEntry.Create(karmaCost * -1, LanguageManager.GetString("String_ExpenseLearnTechnique", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objAdvantage.DisplayName(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                        objEntry.Create(karmaCost * -1,
+                            LanguageManager.GetString("String_ExpenseLearnTechnique", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objAdvantage.DisplayName(GlobalOptions.Language),
+                            ExpenseType.Karma, DateTime.Now);
                         CharacterObject.ExpenseEntries.AddWithSort(objEntry);
                         CharacterObject.Karma -= karmaCost;
 
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateKarma(KarmaExpenseType.AddMartialArtManeuver, objAdvantage.InternalId);
-                    objEntry.Undo = objUndo;
+                        ExpenseUndo objUndo = new ExpenseUndo();
+                        objUndo.CreateKarma(KarmaExpenseType.AddMartialArtManeuver, objAdvantage.InternalId);
+                        objEntry.Undo = objUndo;
+                    }
+                } while (blnAddAgain);
 
-                    IsCharacterUpdateRequested = true;
+                IsCharacterUpdateRequested = true;
 
-                    IsDirty = true;
-                }
+                IsDirty = true;
             }
             else
             {
