@@ -83,7 +83,7 @@ namespace Chummer
                 }
             }
             treAvailableComponents.ExpandAll();
-            treChoosenComponents.ExpandAll();
+            treChosenComponents.ExpandAll();
 	        PopulateGrades();
 			UpdateCustomDrugStats();
             lblDrugDescription.Text = objDrug.Description;
@@ -222,7 +222,7 @@ namespace Chummer
             string nodeText = objNodeData.objDrugComponent.Name;
             if (objNodeData.objDrugComponent.DrugEffects.Count > 1)
                 nodeText += " (level " + (objNodeData.level + 1).ToString() + ")";
-            TreeNode node = treChoosenComponents.Nodes[categoryIndex].Nodes.Add(nodeText);
+            TreeNode node = treChosenComponents.Nodes[categoryIndex].Nodes.Add(nodeText);
             node.Tag = objNodeData;
             node.EnsureVisible();
 
@@ -253,8 +253,8 @@ namespace Chummer
         private void treChoosenComponents_AfterSelect(object sender, TreeViewEventArgs e)
         {
             clsNodeData objNodeData;
-            if (treChoosenComponents.SelectedNode != null && treChoosenComponents.SelectedNode.Tag != null)
-                objNodeData = (clsNodeData)treChoosenComponents.SelectedNode.Tag;
+            if (treChosenComponents.SelectedNode != null && treChosenComponents.SelectedNode.Tag != null)
+                objNodeData = (clsNodeData)treChosenComponents.SelectedNode.Tag;
             else
                 return;
 
@@ -274,12 +274,12 @@ namespace Chummer
         private void btnRemoveComponent_Click(object sender, EventArgs e)
         {
             clsNodeData objNodeData;
-            if (treChoosenComponents.SelectedNode != null && treChoosenComponents.SelectedNode.Tag != null)
-                objNodeData = (clsNodeData)treChoosenComponents.SelectedNode.Tag;
+            if (treChosenComponents.SelectedNode != null && treChosenComponents.SelectedNode.Tag != null)
+                objNodeData = (clsNodeData)treChosenComponents.SelectedNode.Tag;
             else
                 return;
 
-            treChoosenComponents.Nodes.Remove(treChoosenComponents.SelectedNode);
+            treChosenComponents.Nodes.Remove(treChosenComponents.SelectedNode);
 
             lstSelectedDrugComponents.Remove(objNodeData);
 

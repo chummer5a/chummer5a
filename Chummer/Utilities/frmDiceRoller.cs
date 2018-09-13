@@ -56,6 +56,9 @@ namespace Chummer
             cboMethod.DataSource = lstMethod;
             cboMethod.SelectedIndex = 0;
             cboMethod.EndUpdate();
+
+            lblResultsLabel.Visible = false;
+            lblResults.Text = string.Empty;
         }
 
         private void cmdRollDice_Click(object sender, EventArgs e)
@@ -134,7 +137,8 @@ namespace Chummer
             }
 
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-            lblResults.Text = LanguageManager.GetString("Label_DiceRoller_Result", GlobalOptions.Language) + strSpaceCharacter;
+            lblResultsLabel.Visible = true;
+            lblResults.Text = string.Empty;
             if (intGlitchCount >= intGlitchThreshold)
             {
                 if (intHitCount > 0)
@@ -275,7 +279,8 @@ namespace Chummer
             }
 
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-            lblResults.Text = LanguageManager.GetString("Label_DiceRoller_Result", GlobalOptions.Language) + strSpaceCharacter;
+            lblResultsLabel.Visible = true;
+            lblResults.Text = string.Empty;
             if (intGlitchCount >= intGlitchThreshold)
             {
                 if (intHitCount > 0)
@@ -344,21 +349,6 @@ namespace Chummer
             }
         }
         #endregion
-
-        #region Methods
-        private void MoveControls()
-        {
-            nudDice.Left = lblRoll.Left + lblRoll.Width + 6;
-            lblD6.Left = nudDice.Left + nudDice.Width + 6;
-            cboMethod.Left = lblD6.Left + lblD6.Width + 6;
-            cmdRollDice.Left = cboMethod.Left + cboMethod.Width + 6;
-            cmdReroll.Left = cmdRollDice.Left;
-
-            int intMax = Math.Max(lblThreshold.Width, lblGremlins.Width);
-            nudThreshold.Left = lblThreshold.Left + intMax + 6;
-            nudGremlins.Left = lblGremlins.Left + intMax + 6;
-            Width = Math.Max(cmdReroll.Left + cmdReroll.Width + 16, chkBubbleDie.Left + chkBubbleDie.Width + 16);
-        }
-        #endregion
+        
     }
 }

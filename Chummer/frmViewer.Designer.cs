@@ -51,7 +51,7 @@ namespace Chummer
             // 
             this.tsSaveAsHtml.Enabled = false;
             this.tsSaveAsHtml.Name = "tsSaveAsHtml";
-            this.tsSaveAsHtml.Size = new System.Drawing.Size(139, 22);
+            this.tsSaveAsHtml.Size = new System.Drawing.Size(148, 22);
             this.tsSaveAsHtml.Tag = "Button_Viewer_SaveAsHtml";
             this.tsSaveAsHtml.Text = "Save as &HTML";
             this.tsSaveAsHtml.Click += new System.EventHandler(this.tsSaveAsHTML_Click);
@@ -62,13 +62,13 @@ namespace Chummer
             this.tsSaveAsXml,
             this.tsSaveAsHtml});
             this.cmsSaveButton.Name = "cmsPrintButton";
-            this.cmsSaveButton.Size = new System.Drawing.Size(140, 48);
+            this.cmsSaveButton.Size = new System.Drawing.Size(149, 48);
             // 
             // tsSaveAsXml
             // 
             this.tsSaveAsXml.Enabled = false;
             this.tsSaveAsXml.Name = "tsSaveAsXml";
-            this.tsSaveAsXml.Size = new System.Drawing.Size(139, 22);
+            this.tsSaveAsXml.Size = new System.Drawing.Size(148, 22);
             this.tsSaveAsXml.Tag = "Button_Viewer_SaveAsXml";
             this.tsSaveAsXml.Text = "Save as XML";
             this.tsSaveAsXml.Click += new System.EventHandler(this.tsSaveAsXml_Click);
@@ -153,7 +153,7 @@ namespace Chummer
             this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser1.Name = "webBrowser1";
             this.webBrowser1.ScriptErrorsSuppressed = true;
-            this.webBrowser1.Size = new System.Drawing.Size(761, 583);
+            this.webBrowser1.Size = new System.Drawing.Size(761, 507);
             this.webBrowser1.TabIndex = 5;
             this.webBrowser1.WebBrowserShortcutsEnabled = false;
             // 
@@ -173,7 +173,7 @@ namespace Chummer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 637);
+            this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.cboLanguage);
             this.Controls.Add(this.lblCharacterSheet);
             this.Controls.Add(this.cboXSLT);
