@@ -339,6 +339,10 @@
 			<text>特质</text>
 		</string>
 		<string>
+			<key>Label_Qualities</key>
+			<text>特质：</text>
+		</string>
+		<string>
 			<key>Label_Metavariant</key>
 			<text>泛变种：</text>
 		</string>

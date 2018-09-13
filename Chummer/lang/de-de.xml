@@ -346,6 +346,10 @@
 			<text>Gaben</text>
 		</string>
 		<string>
+			<key>Label_Qualities</key>
+			<text>Gaben:</text>
+		</string>
+		<string>
 			<key>Label_Metavariant</key>
 			<text>Metavariante:</text>
 		</string>

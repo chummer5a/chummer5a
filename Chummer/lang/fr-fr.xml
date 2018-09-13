@@ -348,6 +348,10 @@
       <text>Traits</text>
     </string>
     <string>
+      <key>Label_Qualities</key>
+      <text>Traits:</text>
+    </string>
+    <string>
       <key>Label_Metavariant</key>
       <text>Métavariante :</text>
     </string>

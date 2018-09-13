@@ -49,6 +49,7 @@ Application Changes:
 - Fixed a bug where characters in Career mode could add Martial Arts to their sheet even if they did not have enough karma.
 - Fixed a bug where quality-exclusive Martial Arts (e.g. One Trick Pony) would still be displayed alongside other Martial Arts in the Add Martial Arts screen.
 - The Add Martial Arts screen now displays the selected item's karma cost and also lists all the techniques that can be learned under that martial art.
+- The Build Method selection screen will now display the starting karma and maximum karma-to-nuyen for priority-based build methods.
 
 Data Changes:
 
@@ -89,6 +90,7 @@ New Strings:
 - String_ExpenseRemovePositiveQuality
 - String_NotApplicable
 - Label_SelectMartialArt_IncludedTechniques
+- Label_Qualities
 
 Changed Strings:
 
