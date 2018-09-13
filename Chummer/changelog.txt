@@ -50,7 +50,9 @@ Application Changes:
 - Fixed a bug where quality-exclusive Martial Arts (e.g. One Trick Pony) would still be displayed alongside other Martial Arts in the Add Martial Arts screen.
 - The Add Martial Arts screen now displays the selected item's karma cost and also lists all the techniques that can be learned under that martial art.
 - The Build Method selection screen will now display the starting karma and maximum karma-to-nuyen for priority-based build methods.
-- Fixed a misbehaving legacy shimmer that would duplicate improvements that were a part of a piece of 'ware's pair bonus.
+- Fixed a misbehaving legacy shimmer that would duplicate improvements that were a part of a piece of 'ware's pair bonus. Fixes #2978.
+- Fixed an issue where Martial Arts after the first did not properly add to the appropriate node.
+- Fixed a bug that prevented the addskillspecializationoption improvement from working properly. Fixes #2760.
 
 Data Changes:
 

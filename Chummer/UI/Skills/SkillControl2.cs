@@ -198,6 +198,19 @@ namespace Chummer.UI.Skills
                     if (blnUpdateAll)
                         goto case nameof(Skill.DisplayOtherAttribute);
                     break;
+                case nameof(Skill.CGLSpecializations):
+                    if (!_skill.CharacterObject.Created && !_skill.IsExoticSkill)
+                    {
+                        cboSpec.DataBindings.Clear();
+                        cboSpec.DataSource = null;
+                        cboSpec.DisplayMember = nameof(ListItem.Name);
+                        cboSpec.ValueMember = nameof(ListItem.Value);
+                        cboSpec.DataBindings.Add("Enabled", _skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
+                        cboSpec.SelectedIndex = -1;
+                        cboSpec.DataSource = _skill.CGLSpecializations;
+                        cboSpec.DataBindings.Add("Text", _skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
+                    }
+                    break;
                 case nameof(Skill.AttributeModifiers):
                 case nameof(Skill.DisplayOtherAttribute):
                     lblModifiedRating.Text =  _skill.DisplayOtherAttribute(_attributeActive.TotalValue, _attributeActive.Abbrev);

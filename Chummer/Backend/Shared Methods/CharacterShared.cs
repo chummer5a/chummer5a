@@ -5053,6 +5053,8 @@ namespace Chummer
             }
             else
             {
+                objMartialArtsParentNode = treMartialArts.FindNode("Node_SelectedMartialArts", false);
+                objQualityNode = treMartialArts.FindNode("Node_SelectedQualities", false);
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
                     case NotifyCollectionChangedAction.Add:

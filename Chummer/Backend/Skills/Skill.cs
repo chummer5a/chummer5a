@@ -777,7 +777,19 @@ namespace Chummer.Backend.Skills
 
         public virtual string SkillCategory => _strCategory;
 
-        public IReadOnlyList<ListItem> CGLSpecializations => SuggestedSpecializations;
+        public IReadOnlyList<ListItem> CGLSpecializations
+        {
+            get
+            {
+                List<ListItem> lstSuggestedSpecializations = new List<ListItem>(SuggestedSpecializations);
+                foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x => x.ImprovedName == Name && x.ImproveType == Improvement.ImprovementType.SkillSpecializationOption && lstSuggestedSpecializations.All(y => y.Value?.ToString() != x.UniqueName) && x.Enabled))
+                {
+                    string strSpecializationName = objImprovement.UniqueName;
+                    lstSuggestedSpecializations.Add(new ListItem(strSpecializationName, LanguageManager.TranslateExtra(strSpecializationName, GlobalOptions.Language)));
+                }
+                return lstSuggestedSpecializations;
+            }
+        }
 
         private readonly Dictionary<string, string> _cachedStringSpec = new Dictionary<string, string>();
         public virtual string DisplaySpecializationMethod(string strLanguage)

@@ -183,6 +183,7 @@ namespace Chummer
             Ambidextrous,
             UnarmedReach,
             SkillSpecialization,
+            SkillSpecializationOption,
             NativeLanguageLimit,
             AdeptPowerFreeLevels,
             AdeptPowerFreePoints,
@@ -1357,6 +1358,16 @@ namespace Chummer
                     break;
                 case ImprovementType.SkillSpecialization:
                     break;
+                case ImprovementType.SkillSpecializationOption:
+                {
+                    Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                           _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                    if (objTargetSkill != null)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.CGLSpecializations));
+                    }
+                    break;
+                }
                 case ImprovementType.NativeLanguageLimit:
                     break;
                 case ImprovementType.AdeptPowerFreePoints:
