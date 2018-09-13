@@ -82,6 +82,7 @@ Data Changes:
 - Fixed entries for the Krime Stun-O-Net, Additional Clip/Magazine, Narcoject Dazzler, and Red Dot Sight weapon accessories from Street Lethal. They are now all purchasable with appropriate stats, and in the case of Additional Clip/Magazine, it now properly adjusts the maximum capacity on pistols and can only be takeon on weapons with a clip or internal magazine. Fixes #2983 and one of the bugs in #2978.
 - Added missing One With the Matrix quality. Fixed missing page references, restrictions and karma costs for several qualities from Kill Code. Fixes #2974
 - Sensor function ratings are now properly limited to the rating of their parent (Single Sensor or Sensor Array) if their parent has a rating.
+- Added the RunnerHub Rules custom ruleset, courtesy of /u/EnviousShadow.
 
 New Strings:
 
