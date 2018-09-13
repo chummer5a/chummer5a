@@ -53,6 +53,7 @@ Application Changes:
 - Fixed a misbehaving legacy shimmer that would duplicate improvements that were a part of a piece of 'ware's pair bonus. Fixes #2978.
 - Fixed an issue where Martial Arts after the first did not properly add to the appropriate node.
 - Fixed a bug that prevented the addskillspecializationoption improvement from working properly. Fixes #2760.
+- Fixed an issue where special text versions of weapon damage codes would not get properly recognized as text. Fixes #2986.
 
 Data Changes:
 

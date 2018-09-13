@@ -1874,20 +1874,26 @@ namespace Chummer.Backend.Equipment
                             if (Name == "Unarmed Attack (Smashing Blow)")
                                 intDamage *= 2;
                             strDamage = intDamage.ToString(objCulture);
+                            strReturn = strDamage + strDamageType + strDamageExtra;
+                        }
+                        else
+                        {
+                            strReturn = "NaN";
                         }
                     }
                     catch (OverflowException)
                     {
+                        strReturn = "NaN";
                     } // Result is text and not a double
                     catch (InvalidCastException)
                     {
+                        strReturn = "NaN";
                     } // Result is text and not a double
-
-                    strReturn = strDamage + strDamageType + strDamageExtra;
                 }
             }
             else
             {
+                string strOriginalDamage = strDamage;
                 // Place the Damage Type (P or S) into a string and remove it from the expression.
                 if (strDamage.Contains("P or S"))
                 {
@@ -1937,16 +1943,21 @@ namespace Chummer.Backend.Equipment
                             if (Name == "Unarmed Attack (Smashing Blow)")
                                 intDamage *= 2;
                             strDamage = intDamage.ToString(objCulture);
+                            strReturn = strDamage + strDamageType + strDamageExtra;
+                        }
+                        else
+                        {
+                            strReturn = strOriginalDamage;
                         }
                     }
                     catch (OverflowException)
                     {
+                        strReturn = strOriginalDamage;
                     } // Result is text and not a double
                     catch (InvalidCastException)
                     {
+                        strReturn = strOriginalDamage;
                     } // Result is text and not a double
-
-                    strReturn = strDamage + strDamageType + strDamageExtra;
                 }
             }
 
@@ -1957,13 +1968,13 @@ namespace Chummer.Backend.Equipment
             // Translate the Damage Code.
             if (strLanguage != GlobalOptions.DefaultLanguage)
             {
-                strReturn = strReturn.CheapReplace("S", () => LanguageManager.GetString("String_DamageStun", strLanguage))
+                strReturn = strReturn.CheapReplace("Special", () => LanguageManager.GetString("String_DamageSpecial", strLanguage))
+                    .CheapReplace("P or S", () => LanguageManager.GetString("String_DamagePOrS", strLanguage))
+                    .CheapReplace("S", () => LanguageManager.GetString("String_DamageStun", strLanguage))
                     .CheapReplace("P", () => LanguageManager.GetString("String_DamagePhysical", strLanguage))
                     .CheapReplace("Chemical", () => LanguageManager.GetString("String_DamageChemical", strLanguage))
-                    .CheapReplace("Special", () => LanguageManager.GetString("String_DamageSpecial", strLanguage))
                     .CheapReplace("(e)", () => LanguageManager.GetString("String_DamageElectric", strLanguage))
                     .CheapReplace("(f)", () => LanguageManager.GetString("String_DamageFlechette", strLanguage))
-                    .CheapReplace("P or S", () => LanguageManager.GetString("String_DamagePOrS", strLanguage))
                     .CheapReplace("Grenade", () => LanguageManager.GetString("String_DamageGrenade", strLanguage))
                     .CheapReplace("Missile", () => LanguageManager.GetString("String_DamageMissile", strLanguage))
                     .CheapReplace("Mortar", () => LanguageManager.GetString("String_DamageMortar", strLanguage))
