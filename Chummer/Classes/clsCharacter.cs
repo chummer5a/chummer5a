@@ -2589,13 +2589,9 @@ namespace Chummer
                 Cyberware objCyberware = new Cyberware(this);
                 objCyberware.Load(objXmlCyberware);
                 _lstCyberware.Add(objCyberware);
-                // Legacy shim
-                if ((objCyberware.Name == "Myostatin Inhibitor" && LastSavedVersion <= new Version("5.195.1") &&
-                     !Improvements.Any(x =>
-                         x.SourceName == objCyberware.InternalId &&
-                         x.ImproveType == Improvement.ImprovementType.AttributeKarmaCost)) ||
-                    (objCyberware.PairBonus?.HasChildNodes == true &&
-                     Improvements.All(x => x.SourceName != objCyberware.InternalId + "Pair")))
+                // Legacy shim #1
+                if (objCyberware.Name == "Myostatin Inhibitor" && LastSavedVersion <= new Version("5.195.1") &&
+                     !Improvements.Any(x => x.SourceName == objCyberware.InternalId && x.ImproveType == Improvement.ImprovementType.AttributeKarmaCost))
                 {
                     XmlNode objNode = objCyberware.GetNode();
                     if (objNode != null)
@@ -2644,6 +2640,66 @@ namespace Chummer
                     else
                     {
                         _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
+                    }
+                }
+            }
+            // Legacy Shim #2 (needed to be separate because we're dealing with PairBonuses here, and we don't know if something needs its PairBonus reapplied until all Cyberwares have been loaded)
+            if (LastSavedVersion <= new Version("5.200.0"))
+            {
+                foreach (Cyberware objCyberware in Cyberware)
+                {
+                    if (objCyberware.PairBonus?.HasChildNodes == true &&
+                         !Cyberware.DeepAny(x => x.Children, x => objCyberware.IncludePair.Contains(x.Name) && x.Extra == objCyberware.Extra && x.IsModularCurrentlyEquipped &&
+                                                                  Improvements.Any(y => y.SourceName == x.InternalId + "Pair")))
+                    {
+                        XmlNode objNode = objCyberware.GetNode();
+                        if (objNode != null)
+                        {
+                            ImprovementManager.RemoveImprovements(this, objCyberware.SourceType, objCyberware.InternalId);
+                            ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
+                                objCyberware.InternalId + "Pair");
+                            objCyberware.Bonus = objNode["bonus"];
+                            objCyberware.WirelessBonus = objNode["wirelessbonus"];
+                            objCyberware.PairBonus = objNode["pairbonus"];
+                            if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" &&
+                                objCyberware.Forced != "Left")
+                                ImprovementManager.ForcedValue = objCyberware.Forced;
+                            if (objCyberware.Bonus != null)
+                            {
+                                ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
+                                    objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating,
+                                    objCyberware.DisplayNameShort(GlobalOptions.Language));
+                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                    objCyberware.Extra = ImprovementManager.SelectedValue;
+                            }
+
+                            if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
+                            {
+                                ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
+                                    objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating,
+                                    objCyberware.DisplayNameShort(GlobalOptions.Language));
+                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
+                                    string.IsNullOrEmpty(objCyberware.Extra))
+                                    objCyberware.Extra = ImprovementManager.SelectedValue;
+                            }
+
+                            if (!objCyberware.IsModularCurrentlyEquipped)
+                                objCyberware.ChangeModularEquip(false);
+                            else if (objCyberware.PairBonus != null)
+                            {
+                                Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x =>
+                                    x.Name == objCyberware.Name && x.Extra == objCyberware.Extra);
+                                if (objMatchingCyberware != null)
+                                    dicPairableCyberwares[objMatchingCyberware] =
+                                        dicPairableCyberwares[objMatchingCyberware] + 1;
+                                else
+                                    dicPairableCyberwares.Add(objCyberware, 1);
+                            }
+                        }
+                        else
+                        {
+                            _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
+                        }
                     }
                 }
             }
