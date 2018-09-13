@@ -41,7 +41,6 @@ namespace Chummer
                 if (intGremlinsRating > 0)
                     nudGremlins.Value = intGremlinsRating;
             }
-            MoveControls();
 
             List<ListItem> lstMethod = new List<ListItem>
             {
