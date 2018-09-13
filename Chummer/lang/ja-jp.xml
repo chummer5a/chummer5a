@@ -6678,7 +6678,15 @@
     </string>
     <string>
       <key>String_Special</key>
+      <text>Special</text>
+    </string>
+    <string>
+      <key>String_SpecialAttributes</key>
       <text>Special Attributes</text>
+    </string>
+    <string>
+      <key>Label_SpecialAttributes</key>
+      <text>Special Attributes:</text>
     </string>
     <string>
       <key>String_SpecialAttributePoints</key>

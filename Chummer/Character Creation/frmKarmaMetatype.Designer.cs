@@ -47,7 +47,6 @@ namespace Chummer
             this.lblINI = new System.Windows.Forms.Label();
             this.lblINILabel = new System.Windows.Forms.Label();
             this.lblWIL = new System.Windows.Forms.Label();
-            this.lblMetavariantLabel = new System.Windows.Forms.Label();
             this.lblLOG = new System.Windows.Forms.Label();
             this.lblLOGLabel = new System.Windows.Forms.Label();
             this.lblWILLabel = new System.Windows.Forms.Label();
@@ -60,14 +59,15 @@ namespace Chummer
             this.lblBODLabel = new System.Windows.Forms.Label();
             this.lblBOD = new System.Windows.Forms.Label();
             this.cboMetavariant = new System.Windows.Forms.ComboBox();
-            this.lblKarmaLabel = new System.Windows.Forms.Label();
             this.lblKarma = new System.Windows.Forms.Label();
-            this.lblQualitiesLabel = new System.Windows.Forms.Label();
             this.lblQualities = new System.Windows.Forms.Label();
+            this.lblMetavariantLabel = new System.Windows.Forms.Label();
+            this.lblKarmaLabel = new System.Windows.Forms.Label();
+            this.lblQualitiesLabel = new System.Windows.Forms.Label();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.chkBloodSpirit = new System.Windows.Forms.CheckBox();
             this.chkPossessionBased = new System.Windows.Forms.CheckBox();
             this.cboPossessionMethod = new System.Windows.Forms.ComboBox();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.pnlMetatypes.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudForce)).BeginInit();
@@ -303,21 +303,6 @@ namespace Chummer
             this.lblWIL.TabIndex = 53;
             this.lblWIL.Text = "2/12 (18)";
             // 
-            // lblMetavariantLabel
-            // 
-            this.lblMetavariantLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblMetavariantLabel.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.lblMetavariantLabel, 2);
-            this.lblMetavariantLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMetavariantLabel.Location = new System.Drawing.Point(3, 107);
-            this.lblMetavariantLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMetavariantLabel.Name = "lblMetavariantLabel";
-            this.lblMetavariantLabel.Size = new System.Drawing.Size(78, 15);
-            this.lblMetavariantLabel.TabIndex = 58;
-            this.lblMetavariantLabel.Tag = "Label_Metavariant";
-            this.lblMetavariantLabel.Text = "Metavariant:";
-            // 
             // lblLOG
             // 
             this.lblLOG.AutoSize = true;
@@ -458,6 +443,46 @@ namespace Chummer
             this.cboMetavariant.TabIndex = 59;
             this.cboMetavariant.SelectedIndexChanged += new System.EventHandler(this.cboMetavariant_SelectedIndexChanged);
             // 
+            // lblKarma
+            // 
+            this.lblKarma.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblKarma.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.lblKarma, 4);
+            this.lblKarma.Location = new System.Drawing.Point(97, 134);
+            this.lblKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarma.Name = "lblKarma";
+            this.lblKarma.Size = new System.Drawing.Size(13, 13);
+            this.lblKarma.TabIndex = 61;
+            this.lblKarma.Text = "0";
+            // 
+            // lblQualities
+            // 
+            this.lblQualities.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.lblQualities, 4);
+            this.lblQualities.Location = new System.Drawing.Point(97, 159);
+            this.lblQualities.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblQualities.Name = "lblQualities";
+            this.lblQualities.Size = new System.Drawing.Size(33, 13);
+            this.lblQualities.TabIndex = 63;
+            this.lblQualities.Tag = "String_None";
+            this.lblQualities.Text = "None";
+            // 
+            // lblMetavariantLabel
+            // 
+            this.lblMetavariantLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblMetavariantLabel.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.lblMetavariantLabel, 2);
+            this.lblMetavariantLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMetavariantLabel.Location = new System.Drawing.Point(3, 107);
+            this.lblMetavariantLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMetavariantLabel.Name = "lblMetavariantLabel";
+            this.lblMetavariantLabel.Size = new System.Drawing.Size(78, 15);
+            this.lblMetavariantLabel.TabIndex = 58;
+            this.lblMetavariantLabel.Tag = "Label_Metavariant";
+            this.lblMetavariantLabel.Text = "Metavariant:";
+            // 
             // lblKarmaLabel
             // 
             this.lblKarmaLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -473,19 +498,6 @@ namespace Chummer
             this.lblKarmaLabel.Tag = "Label_Karma";
             this.lblKarmaLabel.Text = "Karma:";
             // 
-            // lblKarma
-            // 
-            this.lblKarma.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblKarma.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.lblKarma, 4);
-            this.lblKarma.Location = new System.Drawing.Point(97, 134);
-            this.lblKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarma.Name = "lblKarma";
-            this.lblKarma.Size = new System.Drawing.Size(13, 13);
-            this.lblKarma.TabIndex = 61;
-            this.lblKarma.Text = "0";
-            // 
             // lblQualitiesLabel
             // 
             this.lblQualitiesLabel.AutoSize = true;
@@ -499,17 +511,21 @@ namespace Chummer
             this.lblQualitiesLabel.Tag = "String_Qualities";
             this.lblQualitiesLabel.Text = "Qualities:";
             // 
-            // lblQualities
+            // tableLayoutPanel2
             // 
-            this.lblQualities.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.lblQualities, 4);
-            this.lblQualities.Location = new System.Drawing.Point(97, 159);
-            this.lblQualities.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblQualities.Name = "lblQualities";
-            this.lblQualities.Size = new System.Drawing.Size(33, 13);
-            this.lblQualities.TabIndex = 63;
-            this.lblQualities.Tag = "String_None";
-            this.lblQualities.Text = "None";
+            this.tableLayoutPanel2.ColumnCount = 3;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.tableLayoutPanel2.Controls.Add(this.chkBloodSpirit, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.chkPossessionBased, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.cboPossessionMethod, 2, 0);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(218, 350);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 1;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(398, 52);
+            this.tableLayoutPanel2.TabIndex = 70;
             // 
             // chkBloodSpirit
             // 
@@ -555,22 +571,6 @@ namespace Chummer
             this.cboPossessionMethod.Size = new System.Drawing.Size(154, 21);
             this.cboPossessionMethod.TabIndex = 65;
             this.cboPossessionMethod.Visible = false;
-            // 
-            // tableLayoutPanel2
-            // 
-            this.tableLayoutPanel2.ColumnCount = 3;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
-            this.tableLayoutPanel2.Controls.Add(this.chkBloodSpirit, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.chkPossessionBased, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.cboPossessionMethod, 2, 0);
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(218, 350);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 1;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(398, 52);
-            this.tableLayoutPanel2.TabIndex = 70;
             // 
             // frmKarmaMetatype
             // 

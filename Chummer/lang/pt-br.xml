@@ -256,7 +256,15 @@
     </string>
     <string>
       <key>String_Special</key>
+      <text>Especial</text>
+    </string>
+    <string>
+      <key>String_SpecialAttributes</key>
       <text>Atributos Especiais</text>
+    </string>
+    <string>
+      <key>Label_SpecialAttributes</key>
+      <text>Atributos Especiais:</text>
     </string>
     <string>
       <key>String_SpecialAttributePoints</key>
@@ -7123,11 +7131,11 @@
     </string>
     <string>
       <key>Label_SelectBP_MaxAvail</key>
-      <text>Disponibilidade\nMáxima</text>
+      <text>Disponibilidade Máxima</text>
     </string>
     <string>
       <key>Label_SelectBP_StartingKarma</key>
-      <text>Carma\nInicial</text>
+      <text>Carma Inicial</text>
     </string>
     <string>
       <key>Label_SelectBP_SumToX</key>

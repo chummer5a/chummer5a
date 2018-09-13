@@ -5644,15 +5644,15 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Label_SelectBP_StartingKarma</key>
-      <text>Karma de\ndépart :</text>
+      <text>Karma de départ :</text>
     </string>
     <string>
       <key>Label_SelectBP_SumToX</key>
-      <text>Système à\nX points :</text>
+      <text>Système à X points :</text>
     </string>
     <string>
       <key>Label_SelectBP_MaxNuyen</key>
-      <text>Max. nuyen\nen Karma :</text>
+      <text>Max. nuyen en Karma :</text>
     </string>
 	<string>
       <key>Checkbox_SelectBP_IgnoreRules</key>
@@ -6693,7 +6693,15 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>String_Special</key>
+      <text>Spécial</text>
+    </string>
+    <string>
+      <key>String_SpecialAttributes</key>
       <text>Attributs Spéciaux</text>
+    </string>
+    <string>
+      <key>Label_SpecialAttributes</key>
+      <text>Attributs Spéciaux:</text>
     </string>
     <string>
       <key>String_SpecialAttributePoints</key>

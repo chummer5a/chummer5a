@@ -320,7 +320,15 @@
     </string>
     <string>
       <key>String_Special</key>
+      <text>Special</text>
+    </string>
+    <string>
+      <key>String_SpecialAttributes</key>
       <text>Special Attributes</text>
+    </string>
+    <string>
+      <key>Label_SpecialAttributes</key>
+      <text>Special Attributes:</text>
     </string>
     <string>
       <key>String_SpecialAttributePoints</key>
@@ -7811,11 +7819,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Label_SelectBP_MaxAvail</key>
-      <text>Maximum\nAvailability</text>
+      <text>Maximum Availability</text>
     </string>
     <string>
       <key>Label_SelectBP_StartingKarma</key>
-      <text>Starting\nKarma</text>
+      <text>Starting Karma</text>
     </string>
     <string>
       <key>Label_SelectBP_SumToX</key>

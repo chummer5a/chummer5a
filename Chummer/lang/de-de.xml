@@ -6726,7 +6726,15 @@
 		</string>
 		<string>
 			<key>String_Special</key>
+			<text>Spezial</text>
+		</string>
+		<string>
+			<key>String_SpecialAttributes</key>
 			<text>Spezialattribute</text>
+		</string>
+		<string>
+			<key>Label_SpecialAttributes</key>
+			<text>Spezialattribute:</text>
 		</string>
 		<string>
 			<key>String_SpecialAttributePoints</key>
@@ -7880,7 +7888,7 @@
 		</string>
 		<string>
 			<key>Label_SelectBP_StartingKarma</key>
-			<text>Anfangs-\nKarma</text>
+			<text>Anfangs-Karma</text>
 		</string>
 		<string>
 			<key>String_SumtoTen</key>

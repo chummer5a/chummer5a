@@ -43,19 +43,17 @@ namespace Chummer
             this.nudMaxNuyen = new System.Windows.Forms.NumericUpDown();
             this.lblMaxNuyen = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.tblNumericalUpDowns = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSumtoTen)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyen)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
-            this.tblNumericalUpDowns.SuspendLayout();
             this.SuspendLayout();
             // 
             // nudKarma
             // 
             this.nudKarma.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.nudKarma.Location = new System.Drawing.Point(3, 41);
+            this.nudKarma.Location = new System.Drawing.Point(225, 68);
             this.nudKarma.Maximum = new decimal(new int[] {
             5000,
             0,
@@ -73,7 +71,8 @@ namespace Chummer
             // 
             // cmdOK
             // 
-            this.cmdOK.Location = new System.Drawing.Point(377, 246);
+            this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdOK.Location = new System.Drawing.Point(384, 192);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 6;
@@ -84,9 +83,9 @@ namespace Chummer
             // 
             // chkIgnoreRules
             // 
+            this.chkIgnoreRules.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkIgnoreRules.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.chkIgnoreRules, 4);
-            this.chkIgnoreRules.Location = new System.Drawing.Point(3, 133);
+            this.chkIgnoreRules.Location = new System.Drawing.Point(15, 196);
             this.chkIgnoreRules.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkIgnoreRules.Name = "chkIgnoreRules";
             this.chkIgnoreRules.Size = new System.Drawing.Size(177, 17);
@@ -97,8 +96,9 @@ namespace Chummer
             // 
             // cmdCancel
             // 
+            this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(296, 246);
+            this.cmdCancel.Location = new System.Drawing.Point(303, 192);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 7;
@@ -121,22 +121,22 @@ namespace Chummer
             // 
             // lblMaxAvail
             // 
-            this.lblMaxAvail.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblMaxAvail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMaxAvail.AutoSize = true;
-            this.lblMaxAvail.Location = new System.Drawing.Point(225, 6);
+            this.tableLayoutPanel1.SetColumnSpan(this.lblMaxAvail, 2);
+            this.lblMaxAvail.Location = new System.Drawing.Point(116, 97);
             this.lblMaxAvail.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMaxAvail.Name = "lblMaxAvail";
-            this.lblMaxAvail.Size = new System.Drawing.Size(105, 26);
+            this.lblMaxAvail.Size = new System.Drawing.Size(103, 13);
             this.lblMaxAvail.TabIndex = 3;
             this.lblMaxAvail.Tag = "Label_SelectBP_MaxAvail";
-            this.lblMaxAvail.Text = "Maximum\r\nAvailability";
+            this.lblMaxAvail.Text = "Maximum Availability";
             this.lblMaxAvail.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // nudMaxAvail
             // 
             this.nudMaxAvail.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.nudMaxAvail.Location = new System.Drawing.Point(225, 41);
+            this.nudMaxAvail.Location = new System.Drawing.Point(225, 94);
             this.nudMaxAvail.Name = "nudMaxAvail";
             this.nudMaxAvail.Size = new System.Drawing.Size(105, 20);
             this.nudMaxAvail.TabIndex = 4;
@@ -154,14 +154,13 @@ namespace Chummer
             this.cboGamePlay.FormattingEnabled = true;
             this.cboGamePlay.Location = new System.Drawing.Point(225, 3);
             this.cboGamePlay.Name = "cboGamePlay";
-            this.cboGamePlay.Size = new System.Drawing.Size(217, 21);
+            this.cboGamePlay.Size = new System.Drawing.Size(216, 21);
             this.cboGamePlay.TabIndex = 8;
             this.cboGamePlay.SelectedIndexChanged += new System.EventHandler(this.cboGamePlay_SelectedIndexChanged);
             // 
             // nudSumtoTen
             // 
-            this.nudSumtoTen.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.nudSumtoTen.Location = new System.Drawing.Point(114, 41);
+            this.nudSumtoTen.Location = new System.Drawing.Point(225, 146);
             this.nudSumtoTen.Name = "nudSumtoTen";
             this.nudSumtoTen.Size = new System.Drawing.Size(105, 20);
             this.nudSumtoTen.TabIndex = 9;
@@ -173,13 +172,13 @@ namespace Chummer
             // 
             // lblSumToX
             // 
-            this.lblSumToX.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSumToX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSumToX.AutoSize = true;
-            this.lblSumToX.Location = new System.Drawing.Point(114, 19);
+            this.tableLayoutPanel1.SetColumnSpan(this.lblSumToX, 2);
+            this.lblSumToX.Location = new System.Drawing.Point(157, 149);
             this.lblSumToX.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSumToX.Name = "lblSumToX";
-            this.lblSumToX.Size = new System.Drawing.Size(105, 13);
+            this.lblSumToX.Size = new System.Drawing.Size(62, 13);
             this.lblSumToX.TabIndex = 10;
             this.lblSumToX.Tag = "Label_SelectBP_SumToX";
             this.lblSumToX.Text = "Sum to Ten";
@@ -187,16 +186,16 @@ namespace Chummer
             // 
             // lblStartingKarma
             // 
-            this.lblStartingKarma.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblStartingKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblStartingKarma.AutoSize = true;
-            this.lblStartingKarma.Location = new System.Drawing.Point(3, 6);
+            this.tableLayoutPanel1.SetColumnSpan(this.lblStartingKarma, 2);
+            this.lblStartingKarma.Location = new System.Drawing.Point(143, 71);
             this.lblStartingKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblStartingKarma.Name = "lblStartingKarma";
-            this.lblStartingKarma.Size = new System.Drawing.Size(105, 26);
+            this.lblStartingKarma.Size = new System.Drawing.Size(76, 13);
             this.lblStartingKarma.TabIndex = 11;
             this.lblStartingKarma.Tag = "Label_SelectBP_StartingKarma";
-            this.lblStartingKarma.Text = "Starting\r\nKarma";
+            this.lblStartingKarma.Text = "Starting Karma";
             this.lblStartingKarma.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // lblDescription
@@ -208,7 +207,7 @@ namespace Chummer
             this.lblDescription.Location = new System.Drawing.Point(3, 33);
             this.lblDescription.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(439, 26);
+            this.lblDescription.Size = new System.Drawing.Size(438, 26);
             this.lblDescription.TabIndex = 0;
             this.lblDescription.Tag = "String_SelectBP_KarmaSummary";
             this.lblDescription.Text = "Enter the amount of Build Points you are allowed to create your character with (D" +
@@ -217,14 +216,14 @@ namespace Chummer
             // nudMaxNuyen
             // 
             this.nudMaxNuyen.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.nudMaxNuyen.Location = new System.Drawing.Point(336, 41);
+            this.nudMaxNuyen.Location = new System.Drawing.Point(225, 120);
             this.nudMaxNuyen.Maximum = new decimal(new int[] {
             10000,
             0,
             0,
             0});
             this.nudMaxNuyen.Name = "nudMaxNuyen";
-            this.nudMaxNuyen.Size = new System.Drawing.Size(106, 20);
+            this.nudMaxNuyen.Size = new System.Drawing.Size(105, 20);
             this.nudMaxNuyen.TabIndex = 13;
             this.nudMaxNuyen.Value = new decimal(new int[] {
             235,
@@ -234,13 +233,13 @@ namespace Chummer
             // 
             // lblMaxNuyen
             // 
-            this.lblMaxNuyen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblMaxNuyen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMaxNuyen.AutoSize = true;
-            this.lblMaxNuyen.Location = new System.Drawing.Point(336, 19);
+            this.tableLayoutPanel1.SetColumnSpan(this.lblMaxNuyen, 2);
+            this.lblMaxNuyen.Location = new System.Drawing.Point(125, 123);
             this.lblMaxNuyen.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMaxNuyen.Name = "lblMaxNuyen";
-            this.lblMaxNuyen.Size = new System.Drawing.Size(106, 13);
+            this.lblMaxNuyen.Size = new System.Drawing.Size(94, 13);
             this.lblMaxNuyen.TabIndex = 15;
             this.lblMaxNuyen.Tag = "Label_SelectBP_MaxNuyen";
             this.lblMaxNuyen.Text = "Nuyen Karma Max";
@@ -248,69 +247,54 @@ namespace Chummer
             // 
             // tableLayoutPanel1
             // 
+            this.tableLayoutPanel1.AutoSize = true;
+            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.ColumnCount = 4;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.Controls.Add(this.tblNumericalUpDowns, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.chkIgnoreRules, 0, 3);
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 111F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 111F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 111F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 111F));
+            this.tableLayoutPanel1.Controls.Add(this.nudMaxNuyen, 2, 4);
             this.tableLayoutPanel1.Controls.Add(this.cboGamePlay, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblStartingKarma, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.cboBuildMethod, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.nudMaxAvail, 2, 3);
             this.tableLayoutPanel1.Controls.Add(this.lblDescription, 0, 1);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(7, 12);
+            this.tableLayoutPanel1.Controls.Add(this.nudKarma, 2, 2);
+            this.tableLayoutPanel1.Controls.Add(this.nudSumtoTen, 2, 5);
+            this.tableLayoutPanel1.Controls.Add(this.lblMaxAvail, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.lblMaxNuyen, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.lblSumToX, 0, 5);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(15, 12);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 4;
+            this.tableLayoutPanel1.RowCount = 6;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(445, 228);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(444, 169);
             this.tableLayoutPanel1.TabIndex = 16;
-            // 
-            // tblNumericalUpDowns
-            // 
-            this.tblNumericalUpDowns.AutoSize = true;
-            this.tblNumericalUpDowns.ColumnCount = 4;
-            this.tableLayoutPanel1.SetColumnSpan(this.tblNumericalUpDowns, 4);
-            this.tblNumericalUpDowns.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tblNumericalUpDowns.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tblNumericalUpDowns.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tblNumericalUpDowns.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tblNumericalUpDowns.Controls.Add(this.lblStartingKarma, 0, 0);
-            this.tblNumericalUpDowns.Controls.Add(this.nudMaxNuyen, 3, 1);
-            this.tblNumericalUpDowns.Controls.Add(this.lblMaxNuyen, 3, 0);
-            this.tblNumericalUpDowns.Controls.Add(this.lblSumToX, 1, 0);
-            this.tblNumericalUpDowns.Controls.Add(this.nudKarma, 0, 1);
-            this.tblNumericalUpDowns.Controls.Add(this.lblMaxAvail, 2, 0);
-            this.tblNumericalUpDowns.Controls.Add(this.nudMaxAvail, 2, 1);
-            this.tblNumericalUpDowns.Controls.Add(this.nudSumtoTen, 1, 1);
-            this.tblNumericalUpDowns.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblNumericalUpDowns.Location = new System.Drawing.Point(0, 65);
-            this.tblNumericalUpDowns.Margin = new System.Windows.Forms.Padding(0);
-            this.tblNumericalUpDowns.Name = "tblNumericalUpDowns";
-            this.tblNumericalUpDowns.RowCount = 2;
-            this.tblNumericalUpDowns.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblNumericalUpDowns.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblNumericalUpDowns.Size = new System.Drawing.Size(445, 64);
-            this.tblNumericalUpDowns.TabIndex = 17;
             // 
             // frmSelectBuildMethod
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(464, 281);
+            this.ClientSize = new System.Drawing.Size(464, 227);
             this.ControlBox = false;
             this.Controls.Add(this.cmdCancel);
+            this.Controls.Add(this.chkIgnoreRules);
             this.Controls.Add(this.cmdOK);
             this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(16, 220);
+            this.MinimumSize = new System.Drawing.Size(480, 220);
             this.Name = "frmSelectBuildMethod";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -323,9 +307,8 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyen)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            this.tblNumericalUpDowns.ResumeLayout(false);
-            this.tblNumericalUpDowns.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -346,6 +329,5 @@ namespace Chummer
         private System.Windows.Forms.NumericUpDown nudMaxNuyen;
         private System.Windows.Forms.Label lblMaxNuyen;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.TableLayoutPanel tblNumericalUpDowns;
     }
 }

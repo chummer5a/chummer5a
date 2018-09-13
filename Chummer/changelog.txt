@@ -91,6 +91,8 @@ New Strings:
 - String_NotApplicable
 - Label_SelectMartialArt_IncludedTechniques
 - Label_Qualities
+- String_SpecialAttributes
+- Label_SpecialAttributes
 
 Changed Strings:
 
@@ -99,6 +101,11 @@ Changed Strings:
 - Label_SelectAdvancedLifestyle_Base_Lifestyle
 - Label_SelectAdvancedLifestyle_Base_Security
 - Label_SelectAdvancedLifestyle_Base_Area
+- String_Special
+- Label_SelectBP_MaxAvail
+- Label_SelectBP_StartingKarma
+- Label_SelectBP_SumToX
+- Label_SelectBP_MaxNuyen
 
 Build 202
 

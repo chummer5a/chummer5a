@@ -5009,7 +5009,7 @@
 		</string>
 		<string>
 			<key>Label_SelectBP_MaxAvail</key>
-			<text>最大\n可获得性</text>
+			<text>最大可获得性</text>
 		</string>
 		<string>
 			<key>Checkbox_SelectBP_IgnoreRules</key>
@@ -6066,7 +6066,15 @@
 		</string>
 		<string>
 			<key>String_Special</key>
+			<text>特</text>
+		</string>
+		<string>
+			<key>String_SpecialAttributes</key>
 			<text>特殊属性</text>
+		</string>
+		<string>
+			<key>Label_SpecialAttributes</key>
+			<text>特殊属性：</text>
 		</string>
 		<string>
 			<key>String_SpecialAttributePoints</key>
@@ -7552,7 +7560,7 @@
 		</string>
 		<string>
 			<key>Label_SelectBP_StartingKarma</key>
-			<text>起始\n业力</text>
+			<text>起始业力</text>
 		</string>
 		<string>
 			<key>Label_SelectBP_SumToX</key>
