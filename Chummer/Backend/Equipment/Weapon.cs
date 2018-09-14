@@ -1970,8 +1970,6 @@ namespace Chummer.Backend.Equipment
             {
                 strReturn = strReturn.CheapReplace("Special", () => LanguageManager.GetString("String_DamageSpecial", strLanguage))
                     .CheapReplace("P or S", () => LanguageManager.GetString("String_DamagePOrS", strLanguage))
-                    .CheapReplace("S", () => LanguageManager.GetString("String_DamageStun", strLanguage))
-                    .CheapReplace("P", () => LanguageManager.GetString("String_DamagePhysical", strLanguage))
                     .CheapReplace("Chemical", () => LanguageManager.GetString("String_DamageChemical", strLanguage))
                     .CheapReplace("(e)", () => LanguageManager.GetString("String_DamageElectric", strLanguage))
                     .CheapReplace("(f)", () => LanguageManager.GetString("String_DamageFlechette", strLanguage))
@@ -1984,6 +1982,27 @@ namespace Chummer.Backend.Equipment
                     .CheapReplace("as round", () => LanguageManager.GetString("String_DamageAsRound", strLanguage))
                     .CheapReplace("/m", () => '/' + LanguageManager.GetString("String_DamageMeter", strLanguage))
                     .CheapReplace("(M)", () => LanguageManager.GetString("String_DamageMatrix", strLanguage));
+                strReturn = strReturn
+                    .CheapReplace("0S", () => '0' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("1S", () => '1' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("2S", () => '2' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("3S", () => '3' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("4S", () => '4' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("5S", () => '5' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("6S", () => '6' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("7S", () => '7' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("8S", () => '8' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("9S", () => '9' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("0P", () => '0' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("1P", () => '1' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("2P", () => '2' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("3P", () => '3' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("4P", () => '4' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("5P", () => '5' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("6P", () => '6' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("7P", () => '7' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("8P", () => '8' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("9P", () => '9' + LanguageManager.GetString("String_DamagePhysical", strLanguage));
             }
 
             return strReturn;
