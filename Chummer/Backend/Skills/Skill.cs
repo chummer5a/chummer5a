@@ -544,17 +544,6 @@ namespace Chummer.Backend.Skills
             if (xmlNode.TryGetField("guid", Guid.TryParse, out guiTemp))
                 Id = guiTemp;
 
-            XmlNodeList lstSuggestedSpecializationsXml = xmlNode["specs"]?.ChildNodes;
-            if (lstSuggestedSpecializationsXml != null)
-            {
-                SuggestedSpecializations.Capacity = lstSuggestedSpecializationsXml.Count;
-                foreach (XmlNode node in lstSuggestedSpecializationsXml)
-                {
-                    string strInnerText = node.InnerText;
-                    SuggestedSpecializations.Add(new ListItem(strInnerText, node.Attributes?["translate"]?.InnerText ?? strInnerText));
-                }
-            }
-
             string strGroup = xmlNode["skillgroup"]?.InnerText;
 
             if (!string.IsNullOrEmpty(strGroup))
@@ -568,6 +557,26 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public void ReloadSuggestedSpecializations()
+        {
+            SuggestedSpecializations.Clear();
+
+            XmlNodeList xmlSpecList = GetNode()?.SelectNodes("specs/spec");
+
+            if (xmlSpecList != null)
+            {
+                SuggestedSpecializations.Capacity = xmlSpecList.Count;
+
+                foreach (XmlNode xmlSpecNode in xmlSpecList)
+                {
+                    string strInnerText = xmlSpecNode.InnerText;
+                    SuggestedSpecializations.Add(new ListItem(strInnerText, xmlSpecNode.Attributes?["translate"]?.InnerText ?? strInnerText));
+                }
+
+                SuggestedSpecializations.Sort(CompareListItems.CompareNames);
+            }
+            OnPropertyChanged(nameof(SuggestedSpecializations));
+        }
         #endregion
 
         /// <summary>
@@ -769,6 +778,7 @@ namespace Chummer.Backend.Skills
                 {
                     _guidSkillId = value;
                     _objCachedMyXmlNode = null;
+                    ReloadSuggestedSpecializations();
                 }
             }
         }

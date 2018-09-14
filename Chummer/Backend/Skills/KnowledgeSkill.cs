@@ -105,29 +105,9 @@ namespace Chummer.Backend.Skills
                 {
                     Name = strNewName;
                     LoadDefaultType();
-                    LoadSuggestedSpecializations();
                     OnPropertyChanged();
                 }
             }
-        }
-
-        private void LoadSuggestedSpecializations()
-        {
-            SuggestedSpecializations.Clear();
-
-            XmlNodeList list = GetNode()?.SelectNodes("specs/spec");
-
-            if (list != null)
-            {
-                foreach (XmlNode node in list)
-                {
-                    string strInnerText = node.InnerText;
-                    SuggestedSpecializations.Add(new ListItem(strInnerText, node.Attributes?["translate"]?.InnerText ?? strInnerText));
-                }
-
-                SuggestedSpecializations.Sort(CompareListItems.CompareNames);
-            }
-            OnPropertyChanged(nameof(SuggestedSpecializations));
         }
 
         public bool LoadDefaultType()
@@ -434,8 +414,7 @@ namespace Chummer.Backend.Skills
                 if (objDataNode.TryGetField("id", Guid.TryParse, out Guid guidTemp))
                     SkillId = guidTemp;
             }
-
-            LoadSuggestedSpecializations();
+            
             string strCategoryString = string.Empty;
             if ((xmlNode.TryGetStringFieldQuickly("type", ref strCategoryString) && !string.IsNullOrEmpty(strCategoryString))
                 || (xmlNode.TryGetStringFieldQuickly("skillcategory", ref strCategoryString) && !string.IsNullOrEmpty(strCategoryString)))

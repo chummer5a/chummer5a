@@ -168,22 +168,27 @@ namespace Chummer.UI.Skills
                     all = true;
                     goto case nameof(Skill.CGLSpecializations);
                 case nameof(Skill.CGLSpecializations):
-                    string strOldSpec = _skill.CGLSpecializations.Count != 0 ? cboSpec.SelectedItem?.ToString() : cboSpec.Text;
-                    cboSpec.SuspendLayout();
-                    cboSpec.DataSource = null;
-                    cboSpec.DisplayMember = nameof(ListItem.Name);
-                    cboSpec.ValueMember = nameof(ListItem.Value);
-                    cboSpec.DataSource = _skill.CGLSpecializations;
-                    cboSpec.MaxDropDownItems = Math.Max(1, _skill.CGLSpecializations.Count);
-                    if (string.IsNullOrEmpty(strOldSpec))
-                        cboSpec.SelectedIndex = -1;
-                    else
+                    if (!_skill.CharacterObject.Created)
                     {
-                        cboSpec.SelectedValue = strOldSpec;
-                        if (cboSpec.SelectedIndex == -1)
-                            cboSpec.Text = strOldSpec;
+                        string strOldSpec = _skill.CGLSpecializations.Count != 0 ? cboSpec.SelectedItem?.ToString() : cboSpec.Text;
+                        cboSpec.SuspendLayout();
+                        cboSpec.DataSource = null;
+                        cboSpec.DisplayMember = nameof(ListItem.Name);
+                        cboSpec.ValueMember = nameof(ListItem.Value);
+                        cboSpec.DataSource = _skill.CGLSpecializations;
+                        cboSpec.MaxDropDownItems = Math.Max(1, _skill.CGLSpecializations.Count);
+                        if (string.IsNullOrEmpty(strOldSpec))
+                            cboSpec.SelectedIndex = -1;
+                        else
+                        {
+                            cboSpec.SelectedValue = strOldSpec;
+                            if (cboSpec.SelectedIndex == -1)
+                                cboSpec.Text = strOldSpec;
+                        }
+
+                        cboSpec.ResumeLayout();
                     }
-                    cboSpec.ResumeLayout();
+
                     if (all)
                         goto case nameof(KnowledgeSkill.Type);
                     break;

@@ -65,8 +65,7 @@ namespace Chummer.UI.Skills
             _attributeActive = skill.AttributeObject;
             _skill.PropertyChanged += Skill_PropertyChanged;
             _skill.CharacterObject.AttributeSection.PropertyChanged += AttributeSection_PropertyChanged;
-            Skill_PropertyChanged(null, null);  //if null it updates all
-
+            
             nudSkill.Visible = !skill.CharacterObject.Created && skill.CharacterObject.BuildMethodHasSkillPoints;
             nudKarma.Visible = !skill.CharacterObject.Created;
             chkKarma.Visible = !skill.CharacterObject.Created;
@@ -135,12 +134,13 @@ namespace Chummer.UI.Skills
                 else
                 {
                     //dropdown/spec
+                    cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
                     cboSpec.DisplayMember = nameof(ListItem.Name);
                     cboSpec.ValueMember = nameof(ListItem.Value);
-                    cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
-                    cboSpec.SelectedIndex = -1;
                     cboSpec.DataSource = skill.CGLSpecializations;
-
+                    cboSpec.DisplayMember = nameof(ListItem.Name);
+                    cboSpec.ValueMember = nameof(ListItem.Value);
+                    cboSpec.SelectedIndex = -1;
                     cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
                 }
                 cboSpec.EndUpdate();
@@ -162,6 +162,9 @@ namespace Chummer.UI.Skills
                     btnAddSpec.Location = new Point(btnAddSpec.Location.X - cmdDelete.Width, btnAddSpec.Location.Y);
                 }
             }
+
+            lblName.Font = !_skill.Default ? _italicName : _normalName;
+            lblModifiedRating.Text = _skill.DisplayOtherAttribute(_attributeActive.TotalValue, _attributeActive.Abbrev);
 
             ResumeLayout();
         }
@@ -191,25 +194,33 @@ namespace Chummer.UI.Skills
                     blnUpdateAll = true;
                     goto case nameof(Skill.Default);
                 case nameof(Skill.Default):
-                    if (!_skill.Default)
-                        lblName.Font = _italicName;
-                    else
-                        lblName.Font = _normalName;
+                    lblName.Font = !_skill.Default ? _italicName : _normalName;
                     if (blnUpdateAll)
-                        goto case nameof(Skill.DisplayOtherAttribute);
+                        goto case nameof(Skill.CGLSpecializations);
                     break;
                 case nameof(Skill.CGLSpecializations):
                     if (!_skill.CharacterObject.Created && !_skill.IsExoticSkill)
                     {
-                        cboSpec.DataBindings.Clear();
+                        string strOldSpec = cboSpec.Text;
+                        cboSpec.SuspendLayout();
                         cboSpec.DataSource = null;
                         cboSpec.DisplayMember = nameof(ListItem.Name);
                         cboSpec.ValueMember = nameof(ListItem.Value);
-                        cboSpec.DataBindings.Add("Enabled", _skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
-                        cboSpec.SelectedIndex = -1;
                         cboSpec.DataSource = _skill.CGLSpecializations;
-                        cboSpec.DataBindings.Add("Text", _skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
+                        cboSpec.DisplayMember = nameof(ListItem.Name);
+                        cboSpec.ValueMember = nameof(ListItem.Value);
+                        if (string.IsNullOrEmpty(strOldSpec))
+                            cboSpec.SelectedIndex = -1;
+                        else
+                        {
+                            cboSpec.SelectedValue = strOldSpec;
+                            if (cboSpec.SelectedIndex == -1)
+                                cboSpec.Text = strOldSpec;
+                        }
+                        cboSpec.ResumeLayout();
                     }
+                    if (blnUpdateAll)
+                        goto case nameof(Skill.DisplayOtherAttribute);
                     break;
                 case nameof(Skill.AttributeModifiers):
                 case nameof(Skill.DisplayOtherAttribute):
@@ -280,8 +291,8 @@ namespace Chummer.UI.Skills
             }
 
             cboSelectAttribute.BeginUpdate();
-            cboSelectAttribute.ValueMember = "Value";
-            cboSelectAttribute.DisplayMember = "Name";
+            cboSelectAttribute.DisplayMember = nameof(ListItem.Name);
+            cboSelectAttribute.ValueMember = nameof(ListItem.Value);
             cboSelectAttribute.DataSource = lstAttributeItems;
             cboSelectAttribute.SelectedValue = _skill.AttributeObject.Abbrev;
             cboSelectAttribute.EndUpdate();
