@@ -82,6 +82,7 @@ namespace Chummer
 
             LoadCharacters();
             MoveControls();
+            UpdateCharacter(null);
         }
 
         private void frmCharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
@@ -130,7 +131,6 @@ namespace Chummer
             {
                 LoadCharacters(false);
             }
-
             MoveControls();
             ResumeLayout();
         }
@@ -527,18 +527,34 @@ namespace Chummer
         {
             if (objCache != null)
             {
+                string strUnknown = LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strNone = LanguageManager.GetString("String_None", GlobalOptions.Language);
                 txtCharacterBio.Text = objCache.Description;
                 txtCharacterBackground.Text = objCache.Background;
                 txtCharacterNotes.Text = objCache.CharacterNotes;
                 txtGameNotes.Text = objCache.GameNotes;
                 txtCharacterConcept.Text = objCache.Concept;
                 lblCareerKarma.Text = objCache.Karma;
+                if (string.IsNullOrEmpty(lblCareerKarma.Text) || lblCareerKarma.Text == "0")
+                    lblCareerKarma.Text = strNone;
                 lblPlayerName.Text = objCache.PlayerName;
+                if (string.IsNullOrEmpty(lblPlayerName.Text))
+                    lblPlayerName.Text = strUnknown;
                 lblCharacterName.Text = objCache.CharacterName;
+                if (string.IsNullOrEmpty(lblCharacterName.Text))
+                    lblCharacterName.Text = strUnknown;
                 lblCharacterAlias.Text = objCache.CharacterAlias;
+                if (string.IsNullOrEmpty(lblCharacterAlias.Text))
+                    lblCharacterAlias.Text = strUnknown;
                 lblEssence.Text = objCache.Essence;
+                if (string.IsNullOrEmpty(lblEssence.Text))
+                    lblEssence.Text = strUnknown;
                 lblFilePath.Text = objCache.FileName;
+                if (string.IsNullOrEmpty(lblFilePath.Text))
+                    lblFilePath.Text = LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language);
                 lblSettings.Text = objCache.SettingsFile;
+                if (string.IsNullOrEmpty(lblSettings.Text))
+                    lblSettings.Text = strUnknown;
                 lblFilePath.SetToolTip(objCache.FilePath.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>'));
                 picMugshot.Image = objCache.Mugshot;
 
@@ -560,9 +576,11 @@ namespace Chummer
                     strMetatype += " (" + (objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant) + ')';
                 }
                 lblMetatype.Text = strMetatype;
+                tabCharacterText.Visible = true;
             }
             else
             {
+                tabCharacterText.Visible = false;
                 txtCharacterBio.Text = string.Empty;
                 txtCharacterBackground.Text = string.Empty;
                 txtCharacterNotes.Text = string.Empty;
@@ -579,6 +597,14 @@ namespace Chummer
                 lblSettings.Text = string.Empty;
                 picMugshot.Image = null;
             }
+            lblCareerKarmaLabel.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text);
+            lblMetatypeLabel.Visible = !string.IsNullOrEmpty(lblMetatype.Text);
+            lblPlayerNameLabel.Visible = !string.IsNullOrEmpty(lblPlayerName.Text);
+            lblCharacterNameLabel.Visible = !string.IsNullOrEmpty(lblCharacterName.Text);
+            lblCharacterAliasLabel.Visible = !string.IsNullOrEmpty(lblCharacterAlias.Text);
+            lblEssenceLabel.Visible = !string.IsNullOrEmpty(lblEssence.Text);
+            lblFilePathLabel.Visible = !string.IsNullOrEmpty(lblFilePath.Text);
+            lblSettingsLabel.Visible = !string.IsNullOrEmpty(lblSettings.Text);
             ProcessMugshotSizeMode();
         }
 
