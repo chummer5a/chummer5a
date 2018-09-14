@@ -16438,7 +16438,7 @@
       <category>Positive</category>
       <bonus />
       <source>KC</source>
-      <page>0</page>
+      <page>76</page>
     </quality>
     <quality>
       <id>7ac54323-a913-4a8e-803e-c6ac2d4ba359</id>
@@ -16447,7 +16447,7 @@
       <category>Positive</category>
       <bonus />
       <source>KC</source>
-      <page>0</page>
+      <page>76</page>
     </quality>
     <quality>
       <id>fb8bce41-05ea-48af-a45b-dc80dc392f23</id>
@@ -16456,7 +16456,7 @@
       <category>Positive</category>
       <bonus />
       <source>KC</source>
-      <page>0</page>
+      <page>76</page>
     </quality>
     <quality>
       <id>eefe6c28-5d7b-403d-8c24-5bc26536b52b</id>
@@ -16465,7 +16465,7 @@
       <category>Positive</category>
       <bonus />
       <source>KC</source>
-      <page>0</page>
+      <page>76</page>
     </quality>
     <quality>
       <id>8e16f569-a1b1-499c-8046-85d25fb00041</id>
@@ -16474,7 +16474,7 @@
       <category>Negative</category>
       <bonus />
       <source>KC</source>
-      <page>0</page>
+      <page>76</page>
     </quality>
     <quality>
       <id>19042705-1c57-4973-bf2e-45186ea2b8d5</id>
@@ -16483,7 +16483,7 @@
       <category>Negative</category>
       <bonus />
       <source>KC</source>
-      <page>0</page>
+      <page>77</page>
     </quality>
     <quality>
       <id>2c3a3f51-53c5-4d47-b991-0c64f31472d3</id>
@@ -16492,7 +16492,7 @@
       <category>Negative</category>
       <bonus />
       <source>KC</source>
-      <page>0</page>
+      <page>77</page>
     </quality>
     <quality>
       <id>6bbeb733-a7cc-4427-924b-8c6174399051</id>
@@ -16501,7 +16501,7 @@
       <category>Negative</category>
       <bonus />
       <source>KC</source>
-      <page>0</page>
+      <page>77</page>
     </quality>
     <quality>
       <id>a3d131f2-5ed9-42d0-86c2-396e50a9117d</id>
@@ -16510,7 +16510,7 @@
       <category>Negative</category>
       <bonus />
       <source>KC</source>
-      <page>0</page>
+      <page>77</page>
     </quality>
     <quality>
       <id>282c446f-8156-4268-8baa-5d7e732fcd53</id>
@@ -16520,7 +16520,7 @@
       <limit>4</limit>
       <bonus />
       <source>KC</source>
-      <page>0</page>
+      <page>77</page>
     </quality>
     <quality>
       <id>1638946e-7e2e-4e57-a7cb-d20f2e4eead1</id>
@@ -16529,7 +16529,7 @@
       <category>Negative</category>
       <bonus />
       <source>KC</source>
-      <page>0</page>
+      <page>78</page>
     </quality>
     <quality>
       <id>356eabd2-7d97-46bb-81a1-ac913a670364</id>
@@ -16540,7 +16540,7 @@
         <selectskill limittoskill="Computer, Cybercombat, Decompiling, Electronic Warfare, Hacking, Registering, Software"></selectskill>
       </bonus>
       <source>KC</source>
-      <page>0</page>
+      <page>78</page>
     </quality>
     <quality>
       <id>96322f26-94cf-4d2c-9282-6525f9008fec</id>
@@ -16549,7 +16549,7 @@
       <category>Negative</category>
       <bonus />
       <source>KC</source>
-      <page>0</page>
+      <page>78</page>
     </quality>
     <quality>
       <id>c4dab0b4-32c4-4840-9713-aa46c2412835</id>
@@ -16558,7 +16558,7 @@
       <category>Negative</category>
       <bonus />
       <source>KC</source>
-      <page>0</page>
+      <page>79</page>
     </quality>
     <quality>
       <id>f4a052dc-17ca-4bec-a9bf-30e6da80285e</id>
@@ -16567,7 +16567,7 @@
       <category>Negative</category>
       <bonus />
       <source>KC</source>
-      <page>0</page>
+      <page>79</page>
     </quality>
     <quality>
       <id>ba1644ab-2191-4366-8f5f-13c21eca1cc4</id>
@@ -16576,7 +16576,7 @@
       <category>Negative</category>
       <bonus />
       <source>KC</source>
-      <page>0</page>
+      <page>79</page>
     </quality>
     <quality>
       <id>5e75a946-b14e-488d-93ea-cd82e648286d</id>
@@ -16585,7 +16585,7 @@
       <category>Negative</category>
       <bonus />
       <source>KC</source>
-      <page>0</page>
+      <page>79</page>
     </quality>
     <quality>
       <id>b45b2d09-80d4-4e24-b96c-1e1f3665dee3</id>
@@ -16594,7 +16594,7 @@
       <category>Negative</category>
       <bonus />
       <source>KC</source>
-      <page>0</page>
+      <page>79</page>
     </quality>
     <quality>
       <id>522dbfb5-5ea0-4707-a7e8-1ac777b3aff7</id>
@@ -16844,7 +16844,7 @@
         </oneof>
       </required>
       <source>KC</source>
-      <page>0</page>
+      <page>97</page>
     </quality>
     <quality>
       <id>0b8c9e67-6767-48d3-b14d-8a9b2024447a</id>
@@ -16916,8 +16916,8 @@
           <quality>Technomancer</quality>
         </oneof>
       </required>
-      <source>SR5</source>
-      <page>76</page>
+      <source>KC</source>
+      <page>102</page>
     </quality>
     <!-- End Region -->
     <!-- Region Negative Qualities -->
@@ -17090,7 +17090,7 @@
         </oneof>
       </required>
       <source>KC</source>
-      <page>0</page>
+      <page>99</page>
     </quality>
     <quality>
       <id>4116d691-86f0-4fb5-bf78-f2059514956a</id>
@@ -17177,7 +17177,7 @@
         </oneof>
       </required>
       <source>KC</source>
-      <page>0</page>
+      <page>89</page>
     </quality>
     <quality>
       <id>e3d04705-b90a-4d94-90d0-4ad2c7adfa79</id>
@@ -17202,7 +17202,7 @@
         </oneof>
       </required>
       <source>KC</source>
-      <page>0</page>
+      <page>90</page>
     </quality>
     <quality>
       <id>11d6c3b6-47c4-4765-a625-7a5907ba1b4a</id>
@@ -17227,7 +17227,7 @@
         </oneof>
       </required>
       <source>KC</source>
-      <page>0</page>
+      <page>91</page>
     </quality>
     <quality>
       <id>71511c8f-85f1-4e35-aeaa-be8fa3a45331</id>
@@ -17252,7 +17252,7 @@
         </oneof>
       </required>
       <source>KC</source>
-      <page>0</page>
+      <page>91</page>
     </quality>
     <quality>
       <id>e40e318d-ecde-4a20-bfc5-36d341a644b5</id>
@@ -17277,7 +17277,7 @@
         </oneof>
       </required>
       <source>KC</source>
-      <page>0</page>
+      <page>133</page>
     </quality>
     <quality>
       <id>ee5d131f-5606-4a40-8035-9970aa3b5b29</id>
@@ -17302,7 +17302,7 @@
         </oneof>
       </required>
       <source>KC</source>
-      <page>0</page>
+      <page>134</page>
     </quality>
     <quality>
       <id>580c8ae5-899b-4fa9-8f2d-600c9ac758f9</id>
@@ -17327,7 +17327,7 @@
         </oneof>
       </required>
       <source>KC</source>
-      <page>0</page>
+      <page>132</page>
     </quality>
     <!-- End Region -->
     <!-- End Region -->

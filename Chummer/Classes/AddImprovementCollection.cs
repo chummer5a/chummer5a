@@ -2387,7 +2387,7 @@ namespace Chummer.Classes
                 CreateImprovement(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaDeviceRating, _strUnique);
             }
 
-            // Attack.
+            // Program Limit.
             strBonus = bonusNode["programlimit"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
@@ -2465,6 +2465,22 @@ namespace Chummer.Classes
                     strBonus = '+' + strBonus;
                 Log.Info("Calling CreateImprovement for firewall");
                 CreateImprovement(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaFirewall, _strUnique);
+            }
+
+            // Matrix CM.
+            strBonus = bonusNode["matrixcm"]?.InnerText;
+            if (!string.IsNullOrEmpty(strBonus))
+            {
+                if (strBonus.StartsWith("FixedValues("))
+                {
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
+                }
+                strBonus = strBonus.Replace("Rating", _intRating.ToString());
+                if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
+                    strBonus = '+' + strBonus;
+                Log.Info("Calling CreateImprovement for matrixcm");
+                CreateImprovement(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaMatrixCM, _strUnique);
             }
         }
 

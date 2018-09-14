@@ -78,6 +78,7 @@ namespace Chummer
             LivingPersonaSleaze,
             LivingPersonaDataProcessing,
             LivingPersonaFirewall,
+            LivingPersonaMatrixCM,
             Smartlink,
             BiowareEssCost,
             BiowareTotalEssMultiplier,
@@ -933,6 +934,8 @@ namespace Chummer
                 case ImprovementType.LivingPersonaDataProcessing:
                     break;
                 case ImprovementType.LivingPersonaFirewall:
+                    break;
+                case ImprovementType.LivingPersonaMatrixCM:
                     break;
                 case ImprovementType.Smartlink:
                     break;

@@ -2481,6 +2481,42 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intReturn = BonusMatrixBoxes;
+                if (Name == "Living Persona")
+                {
+                    string strExpression = string.Concat(CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaMatrixCM && x.Enabled).Select(x => x.ImprovedName));
+                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                    {
+                        StringBuilder objValue = new StringBuilder(strExpression);
+                        objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
+                        objValue.CheapReplace(strExpression, "{Parent Rating}", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo));
+                        foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                        {
+                            objValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}', () => ((Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(strMatrixAttribute) ?? 0).ToString(GlobalOptions.InvariantCultureInfo));
+                            objValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}', () => (Parent as IHasMatrixAttributes).GetMatrixAttributeString(strMatrixAttribute) ?? "0");
+                            if (Children.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + '}'))
+                            {
+                                int intTotalChildrenValue = 0;
+                                foreach (Gear loopGear in Children)
+                                {
+                                    if (loopGear.Equipped)
+                                    {
+                                        intTotalChildrenValue += loopGear.GetBaseMatrixAttribute(strMatrixAttribute);
+                                    }
+                                }
+                                objValue.Replace("{Children " + strMatrixAttribute + '}', intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
+                            }
+                        }
+                        foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
+                        {
+                            objValue.CheapReplace(strExpression, '{' + strCharAttributeName + '}', () => CharacterObject.GetAttribute(strCharAttributeName).TotalValue.ToString());
+                            objValue.CheapReplace(strExpression, '{' + strCharAttributeName + "Base}", () => CharacterObject.GetAttribute(strCharAttributeName).TotalBase.ToString());
+                        }
+                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
+                        if (blnIsSuccess)
+                            intReturn += Convert.ToInt32(Math.Ceiling((double) objProcess));
+                    }
+                }
                 foreach (Gear objGear in Children)
                 {
                     if (objGear.Equipped)
