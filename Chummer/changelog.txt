@@ -88,6 +88,7 @@ Data Changes:
 - Added missing One With the Matrix quality. Fixed missing page references, restrictions and karma costs for several qualities from Kill Code. Fixes #2974
 - Sensor function ratings are now properly limited to the rating of their parent (Single Sensor or Sensor Array) if their parent has a rating.
 - Added the RunnerHub Rules custom ruleset, courtesy of /u/EnviousShadow.
+- Added "Mixed Unit Tactics" from Street Lethal as an example knowledge skill. It is assumed that the character can learn and use Mixed Unit Tactics as a knowledge skill without prerequisites, and the prerequisites described in Street Lethal only apply when using Mixed Unit Tactics' maneuvers from Street Lethal. 
 
 New Strings:
 
