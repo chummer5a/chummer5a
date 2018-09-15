@@ -902,15 +902,15 @@ namespace Chummer
 
             _blnSkipRefresh = false;
             //set the Labels for current/maximum
-            Label_SelectAdvancedLifestyle_Base_Comforts.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Comforts", GlobalOptions.Language)
-                .Replace("{0}", (nudComforts.Value + intMinComfort).ToString(GlobalOptions.CultureInfo))
-                .Replace("{1}", (nudComforts.Maximum + intMinComfort).ToString(GlobalOptions.CultureInfo));
-            Label_SelectAdvancedLifestyle_Base_Security.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Security", GlobalOptions.Language)
-                .Replace("{0}", (nudSecurity.Value + intMinSec).ToString(GlobalOptions.CultureInfo))
-                .Replace("{1}", (nudSecurity.Maximum + intMinSec).ToString(GlobalOptions.CultureInfo));
-            Label_SelectAdvancedLifestyle_Base_Area.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Area", GlobalOptions.Language)
-                .Replace("{0}", (nudArea.Value + intMinArea).ToString(GlobalOptions.CultureInfo))
-                .Replace("{1}", (nudArea.Maximum + intMinArea).ToString(GlobalOptions.CultureInfo));
+            Label_SelectAdvancedLifestyle_Base_Comforts.Text = string.Format(LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Comforts", GlobalOptions.Language),
+                (nudComforts.Value + intMinComfort).ToString(GlobalOptions.CultureInfo),
+                (nudComforts.Maximum + intMinComfort).ToString(GlobalOptions.CultureInfo));
+            Label_SelectAdvancedLifestyle_Base_Security.Text = string.Format(LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Security", GlobalOptions.Language),
+                (nudSecurity.Value + intMinSec).ToString(GlobalOptions.CultureInfo),
+                (nudSecurity.Maximum + intMinSec).ToString(GlobalOptions.CultureInfo));
+            Label_SelectAdvancedLifestyle_Base_Neighborhood.Text = string.Format(LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Neighborhood", GlobalOptions.Language),
+                (nudArea.Value + intMinArea).ToString(GlobalOptions.CultureInfo),
+                (nudArea.Maximum + intMinArea).ToString(GlobalOptions.CultureInfo));
 
             //calculate the total LP
             xmlNode = _objLifestyle.GetNode();

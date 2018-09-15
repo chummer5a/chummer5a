@@ -55,6 +55,7 @@ Application Changes:
 - Fixed a bug that prevented the addskillspecializationoption improvement from working properly. Fixes #2760.
 - Fixed an issue where special text versions of weapon damage codes would not get properly recognized as text. Fixes #2986.
 - Improvements can now modify the character's living persona's Matrix condition monitor through a "matrixcm" node inside the "livingpersona" one.
+- Fixed an incorrect string reference in the Limit right-click menu. Fixes #2995.
 
 Data Changes:
 
@@ -99,6 +100,8 @@ New Strings:
 - Label_Qualities
 - String_SpecialAttributes
 - Label_SpecialAttributes
+- Label_SelectAdvancedLifestyle_Neighborhood
+- Label_SelectAdvancedLifestyle_Base_Neighbrhood
 
 Changed Strings:
 
@@ -106,12 +109,15 @@ Changed Strings:
 - Label_SelectAdvancedLifestyle_Base_Comforts
 - Label_SelectAdvancedLifestyle_Base_Lifestyle
 - Label_SelectAdvancedLifestyle_Base_Security
-- Label_SelectAdvancedLifestyle_Base_Area
 - String_Special
 - Label_SelectBP_MaxAvail
 - Label_SelectBP_StartingKarma
 - Label_SelectBP_SumToX
 - Label_SelectBP_MaxNuyen
+
+Removed Strings:
+
+- Label_SelectAdvancedLifestyle_Base_Area
 
 Build 202
 

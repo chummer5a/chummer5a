@@ -10615,7 +10615,7 @@ namespace Chummer
             this.tssLimitModifierEdit.Image = global::Chummer.Properties.Resources.house_edit;
             this.tssLimitModifierEdit.Name = "tssLimitModifierEdit";
             this.tssLimitModifierEdit.Size = new System.Drawing.Size(105, 22);
-            this.tssLimitModifierEdit.Tag = "Menu_Edit";
+            this.tssLimitModifierEdit.Tag = "Menu_Main_Edit";
             this.tssLimitModifierEdit.Text = "&Edit";
             this.tssLimitModifierEdit.Click += new System.EventHandler(this.tssLimitModifierEdit_Click);
             // 
