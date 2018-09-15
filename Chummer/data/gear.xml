@@ -11944,6 +11944,8 @@
       <required>
         <geardetails>
           <OR>
+            <NONE />
+            <category>Commlink</category>
             <category>Cyberdecks</category>
             <category>Cyberterminals</category>
             <category>Custom</category>
