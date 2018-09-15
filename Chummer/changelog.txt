@@ -58,6 +58,7 @@ Application Changes:
 - Fixed an incorrect string reference in the Limit right-click menu. Fixes #2995.
 - Fixed an issue where the Custom Drug creation screen and the custom drug system in general did not properly support translations. Fixes #2946.
 - Fixed an issue where custom drugs were never exposed to Print methods, meaning no character sheet could properly integrate them. No character sheet currently outputs information on custom drugs, but at least the foundation is now there.
+- Fixed an issue where saved custom drugs would not show up properly afted a character is loaded.
 
 Data Changes:
 
