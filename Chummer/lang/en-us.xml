@@ -427,6 +427,10 @@
       <text xml:space="preserve"> </text>
     </string>
     <string>
+      <key>String_Colon</key>
+      <text>:</text>
+    </string>
+    <string>
       <key>String_Remaining</key>
       <text>remaining</text>
     </string>
@@ -877,6 +881,34 @@
     <string>
       <key>String_Pet</key>
       <text>Pet</text>
+    </string>
+    <string>
+      <key>String_Immediate</key>
+      <text>Immediate</text>
+    </string>
+    <string>
+      <key>String_Second</key>
+      <text>second</text>
+    </string>
+    <string>
+      <key>String_Seconds</key>
+      <text>seconds</text>
+    </string>
+    <string>
+      <key>String_CombatTurn</key>
+      <text>combat turn</text>
+    </string>
+    <string>
+      <key>String_CombatTurns</key>
+      <text>combat turns</text>
+    </string>
+    <string>
+      <key>String_Minute</key>
+      <text>minute</text>
+    </string>
+    <string>
+      <key>String_Minutes</key>
+      <text>minutes</text>
     </string>
     <string>
       <key>String_Day</key>
@@ -4803,8 +4835,24 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Drugs</text>
     </string>
     <string>
+      <key>Node_Foundation</key>
+      <text>Foundations</text>
+    </string>
+    <string>
+      <key>Node_Block</key>
+      <text>Blocks</text>
+    </string>
+    <string>
+      <key>Node_Enhancer</key>
+      <text>Enhancers</text>
+    </string>
+    <string>
+      <key>Label_AddictionRating</key>
+      <text>Addiction Rating:</text>
+    </string>
+    <string>
       <key>Label_AddictionThreshold</key>
-      <text>Threshold:</text>
+      <text>Addiction Threshold:</text>
     </string>
     <string>
       <key>Label_DrugEffects</key>
@@ -4833,6 +4881,18 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>String_MaximumDrugBlockLevel</key>
       <text>The maximum level of a block that positively modifies an Attribute that the chosen foundation negatively modifies is Level 2. (CF 191)</text>
+    </string>
+    <string>
+      <key>Label_CrashEffect</key>
+      <text>Crash Effect:</text>
+    </string>
+    <string>
+      <key>String_DamageUnresisted</key>
+      <text>Damage, Unresisted</text>
+    </string>
+    <string>
+      <key>String_PerLevel</key>
+      <text>Per Level</text>
     </string>
       <!-- End Region -->
     <!-- Region Street Gear/Gear Tab -->

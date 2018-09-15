@@ -55,6 +55,14 @@
 			<text>/</text>
 		</string>
 		<string>
+			<key>String_Space</key>
+			<text xml:space="preserve"></text>
+		</string>
+		<string>
+			<key>String_Colon</key>
+			<text>：</text>
+		</string>
+		<string>
 			<key>String_Remaining</key>
 			<text>剩余</text>
 		</string>

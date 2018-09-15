@@ -2568,7 +2568,7 @@ namespace Chummer
             Timekeeper.Finish("load_char_weapons");
             Timekeeper.Start("load_char_drugs");
 
-            // Weapons.
+            // Drugs.
             objXmlNodeList = objXmlDocument.SelectNodes("/character/drugs/drug");
             foreach (XmlNode objXmlDrug in objXmlNodeList)
             {
@@ -4003,6 +4003,16 @@ namespace Chummer
             // </gears>
             objWriter.WriteEndElement();
 
+            // <drugs>
+            objWriter.WriteStartElement("drugs");
+            foreach (Drug objDrug in Drugs)
+            {
+                objDrug.Print(objWriter, objCulture, strLanguageToPrint);
+            }
+
+            // </drugs>
+            objWriter.WriteEndElement();
+            
             // <vehicles>
             objWriter.WriteStartElement("vehicles");
             foreach (Vehicle objVehicle in Vehicles)

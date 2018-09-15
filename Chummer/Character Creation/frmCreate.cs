@@ -12256,28 +12256,16 @@ namespace Chummer
         /// </summary>
         private void RefreshSelectedDrug()
         {
-            bool blnClear = false;
-
-            try
+            if (treCustomDrugs.SelectedNode?.Level == 0)
             {
-                if (treCustomDrugs.SelectedNode.Level == 0)
-                    blnClear = true;
-            }
-            catch
-            {
-                blnClear = true;
-            }
-
-            if (blnClear)
-            {
-                lblDrugAvail.Text = "";
-                lblDrugGrade.Text = "";
-                lblDrugCost.Text = "";
-                lblDrugCategory.Text = "";
-                lblDrugAddictionRating.Text = "";
-                lblDrugAddictionThreshold.Text = "";
-                lblDrugComponents.Text = "";
-                lblDrugEffect.Text = "";
+                lblDrugAvail.Text = string.Empty;
+                lblDrugGrade.Text = string.Empty;
+                lblDrugCost.Text = string.Empty;
+                lblDrugCategory.Text = string.Empty;
+                lblDrugAddictionRating.Text = string.Empty;
+                lblDrugAddictionThreshold.Text = string.Empty;
+                lblDrugComponents.Text = string.Empty;
+                lblDrugEffect.Text = string.Empty;
                 nudDrugQty.Visible = false;
             }
 
@@ -12288,7 +12276,7 @@ namespace Chummer
                 lblDrugName.Text = objDrug.Name;
                 lblDrugAvail.Text = objDrug.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language).ToString();
                 lblDrugGrade.Text = objDrug.Grade;
-                lblDrugCost.Text = String.Format("{0:###,###,##0¥}", objDrug.Cost);
+                lblDrugCost.Text = objDrug.Cost.ToString(CharacterObject.Options.NuyenFormat) + '¥';
                 lblDrugCategory.Text = objDrug.Category;
                 lblDrugAddictionRating.Text = objDrug.AddictionRating.ToString();
                 lblDrugAddictionThreshold.Text = objDrug.AddictionThreshold.ToString();
@@ -12300,7 +12288,7 @@ namespace Chummer
                 lblDrugComponents.Text = "";
                 foreach (DrugComponent objComponent in objDrug.Components)
                 {
-                    lblDrugComponents.Text += objComponent.DisplayName + "\n";
+                    lblDrugComponents.Text += objComponent.CurrentDisplayName + '\n';
                 }
                 _blnSkipRefresh = false;
 

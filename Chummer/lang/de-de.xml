@@ -8992,7 +8992,7 @@
 		</string>
 		<string>
 			<key>Label_AddictionThreshold</key>
-			<text>Schwellwert</text>
+			<text>Schwellwert:</text>
 		</string>
 		<string>
 			<key>Label_DrugEffects</key>

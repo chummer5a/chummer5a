@@ -7473,6 +7473,7 @@ namespace Chummer
             // 
             this.nudDrugQty.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudDrugQty.Enabled = false;
+            this.nudDrugQty.Visible = false;
             this.nudDrugQty.Location = new System.Drawing.Point(78, 41);
             this.nudDrugQty.Maximum = new decimal(new int[] {
             9000,
