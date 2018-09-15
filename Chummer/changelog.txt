@@ -59,6 +59,7 @@ Application Changes:
 - Fixed an issue where the Custom Drug creation screen and the custom drug system in general did not properly support translations. Fixes #2946.
 - Fixed an issue where custom drugs were never exposed to Print methods, meaning no character sheet could properly integrate them. No character sheet currently outputs information on custom drugs, but at least the foundation is now there.
 - Fixed an issue where saved custom drugs would not show up properly afted a character is loaded.
+- Lifestyle qualities will now also display their Extra information in the Shadowrun 5 character sheet set.
 
 Data Changes:
 
@@ -95,6 +96,7 @@ Data Changes:
 - Added the RunnerHub Rules custom ruleset, courtesy of /u/EnviousShadow.
 - Added "Mixed Unit Tactics" from Street Lethal as an example knowledge skill. It is assumed that the character can learn and use Mixed Unit Tactics as a knowledge skill without prerequisites, and the prerequisites described in Street Lethal only apply when using Mixed Unit Tactics' maneuvers from Street Lethal.
 - Added the previously missing categories node to drugcomponents.xml.
+- Added the previously missing option to add STATscan to a cyberhand.
 
 New Strings:
 
