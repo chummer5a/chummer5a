@@ -34,7 +34,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Armor Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource
+    public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -174,8 +174,6 @@ namespace Chummer.Backend.Equipment
                             objGear.Capacity = "[0]";
                             objGear.ArmorCapacity = "[0]";
                             objGear.Cost = "0";
-                            objGear.MaxRating = objGear.Rating;
-                            objGear.MinRating = objGear.Rating;
                             objGear.ParentID = InternalId;
                             _lstGear.Add(objGear);
                         }
@@ -506,7 +504,18 @@ namespace Chummer.Backend.Equipment
         public int Rating
         {
             get => Math.Min(_intRating, MaximumRating);
-            set => _intRating = Math.Min(value, MaximumRating);
+            set
+            {
+                _intRating = Math.Min(value, MaximumRating);
+                if (Gear.Count > 0)
+                {
+                    foreach (Gear objChild in Gear.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
+                    {
+                        // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                        objChild.Rating = objChild.Rating;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -789,7 +798,7 @@ namespace Chummer.Backend.Equipment
                 // Run through its Children and deduct the Capacity costs.
                 foreach (Gear objChildGear in Gear)
                 {
-                    string strCapacity = objChildGear.CalculatedCapacity;
+                    string strCapacity = objChildGear.CalculatedArmorCapacity;
                     intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                     if (intPos != -1)
                     {
@@ -1056,9 +1065,9 @@ namespace Chummer.Backend.Equipment
         }
         #endregion
 
-        public bool Remove(Character characterObject, bool confirmDelete = true)
+        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
-            if (confirmDelete)
+            if (blnConfirmDelete)
             {
                 if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteArmor",
                     GlobalOptions.Language)))

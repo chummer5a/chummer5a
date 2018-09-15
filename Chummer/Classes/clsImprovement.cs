@@ -30,7 +30,7 @@ using Chummer.Backend.Attributes;
 using System.Drawing;
 using System.Text;
 using static Chummer.Backend.Skills.SkillsSection;
-using System.ComponentModel;
+using Chummer.Backend.Uniques;
 
 namespace Chummer
 {
@@ -78,6 +78,7 @@ namespace Chummer
             LivingPersonaSleaze,
             LivingPersonaDataProcessing,
             LivingPersonaFirewall,
+            LivingPersonaMatrixCM,
             Smartlink,
             BiowareEssCost,
             BiowareTotalEssMultiplier,
@@ -183,6 +184,7 @@ namespace Chummer
             Ambidextrous,
             UnarmedReach,
             SkillSpecialization,
+            SkillSpecializationOption,
             NativeLanguageLimit,
             AdeptPowerFreeLevels,
             AdeptPowerFreePoints,
@@ -261,6 +263,7 @@ namespace Chummer
             ActiveSkillKarmaCost,
             SkillGroupKarmaCost,
             SkillGroupDisable,
+            SkillDisable,
             KnowledgeSkillKarmaCost,
             SkillCategorySpecializationKarmaCostMultiplier,
             SkillCategorySpecializationKarmaCost,
@@ -342,6 +345,7 @@ namespace Chummer
             SpiritFettering,
             MentorSpirit,
             Drug,
+            Tradition,
             Weapon,
             WeaponAccessory,
             NumImprovementSources // 🡐 This one should always be the last defined enum
@@ -934,6 +938,8 @@ namespace Chummer
                     break;
                 case ImprovementType.LivingPersonaFirewall:
                     break;
+                case ImprovementType.LivingPersonaMatrixCM:
+                    break;
                 case ImprovementType.Smartlink:
                     break;
                 case ImprovementType.BiowareEssCostNonRetroactive:
@@ -1056,13 +1062,9 @@ namespace Chummer
                 }
                     break;
                 case ImprovementType.DrainResistance:
-                {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.TraditionDrainValue));
-                }
-                    break;
                 case ImprovementType.FadingResistance:
                 {
-                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter, nameof(Character.TechnomancerFadingValue));
+                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter.MagicTradition, nameof(Tradition.DrainValue));
                 }
                     break;
                 case ImprovementType.Composure:
@@ -1362,6 +1364,16 @@ namespace Chummer
                     break;
                 case ImprovementType.SkillSpecialization:
                     break;
+                case ImprovementType.SkillSpecializationOption:
+                {
+                    Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                           _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                    if (objTargetSkill != null)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.CGLSpecializations));
+                    }
+                    break;
+                }
                 case ImprovementType.NativeLanguageLimit:
                     break;
                 case ImprovementType.AdeptPowerFreePoints:

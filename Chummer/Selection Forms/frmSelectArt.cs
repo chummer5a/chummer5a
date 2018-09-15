@@ -57,25 +57,25 @@ namespace Chummer
                     _objXmlDocument = XmlManager.Load("metamagic.xml").GetFastNavigator().SelectSingleNode("/chummer/arts");
                     _strLocalName = LanguageManager.GetString("String_Art", GlobalOptions.Language);
                     _strBaseXPath = "art";
-                    _strXPathFilter = '[' + _objCharacter.Options.BookXPath() + ']';
+                    _strXPathFilter = _objCharacter.Options.BookXPath();
                     break;
                 case Mode.Enhancement:
                     _objXmlDocument = XmlManager.Load("powers.xml").GetFastNavigator().SelectSingleNode("/chummer/enhancements");
                     _strLocalName = LanguageManager.GetString("String_Enhancement", GlobalOptions.Language);
                     _strBaseXPath = "enhancement";
-                    _strXPathFilter = '[' + _objCharacter.Options.BookXPath() + ']';
+                    _strXPathFilter = _objCharacter.Options.BookXPath();
                     break;
                 case Mode.Enchantment:
                     _strLocalName = LanguageManager.GetString("String_Enchantment", GlobalOptions.Language);
                     _objXmlDocument = XmlManager.Load("spells.xml").GetFastNavigator().SelectSingleNode("/chummer/spells");
                     _strBaseXPath = "spell";
-                    _strXPathFilter = "[category = 'Enchantments' and (" + _objCharacter.Options.BookXPath() + ")]";
+                    _strXPathFilter = "category = 'Enchantments' and (" + _objCharacter.Options.BookXPath() + ")";
                     break;
                 case Mode.Ritual:
                     _strLocalName = LanguageManager.GetString("String_Ritual", GlobalOptions.Language);
                     _objXmlDocument = XmlManager.Load("spells.xml").GetFastNavigator().SelectSingleNode("/chummer/spells");
                     _strBaseXPath = "spell";
-                    _strXPathFilter = "[category = 'Rituals' and (" + _objCharacter.Options.BookXPath() + ")]";
+                    _strXPathFilter = "category = 'Rituals' and (" + _objCharacter.Options.BookXPath() + ")";
                     break;
             }
         }
@@ -140,6 +140,11 @@ namespace Chummer
             BuildList();
         }
 
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            BuildList();
+        }
+
         #region Properties
         /// <summary>
         /// Name of Metamagic that was selected in the dialogue.
@@ -158,7 +163,7 @@ namespace Chummer
                 return;
 
             List<ListItem> lstArts = new List<ListItem>();
-            foreach (XPathNavigator objXmlMetamagic in _objXmlDocument.Select(_strBaseXPath + _strXPathFilter))
+            foreach (XPathNavigator objXmlMetamagic in _objXmlDocument.Select(_strBaseXPath + '[' + _strXPathFilter + CommonFunctions.GenerateSearchXPath(txtSearch.Text) + ']'))
             {
                 string strId = objXmlMetamagic.SelectSingleNode("id")?.Value;
                 if (!string.IsNullOrEmpty(strId))
@@ -172,7 +177,6 @@ namespace Chummer
             lstArts.Sort(CompareListItems.CompareNames);
             string strOldSelected = lstArt.SelectedValue?.ToString();
             _blnLoading = true;
-
             lstArt.BeginUpdate();
             lstArt.ValueMember = "Value";
             lstArt.DisplayMember = "Name";
@@ -208,7 +212,10 @@ namespace Chummer
             }
         }
 
-
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
+        }
         #endregion
     }
 }

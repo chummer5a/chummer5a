@@ -44,6 +44,9 @@ namespace Chummer
             foreach (Gear objGear in _lstAmmo)
             {
                 string strName = objGear.DisplayNameShort(GlobalOptions.Language) + " x" + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
+                if (objGear.Rating > 0)
+                    strName += $" ({LanguageManager.GetString("String_Rating", GlobalOptions.Language)} {objGear.Rating})";
+
                 if (objGear.Parent is Gear objParent)
                 {
                     if (!string.IsNullOrEmpty(objParent.DisplayNameShort(GlobalOptions.Language)))
@@ -55,7 +58,8 @@ namespace Chummer
                     }
                 }
                 else if (objGear.Location != null)
-                    strName += " (" + objGear.Location + ')';
+                    strName += " (" + objGear.Location.DisplayName(GlobalOptions.Language) + ')';
+                
                 // Retrieve the plugin information if it has any.
                 if (objGear.Children.Count > 0)
                 {

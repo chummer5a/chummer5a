@@ -404,6 +404,10 @@ namespace Chummer
                     }
 
                     objMod.SetSourceDetail(lblSource);
+                    lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
+                    lblSlotsLabel.Visible = !string.IsNullOrEmpty(lblSlots.Text);
+                    lblAvailabilityLabel.Visible = !string.IsNullOrEmpty(lblAvailability.Text);
+                    lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                     return;
                 }
             }
@@ -413,6 +417,9 @@ namespace Chummer
                 lblCost.Text = string.Empty;
                 lblSlots.Text = string.Empty;
                 lblAvailability.Text = string.Empty;
+                lblCostLabel.Visible = false;
+                lblSlotsLabel.Visible = false;
+                lblAvailabilityLabel.Visible = false;
                 return;
             }
 	        decimal decCost = !chkFreeItem.Checked ? Convert.ToDecimal(xmlSelectedMount["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo) : 0;
@@ -485,14 +492,17 @@ namespace Chummer
 	        lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 	        lblSlots.Text = intSlots.ToString();
 	        lblAvailability.Text = strAvailText;
+	        lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
+	        lblSlotsLabel.Visible = !string.IsNullOrEmpty(lblSlots.Text);
+	        lblAvailabilityLabel.Visible = !string.IsNullOrEmpty(lblAvailability.Text);
 
             string strSource = xmlSelectedMount["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
-
             lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter +
                 LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
-        }
+	        lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+	    }
 
         private void cmdAddMod_Click(object sender, EventArgs e)
         {

@@ -216,6 +216,7 @@
     <Compile Include="Backend\Uniques\Spell.cs" />
     <Compile Include="Backend\Uniques\Spirit.cs" />
     <Compile Include="Backend\Uniques\StackedFocus.cs" />
+    <Compile Include="Backend\Uniques\Tradition.cs" />
     <Compile Include="Character Creation\frmSelectLifeModule.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -289,6 +290,7 @@
     <Compile Include="Interfaces\IHasInternalId.cs" />
     <Compile Include="Interfaces\IHasName.cs" />
     <Compile Include="Interfaces\IHasNotes.cs" />
+    <Compile Include="Interfaces\IHasRating.cs" />
     <Compile Include="Interfaces\IHasSource.cs" />
     <Compile Include="Interfaces\IHasWirelessBonus.cs" />
     <Compile Include="Interfaces\INotifyMultiplePropertyChanged.cs" />
@@ -1824,6 +1826,51 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Ranger Sliver Has Standard Crossbow Ammo Capacity\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Runnerhub Rules\amend_armor.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Runnerhub Rules\amend_bioware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Runnerhub Rules\amend_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Runnerhub Rules\amend_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Runnerhub Rules\amend_martialarts.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Runnerhub Rules\amend_mentors.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Runnerhub Rules\amend_metamagic.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Runnerhub Rules\amend_metatypes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Runnerhub Rules\amend_powers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Runnerhub Rules\amend_priorities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Runnerhub Rules\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Runnerhub Rules\amend_spells.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Runnerhub Rules\amend_traditions.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Runnerhub Rules\amend_vehicles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Runnerhub Rules\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\ShadowNET Rules\amend_armor.xml">

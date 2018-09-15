@@ -17,7 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -206,9 +205,9 @@ namespace Chummer
             }
         }
 
-        public bool Remove(Character character, bool confirmDelete = true)
+        public bool Remove(Character character, bool blnConfirmDelete = true)
         {
-            if (confirmDelete)
+            if (blnConfirmDelete)
             {
                 character.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation", GlobalOptions.Language));
             }

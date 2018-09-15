@@ -79,10 +79,20 @@ namespace Chummer
                     blnOperationChildNodeResult =
                         ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, true) != blnInvert;
                 }
+                else if (strNodeName == "NOR")
+                {
+                    blnOperationChildNodeResult =
+                        ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, true) == blnInvert;
+                }
                 else if (strNodeName == "AND")
                 {
                     blnOperationChildNodeResult =
                         ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, false) != blnInvert;
+                }
+                else if (strNodeName == "NAND")
+                {
+                    blnOperationChildNodeResult =
+                        ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, false) == blnInvert;
                 }
                 else if (strNodeName == "NONE")
                 {

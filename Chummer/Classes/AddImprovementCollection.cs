@@ -25,6 +25,8 @@ using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
+using Chummer.Backend.Uniques;
+
 // ReSharper disable InconsistentNaming
 
 namespace Chummer.Classes
@@ -331,7 +333,7 @@ namespace Chummer.Classes
                     {
                         string strName = xmlTradition.SelectSingleNode("name")?.Value;
                         if (!string.IsNullOrEmpty(strName))
-                            lstTraditions.Add(new ListItem(strName,
+                            lstTraditions.Add(new ListItem(xmlTradition.SelectSingleNode("id")?.Value ?? strName,
                                 xmlTradition.SelectSingleNode("translate")?.Value ?? strName));
                     }
                 }
@@ -344,9 +346,9 @@ namespace Chummer.Classes
                 frmSelectItem frmPickItem = new frmSelectItem
                 {
                     DropdownItems = lstTraditions,
-                    SelectedItem = _objCharacter.MagicTradition
+                    SelectedItem = _objCharacter.MagicTradition.SourceID,
+                    AllowAutoSelect = false
                 };
-                frmPickItem.AllowAutoSelect = false;
                 frmPickItem.ShowDialog();
 
                 // Make sure the dialogue window was not canceled.
@@ -2385,7 +2387,7 @@ namespace Chummer.Classes
                 CreateImprovement(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaDeviceRating, _strUnique);
             }
 
-            // Attack.
+            // Program Limit.
             strBonus = bonusNode["programlimit"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
@@ -2463,6 +2465,22 @@ namespace Chummer.Classes
                     strBonus = '+' + strBonus;
                 Log.Info("Calling CreateImprovement for firewall");
                 CreateImprovement(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaFirewall, _strUnique);
+            }
+
+            // Matrix CM.
+            strBonus = bonusNode["matrixcm"]?.InnerText;
+            if (!string.IsNullOrEmpty(strBonus))
+            {
+                if (strBonus.StartsWith("FixedValues("))
+                {
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
+                }
+                strBonus = strBonus.Replace("Rating", _intRating.ToString());
+                if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
+                    strBonus = '+' + strBonus;
+                Log.Info("Calling CreateImprovement for matrixcm");
+                CreateImprovement(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaMatrixCM, _strUnique);
             }
         }
 
@@ -5326,37 +5344,38 @@ namespace Chummer.Classes
 
         public void addskillspecializationoption(XmlNode bonusNode)
         {
-            if (_objCharacter.Options.FreeMartialArtSpecialization && _objImprovementSource == Improvement.ImprovementSource.MartialArt)
+            List<Skill> lstSkills = new List<Skill>();
+            XmlNodeList xmlSkillsList = bonusNode.SelectNodes("skills/skill");
+            if (xmlSkillsList?.Count > 0)
             {
-                List<Skill> lstSkills = new List<Skill>();
-                XmlNodeList xmlSkillsList = bonusNode.SelectNodes("skills");
-                if (xmlSkillsList?.Count > 0)
+                foreach (XmlNode objNode in xmlSkillsList)
                 {
-                    foreach (XmlNode objNode in xmlSkillsList)
-                    {
-                        Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(objNode.InnerText);
-                        if (objSkill != null)
-                        {
-                            lstSkills.Add(objSkill);
-                        }
-                    }
-                }
-                else
-                {
-                    Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(bonusNode["skill"]?.InnerText ?? string.Empty);
+                    Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(objNode.InnerText);
                     if (objSkill != null)
                     {
                         lstSkills.Add(objSkill);
                     }
                 }
-
-                if (lstSkills.Count > 0)
+            }
+            else
+            {
+                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(bonusNode["skill"]?.InnerText ?? string.Empty);
+                if (objSkill != null)
                 {
-                    foreach (Skill objSkill in lstSkills)
+                    lstSkills.Add(objSkill);
+                }
+            }
+
+            if (lstSkills.Count > 0)
+            {
+                foreach (Skill objSkill in lstSkills)
+                {
+                    // Create the Improvement.
+                    Log.Info("Calling CreateImprovement");
+                    string strSpec = bonusNode["spec"]?.InnerText;
+                    CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecializationOption, strSpec);
+                    if (_objCharacter.Options.FreeMartialArtSpecialization && _objImprovementSource == Improvement.ImprovementSource.MartialArt)
                     {
-                        // Create the Improvement.
-                        Log.Info("Calling CreateImprovement");
-                        string strSpec = bonusNode["spec"]?.InnerText;
                         CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, strSpec);
                         SkillSpecialization nspec = new SkillSpecialization(strSpec, true, objSkill);
                         objSkill.Specializations.Add(nspec);

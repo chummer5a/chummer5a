@@ -136,7 +136,7 @@ namespace Chummer.UI.Skills
             {
                 Location = new Point(265, 42),
             };
-            intNameLabelWidth = _controls.Max(skill => skill.NameWidth);
+            intNameLabelWidth = _controls.DefaultIfEmpty().Max(skill => skill.NameWidth);
             foreach (SkillControl2 s in _controls)
             {
                 s.MoveControls(intNameLabelWidth);
@@ -146,7 +146,7 @@ namespace Chummer.UI.Skills
             lblActiveSp.Left = lblActiveSkills.Left + intNameLabelWidth + 6;
             if (!_objCharacter.Created)
             {
-                intRatingLabelWidth = _controls.Max(skill => skill.NudSkillWidth);
+                intRatingLabelWidth = _controls.DefaultIfEmpty().Max(skill => skill.NudSkillWidth);
                 lblActiveKarma.Left = lblActiveSp.Left + intRatingLabelWidth + 6;
             }
 
@@ -163,7 +163,7 @@ namespace Chummer.UI.Skills
             };
             if (_objCharacter.SkillsSection.KnowledgeSkills.Count > 0)
             {
-                intNameLabelWidth = _objCharacter.SkillsSection.KnowledgeSkills.Max(skill => skill.DisplayName.Length);
+                intNameLabelWidth = _objCharacter.SkillsSection.KnowledgeSkills.DefaultIfEmpty().Max(skill => skill.DisplayName.Length);
                 foreach (KnowledgeSkillControl k in _knoSkills.Controls[0].Controls)
                 {
                     k.MoveControls(intNameLabelWidth);
@@ -504,29 +504,28 @@ namespace Chummer.UI.Skills
 
         private void btnExotic_Click(object sender, EventArgs e)
         {
-            if (_objCharacter.Options.KarmaNewActiveSkill > _objCharacter.Karma && _objCharacter.Created)
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language));
-                return;
-            }
-
-
-            XmlDocument document = XmlManager.Load("skills.xml");
+            XmlDocument xmlSkillsDocument = XmlManager.Load("skills.xml");
             frmSelectExoticSkill frmPickExoticSkill = new frmSelectExoticSkill(_objCharacter);
             frmPickExoticSkill.ShowDialog(this);
 
             if (frmPickExoticSkill.DialogResult == DialogResult.Cancel)
                 return;
 
-            XmlNode node = document.SelectSingleNode("/chummer/skills/skill[name = \"" + frmPickExoticSkill.SelectedExoticSkill + "\"]");
+            XmlNode xmlSkillNode = xmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + frmPickExoticSkill.SelectedExoticSkill + "\"]");
 
-            ExoticSkill skill = new ExoticSkill(_objCharacter, node)
+            ExoticSkill objSkill = new ExoticSkill(_objCharacter, xmlSkillNode)
             {
                 Specific = frmPickExoticSkill.SelectedExoticSkillSpecialisation
             };
-            skill.Upgrade();
-            _objCharacter.SkillsSection.Skills.Add(skill);
-            _objCharacter.SkillsSection.SkillsDictionary.Add(skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')', skill);
+            // Karma check needs to come after the skill is created to make sure bonus-based modifiers (e.g. JoAT) get applied properly (since they can potentially trigger off of the specific exotic skill target)
+            if (_objCharacter.Created && objSkill.UpgradeKarmaCost > _objCharacter.Karma)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language));
+                return;
+            }
+            objSkill.Upgrade();
+            _objCharacter.SkillsSection.Skills.Add(objSkill);
+            _objCharacter.SkillsSection.SkillsDictionary.Add(objSkill.Name + " (" + objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')', objSkill);
         }
         
         private void btnKnowledge_Click(object sender, EventArgs e)

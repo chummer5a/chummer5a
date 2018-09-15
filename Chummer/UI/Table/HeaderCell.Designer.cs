@@ -28,17 +28,17 @@ namespace Chummer.UI.Table
         /// </summary>
         private void InitializeComponent()
         {
-            this._label = new System.Windows.Forms.Label();
+            this._lblCellText = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // _label
+            // _lblCellText
             // 
-            this._label.AutoSize = true;
-            this._label.Location = new System.Drawing.Point(0, 0);
-            this._label.Name = "_label";
-            this._label.Size = new System.Drawing.Size(35, 13);
-            this._label.TabIndex = 0;
-            this._label.Text = "label1";
+            this._lblCellText.AutoSize = true;
+            this._lblCellText.Location = new System.Drawing.Point(0, 0);
+            this._lblCellText.Name = "_lblCellText";
+            this._lblCellText.Size = new System.Drawing.Size(35, 13);
+            this._lblCellText.TabIndex = 0;
+            this._lblCellText.Text = "label1";
             // 
             // HeaderCell
             // 
@@ -46,7 +46,7 @@ namespace Chummer.UI.Table
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Transparent;
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Controls.Add(this._label);
+            this.Controls.Add(this._lblCellText);
             this.Name = "HeaderCell";
             this.Size = new System.Drawing.Size(148, 15);
             this.ResumeLayout(false);
@@ -56,6 +56,6 @@ namespace Chummer.UI.Table
 
         #endregion
 
-        private System.Windows.Forms.Label _label;
+        private System.Windows.Forms.Label _lblCellText;
     }
 }

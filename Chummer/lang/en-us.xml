@@ -67,6 +67,10 @@
   <!-- End Region -->
     <!-- Region Common Strings -->
     <string>
+      <key>String_NotApplicable</key>
+      <text>N/A</text>
+    </string>
+    <string>
       <key>String_Wireless</key>
       <text>Wireless</text>
     </string>
@@ -320,7 +324,15 @@
     </string>
     <string>
       <key>String_Special</key>
+      <text>Special</text>
+    </string>
+    <string>
+      <key>String_SpecialAttributes</key>
       <text>Special Attributes</text>
+    </string>
+    <string>
+      <key>Label_SpecialAttributes</key>
+      <text>Special Attributes:</text>
     </string>
     <string>
       <key>String_SpecialAttributePoints</key>
@@ -417,6 +429,10 @@
     <string>
       <key>String_Space</key>
       <text xml:space="preserve"> </text>
+    </string>
+    <string>
+      <key>String_Colon</key>
+      <text>:</text>
     </string>
     <string>
       <key>String_Remaining</key>
@@ -736,7 +752,7 @@
     </string>
     <string>
       <key>Label_DeviceRating</key>
-      <text>DeviceRating:</text>
+      <text>Device Rating:</text>
     </string>
     <string>
       <key>Label_Signal</key>
@@ -797,6 +813,10 @@
     <string>
       <key>String_Qualities</key>
       <text>Qualities</text>
+    </string>
+    <string>
+      <key>Label_Qualities</key>
+      <text>Qualities:</text>
     </string>
     <string>
       <key>String_Quality</key>
@@ -869,6 +889,34 @@
     <string>
       <key>String_Pet</key>
       <text>Pet</text>
+    </string>
+    <string>
+      <key>String_Immediate</key>
+      <text>Immediate</text>
+    </string>
+    <string>
+      <key>String_Second</key>
+      <text>second</text>
+    </string>
+    <string>
+      <key>String_Seconds</key>
+      <text>seconds</text>
+    </string>
+    <string>
+      <key>String_CombatTurn</key>
+      <text>combat turn</text>
+    </string>
+    <string>
+      <key>String_CombatTurns</key>
+      <text>combat turns</text>
+    </string>
+    <string>
+      <key>String_Minute</key>
+      <text>minute</text>
+    </string>
+    <string>
+      <key>String_Minutes</key>
+      <text>minutes</text>
     </string>
     <string>
       <key>String_Day</key>
@@ -3330,6 +3378,10 @@
       <text>Gained Positive Quality</text>
     </string>
     <string>
+      <key>String_ExpenseRemovePositiveQuality</key>
+      <text>Removed Positive Quality</text>
+    </string>
+    <string>
       <key>String_ExpenseSwapPositiveQuality</key>
       <text>Swapped Positive Quality {0} for {1}</text>
     </string>
@@ -4188,6 +4240,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Node_SelectedManeuvers</key>
       <text>Selected Maneuvers</text>
     </string>
+    <string>
+      <key>Label_SelectMartialArt_IncludedTechniques</key>
+      <text>Enables Learning the Following Techniques:</text>
+    </string>
     <!-- End Region -->
     <!-- Region Spells Tab -->
     <string>
@@ -4787,8 +4843,24 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Drugs</text>
     </string>
     <string>
+      <key>Node_Foundation</key>
+      <text>Foundations</text>
+    </string>
+    <string>
+      <key>Node_Block</key>
+      <text>Blocks</text>
+    </string>
+    <string>
+      <key>Node_Enhancer</key>
+      <text>Enhancers</text>
+    </string>
+    <string>
+      <key>Label_AddictionRating</key>
+      <text>Addiction Rating:</text>
+    </string>
+    <string>
       <key>Label_AddictionThreshold</key>
-      <text>Threshold:</text>
+      <text>Addiction Threshold:</text>
     </string>
     <string>
       <key>Label_DrugEffects</key>
@@ -4817,6 +4889,18 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>String_MaximumDrugBlockLevel</key>
       <text>The maximum level of a block that positively modifies an Attribute that the chosen foundation negatively modifies is Level 2. (CF 191)</text>
+    </string>
+    <string>
+      <key>Label_CrashEffect</key>
+      <text>Crash Effect:</text>
+    </string>
+    <string>
+      <key>String_DamageUnresisted</key>
+      <text>Damage, Unresisted</text>
+    </string>
+    <string>
+      <key>String_PerLevel</key>
+      <text>Per Level</text>
     </string>
       <!-- End Region -->
     <!-- Region Street Gear/Gear Tab -->
@@ -7421,7 +7505,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_Options_ExceedPositiveQualitiesCostDoubled</key>
-      <text>Double all Positive Quality karma costs in excess of the limit</text>
+      <text>Use Career costs for all Positive Quality karma costs in excess of the limit</text>
     </string>
     <string>
       <key>Checkbox_Options_ExceedNegativeQualities</key>
@@ -7687,7 +7771,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>        
     <string>
       <key>Label_SelectAdvancedLifestyle_Base_Lifestyle</key>
-      <text>Lifestyle:</text>
+      <text>[{0}/{1}]</text>
     </string>
     <string>
       <key>Node_SelectAdvancedLifestyle_PositiveQualities</key>
@@ -7699,7 +7783,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Base_Comforts</key>
-      <text>Comforts: [{0}/{1}]</text>
+      <text>[{0}/{1}]</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Comforts</key>
@@ -7726,12 +7810,16 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Necessities:</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_Base_Area</key>
-      <text>Area: [{0}/{1}]</text>
+      <key>Label_SelectAdvancedLifestyle_Base_Neighborhood</key>
+      <text>[{0}/{1}]</text>
+    </string>
+    <string>
+      <key>Label_SelectAdvancedLifestyle_Neighborhood</key>
+      <text>Neighborhood:</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Base_Security</key>
-      <text>Security: [{0}/{1}]</text>
+      <text>[{0}/{1}]</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Security</key>
@@ -7803,11 +7891,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Label_SelectBP_MaxAvail</key>
-      <text>Maximum\nAvailability</text>
+      <text>Maximum Availability</text>
     </string>
     <string>
       <key>Label_SelectBP_StartingKarma</key>
-      <text>Starting\nKarma</text>
+      <text>Starting Karma</text>
     </string>
     <string>
       <key>Label_SelectBP_SumToX</key>

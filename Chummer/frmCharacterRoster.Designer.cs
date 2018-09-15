@@ -100,10 +100,10 @@ namespace Chummer
             this.tabCharacterText.Controls.Add(this.panCharacterBackground);
             this.tabCharacterText.Controls.Add(this.panCharacterNotes);
             this.tabCharacterText.Controls.Add(this.panGameNotes);
-            this.tabCharacterText.Location = new System.Drawing.Point(208, 336);
+            this.tabCharacterText.Location = new System.Drawing.Point(216, 336);
             this.tabCharacterText.Name = "tabCharacterText";
             this.tabCharacterText.SelectedIndex = 0;
-            this.tabCharacterText.Size = new System.Drawing.Size(568, 208);
+            this.tabCharacterText.Size = new System.Drawing.Size(560, 208);
             this.tabCharacterText.TabIndex = 22;
             // 
             // panCharacterBio
@@ -112,7 +112,7 @@ namespace Chummer
             this.panCharacterBio.Location = new System.Drawing.Point(4, 22);
             this.panCharacterBio.Name = "panCharacterBio";
             this.panCharacterBio.Padding = new System.Windows.Forms.Padding(3);
-            this.panCharacterBio.Size = new System.Drawing.Size(560, 182);
+            this.panCharacterBio.Size = new System.Drawing.Size(552, 182);
             this.panCharacterBio.TabIndex = 0;
             this.panCharacterBio.Tag = "Tab_Roster_Description";
             this.panCharacterBio.Text = "Description";
@@ -128,7 +128,7 @@ namespace Chummer
             this.txtCharacterBio.Name = "txtCharacterBio";
             this.txtCharacterBio.ReadOnly = true;
             this.txtCharacterBio.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtCharacterBio.Size = new System.Drawing.Size(554, 176);
+            this.txtCharacterBio.Size = new System.Drawing.Size(546, 176);
             this.txtCharacterBio.TabIndex = 1;
             // 
             // panCharacterConcept
@@ -238,16 +238,18 @@ namespace Chummer
             // lblCharacterName
             // 
             this.lblCharacterName.AutoSize = true;
-            this.lblCharacterName.Location = new System.Drawing.Point(96, 0);
+            this.lblCharacterName.Location = new System.Drawing.Point(96, 6);
+            this.lblCharacterName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCharacterName.Name = "lblCharacterName";
-            this.lblCharacterName.Size = new System.Drawing.Size(33, 13);
+            this.lblCharacterName.Size = new System.Drawing.Size(39, 13);
             this.lblCharacterName.TabIndex = 24;
-            this.lblCharacterName.Text = "None";
+            this.lblCharacterName.Text = "[None]";
             // 
             // lblCharacterNameLabel
             // 
             this.lblCharacterNameLabel.AutoSize = true;
-            this.lblCharacterNameLabel.Location = new System.Drawing.Point(3, 0);
+            this.lblCharacterNameLabel.Location = new System.Drawing.Point(3, 6);
+            this.lblCharacterNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCharacterNameLabel.Name = "lblCharacterNameLabel";
             this.lblCharacterNameLabel.Size = new System.Drawing.Size(87, 13);
             this.lblCharacterNameLabel.TabIndex = 23;
@@ -257,16 +259,18 @@ namespace Chummer
             // lblMetatype
             // 
             this.lblMetatype.AutoSize = true;
-            this.lblMetatype.Location = new System.Drawing.Point(96, 60);
+            this.lblMetatype.Location = new System.Drawing.Point(96, 81);
+            this.lblMetatype.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMetatype.Name = "lblMetatype";
-            this.lblMetatype.Size = new System.Drawing.Size(33, 13);
+            this.lblMetatype.Size = new System.Drawing.Size(39, 13);
             this.lblMetatype.TabIndex = 26;
-            this.lblMetatype.Text = "None";
+            this.lblMetatype.Text = "[None]";
             // 
             // lblMetatypeLabel
             // 
             this.lblMetatypeLabel.AutoSize = true;
-            this.lblMetatypeLabel.Location = new System.Drawing.Point(3, 60);
+            this.lblMetatypeLabel.Location = new System.Drawing.Point(3, 81);
+            this.lblMetatypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMetatypeLabel.Name = "lblMetatypeLabel";
             this.lblMetatypeLabel.Size = new System.Drawing.Size(54, 13);
             this.lblMetatypeLabel.TabIndex = 25;
@@ -276,16 +280,18 @@ namespace Chummer
             // lblCareerKarma
             // 
             this.lblCareerKarma.AutoSize = true;
-            this.lblCareerKarma.Location = new System.Drawing.Point(96, 80);
+            this.lblCareerKarma.Location = new System.Drawing.Point(96, 106);
+            this.lblCareerKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCareerKarma.Name = "lblCareerKarma";
-            this.lblCareerKarma.Size = new System.Drawing.Size(33, 13);
+            this.lblCareerKarma.Size = new System.Drawing.Size(39, 13);
             this.lblCareerKarma.TabIndex = 28;
-            this.lblCareerKarma.Text = "None";
+            this.lblCareerKarma.Text = "[None]";
             // 
             // lblCareerKarmaLabel
             // 
             this.lblCareerKarmaLabel.AutoSize = true;
-            this.lblCareerKarmaLabel.Location = new System.Drawing.Point(3, 80);
+            this.lblCareerKarmaLabel.Location = new System.Drawing.Point(3, 106);
+            this.lblCareerKarmaLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCareerKarmaLabel.Name = "lblCareerKarmaLabel";
             this.lblCareerKarmaLabel.Size = new System.Drawing.Size(74, 13);
             this.lblCareerKarmaLabel.TabIndex = 27;
@@ -295,16 +301,18 @@ namespace Chummer
             // lblPlayerName
             // 
             this.lblPlayerName.AutoSize = true;
-            this.lblPlayerName.Location = new System.Drawing.Point(96, 40);
+            this.lblPlayerName.Location = new System.Drawing.Point(96, 56);
+            this.lblPlayerName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblPlayerName.Name = "lblPlayerName";
-            this.lblPlayerName.Size = new System.Drawing.Size(33, 13);
+            this.lblPlayerName.Size = new System.Drawing.Size(39, 13);
             this.lblPlayerName.TabIndex = 32;
-            this.lblPlayerName.Text = "None";
+            this.lblPlayerName.Text = "[None]";
             // 
             // lblPlayerNameLabel
             // 
             this.lblPlayerNameLabel.AutoSize = true;
-            this.lblPlayerNameLabel.Location = new System.Drawing.Point(3, 40);
+            this.lblPlayerNameLabel.Location = new System.Drawing.Point(3, 56);
+            this.lblPlayerNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblPlayerNameLabel.Name = "lblPlayerNameLabel";
             this.lblPlayerNameLabel.Size = new System.Drawing.Size(39, 13);
             this.lblPlayerNameLabel.TabIndex = 31;
@@ -314,16 +322,18 @@ namespace Chummer
             // lblCharacterAlias
             // 
             this.lblCharacterAlias.AutoSize = true;
-            this.lblCharacterAlias.Location = new System.Drawing.Point(96, 20);
+            this.lblCharacterAlias.Location = new System.Drawing.Point(96, 31);
+            this.lblCharacterAlias.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCharacterAlias.Name = "lblCharacterAlias";
-            this.lblCharacterAlias.Size = new System.Drawing.Size(33, 13);
+            this.lblCharacterAlias.Size = new System.Drawing.Size(39, 13);
             this.lblCharacterAlias.TabIndex = 34;
-            this.lblCharacterAlias.Text = "None";
+            this.lblCharacterAlias.Text = "[None]";
             // 
             // lblCharacterAliasLabel
             // 
             this.lblCharacterAliasLabel.AutoSize = true;
-            this.lblCharacterAliasLabel.Location = new System.Drawing.Point(3, 20);
+            this.lblCharacterAliasLabel.Location = new System.Drawing.Point(3, 31);
+            this.lblCharacterAliasLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCharacterAliasLabel.Name = "lblCharacterAliasLabel";
             this.lblCharacterAliasLabel.Size = new System.Drawing.Size(32, 13);
             this.lblCharacterAliasLabel.TabIndex = 33;
@@ -333,16 +343,18 @@ namespace Chummer
             // lblEssence
             // 
             this.lblEssence.AutoSize = true;
-            this.lblEssence.Location = new System.Drawing.Point(96, 100);
+            this.lblEssence.Location = new System.Drawing.Point(96, 131);
+            this.lblEssence.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblEssence.Name = "lblEssence";
-            this.lblEssence.Size = new System.Drawing.Size(33, 13);
+            this.lblEssence.Size = new System.Drawing.Size(39, 13);
             this.lblEssence.TabIndex = 36;
-            this.lblEssence.Text = "None";
+            this.lblEssence.Text = "[None]";
             // 
             // lblEssenceLabel
             // 
             this.lblEssenceLabel.AutoSize = true;
-            this.lblEssenceLabel.Location = new System.Drawing.Point(3, 100);
+            this.lblEssenceLabel.Location = new System.Drawing.Point(3, 131);
+            this.lblEssenceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblEssenceLabel.Name = "lblEssenceLabel";
             this.lblEssenceLabel.Size = new System.Drawing.Size(51, 13);
             this.lblEssenceLabel.TabIndex = 35;
@@ -352,16 +364,18 @@ namespace Chummer
             // lblFilePath
             // 
             this.lblFilePath.AutoSize = true;
-            this.lblFilePath.Location = new System.Drawing.Point(96, 120);
+            this.lblFilePath.Location = new System.Drawing.Point(96, 156);
+            this.lblFilePath.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblFilePath.Name = "lblFilePath";
-            this.lblFilePath.Size = new System.Drawing.Size(33, 13);
+            this.lblFilePath.Size = new System.Drawing.Size(39, 13);
             this.lblFilePath.TabIndex = 38;
-            this.lblFilePath.Text = "None";
+            this.lblFilePath.Text = "[None]";
             // 
             // lblFilePathLabel
             // 
             this.lblFilePathLabel.AutoSize = true;
-            this.lblFilePathLabel.Location = new System.Drawing.Point(3, 120);
+            this.lblFilePathLabel.Location = new System.Drawing.Point(3, 156);
+            this.lblFilePathLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblFilePathLabel.Name = "lblFilePathLabel";
             this.lblFilePathLabel.Size = new System.Drawing.Size(54, 13);
             this.lblFilePathLabel.TabIndex = 37;
@@ -376,7 +390,7 @@ namespace Chummer
             this.treCharacterList.Location = new System.Drawing.Point(8, 8);
             this.treCharacterList.Name = "treCharacterList";
             this.treCharacterList.ShowNodeToolTips = true;
-            this.treCharacterList.Size = new System.Drawing.Size(192, 536);
+            this.treCharacterList.Size = new System.Drawing.Size(200, 536);
             this.treCharacterList.TabIndex = 0;
             this.treCharacterList.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCharacterList_AfterSelect);
             this.treCharacterList.DoubleClick += new System.EventHandler(this.treCharacterList_DoubleClick);
@@ -432,16 +446,18 @@ namespace Chummer
             // lblSettings
             // 
             this.lblSettings.AutoSize = true;
-            this.lblSettings.Location = new System.Drawing.Point(96, 140);
+            this.lblSettings.Location = new System.Drawing.Point(96, 181);
+            this.lblSettings.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSettings.Name = "lblSettings";
-            this.lblSettings.Size = new System.Drawing.Size(33, 13);
+            this.lblSettings.Size = new System.Drawing.Size(39, 13);
             this.lblSettings.TabIndex = 40;
-            this.lblSettings.Text = "None";
+            this.lblSettings.Text = "[None]";
             // 
             // lblSettingsLabel
             // 
             this.lblSettingsLabel.AutoSize = true;
-            this.lblSettingsLabel.Location = new System.Drawing.Point(3, 140);
+            this.lblSettingsLabel.Location = new System.Drawing.Point(3, 181);
+            this.lblSettingsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSettingsLabel.Name = "lblSettingsLabel";
             this.lblSettingsLabel.Size = new System.Drawing.Size(67, 13);
             this.lblSettingsLabel.TabIndex = 39;
@@ -451,7 +467,6 @@ namespace Chummer
             // tlpCharacterBlock
             // 
             this.tlpCharacterBlock.AutoSize = true;
-            this.tlpCharacterBlock.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpCharacterBlock.ColumnCount = 2;
             this.tlpCharacterBlock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpCharacterBlock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -471,25 +486,25 @@ namespace Chummer
             this.tlpCharacterBlock.Controls.Add(this.lblCareerKarmaLabel, 0, 4);
             this.tlpCharacterBlock.Controls.Add(this.lblCharacterNameLabel, 0, 0);
             this.tlpCharacterBlock.Controls.Add(this.lblCharacterName, 1, 0);
-            this.tlpCharacterBlock.Location = new System.Drawing.Point(208, 8);
+            this.tlpCharacterBlock.Location = new System.Drawing.Point(216, 8);
             this.tlpCharacterBlock.Name = "tlpCharacterBlock";
             this.tlpCharacterBlock.RowCount = 8;
-            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCharacterBlock.Size = new System.Drawing.Size(132, 160);
+            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCharacterBlock.Size = new System.Drawing.Size(208, 200);
             this.tlpCharacterBlock.TabIndex = 41;
             // 
             // frmCharacterRoster
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(786, 552);
+            this.ClientSize = new System.Drawing.Size(786, 569);
             this.ControlBox = false;
             this.Controls.Add(this.tlpCharacterBlock);
             this.Controls.Add(this.tabCharacterText);

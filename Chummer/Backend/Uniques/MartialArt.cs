@@ -326,47 +326,56 @@ namespace Chummer
 
         public static bool Purchase(Character objCharacter)
         {
-            frmSelectMartialArt frmPickMartialArt = new frmSelectMartialArt(objCharacter);
-            frmPickMartialArt.ShowDialog();
-
-            if (frmPickMartialArt.DialogResult == DialogResult.Cancel)
-                return false;
-
-            // Open the Martial Arts XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("martialarts.xml");
-
-            XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[id = \"" + frmPickMartialArt.SelectedMartialArt + "\"]");
-
-            MartialArt objMartialArt = new MartialArt(objCharacter);
-            objMartialArt.Create(objXmlArt);
-
-            objCharacter.MartialArts.Add(objMartialArt);
-            if (!objCharacter.Created) return true;
-            int intKarmaCost = objMartialArt.Rating * objMartialArt.Cost * objCharacter.Options.KarmaQuality;
-            if (intKarmaCost > objCharacter.Karma)
+            bool blnAddAgain;
+            do
             {
-                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
-                return false;
-            }
+                frmSelectMartialArt frmPickMartialArt = new frmSelectMartialArt(objCharacter);
+                frmPickMartialArt.ShowDialog();
 
-            // Create the Expense Log Entry.
-            ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
-            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnMartialArt", GlobalOptions.Language) + ' ' + objMartialArt.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-            objCharacter.ExpenseEntries.AddWithSort(objExpense);
-            objCharacter.Karma -= intKarmaCost;
+                if (frmPickMartialArt.DialogResult == DialogResult.Cancel)
+                    return false;
 
-            ExpenseUndo objUndo = new ExpenseUndo();
-            objUndo.CreateKarma(KarmaExpenseType.AddMartialArt, objMartialArt.Name);
-            objExpense.Undo = objUndo;
+                blnAddAgain = frmPickMartialArt.AddAgain;
+                // Open the Martial Arts XML file and locate the selected piece.
+                XmlDocument objXmlDocument = XmlManager.Load("martialarts.xml");
+
+                XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[id = \"" + frmPickMartialArt.SelectedMartialArt + "\"]");
+
+                MartialArt objMartialArt = new MartialArt(objCharacter);
+                objMartialArt.Create(objXmlArt);
+                
+                if (objCharacter.Created)
+                {
+                    int intKarmaCost = objMartialArt.Rating * objMartialArt.Cost * objCharacter.Options.KarmaQuality;
+                    if (intKarmaCost > objCharacter.Karma)
+                    {
+                        MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                        ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
+                        return false;
+                    }
+
+                    // Create the Expense Log Entry.
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
+                    objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnMartialArt", GlobalOptions.Language) + ' ' + objMartialArt.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                    objCharacter.ExpenseEntries.AddWithSort(objExpense);
+                    objCharacter.Karma -= intKarmaCost;
+
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateKarma(KarmaExpenseType.AddMartialArt, objMartialArt.Name);
+                    objExpense.Undo = objUndo;
+                }
+                objCharacter.MartialArts.Add(objMartialArt);
+            } while (blnAddAgain);
+
             return true;
         }
 
-        public bool Remove(Character objCharacter, bool confirmDelete = true)
+        public bool Remove(Character objCharacter, bool blnConfirmDelete = true)
         {
             // Delete the selected Martial Art.
             if (IsQuality) return false;
-            if (confirmDelete)
+            if (blnConfirmDelete)
             {
                 if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt",
                     GlobalOptions.Language)))

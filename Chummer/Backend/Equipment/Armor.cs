@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A specific piece of Armor.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip,IHasSource
+    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -343,15 +343,15 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                 {
                     Gear objGear = new Gear(_objCharacter);
-                    if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons, _lstGear)) continue;
+                    if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons, blnSkipSelectForms))
+                        continue;
                     foreach (Weapon objWeapon in lstChildWeapons)
                     {
                         objWeapon.ParentID = InternalId;
                     }
-                    
-                    objGear.Capacity = "[0]";
-                    objGear.ArmorCapacity = "[0]";
+                    objGear.Parent = this;
                     objGear.ParentID = InternalId;
+                    Gear.Add(objGear);
                     lstChildWeapons.AddRange(lstWeapons);
                 }
                 lstWeapons.AddRange(lstChildWeapons);
@@ -594,7 +594,7 @@ namespace Chummer.Backend.Equipment
                 objGear.Print(objWriter, objCulture, strLanguageToPrint);
             }
             objWriter.WriteEndElement();
-            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra, strLanguageToPrint));
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("location", Location?.DisplayNameShort(GlobalOptions.Language));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
@@ -741,6 +741,14 @@ namespace Chummer.Backend.Equipment
                         {
                             _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
                             _objCharacter?.RefreshEncumbrance();
+                        }
+                    }
+                    if (Gear.Count > 0)
+                    {
+                        foreach (Gear objChild in Gear.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
+                        {
+                            // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                            objChild.Rating = objChild.Rating;
                         }
                     }
                 }
@@ -1588,9 +1596,9 @@ namespace Chummer.Backend.Equipment
         #endregion
         #endregion
 
-        public bool Remove(Character characterObject, bool confirmDelete = true)
+        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
-            if (confirmDelete)
+            if (blnConfirmDelete)
             {
                 if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteArmor",
                     GlobalOptions.Language)))

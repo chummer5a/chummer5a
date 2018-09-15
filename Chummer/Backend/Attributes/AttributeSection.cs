@@ -234,7 +234,25 @@ namespace Chummer.Backend.Attributes
 
 		internal void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
 		{
-			foreach (CharacterAttrib att in AttributeList)
+		    if (_objCharacter.MetatypeCategory == "Shapeshifter")
+		    {
+		        XmlDocument xmlMetatypesDoc = XmlManager.Load("metatypes.xml", strLanguageToPrint);
+		        XmlNode xmlNode = xmlMetatypesDoc.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{_objCharacter.Metatype}\"]");
+
+		        xmlNode = xmlNode?.SelectSingleNode($"metavariants/metavariant[name = \"{_objCharacter.Metavariant}\"]/name/@translate");
+
+		        if (AttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
+		        {
+		            objWriter.WriteElementString("attributecategory", xmlNode?.SelectSingleNode("name/@translate")?.InnerText ?? _objCharacter.Metatype);
+                }
+		        else
+		        {
+		            xmlNode = xmlNode?.SelectSingleNode($"metavariants/metavariant[name = \"{_objCharacter.Metavariant}\"]/name/@translate");
+                    objWriter.WriteElementString("attributecategory", xmlNode?.InnerText ?? _objCharacter.Metavariant);
+                }
+		    }
+		    objWriter.WriteElementString("attributecategory_english", AttributeCategory.ToString());
+            foreach (CharacterAttrib att in AttributeList)
 			{
 				att.Print(objWriter, objCulture, strLanguageToPrint);
 			}
@@ -260,11 +278,11 @@ namespace Chummer.Backend.Attributes
             return null;
 		}
 
-		internal void ForceAttributePropertyChangedNotificationAll(string name)
+		internal void ForceAttributePropertyChangedNotificationAll(params string[] lstNames)
 		{
 			foreach (CharacterAttrib att in AttributeList)
 			{
-				att.OnPropertyChanged(name);
+				att.OnMultiplePropertyChanged(lstNames);
 			}
 		}
 

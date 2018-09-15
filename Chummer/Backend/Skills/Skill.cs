@@ -102,7 +102,7 @@ namespace Chummer.Backend.Skills
         {
             objWriter.WriteStartElement("skill");
 
-            int intRating = PoolOtherAttribute(AttributeObject.TotalValue, Attribute);
+            int intRating = PoolOtherAttribute(AttributeModifiers, Attribute);
             int intSpecRating = Specializations.Count == 0 || CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && x.UniqueName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled)
                 ? intRating
                 : (!IsKnowledgeSkill && Name == "Artisan" &&
@@ -124,7 +124,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("ratingmax", RatingMaximum.ToString(objCulture));
             objWriter.WriteElementString("specializedrating", intSpecRating.ToString(objCulture));
             objWriter.WriteElementString("specbonus", (intSpecRating - intRating).ToString(objCulture));
-            objWriter.WriteElementString("total", PoolOtherAttribute(AttributeObject.TotalValue, Attribute).ToString(objCulture));
+            objWriter.WriteElementString("total", PoolOtherAttribute(AttributeModifiers, Attribute).ToString(objCulture));
             objWriter.WriteElementString("knowledge", IsKnowledgeSkill.ToString());
             objWriter.WriteElementString("exotic", IsExoticSkill.ToString());
             objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString());
@@ -398,7 +398,10 @@ namespace Chummer.Backend.Skills
                             new DependancyGraphNode<string>(nameof(Specialization))
                         ),
                         new DependancyGraphNode<string>(nameof(Pool),
-                            new DependancyGraphNode<string>(nameof(AttributeObject)),
+                            new DependancyGraphNode<string>(nameof(AttributeModifiers),
+                                new DependancyGraphNode<string>(nameof(AttributeObject))
+                            ),
+                            new DependancyGraphNode<string>(nameof(PoolOtherAttribute)),
                             new DependancyGraphNode<string>(nameof(Attribute))
                         )
                     )
@@ -541,17 +544,6 @@ namespace Chummer.Backend.Skills
             if (xmlNode.TryGetField("guid", Guid.TryParse, out guiTemp))
                 Id = guiTemp;
 
-            XmlNodeList lstSuggestedSpecializationsXml = xmlNode["specs"]?.ChildNodes;
-            if (lstSuggestedSpecializationsXml != null)
-            {
-                SuggestedSpecializations.Capacity = lstSuggestedSpecializationsXml.Count;
-                foreach (XmlNode node in lstSuggestedSpecializationsXml)
-                {
-                    string strInnerText = node.InnerText;
-                    SuggestedSpecializations.Add(new ListItem(strInnerText, node.Attributes?["translate"]?.InnerText ?? strInnerText));
-                }
-            }
-
             string strGroup = xmlNode["skillgroup"]?.InnerText;
 
             if (!string.IsNullOrEmpty(strGroup))
@@ -565,12 +557,32 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public void ReloadSuggestedSpecializations()
+        {
+            SuggestedSpecializations.Clear();
+
+            XmlNodeList xmlSpecList = GetNode()?.SelectNodes("specs/spec");
+
+            if (xmlSpecList != null)
+            {
+                SuggestedSpecializations.Capacity = xmlSpecList.Count;
+
+                foreach (XmlNode xmlSpecNode in xmlSpecList)
+                {
+                    string strInnerText = xmlSpecNode.InnerText;
+                    SuggestedSpecializations.Add(new ListItem(strInnerText, xmlSpecNode.Attributes?["translate"]?.InnerText ?? strInnerText));
+                }
+
+                SuggestedSpecializations.Sort(CompareListItems.CompareNames);
+            }
+            OnPropertyChanged(nameof(SuggestedSpecializations));
+        }
         #endregion
 
         /// <summary>
         /// The total, general pourpose dice pool for this skill
         /// </summary>
-        public int Pool => PoolOtherAttribute(AttributeObject.TotalValue, Attribute);
+        public int Pool => PoolOtherAttribute(AttributeModifiers, Attribute);
 
         public bool Leveled => Rating > 0;
 
@@ -766,6 +778,7 @@ namespace Chummer.Backend.Skills
                 {
                     _guidSkillId = value;
                     _objCachedMyXmlNode = null;
+                    ReloadSuggestedSpecializations();
                 }
             }
         }
@@ -774,7 +787,19 @@ namespace Chummer.Backend.Skills
 
         public virtual string SkillCategory => _strCategory;
 
-        public IReadOnlyList<ListItem> CGLSpecializations => SuggestedSpecializations;
+        public IReadOnlyList<ListItem> CGLSpecializations
+        {
+            get
+            {
+                List<ListItem> lstSuggestedSpecializations = new List<ListItem>(SuggestedSpecializations);
+                foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x => x.ImprovedName == Name && x.ImproveType == Improvement.ImprovementType.SkillSpecializationOption && lstSuggestedSpecializations.All(y => y.Value?.ToString() != x.UniqueName) && x.Enabled))
+                {
+                    string strSpecializationName = objImprovement.UniqueName;
+                    lstSuggestedSpecializations.Add(new ListItem(strSpecializationName, LanguageManager.TranslateExtra(strSpecializationName, GlobalOptions.Language)));
+                }
+                return lstSuggestedSpecializations;
+            }
+        }
 
         private readonly Dictionary<string, string> _cachedStringSpec = new Dictionary<string, string>();
         public virtual string DisplaySpecializationMethod(string strLanguage)
@@ -1120,7 +1145,7 @@ namespace Chummer.Backend.Skills
             return strReturn ?? SkillCategory;
         }
 
-        public virtual string DisplayPool => DisplayOtherAttribute(AttributeObject.TotalValue, Attribute);
+        public virtual string DisplayPool => DisplayOtherAttribute(AttributeModifiers, Attribute);
 
         public string DisplayOtherAttribute(int intAttributeTotalValue, string strAttribute)
         {

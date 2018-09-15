@@ -744,7 +744,7 @@
     </skill>
     <skill>
       <id>d06dfd90-1df0-4f05-84d5-1fea9d146f87</id>
-      <name>Small Unit Tactics</name>
+      <name>Combat Tactics</name>
       <attribute>LOG</attribute>
       <category>Technical Active</category>
       <default>True</default>
@@ -908,8 +908,6 @@
     </skill>
   </skills>
   <knowledgeskills>
-    <skill amendoperation="remove" >
-      <name>Small Unit Tactics</name>
-    </skill>
+    <skill xpathfilter="contains(name,' Unit Tactics')" amendoperation="remove" />
   </knowledgeskills>
 </chummer>

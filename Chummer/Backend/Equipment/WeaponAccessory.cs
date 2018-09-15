@@ -34,7 +34,7 @@ namespace Chummer.Backend.Equipment
     /// Weapon Accessory.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource
+    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating
     {
         private Guid _guiID;
         private readonly Character _objCharacter;
@@ -63,6 +63,7 @@ namespace Chummer.Backend.Equipment
         private int _intRating;
         private int _intRCGroup;
         private int _intAmmoSlots;
+        private string _strModifyAmmoCapacity;
         private bool _blnDeployable;
         private bool _blnDiscountCost;
         private bool _blnIncludedInWeapon;
@@ -159,6 +160,7 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetInt32FieldQuickly("rcgroup", ref _intRCGroup);
             objXmlAccessory.TryGetStringFieldQuickly("conceal", ref _strConceal);
             objXmlAccessory.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots);
+            objXmlAccessory.TryGetStringFieldQuickly("modifyammocapacity", ref _strModifyAmmoCapacity);
             objXmlAccessory.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
             objXmlAccessory.TryGetInt32FieldQuickly("accuracy", ref _intAccuracy);
             objXmlAccessory.TryGetStringFieldQuickly("dicepool", ref _strDicePool);
@@ -209,8 +211,6 @@ namespace Chummer.Backend.Equipment
 
                             objGear.Quantity = decGearQty;
                             objGear.Cost = "0";
-                            objGear.MinRating = intGearRating;
-                            objGear.MaxRating = intGearRating;
                             objGear.ParentID = InternalId;
                             if (!string.IsNullOrEmpty(strChildForceSource))
                                 objGear.Source = strChildForceSource;
@@ -266,6 +266,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteEndElement();
             }
             objWriter.WriteElementString("ammoslots", _intAmmoSlots.ToString());
+            objWriter.WriteElementString("modifyammocapacity", _strModifyAmmoCapacity);
             objWriter.WriteElementString("damagetype", _strDamageType);
             objWriter.WriteElementString("damage", _strDamage);
             objWriter.WriteElementString("damagereplace", _strDamageReplace);
@@ -329,6 +330,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("dicepool", ref _strDicePool);
 
             objNode.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots);
+            objNode.TryGetStringFieldQuickly("modifyammocapacity", ref _strModifyAmmoCapacity);
 
             XmlNode xmlGearsNode = objNode["gears"];
             if (xmlGearsNode != null)
@@ -438,6 +440,14 @@ namespace Chummer.Backend.Equipment
         {
             get => _intAmmoSlots;
             set => _intAmmoSlots = value;
+        }
+        /// <summary>
+        /// The accessory modifies the weapon's ammunition capacity.
+        /// </summary>
+        public string ModifyAmmoCapacity
+        {
+            get => _strModifyAmmoCapacity;
+            set => _strModifyAmmoCapacity = value;
         }
         /// <summary>
         /// The accessory adds to the weapon's damage value.
@@ -612,7 +622,18 @@ namespace Chummer.Backend.Equipment
         public int Rating
         {
             get => _intRating;
-            set => _intRating = value;
+            set
+            {
+                _intRating = value;
+                if (Gear.Count > 0)
+                {
+                    foreach (Gear objChild in Gear.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
+                    {
+                        // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                        objChild.Rating = objChild.Rating;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -1099,9 +1120,9 @@ namespace Chummer.Backend.Equipment
         #endregion
         #endregion
 
-        public bool Remove(Character characterObject, bool confirmDelete = true)
+        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
-            if (confirmDelete)
+            if (blnConfirmDelete)
             {
                 if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon",
                     GlobalOptions.Language)))

@@ -103,6 +103,9 @@ namespace Chummer
                 lblSource.Text = string.Empty;
                 lblSource.SetToolTip(string.Empty);
             }
+
+            lblPowerPointsLabel.Visible = !string.IsNullOrEmpty(lblPowerPoints.Text);
+            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -273,9 +276,12 @@ namespace Chummer
 
         private void MoveControls()
         {
-            lblPowerPoints.Left = lblPowerPointsLabel.Left + lblPowerPointsLabel.Width + 6;
-            lblSource.Left = lblSourceLabel.Left + lblSourceLabel.Width + 6;
             lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
+        }
+
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
         }
         #endregion
     }

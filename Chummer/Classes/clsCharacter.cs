@@ -36,6 +36,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Backend.Uniques;
 
 namespace Chummer
 {
@@ -161,19 +162,7 @@ namespace Chummer
         private int _intMAGAdept;
 
         // Magic Tradition.
-        private string _strMagicTradition = string.Empty;
-        private string _strTraditionDrain = string.Empty;
-        private string _strTraditionName = string.Empty;
-        private string _strSpiritCombat = string.Empty;
-        private string _strSpiritDetection = string.Empty;
-        private string _strSpiritHealth = string.Empty;
-        private string _strSpiritIllusion = string.Empty;
-
-        private string _strSpiritManipulation = string.Empty;
-
-        // Technomancer Stream.
-        private string _strTechnomancerStream = string.Empty;
-        private string _strTechnomancerFading = "RES + WIL";
+        private readonly Tradition _objTradition;
 
         // Condition Monitor Progress.
         private int _intPhysicalCMFilled;
@@ -301,25 +290,6 @@ namespace Chummer
                         ),
                         new DependancyGraphNode<string>(nameof(MysticAdeptPowerPoints)),
                         new DependancyGraphNode<string>(nameof(Karma))
-                    ),
-                    new DependancyGraphNode<string>(nameof(DisplayTraditionDrain),
-                        new DependancyGraphNode<string>(nameof(TraditionDrain),
-                            new DependancyGraphNode<string>(nameof(AdeptEnabled)),
-                            new DependancyGraphNode<string>(nameof(MagicianEnabled))
-                        )
-                    ),
-                    new DependancyGraphNode<string>(nameof(DisplayTechnomancerFading),
-                        new DependancyGraphNode<string>(nameof(TechnomancerFading))
-                    ),
-                    new DependancyGraphNode<string>(nameof(TraditionDrainValueToolTip),
-                        new DependancyGraphNode<string>(nameof(TraditionDrainValue),
-                            new DependancyGraphNode<string>(nameof(TraditionDrain))
-                        )
-                    ),
-                    new DependancyGraphNode<string>(nameof(TechnomancerFadingValueToolTip),
-                        new DependancyGraphNode<string>(nameof(TechnomancerFadingValue),
-                            new DependancyGraphNode<string>(nameof(TechnomancerFading))
-                        )
                     ),
                     new DependancyGraphNode<string>(nameof(AddInitiationsAllowed),
                         new DependancyGraphNode<string>(nameof(IgnoreRules)),
@@ -823,6 +793,7 @@ namespace Chummer
                         )
                     )
                 );
+            _objTradition = new Tradition(this);
         }
 
         private void RefreshAttributeBindings()
@@ -1381,21 +1352,10 @@ namespace Chummer
                 objWriter.WriteElementString("magsplitmagician", _intMAGMagician.ToString());
             }
 
-            // Write the Magic Tradition.
-            objWriter.WriteElementString("tradition", _strMagicTradition);
-            // Write the Drain Attributes.
-            objWriter.WriteElementString("traditiondrain", _strTraditionDrain);
-            // Write the Tradition Name.
-            objWriter.WriteElementString("traditionname", _strTraditionName);
-            // Write the Tradition Spirits.
-            objWriter.WriteElementString("spiritcombat", _strSpiritCombat);
-            objWriter.WriteElementString("spiritdetection", _strSpiritDetection);
-            objWriter.WriteElementString("spirithealth", _strSpiritHealth);
-            objWriter.WriteElementString("spiritillusion", _strSpiritIllusion);
-            objWriter.WriteElementString("spiritmanipulation", _strSpiritManipulation);
-            // Write the Technomancer Stream.
-            objWriter.WriteElementString("stream", _strTechnomancerStream);
-            objWriter.WriteElementString("streamdrain", _strTechnomancerFading);
+            if (_objTradition != null)
+            {
+                _objTradition.Save(objWriter);
+            }
 
             // Condition Monitor Progress.
             // <physicalcmfilled />
@@ -2386,33 +2346,82 @@ namespace Chummer
                 xmlCharacterNavigator.TryGetInt32FieldQuickly("magsplitmagician", ref _intMAGMagician);
             }
 
-            // Attempt to load the Magic Tradition.
-            xmlCharacterNavigator.TryGetStringFieldQuickly("tradition", ref _strMagicTradition);
-            // Attempt to load the Magic Tradition Drain Attributes.
+            // Attempt to load in the character's tradition (or equivalent for Technomancers)
             string strTemp = string.Empty;
-            if (xmlCharacterNavigator.TryGetStringFieldQuickly("traditiondrain", ref strTemp))
+            if (xmlCharacterNavigator.TryGetStringFieldQuickly("stream", ref strTemp) && !string.IsNullOrEmpty(strTemp) && RESEnabled)
             {
-                TraditionDrain = strTemp;
-            }
+                // Legacy load a Technomancer tradition
+                XmlNode xmlTraditionListDataNode = XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions");
+                if (xmlTraditionListDataNode != null)
+                {
+                    XmlNode xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"" + strTemp + "\"]");
+                    if (xmlTraditionDataNode != null)
+                    {
+                        if (!_objTradition.Create(xmlTraditionDataNode, true))
+                            _objTradition.ResetTradition();
+                    }
+                    else
+                    {
+                        xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"Default\"]");
+                        if (xmlTraditionDataNode != null)
+                        {
+                            if (!_objTradition.Create(xmlTraditionDataNode, true))
+                                _objTradition.ResetTradition();
+                        }
+                        else
+                        {
+                            xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition");
+                            if (xmlTraditionDataNode != null)
+                            {
+                                if (!_objTradition.Create(xmlTraditionDataNode, true))
+                                    _objTradition.ResetTradition();
+                            }
+                        }
+                    }
+                }
 
-            // Attempt to load the Magic Tradition Name.
-            xmlCharacterNavigator.TryGetStringFieldQuickly("traditionname", ref _strTraditionName);
-            // Attempt to load the Spirit Combat Name.
-            xmlCharacterNavigator.TryGetStringFieldQuickly("spiritcombat", ref _strSpiritCombat);
-            // Attempt to load the Spirit Detection Name.
-            xmlCharacterNavigator.TryGetStringFieldQuickly("spiritdetection", ref _strSpiritDetection);
-            // Attempt to load the Spirit Health Name.
-            xmlCharacterNavigator.TryGetStringFieldQuickly("spirithealth", ref _strSpiritHealth);
-            // Attempt to load the Spirit Illusion Name.
-            xmlCharacterNavigator.TryGetStringFieldQuickly("spiritillusion", ref _strSpiritIllusion);
-            // Attempt to load the Spirit Manipulation Name.
-            xmlCharacterNavigator.TryGetStringFieldQuickly("spiritmanipulation", ref _strSpiritManipulation);
-            // Attempt to load the Technomancer Stream.
-            xmlCharacterNavigator.TryGetStringFieldQuickly("stream", ref _strTechnomancerStream);
-            // Attempt to load the Technomancer Stream's Fading attributes.
-            if (xmlCharacterNavigator.TryGetStringFieldQuickly("streamfading", ref strTemp))
+                if (_objTradition.Type != TraditionType.None)
+                {
+                    _objTradition.LegacyLoad(xmlCharacterNavigator);
+                }
+            }
+            else
             {
-                TechnomancerFading = strTemp;
+                XPathNavigator xpathTraditionNavigator = xmlCharacterNavigator.SelectSingleNode("tradition");
+                // Regular tradition load
+                if (xpathTraditionNavigator?.SelectSingleNode("id") != null)
+                {
+                    _objTradition.Load(objXmlCharacter.SelectSingleNode("tradition"));
+                }
+                // Not null but doesn't have children -> legacy load a magical tradition
+                else if (xpathTraditionNavigator != null && MAGEnabled)
+                {
+                    XmlNode xmlTraditionListDataNode = XmlManager.Load("traditions.xml").SelectSingleNode("/chummer/traditions");
+                    if (xmlTraditionListDataNode != null)
+                    {
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("tradition", ref strTemp);
+                        XmlNode xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"" + strTemp + "\"]");
+                        if (xmlTraditionDataNode != null)
+                        {
+                            if (!_objTradition.Create(xmlTraditionDataNode))
+                                _objTradition.ResetTradition();
+                        }
+                        else
+                        {
+                            xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[id = \"" + Tradition.CustomMagicalTraditionGuid + "\"]");
+                            if (xmlTraditionDataNode != null)
+                            {
+                                if (!_objTradition.Create(xmlTraditionDataNode))
+                                    _objTradition.ResetTradition();
+                            }
+                        }
+                    }
+
+                    if (_objTradition.Type != TraditionType.None)
+                    {
+                        _objTradition.LegacyLoad(xmlCharacterNavigator);
+                    }
+                }
             }
 
             // Attempt to load Condition Monitor Progress.
@@ -2559,7 +2568,7 @@ namespace Chummer
             Timekeeper.Finish("load_char_weapons");
             Timekeeper.Start("load_char_drugs");
 
-            // Weapons.
+            // Drugs.
             objXmlNodeList = objXmlDocument.SelectNodes("/character/drugs/drug");
             foreach (XmlNode objXmlDrug in objXmlNodeList)
             {
@@ -2580,13 +2589,9 @@ namespace Chummer
                 Cyberware objCyberware = new Cyberware(this);
                 objCyberware.Load(objXmlCyberware);
                 _lstCyberware.Add(objCyberware);
-                // Legacy shim
-                if ((objCyberware.Name == "Myostatin Inhibitor" && LastSavedVersion <= new Version("5.195.1") &&
-                     !Improvements.Any(x =>
-                         x.SourceName == objCyberware.InternalId &&
-                         x.ImproveType == Improvement.ImprovementType.AttributeKarmaCost)) ||
-                    (objCyberware.PairBonus?.HasChildNodes == true &&
-                     Improvements.All(x => x.SourceName != objCyberware.InternalId + "Pair")))
+                // Legacy shim #1
+                if (objCyberware.Name == "Myostatin Inhibitor" && LastSavedVersion <= new Version("5.195.1") &&
+                     !Improvements.Any(x => x.SourceName == objCyberware.InternalId && x.ImproveType == Improvement.ImprovementType.AttributeKarmaCost))
                 {
                     XmlNode objNode = objCyberware.GetNode();
                     if (objNode != null)
@@ -2635,6 +2640,66 @@ namespace Chummer
                     else
                     {
                         _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
+                    }
+                }
+            }
+            // Legacy Shim #2 (needed to be separate because we're dealing with PairBonuses here, and we don't know if something needs its PairBonus reapplied until all Cyberwares have been loaded)
+            if (LastSavedVersion <= new Version("5.200.0"))
+            {
+                foreach (Cyberware objCyberware in Cyberware)
+                {
+                    if (objCyberware.PairBonus?.HasChildNodes == true &&
+                         !Cyberware.DeepAny(x => x.Children, x => objCyberware.IncludePair.Contains(x.Name) && x.Extra == objCyberware.Extra && x.IsModularCurrentlyEquipped &&
+                                                                  Improvements.Any(y => y.SourceName == x.InternalId + "Pair")))
+                    {
+                        XmlNode objNode = objCyberware.GetNode();
+                        if (objNode != null)
+                        {
+                            ImprovementManager.RemoveImprovements(this, objCyberware.SourceType, objCyberware.InternalId);
+                            ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
+                                objCyberware.InternalId + "Pair");
+                            objCyberware.Bonus = objNode["bonus"];
+                            objCyberware.WirelessBonus = objNode["wirelessbonus"];
+                            objCyberware.PairBonus = objNode["pairbonus"];
+                            if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" &&
+                                objCyberware.Forced != "Left")
+                                ImprovementManager.ForcedValue = objCyberware.Forced;
+                            if (objCyberware.Bonus != null)
+                            {
+                                ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
+                                    objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating,
+                                    objCyberware.DisplayNameShort(GlobalOptions.Language));
+                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                    objCyberware.Extra = ImprovementManager.SelectedValue;
+                            }
+
+                            if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
+                            {
+                                ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
+                                    objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating,
+                                    objCyberware.DisplayNameShort(GlobalOptions.Language));
+                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
+                                    string.IsNullOrEmpty(objCyberware.Extra))
+                                    objCyberware.Extra = ImprovementManager.SelectedValue;
+                            }
+
+                            if (!objCyberware.IsModularCurrentlyEquipped)
+                                objCyberware.ChangeModularEquip(false);
+                            else if (objCyberware.PairBonus != null)
+                            {
+                                Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x =>
+                                    x.Name == objCyberware.Name && x.Extra == objCyberware.Extra);
+                                if (objMatchingCyberware != null)
+                                    dicPairableCyberwares[objMatchingCyberware] =
+                                        dicPairableCyberwares[objMatchingCyberware] + 1;
+                                else
+                                    dicPairableCyberwares.Add(objCyberware, 1);
+                            }
+                        }
+                        else
+                        {
+                            _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
+                        }
                     }
                 }
             }
@@ -3431,127 +3496,11 @@ namespace Chummer
             objWriter.WriteElementString("critter", CritterEnabled.ToString());
 
             objWriter.WriteElementString("totaless", Essence().ToString(_objOptions.EssenceFormat, objCulture));
+
             // <tradition />
-            string strTraditionName = MagicTradition;
-            if (strTraditionName == "Custom")
-                strTraditionName = TraditionName;
-            objWriter.WriteStartElement("tradition");
-
-            if (!string.IsNullOrEmpty(strTraditionName))
+            if (MagicTradition.Type != TraditionType.None)
             {
-                XmlDocument xmlTraditions = XmlManager.Load("traditions.xml", strLanguageToPrint);
-                XmlNode objXmlTradition =
-                    xmlTraditions.SelectSingleNode("/chummer/traditions/tradition[name = \"" + MagicTradition + "\"]");
-
-                string strName = MagicTradition;
-                if (!string.IsNullOrEmpty(strName) && strName != "Custom")
-                {
-                    strTraditionName = objXmlTradition?["translate"]?.InnerText ?? strName;
-                }
-
-                objWriter.WriteElementString("drainattributes", DisplayTraditionDrainMethod(strLanguageToPrint));
-                objWriter.WriteElementString("drain", TraditionDrainValue.ToString(objCulture));
-
-                string strSpiritCombat = SpiritCombat;
-                string strSpiritDetection = SpiritDetection;
-                string strSpiritHealth = SpiritHealth;
-                string strSpiritIllusion = SpiritIllusion;
-                string strSpiritManipulation = SpiritManipulation;
-                string strNone = LanguageManager.GetString("String_None", strLanguageToPrint);
-                if (MagicTradition != "Custom")
-                {
-                    if (objXmlTradition == null)
-                    {
-                        strSpiritCombat = strNone;
-                        strSpiritDetection = strNone;
-                        strSpiritHealth = strNone;
-                        strSpiritIllusion = strNone;
-                        strSpiritManipulation = strNone;
-
-                    }
-                    else
-                    {
-                        strSpiritCombat = objXmlTradition.SelectSingleNode("spirits/spiritcombat")?.InnerText ??
-                                          strNone;
-                        if (strSpiritCombat == "All")
-                            strSpiritCombat = LanguageManager.GetString("String_All", strLanguageToPrint);
-                        strSpiritDetection = objXmlTradition.SelectSingleNode("spirits/spiritdetection")?.InnerText ??
-                                             strNone;
-                        if (strSpiritDetection == "All")
-                            strSpiritDetection = LanguageManager.GetString("String_All", strLanguageToPrint);
-                        strSpiritHealth = objXmlTradition.SelectSingleNode("spirits/spirithealth")?.InnerText ??
-                                          strNone;
-                        if (strSpiritHealth == "All")
-                            strSpiritHealth = LanguageManager.GetString("String_All", strLanguageToPrint);
-                        strSpiritIllusion = objXmlTradition.SelectSingleNode("spirits/spiritillusion")?.InnerText ??
-                                            strNone;
-                        if (strSpiritIllusion == "All")
-                            strSpiritIllusion = LanguageManager.GetString("String_All", strLanguageToPrint);
-                        strSpiritManipulation =
-                            objXmlTradition.SelectSingleNode("spirits/spiritmanipulation")?.InnerText ?? strNone;
-                        if (strSpiritManipulation == "All")
-                            strSpiritManipulation = LanguageManager.GetString("String_All", strLanguageToPrint);
-                    }
-                }
-                else
-                {
-                    if (string.IsNullOrEmpty(strSpiritCombat))
-                        strSpiritCombat = strNone;
-                    if (string.IsNullOrEmpty(strSpiritDetection))
-                        strSpiritDetection = strNone;
-                    if (string.IsNullOrEmpty(strSpiritHealth))
-                        strSpiritHealth = strNone;
-                    if (string.IsNullOrEmpty(strSpiritIllusion))
-                        strSpiritIllusion = strNone;
-                    if (string.IsNullOrEmpty(strSpiritManipulation))
-                        strSpiritManipulation = strNone;
-                }
-
-                objWriter.WriteElementString("spiritcombat",
-                    xmlTraditions
-                        .SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritCombat + "\"]/translate")
-                        ?.InnerText ?? strSpiritCombat);
-                objWriter.WriteElementString("spiritdetection",
-                    xmlTraditions
-                        .SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritDetection + "\"]/translate")
-                        ?.InnerText ?? strSpiritDetection);
-                objWriter.WriteElementString("spirithealth",
-                    xmlTraditions
-                        .SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritHealth + "\"]/translate")
-                        ?.InnerText ?? strSpiritHealth);
-                objWriter.WriteElementString("spiritillusion",
-                    xmlTraditions
-                        .SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritIllusion + "\"]/translate")
-                        ?.InnerText ?? strSpiritIllusion);
-                objWriter.WriteElementString("spiritmanipulation",
-                    xmlTraditions
-                        .SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritManipulation + "\"]/translate")
-                        ?.InnerText ?? strSpiritManipulation);
-
-                //Spirit form, default to materialization unless field with other data persists
-                string strSpiritForm = "Materialization";
-                objXmlTradition.TryGetStringFieldQuickly("spiritform", ref strSpiritForm);
-                objWriter.WriteElementString("spiritform", strSpiritForm);
-
-                //Rulebook reference
-                string strSource = string.Empty;
-                string strPage = string.Empty;
-                objXmlTradition.TryGetStringFieldQuickly("source", ref strSource);
-                objXmlTradition.TryGetStringFieldQuickly("page", ref strPage);
-
-                objWriter.WriteElementString("source", strSource);
-                objWriter.WriteElementString("page", strPage);
-            }
-
-            objWriter.WriteElementString("name", strTraditionName);
-            objWriter.WriteEndElement();
-
-            // <stream />
-            objWriter.WriteElementString("stream", TechnomancerStream);
-            if (!string.IsNullOrEmpty(TechnomancerStream))
-            {
-                objWriter.WriteElementString("drainattributes", DisplayTechnomancerFadingMethod(strLanguageToPrint));
-                objWriter.WriteElementString("drain", TechnomancerFadingValue.ToString(objCulture));
+                MagicTradition.Print(objWriter, objCulture, strLanguageToPrint);
             }
 
             // <attributes>
@@ -4054,6 +4003,16 @@ namespace Chummer
             // </gears>
             objWriter.WriteEndElement();
 
+            // <drugs>
+            objWriter.WriteStartElement("drugs");
+            foreach (Drug objDrug in Drugs)
+            {
+                objDrug.Print(objWriter, objCulture, strLanguageToPrint);
+            }
+
+            // </drugs>
+            objWriter.WriteEndElement();
+            
             // <vehicles>
             objWriter.WriteStartElement("vehicles");
             foreach (Vehicle objVehicle in Vehicles)
@@ -4273,8 +4232,7 @@ namespace Chummer
 
             _intMAGAdept = 0;
             _intMAGMagician = 0;
-            _strMagicTradition = string.Empty;
-            _strTechnomancerStream = string.Empty;
+            _objTradition.UnbindTradition();
 
             // Reset all of the Lists.
             // This kills the GC
@@ -4777,6 +4735,8 @@ namespace Chummer
                     return LanguageManager.GetString("Tab_Submersion", strLanguage);
                 case Improvement.ImprovementSource.ArmorEncumbrance:
                     return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage);
+                case Improvement.ImprovementSource.Tradition:
+                    return LanguageManager.GetString("String_Tradition", strLanguage);
                 default:
                     if (objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
                         return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage);
@@ -5424,18 +5384,26 @@ namespace Chummer
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
         /// <param name="objGearNode">Node of gear to move.</param>
-        public void MoveGearNode(int intNewIndex, TreeNode objDestination, TreeNode objGearNode)
+        public void MoveGearNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove)
         {
-            if (objGearNode?.Tag is Gear objGear)
+            if (nodeToMove?.Tag is Gear objGear)
             {
                 TreeNode objNewParent = objDestination;
-                while (objNewParent.Level > 0)
+                while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                     objNewParent = objNewParent.Parent;
 
-                // Change the Location on the Gear item.
-                objGear.Location = (objNewParent.Tag is Location objLocation) ? objLocation : null;
-
-                Gear.Move(Gear.IndexOf(objGear), intNewIndex);
+                if (objNewParent.Tag is Location objLocation)
+                {
+                    nodeToMove.Remove();
+                    objGear.Location = objLocation;
+                    objNewParent.Nodes.Insert(0, nodeToMove);
+                }
+                else if (objNewParent.Tag is string)
+                {
+                    objGear.Location = null;
+                    intNewIndex = Math.Min(intNewIndex, Gear.Count);
+                    Gear.Move(Gear.IndexOf(objGear), intNewIndex);
+                }
             }
         }
 
@@ -5490,19 +5458,27 @@ namespace Chummer
         /// </summary>
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
-        /// <param name="nodArmorNode">Node of armor to move.</param>
-        public void MoveArmorNode(int intNewIndex, TreeNode objDestination, TreeNode nodArmorNode)
+        /// <param name="nodeToMove">Node of armor to move.</param>
+        public void MoveArmorNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove)
         {
-            if (nodArmorNode?.Tag is Armor objArmor)
+            if (nodeToMove?.Tag is Armor objArmor)
             {
                 TreeNode objNewParent = objDestination;
-                while (objNewParent.Level > 0)
+                while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                     objNewParent = objNewParent.Parent;
 
-                // Change the Location on the Armor item.
-                objArmor.Location = objNewParent.Tag is Location objLocation ? objLocation : null;
-
-                Armor.Move(Armor.IndexOf(objArmor), intNewIndex);
+                if (objNewParent.Tag is Location objLocation)
+                {
+                    nodeToMove.Remove();
+                    objArmor.Location = objLocation;
+                    objNewParent.Nodes.Insert(0, nodeToMove);
+                }
+                else if (objNewParent.Tag is string)
+                {
+                    objArmor.Location = null;
+                    intNewIndex = Math.Min(intNewIndex, Armor.Count);
+                    Armor.Move(Armor.IndexOf(objArmor), intNewIndex);
+                }
             }
         }
 
@@ -5534,19 +5510,27 @@ namespace Chummer
         /// </summary>
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
-        /// <param name="nodWeaponNode">Node of weapon to move.</param>
-        public void MoveWeaponNode(int intNewIndex, TreeNode objDestination, TreeNode nodWeaponNode)
+        /// <param name="nodeToMove">Node of weapon to move.</param>
+        public void MoveWeaponNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove)
         {
-            if (nodWeaponNode?.Tag is Weapon objWeapon)
+            if (nodeToMove?.Tag is Weapon objWeapon)
             {
                 TreeNode objNewParent = objDestination;
-                while (objNewParent.Level > 0)
+                while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                     objNewParent = objNewParent.Parent;
 
-                // Change the Location on the Armor item.
-                objWeapon.Location = objNewParent.Tag is Location objLocation ? objLocation : null;
-
-                Weapons.Move(Weapons.IndexOf(objWeapon), intNewIndex);
+                if (objNewParent.Tag is Location objLocation)
+                {
+                    nodeToMove.Remove();
+                    objWeapon.Location = objLocation;
+                    objNewParent.Nodes.Insert(0, nodeToMove);
+                }
+                else if (objNewParent.Tag is string)
+                {
+                    objWeapon.Location = null;
+                    intNewIndex = Math.Min(intNewIndex, Weapons.Count);
+                    Weapons.Move(Weapons.IndexOf(objWeapon), intNewIndex);
+                }
             }
         }
 
@@ -5579,18 +5563,26 @@ namespace Chummer
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
         /// <param name="nodVehicleNode">Node of vehicle to move.</param>
-        public void MoveVehicleNode(int intNewIndex, TreeNode objDestination, TreeNode nodVehicleNode)
+        public void MoveVehicleNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove)
         {
-            if (nodVehicleNode?.Tag is Vehicle objVehicle)
+            if (nodeToMove?.Tag is Vehicle objVehicle)
             {
                 TreeNode objNewParent = objDestination;
-                while (objNewParent.Level > 0)
+                while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                     objNewParent = objNewParent.Parent;
 
-                // Change the Location on the Armor item.
-                objVehicle.Location = objNewParent.Tag is Location objLocation ? objLocation : null;
-
-                Vehicles.Move(Vehicles.IndexOf(objVehicle), intNewIndex);
+                if (objNewParent.Tag is Location objLocation)
+                {
+                    nodeToMove.Remove();
+                    objVehicle.Location = objLocation;
+                    objNewParent.Nodes.Insert(0, nodeToMove);
+                }
+                else if (objNewParent.Tag is string)
+                {
+                    objVehicle.Location = null;
+                    intNewIndex = Math.Min(intNewIndex, Weapons.Count);
+                    Vehicles.Move(Vehicles.IndexOf(objVehicle), intNewIndex);
+                }
             }
         }
 
@@ -7347,7 +7339,27 @@ namespace Chummer
                     else
                     {
                         if (!RESEnabled)
+                        {
                             ClearInitiations();
+                            MagicTradition.ResetTradition();
+                        }
+                        else
+                        {
+                            XmlNode xmlTraditionListDataNode = XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions/");
+                            if (xmlTraditionListDataNode != null)
+                            {
+                                XmlNode xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"Default\"]");
+                                if (xmlTraditionDataNode != null)
+                                {
+                                    if (!MagicTradition.Create(xmlTraditionDataNode, true))
+                                        MagicTradition.ResetTradition();
+                                }
+                                else
+                                    MagicTradition.ResetTradition();
+                            }
+                            else
+                                MagicTradition.ResetTradition();
+                        }
                         if (!Created && !RESEnabled && !DEPEnabled)
                             EssenceAtSpecialStart = decimal.MinValue;
                     }
@@ -7429,390 +7441,8 @@ namespace Chummer
         /// <summary>
         /// Magician's Tradition.
         /// </summary>
-        public string MagicTradition
-        {
-            get => _strMagicTradition;
-            set
-            {
-                if (_strMagicTradition != value)
-                {
-                    _strMagicTradition = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Magician's total amount of dice for resisting drain.
-        /// </summary>
-        public int TraditionDrainValue
-        {
-            get
-            {
-                string strDrainAttributes = TraditionDrain;
-                StringBuilder objDrain = new StringBuilder(strDrainAttributes);
-                foreach (string strAttribute in AttributeSection.AttributeStrings)
-                {
-                    CharacterAttrib objAttrib = GetAttribute(strAttribute);
-                    objDrain.CheapReplace(strDrainAttributes, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString());
-                }
-
-                string strDrain = objDrain.ToString();
-                if (!int.TryParse(strDrain, out int intDrain))
-                {
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strDrain, out bool blnIsSuccess);
-                    if (blnIsSuccess)
-                        intDrain = Convert.ToInt32(objProcess);
-                }
-
-                // Add any Improvements for Drain Resistance.
-                intDrain += ImprovementManager.ValueOf(this, Improvement.ImprovementType.DrainResistance);
-
-                return intDrain;
-            }
-        }
-
-        public string TraditionDrainValueToolTip
-        {
-            get
-            {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                StringBuilder objToolTip = new StringBuilder(TraditionDrain);
-
-                // Update the Fading CharacterAttribute Value.
-                foreach (string strAttribute in AttributeSection.AttributeStrings)
-                {
-                    objToolTip.CheapReplace(strAttribute, () =>
-                    {
-                        CharacterAttrib objAttrib = GetAttribute(strAttribute);
-                        return objAttrib.DisplayAbbrev + strSpaceCharacter + '(' +
-                               objAttrib.TotalValue.ToString(GlobalOptions.CultureInfo) + ')';
-                    });
-                }
-
-                foreach (Improvement objLoopImprovement in Improvements)
-                {
-                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.DrainResistance &&
-                        objLoopImprovement.Enabled)
-                    {
-                        objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                          GetObjectName(objLoopImprovement, GlobalOptions.Language) +
-                                          strSpaceCharacter + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
-                    }
-                }
-
-                return objToolTip.ToString();
-            }
-        }
-
-        public void RefreshTraditionDrainValue(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(CharacterAttrib.TotalValue))
-                OnPropertyChanged(nameof(TraditionDrainValue));
-        }
-
-        /// <summary>
-        /// Magician's Tradition Drain Attributes.
-        /// </summary>
-        public string TraditionDrain
-        {
-            get
-            {
-                if (AdeptEnabled && !MagicianEnabled)
-                {
-                    return "BOD + WIL";
-                }
-
-                return _strTraditionDrain;
-            }
-            set
-            {
-                if (_strTraditionDrain != value)
-                {
-                    foreach (string strOldDrainAttribute in AttributeSection.AttributeStrings)
-                    {
-                        if (_strTraditionDrain.Contains(strOldDrainAttribute))
-                            GetAttribute(strOldDrainAttribute).PropertyChanged -= RefreshTraditionDrainValue;
-                    }
-
-                    _strTraditionDrain = value;
-                    foreach (string strNewDrainAttribute in AttributeSection.AttributeStrings)
-                    {
-                        if (value.Contains(strNewDrainAttribute))
-                            GetAttribute(strNewDrainAttribute).PropertyChanged += RefreshTraditionDrainValue;
-                    }
-
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Magician's Tradition Drain Attributes for display purposes.
-        /// </summary>
-        public string DisplayTraditionDrain => DisplayTraditionDrainMethod(GlobalOptions.Language);
-
-        /// <summary>
-        /// Magician's Tradition Drain Attributes for display purposes.
-        /// </summary>
-        public string DisplayTraditionDrainMethod(string strLanguage)
-        {
-            string strDrain = TraditionDrain;
-            foreach (string strAttribute in AttributeSection.AttributeStrings)
-            {
-                strDrain = strDrain.CheapReplace(strAttribute, () =>
-                {
-                    if (strAttribute == "MAGAdept")
-                        return LanguageManager.GetString("String_AttributeMAGShort", strLanguage) +
-                               LanguageManager.GetString("String_Space", strLanguage) + '(' +
-                               LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
-
-                    return LanguageManager.GetString($"String_Attribute{strAttribute}Short", strLanguage);
-                });
-            }
-
-            return strDrain;
-        }
-
-        /// <summary>
-        /// Magician's Tradition Name (for Custom Traditions).
-        /// </summary>
-        public string TraditionName
-        {
-            get => _strTraditionName;
-            set
-            {
-                if (_strTraditionName != value)
-                {
-                    _strTraditionName = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Magician's Combat Spirit (for Custom Traditions).
-        /// </summary>
-        public string SpiritCombat
-        {
-            get => _strSpiritCombat;
-            set
-            {
-                if (_strSpiritCombat != value)
-                {
-                    _strSpiritCombat = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Magician's Detection Spirit (for Custom Traditions).
-        /// </summary>
-        public string SpiritDetection
-        {
-            get => _strSpiritDetection;
-            set
-            {
-                if (_strSpiritDetection != value)
-                {
-                    _strSpiritDetection = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Magician's Health Spirit (for Custom Traditions).
-        /// </summary>
-        public string SpiritHealth
-        {
-            get => _strSpiritHealth;
-            set
-            {
-                if (_strSpiritHealth != value)
-                {
-                    _strSpiritHealth = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Magician's Illusion Spirit (for Custom Traditions).
-        /// </summary>
-        public string SpiritIllusion
-        {
-            get => _strSpiritIllusion;
-            set
-            {
-                if (_strSpiritIllusion != value)
-                {
-                    _strSpiritIllusion = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Magician's Manipulation Spirit (for Custom Traditions).
-        /// </summary>
-        public string SpiritManipulation
-        {
-            get => _strSpiritManipulation;
-            set
-            {
-                if (_strSpiritManipulation != value)
-                {
-                    _strSpiritManipulation = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Technomancer's Stream.
-        /// </summary>
-        public string TechnomancerStream
-        {
-            get => _strTechnomancerStream;
-            set
-            {
-                if (_strTechnomancerStream != value)
-                {
-                    _strTechnomancerStream = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Magician's total amount of dice for resisting drain.
-        /// </summary>
-        public int TechnomancerFadingValue
-        {
-            get
-            {
-                string strFadingAttributes = TechnomancerFading;
-                StringBuilder objFading = new StringBuilder(strFadingAttributes);
-                foreach (string strAttribute in AttributeSection.AttributeStrings)
-                {
-                    CharacterAttrib objAttrib = GetAttribute(strAttribute);
-                    objFading.CheapReplace(strFadingAttributes, objAttrib.Abbrev,
-                        () => objAttrib.TotalValue.ToString());
-                }
-
-                string strFading = objFading.ToString();
-                if (!int.TryParse(strFading, out int intDrain))
-                {
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strFading, out bool blnIsSuccess);
-                    if (blnIsSuccess)
-                        intDrain = Convert.ToInt32(objProcess);
-                }
-
-                // Add any Improvements for Fading Resistance.
-                intDrain += ImprovementManager.ValueOf(this, Improvement.ImprovementType.FadingResistance);
-
-                return intDrain;
-            }
-        }
-
-        public string TechnomancerFadingValueToolTip
-        {
-            get
-            {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                StringBuilder objToolTip = new StringBuilder(TechnomancerFading);
-
-                // Update the Fading CharacterAttribute Value.
-                foreach (string strAttribute in AttributeSection.AttributeStrings)
-                {
-                    objToolTip.CheapReplace(strAttribute, () =>
-                    {
-                        CharacterAttrib objAttrib = GetAttribute(strAttribute);
-                        return objAttrib.DisplayAbbrev + strSpaceCharacter + '(' +
-                               objAttrib.TotalValue.ToString(GlobalOptions.CultureInfo) + ')';
-                    });
-                }
-
-                foreach (Improvement objLoopImprovement in Improvements)
-                {
-                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FadingResistance &&
-                        objLoopImprovement.Enabled)
-                    {
-                        objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
-                                          GetObjectName(objLoopImprovement, GlobalOptions.Language) +
-                                          strSpaceCharacter + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
-                    }
-                }
-
-                return objToolTip.ToString();
-            }
-        }
-
-        public void RefreshTechnomancerFadingValue(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(CharacterAttrib.TotalValue))
-                OnPropertyChanged(nameof(TechnomancerFadingValue));
-        }
-
-        /// <summary>
-        /// Technomancer's Fading Attributes.
-        /// </summary>
-        public string TechnomancerFading
-        {
-            get => _strTechnomancerFading;
-            set
-            {
-                if (_strTechnomancerFading != value)
-                {
-                    foreach (string strOldDrainAttribute in AttributeSection.AttributeStrings)
-                    {
-                        if (_strTechnomancerFading.Contains(strOldDrainAttribute))
-                            GetAttribute(strOldDrainAttribute).PropertyChanged -= RefreshTechnomancerFadingValue;
-                    }
-
-                    _strTechnomancerFading = value;
-                    foreach (string strNewDrainAttribute in AttributeSection.AttributeStrings)
-                    {
-                        if (value.Contains(strNewDrainAttribute))
-                            GetAttribute(strNewDrainAttribute).PropertyChanged += RefreshTechnomancerFadingValue;
-                    }
-
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Magician's Fading Attributes for display purposes.
-        /// </summary>
-        public string DisplayTechnomancerFading => DisplayTechnomancerFadingMethod(GlobalOptions.Language);
-
-        /// <summary>
-        /// Magician's Fading Attributes for display purposes.
-        /// </summary>
-        public string DisplayTechnomancerFadingMethod(string strLanguage)
-        {
-            string strFading = TechnomancerFading;
-            foreach (string strAttribute in AttributeSection.AttributeStrings)
-            {
-                strFading = strFading.CheapReplace(strAttribute, () =>
-                {
-                    if (strAttribute == "MAGAdept")
-                        return LanguageManager.GetString("String_AttributeMAGShort", strLanguage) +
-                               LanguageManager.GetString("String_Space", strLanguage) + '(' +
-                               LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
-
-                    return LanguageManager.GetString($"String_Attribute{strAttribute}Short", strLanguage);
-                });
-            }
-
-            return strFading;
-        }
-
+        public Tradition MagicTradition => _objTradition;
+        
         /// <summary>
         /// Initiate Grade.
         /// </summary>
@@ -7898,16 +7528,53 @@ namespace Chummer
                             else
                                 EssenceAtSpecialStart = ESS.MetatypeMaximum;
                         }
-
-                        TechnomancerStream = "Default";
+                        
+                        XmlNode xmlTraditionListDataNode = XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions");
+                        if (xmlTraditionListDataNode != null)
+                        {
+                            XmlNode xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"Default\"]");
+                            if (xmlTraditionDataNode != null)
+                            {
+                                if (!MagicTradition.Create(xmlTraditionDataNode, true))
+                                    MagicTradition.ResetTradition();
+                            }
+                            else
+                            {
+                                xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition");
+                                if (xmlTraditionDataNode != null)
+                                {
+                                    if (!MagicTradition.Create(xmlTraditionDataNode, true))
+                                        MagicTradition.ResetTradition();
+                                }
+                            }
+                        }
                     }
                     else
                     {
                         if (!MAGEnabled)
+                        {
                             ClearInitiations();
+                            MagicTradition.ResetTradition();
+                        }
+                        else
+                        {
+                            XmlNode xmlTraditionListDataNode = XmlManager.Load("traditions.xml").SelectSingleNode("/chummer/traditions/");
+                            if (xmlTraditionListDataNode != null)
+                            {
+                                XmlNode xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[id = \"" + Tradition.CustomMagicalTraditionGuid + "\"]");
+                                if (xmlTraditionDataNode != null)
+                                {
+                                    if (!MagicTradition.Create(xmlTraditionDataNode))
+                                        MagicTradition.ResetTradition();
+                                }
+                                else
+                                    MagicTradition.ResetTradition();
+                            }
+                            else
+                                MagicTradition.ResetTradition();
+                        }
                         if (!Created && !DEPEnabled && !MAGEnabled)
                             EssenceAtSpecialStart = decimal.MinValue;
-                        TechnomancerStream = string.Empty;
                     }
 
                     ImprovementManager.ClearCachedValue(this, Improvement.ImprovementType.MatrixInitiativeDice);

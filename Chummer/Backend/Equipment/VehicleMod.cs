@@ -33,7 +33,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class VehicleMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanEquip, IHasSource
+    public class VehicleMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanEquip, IHasSource, IHasRating
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -487,6 +487,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _strSlots;
             set => _strSlots = value;
+        }
+
+        /// <summary>
+        /// Vehicle Mod capacity.
+        /// </summary>
+        public string Capacity
+        {
+            get => _strCapacity;
+            set => _strCapacity = value;
         }
 
         /// <summary>

@@ -970,7 +970,7 @@ namespace Chummer
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})";
                         }
-                        return objCharacter.MagicTradition == strNodeInnerText;
+                        return objCharacter.MagicTradition.Name == strNodeInnerText;
                     }
                 default:
                     Utils.BreakIfDebug();
@@ -1045,6 +1045,49 @@ namespace Chummer
                 intAvail += Convert.ToInt32(objProcess);
 
             return intAvail <= objCharacter.MaximumAvailability;
+        }
+
+        public static bool CheckNuyenRestriction(XmlNode objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1)
+        {
+            // Cost.
+            decimal decCost = 0.0m;
+            XmlNode objCostNode = objXmlGear["cost"];
+            if (objCostNode == null)
+            {
+                int intCostRating = 1;
+                foreach (XmlNode objLoopNode in objXmlGear.SelectNodes("*"))
+                {
+                    if (objLoopNode.Name.StartsWith("cost"))
+                    {
+                        string strLoopCostString = objLoopNode.Name.Substring(4);
+                        if (int.TryParse(strLoopCostString, out int intTmp) && intTmp <= intRating)
+                        {
+                            intCostRating = Math.Max(intCostRating, intTmp);
+                        }
+                    }
+                }
+                objCostNode = objXmlGear.SelectSingleNode("cost" + intCostRating.ToString(GlobalOptions.InvariantCultureInfo));
+            }
+            string strCost = objCostNode?.InnerText;
+            if (!string.IsNullOrEmpty(strCost))
+            {
+                if (strCost.StartsWith("FixedValues("))
+                {
+                    string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
+                }
+                else if (strCost.StartsWith("Variable"))
+                {
+                    strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
+                    int intHyphenIndex = strCost.IndexOf('-');
+                    strCost = intHyphenIndex != -1 ? strCost.Substring(0, intHyphenIndex) : strCost.FastEscape('+');
+                }
+
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    decCost = Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo);
+            }
+            return decMaxNuyen >= decCost * decCostMultiplier;
         }
 
         //TODO: Might be a better location for this; Class names are screwy.
@@ -1188,7 +1231,7 @@ namespace Chummer
                             }
                         case "technique":
                             {
-                                List<MartialArtTechnique> objTempList = null;
+                                List<MartialArtTechnique> objTempList;
                                 if (objParent is MartialArt objArt)
                                 {
                                     objTempList = new List<MartialArtTechnique>(objArt.Techniques.Count);
@@ -1696,61 +1739,97 @@ namespace Chummer
                     }
                 case "metamagicart":
                 case "art":
+                {
+                    // Street Grimoire adds High Arts, which group metamagics and such together. If we're ignoring this requirement 
+                    if (objCharacter.Options.IgnoreArt)
                     {
-                        if (objCharacter.Options.IgnoreArt)
+                        // If we're looking for an art, return true. 
+                        if (xmlNode.Name == "art")
                         {
-                            XPathNavigator xmlMetamagicDoc = XmlManager.Load("metamagic.xml").GetFastNavigator().SelectSingleNode("/chummer");
-                            if (blnShowMessage)
-                            {
-                                string strTranslateArt = xmlMetamagicDoc?.SelectSingleNode($"arts/art[name = \"{strNodeInnerText}\"]/translate")?.Value;
-                                strName = !string.IsNullOrEmpty(strTranslateArt)
-                                    ? $"{Environment.NewLine}\t{strTranslateArt} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})"
-                                    : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})";
-                            }
-                            if (xmlNode.Name == "art")
-                            {
-                                return true;
-                            }
+                            return true;
+                        }
 
-                            if (xmlMetamagicDoc != null)
+                        XPathNavigator xmlMetamagicDoc = XmlManager.Load("metamagic.xml").GetFastNavigator()
+                            .SelectSingleNode("/chummer");
+                        if (blnShowMessage)
+                        {
+                            string strTranslateArt = xmlMetamagicDoc
+                                ?.SelectSingleNode($"arts/art[name = \"{strNodeInnerText}\"]/translate")?.Value;
+                            strName = !string.IsNullOrEmpty(strTranslateArt)
+                                ? $"{Environment.NewLine}\t{strTranslateArt} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})"
+                                : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})";
+                        }
+
+                        if (xmlMetamagicDoc != null)
+                        {
+                            // Loop through the data file for each metamagic to find the Required and Forbidden nodes. 
+                            foreach (Metamagic metamagic in objCharacter.Metamagics)
                             {
-                                foreach (Metamagic metamagic in objCharacter.Metamagics)
+                                XPathNavigator xmlMetamagicNode =
+                                    xmlMetamagicDoc.SelectSingleNode(
+                                        $"metamagics/metamagic[name = \"{metamagic.Name}\"]");
+                                if (xmlMetamagicNode != null)
                                 {
-                                    XPathNavigator xmlMetamagicNode = xmlMetamagicDoc.SelectSingleNode($"metamagics/metamagic[name = \"{metamagic.Name}\"]");
-                                    if (xmlMetamagicNode != null)
+                                    if (xmlMetamagicNode.SelectSingleNode(
+                                            $"required/art[text() = \"{strNodeInnerText}\"]") != null)
                                     {
-                                        if (xmlMetamagicNode.SelectSingleNode($"required/art[text() = \"{strNodeInnerText}\"]") != null)
-                                        {
-                                            return true;
-                                        }
-
-                                        if (xmlMetamagicNode.SelectSingleNode($"forbidden/art[text() = \"{strNodeInnerText}\"]") != null)
-                                        {
-                                            return false;
-                                        }
+                                        return true;
                                     }
+
+                                    if (xmlMetamagicNode.SelectSingleNode(
+                                            $"forbidden/art[text() = \"{strNodeInnerText}\"]") != null)
+                                    {
+                                        return false;
+                                    }
+                                }
+                                else
+                                {
+                                    // We couldn't find a metamagic with this name, so it's probably an art. Try and find the node.
+                                    // If we can't, it's probably a data entry error. 
+                                    xmlMetamagicNode =
+                                        xmlMetamagicDoc.SelectSingleNode($"arts/art[name = \"{metamagic.Name}\"]");
+                                    if (xmlMetamagicNode == null)
+                                        Utils.BreakIfDebug();
+                                    else
+                                        return true;
                                 }
                             }
                         }
-                        else
+
+                        return true;
+                    }
+                    else
+                    {
+                        Art objArt = objCharacter.Arts.FirstOrDefault(x => x.Name == strNodeInnerText);
+                        if (objArt != null)
                         {
-                            Art objArt = objCharacter.Arts.FirstOrDefault(x => x.Name == strNodeInnerText);
-                            if (objArt != null)
+                            if (blnShowMessage)
+                                strName = objArt.DisplayNameShort(GlobalOptions.Language);
+                            return true;
+                        }
+
+                        // In some cases, we want to proxy metamagics for arts. If we haven't found a match yet, check it here. 
+                        if (xmlNode.Name == "metamagicart")
+                        {
+                            Metamagic objMetamagic =
+                                objCharacter.Metamagics.FirstOrDefault(x => x.Name == strNodeInnerText);
+                            if (objMetamagic != null)
                             {
                                 if (blnShowMessage)
-                                    strName = objArt.DisplayNameShort(GlobalOptions.Language);
+                                    strName = objMetamagic.DisplayNameShort(GlobalOptions.Language);
                                 return true;
                             }
                         }
-                        if (blnShowMessage)
-                        {
-                            string strTranslate = XmlManager.Load("metamagic.xml").SelectSingleNode($"/chummer/arts/art[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
-                            strName = !string.IsNullOrEmpty(strTranslate)
-                                ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})"
-                                : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})";
-                        }
+
+                        if (!blnShowMessage) return false;
+                        string strTranslate = XmlManager.Load("metamagic.xml")
+                            .SelectSingleNode($"/chummer/arts/art[name = \"{strNodeInnerText}\"]/translate")?.InnerText;
+                        strName = !string.IsNullOrEmpty(strTranslate)
+                            ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})"
+                            : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})";
                         return false;
                     }
+                }
                 case "metatype":
                     {
                         if (blnShowMessage)
@@ -2001,7 +2080,7 @@ namespace Chummer
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})";
                         }
-                        return objCharacter.MagicTradition == strNodeInnerText;
+                        return objCharacter.MagicTradition.Name == strNodeInnerText;
                     }
                 default:
                     Utils.BreakIfDebug();
@@ -2070,27 +2149,27 @@ namespace Chummer
             return intAvail <= objCharacter.MaximumAvailability;
         }
 
-        public static bool CheckNuyenRestriction(XPathNavigator objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m)
+        public static bool CheckNuyenRestriction(XPathNavigator objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1)
         {
             // Cost.
             decimal decCost = 0.0m;
             XPathNavigator objCostNode = objXmlGear.SelectSingleNode("cost");
-            int intRating = 1;
             if (objCostNode == null)
             {
-                intRating = int.MaxValue;
-                foreach (XPathNavigator objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
+                int intCostRating = 1;
+                foreach (XmlNode objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
                 {
                     if (objLoopNode.Name.StartsWith("cost"))
                     {
                         string strLoopCostString = objLoopNode.Name.Substring(4);
-                        if (int.TryParse(strLoopCostString, out int intTmp))
+                        if (int.TryParse(strLoopCostString, out int intTmp) && intTmp <= intRating)
                         {
-                            intRating = Math.Min(intRating, intTmp);
+                            intCostRating = Math.Max(intCostRating, intTmp);
                         }
                     }
                 }
-                objCostNode = objXmlGear.SelectSingleNode("cost" + intRating.ToString(GlobalOptions.InvariantCultureInfo));
+                
+                objCostNode = objXmlGear.SelectSingleNode("cost" + intCostRating.ToString(GlobalOptions.InvariantCultureInfo));
             }
             string strCost = objCostNode?.Value;
             if (!string.IsNullOrEmpty(strCost))

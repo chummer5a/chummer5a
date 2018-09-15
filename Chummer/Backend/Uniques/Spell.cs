@@ -909,9 +909,9 @@ namespace Chummer
         }
         #endregion
 
-        public bool Remove(Character characterObject, bool confirmDelete = true)
+        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
-            if (confirmDelete)
+            if (blnConfirmDelete)
             {
                 string strMessage = LanguageManager.GetString("Message_DeleteSpell", GlobalOptions.Language);
                 if (!characterObject.ConfirmDelete(strMessage)) return false;

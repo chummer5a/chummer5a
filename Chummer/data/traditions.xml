@@ -494,7 +494,7 @@
       <page>75</page>
       <spirits>
         <spiritcombat>Spirit of Earth</spiritcombat>
-        <spiritdetection>Spirit of Guidance</spiritdetection>
+        <spiritdetection>Guidance Spirit</spiritdetection>
         <spirithealth>Spirit of Water</spirithealth>
         <spiritillusion>Spirit of Air</spiritillusion>
         <spiritmanipulation>Spirit of Fire</spiritmanipulation>
@@ -532,6 +532,13 @@
       <id>4bbe470b-51a7-494b-8ccf-5c638e141049</id>
       <name>Elder God</name>
       <drain>WIL + INT</drain>
+      <bonus>
+        <drainresist>-2</drainresist>
+        <spellcategory>
+          <category>Illusion</category>
+          <val>3</val>
+        </spellcategory>
+      </bonus>
       <source>FA</source>
       <page>78</page>
       <spirits>
@@ -577,6 +584,16 @@
       <id>b8b93cfb-5bdf-47c6-b773-45c59ef7bd34</id>
       <name>Missionist</name>
       <drain>WIL + CHA</drain>
+      <bonus>
+        <spellcategory>
+          <category>Health</category>
+          <val>2</val>
+        </spellcategory>
+        <spellcategory>
+          <category>Combat</category>
+          <val>-2</val>
+        </spellcategory>
+      </bonus>
       <source>FA</source>
       <page>81</page>
       <spirits>
@@ -619,6 +636,21 @@
       <id>52348ffc-2d9b-427b-a546-863a9670127e</id>
       <name>Pariah</name>
       <drain>WIL + LOG</drain>
+      <bonus>
+        <!-- TODO: Disable Conjuring, Binding, Spellcasting, Ritual Spellcasting, Artificing, and Alchemy -->
+        <specificskill>
+          <name>Banishing</name>
+          <bonus>2</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Counterspelling</name>
+          <bonus>2</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Disenchanting</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </bonus>
       <source>FA</source>
       <page>85</page>
       <spirits />
@@ -689,7 +721,7 @@
       <page>111</page>
       <spirits>
         <spiritcombat>Guardian Spirit</spiritcombat>
-        <spiritdetection>Spirit of Guidance</spiritdetection>
+        <spiritdetection>Guidance Spirit</spiritdetection>
         <spirithealth>Spirit of Earth</spirithealth>
         <spiritillusion>Spirit of Water</spiritillusion>
         <spiritmanipulation>Task Spirit</spiritmanipulation>
@@ -718,7 +750,7 @@
       <spirits>
         <spiritcombat>Spirit of Water</spiritcombat>
         <spiritdetection>Spirit of Earth</spiritdetection>
-        <spirithealth>Spirit of Guidance</spirithealth>
+        <spirithealth>Guidance Spirit</spirithealth>
         <spiritillusion>Spirit of Air</spiritillusion>
         <spiritmanipulation>Plant Spirit</spiritmanipulation>
       </spirits>
@@ -745,7 +777,7 @@
       <page>115</page>
       <spirits>
         <spiritcombat>Spirit of Earth</spiritcombat>
-        <spiritdetection>Spirit of Guidance</spiritdetection>
+        <spiritdetection>Guidance Spirit</spiritdetection>
         <spirithealth>Plant Spirit</spirithealth>
         <spiritillusion>Spirit of Man</spiritillusion>
         <spiritmanipulation>Spirit of Water</spiritmanipulation>
@@ -793,7 +825,7 @@
         <spiritcombat>Spirit of Beasts</spiritcombat>
         <spiritdetection>Task Spirit</spiritdetection>
         <spirithealth>Spirit of Earth</spirithealth>
-        <spiritillusion>Spirit of Guidance</spiritillusion>
+        <spiritillusion>Guidance Spirit</spiritillusion>
         <spiritmanipulation>Spirit of Man</spiritmanipulation>
       </spirits>
     </tradition>

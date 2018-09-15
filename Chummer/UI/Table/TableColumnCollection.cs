@@ -26,7 +26,7 @@ namespace Chummer.UI.Table
     public sealed class TableColumnCollection<T> : IEnumerable<TableColumn<T>>
         where T : class, INotifyPropertyChanged
     {
-        private readonly List<TableColumn<T>> _columns = new List<TableColumn<T>>();
+        private readonly List<TableColumn<T>> _lstColumns = new List<TableColumn<T>>();
         private readonly TableView<T> _table;
 
         internal TableColumnCollection(TableView<T> table)
@@ -40,11 +40,11 @@ namespace Chummer.UI.Table
         /// <param name="index"></param>
         /// <returns></returns>
         public TableColumn<T> this[int index] {
-            get => _columns[index];
-            //set => _columns[index] = value;
+            get => _lstColumns[index];
+            //set => _lstColumns[index] = value;
         }
 
-        public int Count => _columns.Count;
+        public int Count => _lstColumns.Count;
 
         public void Add(TableColumn<T> column) {
             if (column == null)
@@ -52,18 +52,18 @@ namespace Chummer.UI.Table
                 throw new ArgumentException();
             }
 
-            _columns.Add(column);
+            _lstColumns.Add(column);
             _table.ColumnAdded(column);
         }
 
         public IEnumerator<TableColumn<T>> GetEnumerator()
         {
-            return _columns.GetEnumerator();
+            return _lstColumns.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return _columns.GetEnumerator();
+            return _lstColumns.GetEnumerator();
         }
     }
 }

@@ -1052,9 +1052,9 @@ namespace Chummer.Backend.Equipment
         #endregion
         #endregion
 
-        public bool Remove(Character characterObject, bool confirmDelete = true)
+        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
-            if (!confirmDelete) return characterObject.Lifestyles.Remove(this);
+            if (!blnConfirmDelete) return characterObject.Lifestyles.Remove(this);
             return characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle", GlobalOptions.Language)) && characterObject.Lifestyles.Remove(this);
         }
 

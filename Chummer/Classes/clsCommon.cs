@@ -51,6 +51,11 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static object EvaluateInvariantXPath(string strXPath, out bool blnIsSuccess)
         {
+            if (string.IsNullOrWhiteSpace(strXPath))
+            {
+                blnIsSuccess = false;
+                return null;
+            }
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
                 blnIsSuccess = false;
@@ -60,7 +65,7 @@ namespace Chummer
             object objReturn;
             try
             {
-                objReturn = s_ObjXPathNavigator.Evaluate(strXPath);
+                objReturn = s_ObjXPathNavigator.Evaluate(strXPath.TrimStart('+'));
                 blnIsSuccess = true;
             }
             catch (Exception)

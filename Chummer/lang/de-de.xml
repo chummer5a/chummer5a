@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -344,6 +344,10 @@
 		<string>
 			<key>String_Qualities</key>
 			<text>Gaben</text>
+		</string>
+		<string>
+			<key>Label_Qualities</key>
+			<text>Gaben:</text>
 		</string>
 		<string>
 			<key>Label_Metavariant</key>
@@ -6722,7 +6726,15 @@
 		</string>
 		<string>
 			<key>String_Special</key>
+			<text>Spezial</text>
+		</string>
+		<string>
+			<key>String_SpecialAttributes</key>
 			<text>Spezialattribute</text>
+		</string>
+		<string>
+			<key>Label_SpecialAttributes</key>
+			<text>Spezialattribute:</text>
 		</string>
 		<string>
 			<key>String_SpecialAttributePoints</key>
@@ -7696,7 +7708,7 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Comforts</key>
-			<text>Komfort: [{0}/{1}]</text>
+			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>String_DataProcessing</key>
@@ -7740,7 +7752,7 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Lifestyle</key>
-			<text>Lebensstil:</text>
+			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>String_Limit</key>
@@ -7804,7 +7816,7 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Security</key>
-			<text>Sicherheit: [{0}/{1}]</text>
+			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>String_KnowledgeSkillFilterAll</key>
@@ -7876,7 +7888,7 @@
 		</string>
 		<string>
 			<key>Label_SelectBP_StartingKarma</key>
-			<text>Anfangs-\nKarma</text>
+			<text>Anfangs-Karma</text>
 		</string>
 		<string>
 			<key>String_SumtoTen</key>
@@ -7891,8 +7903,12 @@
 			<text>Rituale</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Area</key>
-			<text>Gegend: [{0}/{1}]</text>
+			<key>Label_SelectAdvancedLifestyle_Base_Neighborhood</key>
+			<text>[{0}/{1}]</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_Neighborhood</key>
+			<text>Gegend:</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_UnusedLP</key>
@@ -8976,7 +8992,7 @@
 		</string>
 		<string>
 			<key>Label_AddictionThreshold</key>
-			<text>Schwellwert</text>
+			<text>Schwellwert:</text>
 		</string>
 		<string>
 			<key>Label_DrugEffects</key>

@@ -307,11 +307,11 @@ namespace Chummer
         }
         #endregion
 
-        public bool Remove(Character character, bool confirmDelete = true)
+        public bool Remove(Character character, bool blnConfirmDelete = true)
         {
             if (Grade <= 0)
                 return false;
-            if (confirmDelete)
+            if (blnConfirmDelete)
             {
                 if (!character.ConfirmDelete(LanguageManager.GetString("Message_DeleteArt", GlobalOptions.Language)))
                     return false;

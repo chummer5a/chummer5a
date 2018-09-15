@@ -203,9 +203,9 @@ namespace Chummer
 
         #region Methods
 
-        public bool Remove(Character objCharacter, bool confirmDelete)
+        public bool Remove(Character objCharacter, bool blnConfirmDelete)
         {
-            if (confirmDelete)
+            if (blnConfirmDelete)
             {
                 if (!objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt",
                     GlobalOptions.Language)))

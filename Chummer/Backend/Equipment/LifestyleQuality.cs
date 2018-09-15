@@ -471,12 +471,16 @@ namespace Chummer.Backend.Equipment
             }
             else if (Multiplier < 0)
             {
-                strReturn += $" [-{Multiplier}%]";
+                strReturn += $" [{Multiplier}%]";
             }
 
             if (Cost > 0)
             {
                 strReturn += " [+" + Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture) + "¥]";
+            }
+            else if (Cost < 0)
+            {
+                strReturn += " [" + Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture) + "¥]";
             }
             return strReturn;
         }

@@ -24,6 +24,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
  using Chummer.Backend.Equipment;
+using Chummer.Backend.Uniques;
 
 namespace Chummer
 {
@@ -312,20 +313,14 @@ namespace Chummer
         {
             if (e.PropertyName == nameof(Character.MagicTradition))
             {
-                if (_objSpirit.EntityType == SpiritType.Spirit)
-                    RebuildSpiritList(_objSpirit.CharacterObject.MagicTradition);
-            }
-            else if (e.PropertyName == nameof(Character.TechnomancerStream))
-            {
-                if (_objSpirit.EntityType == SpiritType.Sprite)
-                    RebuildSpiritList(_objSpirit.CharacterObject.TechnomancerStream);
+                RebuildSpiritList(_objSpirit.CharacterObject.MagicTradition);
             }
         }
 
         // Rebuild the list of Spirits/Sprites based on the character's selected Tradition/Stream.
-        public void RebuildSpiritList(string strTradition)
+        public void RebuildSpiritList(Tradition objTradition)
         {
-            if (string.IsNullOrEmpty(strTradition))
+            if (objTradition == null)
             {
                 return;
             }
@@ -341,13 +336,13 @@ namespace Chummer
             }
 
             List<ListItem> lstCritters = new List<ListItem>();
-            if (strTradition == "Custom")
+            if (objTradition.IsCustomTradition)
             {
-                string strSpiritCombat = _objSpirit.CharacterObject.SpiritCombat;
-                string strSpiritDetection = _objSpirit.CharacterObject.SpiritDetection;
-                string strSpiritHealth = _objSpirit.CharacterObject.SpiritHealth;
-                string strSpiritIllusion = _objSpirit.CharacterObject.SpiritIllusion;
-                string strSpiritManipulation = _objSpirit.CharacterObject.SpiritManipulation;
+                string strSpiritCombat = objTradition.SpiritCombat;
+                string strSpiritDetection = objTradition.SpiritDetection;
+                string strSpiritHealth = objTradition.SpiritHealth;
+                string strSpiritIllusion = objTradition.SpiritIllusion;
+                string strSpiritManipulation = objTradition.SpiritManipulation;
 
                 if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritCombat))
                 {
@@ -381,7 +376,7 @@ namespace Chummer
             }
             else
             {
-                if (objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + strTradition + "\"]/spirits/spirit[. = \"All\"]") != null)
+                if (objTradition.GetNode()?.SelectSingleNode("spirits/spirit[. = \"All\"]") != null)
                 {
                     if (lstLimitCategories.Count == 0)
                     {
@@ -404,7 +399,7 @@ namespace Chummer
                 }
                 else
                 {
-                    using (XmlNodeList xmlSpiritList = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + strTradition + "\"]/spirits")?.ChildNodes)
+                    using (XmlNodeList xmlSpiritList = objTradition.GetNode()?.SelectSingleNode("spirits")?.ChildNodes)
                         if (xmlSpiritList != null)
                             foreach (XmlNode objXmlSpirit in xmlSpiritList)
                             {

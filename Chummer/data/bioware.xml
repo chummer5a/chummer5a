@@ -224,11 +224,7 @@
       <avail>12</avail>
       <cost>24000</cost>
       <bonus>
-        <limitmodifier>
-          <limit>Physical</limit>
-          <value>1</value>
-          <condition>Only for Escape Artist</condition>
-        </limitmodifier>
+        <physicallimit>1</physicallimit>
         <specificskill>
           <name>Escape Artist</name>
           <bonus>1</bonus>
@@ -237,6 +233,7 @@
       <forbidden>
         <oneof>
           <cyberware>Smart Articulation</cyberware>
+          <bioware>Elastic Joints</bioware>
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -836,6 +833,13 @@
           <condition>Only for Escape Artist</condition>
         </limitmodifier>
       </bonus>
+        <forbidden>
+          <oneof>
+            <bioware>Elastic Joints</bioware>
+            <bioware>Enhanced Articulation</bioware>
+            <cyberware>Smart Articulation</cyberware>
+          </oneof>
+        </forbidden>
       <source>CF</source>
       <page>112</page>
     </bioware>
