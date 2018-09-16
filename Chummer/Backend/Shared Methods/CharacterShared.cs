@@ -3482,8 +3482,8 @@ namespace Chummer
                 {
                     nodRoot = new TreeNode
                     {
-                        Tag = "Node_SelectedGear",
-                        Text = LanguageManager.GetString("Node_SelectedGear", GlobalOptions.Language)
+                        Tag = "Node_SelectedDrugs",
+                        Text = LanguageManager.GetString("Node_SelectedDrugs", GlobalOptions.Language)
                     };
                     treGear.Nodes.Insert(0, nodRoot);
                 }

@@ -6281,18 +6281,6 @@
       <devicerating>4</devicerating>
     </gear>
     <gear>
-      <id>01fc2535-e4a1-4a72-9f13-f197a58d6e7f</id>
-      <name>Trode Patch</name>
-      <category>Electronics Accessories</category>
-      <rating>0</rating>
-      <source>SR5</source>
-      <page>439</page>
-      <avail>0</avail>
-      <armorcapacity>[2]</armorcapacity>
-      <cost>1250</cost>
-      <devicerating>4</devicerating>
-    </gear>
-    <gear>
       <id>a14a00c5-439f-45d1-9703-55bf5525e7f8</id>
       <name>SmartSafety Bracelet</name>
       <category>Electronics Accessories</category>
@@ -11955,6 +11943,8 @@
       <required>
         <geardetails>
           <OR>
+            <NONE />
+            <category>Commlink</category>
             <category>Cyberdecks</category>
             <category>Cyberterminals</category>
             <category>Custom</category>

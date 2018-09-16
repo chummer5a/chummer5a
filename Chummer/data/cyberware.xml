@@ -5628,6 +5628,31 @@
     </cyberware>
     <!-- End Region -->
     <!-- End Region -->
+    <!-- Region Bullets and Bandages -->
+    <cyberware>
+      <id>b933e9e1-3ec3-45fd-8918-f88cc14d3ea0</id>
+      <name>STATscan</name>
+      <limit>{arm}</limit>
+      <category>Cyberlimb Accessory</category>
+      <ess>0</ess>
+      <capacity>[2]</capacity>
+      <avail>8</avail>
+      <cost>2500</cost>
+      <source>BB</source>
+      <page>22</page>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <required>
+        <parentdetails>
+          <OR>
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Hand</name>
+            <name operation="contains">Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
+    </cyberware>
+    <!-- End Region -->
     <!-- Region Hard Targets -->
     <cyberware>
       <id>2e533c08-7403-42de-a9cc-97ded71fe142</id>
