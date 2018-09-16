@@ -65,6 +65,7 @@ Application Changes:
 - Fixed an issue where the "Notes" menu point under the Advanced Lifestyles context menu strip would not get translated properly. Fixes #2998.
 - The Complex Forms & Sprites tab will now display the character's Paragon and information relevant to it if they have chosen a Paragon.
 - Fixed many cases where the presence of a quotation mark in an item's name would cause the program to crash. Fixes #3007.
+- Fixed cases where having certain characters in the notes and/or custom name fields would cause the program to crash when displaying the affected field's tooltip. Fixes #2982.
 
 Data Changes:
 
