@@ -167,7 +167,7 @@ namespace Chummer.Backend.Equipment
                             objXmlArmorGear.TryGetInt32FieldQuickly("rating", ref intRating);
                             objXmlArmorGear.TryGetStringFieldQuickly("select", ref strForceValue);
 
-                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlArmorGear.InnerText + "\"]");
+                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlArmorGear.InnerText.CleanXPath() + "]");
                             Gear objGear = new Gear(_objCharacter);
 
                             objGear.Create(objXmlGear, intRating, lstWeapons, strForceValue, !blnSkipSelectForms);

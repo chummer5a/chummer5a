@@ -2974,7 +2974,7 @@ namespace Translator
                         return;
                     string strDataGearName = xmlDataGearNode.SelectSingleNode("name")?.Value ?? string.Empty;
                     string strDataGearId = xmlDataGearNode.SelectSingleNode("id")?.Value ?? string.Empty;
-                    XmlNode xmlGearNode = xmlGearNodesParent.SelectSingleNode("gear[id=\"" + strDataGearId + "\"]");
+                    XmlNode xmlGearNode = xmlGearNodesParent.SelectSingleNode("gear[id=" + strDataGearId.CleanXPath() + "]");
                     if (xmlGearNode != null)
                     {
                         if (xmlGearNode["id"] == null)
@@ -3051,7 +3051,7 @@ namespace Translator
                                     xmlGearNode.Attributes.RemoveAt(i);
                             }
 
-                        if (xmlDataGearNodeList?.SelectSingleNode("gear[id = \"" + xmlGearNode["id"]?.InnerText + "\"]") == null)
+                        if (xmlDataGearNodeList?.SelectSingleNode("gear[id = " + xmlGearNode["id"]?.InnerText.CleanXPath() + "]") == null)
                         {
 #if !DELETE
                             {
@@ -4607,7 +4607,7 @@ namespace Translator
                             xmlLimbOptionNode.Attributes.RemoveAt(i);
                     }
 
-                if (xmlDataLimbCountsNodeList?.SelectSingleNode("limb[name = \"" + xmlLimbOptionNode["name"]?.InnerText + "\"]") == null)
+                if (xmlDataLimbCountsNodeList?.SelectSingleNode("limb[name = " + xmlLimbOptionNode["name"]?.InnerText.CleanXPath() + "]") == null)
                 {
 #if !DELETE
                     {
@@ -4686,7 +4686,7 @@ namespace Translator
                             xmlPDFArgumentNode.Attributes.RemoveAt(i);
                     }
 
-                if (xmlDataPDFArgumentsNodeList?.SelectSingleNode("pdfargument[name = \"" + xmlPDFArgumentNode["name"]?.InnerText + "\"]") == null)
+                if (xmlDataPDFArgumentsNodeList?.SelectSingleNode("pdfargument[name = " + xmlPDFArgumentNode["name"]?.InnerText.CleanXPath() + "]") == null)
                 {
 #if !DELETE
                     {
@@ -5610,7 +5610,7 @@ namespace Translator
                     if (objWorker.CancellationPending)
                         return;
                     string strDataRangeName = xmlDataRangeNode.SelectSingleNode("name")?.Value ?? string.Empty;
-                    XmlNode xmlRangeNode = xmlRangeNodesParent.SelectSingleNode("range[name = \"" + strDataRangeName + "\"]");
+                    XmlNode xmlRangeNode = xmlRangeNodesParent.SelectSingleNode("range[name = " + strDataRangeName.CleanXPath() + "]");
                     if (xmlRangeNode != null)
                     {
                         if (xmlRangeNode["name"] == null)
@@ -5658,7 +5658,7 @@ namespace Translator
                                     xmlRangeNode.Attributes.RemoveAt(i);
                             }
 
-                        if (xmlDataRangeNodeList?.SelectSingleNode("range[name = \"" + xmlRangeNode["name"]?.InnerText + "\"]") == null)
+                        if (xmlDataRangeNodeList?.SelectSingleNode("range[name = " + xmlRangeNode["name"]?.InnerText.CleanXPath() + "]") == null)
                         {
 #if !DELETE
                             {
@@ -6608,7 +6608,7 @@ namespace Translator
                                     xmlPowerNode.Attributes.RemoveAt(i);
                             }
 
-                        if (xmlDataPowerNodeList?.SelectSingleNode("power[name = \"" + xmlPowerNode["name"]?.InnerText + "\"]") == null)
+                        if (xmlDataPowerNodeList?.SelectSingleNode("power[name = " + xmlPowerNode["name"]?.InnerText.CleanXPath() + "]") == null)
                         {
 #if !DELETE
                             {
@@ -8314,7 +8314,7 @@ namespace Translator
                                 }
                             }
 
-                            if (xmlDataSubItemsList.SelectSingleNode(strSubItem + "[name = \"" + xmlSubItem["name"]?.InnerText + "\"]") == null)
+                            if (xmlDataSubItemsList.SelectSingleNode(strSubItem + "[name = " + xmlSubItem["name"]?.InnerText.CleanXPath() + "]") == null)
                             {
 #if !DELETE
                                     {

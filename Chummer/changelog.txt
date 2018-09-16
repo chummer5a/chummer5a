@@ -64,6 +64,7 @@ Application Changes:
 - Fixed various issues that caused comboboxes in controls for skills and/or knowledge skills to not load translations properly. Fixes #3000.
 - Fixed an issue where the "Notes" menu point under the Advanced Lifestyles context menu strip would not get translated properly. Fixes #2998.
 - The Complex Forms & Sprites tab will now display the character's Paragon and information relevant to it if they have chosen a Paragon.
+- Fixed many cases where the presence of a quotation mark in an item's name would cause the program to crash. Fixes #3007.
 
 Data Changes:
 

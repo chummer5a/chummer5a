@@ -1553,7 +1553,7 @@ namespace Chummer.Classes
             Log.Info("Adding Gear");
             string strName = bonusNode["name"]?.InnerText ?? string.Empty;
             string strCategory = bonusNode["category"]?.InnerText ?? string.Empty;
-            XmlNode node = XmlManager.Load("gear.xml").SelectSingleNode("/chummer/gears/gear[name = \"" + strName + "\" and category = \"" + strCategory + "\"]");
+            XmlNode node = XmlManager.Load("gear.xml").SelectSingleNode("/chummer/gears/gear[name = " + strName.CleanXPath() + " and category = " + strCategory.CleanXPath() + "]");
 
             if (node == null)
                 throw new AbortedException();
