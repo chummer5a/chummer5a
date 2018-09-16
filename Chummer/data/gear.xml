@@ -1367,6 +1367,17 @@
       <addweapon>Missile: High Explosive</addweapon>
       <cost>2100</cost>
     </gear>
+    <gear>
+      <id>9ff4b57d-4aaf-482f-ab67-66e10ed58e13</id>
+      <name>Ammo: Renraku/Ingram Supermach</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>132</page>
+      <avail>16F</avail>
+      <cost>20</cost>
+      <costfor>10</costfor>
+    </gear>
     <!-- Region Kill Code-->
 
       <gear>
