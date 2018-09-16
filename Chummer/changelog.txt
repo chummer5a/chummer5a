@@ -140,6 +140,7 @@ Changed Strings:
 - Label_SelectBP_SumToX
 - Label_SelectBP_MaxNuyen
 - Label_AddictionThreshold
+- Menu_Notes
 
 Removed Strings:
 

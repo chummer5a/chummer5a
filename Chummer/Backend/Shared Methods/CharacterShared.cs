@@ -253,6 +253,8 @@ namespace Chummer
                     AttributeControl objControl = new AttributeControl(objAttrib);
                     objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
                     pnlAttributes.Controls.Add(objControl);
+                    objControl.Width = pnlAttributes.Width;
+                    objControl.Anchor |= AnchorStyles.Right;
                 }
             }
             else
@@ -266,6 +268,8 @@ namespace Chummer
                                 AttributeControl objControl = new AttributeControl(objAttrib);
                                 objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
                                 pnlAttributes.Controls.Add(objControl);
+                                objControl.Width = pnlAttributes.Width;
+                                objControl.Anchor |= AnchorStyles.Right;
                             }
                         }
                         break;
@@ -314,6 +318,8 @@ namespace Chummer
                                 AttributeControl objControl = new AttributeControl(objAttrib);
                                 objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
                                 pnlAttributes.Controls.Add(objControl);
+                                objControl.Width = pnlAttributes.Width;
+                                objControl.Anchor |= AnchorStyles.Right;
                             }
                         }
                         break;
