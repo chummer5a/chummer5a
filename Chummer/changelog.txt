@@ -61,6 +61,7 @@ Application Changes:
 - Fixed an issue where saved custom drugs would not show up properly afted a character is loaded.
 - Lifestyle qualities will now also display their Extra information in the Shadowrun 5 character sheet set.
 - Fixed a potential crash in Create mode that could occur if an attribute's karma levels exceeded the maximum possible karma levels. Fixes #3004.
+- Fixed various issues that caused comboboxes in controls for skills and/or knowledge skills to not load translations properly. Fixes #3000.
 
 Data Changes:
 
