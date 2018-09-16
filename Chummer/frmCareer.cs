@@ -195,7 +195,10 @@ namespace Chummer
             Timekeeper.Finish("load_free");
 
             Timekeeper.Start("load_frm_career");
-            
+
+            cmdRollSpell.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
+            cmdRollDrain.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
+
             mnuSpecialAddBiowareSuite.Visible = CharacterObjectOptions.AllowBiowareSuites;
             
             txtGroupName.DataBindings.Add("Text", CharacterObject, nameof(Character.GroupName), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -633,6 +636,8 @@ namespace Chummer
 
             Utils.DoDatabinding(lblMentorSpirit, "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayName));
             Utils.DoDatabinding(lblMentorSpiritInformation, "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayInformation));
+            Utils.DoDatabinding(lblParagon, "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayName));
+            Utils.DoDatabinding(lblParagonInformation, "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayInformation));
 
             Utils.DoDatabinding(lblComposure, "ToolTipText", CharacterObject, nameof(Character.ComposureToolTip));
             Utils.DoDatabinding(lblComposure, "Text", CharacterObject, nameof(Character.Composure));
@@ -1121,7 +1126,6 @@ namespace Chummer
                         treFoci.Visible = CharacterObject.MAGEnabled;
                         cmdCreateStackedFocus.Visible = CharacterObject.MAGEnabled;
                         lblAstralINI.Visible = CharacterObject.MAGEnabled;
-                        lblSpirits.Visible = CharacterObject.MAGEnabled;
                         panSpirits.Visible = CharacterObject.MAGEnabled;
                         cmdAddSpirit.Visible = CharacterObject.MAGEnabled;
                     }
@@ -1241,7 +1245,6 @@ namespace Chummer
                                 SpecialAttributes.Remove(CharacterObject.MAGAdept);
                             }
                         }
-                        lblSpirits.Visible = CharacterObject.MagicianEnabled;
                         cmdAddSpirit.Visible = CharacterObject.MagicianEnabled;
                         panSpirits.Visible = CharacterObject.MagicianEnabled;
                     }
@@ -1400,6 +1403,9 @@ namespace Chummer
                         lblMentorSpirit.Visible = CharacterObject.HasMentorSpirit;
                         lblMentorSpiritLabel.Visible = CharacterObject.HasMentorSpirit;
                         lblMentorSpiritInformation.Visible = CharacterObject.HasMentorSpirit;
+                        lblParagon.Visible = CharacterObject.HasMentorSpirit;
+                        lblParagonLabel.Visible = CharacterObject.HasMentorSpirit;
+                        lblParagonInformation.Visible = CharacterObject.HasMentorSpirit;
                         break;
                     }
                 case nameof(Character.UseMysticAdeptPPs):
@@ -15959,76 +15965,11 @@ namespace Chummer
 
         private void MoveControls()
         {
-            // Common tab.
-            lblAlias.Left = Math.Max(288, cmdDeleteQuality.Left + cmdDeleteQuality.Width + 6);
-            txtAlias.Left = lblAlias.Left + lblAlias.Width + 6;
-            txtAlias.Width = lblMetatypeLabel.Left - txtAlias.Left - 6;
-
-            // Skills tab.
-
-            // Martial Arts tab.
-            lblMartialArtSource.Left = lblMartialArtSourceLabel.Left + lblMartialArtSourceLabel.Width + 6;
-
-            // Spells and Spirits tab.
-            int intWidth = Math.Max(lblSpellDescriptorsLabel.Width, lblSpellCategoryLabel.Width);
-            intWidth = Math.Max(intWidth, lblSpellRangeLabel.Width);
-            intWidth = Math.Max(intWidth, lblSpellDurationLabel.Width);
-            intWidth = Math.Max(intWidth, lblSpellSourceLabel.Width);
-            intWidth = Math.Max(intWidth, lblSpellDicePoolLabel.Width);
-
-            lblSpellDescriptors.Left = lblSpellDescriptorsLabel.Left + intWidth + 6;
-            lblSpellCategory.Left = lblSpellCategoryLabel.Left + intWidth + 6;
-            lblSpellRange.Left = lblSpellRangeLabel.Left + intWidth + 6;
-            lblSpellDuration.Left = lblSpellDurationLabel.Left + intWidth + 6;
-            lblSpellSource.Left = lblSpellSourceLabel.Left + intWidth + 6;
-            lblSpellDicePool.Left = lblSpellDicePoolLabel.Left + intWidth + 6;
-
-            intWidth = Math.Max(lblSpellTypeLabel.Width, lblSpellDamageLabel.Width);
-            intWidth = Math.Max(intWidth, lblSpellDVLabel.Width);
-            lblSpellTypeLabel.Left = lblSpellCategoryLabel.Left + 179;
-            lblSpellType.Left = lblSpellTypeLabel.Left + intWidth + 6;
-            lblSpellDamageLabel.Left = lblSpellRangeLabel.Left + 179;
-            lblSpellDamage.Left = lblSpellDamageLabel.Left + intWidth + 6;
-            lblSpellDVLabel.Left = lblSpellDurationLabel.Left + 179;
-            lblSpellDV.Left = lblSpellDVLabel.Left + intWidth + 6;
-            cmdQuickenSpell.Left = lblSpellDVLabel.Left;
-
-            intWidth = Math.Max(lblTraditionLabel.Width, lblDrainAttributesLabel.Width);
-            intWidth = Math.Max(intWidth, lblMentorSpiritLabel.Width);
-            cboTradition.Left = lblTraditionLabel.Left + intWidth + 6;
-            lblDrainAttributes.Left = lblDrainAttributesLabel.Left + intWidth + 6;
-            lblTraditionSource.Left = lblTraditionSourceLabel.Left + intWidth + 6;
-            lblDrainAttributesValue.Left = lblDrainAttributes.Left + 91;
-            lblMentorSpirit.Left = lblMentorSpiritLabel.Left + intWidth + 6;
-
-            cmdRollSpell.Left = lblSpellDicePool.Left + lblSpellDicePool.Width + 6;
-            cmdRollDrain.Left = lblDrainAttributesValue.Left + lblDrainAttributesValue.Width + 6;
-            cmdRollSpell.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
-            cmdRollDrain.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
-
-            // Sprites and Complex Forms tab.
-            int intLeft = lblDurationLabel.Width;
-            intLeft = Math.Max(intLeft, lblTargetLabel.Width);
-            intLeft = Math.Max(intLeft, lblFV.Width);
-            intLeft = Math.Max(intLeft, lblComplexFormSource.Width);
-
-            lblTarget.Left = lblTargetLabel.Left + intLeft + 6;
-            lblDuration.Left = lblDurationLabel.Left + intLeft + 6;
-            lblFV.Left = lblFVLabel.Left + intLeft + 6;
-            lblComplexFormSource.Left = lblComplexFormSourceLabel.Left + intLeft + 6;
-
-            intWidth = lblFadingAttributesLabel.Width;
-            lblFadingAttributes.Left = lblFadingAttributesLabel.Left + intWidth + 6;
-            lblFadingAttributesValue.Left = lblFadingAttributes.Left + 91;
-
-            cmdRollFading.Left = lblFadingAttributesValue.Left + lblFadingAttributesValue.Width + 6;
-            cmdRollFading.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
-
             // Critter Powers tab.
             lblCritterPowerPointsLabel.Left = cmdDeleteCritterPower.Left + cmdDeleteCritterPower.Width + 16;
             lblCritterPowerPoints.Left = lblCritterPowerPointsLabel.Left + lblCritterPowerPointsLabel.Width + 6;
 
-            intWidth = Math.Max(lblCritterPowerNameLabel.Width, lblCritterPowerCategoryLabel.Width);
+            int intWidth = Math.Max(lblCritterPowerNameLabel.Width, lblCritterPowerCategoryLabel.Width);
             intWidth = Math.Max(intWidth, lblCritterPowerTypeLabel.Width);
             intWidth = Math.Max(intWidth, lblCritterPowerActionLabel.Width);
             intWidth = Math.Max(intWidth, lblCritterPowerRangeLabel.Width);
@@ -16361,55 +16302,7 @@ namespace Chummer
             cmdDeleteImprovement.Left = cmdEditImprovement.Left + cmdEditImprovement.Width + 6;
             cmdAddImprovementGroup.Left = cmdDeleteImprovement.Left + cmdDeleteImprovement.Width + 6;
             lblImprovementType.Left = lblImprovementTypeLabel.Left + lblImprovementTypeLabel.Width + 6;
-
-            // Other Info tab.
-            intWidth = Math.Max(lblCMPhysicalLabel.Width, lblCMStunLabel.Width);
-            intWidth = Math.Max(intWidth, lblINILabel.Width);
-            intWidth = Math.Max(intWidth, lblMatrixINILabel.Width);
-            intWidth = Math.Max(intWidth, lblAstralINILabel.Width);
-            intWidth = Math.Max(intWidth, lblRiggingINILabel.Width);
-            intWidth = Math.Max(intWidth, lblMatrixINIColdLabel.Width);
-            intWidth = Math.Max(intWidth, lblMatrixINIHotLabel.Width);
-            intWidth = Math.Max(intWidth, lblArmorLabel.Width);
-            intWidth = Math.Max(intWidth, lblESS.Width);
-            intWidth = Math.Max(intWidth, lblRemainingNuyenLabel.Width);
-            intWidth = Math.Max(intWidth, lblCareerKarmaLabel.Width);
-            intWidth = Math.Max(intWidth, lblCareerNuyenLabel.Width);
-            intWidth = Math.Max(intWidth, lblComposureLabel.Width);
-            intWidth = Math.Max(intWidth, lblJudgeIntentionsLabel.Width);
-            intWidth = Math.Max(intWidth, lblLiftCarryLabel.Width);
-            intWidth = Math.Max(intWidth, lblMemoryLabel.Width);
-            intWidth = Math.Max(intWidth, lblMovementLabel.Width);
-            intWidth = Math.Max(intWidth, lblSwimLabel.Width);
-            intWidth = Math.Max(intWidth, lblFlyLabel.Width);
             
-            lblINI.Left = lblCMPhysical.Left;
-            lblMatrixINI.Left = lblCMPhysical.Left;
-            lblAstralINI.Left = lblCMPhysical.Left;
-            lblRiggingINI.Left = lblCMPhysical.Left;
-            lblMatrixINICold.Left = lblCMPhysical.Left;
-            lblMatrixINIHot.Left = lblCMPhysical.Left;
-            lblArmor.Left = lblCMPhysical.Left;
-            lblESSMax.Left = lblCMPhysical.Left;
-            lblRemainingNuyen.Left = lblCMPhysical.Left;
-            lblCareerKarma.Left = lblCMPhysical.Left;
-            lblCareerNuyen.Left = lblCMPhysical.Left;
-            lblComposure.Left = lblCMPhysical.Left;
-            lblJudgeIntentions.Left = lblCMPhysical.Left;
-            lblLiftCarry.Left = lblCMPhysical.Left;
-            lblMemory.Left = lblCMPhysical.Left;
-            lblMovement.Left = lblCMPhysical.Left;
-            lblSwim.Left = lblCMPhysical.Left;
-            lblFly.Left = lblCMPhysical.Left;
-
-            // Condition Monitor tab.
-            intWidth = Math.Max(lblCMPenaltyLabel.Width, lblCMArmorLabel.Width);
-            intWidth = Math.Max(intWidth, lblCMDamageResistancePoolLabel.Width);
-
-            lblCMPenalty.Left = lblCMPenaltyLabel.Left + intWidth + 6;
-            lblCMArmor.Left = lblCMPenalty.Left;
-            lblCMDamageResistancePool.Left = lblCMPenalty.Left;
-
             // Relationships tab
             cmdContactsExpansionToggle.Left = cmdAddContact.Right + 6;
             cmdSwapContactOrder.Left = cmdContactsExpansionToggle.Right + 6;

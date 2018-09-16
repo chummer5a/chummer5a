@@ -62,6 +62,8 @@ Application Changes:
 - Lifestyle qualities will now also display their Extra information in the Shadowrun 5 character sheet set.
 - Fixed a potential crash in Create mode that could occur if an attribute's karma levels exceeded the maximum possible karma levels. Fixes #3004.
 - Fixed various issues that caused comboboxes in controls for skills and/or knowledge skills to not load translations properly. Fixes #3000.
+- Fixed an issue where the "Notes" menu point under the Advanced Lifestyles context menu strip would not get translated properly. Fixes #2998.
+- The Complex Forms & Sprites tab will now display the character's Paragon and information relevant to it if they have chosen a Paragon.
 
 Data Changes:
 

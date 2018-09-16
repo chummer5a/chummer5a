@@ -627,6 +627,8 @@ namespace Chummer
 
             Utils.DoDatabinding(lblMentorSpirit,            "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayName));
             Utils.DoDatabinding(lblMentorSpiritInformation, "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayInformation));
+            Utils.DoDatabinding(lblParagon, "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayName));
+            Utils.DoDatabinding(lblParagonInformation, "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayInformation));
 
             Utils.DoDatabinding(lblComposure,       "ToolTipText", CharacterObject, nameof(Character.ComposureToolTip));
             Utils.DoDatabinding(lblComposure,       "Text", CharacterObject, nameof(Character.Composure));
@@ -1056,7 +1058,6 @@ namespace Chummer
                             }
                         }
                         cmdAddSpirit.Visible = CharacterObject.MagicianEnabled;
-                        lblSpirits.Visible = CharacterObject.MagicianEnabled;
                         panSpirits.Visible = CharacterObject.MagicianEnabled;
                     }
                     break;
@@ -1188,6 +1189,9 @@ namespace Chummer
                         lblMentorSpirit.Visible = CharacterObject.HasMentorSpirit;
                         lblMentorSpiritLabel.Visible = CharacterObject.HasMentorSpirit;
                         lblMentorSpiritInformation.Visible = CharacterObject.HasMentorSpirit;
+                        lblParagon.Visible = CharacterObject.HasMentorSpirit;
+                        lblParagonLabel.Visible = CharacterObject.HasMentorSpirit;
+                        lblParagonInformation.Visible = CharacterObject.HasMentorSpirit;
                         break;
                     }
                 case nameof(Character.UseMysticAdeptPPs):
@@ -14225,12 +14229,6 @@ namespace Chummer
             lblAttributesAug.SetToolTip(LanguageManager.GetString("Tip_CommonAttributesAug", GlobalOptions.Language));
             lblAttributesMetatype.SetToolTip(LanguageManager.GetString("Tip_CommonAttributesMetatypeLimits", GlobalOptions.Language));
             lblNuyen.SetToolTip(string.Format(LanguageManager.GetString("Tip_CommonNuyen", GlobalOptions.Language), CharacterObjectOptions.KarmaNuyenPer));
-            // Spells Tab.
-            lblSelectedSpells.SetToolTip(LanguageManager.GetString("Tip_SpellsSelectedSpells", GlobalOptions.Language));
-            lblSpirits.SetToolTip(LanguageManager.GetString("Tip_SpellsSpirits", GlobalOptions.Language));
-            // Complex Forms Tab.
-            lblComplexForms.SetToolTip(LanguageManager.GetString("Tip_TechnomancerComplexForms", GlobalOptions.Language));
-            lblSprites.SetToolTip(LanguageManager.GetString("Tip_TechnomancerSprites", GlobalOptions.Language));
             // Armor Tab.
             chkArmorEquipped.SetToolTip(LanguageManager.GetString("Tip_ArmorEquipped", GlobalOptions.Language));
             // Weapon Tab.
@@ -14312,92 +14310,11 @@ namespace Chummer
 
         private void MoveControls()
         {
-            // Common tab.
-            lblAlias.Left = Math.Max(288, cmdDeleteQuality.Left + cmdDeleteQuality.Width + 6);
-            txtAlias.Left = lblAlias.Left + lblAlias.Width + 6;
-            txtAlias.Width = lblMetatypeLabel.Left - txtAlias.Left - 6;
-            nudNuyen.Left = lblNuyen.Left + lblNuyen.Width + 6;
-            lblNuyenTotal.Left = nudNuyen.Left + nudNuyen.Width + 6;
-            lblQualityLevelLabel.Left = nudQualityLevel.Left - lblQualityLevelLabel.Width - 6;
-
-            // Martial Arts tab.
-            lblMartialArtSource.Left = lblMartialArtSourceLabel.Right + 6;
-
-            // Spells and Spirits tab.
-            int intWidth = Math.Max(lblSpellDescriptorsLabel.Width, lblSpellCategoryLabel.Width);
-            intWidth = Math.Max(intWidth, lblSpellRangeLabel.Width);
-            intWidth = Math.Max(intWidth, lblSpellDurationLabel.Width);
-            intWidth = Math.Max(intWidth, lblSpellSourceLabel.Width);
-
-            lblSpellDescriptors.Left = lblSpellDescriptorsLabel.Left + intWidth + 6;
-            lblSpellCategory.Left = lblSpellCategoryLabel.Left + intWidth + 6;
-            lblSpellRange.Left = lblSpellRangeLabel.Left + intWidth + 6;
-            lblSpellDuration.Left = lblSpellDurationLabel.Left + intWidth + 6;
-            lblSpellSource.Left = lblSpellSourceLabel.Left + intWidth + 6;
-
-            intWidth = Math.Max(lblSpellTypeLabel.Width, lblSpellDamageLabel.Width);
-            intWidth = Math.Max(intWidth, lblSpellDVLabel.Width);
-            lblSpellTypeLabel.Left = lblSpellCategoryLabel.Left + 179;
-            lblSpellType.Left = lblSpellTypeLabel.Left + intWidth + 6;
-            lblSpellDamageLabel.Left = lblSpellRangeLabel.Left + 179;
-            lblSpellDamage.Left = lblSpellDamageLabel.Left + intWidth + 6;
-            lblSpellDVLabel.Left = lblSpellDurationLabel.Left + 179;
-            lblSpellDV.Left = lblSpellDVLabel.Left + intWidth + 6;
-
-            intWidth = Math.Max(lblTraditionLabel.Width, lblDrainAttributesLabel.Width);
-            intWidth = Math.Max(intWidth, lblMentorSpiritLabel.Width);
-            cboTradition.Left = lblTraditionLabel.Left + intWidth + 6;
-            cboDrain.Left = lblTraditionLabel.Left + intWidth + 6;
-            lblDrainAttributes.Left = lblDrainAttributesLabel.Left + intWidth + 6;
-            lblTraditionSource.Left = lblTraditionSourceLabel.Left + intWidth + 6;
-            lblDrainAttributesValue.Left = lblDrainAttributes.Left + 91;
-            lblMentorSpirit.Left = lblMentorSpiritLabel.Left + intWidth + 6;
-
-            lblTraditionName.Left = cboTradition.Left + cboTradition.Width + 10;
-            lblSpiritCombat.Left = cboTradition.Left + cboTradition.Width + 10;
-            lblSpiritDetection.Left = cboTradition.Left + cboTradition.Width + 10;
-            lblSpiritHealth.Left = cboTradition.Left + cboTradition.Width + 10;
-            lblSpiritIllusion.Left = cboTradition.Left + cboTradition.Width + 10;
-            lblSpiritManipulation.Left = cboTradition.Left + cboTradition.Width + 10;
-            intWidth = Math.Max(lblTraditionName.Width, lblSpiritCombat.Width);
-            intWidth = Math.Max(intWidth, lblSpiritDetection.Width);
-            intWidth = Math.Max(intWidth, lblSpiritHealth.Width);
-            intWidth = Math.Max(intWidth, lblSpiritIllusion.Width);
-            intWidth = Math.Max(intWidth, lblSpiritManipulation.Width);
-            txtTraditionName.Left = lblTraditionName.Left + intWidth + 6;
-            cboSpiritCombat.Left = lblTraditionName.Left + intWidth + 6;
-            cboSpiritDetection.Left = lblTraditionName.Left + intWidth + 6;
-            cboSpiritHealth.Left = lblTraditionName.Left + intWidth + 6;
-            cboSpiritIllusion.Left = lblTraditionName.Left + intWidth + 6;
-            cboSpiritManipulation.Left = lblTraditionName.Left + intWidth + 6;
-
-            // Sprites and Complex Forms tab.
-            int intLeft = lblDurationLabel.Width;
-            intLeft = Math.Max(intLeft, lblTargetLabel.Width);
-            intLeft = Math.Max(intLeft, lblFV.Width);
-            intLeft = Math.Max(intLeft, lblComplexFormSource.Width);
-
-            lblTarget.Left = lblTargetLabel.Left + intLeft + 6;
-            lblDuration.Left = lblDurationLabel.Left + intLeft + 6;
-            lblFV.Left = lblFVLabel.Left + intLeft + 6;
-            lblComplexFormSource.Left = lblComplexFormSourceLabel.Left + intLeft + 6;
-
-            intWidth = lblFadingAttributesLabel.Width;
-            lblFadingAttributes.Left = lblFadingAttributesLabel.Left + intWidth + 6;
-            lblFadingAttributesValue.Left = lblFadingAttributes.Left + 91;
-
-            // Advanced Programs tab.
-            intLeft = lblAIProgramsRequiresLabel.Width;
-            intLeft = Math.Max(intLeft, lblAIProgramsSourceLabel.Width);
-
-            lblAIProgramsRequires.Left = lblAIProgramsRequiresLabel.Left + intLeft + 6;
-            lblAIProgramsSource.Left = lblAIProgramsSourceLabel.Left + intLeft + 6;
-
             // Critter Powers tab.
             lblCritterPowerPointsLabel.Left = cmdDeleteCritterPower.Left + cmdDeleteCritterPower.Width + 16;
             lblCritterPowerPoints.Left = lblCritterPowerPointsLabel.Left + lblCritterPowerPointsLabel.Width + 6;
 
-            intWidth = Math.Max(lblCritterPowerNameLabel.Width, lblCritterPowerCategoryLabel.Width);
+            int intWidth = Math.Max(lblCritterPowerNameLabel.Width, lblCritterPowerCategoryLabel.Width);
             intWidth = Math.Max(intWidth, lblCritterPowerTypeLabel.Width);
             intWidth = Math.Max(intWidth, lblCritterPowerActionLabel.Width);
             intWidth = Math.Max(intWidth, lblCritterPowerRangeLabel.Width);
@@ -14700,33 +14617,7 @@ namespace Chummer
             lblStreetCredTotal.Left = lblStreetCred.Left + intWidth + 6;
             lblNotorietyTotal.Left = lblNotoriety.Left + intWidth + 6;
             lblPublicAwareTotal.Left = lblPublicAware.Left + intWidth + 6;
-
-            // Improvements tab.
-
-            // It is not needed to work on those due to TableLayoutPanel
-            //// Karma Summary tab.
-            //MoveControlsTwoColumns(tabBPSummary);
-            //// Other Info tab.
-            //MoveControlsTwoColumns(tabOtherInfo);
-            //// Spell Defence tab.
-            //MoveControlsTwoColumns(tabDefences);
-
-            lblCMPhysical.Left = lblCMPhysicalLabel.Left + intWidth + 6;
-            lblCMStun.Left = lblCMPhysical.Left;
-            lblINI.Left = lblCMPhysical.Left;
-            lblMatrixINI.Left = lblCMPhysical.Left;
-            lblAstralINI.Left = lblCMPhysical.Left;
-            lblArmor.Left = lblCMPhysical.Left;
-            lblESSMax.Left = lblCMPhysical.Left;
-            lblRemainingNuyen.Left = lblCMPhysical.Left;
-            lblComposure.Left = lblCMPhysical.Left;
-            lblJudgeIntentions.Left = lblCMPhysical.Left;
-            lblLiftCarry.Left = lblCMPhysical.Left;
-            lblMemory.Left = lblCMPhysical.Left;
-            lblMovement.Left = lblCMPhysical.Left;
-            lblSwim.Left = lblCMPhysical.Left;
-            lblFly.Left = lblCMPhysical.Left;
-
+            
             // Relationships tab
             cmdContactsExpansionToggle.Left = cmdAddContact.Right + 6;
             cmdSwapContactOrder.Left = cmdContactsExpansionToggle.Right + 6;
