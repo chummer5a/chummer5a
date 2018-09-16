@@ -380,6 +380,7 @@ namespace Chummer.Backend.Skills
                         new DependancyGraphNode<string>(nameof(KnowledgeSkill.Type), () => IsKnowledgeSkill),
                         new DependancyGraphNode<string>(nameof(DisplayOtherAttribute),
                             new DependancyGraphNode<string>(nameof(PoolOtherAttribute),
+                                new DependancyGraphNode<string>(nameof(Enabled)),
                                 new DependancyGraphNode<string>(nameof(Rating)),
                                 new DependancyGraphNode<string>(nameof(PoolModifiers),
                                     new DependancyGraphNode<string>(nameof(Bonus),
@@ -640,6 +641,12 @@ namespace Chummer.Backend.Skills
                     return _intCachedEnabled > 0;
 
                 if (_blnForceDisabled)
+                {
+                    _intCachedEnabled = 0;
+                    return false;
+                }
+
+                if (_objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.SkillDisable && x.ImprovedName == Name && x.Enabled))
                 {
                     _intCachedEnabled = 0;
                     return false;

@@ -47,7 +47,7 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
-        /// How many points REALLY are in _karma Better htan subclasses calculating Karma - FreeKarma()
+        /// How many points REALLY are in _karma Better than subclasses calculating Karma - FreeKarma()
         /// </summary>
         public int KarmaPoints
         {
@@ -231,6 +231,8 @@ namespace Chummer.Backend.Skills
         /// <returns></returns>
         public int PoolOtherAttribute(int intAttributeTotalValue, string strAttribute)
         {
+            if (!Enabled)
+                return 0;
             int intRating = Rating;
             if (intRating > 0)
             {
@@ -294,11 +296,12 @@ namespace Chummer.Backend.Skills
                             case Improvement.ImprovementType.Skill:
                             case Improvement.ImprovementType.SwapSkillAttribute:
                             case Improvement.ImprovementType.SwapSkillSpecAttribute:
-
+                            case Improvement.ImprovementType.SkillDisable:
                                 if (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == strNameToUse)
                                     yield return objImprovement;
                                 break;
                             case Improvement.ImprovementType.SkillGroup:
+                            case Improvement.ImprovementType.SkillGroupDisable:
                                 if (objImprovement.ImprovedName == SkillGroup && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse) && !objImprovement.Exclude.Contains(SkillCategory))
                                     yield return objImprovement;
                                 break;

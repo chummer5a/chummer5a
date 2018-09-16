@@ -66,6 +66,9 @@ Application Changes:
 - The Complex Forms & Sprites tab will now display the character's Paragon and information relevant to it if they have chosen a Paragon.
 - Fixed many cases where the presence of a quotation mark in an item's name would cause the program to crash. Fixes #3007.
 - Fixed cases where having certain characters in the notes and/or custom name fields would cause the program to crash when displaying the affected field's tooltip. Fixes #2982.
+- Added the ability for improvements to disable individual skills through the "disableskill" bonus node.
+- Added the ability for improvements to add arts through the "addart" and "selectart" bonus nodes.
+- Added the ability for improvements that add qualities, metamagics, arts, and/or echoes to ignore checking whether the newly added item has all of its requirements met before adding said item (e.g. for adding metamagics without adding the art prerequisites for the metamagic).
 
 Data Changes:
 
@@ -103,6 +106,8 @@ Data Changes:
 - Added "Mixed Unit Tactics" from Street Lethal as an example knowledge skill. It is assumed that the character can learn and use Mixed Unit Tactics as a knowledge skill without prerequisites, and the prerequisites described in Street Lethal only apply when using Mixed Unit Tactics' maneuvers from Street Lethal.
 - Added the previously missing categories node to drugcomponents.xml.
 - Added the previously missing option to add STATscan to a cyberhand.
+- Added entries for Seer and Null Wizard from Forbidden Arcana.
+- Fixed a bug where Elementalist would disable access to the Enchanting skill group instead of disabling access to skills in the Enchanting group.
 
 New Strings:
 
