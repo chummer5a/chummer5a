@@ -108,6 +108,7 @@ Data Changes:
 - Added the previously missing option to add STATscan to a cyberhand.
 - Added entries for Seer and Null Wizard from Forbidden Arcana.
 - Fixed a bug where Elementalist would disable access to the Enchanting skill group instead of disabling access to skills in the Enchanting group.
+- Pariah tradition now properly disables access to skills noted in its description and properly gives +2 to Banishing, Counterspelling, and Disenchanting.
 
 New Strings:
 
