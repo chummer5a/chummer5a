@@ -5315,7 +5315,7 @@ namespace Chummer
             this.treLimit.ShowNodeToolTips = true;
             this.treLimit.ShowPlusMinus = false;
             this.treLimit.ShowRootLines = false;
-            this.treLimit.Size = new System.Drawing.Size(295, 0);
+            this.treLimit.Size = new System.Drawing.Size(295, 589);
             this.treLimit.TabIndex = 79;
             this.treLimit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treLimit_KeyDown);
             // 
@@ -5504,7 +5504,7 @@ namespace Chummer
             this.treMartialArts.ShowNodeToolTips = true;
             this.treMartialArts.ShowPlusMinus = false;
             this.treMartialArts.ShowRootLines = false;
-            this.treMartialArts.Size = new System.Drawing.Size(295, 0);
+            this.treMartialArts.Size = new System.Drawing.Size(295, 589);
             this.treMartialArts.TabIndex = 2;
             this.treMartialArts.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMartialArts_AfterSelect);
             this.treMartialArts.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treMartialArts_KeyDown);
@@ -5695,7 +5695,7 @@ namespace Chummer
             this.panSpirits.AutoScroll = true;
             this.panSpirits.Location = new System.Drawing.Point(6, 449);
             this.panSpirits.Name = "panSpirits";
-            this.panSpirits.Size = new System.Drawing.Size(830, 0);
+            this.panSpirits.Size = new System.Drawing.Size(830, 34);
             this.panSpirits.TabIndex = 4;
             // 
             // tableLayoutPanel4
@@ -6339,7 +6339,7 @@ namespace Chummer
             this.panSprites.AutoScroll = true;
             this.panSprites.Location = new System.Drawing.Point(6, 445);
             this.panSprites.Name = "panSprites";
-            this.panSprites.Size = new System.Drawing.Size(830, 0);
+            this.panSprites.Size = new System.Drawing.Size(830, 34);
             this.panSprites.TabIndex = 25;
             // 
             // flowLayoutPanel7
@@ -7010,7 +7010,7 @@ namespace Chummer
             this.treCritterPowers.ShowNodeToolTips = true;
             this.treCritterPowers.ShowPlusMinus = false;
             this.treCritterPowers.ShowRootLines = false;
-            this.treCritterPowers.Size = new System.Drawing.Size(295, 0);
+            this.treCritterPowers.Size = new System.Drawing.Size(295, 589);
             this.treCritterPowers.TabIndex = 15;
             this.treCritterPowers.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCritterPowers_AfterSelect);
             this.treCritterPowers.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCritterPowers_KeyDown);
@@ -7096,7 +7096,7 @@ namespace Chummer
             this.txtGroupNotes.Location = new System.Drawing.Point(418, 554);
             this.txtGroupNotes.Multiline = true;
             this.txtGroupNotes.Name = "txtGroupNotes";
-            this.txtGroupNotes.Size = new System.Drawing.Size(414, 0);
+            this.txtGroupNotes.Size = new System.Drawing.Size(414, 20);
             this.txtGroupNotes.TabIndex = 117;
             this.txtGroupNotes.Visible = false;
             this.txtGroupNotes.TextChanged += new System.EventHandler(this.txtGroupNotes_TextChanged);
@@ -7161,7 +7161,7 @@ namespace Chummer
             this.treMetamagic.Location = new System.Drawing.Point(6, 75);
             this.treMetamagic.Name = "treMetamagic";
             this.treMetamagic.ShowNodeToolTips = true;
-            this.treMetamagic.Size = new System.Drawing.Size(351, 0);
+            this.treMetamagic.Size = new System.Drawing.Size(351, 550);
             this.treMetamagic.TabIndex = 96;
             this.treMetamagic.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMetamagic_AfterSelect);
             this.treMetamagic.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treMetamagic_KeyDown);
@@ -8275,7 +8275,7 @@ namespace Chummer
             treeNode18});
             this.treCyberware.ShowNodeToolTips = true;
             this.treCyberware.ShowRootLines = false;
-            this.treCyberware.Size = new System.Drawing.Size(295, 0);
+            this.treCyberware.Size = new System.Drawing.Size(295, 589);
             this.treCyberware.TabIndex = 28;
             this.treCyberware.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCyberware_AfterSelect);
             this.treCyberware.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCyberware_KeyDown);
@@ -13656,7 +13656,7 @@ namespace Chummer
             treeNode24});
             this.treVehicles.ShowNodeToolTips = true;
             this.treVehicles.ShowRootLines = false;
-            this.treVehicles.Size = new System.Drawing.Size(403, 0);
+            this.treVehicles.Size = new System.Drawing.Size(403, 589);
             this.treVehicles.TabIndex = 30;
             this.treVehicles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treVehicles_AfterSelect);
             this.treVehicles.DragOver += new System.Windows.Forms.DragEventHandler(this.treVehicles_DragOver);
@@ -14664,7 +14664,7 @@ namespace Chummer
             this.treImprovements.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode25});
             this.treImprovements.ShowNodeToolTips = true;
-            this.treImprovements.Size = new System.Drawing.Size(295, 0);
+            this.treImprovements.Size = new System.Drawing.Size(295, 589);
             this.treImprovements.TabIndex = 81;
             this.treImprovements.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treImprovements_AfterSelect);
             this.treImprovements.DragOver += new System.Windows.Forms.DragEventHandler(this.treImprovements_DragOver);
