@@ -91,7 +91,6 @@ namespace Chummer
             }
 
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            MoveControls();
 
             _lstGrades = _objCharacter.GetGradeList(objWareSource);
             _strNoneGradeId = _lstGrades.FirstOrDefault(x => x.Name == "None")?.SourceId.ToString("D");
@@ -1360,27 +1359,6 @@ namespace Chummer
                 lstCyberware.SelectedValue = strOldSelectedCyberware;
 
             _blnPopulatingCategories = false;
-        }
-
-        private void MoveControls()
-        {
-            int intWidth = Math.Max(lblRatingLabel.Width, lblEssenceLabel.Width);
-            intWidth = Math.Max(intWidth, lblCapacityLabel.Width);
-            intWidth = Math.Max(intWidth, lblAvailLabel.Width);
-            intWidth = Math.Max(intWidth, lblCostLabel.Width);
-
-            nudRating.Left = lblRatingLabel.Left + intWidth + 6;
-            lblEssence.Left = lblEssenceLabel.Left + intWidth + 6;
-            lblCapacity.Left = lblCapacityLabel.Left + intWidth + 6;
-            lblAvail.Left = lblAvailLabel.Left + intWidth + 6;
-            lblCost.Left = lblCostLabel.Left + intWidth + 6;
-
-            lblSource.Left = lblSourceLabel.Left + lblSourceLabel.Width + 6;
-            lblTest.Left = lblTestLabel.Left + lblTestLabel.Width + 6;
-            nudESSDiscount.Left = lblESSDiscountLabel.Left + lblESSDiscountLabel.Width + 6;
-            lblESSDiscountPercentLabel.Left = nudESSDiscount.Left + nudESSDiscount.Width;
-
-            lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
         }
 
         private void OpenSourceFromLabel(object sender, EventArgs e)
