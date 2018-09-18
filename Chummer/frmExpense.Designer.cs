@@ -61,7 +61,9 @@ namespace Chummer
             // 
             // nudAmount
             // 
-            this.nudAmount.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.nudAmount.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.nudAmount.Location = new System.Drawing.Point(123, 3);
             this.nudAmount.Maximum = new decimal(new int[] {
             9999999,
@@ -97,8 +99,10 @@ namespace Chummer
             // 
             // txtDescription
             // 
+            this.txtDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.txtDescription, 3);
-            this.txtDescription.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtDescription.Location = new System.Drawing.Point(123, 55);
             this.txtDescription.Name = "txtDescription";
             this.txtDescription.Size = new System.Drawing.Size(474, 20);
@@ -130,6 +134,8 @@ namespace Chummer
             // 
             // chkRefund
             // 
+            this.chkRefund.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.chkRefund.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.chkRefund, 3);
             this.chkRefund.Location = new System.Drawing.Point(123, 82);
@@ -143,14 +149,15 @@ namespace Chummer
             // 
             // datDate
             // 
-            this.datDate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+            this.datDate.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.datDate, 3);
             this.datDate.CustomFormat = "ddddd, MMMM dd, yyyy hh:mm tt";
             this.datDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.datDate.Location = new System.Drawing.Point(123, 29);
             this.datDate.Name = "datDate";
-            this.datDate.Size = new System.Drawing.Size(251, 20);
+            this.datDate.Size = new System.Drawing.Size(474, 20);
             this.datDate.TabIndex = 5;
             // 
             // lblDateLabel
@@ -168,8 +175,10 @@ namespace Chummer
             // 
             // nudPercent
             // 
+            this.nudPercent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.nudPercent.DecimalPlaces = 2;
-            this.nudPercent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudPercent.Location = new System.Drawing.Point(213, 3);
             this.nudPercent.Maximum = new decimal(new int[] {
             1000,
@@ -215,6 +224,9 @@ namespace Chummer
             // 
             // tableLayoutPanel1
             // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.AutoSize = true;
             this.tableLayoutPanel1.ColumnCount = 4;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
