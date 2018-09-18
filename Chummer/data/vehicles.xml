@@ -10718,7 +10718,7 @@
       <category>Body</category>
       <cost>5000</cost>
       <rating>0</rating>
-      <slots>1</slots>
+      <slots>6</slots>
       <bonus>
         <selectskill />
       </bonus>

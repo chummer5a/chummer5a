@@ -831,7 +831,15 @@ namespace Chummer
         /// <returns>Copy of input string with the characters "&", the greater than sign, and the lesser than sign escaped for HTML.</returns>
         public static string CleanForHTML(this string strToClean)
         {
-            return strToClean.CheapReplace("&", () => "&amp;").CheapReplace("&amp;amp;", () => "&amp;").CheapReplace("<", () => "&lt;").CheapReplace(">", () => "&gt;");
+            return strToClean
+                .CheapReplace("<br />", () => "\n")
+                .CheapReplace("&", () => "&amp;")
+                .CheapReplace("&amp;amp;", () => "&amp;")
+                .CheapReplace("<", () => "&lt;")
+                .CheapReplace(">", () => "&gt;")
+                .CheapReplace("\n\r", () => "<br />")
+                .CheapReplace("\n", () => "<br />")
+                .CheapReplace("\r", () => "<br />");
         }
     }
 }

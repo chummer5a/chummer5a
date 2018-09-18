@@ -70,6 +70,8 @@ Application Changes:
 - Added the ability for improvements to add arts through the "addart" and "selectart" bonus nodes.
 - Added the ability for improvements that add qualities, metamagics, arts, and/or echoes to ignore checking whether the newly added item has all of its requirements met before adding said item (e.g. for adding metamagics without adding the art prerequisites for the metamagic).
 - Properly implemented karma costs for Drake powers in career mode.
+- Fixed a bug where the checkbox for Working for the Man/People would appear as an empty checkbox when refunding an expense. Fixes #3016.
+- Fixed an issue where line breaks in notes would not show up properly in tooltips. Fixes #3019.
 
 Data Changes:
 
@@ -110,6 +112,7 @@ Data Changes:
 - Added entries for Seer and Null Wizard from Forbidden Arcana.
 - Fixed a bug where Elementalist would disable access to the Enchanting skill group instead of disabling access to skills in the Enchanting group.
 - Pariah tradition now properly disables access to skills noted in its description and properly gives +2 to Banishing, Counterspelling, and Disenchanting.
+- Fixed incorrect Slots for the Workshop vehicle mod.
 
 New Strings:
 
