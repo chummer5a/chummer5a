@@ -2031,7 +2031,7 @@ namespace Chummer
 
         private void mnuEditPaste_Click(object sender, EventArgs e)
         {
-            object selectedObject = null;
+            object objSelectedObject;
             if (tabCharacterTabs.SelectedTab == tabStreetGear)
             {
                 // Lifestyle Tab.
@@ -2090,22 +2090,22 @@ namespace Chummer
                         {
                             // Gear can't be added directly to the armor tab, so it must be a child.
                             // Find out what the parent of the new object is going to be. 
-                            selectedObject = treArmor.SelectedNode?.Tag;
+                            objSelectedObject = treArmor.SelectedNode?.Tag;
                             Gear objGear = new Gear(CharacterObject);
                             objGear.Load(objXmlNode, true);
-                            if (selectedObject is Armor objSelectedArmor)
+                            if (objSelectedObject is Armor objSelectedArmor)
                             {
                                 objSelectedArmor.Gear.Add(objGear);
                                 if (!objSelectedArmor.Equipped)
                                     objGear.ChangeEquippedStatus(false);
                             }
-                            else if (selectedObject is ArmorMod objSelectedArmorMod)
+                            else if (objSelectedObject is ArmorMod objSelectedArmorMod)
                             {
                                 objSelectedArmorMod.Gear.Add(objGear);
                                 if (!objSelectedArmorMod.Equipped || objSelectedArmorMod.Parent?.Equipped != true)
                                     objGear.ChangeEquippedStatus(false);
                             }
-                            else if (selectedObject is Gear objSelectedGear)
+                            else if (objSelectedObject is Gear objSelectedGear)
                             {
                                 XmlNodeList xmlAddonCategoryList = objSelectedGear.GetNode()?.SelectNodes("addoncategory");
                                 if (xmlAddonCategoryList?.Count > 0)
@@ -2155,11 +2155,11 @@ namespace Chummer
                     XmlNode objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/gear");
                     if (objXmlNode != null)
                     {
-                        selectedObject = treWeapons.SelectedNode?.Tag;
+                        objSelectedObject = treWeapons.SelectedNode?.Tag;
                         Gear objGear = new Gear(CharacterObject);
                         objGear.Load(objXmlNode, true);
 
-                        if (selectedObject is WeaponAccessory objAccessory)
+                        if (objSelectedObject is WeaponAccessory objAccessory)
                         {
                             // Make sure that a Weapon Accessory is selected and that it allows Gear of the item's Category.
                             bool blnDoAdd = false;
@@ -2201,7 +2201,7 @@ namespace Chummer
                             IsCharacterUpdateRequested = true;
                             IsDirty = true;
                         }
-                        else if (selectedObject is Gear objNewParent)
+                        else if (objSelectedObject is Gear objNewParent)
                         {
                             XmlNodeList xmlAddonCategoryList = objNewParent.GetNode()?.SelectNodes("addoncategory");
                             if (xmlAddonCategoryList?.Count > 0)
@@ -2254,8 +2254,8 @@ namespace Chummer
                     {
                         Gear objGear = new Gear(CharacterObject);
                         objGear.Load(objXmlNode, true);
-                        selectedObject = treGear.SelectedNode?.Tag;
-                        if (selectedObject is Gear objNewParent)
+                        objSelectedObject = treGear.SelectedNode?.Tag;
+                        if (objSelectedObject is Gear objNewParent)
                         {
                             XmlNodeList xmlAddonCategoryList = objNewParent.GetNode()?.SelectNodes("addoncategory");
                             if (xmlAddonCategoryList?.Count > 0)
@@ -2325,8 +2325,8 @@ namespace Chummer
             // Cyberware Tab.
             else if (tabCharacterTabs.SelectedTab == tabCyberware)
             {
-                selectedObject = treCyberware.SelectedNode?.Tag;
-                if (selectedObject == null)
+                objSelectedObject = treCyberware.SelectedNode?.Tag;
+                if (objSelectedObject == null)
                     return;
 
                 // Paste Cyberware.
@@ -2336,7 +2336,7 @@ namespace Chummer
                     Cyberware objCyberware = new Cyberware(CharacterObject);
                     objCyberware.Load(objXmlNode, true);
 
-                    if (selectedObject is Cyberware objCyberwareParent)
+                    if (objSelectedObject is Cyberware objCyberwareParent)
                     {
                         if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                         {
@@ -2516,7 +2516,7 @@ namespace Chummer
                         objGear.Load(objXmlNode, true);
 
                         // Paste Gear into a Cyberware.
-                        if (selectedObject is Cyberware objCyberware)
+                        if (objSelectedObject is Cyberware objCyberware)
                         {
                             bool blnDoAdd = false;
                             XmlNodeList xmlGearCategoryList = objCyberware.AllowGear?.SelectNodes("gearcategory");
@@ -2559,7 +2559,7 @@ namespace Chummer
                             IsCharacterUpdateRequested = true;
                             IsDirty = true;
                         }
-                        else if (selectedObject is Gear objNewParent)
+                        else if (objSelectedObject is Gear objNewParent)
                         {
                             XmlNodeList xmlAddonCategoryList = objNewParent.GetNode()?.SelectNodes("addoncategory");
                             if (xmlAddonCategoryList?.Count > 0)
@@ -2594,8 +2594,8 @@ namespace Chummer
             // Vehicles Tab.
             else if (tabCharacterTabs.SelectedTab == tabVehicles)
             {
-                selectedObject = treVehicles.SelectedNode?.Tag;
-                if (selectedObject == null)
+                objSelectedObject = treVehicles.SelectedNode?.Tag;
+                if (objSelectedObject == null)
                     return;
                 // Paste Vehicle.
                 XmlNode objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/vehicle");
@@ -2617,7 +2617,7 @@ namespace Chummer
                     {
                         Cyberware objCyberware = new Cyberware(CharacterObject);
                         objCyberware.Load(objXmlNode, true);
-                        switch (selectedObject)
+                        switch (objSelectedObject)
                         {
                             case Cyberware objCyberwareParent:
                                 {
@@ -2884,7 +2884,7 @@ namespace Chummer
                             objGear.Load(objXmlNode, true);
 
                             // Paste the Gear into a Vehicle's Gear.
-                            if (selectedObject is Gear objVehicleGear)
+                            if (objSelectedObject is Gear objVehicleGear)
                             {
                                 XmlNodeList xmlAddonCategoryList = objVehicleGear.GetNode()?.SelectNodes("addoncategory");
                                 if (xmlAddonCategoryList?.Count > 0)
@@ -2908,12 +2908,12 @@ namespace Chummer
 
                                 objVehicleGear.Children.Add(objGear);
                             }
-                            else if (selectedObject is Vehicle objVehicle)
+                            else if (objSelectedObject is Vehicle objVehicle)
                             {
                                 objVehicle.Gear.Add(objGear);
                                 objParentVehicle = objVehicle;
                             }
-                            else if (selectedObject is WeaponAccessory objAccessory)
+                            else if (objSelectedObject is WeaponAccessory objAccessory)
                             {
                                 bool blnDoAdd = false;
                                 XmlNodeList xmlGearCategoryList = objAccessory.AllowGear?.SelectNodes("gearcategory");
@@ -2938,7 +2938,7 @@ namespace Chummer
                                 objParentVehicle = objAccessory.Parent.ParentVehicle;
                                 objAccessory.Gear.Add(objGear);
                             }
-                            else if (selectedObject is Cyberware objCyberware)
+                            else if (objSelectedObject is Cyberware objCyberware)
                             {
                                 bool blnDoAdd = false;
                                 XmlNodeList xmlGearCategoryList = objCyberware.AllowGear?.SelectNodes("gearcategory");
@@ -2989,7 +2989,7 @@ namespace Chummer
                             objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/weapon");
                             if (objXmlNode != null)
                             {
-                                if (selectedObject is WeaponMount objWeaponMount)
+                                if (objSelectedObject is WeaponMount objWeaponMount)
                                 {
 
                                     Weapon objNewWeapon = new Weapon(CharacterObject) { ParentVehicle = objWeaponMount.Parent };
@@ -2997,7 +2997,7 @@ namespace Chummer
                                     objWeaponMount.Weapons.Add(objNewWeapon);
 
                                 }
-                                else if (selectedObject is VehicleMod objVehicleMod)
+                                else if (objSelectedObject is VehicleMod objVehicleMod)
                                 {
                                     // TODO: Make this not depend on string names
                                     if (objVehicleMod.Name.StartsWith("Mechanical Arm") ||
@@ -3072,7 +3072,7 @@ namespace Chummer
             {
                 cmdDeleteMartialArt.Enabled = !objMartialArt.IsQuality;
             }
-            else if (treMartialArts.SelectedNode?.Tag is ICanRemove removable)
+            else if (treMartialArts.SelectedNode?.Tag is ICanRemove)
             {
                 cmdDeleteMartialArt.Enabled = true;
             }
@@ -3498,7 +3498,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddVehicle(null);
+                blnAddAgain = AddVehicle();
             }
             while (blnAddAgain);
         }
@@ -4509,7 +4509,7 @@ namespace Chummer
         {
             if (treArmor.SelectedNode?.Tag is Location objLocation)
             {
-                foreach (Armor objArmor in objLocation.Children)
+                foreach (Armor objArmor in objLocation.Children.OfType<Armor>())
                 {
                     objArmor.Equipped = true;
                 }
@@ -4523,7 +4523,7 @@ namespace Chummer
         {
             if (treArmor.SelectedNode?.Tag is Location objLocation)
             {
-                foreach (Armor objArmor in objLocation.Children)
+                foreach (Armor objArmor in objLocation.Children.OfType<Armor>())
                 {
                     objArmor.Equipped = true;
                 }
@@ -4696,7 +4696,7 @@ namespace Chummer
 
             TreeNode objSelectedNode = treArmor.SelectedNode;
             // Make sure a parent item is selected, then open the Select Accessory window.
-            if (!(treArmor.SelectedNode?.Tag is Armor objArmor) || objSelectedNode.Level <= 0)
+            if (objSelectedNode?.Level <= 0 || !(objSelectedNode?.Tag is Armor objArmor))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5306,7 +5306,7 @@ namespace Chummer
             }
 
             // Make sure the Gear was found.
-            if (!(objSelectedNode?.Tag is Gear objSensor))
+            if (!(objSelectedNode.Tag is Gear objSensor))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_ModifyVehicleGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5687,7 +5687,7 @@ namespace Chummer
             bool capacityOnly = false;
             string selectedGuid = string.Empty;
             // Make sure the selected item is another piece of Gear.
-            if (objSelectedNode?.Tag is ArmorMod objMod)
+            if (objSelectedNode.Tag is ArmorMod objMod)
             {
                 if (string.IsNullOrEmpty(objMod.GearCapacity))
                 {
@@ -5697,7 +5697,7 @@ namespace Chummer
                 capacityOnly = true;
                 selectedGuid = objMod.InternalId;
             }
-            else if (objSelectedNode?.Tag is Gear objGear)
+            else if (objSelectedNode.Tag is Gear objGear)
             {
                 selectedGuid = objGear.InternalId;
             }
@@ -5736,7 +5736,7 @@ namespace Chummer
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.SourceName == selectedNode.InternalId)
                     {
-                        WriteNotes(objImprovement as IHasNotes, treLimit.SelectedNode);
+                        WriteNotes(objImprovement, treLimit.SelectedNode);
                     }
                 }
             }
@@ -5939,9 +5939,10 @@ namespace Chummer
             }
 
             Cyberware objCyberwareParent = null;
-            VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == (treVehicles.SelectedNode?.Tag as IHasInternalId).InternalId, out Vehicle objVehicle, out WeaponMount _);
+            string strNeedleId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId;
+            VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strNeedleId, out Vehicle objVehicle, out WeaponMount _);
             if (objMod == null)
-                objCyberwareParent = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == (treVehicles.SelectedNode?.Tag as IHasInternalId).InternalId, out objMod);
+                objCyberwareParent = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strNeedleId, out objMod);
 
             if (objCyberwareParent == null && (objMod == null || !objMod.AllowCyberware))
             {
@@ -6239,7 +6240,7 @@ namespace Chummer
             }
 
             // Make sure the Cyberware is allowed to accept Gear.
-            if (!(objSelectedNode?.Tag is Cyberware objCyberware) ||  objCyberware?.AllowGear == null)
+            if (!(objSelectedNode.Tag is Cyberware objCyberware) ||  objCyberware.AllowGear == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_CyberwareGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CyberwareGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6406,7 +6407,7 @@ namespace Chummer
             }
 
             // Locate the Vehicle Sensor Gear.
-            if (!(objSelectedNode?.Tag is Gear objSensor))
+            if (!(objSelectedNode.Tag is Gear objSensor))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6495,7 +6496,7 @@ namespace Chummer
             }
 
             // Locate the Vehicle Sensor Gear.
-            if (!(objSelectedNode?.Tag is Gear objSensor))
+            if (!(objSelectedNode.Tag is Gear objSensor))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_ModifyVehicleGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6578,7 +6579,7 @@ namespace Chummer
             TreeNode objSelectedNode = treWeapons.SelectedNode;
 
             // Make sure the Weapon Accessory is allowed to accept Gear.
-            if (!(objSelectedNode?.Tag is WeaponAccessory objAccessory) || objAccessory?.AllowGear == null)
+            if (!(objSelectedNode?.Tag is WeaponAccessory objAccessory) || objAccessory.AllowGear == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_WeaponGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CyberwareGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6857,7 +6858,7 @@ namespace Chummer
             TreeNode objSelectedNode = treVehicles.SelectedNode;
 
             // Make sure the Weapon Accessory is allowed to accept Gear.
-            if (!(objSelectedNode?.Tag is WeaponAccessory objAccessory) || objAccessory?.AllowGear == null)
+            if (!(objSelectedNode?.Tag is WeaponAccessory objAccessory) || objAccessory.AllowGear == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_WeaponGear", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CyberwareGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -11015,7 +11016,7 @@ namespace Chummer
                     // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
                     if (objGear.IsProgram && CharacterObjectOptions.CalculateCommlinkResponse)
                     {
-                        if ((objGear.Parent as Gear).IsCommlink == true)
+                        if ((objGear.Parent as Gear)?.IsCommlink == true)
                         {
                             chkGearEquipped.Text = LanguageManager.GetString("Checkbox_SoftwareRunning", GlobalOptions.Language);
                         }
@@ -14689,7 +14690,7 @@ namespace Chummer
                                 if (objXmlCategoryNode != null && treWeapons.SelectedNode?.Tag is WeaponAccessory objAccessory)
                                 {
                                     // Make sure that a Weapon Accessory is selected and that it allows Gear of the item's Category.
-                                    XmlNodeList xmlGearCategoryList = objAccessory?.AllowGear?.SelectNodes("gearcategory");
+                                    XmlNodeList xmlGearCategoryList = objAccessory.AllowGear?.SelectNodes("gearcategory");
                                     if (xmlGearCategoryList?.Count > 0)
                                     {
                                         foreach (XmlNode objAllowed in xmlGearCategoryList)
@@ -14732,7 +14733,7 @@ namespace Chummer
                             {
                                 // Make sure that a Weapon Accessory is selected and that it allows Gear of the item's Category.
                                 XmlNodeList xmlGearCategoryList =
-                                    objCyberware?.AllowGear?.SelectNodes("gearcategory");
+                                    objCyberware.AllowGear?.SelectNodes("gearcategory");
                                 if (xmlGearCategoryList?.Count > 0)
                                 {
                                     foreach (XmlNode objAllowed in xmlGearCategoryList)
@@ -14784,7 +14785,7 @@ namespace Chummer
                                         GlobalOptions.Clipboard.SelectSingleNode("/character/gear/category");
                                     foreach (XmlNode objAllowed in gearList)
                                     {
-                                        if (objAllowed.InnerText == objXmlCategoryNode.InnerText)
+                                        if (objAllowed.InnerText == objXmlCategoryNode?.InnerText)
                                         {
                                             blnPasteEnabled = true;
                                             break;
@@ -15649,7 +15650,6 @@ namespace Chummer
 
         private void tsEditWeaponMount_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treVehicles.SelectedNode;
             if (!(treVehicles.SelectedNode?.Tag is WeaponMount objWeaponMount))
                 return;
             frmCreateWeaponMount frmCreateWeaponMount = new frmCreateWeaponMount(objWeaponMount.Parent, CharacterObject, objWeaponMount);

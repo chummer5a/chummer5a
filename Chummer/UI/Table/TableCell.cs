@@ -28,7 +28,7 @@ namespace Chummer.UI.Table
 
         public TableCell(Control content = null)
         {
-            this.contentField = content;
+            contentField = content;
             InitializeComponent();
             Alignment = Alignment.Left;
         }

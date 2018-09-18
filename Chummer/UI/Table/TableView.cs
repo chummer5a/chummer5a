@@ -512,9 +512,7 @@ namespace Chummer.UI.Table
                     SuspendLayout();
                     for (int i = 0; i < _columns.Count; i++)
                     {
-                        TableColumn<T> column = _columns[i];
                         List<TableCell> cells = _lstCells[i].cells;
-                        TableCell oldCell = cells[e.NewIndex];
                         cells.RemoveAt(e.NewIndex);
                     }
                     row = _lstRowCells[e.NewIndex];

@@ -17,12 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -63,7 +58,7 @@ namespace Chummer
                 TreeNode nodCategoryNode = treAvailableComponents.FindNode("Node_" + strCategory);
                 if (nodCategoryNode == null)
                 {
-                    Log.Warning(string.Format("Unknown category %s in component %s", strCategory, objItem.Key));
+                    Log.Warning($"Unknown category {strCategory} in component {objItem.Key}");
                     return;
                 }
                 TreeNode objNode = nodCategoryNode.Nodes.Add(objItem.Value.DisplayNameShort(GlobalOptions.Language));
@@ -91,13 +86,17 @@ namespace Chummer
 
         private void LoadData()
         {
-            foreach (XmlNode objXmlComponent in _objXmlDocument.SelectNodes("chummer/drugcomponents/drugcomponent"))
+            XmlNodeList xmlComponentsNodeList = _objXmlDocument.SelectNodes("chummer/drugcomponents/drugcomponent");
+            if (xmlComponentsNodeList?.Count > 0)
             {
-                DrugComponent objDrugComponent = new DrugComponent(_objCharacter);
-                objDrugComponent.Load(objXmlComponent);
-                _dicDrugComponents[objDrugComponent.Name] = objDrugComponent;
-			}
-		}
+                foreach (XmlNode objXmlComponent in xmlComponentsNodeList)
+                {
+                    DrugComponent objDrugComponent = new DrugComponent(_objCharacter);
+                    objDrugComponent.Load(objXmlComponent);
+                    _dicDrugComponents[objDrugComponent.Name] = objDrugComponent;
+                }
+            }
+        }
 		
 		/// <summary>
 		/// Populate the list of Drug Grades.
@@ -152,7 +151,7 @@ namespace Chummer
             TreeNode nodCategoryNode = treChosenComponents.FindNode("Node_" + strCategory);
             if (nodCategoryNode == null)
             {
-                Log.Warning(string.Format("Unknown category %s in component %s", strCategory, objNodeData.DrugComponent.Name));
+                Log.Warning($"Unknown category {strCategory} in component {objNodeData.DrugComponent.Name}");
                 return;
             }
 
@@ -286,9 +285,11 @@ namespace Chummer
 			// Update the Essence and Cost multipliers based on the Grade that has been selected.
 			// Retrieve the information for the selected Grade.
 			XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = \"" + cboGrade.SelectedValue + "\"]");
-			_dblCostMultiplier = Convert.ToDouble(objXmlGrade["cost"].InnerText, GlobalOptions.CultureInfo);
-			objXmlGrade.TryGetField("addictionthreshold", out _intAddictionThreshold, 0);
-			UpdateCustomDrugStats();
+		    if (!objXmlGrade.TryGetDoubleFieldQuickly("cost", ref _dblCostMultiplier))
+		        _dblCostMultiplier = 1.0;
+            if (!objXmlGrade.TryGetInt32FieldQuickly("addictionthreshold", ref _intAddictionThreshold))
+		        _intAddictionThreshold = 0;
+            UpdateCustomDrugStats();
 			lblDrugDescription.Text = _objDrug.GenerateDescription(0);
 		}
 	}

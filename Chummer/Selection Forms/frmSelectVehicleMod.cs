@@ -23,7 +23,6 @@ using System.Windows.Forms;
 using System.Xml.XPath;
  using Chummer.Backend.Equipment;
 using System.Text;
- using iTextSharp.text.pdf;
 
 namespace Chummer
 {

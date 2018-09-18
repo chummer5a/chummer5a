@@ -627,8 +627,7 @@ namespace Chummer.Backend.Skills
         }
 
         public string DisplayAttribute => DisplayAttributeMethod(GlobalOptions.Language);
-
-        private bool _blnOldEnable = true; //For OnPropertyChanged
+        
         private int _intCachedEnabled = -1;
 
         private bool _blnForceDisabled;

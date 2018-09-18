@@ -67,7 +67,7 @@ namespace Chummer.Backend.Equipment
         private Guid _guiWeaponID = Guid.Empty;
         private readonly TaggedObservableCollection<Gear> _lstChildren = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
-        private Location _objLocation = null;
+        private Location _objLocation;
         private readonly Character _objCharacter;
         private int _intChildCostMultiplier = 1;
         private int _intChildAvailModifier;
@@ -538,7 +538,7 @@ namespace Chummer.Backend.Equipment
         /// Create a gear from an XmlNode attached to another object type.
         /// </summary>
         /// <param name="xmlGearsDocument">XmlDocument containing information about all possible gear items.</param>
-        /// <param name="xmlChildGearNode">XmlNode containing information about the child gear that needs to be created.</param>
+        /// <param name="xmlGearNode">XmlNode containing information about the child gear that needs to be created.</param>
         /// <param name="lstWeapons">List of weapons that this (and other children) gear creates.</param>
         /// <param name="blnAddImprovements">Whether to create improvements for the gear or not (for Selection Windows, set to False).</param>
         /// <returns></returns>
@@ -554,10 +554,10 @@ namespace Chummer.Backend.Equipment
             if (xmlGearNode["name"] != null)
             {
                 xmlGearDataNode = xmlGearsDocument.SelectSingleNode("/chummer/gears/gear[name = " + xmlGearNode["name"].InnerText.CleanXPath() + "]");
-                XmlNode xmlInnerGears = xmlGearNode["gears"];
-                if (xmlInnerGears != null)
+                XmlNodeList xmlInnerGears = xmlGearNode.SelectNodes("gears/gear");
+                if (xmlInnerGears?.Count > 0)
                 {
-                    foreach (XmlNode xmlChildGearNode in xmlInnerGears.SelectNodes("gear"))
+                    foreach (XmlNode xmlChildGearNode in xmlInnerGears)
                     {
                         Gear objChildGear = new Gear(_objCharacter);
                         if (objChildGear.CreateFromNode(xmlGearsDocument, xmlChildGearNode, lstWeapons, blnAddImprovements))
@@ -757,7 +757,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="blnCopy">Whether or not we are loading a copy of an existing gear.</param>
-        public void Load(XmlNode objNode, bool blnCopy = false, object objForParent = null)
+        public void Load(XmlNode objNode, bool blnCopy = false)
         {
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             if (objNode.TryGetStringFieldQuickly("id", ref _SourceGuid))
@@ -860,9 +860,10 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (objNode["location"] != null)
+            string strLocation = objNode["location"]?.InnerText;
+            if (!string.IsNullOrEmpty(strLocation))
             {
-                if (Guid.TryParse(objNode["location"].InnerText, out Guid temp))
+                if (Guid.TryParse(strLocation, out Guid temp))
                 {
                     // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
                     _objLocation =
@@ -874,7 +875,7 @@ namespace Chummer.Backend.Equipment
                     //Legacy. Location is a string. 
                     _objLocation =
                         CharacterObject.GearLocations.FirstOrDefault(location =>
-                            location.Name == objNode["location"].InnerText);
+                            location.Name == strLocation);
                 }
                 _objLocation?.Children.Add(this);
             }

@@ -733,22 +733,27 @@ namespace Chummer.Backend.Equipment
                 XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
 
                 XmlNodeList objXmlGearList = objParentNode["gears"].SelectNodes("usegear");
-                IList<Weapon> lstChildWeapons = new List<Weapon>();
-                foreach (XmlNode objXmlVehicleGear in objXmlGearList)
+                if (objXmlGearList?.Count > 0)
                 {
-                    Gear objGear = new Gear(_objCharacter);
-                    if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons, blnCreateImprovements))
-                        continue;
-                    foreach (Weapon objWeapon in lstChildWeapons)
+                    IList<Weapon> lstChildWeapons = new List<Weapon>();
+                    foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                     {
-                        objWeapon.ParentID = InternalId;
+                        Gear objGear = new Gear(_objCharacter);
+                        if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons, blnCreateImprovements))
+                            continue;
+                        foreach (Weapon objWeapon in lstChildWeapons)
+                        {
+                            objWeapon.ParentID = InternalId;
+                        }
+
+                        objGear.Parent = this;
+                        objGear.ParentID = InternalId;
+                        Gear.Add(objGear);
+                        lstChildWeapons.AddRange(lstWeapons);
                     }
-                    objGear.Parent = this;
-                    objGear.ParentID = InternalId;
-                    Gear.Add(objGear);
-                    lstChildWeapons.AddRange(lstWeapons);
+
+                    lstWeapons.AddRange(lstChildWeapons);
                 }
-                lstWeapons.AddRange(lstChildWeapons);
             }
         }
 

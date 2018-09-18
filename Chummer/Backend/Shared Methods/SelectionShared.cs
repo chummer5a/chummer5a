@@ -1055,17 +1055,22 @@ namespace Chummer
             if (objCostNode == null)
             {
                 int intCostRating = 1;
-                foreach (XmlNode objLoopNode in objXmlGear.SelectNodes("*"))
+                XmlNodeList xmlChildNodesList = objXmlGear.SelectNodes("*");
+                if (xmlChildNodesList?.Count > 0)
                 {
-                    if (objLoopNode.Name.StartsWith("cost"))
+                    foreach (XmlNode objLoopNode in xmlChildNodesList)
                     {
-                        string strLoopCostString = objLoopNode.Name.Substring(4);
-                        if (int.TryParse(strLoopCostString, out int intTmp) && intTmp <= intRating)
+                        if (objLoopNode.Name.StartsWith("cost"))
                         {
-                            intCostRating = Math.Max(intCostRating, intTmp);
+                            string strLoopCostString = objLoopNode.Name.Substring(4);
+                            if (int.TryParse(strLoopCostString, out int intTmp) && intTmp <= intRating)
+                            {
+                                intCostRating = Math.Max(intCostRating, intTmp);
+                            }
                         }
                     }
                 }
+
                 objCostNode = objXmlGear.SelectSingleNode("cost" + intCostRating.ToString(GlobalOptions.InvariantCultureInfo));
             }
             string strCost = objCostNode?.InnerText;

@@ -24,7 +24,7 @@ namespace Chummer.UI.Table
     public partial class TableRow : UserControl
     {
         private int _intIndex;
-        private bool _blnSelected = false;
+        private bool _blnSelected;
 
         public TableRow()
         {

@@ -36,7 +36,7 @@ namespace Chummer.Backend.Equipment
         private int _intAvail;
         private string _strSource = "SR5";
         private int _intDeviceRating = 2;
-	    private int _intAddictionThreshold = 0;
+	    private int _intAddictionThreshold;
 		private readonly Improvement.ImprovementSource _eSource;
 
         #region Constructor and Load Methods

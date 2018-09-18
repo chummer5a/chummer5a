@@ -27,8 +27,7 @@ namespace Chummer
     {
         private bool _blnSkipRefresh = true;
         private string _strForceMentor = string.Empty;
-
-        private readonly string _strXmlFile;
+        
         private readonly XPathNavigator _xmlBaseMentorSpiritDataNode;
         private readonly Character _objCharacter;
         private readonly bool _blnEverShowMentorMask;
@@ -39,14 +38,13 @@ namespace Chummer
             InitializeComponent();
 
             // Load the Mentor information.
-            _strXmlFile = strXmlFile;
             _xmlBaseMentorSpiritDataNode = XmlManager.Load(strXmlFile).GetFastNavigator().SelectSingleNode("/chummer");
             if (strXmlFile == "paragons.xml")
                 Tag = "Title_SelectMentorSpirit_Paragon";
 
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            _blnEverShowMentorMask = _strXmlFile == "mentors.xml" && _objCharacter.Options.Books.Contains("FA");
+            _blnEverShowMentorMask = strXmlFile == "mentors.xml" && _objCharacter.Options.Books.Contains("FA");
         }
 
         private void frmSelectMentorSpirit_Load(object sender, EventArgs e)

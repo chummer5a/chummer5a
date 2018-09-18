@@ -2694,7 +2694,7 @@ namespace Chummer
             {
                 cmdDeleteMartialArt.Enabled = !objMartialArt.IsQuality;
             }
-            else if (treMartialArts.SelectedNode?.Tag is ICanRemove removable)
+            else if (treMartialArts.SelectedNode?.Tag is ICanRemove)
             {
                 cmdDeleteMartialArt.Enabled = true;
             }
@@ -3099,7 +3099,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickArmor(null);
+                blnAddAgain = PickArmor();
             }
             while (blnAddAgain);
         }
@@ -3368,7 +3368,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddVehicle(null);
+                blnAddAgain = AddVehicle();
             }
             while (blnAddAgain);
         }
@@ -3451,11 +3451,8 @@ namespace Chummer
             {
                 if (objCyberware.Parent != null)
                     objCyberware.Parent.Children.Remove(objCyberware);
-                else
+                else if (CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == objCyberware.InternalId, out objMod) != null)
                 {
-                    objCyberware =
-                        CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == objCyberware.InternalId,
-                            out objMod);
                     objMod.Cyberware.Remove(objCyberware);
                 }
 
@@ -5554,7 +5551,7 @@ namespace Chummer
             // Simplest way to fix this would be to make the customgroup a variable in the CreateImprovements method, but that's spooky. 
             if (!string.IsNullOrWhiteSpace(frmPickImprovement.NewImprovement.CustomGroup))
             {
-                RefreshCustomImprovements(treImprovements, treLimit, cmsImprovementLocation, cmsImprovement, cmsLimitModifier, null);
+                RefreshCustomImprovements(treImprovements, treLimit, cmsImprovementLocation, cmsImprovement, cmsLimitModifier);
             }
 
             IsCharacterUpdateRequested = true;
@@ -5618,7 +5615,7 @@ namespace Chummer
             if (treArmor.SelectedNode?.Tag is Location selectedLocation)
             {
                 // Equip all of the Armor in the Armor Bundle.
-                foreach (Armor objArmor in selectedLocation.Children)
+                foreach (Armor objArmor in selectedLocation.Children.OfType<Armor>())
                 {
                     if (objArmor.Location == selectedLocation)
                     {
@@ -5648,7 +5645,7 @@ namespace Chummer
             if (treArmor.SelectedNode?.Tag is Location selectedLocation)
             {
                 // Equip all of the Armor in the Armor Bundle.
-                foreach (Armor objArmor in selectedLocation.Children)
+                foreach (Armor objArmor in selectedLocation.Children.OfType<Armor>())
                 {
                     if (objArmor.Location == selectedLocation)
                     {
@@ -5659,7 +5656,7 @@ namespace Chummer
             else if (treArmor.SelectedNode?.Tag.ToString() == "Node_SelectedArmor")
             {
                 foreach (Armor objArmor in CharacterObject.Armor.Where(objArmor =>
-                    objArmor.Equipped == true && objArmor.Location == null))
+                    objArmor.Equipped && objArmor.Location == null))
                 {
                     objArmor.Equipped = false;
                 }
@@ -8577,7 +8574,7 @@ namespace Chummer
             else if (treArmor.SelectedNode?.Tag is ArmorMod objMod)
             {
                 strSelectedId = objMod.InternalId;
-                if (string.IsNullOrEmpty(objMod?.GearCapacity))
+                if (string.IsNullOrEmpty(objMod.GearCapacity))
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -10037,7 +10034,7 @@ namespace Chummer
 
         private void treWeapons_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            if (!(treWeapons.SelectedNode?.Tag is IHasInternalId))
+            if (treWeapons.SelectedNode != null && !(treWeapons.SelectedNode?.Tag is IHasInternalId))
             {
                 if (treWeapons.SelectedNode.Level != 1 && treWeapons.SelectedNode.Level != 0)
                     return;
@@ -12769,7 +12766,7 @@ namespace Chummer
                 if (pnlConditionMonitorPanel.Controls.OfType<CheckBox>().Count() < intConditionMax)
                 {
                     int max = 0;
-                    if (pnlConditionMonitorPanel.Controls.OfType<CheckBox>().Count() > 0)
+                    if (pnlConditionMonitorPanel.Controls.OfType<CheckBox>().Any())
                     {
                         max = pnlConditionMonitorPanel.Controls.OfType<CheckBox>().Max(x => Convert.ToInt32(x.Tag));
                     }
@@ -12997,11 +12994,11 @@ namespace Chummer
             {
                 if (panVehicleCM.SelectedIndex == 0)
                 {
-                    ProcessConditionMonitorCheckedChanged(objBox, i => objVehicle.PhysicalCMFilled = i, true);
+                    ProcessConditionMonitorCheckedChanged(objBox, i => objVehicle.PhysicalCMFilled = i);
                 }
                 else
                 {
-                    ProcessConditionMonitorCheckedChanged(objBox, i => objVehicle.MatrixCMFilled = i, true);
+                    ProcessConditionMonitorCheckedChanged(objBox, i => objVehicle.MatrixCMFilled = i);
                 }
             }
         }
@@ -16593,7 +16590,7 @@ namespace Chummer
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareSuite", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + xmlSuite["name"].InnerText, ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareSuite", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + xmlSuite["name"]?.InnerText, ExpenseType.Nuyen, DateTime.Now);
             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Nuyen -= decCost;
 
@@ -17390,8 +17387,6 @@ namespace Chummer
             if (!(treVehicles.SelectedNode?.Tag is Cyberware objModularCyberware))
                 return;
             CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == objModularCyberware.InternalId, out VehicleMod objOldParentVehicleMod);
-            if (objModularCyberware == null)
-                return;
             frmSelectItem frmPickMount = new frmSelectItem
             {
                 GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware),

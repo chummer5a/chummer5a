@@ -33,7 +33,7 @@ namespace Chummer.Backend.Equipment
     public class Drug : IHasName, IHasXmlNode
     {
         private Guid _sourceID = Guid.Empty;
-        private Guid _guiID = new Guid();
+        private Guid _guiID;
         private string _strName = "";
         private string _strCategory = "";
         private string _strAvailability = "0";
@@ -76,14 +76,18 @@ namespace Chummer.Backend.Equipment
 
         public void Load(XmlNode objXmlData)
         {
-            _guiID = Guid.Parse(objXmlData["guid"].InnerText);
+            objXmlData.TryGetField("guid", Guid.TryParse, out _guiID);
             objXmlData.TryGetStringFieldQuickly("name", ref _strName);
             objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
-            foreach (XmlNode objXmlLevel in objXmlData.SelectNodes("drugcomponents/drugcomponent"))
+            XmlNodeList xmlComponentsNodeList = objXmlData.SelectNodes("drugcomponents/drugcomponent");
+            if (xmlComponentsNodeList?.Count > 0)
             {
-                DrugComponent c = new DrugComponent(_objCharacter);
-                c.Load(objXmlLevel);
-                Components.Add(c);
+                foreach (XmlNode objXmlLevel in xmlComponentsNodeList)
+                {
+                    DrugComponent c = new DrugComponent(_objCharacter);
+                    c.Load(objXmlLevel);
+                    Components.Add(c);
+                }
             }
 
             if (objXmlData["sourceid"] == null || !objXmlData.TryGetField("sourceid", Guid.TryParse, out _sourceID))
@@ -415,7 +419,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private bool _blnCachedLimitFlag = false;
+        private bool _blnCachedLimitFlag;
         public Dictionary<string, int> Limits
         {
             get
@@ -430,7 +434,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private bool _blnCachedQualityFlag = false;
+        private bool _blnCachedQualityFlag;
         public List<string> Qualities
 	    {
 	        get
@@ -447,19 +451,19 @@ namespace Chummer.Backend.Equipment
 	        }
 	    }
 
-        private bool _cachedInfoFlag = false;
+        private bool _blnCachedInfoFlag;
         public List<string> Infos
 	    {
 	        get
 	        {
-	            if (_cachedInfoFlag) return _lstCachedInfos;
+	            if (_blnCachedInfoFlag) return _lstCachedInfos;
 	            foreach (DrugComponent d in Components)
 	            {
 	                _lstCachedInfos.AddRange(d.ActiveDrugEffect.Infos);
                 }
 
 	            _lstCachedInfos = _lstCachedInfos.Distinct().ToList();
-	            _cachedInfoFlag = true;
+	            _blnCachedInfoFlag = true;
                 return _lstCachedInfos;
 	        }
 	    }
@@ -547,7 +551,7 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayName => DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
-        private bool _blnCachedAttributeFlag = false;
+        private bool _blnCachedAttributeFlag;
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage;
 
@@ -665,7 +669,6 @@ namespace Chummer.Backend.Equipment
 				}
 				if (blnNewLineFlag)
 				{
-					blnNewLineFlag = false;
 					strbldDescription.AppendLine();
 				}
 
@@ -753,8 +756,8 @@ namespace Chummer.Backend.Equipment
         private string _strName;
 		private string _strCategory;
 	    private string _strAvailability = "0";
-        private readonly List<DrugEffect> _lstEffects;
-		private int _intLevel = 0;
+        private readonly List<DrugEffect> _lstEffects = new List<DrugEffect>();
+        private int _intLevel;
 		private string _strSource;
 		private string _strPage;
 		private string _strCost;
@@ -768,7 +771,6 @@ namespace Chummer.Backend.Equipment
 	    {
 	        _guidId = new Guid();
             _objCharacter = objCharacter;
-            _lstEffects = new List<DrugEffect>();
 		}
 
 		#region Constructor, Create, Save, Load, and Print Methods
@@ -778,55 +780,64 @@ namespace Chummer.Backend.Equipment
             objXmlData.TryGetField("id", Guid.TryParse, out _sourceID);
             objXmlData.TryGetStringFieldQuickly("name", ref _strName);
 			objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
-			foreach (XmlNode objXmlLevel in objXmlData.SelectNodes("effects/effect"))
-			{
-				DrugEffect objDrugEffect = new DrugEffect();
-			    objXmlLevel.TryGetField("level", out int effectLevel);
-			    objDrugEffect.Level = effectLevel;
+		    XmlNodeList xmlEffectsList = objXmlData.SelectNodes("effects/effect");
+		    if (xmlEffectsList?.Count > 0)
+		    {
+		        foreach (XmlNode objXmlLevel in xmlEffectsList)
+		        {
+		            DrugEffect objDrugEffect = new DrugEffect();
+		            objXmlLevel.TryGetField("level", out int effectLevel);
+		            objDrugEffect.Level = effectLevel;
+		            XmlNodeList xmlEffectChildNodeList = objXmlLevel.SelectNodes("*");
+                    if (xmlEffectChildNodeList?.Count > 0)
+                    {
+                        foreach (XmlNode objXmlEffect in xmlEffectChildNodeList)
+                        {
+                            objXmlEffect.TryGetField("name", out string effectName);
+                            objXmlEffect.TryGetField("value", out var effectValue, 1);
+                            switch (objXmlEffect.Name)
+                            {
+                                case "attribute":
+                                    if (effectName != null)
+                                        objDrugEffect.Attributes[effectName] = effectValue;
+                                    break;
+                                case "limit":
+                                    if (effectName != null)
+                                        objDrugEffect.Limits[effectName] = effectValue;
+                                    break;
+                                case "quality":
+                                    objDrugEffect.Qualities.Add(objXmlEffect.InnerText);
+                                    break;
+                                case "info":
+                                    objDrugEffect.Infos.Add(objXmlEffect.InnerText);
+                                    break;
+                                case "initiative":
+                                    objDrugEffect.Initiative = int.Parse(objXmlEffect.InnerText);
+                                    break;
+                                case "initiativedice":
+                                    objDrugEffect.InitiativeDice = int.Parse(objXmlEffect.InnerText);
+                                    break;
+                                case "crashdamage":
+                                    objDrugEffect.CrashDamage = int.Parse(objXmlEffect.InnerText);
+                                    break;
+                                case "speed":
+                                    objDrugEffect.Speed = int.Parse(objXmlEffect.InnerText);
+                                    break;
+                                case "duration":
+                                    objDrugEffect.Duration = int.Parse(objXmlEffect.InnerText);
+                                    break;
+                                default:
+                                    Log.Warning(info: $"Unknown drug effect {objXmlEffect.Name} in component {effectName}");
+                                    break;
+                            }
+                        }
+                    }
 
-                foreach (XmlNode objXmlEffect in objXmlLevel.SelectNodes("*"))
-				{
-				    objXmlEffect.TryGetField("name", out string effectName, null);
-				    objXmlEffect.TryGetField("value", out var effectValue, 1);
-                    switch (objXmlEffect.Name)
-					{
-						case "attribute":
-							if (effectName != null)
-								objDrugEffect.Attributes[effectName] = effectValue;
-							break;
-						case "limit":
-							if (effectName != null)
-								objDrugEffect.Limits[effectName] = effectValue;
-							break;
-						case "quality":
-							objDrugEffect.Qualities.Add(objXmlEffect.InnerText);
-							break;
-						case "info":
-							objDrugEffect.Infos.Add(objXmlEffect.InnerText);
-							break;
-						case "initiative":
-							objDrugEffect.Initiative = int.Parse(objXmlEffect.InnerText);
-							break;
-						case "initiativedice":
-							objDrugEffect.InitiativeDice = int.Parse(objXmlEffect.InnerText);
-							break;
-						case "crashdamage":
-							objDrugEffect.CrashDamage = int.Parse(objXmlEffect.InnerText);
-							break;
-						case "speed":
-							objDrugEffect.Speed = int.Parse(objXmlEffect.InnerText);
-							break;
-						case "duration":
-							objDrugEffect.Duration = int.Parse(objXmlEffect.InnerText);
-							break;
-						default:
-							Log.Warning(info: string.Format("Unknown drug effect %s in component %s", objXmlEffect.Name, effectName));
-							break;
-					}
-				}
-				_lstEffects.Add(objDrugEffect);
-			}
-			objXmlData.TryGetStringFieldQuickly("availability", ref _strAvailability);
+		            _lstEffects.Add(objDrugEffect);
+		        }
+		    }
+
+		    objXmlData.TryGetStringFieldQuickly("availability", ref _strAvailability);
 			objXmlData.TryGetStringFieldQuickly("cost", ref _strCost);
 			objXmlData.TryGetField("rating", out _intAddictionRating);
 			objXmlData.TryGetField("threshold", out _intAddictionThreshold);
@@ -1139,7 +1150,6 @@ namespace Chummer.Backend.Equipment
 				}
 				if (blnNewLineFlag)
 				{
-					blnNewLineFlag = false;
 					strbldDescription.AppendLine();
 				}
 
@@ -1237,15 +1247,15 @@ namespace Chummer.Backend.Equipment
 
 	    public List<string> Infos { get; }
 
-	    public int Initiative { get; set; } = 0;
+	    public int Initiative { get; set; }
 
-	    public int InitiativeDice { get; set; } = 0;
+	    public int InitiativeDice { get; set; }
 
-	    public int CrashDamage { get; set; } = 0;
+	    public int CrashDamage { get; set; }
 
-	    public int Speed { get; set; } = 0;
+	    public int Speed { get; set; }
 
-	    public int Duration { get; set; } = 0;
+	    public int Duration { get; set; }
 
         public int Level { get; set; }
 	}

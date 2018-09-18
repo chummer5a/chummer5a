@@ -25,7 +25,6 @@ using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
-using Chummer.Backend.Uniques;
 
 // ReSharper disable InconsistentNaming
 
@@ -1679,7 +1678,7 @@ namespace Chummer.Classes
                 Avail = "0",
                 Cost = "0",
                 UseSkill = bonusNode["useskill"]?.InnerText ?? string.Empty,
-                Source = bonusNode["source"].InnerText ?? "SR5",
+                Source = bonusNode["source"]?.InnerText ?? "SR5",
                 Page = bonusNode["page"]?.InnerText ?? "0",
                 ParentID = SourceName
             };

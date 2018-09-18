@@ -23,7 +23,7 @@ namespace Chummer.UI.Table
 {
     public partial class SpinnerTableCell<T> : TableCell where T : class, INotifyPropertyChanged
     {
-        private bool _blnUpdating = false;
+        private bool _blnUpdating;
 
         public SpinnerTableCell(TableView<T> table)
         {
