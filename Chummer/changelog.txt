@@ -69,6 +69,7 @@ Application Changes:
 - Added the ability for improvements to disable individual skills through the "disableskill" bonus node.
 - Added the ability for improvements to add arts through the "addart" and "selectart" bonus nodes.
 - Added the ability for improvements that add qualities, metamagics, arts, and/or echoes to ignore checking whether the newly added item has all of its requirements met before adding said item (e.g. for adding metamagics without adding the art prerequisites for the metamagic).
+- Fixed a bug where the checkbox for Working for the Man/People would appear as an empty checkbox when refunding an expense. Fixes #3016.
 
 Data Changes:
 
