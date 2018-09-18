@@ -4040,20 +4040,26 @@ namespace Chummer
                     frmPickCritterPower.Dispose();
                     continue;
                 }
+                
+                if (objPower.Karma > CharacterObject.Karma)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    continue;
+                }
+
+                if (!CharacterObject.ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language).Replace("{0}", objPower.DisplayName(GlobalOptions.Language))
+                    .Replace("{1}", objPower.Karma.ToString())))
+                    continue;
+
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                objExpense.Create(objPower.Karma * -1, LanguageManager.GetString("String_ExpensePurchaseCritterPower", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objPower.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+
+                ExpenseUndo objUndo = new ExpenseUndo();
+                objUndo.CreateKarma(KarmaExpenseType.AddCritterPower, objPower.InternalId);
+                objExpense.Undo = objUndo;
 
                 CharacterObject.CritterPowers.Add(objPower);
-                
-                if (objPower.Karma > 0)
-                {
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(objPower.Karma * -1, LanguageManager.GetString("String_ExpensePurchaseCritterPower", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objPower.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateKarma(KarmaExpenseType.AddCritterPower, objPower.InternalId);
-                    objExpense.Undo = objUndo;
-                }
-                
                 IsCharacterUpdateRequested = true;
 
                 IsDirty = true;
