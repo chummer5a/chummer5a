@@ -148,6 +148,11 @@ namespace Chummer
             _strSelectedManeuver = lstManeuvers.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
         }
+
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
+        }
         #endregion
     }
 }

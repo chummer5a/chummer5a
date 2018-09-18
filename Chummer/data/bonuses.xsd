@@ -466,7 +466,9 @@
           <xs:sequence>
             <xs:element name="attack" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="dataprocessing" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="devicerating" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="firewall" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="matrixcm" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="programlimit" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="sleaze" type="xs:string" minOccurs="0" maxOccurs="1" />
           </xs:sequence>

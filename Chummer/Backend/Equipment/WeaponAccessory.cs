@@ -63,6 +63,7 @@ namespace Chummer.Backend.Equipment
         private int _intRating;
         private int _intRCGroup;
         private int _intAmmoSlots;
+        private string _strModifyAmmoCapacity;
         private bool _blnDeployable;
         private bool _blnDiscountCost;
         private bool _blnIncludedInWeapon;
@@ -157,6 +158,7 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetInt32FieldQuickly("rcgroup", ref _intRCGroup);
             objXmlAccessory.TryGetStringFieldQuickly("conceal", ref _strConceal);
             objXmlAccessory.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots);
+            objXmlAccessory.TryGetStringFieldQuickly("modifyammocapacity", ref _strModifyAmmoCapacity);
             objXmlAccessory.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
             objXmlAccessory.TryGetInt32FieldQuickly("accuracy", ref _intAccuracy);
             objXmlAccessory.TryGetStringFieldQuickly("dicepool", ref _strDicePool);
@@ -198,7 +200,7 @@ namespace Chummer.Backend.Equipment
                             if (objXmlAccessoryGearNameAttributes?["qty"] != null)
                                 decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
 
-                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGearName?.InnerText + "\" and category = \"" + objXmlAccessoryGear["category"].InnerText + "\"]");
+                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlAccessoryGearName?.InnerText.CleanXPath() + " and category = " + objXmlAccessoryGear["category"].InnerText.CleanXPath() + "]");
                             Gear objGear = new Gear(_objCharacter);
 
                             List<Weapon> lstWeapons = new List<Weapon>();
@@ -261,6 +263,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteEndElement();
             }
             objWriter.WriteElementString("ammoslots", _intAmmoSlots.ToString());
+            objWriter.WriteElementString("modifyammocapacity", _strModifyAmmoCapacity);
             objWriter.WriteElementString("damagetype", _strDamageType);
             objWriter.WriteElementString("damage", _strDamage);
             objWriter.WriteElementString("damagereplace", _strDamageReplace);
@@ -317,6 +320,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("dicepool", ref _strDicePool);
 
             objNode.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots);
+            objNode.TryGetStringFieldQuickly("modifyammocapacity", ref _strModifyAmmoCapacity);
 
             XmlNode xmlGearsNode = objNode["gears"];
             if (xmlGearsNode != null)
@@ -420,6 +424,14 @@ namespace Chummer.Backend.Equipment
         {
             get => _intAmmoSlots;
             set => _intAmmoSlots = value;
+        }
+        /// <summary>
+        /// The accessory modifies the weapon's ammunition capacity.
+        /// </summary>
+        public string ModifyAmmoCapacity
+        {
+            get => _strModifyAmmoCapacity;
+            set => _strModifyAmmoCapacity = value;
         }
         /// <summary>
         /// The accessory adds to the weapon's damage value.

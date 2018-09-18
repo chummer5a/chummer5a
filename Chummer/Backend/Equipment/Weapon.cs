@@ -364,7 +364,7 @@ namespace Chummer.Backend.Equipment
                             if (objXmlAccessoryGearNameAttributes?["qty"] != null)
                                 decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
 
-                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGearName.InnerText + "\" and category = \"" + objXmlAccessoryGear["category"].InnerText + "\"]");
+                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlAccessoryGearName.InnerText.CleanXPath() + " and category = " + objXmlAccessoryGear["category"].InnerText.CleanXPath() + "]");
                             Gear objGear = new Gear(_objCharacter);
 
                             objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue, blnAddChildImprovements, blnChildCreateChildren);
@@ -1037,7 +1037,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return AmmoName;
 
-            return XmlManager.Load("gear.xml", strLanguage).SelectSingleNode("/chummer/gears/gear[name = \"" + AmmoName + "\"]/@translate")?.InnerText ?? AmmoName;
+            return XmlManager.Load("gear.xml", strLanguage).SelectSingleNode("/chummer/gears/gear[name = " + AmmoName.CleanXPath() + "]/@translate")?.InnerText ?? AmmoName;
         }
 
         /// <summary>
@@ -1728,9 +1728,6 @@ namespace Chummer.Backend.Equipment
                 strDamage = strDamage.FastEscape(strSplash).Trim();
             }
 
-            // Replace the division sign with "div" since we're using XPath.
-            strDamage = strDamage.Replace("/", " div ");
-
             // Include WeaponCategoryDV Improvements.
             int intImprove = 0;
             if (_objCharacter != null)
@@ -1865,6 +1862,8 @@ namespace Chummer.Backend.Equipment
                     strReturn = strDamageType + strDamageExtra;
                 else
                 {
+                    // Replace the division sign with "div" since we're using XPath.
+                    strDamage = strDamage.Replace("/", " div ");
                     try
                     {
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strDamage, out bool blnIsSuccess);
@@ -1875,20 +1874,26 @@ namespace Chummer.Backend.Equipment
                             if (Name == "Unarmed Attack (Smashing Blow)")
                                 intDamage *= 2;
                             strDamage = intDamage.ToString(objCulture);
+                            strReturn = strDamage + strDamageType + strDamageExtra;
+                        }
+                        else
+                        {
+                            strReturn = "NaN";
                         }
                     }
                     catch (OverflowException)
                     {
+                        strReturn = "NaN";
                     } // Result is text and not a double
                     catch (InvalidCastException)
                     {
+                        strReturn = "NaN";
                     } // Result is text and not a double
-
-                    strReturn = strDamage + strDamageType + strDamageExtra;
                 }
             }
             else
             {
+                string strOriginalDamage = strDamage;
                 // Place the Damage Type (P or S) into a string and remove it from the expression.
                 if (strDamage.Contains("P or S"))
                 {
@@ -1928,27 +1933,31 @@ namespace Chummer.Backend.Equipment
                 {
                     // Replace the division sign with "div" since we're using XPath.
                     strDamage = strDamage.Replace("/", " div ");
-
                     try
                     {
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strDamage, out bool blnIsSuccess);
                         if (blnIsSuccess)
                         {
-                            int intDamage = Convert.ToInt32(Math.Ceiling((double) objProcess));
+                            int intDamage = Convert.ToInt32(Math.Ceiling((double)objProcess));
                             intDamage += intBonus;
                             if (Name == "Unarmed Attack (Smashing Blow)")
                                 intDamage *= 2;
                             strDamage = intDamage.ToString(objCulture);
+                            strReturn = strDamage + strDamageType + strDamageExtra;
+                        }
+                        else
+                        {
+                            strReturn = strOriginalDamage;
                         }
                     }
                     catch (OverflowException)
                     {
+                        strReturn = strOriginalDamage;
                     } // Result is text and not a double
                     catch (InvalidCastException)
                     {
+                        strReturn = strOriginalDamage;
                     } // Result is text and not a double
-
-                    strReturn = strDamage + strDamageType + strDamageExtra;
                 }
             }
 
@@ -1959,13 +1968,11 @@ namespace Chummer.Backend.Equipment
             // Translate the Damage Code.
             if (strLanguage != GlobalOptions.DefaultLanguage)
             {
-                strReturn = strReturn.CheapReplace("S", () => LanguageManager.GetString("String_DamageStun", strLanguage))
-                    .CheapReplace("P", () => LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                strReturn = strReturn.CheapReplace("Special", () => LanguageManager.GetString("String_DamageSpecial", strLanguage))
+                    .CheapReplace("P or S", () => LanguageManager.GetString("String_DamagePOrS", strLanguage))
                     .CheapReplace("Chemical", () => LanguageManager.GetString("String_DamageChemical", strLanguage))
-                    .CheapReplace("Special", () => LanguageManager.GetString("String_DamageSpecial", strLanguage))
                     .CheapReplace("(e)", () => LanguageManager.GetString("String_DamageElectric", strLanguage))
                     .CheapReplace("(f)", () => LanguageManager.GetString("String_DamageFlechette", strLanguage))
-                    .CheapReplace("P or S", () => LanguageManager.GetString("String_DamagePOrS", strLanguage))
                     .CheapReplace("Grenade", () => LanguageManager.GetString("String_DamageGrenade", strLanguage))
                     .CheapReplace("Missile", () => LanguageManager.GetString("String_DamageMissile", strLanguage))
                     .CheapReplace("Mortar", () => LanguageManager.GetString("String_DamageMortar", strLanguage))
@@ -1975,6 +1982,27 @@ namespace Chummer.Backend.Equipment
                     .CheapReplace("as round", () => LanguageManager.GetString("String_DamageAsRound", strLanguage))
                     .CheapReplace("/m", () => '/' + LanguageManager.GetString("String_DamageMeter", strLanguage))
                     .CheapReplace("(M)", () => LanguageManager.GetString("String_DamageMatrix", strLanguage));
+                strReturn = strReturn
+                    .CheapReplace("0S", () => '0' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("1S", () => '1' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("2S", () => '2' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("3S", () => '3' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("4S", () => '4' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("5S", () => '5' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("6S", () => '6' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("7S", () => '7' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("8S", () => '8' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("9S", () => '9' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("0P", () => '0' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("1P", () => '1' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("2P", () => '2' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("3P", () => '3' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("4P", () => '4' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("5P", () => '5' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("6P", () => '6' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("7P", () => '7' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("8P", () => '8' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("9P", () => '9' + LanguageManager.GetString("String_DamagePhysical", strLanguage));
             }
 
             return strReturn;
@@ -2036,7 +2064,28 @@ namespace Chummer.Backend.Equipment
                         strPrepend = strThisAmmo.Substring(0, intPos + 1);
                         strThisAmmo = strThisAmmo.Substring(intPos + 1, strThisAmmo.Length - (intPos + 1));
                     }
+                    if (WeaponAccessories.Count != 0)
+                    {
+                        foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                        {
+                            if (objAccessory.Equipped)
+                            {
+                                string strModifyAmmoCapacity = objAccessory.ModifyAmmoCapacity;
+                                if (!string.IsNullOrEmpty(strModifyAmmoCapacity))
+                                {
+                                    strThisAmmo = '(' + strThisAmmo + strModifyAmmoCapacity + ')';
+                                    int AddParenthesesCount = strModifyAmmoCapacity.Count(x => x == ')') - strModifyAmmoCapacity.Count(x => x == '(');
+                                    for (int i = 0; i < AddParenthesesCount; ++i)
+                                        strThisAmmo = '(' + strThisAmmo;
+                                    for (int i = 0; i < -AddParenthesesCount; ++i)
+                                        strThisAmmo += ')';
+                                }
+                            }
+                        }
+                    }
                     strThisAmmo = strThisAmmo.CheapReplace("Weapon", () => Ammo);
+                    // Replace the division sign with "div" since we're using XPath.
+                    strThisAmmo = strThisAmmo.Replace("/", " div ");
                     // If this is an Underbarrel Weapons that has been added, cut the Ammo capacity in half.
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strThisAmmo, out bool blnIsSuccess);
                     if (blnIsSuccess)
@@ -2346,6 +2395,8 @@ namespace Chummer.Backend.Equipment
                         objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                     }
 
+                    // Replace the division sign with "div" since we're using XPath.
+                    objCost.Replace("/", " div ");
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
                     decimal decReturn = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
 
@@ -2558,7 +2609,8 @@ namespace Chummer.Backend.Equipment
             int intAP;
             try
             {
-
+                // Replace the division sign with "div" since we're using XPath.
+                objAP.Replace("/", " div ");
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAP.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intAP = Convert.ToInt32(objProcess);
@@ -2975,6 +3027,8 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
+                // Replace the division sign with "div" since we're using XPath.
+                objAccuracy.Replace("/", " div ");
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAccuracy.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intAccuracy = Convert.ToInt32(objProcess);
@@ -3808,6 +3862,8 @@ namespace Chummer.Backend.Equipment
                     objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                 }
 
+                // Replace the division sign with "div" since we're using XPath.
+                objAvail.Replace("/", " div ");
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intAvail += Convert.ToInt32(objProcess);
@@ -4588,6 +4644,8 @@ namespace Chummer.Backend.Equipment
                     objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "}", () => _objCharacter.GetAttribute(strCharAttributeName).TotalValue.ToString());
                     objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "Base}", () => _objCharacter.GetAttribute(strCharAttributeName).TotalBase.ToString());
                 }
+                // Replace the division sign with "div" since we're using XPath.
+                objValue.Replace("/", " div ");
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
                 return blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;

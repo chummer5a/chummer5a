@@ -60,6 +60,9 @@ namespace Chummer.UI.Attributes
             {
                 while (_objAttribute.KarmaMaximum < 0 && _objAttribute.Base > 0)
                     _objAttribute.Base -= 1;
+                // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
+                if (_objAttribute.Karma > _objAttribute.KarmaMaximum)
+                    _objAttribute.Karma = _objAttribute.KarmaMaximum;
 
                 nudBase.DataBindings.Add("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.DataBindings.Add("Maximum", _dataSource, nameof(CharacterAttrib.PriorityMaximum), false, DataSourceUpdateMode.OnPropertyChanged);

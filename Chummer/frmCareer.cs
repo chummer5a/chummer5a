@@ -195,7 +195,10 @@ namespace Chummer
             Timekeeper.Finish("load_free");
 
             Timekeeper.Start("load_frm_career");
-            
+
+            cmdRollSpell.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
+            cmdRollDrain.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
+
             mnuSpecialAddBiowareSuite.Visible = CharacterObjectOptions.AllowBiowareSuites;
             
             txtGroupName.DataBindings.Add("Text", CharacterObject, nameof(Character.GroupName), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -264,6 +267,7 @@ namespace Chummer
             RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
             RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
             RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsVehicleCyberware, cmsVehicleCyberwareGear);
+            RefreshDrugs(treCustomDrugs);
 
             // Set up events that would change various lists
             CharacterObject.Spells.CollectionChanged += SpellCollectionChanged;
@@ -632,6 +636,8 @@ namespace Chummer
 
             Utils.DoDatabinding(lblMentorSpirit, "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayName));
             Utils.DoDatabinding(lblMentorSpiritInformation, "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayInformation));
+            Utils.DoDatabinding(lblParagon, "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayName));
+            Utils.DoDatabinding(lblParagonInformation, "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayInformation));
 
             Utils.DoDatabinding(lblComposure, "ToolTipText", CharacterObject, nameof(Character.ComposureToolTip));
             Utils.DoDatabinding(lblComposure, "Text", CharacterObject, nameof(Character.Composure));
@@ -1120,7 +1126,6 @@ namespace Chummer
                         treFoci.Visible = CharacterObject.MAGEnabled;
                         cmdCreateStackedFocus.Visible = CharacterObject.MAGEnabled;
                         lblAstralINI.Visible = CharacterObject.MAGEnabled;
-                        lblSpirits.Visible = CharacterObject.MAGEnabled;
                         panSpirits.Visible = CharacterObject.MAGEnabled;
                         cmdAddSpirit.Visible = CharacterObject.MAGEnabled;
                     }
@@ -1240,7 +1245,6 @@ namespace Chummer
                                 SpecialAttributes.Remove(CharacterObject.MAGAdept);
                             }
                         }
-                        lblSpirits.Visible = CharacterObject.MagicianEnabled;
                         cmdAddSpirit.Visible = CharacterObject.MagicianEnabled;
                         panSpirits.Visible = CharacterObject.MagicianEnabled;
                     }
@@ -1399,6 +1403,9 @@ namespace Chummer
                         lblMentorSpirit.Visible = CharacterObject.HasMentorSpirit;
                         lblMentorSpiritLabel.Visible = CharacterObject.HasMentorSpirit;
                         lblMentorSpiritInformation.Visible = CharacterObject.HasMentorSpirit;
+                        lblParagon.Visible = CharacterObject.HasMentorSpirit;
+                        lblParagonLabel.Visible = CharacterObject.HasMentorSpirit;
+                        lblParagonInformation.Visible = CharacterObject.HasMentorSpirit;
                         break;
                     }
                 case nameof(Character.UseMysticAdeptPPs):
@@ -6772,40 +6779,49 @@ namespace Chummer
                     treMartialArts.SelectedNode = treMartialArts.SelectedNode.Parent;
 
                 if (!(treMartialArts.SelectedNode?.Tag is MartialArt objMartialArt)) return;
-                frmSelectMartialArtTechnique frmPickMartialArtTechnique = new frmSelectMartialArtTechnique(CharacterObject, objMartialArt);
-                frmPickMartialArtTechnique.ShowDialog(this);
 
-                if (frmPickMartialArtTechnique.DialogResult == DialogResult.Cancel)
-                    return;
-
-                // Open the Martial Arts XML file and locate the selected piece.
-                XmlNode xmlTechnique = XmlManager.Load("martialarts.xml").SelectSingleNode("/chummer/techniques/technique[id = \"" + frmPickMartialArtTechnique.SelectedTechnique + "\"]");
-
-                if (xmlTechnique != null)
+                bool blnAddAgain = false;
+                do
                 {
-                    // Create the Improvements for the Advantage if there are any.
-                    MartialArtTechnique objAdvantage = new MartialArtTechnique(CharacterObject);
-                    objAdvantage.Create(xmlTechnique);
-                    if (objAdvantage.InternalId.IsEmptyGuid())
+                    frmSelectMartialArtTechnique frmPickMartialArtTechnique = new frmSelectMartialArtTechnique(CharacterObject, objMartialArt);
+                    frmPickMartialArtTechnique.ShowDialog(this);
+
+                    if (frmPickMartialArtTechnique.DialogResult == DialogResult.Cancel)
                         return;
 
-                    int karmaCost = objMartialArt.Techniques.Count > 0 ? CharacterObjectOptions.KarmaManeuver : 0;
-                            objMartialArt.Techniques.Add(objAdvantage);
+                    // Open the Martial Arts XML file and locate the selected piece.
+                    XmlNode xmlTechnique = XmlManager.Load("martialarts.xml").SelectSingleNode("/chummer/techniques/technique[id = \"" + frmPickMartialArtTechnique.SelectedTechnique + "\"]");
+
+                    if (xmlTechnique != null)
+                    {
+                        // Create the Improvements for the Advantage if there are any.
+                        MartialArtTechnique objAdvantage = new MartialArtTechnique(CharacterObject);
+                        objAdvantage.Create(xmlTechnique);
+                        if (objAdvantage.InternalId.IsEmptyGuid())
+                            return;
+
+                        blnAddAgain = frmPickMartialArtTechnique.AddAgain;
+
+                        int karmaCost = objMartialArt.Techniques.Count > 0 ? CharacterObjectOptions.KarmaManeuver : 0;
+                        objMartialArt.Techniques.Add(objAdvantage);
 
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                        objEntry.Create(karmaCost * -1, LanguageManager.GetString("String_ExpenseLearnTechnique", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objAdvantage.DisplayName(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                        objEntry.Create(karmaCost * -1,
+                            LanguageManager.GetString("String_ExpenseLearnTechnique", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objAdvantage.DisplayName(GlobalOptions.Language),
+                            ExpenseType.Karma, DateTime.Now);
                         CharacterObject.ExpenseEntries.AddWithSort(objEntry);
                         CharacterObject.Karma -= karmaCost;
 
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateKarma(KarmaExpenseType.AddMartialArtManeuver, objAdvantage.InternalId);
-                    objEntry.Undo = objUndo;
+                        ExpenseUndo objUndo = new ExpenseUndo();
+                        objUndo.CreateKarma(KarmaExpenseType.AddMartialArtManeuver, objAdvantage.InternalId);
+                        objEntry.Undo = objUndo;
+                    }
+                } while (blnAddAgain);
 
-                    IsCharacterUpdateRequested = true;
+                IsCharacterUpdateRequested = true;
 
-                    IsDirty = true;
-                }
+                IsDirty = true;
             }
             else
             {
@@ -8726,7 +8742,7 @@ namespace Chummer
 
             do
             {
-                frmSelectCyberware frmPickCyberware = new frmSelectCyberware(CharacterObject, Improvement.ImprovementSource.Cyberware, objCyberwareParent?.GetNode() ?? objMod.GetNode());
+                frmSelectCyberware frmPickCyberware = new frmSelectCyberware(CharacterObject, Improvement.ImprovementSource.Cyberware, objCyberwareParent ?? (object)objMod);
                 if (objCyberwareParent == null)
                 {
                     //frmPickCyberware.SetGrade = "Standard";
@@ -13030,28 +13046,16 @@ namespace Chummer
         /// </summary>
         private void RefreshSelectedDrug()
         {
-            bool blnClear = false;
-
-            try
+            if (treCustomDrugs.SelectedNode?.Level == 0)
             {
-                if (treCustomDrugs.SelectedNode.Level == 0)
-                    blnClear = true;
-            }
-            catch
-            {
-                blnClear = true;
-            }
-
-            if (blnClear)
-            {
-                lblDrugAvail.Text = "";
-                lblDrugGrade.Text = "";
-                lblDrugCost.Text = "";
-                lblDrugCategory.Text = "";
-                lblDrugAddictionRating.Text = "";
-                lblDrugAddictionThreshold.Text = "";
-                lblDrugComponents.Text = "";
-                lblDrugEffect.Text = "";
+                lblDrugAvail.Text = string.Empty;
+                lblDrugGrade.Text = string.Empty;
+                lblDrugCost.Text = string.Empty;
+                lblDrugCategory.Text = string.Empty;
+                lblDrugAddictionRating.Text = string.Empty;
+                lblDrugAddictionThreshold.Text = string.Empty;
+                lblDrugComponents.Text = string.Empty;
+                lblDrugEffect.Text = string.Empty;
             }
 
             // Locate the selected Vehicle.
@@ -13061,7 +13065,7 @@ namespace Chummer
                 lblDrugName.Text = objDrug.Name;
                 lblDrugAvail.Text = objDrug.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language).ToString();
                 lblDrugGrade.Text = objDrug.Grade;
-                lblDrugCost.Text = String.Format("{0:###,###,##0¥}", objDrug.Cost);
+                lblDrugCost.Text = objDrug.Cost.ToString(CharacterObject.Options.NuyenFormat) + '¥';
                 lblDrugCategory.Text = objDrug.Category;
                 lblDrugAddictionRating.Text = objDrug.AddictionRating.ToString();
                 lblDrugAddictionThreshold.Text = objDrug.AddictionThreshold.ToString();
@@ -13069,7 +13073,7 @@ namespace Chummer
                 lblDrugComponents.Text = "";
                 foreach (DrugComponent objComponent in objDrug.Components)
                 {
-                    lblDrugComponents.Text += objComponent.DisplayName + "\n";
+                    lblDrugComponents.Text += objComponent.CurrentDisplayName + '\n';
                 }
 
                 btnIncreaseDrugQty.Enabled = objDrug.Cost <= CharacterObject.Nuyen;
@@ -14285,7 +14289,7 @@ namespace Chummer
         /// </summary>
         private bool PickCyberware(Cyberware objSelectedCyberware, Improvement.ImprovementSource objSource)
         {
-            frmSelectCyberware frmPickCyberware = new frmSelectCyberware(CharacterObject, objSource, objSelectedCyberware?.GetNode());
+            frmSelectCyberware frmPickCyberware = new frmSelectCyberware(CharacterObject, objSource, objSelectedCyberware);
             decimal decMultiplier = 1.0m;
             // Apply the character's Cyberware Essence cost multiplier if applicable.
             if (objSource == Improvement.ImprovementSource.Cyberware)
@@ -15961,76 +15965,11 @@ namespace Chummer
 
         private void MoveControls()
         {
-            // Common tab.
-            lblAlias.Left = Math.Max(288, cmdDeleteQuality.Left + cmdDeleteQuality.Width + 6);
-            txtAlias.Left = lblAlias.Left + lblAlias.Width + 6;
-            txtAlias.Width = lblMetatypeLabel.Left - txtAlias.Left - 6;
-
-            // Skills tab.
-
-            // Martial Arts tab.
-            lblMartialArtSource.Left = lblMartialArtSourceLabel.Left + lblMartialArtSourceLabel.Width + 6;
-
-            // Spells and Spirits tab.
-            int intWidth = Math.Max(lblSpellDescriptorsLabel.Width, lblSpellCategoryLabel.Width);
-            intWidth = Math.Max(intWidth, lblSpellRangeLabel.Width);
-            intWidth = Math.Max(intWidth, lblSpellDurationLabel.Width);
-            intWidth = Math.Max(intWidth, lblSpellSourceLabel.Width);
-            intWidth = Math.Max(intWidth, lblSpellDicePoolLabel.Width);
-
-            lblSpellDescriptors.Left = lblSpellDescriptorsLabel.Left + intWidth + 6;
-            lblSpellCategory.Left = lblSpellCategoryLabel.Left + intWidth + 6;
-            lblSpellRange.Left = lblSpellRangeLabel.Left + intWidth + 6;
-            lblSpellDuration.Left = lblSpellDurationLabel.Left + intWidth + 6;
-            lblSpellSource.Left = lblSpellSourceLabel.Left + intWidth + 6;
-            lblSpellDicePool.Left = lblSpellDicePoolLabel.Left + intWidth + 6;
-
-            intWidth = Math.Max(lblSpellTypeLabel.Width, lblSpellDamageLabel.Width);
-            intWidth = Math.Max(intWidth, lblSpellDVLabel.Width);
-            lblSpellTypeLabel.Left = lblSpellCategoryLabel.Left + 179;
-            lblSpellType.Left = lblSpellTypeLabel.Left + intWidth + 6;
-            lblSpellDamageLabel.Left = lblSpellRangeLabel.Left + 179;
-            lblSpellDamage.Left = lblSpellDamageLabel.Left + intWidth + 6;
-            lblSpellDVLabel.Left = lblSpellDurationLabel.Left + 179;
-            lblSpellDV.Left = lblSpellDVLabel.Left + intWidth + 6;
-            cmdQuickenSpell.Left = lblSpellDVLabel.Left;
-
-            intWidth = Math.Max(lblTraditionLabel.Width, lblDrainAttributesLabel.Width);
-            intWidth = Math.Max(intWidth, lblMentorSpiritLabel.Width);
-            cboTradition.Left = lblTraditionLabel.Left + intWidth + 6;
-            lblDrainAttributes.Left = lblDrainAttributesLabel.Left + intWidth + 6;
-            lblTraditionSource.Left = lblTraditionSourceLabel.Left + intWidth + 6;
-            lblDrainAttributesValue.Left = lblDrainAttributes.Left + 91;
-            lblMentorSpirit.Left = lblMentorSpiritLabel.Left + intWidth + 6;
-
-            cmdRollSpell.Left = lblSpellDicePool.Left + lblSpellDicePool.Width + 6;
-            cmdRollDrain.Left = lblDrainAttributesValue.Left + lblDrainAttributesValue.Width + 6;
-            cmdRollSpell.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
-            cmdRollDrain.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
-
-            // Sprites and Complex Forms tab.
-            int intLeft = lblDurationLabel.Width;
-            intLeft = Math.Max(intLeft, lblTargetLabel.Width);
-            intLeft = Math.Max(intLeft, lblFV.Width);
-            intLeft = Math.Max(intLeft, lblComplexFormSource.Width);
-
-            lblTarget.Left = lblTargetLabel.Left + intLeft + 6;
-            lblDuration.Left = lblDurationLabel.Left + intLeft + 6;
-            lblFV.Left = lblFVLabel.Left + intLeft + 6;
-            lblComplexFormSource.Left = lblComplexFormSourceLabel.Left + intLeft + 6;
-
-            intWidth = lblFadingAttributesLabel.Width;
-            lblFadingAttributes.Left = lblFadingAttributesLabel.Left + intWidth + 6;
-            lblFadingAttributesValue.Left = lblFadingAttributes.Left + 91;
-
-            cmdRollFading.Left = lblFadingAttributesValue.Left + lblFadingAttributesValue.Width + 6;
-            cmdRollFading.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
-
             // Critter Powers tab.
             lblCritterPowerPointsLabel.Left = cmdDeleteCritterPower.Left + cmdDeleteCritterPower.Width + 16;
             lblCritterPowerPoints.Left = lblCritterPowerPointsLabel.Left + lblCritterPowerPointsLabel.Width + 6;
 
-            intWidth = Math.Max(lblCritterPowerNameLabel.Width, lblCritterPowerCategoryLabel.Width);
+            int intWidth = Math.Max(lblCritterPowerNameLabel.Width, lblCritterPowerCategoryLabel.Width);
             intWidth = Math.Max(intWidth, lblCritterPowerTypeLabel.Width);
             intWidth = Math.Max(intWidth, lblCritterPowerActionLabel.Width);
             intWidth = Math.Max(intWidth, lblCritterPowerRangeLabel.Width);
@@ -16363,55 +16302,7 @@ namespace Chummer
             cmdDeleteImprovement.Left = cmdEditImprovement.Left + cmdEditImprovement.Width + 6;
             cmdAddImprovementGroup.Left = cmdDeleteImprovement.Left + cmdDeleteImprovement.Width + 6;
             lblImprovementType.Left = lblImprovementTypeLabel.Left + lblImprovementTypeLabel.Width + 6;
-
-            // Other Info tab.
-            intWidth = Math.Max(lblCMPhysicalLabel.Width, lblCMStunLabel.Width);
-            intWidth = Math.Max(intWidth, lblINILabel.Width);
-            intWidth = Math.Max(intWidth, lblMatrixINILabel.Width);
-            intWidth = Math.Max(intWidth, lblAstralINILabel.Width);
-            intWidth = Math.Max(intWidth, lblRiggingINILabel.Width);
-            intWidth = Math.Max(intWidth, lblMatrixINIColdLabel.Width);
-            intWidth = Math.Max(intWidth, lblMatrixINIHotLabel.Width);
-            intWidth = Math.Max(intWidth, lblArmorLabel.Width);
-            intWidth = Math.Max(intWidth, lblESS.Width);
-            intWidth = Math.Max(intWidth, lblRemainingNuyenLabel.Width);
-            intWidth = Math.Max(intWidth, lblCareerKarmaLabel.Width);
-            intWidth = Math.Max(intWidth, lblCareerNuyenLabel.Width);
-            intWidth = Math.Max(intWidth, lblComposureLabel.Width);
-            intWidth = Math.Max(intWidth, lblJudgeIntentionsLabel.Width);
-            intWidth = Math.Max(intWidth, lblLiftCarryLabel.Width);
-            intWidth = Math.Max(intWidth, lblMemoryLabel.Width);
-            intWidth = Math.Max(intWidth, lblMovementLabel.Width);
-            intWidth = Math.Max(intWidth, lblSwimLabel.Width);
-            intWidth = Math.Max(intWidth, lblFlyLabel.Width);
             
-            lblINI.Left = lblCMPhysical.Left;
-            lblMatrixINI.Left = lblCMPhysical.Left;
-            lblAstralINI.Left = lblCMPhysical.Left;
-            lblRiggingINI.Left = lblCMPhysical.Left;
-            lblMatrixINICold.Left = lblCMPhysical.Left;
-            lblMatrixINIHot.Left = lblCMPhysical.Left;
-            lblArmor.Left = lblCMPhysical.Left;
-            lblESSMax.Left = lblCMPhysical.Left;
-            lblRemainingNuyen.Left = lblCMPhysical.Left;
-            lblCareerKarma.Left = lblCMPhysical.Left;
-            lblCareerNuyen.Left = lblCMPhysical.Left;
-            lblComposure.Left = lblCMPhysical.Left;
-            lblJudgeIntentions.Left = lblCMPhysical.Left;
-            lblLiftCarry.Left = lblCMPhysical.Left;
-            lblMemory.Left = lblCMPhysical.Left;
-            lblMovement.Left = lblCMPhysical.Left;
-            lblSwim.Left = lblCMPhysical.Left;
-            lblFly.Left = lblCMPhysical.Left;
-
-            // Condition Monitor tab.
-            intWidth = Math.Max(lblCMPenaltyLabel.Width, lblCMArmorLabel.Width);
-            intWidth = Math.Max(intWidth, lblCMDamageResistancePoolLabel.Width);
-
-            lblCMPenalty.Left = lblCMPenaltyLabel.Left + intWidth + 6;
-            lblCMArmor.Left = lblCMPenalty.Left;
-            lblCMDamageResistancePool.Left = lblCMPenalty.Left;
-
             // Relationships tab
             cmdContactsExpansionToggle.Left = cmdAddContact.Right + 6;
             cmdSwapContactOrder.Left = cmdContactsExpansionToggle.Right + 6;
@@ -17698,7 +17589,7 @@ namespace Chummer
             objExpense.Create(decCost * -1,
                 LanguageManager.GetString("String_ExpensePurchaseDrug", GlobalOptions.Language) +
                 LanguageManager.GetString("String_Space", GlobalOptions.Language) +
-                selectedDrug.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                selectedDrug.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Nuyen -= decCost;
             selectedDrug.Quantity++;
@@ -17735,6 +17626,16 @@ namespace Chummer
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
+        }
+
+        private void pnlAttributes_Layout(object sender, LayoutEventArgs e)
+        {
+            pnlAttributes.SuspendLayout();
+            foreach (Control objAttributeControl in pnlAttributes.Controls)
+            {
+                objAttributeControl.Width = pnlAttributes.ClientSize.Width;
+            }
+            pnlAttributes.ResumeLayout();
         }
     }
 }

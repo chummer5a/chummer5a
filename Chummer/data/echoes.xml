@@ -205,19 +205,19 @@
       <id>64710f70-897a-4505-829d-7d0ade750b24</id>
       <name>Aegis</name>
       <source>KC</source>
-      <page>0</page>
+      <page>101</page>
     </echo>
     <echo>
       <id>8aa97815-eacb-412d-99ac-1acda562fb52</id>
       <name>Draining Spike</name>
       <source>KC</source>
-      <page>0</page>
+      <page>101</page>
     </echo>
     <echo>
       <id>a6f9a6cd-4727-4de6-a774-bb93ab67940a</id>
       <name>Neural Synergy</name>
       <source>KC</source>
-      <page>0</page>
+      <page>101</page>
       <bonus>
         <specificattribute>
           <name>LOG</name>
@@ -230,28 +230,29 @@
       <id>96f534c0-b53b-43af-bdac-54de468f0d70</id>
       <name>Predictive Analytics</name>
       <source>KC</source>
-      <page>0</page>
+      <page>101</page>
       <!-- TODO: Matrix AR Initiative bonus -->
+      <limit>4</limit>
     </echo>
     <echo>
       <id>37e8342f-9aad-4ee0-8e68-7a5c00f2678b</id>
       <name>Resonance Resistance</name>
       <source>KC</source>
-      <page>0</page>
+      <page>102</page>
       <limit>False</limit>
     </echo>
     <echo>
       <id>1e0405f3-3872-4a53-afd7-bd643899e7d9</id>
       <name>The Van der Waals Effect</name>
       <source>KC</source>
-      <page>0</page>
+      <page>102</page>
       <limit>False</limit>
     </echo>
     <echo>
       <id>6cb9bc65-7b64-44dd-ba9a-f96f3c09c741</id>
       <name>Will of the Resonance</name>
       <source>KC</source>
-      <page>0</page>
+      <page>102</page>
       <bonus>
         <specificattribute>
           <name>WIL</name>
@@ -264,7 +265,7 @@
       <id>f7bd6993-efa4-494c-8c58-e9f0950af7b9</id>
       <name>Daemon: Cyberadept</name>
       <source>KC</source>
-      <page>0</page>
+      <page>90</page>
       <bonus>
           <cyberadeptdaemon>Rating</cyberadeptdaemon>
       </bonus>

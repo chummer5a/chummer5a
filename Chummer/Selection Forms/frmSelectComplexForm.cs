@@ -141,7 +141,7 @@ namespace Chummer
                 }
 
                 lblFV.Text = strFV;
-                
+
                 string strSource = xmlComplexForm.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strPage = xmlComplexForm.SelectSingleNode("altpage")?.Value ?? xmlComplexForm.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
@@ -157,6 +157,11 @@ namespace Chummer
                 lblFV.Text = string.Empty;
                 lblSource.SetToolTip(string.Empty);
             }
+
+            lblDurationLabel.Visible = !string.IsNullOrEmpty(lblDuration.Text);
+            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+            lblFVLabel.Visible = !string.IsNullOrEmpty(lblFV.Text);
+            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -291,17 +296,12 @@ namespace Chummer
 
         private void MoveControls()
         {
-            int intLeft = lblDurationLabel.Width;
-            intLeft = Math.Max(intLeft, lblTargetLabel.Width);
-            intLeft = Math.Max(intLeft, lblFV.Width);
-            intLeft = Math.Max(intLeft, lblSourceLabel.Width);
-
-            lblTarget.Left = lblTargetLabel.Left + intLeft + 6;
-            lblDuration.Left = lblDurationLabel.Left + intLeft + 6;
-            lblFV.Left = lblFVLabel.Left + intLeft + 6;
-            lblSource.Left = lblSourceLabel.Left + intLeft + 6;
-
             lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
+        }
+
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
         }
         #endregion
     }

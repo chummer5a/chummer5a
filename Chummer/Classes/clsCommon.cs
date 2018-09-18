@@ -65,7 +65,7 @@ namespace Chummer
             object objReturn;
             try
             {
-                objReturn = s_ObjXPathNavigator.Evaluate(strXPath);
+                objReturn = s_ObjXPathNavigator.Evaluate(strXPath.TrimStart('+'));
                 blnIsSuccess = true;
             }
             catch (Exception)

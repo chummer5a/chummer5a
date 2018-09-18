@@ -41,7 +41,8 @@
             // 
             // cmdOKAdd
             // 
-            this.cmdOKAdd.Location = new System.Drawing.Point(783, 450);
+            this.cmdOKAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdOKAdd.Location = new System.Drawing.Point(616, 526);
             this.cmdOKAdd.Name = "cmdOKAdd";
             this.cmdOKAdd.Size = new System.Drawing.Size(75, 23);
             this.cmdOKAdd.TabIndex = 6;
@@ -52,8 +53,9 @@
             // 
             // cmdCancel
             // 
+            this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(702, 479);
+            this.cmdCancel.Location = new System.Drawing.Point(535, 526);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 7;
@@ -64,7 +66,8 @@
             // 
             // cmdOK
             // 
-            this.cmdOK.Location = new System.Drawing.Point(783, 479);
+            this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdOK.Location = new System.Drawing.Point(697, 526);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 5;
@@ -76,7 +79,7 @@
             // lblCategory
             // 
             this.lblCategory.AutoSize = true;
-            this.lblCategory.Location = new System.Drawing.Point(12, 9);
+            this.lblCategory.Location = new System.Drawing.Point(12, 17);
             this.lblCategory.Name = "lblCategory";
             this.lblCategory.Size = new System.Drawing.Size(52, 13);
             this.lblCategory.TabIndex = 0;
@@ -87,7 +90,7 @@
             // 
             this.cboCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCategory.FormattingEnabled = true;
-            this.cboCategory.Location = new System.Drawing.Point(70, 6);
+            this.cboCategory.Location = new System.Drawing.Point(70, 14);
             this.cboCategory.Name = "cboCategory";
             this.cboCategory.Size = new System.Drawing.Size(182, 21);
             this.cboCategory.TabIndex = 1;
@@ -95,10 +98,13 @@
             // 
             // lstKits
             // 
+            this.lstKits.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstKits.FormattingEnabled = true;
-            this.lstKits.Location = new System.Drawing.Point(12, 33);
+            this.lstKits.Location = new System.Drawing.Point(12, 46);
             this.lstKits.Name = "lstKits";
-            this.lstKits.Size = new System.Drawing.Size(293, 472);
+            this.lstKits.Size = new System.Drawing.Size(366, 472);
             this.lstKits.TabIndex = 2;
             this.lstKits.SelectedIndexChanged += new System.EventHandler(this.lstKits_SelectedIndexChanged);
             this.lstKits.DoubleClick += new System.EventHandler(this.lstKits_DoubleClick);
@@ -106,7 +112,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(327, 14);
+            this.label1.Location = new System.Drawing.Point(403, 17);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(52, 13);
             this.label1.TabIndex = 3;
@@ -115,17 +121,20 @@
             // 
             // treContents
             // 
-            this.treContents.Location = new System.Drawing.Point(330, 33);
+            this.treContents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.treContents.Location = new System.Drawing.Point(406, 46);
             this.treContents.Name = "treContents";
             this.treContents.ShowPlusMinus = false;
             this.treContents.ShowRootLines = false;
-            this.treContents.Size = new System.Drawing.Size(366, 469);
+            this.treContents.Size = new System.Drawing.Size(366, 472);
             this.treContents.TabIndex = 4;
             // 
             // cmdDelete
             // 
             this.cmdDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdDelete.Location = new System.Drawing.Point(783, 380);
+            this.cmdDelete.Location = new System.Drawing.Point(697, 12);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(75, 23);
             this.cmdDelete.TabIndex = 8;
@@ -140,7 +149,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(870, 514);
+            this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.cmdDelete);
             this.Controls.Add(this.treContents);
             this.Controls.Add(this.label1);

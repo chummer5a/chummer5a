@@ -1553,7 +1553,7 @@ namespace Chummer.Classes
             Log.Info("Adding Gear");
             string strName = bonusNode["name"]?.InnerText ?? string.Empty;
             string strCategory = bonusNode["category"]?.InnerText ?? string.Empty;
-            XmlNode node = XmlManager.Load("gear.xml").SelectSingleNode("/chummer/gears/gear[name = \"" + strName + "\" and category = \"" + strCategory + "\"]");
+            XmlNode node = XmlManager.Load("gear.xml").SelectSingleNode("/chummer/gears/gear[name = " + strName.CleanXPath() + " and category = " + strCategory.CleanXPath() + "]");
 
             if (node == null)
                 throw new AbortedException();
@@ -2387,7 +2387,7 @@ namespace Chummer.Classes
                 CreateImprovement(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaDeviceRating, _strUnique);
             }
 
-            // Attack.
+            // Program Limit.
             strBonus = bonusNode["programlimit"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
@@ -2465,6 +2465,22 @@ namespace Chummer.Classes
                     strBonus = '+' + strBonus;
                 Log.Info("Calling CreateImprovement for firewall");
                 CreateImprovement(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaFirewall, _strUnique);
+            }
+
+            // Matrix CM.
+            strBonus = bonusNode["matrixcm"]?.InnerText;
+            if (!string.IsNullOrEmpty(strBonus))
+            {
+                if (strBonus.StartsWith("FixedValues("))
+                {
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
+                }
+                strBonus = strBonus.Replace("Rating", _intRating.ToString());
+                if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
+                    strBonus = '+' + strBonus;
+                Log.Info("Calling CreateImprovement for matrixcm");
+                CreateImprovement(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaMatrixCM, _strUnique);
             }
         }
 
@@ -3813,13 +3829,96 @@ namespace Chummer.Classes
             _objCharacter.SubmersionGrade += ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating);
         }
 
+        public void addart(XmlNode bonusNode)
+        {
+            XmlNode objXmlSelectedArt = XmlManager.Load("metamagic.xml").SelectSingleNode("/chummer/arts/art[name = \"" + bonusNode.InnerText + "\"]");
+
+            // Makes sure we aren't over our limits for this particular metamagic from this overall source
+            if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
+                objXmlSelectedArt.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Art", GlobalOptions.Language), string.Empty, _strFriendlyName))
+            {
+                Art objAddArt = new Art(_objCharacter);
+                objAddArt.Create(objXmlSelectedArt, Improvement.ImprovementSource.Metamagic);
+                objAddArt.Grade = -1;
+                if (objAddArt.InternalId.IsEmptyGuid())
+                    throw new AbortedException();
+
+                _objCharacter.Arts.Add(objAddArt);
+                CreateImprovement(objAddArt.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Art, _strUnique);
+            }
+            else
+            {
+                throw new AbortedException();
+            }
+        }
+
+        public void selectart(XmlNode bonusNode)
+        {
+            XmlDocument objXmlDocument = XmlManager.Load("metamagic.xml");
+            XmlNode objXmlSelectedArt;
+            XmlNodeList xmlArtList = bonusNode.SelectNodes("art");
+            if (xmlArtList?.Count > 0)
+            {
+                List<ListItem> lstArts = new List<ListItem>();
+                frmSelectItem frmPickItem = new frmSelectItem();
+                foreach (XmlNode objXmlAddArt in xmlArtList)
+                {
+                    string strLoopName = objXmlAddArt.InnerText;
+                    XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/arts/art[name = \"" + strLoopName + "\"]");
+                    // Makes sure we aren't over our limits for this particular metamagic from this overall source
+                    if (objXmlArt != null && objXmlAddArt.RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
+                    {
+                        lstArts.Add(new ListItem(objXmlArt["id"]?.InnerText, objXmlArt["translate"]?.InnerText ?? strLoopName));
+                    }
+                }
+                if (lstArts.Count == 0)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language).Replace("{0}", SourceName));
+                    throw new AbortedException();
+                }
+                frmPickItem.GeneralItems = lstArts;
+                frmPickItem.ShowDialog();
+                // Don't do anything else if the form was canceled.
+                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    throw new AbortedException();
+
+                objXmlSelectedArt = objXmlDocument.SelectSingleNode("/chummer/arts/art[id = \"" + frmPickItem.SelectedItem + "\"]");
+
+                string strSelectedName = objXmlSelectedArt?["name"]?.InnerText;
+                if (string.IsNullOrEmpty(strSelectedName))
+                    throw new AbortedException();
+            }
+            else
+            {
+                frmSelectArt frmPickArt = new frmSelectArt(_objCharacter, frmSelectArt.Mode.Art);
+                frmPickArt.ShowDialog();
+                // Don't do anything else if the form was canceled.
+                if (frmPickArt.DialogResult == DialogResult.Cancel)
+                    throw new AbortedException();
+
+                objXmlSelectedArt = objXmlDocument.SelectSingleNode("/chummer/arts/art[id = \"" + frmPickArt.SelectedItem + "\"]");
+            }
+
+            Art objAddArt = new Art(_objCharacter);
+            objAddArt.Create(objXmlSelectedArt, Improvement.ImprovementSource.Metamagic);
+            objAddArt.Grade = -1;
+            if (objAddArt.InternalId.IsEmptyGuid())
+                throw new AbortedException();
+
+            SelectedValue = objAddArt.DisplayName(GlobalOptions.Language);
+
+            _objCharacter.Arts.Add(objAddArt);
+            CreateImprovement(objAddArt.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Art, _strUnique);
+        }
+
         public void addmetamagic(XmlNode bonusNode)
         {
             XmlNode objXmlSelectedMetamagic = XmlManager.Load("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + bonusNode.InnerText + "\"]");
             string strForcedValue = bonusNode.Attributes?["select"]?.InnerText ?? string.Empty;
 
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
-            if (objXmlSelectedMetamagic.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Metamagic", GlobalOptions.Language), string.Empty, _strFriendlyName))
+            if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
+                objXmlSelectedMetamagic.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Metamagic", GlobalOptions.Language), string.Empty, _strFriendlyName))
             {
                 Metamagic objAddMetamagic = new Metamagic(_objCharacter);
                 objAddMetamagic.Create(objXmlSelectedMetamagic, Improvement.ImprovementSource.Metamagic, strForcedValue);
@@ -3911,7 +4010,8 @@ namespace Chummer.Classes
             string strForceValue = bonusNode.Attributes?["select"]?.InnerText ?? string.Empty;
 
             // Makes sure we aren't over our limits for this particular echo from this overall source
-            if (objXmlSelectedEcho.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Echo", GlobalOptions.Language), string.Empty, _strFriendlyName))
+            if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
+                objXmlSelectedEcho.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Echo", GlobalOptions.Language), string.Empty, _strFriendlyName))
             {
                 Metamagic objAddEcho = new Metamagic(_objCharacter);
                 objAddEcho.Create(objXmlSelectedEcho, Improvement.ImprovementSource.Echo, strForceValue);
@@ -5188,7 +5288,8 @@ namespace Chummer.Classes
                         for (int i = 0; i < intCount; ++i)
                         {
                             // Makes sure we aren't over our limits for this particular quality from this overall source
-                            if (objXmlSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality", GlobalOptions.Language), string.Empty, _strFriendlyName))
+                            if (objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString ||
+                                objXmlSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality", GlobalOptions.Language), string.Empty, _strFriendlyName))
                             {
                                 List<Weapon> lstWeapons = new List<Weapon>();
                                 Quality objAddQuality = new Quality(_objCharacter);
@@ -5328,37 +5429,38 @@ namespace Chummer.Classes
 
         public void addskillspecializationoption(XmlNode bonusNode)
         {
-            if (_objCharacter.Options.FreeMartialArtSpecialization && _objImprovementSource == Improvement.ImprovementSource.MartialArt)
+            List<Skill> lstSkills = new List<Skill>();
+            XmlNodeList xmlSkillsList = bonusNode.SelectNodes("skills/skill");
+            if (xmlSkillsList?.Count > 0)
             {
-                List<Skill> lstSkills = new List<Skill>();
-                XmlNodeList xmlSkillsList = bonusNode.SelectNodes("skills");
-                if (xmlSkillsList?.Count > 0)
+                foreach (XmlNode objNode in xmlSkillsList)
                 {
-                    foreach (XmlNode objNode in xmlSkillsList)
-                    {
-                        Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(objNode.InnerText);
-                        if (objSkill != null)
-                        {
-                            lstSkills.Add(objSkill);
-                        }
-                    }
-                }
-                else
-                {
-                    Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(bonusNode["skill"]?.InnerText ?? string.Empty);
+                    Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(objNode.InnerText);
                     if (objSkill != null)
                     {
                         lstSkills.Add(objSkill);
                     }
                 }
-
-                if (lstSkills.Count > 0)
+            }
+            else
+            {
+                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(bonusNode["skill"]?.InnerText ?? string.Empty);
+                if (objSkill != null)
                 {
-                    foreach (Skill objSkill in lstSkills)
+                    lstSkills.Add(objSkill);
+                }
+            }
+
+            if (lstSkills.Count > 0)
+            {
+                foreach (Skill objSkill in lstSkills)
+                {
+                    // Create the Improvement.
+                    Log.Info("Calling CreateImprovement");
+                    string strSpec = bonusNode["spec"]?.InnerText;
+                    CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecializationOption, strSpec);
+                    if (_objCharacter.Options.FreeMartialArtSpecialization && _objImprovementSource == Improvement.ImprovementSource.MartialArt)
                     {
-                        // Create the Improvement.
-                        Log.Info("Calling CreateImprovement");
-                        string strSpec = bonusNode["spec"]?.InnerText;
                         CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, strSpec);
                         SkillSpecialization nspec = new SkillSpecialization(strSpec, true, objSkill);
                         objSkill.Specializations.Add(nspec);
@@ -5569,6 +5671,14 @@ namespace Chummer.Classes
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating),
                 1, ImprovementManager.ValueToInt(_objCharacter, bonusNode["min"]?.InnerText, _intRating), ImprovementManager.ValueToInt(_objCharacter, bonusNode["max"]?.InnerText, _intRating),
                 0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty);
+        }
+
+        public void skilldisable(XmlNode bonusNode)
+        {
+            Log.Info("skilldisable");
+            Log.Info("skilldisable = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillDisable, _strUnique);
         }
 
         public void skillgroupdisable(XmlNode bonusNode)

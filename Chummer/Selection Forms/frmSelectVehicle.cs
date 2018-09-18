@@ -34,6 +34,7 @@ namespace Chummer
         private decimal _decUsedCost;
         private decimal _decMarkup;
 
+        private bool _blnLoading = true;
         private bool _blnAddAgain;
         private static string s_StrSelectCategory = string.Empty;
 
@@ -91,12 +92,13 @@ namespace Chummer
             {
                 _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
             }
+            chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
             cboCategory.DisplayMember = "Name";
             cboCategory.DataSource = _lstCategory;
-
+            _blnLoading = false;
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(s_StrSelectCategory))
                 cboCategory.SelectedIndex = 0;
@@ -106,8 +108,6 @@ namespace Chummer
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
             cboCategory.EndUpdate();
-
-            chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
         }
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -150,21 +150,29 @@ namespace Chummer
 
         private void chkUsedVehicle_CheckedChanged(object sender, EventArgs e)
         {
+            if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
+                RefreshList();
             UpdateSelectedVehicle();
         }
 
         private void nudUsedVehicleDiscount_ValueChanged(object sender, EventArgs e)
         {
+            if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
+                RefreshList();
             UpdateSelectedVehicle();
         }
 
         private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
+            if (chkShowOnlyAffordItems.Checked)
+                RefreshList();
             UpdateSelectedVehicle();
         }
 
         private void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
+            if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
+                RefreshList();
             UpdateSelectedVehicle();
         }
 
@@ -203,6 +211,16 @@ namespace Chummer
         {
             if (e.KeyCode == Keys.Up)
                 txtSearch.Select(txtSearch.Text.Length, 0);
+        }
+
+        private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e)
+        {
+            RefreshList();
+        }
+
+        private void chkShowOnlyAffordItems_CheckedChanged(object sender, EventArgs e)
+        {
+            RefreshList();
         }
         #endregion
 
@@ -255,6 +273,9 @@ namespace Chummer
         /// </summary>
         private void UpdateSelectedVehicle()
         {
+            if (_blnLoading)
+                return;
+            
             string strSelectedId = lstVehicle.SelectedValue?.ToString();
             XPathNavigator objXmlVehicle = null;
             if (!string.IsNullOrEmpty(strSelectedId))
@@ -264,6 +285,18 @@ namespace Chummer
             }
             if (objXmlVehicle == null)
             {
+                lblVehicleHandlingLabel.Visible = false;
+                lblVehicleAccelLabel.Visible = false;
+                lblVehicleSpeedLabel.Visible = false;
+                lblVehiclePilotLabel.Visible = false;
+                lblVehicleBodyLabel.Visible = false;
+                lblVehicleArmorLabel.Visible = false;
+                lblVehicleSeatsLabel.Visible = false;
+                lblVehicleSensorLabel.Visible = false;
+                lblVehicleAvailLabel.Visible = false;
+                lblSourceLabel.Visible = false;
+                lblVehicleCostLabel.Visible = false;
+                lblTestLabel.Visible = false;
                 lblVehicleHandling.Text = string.Empty;
                 lblVehicleAccel.Text = string.Empty;
                 lblVehicleSpeed.Text = string.Empty;
@@ -292,6 +325,14 @@ namespace Chummer
             lblVehicleArmor.Text = objXmlVehicle.SelectSingleNode("armor")?.Value;
             lblVehicleSeats.Text = objXmlVehicle.SelectSingleNode("seats")?.Value;
             lblVehicleSensor.Text = objXmlVehicle.SelectSingleNode("sensor")?.Value;
+            lblVehicleHandlingLabel.Visible = !string.IsNullOrEmpty(lblVehicleHandling.Text);
+            lblVehicleAccelLabel.Visible = !string.IsNullOrEmpty(lblVehicleAccel.Text);
+            lblVehicleSpeedLabel.Visible = !string.IsNullOrEmpty(lblVehicleSpeed.Text);
+            lblVehiclePilotLabel.Visible = !string.IsNullOrEmpty(lblVehiclePilot.Text);
+            lblVehicleBodyLabel.Visible = !string.IsNullOrEmpty(lblVehicleBody.Text);
+            lblVehicleArmorLabel.Visible = !string.IsNullOrEmpty(lblVehicleArmor.Text);
+            lblVehicleSeatsLabel.Visible = !string.IsNullOrEmpty(lblVehicleSeats.Text);
+            lblVehicleSensorLabel.Visible = !string.IsNullOrEmpty(lblVehicleSensor.Text);
 
             string strAvail = objXmlVehicle.SelectSingleNode("avail")?.Value ?? string.Empty;
             if (!string.IsNullOrEmpty(strAvail))
@@ -316,6 +357,7 @@ namespace Chummer
                 strAvail += strSuffix;
             }
             lblVehicleAvail.Text = strAvail;
+            lblVehicleAvailLabel.Visible = !string.IsNullOrEmpty(lblVehicleAvail.Text);
 
             chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(objXmlVehicle.SelectSingleNode("category")?.Value);
 
@@ -324,7 +366,9 @@ namespace Chummer
             if (strCost.StartsWith("Variable"))
             {
                 lblVehicleCost.Text = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
+                lblVehicleCostLabel.Visible = !string.IsNullOrEmpty(lblVehicleCost.Text);
                 lblTest.Text = string.Empty;
+                lblTestLabel.Visible = false;
             }
             else
             {
@@ -354,7 +398,9 @@ namespace Chummer
                 }
 
                 lblVehicleCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblVehicleCostLabel.Visible = !string.IsNullOrEmpty(lblVehicleCost.Text);
                 lblTest.Text = _objCharacter.AvailTest(decCost, lblVehicleAvail.Text);
+                lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
             }
 
 
@@ -363,6 +409,7 @@ namespace Chummer
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
             lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
         private void RefreshList()
@@ -395,31 +442,50 @@ namespace Chummer
             List<ListItem> lstVehicles = new List<ListItem>();
             foreach (XPathNavigator objXmlVehicle in objXmlVehicleList)
             {
-                if (!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter))
+                if (chkHideOverAvailLimit.Checked && !SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter))
+                    continue;
+                if (!chkFreeItem.Checked && chkShowOnlyAffordItems.Checked)
                 {
-                    string strDisplayname = objXmlVehicle.SelectSingleNode("translate")?.Value ?? objXmlVehicle.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                    decimal decCostMultiplier = 1.0m;
+                    if (chkUsedVehicle.Checked)
+                        decCostMultiplier -= (nudUsedVehicleDiscount.Value / 100.0m);
+                    decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
+                    if (_setBlackMarketMaps.Contains(objXmlVehicle.SelectSingleNode("category")?.Value))
+                        decCostMultiplier *= 0.9m;
+                    if (_setDealerConnectionMaps?.Any(set => objXmlVehicle.SelectSingleNode("category")?.Value.StartsWith(set) == true) == true)
+                        decCostMultiplier *= 0.9m;
+                    if (!SelectionShared.CheckNuyenRestriction(objXmlVehicle, _objCharacter.Nuyen, decCostMultiplier))
+                        continue;
+                }
 
-                    if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
+                string strDisplayname = objXmlVehicle.SelectSingleNode("translate")?.Value ?? objXmlVehicle.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+
+                if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
+                {
+                    string strCategory = objXmlVehicle.SelectSingleNode("category")?.Value;
+                    if (!string.IsNullOrEmpty(strCategory))
                     {
-                        string strCategory = objXmlVehicle.SelectSingleNode("category")?.Value;
-                        if (!string.IsNullOrEmpty(strCategory))
+                        ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
+                        if (!string.IsNullOrEmpty(objFoundItem.Name))
                         {
-                            ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
-                            if (!string.IsNullOrEmpty(objFoundItem.Name))
-                            {
-                                strDisplayname += " [" + objFoundItem.Name + ']';
-                            }
+                            strDisplayname += " [" + objFoundItem.Name + ']';
                         }
                     }
-                    lstVehicles.Add(new ListItem(objXmlVehicle.SelectSingleNode("id")?.Value ?? string.Empty, strDisplayname));
                 }
+                lstVehicles.Add(new ListItem(objXmlVehicle.SelectSingleNode("id")?.Value ?? string.Empty, strDisplayname));
             }
             lstVehicles.Sort(CompareListItems.CompareNames);
+            string strOldSelected = lstVehicle.SelectedValue?.ToString();
+            _blnLoading = true;
             lstVehicle.BeginUpdate();
-            lstVehicle.DataSource = null;
             lstVehicle.ValueMember = "Value";
             lstVehicle.DisplayMember = "Name";
             lstVehicle.DataSource = lstVehicles;
+            _blnLoading = false;
+            if (string.IsNullOrEmpty(strOldSelected))
+                lstVehicle.SelectedIndex = -1;
+            else
+                lstVehicle.SelectedValue = strOldSelected;
             lstVehicle.EndUpdate();
         }
 
@@ -457,45 +523,14 @@ namespace Chummer
 
         private void MoveControls()
         {
-            int intWidth = Math.Max(lblVehicleHandlingLabel.Width, lblVehicleSpeedLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleBodyLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleSensorLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleAvailLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleCostLabel.Width);
-
-            lblVehicleHandling.Left = lblVehicleHandlingLabel.Left + intWidth + 6;
-            lblVehicleSpeed.Left = lblVehicleSpeedLabel.Left + intWidth + 6;
-            lblVehicleBody.Left = lblVehicleBodyLabel.Left + intWidth + 6;
-            lblVehicleSensor.Left = lblVehicleSensorLabel.Left + intWidth + 6;
-            lblVehicleAvail.Left = lblVehicleAvailLabel.Left + intWidth + 6;
-            lblTestLabel.Left = lblVehicleAvail.Left + lblVehicleAvail.Width + 16;
-            lblTest.Left = lblTestLabel.Left + lblTestLabel.Width + 6;
-            lblVehicleCost.Left = lblVehicleCostLabel.Left + intWidth + 6;
-
-            intWidth = Math.Max(lblVehicleAccelLabel.Width, lblVehiclePilotLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleArmorLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleSeatsLabel.Width);
-
-            lblVehicleAccelLabel.Left = lblVehicleHandling.Left + 60;
-            lblVehicleAccel.Left = lblVehicleAccelLabel.Left + intWidth + 6;
-            lblVehiclePilotLabel.Left = lblVehicleHandling.Left + 60;
-            lblVehiclePilot.Left = lblVehiclePilotLabel.Left + intWidth + 6;
-            lblVehicleArmorLabel.Left = lblVehicleHandling.Left + 60;
-            lblVehicleArmor.Left = lblVehicleArmorLabel.Left + intWidth + 6;
-            lblVehicleSeatsLabel.Left = lblVehicleHandling.Left + 60;
-            lblVehicleSeats.Left = lblVehicleSeatsLabel.Left + intWidth + 6;
-
-            lblUsedVehicleDiscountLabel.Left = chkUsedVehicle.Left + chkUsedVehicle.Width + 6;
-            nudUsedVehicleDiscount.Left = lblUsedVehicleDiscountLabel.Left + lblUsedVehicleDiscountLabel.Width + 6;
-            lblUsedVehicleDiscountPercentLabel.Left = nudUsedVehicleDiscount.Left + nudUsedVehicleDiscount.Width;
-
-            nudMarkup.Left = lblMarkupLabel.Left + lblMarkupLabel.Width + 6;
-            lblMarkupPercentLabel.Left = nudMarkup.Left + nudMarkup.Width + 6;
-
-            lblSource.Left = lblSourceLabel.Left + lblSourceLabel.Width + 6;
-
             lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
         }
+
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
+        }
+
         #endregion
     }
 }

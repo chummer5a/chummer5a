@@ -266,6 +266,9 @@ namespace Chummer
                 lblSource.Text = string.Empty;
                 lblSource.SetToolTip(string.Empty);
             }
+
+            lblRequiresProgramLabel.Visible = !string.IsNullOrEmpty(lblRequiresProgram.Text);
+            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
         /// <summary>
@@ -414,6 +417,11 @@ namespace Chummer
             lblSource.Left = lblSourceLabel.Left + intLeft + 6;
 
             lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
+        }
+
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
         }
         #endregion
     }

@@ -51,22 +51,23 @@ namespace CrashHandler
                         Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory),
                         GenerateFolderName()
                     ),
-                    "txt"));
+                    "txt"), false, Encoding.UTF8);
 
-            CrashLogWriter.WriteLine("This file contains information on a crash report for Chummer5A.\n" +
-                                     "You can safely delete this file, but a developer might want to look at it");
-            CrashLogWriter.Flush();
-
+		    CrashLogWriter.WriteLine("This file contains information on a crash report for Chummer5A.");
+		    CrashLogWriter.WriteLine("You can safely delete this file, but a developer might want to look at it.");
 
 			if (!Deserialize(b64Json, out _procId, out _filesList, out _pretendFiles, out _attributes, out _threadId, out _exceptionPrt))
 			{
 				throw new ArgumentException("Could not deserialize");
 			}
-		    _pretendFiles.TryGetValue("exception.txt", out string exception);
 
-            CrashLogWriter.WriteLine(exception);
+		    if (_pretendFiles.TryGetValue("exception.txt", out string exception))
+		    {
+		        CrashLogWriter.WriteLine(exception);
+		        CrashLogWriter.Flush();
+            }
 
-            CrashLogWriter.WriteLine("Crash id is {0}", _attributes["visible-crash-id"]);
+		    CrashLogWriter.WriteLine("Crash id is {0}", _attributes["visible-crash-id"]);
             CrashLogWriter.Flush();
 
             //		    _filesList = new List<string>();

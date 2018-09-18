@@ -346,6 +346,10 @@
 			<text>Gaben</text>
 		</string>
 		<string>
+			<key>Label_Qualities</key>
+			<text>Gaben:</text>
+		</string>
+		<string>
 			<key>Label_Metavariant</key>
 			<text>Metavariante:</text>
 		</string>
@@ -5911,7 +5915,7 @@
 		</string>
 		<string>
 			<key>String_Notoriety</key>
-			<text>schlechter Ruf</text>
+			<text>Schlechter Ruf</text>
 		</string>
 		<string>
 			<key>Menu_SpecialReapplyImprovements</key>
@@ -6722,7 +6726,15 @@
 		</string>
 		<string>
 			<key>String_Special</key>
+			<text>Spezial</text>
+		</string>
+		<string>
+			<key>String_SpecialAttributes</key>
 			<text>Spezialattribute</text>
+		</string>
+		<string>
+			<key>Label_SpecialAttributes</key>
+			<text>Spezialattribute:</text>
 		</string>
 		<string>
 			<key>String_SpecialAttributePoints</key>
@@ -7696,7 +7708,7 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Comforts</key>
-			<text>Komfort: [{0}/{1}]</text>
+			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>String_DataProcessing</key>
@@ -7740,7 +7752,7 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Lifestyle</key>
-			<text>Lebensstil:</text>
+			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>String_Limit</key>
@@ -7804,7 +7816,7 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Security</key>
-			<text>Sicherheit: [{0}/{1}]</text>
+			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>String_KnowledgeSkillFilterAll</key>
@@ -7876,7 +7888,7 @@
 		</string>
 		<string>
 			<key>Label_SelectBP_StartingKarma</key>
-			<text>Anfangs-\nKarma</text>
+			<text>Anfangs-Karma</text>
 		</string>
 		<string>
 			<key>String_SumtoTen</key>
@@ -7891,8 +7903,12 @@
 			<text>Rituale</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Area</key>
-			<text>Gegend: [{0}/{1}]</text>
+			<key>Label_SelectAdvancedLifestyle_Base_Neighborhood</key>
+			<text>[{0}/{1}]</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_Neighborhood</key>
+			<text>Gegend:</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_UnusedLP</key>
@@ -8976,7 +8992,7 @@
 		</string>
 		<string>
 			<key>Label_AddictionThreshold</key>
-			<text>Schwellwert</text>
+			<text>Schwellwert:</text>
 		</string>
 		<string>
 			<key>Label_DrugEffects</key>
@@ -9013,6 +9029,78 @@
 		<string>
 			<key>Tab_Drugs</key>
 			<text>Drogen</text>
+		</string>
+		<string>
+			<key>Label_AddictionRating</key>
+			<text>Abhängigkeitswert:</text>
+		</string>
+		<string>
+			<key>Label_CrashEffect</key>
+			<text>Nachwirkung:</text>
+		</string>
+		<string>
+			<key>MessageTitle_SelectAdvancedLifestyle_OverLPLimit</key>
+			<text>Über LP Limit</text>
+		</string>
+		<string>
+			<key>Node_Block</key>
+			<text>Bausteine</text>
+		</string>
+		<string>
+			<key>Node_Foundation</key>
+			<text>Basis</text>
+		</string>
+		<string>
+			<key>Node_Enhancer</key>
+			<text>Verstärker</text>
+		</string>
+		<string>
+			<key>String_CombatTurn</key>
+			<text>Kampfrunde</text>
+		</string>
+		<string>
+			<key>String_CombatTurns</key>
+			<text>Kampfrunden</text>
+		</string>
+		<string>
+			<key>String_DamageUnresisted</key>
+			<text>Schaden, ohne Widerstandsprobe</text>
+		</string>
+		<string>
+			<key>String_ExpenseRemovePositiveQuality</key>
+			<text>Vorteil entfernen</text>
+		</string>
+		<string>
+			<key>String_Minute</key>
+			<text>Minute</text>
+		</string>
+		<string>
+			<key>String_Minutes</key>
+			<text>Minuten</text>
+		</string>
+		<string>
+			<key>String_PerLevel</key>
+			<text>Pro Stufe</text>
+		</string>
+		<string>
+			<key>String_Second</key>
+			<text>Sekunde</text>
+		</string>
+		<string>
+			<key>String_Seconds</key>
+			<text>Sekunden</text>
+		</string>
+		<string>
+			<key>Label_SelectMartialArt_IncludedTechniques</key>
+			<text>Erlaubt das Erlernen der folgenden Techniken:</text>
+		</string>
+		<string>
+			<key>String_Immediate</key>
+			<text>Sofort</text>
+		</string>
+		<string>
+			<key>String_TotalRating</key>
+			<text>Gesamtstufe</text>
 		</string>
 	</strings>
 </chummer>

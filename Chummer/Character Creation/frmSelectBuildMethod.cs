@@ -110,6 +110,7 @@ namespace Chummer
                 XPathNavigator objXmlSelectedGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + cboGamePlay.SelectedValue.ToString() + "\"]");
                 objXmlSelectedGameplayOption.TryGetInt32FieldQuickly("karma", ref _intQualityLimits);
                 objXmlSelectedGameplayOption.TryGetDecFieldQuickly("maxnuyen", ref _decNuyenBP);
+                nudMaxNuyen.Value = _decNuyenBP;
             }
         }
 
@@ -122,11 +123,11 @@ namespace Chummer
                     _objCharacter.BuildMethod = CharacterBuildMethod.Karma;
                     break;
                 case "Priority":
-                    _objCharacter.NuyenMaximumBP = _decNuyenBP;
+                    _objCharacter.NuyenMaximumBP = decimal.ToInt32(nudMaxNuyen.Value);
                     _objCharacter.BuildMethod = CharacterBuildMethod.Priority;
                     break;
                 case "SumtoTen":
-                    _objCharacter.NuyenMaximumBP = _decNuyenBP;
+                    _objCharacter.NuyenMaximumBP = decimal.ToInt32(nudMaxNuyen.Value);
                     _objCharacter.BuildMethod = CharacterBuildMethod.SumtoTen;
                     _objCharacter.SumtoTen = decimal.ToInt32(nudSumtoTen.Value);
                     break;
@@ -169,43 +170,42 @@ namespace Chummer
 
         private void cboBuildMethod_SelectedIndexChanged(object sender, EventArgs e)
         {
-            nudKarma.Visible = false;
-            nudMaxNuyen.Visible = false;
             nudSumtoTen.Visible = false;
-            lblStartingKarma.Visible = false;
             lblSumToX.Visible = false;
-            lblMaxNuyen.Visible = false;
-            lblDescription.Text = LanguageManager.GetString("String_SelectBP_PrioritySummary", GlobalOptions.Language);
 
             string strSelectedBuildMethod = cboBuildMethod.SelectedValue?.ToString();
             switch (strSelectedBuildMethod)
             {
                 case "Karma":
                     nudKarma.Value = _objCharacter.Options.BuildMethod == "Karma" ? _objCharacter.Options.BuildPoints : 800;
+                    nudKarma.Enabled = true;
+                    nudMaxNuyen.Value = 235;
+                    nudMaxNuyen.Enabled = true;
                     lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_KarmaSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
-                    nudKarma.Visible = true;
-                    nudMaxNuyen.Visible = true;
-                    lblStartingKarma.Visible = true;
-                    lblMaxNuyen.Visible = true;
                     break;
                 case "LifeModule":
                     nudKarma.Value = 750;
+                    nudKarma.Enabled = true;
+                    nudMaxNuyen.Value = 235;
+                    nudMaxNuyen.Enabled = true;
                     lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_LifeModuleSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
-                    nudKarma.Visible = true;
-                    nudMaxNuyen.Visible = true;
-                    lblStartingKarma.Visible = true;
-                    lblMaxNuyen.Visible = true;
                     break;
                 case "SumtoTen":
                     nudSumtoTen.Visible = true;
                     lblSumToX.Visible = true;
+                    goto default;
+                default:
+                    nudKarma.Value = _intQualityLimits;
+                    nudKarma.Enabled = false;
+                    nudMaxNuyen.Value = _decNuyenBP;
+                    nudMaxNuyen.Enabled = false;
+                    lblDescription.Text = LanguageManager.GetString("String_SelectBP_PrioritySummary", GlobalOptions.Language);
                     break;
             }
         }
 
         private void frmSelectBuildMethod_Load(object sender, EventArgs e)
         {
-            Height = cmdOK.Bottom + 40;
             cboBuildMethod_SelectedIndexChanged(this, e);
         }
 
@@ -220,6 +220,12 @@ namespace Chummer
                     nudMaxAvail.Value = intTemp;
                 objXmlGameplayOption.TryGetInt32FieldQuickly("karma", ref _intQualityLimits);
                 objXmlGameplayOption.TryGetDecFieldQuickly("maxnuyen", ref _decNuyenBP);
+                string strSelectedBuildMethod = cboBuildMethod.SelectedValue?.ToString();
+                if (strSelectedBuildMethod != "Karma" && strSelectedBuildMethod != "LifeModule")
+                {
+                    nudKarma.Value = _intQualityLimits;
+                    nudMaxNuyen.Value = _decNuyenBP;
+                }
             }
         }
         #endregion

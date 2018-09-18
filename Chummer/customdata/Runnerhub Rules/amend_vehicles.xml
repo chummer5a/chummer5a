@@ -32,11 +32,12 @@
 			<name>BMW Luxus</name>
 			<avail>24F</avail>
 		</vehicle>
-		<vehicle xpathfilter="(category = 'Cars' or category = 'Bikes' or category = 'Trucks' or category = 'Boats' or category = 'Corpsec/Police/Military' or category='Fixed-Wing Aircraft' or category = 'LTAV' or category = 'Rotorcraft' or category = 'VTOL/VSTOL') and pilot > 0"  amendoperation="append">
-			<mods>
-				<name>GridLink</name>
+		<vehicle xpathfilter="(category = 'Cars' or category = 'Bikes' or category = 'Trucks' or category = 'Boats' or category = 'Corpsec/Police/Military' or category='Fixed-Wing Aircraft' or category = 'LTAV' or category = 'Rotorcraft' or category = 'VTOL/VSTOL') and pilot > 0">
+			<mods xpathfilter="not(name = 'GridLink')">
+				<name amendoperation="addnode">GridLink</name>
 			</mods>
 		</vehicle>
+
 	</vehicles>
 	<mods>
 		<mod>
@@ -45,7 +46,7 @@
 			<slots>2</slots>
 			<cost>1500</cost>
 		</mod>
-		<mod>
+    <mod amendoperation="addnode">
 		  <!-- Has extras space in its name to differ from the others -->
 		  <id>fce1576c-2016-4a7c-af13-51f9949a3325</id>
 		  <name>Realistic Features (Drone)  </name>
@@ -60,18 +61,18 @@
 			<required>
 			  <vehicledetails>
 			  	<OR>
-	    			<name>Cyberspace Designs Dragonfly (Minidrone)</name>
-				    <name>Renraku Gerbil (Minidrone)</name>
-				    <name>Proteus Krake (Small)</name>
-				    <name>Ares Cheetah (Medium)</name>				    
-				</OR>
+	    			<name operation="contains">Cyberspace Designs Dragonfly</name>
+            <name operation="contains">Renraku Gerbil</name>
+            <name operation="contains">Proteus Krake</name>
+            <name operation="contains">Ares Cheetah</name>
+					</OR>
 			  </vehicledetails>
 			</required>
 		</mod>
 
-		<mod>
+    <mod amendoperation="addnode">
 		  <!-- Has extras space in its name to differ from the others -->
-		  --<id>9ec316d3-702c-4ddb-b8d5-d7c2936600c4</id>
+		  <id>9ec316d3-702c-4ddb-b8d5-d7c2936600c4</id>
 		  <name>Realistic Features (Drone) </name>
 		  <page>125</page>
 		  <source>R5</source>
@@ -84,31 +85,38 @@
 			<required>
 			  <vehicledetails>
 			  	<OR>
-				    <name>Festo Sewer Snake (Small)</name>				    
-				    <name>Ares Duelist (Medium)</name>
-				</OR>
+            <name operation="contains">Festo Sewer Snake</name>
+            <name operation="contains">Ares Duelist</name>
+					</OR>
 			  </vehicledetails>
 			</required>
-
 		</mod>
-
 		<mod>
 			<name>Realistic Features (Drone)</name>
-			<required>
+			<required amendoperation="replace" addifnotfound="True">
 			  <vehicledetails>
-			  	<OR>
-				    <name>Sony Goldfish (Microdrone)</name>
-				    <name>Festo Pigeon 2.0 (Minidrone)</name>
-				    <name>Remote Cyberhand</name>
+          <OR>
+            <name operation="contains">Sony Goldfish</name>
+            <name operation="contains">Festo Pigeon 2.0</name>
+				    <name operation="contains">Remote Cyberhand</name>
 				    <category operation="contains">Drones: Anthro</category>
-				    <name>Shiawase Kanmushi (Microdrone)</name>
-				    <name>MCT Fly-Spy (Minidrone)</name>
-				</OR>
-				<NOT>
-					<name>Ares Duelist (Medium)</name>
-				</NOT>
+            <name operation="contains">Shiawase Kanmushi</name>
+            <name operation="contains">MCT Fly-Spy</name>
+					</OR>
 			  </vehicledetails>
 			</required>
+      <forbidden amendoperation="replace" addifnotfound="True">
+        <vehicledetails>
+	        <OR>
+            <name operation="contains">Cyberspace Designs Dragonfly</name>
+            <name operation="contains">Renraku Gerbil</name>
+            <name operation="contains">Proteus Krake</name>
+            <name operation="contains">Ares Cheetah</name>
+            <name operation="contains">Festo Sewer Snake</name>
+            <name operation="contains">Ares Duelist</name>
+	        </OR>
+        </vehicledetails>
+      </forbidden>
 		</mod>
 	</mods>
 </chummer>

@@ -380,6 +380,7 @@ namespace Chummer.Backend.Skills
                         new DependancyGraphNode<string>(nameof(KnowledgeSkill.Type), () => IsKnowledgeSkill),
                         new DependancyGraphNode<string>(nameof(DisplayOtherAttribute),
                             new DependancyGraphNode<string>(nameof(PoolOtherAttribute),
+                                new DependancyGraphNode<string>(nameof(Enabled)),
                                 new DependancyGraphNode<string>(nameof(Rating)),
                                 new DependancyGraphNode<string>(nameof(PoolModifiers),
                                     new DependancyGraphNode<string>(nameof(Bonus),
@@ -544,17 +545,6 @@ namespace Chummer.Backend.Skills
             if (xmlNode.TryGetField("guid", Guid.TryParse, out guiTemp))
                 Id = guiTemp;
 
-            XmlNodeList lstSuggestedSpecializationsXml = xmlNode["specs"]?.ChildNodes;
-            if (lstSuggestedSpecializationsXml != null)
-            {
-                SuggestedSpecializations.Capacity = lstSuggestedSpecializationsXml.Count;
-                foreach (XmlNode node in lstSuggestedSpecializationsXml)
-                {
-                    string strInnerText = node.InnerText;
-                    SuggestedSpecializations.Add(new ListItem(strInnerText, node.Attributes?["translate"]?.InnerText ?? strInnerText));
-                }
-            }
-
             string strGroup = xmlNode["skillgroup"]?.InnerText;
 
             if (!string.IsNullOrEmpty(strGroup))
@@ -568,6 +558,26 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public void ReloadSuggestedSpecializations()
+        {
+            SuggestedSpecializations.Clear();
+
+            XmlNodeList xmlSpecList = GetNode()?.SelectNodes("specs/spec");
+
+            if (xmlSpecList != null)
+            {
+                SuggestedSpecializations.Capacity = xmlSpecList.Count;
+
+                foreach (XmlNode xmlSpecNode in xmlSpecList)
+                {
+                    string strInnerText = xmlSpecNode.InnerText;
+                    SuggestedSpecializations.Add(new ListItem(strInnerText, xmlSpecNode.Attributes?["translate"]?.InnerText ?? strInnerText));
+                }
+
+                SuggestedSpecializations.Sort(CompareListItems.CompareNames);
+            }
+            OnPropertyChanged(nameof(SuggestedSpecializations));
+        }
         #endregion
 
         /// <summary>
@@ -631,6 +641,12 @@ namespace Chummer.Backend.Skills
                     return _intCachedEnabled > 0;
 
                 if (_blnForceDisabled)
+                {
+                    _intCachedEnabled = 0;
+                    return false;
+                }
+
+                if (_objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.SkillDisable && x.ImprovedName == Name && x.Enabled))
                 {
                     _intCachedEnabled = 0;
                     return false;
@@ -769,6 +785,7 @@ namespace Chummer.Backend.Skills
                 {
                     _guidSkillId = value;
                     _objCachedMyXmlNode = null;
+                    ReloadSuggestedSpecializations();
                 }
             }
         }
@@ -777,7 +794,19 @@ namespace Chummer.Backend.Skills
 
         public virtual string SkillCategory => _strCategory;
 
-        public IReadOnlyList<ListItem> CGLSpecializations => SuggestedSpecializations;
+        public IReadOnlyList<ListItem> CGLSpecializations
+        {
+            get
+            {
+                List<ListItem> lstSuggestedSpecializations = new List<ListItem>(SuggestedSpecializations);
+                foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x => x.ImprovedName == Name && x.ImproveType == Improvement.ImprovementType.SkillSpecializationOption && lstSuggestedSpecializations.All(y => y.Value?.ToString() != x.UniqueName) && x.Enabled))
+                {
+                    string strSpecializationName = objImprovement.UniqueName;
+                    lstSuggestedSpecializations.Add(new ListItem(strSpecializationName, LanguageManager.TranslateExtra(strSpecializationName, GlobalOptions.Language)));
+                }
+                return lstSuggestedSpecializations;
+            }
+        }
 
         private readonly Dictionary<string, string> _cachedStringSpec = new Dictionary<string, string>();
         public virtual string DisplaySpecializationMethod(string strLanguage)

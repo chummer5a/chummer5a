@@ -376,7 +376,7 @@ namespace Chummer
             }
             else
             {
-                if (objTradition.GetNode().SelectSingleNode("spirits/spirit[. = \"All\"]") != null)
+                if (objTradition.GetNode()?.SelectSingleNode("spirits/spirit[. = \"All\"]") != null)
                 {
                     if (lstLimitCategories.Count == 0)
                     {
@@ -399,7 +399,7 @@ namespace Chummer
                 }
                 else
                 {
-                    using (XmlNodeList xmlSpiritList = objTradition.GetNode().SelectSingleNode("spirits")?.ChildNodes)
+                    using (XmlNodeList xmlSpiritList = objTradition.GetNode()?.SelectSingleNode("spirits")?.ChildNodes)
                         if (xmlSpiritList != null)
                             foreach (XmlNode objXmlSpirit in xmlSpiritList)
                             {
@@ -634,7 +634,7 @@ namespace Chummer
                 if (objXmlGear.Attributes["rating"] != null)
                     intRating = ExpressionToInt(objXmlGear.Attributes["rating"].InnerText, decimal.ToInt32(nudForce.Value), 0);
                 string strForceValue = objXmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
-                XmlNode objXmlGearItem = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlGear.InnerText + "\"]");
+                XmlNode objXmlGearItem = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlGear.InnerText.CleanXPath() + "]");
                 Gear objGear = new Gear(objCharacter);
                 List<Weapon> lstWeapons = new List<Weapon>();
                 objGear.Create(objXmlGearItem, intRating, lstWeapons, strForceValue);
