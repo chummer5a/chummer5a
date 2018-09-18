@@ -54,6 +54,7 @@ Data Changes:
 - Fixed a bug where various traditions with Guidance Spirit set as one of their five spirits did not have Guidance Spirit show up properly in their lists.
 - Characters following the Elder God tradition will now properly get a -2 dicepool modifier to drain resistance rolls and a +3 dicepool modifier to casting Illusion spells.
 - Characters following the Missionist tradition will now properly get a +2 dicepool modifier to casting Health spells and a -2 dicepool modifier to casting Combat spells.
+- Fixed incorrect Slots for the Workshop vehicle mod.
 
 New Strings:
 
