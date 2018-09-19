@@ -9409,6 +9409,60 @@ Only one attribute may be at its Maximum value during character creation.</text>
 	  <text>Chummer5a encountered an error when loading one or more improvements for this character. This is likely because a certain improvement present in an older version of Chummer has been significantly altered in a later version.\n\nThe issue can be fixed by re-applying only the improvements that caused issues.\n\nDo you wish to re-apply the problematic issues right now? If you do not, the issues can still be fixed by re-applying all improvements via Special > Re-apply Improvements.</text>
 	</string>
     <!-- End Region -->
+    <!-- Region Loading Form -->
+    <string>
+      <key>String_Loading</key>
+      <text>Loading...</text>
+    </string>
+    <string>
+      <key>String_Loading_Pattern</key>
+      <text>Loading {0}...</text>
+    </string>
+    <string>
+      <key>String_Initializing</key>
+      <text>Initializing...</text>
+    </string>
+    <string>
+      <key>String_Settings</key>
+      <text>Settings</text>
+    </string>
+    <string>
+      <key>String_MentorSpirit</key>
+      <text>Mentor Spirit</text>
+    </string>
+    <string>
+      <key>String_Locations</key>
+      <text>Locations</text>
+    </string>
+    <string>
+      <key>String_Metamagics</key>
+      <text>Metamagics</text>
+    </string>
+    <string>
+      <key>String_Arts</key>
+      <text>Arts</text>
+    </string>
+    <string>
+      <key>String_Enhancements</key>
+      <text>Enhancements</text>
+    </string>
+    <string>
+      <key>String_Expenses</key>
+      <text>Expenses</text>
+    </string>
+    <string>
+      <key>String_LegacyFixes</key>
+      <text>Legacy Fixes</text>
+    </string>
+    <string>
+      <key>String_GeneratedImprovements</key>
+      <text>Generated Improvements</text>
+    </string>
+    <string>
+      <key>String_UI</key>
+      <text>UI</text>
+    </string>
+    <!-- End Region -->
     <!-- End Region -->
     <string>
       <key>Message_DroneIllegalDowngrade</key>

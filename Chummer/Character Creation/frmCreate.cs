@@ -7486,10 +7486,9 @@ namespace Chummer
             if (!(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
                 return;
 
-            string strGuid = strGuid = objLifestyle.InternalId;
+            string strGuid = objLifestyle.InternalId;
             int intMonths = objLifestyle.Increments;
             int intPosition = CharacterObject.Lifestyles.IndexOf(CharacterObject.Lifestyles.Where(p => p.InternalId == objLifestyle.InternalId).First());
-            string strOldLifestyleName = objLifestyle.DisplayName(GlobalOptions.Language);
             decimal decOldLifestyleTotalCost = objLifestyle.TotalCost;
 
             if (objLifestyle.StyleType != LifestyleType.Standard)
@@ -9949,7 +9948,11 @@ namespace Chummer
             // Character is not dirty and their savefile was updated outside of Chummer5 while it is open, so reload them
             Cursor = Cursors.WaitCursor;
 
-            CharacterObject.Load();
+            frmLoading frmLoadingForm = new frmLoading {CharacterFile = CharacterObject.FileName};
+            frmLoadingForm.Reset(36);
+            frmLoadingForm.Show();
+            CharacterObject.Load(frmLoadingForm);
+            frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
 
             // Update character information fields.
             RefreshMetatypeFields();
@@ -9972,6 +9975,8 @@ namespace Chummer
             UpdateCharacterInfo();
 
             IsDirty = false;
+
+            frmLoadingForm.Close();
 
             Cursor = Cursors.Default;
 
@@ -14880,15 +14885,9 @@ namespace Chummer
 
             string strType = objSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
             XmlDocument objXmlDocument = XmlManager.Load(strType + ".xml", string.Empty, true);
-            XmlNode xmlSuite = null;
-            if (Guid.TryParse(frmPickCyberwareSuite.SelectedSuite, out Guid _result))
-            {
-                xmlSuite = objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]");
-            }
-            else
-            {
-                xmlSuite = objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]");
-            }
+            XmlNode xmlSuite = Guid.TryParse(frmPickCyberwareSuite.SelectedSuite, out Guid _result)
+                ? objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]")
+                : objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]");
             if (xmlSuite == null)
                 return;
             Grade objGrade = Cyberware.ConvertToCyberwareGrade(xmlSuite["grade"]?.InnerText, objSource, CharacterObject);

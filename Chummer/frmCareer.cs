@@ -2378,26 +2378,32 @@ namespace Chummer
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
             {
                 Cursor = Cursors.WaitCursor;
+                frmLoading frmLoadingForm = new frmLoading();
+                frmLoadingForm.Reset(77);
                 Character objVessel = new Character
                 {
                     FileName = openFileDialog.FileName
                 };
-                objVessel.Load();
+                frmLoadingForm.CharacterFile = objVessel.FileName;
+                frmLoadingForm.Show();
+                objVessel.Load(frmLoadingForm);
                 // Make sure the Vessel is in Career Mode.
                 if (!objVessel.Created)
                 {
                     Cursor = Cursors.Default;
                     MessageBox.Show(LanguageManager.GetString("Message_VesselInCareerMode", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Possession", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     objVessel.DeleteCharacter();
+                    frmLoadingForm.Close();
                     return;
                 }
-
+                
                 // Load the Spirit's save file into a new Merge character.
                 Character objMerge = new Character
                 {
                     FileName = CharacterObject.FileName
                 };
-                objMerge.Load();
+                frmLoadingForm.CharacterFile = objMerge.FileName;
+                objMerge.Load(frmLoadingForm);
                 objMerge.Possessed = true;
                 objMerge.Alias = objVessel.CharacterName + " (" + LanguageManager.GetString("String_Possessed", GlobalOptions.Language) + ')';
 
@@ -2432,10 +2438,12 @@ namespace Chummer
                 objMerge.STR.MetatypeMaximum = objVessel.STR.Value + objMerge.MAG.TotalValue;
                 objMerge.STR.Value = objVessel.STR.Value + objMerge.MAG.TotalValue;*/
 
+                frmLoadingForm.PerformStep(LanguageManager.GetString("String_SelectPACKSKit_Lifestyles"));
                 // Copy any Lifestyles the Vessel has.
                 foreach (Lifestyle objLifestyle in objVessel.Lifestyles)
                     objMerge.Lifestyles.Add(objLifestyle);
 
+                frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Armor"));
                 // Copy any Armor the Vessel has.
                 foreach (Armor objArmor in objVessel.Armor)
                 {
@@ -2443,6 +2451,7 @@ namespace Chummer
                     CopyArmorImprovements(objVessel, objMerge, objArmor);
                 }
 
+                frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Gear"));
                 // Copy any Gear the Vessel has.
                 foreach (Gear objGear in objVessel.Gear)
                 {
@@ -2450,6 +2459,7 @@ namespace Chummer
                     CopyGearImprovements(objVessel, objMerge, objGear);
                 }
 
+                frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Cyberware"));
                 // Copy any Cyberware/Bioware the Vessel has.
                 foreach (Cyberware objCyberware in objVessel.Cyberware)
                 {
@@ -2457,14 +2467,17 @@ namespace Chummer
                     CopyCyberwareImprovements(objVessel, objMerge, objCyberware);
                 }
 
+                frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Weapons"));
                 // Copy any Weapons the Vessel has.
                 foreach (Weapon objWeapon in objVessel.Weapons)
                     objMerge.Weapons.Add(objWeapon);
 
+                frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Vehicles"));
                 // Copy and Vehicles the Vessel has.
                 foreach (Vehicle objVehicle in objVessel.Vehicles)
                     objMerge.Vehicles.Add(objVehicle);
 
+                frmLoadingForm.PerformStep(LanguageManager.GetString("String_Settings"));
                 // Copy the character info.
                 objMerge.Sex = objVessel.Sex;
                 objMerge.Age = objVessel.Age;
@@ -2488,6 +2501,8 @@ namespace Chummer
                 strShowFileName = strShowFileName.TrimEndOnce(".chum5");
 
                 strShowFileName += " (" + LanguageManager.GetString("String_Possessed", GlobalOptions.Language) + ')';
+
+                frmLoadingForm.Close();
 
                 // Now that everything is done, save the merged character and open them.
                 SaveFileDialog saveFileDialog = new SaveFileDialog
@@ -2571,12 +2586,18 @@ namespace Chummer
 
             Cursor = Cursors.WaitCursor;
 
+            frmLoading frmLoadingForm = new frmLoading();
+            frmLoadingForm.Reset(36);
+            
             // Load the Spirit's save file into a new Merge character.
             Character objMerge = new Character
             {
                 FileName = CharacterObject.FileName
             };
+            frmLoadingForm.CharacterFile = objMerge.FileName;
+            frmLoadingForm.Show();
             objMerge.Load();
+            frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
             objMerge.Possessed = true;
             objMerge.Alias = frmSelectVessel.SelectedItem + " (" + LanguageManager.GetString("String_Possessed", GlobalOptions.Language) + ')';
 
@@ -2703,6 +2724,7 @@ namespace Chummer
 
             saveFileDialog.FileName = strShowFileName;
 
+            frmLoadingForm.Close();
             Cursor = Cursors.Default;
 
             if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
@@ -13230,7 +13252,11 @@ namespace Chummer
             // Character is not dirty and their savefile was updated outside of Chummer5 while it is open, so reload them
             Cursor = Cursors.WaitCursor;
 
-            CharacterObject.Load();
+            frmLoading frmLoadingForm = new frmLoading {CharacterFile = CharacterObject.FileName};
+            frmLoadingForm.Reset(36);
+            frmLoadingForm.Show();
+            CharacterObject.Load(frmLoadingForm);
+            frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
 
             // Update character information fields.
             RefreshMetatypeFields();
@@ -13242,6 +13268,7 @@ namespace Chummer
 
             IsDirty = false;
 
+            frmLoadingForm.Close();
             Cursor = Cursors.Default;
 
             if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0)

@@ -74,6 +74,7 @@ Application Changes:
 - Fixed an issue where line breaks in notes would not show up properly in tooltips. Fixes #3019.
 - Fixed a bug where existing bioware on a character would not get removed if/when the character took Sensitive System or another quality that removed access to bioware. A similar bug was fixed for improvements that removed access to cyberware and/or 'ware entirely.
 - Fixed a bug where newly created characters would not get added to the list of characters open in internal memory, which could cause a whole lot of other issues, least of which was that the character's tab would not get properly updated if the character's alias was changed.
+- Added a loading bar/screen that is displayed when the program is performing its initial loading and whenever the program loads in a character.
 
 Data Changes:
 
@@ -141,6 +142,19 @@ New Strings:
 - Label_CrashEffect
 - String_DamageUnresisted
 - String_PerLevel
+- String_Loading
+- String_Loading_Pattern
+- String_Initializing
+- String_Settings
+- String_MentorSpirit
+- String_Locations
+- String_Metamagics
+- String_Arts
+- String_Enhancements
+- String_Expenses
+- String_LegacyFixes
+- String_GeneratedImprovements
+- String_UI
 
 Changed Strings:
 
