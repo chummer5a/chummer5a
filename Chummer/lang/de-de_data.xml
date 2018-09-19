@@ -17737,43 +17737,43 @@
 				<id>de50bb02-7f90-4c76-9984-e7d2b3248726</id>
 				<name>GPS Monitor</name>
 				<translate>GPS Monitor</translate>
-				<altpage>422</altpage>
+				<altpage>424</altpage>
 			</gear>
 			<gear>
 				<id>3fc588dc-ec8b-4483-8796-f8a068698ea4</id>
 				<name>Mini-Multitool</name>
 				<translate>Mini-Multitool</translate>
-				<altpage>422</altpage>
+				<altpage>424</altpage>
 			</gear>
 			<gear>
 				<id>a75fb825-dc62-46ff-8e8a-454b7a9442ba</id>
 				<name>Micro-Lighter</name>
-				<translate>Micro-Lighter</translate>
-				<altpage>422</altpage>
+				<translate>Mikro-Feuerzeug</translate>
+				<altpage>424</altpage>
 			</gear>
 			<gear>
 				<id>4d08fb85-0756-4f99-9dfe-6e2592ee22b4</id>
 				<name>Hidden Compartment</name>
-				<translate>Hidden Compartment</translate>
-				<altpage>422</altpage>
+				<translate>Verborgenes Fach</translate>
+				<altpage>424</altpage>
 			</gear>
 			<gear>
 				<id>63a4180e-97bc-4954-b5c2-a1029d834638</id>
 				<name>Phosphorescent Blade Coating</name>
-				<translate>Phosphorescent Blade Coating</translate>
-				<altpage>422</altpage>
+				<translate>Phosphoreszierende Klinge (beschichtet)</translate>
+				<altpage>424</altpage>
 			</gear>
 			<gear>
 				<id>09ed9d86-59a2-4ac9-ac3f-70816f3485fb</id>
 				<name>ARO of Local Maps</name>
-				<translate>ARO of Local Maps</translate>
-				<altpage>422</altpage>
+				<translate>ARO örtlicher Karten</translate>
+				<altpage>424</altpage>
 			</gear>
 			<gear>
 				<id>3772ad51-c689-4e38-8c93-b285e78670b5</id>
 				<name>Can Make Commcalls</name>
-				<translate>Can Make Commcalls</translate>
-				<altpage>422</altpage>
+				<translate>Kann Telefonanrufe tätigen</translate>
+				<altpage>424</altpage>
 			</gear>
 			<gear>
 				<id>8e4e5c33-63f4-437a-ae64-1e54276bd13d</id>
