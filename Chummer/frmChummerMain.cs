@@ -981,6 +981,7 @@ namespace Chummer
                     objCharacter.Weapons.Add(objLoopWeapon);
             }
 
+            OpenCharacters.Add(objCharacter);
             frmCreate frmNewCharacter = new frmCreate(objCharacter)
             {
                 MdiParent = this,
