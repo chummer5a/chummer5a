@@ -162,6 +162,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ImprovementMethods.tt</DependentUpon>
     </Compile>
+    <Compile Include="Backend\Powers\CritterPower.cs" />
+    <Compile Include="Backend\Powers\AdeptPower.cs" />
     <Compile Include="Backend\Shared Methods\CharacterShared.cs" />
     <Compile Include="Backend\Datastructures\DependancyGraphNode.cs" />
     <Compile Include="Backend\Datastructures\TranslatedField.cs" />

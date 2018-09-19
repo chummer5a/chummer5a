@@ -38,7 +38,7 @@ namespace Chummer
         private int _intGrade;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Enhancement;
         private string _strNotes = string.Empty;
-        private Power _objParent;
+        private AdeptPower _objParent;
 
         private readonly Character _objCharacter;
 
@@ -255,7 +255,7 @@ namespace Chummer
         /// <summary>
         /// Parent Power.
         /// </summary>
-        public Power Parent
+        public AdeptPower Parent
         {
             get => _objParent;
             set => _objParent = value;
@@ -331,7 +331,7 @@ namespace Chummer
             }
 
             characterObject.Enhancements.Remove(this);
-            foreach (Power objPower in characterObject.Powers)
+            foreach (AdeptPower objPower in characterObject.Powers)
             {
                 if (objPower.Enhancements.Contains(this))
                     objPower.Enhancements.Remove(this);

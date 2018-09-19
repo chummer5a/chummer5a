@@ -500,31 +500,12 @@ namespace Chummer
             set => _blnCountTowardsLimit = value;
         }
 
-        /// <summary>
-        /// Karma that the Critter must pay to take the power.
-        /// </summary>
-        public int Karma
-        {
-            get => _intKarma;
-            set => _intKarma = value;
-        }
-
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()
         {
             return GetNode(GlobalOptions.Language);
-        }
-
-        public XmlNode GetNode(string strLanguage)
-        {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
-            {
-                _objCachedMyXmlNode = XmlManager.Load("critterpowers.xml", strLanguage).SelectSingleNode("/chummer/powers/power[name = \"" + Name + "\"]");
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
-            return _objCachedMyXmlNode;
         }
         #endregion
 
@@ -545,23 +526,6 @@ namespace Chummer
             };
             return objNode;
         }
-
-        public Color PreferredColor
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(Notes))
-                {
-                    return Color.SaddleBrown;
-                }
-                if (Grade != 0)
-                {
-                    return SystemColors.GrayText;
-                }
-
-                return SystemColors.WindowText;
-            }
-        }
         #endregion
 
         public bool Remove(Character characterObject, bool blnConfirmDelete = true)
@@ -576,23 +540,6 @@ namespace Chummer
             ImprovementManager.RemoveImprovements(characterObject, Improvement.ImprovementSource.CritterPower, InternalId);
 
             return characterObject.CritterPowers.Remove(this);
-        }
-
-        public void SetSourceDetail(Control sourceControl)
-        {
-            if (SourceDetail != null)
-            {
-                SourceDetail.SetControl(sourceControl);
-            }
-            else if (!string.IsNullOrWhiteSpace(_strPage) && !string.IsNullOrWhiteSpace(_strSource))
-            {
-                SourceDetail = new SourceString(_strSource, _strPage);
-                SourceDetail.SetControl(sourceControl);
-            }
-            else
-            {
-                Utils.BreakIfDebug();
-            }
         }
     }
 }

@@ -1410,7 +1410,7 @@ namespace Chummer
                         lstParentNodeChildren.Insert(intTargetIndex, objNode);
                     }
                 }
-                foreach (Power objPower in _objCharacter.Powers)
+                foreach (AdeptPower objPower in _objCharacter.Powers)
                 {
                     foreach (Enhancement objEnhancement in objPower.Enhancements)
                     {
@@ -1602,7 +1602,7 @@ namespace Chummer
                     break;
                 case null:
                     {
-                        foreach (Power objPower in CharacterObject.Powers)
+                        foreach (AdeptPower objPower in CharacterObject.Powers)
                         {
                             objPower.Enhancements.AddTaggedCollectionChanged(treMetamagic, (x, y) => RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, y));
                         }
@@ -1613,7 +1613,7 @@ namespace Chummer
 
         protected void RefreshPowerCollectionBeforeRemove(TreeView treMetamagic, RemovingOldEventArgs removingOldEventArgs)
         {
-            if (removingOldEventArgs.OldObject is Power objPower)
+            if (removingOldEventArgs.OldObject is AdeptPower objPower)
             {
                 objPower.Enhancements.RemoveTaggedCollectionChanged(treMetamagic);
             }

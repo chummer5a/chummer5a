@@ -39,7 +39,7 @@ namespace Chummer.UI.Powers
         // TODO: check, if this can be removed???
         public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate; 
         
-        private TableView<Power> _table;
+        private TableView<AdeptPower> _table;
 
         public PowersTabUserControl()
         {
@@ -54,7 +54,7 @@ namespace Chummer.UI.Powers
         }
         
         private Character _objCharacter;
-        private readonly IList<Tuple<string, Predicate<Power>>> _dropDownList;
+        private readonly IList<Tuple<string, Predicate<AdeptPower>>> _dropDownList;
         private bool _blnSearchMode;
         
         private void PowersTabUserControl_Load(object sender, EventArgs e)
@@ -83,7 +83,7 @@ namespace Chummer.UI.Powers
                 if (e.ListChangedType == ListChangedType.ItemChanged)
                 {
                     string propertyName = e.PropertyDescriptor?.Name;
-                    if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
+                    if (propertyName == nameof(AdeptPower.FreeLevels) || propertyName == nameof(AdeptPower.TotalRating))
                     {
                         // recalculation of power points on rating/free levels change
                         CalculatePowerPoints();
@@ -132,14 +132,14 @@ namespace Chummer.UI.Powers
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
         }
         
-        private static IList<Tuple<string, Predicate<Power>>> GenerateDropdownFilter()
+        private static IList<Tuple<string, Predicate<AdeptPower>>> GenerateDropdownFilter()
         {
-            List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>
+            List<Tuple<string, Predicate<AdeptPower>>> ret = new List<Tuple<string, Predicate<AdeptPower>>>
             {
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search", GlobalOptions.Language), null),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterAll", GlobalOptions.Language), power => true),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero", GlobalOptions.Language), power => power.Rating > 0),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero", GlobalOptions.Language), power => power.Rating == 0)
+                new Tuple<string, Predicate<AdeptPower>>(LanguageManager.GetString("String_Search", GlobalOptions.Language), null),
+                new Tuple<string, Predicate<AdeptPower>>(LanguageManager.GetString("String_PowerFilterAll", GlobalOptions.Language), power => true),
+                new Tuple<string, Predicate<AdeptPower>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero", GlobalOptions.Language), power => power.Rating > 0),
+                new Tuple<string, Predicate<AdeptPower>>(LanguageManager.GetString("String_PowerFilterRatingZero", GlobalOptions.Language), power => power.Rating == 0)
             };
 
             /*
@@ -159,7 +159,7 @@ namespace Chummer.UI.Powers
         
         private void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboDisplayFilter.SelectedItem is Tuple<string, Predicate<Power>> selectedItem)
+            if (cboDisplayFilter.SelectedItem is Tuple<string, Predicate<AdeptPower>> selectedItem)
             {
                 if (selectedItem.Item2 == null)
                 {
@@ -203,7 +203,7 @@ namespace Chummer.UI.Powers
                 }
                 blnAddAgain = frmPickPower.AddAgain;
 
-                Power objPower = new Power(_objCharacter);
+                AdeptPower objPower = new AdeptPower(_objCharacter);
 
                 XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]");
                 frmPickPower.Dispose();
@@ -255,13 +255,13 @@ namespace Chummer.UI.Powers
 
         private void InitializeTable()
         {
-            _table = new TableView<Power>()
+            _table = new TableView<AdeptPower>
             {
-                Location = new Point(3, 3)
+                Location = new Point(3, 3),
+                ToolTip = _tipTooltip
             };
-            _table.ToolTip = _tipTooltip;
             // create columns
-            TableColumn<Power> nameColumn = new TableColumn<Power>(() => new TextTableCell())
+            TableColumn<AdeptPower> nameColumn = new TableColumn<AdeptPower>(() => new TextTableCell())
             {
                 Text = "Power",
                 Extractor = (power => power.DisplayName),
@@ -270,7 +270,7 @@ namespace Chummer.UI.Powers
             };
             nameColumn.AddDependency(nameof(Power.DisplayName));
 
-            TableColumn<Power> actionColumn = new TableColumn<Power>(() => new TextTableCell())
+            TableColumn<AdeptPower> actionColumn = new TableColumn<AdeptPower>(() => new TextTableCell())
             {
                 Text = "Action",
                 Extractor = (power => power.DisplayAction),
@@ -279,7 +279,7 @@ namespace Chummer.UI.Powers
             };
             actionColumn.AddDependency(nameof(Power.DisplayAction));
 
-            TableColumn<Power> ratingColumn = new TableColumn<Power>(() => new SpinnerTableCell<Power>(_table)
+            TableColumn<AdeptPower> ratingColumn = new TableColumn<AdeptPower>(() => new SpinnerTableCell<AdeptPower>(_table)
             {
                 EnabledExtractor = (p => p.LevelsEnabled),
                 MaxExtractor = (p => Math.Max(p.TotalMaximumLevels - p.FreeLevels, 0)),
@@ -298,43 +298,43 @@ namespace Chummer.UI.Powers
             {
                 Text = "Rating",
                 Tag = "String_Rating",
-                Sorter = (o1, o2) => ((Power)o1).Rating - ((Power)o2).Rating
+                Sorter = (o1, o2) => ((AdeptPower)o1).Rating - ((AdeptPower)o2).Rating
             };
 
 
-            ratingColumn.AddDependency(nameof(Power.LevelsEnabled));
-            ratingColumn.AddDependency(nameof(Power.FreeLevels));
-            ratingColumn.AddDependency(nameof(Power.TotalMaximumLevels));
-            ratingColumn.AddDependency(nameof(Power.TotalRating));
-            TableColumn<Power> totalRatingColumn = new TableColumn<Power>(() => new TextTableCell())
+            ratingColumn.AddDependency(nameof(AdeptPower.LevelsEnabled));
+            ratingColumn.AddDependency(nameof(AdeptPower.FreeLevels));
+            ratingColumn.AddDependency(nameof(AdeptPower.TotalMaximumLevels));
+            ratingColumn.AddDependency(nameof(AdeptPower.TotalRating));
+            TableColumn<AdeptPower> totalRatingColumn = new TableColumn<AdeptPower>(() => new TextTableCell())
             {
                 Text = "Total Rating",
                 Extractor = (power => power.TotalRating),
                 Tag = "String_TotalRating",
-                Sorter = (o1, o2) => ((Power)o1).TotalRating - ((Power)o2).TotalRating
+                Sorter = (o1, o2) => ((AdeptPower)o1).TotalRating - ((AdeptPower)o2).TotalRating
             };
-            totalRatingColumn.AddDependency(nameof(Power.TotalRating));
+            totalRatingColumn.AddDependency(nameof(AdeptPower.TotalRating));
 
-            TableColumn<Power> powerPointsColumn = new TableColumn<Power>(() => new TextTableCell())
+            TableColumn<AdeptPower> powerPointsColumn = new TableColumn<AdeptPower>(() => new TextTableCell())
             {
                 Text = "Power Points",
                 Extractor = (power => power.DisplayPoints),
                 Tag = "ColumnHeader_Power_Points",
                 ToolTipExtractor = (item => item.ToolTip)
             };
-            powerPointsColumn.AddDependency(nameof(Power.DisplayPoints));
-            powerPointsColumn.AddDependency(nameof(Power.ToolTip));
+            powerPointsColumn.AddDependency(nameof(AdeptPower.DisplayPoints));
+            powerPointsColumn.AddDependency(nameof(AdeptPower.ToolTip));
 
-            TableColumn<Power> sourceColumn = new TableColumn<Power>(() => new TextTableCell())
+            TableColumn<AdeptPower> sourceColumn = new TableColumn<AdeptPower>(() => new TextTableCell())
             {
                 Text = "Source",
                 Extractor = (power => power.SourceDetail),
                 Tag = "Label_Source",
                 ToolTipExtractor = (item => item.SourceDetail.LanguageBookTooltip)
             };
-            powerPointsColumn.AddDependency(nameof(Power.Source));
+            powerPointsColumn.AddDependency(nameof(AdeptPower.Source));
 
-            TableColumn<Power> adeptWayColumn = new TableColumn<Power>(() => new CheckBoxTableCell<Power>()
+            TableColumn<AdeptPower> adeptWayColumn = new TableColumn<AdeptPower>(() => new CheckBoxTableCell<AdeptPower>()
             {
                 ValueGetter = (p => p.DiscountedAdeptWay),
                 ValueUpdater = (p, check) => p.DiscountedAdeptWay = check,
@@ -345,9 +345,9 @@ namespace Chummer.UI.Powers
                 Text = "Adept Way",
                 Tag = "Checkbox_Power_AdeptWay"
             };
-            adeptWayColumn.AddDependency(nameof(Power.DiscountedAdeptWay));
-            adeptWayColumn.AddDependency(nameof(Power.AdeptWayDiscountEnabled));
-            adeptWayColumn.AddDependency(nameof(Power.Rating));
+            adeptWayColumn.AddDependency(nameof(AdeptPower.DiscountedAdeptWay));
+            adeptWayColumn.AddDependency(nameof(AdeptPower.AdeptWayDiscountEnabled));
+            adeptWayColumn.AddDependency(nameof(AdeptPower.Rating));
 
             /*
              TableColumn<Power> geasColumn = new TableColumn<Power>(() => new CheckBoxTableCell<Power>()
@@ -363,7 +363,7 @@ namespace Chummer.UI.Powers
             geasColumn.AddDependency(nameof(Power.DiscountedGeas));
             */
 
-            TableColumn<Power> noteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new PictureBox()
+            TableColumn<AdeptPower> noteColumn = new TableColumn<AdeptPower>(() => new ButtonTableCell<AdeptPower>(new PictureBox()
             {
                 Image = Chummer.Properties.Resources.note_edit,
                 Size = GetImageSize(Chummer.Properties.Resources.note_edit),
@@ -391,9 +391,9 @@ namespace Chummer.UI.Powers
                     return strTooltip.WordWrap(100);
                 })
             };
-            noteColumn.AddDependency(nameof(Power.Notes));
+            noteColumn.AddDependency(nameof(AdeptPower.Notes));
 
-            TableColumn<Power> deleteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new Button() { Text = "Delete", Tag = "String_Delete", BackColor = SystemColors.Control })
+            TableColumn<AdeptPower> deleteColumn = new TableColumn<AdeptPower>(() => new ButtonTableCell<AdeptPower>(new Button() { Text = "Delete", Tag = "String_Delete", BackColor = SystemColors.Control })
             {
                 ClickHandler = p =>
                 {

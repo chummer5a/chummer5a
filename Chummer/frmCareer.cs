@@ -1881,7 +1881,7 @@ namespace Chummer
             }
 
             // Refresh Adept Powers.
-            foreach (Power objPower in CharacterObject.Powers.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
+            foreach (AdeptPower objPower in CharacterObject.Powers.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
             {
                 XmlNode objNode = objPower.GetNode();
                 if (objNode != null)
@@ -17100,7 +17100,7 @@ namespace Chummer
             // Find the associated Power
             string strPower = objXmlArt["power"]?.InnerText;
             bool blnPowerFound = false;
-            foreach (Power objPower in CharacterObject.Powers)
+            foreach (AdeptPower objPower in CharacterObject.Powers)
             {
                 if (objPower.Name == strPower)
                 {

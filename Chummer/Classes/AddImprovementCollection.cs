@@ -3302,7 +3302,7 @@ namespace Chummer.Classes
 
                 Log.Info("strSelected = " + SelectedValue);
 
-                foreach (Power objPower in _objCharacter.Powers)
+                foreach (AdeptPower objPower in _objCharacter.Powers)
                 {
                     if (objPower.InternalId == SourceName)
                     {
@@ -3697,12 +3697,12 @@ namespace Chummer.Classes
                 {
                     // Check if the character already has this power
                     Log.Info("strSelection = " + strSelection);
-                    Power objNewPower = new Power(_objCharacter);
+                    AdeptPower objNewPower = new AdeptPower(_objCharacter);
                     XmlNode objXmlPower = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[name = \"" + strPowerName + "\"]");
                     if (!objNewPower.Create(objXmlPower, 0, bonusNode["bonusoverride"]))
                         throw new AbortedException();
 
-                    Power objBoostedPower = _objCharacter.Powers.FirstOrDefault(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
+                    AdeptPower objBoostedPower = _objCharacter.Powers.FirstOrDefault(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
                     if (objBoostedPower == null)
                     {
                         _objCharacter.Powers.Add(objNewPower);
@@ -3773,7 +3773,7 @@ namespace Chummer.Classes
                                 XmlNode objXmlPower = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]");
 
                                 // If no, add the power and mark it free or give it free levels
-                                Power objNewPower = new Power(_objCharacter);
+                                AdeptPower objNewPower = new AdeptPower(_objCharacter);
                                 if (!objNewPower.Create(objXmlPower))
                                     throw new AbortedException();
 
@@ -3781,7 +3781,7 @@ namespace Chummer.Classes
                                 if (_blnConcatSelectedValue)
                                     SourceName += " (" + SelectedValue + ')';
 
-                                List<Power> lstExistingPowersList = _objCharacter.Powers.Where(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra).ToList();
+                                List<AdeptPower> lstExistingPowersList = _objCharacter.Powers.Where(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra).ToList();
 
                                 Log.Info("blnHasPower = " + (lstExistingPowersList.Count > 0).ToString());
 

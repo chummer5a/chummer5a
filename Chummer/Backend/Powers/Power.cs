@@ -41,7 +41,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayNameMethod(GlobalOptions.DefaultLanguage)}")]
     public class Power : INotifyMultiplePropertyChanged, IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
-        private Guid _guiID;
+        internal Guid _guiID;
         private Guid _sourceID = Guid.Empty;
         private string _strName = string.Empty;
         private string _strExtra = string.Empty;
@@ -62,6 +62,9 @@ namespace Chummer
         private bool _blnLevelsEnabled;
         private int _intRating = 1;
         private int _cachedLearnedRating;
+        internal Improvement.ImprovementSource _improvementSource = Improvement.ImprovementSource.Power;
+        internal Improvement.ImprovementType _freeLevelImprovementType;
+        internal Improvement.ImprovementType _freePointImprovementType;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Power(Character objCharacter)
@@ -70,14 +73,6 @@ namespace Chummer
             _guiID = Guid.NewGuid();
             CharacterObject = objCharacter;
             CharacterObject.PropertyChanged += OnCharacterChanged;
-            if (CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-            {
-                MAGAttributeObject = CharacterObject.MAGAdept;
-            }
-            else
-            {
-                MAGAttributeObject = CharacterObject.MAG;
-            }
         }
 
         public void UnbindPower()
@@ -89,7 +84,7 @@ namespace Chummer
 
         public void DeletePower()
         {
-            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId);
+            ImprovementManager.RemoveImprovements(CharacterObject, _improvementSource, InternalId);
             CharacterObject.Powers.Remove(this);
             UnbindPower();
         }
@@ -179,7 +174,7 @@ namespace Chummer
                 string strOldForce = ImprovementManager.ForcedValue;
                 string strOldSelected = ImprovementManager.SelectedValue;
                 ImprovementManager.ForcedValue = Extra;
-                if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, false, TotalRating, DisplayNameShort(GlobalOptions.Language)))
+                if (!ImprovementManager.CreateImprovements(CharacterObject, _improvementSource, InternalId, Bonus, false, TotalRating, DisplayNameShort(GlobalOptions.Language)))
                 {
                     ImprovementManager.ForcedValue = strOldForce;
                     DeletePower();
@@ -328,7 +323,7 @@ namespace Chummer
         /// <summary>
         /// The Character object being used by the Power.
         /// </summary>
-        public Character CharacterObject { get; }
+        public Character CharacterObject { get; set; }
 
         private CharacterAttrib _objMAGAttribute;
         /// <summary>
@@ -949,12 +944,12 @@ namespace Chummer
             {
                 if (Bonus?.InnerXml.Contains("Rating") == true)
                 {
-                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId);
+                    ImprovementManager.RemoveImprovements(CharacterObject, _improvementSource, InternalId);
                     int intTotalRating = TotalRating;
                     if (intTotalRating > 0)
                     {
                         ImprovementManager.ForcedValue = Extra;
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, false, intTotalRating, DisplayNameShort(GlobalOptions.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, _improvementSource, InternalId, Bonus, false, intTotalRating, DisplayNameShort(GlobalOptions.Language));
                     }
                 }
             }
@@ -1000,9 +995,9 @@ namespace Chummer
                 }
             }
         }
-        
-        private XmlNode _objCachedMyXmlNode;
-        private string _strCachedXmlNodeLanguage = string.Empty;
+
+        internal XmlNode _objCachedMyXmlNode;
+        internal string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()
         {

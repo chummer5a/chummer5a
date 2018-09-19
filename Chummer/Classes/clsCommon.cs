@@ -617,7 +617,7 @@ namespace Chummer
                     if (objEnhancement.InternalId == strGuid)
                         return objEnhancement;
                 }
-                foreach (Power objPower in objCharacter.Powers)
+                foreach (AdeptPower objPower in objCharacter.Powers)
                 {
                     foreach (Enhancement objEnhancement in objPower.Enhancements)
                     {

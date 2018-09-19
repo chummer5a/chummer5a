@@ -767,7 +767,7 @@ namespace Chummer
                 case "power":
                     {
                         // Run through all of the Powers the character has and see if the current required item exists.
-                        Power power = objCharacter.Powers.FirstOrDefault(p => p.Name == strNodeInnerText);
+                        AdeptPower power = objCharacter.Powers.FirstOrDefault(p => p.Name == strNodeInnerText);
                         if (power != null)
                         {
                             if (blnShowMessage)
@@ -1875,7 +1875,7 @@ namespace Chummer
                 case "power":
                     {
                         // Run through all of the Powers the character has and see if the current required item exists.
-                        Power power = objCharacter.Powers.FirstOrDefault(p => p.Name == strNodeInnerText);
+                        AdeptPower power = objCharacter.Powers.FirstOrDefault(p => p.Name == strNodeInnerText);
                         if (power != null)
                         {
                             if (blnShowMessage)

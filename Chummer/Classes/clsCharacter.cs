@@ -193,7 +193,7 @@ namespace Chummer
         private readonly ObservableCollection<Spell> _lstSpells = new ObservableCollection<Spell>();
         private readonly List<Focus> _lstFoci = new List<Focus>();
         private readonly List<StackedFocus> _lstStackedFoci = new List<StackedFocus>();
-        private readonly CachedBindingList<Power> _lstPowers = new CachedBindingList<Power>();
+        private readonly CachedBindingList<AdeptPower> _lstPowers = new CachedBindingList<AdeptPower>();
         private readonly ObservableCollection<ComplexForm> _lstComplexForms = new ObservableCollection<ComplexForm>();
         private readonly ObservableCollection<AIProgram> _lstAIPrograms = new ObservableCollection<AIProgram>();
         private readonly ObservableCollection<MartialArt> _lstMartialArts = new ObservableCollection<MartialArt>();
@@ -860,9 +860,9 @@ namespace Chummer
                         break;
                     }
 
-                    if (e.PropertyDescriptor.Name == nameof(Power.AdeptWayDiscountEnabled))
+                    if (e.PropertyDescriptor.Name == nameof(AdeptPower.AdeptWayDiscountEnabled))
                         setChangedProperties.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
-                    else if (e.PropertyDescriptor.Name == nameof(Power.PowerPoints))
+                    else if (e.PropertyDescriptor.Name == nameof(AdeptPower.PowerPoints))
                         setChangedProperties.Add(nameof(PowerPointsUsed));
                 }
                     break;
@@ -1415,7 +1415,7 @@ namespace Chummer
 
             // <powers>
             objWriter.WriteStartElement("powers");
-            foreach (Power objPower in _lstPowers)
+            foreach (AdeptPower objPower in _lstPowers)
             {
                 objPower.Save(objWriter);
             }
@@ -2788,7 +2788,7 @@ namespace Chummer
                         strPowerName + (xmlPower["extra"]?.InnerText ?? string.Empty)));
                 else
                 {
-                    Power objPower = new Power(this);
+                    AdeptPower objPower = new AdeptPower(this);
                     objPower.Load(xmlPower);
                     _lstPowers.Add(objPower);
                 }
@@ -2802,7 +2802,7 @@ namespace Chummer
                     objXmlCharacter.SelectSingleNode("powers/power[guid = \"" + objItem.Value.ToString() + "\"]");
                 if (objNode != null)
                 {
-                    Power objPower = new Power(this);
+                    AdeptPower objPower = new AdeptPower(this);
                     objPower.Load(objNode);
                     _lstPowers.Add(objPower);
                 }
@@ -3864,7 +3864,7 @@ namespace Chummer
 
             // <powers>
             objWriter.WriteStartElement("powers");
-            foreach (Power objPower in Powers)
+            foreach (AdeptPower objPower in Powers)
             {
                 objPower.Print(objWriter, objCulture, strLanguageToPrint);
             }
@@ -4529,7 +4529,7 @@ namespace Chummer
 
                     break;
                 case Improvement.ImprovementSource.Power:
-                    foreach (Power objPower in Powers)
+                    foreach (AdeptPower objPower in Powers)
                     {
                         if (objPower.InternalId == objImprovement.SourceName)
                         {
@@ -5695,7 +5695,7 @@ namespace Chummer
             {
                 if (i < Powers.Count)
                 {
-                    Power objToRemove = Powers[i];
+                    AdeptPower objToRemove = Powers[i];
                     if (objToRemove.FreeLevels == 0 && objToRemove.FreePoints == 0)
                     {
                         // Remove the Improvements created by the Power.
@@ -8802,7 +8802,7 @@ namespace Chummer
         /// <summary>
         /// Adept Powers.
         /// </summary>
-        public CachedBindingList<Power> Powers => _lstPowers;
+        public CachedBindingList<AdeptPower> Powers => _lstPowers;
 
         /// <summary>
         /// Technomancer Complex Forms.

@@ -9710,7 +9710,7 @@ namespace Chummer
                 intInitiationPoints += 2;
             }
             */
-            foreach (Power objPower in CharacterObject.Powers)
+            foreach (AdeptPower objPower in CharacterObject.Powers)
             {
                 intInitiationPoints += objPower.Enhancements.Count * 2;
                 /*
@@ -15152,7 +15152,7 @@ namespace Chummer
             // Find the associated Power
             string strPower = objXmlArt["power"]?.InnerText;
             bool blnPowerFound = false;
-            foreach (Power objPower in CharacterObject.Powers)
+            foreach (AdeptPower objPower in CharacterObject.Powers)
             {
                 if (objPower.Name == strPower)
                 {

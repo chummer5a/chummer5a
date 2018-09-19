@@ -1379,20 +1379,20 @@ namespace Chummer
                 case ImprovementType.AdeptPowerFreePoints:
                     {
                         // Get the power improved by this improvement
-                        Power objImprovedPower = _objCharacter.Powers.FirstOrDefault(objPower => objPower.Name == ImprovedName && objPower.Extra == UniqueName);
+                        AdeptPower objImprovedPower = _objCharacter.Powers.FirstOrDefault(objPower => objPower.Name == ImprovedName && objPower.Extra == UniqueName);
                         if (objImprovedPower != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objImprovedPower, nameof(Power.FreePoints));
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objImprovedPower, nameof(AdeptPower.FreePoints));
                         }
                     }
                     break;
                 case ImprovementType.AdeptPowerFreeLevels:
                     {
                         // Get the power improved by this improvement
-                        Power objImprovedPower = _objCharacter.Powers.FirstOrDefault(objPower => objPower.Name == ImprovedName && objPower.Extra == UniqueName);
+                        AdeptPower objImprovedPower = _objCharacter.Powers.FirstOrDefault(objPower => objPower.Name == ImprovedName && objPower.Extra == UniqueName);
                         if (objImprovedPower != null)
                         {
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objImprovedPower, nameof(Power.FreeLevels));
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objImprovedPower, nameof(AdeptPower.FreeLevels));
                         }
                     }
                     break;
@@ -3296,7 +3296,7 @@ namespace Chummer
                         }
                         break;
                     case Improvement.ImprovementType.MagiciansWayDiscount:
-                        foreach (Power objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
+                        foreach (AdeptPower objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
                         {
                             objLoopPower.RefreshDiscountedAdeptWay(objLoopPower.AdeptWayDiscountEnabled);
                         }
@@ -3593,7 +3593,7 @@ namespace Chummer
                         }
                         break;
                     case Improvement.ImprovementType.MagiciansWayDiscount:
-                        foreach (Power objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
+                        foreach (AdeptPower objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
                         {
                             objLoopPower.RefreshDiscountedAdeptWay(objLoopPower.AdeptWayDiscountEnabled);
                         }
@@ -3959,7 +3959,7 @@ namespace Chummer
                     case Improvement.ImprovementType.AdeptPowerFreeLevels:
                     case Improvement.ImprovementType.AdeptPowerFreePoints:
                         // Get the power improved by this improvement
-                        Power objImprovedPower = objCharacter.Powers.FirstOrDefault(objPower => objPower.Name == objImprovement.ImprovedName &&
+                        AdeptPower objImprovedPower = objCharacter.Powers.FirstOrDefault(objPower => objPower.Name == objImprovement.ImprovedName &&
                                         objPower.Extra == objImprovement.UniqueName);
                         if (objImprovedPower != null)
                         {
@@ -3971,11 +3971,11 @@ namespace Chummer
 
                             objImprovedPower.OnPropertyChanged(nameof(objImprovedPower.TotalRating));
                             objImprovedPower.OnPropertyChanged(objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels
-                                ? nameof(Power.FreeLevels) : nameof(Power.FreePoints));
+                                ? nameof(AdeptPower.FreeLevels) : nameof(AdeptPower.FreePoints));
                         }
                         break;
                     case Improvement.ImprovementType.MagiciansWayDiscount:
-                        foreach (Power objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
+                        foreach (AdeptPower objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
                         {
                             objLoopPower.RefreshDiscountedAdeptWay(objLoopPower.AdeptWayDiscountEnabled);
                         }
