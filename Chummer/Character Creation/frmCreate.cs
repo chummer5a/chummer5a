@@ -1128,24 +1128,81 @@ namespace Chummer
                         }
                     }
                     break;
+                case nameof(Character.AddBiowareEnabled):
+                    {
+                        if (!CharacterObject.AddBiowareEnabled)
+                        {
+                            bool blnDoRefresh = false;
+                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().DeepWhere(x => x.Children, x => x.SourceType == Improvement.ImprovementSource.Bioware && x.CanRemoveThroughImprovements))
+                            {
+                                objCyberware.DeleteCyberware();
+                                Cyberware objParent = objCyberware.Parent;
+                                if (objParent != null)
+                                    objParent.Children.Remove(objCyberware);
+                                else
+                                    CharacterObject.Cyberware.Remove(objCyberware);
+                                blnDoRefresh = true;
+                            }
+
+                            if (blnDoRefresh)
+                            {
+                                IsCharacterUpdateRequested = true;
+                            }
+                        }
+                    }
+                    break;
+                case nameof(Character.AddCyberwareEnabled):
+                    {
+                        if (!CharacterObject.AddCyberwareEnabled)
+                        {
+                            bool blnDoRefresh = false;
+                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().DeepWhere(x => x.Children, x => x.SourceType == Improvement.ImprovementSource.Cyberware && x.CanRemoveThroughImprovements))
+                            {
+                                objCyberware.DeleteCyberware();
+                                Cyberware objParent = objCyberware.Parent;
+                                if (objParent != null)
+                                    objParent.Children.Remove(objCyberware);
+                                else
+                                    CharacterObject.Cyberware.Remove(objCyberware);
+                                blnDoRefresh = true;
+                            }
+
+                            if (blnDoRefresh)
+                            {
+                                IsCharacterUpdateRequested = true;
+                            }
+                        }
+                    }
+                    break;
+                case nameof(Character.CyberwareDisabled):
+                    {
+                        if (CharacterObject.CyberwareDisabled)
+                        {
+                            bool blnDoRefresh = false;
+                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().Where(x => x.CanRemoveThroughImprovements))
+                            {
+                                objCyberware.DeleteCyberware();
+                                Cyberware objParent = objCyberware.Parent;
+                                if (objParent != null)
+                                    objParent.Children.Remove(objCyberware);
+                                else
+                                    CharacterObject.Cyberware.Remove(objCyberware);
+                                blnDoRefresh = true;
+                            }
+
+                            if (blnDoRefresh)
+                            {
+                                IsCharacterUpdateRequested = true;
+                            }
+                        }
+                    }
+                    break;
                 case nameof(Character.ExCon):
                     {
                         if (CharacterObject.ExCon)
                         {
                             bool blnDoRefresh = false;
-                            bool funcExConIneligibleWare(Cyberware x)
-                            {
-                                Cyberware objParent = x;
-                                bool blnNoParentIsModular = string.IsNullOrEmpty(objParent.PlugsIntoModularMount);
-                                while (objParent.Parent != null && blnNoParentIsModular)
-                                {
-                                    objParent = objParent.Parent;
-                                    blnNoParentIsModular = string.IsNullOrEmpty(objParent.PlugsIntoModularMount);
-                                }
-
-                                return blnNoParentIsModular;
-                            }
-                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().DeepWhere(x => x.Children, funcExConIneligibleWare))
+                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().DeepWhere(x => x.Children, x => x.CanRemoveThroughImprovements))
                             {
                                 char chrAvail = objCyberware.TotalAvailTuple(false).Suffix;
                                 if (chrAvail == 'R' || chrAvail == 'F')

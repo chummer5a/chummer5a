@@ -1316,37 +1316,165 @@ namespace Chummer
                         }
                     }
                     break;
+                case nameof(Character.AddBiowareEnabled):
+                    {
+                        if (!CharacterObject.AddBiowareEnabled)
+                        {
+                            string strBiowareDisabledSource = string.Empty;
+                            Improvement objDisablingImprovement = CharacterObject.Improvements.FirstOrDefault(x => x.ImproveType == Improvement.ImprovementType.DisableBioware && x.Enabled);
+                            if (objDisablingImprovement != null)
+                            {
+                                strBiowareDisabledSource = LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+                                                             CharacterObject.GetObjectName(objDisablingImprovement, GlobalOptions.Language) +
+                                                             ')' + LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                            }
+                            bool blnDoRefresh = false;
+                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().DeepWhere(x => x.Children, x => x.SourceType == Improvement.ImprovementSource.Bioware && x.CanRemoveThroughImprovements))
+                            {
+                                if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
+                                {
+                                    objCyberware.ChangeModularEquip(false);
+                                    objCyberware.Parent?.Children.Remove(objCyberware);
+                                    CharacterObject.Cyberware.Add(objCyberware);
+                                }
+                                else
+                                {
+                                    objCyberware.DeleteCyberware();
+
+                                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                    string strEntry = LanguageManager.GetString("String_ExpenseSoldBioware", GlobalOptions.Language);
+                                    objExpense.Create(0, strEntry + strBiowareDisabledSource + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+
+                                    Cyberware objParent = objCyberware.Parent;
+                                    if (objParent != null)
+                                        objParent.Children.Remove(objCyberware);
+                                    else
+                                        CharacterObject.Cyberware.Remove(objCyberware);
+
+                                    IncreaseEssenceHole((int) (objCyberware.CalculatedESS() * 100));
+                                }
+
+                                blnDoRefresh = true;
+                            }
+
+                            if (blnDoRefresh)
+                            {
+                                IsCharacterUpdateRequested = true;
+
+                                IsDirty = true;
+                            }
+                        }
+                        break;
+                    }
+                case nameof(Character.AddCyberwareEnabled):
+                    {
+                        if (!CharacterObject.AddCyberwareEnabled)
+                        {
+                            string strCyberwareDisabledSource = string.Empty;
+                            Improvement objDisablingImprovement = CharacterObject.Improvements.FirstOrDefault(x => x.ImproveType == Improvement.ImprovementType.DisableCyberware && x.Enabled);
+                            if (objDisablingImprovement != null)
+                            {
+                                strCyberwareDisabledSource = LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+                                                             CharacterObject.GetObjectName(objDisablingImprovement, GlobalOptions.Language) +
+                                                             ')' + LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                            }
+                            bool blnDoRefresh = false;
+                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().DeepWhere(x => x.Children, x => x.SourceType == Improvement.ImprovementSource.Cyberware && x.CanRemoveThroughImprovements))
+                            {
+                                if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
+                                {
+                                    objCyberware.ChangeModularEquip(false);
+                                    objCyberware.Parent?.Children.Remove(objCyberware);
+                                    CharacterObject.Cyberware.Add(objCyberware);
+                                }
+                                else
+                                {
+                                    objCyberware.DeleteCyberware();
+
+                                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                    string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberware", GlobalOptions.Language);
+                                    objExpense.Create(0, strEntry + strCyberwareDisabledSource + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+
+                                    Cyberware objParent = objCyberware.Parent;
+                                    if (objParent != null)
+                                        objParent.Children.Remove(objCyberware);
+                                    else
+                                        CharacterObject.Cyberware.Remove(objCyberware);
+
+                                    IncreaseEssenceHole((int) (objCyberware.CalculatedESS() * 100));
+                                }
+
+                                blnDoRefresh = true;
+                            }
+
+                            if (blnDoRefresh)
+                            {
+                                IsCharacterUpdateRequested = true;
+
+                                IsDirty = true;
+                            }
+                        }
+                        break;
+                    }
+                case nameof(Character.CyberwareDisabled):
+                    {
+                        if (CharacterObject.CyberwareDisabled)
+                        {
+                            string strDisabledSource = string.Empty;
+                            Improvement objDisablingImprovement = CharacterObject.Improvements.FirstOrDefault(x => x.ImproveType == Improvement.ImprovementType.SpecialTab &&
+                                                                                                                   x.ImprovedName == "Cyberware" && x.UniqueName == "disabletab" && x.Enabled);
+                            if (objDisablingImprovement != null)
+                            {
+                                strDisabledSource = LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+                                                             CharacterObject.GetObjectName(objDisablingImprovement, GlobalOptions.Language) +
+                                                             ')' + LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                            }
+                            bool blnDoRefresh = false;
+                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList())
+                            {
+                                objCyberware.DeleteCyberware();
+
+                                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                string strEntry = LanguageManager.GetString(objCyberware.SourceType == Improvement.ImprovementSource.Cyberware ? "String_ExpenseSoldCyberware" : "String_ExpenseSoldBioware", GlobalOptions.Language);
+                                objExpense.Create(0, strEntry + strDisabledSource + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+
+                                Cyberware objParent = objCyberware.Parent;
+                                if (objParent != null)
+                                    objParent.Children.Remove(objCyberware);
+                                else
+                                    CharacterObject.Cyberware.Remove(objCyberware);
+
+                                IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
+
+                                blnDoRefresh = true;
+                            }
+
+                            if (blnDoRefresh)
+                            {
+                                IsCharacterUpdateRequested = true;
+
+                                IsDirty = true;
+                            }
+                        }
+                        break;
+                    }
                 case nameof(Character.ExCon):
                     {
                         if (CharacterObject.ExCon)
                         {
                             bool blnDoRefresh = false;
-                            bool funcExConIneligibleWare(Cyberware x)
+                            string strExConString = string.Empty;
+                            Improvement objExConImprovement = CharacterObject.Improvements.FirstOrDefault(x => x.ImproveType == Improvement.ImprovementType.ExCon && x.Enabled);
+                            if (objExConImprovement != null)
                             {
-                                if (x.Grade.Name == "None")
-                                    return false;
-                                Cyberware objParent = x;
-                                bool blnNoParentIsModular = string.IsNullOrEmpty(objParent.PlugsIntoModularMount);
-                                while (objParent.Parent != null && blnNoParentIsModular)
-                                {
-                                    objParent = objParent.Parent;
-                                    blnNoParentIsModular = string.IsNullOrEmpty(objParent.PlugsIntoModularMount);
-                                }
-
-                                return blnNoParentIsModular;
+                                strExConString = LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' +
+                                                             CharacterObject.GetObjectName(objExConImprovement, GlobalOptions.Language) +
+                                                             ')' + LanguageManager.GetString("String_Space", GlobalOptions.Language);
                             }
-                            string strExConString = CharacterObject.Qualities.FirstOrDefault(x => x.Name == "Ex-Con")?.DisplayNameShort(GlobalOptions.Language);
-                            if (string.IsNullOrEmpty(strExConString))
-                            {
-                                XmlNode xmlErasedQuality = XmlManager.Load("qualities.xml").SelectSingleNode("chummer/qualities/quality[name = \"Ex-Con\"]");
-                                if (xmlErasedQuality != null)
-                                {
-                                    strExConString = xmlErasedQuality["translate"]?.InnerText ?? xmlErasedQuality["name"]?.InnerText ?? string.Empty;
-                                }
-                            }
-                            if (!string.IsNullOrEmpty(strExConString))
-                                strExConString = LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + strExConString + ')' + LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().DeepWhere(x => x.Children, funcExConIneligibleWare))
+                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().DeepWhere(x => x.Children, x => x.Grade.Name != "None" && x.CanRemoveThroughImprovements))
                             {
                                 char chrAvail = objCyberware.TotalAvailTuple(false).Suffix;
                                 if (chrAvail == 'R' || chrAvail == 'F')

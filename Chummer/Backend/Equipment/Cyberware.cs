@@ -1741,6 +1741,22 @@ namespace Chummer.Backend.Equipment
                 objChild.ChangeModularEquip(blnEquip);
         }
 
+        public bool CanRemoveThroughImprovements
+        {
+            get
+            {
+                Cyberware objParent = this;
+                bool blnNoParentIsModular = string.IsNullOrEmpty(objParent.PlugsIntoModularMount);
+                while (objParent.Parent != null && blnNoParentIsModular)
+                {
+                    objParent = objParent.Parent;
+                    blnNoParentIsModular = string.IsNullOrEmpty(objParent.PlugsIntoModularMount);
+                }
+
+                return blnNoParentIsModular;
+            }
+        }
+
         /// <summary>
         /// Comma-separated list of mount locations with which this 'ware is mutually exclusive.
         /// </summary>

@@ -72,6 +72,7 @@ Application Changes:
 - Properly implemented karma costs for Drake powers in career mode.
 - Fixed a bug where the checkbox for Working for the Man/People would appear as an empty checkbox when refunding an expense. Fixes #3016.
 - Fixed an issue where line breaks in notes would not show up properly in tooltips. Fixes #3019.
+- Fixed a bug where existing bioware on a character would not get removed if/when the character took Sensitive System or another quality that removed access to bioware. A similar bug was fixed for improvements that removed access to cyberware and/or 'ware entirely.
 
 Data Changes:
 
