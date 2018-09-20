@@ -33,7 +33,6 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            MoveControls();
         }
 
         private void frmReload_Load(object sender, EventArgs e)
@@ -139,15 +138,6 @@ namespace Chummer
         private void AcceptForm()
         {
             DialogResult = DialogResult.OK;
-        }
-
-        private void MoveControls()
-        {
-            int intWidth = Math.Max(lblAmmoLabel.Width, lblTypeLabel.Width);
-            cboAmmo.Left = lblAmmoLabel.Left + intWidth + 6;
-            cboAmmo.Width = Width - cboAmmo.Left - 19;
-            cboType.Left = lblTypeLabel.Left + intWidth + 6;
-            cboType.Width = Width - cboType.Left - 19;
         }
         #endregion
     }
