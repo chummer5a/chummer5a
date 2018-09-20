@@ -75,8 +75,7 @@ namespace Chummer
                 chkStack.Checked = false;
                 chkStack.Visible = false;
             }
-
-            MoveControls();
+            
             // Load the Gear information.
             _xmlBaseGearDataNode = XmlManager.Load("gear.xml").GetFastNavigator().SelectSingleNode("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseGearDataNode);
@@ -1135,11 +1134,6 @@ namespace Chummer
 
                 DialogResult = DialogResult.OK;
             }
-        }
-
-        private void MoveControls()
-        {
-            lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
         }
 
         private void OpenSourceFromLabel(object sender, EventArgs e)

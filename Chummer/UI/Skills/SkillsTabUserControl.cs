@@ -136,7 +136,10 @@ namespace Chummer.UI.Skills
             {
                 Location = new Point(265, 42),
             };
-            intNameLabelWidth = _controls.DefaultIfEmpty().Max(skill => skill.NameWidth);
+            foreach (SkillControl2 s in _controls)
+            {
+                intNameLabelWidth = Math.Max(intNameLabelWidth, s.NameWidth);
+            }
             foreach (SkillControl2 s in _controls)
             {
                 s.MoveControls(intNameLabelWidth);
@@ -146,7 +149,10 @@ namespace Chummer.UI.Skills
             lblActiveSp.Left = lblActiveSkills.Left + intNameLabelWidth + 6;
             if (!_objCharacter.Created)
             {
-                intRatingLabelWidth = _controls.DefaultIfEmpty().Max(skill => skill.NudSkillWidth);
+                foreach (SkillControl2 s in _controls)
+                {
+                    intRatingLabelWidth = Math.Max(intNameLabelWidth, s.NudSkillWidth);
+                }
                 lblActiveKarma.Left = lblActiveSp.Left + intRatingLabelWidth + 6;
             }
 
@@ -163,7 +169,10 @@ namespace Chummer.UI.Skills
             };
             if (_objCharacter.SkillsSection.KnowledgeSkills.Count > 0)
             {
-                intNameLabelWidth = _objCharacter.SkillsSection.KnowledgeSkills.DefaultIfEmpty().Max(skill => skill.DisplayName.Length);
+                foreach (KnowledgeSkill objLoopSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+                {
+                    intNameLabelWidth = Math.Max(intNameLabelWidth, objLoopSkill.DisplayName.Length);
+                }
                 foreach (KnowledgeSkillControl k in _knoSkills.Controls[0].Controls)
                 {
                     k.MoveControls(intNameLabelWidth);

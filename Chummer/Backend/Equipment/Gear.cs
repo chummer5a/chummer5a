@@ -67,7 +67,7 @@ namespace Chummer.Backend.Equipment
         private Guid _guiWeaponID = Guid.Empty;
         private readonly TaggedObservableCollection<Gear> _lstChildren = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
-        private Location _objLocation = null;
+        private Location _objLocation;
         private readonly Character _objCharacter;
         private int _intChildCostMultiplier = 1;
         private int _intChildAvailModifier;
@@ -172,8 +172,7 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetInt32FieldQuickly("childcostmultiplier", ref _intChildCostMultiplier);
             objXmlGear.TryGetInt32FieldQuickly("childavailmodifier", ref _intChildAvailModifier);
             objXmlGear.TryGetBoolFieldQuickly("allowrename", ref _blnAllowRename);
-
-            SourceDetail = new SourceString(_strSource, _strPage);
+            
             // Check for a Custom name
             if (_strName == "Custom Item")
             {
@@ -306,8 +305,8 @@ namespace Chummer.Backend.Equipment
                     {
                         string strLoopID = objXmlAddWeapon.InnerText;
                         XmlNode objXmlWeapon = strLoopID.IsGuid()
-                            ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
-                            : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
+                            ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + "]")
+                            : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + "]");
 
                         if (objXmlWeapon != null)
                         {
@@ -411,7 +410,7 @@ namespace Chummer.Backend.Equipment
                             List<ListItem> lstGears = new List<ListItem>();
                             foreach (XmlNode objChoiceNode in objXmlNodeList)
                             {
-                                XmlNode objXmlLoopGear = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objChoiceNode["name"]?.InnerText + "\" and category = \"" + objChoiceNode["category"]?.InnerText + "\"]");
+                                XmlNode objXmlLoopGear = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objChoiceNode["name"]?.InnerText.CleanXPath() + " and category = " + objChoiceNode["category"]?.InnerText.CleanXPath() + "]");
                                 if (objXmlLoopGear == null)
                                     continue;
                                 XmlNode xmlTestNode = objXmlLoopGear.SelectSingleNode("forbidden/geardetails");
@@ -473,7 +472,7 @@ namespace Chummer.Backend.Equipment
                                 continue;
                             }
 
-                            XmlNode objXmlChosenGear = objXmlChooseGearNode.SelectSingleNode("usegear[name = \"" + frmPickItem.SelectedItem + "\"]");
+                            XmlNode objXmlChosenGear = objXmlChooseGearNode.SelectSingleNode("usegear[name = " + frmPickItem.SelectedItem.CleanXPath() + "]");
 
                             if (objXmlChosenGear == null)
                             {
@@ -501,7 +500,7 @@ namespace Chummer.Backend.Equipment
         {
             XmlNode xmlChildName = xmlChildNode["name"];
             XmlAttributeCollection xmlChildNameAttributes = xmlChildName?.Attributes;
-            XmlNode xmlChildDataNode = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + xmlChildName?.InnerText + "\" and category = \"" + xmlChildNode["category"]?.InnerText + "\"]");
+            XmlNode xmlChildDataNode = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + xmlChildName?.InnerText.CleanXPath() + " and category = " + xmlChildNode["category"]?.InnerText.CleanXPath() + "]");
             if (xmlChildDataNode == null)
                 return;
             int intChildRating = Convert.ToInt32(xmlChildNode["rating"]?.InnerText);
@@ -538,7 +537,7 @@ namespace Chummer.Backend.Equipment
         /// Create a gear from an XmlNode attached to another object type.
         /// </summary>
         /// <param name="xmlGearsDocument">XmlDocument containing information about all possible gear items.</param>
-        /// <param name="xmlChildGearNode">XmlNode containing information about the child gear that needs to be created.</param>
+        /// <param name="xmlGearNode">XmlNode containing information about the child gear that needs to be created.</param>
         /// <param name="lstWeapons">List of weapons that this (and other children) gear creates.</param>
         /// <param name="blnAddImprovements">Whether to create improvements for the gear or not (for Selection Windows, set to False).</param>
         /// <returns></returns>
@@ -553,11 +552,11 @@ namespace Chummer.Backend.Equipment
             string strForceValue = lstGearAttributes?["select"]?.InnerText ?? string.Empty;
             if (xmlGearNode["name"] != null)
             {
-                xmlGearDataNode = xmlGearsDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + xmlGearNode["name"].InnerText + "\"]");
-                XmlNode xmlInnerGears = xmlGearNode["gears"];
-                if (xmlInnerGears != null)
+                xmlGearDataNode = xmlGearsDocument.SelectSingleNode("/chummer/gears/gear[name = " + xmlGearNode["name"].InnerText.CleanXPath() + "]");
+                XmlNodeList xmlInnerGears = xmlGearNode.SelectNodes("gears/gear");
+                if (xmlInnerGears?.Count > 0)
                 {
-                    foreach (XmlNode xmlChildGearNode in xmlInnerGears.SelectNodes("gear"))
+                    foreach (XmlNode xmlChildGearNode in xmlInnerGears)
                     {
                         Gear objChildGear = new Gear(_objCharacter);
                         if (objChildGear.CreateFromNode(xmlGearsDocument, xmlChildGearNode, lstWeapons, blnAddImprovements))
@@ -573,7 +572,7 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
-                xmlGearDataNode = xmlGearsDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + xmlGearNode.InnerText + "\"]");
+                xmlGearDataNode = xmlGearsDocument.SelectSingleNode("/chummer/gears/gear[name = " + xmlGearNode.InnerText.CleanXPath() + "]");
             }
 
             if (xmlGearDataNode != null)
@@ -757,7 +756,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="blnCopy">Whether or not we are loading a copy of an existing gear.</param>
-        public void Load(XmlNode objNode, bool blnCopy = false, object objForParent = null)
+        public void Load(XmlNode objNode, bool blnCopy = false)
         {
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             if (objNode.TryGetStringFieldQuickly("id", ref _SourceGuid))
@@ -801,7 +800,6 @@ namespace Chummer.Backend.Equipment
             _nodWeaponBonus = objNode["weaponbonus"];
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
-            SourceDetail = new SourceString(_strSource, _strPage);
             bool blnNeedCommlinkLegacyShim = !objNode.TryGetStringFieldQuickly("canformpersona", ref _strCanFormPersona);
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
                 GetNode()?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
@@ -860,9 +858,10 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (objNode["location"] != null)
+            string strLocation = objNode["location"]?.InnerText;
+            if (!string.IsNullOrEmpty(strLocation))
             {
-                if (Guid.TryParse(objNode["location"].InnerText, out Guid temp))
+                if (Guid.TryParse(strLocation, out Guid temp))
                 {
                     // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
                     _objLocation =
@@ -874,7 +873,7 @@ namespace Chummer.Backend.Equipment
                     //Legacy. Location is a string. 
                     _objLocation =
                         CharacterObject.GearLocations.FirstOrDefault(location =>
-                            location.Name == objNode["location"].InnerText);
+                            location.Name == strLocation);
                 }
                 _objLocation?.Children.Add(this);
             }
@@ -893,7 +892,7 @@ namespace Chummer.Backend.Equipment
                     if (intResult == -1)
                     {
                         XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
-                        XmlNode gear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + _strName + "\"]");
+                        XmlNode gear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = " + _strName.CleanXPath() + "]");
                         if (gear != null)
                         {
                             Equipped = false;
@@ -1943,11 +1942,12 @@ namespace Chummer.Backend.Equipment
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 XmlDocument objDoc = XmlManager.Load("gear.xml", strLanguage);
-                _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/gears/gear[(id = \"" + _SourceGuid + "\") or (name = \"" + Name + "\" and category = \"" + Category + "\")]");
+                string strNameWithQuotes = Name.CleanXPath();
+                _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/gears/gear[(id = \"" + _SourceGuid + "\") or (name = " + strNameWithQuotes + " and category = \"" + Category + "\")]");
                 if (_objCachedMyXmlNode == null)
                 {
-                    _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/gears/gear[(name = \"" + Name + "\")]") ??
-                                          objDoc.SelectSingleNode("/chummer/gears/gear[contains(name, \"" + Name + "\")]");
+                    _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/gears/gear[(name = " + strNameWithQuotes + ")]") ??
+                                          objDoc.SelectSingleNode("/chummer/gears/gear[contains(name, " + strNameWithQuotes + ")]");
                     _objCachedMyXmlNode?.TryGetStringFieldQuickly("id", ref _SourceGuid);
                 }
                 _strCachedXmlNodeLanguage = strLanguage;
@@ -2917,18 +2917,23 @@ namespace Chummer.Backend.Equipment
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (SourceDetail != null)
+            if (SourceDetail != null && SourceDetail.Language == GlobalOptions.Language)
             {
-                SourceDetail.SetControl(sourceControl);
-            }
-            else if (!string.IsNullOrWhiteSpace(_strPage) && !string.IsNullOrWhiteSpace(_strSource))
-            {
-                SourceDetail = new SourceString(_strSource, _strPage);
                 SourceDetail.SetControl(sourceControl);
             }
             else
             {
-                Utils.BreakIfDebug();
+                string strSource = Source;
+                string strPage = DisplayPage(GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                {
+                    SourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    SourceDetail.SetControl(sourceControl);
+                }
+                else
+                {
+                    Utils.BreakIfDebug();
+                }
             }
         }
 

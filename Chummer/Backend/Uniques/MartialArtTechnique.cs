@@ -57,8 +57,7 @@ namespace Chummer
                     xmlTechniqueDataNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             xmlTechniqueDataNode.TryGetStringFieldQuickly("source", ref _strSource);
             xmlTechniqueDataNode.TryGetStringFieldQuickly("page", ref _strPage);
-
-            SourceDetail = new SourceString(_strSource, _strPage);
+            
             if (xmlTechniqueDataNode["bonus"] == null) return;
             if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtTechnique, _guiID.ToString("D"), xmlTechniqueDataNode["bonus"], false, 1, DisplayName(GlobalOptions.Language)))
             {
@@ -104,7 +103,6 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -258,18 +256,23 @@ namespace Chummer
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (SourceDetail != null)
+            if (SourceDetail != null && SourceDetail.Language == GlobalOptions.Language)
             {
-                SourceDetail.SetControl(sourceControl);
-            }
-            else if (!string.IsNullOrWhiteSpace(_strPage) && !string.IsNullOrWhiteSpace(_strSource))
-            {
-                SourceDetail = new SourceString(_strSource, _strPage);
                 SourceDetail.SetControl(sourceControl);
             }
             else
             {
-                Utils.BreakIfDebug();
+                string strSource = Source;
+                string strPage = Page(GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                {
+                    SourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    SourceDetail.SetControl(sourceControl);
+                }
+                else
+                {
+                    Utils.BreakIfDebug();
+                }
             }
         }
     }

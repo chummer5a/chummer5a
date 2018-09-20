@@ -167,7 +167,7 @@ namespace Chummer.Backend.Equipment
                             objXmlArmorGear.TryGetInt32FieldQuickly("rating", ref intRating);
                             objXmlArmorGear.TryGetStringFieldQuickly("select", ref strForceValue);
 
-                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlArmorGear.InnerText + "\"]");
+                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlArmorGear.InnerText.CleanXPath() + "]");
                             Gear objGear = new Gear(_objCharacter);
 
                             objGear.Create(objXmlGear, intRating, lstWeapons, strForceValue, !blnSkipSelectForms);
@@ -204,7 +204,6 @@ namespace Chummer.Backend.Equipment
                             Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
                         }
             }
-            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -302,8 +301,7 @@ namespace Chummer.Backend.Equipment
                             _lstGear.Add(objGear);
                         }
             }
-
-            SourceDetail = new SourceString(_strSource, _strPage);
+            
             if (!blnCopy) return;
             if (!string.IsNullOrEmpty(Extra))
                 ImprovementManager.ForcedValue = Extra;
@@ -1056,18 +1054,23 @@ namespace Chummer.Backend.Equipment
         /// <param name="sourceControl"></param>
         public void SetSourceDetail(Control sourceControl)
         {
-            if (SourceDetail != null)
+            if (SourceDetail != null && SourceDetail.Language == GlobalOptions.Language)
             {
-                SourceDetail.SetControl(sourceControl);
-            }
-            else if (!string.IsNullOrWhiteSpace(_strPage) && !string.IsNullOrWhiteSpace(_strSource))
-            {
-                SourceDetail = new SourceString(_strSource, _strPage);
                 SourceDetail.SetControl(sourceControl);
             }
             else
             {
-                Utils.BreakIfDebug();
+                string strSource = Source;
+                string strPage = DisplayPage(GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                {
+                    SourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    SourceDetail.SetControl(sourceControl);
+                }
+                else
+                {
+                    Utils.BreakIfDebug();
+                }
             }
         }
     }

@@ -84,7 +84,7 @@ namespace Chummer
         private int _intCachedContactPoints = int.MinValue;
         private int _intContactPointsUsed;
         private int _intCachedRedlinerBonus = int.MinValue;
-        private int _intCurrentCounterspellingDice = 0;
+        private int _intCurrentCounterspellingDice;
 
         // General character info.
         private string _strName = string.Empty;
@@ -1352,10 +1352,7 @@ namespace Chummer
                 objWriter.WriteElementString("magsplitmagician", _intMAGMagician.ToString());
             }
 
-            if (_objTradition != null)
-            {
-                _objTradition.Save(objWriter);
-            }
+            _objTradition?.Save(objWriter);
 
             // Condition Monitor Progress.
             // <physicalcmfilled />
@@ -1762,9 +1759,11 @@ namespace Chummer
         /// <summary>
         /// Load the Character from an XML file.
         /// </summary>
-        public bool Load()
+        /// <param name="frmLoadingForm">Instancs of frmLoading to use to update with loading progress. frmLoading::PerformStep() is called 35 times within this method, so plan accordingly.</param>
+        public bool Load(frmLoading frmLoadingForm = null)
         {
             Timekeeper.Start("load_xml");
+            frmLoadingForm?.PerformStep("XML");
             XmlDocument objXmlDocument = new XmlDocument();
             if (!File.Exists(_strFileName))
                 return false;
@@ -1787,6 +1786,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_xml");
             Timekeeper.Start("load_char_misc");
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Settings"));
             XmlNode objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
             XPathNavigator xmlCharacterNavigator = objXmlDocument.GetFastNavigator().SelectSingleNode("/character");
 
@@ -2032,8 +2032,10 @@ namespace Chummer
             }
             else
             {
-                foreach (XmlNode xmlNode in xmlGameplayOption.SelectNodes("bannedwaregrades/grade"))
-                    BannedWareGrades.Add(xmlNode.InnerText);
+                XmlNodeList xmlBannedGradesList = xmlGameplayOption?.SelectNodes("bannedwaregrades/grade");
+                if (xmlBannedGradesList?.Count > 0)
+                    foreach (XmlNode xmlNode in xmlBannedGradesList)
+                        BannedWareGrades.Add(xmlNode.InnerText);
             }
 
             string strSkill1 = string.Empty;
@@ -2095,6 +2097,7 @@ namespace Chummer
             xmlCharacterNavigator.TryGetStringFieldQuickly("groupnotes", ref _strGroupNotes);
             Timekeeper.Finish("load_char_misc");
             Timekeeper.Start("load_char_mentorspirit");
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_MentorSpirit"));
             // Improvements.
             XmlNodeList objXmlNodeList = objXmlCharacter.SelectNodes("mentorspirits/mentorspirit");
             foreach (XmlNode objXmlMentor in objXmlNodeList)
@@ -2107,6 +2110,7 @@ namespace Chummer
             Timekeeper.Finish("load_char_mentorspirit");
             _lstInternalIdsNeedingReapplyImprovements.Clear();
             Timekeeper.Start("load_char_imp");
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Improvements"));
             // Improvements.
             objXmlNodeList = objXmlCharacter.SelectNodes("improvements/improvement");
             string strCharacterInnerXml = objXmlCharacter.InnerXml;
@@ -2159,7 +2163,7 @@ namespace Chummer
             Timekeeper.Finish("load_char_imp");
 
             Timekeeper.Start("load_char_contacts");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Contacts"));
             // Contacts.
             foreach (XPathNavigator xmlContact in xmlCharacterNavigator.Select("contacts/contact"))
             {
@@ -2170,6 +2174,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_contacts");
             Timekeeper.Start("load_char_quality");
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Qualities"));
             // Qualities
             Quality objLivingPersonaQuality = null;
             objXmlNodeList = objXmlCharacter.SelectNodes("qualities/quality");
@@ -2335,6 +2340,7 @@ namespace Chummer
             if (blnHasOldQualities)
                 ConvertOldQualities(objXmlNodeList);
             Timekeeper.Finish("load_char_quality");
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Attributes"));
             AttributeSection.Load(objXmlCharacter);
             RefreshAttributeBindings();
             Timekeeper.Start("load_char_misc2");
@@ -2346,6 +2352,7 @@ namespace Chummer
                 xmlCharacterNavigator.TryGetInt32FieldQuickly("magsplitmagician", ref _intMAGMagician);
             }
 
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Tradition"));
             // Attempt to load in the character's tradition (or equivalent for Technomancers)
             string strTemp = string.Empty;
             if (xmlCharacterNavigator.TryGetStringFieldQuickly("stream", ref strTemp) && !string.IsNullOrEmpty(strTemp) && RESEnabled)
@@ -2429,7 +2436,7 @@ namespace Chummer
             xmlCharacterNavigator.TryGetInt32FieldQuickly("stuncmfilled", ref _intStunCMFilled);
             Timekeeper.Finish("load_char_misc2");
             Timekeeper.Start("load_char_skills"); //slightly messy
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Skills"));
             _oldSkillsBackup = objXmlCharacter.SelectSingleNode("skills")?.Clone();
             _oldSkillGroupBackup = objXmlCharacter.SelectSingleNode("skillgroups")?.Clone();
 
@@ -2444,26 +2451,26 @@ namespace Chummer
             }
 
             Timekeeper.Start("load_char_loc");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Locations"));
             // Locations.
             XmlNodeList objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/gearlocation");
             foreach (XmlNode objXmlLocation in objXmlLocationList)
             {
-                Location objLocation = new Location(this, _lstGearLocations, string.Empty, false);
+                Location objLocation = new Location(this, _lstGearLocations);
                 objLocation.Load(objXmlLocation);
             }
 
             objXmlLocationList = objXmlCharacter.SelectNodes("locations/location");
             foreach (XmlNode objXmlLocation in objXmlLocationList)
             {
-                Location objLocation = new Location(this, _lstGearLocations, string.Empty, false);
+                Location objLocation = new Location(this, _lstGearLocations);
                 objLocation.Load(objXmlLocation);
             }
 
             objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/location");
             foreach (XmlNode objXmlLocation in objXmlLocationList)
             {
-                Location objLocation = new Location(this, _lstGearLocations, string.Empty, false);
+                Location objLocation = new Location(this, _lstGearLocations);
                 objLocation.Load(objXmlLocation);
             }
 
@@ -2474,21 +2481,21 @@ namespace Chummer
             objXmlLocationList = objXmlCharacter.SelectNodes("armorbundles/armorbundle");
             foreach (XmlNode objXmlLocation in objXmlLocationList)
             {
-                Location objLocation = new Location(this, _lstArmorLocations, string.Empty, false);
+                Location objLocation = new Location(this, _lstArmorLocations);
                 objLocation.Load(objXmlLocation);
             }
 
             objXmlLocationList = objXmlCharacter.SelectNodes("armorlocations/armorlocation");
             foreach (XmlNode objXmlLocation in objXmlLocationList)
             {
-                Location objLocation = new Location(this, _lstArmorLocations, string.Empty, false);
+                Location objLocation = new Location(this, _lstArmorLocations);
                 objLocation.Load(objXmlLocation);
             }
 
             objXmlLocationList = objXmlCharacter.SelectNodes("armorlocations/location");
             foreach (XmlNode objXmlLocation in objXmlLocationList)
             {
-                Location objLocation = new Location(this, _lstArmorLocations, string.Empty, false);
+                Location objLocation = new Location(this, _lstArmorLocations);
                 objLocation.Load(objXmlLocation);
             }
 
@@ -2499,14 +2506,14 @@ namespace Chummer
             XmlNodeList objXmlVehicleLocationList = objXmlCharacter.SelectNodes("vehiclelocations/vehiclelocation");
             foreach (XmlNode objXmlLocation in objXmlVehicleLocationList)
             {
-                Location objLocation = new Location(this, _lstVehicleLocations, string.Empty, false);
+                Location objLocation = new Location(this, _lstVehicleLocations);
                 objLocation.Load(objXmlLocation);
             }
 
             objXmlVehicleLocationList = objXmlCharacter.SelectNodes("vehiclelocations/location");
             foreach (XmlNode objXmlLocation in objXmlVehicleLocationList)
             {
-                Location objLocation = new Location(this, _lstVehicleLocations, string.Empty, false);
+                Location objLocation = new Location(this, _lstVehicleLocations);
                 objLocation.Load(objXmlLocation);
             }
 
@@ -2517,14 +2524,14 @@ namespace Chummer
             XmlNodeList objXmlWeaponLocationList = objXmlCharacter.SelectNodes("weaponlocations/weaponlocation");
             foreach (XmlNode objXmlLocation in objXmlWeaponLocationList)
             {
-                Location objLocation = new Location(this, _lstWeaponLocations, string.Empty, false);
+                Location objLocation = new Location(this, _lstWeaponLocations);
                 objLocation.Load(objXmlLocation);
             }
 
             objXmlWeaponLocationList = objXmlCharacter.SelectNodes("weaponlocations/location");
             foreach (XmlNode objXmlLocation in objXmlWeaponLocationList)
             {
-                Location objLocation = new Location(this, _lstWeaponLocations, string.Empty, false);
+                Location objLocation = new Location(this, _lstWeaponLocations);
                 objLocation.Load(objXmlLocation);
             }
 
@@ -2544,6 +2551,7 @@ namespace Chummer
             Timekeeper.Finish("load_char_sfoci");
 
             Timekeeper.Start("load_char_armor");
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Armor"));
             // Armor.
             objXmlNodeList = objXmlCharacter.SelectNodes("armors/armor");
             foreach (XmlNode objXmlArmor in objXmlNodeList)
@@ -2555,7 +2563,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_armor");
             Timekeeper.Start("load_char_weapons");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Weapons"));
             // Weapons.
             objXmlNodeList = objXmlCharacter.SelectNodes("weapons/weapon");
             foreach (XmlNode objXmlWeapon in objXmlNodeList)
@@ -2567,8 +2575,8 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_weapons");
             Timekeeper.Start("load_char_drugs");
-
-            // Weapons.
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Drugs"));
+            // Drugs.
             objXmlNodeList = objXmlDocument.SelectNodes("/character/drugs/drug");
             foreach (XmlNode objXmlDrug in objXmlNodeList)
             {
@@ -2579,7 +2587,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_drugs");
             Timekeeper.Start("load_char_ware");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Cyberware"));
             // Dictionary for instantly re-applying outdated improvements for 'ware with pair bonuses in legacy shim
             Dictionary<Cyberware, int> dicPairableCyberwares = new Dictionary<Cyberware, int>();
             // Cyberware/Bioware.
@@ -2756,7 +2764,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_ware");
             Timekeeper.Start("load_char_spells");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SelectedSpells"));
             // Spells.
             objXmlNodeList = objXmlCharacter.SelectNodes("spells/spell");
             foreach (XmlNode objXmlSpell in objXmlNodeList)
@@ -2768,7 +2776,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_spells");
             Timekeeper.Start("load_char_powers");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Adept"));
             // Powers.
             bool blnDoEnhancedAccuracyRefresh = LastSavedVersion <= new Version("5.198.26");
             List<ListItem> lstPowerOrder = new List<ListItem>();
@@ -2810,7 +2818,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_powers");
             Timekeeper.Start("load_char_spirits");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Spirits"));
             // Spirits/Sprites.
             foreach (XPathNavigator xmlSpirit in xmlCharacterNavigator.Select("spirits/spirit"))
             {
@@ -2821,7 +2829,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_spirits");
             Timekeeper.Start("load_char_complex");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_ComplexForms"));
             // Compex Forms/Technomancer Programs.
             objXmlNodeList = objXmlCharacter.SelectNodes("complexforms/complexform");
             foreach (XmlNode objXmlComplexForm in objXmlNodeList)
@@ -2833,7 +2841,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_complex");
             Timekeeper.Start("load_char_aiprogram");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_AdvancedPrograms"));
             // Compex Forms/Technomancer Programs.
             objXmlNodeList = objXmlCharacter.SelectNodes("aiprograms/aiprogram");
             foreach (XmlNode objXmlProgram in objXmlNodeList)
@@ -2845,7 +2853,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_aiprogram");
             Timekeeper.Start("load_char_marts");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_MartialArts"));
             // Martial Arts.
             objXmlNodeList = objXmlCharacter.SelectNodes("martialarts/martialart");
             foreach (XmlNode objXmlArt in objXmlNodeList)
@@ -2871,7 +2879,7 @@ namespace Chummer
             Timekeeper.Finish("load_char_mam");
             #endif
             Timekeeper.Start("load_char_mod");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Limits"));
             // Limit Modifiers.
             objXmlNodeList = objXmlCharacter.SelectNodes("limitmodifiers/limitmodifier");
             foreach (XmlNode objXmlLimit in objXmlNodeList)
@@ -2883,7 +2891,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_mod");
             Timekeeper.Start("load_char_lifestyle");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_SelectPACKSKit_Lifestyles"));
             // Lifestyles.
             objXmlNodeList = objXmlCharacter.SelectNodes("lifestyles/lifestyle");
             foreach (XmlNode objXmlLifestyle in objXmlNodeList)
@@ -2895,7 +2903,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_lifestyle");
             Timekeeper.Start("load_char_gear");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Gear"));
             // <gears>
             objXmlNodeList = objXmlCharacter.SelectNodes("gears/gear");
             foreach (XmlNode objXmlGear in objXmlNodeList)
@@ -2965,7 +2973,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_gear");
             Timekeeper.Start("load_char_car");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Vehicles"));
             // Vehicles.
             objXmlNodeList = objXmlCharacter.SelectNodes("vehicles/vehicle");
             foreach (XmlNode objXmlVehicle in objXmlNodeList)
@@ -2977,6 +2985,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_car");
             Timekeeper.Start("load_char_mmagic");
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Metamagics"));
             // Metamagics/Echoes.
             objXmlNodeList = objXmlCharacter.SelectNodes("metamagics/metamagic");
             foreach (XmlNode objXmlMetamagic in objXmlNodeList)
@@ -2988,7 +2997,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_mmagic");
             Timekeeper.Start("load_char_arts");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Arts"));
             // Arts
             objXmlNodeList = objXmlCharacter.SelectNodes("arts/art");
             foreach (XmlNode objXmlArt in objXmlNodeList)
@@ -3000,7 +3009,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_arts");
             Timekeeper.Start("load_char_ench");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Enhancements"));
             // Enhancements
             objXmlNodeList = objXmlCharacter.SelectNodes("enhancements/enhancement");
             foreach (XmlNode objXmlEnhancement in objXmlNodeList)
@@ -3012,7 +3021,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_ench");
             Timekeeper.Start("load_char_cpow");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Critter"));
             // Critter Powers.
             objXmlNodeList = objXmlCharacter.SelectNodes("critterpowers/critterpower");
             foreach (XmlNode objXmlPower in objXmlNodeList)
@@ -3024,7 +3033,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_cpow");
             Timekeeper.Start("load_char_foci");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SummaryFoci"));
             // Foci.
             objXmlNodeList = objXmlCharacter.SelectNodes("foci/focus");
             foreach (XmlNode objXmlFocus in objXmlNodeList)
@@ -3036,7 +3045,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_foci");
             Timekeeper.Start("load_char_init");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SummaryInitiation"));
             // Initiation Grades.
             objXmlNodeList = objXmlCharacter.SelectNodes("initiationgrades/initiationgrade");
             foreach (XmlNode objXmlGrade in objXmlNodeList)
@@ -3045,8 +3054,9 @@ namespace Chummer
                 objGrade.Load(objXmlGrade);
                 _lstInitiationGrades.Add(objGrade);
             }
-
+            
             Timekeeper.Finish("load_char_init");
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Expenses"));
             // While expenses are to be saved in create mode due to starting nuyen and starting karma being logged as expense log entries,
             // they shouldn't get loaded in create mode because they shouldn't be there.
             if (Created)
@@ -3076,7 +3086,7 @@ namespace Chummer
             }
 #endif
             Timekeeper.Start("load_char_igroup");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Improvements"));
             // Improvement Groups.
             XmlNodeList objXmlGroupList = objXmlCharacter.SelectNodes("improvementgroups/improvementgroup");
             foreach (XmlNode objXmlGroup in objXmlGroupList)
@@ -3086,7 +3096,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_igroup");
             Timekeeper.Start("load_char_calendar");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Calendar"));
             // Calendar.
             XmlNodeList objXmlWeekList = objXmlCharacter.SelectNodes("calendar/week");
             foreach (XmlNode objXmlWeek in objXmlWeekList)
@@ -3098,7 +3108,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_calendar");
             Timekeeper.Start("load_char_unarmed");
-
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_LegacyFixes"));
             // Look for the unarmed attack
             bool blnFoundUnarmed = false;
             foreach (Weapon objWeapon in _lstWeapons)
@@ -3225,6 +3235,7 @@ namespace Chummer
 
             // Refresh certain improvements
             Timekeeper.Start("load_char_improvementrefreshers");
+            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_GeneratedImprovements"));
             IsLoading = false;
             // Refresh permanent attribute changes due to essence loss
             RefreshEssenceLossImprovements();
@@ -4003,6 +4014,16 @@ namespace Chummer
             // </gears>
             objWriter.WriteEndElement();
 
+            // <drugs>
+            objWriter.WriteStartElement("drugs");
+            foreach (Drug objDrug in Drugs)
+            {
+                objDrug.Print(objWriter, objCulture, strLanguageToPrint);
+            }
+
+            // </drugs>
+            objWriter.WriteEndElement();
+            
             // <vehicles>
             objWriter.WriteStartElement("vehicles");
             foreach (Vehicle objVehicle in Vehicles)
@@ -5316,7 +5337,7 @@ namespace Chummer
         /// </summary>
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
-        /// <param name="objGearNode">Node of gear to move.</param>
+        /// <param name="nodeToMove">Node of gear to move.</param>
         public void MoveGearNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove)
         {
             if (nodeToMove?.Tag is Gear objGear)
@@ -5495,7 +5516,7 @@ namespace Chummer
         /// </summary>
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
-        /// <param name="nodVehicleNode">Node of vehicle to move.</param>
+        /// <param name="nodeToMove">Node of vehicle to move.</param>
         public void MoveVehicleNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove)
         {
             if (nodeToMove?.Tag is Vehicle objVehicle)
@@ -5599,7 +5620,7 @@ namespace Chummer
                 while (objNewParent.Level > 0)
                     objNewParent = objNewParent.Parent;
 
-                objImprovement.CustomGroup = objNewParent?.Tag.ToString() == "Node_SelectedImprovements"
+                objImprovement.CustomGroup = objNewParent.Tag.ToString() == "Node_SelectedImprovements"
                     ? string.Empty
                     : objNewParent.Text;
                 Improvements[Improvements.IndexOf(objImprovement)] = objImprovement;
@@ -9853,10 +9874,7 @@ namespace Chummer
         /// <summary>
         /// Custom Drugs created by the character.
         /// </summary>
-        public TaggedObservableCollection<Drug> Drugs
-        {
-            get { return _lstDrugs; }
-        }
+        public TaggedObservableCollection<Drug> Drugs => _lstDrugs;
 
         #endregion
 
@@ -11726,7 +11744,7 @@ namespace Chummer
 
                 return _intCachedTrustFund = Improvements
                     .Where(x => x.ImproveType == Improvement.ImprovementType.TrustFund && x.Enabled).DefaultIfEmpty()
-                    .Max(x => x != null ? x.Value : 0);
+                    .Max(x => x?.Value ?? 0);
             }
         }
 

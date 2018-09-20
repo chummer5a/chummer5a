@@ -44,15 +44,35 @@ namespace Chummer.Backend.Skills
         /// <returns></returns>
         public override int CurrentKarmaCost => Math.Max(RangeCost(Base + FreeKarma, TotalBaseRating), 0);
 
-        public override bool IsExoticSkill => true;
-
-        /// <summary>
-        /// Called during save to allow derived classes to save additional infomation required to rebuild state
-        /// </summary>
-        /// <param name="writer"></param>
-        protected override void SaveExtendedData(XmlTextWriter writer)
+        public override void WriteTo(XmlTextWriter objWriter)
         {
-            writer.WriteElementString("specific", _strSpecific);
+            objWriter.WriteStartElement("skill");
+            objWriter.WriteElementString("guid", Id.ToString("D"));
+            objWriter.WriteElementString("suid", SkillId.ToString("D"));
+            objWriter.WriteElementString("isknowledge", bool.FalseString);
+            objWriter.WriteElementString("skillcategory", SkillCategory);
+            objWriter.WriteElementString("karma", KarmaPoints.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("base", BasePoints.ToString(GlobalOptions.InvariantCultureInfo)); //this could acctually be saved in karma too during career
+            objWriter.WriteElementString("notes", Notes);
+            if (!CharacterObject.Created)
+            {
+                objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString());
+            }
+
+            if (Specializations.Count != 0)
+            {
+                objWriter.WriteStartElement("specs");
+                foreach (SkillSpecialization objSpecialization in Specializations)
+                {
+                    objSpecialization.Save(objWriter);
+                }
+                objWriter.WriteEndElement();
+            }
+
+            objWriter.WriteElementString("specific", _strSpecific);
+
+            objWriter.WriteEndElement();
+
         }
 
         public string Specific

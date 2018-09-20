@@ -69,7 +69,7 @@ namespace Chummer.Backend.Equipment
         private readonly TaggedObservableCollection<Weapon> _lstWeapons = new TaggedObservableCollection<Weapon>();
         private readonly TaggedObservableCollection<WeaponMount> _lstWeaponMounts = new TaggedObservableCollection<WeaponMount>();
         private string _strNotes = string.Empty;
-        private Location _objLocation = null;
+        private Location _objLocation;
         private readonly TaggedObservableCollection<Location> _lstLocations = new TaggedObservableCollection<Location>();
         private bool _blnBlackMarketDiscount;
         private string _strParentID = string.Empty;
@@ -400,7 +400,6 @@ namespace Chummer.Backend.Equipment
                     Weapons.Add(objWeapon);
                 }
             }
-            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         public SourceString SourceDetail { get; set; }
@@ -664,9 +663,10 @@ namespace Chummer.Backend.Equipment
             }
 
 
-            if (objNode["location"] != null)
+            string strLocation = objNode["location"]?.InnerText;
+            if (!string.IsNullOrEmpty(strLocation))
             {
-                if (Guid.TryParse(objNode["location"].InnerText, out Guid temp))
+                if (Guid.TryParse(strLocation, out Guid temp))
                 {
                     // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
                     _objLocation =
@@ -678,7 +678,7 @@ namespace Chummer.Backend.Equipment
                     //Legacy. Location is a string. 
                     _objLocation =
                         _objCharacter.WeaponLocations.FirstOrDefault(location =>
-                            location.Name == objNode["location"].InnerText);
+                            location.Name == strLocation);
                 }
                 _objLocation?.Children.Add(this);
             }
@@ -716,11 +716,10 @@ namespace Chummer.Backend.Equipment
                 // Locations.
                 foreach (XmlNode objXmlLocation in objNode.SelectNodes("locations/location"))
                 {
-                    Location objLocation = new Location(_objCharacter, _lstLocations, "", false);
+                    Location objLocation = new Location(_objCharacter, _lstLocations);
                     objLocation.Load(objXmlLocation);
                 }
             }
-            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -3132,18 +3131,23 @@ namespace Chummer.Backend.Equipment
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (SourceDetail != null)
+            if (SourceDetail != null && SourceDetail.Language == GlobalOptions.Language)
             {
-                SourceDetail.SetControl(sourceControl);
-            }
-            else if (!string.IsNullOrWhiteSpace(_strPage) && !string.IsNullOrWhiteSpace(_strSource))
-            {
-                SourceDetail = new SourceString(_strSource, _strPage);
                 SourceDetail.SetControl(sourceControl);
             }
             else
             {
-                Utils.BreakIfDebug();
+                string strSource = Source;
+                string strPage = Page(GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                {
+                    SourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    SourceDetail.SetControl(sourceControl);
+                }
+                else
+                {
+                    Utils.BreakIfDebug();
+                }
             }
         }
     }

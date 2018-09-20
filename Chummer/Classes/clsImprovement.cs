@@ -104,6 +104,7 @@ namespace Chummer
             ArmorEncumbrancePenalty,
             Initiation,
             Submersion,
+            Art,
             Metamagic,
             Echo,
             Skillwire,
@@ -999,6 +1000,8 @@ namespace Chummer
                     break;
                 case ImprovementType.Submersion:
                     break;
+                case ImprovementType.Art:
+                    break;
                 case ImprovementType.Metamagic:
                     break;
                 case ImprovementType.Echo:
@@ -1642,6 +1645,16 @@ namespace Chummer
                     if (objTargetGroup != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup, nameof(SkillGroup.IsDisabled));
+                    }
+                    break;
+                }
+                case ImprovementType.SkillDisable:
+                {
+                    Skill objTargetSkill = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
+                                           _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>().FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                    if (objTargetSkill != null)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill, nameof(Skill.Enabled));
                     }
                 }
                     break;
@@ -3169,6 +3182,13 @@ namespace Chummer
                     case Improvement.ImprovementType.Submersion:
                         objCharacter.SubmersionGrade += objImprovement.Value;
                         break;
+                    case Improvement.ImprovementType.Art:
+                        Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objArt != null)
+                        {
+                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == objArt.SourceType && x.SourceName == objArt.InternalId && x.Enabled).ToList());
+                        }
+                        break;
                     case Improvement.ImprovementType.Metamagic:
                     case Improvement.ImprovementType.Echo:
                         Metamagic objMetamagic = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
@@ -3434,6 +3454,13 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.Submersion:
                         objCharacter.SubmersionGrade -= objImprovement.Value;
+                        break;
+                    case Improvement.ImprovementType.Art:
+                        Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objArt != null)
+                        {
+                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == objArt.SourceType && x.SourceName == objArt.InternalId && x.Enabled).ToList());
+                        }
                         break;
                     case Improvement.ImprovementType.Metamagic:
                     case Improvement.ImprovementType.Echo:
@@ -3796,6 +3823,14 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.Submersion:
                         objCharacter.SubmersionGrade -= objImprovement.Value;
+                        break;
+                    case Improvement.ImprovementType.Art:
+                        Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objArt != null)
+                        {
+                            decReturn += RemoveImprovements(objCharacter, objArt.SourceType, objArt.InternalId);
+                            objCharacter.Arts.Remove(objArt);
+                        }
                         break;
                     case Improvement.ImprovementType.Metamagic:
                     case Improvement.ImprovementType.Echo:

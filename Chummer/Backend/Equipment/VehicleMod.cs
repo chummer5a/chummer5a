@@ -217,7 +217,6 @@ namespace Chummer.Backend.Equipment
                     _strExtra = ImprovementManager.SelectedValue;
                 }
             }
-            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         public SourceString SourceDetail { get; set; }
@@ -367,8 +366,6 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
-
-            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -1278,18 +1275,23 @@ namespace Chummer.Backend.Equipment
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (SourceDetail != null)
+            if (SourceDetail != null && SourceDetail.Language == GlobalOptions.Language)
             {
-                SourceDetail.SetControl(sourceControl);
-            }
-            else if (!string.IsNullOrWhiteSpace(_strPage) && !string.IsNullOrWhiteSpace(_strSource))
-            {
-                SourceDetail = new SourceString(_strSource, _strPage);
                 SourceDetail.SetControl(sourceControl);
             }
             else
             {
-                Utils.BreakIfDebug();
+                string strSource = Source;
+                string strPage = Page(GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                {
+                    SourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    SourceDetail.SetControl(sourceControl);
+                }
+                else
+                {
+                    Utils.BreakIfDebug();
+                }
             }
         }
     }

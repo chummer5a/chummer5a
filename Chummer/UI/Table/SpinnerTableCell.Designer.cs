@@ -50,6 +50,7 @@ namespace Chummer.UI.Table
             this.Controls.Add(this._spinner);
             this.Name = "SpinnerTableCell";
             this.Size = new System.Drawing.Size(50, 23);
+            this.Load += OnLoad;
             ((System.ComponentModel.ISupportInitialize)(this._spinner)).EndInit();
             this.ResumeLayout(false);
 

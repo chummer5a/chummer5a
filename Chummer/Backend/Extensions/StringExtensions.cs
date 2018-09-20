@@ -823,5 +823,23 @@ namespace Chummer
             objReturn.Append("\")");
             return objReturn.ToString();
         }
+
+        /// <summary>
+        /// Escapes characters in a string that would cause confusion if the string were placed as HTML content
+        /// </summary>
+        /// <param name="strToClean">String to clean.</param>
+        /// <returns>Copy of input string with the characters "&", the greater than sign, and the lesser than sign escaped for HTML.</returns>
+        public static string CleanForHTML(this string strToClean)
+        {
+            return strToClean
+                .CheapReplace("<br />", () => "\n")
+                .CheapReplace("&", () => "&amp;")
+                .CheapReplace("&amp;amp;", () => "&amp;")
+                .CheapReplace("<", () => "&lt;")
+                .CheapReplace(">", () => "&gt;")
+                .CheapReplace("\n\r", () => "<br />")
+                .CheapReplace("\n", () => "<br />")
+                .CheapReplace("\r", () => "<br />");
+        }
     }
 }

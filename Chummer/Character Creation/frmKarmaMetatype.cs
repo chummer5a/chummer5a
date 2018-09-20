@@ -560,7 +560,7 @@ namespace Chummer
                 XmlDocument xmlGearDocument = XmlManager.Load("gear.xml");
                 foreach (XmlNode xmlGear in charNode.SelectNodes("gears/gear"))
                 {
-                    XmlNode xmlGearData = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + xmlGear["name"].InnerText + "\" and category = \"" + xmlGear["category"].InnerText + "\"]");
+                    XmlNode xmlGearData = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + xmlGear["name"].InnerText.CleanXPath() + " and category = " + xmlGear["category"].InnerText.CleanXPath() + "]");
                     if (xmlGearData == null)
                         continue;
 

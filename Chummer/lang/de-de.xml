@@ -7903,8 +7903,12 @@
 			<text>Rituale</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Area</key>
+			<key>Label_SelectAdvancedLifestyle_Base_Neighborhood</key>
 			<text>[{0}/{1}]</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_Neighborhood</key>
+			<text>Gegend:</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_UnusedLP</key>
@@ -8988,7 +8992,7 @@
 		</string>
 		<string>
 			<key>Label_AddictionThreshold</key>
-			<text>Schwellwert</text>
+			<text>Schwellwert:</text>
 		</string>
 		<string>
 			<key>Label_DrugEffects</key>

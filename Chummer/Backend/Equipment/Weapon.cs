@@ -77,7 +77,7 @@ namespace Chummer.Backend.Equipment
         private WeaponMount _objWeaponMount;
         private string _strNotes = string.Empty;
         private string _strUseSkill = string.Empty;
-        private Location _objLocation = null;
+        private Location _objLocation;
         private string _strSpec = string.Empty;
         private string _strSpec2 = string.Empty;
         private bool _blnIncludedInWeapon;
@@ -255,8 +255,9 @@ namespace Chummer.Backend.Equipment
             if (objRangeNode != null)
             {
                 _strRange = objRangeNode.InnerText;
-                if (objRangeNode.Attributes["multiply"] != null)
-                    _decRangeMultiplier = Convert.ToDecimal(objRangeNode.Attributes["multiply"].InnerText, GlobalOptions.InvariantCultureInfo);
+                string strMultiply = objRangeNode.Attributes?["multiply"]?.InnerText;
+                if (!string.IsNullOrEmpty(strMultiply))
+                    _decRangeMultiplier = Convert.ToDecimal(strMultiply, GlobalOptions.InvariantCultureInfo);
             }
             objXmlWeapon.TryGetStringFieldQuickly("alternaterange", ref _strAlternateRange);
 
@@ -270,19 +271,23 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetBoolFieldQuickly("allowaccessory", ref _blnAllowAccessory);
 
             // If the Weapon comes with an Underbarrel Weapon, add it.
-            if (objXmlWeapon.InnerXml.Contains("<underbarrels>") && blnCreateChildren)
+            if (blnCreateChildren)
             {
-                foreach (XmlNode objXmlUnderbarrel in objXmlWeapon["underbarrels"].ChildNodes)
+                XmlNodeList xmlUnderbarrelsList = objXmlWeapon["underbarrels"]?.ChildNodes;
+                if (xmlUnderbarrelsList?.Count > 0)
                 {
-                    Weapon objUnderbarrelWeapon = new Weapon(_objCharacter);
-                    XmlNode objXmlWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlUnderbarrel.InnerText + "\"]");
-                    objUnderbarrelWeapon.Create(objXmlWeaponNode, lstWeapons, true, blnCreateImprovements, blnSkipCost);
-                    if (!AllowAccessory)
-                        objUnderbarrelWeapon.AllowAccessory = false;
-                    objUnderbarrelWeapon.ParentID = InternalId;
-                    objUnderbarrelWeapon.Cost = "0";
-                    objUnderbarrelWeapon.IncludedInWeapon = true;
-                    _lstUnderbarrel.Add(objUnderbarrelWeapon);
+                    foreach (XmlNode objXmlUnderbarrel in xmlUnderbarrelsList)
+                    {
+                        Weapon objUnderbarrelWeapon = new Weapon(_objCharacter);
+                        XmlNode objXmlWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlUnderbarrel.InnerText + "\"]");
+                        objUnderbarrelWeapon.Create(objXmlWeaponNode, lstWeapons, true, blnCreateImprovements, blnSkipCost);
+                        if (!AllowAccessory)
+                            objUnderbarrelWeapon.AllowAccessory = false;
+                        objUnderbarrelWeapon.ParentID = InternalId;
+                        objUnderbarrelWeapon.Cost = "0";
+                        objUnderbarrelWeapon.IncludedInWeapon = true;
+                        _lstUnderbarrel.Add(objUnderbarrelWeapon);
+                    }
                 }
             }
 
@@ -319,75 +324,80 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
 
             // If there are any Accessories that come with the Weapon, add them.
-            XmlNode xmlAccessoriesNode = objXmlWeapon["accessories"];
-            if (xmlAccessoriesNode != null && blnCreateChildren)
+            if (blnCreateChildren)
             {
-                XmlNodeList objXmlAccessoryList = xmlAccessoriesNode.SelectNodes("accessory");
-                foreach (XmlNode objXmlWeaponAccessory in objXmlAccessoryList)
+                XmlNodeList objXmlAccessoryList = objXmlWeapon.SelectNodes("accessories/accessory");
+                if (objXmlAccessoryList?.Count > 0)
                 {
-                    XmlNode objXmlAccessory = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlWeaponAccessory["name"].InnerText + "\"]");
-                    WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-                    int intAccessoryRating = 0;
-                    if (objXmlWeaponAccessory["rating"] != null)
+                    foreach (XmlNode objXmlWeaponAccessory in objXmlAccessoryList)
                     {
-                        intAccessoryRating = Convert.ToInt32(objXmlWeaponAccessory["rating"].InnerText);
-                    }
-                    if (objXmlWeaponAccessory.InnerXml.Contains("mount"))
-                    {
-                        objAccessory.Create(objXmlAccessory,
-                            objXmlWeaponAccessory.InnerXml.Contains("<extramount>")
-                                ? new Tuple<string, string>(objXmlAccessory["mount"].InnerText, objXmlAccessory["extramount"].InnerText)
-                                : new Tuple<string, string>(objXmlAccessory["mount"].InnerText, "None"), intAccessoryRating, false, blnCreateChildren, blnCreateImprovements);
-                    }
-                    else
-                    {
-                        objAccessory.Create(objXmlAccessory, new Tuple<string, string>("Internal", "None"), intAccessoryRating, false, blnCreateChildren, blnCreateImprovements);
-                    }
-                    // Add any extra Gear that comes with the Weapon Accessory.
-                    XmlNode xmlGearsNode = objXmlWeaponAccessory["gears"];
-                    if (xmlGearsNode != null)
-                    {
-                        XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
-                        foreach (XmlNode objXmlAccessoryGear in xmlGearsNode.SelectNodes("usegear"))
+                        XmlNode objXmlAccessory = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlWeaponAccessory["name"].InnerText + "\"]");
+                        WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
+                        int intAccessoryRating = 0;
+                        if (objXmlWeaponAccessory["rating"] != null)
                         {
-                            XmlNode objXmlAccessoryGearName = objXmlAccessoryGear["name"];
-                            XmlAttributeCollection objXmlAccessoryGearNameAttributes = objXmlAccessoryGearName.Attributes;
-                            int intGearRating = 0;
-                            decimal decGearQty = 1;
-                            string strChildForceSource = objXmlAccessoryGear["source"]?.InnerText ?? string.Empty;
-                            string strChildForcePage = objXmlAccessoryGear["page"]?.InnerText ?? string.Empty;
-                            string strChildForceValue = objXmlAccessoryGearNameAttributes?["select"]?.InnerText ??string.Empty;
-                            bool blnChildCreateChildren = objXmlAccessoryGearNameAttributes?["createchildren"]?.InnerText != bool.FalseString;
-                            bool blnAddChildImprovements = objXmlAccessoryGearNameAttributes?["addimprovements"]?.InnerText != bool.FalseString;
-                            if (objXmlAccessoryGear["rating"] != null)
-                                intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText);
-                            if (objXmlAccessoryGearNameAttributes?["qty"] != null)
-                                decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
-
-                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGearName.InnerText + "\" and category = \"" + objXmlAccessoryGear["category"].InnerText + "\"]");
-                            Gear objGear = new Gear(_objCharacter);
-
-                            objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue, blnAddChildImprovements, blnChildCreateChildren);
-
-                            objGear.Quantity = decGearQty;
-                            objGear.Cost = "0";
-                            objGear.ParentID = InternalId;
-
-                            if (!string.IsNullOrEmpty(strChildForceSource))
-                                objGear.Source = strChildForceSource;
-                            if (!string.IsNullOrEmpty(strChildForcePage))
-                                objGear.Page = strChildForcePage;
-                            objAccessory.Gear.Add(objGear);
-
-                            // Change the Capacity of the child if necessary.
-                            if (objXmlAccessoryGear["capacity"] != null)
-                                objGear.Capacity = '[' + objXmlAccessoryGear["capacity"].InnerText + ']';
+                            intAccessoryRating = Convert.ToInt32(objXmlWeaponAccessory["rating"].InnerText);
                         }
-                    }
 
-                    objAccessory.IncludedInWeapon = true;
-                    objAccessory.Parent = this;
-                    _lstAccessories.Add(objAccessory);
+                        if (objXmlWeaponAccessory.InnerXml.Contains("mount"))
+                        {
+                            objAccessory.Create(objXmlAccessory,
+                                objXmlWeaponAccessory.InnerXml.Contains("<extramount>")
+                                    ? new Tuple<string, string>(objXmlAccessory["mount"].InnerText, objXmlAccessory["extramount"].InnerText)
+                                    : new Tuple<string, string>(objXmlAccessory["mount"].InnerText, "None"), intAccessoryRating, false, blnCreateChildren, blnCreateImprovements);
+                        }
+                        else
+                        {
+                            objAccessory.Create(objXmlAccessory, new Tuple<string, string>("Internal", "None"), intAccessoryRating, false, blnCreateChildren, blnCreateImprovements);
+                        }
+
+                        // Add any extra Gear that comes with the Weapon Accessory.
+                        XmlNode xmlGearsNode = objXmlWeaponAccessory["gears"];
+                        if (xmlGearsNode != null)
+                        {
+                            XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
+                            foreach (XmlNode objXmlAccessoryGear in xmlGearsNode.SelectNodes("usegear"))
+                            {
+                                XmlNode objXmlAccessoryGearName = objXmlAccessoryGear["name"];
+                                XmlAttributeCollection objXmlAccessoryGearNameAttributes = objXmlAccessoryGearName.Attributes;
+                                int intGearRating = 0;
+                                decimal decGearQty = 1;
+                                string strChildForceSource = objXmlAccessoryGear["source"]?.InnerText ?? string.Empty;
+                                string strChildForcePage = objXmlAccessoryGear["page"]?.InnerText ?? string.Empty;
+                                string strChildForceValue = objXmlAccessoryGearNameAttributes?["select"]?.InnerText ?? string.Empty;
+                                bool blnChildCreateChildren = objXmlAccessoryGearNameAttributes?["createchildren"]?.InnerText != bool.FalseString;
+                                bool blnAddChildImprovements = objXmlAccessoryGearNameAttributes?["addimprovements"]?.InnerText != bool.FalseString;
+                                if (objXmlAccessoryGear["rating"] != null)
+                                    intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText);
+                                if (objXmlAccessoryGearNameAttributes?["qty"] != null)
+                                    decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
+
+                                XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlAccessoryGearName.InnerText.CleanXPath() + " and category = " +
+                                                                                         objXmlAccessoryGear["category"].InnerText.CleanXPath() + "]");
+                                Gear objGear = new Gear(_objCharacter);
+
+                                objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue, blnAddChildImprovements, blnChildCreateChildren);
+
+                                objGear.Quantity = decGearQty;
+                                objGear.Cost = "0";
+                                objGear.ParentID = InternalId;
+
+                                if (!string.IsNullOrEmpty(strChildForceSource))
+                                    objGear.Source = strChildForceSource;
+                                if (!string.IsNullOrEmpty(strChildForcePage))
+                                    objGear.Page = strChildForcePage;
+                                objAccessory.Gear.Add(objGear);
+
+                                // Change the Capacity of the child if necessary.
+                                if (objXmlAccessoryGear["capacity"] != null)
+                                    objGear.Capacity = '[' + objXmlAccessoryGear["capacity"].InnerText + ']';
+                            }
+                        }
+
+                        objAccessory.IncludedInWeapon = true;
+                        objAccessory.Parent = this;
+                        _lstAccessories.Add(objAccessory);
+                    }
                 }
             }
 
@@ -413,8 +423,6 @@ namespace Chummer.Backend.Equipment
             }
             foreach (Weapon objLoopWeapon in lstWeapons)
                 objLoopWeapon.ParentVehicle = ParentVehicle;
-
-            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         public SourceString SourceDetail { get; set; }
@@ -685,9 +693,10 @@ namespace Chummer.Backend.Equipment
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
-            if (objNode["location"] != null)
+            string strLocation = objNode["location"]?.InnerText;
+            if (!string.IsNullOrEmpty(strLocation))
             {
-                if (Guid.TryParse(objNode["location"].InnerText, out Guid temp))
+                if (Guid.TryParse(strLocation, out Guid temp))
                 {
                     // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
                     _objLocation =
@@ -699,7 +708,7 @@ namespace Chummer.Backend.Equipment
                     //Legacy. Location is a string. 
                     _objLocation =
                         _objCharacter.WeaponLocations.FirstOrDefault(location =>
-                            location.Name == objNode["location"].InnerText);
+                            location.Name == strLocation);
                 }
             }
             _objLocation?.Children.Add(this);
@@ -747,8 +756,6 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
                 GetNode()?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
-
-            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -1037,7 +1044,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return AmmoName;
 
-            return XmlManager.Load("gear.xml", strLanguage).SelectSingleNode("/chummer/gears/gear[name = \"" + AmmoName + "\"]/@translate")?.InnerText ?? AmmoName;
+            return XmlManager.Load("gear.xml", strLanguage).SelectSingleNode("/chummer/gears/gear[name = " + AmmoName.CleanXPath() + "]/@translate")?.InnerText ?? AmmoName;
         }
 
         /// <summary>
@@ -4797,18 +4804,23 @@ namespace Chummer.Backend.Equipment
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (SourceDetail != null)
+            if (SourceDetail != null && SourceDetail.Language == GlobalOptions.Language)
             {
-                SourceDetail.SetControl(sourceControl);
-            }
-            else if (!string.IsNullOrWhiteSpace(_strPage) && !string.IsNullOrWhiteSpace(_strSource))
-            {
-                SourceDetail = new SourceString(_strSource, _strPage);
                 SourceDetail.SetControl(sourceControl);
             }
             else
             {
-                Utils.BreakIfDebug();
+                string strSource = Source;
+                string strPage = DisplayPage(GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                {
+                    SourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    SourceDetail.SetControl(sourceControl);
+                }
+                else
+                {
+                    Utils.BreakIfDebug();
+                }
             }
         }
     }

@@ -253,6 +253,8 @@ namespace Chummer
                     AttributeControl objControl = new AttributeControl(objAttrib);
                     objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
                     pnlAttributes.Controls.Add(objControl);
+                    objControl.Width = pnlAttributes.Width;
+                    objControl.Anchor |= AnchorStyles.Right;
                 }
             }
             else
@@ -266,6 +268,8 @@ namespace Chummer
                                 AttributeControl objControl = new AttributeControl(objAttrib);
                                 objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
                                 pnlAttributes.Controls.Add(objControl);
+                                objControl.Width = pnlAttributes.Width;
+                                objControl.Anchor |= AnchorStyles.Right;
                             }
                         }
                         break;
@@ -314,6 +318,8 @@ namespace Chummer
                                 AttributeControl objControl = new AttributeControl(objAttrib);
                                 objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
                                 pnlAttributes.Controls.Add(objControl);
+                                objControl.Width = pnlAttributes.Width;
+                                objControl.Anchor |= AnchorStyles.Right;
                             }
                         }
                         break;
@@ -3482,8 +3488,8 @@ namespace Chummer
                 {
                     nodRoot = new TreeNode
                     {
-                        Tag = "Node_SelectedGear",
-                        Text = LanguageManager.GetString("Node_SelectedGear", GlobalOptions.Language)
+                        Tag = "Node_SelectedDrugs",
+                        Text = LanguageManager.GetString("Node_SelectedDrugs", GlobalOptions.Language)
                     };
                     treGear.Nodes.Insert(0, nodRoot);
                 }

@@ -55,6 +55,27 @@ Application Changes:
 - Fixed a bug that prevented the addskillspecializationoption improvement from working properly. Fixes #2760.
 - Fixed an issue where special text versions of weapon damage codes would not get properly recognized as text. Fixes #2986.
 - Improvements can now modify the character's living persona's Matrix condition monitor through a "matrixcm" node inside the "livingpersona" one.
+- Fixed an incorrect string reference in the Limit right-click menu. Fixes #2995.
+- Fixed an issue where the Custom Drug creation screen and the custom drug system in general did not properly support translations. Fixes #2946.
+- Fixed an issue where custom drugs were never exposed to Print methods, meaning no character sheet could properly integrate them. No character sheet currently outputs information on custom drugs, but at least the foundation is now there.
+- Fixed an issue where saved custom drugs would not show up properly afted a character is loaded.
+- Lifestyle qualities will now also display their Extra information in the Shadowrun 5 character sheet set.
+- Fixed a potential crash in Create mode that could occur if an attribute's karma levels exceeded the maximum possible karma levels. Fixes #3004.
+- Fixed various issues that caused comboboxes in controls for skills and/or knowledge skills to not load translations properly. Fixes #3000.
+- Fixed an issue where the "Notes" menu point under the Advanced Lifestyles context menu strip would not get translated properly. Fixes #2998.
+- The Complex Forms & Sprites tab will now display the character's Paragon and information relevant to it if they have chosen a Paragon.
+- Fixed many cases where the presence of a quotation mark in an item's name would cause the program to crash. Fixes #3007.
+- Fixed cases where having certain characters in the notes and/or custom name fields would cause the program to crash when displaying the affected field's tooltip. Fixes #2982.
+- Added the ability for improvements to disable individual skills through the "disableskill" bonus node.
+- Added the ability for improvements to add arts through the "addart" and "selectart" bonus nodes.
+- Added the ability for improvements that add qualities, metamagics, arts, and/or echoes to ignore checking whether the newly added item has all of its requirements met before adding said item (e.g. for adding metamagics without adding the art prerequisites for the metamagic).
+- Properly implemented karma costs for Drake powers in career mode.
+- Fixed a bug where the checkbox for Working for the Man/People would appear as an empty checkbox when refunding an expense. Fixes #3016.
+- Fixed an issue where line breaks in notes would not show up properly in tooltips. Fixes #3019.
+- Fixed a bug where existing bioware on a character would not get removed if/when the character took Sensitive System or another quality that removed access to bioware. A similar bug was fixed for improvements that removed access to cyberware and/or 'ware entirely.
+- Fixed a bug where newly created characters would not get added to the list of characters open in internal memory, which could cause a whole lot of other issues, least of which was that the character's tab would not get properly updated if the character's alias was changed.
+- Added a loading bar/screen that is displayed when the program is performing its initial loading and whenever the program loads in a character.
+- Fixed a bug where the program's UI showed English page number references even for non-English languages. Fixes #3024.
 
 Data Changes:
 
@@ -90,6 +111,12 @@ Data Changes:
 - Sensor function ratings are now properly limited to the rating of their parent (Single Sensor or Sensor Array) if their parent has a rating.
 - Added the RunnerHub Rules custom ruleset, courtesy of /u/EnviousShadow.
 - Added "Mixed Unit Tactics" from Street Lethal as an example knowledge skill. It is assumed that the character can learn and use Mixed Unit Tactics as a knowledge skill without prerequisites, and the prerequisites described in Street Lethal only apply when using Mixed Unit Tactics' maneuvers from Street Lethal.
+- Added the previously missing categories node to drugcomponents.xml.
+- Added the previously missing option to add STATscan to a cyberhand.
+- Added entries for Seer and Null Wizard from Forbidden Arcana.
+- Fixed a bug where Elementalist would disable access to the Enchanting skill group instead of disabling access to skills in the Enchanting group.
+- Pariah tradition now properly disables access to skills noted in its description and properly gives +2 to Banishing, Counterspelling, and Disenchanting.
+- Fixed incorrect Slots for the Workshop vehicle mod.
 
 New Strings:
 
@@ -99,6 +126,36 @@ New Strings:
 - Label_Qualities
 - String_SpecialAttributes
 - Label_SpecialAttributes
+- Label_SelectAdvancedLifestyle_Neighborhood
+- Label_SelectAdvancedLifestyle_Base_Neighbrhood
+- String_Colon
+- String_Immediate
+- String_Second
+- String_Seconds
+- String_CombatTurn
+- String_CombatTurns
+- String_Minute
+- String_Minutes
+- Node_Foundation
+- Node_Block
+- Node_Enhancer
+- Label_AddictionRating
+- Label_CrashEffect
+- String_DamageUnresisted
+- String_PerLevel
+- String_Loading
+- String_Loading_Pattern
+- String_Initializing
+- String_Settings
+- String_MentorSpirit
+- String_Locations
+- String_Metamagics
+- String_Arts
+- String_Enhancements
+- String_Expenses
+- String_LegacyFixes
+- String_GeneratedImprovements
+- String_UI
 
 Changed Strings:
 
@@ -106,12 +163,17 @@ Changed Strings:
 - Label_SelectAdvancedLifestyle_Base_Comforts
 - Label_SelectAdvancedLifestyle_Base_Lifestyle
 - Label_SelectAdvancedLifestyle_Base_Security
-- Label_SelectAdvancedLifestyle_Base_Area
 - String_Special
 - Label_SelectBP_MaxAvail
 - Label_SelectBP_StartingKarma
 - Label_SelectBP_SumToX
 - Label_SelectBP_MaxNuyen
+- Label_AddictionThreshold
+- Menu_Notes
+
+Removed Strings:
+
+- Label_SelectAdvancedLifestyle_Base_Area
 
 Build 202
 

@@ -135,8 +135,6 @@ namespace Chummer.UI.Skills
                 {
                     //dropdown/spec
                     cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
-                    cboSpec.DisplayMember = nameof(ListItem.Name);
-                    cboSpec.ValueMember = nameof(ListItem.Value);
                     cboSpec.DataSource = skill.CGLSpecializations;
                     cboSpec.DisplayMember = nameof(ListItem.Name);
                     cboSpec.ValueMember = nameof(ListItem.Value);
@@ -204,8 +202,6 @@ namespace Chummer.UI.Skills
                         string strOldSpec = cboSpec.Text;
                         cboSpec.SuspendLayout();
                         cboSpec.DataSource = null;
-                        cboSpec.DisplayMember = nameof(ListItem.Name);
-                        cboSpec.ValueMember = nameof(ListItem.Value);
                         cboSpec.DataSource = _skill.CGLSpecializations;
                         cboSpec.DisplayMember = nameof(ListItem.Name);
                         cboSpec.ValueMember = nameof(ListItem.Value);
@@ -291,9 +287,9 @@ namespace Chummer.UI.Skills
             }
 
             cboSelectAttribute.BeginUpdate();
+            cboSelectAttribute.DataSource = lstAttributeItems;
             cboSelectAttribute.DisplayMember = nameof(ListItem.Name);
             cboSelectAttribute.ValueMember = nameof(ListItem.Value);
-            cboSelectAttribute.DataSource = lstAttributeItems;
             cboSelectAttribute.SelectedValue = _skill.AttributeObject.Abbrev;
             cboSelectAttribute.EndUpdate();
         }

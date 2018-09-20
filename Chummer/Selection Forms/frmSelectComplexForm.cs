@@ -42,7 +42,6 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            MoveControls();
             // Load the Complex Form information.
             _xmlBaseComplexFormsNode = XmlManager.Load("complexforms.xml").GetFastNavigator().SelectSingleNode("/chummer/complexforms");
 
@@ -292,11 +291,6 @@ namespace Chummer
                 _strSelectedComplexForm = strSelectedItem;
                 DialogResult = DialogResult.OK;
             }
-        }
-
-        private void MoveControls()
-        {
-            lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
         }
 
         private void OpenSourceFromLabel(object sender, EventArgs e)

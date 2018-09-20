@@ -57,8 +57,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             _strSelectedLifestyle = strSelectedLifestyle;
             _lstExistingQualities = lstExistingQualities;
-
-            MoveControls();
+            
             // Load the Quality information.
             _objXmlDocument = XmlManager.Load("lifestyles.xml");
             _objMetatypeDocument = XmlManager.Load("metatypes.xml");
@@ -1090,15 +1089,6 @@ namespace Chummer
             }
 
             return true;
-        }
-
-        private void MoveControls()
-        {
-            int intWidth = Math.Max(lblBPLabel.Width, lblSourceLabel.Width);
-            lblBP.Left = lblBPLabel.Left + intWidth + 6;
-            lblSource.Left = lblSourceLabel.Left + intWidth + 6;
-
-            lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
         }
 
         private void OpenSourceFromLabel(object sender, EventArgs e)
