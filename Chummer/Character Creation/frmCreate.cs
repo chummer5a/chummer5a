@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
@@ -3565,19 +3566,14 @@ namespace Chummer
             if (!cmdDeleteVehicle.Enabled)
                 return;
             // Delete the selected Vehicle.
-            TreeNode objSelectedNode = treVehicles.SelectedNode;
+            object objSelectedNodeTag = treVehicles.SelectedNode?.Tag;
             // Delete the selected Vehicle.
-            if (objSelectedNode == null)
+            if (objSelectedNodeTag == null)
             {
                 return;
             }
 
-            if (treVehicles.SelectedNode?.Tag is string strSelectedId)
-            {
-                if (strSelectedId == "Node_SelectedVehicles")
-                    return;
-            }
-            else if (treVehicles.SelectedNode?.Tag is VehicleMod objMod)
+            if (objSelectedNodeTag is VehicleMod objMod)
             {
                 // Check for Improved Sensor bonus.
                 if (objMod.Bonus?["improvesensor"] != null || (objMod.WirelessOn && objMod.WirelessBonus?["improvesensor"] != null))
@@ -3625,7 +3621,7 @@ namespace Chummer
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
             }
-            else if (treVehicles.SelectedNode?.Tag is ICanRemove selectedObject)
+            else if (objSelectedNodeTag is ICanRemove selectedObject)
             {
                 if (selectedObject.Remove(CharacterObject, CharacterObjectOptions.ConfirmDelete))
                 {
@@ -4367,6 +4363,8 @@ namespace Chummer
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                 return;
             Location objLocation = new Location(CharacterObject, CharacterObject.GearLocations, frmPickText.SelectedValue);
+            CharacterObject.GearLocations.Add(objLocation);
+
             IsDirty = true;
         }
 
@@ -4382,6 +4380,7 @@ namespace Chummer
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                 return;
             Location objLocation = new Location(CharacterObject, CharacterObject.WeaponLocations, frmPickText.SelectedValue);
+            CharacterObject.WeaponLocations.Add(objLocation);
 
             IsDirty = true;
         }
@@ -4558,6 +4557,7 @@ namespace Chummer
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                 return;
             Location objLocation = new Location(CharacterObject, CharacterObject.ArmorLocations, frmPickText.SelectedValue);
+            CharacterObject.ArmorLocations.Add(objLocation);
 
             IsDirty = true;
         }
@@ -4611,7 +4611,9 @@ namespace Chummer
 
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                 return;
-            Location objLocation = new Location(CharacterObject, objVehicle?.Locations ?? CharacterObject.VehicleLocations, frmPickText.SelectedValue);
+            ObservableCollection<Location> lstParent = objVehicle?.Locations ?? CharacterObject.VehicleLocations;
+            Location objLocation = new Location(CharacterObject, lstParent, frmPickText.SelectedValue);
+            lstParent.Add(objLocation);
 
             IsDirty = true;
         }
@@ -4748,12 +4750,8 @@ namespace Chummer
 
         private void tsAddArmorMod_Click(object sender, EventArgs e)
         {
-            while (treArmor.SelectedNode != null && treArmor.SelectedNode.Level > 1)
-                treArmor.SelectedNode = treArmor.SelectedNode.Parent;
-
-            TreeNode objSelectedNode = treArmor.SelectedNode;
             // Make sure a parent item is selected, then open the Select Accessory window.
-            if (objSelectedNode?.Level <= 0 || !(objSelectedNode?.Tag is Armor objArmor))
+            if (!(treArmor.SelectedNode?.Tag is Armor objArmor))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -8127,7 +8125,7 @@ namespace Chummer
             if (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Level > 1)
             {
                 // Determine if this is a piece of Gear. If not, don't let the user drag the Node.
-                if (treVehicles.SelectedNode?.Tag is Gear objGear)
+                if (treVehicles.SelectedNode?.Tag is Gear)
                 {
                     _eDragButton = e.Button;
                     _blnDraggingGear = true;
@@ -8738,8 +8736,7 @@ namespace Chummer
                 lblTarget.Text = objComplexForm.DisplayTarget(GlobalOptions.Language);
                 lblFV.Text = objComplexForm.DisplayFV(GlobalOptions.Language);
                 lblFV.SetToolTip(objComplexForm.FVTooltip);
-
-                string strPage = objComplexForm.Page(GlobalOptions.Language);
+                
                 objComplexForm.SetSourceDetail(lblComplexFormSource);
             }
             else
@@ -10532,7 +10529,6 @@ namespace Chummer
 
                 if (objSelectedAccessory.IncludedInWeapon)
                     cmdDeleteWeapon.Enabled = false;
-                objWeapon = objSelectedAccessory.Parent;
                 lblWeaponName.Text = objSelectedAccessory.DisplayNameShort(GlobalOptions.Language);
                 lblWeaponCategory.Text = LanguageManager.GetString("String_WeaponAccessory", GlobalOptions.Language);
                 lblWeaponAvail.Text = objSelectedAccessory.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
@@ -11523,7 +11519,7 @@ namespace Chummer
             }
 
             // Open the Gear XML file and locate the selected Gear.
-            object objParent = objSelectedGear ?? (object)objSelectedMod ?? (object)objSelectedArmor;
+            object objParent = objSelectedGear ?? objSelectedMod ?? (object)objSelectedArmor;
             Cursor = Cursors.WaitCursor;
 
             string strCategories = string.Empty;
@@ -14885,7 +14881,7 @@ namespace Chummer
 
             string strType = objSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
             XmlDocument objXmlDocument = XmlManager.Load(strType + ".xml", string.Empty, true);
-            XmlNode xmlSuite = Guid.TryParse(frmPickCyberwareSuite.SelectedSuite, out Guid _result)
+            XmlNode xmlSuite = frmPickCyberwareSuite.SelectedSuite.IsGuid()
                 ? objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]")
                 : objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]");
             if (xmlSuite == null)

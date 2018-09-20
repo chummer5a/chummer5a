@@ -36,6 +36,7 @@ namespace Chummer.UI.Table
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Name = "TextTableCell";
             this.Size = new System.Drawing.Size(0, 0);
+            this.Load += OnLoad;
             this.ResumeLayout(false);
 
         }

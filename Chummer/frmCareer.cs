@@ -4714,16 +4714,7 @@ namespace Chummer
             do
             {
                 // Select the root Gear node then open the Select Gear window.
-                string strGuid = string.Empty;
-                if (objGear.Location != null)
-                {
-                    strGuid = objGear.Location.InternalId;
-                }
-                if (objGear.Parent is Gear parent)
-                {
-                    strGuid = parent.InternalId;
-                }
-                blnAddAgain = PickGear(objGear, null, objGear.Category == "Ammunition", objGear, objGear.DisplayNameShort(GlobalOptions.Language));
+                blnAddAgain = PickGear(objGear, objGear.Location, objGear.Category == "Ammunition", objGear, objGear.DisplayNameShort(GlobalOptions.Language));
             } while (blnAddAgain);
         }
 
@@ -5389,6 +5380,7 @@ namespace Chummer
                 return;
 
             Location objLocation = new Location(CharacterObject, CharacterObject.GearLocations, frmPickText.SelectedValue);
+            CharacterObject.GearLocations.Add(objLocation);
 
             IsDirty = true;
         }
@@ -5406,6 +5398,7 @@ namespace Chummer
                 return;
 
             Location objLocation = new Location(CharacterObject, CharacterObject.WeaponLocations, frmPickText.SelectedValue);
+            CharacterObject.WeaponLocations.Add(objLocation);
 
             IsDirty = true;
         }
@@ -5756,6 +5749,7 @@ namespace Chummer
                 return;
 
             Location objLocation = new Location(CharacterObject, CharacterObject.ArmorLocations, frmPickText.SelectedValue);
+            CharacterObject.ArmorLocations.Add(objLocation);
 
             IsDirty = true;
         }
@@ -5915,6 +5909,7 @@ namespace Chummer
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                 return;
             Location objLocation = new Location(CharacterObject, objVehicle.Locations, frmPickText.SelectedValue);
+            objVehicle.Locations.Add(objLocation);
 
             IsDirty = true;
         }
@@ -6230,10 +6225,6 @@ namespace Chummer
 
         private void tsAddArmorMod_Click(object sender, EventArgs e)
         {
-            while (treArmor.SelectedNode != null && treArmor.SelectedNode.Level > 1)
-                treArmor.SelectedNode = treArmor.SelectedNode.Parent;
-
-            TreeNode objSelectedNode = treArmor.SelectedNode;
             // Make sure a parent item is selected, then open the Select Accessory window.
             if (!(treArmor.SelectedNode?.Tag is Armor objArmor))
             {
@@ -6283,11 +6274,15 @@ namespace Chummer
                 // Locate the selected piece.
                 objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = \"" + frmPickArmorMod.SelectedArmorMod + "\"]");
 
+                if (objXmlArmor == null)
+                {
+                    frmPickArmorMod.Dispose();
+                    continue;
+                }
+
                 ArmorMod objMod = new ArmorMod(CharacterObject);
                 List<Weapon> lstWeapons = new List<Weapon>();
-                int intRating = 0;
-                if (Convert.ToInt32(objXmlArmor["maxrating"].InnerText) > 1)
-                    intRating = frmPickArmorMod.SelectedRating;
+                int intRating = Convert.ToInt32(objXmlArmor["maxrating"]?.InnerText) > 1 ? frmPickArmorMod.SelectedRating : 0;
 
                 objMod.Create(objXmlArmor, intRating, lstWeapons);
                 if (objMod.InternalId.IsEmptyGuid())
@@ -6984,7 +6979,6 @@ namespace Chummer
 
         private void tsVehicleAddGear_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treVehicles.SelectedNode;
             // Locate the selected Vehicle.
             if (!(treVehicles.SelectedNode?.Tag is Vehicle objSelectedVehicle))
             {
@@ -7112,7 +7106,6 @@ namespace Chummer
 
         private void tsVehicleSensorAddAsPlugin_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treVehicles.SelectedNode;
             // Make sure a parent items is selected, then open the Select Gear window.
             if (!(treVehicles.SelectedNode?.Tag is Gear objSensor))
             {
@@ -8707,21 +8700,14 @@ namespace Chummer
 
         private void tsArmorGearAddAsPlugin_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treArmor.SelectedNode;
+            object objSelectedNodeTag = treArmor.SelectedNode?.Tag;
             // Make sure a parent items is selected, then open the Select Gear window.
-            if (objSelectedNode == null || objSelectedNode.Level == 0)
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            string strSelectedId = string.Empty;
-            bool capacityOnly = false;
-            if (treArmor.SelectedNode?.Tag is Gear objGear)
+            string strSelectedId;
+            if (objSelectedNodeTag is Gear objGear)
             {
                 strSelectedId = objGear.InternalId;
             }
-            else if (treArmor.SelectedNode?.Tag is ArmorMod objMod)
+            else if (objSelectedNodeTag is ArmorMod objMod)
             {
                 strSelectedId = objMod.InternalId;
                 if (string.IsNullOrEmpty(objMod.GearCapacity))
@@ -8729,15 +8715,20 @@ namespace Chummer
                     MessageBox.Show(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-
+            }
+            else
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_SelectArmor", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
 
-            if (strSelectedId == string.Empty) return;
+            if (strSelectedId == string.Empty)
+                return;
 
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickArmorGear(strSelectedId, capacityOnly);
+                blnAddAgain = PickArmorGear(strSelectedId);
             }
             while (blnAddAgain);
         }
@@ -9230,7 +9221,6 @@ namespace Chummer
 
         private void tsCyberwareAddGear_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treCyberware.SelectedNode;
             // Make sure a parent items is selected, then open the Select Gear window.
             if (!(treCyberware.SelectedNode?.Tag is Cyberware objCyberware))
             {
@@ -10316,9 +10306,9 @@ namespace Chummer
             if (!(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
                 return;
 
-            string strGuid = strGuid = objLifestyle.InternalId;
+            string strGuid = objLifestyle.InternalId;
             int intMonths = objLifestyle.Increments;
-            int intPosition = CharacterObject.Lifestyles.IndexOf(CharacterObject.Lifestyles.Where(p => p.InternalId == objLifestyle.InternalId).First());
+            int intPosition = CharacterObject.Lifestyles.IndexOf(CharacterObject.Lifestyles.FirstOrDefault(p => p.InternalId == objLifestyle.InternalId));
             string strOldLifestyleName = objLifestyle.DisplayName(GlobalOptions.Language);
             decimal decOldLifestyleTotalCost = objLifestyle.TotalCost;
 
@@ -11037,13 +11027,14 @@ namespace Chummer
                 return;
 
             // Locate the selected Armor Modification.
-            if (!(treArmor.SelectedNode?.Tag is ArmorMod objMod))
-                return;
-            if (objMod != null)
+            if ((treArmor.SelectedNode?.Tag is ArmorMod objMod))
+            {
                 objMod.IncludedInArmor = chkIncludedInArmor.Checked;
 
-            IsDirty = true;
-            IsCharacterUpdateRequested = true;
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
+            }
         }
 
         private void chkCommlinks_CheckedChanged(object sender, EventArgs e)
@@ -11383,11 +11374,13 @@ namespace Chummer
 
         private void treVehicles_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            if (!(treVehicles.SelectedNode?.Tag is Gear objGear)) return;
-            _eDragButton = e.Button;
-            _blnDraggingGear = true;
-            _intDragLevel = treVehicles.SelectedNode.Level;
-            DoDragDrop(e.Item, DragDropEffects.Move);
+            if ((treVehicles.SelectedNode?.Tag is Gear))
+            {
+                _eDragButton = e.Button;
+                _blnDraggingGear = true;
+                _intDragLevel = treVehicles.SelectedNode.Level;
+                DoDragDrop(e.Item, DragDropEffects.Move);
+            }
         }
 
         private void treVehicles_DragEnter(object sender, DragEventArgs e)
@@ -11638,15 +11631,13 @@ namespace Chummer
             {
                 case Gear objGear:
                 {
-                    objSelectedFocus = (Gear) e.Node.Tag;
-                    intFociTotal = objSelectedFocus.Rating;
-                    objGear = null;
+                    objSelectedFocus = objGear;
+                    intFociTotal = objGear.Rating;
                     break;
                 }
                 case StackedFocus objStackedFocus:
                 {
                     intFociTotal = objStackedFocus.TotalForce;
-                    objStackedFocus = null;
                     break;
                 }
             }
@@ -12563,7 +12554,7 @@ namespace Chummer
 
         private void treImprovements_DoubleClick(object sender, EventArgs e)
         {
-            if (treImprovements.SelectedNode?.Tag is Improvement objImprovement)
+            if (treImprovements.SelectedNode?.Tag is Improvement)
             {
                 cmdEditImprovement_Click(sender, e);
             }
@@ -12904,6 +12895,7 @@ namespace Chummer
         /// <param name="intThreshold">Show an increase in modifiers every <paramref name="intThreshold"/> boxes.</param>
         /// <param name="intThresholdOffset">Initial threshold for penalties from <paramref name="intThreshold"/> should be offset by this much.</param>
         /// <param name="intOverflow">Number of overflow boxes to show (set to 0 if none, like for the stun condition monitor).</param>
+        /// <param name="button_Click">Event handler for when a CM box is clicked</param>
         /// <param name="check">Whether or not to check the checkbox when finished processing. Expected to only be called on load.</param>
         /// <param name="value">Tag value of the checkbox to enable when using the check parameter. Expected to be the StunCMFilled or PhysicalCMFilled properties.</param>
         private void ProcessCharacterConditionMonitorBoxDisplays(Control pnlConditionMonitorPanel, int intConditionMax, int intThreshold, int intThresholdOffset, int intOverflow, EventHandler button_Click, bool check = false, int value = 0)
@@ -12925,9 +12917,9 @@ namespace Chummer
                         CheckBox cb = new CheckBox
                         {
                             Tag = i,
-                            Appearance = System.Windows.Forms.Appearance.Button,
-                            Size = new System.Drawing.Size(24, 24),
-                            TextAlign = System.Drawing.ContentAlignment.MiddleRight,
+                            Appearance = Appearance.Button,
+                            Size = new Size(24, 24),
+                            TextAlign = ContentAlignment.MiddleRight,
                             UseVisualStyleBackColor = true
                         };
                         cb.Click += button_Click;
@@ -12937,7 +12929,7 @@ namespace Chummer
                 foreach (CheckBox chkCmBox in pnlConditionMonitorPanel.Controls.OfType<CheckBox>())
                 {
                     int intCurrentBoxTag = Convert.ToInt32(chkCmBox.Tag);
-                    if (intCurrentBoxTag == value && check)
+                    if (intCurrentBoxTag == value)
                         currentBox = chkCmBox;
                     if (intCurrentBoxTag <= intConditionMax)
                     {
@@ -13101,11 +13093,8 @@ namespace Chummer
             TreeNode objGearNode = treGear.SelectedNode;
             while (objGearNode?.Level > 1)
                 objGearNode = objGearNode.Parent;
-
-            if (!(objGearNode?.Tag is Gear objGear))
-                return;
-
-            if (objGear != null && sender is CheckBox objBox)
+            
+            if ((objGearNode?.Tag is Gear objGear) && (sender is CheckBox objBox))
                 ProcessConditionMonitorCheckedChanged(objBox, i => objGear.MatrixCMFilled = i, false);
         }
 
@@ -14389,7 +14378,7 @@ namespace Chummer
                         // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
                         if (objGear.IsProgram && CharacterObjectOptions.CalculateCommlinkResponse)
                         {
-                            if (objGear.Parent is IHasMatrixAttributes commlink && commlink.IsCommlink == true)
+                            if (objGear.Parent is IHasMatrixAttributes objCommlink && objCommlink.IsCommlink)
                             {
                                 chkGearEquipped.Text = LanguageManager.GetString("Checkbox_SoftwareRunning",
                                     GlobalOptions.Language);
@@ -14642,7 +14631,8 @@ namespace Chummer
         /// <summary>
         /// Select a piece of Gear to be added to the character.
         /// </summary>
-        /// <param name="strSelectedId">InternalId or location of the parent to which the gear should be added.</param>
+        /// <param name="iParent">Parent to which the gear should be added.</param>
+        /// <param name="objLocation">Location to which the gear should be added.</param>
         /// <param name="blnAmmoOnly">Whether or not only Ammunition should be shown in the window.</param>
         /// <param name="objStackGear">Whether or not the selected item should stack with a matching item on the character.</param>
         /// <param name="strForceItemValue">Force the user to select an item with the passed name.</param>
@@ -14888,7 +14878,7 @@ namespace Chummer
             }
 
             // Open the Gear XML file and locate the selected Gear.
-            object objParent = objSelectedGear ?? (object)objSelectedMod ?? (object)objSelectedArmor;
+            object objParent = objSelectedGear ?? objSelectedMod ?? (object)objSelectedArmor;
 
             Cursor = Cursors.WaitCursor;
 
@@ -15674,7 +15664,6 @@ namespace Chummer
             }
             else if (treVehicles.SelectedNode?.Tag is WeaponAccessory objAccessory)
             {
-                objVehicle = objAccessory.Parent.ParentVehicle;
                 if (objAccessory.IncludedInWeapon)
                     cmdDeleteVehicle.Enabled = false;
                 lblVehicleName.Text = objAccessory.DisplayNameShort(GlobalOptions.Language);
@@ -15725,7 +15714,6 @@ namespace Chummer
             }
             else if (treVehicles.SelectedNode?.Tag is Cyberware objCyberware)
             {
-                objVehicle = objCyberware.ParentVehicle;
                 if (!string.IsNullOrEmpty(objCyberware.ParentID))
                     cmdDeleteVehicle.Enabled = false;
                 lblVehicleName.Text = objCyberware.DisplayNameShort(GlobalOptions.Language);
@@ -16731,15 +16719,9 @@ namespace Chummer
             string strType = objSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
             XmlDocument objXmlDocument = XmlManager.Load(strType + ".xml");
 
-            XmlNode xmlSuite = null;
-            if (Guid.TryParse(frmPickCyberwareSuite.SelectedSuite, out Guid _result))
-            {
-                xmlSuite = objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]");
-            }
-            else
-            {
-                xmlSuite = objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]");
-            }
+            XmlNode xmlSuite = frmPickCyberwareSuite.SelectedSuite.IsGuid()
+                ? objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]")
+                : objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]");
             if (xmlSuite == null)
                 return;
 
@@ -16982,9 +16964,6 @@ namespace Chummer
 
         private void tsMetamagicAddArt_Click(object sender, EventArgs e)
         {
-            // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
-            bool blnPayWithKarma = false;
-
             if (treMetamagic.SelectedNode.Level != 0)
                 return;
 
@@ -16992,12 +16971,16 @@ namespace Chummer
             if ((treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 intGrade = objGrade.Grade;
 
+            /*
+            // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
+            bool blnPayWithKarma = false;
             if (blnPayWithKarma && CharacterObject.Karma < CharacterObjectOptions.KarmaMetamagic)
             {
                 // Make sure the Karma expense would not put them over the limit.
                 MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
+            */
 
             frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Art);
             frmPickArt.ShowDialog(this);
@@ -17018,6 +17001,7 @@ namespace Chummer
 
             CharacterObject.Arts.Add(objArt);
 
+            /*
             if (blnPayWithKarma)
             {
                 string strType = LanguageManager.GetString("String_Art", GlobalOptions.Language);
@@ -17033,6 +17017,7 @@ namespace Chummer
                 // Adjust the character's Karma total.
                 CharacterObject.Karma -= CharacterObjectOptions.KarmaMetamagic;
             }
+            */
 
             IsCharacterUpdateRequested = true;
 

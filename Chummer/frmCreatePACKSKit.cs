@@ -19,7 +19,8 @@
  using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
+ using System.Linq;
+ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
  using Chummer.Backend.Equipment;
@@ -286,21 +287,17 @@ namespace Chummer
             {
                 // <knowledgeskills>
                 objWriter.WriteStartElement("knowledgeskills");
-                // Active Skills.
-                foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                foreach (KnowledgeSkill objSkill in _objCharacter.SkillsSection.Skills.OfType<KnowledgeSkill>())
                 {
-                    if (objSkill.IsKnowledgeSkill)
-                    {
-                        // <skill>
-                        objWriter.WriteStartElement("skill");
-                        objWriter.WriteElementString("name", objSkill.Name);
-                        objWriter.WriteElementString("rating", objSkill.Rating.ToString());
-                        if (!string.IsNullOrEmpty(objSkill.Specialization))
-                            objWriter.WriteElementString("spec", objSkill.Specialization);
-                        objWriter.WriteElementString("category", objSkill.SkillCategory);
-                        // </skill>
-                        objWriter.WriteEndElement();
-                    }
+                    // <skill>
+                    objWriter.WriteStartElement("skill");
+                    objWriter.WriteElementString("name", objSkill.Name);
+                    objWriter.WriteElementString("rating", objSkill.Rating.ToString());
+                    if (!string.IsNullOrEmpty(objSkill.Specialization))
+                        objWriter.WriteElementString("spec", objSkill.Specialization);
+                    objWriter.WriteElementString("category", objSkill.SkillCategory);
+                    // </skill>
+                    objWriter.WriteEndElement();
                 }
                 // </knowledgeskills>
                 objWriter.WriteEndElement();

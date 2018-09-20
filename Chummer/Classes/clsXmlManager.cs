@@ -23,7 +23,6 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Windows.Forms;
-using System.Xml.Linq;
 using System.Xml.XPath;
 
 namespace Chummer
@@ -253,16 +252,20 @@ namespace Chummer
             if (!objReference.DuplicatesChecked || blnHasLiveCustomData)
             {
                 using (XmlNodeList xmlNodeList = objDoc.SelectNodes("/chummer/*"))
+                {
                     if (xmlNodeList?.Count > 0)
+                    {
                         foreach (XmlNode objNode in xmlNodeList)
                         {
                             // Only process nodes that have children and are not the version node
                             if (objNode.Name != "version" && objNode.HasChildNodes)
                             {
-                                // Parse the node into an XDocument for LINQ parsing.
-                                CheckIdNodes(XDocument.Parse(objNode.OuterXml), strFileName);
+                                // Parsing the node into an XDocument for LINQ parsing would result in slightly slower overall code (31 samples vs. 30 samples).
+                                CheckIdNodes(objNode, strFileName);
                             }
                         }
+                    }
+                }
 
                 objReference.DuplicatesChecked = true;
             }
@@ -278,40 +281,58 @@ namespace Chummer
             return new XPathDocument(memStream).CreateNavigator();
         }
 
-        private static void CheckIdNodes(XContainer xmlParentNode, string strFileName)
+        private static void CheckIdNodes(XmlNode xmlParentNode, string strFileName)
         {
-            HashSet<string> lstDuplicateIDs = new HashSet<string>();
+            HashSet<string> setDuplicateIDs = new HashSet<string>();
             List<string> lstItemsWithMalformedIDs = new List<string>();
-            // Not a dictionary specifically so duplicates can be caught. Item1 is ID, Item2 is the item's name.
-            List<Tuple<string, string>> lstItemsWithIDs = new List<Tuple<string, string>>();
+            // Key is ID, Value is a list of the names of all items with that ID.
+            Dictionary<string, List<string>> dicItemsWithIDs = new Dictionary<string, List<string>>();
 
-            foreach (XElement objLoopNode in xmlParentNode.Elements())
+            using (XmlNodeList xmlChildNodeList = xmlParentNode.SelectNodes("*"))
             {
-                string strId = (string)objLoopNode.Element("id") ?? string.Empty;
-                if (!string.IsNullOrEmpty(strId))
+                if (xmlChildNodeList?.Count > 0)
                 {
-                    string strItemName = (string)objLoopNode.Element("name") ?? (string)objLoopNode.Element("stage") ?? (string)objLoopNode.Element("category") ?? strId;
-                    if (!lstDuplicateIDs.Contains(strId) && lstItemsWithIDs.Any(x => x.Item1 == strId))
+                    foreach (XmlNode xmlLoopNode in xmlChildNodeList)
                     {
-                        lstDuplicateIDs.Add(strId);
-                        if (strItemName == strId)
-                            strItemName = string.Empty;
-                    }
-                    if (!strId.IsGuid())
-                        lstItemsWithMalformedIDs.Add(strItemName);
-                    lstItemsWithIDs.Add(new Tuple<string, string>(strId, strItemName));
-                }
+                        string strId = xmlLoopNode["id"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strId))
+                        {
+                            string strItemName = xmlLoopNode["name"]?.InnerText ?? xmlLoopNode["stage"]?.InnerText ?? xmlLoopNode["category"]?.InnerText ?? strId;
+                            if (!strId.IsGuid())
+                                lstItemsWithMalformedIDs.Add(strItemName);
+                            else if (dicItemsWithIDs.TryGetValue(strId, out List<string> lstNamesList))
+                            {
+                                if (!setDuplicateIDs.Contains(strId))
+                                {
+                                    setDuplicateIDs.Add(strId);
+                                    if (strItemName == strId)
+                                        strItemName = string.Empty;
+                                }
 
-                // Perform recursion so that nested elements that also have ids are also checked (e.g. Metavariants)
-                CheckIdNodes(objLoopNode, strFileName);
+                                lstNamesList.Add(strItemName);
+                            }
+                            else
+                                dicItemsWithIDs.Add(strId, new List<string> {strItemName});
+                        }
+
+                        // Perform recursion so that nested elements that also have ids are also checked (e.g. Metavariants)
+                        CheckIdNodes(xmlLoopNode, strFileName);
+                    }
+                }
             }
 
-            if (lstDuplicateIDs.Count > 0)
+            if (setDuplicateIDs.Count > 0)
             {
-                string strDuplicatesNames = string.Join(Environment.NewLine, lstItemsWithIDs.Where(x => lstDuplicateIDs.Contains(x.Item1) && !string.IsNullOrEmpty(x.Item2)).Select(x => x.Item2));
+                string strDuplicatesNames = string.Empty;
+                foreach (IEnumerable<string> lstDuplicateNames in dicItemsWithIDs.Where(x => setDuplicateIDs.Contains(x.Key)).Select(x => x.Value))
+                {
+                    if (!string.IsNullOrEmpty(strDuplicatesNames))
+                        strDuplicatesNames += Environment.NewLine;
+                    strDuplicatesNames += string.Join(Environment.NewLine, lstDuplicateNames);
+                }
                 MessageBox.Show(
                     LanguageManager.GetString("Message_DuplicateGuidWarning", GlobalOptions.Language)
-                        .Replace("{0}", lstDuplicateIDs.Count.ToString())
+                        .Replace("{0}", setDuplicateIDs.Count.ToString())
                         .Replace("{1}", strFileName)
                         .Replace("{2}", strDuplicatesNames));
             }
@@ -326,7 +347,7 @@ namespace Chummer
                         .Replace("{2}", strMalformedIdNames));
             }
         }
-
+        
         private static void AppendTranslations(XmlDocument xmlDataDocument, XmlNode xmlTranslationListParentNode, XmlNode xmlDataParentNode)
         {
             foreach (XmlNode objChild in xmlTranslationListParentNode.ChildNodes)

@@ -23,7 +23,6 @@ namespace Chummer.UI.Table
 {
     public partial class TableCell : UserControl
     {
-        private object _objValue;
         protected Control contentField;
 
         public TableCell(Control content = null)
@@ -38,11 +37,7 @@ namespace Chummer.UI.Table
         /// </summary>
         public Alignment Alignment { get; set; }
 
-        public object Value
-        {
-            get => _objValue;
-            private set => _objValue = value;
-        }
+        public object Value { get; private set; }
 
         /// <summary>
         /// called when a item is updated

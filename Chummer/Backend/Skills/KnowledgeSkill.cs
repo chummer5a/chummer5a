@@ -173,22 +173,19 @@ namespace Chummer.Backend.Skills
                     return _intCachedCyberwareRating = intMaxHardwire;
                 }
 
-                if (IsKnowledgeSkill)
+                int intMaxSkillsoftRating = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillsoftAccess);
+                if (intMaxSkillsoftRating > 0)
                 {
-                    int intMaxSkillsoftRating = Math.Min(IsKnowledgeSkill ? int.MaxValue : ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Skillwire), ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillsoftAccess));
-                    if (intMaxSkillsoftRating > 0)
+                    int intMax = 0;
+                    foreach (Improvement objSkillsoftImprovement in CharacterObject.Improvements)
                     {
-                        int intMax = 0;
-                        foreach (Improvement objSkillsoftImprovement in CharacterObject.Improvements)
+                        if (objSkillsoftImprovement.ImproveType == Improvement.ImprovementType.Skillsoft && objSkillsoftImprovement.ImprovedName == InternalId && objSkillsoftImprovement.Enabled)
                         {
-                            if (objSkillsoftImprovement.ImproveType == Improvement.ImprovementType.Skillsoft && objSkillsoftImprovement.ImprovedName == InternalId && objSkillsoftImprovement.Enabled)
-                            {
-                                intMax = Math.Max(intMax, objSkillsoftImprovement.Value);
-                            }
+                            intMax = Math.Max(intMax, objSkillsoftImprovement.Value);
                         }
-
-                        return _intCachedCyberwareRating = Math.Min(intMax, intMaxSkillsoftRating);
                     }
+
+                    return _intCachedCyberwareRating = Math.Min(intMax, intMaxSkillsoftRating);
                 }
 
                 return _intCachedCyberwareRating = 0;
@@ -387,12 +384,38 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        protected override void SaveExtendedData(XmlTextWriter writer)
+        public override void WriteTo(XmlTextWriter objWriter)
         {
-            writer.WriteElementString("name", Name);
-            writer.WriteElementString("type", _strType);
+            objWriter.WriteStartElement("skill");
+            objWriter.WriteElementString("guid", Id.ToString("D"));
+            objWriter.WriteElementString("suid", SkillId.ToString("D"));
+            objWriter.WriteElementString("isknowledge", bool.TrueString);
+            objWriter.WriteElementString("skillcategory", SkillCategory);
+            objWriter.WriteElementString("karma", KarmaPoints.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("base", BasePoints.ToString(GlobalOptions.InvariantCultureInfo)); //this could acctually be saved in karma too during career
+            objWriter.WriteElementString("notes", Notes);
+            if (!CharacterObject.Created)
+            {
+                objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString());
+            }
+
+            if (Specializations.Count != 0)
+            {
+                objWriter.WriteStartElement("specs");
+                foreach (SkillSpecialization objSpecialization in Specializations)
+                {
+                    objSpecialization.Save(objWriter);
+                }
+                objWriter.WriteEndElement();
+            }
+
+            objWriter.WriteElementString("name", Name);
+            objWriter.WriteElementString("type", _strType);
             if (ForcedName)
-                writer.WriteElementString("forced", null);
+                objWriter.WriteElementString("forced", null);
+
+            objWriter.WriteEndElement();
+
         }
 
         public void Load(XmlNode xmlNode)
@@ -422,7 +445,5 @@ namespace Chummer.Backend.Skills
                 Type = strCategoryString;
             }
         }
-
-        public override bool IsKnowledgeSkill => true;
     }
 }

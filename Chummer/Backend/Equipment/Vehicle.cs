@@ -717,7 +717,7 @@ namespace Chummer.Backend.Equipment
                 // Locations.
                 foreach (XmlNode objXmlLocation in objNode.SelectNodes("locations/location"))
                 {
-                    Location objLocation = new Location(_objCharacter, _lstLocations, "", false);
+                    Location objLocation = new Location(_objCharacter, _lstLocations);
                     objLocation.Load(objXmlLocation);
                 }
             }
