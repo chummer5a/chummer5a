@@ -3873,11 +3873,11 @@
 		</string>
 		<string>
 			<key>Title_Expense_Karma</key>
-			<text>Ausgegebenes Karma</text>
+			<text>Karma anpassen</text>
 		</string>
 		<string>
 			<key>Title_Expense_Nuyen</key>
-			<text>Ausgegebene Nuyen</text>
+			<text>Nuyen anpassen</text>
 		</string>
 		<string>
 			<key>Label_Expense_KarmaAmount</key>
