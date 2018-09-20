@@ -3147,16 +3147,16 @@
 				<translate>Mit Hauern und Hörnern</translate>
 				<altcode>TCT</altcode>
 			</book>
-			<book>
+			<book translated="True">
 				<id>e894804c-2e11-489e-acc8-f9691a79b261</id>
 				<name>Shadows In Focus: Sioux Nation: Counting Coup</name>
-				<translate>Shadows In Focus: Sioux Nation: Counting Coup</translate>
+				<translate>Shadowrun: Mission Sioux-Nation</translate>
 				<altcode>SFCC</altcode>
 			</book>
 			<book>
 				<id>c74e950e-3554-4a44-9060-5a2840302538</id>
 				<name>Dark Terrors</name>
-				<translate>Dark Terrors</translate>
+				<translate>Im Herzen der Dunkelheit</translate>
 				<altcode>DTR</altcode>
 			</book>
 			<book>
