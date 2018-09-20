@@ -4513,6 +4513,12 @@
 				<translate>Gestaltwandel (Dracoform)</translate>
 				<altpage>192</altpage>
 			</power>
+			<power>
+				<id>7a2d7ea2-7460-4d76-be08-dfbf5653ec7d</id>
+				<name>Resonance Hosting</name>
+				<translate>Resonance Hosting</translate>
+				<altpage>168</altpage>
+			</power>
 		</powers>
 	</chummer>
 	<chummer file="critters.xml">
@@ -7992,6 +7998,7 @@
 			<category translate="Weiche Nanowaresysteme">Soft Nanoware</category>
 			<category translate="Spezielle Biodronen-Cyberware">Special Biodrone Cyberware</category>
 			<category translate="Cybersuite" translated="True">Cybersuite</category>
+			<category translate="Cyberimplantatwaffen-Zubehör">Cyber Implant Weapon Accessory</category>
 		</categories>
 		<cyberwares>
 			<cyberware>
@@ -8464,14 +8471,8 @@
 			</cyberware>
 			<cyberware>
 				<id>8b9541a9-e10a-488d-a076-4e5b1c469839</id>
-				<name>Silencer</name>
+				<name>Silencer/Suppressor</name>
 				<translate>Schalldämpfer</translate>
-				<altpage>463</altpage>
-			</cyberware>
-			<cyberware>
-				<id>e8fad85e-01c7-4fda-a5e0-73af457f4cf7</id>
-				<name>Sound Suppressor</name>
-				<translate>Schallunterdrücker</translate>
 				<altpage>463</altpage>
 			</cyberware>
 			<cyberware>
@@ -10144,6 +10145,12 @@
 				<translate>Cranial Shield</translate>
 				<altpage>65</altpage>
 			</cyberware>
+			<cyberware translated="True">
+				<id>b933e9e1-3ec3-45fd-8918-f88cc14d3ea0</id>
+				<name>STATscan</name>
+				<translate>STATscan</translate>
+				<altpage>24</altpage>
+			</cyberware>
 		</cyberwares>
 	</chummer>
 	<chummer file="echoes.xml">
@@ -10386,9 +10393,11 @@
 			<category translate="Währung">Currency</category>
 			<category translate="Cyberterminals">Cyberterminals</category>
 			<category translate="Metatyp-spezifisch">Metatype-Specific</category>
-			<category translate="Maßgeschneidertes Parfum/Rasierwasser">Tailored Perfume/Cologne</category>
-			<category translate="Matrix Accessories">Matrix Accessories</category>
+			<category translate="Maßgeschneidertes Parfüm/Rasierwasser">Tailored Perfume/Cologne</category>
+			<category translate="Matrix-Zubehör">Matrix Accessories</category>
 			<category translate="Booster Chips">Booster Chips</category>
+			<category translate="Custom Cyberdeck Attributes">Custom Cyberdeck Attributes</category>
+			<category translate="Maßgeschneiderte Drogen">Custom Drug</category>
 		</categories>
 		<gears>
 			<gear translated="True">
@@ -14935,8 +14944,8 @@
 			</gear>
 			<gear translated="True">
 				<id>875bf273-1a0d-4a42-80ab-6547d7a1235a</id>
-				<name>Narcoject</name>
-				<translate>Narcoject</translate>
+				<name>Narcojet</name>
+				<translate>Narcojet</translate>
 				<altpage>412</altpage>
 			</gear>
 			<gear>
@@ -17232,13 +17241,13 @@
 			<gear>
 				<id>76e908e1-9f0b-4846-bf9e-d9a3b7fe0e7c</id>
 				<name>Refined Reagents</name>
-				<translate>Refined Reagents</translate>
+				<translate>Geläuterte Reagenzien</translate>
 				<altpage>24</altpage>
 			</gear>
 			<gear>
 				<id>377cfe85-9280-46f9-a0c6-570b862fea70</id>
 				<name>Radical Reagents</name>
-				<translate>Radical Reagents</translate>
+				<translate>Radikale Reagenzien</translate>
 				<altpage>24</altpage>
 			</gear>
 			<gear>
@@ -17939,26 +17948,26 @@
 			</gear>
 			<gear>
 				<id>101acb97-2528-4812-a852-a8591b68145f</id>
-				<name>Attack</name>
-				<translate>Attack</translate>
+				<name>[Custom Cyberdeck] Attack</name>
+				<translate>[Custom Cyberdeck] Attack</translate>
 				<altpage>60</altpage>
 			</gear>
 			<gear>
 				<id>cc6cb58a-a6a1-441d-84f6-a0ea3091317e</id>
-				<name>Sleaze</name>
-				<translate>Sleaze</translate>
+				<name>[Custom Cyberdeck] Sleaze</name>
+				<translate>[Custom Cyberdeck] Sleaze</translate>
 				<altpage>60</altpage>
 			</gear>
 			<gear>
 				<id>c4760ef1-5fe0-477b-8579-a457aaf16bf9</id>
-				<name>Data Processing</name>
-				<translate>Data Processing</translate>
+				<name>[Custom Cyberdeck] Data Processing</name>
+				<translate>[Custom Cyberdeck] Data Processing</translate>
 				<altpage>60</altpage>
 			</gear>
 			<gear>
 				<id>37c5f8bc-025a-4eca-93a8-1e93e0cabcd9</id>
-				<name>Firewall</name>
-				<translate>Firewall</translate>
+				<name>[Custom Cyberdeck] Firewall</name>
+				<translate>[Custom Cyberdeck] Firewall</translate>
 				<altpage>60</altpage>
 			</gear>
 			<gear>
@@ -18278,6 +18287,36 @@
 				<name>Pantheon Industries Micro-Dish Transmitter</name>
 				<translate>Pantheon Industries Micro-Dish Transmitter</translate>
 				<altpage>73</altpage>
+			</gear>
+			<gear>
+				<id>9ff4b57d-4aaf-482f-ab67-66e10ed58e13</id>
+				<name>Ammo: Renraku/Ingram Supermach</name>
+				<translate>Munnition: Renraku/Ingram Supermach</translate>
+				<altpage>140</altpage>
+			</gear>
+			<gear>
+				<id>4d36bc74-d75e-46ce-9739-9b58ca72b518</id>
+				<name>Faceless - Blurred Face</name>
+				<translate>Faceless - Blurred Face</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear>
+				<id>d1d0bbce-a2a2-4d92-b54c-b1152befb96f</id>
+				<name>Trode Patch</name>
+				<translate>Trode Patch</translate>
+				<altpage>60</altpage>
+			</gear>
+			<gear>
+				<id>2d9b2e2d-5460-4e1a-b4dc-82c7092b6a7e</id>
+				<name>Trode Patch Cover</name>
+				<translate>Trode Patch Cover</translate>
+				<altpage>60</altpage>
+			</gear>
+			<gear translated="True">
+				<id>d2a1cc9b-72e3-49df-957c-8ed6fb47a813</id>
+				<name>Narcojet Dazzler</name>
+				<translate>Narcojet Dazzler</translate>
+				<altpage>46</altpage>
 			</gear>
 		</gears>
 	</chummer>
@@ -23563,34 +23602,34 @@
 			</limb>
 		</limbcounts>
 		<blackmarketpipelinecategories>
-			<category translate="Armor">Armor</category>
+			<category translate="Panzerung">Armor</category>
 			<category translate="Bioware">Bioware</category>
 			<category translate="Cyberware">Cyberware</category>
-			<category translate="Drugs">Drugs</category>
-			<category translate="Electronics">Electronics</category>
-			<category translate="Vehicles">Vehicles</category>
-			<category translate="Weapons">Weapons</category>
+			<category translate="Drogen">Drugs</category>
+			<category translate="Electronik">Electronics</category>
+			<category translate="Fahrzeuge und Drohnen">Vehicles</category>
+			<category translate="Waffen">Weapons</category>
 		</blackmarketpipelinecategories>
 		<pdfarguments>
 			<pdfargument>
 				<name>Web Browser</name>
-				<translate>Web Browser</translate>
+				<translate>Webbrowser</translate>
 			</pdfargument>
 			<pdfargument>
 				<name>Acrobat-style</name>
-				<translate>Acrobat-style</translate>
+				<translate>Acrobat-Stil</translate>
 			</pdfargument>
 			<pdfargument>
 				<name>Unix-style</name>
-				<translate>Unix-style</translate>
+				<translate>Unix-Stil</translate>
 			</pdfargument>
 			<pdfargument>
 				<name>Sumatra - Re-use instance</name>
-				<translate>Sumatra - Re-use instance</translate>
+				<translate>Sumatra - Instanz wiederverwenden</translate>
 			</pdfargument>
 			<pdfargument>
 				<name>Sumatra</name>
-				<translate>Sumatra</translate>
+				<translate>Sumatra </translate>
 			</pdfargument>
 		</pdfarguments>
 	</chummer>
@@ -29752,6 +29791,42 @@
 				<translate>Dissonant Stream: Morphinae</translate>
 				<altpage>0</altpage>
 			</quality>
+			<quality>
+				<id>90691f29-5b81-4a81-9ebc-21f2f5da1d55</id>
+				<name>Seer</name>
+				<translate>Seher</translate>
+				<altpage>48</altpage>
+			</quality>
+			<quality>
+				<id>ecb5ab50-68c9-45ee-9fb4-c2f0b3051096</id>
+				<name>Null Wizard</name>
+				<translate>Nullzauberer</translate>
+				<altpage>48</altpage>
+			</quality>
+			<quality>
+				<id>8bdd4868-191c-4c28-800b-526cb39f7786</id>
+				<name>One With the Matrix I</name>
+				<translate>One With the Matrix I</translate>
+				<altpage>97</altpage>
+			</quality>
+			<quality>
+				<id>3c83d73e-7aa7-4fe5-8f03-6e983648e2eb</id>
+				<name>One With the Matrix II</name>
+				<translate>One With the Matrix II</translate>
+				<altpage>97</altpage>
+			</quality>
+			<quality>
+				<id>b705a89c-219c-432c-ab47-98ff6c975b4a</id>
+				<name>One With the Matrix III</name>
+				<translate>One With the Matrix III</translate>
+				<altpage>97</altpage>
+			</quality>
+			<quality>
+				<id>c5311ee0-8a9b-41b9-857f-28541090968a</id>
+				<name>Paragon</name>
+				<translate>Paragon</translate>
+				<altpage>102</altpage>
+			</quality>
 		</qualities>
 	</chummer>
 	<chummer file="skills.xml">
@@ -33647,9 +33722,9 @@
 				<name>Spanish: Aztlaner</name>
 				<translate>Spanisch: Aztlaner</translate>
 				<specs>
-					<spec translate="Read/Write">Read/Write</spec>
-					<spec translate="Speak">Speak</spec>
-					<spec translate="Dialect">Dialect</spec>
+					<spec translate="Lesen/Schreiben">Read/Write</spec>
+					<spec translate="Sprechen">Speak</spec>
+					<spec translate="Dialekt">Dialect</spec>
 					<spec translate="Lingo">Lingo</spec>
 				</specs>
 			</skill>
@@ -33658,6 +33733,20 @@
 				<name>Area Knowledge: Neo-Tokyo</name>
 				<translate>Ortskenntnis: Neo-Tokyo</translate>
 				<specs />
+			</skill>
+			<skill>
+				<id>0e5b89c5-1143-4e73-ab71-0700910fcaaa</id>
+				<name>Mixed Unit Tactics</name>
+				<translate>Taktik gemischter Einheiten</translate>
+				<specs>
+					<spec translate="Luftwaffe">Aerial/Aircraft</spec>
+					<spec translate="Gepanzerte Infanterie">Armored Infantry</spec>
+					<spec translate="Artillerie">Artillery</spec>
+					<spec translate="Marine">Naval</spec>
+					<spec translate="Mechanisierte Infanterie">Mechanized Infantry</spec>
+					<spec translate="Gewöhnliche Infanterie">Standard Infantry</spec>
+					<spec translate="[Einheitentyp]">[Single Unit Type]</spec>
+				</specs>
 			</skill>
 		</knowledgeskills>
 	</chummer>
@@ -35851,6 +35940,18 @@
 				<name>Machine Sprite</name>
 				<translate>Maschinen-Sprite</translate>
 				<altpage>256</altpage>
+			</spirit>
+			<spirit>
+				<id>74db183e-2fef-4e6d-84a3-63e641d93bf0</id>
+				<name>Companion Sprite</name>
+				<translate>Companion Sprite</translate>
+				<altpage>100</altpage>
+			</spirit>
+			<spirit>
+				<id>80788abc-4b14-40b0-8ffd-e36fe60653cb</id>
+				<name>Generalist Sprite</name>
+				<translate>Generalist Sprite</translate>
+				<altpage>100</altpage>
 			</spirit>
 		</spirits>
 	</chummer>
@@ -42948,7 +43049,7 @@
 				<translate>Narcoject PEP</translate>
 				<altpage>45</altpage>
 			</weapon>
-			<weapon>
+			<weapon translated="True">
 				<id>823ffbe6-b8a9-43f6-91e1-ba3e312ce577</id>
 				<name>Narcoject Trackstopper</name>
 				<translate>Narcoject Trackstopper</translate>
@@ -43092,6 +43193,12 @@
 				<translate>Minigranate: MCT/Winchester-Howe Hornet</translate>
 				<altpage>139</altpage>
 			</weapon>
+			<weapon translated="True">
+				<id>93190477-d1f9-45d0-bee9-9f9bc9a29638</id>
+				<name>Renraku/Ingram Supermach 200</name>
+				<translate>Renraku/Ingram Supermach 200</translate>
+				<altpage>139</altpage>
+			</weapon>
 		</weapons>
 		<accessories>
 			<accessory>
@@ -43198,7 +43305,7 @@
 			</accessory>
 			<accessory>
 				<id>0da6149e-982f-4051-825b-52c1b79c7e52</id>
-				<name>Silencer</name>
+				<name>Silencer/Suppressor</name>
 				<translate>Schalldämpfer</translate>
 				<altpage>435</altpage>
 			</accessory>
@@ -43784,12 +43891,6 @@
 				<translate>HK Urban Fighter Ersatzladestreifen</translate>
 				<altpage>32</altpage>
 			</accessory>
-			<accessory>
-				<id>abe43262-a891-455b-849b-df2bb05a7ef8</id>
-				<name>Additional Clip/Magazine (Non-Pistol)</name>
-				<translate>Zusätzlicher Ladestreifen/Zusätzliches internes Magazin</translate>
-				<altpage>47</altpage>
-			</accessory>
 			<accessory translated="True">
 				<id>37d3ffa9-b33e-4280-845c-bee0d063f193</id>
 				<name>Krime Pack</name>
@@ -43813,6 +43914,18 @@
 				<name>Krime Stun-O-Net</name>
 				<translate>Krime Betäubungsbajonett</translate>
 				<altpage>46</altpage>
+			</accessory>
+			<accessory>
+				<id>d2a1cc9b-72e3-49df-957c-8ed6fb47a813</id>
+				<name>Additional Clip/Magazine</name>
+				<translate>Zusätzlicher Ladestreifen/Magazin</translate>
+				<altpage>47</altpage>
+			</accessory>
+			<accessory>
+				<id>20d18222-448c-47f8-bb4e-be307a0cd995</id>
+				<name>Additional Clip/Magazine (Pistol)</name>
+				<translate>Zusätzlicher Ladestreifen/Magazin (Pistole)</translate>
+				<altpage>47</altpage>
 			</accessory>
 		</accessories>
 	</chummer>
@@ -44457,6 +44570,12 @@
 				<name>Armor</name>
 				<translate>Panzerung</translate>
 				<altpage>Adjusts the character's Armor Rating by the value entered. Positive numbers improve Armor. Negative numbers reduce Armor.</altpage>
+			</improvement>
+			<improvement>
+				<id>dodge</id>
+				<name>Dodge</name>
+				<translate>Dodge</translate>
+				<altpage>Increases the character's Dodge pool by the listed value.</altpage>
 			</improvement>
 		</improvements>
 	</chummer>
@@ -45510,6 +45629,51 @@
 				<translate>Wasserzeichen</translate>
 				<altpage>254</altpage>
 			</power>
+			<power>
+				<name>Bodyguard</name>
+				<translate>Bodyguard</translate>
+				<altpage>100</altpage>
+			</power>
+			<power>
+				<name>Shield</name>
+				<translate>Shield</translate>
+				<altpage>100</altpage>
+			</power>
+			<power>
+				<name>Active Analytics</name>
+				<translate>Active Analytics</translate>
+				<altpage>101</altpage>
+			</power>
+			<power>
+				<name>Borrowed IP</name>
+				<translate>Borrowed IP</translate>
+				<altpage>101</altpage>
+			</power>
+			<power>
+				<name>Decompiling Resistance</name>
+				<translate>Decompiling Resistance</translate>
+				<altpage>101</altpage>
+			</power>
+			<power>
+				<name>Enhance</name>
+				<translate>Enhance</translate>
+				<altpage>101</altpage>
+			</power>
+			<power>
+				<name>Navi</name>
+				<translate>Navi</translate>
+				<altpage>101</altpage>
+			</power>
+			<power>
+				<name>Resilient Code</name>
+				<translate>Resilient Code</translate>
+				<altpage>101</altpage>
+			</power>
+			<power>
+				<name>Resonance Spooling</name>
+				<translate>Resonance Spooling</translate>
+				<altpage>101</altpage>
+			</power>
 		</powers>
 	</chummer>
 	<chummer file="gameplayoptions.xml">
@@ -45722,5 +45886,10 @@
 				<altpage>191</altpage>
 			</drugcomponent>
 		</drugcomponents>
+		<categories>
+			<category translate="Basis">Foundation</category>
+			<category translate="Baustein">Block</category>
+			<category translate="Verstärker">Enhancer</category>
+		</categories>
 	</chummer>
 </chummer>
