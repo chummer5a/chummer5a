@@ -1734,10 +1734,6 @@
 			<text>Begrenzt</text>
 		</string>
 		<string>
-			<key>String_AttributePilot</key>
-			<text>Pilot</text>
-		</string>
-		<string>
 			<key>String_AttributeResponse</key>
 			<text>Prozessor</text>
 		</string>
@@ -1983,7 +1979,7 @@
 		</string>
 		<string>
 			<key>String_ExpenseRemoveNegativeQuality</key>
-			<text>Nachteil entfernen</text>
+			<text>Gelöschter Nachteil</text>
 		</string>
 		<string>
 			<key>String_ExpenseSwapNegativeQuality</key>
@@ -7309,14 +7305,6 @@
 			<text>Wähle eine Kunst</text>
 		</string>
 		<string>
-			<key>Title_SelectEnhancement</key>
-			<text>Wähle eine Verbesserung</text>
-		</string>
-		<string>
-			<key>Title_SelectEnchantment</key>
-			<text>Wähle eine Verbesserung</text>
-		</string>
-		<string>
 			<key>Title_SelectRitual</key>
 			<text>Wähle ein Ritual</text>
 		</string>
@@ -7905,10 +7893,6 @@
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Neighborhood</key>
 			<text>[{0}/{1}]</text>
-		</string>
-		<string>
-			<key>Label_SelectAdvancedLifestyle_Neighborhood</key>
-			<text>Gegend:</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_UnusedLP</key>
@@ -9169,6 +9153,114 @@
 		<string>
 			<key>Checkbox_Option_PrioritySpellsAsAdeptPowers</key>
 			<text>Verwenden freier Zaubersprüche als Kraftpunkte für Magiepriorität erlauben</text>
+		</string>
+		<string>
+			<key>Label_AddictionRating</key>
+			<text>Abhängigkeitswert:</text>
+		</string>
+		<string>
+			<key>Label_CrashEffect</key>
+			<text>Nachwirkung:</text>
+		</string>
+		<string>
+			<key>MessageTitle_SelectAdvancedLifestyle_OverLPLimit</key>
+			<text>Über LP Limit</text>
+		</string>
+		<string>
+			<key>Label_SelectMartialArt_IncludedTechniques</key>
+			<text>Erlaubt das Erlernen der folgenden Techniken:</text>
+		</string>
+		<string>
+			<key>Node_Block</key>
+			<text>Bausteine</text>
+		</string>
+		<string>
+			<key>Node_Foundation</key>
+			<text>Basis</text>
+		</string>
+		<string>
+			<key>Node_Enhancer</key>
+			<text>Verstärker</text>
+		</string>
+		<string>
+			<key>String_Arts</key>
+			<text>Künste</text>
+		</string>
+		<string>
+			<key>String_CombatTurn</key>
+			<text>Kampfrunde</text>
+		</string>
+		<string>
+			<key>String_CombatTurns</key>
+			<text>Kampfrunden</text>
+		</string>
+		<string>
+			<key>String_DamageUnresisted</key>
+			<text>Schaden, ohne Widerstandsprobe</text>
+		</string>
+		<string>
+			<key>String_Enhancements</key>
+			<text>Verbesserungen</text>
+		</string>
+		<string>
+			<key>String_ExpenseRemovePositiveQuality</key>
+			<text>Gelöschter Vorteil</text>
+		</string>
+		<string>
+			<key>String_Expenses</key>
+			<text>Aufwendungen</text>
+		</string>
+		<string>
+			<key>String_Metamagics</key>
+			<text>Metamagien</text>
+		</string>
+		<string>
+			<key>String_Locations</key>
+			<text>Orte</text>
+		</string>
+		<string>
+			<key>String_Minute</key>
+			<text>Minute</text>
+		</string>
+		<string>
+			<key>String_Minutes</key>
+			<text>Minuten</text>
+		</string>
+		<string>
+			<key>String_PerLevel</key>
+			<text>Pro Stufe</text>
+		</string>
+		<string>
+			<key>String_Second</key>
+			<text>Sekunde</text>
+		</string>
+		<string>
+			<key>String_Seconds</key>
+			<text>Sekunden</text>
+		</string>
+		<string>
+			<key>String_Immediate</key>
+			<text>Sofort</text>
+		</string>
+		<string>
+			<key>String_TotalRating</key>
+			<text>Gesamtstufe</text>
+		</string>
+		<string>
+			<key>String_Settings</key>
+			<text>Optionen</text>
+		</string>
+		<string>
+			<key>String_GeneratedImprovements</key>
+			<text>Erzeugte Verbesserungen</text>
+		</string>
+		<string>
+			<key>String_LegacyFixes</key>
+			<text>Legacy-Korrekturen</text>
+		</string>
+		<string>
+			<key>String_MentorSpirit</key>
+			<text>Schutzgeist</text>
 		</string>
 	</strings>
 </chummer>
