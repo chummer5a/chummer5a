@@ -9142,5 +9142,33 @@
 			<key>String_Initializing</key>
 			<text>Initialisiere ...</text>
 		</string>
+		<string>
+			<key>Checkbox_Options_LiveUpdateCleanCharacterFiles</key>
+			<text>Änderungen geöffneter Charaktere automatisch laden, wenn keine ausstehenden Änderungen zu speichern sind</text>
+		</string>
+		<string>
+			<key>Checkbox_Option_HideItemsOverAvailLimit</key>
+			<text>Einträge ausblenden, die über dem Verfügbarkeitslimit zur Charaktererstellung liegen</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_AllowHoverIncrement</key>
+			<text>Veränderung von Werten über numerische Drehfelder erlauben, indem mit der Maus darüber gefahren wird</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_MysAdeptSecondMAGAttribute</key>
+			<text>Magieradepten nutzen 2. MAG-Attribut für Adeptenkräfte anstatt besonderer Kraftpunkteregeln</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_CompensateSkillGroupKarmaDifference</key>
+			<text>Höhere Karma-Kosten beim Erhöhen der letzte Fertigkeit einer Fertigkeitsgruppe angleichen</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_UnarmedSkillImprovements</key>
+			<text>Mit waffenlosen Kampftechniken eingesetzte Waffen erahlten den Bonus für Ersteres</text>
+		</string>
+		<string>
+			<key>Checkbox_Option_PrioritySpellsAsAdeptPowers</key>
+			<text>Verwenden freier Zaubersprüche als Kraftpunkte für Magiepriorität erlauben</text>
+		</string>
 	</strings>
 </chummer>
