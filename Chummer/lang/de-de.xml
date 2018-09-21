@@ -7390,11 +7390,11 @@
 		</string>
 		<string>
 			<key>Message_Improvement_EmptySelectionList</key>
-			<text>No eligible items could be selected for this effect!</text>
+			<text>Für diesen Effekt konnten keine passenden Elemente ausgewählt werden!</text>
 		</string>
 		<string>
 			<key>Message_Improvement_EmptySelectionListNamed</key>
-			<text>No eligible items could be selected for {0} to affect!</text>
+			<text>Es konnten keine geeigneten Elemente ausgewählt werden, die sich auf {0} auswirken!</text>
 		</string>
 		<string>
 			<key>String_MetamagicSkillBase</key>
@@ -9148,7 +9148,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_UnarmedSkillImprovements</key>
-			<text>Mit waffenlosen Kampftechniken eingesetzte Waffen erahlten den Bonus für Ersteres</text>
+			<text>Mit waffenlosen Kampftechniken eingesetzte Waffen erhalten den Bonus für Ersteres</text>
 		</string>
 		<string>
 			<key>Checkbox_Option_PrioritySpellsAsAdeptPowers</key>
@@ -9217,6 +9217,22 @@
 		<string>
 			<key>String_Locations</key>
 			<text>Orte</text>
+    </string>
+    <string>
+			<key>String_NotApplicable</key>
+			<text>N/A</text>
+		</string>
+		<string>
+			<key>String_Version</key>
+			<text>Version</text>
+		</string>
+		<string>
+			<key>String_Colon</key>
+			<text>:</text>
+		</string>
+		<string>
+			<key>String_Sensor</key>
+			<text>Sensor</text>
 		</string>
 		<string>
 			<key>String_Minute</key>
@@ -9261,6 +9277,50 @@
 		<string>
 			<key>String_MentorSpirit</key>
 			<text>Schutzgeist</text>
+    </string>
+    <string>
+			<key>Menu_Main_ClearUnpinnedItems</key>
+			<text>&amp;Ungeöffnete Elemente entfernen</text>
+		</string>
+		<string>
+			<key>String_Cyberzombie</key>
+			<text>Cyberzombie</text>
+		</string>
+		<string>
+			<key>Message_Updater_CleanReinstallPrompt</key>
+			<text>Bei einer Neuinstallation werden alle Dateien im Chummer5a-Verzeichnis gelöscht, die nicht zum Hauptdownload gehören. Das schließt benutzerspezifische Ergänzungen, automatisch generierte Zwischenspeicherungen, benutzerdefinierte Datenblätter, individuelle Übersetzungen und andere vom Standard abweichende Einstellungen ein.\n\nSind Sie sicher, dass Sie eine Neuinstallation durchführen möchten?</text>
+		</string>
+		<string>
+			<key>String_Settings</key>
+			<text>Settings</text>
+		</string>
+		<string>
+			<key>Message_DuplicateGuidWarning</key>
+			<text>In der Datei {1} wurden {0} Einträge mit der gleichen GUID gefunden. Falls Sie benutzerspezifische Inhalte verwenden, stellen Sie bitte sicher, dass Sie für jedes hinzugefügte Element eine neue GUID verwenden.\n\nEinträge mit doppelter GUID:\n{2}</text>
+		</string>
+		<string>
+			<key>Message_NonGuidIdWarning</key>
+			<text>In der Datei {1} wurden {0} Einträge mit IDs gefunden, die nicht als GUID erkannt werden können. Falls Sie benutzerspezifische Inhalte verwenden, stellen Sie bitte sicher, dass ID-Felder stets mit einer eindeutigen GUID versehen sind.\n\nEinträge mit nicht GUID-konformen ID-Feldern:\n{2}</text>
+		</string>
+		<string>
+			<key>Message_ImprovementLoadError</key>
+			<text>Chummer5a ist beim Laden einer oder mehrerer Verbesserungen für diesen Charakter auf einen Fehler gestoßen. Dies liegt wahrscheinlich daran, dass eine bestimmte Verbesserung, die in einer älteren Version von Chummer vorhanden war, in einer neueren Version signifikant geändert wurde.\n\n\nDas Problem kann behoben werden, indem man nur die Verbesserungen, die Probleme verursacht haben, erneut anwendet.\n\n\nMöchten Sie diese Verbesserungen jetzt erneut anwenden? Wenn Sie dies nicht tun, können die Probleme trotzdem behoben werden, indem Sie alle Verbesserungen über 'Spezial' &gt; 'Verbesserungen nochmal anwenden' entsprechend anpassen.</text>
+		</string>
+		<string>
+			<key>MessageTitle_ImprovementLoadError</key>
+			<text>Beim Laden von Verbesserungen ist ein Fehler aufgetreten.</text>
+		</string>
+		<string>
+			<key>Message_InvalidCharacters</key>
+			<text>Dieser Text enthält ein oder mehrere ungültige Zeichen. Ungültige Zeichen: "\n Bitte entfernen Sie alle ungültigen Zeichen und versuchen Sie es erneut.</text>
+		</string>
+		<string>
+			<key>Message_MissingCustomDataDirectories</key>
+			<text>Dieser Charakter wurde mit den folgenden benutzerspezifischen Datenverzeichnissen erstellt, die nicht aktiviert sind:\n\n{0}\n\nDadurch können Fehler entstehen. Möchten Sie den Charakter dennoch laden?</text>
+		</string>
+		<string>
+			<key>Message_ConfirmKarmaExpenseKnowledgeSkill</key>
+			<text>Sind Sie sicher, dass Sie {2} Karma ausgeben möchten um {0} auf {1} zu verbessern, um diese Fertigkeit auf {3} zu setzen?</text>
 		</string>
 	</strings>
 </chummer>

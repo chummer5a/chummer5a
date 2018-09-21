@@ -17742,13 +17742,13 @@
 				<translate>Broken Sony CIY-720</translate>
 				<altpage>249</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>de50bb02-7f90-4c76-9984-e7d2b3248726</id>
 				<name>GPS Monitor</name>
 				<translate>GPS Monitor</translate>
 				<altpage>424</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>3fc588dc-ec8b-4483-8796-f8a068698ea4</id>
 				<name>Mini-Multitool</name>
 				<translate>Mini-Multitool</translate>
@@ -23602,13 +23602,13 @@
 			</limb>
 		</limbcounts>
 		<blackmarketpipelinecategories>
-			<category translate="Armor">Armor</category>
+			<category translate="Panzerung">Armor</category>
 			<category translate="Bioware">Bioware</category>
 			<category translate="Cyberware">Cyberware</category>
-			<category translate="Drugs">Drugs</category>
-			<category translate="Electronics">Electronics</category>
-			<category translate="Vehicles">Vehicles</category>
-			<category translate="Weapons">Weapons</category>
+			<category translate="Drogen">Drugs</category>
+			<category translate="Elektronik">Electronics</category>
+			<category translate="Fahrzeuge und Drohnen">Vehicles</category>
+			<category translate="Waffen">Weapons</category>
 		</blackmarketpipelinecategories>
 		<pdfarguments>
 			<pdfargument>
