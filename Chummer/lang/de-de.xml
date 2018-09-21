@@ -9217,8 +9217,8 @@
 		<string>
 			<key>String_Locations</key>
 			<text>Orte</text>
-    </string>
-    <string>
+		</string>
+		<string>
 			<key>String_NotApplicable</key>
 			<text>N/A</text>
 		</string>
@@ -9277,8 +9277,8 @@
 		<string>
 			<key>String_MentorSpirit</key>
 			<text>Schutzgeist</text>
-    </string>
-    <string>
+		</string>
+		<string>
 			<key>Menu_Main_ClearUnpinnedItems</key>
 			<text>&amp;Ungeöffnete Elemente entfernen</text>
 		</string>
@@ -9289,10 +9289,6 @@
 		<string>
 			<key>Message_Updater_CleanReinstallPrompt</key>
 			<text>Bei einer Neuinstallation werden alle Dateien im Chummer5a-Verzeichnis gelöscht, die nicht zum Hauptdownload gehören. Das schließt benutzerspezifische Ergänzungen, automatisch generierte Zwischenspeicherungen, benutzerdefinierte Datenblätter, individuelle Übersetzungen und andere vom Standard abweichende Einstellungen ein.\n\nSind Sie sicher, dass Sie eine Neuinstallation durchführen möchten?</text>
-		</string>
-		<string>
-			<key>String_Settings</key>
-			<text>Settings</text>
 		</string>
 		<string>
 			<key>Message_DuplicateGuidWarning</key>
