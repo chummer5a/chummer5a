@@ -18,8 +18,10 @@
  */
 namespace Chummer
 {
-    interface IHasSource
+    public interface IHasSource
     {
+        SourceString SourceDetail { get; }
+
         void SetSourceDetail(System.Windows.Forms.Control sourceControl);
     }
 }

@@ -335,10 +335,28 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string SourceID => Type == TraditionType.None ? string.Empty : _strSourceGuid;
 
-        /// <summary>
-        /// String used to display Tradition's source
-        /// </summary>
-        public SourceString SourceDetail { get; set; }
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == null)
+                {
+                    string strSource = Source;
+                    string strPage = Page(GlobalOptions.Language);
+                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                    {
+                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                    }
+                }
+
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Bonus node from the XML file.
@@ -920,24 +938,9 @@ namespace Chummer.Backend.Uniques
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (SourceDetail != null && SourceDetail.Language == GlobalOptions.Language)
-            {
-                SourceDetail.SetControl(sourceControl);
-            }
-            else
-            {
-                string strSource = Source;
-                string strPage = Page(GlobalOptions.Language);
-                if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
-                {
-                    SourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
-                    SourceDetail.SetControl(sourceControl);
-                }
-                else
-                {
-                    Utils.BreakIfDebug();
-                }
-            }
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
         }
 
         [NotifyPropertyChangedInvocator]

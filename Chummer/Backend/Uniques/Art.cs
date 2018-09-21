@@ -84,7 +84,28 @@ namespace Chummer
             }*/
         }
 
-        public SourceString SourceDetail { get; set; }
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == null)
+                {
+                    string strSource = Source;
+                    string strPage = Page(GlobalOptions.Language);
+                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                    {
+                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                    }
+                }
+
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -321,24 +342,9 @@ namespace Chummer
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (SourceDetail != null && SourceDetail.Language == GlobalOptions.Language)
-            {
-                SourceDetail.SetControl(sourceControl);
-            }
-            else
-            {
-                string strSource = Source;
-                string strPage = Page(GlobalOptions.Language);
-                if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
-                {
-                    SourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
-                    SourceDetail.SetControl(sourceControl);
-                }
-                else
-                {
-                    Utils.BreakIfDebug();
-                }
-            }
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
         }
     }
 }
