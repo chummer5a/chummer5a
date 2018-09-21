@@ -314,22 +314,6 @@
 			<text>Maximal erlaubte Kapazität:</text>
 		</string>
 		<string>
-			<key>Label_BallisticArmorShort</key>
-			<text>Ballistisch:</text>
-		</string>
-		<string>
-			<key>Label_BallisticArmorLong</key>
-			<text>Ballistische Panzerung:</text>
-		</string>
-		<string>
-			<key>Label_ImpactArmorShort</key>
-			<text>Stoß:</text>
-		</string>
-		<string>
-			<key>Label_ImpactArmorLong</key>
-			<text>Stoßpanzerung:</text>
-		</string>
-		<string>
 			<key>Label_Test</key>
 			<text>Probe:</text>
 		</string>
@@ -2840,22 +2824,6 @@
 			<text>Aus der angelegten Panzerung und -modifikationen wurden die Panzerungsbehinderung und der höchste Panzerungswert ermittelt.</text>
 		</string>
 		<string>
-			<key>Tip_ArmorDegradationBPlus</key>
-			<text>Repariere Ballistische Panzerung.</text>
-		</string>
-		<string>
-			<key>Tip_ArmorDegradationBMinus</key>
-			<text>Verschleiße Ballistische Panzerung.</text>
-		</string>
-		<string>
-			<key>Tip_ArmorDegradationIPlus</key>
-			<text>Repariere Stoßpanzerung.</text>
-		</string>
-		<string>
-			<key>Tip_ArmorDegradationIMinus</key>
-			<text>Verschleiße Stoßpanzerung.</text>
-		</string>
-		<string>
 			<key>Label_Conceal</key>
 			<text>Verbergen:</text>
 		</string>
@@ -3260,14 +3228,6 @@
 			<text>Astrale Initiativedurchgänge:</text>
 		</string>
 		<string>
-			<key>Label_OtherBallistic</key>
-			<text>Ballistische Panzerung:</text>
-		</string>
-		<string>
-			<key>Label_OtherImpact</key>
-			<text>Stoßpanzerung:</text>
-		</string>
-		<string>
 			<key>Label_OtherEssence</key>
 			<text>Essenz:</text>
 		</string>
@@ -3340,14 +3300,6 @@
 			<text>Charaktere haben 3 Astrale Initiativedurchgänge</text>
 		</string>
 		<string>
-			<key>Tip_OtherBallisticArmor</key>
-			<text>Nur der höchste Wert der Ballistischen Panzerung wird benutzt. Wenn der Wert aller Panzerungsteile über KON × 2 liegt, unterliegen Sie einem Abzug von -1 auf GES für jeweils 2 Punkte Überhang.</text>
-		</string>
-		<string>
-			<key>Tip_OtherImpactArmor</key>
-			<text>Nur der höchste Wert der Stoßpanzerung wird benutzt. Wenn der aller Panzerungsteile über KON × 2 liegt, unterliegen Sie einem Abzug von -1 auf GES für jeweils 2 Punkte Überhang.</text>
-		</string>
-		<string>
 			<key>Tip_OtherEssence</key>
 			<text>Charaktere starten mit 6 Essenz, welche durch Cyberware und Bioware verringert wird.</text>
 		</string>
@@ -3390,14 +3342,6 @@
 		<string>
 			<key>Label_CMCMPenalty</key>
 			<text>Verletzungsmodifikator:</text>
-		</string>
-		<string>
-			<key>Label_CMBallistic</key>
-			<text>Ballistische Panzerung:</text>
-		</string>
-		<string>
-			<key>Label_CMImpact</key>
-			<text>Stoßpanzerung:</text>
 		</string>
 		<string>
 			<key>Label_CMResistancePool</key>
@@ -4592,10 +4536,6 @@
 			<text>Sicherheit:</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_TotalLP</key>
-			<text>Totale LP:</text>
-		</string>
-		<string>
 			<key>Message_SelectAdvancedLifestyle_LifestyleName</key>
 			<text>Bitte benennen Sie Ihren Lebensstil.</text>
 		</string>
@@ -4634,10 +4574,6 @@
 		<string>
 			<key>String_SelectBP_KarmaSummary</key>
 			<text>Geben Sie die Menge an Karma ein, mit der Sie Ihren Charakter erstellen dürfen (Gewöhnlich {0}).</text>
-		</string>
-		<string>
-			<key>Tip_SelectBP_IgnoreRules</key>
-			<text>Wenn aktiviert, werden alle Charakter-Generierungsvorschriften ignoriert (Anzahl GP, maximal Werte usw.). Nur für NSCs gedacht.</text>
 		</string>
 		<string>
 			<key>Title_SelectContactConnection</key>
@@ -4820,38 +4756,6 @@
 			<text>Nachteil:</text>
 		</string>
 		<string>
-			<key>Title_SelectMetamagic</key>
-			<text>Metamagische Technik auswählen</text>
-		</string>
-		<string>
-			<key>Title_SelectMetamagic_Echo</key>
-			<text>Wandlung auswählen</text>
-		</string>
-		<string>
-			<key>Message_SelectMetamagic_MetamagicRequirement</key>
-			<text>Sie erfüllen nicht die nötigen Voraussetzungen für diese Metamagie. Sie müssen alle Voraussetzungen erfüllen:</text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectMetamagic_MetamagicRequirement</key>
-			<text>Metamagische Voraussetzung</text>
-		</string>
-		<string>
-			<key>Message_SelectMetamagic_EchoRequirement</key>
-			<text>Sie erfüllen nicht die nötigen Voraussetzungen für dieses Echo. Sie müssen alle Voraussetzungen erfüllen:</text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectMetamagic_EchoRequirement</key>
-			<text>Echo Anforderungen</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectMetamagic_LimitList</key>
-			<text>Nur Metamagische Techniken anzeigen, die ich wählen kann.</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectEcho_LimitList</key>
-			<text>Nur Echos anzeigen, die ich wählen kann.</text>
-		</string>
-		<string>
 			<key>Title_SelectNexus</key>
 			<text>Nexus bauen</text>
 		</string>
@@ -4990,10 +4894,6 @@
 		<string>
 			<key>Title_SelectComplexForm</key>
 			<text>Programm auswählen</text>
-		</string>
-		<string>
-			<key>Label_SelectProgram_CommonlyUsedSkill</key>
-			<text>Häufig benutzte Fertigkeiten:</text>
 		</string>
 		<string>
 			<key>Title_SelectProgramOption</key>
@@ -5256,14 +5156,6 @@
 			<text>Charakter kann nicht geladen werden</text>
 		</string>
 		<string>
-			<key>String_BallisticEncumbrance</key>
-			<text>Belastung durch ballistische Panzerung</text>
-		</string>
-		<string>
-			<key>String_ImpactEncumbrance</key>
-			<text>Belastung durch Stoßpanzerung</text>
-		</string>
-		<string>
 			<key>Label_Options_ComplexFormSkillsoft</key>
 			<text>Komplexe-Form Talentsoft</text>
 		</string>
@@ -5300,10 +5192,6 @@
 			<text>Antimagiefokus</text>
 		</string>
 		<string>
-			<key>Label_Options_DiviningFocus</key>
-			<text>Weissagungsfokus</text>
-		</string>
-		<string>
 			<key>Label_Options_InfusionFocus</key>
 			<text>Infusionsfokus</text>
 		</string>
@@ -5314,10 +5202,6 @@
 		<string>
 			<key>Label_Options_PowerFocus</key>
 			<text>Kraftfokus</text>
-		</string>
-		<string>
-			<key>Label_Options_ShieldingFocus</key>
-			<text>Abschirmungsfokus</text>
 		</string>
 		<string>
 			<key>Label_Options_SpellcastingFocus</key>
@@ -5338,10 +5222,6 @@
 		<string>
 			<key>Label_Options_WeaponFocus</key>
 			<text>Waffenfokus</text>
-		</string>
-		<string>
-			<key>Label_Options_DowsingFocus</key>
-			<text>Schwingungsfokus</text>
 		</string>
 		<string>
 			<key>Checkbox_Option_AllowExceedAttributeBP</key>
@@ -7069,10 +6949,6 @@
 			<text>Aktivierung dieser Hausregel erlaubt es Charakteren mit zwei Cyberbeinen die Geschicklichkeit der Cyberbeine als Modifikator für die Laufgeschwindigkeit zu benutzen.</text>
 		</string>
 		<string>
-			<key>Tip_OptionsDontDoubleQualities</key>
-			<text>Aktivierung dieser Hausregel erlaubt es Charakteren im Karrieremodus, Vorteile zu kaufen und Nachteile abzubauen, ohne dafür die doppelten Kosten zu zahlen. </text>
-		</string>
-		<string>
 			<key>Tip_OptionsExceptionalNotMaxed</key>
 			<text>Aktivierung dieser Hausregel erlaubt es, bis zu zwei Attribute und das Metatyp-Limit zu steigern, wenn eines der Attribute durch Außergewöhnliches Attribut gesteigert wurde.</text>
 		</string>
@@ -7245,14 +7121,6 @@
 			<text>Jeden eingeschränkten Gegenstand Lizensieren lassen.</text>
 		</string>
 		<string>
-			<key>Checkbox_Options_Knucks</key>
-			<text>Schlagringe erhalten Boni, die waffenlosen Kampf betreffen</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_DontDoubleQualities</key>
-			<text>Kosten für Vor-/Nachteile im Karrieremodus nicht verdoppeln</text>
-		</string>
-		<string>
 			<key>Checkbox_Options_IgnoreArt</key>
 			<text>Ignoriere Anforderungen für Künste aus dem Strasengrimoire</text>
 		</string>
@@ -7301,62 +7169,6 @@
 			<text>Geben Sie die maximale Verfügbarkeit ein, mit der Ihr Charakter erschaffen werden soll.</text>
 		</string>
 		<string>
-			<key>Title_SelectArt</key>
-			<text>Wähle eine Kunst</text>
-		</string>
-		<string>
-			<key>Title_SelectRitual</key>
-			<text>Wähle ein Ritual</text>
-		</string>
-		<string>
-			<key>Message_SelectArt_ArtRequirement</key>
-			<text>You do not meet the requirements for this Art. You must meet all of the following criteria:</text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectArt_ArtRequirement</key>
-			<text>Art Requirement</text>
-		</string>
-		<string>
-			<key>Message_SelectArt_EnchantmentRequirement</key>
-			<text>Sie erfüllen nicht alle Anforderungen für diese Verbesserung. Die Anforderungen sind:</text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectArt_EnchantmentRequirement</key>
-			<text>Anforderung der Verbesserung</text>
-		</string>
-		<string>
-			<key>Message_SelectArt_EnhancementRequirement</key>
-			<text>Sie erfüllen nicht alle Anforderungen für diese Verbesserung. Die Anforderungen sind:</text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectArt_EnhancementRequirement</key>
-			<text>Enhancement Requirement</text>
-		</string>
-		<string>
-			<key>Message_SelectArt_RitualRequirement</key>
-			<text>Sie erfüllen nicht alle Anforderungen für dieses Ritual. Die Anforderungen sind:</text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectArt_RitualRequirement</key>
-			<text>Anforderung des Rituals</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectArt_LimitList</key>
-			<text>Zeige nur Künste die ich wählen kann</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectEnhancement_LimitList</key>
-			<text>Zeige nur Verbesserungen die ich wählen kann</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectEnchantment_LimitList</key>
-			<text>Zeige nur Verbesserungen die ich wählen kann</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectRitual_LimitList</key>
-			<text>Zeige nur Rituale die ich wählen kann</text>
-		</string>
-		<string>
 			<key>String_PowerPoint</key>
 			<text>Kraftpunkt</text>
 		</string>
@@ -7399,42 +7211,6 @@
 		<string>
 			<key>String_MetamagicSkillBase</key>
 			<text>Basierend auf Ihrer Talentauswahl dürfen Sie {0} auswählen.</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillMagicianA</key>
-			<text>2 Magische Fertigkeiten auf Stufe 5</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillTechnomancerA</key>
-			<text>2 Resonanzfertigkeiten auf Stufe 5</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillMagicianB</key>
-			<text>2 Magische Fertigkeiten auf Stufe 4</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillTechnomancerB</key>
-			<text>2 Resonanzfertigkeiten auf Stufe 4</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillAdeptB</key>
-			<text>1 Aktionsfertigkeit auf Stufe 4</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillAspectedB</key>
-			<text>1 Magische Fertigkeitsgruppe auf Stufe 4</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillAdeptC</key>
-			<text>1 Aktionsfertigkeit auf Stufe 2</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillAspectedC</key>
-			<text>1 Magische Fertigkeitsgruppe auf Stufe 2</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillAspectedD</key>
-			<text>1 Magische Fertigkeitsgruppe auf Stufe 0</text>
 		</string>
 		<string>
 			<key>Message_Metatype_Duplicate</key>
@@ -9312,11 +9088,103 @@
 		</string>
 		<string>
 			<key>Message_MissingCustomDataDirectories</key>
-			<text>Dieser Charakter wurde mit den folgenden benutzerspezifischen Datenverzeichnissen erstellt, die nicht aktiviert sind:\n\n{0}\n\nDadurch können Fehler entstehen. Möchten Sie den Charakter dennoch laden?</text>
+			<text>Dieser Charakter wurde mit den folgenden benutzerdefinierten Datenverzeichnissen erstellt, die nicht aktiviert sind:\n\n{0}\n\nDadurch können Fehler entstehen. Möchten Sie den Charakter dennoch laden?</text>
 		</string>
 		<string>
 			<key>Message_ConfirmKarmaExpenseKnowledgeSkill</key>
 			<text>Sind Sie sicher, dass Sie {2} Karma ausgeben möchten um {0} auf {1} zu verbessern, um diese Fertigkeit auf {3} zu setzen?</text>
+		</string>
+		<string>
+			<key>String_UI</key>
+			<text>UI</text>
+		</string>
+		<string>
+			<key>Button_ApplyManeuver</key>
+			<text>Manöver anwenden</text>
+		</string>
+		<string>
+			<key>Button_Delay</key>
+			<text>Verzögern</text>
+		</string>
+		<string>
+			<key>Label_AutoRollInit</key>
+			<text>Initiative automatisch würfeln</text>
+		</string>
+		<string>
+			<key>MessageTitle_SelectGeneric_Limit</key>
+			<text>{0} Limit</text>
+		</string>
+		<string>
+			<key>String_BubbleDie</key>
+			<text>Nur für Patzer:</text>
+		</string>
+		<string>
+			<key>String_Pilot</key>
+			<text>Pilot</text>
+		</string>
+		<string>
+			<key>AddToken_Header</key>
+			<text>Spieler-Token hinzufügen</text>
+		</string>
+		<string>
+			<key>Enum_DogBrain</key>
+			<text>Drohnen gesteuert</text>
+		</string>
+		<string>
+			<key>Label_InitiativeManeuvers</key>
+			<text>Initiativmanöver</text>
+		</string>
+		<string>
+			<key>Label_Round</key>
+			<text>Runde</text>
+		</string>
+		<string>
+			<key>String_Tradition</key>
+			<text>Tradition</text>
+		</string>
+		<string>
+			<key>String_Handling</key>
+			<text>Handling</text>
+		</string>
+		<string>
+			<key>Label_StartingInit</key>
+			<text>Startinitiative</text>
+		</string>
+		<string>
+			<key>Menu_Main_ChummerDiscord</key>
+			<text>Chummer Discord</text>
+		</string>
+		<string>
+			<key>Menu_Main_IssueTracker</key>
+			<text>Issue Tracker</text>
+		</string>
+		<string>
+			<key>Menu_Main_Translator</key>
+			<text>Übersetzer</text>
+		</string>
+		<string>
+			<key>Checkbox_Option_EducationQualitiesApplyOnChargenKarma</key>
+			<text>Bildungsvorteile geben Karma-Rabatt für Wissensfähigkeiten im Erstellungsmodus.</text>
+		</string>
+		<string>
+			<key>Label_CustomDataDirectories</key>
+			<text>Zu verwendende benutzerdefinierte Datenverzeichnisse (Änderungen werden nur nach einemNeustart angewendet)</text>
+		</string>
+		<string>
+			<key>Message_Duplicate_CustomDataDirectoryName</key>
+			<text>Ein benutzerdefiniertes Datenverzeichnis dieses Namens ist bereits vorhanden.</text>
+		</string>
+		<string>
+			<key>Message_Duplicate_CustomDataDirectoryName_Title</key>
+			<text>Doppelter Name eines benutzerdefinierten Datenverzeichnisses</text>
+		</string>
+		<string>
+			<key>Message_MissingCustomDataDirectories_Title</key>
+			<text>Fehlende benutzerdefinierte Datenverzeichnisse</text>
+		</string>
+		<string>
+			<key>MessageTitle_Options_CloseForms</key>
+			<text>Formulare schließen</text>
 		</string>
 	</strings>
 </chummer>
