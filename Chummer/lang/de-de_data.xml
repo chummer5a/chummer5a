@@ -23613,19 +23613,19 @@
 		<pdfarguments>
 			<pdfargument>
 				<name>Web Browser</name>
-				<translate>Web Browser</translate>
+				<translate>Webbrowser</translate>
 			</pdfargument>
 			<pdfargument>
 				<name>Acrobat-style</name>
-				<translate>Acrobat-style</translate>
+				<translate>Acrobat-Stil</translate>
 			</pdfargument>
 			<pdfargument>
 				<name>Unix-style</name>
-				<translate>Unix-style</translate>
+				<translate>Unix-Stil</translate>
 			</pdfargument>
 			<pdfargument>
 				<name>Sumatra - Re-use instance</name>
-				<translate>Sumatra - Re-use instance</translate>
+				<translate>Sumatra - Instanz wiederverwenden</translate>
 			</pdfargument>
 			<pdfargument>
 				<name>Sumatra</name>
