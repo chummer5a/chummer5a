@@ -23,7 +23,7 @@ namespace Chummer.UI.Table
 {
     public partial class SpinnerTableCell<T> : TableCell where T : class, INotifyPropertyChanged
     {
-        private bool _blnUpdating = false;
+        private bool _blnUpdating;
 
         public SpinnerTableCell(TableView<T> table)
         {
@@ -31,6 +31,10 @@ namespace Chummer.UI.Table
             contentField = _spinner;
             Enter += (a, b) => table.PauseSort(this);
             Leave += (a, b) => table.ResumeSort(this);
+        }
+
+        private void OnLoad(object sender, EventArgs eventArgs)
+        {
             MinimumSize = _spinner.Size;
         }
 

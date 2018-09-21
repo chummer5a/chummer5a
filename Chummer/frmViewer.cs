@@ -106,7 +106,6 @@ namespace Chummer
                     }
                 }
             }
-            MoveControls();
         }
 
         private void frmViewer_Load(object sender, EventArgs e)
@@ -454,18 +453,7 @@ namespace Chummer
 
             Cursor = Cursors.Default;
         }
-
-        private void MoveControls()
-        {
-            int intWidth = cmdPrint.Width;
-            cmdPrint.AutoSize = false;
-            cmdPrint.Width = intWidth + 20;
-            cmdSaveAsPdf.Left = cmdPrint.Right + 6;
-
-            lblCharacterSheet.Left = cboLanguage.Left - lblCharacterSheet.Width - 6;
-            MinimumSize = new System.Drawing.Size(2 * cmdPrint.Left + cmdPrint.Width + cmdSaveAsPdf.Width + lblCharacterSheet.Width + cboLanguage.Width + cboXSLT.Width + 24, 73);
-        }
-
+        
         private void cmdSaveAsPdf_Click(object sender, EventArgs e)
         {
             // Save the generated output as PDF.

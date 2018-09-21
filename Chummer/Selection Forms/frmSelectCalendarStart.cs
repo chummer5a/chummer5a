@@ -31,14 +31,12 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            MoveControls();
         }
 
         public frmSelectCalendarStart(CalendarWeek objWeek)
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            MoveControls();
 
             nudYear.Value = objWeek.Year;
             nudMonth.Value = objWeek.Month;
@@ -94,15 +92,6 @@ namespace Chummer
                 _intSelectedWeek++;
 
             DialogResult = DialogResult.OK;
-        }
-
-        private void MoveControls()
-        {
-            nudYear.Left = lblYear.Left + lblYear.Width + 6;
-            lblMonth.Left = nudYear.Left + nudYear.Width + 16;
-            nudMonth.Left = lblMonth.Left + lblMonth.Width + 6;
-            lblWeek.Left = nudMonth.Left + nudMonth.Width + 16;
-            nudWeek.Left = lblWeek.Left + lblWeek.Width + 6;
         }
         #endregion
 

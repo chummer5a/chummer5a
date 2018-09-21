@@ -103,7 +103,7 @@ namespace Chummer
                 return;
             }
 
-            // Retireve the information for the selected piece of Cyberware.
+            // Retrieve the information for the selected art
             XPathNavigator objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strBaseXPath + "[id = \"" + strSelected + "\"]");
 
             if (objXmlMetamagic == null)
@@ -147,7 +147,7 @@ namespace Chummer
 
         #region Properties
         /// <summary>
-        /// Name of Metamagic that was selected in the dialogue.
+        /// Id of the Art that was selected in the dialogue.
         /// </summary>
         public string SelectedItem => _strSelectedItem;
 
@@ -155,7 +155,7 @@ namespace Chummer
 
         #region Methods
         /// <summary>
-        /// Build the list of Metamagics.
+        /// Build the list of Arts.
         /// </summary>
         private void BuildList()
         {

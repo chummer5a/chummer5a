@@ -627,8 +627,8 @@ namespace Chummer.Backend.Skills
 
         public static int CompareSkills(Skill rhs, Skill lhs)
         {
-            ExoticSkill lhsExoticSkill = (lhs.IsExoticSkill ? lhs : null) as ExoticSkill;
-            if ((rhs.IsExoticSkill ? rhs : null) is ExoticSkill rhsExoticSkill)
+            ExoticSkill lhsExoticSkill = lhs as ExoticSkill;
+            if (rhs is ExoticSkill rhsExoticSkill)
             {
                 if (lhsExoticSkill != null)
                 {

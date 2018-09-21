@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Cyberware.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Cyberware : IHasChildren<Cyberware>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating
+    public class Cyberware : IHasChildren<Cyberware>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource
     {
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
@@ -661,8 +661,6 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            SourceDetail = new SourceString(_strSource, _strPage);
-
             if (blnCreateChildren)
                 CreateChildren(objXmlCyberware, objGrade, lstWeapons, lstVehicles, blnCreateImprovements);
 
@@ -733,22 +731,27 @@ namespace Chummer.Backend.Equipment
                 XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
 
                 XmlNodeList objXmlGearList = objParentNode["gears"].SelectNodes("usegear");
-                IList<Weapon> lstChildWeapons = new List<Weapon>();
-                foreach (XmlNode objXmlVehicleGear in objXmlGearList)
+                if (objXmlGearList?.Count > 0)
                 {
-                    Gear objGear = new Gear(_objCharacter);
-                    if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons, blnCreateImprovements))
-                        continue;
-                    foreach (Weapon objWeapon in lstChildWeapons)
+                    IList<Weapon> lstChildWeapons = new List<Weapon>();
+                    foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                     {
-                        objWeapon.ParentID = InternalId;
+                        Gear objGear = new Gear(_objCharacter);
+                        if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons, blnCreateImprovements))
+                            continue;
+                        foreach (Weapon objWeapon in lstChildWeapons)
+                        {
+                            objWeapon.ParentID = InternalId;
+                        }
+
+                        objGear.Parent = this;
+                        objGear.ParentID = InternalId;
+                        Gear.Add(objGear);
+                        lstChildWeapons.AddRange(lstWeapons);
                     }
-                    objGear.Parent = this;
-                    objGear.ParentID = InternalId;
-                    Gear.Add(objGear);
-                    lstChildWeapons.AddRange(lstWeapons);
+
+                    lstWeapons.AddRange(lstChildWeapons);
                 }
-                lstWeapons.AddRange(lstChildWeapons);
             }
         }
 
@@ -1059,8 +1062,7 @@ namespace Chummer.Backend.Equipment
                 GetNode()?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
             if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
                 GetNode()?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
-
-            SourceDetail = new SourceString(_strSource, _strPage);
+            
             if (blnCopy)
             {
                 if (Bonus != null || WirelessBonus != null || PairBonus != null)
@@ -1734,6 +1736,22 @@ namespace Chummer.Backend.Equipment
 
             foreach (Cyberware objChild in Children)
                 objChild.ChangeModularEquip(blnEquip);
+        }
+
+        public bool CanRemoveThroughImprovements
+        {
+            get
+            {
+                Cyberware objParent = this;
+                bool blnNoParentIsModular = string.IsNullOrEmpty(objParent.PlugsIntoModularMount);
+                while (objParent.Parent != null && blnNoParentIsModular)
+                {
+                    objParent = objParent.Parent;
+                    blnNoParentIsModular = string.IsNullOrEmpty(objParent.PlugsIntoModularMount);
+                }
+
+                return blnNoParentIsModular;
+            }
         }
 
         /// <summary>
@@ -3638,18 +3656,23 @@ namespace Chummer.Backend.Equipment
         /// <param name="sourceControl"></param>
         public void SetSourceDetail(Control sourceControl)
         {
-            if (SourceDetail != null)
+            if (SourceDetail != null && SourceDetail.Language == GlobalOptions.Language)
             {
-                SourceDetail.SetControl(sourceControl);
-            }
-            else if (!string.IsNullOrWhiteSpace(_strPage) && !string.IsNullOrWhiteSpace(_strSource))
-            {
-                SourceDetail = new SourceString(_strSource, _strPage);
                 SourceDetail.SetControl(sourceControl);
             }
             else
             {
-                Utils.BreakIfDebug();
+                string strSource = Source;
+                string strPage = Page(GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                {
+                    SourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    SourceDetail.SetControl(sourceControl);
+                }
+                else
+                {
+                    Utils.BreakIfDebug();
+                }
             }
         }
     }

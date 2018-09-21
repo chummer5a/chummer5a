@@ -47,7 +47,7 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
-        /// How many points REALLY are in _karma Better htan subclasses calculating Karma - FreeKarma()
+        /// How many points REALLY are in _karma Better than subclasses calculating Karma - FreeKarma()
         /// </summary>
         public int KarmaPoints
         {
@@ -195,10 +195,10 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public bool BuyWithKarma
         {
-            get => (_blnBuyWithKarma || ForcedBuyWithKarma) && !ForcedNotBuyWithKarma;
+            get => (_blnBuyWithKarma || ForcedBuyWithKarma) && !ForcedNotBuyWithKarma && !string.IsNullOrEmpty(Specialization);
             set
             {
-                bool blnNewValue = (value || ForcedBuyWithKarma) && !ForcedNotBuyWithKarma;
+                bool blnNewValue = (value || ForcedBuyWithKarma) && !ForcedNotBuyWithKarma && !string.IsNullOrEmpty(Specialization);
                 if (_blnBuyWithKarma != blnNewValue)
                 {
                     _blnBuyWithKarma = blnNewValue;
@@ -231,6 +231,8 @@ namespace Chummer.Backend.Skills
         /// <returns></returns>
         public int PoolOtherAttribute(int intAttributeTotalValue, string strAttribute)
         {
+            if (!Enabled)
+                return 0;
             int intRating = Rating;
             if (intRating > 0)
             {
@@ -294,11 +296,12 @@ namespace Chummer.Backend.Skills
                             case Improvement.ImprovementType.Skill:
                             case Improvement.ImprovementType.SwapSkillAttribute:
                             case Improvement.ImprovementType.SwapSkillSpecAttribute:
-
+                            case Improvement.ImprovementType.SkillDisable:
                                 if (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == strNameToUse)
                                     yield return objImprovement;
                                 break;
                             case Improvement.ImprovementType.SkillGroup:
+                            case Improvement.ImprovementType.SkillGroupDisable:
                                 if (objImprovement.ImprovedName == SkillGroup && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse) && !objImprovement.Exclude.Contains(SkillCategory))
                                     yield return objImprovement;
                                 break;
@@ -340,7 +343,7 @@ namespace Chummer.Backend.Skills
 
                 int intExtra = 0;
                 decimal decMultiplier = 1.0m;
-                ExoticSkill objThisAsExoticSkill = IsExoticSkill ? this as ExoticSkill : null;
+                ExoticSkill objThisAsExoticSkill = this as ExoticSkill;
                 foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
                 {
                     if (objLoopImprovement.Minimum <= BasePoints &&
@@ -412,7 +415,7 @@ namespace Chummer.Backend.Skills
                     if (!objSpec.Free && (BuyWithKarma || _objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule))
                         intSpecCount += 1;
                 }
-                int intSpecCost = intSpecCount * (IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization);
+                int intSpecCost = intSpecCount * CharacterObject.Options.KarmaSpecialization;
                 int intExtraSpecCost = 0;
                 decimal decSpecCostMultiplier = 1.0m;
                 foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
@@ -503,7 +506,7 @@ namespace Chummer.Backend.Skills
 
             decimal decMultiplier = 1.0m;
             int intExtra = 0;
-            ExoticSkill objThisAsExoticSkill = IsExoticSkill ? this as ExoticSkill : null;
+            ExoticSkill objThisAsExoticSkill = this as ExoticSkill;
             foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
             {
                 if (objLoopImprovement.Minimum <= lower &&
@@ -598,7 +601,7 @@ namespace Chummer.Backend.Skills
 
                 decimal decMultiplier = 1.0m;
                 int intExtra = 0;
-                ExoticSkill objThisAsExoticSkill = IsExoticSkill ? this as ExoticSkill : null;
+                ExoticSkill objThisAsExoticSkill = this as ExoticSkill;
                 foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
                 {
                     if ((objLoopImprovement.Maximum == 0 || intTotalBaseRating + 1 <= objLoopImprovement.Maximum) && objLoopImprovement.Minimum <= intTotalBaseRating + 1 &&
@@ -641,14 +644,9 @@ namespace Chummer.Backend.Skills
 
                 int price = UpgradeKarmaCost;
                 int intTotalBaseRating = TotalBaseRating;
-                string strSkillType = "String_ExpenseActiveSkill";
-                if (IsKnowledgeSkill)
-                {
-                    strSkillType = "String_ExpenseKnowledgeSkill";
-                }
                 //If data file contains {4} this crashes but...
                 string upgradetext =
-                    $"{LanguageManager.GetString(strSkillType, GlobalOptions.Language)} {DisplayNameMethod(GlobalOptions.Language)} {intTotalBaseRating} -> {(intTotalBaseRating + 1)}";
+                    $"{LanguageManager.GetString(IsKnowledgeSkill ? "String_ExpenseKnowledgeSkill" : "String_ExpenseActiveSkill", GlobalOptions.Language)} {DisplayNameMethod(GlobalOptions.Language)} {intTotalBaseRating} -> {(intTotalBaseRating + 1)}";
 
                 ExpenseLogEntry entry = new ExpenseLogEntry(CharacterObject);
                 entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
@@ -674,7 +672,7 @@ namespace Chummer.Backend.Skills
                         _intCachedCanAffordSpecialization = 0;
                     else
                     {
-                        int price = IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization;
+                        int intPrice = IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization;
 
                         int intExtraSpecCost = 0;
                         int intTotalBaseRating = TotalBaseRating;
@@ -694,10 +692,10 @@ namespace Chummer.Backend.Skills
                             }
                         }
                         if (decSpecCostMultiplier != 1.0m)
-                            price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
-                        price += intExtraSpecCost; //Spec
+                            intPrice = decimal.ToInt32(decimal.Ceiling(intPrice * decSpecCostMultiplier));
+                        intPrice += intExtraSpecCost; //Spec
 
-                        _intCachedCanAffordSpecialization = price <= CharacterObject.Karma ? 1 : 0;
+                        _intCachedCanAffordSpecialization = intPrice <= CharacterObject.Karma ? 1 : 0;
                     }
                 }
 
@@ -705,12 +703,12 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public void AddSpecialization(string name)
+        public void AddSpecialization(string strName)
         {
-            SkillSpecialization nspec = new SkillSpecialization(name, false, this);
+            SkillSpecialization nspec = new SkillSpecialization(strName, false, this);
             if (_objCharacter.Created)
             {
-                int price = IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization;
+                int intPrice = IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization;
 
                 int intExtraSpecCost = 0;
                 int intTotalBaseRating = TotalBaseRating;
@@ -730,23 +728,23 @@ namespace Chummer.Backend.Skills
                     }
                 }
                 if (decSpecCostMultiplier != 1.0m)
-                    price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
-                price += intExtraSpecCost; //Spec
+                    intPrice = decimal.ToInt32(decimal.Ceiling(intPrice * decSpecCostMultiplier));
+                intPrice += intExtraSpecCost; //Spec
 
-                if (price > CharacterObject.Karma)
+                if (intPrice > CharacterObject.Karma)
                     return;
 
                 //If data file contains {4} this crashes but...
                 string upgradetext = //TODO WRONG
-                $"{LanguageManager.GetString("String_ExpenseLearnSpecialization", GlobalOptions.Language)} {DisplayNameMethod(GlobalOptions.Language)} ({name})";
+                $"{LanguageManager.GetString("String_ExpenseLearnSpecialization", GlobalOptions.Language)} {DisplayNameMethod(GlobalOptions.Language)} ({strName})";
 
                 ExpenseLogEntry entry = new ExpenseLogEntry(CharacterObject);
-                entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
+                entry.Create(intPrice * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
                 entry.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.AddSpecialization, nspec.InternalId);
 
                 CharacterObject.ExpenseEntries.AddWithSort(entry);
 
-                CharacterObject.Karma -= price;
+                CharacterObject.Karma -= intPrice;
             }
 
             Specializations.Add(nspec);

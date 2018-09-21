@@ -23,7 +23,6 @@ using System.Windows.Forms;
 using System.Xml.XPath;
  using Chummer.Backend.Equipment;
 using System.Text;
- using iTextSharp.text.pdf;
 
 namespace Chummer
 {
@@ -54,7 +53,6 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            MoveControls();
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = XmlManager.Load("vehicles.xml").GetFastNavigator().SelectSingleNode("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode);
@@ -740,11 +738,6 @@ namespace Chummer
                 default:
                     return string.Empty;
             }
-        }
-
-        private void MoveControls()
-        {
-            lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
         }
 
         private string ReplaceStrings(string strInput, int intExtraSlots = 0)

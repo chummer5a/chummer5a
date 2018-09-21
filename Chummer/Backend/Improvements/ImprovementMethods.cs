@@ -93,6 +93,8 @@ namespace Chummer
                     return objImprovementAdder.addgear;
                 case "ADDWEAPON":
                     return objImprovementAdder.addweapon;
+                case "NATURALWEAPON":
+                    return objImprovementAdder.naturalweapon;
                 case "SELECTAIPROGRAM":
                     return objImprovementAdder.selectaiprogram;
                 case "SELECTINHERENTAIPROGRAM":
@@ -289,6 +291,10 @@ namespace Chummer
                     return objImprovementAdder.initiation;
                 case "SUBMERSION":
                     return objImprovementAdder.submersion;
+                case "ADDART":
+                    return objImprovementAdder.addart;
+                case "SELECTART":
+                    return objImprovementAdder.selectart;
                 case "ADDMETAMAGIC":
                     return objImprovementAdder.addmetamagic;
                 case "SELECTMETAMAGIC":
@@ -471,6 +477,8 @@ namespace Chummer
                     return objImprovementAdder.skillgroupkarmacost;
                 case "KNOWLEDGESKILLKARMACOST":
                     return objImprovementAdder.knowledgeskillkarmacost;
+                case "SKILLDISABLE":
+                    return objImprovementAdder.skilldisable;
                 case "SKILLGROUPDISABLE":
                     return objImprovementAdder.skillgroupdisable;
                 case "SKILLGROUPCATEGORYDISABLE":
@@ -555,8 +563,6 @@ namespace Chummer
                     return objImprovementAdder.weaponskillaccuracy;
                 case "METAGENETICLIMIT":
                     return objImprovementAdder.metageneticlimit;
-                case "NATURALWEAPON":
-                    return objImprovementAdder.naturalweapon;
                 case "CYBERADEPTDAEMON":
                     return objImprovementAdder.cyberadeptdaemon;
                 // No method matches, return a null pointer

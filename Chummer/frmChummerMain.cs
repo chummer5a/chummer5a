@@ -103,6 +103,10 @@ namespace Chummer
                 LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
             }
 
+            frmLoading frmLoadingForm = new frmLoading {CharacterFile = Text};
+            frmLoadingForm.Reset(3);
+            frmLoadingForm.Show();
+
             // Attempt to cache all XML files that are used the most.
             Timekeeper.Start("cache_load");
             Parallel.Invoke(
@@ -114,7 +118,7 @@ namespace Chummer
                 () => XmlManager.Load("critters.xml"),
                 () => XmlManager.Load("critterpowers.xml"),
                 () => XmlManager.Load("cyberware.xml"),
-                //() => XmlManager.Load("drugcomponents.xml"), TODO: Re-enable when Custom Drugs branch is merged
+                () => XmlManager.Load("drugcomponents.xml"),
                 () => XmlManager.Load("echoes.xml"),
                 () => XmlManager.Load("gameplayoptions.xml"),
                 () => XmlManager.Load("gear.xml"),
@@ -143,6 +147,7 @@ namespace Chummer
                 () => XmlManager.Load("weapons.xml")
             );
             Timekeeper.Finish("cache_load");
+            frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
             CharacterRoster = GlobalOptions.HideCharacterRoster
                 ? null
                 : new frmCharacterRoster
@@ -153,6 +158,7 @@ namespace Chummer
             _lstCharacters.CollectionChanged += LstCharactersOnCollectionChanged;
             _lstOpenCharacterForms.CollectionChanged += LstOpenCharacterFormsOnCollectionChanged;
 
+            frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
             // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
             string[] strArgs = Environment.GetCommandLineArgs();
             string strLoop;
@@ -176,6 +182,7 @@ namespace Chummer
                 }
             });
 
+            frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
             if (blnShowTest)
             {
                 frmTest frmTestData = new frmTest();
@@ -187,6 +194,7 @@ namespace Chummer
                 CharacterRoster.WindowState = FormWindowState.Maximized;
                 CharacterRoster.Show();
             }
+            frmLoadingForm.Close();
         }
 
         private void LstOpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -981,6 +989,7 @@ namespace Chummer
                     objCharacter.Weapons.Add(objLoopWeapon);
             }
 
+            OpenCharacters.Add(objCharacter);
             frmCreate frmNewCharacter = new frmCreate(objCharacter)
             {
                 MdiParent = this,
@@ -1109,6 +1118,9 @@ namespace Chummer
                 {
                     FileName = strFileName
                 };
+                frmLoading frmLoadingForm = new frmLoading { CharacterFile = objCharacter.FileName };
+                frmLoadingForm.Reset(35);
+                frmLoadingForm.Show();
 
                 XmlDocument objXmlDocument = new XmlDocument();
                 //StreamReader is used to prevent encoding errors
@@ -1122,6 +1134,7 @@ namespace Chummer
                     {
                         if (blnShowErrors)
                             MessageBox.Show(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language).Replace("{0}", ex.Message), LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        frmLoadingForm.Close();
                         return null;
                     }
                 }
@@ -1148,12 +1161,13 @@ namespace Chummer
 
                 OpenCharacters.Add(objCharacter);
                 Timekeeper.Start("load_file");
-                bool blnLoaded = objCharacter.Load();
+                bool blnLoaded = objCharacter.Load(frmLoadingForm);
                 Timekeeper.Finish("load_file");
                 if (!blnLoaded)
                 {
                     OpenCharacters.Remove(objCharacter);
                     objCharacter.DeleteCharacter();
+                    frmLoadingForm.Close();
                     return null;
                 }
 
@@ -1163,6 +1177,7 @@ namespace Chummer
                 // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
                 if (blnClearFileName)
                     objCharacter.FileName = string.Empty;
+                frmLoadingForm.Close();
             }
             else if (blnShowErrors)
             {

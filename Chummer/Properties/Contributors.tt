@@ -40,8 +40,8 @@ namespace Chummer.Properties
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
         JavaScriptSerializer jss = new JavaScriptSerializer();
 
-        // TODO: Add support for proper pagination if we get more than 100 total contributors
-        string strPerPageString = string.IsNullOrEmpty(strOAuthToken) ? "per_page=100" : "&per_page=100";
+        // TODO: Add support for proper pagination if we get more than 200 total contributors
+        string strPerPageString = string.IsNullOrEmpty(strOAuthToken) ? "per_page=200" : "&per_page=200";
         HttpWebRequest webRequest = System.Net.WebRequest.Create($"https://api.github.com/repos/chummer5a/chummer5a/contributors?{strOAuthToken}{strPerPageString}") as HttpWebRequest;
         webRequest.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
         webRequest.Accept = "application/json";

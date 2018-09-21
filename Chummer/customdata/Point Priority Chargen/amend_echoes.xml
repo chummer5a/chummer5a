@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <echoes>
+    <echo amendoperation="addnode">
+      <id>3240fbc0-b7ca-48c8-910d-5a60be436729</id>
+      <name>Resonance-Access Memory</name>
+      <source>SR5</source>
+      <page>1</page>
+      <bonus>
+        <livingpersona>
+          <programlimit>1</programlimit>
+        </livingpersona>
+      </bonus>
+      <limit>6</limit>
+    </echo>
+    <echo amendoperation="addnode">
+      <id>e7d86b1f-d189-44cd-9a85-6bcda1a78ef9</id>
+      <name>Cyberware-Resonance Interface</name>
+      <source>SR5</source>
+      <page>1</page>
+      <limit>5</limit>
+    </echo>
+    <echo amendoperation="addnode">
+      <id>a8d1fe2a-a388-4779-9ed9-294434613d22</id>
+      <name>Bio-Processing</name>
+      <source>SR5</source>
+      <page>1</page>
+      <limit>False</limit>
+    </echo>
+  </echoes>
+</chummer>

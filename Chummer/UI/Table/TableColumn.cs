@@ -33,11 +33,11 @@ namespace Chummer.UI.Table
 
         private readonly Func<TableCell> _cellFactory;
         private Comparison<object> _sorter;
-        private bool _blnLive = false;
+        private bool _blnLive;
         private string _strText;
         private string _strTag;
-        private int _intMinWidth = 0;
-        private int _intPrefWidth = 0;
+        private int _intMinWidth;
+        private int _intPrefWidth;
         private Func<T, object> _funcExtractor;
         private Comparison<T> _itemSorter;
         private readonly HashSet<string> _setDependencies = new HashSet<string>();

@@ -80,7 +80,7 @@
 
       <tr><td colspan="100%" style="padding: 0 2%; text-align: justify;">
         <xsl:for-each select="qualities/quality">
-          <xsl:value-of select="name"/>
+          <xsl:value-of select="fullname"/>
           <text>; </text>
         </xsl:for-each>
       </td></tr>

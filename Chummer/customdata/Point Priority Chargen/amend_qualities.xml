@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <qualities>
+    <quality>
+      <onlyprioritygiven amendoperation="remove" />
+      <doublecareer amendoperation="remove" />
+      <bonus>
+        <focusbindingkarmacost amendoperation="remove" />
+        <newspellkarmacost amendoperation="remove" />
+      </bonus>
+      <required>
+        <oneof xpathfilter="quality = 'Technomancer'">
+          <quality amendoperation="addnode">Resonant</quality>
+        </oneof>
+        <oneof xpathfilter="quality = 'Aspected Magician'">
+          <quality amendoperation="addnode">Aspected Adept</quality>
+        </oneof>
+      </required>
+      <forbidden>
+        <oneof xpathfilter="quality = 'Technomancer'">
+          <quality amendoperation="addnode">Resonant</quality>
+        </oneof>
+        <oneof xpathfilter="quality = 'Aspected Magician'">
+          <quality amendoperation="addnode">Aspected Adept</quality>
+        </oneof>
+      </forbidden>
+    </quality>
+    <quality>
+      <name>Aware</name>
+      <karma>15</karma>
+    </quality>
+    <quality amendoperation="addnode">
+      <id>757bb59c-0242-481e-917c-5ae48474ddc2</id>
+      <name>Resonant</name>
+      <karma>15</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <addgear>
+          <name>Living Persona</name>
+          <category>Commlinks</category>
+        </addgear>
+        <enableattribute>
+          <name>RES</name>
+        </enableattribute>
+        <enabletab>
+          <name>technomancer</name>
+        </enabletab>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <metatypecategory>Metasapient</metatypecategory>
+          <metatypecategory>Shapeshifter</metatypecategory>
+          <quality>Aware</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Aspected Adept</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
+          <quality>Apprentice</quality>
+          <quality>Adept</quality>
+        </oneof>
+      </forbidden>
+      <source>SR5</source>
+      <page>1</page>
+    </quality>
+    <quality>
+      <name>Aspected Magician</name>
+      <karma>25</karma>
+      <forbidden>
+        <oneof>
+          <quality amendoperation="addnode">Aspected Adept</quality>
+        </oneof>
+      </forbidden>
+    </quality>
+    <quality>
+      <name>Technomancer</name>
+      <karma>50</karma>
+      <forbidden>
+        <oneof>
+          <quality amendoperation="addnode">Resonant</quality>
+        </oneof>
+      </forbidden>
+    </quality>
+    <quality>
+      <name>Adept</name>
+      <karma>50</karma>
+    </quality>
+    <quality>
+      <name>Magician</name>
+      <karma>50</karma>
+    </quality>
+    <quality amendoperation="addnode">
+      <id>1042592d-8bd8-4970-a90f-2086f0a32de5</id>
+      <name>Aspected Adept</name>
+      <karma>75</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+        </enableattribute>
+        <enabletab>
+          <name>magician</name>
+          <name>adept</name>
+        </enabletab>
+        <unlockskills>Sorcery,Conjuring,Enchanting</unlockskills>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Aware</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
+          <quality>Apprentice</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+          <quality>Adept</quality>
+          <quality>Technomancer</quality>
+          <quality>Resonant</quality>
+        </oneof>
+      </forbidden>
+      <source>SR5</source>
+      <page>1</page>
+    </quality>
+    <quality>
+      <name>Mystic Adept</name>
+      <karma>100</karma>
+    </quality>
+    <quality amendoperation="addnode">
+      <id>f8dc66e5-4b26-4a5a-b75d-b73ae01dc628</id>
+      <name>Harmonic Echo</name>
+      <karma>15</karma>
+      <category>Positive</category>
+      <bonus>
+        <selectecho />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Resonant</quality>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>SR5</source>
+      <page>1</page>
+    </quality>
+    <quality xpathfilter="name = 'Uncouth'">
+      <bonus amendoperation="replace">
+        <notoriety>1</notoriety>
+      </bonus>
+    </quality>
+    <quality xpathfilter="name = 'Uneducated'">
+      <bonus amendoperation="replace">
+        <notoriety>1</notoriety>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>College Education</quality>
+          <quality>Technical School Education</quality>
+        </oneof>
+      </forbidden>
+    </quality>
+    <quality xpathfilter="name = 'College Education' and source = 'RF'">
+      <karma>0</karma>
+      <bonus amendoperation="replace">
+        <selectskill knowledgeskills="True">
+          <val>6</val>
+          <applytorating>True</applytorating>
+        </selectskill>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Linguist</quality>
+          <quality>School of Hard Knocks</quality>
+          <quality>Technical School Education</quality>
+          <quality>Uneducated</quality>
+        </oneof>
+      </forbidden>
+    </quality>
+    <quality xpathfilter="name = 'Jack of All Trades'">
+      <karma>1</karma>
+      <bonus amendoperation="replace" />
+    </quality>
+    <quality xpathfilter="name = 'Linguist'">
+      <karma>0</karma>
+      <bonus amendoperation="replace">
+        <selectskill knowledgeskills="True">
+          <val>6</val>
+          <applytorating>True</applytorating>
+        </selectskill>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>College Education</quality>
+          <quality>School of Hard Knocks</quality>
+          <quality>Technical School Education</quality>
+          <quality>Uneducated</quality>
+        </oneof>
+      </forbidden>
+    </quality>
+    <quality xpathfilter="name = 'School of Hard Knocks'">
+      <karma>0</karma>
+      <bonus amendoperation="replace">
+        <selectskill knowledgeskills="True">
+          <val>6</val>
+          <applytorating>True</applytorating>
+        </selectskill>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>College Education</quality>
+          <quality>Linguist</quality>
+          <quality>Technical School Education</quality>
+          <quality>Uneducated</quality>
+        </oneof>
+      </forbidden>
+    </quality>
+    <quality xpathfilter="name = 'Technical School Education'">
+      <karma>0</karma>
+      <bonus amendoperation="replace">
+        <selectskill knowledgeskills="True">
+          <val>6</val>
+          <applytorating>True</applytorating>
+        </selectskill>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>College Education</quality>
+          <quality>Linguist</quality>
+          <quality>School of Hard Knocks</quality>
+          <quality>Uneducated</quality>
+        </oneof>
+      </forbidden>
+    </quality>
+    <quality xpathfilter="name = &quot;The Beast's Way&quot; or name = 'The Spiritual Way'">
+      <bonus>
+        <addqualities amendoperation="addnode">
+          <addquality>Mentor Spirit</addquality>
+        </addqualities>
+      </bonus>
+    </quality>
+    <quality amendoperation="addnode">
+      <id>d8cdc181-e18a-43fd-b025-adb678855ad1</id>
+      <name>Shifter</name>
+      <karma>100</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Aware</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Aspected Adept</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
+          <quality>Apprentice</quality>
+          <quality>Adept</quality>
+        </oneof>
+      </required>
+      <source>SR5</source>
+      <page>1</page>
+    </quality>
+  </qualities>
+</chummer>

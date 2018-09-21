@@ -40,7 +40,6 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            MoveControls();
         }
 
         private void frmSelectItem_Load(object sender, EventArgs e)
@@ -395,12 +394,6 @@ namespace Chummer
         private void AcceptForm()
         {
             DialogResult = DialogResult.OK;
-        }
-
-        private void MoveControls()
-        {
-            cboAmmo.Left = lblAmmoLabel.Left + lblAmmoLabel.Width + 6;
-            cboAmmo.Width = Width - cboAmmo.Left - 19;
         }
         #endregion
     }

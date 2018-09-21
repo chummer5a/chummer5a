@@ -14058,6 +14058,40 @@
         <spec>Grenade Launcher</spec>
         <useskill>Heavy Weapons</useskill>
       </weapon>
+    <weapon>
+      <id>93190477-d1f9-45d0-bee9-9f9bc9a29638</id>
+      <name>Renraku/Ingram Supermach 200</name>
+      <category>Submachine Guns</category>
+      <type>Ranged</type>
+      <conceal>2</conceal>
+      <accuracy>6</accuracy>
+      <reach>0</reach>
+      <damage>5P</damage>
+      <ap>-6</ap>
+      <mode>BF/FA</mode>
+      <rc>-2</rc>
+      <ammo>40(c)</ammo>
+      <avail>18F</avail>
+      <cost>5000</cost>
+      <source>SL</source>
+      <page>132</page>
+      <accessories>
+        <accessory>
+          <name>Shock Pad</name>
+        </accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
+      </accessories>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+      </accessorymounts>
+      <ammoname>Ammo: Renraku/Ingram Supermach</ammoname>
+    </weapon>
     <!-- End Region -->
   </weapons>
   <accessories>

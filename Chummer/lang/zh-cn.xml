@@ -55,6 +55,14 @@
 			<text>/</text>
 		</string>
 		<string>
+			<key>String_Space</key>
+			<text xml:space="preserve"></text>
+		</string>
+		<string>
+			<key>String_Colon</key>
+			<text>：</text>
+		</string>
+		<string>
 			<key>String_Remaining</key>
 			<text>剩余</text>
 		</string>
@@ -8221,8 +8229,12 @@
 			<text>总计：</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Area</key>
+			<key>Label_SelectAdvancedLifestyle_Base_Neighborhood</key>
 			<text>[{0}/{1}]</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_Neighborhood</key>
+			<text>邻里：</text>
 		</string>
 		<string>
 			<key>Button_Download</key>

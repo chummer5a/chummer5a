@@ -34,8 +34,12 @@ namespace Chummer.UI.Table
             Controls.Add(button);
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             button.PerformLayout();
-            MinimumSize = button.Size;
             ResumeLayout(false);
+        }
+
+        private void OnLoad(object sender, EventArgs eventArgs)
+        {
+            MinimumSize = _button.Size;
         }
 
         protected internal override void UpdateValue(object newValue)
