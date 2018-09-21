@@ -553,7 +553,28 @@ namespace Chummer.Backend.Equipment
             set => _strPage = value;
         }
 
-        public SourceString SourceDetail { get; private set; }
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == null)
+                {
+                    string strSource = Source;
+                    string strPage = DisplayPage(GlobalOptions.Language);
+                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                    {
+                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                    }
+                }
+
+                return _objCachedSourceDetail;
+            }
+        }
 
         public string DisplayPage(string strLanguage)
         {
@@ -1054,24 +1075,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="sourceControl"></param>
         public void SetSourceDetail(Control sourceControl)
         {
-            if (SourceDetail != null && SourceDetail.Language == GlobalOptions.Language)
-            {
-                SourceDetail.SetControl(sourceControl);
-            }
-            else
-            {
-                string strSource = Source;
-                string strPage = DisplayPage(GlobalOptions.Language);
-                if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
-                {
-                    SourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
-                    SourceDetail.SetControl(sourceControl);
-                }
-                else
-                {
-                    Utils.BreakIfDebug();
-                }
-            }
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
         }
     }
 }
