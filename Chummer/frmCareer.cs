@@ -107,7 +107,6 @@ namespace Chummer
                 cmsInitiationNotes,
                 cmsLifestyle,
                 cmsLifestyleNotes,
-                cmsLimitModifier,
                 cmsMartialArts,
                 cmsMetamagic,
                 cmsQuality,
@@ -257,7 +256,7 @@ namespace Chummer
             mnuSpecialPossess.Visible = CharacterObject.CritterPowers.Any(x => x.Name == "Inhabitation" || x.Name == "Possession");
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
             RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
-            RefreshCustomImprovements(treImprovements, treLimit, cmsImprovementLocation, cmsImprovement, cmsLimitModifier);
+            RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView, cmsImprovementLocation, cmsImprovement, lmtControl.LimitContextMenuStrip);
             RefreshCalendar(lstCalendar);
             RefreshContacts(panContacts, panEnemies, panPets);
 
@@ -283,7 +282,6 @@ namespace Chummer
             CharacterObject.Qualities.CollectionChanged += QualityCollectionChanged;
             CharacterObject.MartialArts.CollectionChanged += MartialArtCollectionChanged;
             CharacterObject.Lifestyles.CollectionChanged += LifestyleCollectionChanged;
-            CharacterObject.LimitModifiers.CollectionChanged += LimitModifierCollectionChanged;
             CharacterObject.Contacts.CollectionChanged += ContactCollectionChanged;
             CharacterObject.Armor.CollectionChanged += ArmorCollectionChanged;
             CharacterObject.ArmorLocations.CollectionChanged += ArmorLocationCollectionChanged;
@@ -564,14 +562,6 @@ namespace Chummer
             Utils.DoDatabinding(lblCMPenalty,   "Text", CharacterObject, nameof(Character.WoundModifier));
             Utils.DoDatabinding(lblCMPhysical,  "Text", CharacterObject, nameof(Character.PhysicalCM));
             Utils.DoDatabinding(lblCMStun,      "Text", CharacterObject, nameof(Character.StunCM));
-            Utils.DoDatabinding(lblPhysical, "Text", CharacterObject, nameof(Character.LimitPhysical));
-            Utils.DoDatabinding(lblPhysical, "ToolTipText", CharacterObject, nameof(Character.LimitPhysicalToolTip));
-            Utils.DoDatabinding(lblMental, "Text", CharacterObject, nameof(Character.LimitMental));
-            Utils.DoDatabinding(lblMental, "ToolTipText", CharacterObject, nameof(Character.LimitMentalToolTip));
-            Utils.DoDatabinding(lblSocial, "Text", CharacterObject, nameof(Character.LimitSocial));
-            Utils.DoDatabinding(lblSocial, "ToolTipText", CharacterObject, nameof(Character.LimitSocialToolTip));
-            Utils.DoDatabinding(lblAstral, "Text", CharacterObject, nameof(Character.LimitAstral));
-            Utils.DoDatabinding(lblAstral, "ToolTipText", CharacterObject, nameof(Character.LimitAstralToolTip));
 
             Utils.DoDatabinding(lblESSMax, "Text", CharacterObject, nameof(Character.DisplayEssence));
             Utils.DoDatabinding(lblCyberwareESS, "Text", CharacterObject, nameof(Character.DisplayCyberwareEssence));
@@ -771,14 +761,9 @@ namespace Chummer
             RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle, notifyCollectionChangedEventArgs);
         }
 
-        private void LimitModifierCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
-        {
-            RefreshLimitModifiers(treLimit, cmsLimitModifier, notifyCollectionChangedEventArgs);
-        }
-
         private void ImprovementCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            RefreshCustomImprovements(treImprovements, treLimit, cmsImprovementLocation, cmsImprovement, cmsLimitModifier, notifyCollectionChangedEventArgs);
+            RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView, cmsImprovementLocation, cmsImprovement, lmtControl.LimitContextMenuStrip, notifyCollectionChangedEventArgs);
         }
 
         private void ImprovementGroupCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -903,7 +888,6 @@ namespace Chummer
                 CharacterObject.Qualities.CollectionChanged -= QualityCollectionChanged;
                 CharacterObject.MartialArts.CollectionChanged -= MartialArtCollectionChanged;
                 CharacterObject.Lifestyles.CollectionChanged -= LifestyleCollectionChanged;
-                CharacterObject.LimitModifiers.CollectionChanged -= LimitModifierCollectionChanged;
                 CharacterObject.Contacts.CollectionChanged -= ContactCollectionChanged;
                 CharacterObject.Armor.CollectionChanged -= ArmorCollectionChanged;
                 CharacterObject.ArmorLocations.CollectionChanged -= ArmorLocationCollectionChanged;
@@ -2859,13 +2843,6 @@ namespace Chummer
 #endregion
 
 #region Button Events
-        private void treLimit_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                cmdDeleteLimitModifier_Click(sender, e);
-            }
-        }
         private void panContacts_DragDrop(object sender, DragEventArgs e)
         {
             TransportWrapper wrapper = (TransportWrapper)e.Data.GetData(typeof(TransportWrapper));
@@ -5543,7 +5520,7 @@ namespace Chummer
             if (!string.IsNullOrWhiteSpace(location))
             {
                 //TODO: Improvement system interface needs a better handler for 
-                RefreshCustomImprovements(treImprovements,treLimit,cmsImprovementLocation,cmsImprovement,cmsLimitModifier);
+                RefreshCustomImprovements(treImprovements,lmtControl.LimitTreeView,cmsImprovementLocation,cmsImprovement,lmtControl.LimitContextMenuStrip);
             }
             IsCharacterUpdateRequested = true;
 
@@ -5694,7 +5671,7 @@ namespace Chummer
             // Simplest way to fix this would be to make the customgroup a variable in the CreateImprovements method, but that's spooky. 
             if (!string.IsNullOrWhiteSpace(frmPickImprovement.NewImprovement.CustomGroup))
             {
-                RefreshCustomImprovements(treImprovements, treLimit, cmsImprovementLocation, cmsImprovement, cmsLimitModifier);
+                RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView, cmsImprovementLocation, cmsImprovement, lmtControl.LimitContextMenuStrip);
             }
 
             IsCharacterUpdateRequested = true;
@@ -16772,54 +16749,6 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void cmdDeleteLimitModifier_Click(object sender, EventArgs e)
-        {
-            if (!(treLimit.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete)) return;
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
-        }
-
-        private void tssLimitModifierNotes_Click(object sender, EventArgs e)
-        {
-            if (treLimit.SelectedNode != null)
-            {
-                if (treMetamagic.SelectedNode?.Tag is IHasNotes objNotes)
-                {
-                    WriteNotes(objNotes, treMetamagic.SelectedNode);
-                }
-                else
-                {
-                    // the limit modifier has a source
-                    foreach (Improvement objImprovement in CharacterObject.Improvements)
-                    {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier &&
-                            objImprovement.SourceName == treLimit.SelectedNode?.Tag.ToString())
-                        {
-                            string strOldValue = objImprovement.Notes;
-                            frmNotes frmItemNotes = new frmNotes
-                            {
-                                Notes = strOldValue
-                            };
-                            frmItemNotes.ShowDialog(this);
-
-                            if (frmItemNotes.DialogResult == DialogResult.OK)
-                            {
-                                objImprovement.Notes = frmItemNotes.Notes;
-                                if (objImprovement.Notes != strOldValue)
-                                {
-                                    IsDirty = true;
-
-                                    treLimit.SelectedNode.ForeColor = objImprovement.PreferredColor;
-                                    treLimit.SelectedNode.ToolTipText = objImprovement.Notes.WordWrap(100);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         private void cmdIncreasePowerPoints_Click(object sender, EventArgs e)
         {
             // Make sure the character has enough Karma to improve the CharacterAttribute.
@@ -17305,11 +17234,6 @@ namespace Chummer
                 return;
             objCommlink.Overclocked = cboCyberwareGearOverclocker.SelectedValue.ToString();
             objCommlink.RefreshMatrixAttributeCBOs(cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall);
-        }
-
-        private void tssLimitModifierEdit_Click(object sender, EventArgs e)
-        {
-            UpdateLimitModifier(treLimit);
         }
 
         private void cmdAddAIProgram_Click(object sender, EventArgs e)

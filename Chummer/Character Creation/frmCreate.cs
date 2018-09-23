@@ -92,7 +92,6 @@ namespace Chummer
                 cmsComplexForm,
                 cmsComplexFormPlugin,
                 cmsCritterPowers,
-                cmsCustomLimitModifier,
                 cmsCyberware,
                 cmsCyberwareGear,
                 cmsVehicleCyberware,
@@ -105,7 +104,6 @@ namespace Chummer
                 cmsInitiationNotes,
                 cmsLifestyle,
                 cmsLifestyleNotes,
-                cmsLimitModifier,
                 cmsMartialArts,
                 cmsMetamagic,
                 cmsQuality,
@@ -306,7 +304,6 @@ namespace Chummer
             CharacterObject.Qualities.CollectionChanged += QualityCollectionChanged;
             CharacterObject.MartialArts.CollectionChanged += MartialArtCollectionChanged;
             CharacterObject.Lifestyles.CollectionChanged += LifestyleCollectionChanged;
-            CharacterObject.LimitModifiers.CollectionChanged += LimitModifierCollectionChanged;
             CharacterObject.Contacts.CollectionChanged += ContactCollectionChanged;
             CharacterObject.Spirits.CollectionChanged += SpiritCollectionChanged;
             CharacterObject.Armor.CollectionChanged += ArmorCollectionChanged;
@@ -556,15 +553,6 @@ namespace Chummer
             Utils.DoDatabinding(lblCMPhysical,      "Text", CharacterObject, nameof(Character.PhysicalCM));
             Utils.DoDatabinding(lblCMStun,          "Text", CharacterObject, nameof(Character.StunCM));
 
-            Utils.DoDatabinding(lblPhysical,        "Text", CharacterObject, nameof(Character.LimitPhysical));
-            Utils.DoDatabinding(lblPhysical,        "ToolTipText", CharacterObject, nameof(Character.LimitPhysicalToolTip));
-            Utils.DoDatabinding(lblMental,          "Text", CharacterObject, nameof(Character.LimitMental));
-            Utils.DoDatabinding(lblMental,          "ToolTipText", CharacterObject, nameof(Character.LimitMentalToolTip));
-            Utils.DoDatabinding(lblSocial,          "Text", CharacterObject, nameof(Character.LimitSocial));
-            Utils.DoDatabinding(lblSocial,          "ToolTipText", CharacterObject, nameof(Character.LimitSocialToolTip));
-            Utils.DoDatabinding(lblAstral,          "Text", CharacterObject, nameof(Character.LimitAstral));
-            Utils.DoDatabinding(lblAstral,          "ToolTipText", CharacterObject, nameof(Character.LimitAstralToolTip));
-
             Utils.DoDatabinding(lblESSMax,          "Text", CharacterObject, nameof(Character.DisplayEssence));
             Utils.DoDatabinding(lblCyberwareESS,    "Text", CharacterObject, nameof(Character.DisplayCyberwareEssence));
             Utils.DoDatabinding(lblBiowareESS,      "Text", CharacterObject, nameof(Character.DisplayBiowareEssence));
@@ -726,7 +714,6 @@ namespace Chummer
                 CharacterObject.Qualities.CollectionChanged -= QualityCollectionChanged;
                 CharacterObject.MartialArts.CollectionChanged -= MartialArtCollectionChanged;
                 CharacterObject.Lifestyles.CollectionChanged -= LifestyleCollectionChanged;
-                CharacterObject.LimitModifiers.CollectionChanged -= LimitModifierCollectionChanged;
                 CharacterObject.Contacts.CollectionChanged -= ContactCollectionChanged;
                 CharacterObject.Spirits.CollectionChanged -= SpiritCollectionChanged;
                 CharacterObject.Armor.CollectionChanged -= ArmorCollectionChanged;
@@ -833,8 +820,6 @@ namespace Chummer
             lblNotes.Top = txtConcept.Top + txtConcept.Height + 3;
             txtNotes.Top = lblNotes.Top + lblNotes.Height + 3;
             txtNotes.Height = intHeight;
-
-            cmdDeleteLimitModifier.Left = cmdAddLimitModifier.Left + cmdAddLimitModifier.Width + 15;
         }
         #endregion
 
@@ -3145,14 +3130,6 @@ namespace Chummer
 #endregion
 
 #region Button Events
-        private void treLimit_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                cmdDeleteLimitModifier_Click(sender, e);
-            }
-        }
-
         private void cmdAddSpell_Click(object sender, EventArgs e)
         {
             // Open the Spells XML file and locate the selected piece.
@@ -3637,28 +3614,6 @@ namespace Chummer
                 IsDirty = true;
                 IsCharacterUpdateRequested = true;
             }
-        }
-
-        private void cmdDeleteLimitModifier_Click(object sender, EventArgs e)
-        {
-            if (treLimit.SelectedNode == null || treLimit.SelectedNode.Level <= 0)
-                return;
-
-            if (!(treLimit.SelectedNode?.Tag is LimitModifier objLimitModifier))
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_CannotDeleteLimitModifier", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier", GlobalOptions.Language)))
-                return;
-
-            // Delete the selected Limit Modifier.
-            CharacterObject.LimitModifiers.Remove(objLimitModifier);
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private void cmdDeleteMartialArt_Click(object sender, EventArgs e)
@@ -5771,29 +5726,6 @@ namespace Chummer
             if (treArmor.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treArmor.SelectedNode);
-            }
-        }
-
-        private void tssLimitModifierNotes_Click(object sender, EventArgs e)
-        {
-            if (treLimit.SelectedNode == null)
-                return;
-            if (treLimit.SelectedNode?.Tag is IHasNotes objNotes)
-            {
-                WriteNotes(objNotes, treLimit.SelectedNode);
-            }
-            else
-            {
-                // the limit modifier has a source
-                //TODO: All limitmodifiers should exist in the character object properly, irrespective of whether it came from an improvement. 
-                if (treLimit.SelectedNode?.Tag is IHasInternalId selectedNode)
-                foreach (Improvement objImprovement in CharacterObject.Improvements)
-                {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.SourceName == selectedNode.InternalId)
-                    {
-                        WriteNotes(objImprovement, treLimit.SelectedNode);
-                    }
-                }
             }
         }
 
@@ -15312,11 +15244,6 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tssLimitModifierEdit_Click(object sender, EventArgs e)
-        {
-            UpdateLimitModifier(treLimit);
-        }
-
         private void mnuSpecialConfirmValidity_Click(object sender, EventArgs e)
         {
             if (CheckCharacterValidity())
@@ -15402,11 +15329,6 @@ namespace Chummer
         private void LifestyleCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle, notifyCollectionChangedEventArgs);
-        }
-
-        private void LimitModifierCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
-        {
-            RefreshLimitModifiers(treLimit, cmsLimitModifier, notifyCollectionChangedEventArgs);
         }
 
         private void ContactCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
