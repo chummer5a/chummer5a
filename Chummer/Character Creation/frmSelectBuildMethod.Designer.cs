@@ -32,10 +32,10 @@ namespace Chummer
             this.cmdOK = new System.Windows.Forms.Button();
             this.chkIgnoreRules = new System.Windows.Forms.CheckBox();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.cboBuildMethod = new System.Windows.Forms.ComboBox();
+            this.cboBuildMethod = new ElasticComboBox();
             this.lblMaxAvail = new System.Windows.Forms.Label();
             this.nudMaxAvail = new System.Windows.Forms.NumericUpDown();
-            this.cboGamePlay = new System.Windows.Forms.ComboBox();
+            this.cboGamePlay = new ElasticComboBox();
             this.lblStartingKarma = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
             this.nudMaxNuyen = new System.Windows.Forms.NumericUpDown();
@@ -349,10 +349,10 @@ namespace Chummer
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.CheckBox chkIgnoreRules;
         private System.Windows.Forms.Button cmdCancel;
-        private System.Windows.Forms.ComboBox cboBuildMethod;
+        private ElasticComboBox cboBuildMethod;
         private System.Windows.Forms.Label lblMaxAvail;
         private System.Windows.Forms.NumericUpDown nudMaxAvail;
-        private System.Windows.Forms.ComboBox cboGamePlay;
+        private ElasticComboBox cboGamePlay;
         private System.Windows.Forms.Label lblStartingKarma;
         private System.Windows.Forms.Label lblDescription;
         private System.Windows.Forms.NumericUpDown nudMaxNuyen;

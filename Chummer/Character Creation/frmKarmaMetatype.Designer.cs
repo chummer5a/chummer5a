@@ -33,7 +33,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.pnlMetatypes = new System.Windows.Forms.Panel();
-            this.cboCategory = new System.Windows.Forms.ComboBox();
+            this.cboCategory = new ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.lstMetatypes = new System.Windows.Forms.ListBox();
@@ -58,7 +58,7 @@ namespace Chummer
             this.lblINTLabel = new System.Windows.Forms.Label();
             this.lblBODLabel = new System.Windows.Forms.Label();
             this.lblBOD = new System.Windows.Forms.Label();
-            this.cboMetavariant = new System.Windows.Forms.ComboBox();
+            this.cboMetavariant = new ElasticComboBox();
             this.lblKarma = new System.Windows.Forms.Label();
             this.lblQualities = new System.Windows.Forms.Label();
             this.lblMetavariantLabel = new System.Windows.Forms.Label();
@@ -67,7 +67,7 @@ namespace Chummer
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.chkBloodSpirit = new System.Windows.Forms.CheckBox();
             this.chkPossessionBased = new System.Windows.Forms.CheckBox();
-            this.cboPossessionMethod = new System.Windows.Forms.ComboBox();
+            this.cboPossessionMethod = new ElasticComboBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.pnlMetatypes.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -629,18 +629,18 @@ namespace Chummer
         
         private System.Windows.Forms.Panel pnlMetatypes;
         private System.Windows.Forms.CheckBox chkBloodSpirit;
-        private System.Windows.Forms.ComboBox cboPossessionMethod;
+        private ElasticComboBox cboPossessionMethod;
         private System.Windows.Forms.CheckBox chkPossessionBased;
         private System.Windows.Forms.NumericUpDown nudForce;
         private System.Windows.Forms.Label lblForceLabel;
-        private System.Windows.Forms.ComboBox cboCategory;
+        private ElasticComboBox cboCategory;
         internal System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Label lblQualities;
         private System.Windows.Forms.Label lblQualitiesLabel;
         internal System.Windows.Forms.Label lblKarma;
         internal System.Windows.Forms.Label lblKarmaLabel;
         private System.Windows.Forms.Label lblMetavariantLabel;
-        private System.Windows.Forms.ComboBox cboMetavariant;
+        private ElasticComboBox cboMetavariant;
         internal System.Windows.Forms.Button cmdOK;
         internal System.Windows.Forms.Label lblINILabel;
         internal System.Windows.Forms.Label lblINI;

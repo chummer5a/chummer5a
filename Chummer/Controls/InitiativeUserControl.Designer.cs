@@ -45,7 +45,7 @@ namespace Chummer
             this.btnMinus10Init = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.btnAdd10Init = new System.Windows.Forms.Button();
-            this.cboManeuvers = new System.Windows.Forms.ComboBox();
+            this.cboManeuvers = new ElasticComboBox();
             this.btnApplyInterrupt = new System.Windows.Forms.Button();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnNext = new System.Windows.Forms.Button();
@@ -429,7 +429,7 @@ namespace Chummer
         private System.Windows.Forms.Button btnMinus10Init;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button btnAdd10Init;
-        private System.Windows.Forms.ComboBox cboManeuvers;
+        private ElasticComboBox cboManeuvers;
         private System.Windows.Forms.Button btnApplyInterrupt;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.Button btnNext;

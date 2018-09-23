@@ -56,7 +56,7 @@ namespace Chummer
             this.lblTestLabel = new System.Windows.Forms.Label();
             this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.cboCategory = new System.Windows.Forms.ComboBox();
+            this.cboCategory = new ElasticComboBox();
             this.lblVehicleCapacity = new System.Windows.Forms.Label();
             this.lblVehicleCapacityLabel = new System.Windows.Forms.Label();
             this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
@@ -651,7 +651,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblTestLabel;
         private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox cboCategory;
+        private ElasticComboBox cboCategory;
         private System.Windows.Forms.Label lblVehicleCapacity;
         private System.Windows.Forms.Label lblVehicleCapacityLabel;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;

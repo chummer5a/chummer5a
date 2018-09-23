@@ -50,7 +50,7 @@ namespace Chummer
             this.cmdOK = new System.Windows.Forms.Button();
             this.lstVehicle = new System.Windows.Forms.ListBox();
             this.lblCategory = new System.Windows.Forms.Label();
-            this.cboCategory = new System.Windows.Forms.ComboBox();
+            this.cboCategory = new ElasticComboBox();
             this.lblVehicleSensor = new System.Windows.Forms.Label();
             this.lblVehicleSensorLabel = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
@@ -780,7 +780,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.ListBox lstVehicle;
         private System.Windows.Forms.Label lblCategory;
-        private System.Windows.Forms.ComboBox cboCategory;
+        private ElasticComboBox cboCategory;
         private System.Windows.Forms.Label lblVehicleSensor;
         private System.Windows.Forms.Label lblVehicleSensorLabel;
         private System.Windows.Forms.Button cmdOKAdd;

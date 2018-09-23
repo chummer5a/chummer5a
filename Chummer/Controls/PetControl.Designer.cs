@@ -40,7 +40,7 @@ namespace Chummer
             this.imgNotes = new System.Windows.Forms.PictureBox();
             this.lblName = new System.Windows.Forms.Label();
             this.lblMetatypeLabel = new System.Windows.Forms.Label();
-            this.cboMetatype = new System.Windows.Forms.ComboBox();
+            this.cboMetatype = new ElasticComboBox();
             this.cmsContact.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgLink)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgNotes)).BeginInit();
@@ -187,6 +187,6 @@ namespace Chummer
         private System.Windows.Forms.ContextMenuStrip cmsContact;
         private System.Windows.Forms.Label lblName;
         private System.Windows.Forms.Label lblMetatypeLabel;
-        private System.Windows.Forms.ComboBox cboMetatype;
+        private ElasticComboBox cboMetatype;
     }
 }

@@ -49,9 +49,9 @@ namespace Chummer
             this.lblTestLabel = new System.Windows.Forms.Label();
             this.nudRating = new System.Windows.Forms.NumericUpDown();
             this.lblRatingLabel = new System.Windows.Forms.Label();
-            this.cboMount = new System.Windows.Forms.ComboBox();
+            this.cboMount = new ElasticComboBox();
             this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
-            this.cboExtraMount = new System.Windows.Forms.ComboBox();
+            this.cboExtraMount = new ElasticComboBox();
             this.lblExtraMountLabel = new System.Windows.Forms.Label();
             this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -604,9 +604,9 @@ namespace Chummer
         private System.Windows.Forms.Label lblMarkupPercentLabel;
         private System.Windows.Forms.Label lblTest;
         private System.Windows.Forms.Label lblTestLabel;
-        private System.Windows.Forms.ComboBox cboMount;
+        private ElasticComboBox cboMount;
         private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
-        private System.Windows.Forms.ComboBox cboExtraMount;
+        private ElasticComboBox cboExtraMount;
         private System.Windows.Forms.Label lblExtraMountLabel;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;

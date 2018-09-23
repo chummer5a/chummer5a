@@ -35,7 +35,7 @@ namespace Chummer
             this.lblForce = new System.Windows.Forms.Label();
             this.nudForce = new System.Windows.Forms.NumericUpDown();
             this.chkBound = new System.Windows.Forms.CheckBox();
-            this.cboSpiritName = new System.Windows.Forms.ComboBox();
+            this.cboSpiritName = new ElasticComboBox();
             this.imgLink = new System.Windows.Forms.PictureBox();
             this.cmsSpirit = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsContactOpen = new System.Windows.Forms.ToolStripMenuItem();
@@ -267,7 +267,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblForce;
         private System.Windows.Forms.NumericUpDown nudForce;
         private System.Windows.Forms.CheckBox chkBound;
-        private System.Windows.Forms.ComboBox cboSpiritName;
+        private ElasticComboBox cboSpiritName;
         private System.Windows.Forms.PictureBox imgLink;
         private System.Windows.Forms.ContextMenuStrip cmsSpirit;
         private System.Windows.Forms.ToolStripMenuItem tsContactOpen;
