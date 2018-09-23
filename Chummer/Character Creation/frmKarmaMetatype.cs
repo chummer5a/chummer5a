@@ -97,7 +97,6 @@ namespace Chummer
 
             cboCategory.EndUpdate();
 
-            Height = cmdOK.Bottom + 40;
             lstMetatypes.Height = cmdOK.Bottom - lstMetatypes.Top;
 
             // Add Possession and Inhabitation to the list of Critter Tradition variations.

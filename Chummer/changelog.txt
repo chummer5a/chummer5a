@@ -76,6 +76,8 @@ Application Changes:
 - Fixed a bug where newly created characters would not get added to the list of characters open in internal memory, which could cause a whole lot of other issues, least of which was that the character's tab would not get properly updated if the character's alias was changed.
 - Added a loading bar/screen that is displayed when the program is performing its initial loading and whenever the program loads in a character.
 - Fixed a bug where the program's UI showed English page number references even for non-English languages. Fixes #3024.
+- Adept Way Discounts are no longer available to powers that don't have a populated Adept Way requirement. Fixes part of #3042
+- Fixed an issue with the Karma Metatype selector not showing the correct height.
 
 Data Changes:
 
