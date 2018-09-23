@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmSelectPACKSKit
     {
@@ -32,7 +32,7 @@
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblCategory = new System.Windows.Forms.Label();
-            this.cboCategory = new System.Windows.Forms.ComboBox();
+            this.cboCategory = new ElasticComboBox();
             this.lstKits = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.treContents = new System.Windows.Forms.TreeView();
@@ -237,7 +237,7 @@
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Label lblCategory;
-        private System.Windows.Forms.ComboBox cboCategory;
+        private ElasticComboBox cboCategory;
         private System.Windows.Forms.ListBox lstKits;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TreeView treContents;

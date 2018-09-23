@@ -28,7 +28,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.cboTest = new System.Windows.Forms.ComboBox();
+            this.cboTest = new ElasticComboBox();
             this.cmdTest = new System.Windows.Forms.Button();
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.pgbProgress = new System.Windows.Forms.ProgressBar();
@@ -116,7 +116,7 @@ namespace Chummer
 
         #endregion
 
-        private System.Windows.Forms.ComboBox cboTest;
+        private ElasticComboBox cboTest;
         private System.Windows.Forms.Button cmdTest;
         private System.Windows.Forms.TextBox txtOutput;
         private System.Windows.Forms.ProgressBar pgbProgress;

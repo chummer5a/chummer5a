@@ -38,7 +38,7 @@ namespace Chummer
             this.lblResultsLabel = new System.Windows.Forms.Label();
             this.lblGremlins = new System.Windows.Forms.Label();
             this.nudGremlins = new System.Windows.Forms.NumericUpDown();
-            this.cboMethod = new System.Windows.Forms.ComboBox();
+            this.cboMethod = new ElasticComboBox();
             this.chkCinematicGameplay = new System.Windows.Forms.CheckBox();
             this.cmdReroll = new System.Windows.Forms.Button();
             this.chkRushJob = new System.Windows.Forms.CheckBox();
@@ -343,7 +343,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblResultsLabel;
         private System.Windows.Forms.Label lblGremlins;
         private System.Windows.Forms.NumericUpDown nudGremlins;
-        private System.Windows.Forms.ComboBox cboMethod;
+        private ElasticComboBox cboMethod;
         private System.Windows.Forms.CheckBox chkCinematicGameplay;
         private System.Windows.Forms.Button cmdReroll;
         private System.Windows.Forms.CheckBox chkRushJob;

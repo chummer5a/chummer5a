@@ -32,7 +32,7 @@ namespace Chummer
             this.cmdOK = new System.Windows.Forms.Button();
             this.lstGear = new System.Windows.Forms.ListBox();
             this.lblCategory = new System.Windows.Forms.Label();
-            this.cboCategory = new System.Windows.Forms.ComboBox();
+            this.cboCategory = new ElasticComboBox();
             this.nudRating = new System.Windows.Forms.NumericUpDown();
             this.lblRatingLabel = new System.Windows.Forms.Label();
             this.lblCost = new System.Windows.Forms.Label();
@@ -684,7 +684,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.ListBox lstGear;
         private System.Windows.Forms.Label lblCategory;
-        private System.Windows.Forms.ComboBox cboCategory;
+        private ElasticComboBox cboCategory;
         private System.Windows.Forms.NumericUpDown nudRating;
         private System.Windows.Forms.Label lblRatingLabel;
         private System.Windows.Forms.Label lblCost;

@@ -31,7 +31,7 @@ namespace Chummer
             this.lblAmmoLabel = new System.Windows.Forms.Label();
             this.cboAmmo = new Chummer.ElasticComboBox();
             this.lblTypeLabel = new System.Windows.Forms.Label();
-            this.cboType = new System.Windows.Forms.ComboBox();
+            this.cboType = new Chummer.ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -185,7 +185,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblAmmoLabel;
         private ElasticComboBox cboAmmo;
         private System.Windows.Forms.Label lblTypeLabel;
-        private System.Windows.Forms.ComboBox cboType;
+        private ElasticComboBox cboType;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;

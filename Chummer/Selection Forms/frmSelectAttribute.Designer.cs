@@ -29,7 +29,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.cmdOK = new System.Windows.Forms.Button();
-            this.cboAttribute = new System.Windows.Forms.ComboBox();
+            this.cboAttribute = new ElasticComboBox();
             this.lblDescription = new System.Windows.Forms.Label();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.chkDoNotAffectMetatypeMaximum = new System.Windows.Forms.CheckBox();
@@ -174,7 +174,7 @@ namespace Chummer
         #endregion
 
         private System.Windows.Forms.Button cmdOK;
-        private System.Windows.Forms.ComboBox cboAttribute;
+        private ElasticComboBox cboAttribute;
         private System.Windows.Forms.Label lblDescription;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.CheckBox chkDoNotAffectMetatypeMaximum;

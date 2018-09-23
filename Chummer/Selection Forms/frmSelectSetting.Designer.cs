@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmSelectSetting
     {
@@ -30,7 +30,7 @@
         {
             this.lblSettingDescription = new System.Windows.Forms.Label();
             this.lblSetting = new System.Windows.Forms.Label();
-            this.cboSetting = new System.Windows.Forms.ComboBox();
+            this.cboSetting = new ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -171,7 +171,7 @@
 
         private System.Windows.Forms.Label lblSettingDescription;
         private System.Windows.Forms.Label lblSetting;
-        private System.Windows.Forms.ComboBox cboSetting;
+        private ElasticComboBox cboSetting;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;

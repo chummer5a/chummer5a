@@ -30,11 +30,11 @@ namespace Chummer.UI.Skills
         private void InitializeComponent()
         {
             this.lblModifiedRating = new LabelWithToolTip();
-            this.cboSpec = new System.Windows.Forms.ComboBox();
+            this.cboSpec = new ElasticComboBox();
             this.chkKarma = new System.Windows.Forms.CheckBox();
             this.cmdDelete = new System.Windows.Forms.Button();
-            this.cboSkill = new System.Windows.Forms.ComboBox();
-            this.cboType = new System.Windows.Forms.ComboBox();
+            this.cboSkill = new ElasticComboBox();
+            this.cboType = new ElasticComboBox();
             this.lblRating = new System.Windows.Forms.Label();
             this.lblName = new LabelWithToolTip();
             this.lblSpec = new System.Windows.Forms.Label();
@@ -209,11 +209,11 @@ namespace Chummer.UI.Skills
         private NumericUpDownEx nudKarma;
         private NumericUpDownEx nudSkill;
         private LabelWithToolTip lblModifiedRating;
-        private System.Windows.Forms.ComboBox cboSpec;
+        private ElasticComboBox cboSpec;
         private System.Windows.Forms.CheckBox chkKarma;
         private System.Windows.Forms.Button cmdDelete;
-        private System.Windows.Forms.ComboBox cboSkill;
-        private System.Windows.Forms.ComboBox cboType;
+        private ElasticComboBox cboSkill;
+        private ElasticComboBox cboType;
         private System.Windows.Forms.Label lblRating;
         private LabelWithToolTip lblName;
         private System.Windows.Forms.Label lblSpec;

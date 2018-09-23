@@ -28,10 +28,10 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.cboCategory = new System.Windows.Forms.ComboBox();
+            this.cboCategory = new ElasticComboBox();
             this.lblCategory = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.cboGrade = new System.Windows.Forms.ComboBox();
+            this.cboGrade = new ElasticComboBox();
             this.lstCyberware = new System.Windows.Forms.ListBox();
             this.lblEssenceLabel = new System.Windows.Forms.Label();
             this.lblEssence = new System.Windows.Forms.Label();
@@ -747,10 +747,10 @@ namespace Chummer
 
         #endregion
 
-        private System.Windows.Forms.ComboBox cboCategory;
+        private ElasticComboBox cboCategory;
         private System.Windows.Forms.Label lblCategory;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox cboGrade;
+        private ElasticComboBox cboGrade;
         private System.Windows.Forms.ListBox lstCyberware;
         private System.Windows.Forms.Label lblEssenceLabel;
         private System.Windows.Forms.Label lblEssence;

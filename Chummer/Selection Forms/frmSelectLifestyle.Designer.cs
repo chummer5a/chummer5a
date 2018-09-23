@@ -28,7 +28,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.cboLifestyle = new System.Windows.Forms.ComboBox();
+            this.cboLifestyle = new ElasticComboBox();
             this.lblLifestyles = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -338,7 +338,7 @@ namespace Chummer
 
         #endregion
 
-        private System.Windows.Forms.ComboBox cboLifestyle;
+        private ElasticComboBox cboLifestyle;
         private System.Windows.Forms.Label lblLifestyles;
         private System.Windows.Forms.Button cmdOKAdd;
         private System.Windows.Forms.Button cmdCancel;
