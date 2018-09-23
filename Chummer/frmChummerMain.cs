@@ -848,7 +848,7 @@ namespace Chummer
         {
             if (Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0 || !IsVisibleOnAnyScreen())
             {
-                Size = new Size(1191, 752);
+                Size = new Size(1280, 768);
                 StartPosition = FormStartPosition.CenterScreen;
             }
             else
