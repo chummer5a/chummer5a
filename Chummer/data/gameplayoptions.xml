@@ -23,6 +23,9 @@
       <id>054559be-d80a-42b9-a0a9-d6957d2b3c55</id>
       <name>Standard</name>
       <karma>25</karma>
+      <pointbuykarma>800</pointbuykarma>
+      <lifemoduleskarma>750</lifemoduleskarma>
+      <sumtoten>10</sumtoten>
       <maxavailability>12</maxavailability>
       <maxnuyen>10</maxnuyen>
       <contactmultiplier>3</contactmultiplier>
@@ -37,6 +40,9 @@
       <id>5b1281c0-466d-441d-a844-5a2bc93d9843</id>
       <name>Prime Runner</name>
       <karma>35</karma>
+      <pointbuykarma>1000</pointbuykarma>
+      <lifemoduleskarma>950</lifemoduleskarma>
+      <sumtoten>10</sumtoten>
       <maxavailability>15</maxavailability>
       <maxnuyen>25</maxnuyen>
       <contactmultiplier>6</contactmultiplier>
@@ -50,6 +56,9 @@
       <id>def8a6aa-4bfa-4c73-a20f-2a8e80d2b1df</id>
       <name>Street Level</name>
       <karma>13</karma>
+      <pointbuykarma>600</pointbuykarma>
+      <lifemoduleskarma>550</lifemoduleskarma>
+      <sumtoten>10</sumtoten>
       <maxavailability>10</maxavailability>
       <maxnuyen>5</maxnuyen>
       <contactmultiplier>3</contactmultiplier>
@@ -63,6 +72,9 @@
       <id>b9d5c0ae-0d2c-4e86-9e09-f42a23ab27a6</id>
       <name>Street Scum</name>
       <karma>13</karma>
+      <pointbuykarma>600</pointbuykarma>
+      <lifemoduleskarma>550</lifemoduleskarma>
+      <sumtoten>10</sumtoten>
       <maxavailability>10</maxavailability>
       <maxnuyen>5</maxnuyen>
       <contactmultiplier>3</contactmultiplier>

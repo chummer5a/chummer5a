@@ -60,9 +60,6 @@ namespace Chummer
             _xmlQualityDocumentQualitiesNode = xmlQualityDoc.SelectSingleNode("/chummer/qualities");
             _xmlBaseQualityDataNode = xmlQualityDoc.GetFastNavigator().SelectSingleNode("/chummer");
             _xmlCritterPowerDocumentPowersNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers");
-
-            Height = cmdOK.Bottom + 40;
-            lstMetatypes.Height = cmdOK.Bottom - lstMetatypes.Top;
         }
         
         private void frmPriorityMetatype_Load(object sender, EventArgs e)

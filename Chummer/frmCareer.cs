@@ -14353,7 +14353,7 @@ namespace Chummer
                         chkGearEquipped.Checked = objGear.Equipped;
 
                         // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
-                        if (objGear.IsProgram && CharacterObjectOptions.CalculateCommlinkResponse)
+                        if (objGear.IsProgram)
                         {
                             if (objGear.Parent is IHasMatrixAttributes objCommlink && objCommlink.IsCommlink)
                             {

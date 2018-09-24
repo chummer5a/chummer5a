@@ -1821,11 +1821,8 @@ namespace Chummer.Backend.Equipment
             }
             if (intImprove != 0)
                 strDamage += " + " + intImprove.ToString();
-
-            CharacterOptions objOptions = _objCharacter.Options;
-            int intBonus = 0;
-            if (objOptions.MoreLethalGameplay)
-                intBonus = 2;
+            
+            int intBonus = _objCharacter.Options.MoreLethalGameplay ? 2 : 0;
 
             // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
             if (!string.IsNullOrEmpty(AmmoLoaded))

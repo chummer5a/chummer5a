@@ -78,6 +78,10 @@ Application Changes:
 - Fixed a bug where the program's UI showed English page number references even for non-English languages. Fixes #3024.
 - Adept Way Discounts are no longer available to powers that don't have a populated Adept Way requirement. Fixes part of #3042
 - Fixed an issue with the Karma Metatype selector not showing the correct height.
+- Re-enabled the option to use More Lethal gameplay rules from 4th edition (the option is in the House Rules section).
+- Reorganized the options menu so that global options that are independent from the currently opened character are easier to tell apart, and so that the PDF information of individual sourcebooks can be modified even if a custom ruleset is enabled that disables the given sourcebooks.
+- The options menu now supports selecting a default gameplay option when creating a new character instead of modifying the default max availability and max starting karma amounts.
+- Gameplay options can now declare default values for karma levels under Point Buy, karma levels under Life Modules, and Sum-to-X value under Sum-to-Ten build methods in their XML entries.
 
 Data Changes:
 
@@ -158,6 +162,11 @@ New Strings:
 - String_LegacyFixes
 - String_GeneratedImprovements
 - String_UI
+- Tab_Options_GitHubIssues
+- Label_Options_EditSourcebookInfo
+- Label_Options_SourcebooksToUse
+- Label_Options_SelectedSourcebook
+- Label_Options_MetatypesCostKarma
 
 Changed Strings:
 
@@ -172,10 +181,20 @@ Changed Strings:
 - Label_SelectBP_MaxNuyen
 - Label_AddictionThreshold
 - Menu_Notes
+- Tab_Options_Global
+- Tab_Options_Character
+- Label_Options_Defaults
+- Label_Options_CyberlimbCount
+- Label_Options_NuyenPerBP
+- Checkbox_Options_MoreLethalGameplace
+- Checkbox_Option_CreateBackupOnCareer
+- Label_Options_CharacterRoster
 
 Removed Strings:
 
 - Label_SelectAdvancedLifestyle_Base_Area
+- Label_Options_AdditionalBooks
+- Checkbox_Options_MetatypesCostKarma
 
 Build 202
 
