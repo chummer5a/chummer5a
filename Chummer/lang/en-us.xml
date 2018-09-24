@@ -6984,6 +6984,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Selected Sourcebook:</text>
     </string>
     <string>
+      <key>Label_Options_CustomDataDirectories</key>
+      <text>Custom Data Directories to Use (Changes Are Only Applied After a Restart)</text>
+    </string>
+    <string>
       <key>Label_Options_Defaults</key>
       <text>Defaults for New Characters:</text>
     </string>

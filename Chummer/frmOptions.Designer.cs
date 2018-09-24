@@ -3332,6 +3332,7 @@ namespace Chummer
             this.lblCustomDataDirectoriesLabel.Name = "lblCustomDataDirectoriesLabel";
             this.lblCustomDataDirectoriesLabel.Size = new System.Drawing.Size(358, 13);
             this.lblCustomDataDirectoriesLabel.TabIndex = 36;
+            this.lblCustomDataDirectoriesLabel.Tag = "Label_Options_CustomDataDirectories";
             this.lblCustomDataDirectoriesLabel.Text = "Custom Data Directories to Use (Changes Are Only Applied After a Restart)";
             // 
             // cmdAddCustomDirectory
