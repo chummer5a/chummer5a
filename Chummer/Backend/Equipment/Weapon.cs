@@ -1765,14 +1765,17 @@ namespace Chummer.Backend.Equipment
                 {
                     strCategory = "Unarmed Combat";
                 }
+
+                string strUseSkill = Skill.Name;
+
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV && objImprovement.Enabled && (objImprovement.ImprovedName == strCategory || "Cyberware " + objImprovement.ImprovedName == strCategory))
-                        intImprove += objImprovement.Value;
-                    if (!string.IsNullOrEmpty(_strUseSkill))
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV && objImprovement.Enabled &&
+                        (objImprovement.ImprovedName == strCategory ||
+                         objImprovement.ImprovedName == strUseSkill ||
+                         "Cyberware " + objImprovement.ImprovedName == strCategory))
                     {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV && objImprovement.Enabled && (objImprovement.ImprovedName == _strUseSkill || "Cyberware " + objImprovement.ImprovedName == strCategory))
-                            intImprove += objImprovement.Value;
+                        intImprove += objImprovement.Value;
                     }
                 }
             }
@@ -3631,12 +3634,12 @@ namespace Chummer.Backend.Equipment
                 string strSkill = GetSkillName(strCategory, ref strSpec);
 
                 // Use the Skill defined by the Weapon if one is present.
-                if (!string.IsNullOrEmpty(_strUseSkill))
+                if (!string.IsNullOrEmpty(UseSkill))
                 {
-                    strSkill = _strUseSkill;
+                    strSkill = UseSkill;
                     strSpec = string.Empty;
 
-                    if (_strUseSkill.Contains("Exotic"))
+                    if (UseSkill.Contains("Exotic"))
                         strSpec = Name;
                 }
 
