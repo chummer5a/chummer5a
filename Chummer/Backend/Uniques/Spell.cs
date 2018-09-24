@@ -33,7 +33,7 @@ namespace Chummer
     /// A Magician Spell.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Spell : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
+    public class Spell : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource, IHasDicePool
     {
         private Guid _guiID;
         private string _strName = string.Empty;

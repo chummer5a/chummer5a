@@ -34,7 +34,7 @@ namespace Chummer.Backend.Equipment
     /// Weapon Accessory.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating
+    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, IHasDicePool
     {
         private Guid _guiID;
         private readonly Character _objCharacter;
@@ -928,6 +928,8 @@ namespace Chummer.Backend.Equipment
         }
 
         private string DicePoolString => _strDicePool;
+
+        public string DicePoolTooltip => string.Empty;
 
         /// <summary>
         /// Adjust the Weapon's Ammo amount by the specified percent.

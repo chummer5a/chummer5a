@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A Weapon.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource
+    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasDicePool
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -3539,6 +3539,8 @@ namespace Chummer.Backend.Equipment
                 return intReturn;
             }
         }
+
+        public int DicePool => Convert.ToInt32(GetDicePool(GlobalOptions.CultureInfo, GlobalOptions.Language));
 
         /// <summary>
         /// The Dice Pool size for the Active Skill required to use the Weapon.

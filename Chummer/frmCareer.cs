@@ -5857,12 +5857,6 @@ namespace Chummer
             DiceRollerOpenedInt(CharacterObject, intDice);
         }
 
-        private void cmdRollWeapon_Click(object sender, EventArgs e)
-        {
-            int.TryParse(lblWeaponDicePool.Text, out int intDice);
-            DiceRollerOpenedInt(CharacterObject, intDice);
-        }
-
         private void cmdRollVehicleWeapon_Click(object sender, EventArgs e)
         {
             int.TryParse(lblVehicleWeaponDicePool.Text, out int intDice);
@@ -13704,6 +13698,11 @@ namespace Chummer
             {
                 selected.SetSourceDetail(lblWeaponSource);
             }
+
+            if (treWeapons.SelectedNode?.Tag is IHasDicePool)
+            {
+                ctlWeaponDicePool.PoolObject = treWeapons.SelectedNode?.Tag as IHasDicePool;
+            }
             if (treWeapons.SelectedNode?.Tag is Weapon objWeapon)
             {
                 if (objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality") || objWeapon.IncludedInWeapon || !string.IsNullOrEmpty(objWeapon.ParentID))
@@ -13847,8 +13846,6 @@ namespace Chummer
                 }
                 else
                     lblWeaponSlots.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
-                lblWeaponDicePool.Text = objWeapon.GetDicePool(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblWeaponDicePool.SetToolTip(objWeapon.DicePoolTooltip);
                 lblWeaponRC.SetToolTip(objWeapon.RCToolTip);
             }
             else if (treWeapons.SelectedNode?.Tag is WeaponAccessory objSelectedAccessory)
@@ -13857,8 +13854,6 @@ namespace Chummer
                     cmdDeleteWeapon.Enabled = false;
 
                 cmdWeaponMoveToVehicle.Enabled = false;
-                lblWeaponDicePool.Text = string.Empty;
-                lblWeaponDicePool.SetToolTip(string.Empty);
                 cmdFireWeapon.Enabled = false;
                 cmdReloadWeapon.Enabled = false;
                 cmdWeaponBuyAmmo.Enabled = false;
@@ -16000,7 +15995,6 @@ namespace Chummer
             chkWeaponAccessoryInstalled.SetToolTip(LanguageManager.GetString("Tip_WeaponInstalled", GlobalOptions.Language));
             cmdWeaponBuyAmmo.SetToolTip(LanguageManager.GetString("Tip_BuyAmmo", GlobalOptions.Language));
             cmdWeaponMoveToVehicle.SetToolTip(LanguageManager.GetString("Tip_TransferToVehicle", GlobalOptions.Language));
-            cmdRollWeapon.SetToolTip(LanguageManager.GetString("Tip_DiceRoller", GlobalOptions.Language));
             // Gear Tab.
             cmdGearIncreaseQty.SetToolTip(LanguageManager.GetString("Tip_IncreaseGearQty", GlobalOptions.Language));
             cmdGearReduceQty.SetToolTip(LanguageManager.GetString("Tip_DecreaseGearQty", GlobalOptions.Language));
@@ -16233,14 +16227,11 @@ namespace Chummer
 
             lblWeaponAmmoRemaining.Left = lblWeaponAmmoRemainingLabel.Left + intWidth + 6;
             cboWeaponAmmo.Left = lblWeaponAmmoTypeLabel.Left + intWidth + 6;
-            lblWeaponDicePool.Left = lblWeaponDicePoolLabel.Left + intWidth + 6;
+            ctlWeaponDicePool.Left = lblWeaponDicePoolLabel.Left + intWidth + 6;
 
             cmdFireWeapon.Left = lblWeaponAmmoRemaining.Left + 123;
             cmdReloadWeapon.Left = cmdFireWeapon.Left + cmdFireWeapon.Width + 6;
             cmdWeaponBuyAmmo.Left = cmdReloadWeapon.Left + cmdReloadWeapon.Width + 6;
-
-            cmdRollWeapon.Left = lblWeaponDicePool.Left + lblWeaponDicePool.Width + 6;
-            cmdRollWeapon.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
 
             lblWeaponAttackLabel.Left = lblWeaponDeviceRating.Left + lblWeaponDeviceRating.Width + 20;
             cboWeaponGearAttack.Left = lblWeaponAttackLabel.Left + lblWeaponAttackLabel.Width + 6;

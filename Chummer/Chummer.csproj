@@ -290,6 +290,7 @@
     <Compile Include="Interfaces\ICanSell.cs" />
     <Compile Include="Interfaces\IHasChildren.cs" />
     <Compile Include="Interfaces\IHasChildrenAndCost.cs" />
+    <Compile Include="Interfaces\IHasDicePool.cs" />
     <Compile Include="Interfaces\IHasLocation.cs" />
     <Compile Include="Interfaces\IHasMatrixAttributes.cs" />
     <Compile Include="Interfaces\IHasMugshots.cs" />
@@ -425,6 +426,12 @@
     </Compile>
     <Compile Include="UI\Attributes\AttributeControl.Designer.cs">
       <DependentUpon>AttributeControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Shared\Components\DicePoolControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Shared\Components\DicePoolControl.Designer.cs">
+      <DependentUpon>DicePoolControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Shared\LimitTabUserControl.cs">
       <SubType>UserControl</SubType>
@@ -1048,6 +1055,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Attributes\AttributeControl.resx">
       <DependentUpon>AttributeControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Shared\Components\DicePoolControl.resx">
+      <DependentUpon>DicePoolControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Shared\LimitTabUserControl.resx">
       <DependentUpon>LimitTabUserControl.cs</DependentUpon>
