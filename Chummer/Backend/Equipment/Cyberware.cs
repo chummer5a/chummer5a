@@ -414,7 +414,7 @@ namespace Chummer.Backend.Equipment
             {
                 string strSubsystem = string.Empty;
                 XmlNodeList lstSubSystems = objXmlCyberware.SelectNodes("allowsubsystems/category");
-                for (int i = 0; i < lstSubSystems.Count; i++)
+                for (int i = 0; i < lstSubSystems?.Count; i++)
                 {
                     strSubsystem += lstSubSystems[i].InnerText;
                     if (i != lstSubSystems.Count - 1)

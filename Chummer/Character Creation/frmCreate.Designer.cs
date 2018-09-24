@@ -11067,7 +11067,6 @@ namespace Chummer
 			this.Controls.Add(this.StatusStrip);
 			this.Controls.Add(this.toolStrip);
 			this.Controls.Add(this.mnuCreateMenu);
-			this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.mnuCreateMenu;
 			this.Name = "frmCreate";

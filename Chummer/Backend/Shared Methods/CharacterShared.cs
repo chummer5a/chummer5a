@@ -146,6 +146,7 @@ namespace Chummer
         /// </summary>
         protected void AutoSaveCharacter()
         {
+            Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
             string strAutosavePath = Path.Combine(Application.StartupPath, "saves", "autosave");
             if (!Directory.Exists(strAutosavePath))
@@ -170,7 +171,7 @@ namespace Chummer
                 strShowFileName = _objCharacter.CharacterName;
             string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
             _objCharacter.Save(strFilePath);
-            Cursor = Cursors.Default;
+            Cursor = objOldCursor;
             AutosaveStopWatch.Restart();
         }
 
@@ -6941,12 +6942,13 @@ namespace Chummer
                 }
             }
 
+            Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
             if (_objCharacter.Save())
             {
                 GlobalOptions.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);
                 IsDirty = false;
-                Cursor = Cursors.Default;
+                Cursor = objOldCursor;
 
                 // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
                 if (blnDoCreated)
@@ -6956,7 +6958,7 @@ namespace Chummer
 
                 return true;
             }
-            Cursor = Cursors.Default;
+            Cursor = objOldCursor;
             return false;
         }
 
