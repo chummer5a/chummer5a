@@ -188,7 +188,7 @@ namespace Chummer
                 // Load the Priority information.
                 if (string.IsNullOrEmpty(CharacterObject.GameplayOption))
                 {
-                    CharacterObject.GameplayOption = "Standard";
+                    CharacterObject.GameplayOption = GlobalOptions.DefaultGameplayOption;
                 }
                 XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml").SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + CharacterObject.GameplayOption + "\"]");
                 if (objXmlGameplayOption != null)
@@ -208,7 +208,11 @@ namespace Chummer
                     CharacterObject.GameplayOptionQualityLimit = CharacterObject.MaxKarma = Convert.ToInt32(strKarma);
                     CharacterObject.MaxNuyen = Convert.ToInt32(strNuyen);
                 }
+
+                mnuSpecialChangeMetatype.Tag = "Menu_SpecialChangePriorities";
+                mnuSpecialChangeMetatype.Text = LanguageManager.GetString("Menu_SpecialChangePriorities");
             }
+            
             Utils.DoDatabinding(lblNuyenTotal, "Text", CharacterObject, nameof(Character.DisplayTotalStartingNuyen));
             lblAttributesBase.Visible = CharacterObject.BuildMethodHasSkillPoints;
 

@@ -1445,8 +1445,12 @@
       <text>Create PACKS Kit</text>
     </string>
     <string>
+      <key>Menu_SpecialChangePriorities</key>
+      <text>Change &amp;Priority Selection</text>
+    </string>
+    <string>
       <key>Menu_SpecialChangeMetatype</key>
-      <text>Change Priority Selection</text>
+      <text>Change &amp;Metatype</text>
     </string>
     <string>
       <key>Menu_SpecialChangeOptions</key>

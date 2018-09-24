@@ -83,6 +83,7 @@ Application Changes:
 - The options menu now supports selecting a default gameplay option when creating a new character instead of modifying the default max availability and max starting karma amounts.
 - Gameplay options can now declare default values for karma levels under Point Buy, karma levels under Life Modules, and Sum-to-X value under Sum-to-Ten build methods in their XML entries.
 - Fixed a bug where improvements that added to a weapon type's DV would sometimes apply their bonus twice. Fixes #3036.
+- Fixed an issue where the dropdown menu option to change a character's metatype would show as "Change Priority Selection" regardless of the character's build method.
 
 Data Changes:
 
@@ -173,6 +174,7 @@ New Strings:
 - Label_Options_MetatypesCostKarma
 - Label_Options_CustomDataDirectories
 - Button_Options_UploadPastebin
+- Menu_SpecialChangePriorities
 
 Changed Strings:
 
@@ -195,6 +197,7 @@ Changed Strings:
 - Checkbox_Options_MoreLethalGameplace
 - Checkbox_Option_CreateBackupOnCareer
 - Label_Options_CharacterRoster
+- Menu_SpecialChangeMetatype
 
 Removed Strings:
 
