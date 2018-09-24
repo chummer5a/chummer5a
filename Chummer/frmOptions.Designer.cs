@@ -4154,11 +4154,13 @@ namespace Chummer
             // 
             // cmdUploadPastebin
             // 
+            this.cmdUploadPastebin.AutoSize = true;
             this.cmdUploadPastebin.Enabled = false;
             this.cmdUploadPastebin.Location = new System.Drawing.Point(6, 6);
             this.cmdUploadPastebin.Name = "cmdUploadPastebin";
             this.cmdUploadPastebin.Size = new System.Drawing.Size(152, 23);
             this.cmdUploadPastebin.TabIndex = 1;
+            this.cmdUploadPastebin.Tag = "Button_Options_UploadPastebin";
             this.cmdUploadPastebin.Text = "Upload file to Pastebin";
             this.cmdUploadPastebin.UseVisualStyleBackColor = true;
             this.cmdUploadPastebin.Click += new System.EventHandler(this.cmdUploadPastebin_Click);
@@ -4360,6 +4362,7 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKnowledgeMultiplier)).EndInit();
             this.tabGitHubIssues.ResumeLayout(false);
+            this.tabGitHubIssues.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);

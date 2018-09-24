@@ -171,6 +171,7 @@ New Strings:
 - Label_Options_SelectedSourcebook
 - Label_Options_MetatypesCostKarma
 - Label_Options_CustomDataDirectories
+- Button_Options_UploadPastebin
 
 Changed Strings:
 
