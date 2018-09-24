@@ -123,6 +123,8 @@ Data Changes:
 - Fixed a bug where Elementalist would disable access to the Enchanting skill group instead of disabling access to skills in the Enchanting group.
 - Pariah tradition now properly disables access to skills noted in its description and properly gives +2 to Banishing, Counterspelling, and Disenchanting.
 - Fixed incorrect Slots for the Workshop vehicle mod.
+- Fixed a typo in the name of the Dassault Janitorial Drone.
+- All instances of "NeoNET" are now capitalized as such (some items previously said "NeoNet" or "Neonet"). Fixes #3033.
 
 New Strings:
 
