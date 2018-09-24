@@ -84,6 +84,7 @@ Application Changes:
 - Gameplay options can now declare default values for karma levels under Point Buy, karma levels under Life Modules, and Sum-to-X value under Sum-to-Ten build methods in their XML entries.
 - Fixed a bug where improvements that added to a weapon type's DV would sometimes apply their bonus twice. Fixes #3036.
 - Fixed an issue where the dropdown menu option to change a character's metatype would show as "Change Priority Selection" regardless of the character's build method.
+- The Translator tool now warns users that the "Rebuild" option will delete translations for any data entries that are not present in the core Chummer5a data files, and now has a separate "Update" option that does not delete such translations. Fixes #2932.
 
 Data Changes:
 
