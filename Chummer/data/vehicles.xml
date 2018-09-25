@@ -12671,8 +12671,7 @@
       <cost>500</cost>
       <rating>0</rating>
       <slots>2</slots>
-      <ammobonus>100</ammobonus>
-      <ammoreplace>0(belt)</ammoreplace>
+      <ammoreplace>100(belt)</ammoreplace>
       <optionaldrone />
       <required>
         <vehicledetails>
