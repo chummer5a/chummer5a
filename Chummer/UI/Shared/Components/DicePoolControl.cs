@@ -13,7 +13,7 @@ namespace Chummer.UI.Shared.Components
 {
     public partial class DicePoolControl : UserControl
     {
-        public Action<Character, int> DiceRollerOpenedInt { get; set; }
+        public event Action<Character, int> DiceRollerOpenedInt;
 
         private Character _characterObject;
         private IHasDicePool _poolObject;
@@ -37,7 +37,7 @@ namespace Chummer.UI.Shared.Components
                 _characterObject = new Character();
             }
             cmdRoll.SetToolTip(LanguageManager.GetString("Tip_DiceRoller", GlobalOptions.Language));
-            Utils.DoDatabinding(cmdRoll, "Visible", _characterObject.Options, nameof(CharacterOptions.AllowSkillDiceRolling));
+            cmdRoll.Visible = _characterObject.Options.AllowSkillDiceRolling;
 
             if (ParentForm != null)
                 ParentForm.Cursor = Cursors.Default;
@@ -45,7 +45,8 @@ namespace Chummer.UI.Shared.Components
 
         private void cmdRoll_Click(object sender, EventArgs e)
         {
-            DiceRollerOpenedInt(_characterObject, PoolObject.DicePool);
+            if (_poolObject == null) return;
+            DiceRollerOpenedInt?.Invoke(_characterObject, PoolObject.DicePool);
         }
 
         public IHasDicePool PoolObject
@@ -55,8 +56,15 @@ namespace Chummer.UI.Shared.Components
             {
                 _poolObject = value;
                 if (value == null) return;
-                Utils.DoDatabinding(lblDicePool, "Text", PoolObject, nameof(PoolObject.DicePool));
-                Utils.DoDatabinding(lblDicePool, "ToolTipText", PoolObject, nameof(PoolObject.DicePoolTooltip));
+                if (lblDicePool.DataBindings.Count == 0)
+                {
+                    Utils.DoDatabinding(lblDicePool, "Text", PoolObject, nameof(PoolObject.DicePool));
+                    Utils.DoDatabinding(lblDicePool, "ToolTipText", PoolObject, nameof(PoolObject.DicePoolTooltip));
+                }
+                else
+                {
+                    lblDicePool.ResetBindings();
+                }
             }
         }
     }

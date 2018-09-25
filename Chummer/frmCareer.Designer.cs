@@ -15183,7 +15183,6 @@ namespace Chummer
 			// 
 			this.ctlWeaponDicePool.AutoSize = true;
 			this.ctlWeaponDicePool.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.ctlWeaponDicePool.DiceRollerOpenedInt = null;
 			this.ctlWeaponDicePool.Location = new System.Drawing.Point(373, 368);
 			this.ctlWeaponDicePool.Name = "ctlWeaponDicePool";
 			this.ctlWeaponDicePool.PoolObject = null;
