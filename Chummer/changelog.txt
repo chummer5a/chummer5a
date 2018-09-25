@@ -78,6 +78,7 @@ Application Changes:
 - Fixed a bug where the program's UI showed English page number references even for non-English languages. Fixes #3024.
 - Adept Way Discounts are no longer available to powers that don't have a populated Adept Way requirement. Fixes part of #3042
 - Fixed an issue with the Karma Metatype selector not showing the correct height.
+- The "ess" requirement used by Cyber-Snob and some other qualities can now filter based on multiple grades instead of just one. This allows a mixture of Betaware and Deltaware to qualify for Cyber-Snob, for example. Fixes #3047
 
 Data Changes:
 
@@ -119,6 +120,7 @@ Data Changes:
 - Fixed a bug where Elementalist would disable access to the Enchanting skill group instead of disabling access to skills in the Enchanting group.
 - Pariah tradition now properly disables access to skills noted in its description and properly gives +2 to Banishing, Counterspelling, and Disenchanting.
 - Fixed incorrect Slots for the Workshop vehicle mod.
+- Fixed inability to take Cyber-Snob with Deltaware cyberware. 
 
 New Strings:
 
