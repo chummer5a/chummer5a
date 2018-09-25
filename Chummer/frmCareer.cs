@@ -15141,8 +15141,7 @@ namespace Chummer
         /// <param name="blnDisplay">Whether to hide or show the objects.</param>
         private void DisplayVehicleWeaponStats(bool blnDisplay)
         {
-            lblVehicleWeaponName.Visible = blnDisplay;
-            lblVehicleWeaponCategory.Visible = blnDisplay;
+            tlpVehicleWeapon.Visible = blnDisplay;
             lblVehicleWeaponAP.Visible = blnDisplay;
             lblVehicleWeaponDamage.Visible = blnDisplay;
             lblVehicleWeaponAccuracy.Visible = blnDisplay;
@@ -15154,9 +15153,7 @@ namespace Chummer
             lblVehicleWeaponRangeMedium.Visible = blnDisplay;
             lblVehicleWeaponRangeLong.Visible = blnDisplay;
             lblVehicleWeaponRangeExtreme.Visible = blnDisplay;
-
-            lblVehicleWeaponNameLabel.Visible = blnDisplay;
-            lblVehicleWeaponCategoryLabel.Visible = blnDisplay;
+            
             lblVehicleWeaponAPLabel.Visible = blnDisplay;
             lblVehicleWeaponDamageLabel.Visible = blnDisplay;
             lblVehicleWeaponAccuracyLabel.Visible = blnDisplay;
@@ -15498,8 +15495,10 @@ namespace Chummer
                     objWeapon.IncludedInWeapon || !string.IsNullOrEmpty(objWeapon.ParentID))
                     cmdDeleteVehicle.Enabled = false;
                 DisplayVehicleWeaponStats(true);
-                lblVehicleWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
-                lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
+                DisplayVehicleStats(false);
+                
+                lblVehicleName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
+                lblVehicleCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
                 lblVehicleWeaponDamage.Text =
                     objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblVehicleWeaponAccuracy.Text =
@@ -15528,8 +15527,6 @@ namespace Chummer
                 DisplayVehicleStats(false);
 
                 cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
-                lblVehicleWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
-                lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
                 lblVehicleWeaponDamage.Text =
                     objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblVehicleWeaponAccuracy.Text =
@@ -16088,76 +16085,10 @@ namespace Chummer
 
         private void MoveControls()
         {
-            // Critter Powers tab.
-            lblCritterPowerPointsLabel.Left = cmdDeleteCritterPower.Left + cmdDeleteCritterPower.Width + 16;
-            lblCritterPowerPoints.Left = lblCritterPowerPointsLabel.Left + lblCritterPowerPointsLabel.Width + 6;
-
-            int intWidth = Math.Max(lblCritterPowerNameLabel.Width, lblCritterPowerCategoryLabel.Width);
-            intWidth = Math.Max(intWidth, lblCritterPowerTypeLabel.Width);
-            intWidth = Math.Max(intWidth, lblCritterPowerActionLabel.Width);
-            intWidth = Math.Max(intWidth, lblCritterPowerRangeLabel.Width);
-            intWidth = Math.Max(intWidth, lblCritterPowerDurationLabel.Width);
-            intWidth = Math.Max(intWidth, lblCritterPowerSourceLabel.Width);
-            intWidth = Math.Max(intWidth, lblCritterPowerPointCostLabel.Width);
-
-            lblCritterPowerName.Left = lblCritterPowerNameLabel.Left + intWidth + 6;
-            lblCritterPowerCategory.Left = lblCritterPowerCategoryLabel.Left + intWidth + 6;
-            lblCritterPowerType.Left = lblCritterPowerTypeLabel.Left + intWidth + 6;
-            lblCritterPowerAction.Left = lblCritterPowerActionLabel.Left + intWidth + 6;
-            lblCritterPowerRange.Left = lblCritterPowerRangeLabel.Left + intWidth + 6;
-            lblCritterPowerDuration.Left = lblCritterPowerDurationLabel.Left + intWidth + 6;
-            lblCritterPowerSource.Left = lblCritterPowerSourceLabel.Left + intWidth + 6;
-            lblCritterPowerPointCost.Left = lblCritterPowerPointCostLabel.Left + intWidth + 6;
-
-            // Initiation and Submersion tab.
-
-            // Cyberware and Bioware tab.
-            intWidth = Math.Max(lblCyberwareNameLabel.Width, lblCyberwareCategoryLabel.Width);
-            intWidth = Math.Max(intWidth, lblCyberwareGradeLabel.Width);
-            intWidth = Math.Max(intWidth, lblCyberwareEssenceLabel.Width);
-            intWidth = Math.Max(intWidth, lblCyberwareAvailLabel.Width);
-            intWidth = Math.Max(intWidth, lblCyberwareSourceLabel.Width);
-
-            lblCyberwareName.Left = lblCyberwareNameLabel.Left + intWidth + 6;
-            lblCyberwareCategory.Left = lblCyberwareCategoryLabel.Left + intWidth + 6;
-            lblCyberwareGrade.Left = lblCyberwareGradeLabel.Left + intWidth + 6;
-            lblCyberwareEssence.Left = lblCyberwareEssenceLabel.Left + intWidth + 6;
-            lblCyberwareAvail.Left = lblCyberwareAvailLabel.Left + intWidth + 6;
-            lblCyberwareSource.Left = lblCyberwareSourceLabel.Left + intWidth + 6;
-
-            intWidth = lblEssenceHoleESSLabel.Width;
-            lblCyberwareESS.Left = lblEssenceHoleESSLabel.Left + intWidth + 6;
-            lblBiowareESS.Left = lblEssenceHoleESSLabel.Left + intWidth + 6;
-            lblEssenceHoleESS.Left = lblEssenceHoleESSLabel.Left + intWidth + 6;
-
-            intWidth = Math.Max(lblCyberwareRatingLabel.Width, lblCyberwareCapacityLabel.Width);
-            intWidth = Math.Max(intWidth, lblCyberwareCostLabel.Width);
-            intWidth = Math.Max(intWidth, lblCyberlimbSTRLabel.Width);
-
-            lblCyberAttackLabel.Left = lblCyberDeviceRating.Left + lblCyberDeviceRating.Width + 20;
-            cboCyberwareGearAttack.Left = lblCyberAttackLabel.Left + lblCyberAttackLabel.Width + 6;
-            lblCyberSleazeLabel.Left = cboCyberwareGearAttack.Left + cboCyberwareGearAttack.Width + 20;
-            cboCyberwareGearSleaze.Left = lblCyberSleazeLabel.Left + lblCyberSleazeLabel.Width + 6;
-            lblCyberDataProcessingLabel.Left = cboCyberwareGearSleaze.Left + cboCyberwareGearSleaze.Width + 20;
-            cboCyberwareGearDataProcessing.Left = lblCyberDataProcessingLabel.Left + lblCyberDataProcessingLabel.Width + 6;
-            lblCyberFirewallLabel.Left = cboCyberwareGearDataProcessing.Left + cboCyberwareGearDataProcessing.Width + 20;
-            cboCyberwareGearFirewall.Left = lblCyberFirewallLabel.Left + lblCyberFirewallLabel.Width + 6;
-
-            lblCyberwareRatingLabel.Left = lblCyberwareName.Left + 208;
-            lblCyberwareRating.Left = lblCyberwareRatingLabel.Left + intWidth + 6;
-            lblCyberwareCapacityLabel.Left = lblCyberwareName.Left + 208;
-            lblCyberwareCapacity.Left = lblCyberwareCapacityLabel.Left + intWidth + 6;
-            lblCyberwareCostLabel.Left = lblCyberwareName.Left + 208;
-            lblCyberwareCost.Left = lblCyberwareCostLabel.Left + intWidth + 6;
-            lblCyberlimbAGILabel.Left = lblCyberwareName.Left + 208;
-            lblCyberlimbAGI.Left = lblCyberlimbAGILabel.Left + intWidth + 6;
-            lblCyberlimbSTRLabel.Left = lblCyberwareName.Left + 208;
-            lblCyberlimbSTR.Left = lblCyberlimbSTRLabel.Left + intWidth + 6;
-
             // Street Gear tab.
 
             // Armor tab.
-            intWidth = lblArmorValueLabel.Width;
+            int intWidth = lblArmorValueLabel.Width;
             intWidth = Math.Max(intWidth, lblArmorRatingLabel.Width);
             intWidth = Math.Max(intWidth, lblArmorCapacityLabel.Width);
             intWidth = Math.Max(intWidth, lblArmorSourceLabel.Width);
@@ -16279,160 +16210,8 @@ namespace Chummer
 
             lblGearSource.Left = lblGearSourceLabel.Left + lblGearSourceLabel.Width + 6;
             chkGearHomeNode.Left = chkGearEquipped.Left + chkGearEquipped.Width + 16;
-
-            // Vehicles and Drones tab.
-            intWidth = Math.Max(lblVehicleNameLabel.Width, lblVehicleCategoryLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleHandlingLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleAttackLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehiclePilotLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleFirewallLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleAvailLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleRatingLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleGearQtyLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleSourceLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleWeaponNameLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleWeaponCategoryLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleWeaponDamageLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleWeaponAccuracyLabel.Width);
-
-            lblVehicleName.Left = lblVehicleNameLabel.Left + intWidth + 6;
-            lblVehicleCategory.Left = lblVehicleCategoryLabel.Left + intWidth + 6;
-            lblVehicleHandling.Left = lblVehicleHandlingLabel.Left + intWidth + 6;
-            lblVehiclePilot.Left = lblVehiclePilotLabel.Left + intWidth + 6;
-            cboVehicleGearAttack.Left = lblVehicleAttackLabel.Left + intWidth + 6;
-            cboVehicleGearFirewall.Left = lblVehicleFirewallLabel.Left + intWidth + 6;
-            lblVehicleAvail.Left = lblVehicleAvailLabel.Left + intWidth + 6;
-            lblVehicleRating.Left = lblVehicleRatingLabel.Left + intWidth + 6;
-            lblVehicleGearQty.Left = lblVehicleGearQtyLabel.Left + intWidth + 6;
-            lblVehicleSource.Left = lblVehicleSourceLabel.Left + intWidth + 6;
-            lblVehicleWeaponName.Left = lblVehicleWeaponNameLabel.Left + intWidth + 6;
-            lblVehicleWeaponCategory.Left = lblVehicleWeaponCategoryLabel.Left + intWidth + 6;
-            lblVehicleWeaponDamage.Left = lblVehicleWeaponDamageLabel.Left + intWidth + 6;
-            lblVehicleWeaponAccuracy.Left = lblVehicleWeaponDamageLabel.Left + intWidth + 6;
-            intWidth = Math.Max(lblVehicleAccelLabel.Width, lblVehicleBodyLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleCostLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleProtectionLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleElectromagneticLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleSleazeLabel.Width);
-
-            lblVehicleAccelLabel.Left = lblVehicleHandling.Left + 60;
-            lblVehicleAccel.Left = lblVehicleAccelLabel.Left + intWidth + 6;
-            lblVehicleBodyLabel.Left = lblVehicleHandling.Left + 60;
-            lblVehicleBody.Left = lblVehicleBodyLabel.Left + intWidth + 6;
-            lblVehicleCostLabel.Left = lblVehicleHandling.Left + 60;
-            lblVehicleCost.Left = lblVehicleCostLabel.Left + intWidth + 6;
-            lblVehicleProtectionLabel.Left = lblVehicleHandling.Left + 60;
-            lblVehicleProtection.Left = lblVehicleProtectionLabel.Left + intWidth + 6;
-            lblVehicleElectromagneticLabel.Left = lblVehicleHandling.Left + 60;
-            lblVehicleElectromagnetic.Left = lblVehicleElectromagneticLabel.Left + intWidth + 6;
-            lblVehicleSleazeLabel.Left = lblVehicleHandling.Left + 60;
-            cboVehicleGearSleaze.Left = lblVehicleSleazeLabel.Left + intWidth + 6;
-
-            cmdVehicleGearReduceQty.Left = lblVehicleGearQtyLabel.Left + 144;
-            cmdVehicleMoveToInventory.Left = cmdVehicleGearReduceQty.Left + 29;
-            chkVehicleIncludedInWeapon.Left = lblVehicleAccel.Left;
-
-            intWidth = Math.Max(lblVehicleSpeedLabel.Width, lblVehicleArmorLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleDataProcessingLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehiclePowertrainLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleCosmeticLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleDeviceLabel.Width);
-
-            lblVehicleSpeedLabel.Left = lblVehicleAccel.Left + 60;
-            lblVehicleSpeed.Left = lblVehicleSpeedLabel.Left + intWidth + 6;
-            lblVehicleArmorLabel.Left = lblVehicleAccel.Left + 60;
-            lblVehicleArmor.Left = lblVehicleArmorLabel.Left + intWidth + 6;
-            lblVehiclePowertrainLabel.Left = lblVehicleAccel.Left + 60;
-            lblVehiclePowertrain.Left = lblVehiclePowertrainLabel.Left + intWidth + 6;
-            lblVehicleCosmeticLabel.Left = lblVehicleAccel.Left + 60;
-            lblVehicleCosmetic.Left = lblVehicleCosmeticLabel.Left + intWidth + 6;
-            lblVehicleDataProcessingLabel.Left = lblVehicleAccel.Left + 60;
-            cboVehicleGearDataProcessing.Left = lblVehicleDataProcessingLabel.Left + intWidth + 6;
-            lblVehicleDeviceLabel.Left = lblVehicleAccel.Left + 60;
-            lblVehicleDevice.Left = lblVehicleDeviceLabel.Left + intWidth + 6;
-
-            intWidth = Math.Max(lblVehicleFirewallLabel.Width, lblVehicleSensorLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleSeatsLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleDroneModSlotsLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleSlotsLabel.Width);
-
-            lblVehicleSensorLabel.Left = lblVehicleSpeed.Left + 60;
-            lblVehicleSensor.Left = lblVehicleSensorLabel.Left + intWidth + 6;
-            lblVehicleSeatsLabel.Left = lblVehicleSpeed.Left + 60;
-            lblVehicleSeats.Left = lblVehicleSeatsLabel.Left + intWidth + 6;
-            lblVehicleFirewallLabel.Left = lblVehicleSpeed.Left + 60;
-            lblVehicleDroneModSlotsLabel.Left = lblVehicleSpeed.Left + 60;
-            lblVehicleDroneModSlots.Left = lblVehicleDroneModSlotsLabel.Left + intWidth + 6;
-
-            cboVehicleGearFirewall.Left = lblVehicleFirewallLabel.Left + intWidth + 6;
-
-            lblVehicleSlotsLabel.Left = lblVehicleSpeed.Left + 60;
-            lblVehicleSlots.Left = lblVehicleSlotsLabel.Left + intWidth + 6;
-
-            chkVehicleHomeNode.Left = lblVehicleSlotsLabel.Left;
-            chkVehicleWeaponAccessoryInstalled.Left = lblVehicleSlotsLabel.Left;
-
-            // Character Info.
-            intWidth = Math.Max(lblSex.Width, lblHeight.Width);
-            txtSex.Left = lblSex.Left + intWidth + 6;
-            txtSex.Width = lblAge.Left - txtSex.Left - 16;
-            txtHeight.Left = lblHeight.Left + intWidth + 6;
-            txtHeight.Width = lblWeight.Left - txtHeight.Left - 16;
-
-            intWidth = Math.Max(lblAge.Width, lblWeight.Width);
-            txtAge.Left = lblAge.Left + intWidth + 6;
-            txtAge.Width = lblEyes.Left - txtAge.Left - 16;
-            txtWeight.Left = lblWeight.Left + intWidth + 6;
-            txtWeight.Width = lblSkin.Left - txtWeight.Left - 16;
-
-            intWidth = Math.Max(lblEyes.Width, lblSkin.Width);
-            txtEyes.Left = lblEyes.Left + intWidth + 6;
-            txtEyes.Width = lblHair.Left - txtEyes.Left - 16;
-            txtSkin.Left = lblSkin.Left + intWidth + 6;
-            txtSkin.Width = lblCharacterName.Left - txtSkin.Left - 16;
-
-            intWidth = Math.Max(lblHair.Width, lblCharacterName.Width);
-            txtHair.Left = lblHair.Left + intWidth + 6;
-            txtHair.Width = lblPlayerName.Left - txtHair.Left - 16;
-            txtCharacterName.Left = lblCharacterName.Left + intWidth + 6;
-            txtCharacterName.Width = lblPlayerName.Left - txtCharacterName.Left - 16;
-
-            txtPlayerName.Left = lblPlayerName.Left + lblPlayerName.Width + 6;
-            txtPlayerName.Width = tabCharacterInfo.Width - txtPlayerName.Left - 16;
-
-            intWidth = Math.Max(lblStreetCred.Width, lblNotoriety.Width);
-            intWidth = Math.Max(intWidth, lblPublicAware.Width);
-
-            nudStreetCred.Left = lblStreetCred.Left + intWidth + 6;
-            nudNotoriety.Left = lblNotoriety.Left + intWidth + 6;
-            nudPublicAware.Left = lblPublicAware.Left + intWidth + 6;
-            lblStreetCredTotal.Left = nudStreetCred.Left + nudStreetCred.Width + 6;
-            lblNotorietyTotal.Left = nudNotoriety.Left + nudNotoriety.Width + 6;
-            lblPublicAwareTotal.Left = nudPublicAware.Left + nudPublicAware.Width + 6;
-
-            // Expense Tab.
-            cmdKarmaSpent.Left = cmdKarmaGained.Left + cmdKarmaGained.Width + 6;
-            cmdKarmaEdit.Left = cmdKarmaSpent.Left + cmdKarmaSpent.Width + 6;
-            chkShowFreeKarma.Left = cmdKarmaEdit.Left + cmdKarmaEdit.Width + 6;
-            cmdNuyenSpent.Left = cmdNuyenGained.Left + cmdNuyenGained.Width + 6;
-            cmdNuyenEdit.Left = cmdNuyenSpent.Left + cmdNuyenSpent.Width + 6;
-            chkShowFreeNuyen.Left = cmdNuyenEdit.Left + cmdNuyenEdit.Width + 6;
-            // Calendar Tab.
-            cmdEditWeek.Left = cmdAddWeek.Left + cmdAddWeek.Width + 6;
-
-            // Improvements tab.
-            cmdEditImprovement.Left = cmdAddImprovement.Left + cmdAddImprovement.Width + 6;
-            cmdDeleteImprovement.Left = cmdEditImprovement.Left + cmdEditImprovement.Width + 6;
-            cmdAddImprovementGroup.Left = cmdDeleteImprovement.Left + cmdDeleteImprovement.Width + 6;
-            lblImprovementType.Left = lblImprovementTypeLabel.Left + lblImprovementTypeLabel.Width + 6;
-            
-            // Relationships tab
-            cmdContactsExpansionToggle.Left = cmdAddContact.Right + 6;
-            cmdSwapContactOrder.Left = cmdContactsExpansionToggle.Right + 6;
         }
-
-
-
+        
         /// <summary>
         /// Recheck all mods to see if Sensor has changed.
         /// </summary>
@@ -17362,10 +17141,9 @@ namespace Chummer
         
         private void picMugshot_SizeChanged(object sender, EventArgs e)
         {
-            if (picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width)
-                picMugshot.SizeMode = PictureBoxSizeMode.CenterImage;
-            else
-                picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
+            picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
+                ? PictureBoxSizeMode.CenterImage
+                : PictureBoxSizeMode.Zoom;
         }
 
         private void cmdCyberwareChangeMount_Click(object sender, EventArgs e)
