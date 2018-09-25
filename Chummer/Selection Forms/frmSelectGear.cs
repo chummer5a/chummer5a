@@ -1101,8 +1101,8 @@ namespace Chummer
                 string strOldSelected = lstGear.SelectedValue?.ToString();
                 bool blnOldLoading = _blnLoading;
                 _blnLoading = true;
-                lstGear.ValueMember = "Value";
-                lstGear.DisplayMember = "Name";
+                lstGear.ValueMember = nameof(ListItem.Value);
+                lstGear.DisplayMember = nameof(ListItem.Name);
                 lstGear.DataSource = lstGears;
                 _blnLoading = blnOldLoading;
                 if (string.IsNullOrEmpty(strOldSelected))

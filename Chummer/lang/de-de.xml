@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -6208,7 +6208,7 @@
 		</string>
 		<string>
 			<key>Tab_Options_Character</key>
-			<text>Charakter und ausdrucken</text>
+			<text>Charakter</text>
 		</string>
 		<string>
 			<key>Tab_Options_Miscellaneous</key>

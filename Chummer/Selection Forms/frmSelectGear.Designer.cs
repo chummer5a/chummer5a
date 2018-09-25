@@ -32,7 +32,7 @@ namespace Chummer
             this.cmdOK = new System.Windows.Forms.Button();
             this.lstGear = new System.Windows.Forms.ListBox();
             this.lblCategory = new System.Windows.Forms.Label();
-            this.cboCategory = new ElasticComboBox();
+            this.cboCategory = new Chummer.ElasticComboBox();
             this.nudRating = new System.Windows.Forms.NumericUpDown();
             this.lblRatingLabel = new System.Windows.Forms.Label();
             this.lblCost = new System.Windows.Forms.Label();
@@ -138,6 +138,7 @@ namespace Chummer
             this.cboCategory.Name = "cboCategory";
             this.cboCategory.Size = new System.Drawing.Size(222, 21);
             this.cboCategory.TabIndex = 34;
+            this.cboCategory.TooltipText = "";
             this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
             // 
             // nudRating

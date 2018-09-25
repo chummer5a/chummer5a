@@ -3755,7 +3755,7 @@ namespace Chummer
 			this.treMartialArts.ShowNodeToolTips = true;
 			this.treMartialArts.ShowPlusMinus = false;
 			this.treMartialArts.ShowRootLines = false;
-			this.treMartialArts.Size = new System.Drawing.Size(295, 0);
+			this.treMartialArts.Size = new System.Drawing.Size(295, 585);
 			this.treMartialArts.TabIndex = 2;
 			this.treMartialArts.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMartialArts_AfterSelect);
 			this.treMartialArts.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treMartialArts_KeyDown);
@@ -11067,7 +11067,6 @@ namespace Chummer
 			this.Controls.Add(this.StatusStrip);
 			this.Controls.Add(this.toolStrip);
 			this.Controls.Add(this.mnuCreateMenu);
-			this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.mnuCreateMenu;
 			this.Name = "frmCreate";

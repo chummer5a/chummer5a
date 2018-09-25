@@ -52,7 +52,6 @@ namespace Chummer
         private bool _blnCalculateCommlinkResponse = true;
         private bool _blnConfirmDelete = true;
         private bool _blnConfirmKarmaExpense = true;
-        private bool _blnCreateBackupOnCareer;
         private bool _blnCyberlegMovement;
         private bool _blnDontDoubleQualityPurchaseCost;
         private bool _blnDontDoubleQualityRefundCost;
@@ -377,8 +376,6 @@ namespace Chummer
             objWriter.WriteElementString("alternatemetatypeattributekarma", _blnAlternateMetatypeAttributeKarma.ToString());
             // <reversekarmapriorityorder />
             objWriter.WriteElementString("reverseattributepriorityorder", ReverseAttributePriorityOrder.ToString());
-            // <createbackuponcareer />
-            objWriter.WriteElementString("createbackuponcareer", _blnCreateBackupOnCareer.ToString());
             // <printnotes />
             objWriter.WriteElementString("printnotes", _blnPrintNotes.ToString());
             // <allowobsolescentupgrade />
@@ -742,8 +739,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("dontusecyberlimbcalculation", ref _blnDontUseCyberlimbCalculation);
             // House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
             objXmlNode.TryGetBoolFieldQuickly("alternatemetatypeattributekarma", ref _blnAlternateMetatypeAttributeKarma);
-            // Whether or not a backup copy of the character should be created before they are placed into Career Mode.
-            objXmlNode.TryGetBoolFieldQuickly("createbackuponcareer", ref _blnCreateBackupOnCareer);
             // Whether or not Notes should be printed.
             objXmlNode.TryGetBoolFieldQuickly("printnotes", ref _blnPrintNotes);
             // Whether or not Obsolescent can be removed/upgrade in the same manner as Obsolete.
@@ -1264,15 +1259,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Optional Rule: Whether or not Armor Encumbrance is ignored if only a single piece of Armor is worn.
-        /// </summary>
-        public bool NoSingleArmorEncumbrance
-        {
-            get => _blnNoSingleArmorEncumbrance;
-            set => _blnNoSingleArmorEncumbrance = value;
-        }
-
-        /// <summary>
         /// House Rule: Ignore Armor Encumbrance entirely.
         /// </summary>
         public bool NoArmorEncumbrance
@@ -1381,15 +1367,6 @@ namespace Chummer
             set => _blnAllowCyberwareESSDiscounts = value;
         }
         
-        /// <summary>
-        /// Whether or not Maximum Armor Modifications is in use.
-        /// </summary>
-        public bool MaximumArmorModifications
-        {
-            get => _blnMaximumArmorModifications;
-            set => _blnMaximumArmorModifications = value;
-        }
-
         /// <summary>
         /// Whether or not Armor Degredation is allowed.
         /// </summary>
@@ -1698,15 +1675,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not a Commlink's Response should be calculated based on the number of programs running on it.
-        /// </summary>
-        public bool CalculateCommlinkResponse
-        {
-            get => _blnCalculateCommlinkResponse;
-            set => _blnCalculateCommlinkResponse = value;
-        }
-
-        /// <summary>
         /// Whether or not Stacked Foci can have a combined Force higher than 6.
         /// </summary>
         public bool AllowHigherStackedFoci
@@ -1785,15 +1753,6 @@ namespace Chummer
         {
             get => _blnCompensateSkillGroupKarmaDifference;
             set => _blnCompensateSkillGroupKarmaDifference = value;
-        }
-
-        /// <summary>
-        /// Whether or not a backup copy of the character should be created before they are placed into Career Mode.
-        /// </summary>
-        public bool CreateBackupOnCareer
-        {
-            get => _blnCreateBackupOnCareer;
-            set => _blnCreateBackupOnCareer = value;
         }
 
         /// <summary>
@@ -2258,33 +2217,6 @@ namespace Chummer
         #endregion
 
         #region Default Build
-        /// <summary>
-        /// Default build method.
-        /// </summary>
-        public string BuildMethod
-        {
-            get => _strBuildMethod;
-            set => _strBuildMethod = value;
-        }
-
-        /// <summary>
-        /// Default number of build points.
-        /// </summary>
-        public int BuildPoints
-        {
-            get => _intBuildPoints;
-            set => _intBuildPoints = value;
-        }
-
-        /// <summary>
-        /// Default Availability.
-        /// </summary>
-        public int Availability
-        {
-            get => _intAvailability;
-            set => _intAvailability = value;
-        }
-
         /// <summary>
         /// Whether Life Modules should automatically generate a character background.
         /// </summary>

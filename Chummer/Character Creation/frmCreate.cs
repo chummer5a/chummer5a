@@ -188,7 +188,7 @@ namespace Chummer
                 // Load the Priority information.
                 if (string.IsNullOrEmpty(CharacterObject.GameplayOption))
                 {
-                    CharacterObject.GameplayOption = "Standard";
+                    CharacterObject.GameplayOption = GlobalOptions.DefaultGameplayOption;
                 }
                 XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml").SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + CharacterObject.GameplayOption + "\"]");
                 if (objXmlGameplayOption != null)
@@ -208,7 +208,11 @@ namespace Chummer
                     CharacterObject.GameplayOptionQualityLimit = CharacterObject.MaxKarma = Convert.ToInt32(strKarma);
                     CharacterObject.MaxNuyen = Convert.ToInt32(strNuyen);
                 }
+
+                mnuSpecialChangeMetatype.Tag = "Menu_SpecialChangePriorities";
+                mnuSpecialChangeMetatype.Text = LanguageManager.GetString("Menu_SpecialChangePriorities");
             }
+            
             Utils.DoDatabinding(lblNuyenTotal, "Text", CharacterObject, nameof(Character.DisplayTotalStartingNuyen));
             lblAttributesBase.Visible = CharacterObject.BuildMethodHasSkillPoints;
 
@@ -9003,16 +9007,17 @@ namespace Chummer
             lblMetatypeSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
             lblMetatypeSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
 
-            if (CharacterObjectOptions.MetatypeCostsKarma)
+            if (CharacterObject.BuildMethod == CharacterBuildMethod.Karma || CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule)
             {
                 lblKarmaMetatypeBP.Text = (CharacterObject.MetatypeBP * CharacterObjectOptions.MetatypeCostsKarmaMultiplier).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter +
                                           LanguageManager.GetString("String_Karma", GlobalOptions.Language);
             }
-            else
+            else if (CharacterObject.BuildMethod == CharacterBuildMethod.Priority || CharacterObject.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
-                lblKarmaMetatypeBP.Text = "0" + strSpaceCharacter + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
+                lblKarmaMetatypeBP.Text = (CharacterObject.MetatypeBP).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter +
+                                          LanguageManager.GetString("String_Karma", GlobalOptions.Language);
             }
-
+            
             string strToolTip = strMetatype + strSpaceCharacter + '(' + CharacterObject.MetatypeBP + ')';
             lblKarmaMetatypeBP.SetToolTip(strToolTip);
 
@@ -9102,13 +9107,12 @@ namespace Chummer
 
             // ------------------------------------------------------------------------------
             // Metatype/Metavariant only cost points when working with BP (or when the Metatype Costs Karma option is enabled when working with Karma).
-            if ((CharacterObject.BuildMethod == CharacterBuildMethod.Karma || CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule) && CharacterObjectOptions.MetatypeCostsKarma)
+            if (CharacterObject.BuildMethod == CharacterBuildMethod.Karma || CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule)
             {
                 // Subtract the BP used for Metatype.
                 intKarmaPointsRemain -= (CharacterObject.MetatypeBP * CharacterObjectOptions.MetatypeCostsKarmaMultiplier);
             }
-
-            if (CharacterObject.BuildMethod == CharacterBuildMethod.Priority || CharacterObject.BuildMethod == CharacterBuildMethod.SumtoTen)
+            else if (CharacterObject.BuildMethod == CharacterBuildMethod.Priority || CharacterObject.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 intKarmaPointsRemain -= (CharacterObject.MetatypeBP);
             }
@@ -11004,7 +11008,7 @@ namespace Chummer
                     chkGearEquipped.Checked = objGear.Equipped;
 
                     // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
-                    if (objGear.IsProgram && CharacterObjectOptions.CalculateCommlinkResponse)
+                    if (objGear.IsProgram)
                     {
                         if ((objGear.Parent as Gear)?.IsCommlink == true)
                         {
@@ -13189,7 +13193,7 @@ namespace Chummer
                     if (MessageBox.Show(LanguageManager.GetString("Message_ExtraNuyen", GlobalOptions.Language).Replace("{0}", CharacterObject.Nuyen.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo)).Replace("{1}", (5000).ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo)), LanguageManager.GetString("MessageTitle_ExtraNuyen", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                         return false;
                 }
-                if (CharacterObjectOptions.CreateBackupOnCareer && chkCharacterCreated.Checked)
+                if (GlobalOptions.CreateBackupOnCareer && chkCharacterCreated.Checked)
                 {
                     // Create a pre-Career Mode backup of the character.
                     // Make sure the backup directory exists.
