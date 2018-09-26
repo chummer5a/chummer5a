@@ -1081,12 +1081,11 @@ namespace Chummer
             this.tabCharacterInfo = new System.Windows.Forms.TabPage();
             this.tlpCharacterInfo = new System.Windows.Forms.TableLayoutPanel();
             this.txtNotes = new System.Windows.Forms.TextBox();
-            this.lblConcept = new System.Windows.Forms.Label();
-            this.picMugshot = new System.Windows.Forms.PictureBox();
             this.lblNotes = new System.Windows.Forms.Label();
             this.txtConcept = new System.Windows.Forms.TextBox();
             this.cboPrimaryArm = new Chummer.ElasticComboBox();
             this.lblSex = new System.Windows.Forms.Label();
+            this.lblConcept = new System.Windows.Forms.Label();
             this.lblPublicAwareTotal = new Chummer.LabelWithToolTip();
             this.txtBackground = new System.Windows.Forms.TextBox();
             this.lblNotorietyTotal = new Chummer.LabelWithToolTip();
@@ -1119,6 +1118,7 @@ namespace Chummer
             this.lblNumMugshots = new System.Windows.Forms.Label();
             this.lblHandedness = new System.Windows.Forms.Label();
             this.lblMugshot = new System.Windows.Forms.Label();
+            this.picMugshot = new System.Windows.Forms.PictureBox();
             this.chkIsMainMugshot = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel17 = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddMugshot = new System.Windows.Forms.Button();
@@ -1243,6 +1243,8 @@ namespace Chummer
             this.tsVehicleWeaponMountAddUnderbarrel = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleWeaponMountNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.tsWeaponMountLocation = new System.Windows.Forms.ToolStripMenuItem();
+            this.flowLayoutPanel18 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowLayoutPanel19 = new System.Windows.Forms.FlowLayoutPanel();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -1354,11 +1356,11 @@ namespace Chummer
             this.tlpVehicleWeapon.SuspendLayout();
             this.tabCharacterInfo.SuspendLayout();
             this.tlpCharacterInfo.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPublicAware)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudNotoriety)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudStreetCred)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMugshotIndex)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).BeginInit();
             this.flowLayoutPanel17.SuspendLayout();
             this.tabKarma.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitKarmaNuyen)).BeginInit();
@@ -1401,6 +1403,8 @@ namespace Chummer
             this.cmsTechnique.SuspendLayout();
             this.cmsAdvancedProgram.SuspendLayout();
             this.cmsWeaponMount.SuspendLayout();
+            this.flowLayoutPanel18.SuspendLayout();
+            this.flowLayoutPanel19.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblTraditionSource
@@ -9875,7 +9879,7 @@ namespace Chummer
             this.treArmor.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode21});
             this.treArmor.ShowNodeToolTips = true;
-            this.treArmor.Size = new System.Drawing.Size(295, 514);
+            this.treArmor.Size = new System.Drawing.Size(295, 563);
             this.treArmor.TabIndex = 69;
             this.treArmor.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treArmor_AfterSelect);
             this.treArmor.DragOver += new System.Windows.Forms.DragEventHandler(this.treArmor_DragOver);
@@ -10876,7 +10880,7 @@ namespace Chummer
             this.treWeapons.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode22});
             this.treWeapons.ShowNodeToolTips = true;
-            this.treWeapons.Size = new System.Drawing.Size(295, 514);
+            this.treWeapons.Size = new System.Drawing.Size(295, 563);
             this.treWeapons.TabIndex = 29;
             this.treWeapons.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treWeapons_AfterSelect);
             this.treWeapons.DragOver += new System.Windows.Forms.DragEventHandler(this.treWeapons_DragOver);
@@ -11141,9 +11145,6 @@ namespace Chummer
             // 
             this.tabDrugs.BackColor = System.Drawing.SystemColors.Control;
             this.tabDrugs.Controls.Add(this.tblDrugDescription);
-            this.tabDrugs.Controls.Add(this.btnDeleteCustomDrug);
-            this.tabDrugs.Controls.Add(this.treCustomDrugs);
-            this.tabDrugs.Controls.Add(this.btnCreateCustomDrug);
             this.tabDrugs.Location = new System.Drawing.Point(4, 22);
             this.tabDrugs.Name = "tabDrugs";
             this.tabDrugs.Padding = new System.Windows.Forms.Padding(3);
@@ -11154,34 +11155,36 @@ namespace Chummer
             // 
             // tblDrugDescription
             // 
-            this.tblDrugDescription.AutoSize = true;
             this.tblDrugDescription.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tblDrugDescription.ColumnCount = 2;
+            this.tblDrugDescription.ColumnCount = 3;
+            this.tblDrugDescription.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
             this.tblDrugDescription.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tblDrugDescription.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tblDrugDescription.Controls.Add(this.lblDrugEffectsLabel, 0, 9);
-            this.tblDrugDescription.Controls.Add(this.lblDrugEffect, 0, 9);
-            this.tblDrugDescription.Controls.Add(this.lblDrugNameLabel, 0, 0);
-            this.tblDrugDescription.Controls.Add(this.lblDrugCategoryLabel, 0, 1);
-            this.tblDrugDescription.Controls.Add(this.lblDrugQtyLabel, 0, 2);
-            this.tblDrugDescription.Controls.Add(this.lblDrugGradeLabel, 0, 3);
-            this.tblDrugDescription.Controls.Add(this.lblDrugCategory, 1, 1);
-            this.tblDrugDescription.Controls.Add(this.lblDrugGrade, 1, 3);
-            this.tblDrugDescription.Controls.Add(this.lblDrugName, 1, 0);
-            this.tblDrugDescription.Controls.Add(this.lblDrugAvailabel, 0, 4);
-            this.tblDrugDescription.Controls.Add(this.lblDrugAvail, 1, 4);
-            this.tblDrugDescription.Controls.Add(this.lblDrugCost, 1, 5);
-            this.tblDrugDescription.Controls.Add(this.lblDrugAddictionThreshold, 1, 6);
-            this.tblDrugDescription.Controls.Add(this.lblDrugAddictionRating, 1, 7);
-            this.tblDrugDescription.Controls.Add(this.lblDrugComponentsLabel, 0, 8);
-            this.tblDrugDescription.Controls.Add(this.lblDrugAddictionThresholdLabel, 0, 6);
-            this.tblDrugDescription.Controls.Add(this.lblDrugComponents, 1, 8);
-            this.tblDrugDescription.Controls.Add(this.lblDrugAddictionRatingLabel, 0, 7);
-            this.tblDrugDescription.Controls.Add(this.lblDrugCostLabel, 0, 5);
-            this.tblDrugDescription.Controls.Add(this.flwDrugQty, 1, 2);
-            this.tblDrugDescription.Location = new System.Drawing.Point(307, 36);
+            this.tblDrugDescription.Controls.Add(this.lblDrugEffectsLabel, 1, 10);
+            this.tblDrugDescription.Controls.Add(this.treCustomDrugs, 0, 1);
+            this.tblDrugDescription.Controls.Add(this.lblDrugEffect, 1, 10);
+            this.tblDrugDescription.Controls.Add(this.lblDrugNameLabel, 1, 1);
+            this.tblDrugDescription.Controls.Add(this.lblDrugCategoryLabel, 1, 2);
+            this.tblDrugDescription.Controls.Add(this.lblDrugQtyLabel, 1, 3);
+            this.tblDrugDescription.Controls.Add(this.lblDrugGradeLabel, 1, 4);
+            this.tblDrugDescription.Controls.Add(this.lblDrugCategory, 2, 2);
+            this.tblDrugDescription.Controls.Add(this.lblDrugGrade, 2, 4);
+            this.tblDrugDescription.Controls.Add(this.lblDrugName, 2, 1);
+            this.tblDrugDescription.Controls.Add(this.lblDrugAvailabel, 1, 5);
+            this.tblDrugDescription.Controls.Add(this.lblDrugAvail, 2, 5);
+            this.tblDrugDescription.Controls.Add(this.lblDrugCost, 2, 6);
+            this.tblDrugDescription.Controls.Add(this.lblDrugAddictionThreshold, 2, 7);
+            this.tblDrugDescription.Controls.Add(this.lblDrugAddictionRating, 2, 8);
+            this.tblDrugDescription.Controls.Add(this.lblDrugComponentsLabel, 1, 9);
+            this.tblDrugDescription.Controls.Add(this.lblDrugAddictionThresholdLabel, 1, 7);
+            this.tblDrugDescription.Controls.Add(this.lblDrugComponents, 2, 9);
+            this.tblDrugDescription.Controls.Add(this.lblDrugAddictionRatingLabel, 1, 8);
+            this.tblDrugDescription.Controls.Add(this.lblDrugCostLabel, 1, 6);
+            this.tblDrugDescription.Controls.Add(this.flwDrugQty, 2, 3);
+            this.tblDrugDescription.Controls.Add(this.flowLayoutPanel19, 0, 0);
+            this.tblDrugDescription.Location = new System.Drawing.Point(9, 9);
             this.tblDrugDescription.Name = "tblDrugDescription";
-            this.tblDrugDescription.RowCount = 10;
+            this.tblDrugDescription.RowCount = 11;
             this.tblDrugDescription.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblDrugDescription.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblDrugDescription.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -11191,66 +11194,67 @@ namespace Chummer
             this.tblDrugDescription.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblDrugDescription.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblDrugDescription.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblDrugDescription.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblDrugDescription.Size = new System.Drawing.Size(179, 208);
+            this.tblDrugDescription.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tblDrugDescription.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tblDrugDescription.Size = new System.Drawing.Size(815, 587);
             this.tblDrugDescription.TabIndex = 109;
             // 
             // lblDrugEffectsLabel
             // 
+            this.lblDrugEffectsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDrugEffectsLabel.AutoSize = true;
-            this.lblDrugEffectsLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugEffectsLabel.Location = new System.Drawing.Point(3, 191);
-            this.lblDrugEffectsLabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDrugEffectsLabel.Location = new System.Drawing.Point(330, 265);
+            this.lblDrugEffectsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugEffectsLabel.Name = "lblDrugEffectsLabel";
-            this.lblDrugEffectsLabel.Size = new System.Drawing.Size(72, 14);
+            this.lblDrugEffectsLabel.Size = new System.Drawing.Size(43, 13);
             this.lblDrugEffectsLabel.TabIndex = 98;
             this.lblDrugEffectsLabel.Tag = "Label_DrugEffects";
-            this.lblDrugEffectsLabel.Text = "[Components]";
+            this.lblDrugEffectsLabel.Text = "Effects:";
             // 
             // lblDrugEffect
             // 
             this.lblDrugEffect.AutoSize = true;
-            this.lblDrugEffect.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugEffect.Location = new System.Drawing.Point(81, 191);
-            this.lblDrugEffect.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDrugEffect.Location = new System.Drawing.Point(379, 265);
+            this.lblDrugEffect.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugEffect.Name = "lblDrugEffect";
-            this.lblDrugEffect.Size = new System.Drawing.Size(95, 14);
+            this.lblDrugEffect.Size = new System.Drawing.Size(46, 13);
             this.lblDrugEffect.TabIndex = 97;
             this.lblDrugEffect.Tag = "";
             this.lblDrugEffect.Text = "[Effects]";
             // 
             // lblDrugNameLabel
             // 
+            this.lblDrugNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDrugNameLabel.AutoSize = true;
-            this.lblDrugNameLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugNameLabel.Location = new System.Drawing.Point(3, 3);
-            this.lblDrugNameLabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDrugNameLabel.Location = new System.Drawing.Point(335, 35);
+            this.lblDrugNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugNameLabel.Name = "lblDrugNameLabel";
-            this.lblDrugNameLabel.Size = new System.Drawing.Size(72, 13);
+            this.lblDrugNameLabel.Size = new System.Drawing.Size(38, 13);
             this.lblDrugNameLabel.TabIndex = 73;
             this.lblDrugNameLabel.Tag = "Label_Name";
             this.lblDrugNameLabel.Text = "Name:";
             // 
             // lblDrugCategoryLabel
             // 
+            this.lblDrugCategoryLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDrugCategoryLabel.AutoSize = true;
-            this.lblDrugCategoryLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugCategoryLabel.Location = new System.Drawing.Point(3, 22);
-            this.lblDrugCategoryLabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDrugCategoryLabel.Location = new System.Drawing.Point(321, 60);
+            this.lblDrugCategoryLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugCategoryLabel.Name = "lblDrugCategoryLabel";
-            this.lblDrugCategoryLabel.Size = new System.Drawing.Size(72, 13);
+            this.lblDrugCategoryLabel.Size = new System.Drawing.Size(52, 13);
             this.lblDrugCategoryLabel.TabIndex = 75;
             this.lblDrugCategoryLabel.Tag = "Label_Category";
             this.lblDrugCategoryLabel.Text = "Category:";
             // 
             // lblDrugQtyLabel
             // 
+            this.lblDrugQtyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDrugQtyLabel.AutoSize = true;
-            this.lblDrugQtyLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugQtyLabel.Location = new System.Drawing.Point(3, 41);
-            this.lblDrugQtyLabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDrugQtyLabel.Location = new System.Drawing.Point(347, 85);
+            this.lblDrugQtyLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugQtyLabel.Name = "lblDrugQtyLabel";
-            this.lblDrugQtyLabel.Size = new System.Drawing.Size(72, 30);
+            this.lblDrugQtyLabel.Size = new System.Drawing.Size(26, 18);
             this.lblDrugQtyLabel.TabIndex = 95;
             this.lblDrugQtyLabel.Tag = "Label_Qty";
             this.lblDrugQtyLabel.Text = "Qty:";
@@ -11258,12 +11262,12 @@ namespace Chummer
             // 
             // lblDrugGradeLabel
             // 
+            this.lblDrugGradeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDrugGradeLabel.AutoSize = true;
-            this.lblDrugGradeLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugGradeLabel.Location = new System.Drawing.Point(3, 77);
-            this.lblDrugGradeLabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDrugGradeLabel.Location = new System.Drawing.Point(334, 115);
+            this.lblDrugGradeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugGradeLabel.Name = "lblDrugGradeLabel";
-            this.lblDrugGradeLabel.Size = new System.Drawing.Size(72, 13);
+            this.lblDrugGradeLabel.Size = new System.Drawing.Size(39, 13);
             this.lblDrugGradeLabel.TabIndex = 93;
             this.lblDrugGradeLabel.Tag = "Label_Grade";
             this.lblDrugGradeLabel.Text = "Grade:";
@@ -11271,44 +11275,41 @@ namespace Chummer
             // lblDrugCategory
             // 
             this.lblDrugCategory.AutoSize = true;
-            this.lblDrugCategory.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugCategory.Location = new System.Drawing.Point(81, 22);
-            this.lblDrugCategory.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDrugCategory.Location = new System.Drawing.Point(379, 60);
+            this.lblDrugCategory.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugCategory.Name = "lblDrugCategory";
-            this.lblDrugCategory.Size = new System.Drawing.Size(95, 13);
+            this.lblDrugCategory.Size = new System.Drawing.Size(55, 13);
             this.lblDrugCategory.TabIndex = 76;
             this.lblDrugCategory.Text = "[Category]";
             // 
             // lblDrugGrade
             // 
             this.lblDrugGrade.AutoSize = true;
-            this.lblDrugGrade.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugGrade.Location = new System.Drawing.Point(81, 77);
-            this.lblDrugGrade.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDrugGrade.Location = new System.Drawing.Point(379, 115);
+            this.lblDrugGrade.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugGrade.Name = "lblDrugGrade";
-            this.lblDrugGrade.Size = new System.Drawing.Size(95, 13);
+            this.lblDrugGrade.Size = new System.Drawing.Size(42, 13);
             this.lblDrugGrade.TabIndex = 94;
             this.lblDrugGrade.Text = "[Grade]";
             // 
             // lblDrugName
             // 
             this.lblDrugName.AutoSize = true;
-            this.lblDrugName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugName.Location = new System.Drawing.Point(81, 3);
-            this.lblDrugName.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDrugName.Location = new System.Drawing.Point(379, 35);
+            this.lblDrugName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugName.Name = "lblDrugName";
-            this.lblDrugName.Size = new System.Drawing.Size(95, 13);
+            this.lblDrugName.Size = new System.Drawing.Size(41, 13);
             this.lblDrugName.TabIndex = 74;
             this.lblDrugName.Text = "[Name]";
             // 
             // lblDrugAvailabel
             // 
+            this.lblDrugAvailabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDrugAvailabel.AutoSize = true;
-            this.lblDrugAvailabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugAvailabel.Location = new System.Drawing.Point(3, 96);
-            this.lblDrugAvailabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDrugAvailabel.Location = new System.Drawing.Point(340, 140);
+            this.lblDrugAvailabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugAvailabel.Name = "lblDrugAvailabel";
-            this.lblDrugAvailabel.Size = new System.Drawing.Size(72, 13);
+            this.lblDrugAvailabel.Size = new System.Drawing.Size(33, 13);
             this.lblDrugAvailabel.TabIndex = 77;
             this.lblDrugAvailabel.Tag = "Label_Avail";
             this.lblDrugAvailabel.Text = "Avail:";
@@ -11316,66 +11317,63 @@ namespace Chummer
             // lblDrugAvail
             // 
             this.lblDrugAvail.AutoSize = true;
-            this.lblDrugAvail.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugAvail.Location = new System.Drawing.Point(81, 96);
-            this.lblDrugAvail.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDrugAvail.Location = new System.Drawing.Point(379, 140);
+            this.lblDrugAvail.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugAvail.Name = "lblDrugAvail";
-            this.lblDrugAvail.Size = new System.Drawing.Size(95, 13);
+            this.lblDrugAvail.Size = new System.Drawing.Size(36, 13);
             this.lblDrugAvail.TabIndex = 78;
             this.lblDrugAvail.Text = "[Avail]";
             // 
             // lblDrugCost
             // 
             this.lblDrugCost.AutoSize = true;
-            this.lblDrugCost.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugCost.Location = new System.Drawing.Point(81, 115);
-            this.lblDrugCost.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDrugCost.Location = new System.Drawing.Point(379, 165);
+            this.lblDrugCost.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugCost.Name = "lblDrugCost";
-            this.lblDrugCost.Size = new System.Drawing.Size(95, 13);
+            this.lblDrugCost.Size = new System.Drawing.Size(34, 13);
             this.lblDrugCost.TabIndex = 80;
             this.lblDrugCost.Text = "[Cost]";
             // 
             // lblDrugAddictionThreshold
             // 
             this.lblDrugAddictionThreshold.AutoSize = true;
-            this.lblDrugAddictionThreshold.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugAddictionThreshold.Location = new System.Drawing.Point(81, 134);
-            this.lblDrugAddictionThreshold.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDrugAddictionThreshold.Location = new System.Drawing.Point(379, 190);
+            this.lblDrugAddictionThreshold.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugAddictionThreshold.Name = "lblDrugAddictionThreshold";
-            this.lblDrugAddictionThreshold.Size = new System.Drawing.Size(95, 13);
+            this.lblDrugAddictionThreshold.Size = new System.Drawing.Size(60, 13);
             this.lblDrugAddictionThreshold.TabIndex = 86;
             this.lblDrugAddictionThreshold.Text = "[Threshold]";
             // 
             // lblDrugAddictionRating
             // 
-            this.lblDrugAddictionRating.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugAddictionRating.Location = new System.Drawing.Point(81, 153);
-            this.lblDrugAddictionRating.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDrugAddictionRating.AutoSize = true;
+            this.lblDrugAddictionRating.Location = new System.Drawing.Point(379, 215);
+            this.lblDrugAddictionRating.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugAddictionRating.Name = "lblDrugAddictionRating";
-            this.lblDrugAddictionRating.Size = new System.Drawing.Size(95, 13);
+            this.lblDrugAddictionRating.Size = new System.Drawing.Size(44, 13);
             this.lblDrugAddictionRating.TabIndex = 88;
             this.lblDrugAddictionRating.Text = "[Rating]";
             // 
             // lblDrugComponentsLabel
             // 
+            this.lblDrugComponentsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDrugComponentsLabel.AutoSize = true;
-            this.lblDrugComponentsLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugComponentsLabel.Location = new System.Drawing.Point(3, 172);
-            this.lblDrugComponentsLabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDrugComponentsLabel.Location = new System.Drawing.Point(304, 240);
+            this.lblDrugComponentsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugComponentsLabel.Name = "lblDrugComponentsLabel";
-            this.lblDrugComponentsLabel.Size = new System.Drawing.Size(72, 13);
+            this.lblDrugComponentsLabel.Size = new System.Drawing.Size(69, 13);
             this.lblDrugComponentsLabel.TabIndex = 91;
             this.lblDrugComponentsLabel.Tag = "Label_DrugComponents";
             this.lblDrugComponentsLabel.Text = "Components:";
             // 
             // lblDrugAddictionThresholdLabel
             // 
+            this.lblDrugAddictionThresholdLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDrugAddictionThresholdLabel.AutoSize = true;
-            this.lblDrugAddictionThresholdLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugAddictionThresholdLabel.Location = new System.Drawing.Point(3, 134);
-            this.lblDrugAddictionThresholdLabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDrugAddictionThresholdLabel.Location = new System.Drawing.Point(316, 190);
+            this.lblDrugAddictionThresholdLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugAddictionThresholdLabel.Name = "lblDrugAddictionThresholdLabel";
-            this.lblDrugAddictionThresholdLabel.Size = new System.Drawing.Size(72, 13);
+            this.lblDrugAddictionThresholdLabel.Size = new System.Drawing.Size(57, 13);
             this.lblDrugAddictionThresholdLabel.TabIndex = 92;
             this.lblDrugAddictionThresholdLabel.Tag = "Label_AddictionThreshold";
             this.lblDrugAddictionThresholdLabel.Text = "Threshold:";
@@ -11383,58 +11381,61 @@ namespace Chummer
             // lblDrugComponents
             // 
             this.lblDrugComponents.AutoSize = true;
-            this.lblDrugComponents.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugComponents.Location = new System.Drawing.Point(81, 172);
-            this.lblDrugComponents.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDrugComponents.Location = new System.Drawing.Point(379, 240);
+            this.lblDrugComponents.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugComponents.Name = "lblDrugComponents";
-            this.lblDrugComponents.Size = new System.Drawing.Size(95, 13);
+            this.lblDrugComponents.Size = new System.Drawing.Size(72, 13);
             this.lblDrugComponents.TabIndex = 84;
             this.lblDrugComponents.Text = "[Components]";
             // 
             // lblDrugAddictionRatingLabel
             // 
+            this.lblDrugAddictionRatingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDrugAddictionRatingLabel.AutoSize = true;
-            this.lblDrugAddictionRatingLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugAddictionRatingLabel.Location = new System.Drawing.Point(3, 153);
-            this.lblDrugAddictionRatingLabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDrugAddictionRatingLabel.Location = new System.Drawing.Point(332, 215);
+            this.lblDrugAddictionRatingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugAddictionRatingLabel.Name = "lblDrugAddictionRatingLabel";
-            this.lblDrugAddictionRatingLabel.Size = new System.Drawing.Size(72, 13);
+            this.lblDrugAddictionRatingLabel.Size = new System.Drawing.Size(41, 13);
             this.lblDrugAddictionRatingLabel.TabIndex = 90;
             this.lblDrugAddictionRatingLabel.Tag = "Label_Rating";
             this.lblDrugAddictionRatingLabel.Text = "Rating:";
             // 
             // lblDrugCostLabel
             // 
+            this.lblDrugCostLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDrugCostLabel.AutoSize = true;
-            this.lblDrugCostLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugCostLabel.Location = new System.Drawing.Point(3, 115);
-            this.lblDrugCostLabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDrugCostLabel.Location = new System.Drawing.Point(342, 165);
+            this.lblDrugCostLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugCostLabel.Name = "lblDrugCostLabel";
-            this.lblDrugCostLabel.Size = new System.Drawing.Size(72, 13);
+            this.lblDrugCostLabel.Size = new System.Drawing.Size(31, 13);
             this.lblDrugCostLabel.TabIndex = 79;
             this.lblDrugCostLabel.Tag = "Label_Cost";
             this.lblDrugCostLabel.Text = "Cost:";
             // 
             // flwDrugQty
             // 
-            this.flwDrugQty.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.flwDrugQty.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.flwDrugQty.AutoSize = true;
             this.flwDrugQty.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flwDrugQty.Controls.Add(this.lblDrugQty);
             this.flwDrugQty.Controls.Add(this.btnIncreaseDrugQty);
             this.flwDrugQty.Controls.Add(this.btnDecreaseDrugQty);
-            this.flwDrugQty.Location = new System.Drawing.Point(81, 41);
+            this.flwDrugQty.Location = new System.Drawing.Point(376, 79);
+            this.flwDrugQty.Margin = new System.Windows.Forms.Padding(0);
             this.flwDrugQty.Name = "flwDrugQty";
-            this.flwDrugQty.Size = new System.Drawing.Size(95, 30);
+            this.flwDrugQty.Size = new System.Drawing.Size(439, 30);
             this.flwDrugQty.TabIndex = 96;
             // 
             // lblDrugQty
             // 
+            this.lblDrugQty.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lblDrugQty.AutoSize = true;
-            this.lblDrugQty.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugQty.Location = new System.Drawing.Point(3, 0);
+            this.lblDrugQty.Location = new System.Drawing.Point(3, 6);
+            this.lblDrugQty.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugQty.Name = "lblDrugQty";
-            this.lblDrugQty.Size = new System.Drawing.Size(29, 30);
+            this.lblDrugQty.Size = new System.Drawing.Size(29, 18);
             this.lblDrugQty.TabIndex = 106;
             this.lblDrugQty.Text = "[Qty]";
             this.lblDrugQty.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -11467,7 +11468,7 @@ namespace Chummer
             // 
             // btnDeleteCustomDrug
             // 
-            this.btnDeleteCustomDrug.Location = new System.Drawing.Point(126, 7);
+            this.btnDeleteCustomDrug.Location = new System.Drawing.Point(123, 3);
             this.btnDeleteCustomDrug.Name = "btnDeleteCustomDrug";
             this.btnDeleteCustomDrug.Size = new System.Drawing.Size(75, 23);
             this.btnDeleteCustomDrug.TabIndex = 3;
@@ -11477,20 +11478,24 @@ namespace Chummer
             // 
             // treCustomDrugs
             // 
-            this.treCustomDrugs.Location = new System.Drawing.Point(6, 36);
+            this.treCustomDrugs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.treCustomDrugs.Location = new System.Drawing.Point(3, 32);
             this.treCustomDrugs.Name = "treCustomDrugs";
             treeNode23.Name = "nodSelectedDrug";
             treeNode23.Tag = "Node_SelectedDrugs";
             treeNode23.Text = "Selected Drugs";
             this.treCustomDrugs.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode23});
-            this.treCustomDrugs.Size = new System.Drawing.Size(295, 563);
+            this.tblDrugDescription.SetRowSpan(this.treCustomDrugs, 10);
+            this.treCustomDrugs.Size = new System.Drawing.Size(295, 552);
             this.treCustomDrugs.TabIndex = 2;
             this.treCustomDrugs.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCustomDrugs_AfterSelect);
             // 
             // btnCreateCustomDrug
             // 
-            this.btnCreateCustomDrug.Location = new System.Drawing.Point(6, 7);
+            this.btnCreateCustomDrug.Location = new System.Drawing.Point(3, 3);
             this.btnCreateCustomDrug.Name = "btnCreateCustomDrug";
             this.btnCreateCustomDrug.Size = new System.Drawing.Size(114, 23);
             this.btnCreateCustomDrug.TabIndex = 1;
@@ -11503,9 +11508,6 @@ namespace Chummer
             // 
             this.tabLifestyle.BackColor = System.Drawing.SystemColors.Control;
             this.tabLifestyle.Controls.Add(this.tblLifestyleDetails);
-            this.tabLifestyle.Controls.Add(this.cmdAddLifestyle);
-            this.tabLifestyle.Controls.Add(this.treLifestyles);
-            this.tabLifestyle.Controls.Add(this.cmdDeleteLifestyle);
             this.tabLifestyle.Location = new System.Drawing.Point(4, 22);
             this.tabLifestyle.Name = "tabLifestyle";
             this.tabLifestyle.Padding = new System.Windows.Forms.Padding(3);
@@ -11521,35 +11523,40 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tblLifestyleDetails.AutoSize = true;
             this.tblLifestyleDetails.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tblLifestyleDetails.ColumnCount = 2;
+            this.tblLifestyleDetails.ColumnCount = 3;
+            this.tblLifestyleDetails.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
             this.tblLifestyleDetails.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tblLifestyleDetails.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tblLifestyleDetails.Controls.Add(this.lblLifestyleCostLabel, 0, 0);
-            this.tblLifestyleDetails.Controls.Add(this.lblLifestyleCost, 1, 0);
-            this.tblLifestyleDetails.Controls.Add(this.lblLifestyleQualities, 1, 4);
-            this.tblLifestyleDetails.Controls.Add(this.lblBaseLifestyle, 1, 3);
-            this.tblLifestyleDetails.Controls.Add(this.lblLifestyleQualitiesLabel, 0, 4);
-            this.tblLifestyleDetails.Controls.Add(this.flowLayoutPanel1, 0, 1);
-            this.tblLifestyleDetails.Controls.Add(this.lblLifestyleComfortsLabel, 0, 3);
-            this.tblLifestyleDetails.Controls.Add(this.lblLifestyleSourceLabel, 0, 2);
-            this.tblLifestyleDetails.Controls.Add(this.lblLifestyleSource, 1, 2);
-            this.tblLifestyleDetails.Location = new System.Drawing.Point(308, 36);
+            this.tblLifestyleDetails.Controls.Add(this.lblLifestyleCostLabel, 1, 1);
+            this.tblLifestyleDetails.Controls.Add(this.treLifestyles, 0, 1);
+            this.tblLifestyleDetails.Controls.Add(this.lblLifestyleCost, 2, 1);
+            this.tblLifestyleDetails.Controls.Add(this.lblLifestyleQualities, 2, 5);
+            this.tblLifestyleDetails.Controls.Add(this.lblBaseLifestyle, 2, 4);
+            this.tblLifestyleDetails.Controls.Add(this.lblLifestyleQualitiesLabel, 1, 5);
+            this.tblLifestyleDetails.Controls.Add(this.flowLayoutPanel1, 1, 2);
+            this.tblLifestyleDetails.Controls.Add(this.lblLifestyleComfortsLabel, 1, 4);
+            this.tblLifestyleDetails.Controls.Add(this.lblLifestyleSourceLabel, 1, 3);
+            this.tblLifestyleDetails.Controls.Add(this.lblLifestyleSource, 2, 3);
+            this.tblLifestyleDetails.Controls.Add(this.flowLayoutPanel18, 0, 0);
+            this.tblLifestyleDetails.Location = new System.Drawing.Point(9, 9);
+            this.tblLifestyleDetails.MinimumSize = new System.Drawing.Size(815, 587);
             this.tblLifestyleDetails.Name = "tblLifestyleDetails";
-            this.tblLifestyleDetails.RowCount = 5;
+            this.tblLifestyleDetails.RowCount = 6;
             this.tblLifestyleDetails.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblLifestyleDetails.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblLifestyleDetails.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblLifestyleDetails.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblLifestyleDetails.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblLifestyleDetails.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblLifestyleDetails.Size = new System.Drawing.Size(247, 112);
+            this.tblLifestyleDetails.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tblLifestyleDetails.Size = new System.Drawing.Size(815, 598);
             this.tblLifestyleDetails.TabIndex = 118;
             // 
             // lblLifestyleCostLabel
             // 
+            this.lblLifestyleCostLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblLifestyleCostLabel.AutoSize = true;
-            this.lblLifestyleCostLabel.Location = new System.Drawing.Point(3, 3);
-            this.lblLifestyleCostLabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblLifestyleCostLabel.Location = new System.Drawing.Point(304, 35);
+            this.lblLifestyleCostLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLifestyleCostLabel.Name = "lblLifestyleCostLabel";
             this.lblLifestyleCostLabel.Size = new System.Drawing.Size(66, 13);
             this.lblLifestyleCostLabel.TabIndex = 85;
@@ -11559,8 +11566,8 @@ namespace Chummer
             // lblLifestyleCost
             // 
             this.lblLifestyleCost.AutoSize = true;
-            this.lblLifestyleCost.Location = new System.Drawing.Point(75, 3);
-            this.lblLifestyleCost.Margin = new System.Windows.Forms.Padding(3);
+            this.lblLifestyleCost.Location = new System.Drawing.Point(376, 35);
+            this.lblLifestyleCost.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLifestyleCost.Name = "lblLifestyleCost";
             this.lblLifestyleCost.Size = new System.Drawing.Size(34, 13);
             this.lblLifestyleCost.TabIndex = 84;
@@ -11569,35 +11576,33 @@ namespace Chummer
             // lblLifestyleQualities
             // 
             this.lblLifestyleQualities.AutoSize = true;
-            this.lblLifestyleQualities.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblLifestyleQualities.Location = new System.Drawing.Point(75, 96);
-            this.lblLifestyleQualities.Margin = new System.Windows.Forms.Padding(3);
+            this.lblLifestyleQualities.Location = new System.Drawing.Point(376, 140);
+            this.lblLifestyleQualities.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLifestyleQualities.MaximumSize = new System.Drawing.Size(442, 0);
             this.lblLifestyleQualities.Name = "lblLifestyleQualities";
-            this.lblLifestyleQualities.Size = new System.Drawing.Size(169, 13);
+            this.lblLifestyleQualities.Size = new System.Drawing.Size(19, 13);
             this.lblLifestyleQualities.TabIndex = 115;
             this.lblLifestyleQualities.Text = "[0]";
             // 
             // lblBaseLifestyle
             // 
             this.lblBaseLifestyle.AutoSize = true;
-            this.lblBaseLifestyle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblBaseLifestyle.Location = new System.Drawing.Point(75, 77);
-            this.lblBaseLifestyle.Margin = new System.Windows.Forms.Padding(3);
+            this.lblBaseLifestyle.Location = new System.Drawing.Point(376, 115);
+            this.lblBaseLifestyle.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBaseLifestyle.MaximumSize = new System.Drawing.Size(442, 0);
             this.lblBaseLifestyle.Name = "lblBaseLifestyle";
-            this.lblBaseLifestyle.Size = new System.Drawing.Size(169, 13);
+            this.lblBaseLifestyle.Size = new System.Drawing.Size(19, 13);
             this.lblBaseLifestyle.TabIndex = 117;
             this.lblBaseLifestyle.Text = "[0]";
             // 
             // lblLifestyleQualitiesLabel
             // 
+            this.lblLifestyleQualitiesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblLifestyleQualitiesLabel.AutoSize = true;
-            this.lblLifestyleQualitiesLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblLifestyleQualitiesLabel.Location = new System.Drawing.Point(3, 96);
-            this.lblLifestyleQualitiesLabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblLifestyleQualitiesLabel.Location = new System.Drawing.Point(320, 140);
+            this.lblLifestyleQualitiesLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLifestyleQualitiesLabel.Name = "lblLifestyleQualitiesLabel";
-            this.lblLifestyleQualitiesLabel.Size = new System.Drawing.Size(66, 13);
+            this.lblLifestyleQualitiesLabel.Size = new System.Drawing.Size(50, 13);
             this.lblLifestyleQualitiesLabel.TabIndex = 114;
             this.lblLifestyleQualitiesLabel.Tag = "Label_LifestyleQualities";
             this.lblLifestyleQualitiesLabel.Text = "Qualities:";
@@ -11611,7 +11616,8 @@ namespace Chummer
             this.flowLayoutPanel1.Controls.Add(this.cmdDecreaseLifestyleMonths);
             this.flowLayoutPanel1.Controls.Add(this.cmdIncreaseLifestyleMonths);
             this.flowLayoutPanel1.Controls.Add(this.lblLifestyleMonthsLabel);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 22);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(301, 54);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(241, 30);
             this.flowLayoutPanel1.TabIndex = 86;
@@ -11621,6 +11627,7 @@ namespace Chummer
             this.lblLifestyleMonths.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblLifestyleMonths.AutoSize = true;
             this.lblLifestyleMonths.Location = new System.Drawing.Point(3, 8);
+            this.lblLifestyleMonths.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLifestyleMonths.Name = "lblLifestyleMonths";
             this.lblLifestyleMonths.Size = new System.Drawing.Size(31, 13);
             this.lblLifestyleMonths.TabIndex = 91;
@@ -11659,6 +11666,7 @@ namespace Chummer
             this.lblLifestyleMonthsLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblLifestyleMonthsLabel.AutoSize = true;
             this.lblLifestyleMonthsLabel.Location = new System.Drawing.Point(100, 8);
+            this.lblLifestyleMonthsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLifestyleMonthsLabel.Name = "lblLifestyleMonthsLabel";
             this.lblLifestyleMonthsLabel.Size = new System.Drawing.Size(138, 13);
             this.lblLifestyleMonthsLabel.TabIndex = 83;
@@ -11668,24 +11676,24 @@ namespace Chummer
             // 
             // lblLifestyleComfortsLabel
             // 
+            this.lblLifestyleComfortsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblLifestyleComfortsLabel.AutoSize = true;
-            this.lblLifestyleComfortsLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblLifestyleComfortsLabel.Location = new System.Drawing.Point(3, 77);
-            this.lblLifestyleComfortsLabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblLifestyleComfortsLabel.Location = new System.Drawing.Point(322, 115);
+            this.lblLifestyleComfortsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLifestyleComfortsLabel.Name = "lblLifestyleComfortsLabel";
-            this.lblLifestyleComfortsLabel.Size = new System.Drawing.Size(66, 13);
+            this.lblLifestyleComfortsLabel.Size = new System.Drawing.Size(48, 13);
             this.lblLifestyleComfortsLabel.TabIndex = 116;
             this.lblLifestyleComfortsLabel.Tag = "Label_SelectAdvancedLifestyle_Lifestyle";
             this.lblLifestyleComfortsLabel.Text = "Lifestyle:";
             // 
             // lblLifestyleSourceLabel
             // 
+            this.lblLifestyleSourceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblLifestyleSourceLabel.AutoSize = true;
-            this.lblLifestyleSourceLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblLifestyleSourceLabel.Location = new System.Drawing.Point(3, 58);
-            this.lblLifestyleSourceLabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblLifestyleSourceLabel.Location = new System.Drawing.Point(326, 90);
+            this.lblLifestyleSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLifestyleSourceLabel.Name = "lblLifestyleSourceLabel";
-            this.lblLifestyleSourceLabel.Size = new System.Drawing.Size(66, 13);
+            this.lblLifestyleSourceLabel.Size = new System.Drawing.Size(44, 13);
             this.lblLifestyleSourceLabel.TabIndex = 87;
             this.lblLifestyleSourceLabel.Tag = "Label_Source";
             this.lblLifestyleSourceLabel.Text = "Source:";
@@ -11693,12 +11701,11 @@ namespace Chummer
             // lblLifestyleSource
             // 
             this.lblLifestyleSource.AutoSize = true;
-            this.lblLifestyleSource.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblLifestyleSource.Location = new System.Drawing.Point(75, 58);
-            this.lblLifestyleSource.Margin = new System.Windows.Forms.Padding(3);
+            this.lblLifestyleSource.Location = new System.Drawing.Point(376, 90);
+            this.lblLifestyleSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLifestyleSource.MaximumSize = new System.Drawing.Size(442, 0);
             this.lblLifestyleSource.Name = "lblLifestyleSource";
-            this.lblLifestyleSource.Size = new System.Drawing.Size(169, 13);
+            this.lblLifestyleSource.Size = new System.Drawing.Size(47, 13);
             this.lblLifestyleSource.TabIndex = 88;
             this.lblLifestyleSource.Text = "[Source]";
             this.lblLifestyleSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
@@ -11707,7 +11714,7 @@ namespace Chummer
             // 
             this.cmdAddLifestyle.AutoSize = true;
             this.cmdAddLifestyle.ContextMenuStrip = this.cmsLifestyle;
-            this.cmdAddLifestyle.Location = new System.Drawing.Point(6, 7);
+            this.cmdAddLifestyle.Location = new System.Drawing.Point(3, 3);
             this.cmdAddLifestyle.Name = "cmdAddLifestyle";
             this.cmdAddLifestyle.Size = new System.Drawing.Size(95, 23);
             this.cmdAddLifestyle.SplitMenuStrip = this.cmsLifestyle;
@@ -11723,16 +11730,17 @@ namespace Chummer
             this.treLifestyles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.treLifestyles.HideSelection = false;
-            this.treLifestyles.Location = new System.Drawing.Point(6, 36);
+            this.treLifestyles.Location = new System.Drawing.Point(3, 32);
             this.treLifestyles.Name = "treLifestyles";
             treeNode24.Name = "nodLifestylesRoot";
             treeNode24.Tag = "Node_SelectedLifestyles";
             treeNode24.Text = "Selected Lifestyles";
             this.treLifestyles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode24});
+            this.tblLifestyleDetails.SetRowSpan(this.treLifestyles, 5);
             this.treLifestyles.ShowNodeToolTips = true;
             this.treLifestyles.ShowRootLines = false;
-            this.treLifestyles.Size = new System.Drawing.Size(295, 514);
+            this.treLifestyles.Size = new System.Drawing.Size(295, 563);
             this.treLifestyles.TabIndex = 80;
             this.treLifestyles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treLifestyles_AfterSelect);
             this.treLifestyles.DragOver += new System.Windows.Forms.DragEventHandler(this.treLifestyles_DragOver);
@@ -11743,7 +11751,7 @@ namespace Chummer
             // cmdDeleteLifestyle
             // 
             this.cmdDeleteLifestyle.AutoSize = true;
-            this.cmdDeleteLifestyle.Location = new System.Drawing.Point(107, 7);
+            this.cmdDeleteLifestyle.Location = new System.Drawing.Point(104, 3);
             this.cmdDeleteLifestyle.Name = "cmdDeleteLifestyle";
             this.cmdDeleteLifestyle.Size = new System.Drawing.Size(80, 23);
             this.cmdDeleteLifestyle.TabIndex = 81;
@@ -14356,33 +14364,6 @@ namespace Chummer
             this.txtNotes.TabIndex = 25;
             this.txtNotes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
             // 
-            // lblConcept
-            // 
-            this.lblConcept.AutoSize = true;
-            this.tlpCharacterInfo.SetColumnSpan(this.lblConcept, 3);
-            this.lblConcept.Location = new System.Drawing.Point(3, 320);
-            this.lblConcept.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblConcept.Name = "lblConcept";
-            this.lblConcept.Size = new System.Drawing.Size(50, 13);
-            this.lblConcept.TabIndex = 18;
-            this.lblConcept.Tag = "Label_Concept";
-            this.lblConcept.Text = "Concept:";
-            // 
-            // picMugshot
-            // 
-            this.picMugshot.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpCharacterInfo.SetColumnSpan(this.picMugshot, 5);
-            this.picMugshot.Location = new System.Drawing.Point(626, 292);
-            this.picMugshot.Name = "picMugshot";
-            this.tlpCharacterInfo.SetRowSpan(this.picMugshot, 5);
-            this.picMugshot.Size = new System.Drawing.Size(194, 318);
-            this.picMugshot.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.picMugshot.TabIndex = 20;
-            this.picMugshot.TabStop = false;
-            this.picMugshot.SizeChanged += new System.EventHandler(this.picMugshot_SizeChanged);
-            // 
             // lblNotes
             // 
             this.lblNotes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -14434,6 +14415,18 @@ namespace Chummer
             this.lblSex.TabIndex = 0;
             this.lblSex.Tag = "Label_Sex";
             this.lblSex.Text = "Sex:";
+            // 
+            // lblConcept
+            // 
+            this.lblConcept.AutoSize = true;
+            this.tlpCharacterInfo.SetColumnSpan(this.lblConcept, 3);
+            this.lblConcept.Location = new System.Drawing.Point(3, 320);
+            this.lblConcept.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblConcept.Name = "lblConcept";
+            this.lblConcept.Size = new System.Drawing.Size(50, 13);
+            this.lblConcept.TabIndex = 18;
+            this.lblConcept.Tag = "Label_Concept";
+            this.lblConcept.Text = "Concept:";
             // 
             // lblPublicAwareTotal
             // 
@@ -14794,6 +14787,21 @@ namespace Chummer
             this.lblMugshot.TabIndex = 21;
             this.lblMugshot.Tag = "Label_Mugshot";
             this.lblMugshot.Text = "Mugshot:";
+            // 
+            // picMugshot
+            // 
+            this.picMugshot.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpCharacterInfo.SetColumnSpan(this.picMugshot, 5);
+            this.picMugshot.Location = new System.Drawing.Point(626, 292);
+            this.picMugshot.Name = "picMugshot";
+            this.tlpCharacterInfo.SetRowSpan(this.picMugshot, 5);
+            this.picMugshot.Size = new System.Drawing.Size(194, 318);
+            this.picMugshot.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picMugshot.TabIndex = 20;
+            this.picMugshot.TabStop = false;
+            this.picMugshot.SizeChanged += new System.EventHandler(this.picMugshot_SizeChanged);
             // 
             // chkIsMainMugshot
             // 
@@ -15180,7 +15188,7 @@ namespace Chummer
             // 
             this.cmdChangeStartWeek.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdChangeStartWeek.AutoSize = true;
-            this.cmdChangeStartWeek.Location = new System.Drawing.Point(-24302, 6);
+            this.cmdChangeStartWeek.Location = new System.Drawing.Point(-24951, 6);
             this.cmdChangeStartWeek.Name = "cmdChangeStartWeek";
             this.cmdChangeStartWeek.Size = new System.Drawing.Size(119, 23);
             this.cmdChangeStartWeek.TabIndex = 4;
@@ -15615,7 +15623,7 @@ namespace Chummer
             this.tabEnemies.Location = new System.Drawing.Point(4, 22);
             this.tabEnemies.Name = "tabEnemies";
             this.tabEnemies.Padding = new System.Windows.Forms.Padding(3);
-            this.tabEnemies.Size = new System.Drawing.Size(178, 42);
+            this.tabEnemies.Size = new System.Drawing.Size(827, 599);
             this.tabEnemies.TabIndex = 1;
             this.tabEnemies.Tag = "Label_Enemies";
             this.tabEnemies.Text = "Enemies";
@@ -15658,7 +15666,7 @@ namespace Chummer
             this.panEnemies.AutoScroll = true;
             this.panEnemies.Location = new System.Drawing.Point(6, 48);
             this.panEnemies.Name = "panEnemies";
-            this.panEnemies.Size = new System.Drawing.Size(7955, 6673);
+            this.panEnemies.Size = new System.Drawing.Size(816, 557);
             this.panEnemies.TabIndex = 41;
             this.panEnemies.Click += new System.EventHandler(this.panEnemies_Click);
             // 
@@ -15682,7 +15690,7 @@ namespace Chummer
             this.tabPets.Location = new System.Drawing.Point(4, 22);
             this.tabPets.Name = "tabPets";
             this.tabPets.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPets.Size = new System.Drawing.Size(178, 42);
+            this.tabPets.Size = new System.Drawing.Size(827, 599);
             this.tabPets.TabIndex = 4;
             this.tabPets.Tag = "Tab_Pets";
             this.tabPets.Text = "Pets and Cohorts";
@@ -15696,7 +15704,7 @@ namespace Chummer
             this.panPets.Location = new System.Drawing.Point(6, 33);
             this.panPets.Margin = new System.Windows.Forms.Padding(0);
             this.panPets.Name = "panPets";
-            this.panPets.Size = new System.Drawing.Size(7955, 6688);
+            this.panPets.Size = new System.Drawing.Size(816, 557);
             this.panPets.TabIndex = 25;
             // 
             // cmdAddPet
@@ -16133,6 +16141,28 @@ namespace Chummer
             this.tsWeaponMountLocation.Tag = "Menu_RenameLocation";
             this.tsWeaponMountLocation.Text = "Rename &Location";
             // 
+            // flowLayoutPanel18
+            // 
+            this.flowLayoutPanel18.AutoSize = true;
+            this.flowLayoutPanel18.Controls.Add(this.cmdAddLifestyle);
+            this.flowLayoutPanel18.Controls.Add(this.cmdDeleteLifestyle);
+            this.flowLayoutPanel18.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanel18.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel18.Name = "flowLayoutPanel18";
+            this.flowLayoutPanel18.Size = new System.Drawing.Size(187, 29);
+            this.flowLayoutPanel18.TabIndex = 118;
+            // 
+            // flowLayoutPanel19
+            // 
+            this.flowLayoutPanel19.AutoSize = true;
+            this.flowLayoutPanel19.Controls.Add(this.btnCreateCustomDrug);
+            this.flowLayoutPanel19.Controls.Add(this.btnDeleteCustomDrug);
+            this.flowLayoutPanel19.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanel19.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel19.Name = "flowLayoutPanel19";
+            this.flowLayoutPanel19.Size = new System.Drawing.Size(201, 29);
+            this.flowLayoutPanel19.TabIndex = 99;
+            // 
             // frmCareer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -16288,7 +16318,6 @@ namespace Chummer
             this.tabWeaponMatrixCM.ResumeLayout(false);
             this.tabWeaponMatrixCMPage.ResumeLayout(false);
             this.tabDrugs.ResumeLayout(false);
-            this.tabDrugs.PerformLayout();
             this.tblDrugDescription.ResumeLayout(false);
             this.tblDrugDescription.PerformLayout();
             this.flwDrugQty.ResumeLayout(false);
@@ -16313,11 +16342,11 @@ namespace Chummer
             this.tabCharacterInfo.PerformLayout();
             this.tlpCharacterInfo.ResumeLayout(false);
             this.tlpCharacterInfo.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPublicAware)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudNotoriety)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudStreetCred)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMugshotIndex)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).EndInit();
             this.flowLayoutPanel17.ResumeLayout(false);
             this.flowLayoutPanel17.PerformLayout();
             this.tabKarma.ResumeLayout(false);
@@ -16376,6 +16405,9 @@ namespace Chummer
             this.cmsTechnique.ResumeLayout(false);
             this.cmsAdvancedProgram.ResumeLayout(false);
             this.cmsWeaponMount.ResumeLayout(false);
+            this.flowLayoutPanel18.ResumeLayout(false);
+            this.flowLayoutPanel18.PerformLayout();
+            this.flowLayoutPanel19.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -17566,5 +17598,7 @@ namespace Chummer
         private TableLayoutPanel tlpCharacterInfo;
         private TextBox txtConcept;
         private FlowLayoutPanel flowLayoutPanel17;
+        private FlowLayoutPanel flowLayoutPanel18;
+        private FlowLayoutPanel flowLayoutPanel19;
     }
 }
