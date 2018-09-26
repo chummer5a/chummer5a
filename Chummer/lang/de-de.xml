@@ -6521,7 +6521,7 @@
 		</string>
 		<string>
 			<key>Label_Options_PDFOffset</key>
-			<text>Seitenanzahl:</text>
+			<text>Seitenversatz:</text>
 		</string>
 		<string>
 			<key>Button_Options_PDFTest</key>
@@ -6574,7 +6574,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Option_PrintToFileFirst</key>
-			<text>Linux Druckfehler-Fix nutzen.</text>
+			<text>Linux Druckfehler-Fix nutzen</text>
 		</string>
 		<string>
 			<key>Checkbox_Aerodynamic</key>
@@ -9185,6 +9185,42 @@
 		<string>
 			<key>MessageTitle_Options_CloseForms</key>
 			<text>Formulare schließen</text>
+		</string>
+		<string>
+			<key>Label_Options_EditSourcebookInfo</key>
+			<text>Quellenbuchangaben bearbeiten</text>
+		</string>
+		<string>
+			<key>Label_Options_SelectedSourcebook</key>
+			<text>Ausgewähltes Quellenbuch:</text>
+		</string>
+		<string>
+			<key>Label_Options_Defaults</key>
+			<text>Vorbelegung für neue Charaktere:</text>
+		</string>
+		<string>
+			<key>String_NotSupported</key>
+			<text>"Diese Kombiantion von Rasse/Metavariante ist aktuell noch unvollständig und wird in künftige Versionen vervollständigt. Versuche, einen Charakter mit dieser Kombination zu erstellen, können zu unerwarteten Ergebnissen führen."</text>
+		</string>
+		<string>
+			<key>Warning_NoLimitFound</key>
+			<text>Es konnte kein passendes Limit zum Ändern gefunden werden. Stellen Sie sicher, dass Sie einen benutzerdefinierten Limit-Modifikator gewählt haben.</text>
+		</string>
+		<string>
+			<key>Label_Options_SourcebooksToUse</key>
+			<text>Zu verwendende Quellenbücher</text>
+		</string>
+		<string>
+			<key>Label_Updater_Status</key>
+			<text>Status der Aktualisierung:</text>
+		</string>
+		<string>
+			<key>Label_Options_MetatypesCostKarma</key>
+			<text>Faktor für Metatyp Karmakosten</text>
+		</string>
+		<string>
+			<key>Label_Options_CustomDataDirectories</key>
+			<text>Anzuwendende Sonderregeln (Änderungen werden erst nach einem Programmneustart aktiv)</text>
 		</string>
 	</strings>
 </chummer>
