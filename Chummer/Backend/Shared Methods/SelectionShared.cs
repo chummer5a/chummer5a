@@ -505,11 +505,11 @@ namespace Chummer
                         string strEssNodeGradeAttributeText = xmlNode.Attributes?["grade"]?.InnerText ?? string.Empty;
                         if (!string.IsNullOrEmpty(strEssNodeGradeAttributeText))
                         {
-                            HashSet<string> objEssNodeGradeAttributeText = new HashSet<string>(xmlNode.Attributes?["grade"]?.InnerText.Split(','));
+                            HashSet<string> setEssNodeGradeAttributeText = new HashSet<string>(strEssNodeGradeAttributeText.Split(','));
                             decimal decGrade =
                                 objCharacter.Cyberware.Where(
                                         objCyberware =>
-                                            objEssNodeGradeAttributeText.Any(func => objCyberware.Grade.Name.Contains(func)))
+                                            setEssNodeGradeAttributeText.Any(func => objCyberware.Grade.Name.Contains(func)))
                                     .AsParallel().Sum(objCyberware => objCyberware.CalculatedESS());
                             if (strNodeInnerText.StartsWith('-'))
                             {
@@ -1576,13 +1576,14 @@ namespace Chummer
                     }
                 case "ess":
                     {
-                        string objEssNodeGradeAttributeText = xmlNode.SelectSingleNode("@grade")?.Value ?? string.Empty;
-                        if (!string.IsNullOrEmpty(objEssNodeGradeAttributeText))
+                        string strEssNodeGradeAttributeText = xmlNode.SelectSingleNode("@grade")?.Value ?? string.Empty;
+                        if (!string.IsNullOrEmpty(strEssNodeGradeAttributeText))
                         {
+                            HashSet<string> setEssNodeGradeAttributeText = new HashSet<string>(strEssNodeGradeAttributeText.Split(','));
                             decimal decGrade =
                                 objCharacter.Cyberware.Where(
                                         objCyberware =>
-                                            objCyberware.Grade.Name.Contains(objEssNodeGradeAttributeText))
+                                            setEssNodeGradeAttributeText.Any(func => objCyberware.Grade.Name.Contains(func)))
                                     .AsParallel().Sum(objCyberware => objCyberware.CalculatedESS());
                             if (strNodeInnerText.StartsWith('-'))
                             {
@@ -1591,7 +1592,7 @@ namespace Chummer
                                     strName = Environment.NewLine + '\t' +
                                        LanguageManager.GetString("Message_SelectQuality_RequireESSGradeBelow", GlobalOptions.Language)
                                            .Replace("{0}", strNodeInnerText)
-                                           .Replace("{1}", objEssNodeGradeAttributeText)
+                                           .Replace("{1}", strEssNodeGradeAttributeText)
                                            .Replace("{2}", decGrade.ToString(GlobalOptions.InvariantCultureInfo));
                                 return decGrade < Convert.ToDecimal(strNodeInnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo);
                             }
@@ -1600,7 +1601,7 @@ namespace Chummer
                                 strName = Environment.NewLine + '\t' +
                                    LanguageManager.GetString("Message_SelectQuality_RequireESSGradeAbove", GlobalOptions.Language)
                                        .Replace("{0}", strNodeInnerText)
-                                       .Replace("{1}", objEssNodeGradeAttributeText)
+                                       .Replace("{1}", strEssNodeGradeAttributeText)
                                        .Replace("{2}", decGrade.ToString(GlobalOptions.InvariantCultureInfo));
                             return decGrade >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
                         }
