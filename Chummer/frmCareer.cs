@@ -14744,7 +14744,7 @@ namespace Chummer
                     return frmPickGear.AddAgain;
                 // If a match was found, we need to use the cost of a single item in the stack which can include plugins.
                 foreach (Gear objPlugin in objStackWith.Children)
-                    decCost += (objPlugin.TotalCost - objPlugin.OwnCost) * frmPickGear.SelectedQty;
+                    decCost += objPlugin.TotalCost * frmPickGear.SelectedQty;
             }
             if (!blnNullParent && !blnAmmoOnly)
                 decCost *= objSelectedGear.Quantity;
