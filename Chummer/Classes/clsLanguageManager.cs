@@ -313,6 +313,15 @@ namespace Chummer
                     UpdateControls(objSplitControl.Panel1, strIntoLanguage);
                     UpdateControls(objSplitControl.Panel2, strIntoLanguage);
                 }
+                else if (objChild is GroupBox)
+                {
+                    string strControlTag = objChild.Tag?.ToString();
+                    if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
+                        objChild.Text = GetString(strControlTag, strIntoLanguage);
+                    else if (objChild.Text.StartsWith('['))
+                        objChild.Text = string.Empty;
+                    UpdateControls(objChild, strIntoLanguage);
+                }
                 else if (objChild is Panel)
                 {
                     UpdateControls(objChild, strIntoLanguage);
@@ -335,9 +344,9 @@ namespace Chummer
                             objNode.Text = string.Empty;
                     }
                 }
-                else if (objChild is DataGridView)
+                else if (objChild is DataGridView objDataGridView)
                 {
-                    foreach (DataGridViewTextBoxColumn objColumn in ((DataGridView) objChild).Columns)
+                    foreach (DataGridViewTextBoxColumn objColumn in objDataGridView.Columns)
                     {
                         if (objColumn is DataGridViewTextBoxColumnTranslated objTranslatedColumn && !string.IsNullOrWhiteSpace(objTranslatedColumn.TranslationTag))
                         {

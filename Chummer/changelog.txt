@@ -87,6 +87,7 @@ Application Changes:
 - Fixed an issue where the dropdown menu option to change a character's metatype would show as "Change Priority Selection" regardless of the character's build method.
 - The Translator tool now warns users that the "Rebuild" option will delete translations for any data entries that are not present in the core Chummer5a data files, and now has a separate "Update" option that does not delete such translations. Fixes #2932.
 - Fixed an issue where increasing the quantity of gear that contained plugins would count the cost from its children incorrectly. Fixes #3003.
+- Fixed a bug where group layout boxes and controls within those group layout boxes would not get translated. Fixes #3052.
 
 Data Changes:
 
