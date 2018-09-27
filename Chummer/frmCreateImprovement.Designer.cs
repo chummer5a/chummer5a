@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmCreateImprovement
     {
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.lblImprovementType = new System.Windows.Forms.Label();
-            this.cboImprovemetType = new System.Windows.Forms.ComboBox();
+            this.cboImprovemetType = new ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblVal = new System.Windows.Forms.Label();
@@ -313,7 +313,7 @@
         #endregion
 
         private System.Windows.Forms.Label lblImprovementType;
-        private System.Windows.Forms.ComboBox cboImprovemetType;
+        private ElasticComboBox cboImprovemetType;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Label lblVal;

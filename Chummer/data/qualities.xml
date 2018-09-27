@@ -11617,7 +11617,7 @@
       </bonus>
       <required>
         <oneof>
-          <ess grade="Betaware">1</ess>
+          <ess grade="Betaware,Deltaware,Gammaware">1</ess>
         </oneof>
       </required>
       <source>CF</source>

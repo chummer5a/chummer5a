@@ -74,21 +74,12 @@ namespace Chummer
             if (objXmlMentor != null)
             {
                 chkMentorMask.Visible = _blnEverShowMentorMask;
-                // Get the information for the selected Mentor.
-                lblAdvantage.Text = objXmlMentor.SelectSingleNode("altadvantage")?.Value ??
-                                    objXmlMentor.SelectSingleNode("advantage")?.Value ??
-                                    LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                lblAdvantageLabel.Visible = !string.IsNullOrEmpty(lblAdvantage.Text);
-                lblDisadvantage.Text = objXmlMentor.SelectSingleNode("altdisadvantage")?.Value ??
-                                       objXmlMentor.SelectSingleNode("disadvantage")?.Value ??
-                                       LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                lblDisadvantageLabel.Visible = !string.IsNullOrEmpty(lblDisadvantage.Text);
-
+                
                 cboChoice1.BeginUpdate();
                 cboChoice2.BeginUpdate();
                 cboChoice1.DataSource = null;
                 cboChoice2.DataSource = null;
-
+                
                 // If the Mentor offers a choice of bonuses, build the list and let the user select one.
                 XPathNavigator xmlChoices = objXmlMentor.SelectSingleNode("choices");
                 if (xmlChoices != null)
@@ -107,8 +98,7 @@ namespace Chummer
                                 lstChoice1.Add(new ListItem(strName, objChoice.SelectSingleNode("translate")?.Value ?? strName));
                         }
                     }
-
-                    lblChoice1.Visible = true;
+                    
                     cboChoice1.Visible = true;
                     cboChoice1.ValueMember = "Value";
                     cboChoice1.DisplayMember = "Name";
@@ -116,7 +106,6 @@ namespace Chummer
 
                     if (lstChoice2.Count > 0)
                     {
-                        lblChoice2.Visible = true;
                         cboChoice2.Visible = true;
                         cboChoice2.ValueMember = "Value";
                         cboChoice2.DisplayMember = "Name";
@@ -124,19 +113,28 @@ namespace Chummer
                     }
                     else
                     {
-                        lblChoice2.Visible = false;
                         cboChoice2.Visible = false;
                     }
                 }
                 else
                 {
-                    lblChoice1.Visible = false;
                     cboChoice1.Visible = false;
-                    lblChoice2.Visible = false;
                     cboChoice2.Visible = false;
                 }
                 cboChoice1.EndUpdate();
                 cboChoice2.EndUpdate();
+                lblChoice1.Visible = cboChoice1.Visible;
+                lblChoice2.Visible = cboChoice2.Visible;
+
+                // Get the information for the selected Mentor.
+                lblAdvantage.Text = objXmlMentor.SelectSingleNode("altadvantage")?.Value ??
+                                    objXmlMentor.SelectSingleNode("advantage")?.Value ??
+                                    LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                lblAdvantageLabel.Visible = !string.IsNullOrEmpty(lblAdvantage.Text);
+                lblDisadvantage.Text = objXmlMentor.SelectSingleNode("altdisadvantage")?.Value ??
+                                       objXmlMentor.SelectSingleNode("disadvantage")?.Value ??
+                                       LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                lblDisadvantageLabel.Visible = !string.IsNullOrEmpty(lblDisadvantage.Text);
 
                 string strSource = objXmlMentor.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strPage = objXmlMentor.SelectSingleNode("altpage")?.Value ?? objXmlMentor.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
@@ -155,14 +153,8 @@ namespace Chummer
                 lblDisadvantage.Text = string.Empty;
                 lblChoice1.Visible = false;
                 lblChoice2.Visible = false;
-                cboChoice1.BeginUpdate();
                 cboChoice1.Visible = false;
-                cboChoice1.DataSource = null;
-                cboChoice1.EndUpdate();
-                cboChoice2.BeginUpdate();
                 cboChoice2.Visible = false;
-                cboChoice2.DataSource = null;
-                cboChoice2.EndUpdate();
                 lblSourceLabel.Visible = false;
                 lblSource.Text = string.Empty;
                 lblSource.SetToolTip(string.Empty);

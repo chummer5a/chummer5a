@@ -29,7 +29,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.lblExport = new System.Windows.Forms.Label();
-            this.cboXSLT = new System.Windows.Forms.ComboBox();
+            this.cboXSLT = new ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.SaveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
@@ -125,7 +125,7 @@ namespace Chummer
         #endregion
 
         private System.Windows.Forms.Label lblExport;
-        private System.Windows.Forms.ComboBox cboXSLT;
+        private ElasticComboBox cboXSLT;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
         internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;

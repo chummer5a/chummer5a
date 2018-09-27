@@ -81,7 +81,6 @@ namespace Chummer
             }
 
             LoadCharacters();
-            MoveControls();
             UpdateCharacter(null);
         }
 
@@ -110,7 +109,6 @@ namespace Chummer
 
             SuspendLayout();
             LoadCharacters(false, false);
-            MoveControls();
             ResumeLayout();
         }
 
@@ -131,7 +129,6 @@ namespace Chummer
             {
                 LoadCharacters(false);
             }
-            MoveControls();
             ResumeLayout();
         }
 
@@ -609,25 +606,7 @@ namespace Chummer
         }
 
         #region Form Methods
-
-        private void MoveControls()
-        {
-            int intWidth = 0;
-            int intMargin = treCharacterList.Left;
-            foreach (TreeNode objNode in treCharacterList.Nodes)
-            {
-                intMargin = Math.Max(intMargin, objNode.Bounds.Left);
-                intWidth = Math.Max(intWidth, objNode.GetRightMostEdge());
-            }
-            intWidth += intMargin - treCharacterList.Left;
-
-            int intDifference = intWidth - treCharacterList.Width;
-            treCharacterList.Width = intWidth;
-            tabCharacterText.Left = treCharacterList.Width + 12;
-            tabCharacterText.Width -= intDifference;
-            tlpCharacterBlock.Left = tabCharacterText.Left;
-        }
-
+        
         private void treCharacterList_AfterSelect(object sender, TreeViewEventArgs e)
         {
             CharacterCache objCache = null;
@@ -756,10 +735,9 @@ namespace Chummer
 
         private void ProcessMugshotSizeMode()
         {
-            if (picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width)
-                picMugshot.SizeMode = PictureBoxSizeMode.CenterImage;
-            else
-                picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
+            picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
+                ? PictureBoxSizeMode.CenterImage
+                : PictureBoxSizeMode.Zoom;
         }
         #endregion
         #region Classes
@@ -839,7 +817,6 @@ namespace Chummer
                                 GlobalOptions.MostRecentlyUsedCharacters.Move(GlobalOptions.MostRecentlyUsedCharacters.IndexOf(lstSorted[i].Item2), i);
 
                             LoadCharacters(false, true, false);
-                            MoveControls();
                             ResumeLayout();
                             treCharacterList.SelectedNode = treCharacterList.FindNode(strSelectedTag);
                             break;
@@ -866,7 +843,6 @@ namespace Chummer
                             _blnSkipUpdate = false;
 
                             LoadCharacters(true, false, false);
-                            MoveControls();
                             ResumeLayout();
                             treCharacterList.SelectedNode = treCharacterList.FindNode(strSelectedTag);
                             break;

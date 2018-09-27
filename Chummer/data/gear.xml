@@ -8972,6 +8972,39 @@
     <!-- End Region -->
     <!-- Region Contracts and Upkeep -->
     <gear>
+      <id>f13d9739-aa52-4260-ad2f-0eacde7b9e13</id>
+      <name>Public Grid</name>
+      <category>Contracts/Upkeep</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>233</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <hide />
+    </gear>
+    <gear>
+      <id>9bb90566-c924-477e-b6ee-71d350548e9b</id>
+      <name>Local Grid</name>
+      <category>Contracts/Upkeep</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>234</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <hide />
+    </gear>
+    <gear>
+      <id>42d552fd-d939-42db-a88a-7cde7451dded</id>
+      <name>Global Grid</name>
+      <category>Contracts/Upkeep</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>234</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <hide />
+    </gear>
+    <gear>
       <id>20543d97-0eb6-4eda-b0d0-d18000a094ab</id>
       <name>Fab Sensor Upkeep (1 Month Advance Payment)</name>
       <category>Sensor Functions</category>

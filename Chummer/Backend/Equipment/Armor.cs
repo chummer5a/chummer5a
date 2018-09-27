@@ -1259,18 +1259,9 @@ namespace Chummer.Backend.Equipment
             {
                 string strReturn = TotalArmorCapacity;
 
-                // If an Armor Capacity is specified for the Armor, use that value. Otherwise, use the higher of 6 or (Highest Armor Rating * 1.5, round up).
+                // If an Armor Capacity is specified for the Armor, use that value.
                 if (string.IsNullOrEmpty(strReturn) || strReturn == "0")
-                {
-                    // This is only calculated if the Maximum Armor Modification rule is enabled.
-                    if (_objCharacter.Options.MaximumArmorModifications)
-                    {
-                        int intA = (3 * Convert.ToInt32(ArmorValue, GlobalOptions.CultureInfo) + 1) / 2;
-                        strReturn = Math.Max(intA, 6).ToString();
-                    }
-                    else
-                        strReturn = (0.0m).ToString("#,0.##", GlobalOptions.CultureInfo);
-                }
+                    strReturn = (0.0m).ToString("#,0.##", GlobalOptions.CultureInfo);
                 else if (strReturn == "Rating")
                     strReturn = Rating.ToString();
                 else if (decimal.TryParse(strReturn, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))

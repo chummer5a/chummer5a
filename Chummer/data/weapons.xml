@@ -1076,6 +1076,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Cyber Implants</spec>
       <avail>7R</avail>
       <cost>200</cost>
       <source>SR5</source>
@@ -8856,6 +8857,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Swords</spec>
       <avail>8</avail>
       <cost>450</cost>
       <source>CA</source>
@@ -9118,6 +9120,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Cyber Implants</spec>
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>True</cyberware>
@@ -9140,6 +9143,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Cyber Implants</spec>
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>True</cyberware>
@@ -9162,6 +9166,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Cyber Implants</spec>
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>True</cyberware>
@@ -9184,6 +9189,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Cyber Implants</spec>
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>True</cyberware>
@@ -11979,6 +11985,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Hammers</spec>
       <avail>14R</avail>
       <cost>5500</cost>
       <source>TCT</source>
@@ -12096,6 +12103,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Axes</spec>
       <avail>0</avail>
       <cost>300</cost>
       <source>SL</source>
@@ -12172,6 +12180,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Swords</spec>
       <avail>7R</avail>
       <cost>3000</cost>
       <source>SL</source>
@@ -12190,6 +12199,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Swords</spec>
       <avail>5R</avail>
       <cost>200</cost>
       <source>SL</source>
@@ -12208,6 +12218,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Swords</spec>
       <avail>12R</avail>
       <cost>2500</cost>
       <source>SL</source>
@@ -12226,6 +12237,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Hammers</spec>
       <avail>9</avail>
       <cost>1500</cost>
       <source>SL</source>

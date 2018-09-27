@@ -18776,7 +18776,7 @@
     </vehicle>
     <vehicle>
       <id>a88f58ad-f4e0-448a-ba5c-00cbdd0076f6</id>
-      <name>NeoNet Avenging Angel (Huge)</name>
+      <name>NeoNET Avenging Angel (Huge)</name>
      <translate>新网·复仇天使(巨型)</translate>
     </vehicle>
       <vehicle>
@@ -18816,7 +18816,7 @@
     </vehicle>
     <vehicle>
       <id>b448855b-57e7-435a-b523-174adb276674</id>
-      <name>NeoNet Juggernaut</name>
+      <name>NeoNET Juggernaut</name>
       <translate>新网·重装机甲</translate>
     </vehicle>
     <vehicle>
@@ -18966,7 +18966,7 @@
       </vehicle>
       <vehicle>
         <id>0ff86ef9-e35d-4f8f-bc64-0303f81f11c7</id>
-        <name>Neonet Prarie Dog (Small)</name>
+        <name>NeoNET Prarie Dog (Small)</name>
         <translate>新网•草原犬鼠（小型）</translate>
       </vehicle>
       <vehicle>

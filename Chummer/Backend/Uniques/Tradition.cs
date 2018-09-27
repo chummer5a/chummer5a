@@ -973,6 +973,8 @@ namespace Chummer.Backend.Uniques
                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                 }
             }
+
+            _objCharacter?.OnPropertyChanged(nameof(Character.MagicTradition));
         }
     }
 }

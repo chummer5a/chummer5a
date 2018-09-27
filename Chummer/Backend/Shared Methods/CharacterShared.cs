@@ -146,6 +146,7 @@ namespace Chummer
         /// </summary>
         protected void AutoSaveCharacter()
         {
+            Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
             string strAutosavePath = Path.Combine(Application.StartupPath, "saves", "autosave");
             if (!Directory.Exists(strAutosavePath))
@@ -170,7 +171,7 @@ namespace Chummer
                 strShowFileName = _objCharacter.CharacterName;
             string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
             _objCharacter.Save(strFilePath);
-            Cursor = Cursors.Default;
+            Cursor = objOldCursor;
             AutosaveStopWatch.Restart();
         }
 
@@ -867,228 +868,6 @@ namespace Chummer
                 }
                 else
                     objParentNode.Nodes.Add(objNode);
-            }
-        }
-
-        protected void RefreshLimitModifiers(TreeView treLimit, ContextMenuStrip cmsLimitModifier, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
-        {
-            string strSelectedId = (treLimit.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
-
-            TreeNode[] aobjLimitNodes = new TreeNode[(int)LimitType.NumLimitTypes];
-
-            if (notifyCollectionChangedEventArgs == null)
-            {
-                treLimit.Nodes.Clear();
-
-                // Add Limit Modifiers.
-                foreach (LimitModifier objLimitModifier in CharacterObject.LimitModifiers)
-                {
-                    int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
-                    TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
-                    if (!objParentNode.Nodes.ContainsKey(objLimitModifier.DisplayName))
-                    {
-                        objParentNode.Nodes.Add(objLimitModifier.CreateTreeNode(cmsLimitModifier));
-                    }
-                }
-
-                // Add Limit Modifiers from Improvements
-                foreach (Improvement objImprovement in CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveSource == Improvement.ImprovementSource.Custom))
-                {
-                    int intTargetLimit = -1;
-                    switch (objImprovement.ImproveType)
-                    {
-                        case Improvement.ImprovementType.LimitModifier:
-                            intTargetLimit = (int)Enum.Parse(typeof(LimitType), objImprovement.ImprovedName);
-                            break;
-                        case Improvement.ImprovementType.PhysicalLimit:
-                            intTargetLimit = (int)LimitType.Physical;
-                            break;
-                        case Improvement.ImprovementType.MentalLimit:
-                            intTargetLimit = (int)LimitType.Mental;
-                            break;
-                        case Improvement.ImprovementType.SocialLimit:
-                            intTargetLimit = (int)LimitType.Social;
-                            break;
-                    }
-                    if (intTargetLimit != -1)
-                    {
-                        TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
-                        string strName = objImprovement.UniqueName + ": ";
-                        if (objImprovement.Value > 0)
-                            strName += '+';
-                        strName += objImprovement.Value.ToString();
-                        if (!string.IsNullOrEmpty(objImprovement.Condition))
-                            strName += ", " + objImprovement.Condition;
-                        if (!objParentNode.Nodes.ContainsKey(strName))
-                        {
-                            TreeNode objNode = new TreeNode
-                            {
-                                Name = strName,
-                                Text = strName,
-                                Tag = objImprovement.SourceName,
-                                ContextMenuStrip = cmsLimitModifier,
-                                ForeColor = objImprovement.PreferredColor,
-                                ToolTipText = objImprovement.Notes.WordWrap(100)
-                            };
-                            if (string.IsNullOrEmpty(objImprovement.ImprovedName))
-                            {
-                                if (objImprovement.ImproveType == Improvement.ImprovementType.SocialLimit)
-                                    objImprovement.ImprovedName = "Social";
-                                else if (objImprovement.ImproveType == Improvement.ImprovementType.MentalLimit)
-                                    objImprovement.ImprovedName = "Mental";
-                                else
-                                    objImprovement.ImprovedName = "Physical";
-                            }
-
-                            objParentNode.Nodes.Add(objNode);
-                        }
-                    }
-                }
-
-                treLimit.SortCustom(strSelectedId);
-            }
-            else
-            {
-                aobjLimitNodes[0] = treLimit.FindNode("Node_Physical", false);
-                aobjLimitNodes[1] = treLimit.FindNode("Node_Mental", false);
-                aobjLimitNodes[2] = treLimit.FindNode("Node_Social", false);
-                aobjLimitNodes[3] = treLimit.FindNode("Node_Astral", false);
-
-                switch (notifyCollectionChangedEventArgs.Action)
-                {
-                    case NotifyCollectionChangedAction.Add:
-                        {
-                            foreach (LimitModifier objLimitModifier in notifyCollectionChangedEventArgs.NewItems)
-                            {
-                                int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
-                                TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
-                                TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                                if (!lstParentNodeChildren.ContainsKey(objLimitModifier.DisplayName))
-                                {
-                                    TreeNode objNode = objLimitModifier.CreateTreeNode(cmsLimitModifier);
-                                    int intNodesCount = lstParentNodeChildren.Count;
-                                    int intTargetIndex = 0;
-                                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
-                                    {
-                                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
-                                        {
-                                            break;
-                                        }
-                                    }
-                                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                                    objParentNode.Expand();
-                                    treLimit.SelectedNode = objNode;
-                                }
-                            }
-                        }
-                        break;
-                    case NotifyCollectionChangedAction.Remove:
-                        {
-                            foreach (LimitModifier objLimitModifier in notifyCollectionChangedEventArgs.OldItems)
-                            {
-                                TreeNode objNode = treLimit.FindNodeByTag(objLimitModifier);
-                                if (objNode != null)
-                                {
-                                    TreeNode objParent = objNode.Parent;
-                                    objNode.Remove();
-                                    if (objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                        objParent.Remove();
-                                }
-                            }
-                        }
-                        break;
-                    case NotifyCollectionChangedAction.Replace:
-                        {
-                            List<TreeNode> lstOldParentNodes = new List<TreeNode>();
-                            foreach (LimitModifier objLimitModifier in notifyCollectionChangedEventArgs.OldItems)
-                            {
-                                TreeNode objNode = treLimit.FindNodeByTag(objLimitModifier);
-                                if (objNode != null)
-                                {
-                                    lstOldParentNodes.Add(objNode.Parent);
-                                    objNode.Remove();
-                                }
-                            }
-                            foreach (LimitModifier objLimitModifier in notifyCollectionChangedEventArgs.NewItems)
-                            {
-                                int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
-                                TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
-                                TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                                if (!lstParentNodeChildren.ContainsKey(objLimitModifier.DisplayName))
-                                {
-                                    TreeNode objNode = objLimitModifier.CreateTreeNode(cmsLimitModifier);
-                                    int intNodesCount = lstParentNodeChildren.Count;
-                                    int intTargetIndex = 0;
-                                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
-                                    {
-                                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
-                                        {
-                                            break;
-                                        }
-                                    }
-                                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                                    objParentNode.Expand();
-                                    treLimit.SelectedNode = objNode;
-                                }
-                            }
-                            foreach (TreeNode objOldParentNode in lstOldParentNodes)
-                            {
-                                if (objOldParentNode.Level == 0 && objOldParentNode.Nodes.Count == 0)
-                                    objOldParentNode.Remove();
-                            }
-                        }
-                        break;
-                    case NotifyCollectionChangedAction.Reset:
-                        {
-                            RefreshLimitModifiers(treLimit, cmsLimitModifier);
-                        }
-                        break;
-                }
-            }
-
-            TreeNode GetLimitModifierParentNode(int intTargetLimit)
-            {
-                TreeNode objParentNode = aobjLimitNodes[intTargetLimit];
-                if (objParentNode == null)
-                {
-                    switch (intTargetLimit)
-                    {
-                        case 0:
-                            objParentNode = new TreeNode()
-                            {
-                                Tag = "Node_Physical",
-                                Text = LanguageManager.GetString("Node_Physical", GlobalOptions.Language)
-                            };
-                            treLimit.Nodes.Insert(0, objParentNode);
-                            break;
-                        case 1:
-                            objParentNode = new TreeNode()
-                            {
-                                Tag = "Node_Mental",
-                                Text = LanguageManager.GetString("Node_Mental", GlobalOptions.Language)
-                            };
-                            treLimit.Nodes.Insert(aobjLimitNodes[0] == null ? 0 : 1, objParentNode);
-                            break;
-                        case 2:
-                            objParentNode = new TreeNode()
-                            {
-                                Tag = "Node_Social",
-                                Text = LanguageManager.GetString("Node_Social", GlobalOptions.Language)
-                            };
-                            treLimit.Nodes.Insert((aobjLimitNodes[0] == null ? 0 : 1) + (aobjLimitNodes[1] == null ? 0 : 1), objParentNode);
-                            break;
-                        case 3:
-                            objParentNode = new TreeNode()
-                            {
-                                Tag = "Node_Astral",
-                                Text = LanguageManager.GetString("Node_Astral", GlobalOptions.Language)
-                            };
-                            treLimit.Nodes.Add(objParentNode);
-                            break;
-                    }
-                    objParentNode?.Expand();
-                }
-                return objParentNode;
             }
         }
 
@@ -5304,8 +5083,6 @@ namespace Chummer
 
                 // Sort the list of Custom Improvements in alphabetical order based on their Custom Name within each Group.
                 treImprovements.SortCustom(strSelectedId);
-
-                RefreshLimitModifiers(treLimit, cmsLimitModifier);
             }
             else
             {
@@ -7165,12 +6942,13 @@ namespace Chummer
                 }
             }
 
+            Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
             if (_objCharacter.Save())
             {
                 GlobalOptions.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);
                 IsDirty = false;
-                Cursor = Cursors.Default;
+                Cursor = objOldCursor;
 
                 // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
                 if (blnDoCreated)
@@ -7180,7 +6958,7 @@ namespace Chummer
 
                 return true;
             }
-            Cursor = Cursors.Default;
+            Cursor = objOldCursor;
             return false;
         }
 
