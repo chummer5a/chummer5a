@@ -20,6 +20,7 @@
 <chummer>
   <version>-494</version>
   <name>Français (fr-FR)</name>
+  <righttoleft>False</righttoleft>
   <strings>
 	<!-- Meta Strings -->
 	<string>

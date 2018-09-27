@@ -20,6 +20,7 @@
 <chummer>
   <version>-350</version>
   <name>English (en-US)</name>
+  <righttoleft>False</righttoleft>
   <strings>
 	  <!-- Region Meta Strings -->
 	<string>
