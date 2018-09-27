@@ -159,7 +159,6 @@ namespace Chummer
             lstNuyen.ListViewItemSorter = _lvwNuyenColumnSorter;
 
             SetTooltips();
-            MoveControls();
         }
 
         private void TreeView_MouseDown(object sender, MouseEventArgs e)
@@ -10123,12 +10122,16 @@ namespace Chummer
             UpdateQualityLevelValue(objQuality);
             if (objQuality == null)
             {
+                lblQualitySourceLabel.Visible = false;
+                lblQualityBPLabel.Visible = false;
                 lblQualitySource.Text = string.Empty;
                 lblQualitySource.SetToolTip(null);
                 lblQualityBP.Text = string.Empty;
             }
             else
             {
+                lblQualitySourceLabel.Visible = true;
+                lblQualityBPLabel.Visible = true;
                 objQuality.SetSourceDetail(lblQualitySource);
                 lblQualityBP.Text = (objQuality.BP * objQuality.Levels * CharacterObjectOptions.KarmaQuality).ToString() + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
             }
@@ -16081,135 +16084,6 @@ namespace Chummer
             // Improvements Tab.
             cmdImprovementsEnableAll.Left = chkImprovementActive.Left + chkImprovementActive.Width + 6;
             cmdImprovementsDisableAll.Left = cmdImprovementsEnableAll.Left + cmdImprovementsEnableAll.Width + 6;
-        }
-
-        private void MoveControls()
-        {
-            // Street Gear tab.
-
-            // Armor tab.
-            int intWidth = lblArmorValueLabel.Width;
-            intWidth = Math.Max(intWidth, lblArmorRatingLabel.Width);
-            intWidth = Math.Max(intWidth, lblArmorCapacityLabel.Width);
-            intWidth = Math.Max(intWidth, lblArmorSourceLabel.Width);
-
-            lblArmorValue.Left = lblArmorValueLabel.Left + intWidth + 6;
-            lblArmorRating.Left = lblArmorRatingLabel.Left + intWidth + 6;
-            lblArmorCapacity.Left = lblArmorCapacityLabel.Left + intWidth + 6;
-            lblArmorSource.Left = lblArmorSourceLabel.Left + intWidth + 6;
-
-            lblArmorAvailLabel.Left = lblArmorRating.Left + Math.Max(lblArmorRating.Width, 50) + 6;
-            lblArmorAvail.Left = lblArmorAvailLabel.Left + lblArmorAvailLabel.Width + 6;
-
-            lblArmorCostLabel.Left = lblArmorAvail.Left + Math.Max(lblArmorAvail.Width, 50) + 6;
-            lblArmorCost.Left = lblArmorCostLabel.Left + lblArmorCostLabel.Width + 6;
-
-            cmdArmorIncrease.Left = lblArmorValue.Left + 45;
-            cmdArmorDecrease.Left = cmdArmorIncrease.Left + cmdArmorIncrease.Width + 6;
-
-            lblArmorAttackLabel.Left = lblArmorDeviceRating.Left + lblArmorDeviceRating.Width + 20;
-            lblArmorAttack.Left = lblArmorAttackLabel.Left + lblArmorAttackLabel.Width + 6;
-            lblArmorSleazeLabel.Left = lblArmorAttack.Left + lblArmorAttack.Width + 20;
-            lblArmorSleaze.Left = lblArmorSleazeLabel.Left + lblArmorSleazeLabel.Width + 6;
-            lblArmorDataProcessingLabel.Left = lblArmorSleaze.Left + lblArmorSleaze.Width + 20;
-            lblArmorDataProcessing.Left = lblArmorDataProcessingLabel.Left + lblArmorDataProcessingLabel.Width + 6;
-            lblArmorFirewallLabel.Left = lblArmorDataProcessing.Left + lblArmorDataProcessing.Width + 20;
-            lblArmorFirewall.Left = lblArmorFirewallLabel.Left + lblArmorFirewallLabel.Width + 6;
-
-            // Weapons tab.
-            lblWeaponName.Left = lblWeaponNameLabel.Left + lblWeaponNameLabel.Width + 6;
-            lblWeaponCategory.Left = lblWeaponCategoryLabel.Left + lblWeaponCategoryLabel.Width + 6;
-
-            intWidth = Math.Max(lblWeaponNameLabel.Width, lblWeaponCategoryLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponDamageLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponReachLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponAvailLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponSlotsLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponSourceLabel.Width);
-
-            lblWeaponName.Left = lblWeaponNameLabel.Left + intWidth + 6;
-            lblWeaponCategory.Left = lblWeaponCategoryLabel.Left + intWidth + 6;
-            lblWeaponDamage.Left = lblWeaponDamageLabel.Left + intWidth + 6;
-            lblWeaponReach.Left = lblWeaponReachLabel.Left + intWidth + 6;
-            lblWeaponAvail.Left = lblWeaponAvailLabel.Left + intWidth + 6;
-            lblWeaponSlots.Left = lblWeaponSlotsLabel.Left + intWidth + 6;
-            lblWeaponSource.Left = lblWeaponSourceLabel.Left + intWidth + 6;
-
-            intWidth = Math.Max(lblWeaponRCLabel.Width, lblWeaponModeLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponCostLabel.Width);
-
-            lblWeaponRCLabel.Left = lblWeaponDamageLabel.Left + 176;
-            lblWeaponRC.Left = lblWeaponRCLabel.Left + intWidth + 6;
-            lblWeaponModeLabel.Left = lblWeaponDamageLabel.Left + 176;
-            lblWeaponMode.Left = lblWeaponModeLabel.Left + intWidth + 6;
-            lblWeaponCostLabel.Left = lblWeaponDamageLabel.Left + 176;
-            lblWeaponCost.Left = lblWeaponCostLabel.Left + intWidth + 6;
-            chkIncludedInWeapon.Left = lblWeaponDamageLabel.Left + 176;
-            lblWeaponAccuracy.Left = lblWeaponAccuracyLabel.Left + lblWeaponAccuracyLabel.Width + 6;
-
-            intWidth = Math.Max(lblWeaponAPLabel.Width, lblWeaponAmmoLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponConcealLabel.Width);
-
-            lblWeaponAPLabel.Left = lblWeaponRC.Left + 95;
-            lblWeaponAP.Left = lblWeaponAPLabel.Left + intWidth + 6;
-            lblWeaponAmmoLabel.Left = lblWeaponRC.Left + 95;
-            lblWeaponAmmo.Left = lblWeaponAmmoLabel.Left + intWidth + 6;
-            lblWeaponConcealLabel.Left = lblWeaponRC.Left + 95;
-            lblWeaponConceal.Left = lblWeaponConcealLabel.Left + intWidth + 6;
-            chkWeaponAccessoryInstalled.Left = lblWeaponRC.Left + 95;
-            cmdWeaponMoveToVehicle.Left = chkWeaponAccessoryInstalled.Left + chkWeaponAccessoryInstalled.Width + 6;
-
-            intWidth = Math.Max(lblWeaponAmmoRemainingLabel.Width, lblWeaponAmmoTypeLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponDicePoolLabel.Width);
-
-            lblWeaponAmmoRemaining.Left = lblWeaponAmmoRemainingLabel.Left + intWidth + 6;
-            cboWeaponAmmo.Left = lblWeaponAmmoTypeLabel.Left + intWidth + 6;
-            lblWeaponDicePool.Left = lblWeaponDicePoolLabel.Left + intWidth + 6;
-
-            cmdFireWeapon.Left = lblWeaponAmmoRemaining.Left + 123;
-            cmdReloadWeapon.Left = cmdFireWeapon.Left + cmdFireWeapon.Width + 6;
-            cmdWeaponBuyAmmo.Left = cmdReloadWeapon.Left + cmdReloadWeapon.Width + 6;
-
-            cmdRollWeapon.Left = lblWeaponDicePool.Left + lblWeaponDicePool.Width + 6;
-            cmdRollWeapon.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
-
-            lblWeaponAttackLabel.Left = lblWeaponDeviceRating.Left + lblWeaponDeviceRating.Width + 20;
-            cboWeaponGearAttack.Left = lblWeaponAttackLabel.Left + lblWeaponAttackLabel.Width + 6;
-            lblWeaponSleazeLabel.Left = cboWeaponGearAttack.Left + cboWeaponGearAttack.Width + 20;
-            cboWeaponGearSleaze.Left = lblWeaponSleazeLabel.Left + lblWeaponSleazeLabel.Width + 6;
-            lblWeaponDataProcessingLabel.Left = cboWeaponGearSleaze.Left + cboWeaponGearSleaze.Width + 20;
-            cboWeaponGearDataProcessing.Left = lblWeaponDataProcessingLabel.Left + lblWeaponDataProcessingLabel.Width + 6;
-            lblWeaponFirewallLabel.Left = cboWeaponGearDataProcessing.Left + cboWeaponGearDataProcessing.Width + 20;
-            cboWeaponGearFirewall.Left = lblWeaponFirewallLabel.Left + lblWeaponFirewallLabel.Width + 6;
-
-            // Gear tab.
-            intWidth = Math.Max(lblGearNameLabel.Width, lblGearCategoryLabel.Width);
-            intWidth = Math.Max(intWidth, lblGearRatingLabel.Width);
-            intWidth = Math.Max(intWidth, lblGearCapacityLabel.Width);
-            intWidth = Math.Max(intWidth, lblGearQtyLabel.Width);
-
-            chkCommlinks.Left = cmdAddLocation.Left + cmdAddLocation.Width + 16;
-
-            lblGearName.Left = lblGearNameLabel.Left + intWidth + 6;
-            lblGearCategory.Left = lblGearCategoryLabel.Left + intWidth + 6;
-            lblGearRating.Left = lblGearRatingLabel.Left + intWidth + 6;
-            lblGearCapacity.Left = lblGearCapacityLabel.Left + intWidth + 6;
-            lblGearQty.Left = lblGearQtyLabel.Left + intWidth + 6;
-
-            cmdGearIncreaseQty.Left = lblGearQty.Left + 57;
-            cmdGearReduceQty.Left = cmdGearIncreaseQty.Left + cmdGearIncreaseQty.Width + 6;
-            cmdGearSplitQty.Left = cmdGearReduceQty.Left + 79;
-            cmdGearMergeQty.Left = cmdGearSplitQty.Left + cmdGearSplitQty.Width + 6;
-            cmdGearMoveToVehicle.Left = cmdGearMergeQty.Left + 56;
-
-            intWidth = lblGearDamageLabel.Width;
-            lblGearDamage.Left = lblGearDamageLabel.Left + intWidth + 6;
-
-            intWidth = lblGearAPLabel.Width;
-            lblGearAP.Left = lblGearAPLabel.Left + intWidth + 6;
-
-            lblGearSource.Left = lblGearSourceLabel.Left + lblGearSourceLabel.Width + 6;
-            chkGearHomeNode.Left = chkGearEquipped.Left + chkGearEquipped.Width + 16;
         }
         
         /// <summary>
