@@ -3523,6 +3523,29 @@ namespace Chummer.Backend.Equipment
                 return SystemColors.WindowText;
             }
         }
+
+        public void SetupChildrenCyberwareCollectionChanged(bool blnAdd, TreeView treCyberware, ContextMenuStrip cmsCyberware = null, ContextMenuStrip cmsCyberwareGear = null)
+        {
+            if (blnAdd)
+            {
+                Children.AddTaggedCollectionChanged(treCyberware, (x, y) => this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, null, y));
+                Gear.AddTaggedCollectionChanged(treCyberware, (x, y) => this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, () => Children.Count, y));
+
+                foreach (Cyberware objChild in Children)
+                    objChild.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware, cmsCyberwareGear);
+                foreach (Gear objGear in Gear)
+                    objGear.SetupChildrenGearsCollectionChanged(true, treCyberware, cmsCyberwareGear);
+            }
+            else
+            {
+                Children.RemoveTaggedCollectionChanged(treCyberware);
+                Gear.RemoveTaggedCollectionChanged(treCyberware);
+                foreach (Cyberware objChild in Children)
+                    objChild.SetupChildrenCyberwareCollectionChanged(false, treCyberware);
+                foreach (Gear objGear in Gear)
+                    objGear.SetupChildrenGearsCollectionChanged(false, treCyberware);
+            }
+        }
         #endregion
         #endregion
 

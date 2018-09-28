@@ -52,6 +52,8 @@ namespace Chummer
         private MouseButtons _eDragButton = MouseButtons.None;
         private bool _blnDraggingGear;
         private StoryBuilder _objStoryBuilder;
+
+        public TreeView FociTree => treFoci;
         //private readonly Stopwatch PowerPropertyChanged_StopWatch = Stopwatch.StartNew();
         //private readonly Stopwatch SkillPropertyChanged_StopWatch = Stopwatch.StartNew();
 
@@ -7220,7 +7222,7 @@ namespace Chummer
                     // Find the selected piece of Gear.
                     if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
                     {
-                        if (!RefreshSingleFocusRating(treFoci, objGear, decimal.ToInt32(nudCyberwareRating.Value)))
+                        if (!objGear.RefreshSingleFocusRating(treFoci, decimal.ToInt32(nudCyberwareRating.Value)))
                         {
                             _blnSkipRefresh = true;
                             nudCyberwareRating.Value = objGear.Rating;
@@ -7544,7 +7546,7 @@ namespace Chummer
 
                 if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
                 {
-                    if (!RefreshSingleFocusRating(treFoci, objGear, decimal.ToInt32(nudGearRating.Value)))
+                    if (!objGear.RefreshSingleFocusRating(treFoci, decimal.ToInt32(nudGearRating.Value)))
                     {
                         _blnSkipRefresh = true;
                         nudGearRating.Value = objGear.Rating;
@@ -8125,7 +8127,7 @@ namespace Chummer
             {
                 if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
                 {
-                    if (!RefreshSingleFocusRating(treFoci, objGear, decimal.ToInt32(nudVehicleRating.Value)))
+                    if (!objGear.RefreshSingleFocusRating(treFoci, decimal.ToInt32(nudVehicleRating.Value)))
                     {
                         _blnSkipRefresh = true;
                         nudVehicleRating.Value = objGear.Rating;
@@ -8493,7 +8495,7 @@ namespace Chummer
             {
                 if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
                 {
-                    if (!RefreshSingleFocusRating(treFoci, objGear, decimal.ToInt32(nudArmorRating.Value)))
+                    if (!objGear.RefreshSingleFocusRating(treFoci, decimal.ToInt32(nudArmorRating.Value)))
                     {
                         _blnSkipRefresh = true;
                         nudArmorRating.Value = objGear.Rating;
@@ -12152,17 +12154,17 @@ namespace Chummer
                     int intDecimalPlaces = CharacterObjectOptions.NuyenDecimals;
                     if (intDecimalPlaces <= 0)
                     {
-                        nudGearQty.DecimalPlaces = 0;
-                        nudGearQty.Minimum = 1.0m;
+                        nudVehicleGearQty.DecimalPlaces = 0;
+                        nudVehicleGearQty.Minimum = 1.0m;
                     }
                     else
                     {
-                        nudGearQty.DecimalPlaces = intDecimalPlaces;
+                        nudVehicleGearQty.DecimalPlaces = intDecimalPlaces;
                         decimal decMinimum = 1.0m;
                         // Need a for loop instead of a power system to maintain exact precision
                         for (int i = 0; i < intDecimalPlaces; ++i)
                             decMinimum /= 10.0m;
-                        nudGearQty.Minimum = decMinimum;
+                        nudVehicleGearQty.Minimum = decMinimum;
                     }
                 }
                 else if (objGear.Category == "Currency")
@@ -14243,41 +14245,6 @@ namespace Chummer
             lblJudgeIntentionsLabel.SetToolTip(LanguageManager.GetString("Tip_OtherJudgeIntentions", GlobalOptions.Language));
             lblLiftCarryLabel.SetToolTip(LanguageManager.GetString("Tip_OtherLiftAndCarry", GlobalOptions.Language));
             lblMemoryLabel.SetToolTip(LanguageManager.GetString("Tip_OtherMemory", GlobalOptions.Language));
-
-            // Reposition controls based on their new sizes.
-            // Common Tab.
-            txtAlias.Left = lblAlias.Left + lblAlias.Width + 6;
-            txtAlias.Width = lblMetatypeLabel.Left - 6 - txtAlias.Left;
-            cmdDeleteQuality.Left = cmdAddQuality.Left + cmdAddQuality.Width + 6;
-            // Martial Arts Tab.
-            cmdDeleteMartialArt.Left = cmdAddMartialArt.Left + cmdAddMartialArt.Width + 6;
-            // Magician Tab.
-            cmdDeleteSpell.Left = cmdAddSpell.Left + cmdAddSpell.Width + 6;
-            // Technomancer Tab.
-            cmdDeleteComplexForm.Left = cmdAddComplexForm.Left + cmdAddComplexForm.Width + 6;
-            // Advanced Programs Tab.
-            cmdDeleteAIProgram.Left = cmdAddAIProgram.Left + cmdAddAIProgram.Width + 6;
-            // Critter Powers Tab.
-            cmdDeleteCritterPower.Left = cmdAddCritterPower.Left + cmdAddCritterPower.Width + 6;
-            // Cyberware Tab.
-            cmdAddBioware.Left = cmdAddCyberware.Left + cmdAddCyberware.Width + 6;
-            cmdDeleteCyberware.Left = cmdAddBioware.Left + cmdAddBioware.Width + 6;
-            // Lifestyle Tab.
-            cmdDeleteLifestyle.Left = cmdAddLifestyle.Left + cmdAddLifestyle.Width + 6;
-            // Armor Tab.
-            cmdDeleteArmor.Left = cmdAddArmor.Left + cmdAddArmor.Width + 6;
-            cmdAddArmorBundle.Left = cmdDeleteArmor.Left + cmdDeleteArmor.Width + 6;
-            cmdArmorEquipAll.Left = chkArmorEquipped.Left + chkArmorEquipped.Width + 6;
-            cmdArmorUnEquipAll.Left = cmdArmorEquipAll.Left + cmdArmorEquipAll.Width + 6;
-            // Weapons Tab.
-            cmdDeleteWeapon.Left = cmdAddWeapon.Left + cmdAddWeapon.Width + 6;
-            cmdAddWeaponLocation.Left = cmdDeleteWeapon.Left + cmdDeleteWeapon.Width + 6;
-            // Gear Tab.
-            cmdDeleteGear.Left = cmdAddGear.Left + cmdAddGear.Width + 6;
-            cmdAddLocation.Left = cmdDeleteGear.Left + cmdDeleteGear.Width + 6;
-            // Vehicle Tab.
-            cmdDeleteVehicle.Left = cmdAddVehicle.Left + cmdAddVehicle.Width + 6;
-            cmdAddVehicleLocation.Left = cmdDeleteVehicle.Left + cmdDeleteVehicle.Width + 6;
         }
 
         /// <summary>
