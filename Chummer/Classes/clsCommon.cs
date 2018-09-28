@@ -68,7 +68,13 @@ namespace Chummer
                 objReturn = s_ObjXPathNavigator.Evaluate(strXPath.TrimStart('+'));
                 blnIsSuccess = true;
             }
-            catch (Exception)
+            catch (ArgumentException)
+            {
+                Utils.BreakIfDebug();
+                objReturn = strXPath;
+                blnIsSuccess = false;
+            }
+            catch (XPathException)
             {
                 Utils.BreakIfDebug();
                 objReturn = strXPath;
@@ -92,7 +98,13 @@ namespace Chummer
                 objReturn = s_ObjXPathNavigator.Evaluate(objXPath);
                 blnIsSuccess = true;
             }
-            catch (Exception)
+            catch (ArgumentException)
+            {
+                Utils.BreakIfDebug();
+                objReturn = objXPath;
+                blnIsSuccess = false;
+            }
+            catch (XPathException)
             {
                 Utils.BreakIfDebug();
                 objReturn = objXPath;

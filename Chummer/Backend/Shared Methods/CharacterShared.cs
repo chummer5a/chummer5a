@@ -1076,7 +1076,7 @@ namespace Chummer
                         break;
                 }
 
-                Improvement.ImprovementSource source = CharacterObject.RESEnabled ? Improvement.ImprovementSource.Echo : Improvement.ImprovementSource.Metamagic;
+                Improvement.ImprovementSource objMetamagicSource = CharacterObject.RESEnabled ? Improvement.ImprovementSource.Echo : Improvement.ImprovementSource.Metamagic;
                 int grade = CharacterObject.RESEnabled ? CharacterObject.SubmersionGrade : CharacterObject.InitiateGrade;
                 // Update any Metamagic Improvements the character might have.
                 foreach (Metamagic objMetamagic in CharacterObject.Metamagics.Where(metamagic => metamagic.Bonus != null))
@@ -1084,8 +1084,8 @@ namespace Chummer
                     // If the Bonus contains "Rating", remove the existing Improvement and create new ones.
                     if (objMetamagic.Bonus.InnerXml.Contains("Rating"))
                     {
-                        ImprovementManager.RemoveImprovements(CharacterObject, source, objMetamagic.InternalId);
-                        ImprovementManager.CreateImprovements(CharacterObject, source, objMetamagic.InternalId, objMetamagic.Bonus, false, grade, objMetamagic.DisplayNameShort(GlobalOptions.Language));
+                        ImprovementManager.RemoveImprovements(CharacterObject, objMetamagicSource, objMetamagic.InternalId);
+                        ImprovementManager.CreateImprovements(CharacterObject, objMetamagicSource, objMetamagic.InternalId, objMetamagic.Bonus, false, grade, objMetamagic.DisplayNameShort(GlobalOptions.Language));
                     }
                 }
             }
@@ -1962,7 +1962,8 @@ namespace Chummer
                         foreach (Location objLocation in _objCharacter.WeaponLocations)
                         {
                             TreeNode nodLocation = treWeapons.FindNode(objLocation?.InternalId, false);
-                            if (nodLocation == null) continue;
+                            if (nodLocation == null)
+                                continue;
                             if (nodLocation.Nodes.Count > 0)
                             {
                                 if (nodRoot == null)
@@ -1981,7 +1982,7 @@ namespace Chummer
                                     nodRoot.Nodes.Add(nodWeapon);
                                 }
                             }
-                            objLocation.Remove(_objCharacter);
+                            objLocation?.Remove(_objCharacter);
                         }
                     }
                     break;
@@ -2096,7 +2097,6 @@ namespace Chummer
                 TreeNode objNode = objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
                 if (objNode == null)
                     return;
-                bool isExpanded = objNode.IsExpanded;
                 TreeNode nodParent = null;
                 if (objWeapon.Location != null)
                 {
@@ -2385,11 +2385,7 @@ namespace Chummer
                     {
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objNode = treArmor.FindNode(objLocation.InternalId, false);
-                            if (objNode == null)
-                            {
-                                objNode = treArmor.FindNodeByTag(objLocation);
-                            }
+                            TreeNode objNode = treArmor.FindNode(objLocation.InternalId, false) ?? treArmor.FindNodeByTag(objLocation);
                             if (objNode != null)
                             {
                                 objNode.Remove();
@@ -2422,7 +2418,7 @@ namespace Chummer
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
                             TreeNode objNode = treArmor.FindNode(objLocation.InternalId, false);
-                            if (objLocation != null)
+                            if (objNode != null)
                             {
                                 if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is Location objNewLocation)
                                 {
@@ -2440,7 +2436,7 @@ namespace Chummer
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
                             TreeNode objNode = treArmor.FindNode(objLocation.InternalId, false);
-                            if (objLocation != null)
+                            if (objNode != null)
                             {
                                 lstMoveNodes.Add(new Tuple<Location, TreeNode>(objLocation, objNode));
                                 objNode.Remove();
@@ -2484,7 +2480,7 @@ namespace Chummer
                                         nodRoot.Nodes.Add(nodArmor);
                                     }
                                 }
-                                objLocation.Remove(CharacterObject);
+                                objLocation?.Remove(CharacterObject);
                             }
                         }
                     }
@@ -3262,7 +3258,6 @@ namespace Chummer
                 TreeNode objNode = objGear.CreateTreeNode();
                 if (objNode == null)
                     return;
-                TreeNode nodParent = null;
                 if (nodRoot == null)
                 {
                     nodRoot = new TreeNode
@@ -3272,13 +3267,12 @@ namespace Chummer
                     };
                     treGear.Nodes.Insert(0, nodRoot);
                 }
-                nodParent = nodRoot;
 
                 if (intIndex >= 0)
-                    nodParent.Nodes.Insert(intIndex, objNode);
+                    nodRoot.Nodes.Insert(intIndex, objNode);
                 else
-                    nodParent.Nodes.Add(objNode);
-                nodParent.Expand();
+                    nodRoot.Nodes.Add(objNode);
+                nodRoot.Expand();
                 if (blnSingleAdd)
                     treGear.SelectedNode = objNode;
             }
@@ -3777,8 +3771,8 @@ namespace Chummer
                             {
                                 if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is Location objNewLocation)
                                 {
-                                    objNode.Tag = objLocation;
-                                    objNode.Text = objLocation.DisplayName(GlobalOptions.Language);
+                                    objNode.Tag = objNewLocation;
+                                    objNode.Text = objNewLocation.DisplayName(GlobalOptions.Language);
                                 }
                                 intNewItemsIndex += 1;
                             }
@@ -6375,6 +6369,8 @@ namespace Chummer
 
         protected void EnemyChanged(object sender, TextEventArgs e)
         {
+            ContactControl objSenderControl = sender as ContactControl;
+            
             // Handle the ConnectionRatingChanged Event for the ContactControl object.
             int intNegativeQualityBP = 0;
             // Calculate the BP used for Negative Qualities.
@@ -6408,17 +6404,21 @@ namespace Chummer
             if (intBPUsed < (intEnemyMax * -1) && !CharacterObject.IgnoreRules)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_EnemyLimit", GlobalOptions.Language).Replace("{0}", strEnemyPoints), LanguageManager.GetString("MessageTitle_EnemyLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                Contact objSenderContact = ((ContactControl)sender).ContactObject;
-                int intTotal = (intEnemyMax * -1) - intBPUsed;
-                switch (e.Text)
+                Contact objSenderContact = objSenderControl?.ContactObject;
+                if (objSenderContact != null)
                 {
-                    case "Connection":
-                        objSenderContact.Connection -= intTotal;
-                        break;
-                    case "Loyalty":
-                        objSenderContact.Loyalty -= intTotal;
-                        break;
+                    int intTotal = (intEnemyMax * -1) - intBPUsed;
+                    switch (e.Text)
+                    {
+                        case "Connection":
+                            objSenderContact.Connection -= intTotal;
+                            break;
+                        case "Loyalty":
+                            objSenderContact.Loyalty -= intTotal;
+                            break;
+                    }
                 }
+
                 return;
             }
 
@@ -6427,17 +6427,20 @@ namespace Chummer
                 if (intBPUsed + intNegativeQualityBP < (intQualityMax * -1) && !CharacterObject.IgnoreRules)
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language).Replace("{0}", strQualityPoints), LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    Contact objSenderContact = ((ContactControl)sender).ContactObject;
-                    switch (e.Text)
+                    Contact objSenderContact = objSenderControl?.ContactObject;
+                    if (objSenderContact != null)
                     {
-                        case "Connection":
-                            objSenderContact.Connection -= (((intQualityMax * -1) - (intBPUsed + intNegativeQualityBP)) /
-                                                            CharacterObjectOptions.KarmaQuality);
-                            break;
-                        case "Loyalty":
-                            objSenderContact.Loyalty -= (((intQualityMax * -1) - (intBPUsed + intNegativeQualityBP)) /
-                                                         CharacterObjectOptions.KarmaQuality);
-                            break;
+                        switch (e.Text)
+                        {
+                            case "Connection":
+                                objSenderContact.Connection -= (((intQualityMax * -1) - (intBPUsed + intNegativeQualityBP)) /
+                                                                CharacterObjectOptions.KarmaQuality);
+                                break;
+                            case "Loyalty":
+                                objSenderContact.Loyalty -= (((intQualityMax * -1) - (intBPUsed + intNegativeQualityBP)) /
+                                                             CharacterObjectOptions.KarmaQuality);
+                                break;
+                        }
                     }
                 }
             }

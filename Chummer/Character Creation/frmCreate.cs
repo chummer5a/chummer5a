@@ -1893,7 +1893,7 @@ namespace Chummer
                 {
                     foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
                     {
-                        if (intCyberwaresCount % 2 == 0)
+                        if ((intCyberwaresCount & 1) == 0)
                         {
                             if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" && objCyberware.Forced != "Left")
                                 ImprovementManager.ForcedValue = objCyberware.Forced;
@@ -7220,7 +7220,7 @@ namespace Chummer
                             {
                                 ImprovementManager.RemoveImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair");
                                 // Go down the list and create pair bonuses for every second item
-                                if (intCyberwaresCount > 0 && intCyberwaresCount % 2 == 0)
+                                if (intCyberwaresCount > 0 && (intCyberwaresCount & 1) == 0)
                                 {
                                     ImprovementManager.CreateImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                                 }
@@ -11078,19 +11078,19 @@ namespace Chummer
             }
             if (CharacterObject.MetatypeCategory == "Shapeshifter")
             {
-                List<CharacterAttrib> staging = new List<CharacterAttrib>();
+                List<CharacterAttrib> lstAttributesToAdd = new List<CharacterAttrib>();
                 XmlDocument xmlDoc = XmlManager.Load("metatypes.xml");
-                string s = $"/chummer/metatypes/metatype[name = \"{CharacterObject.Metatype}\"]/metavariants/metavariant[name = \"{CharacterObject.Metavariant}\"]";
-                foreach (CharacterAttrib att in CharacterObject.AttributeSection.AttributeList)
+                string strMetavariantXPath = $"/chummer/metatypes/metatype[name = \"{CharacterObject.Metatype}\"]/metavariants/metavariant[name = \"{CharacterObject.Metavariant}\"]";
+                foreach (CharacterAttrib objOldAttribute in CharacterObject.AttributeSection.AttributeList)
                 {
-                    CharacterAttrib newAtt = new CharacterAttrib(CharacterObject, att.Abbrev,
+                    CharacterAttrib objNewAttribute = new CharacterAttrib(CharacterObject, objOldAttribute.Abbrev,
                         CharacterAttrib.AttributeCategory.Shapeshifter);
-                    AttributeSection.CopyAttribute(att, newAtt, s, xmlDoc);
-                    staging.Add(newAtt);
+                    AttributeSection.CopyAttribute(objOldAttribute, objNewAttribute, strMetavariantXPath, xmlDoc);
+                    lstAttributesToAdd.Add(objNewAttribute);
                 }
-                foreach (CharacterAttrib att in staging)
+                foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
                 {
-                    CharacterObject.AttributeSection.AttributeList.Add(att);
+                    CharacterObject.AttributeSection.AttributeList.Add(objAttributeToAdd);
                 }
             }
 
@@ -12272,7 +12272,7 @@ namespace Chummer
             {
                 _blnSkipRefresh = true;
                 lblDrugName.Text = objDrug.Name;
-                lblDrugAvail.Text = objDrug.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language).ToString();
+                lblDrugAvail.Text = objDrug.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblDrugGrade.Text = objDrug.Grade;
                 lblDrugCost.Text = objDrug.Cost.ToString(CharacterObject.Options.NuyenFormat) + '¥';
                 lblDrugCategory.Text = objDrug.Category;

@@ -2965,13 +2965,10 @@ namespace Chummer.Backend.Equipment
 
             if ((lstNamesOfChangedProperties?.Count > 0) != true)
                 return;
-            
-            if (PropertyChanged != null)
+
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
-                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
-                {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-                }
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
         }
     }
