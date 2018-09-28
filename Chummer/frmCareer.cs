@@ -16102,11 +16102,6 @@ namespace Chummer
                 }
             }
         }
-        
-        private void AdjustBurnStreetCredButtonLocation(object sender, EventArgs e)
-        {
-            cmdBurnStreetCred.Left = lblStreetCredTotal.Left + lblStreetCredTotal.Width + 6;
-        }
 
         /// <summary>
         /// Copy the Improvements from a piece of Armor on one character to another.
@@ -16380,27 +16375,6 @@ namespace Chummer
             IsDirty = true;
         }
 #endregion
-
-        private void cmdAddLimitModifier_Click(object sender, EventArgs e)
-        {
-            frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(null, "Physical", "Mental", "Social");
-            frmPickLimitModifier.ShowDialog(this);
-
-            if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
-                return;
-
-            // Create the new limit modifier.
-            LimitModifier objLimitModifier = new LimitModifier(CharacterObject);
-            objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition);
-            if (objLimitModifier.InternalId.IsEmptyGuid())
-                return;
-
-            CharacterObject.LimitModifiers.Add(objLimitModifier);
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
 
         private void cmdIncreasePowerPoints_Click(object sender, EventArgs e)
         {

@@ -3467,14 +3467,14 @@ namespace Chummer
         private void cmdAddGear_Click(object sender, EventArgs e)
         {
             bool blnAddAgain;
-            string id = string.Empty;
+            string strSelectedId = string.Empty;
             if (treGear.SelectedNode?.Tag is Location objNode)
             {
-                id = objNode.InternalId;
+                strSelectedId = objNode.InternalId;
             }
             do
             {
-                blnAddAgain = PickGear(id);
+                blnAddAgain = PickGear(strSelectedId);
             }
             while (blnAddAgain);
         }
@@ -4283,27 +4283,6 @@ namespace Chummer
                     IsDirty = true;
                 }
             }
-        }
-
-        private void cmdAddLimitModifier_Click(object sender, EventArgs e)
-        {
-            frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(null, "Physical", "Mental", "Social");
-            frmPickLimitModifier.ShowDialog(this);
-
-            if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
-                return;
-
-            // Create the new limit modifier.
-            LimitModifier objLimitModifier = new LimitModifier(CharacterObject);
-            objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition);
-            if (objLimitModifier.InternalId.IsEmptyGuid())
-                return;
-
-            CharacterObject.LimitModifiers.Add(objLimitModifier);
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private void cmdAddLocation_Click(object sender, EventArgs e)
@@ -15281,17 +15260,6 @@ namespace Chummer
             do
             {
                 blnAddAgain = AddWeapon(objLocation);
-            }
-            while (blnAddAgain);
-        }
-
-        private void tsGearLocationAddGear_Click(object sender, EventArgs e)
-        {
-            if (!(treGear.SelectedNode?.Tag is IHasInternalId objSelectedId)) return;
-            bool blnAddAgain;
-            do
-            {
-                blnAddAgain = PickGear(objSelectedId.InternalId);
             }
             while (blnAddAgain);
         }
