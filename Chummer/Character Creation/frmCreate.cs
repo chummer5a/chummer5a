@@ -79,6 +79,8 @@ namespace Chummer
 
             tabPowerUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             tabSkillUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
+            lmtControl.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
+            lmtControl.MakeDirty += MakeDirty;
 
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             ContextMenuStrip[] lstCMSToTranslate = {
