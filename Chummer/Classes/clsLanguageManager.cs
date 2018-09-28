@@ -282,7 +282,14 @@ namespace Chummer
             // Translatable items are identified by having a value in their Tag attribute. The contents of Tag is the string to lookup in the language list.
             foreach (Control objChild in objParent.Controls)
             {
-                objChild.RightToLeft = eIntoRightToLeft;
+                try
+                {
+                    objChild.RightToLeft = eIntoRightToLeft;
+                }
+                catch (NotSupportedException)
+                {
+                    Utils.BreakIfDebug();
+                }
 
                 if (objChild is Label || objChild is Button || objChild is CheckBox)
                 {
