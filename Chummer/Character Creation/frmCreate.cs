@@ -11574,7 +11574,6 @@ namespace Chummer
             _blnSkipRefresh = true;
             if (treLifestyles.SelectedNode == null || treLifestyles.SelectedNode.Level <= 0)
             {
-                tblLifestyleDetails.Visible = false;
                 cmdDeleteLifestyle.Enabled = false;
                 lblLifestyleCost.Text = string.Empty;
                 lblLifestyleTotalCost.Text = string.Empty;
@@ -11594,7 +11593,6 @@ namespace Chummer
                 _blnSkipRefresh = false;
                 return;
             }
-            tblLifestyleDetails.Visible = true;
             cmdDeleteLifestyle.Enabled = true;
             nudLifestyleMonths.Visible = true;
 

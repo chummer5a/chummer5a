@@ -15058,8 +15058,6 @@ namespace Chummer
             _blnSkipRefresh = true;
             if (treLifestyles.SelectedNode == null || treLifestyles.SelectedNode.Level == 0)
             {
-                tblLifestyleDetails.Visible = false;
-
                 _blnSkipRefresh = false;
                 return;
             }
@@ -15071,7 +15069,6 @@ namespace Chummer
                 return;
             }
 
-            tblLifestyleDetails.Visible = true;
             cmdIncreaseLifestyleMonths.Visible = true;
             cmdDecreaseLifestyleMonths.Visible = true;
 
