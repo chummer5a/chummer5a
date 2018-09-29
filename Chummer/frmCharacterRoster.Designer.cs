@@ -64,7 +64,7 @@ namespace Chummer
             this.tsCloseOpenCharacter = new System.Windows.Forms.ToolStripMenuItem();
             this.lblSettings = new System.Windows.Forms.Label();
             this.lblSettingsLabel = new System.Windows.Forms.Label();
-            this.tlpCharacterBlock = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpCharacterBlock = new Chummer.BufferedTableLayoutPanel();
             this.picMugshot = new System.Windows.Forms.PictureBox();
             this.tabCharacterText.SuspendLayout();
             this.panCharacterBio.SuspendLayout();
@@ -573,7 +573,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsSort;
         private System.Windows.Forms.ToolStripMenuItem tsDelete;
         private System.Windows.Forms.ToolStripMenuItem tsCloseOpenCharacter;
-        private System.Windows.Forms.TableLayoutPanel tlpCharacterBlock;
+        private Chummer.BufferedTableLayoutPanel tlpCharacterBlock;
         private System.Windows.Forms.Label lblSettings;
         private System.Windows.Forms.Label lblSettingsLabel;
         private System.Windows.Forms.PictureBox picMugshot;

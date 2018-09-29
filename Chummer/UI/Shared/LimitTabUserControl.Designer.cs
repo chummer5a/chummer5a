@@ -33,8 +33,8 @@ namespace Chummer.UI.Shared
             this.flowButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddLimitModifier = new System.Windows.Forms.Button();
             this.cmdDeleteLimitModifier = new System.Windows.Forms.Button();
-            this.tlpParent = new System.Windows.Forms.TableLayoutPanel();
-            this.tableDetails = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpParent = new Chummer.BufferedTableLayoutPanel();
+            this.tableDetails = new Chummer.BufferedTableLayoutPanel();
             this.lblMentalLimitLabel = new System.Windows.Forms.Label();
             this.lblSocialLimitLabel = new System.Windows.Forms.Label();
             this.lblPhysicalLimitLabel = new System.Windows.Forms.Label();
@@ -288,8 +288,8 @@ namespace Chummer.UI.Shared
         private System.Windows.Forms.FlowLayoutPanel flowButtons;
         private System.Windows.Forms.Button cmdAddLimitModifier;
         private System.Windows.Forms.Button cmdDeleteLimitModifier;
-        private System.Windows.Forms.TableLayoutPanel tlpParent;
-        private System.Windows.Forms.TableLayoutPanel tableDetails;
+        private Chummer.BufferedTableLayoutPanel tlpParent;
+        private Chummer.BufferedTableLayoutPanel tableDetails;
         private System.Windows.Forms.Label lblMentalLimitLabel;
         private System.Windows.Forms.Label lblSocialLimitLabel;
         private System.Windows.Forms.Label lblPhysicalLimitLabel;

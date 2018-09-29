@@ -88,7 +88,7 @@ namespace Chummer
             this.chkUnarmedSkillImprovements = new System.Windows.Forms.CheckBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabGlobal = new System.Windows.Forms.TabPage();
-            this.tlpGlobal = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpGlobal = new Chummer.BufferedTableLayoutPanel();
             this.imgSheetLanguageFlag = new System.Windows.Forms.PictureBox();
             this.chkSearchInCategoryOnly = new System.Windows.Forms.CheckBox();
             this.cmdPDFAppPath = new System.Windows.Forms.Button();
@@ -111,7 +111,7 @@ namespace Chummer
             this.cboPDFParameters = new Chummer.ElasticComboBox();
             this.txtPDFAppPath = new System.Windows.Forms.TextBox();
             this.grpSelectedSourcebook = new System.Windows.Forms.GroupBox();
-            this.tlpSelectedSourcebook = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpSelectedSourcebook = new Chummer.BufferedTableLayoutPanel();
             this.txtPDFLocation = new System.Windows.Forms.TextBox();
             this.lblPDFLocation = new System.Windows.Forms.Label();
             this.cmdPDFLocation = new System.Windows.Forms.Button();
@@ -133,14 +133,14 @@ namespace Chummer
             this.chkCreateBackupOnCareer = new System.Windows.Forms.CheckBox();
             this.chkPrintToFileFirst = new System.Windows.Forms.CheckBox();
             this.grpCharacterDefaults = new System.Windows.Forms.GroupBox();
-            this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel7 = new Chummer.BufferedTableLayoutPanel();
             this.cboBuildMethod = new Chummer.ElasticComboBox();
             this.cboDefaultGameplayOption = new System.Windows.Forms.ComboBox();
             this.lblEditSourcebookInfo = new System.Windows.Forms.Label();
             this.lstGlobalSourcebookInfos = new System.Windows.Forms.ListBox();
             this.imgLanguageFlag = new System.Windows.Forms.PictureBox();
             this.tabCharacterOptions = new System.Windows.Forms.TabPage();
-            this.tlpCharacterOptions = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpCharacterOptions = new Chummer.BufferedTableLayoutPanel();
             this.treSourcebook = new System.Windows.Forms.TreeView();
             this.chkPrintNotes = new System.Windows.Forms.CheckBox();
             this.lblSourcebooksToUse = new System.Windows.Forms.Label();
@@ -165,7 +165,7 @@ namespace Chummer
             this.cboLimbCount = new Chummer.ElasticComboBox();
             this.cmdEnableSourcebooks = new System.Windows.Forms.Button();
             this.tabKarmaCosts = new System.Windows.Forms.TabPage();
-            this.tlpKarmaCosts = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpKarmaCosts = new Chummer.BufferedTableLayoutPanel();
             this.cmdRestoreDefaultsKarma = new System.Windows.Forms.Button();
             this.nudKarmaMysticAdeptPowerPoint = new System.Windows.Forms.NumericUpDown();
             this.lblKarmaMysticAdeptPowerPoint = new System.Windows.Forms.Label();
@@ -236,7 +236,7 @@ namespace Chummer
             this.lblNuyenPerBP = new System.Windows.Forms.Label();
             this.nudNuyenPerBP = new System.Windows.Forms.NumericUpDown();
             this.tabOptionalRules = new System.Windows.Forms.TabPage();
-            this.tlpOptionalRules = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpOptionalRules = new Chummer.BufferedTableLayoutPanel();
             this.cmdDecreaseCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
             this.cmdIncreaseCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
             this.lblCustomDataDirectoriesLabel = new System.Windows.Forms.Label();
@@ -245,7 +245,7 @@ namespace Chummer
             this.cmdRenameCustomDataDirectory = new System.Windows.Forms.Button();
             this.cmdRemoveCustomDirectory = new System.Windows.Forms.Button();
             this.tabHouseRules = new System.Windows.Forms.TabPage();
-            this.tlpHouseRules = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpHouseRules = new Chummer.BufferedTableLayoutPanel();
             this.chkNoArmorEncumbrance = new System.Windows.Forms.CheckBox();
             this.chkIgnoreArt = new System.Windows.Forms.CheckBox();
             this.chkExceedNegativeQualitiesLimit = new System.Windows.Forms.CheckBox();
@@ -290,7 +290,7 @@ namespace Chummer
             this.lblSettingName = new System.Windows.Forms.Label();
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.cboSetting = new Chummer.ElasticComboBox();
-            this.tlpOptions = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpOptions = new Chummer.BufferedTableLayoutPanel();
             this.flpOKCancel = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdCancel = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
@@ -4628,24 +4628,24 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkNoArmorEncumbrance;
         private System.Windows.Forms.NumericUpDown nudKarmaMysticAdeptPowerPoint;
         private System.Windows.Forms.Label lblKarmaMysticAdeptPowerPoint;
-        private System.Windows.Forms.TableLayoutPanel tlpOptions;
+        private Chummer.BufferedTableLayoutPanel tlpOptions;
         private System.Windows.Forms.FlowLayoutPanel flpOKCancel;
         private System.Windows.Forms.Button cmdCancel;
-        private System.Windows.Forms.TableLayoutPanel tlpKarmaCosts;
-        private System.Windows.Forms.TableLayoutPanel tlpHouseRules;
+        private Chummer.BufferedTableLayoutPanel tlpKarmaCosts;
+        private Chummer.BufferedTableLayoutPanel tlpHouseRules;
         private System.Windows.Forms.CheckBox chkAllowSkillRegrouping;
         private System.Windows.Forms.CheckBox chkExtendAnyDetectionSpell;
         private System.Windows.Forms.CheckBox chkMoreLethalGameplay;
         private System.Windows.Forms.NumericUpDown nudMetatypeCostsKarmaMultiplier;
         private System.Windows.Forms.Label lblMetatypeCostsKarmaMultiplierLabel;
-        private System.Windows.Forms.TableLayoutPanel tlpOptionalRules;
+        private Chummer.BufferedTableLayoutPanel tlpOptionalRules;
         private System.Windows.Forms.CheckBox chkSpecialKarmaCost;
         private System.Windows.Forms.TabPage tabGitHubIssues;
         private System.Windows.Forms.Button cmdUploadPastebin;
         private System.Windows.Forms.Label lblNuyenPerBP;
         private System.Windows.Forms.NumericUpDown nudNuyenPerBP;
         private System.Windows.Forms.TabPage tabGlobal;
-        private System.Windows.Forms.TableLayoutPanel tlpGlobal;
+        private Chummer.BufferedTableLayoutPanel tlpGlobal;
         private System.Windows.Forms.CheckBox chkSearchInCategoryOnly;
         private System.Windows.Forms.Button cmdPDFAppPath;
         private System.Windows.Forms.Label lblLanguage;
@@ -4683,13 +4683,13 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkPreferNightlyBuilds;
         private System.Windows.Forms.Label lblCharacterRosterLabel;
         private System.Windows.Forms.GroupBox grpCharacterDefaults;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel7;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel7;
         private ElasticComboBox cboBuildMethod;
         private System.Windows.Forms.TextBox txtCharacterRosterPath;
         private System.Windows.Forms.Button cmdCharacterRoster;
         private System.Windows.Forms.CheckBox chkCreateBackupOnCareer;
         private System.Windows.Forms.CheckBox chkPrintToFileFirst;
-        private System.Windows.Forms.TableLayoutPanel tlpCharacterOptions;
+        private Chummer.BufferedTableLayoutPanel tlpCharacterOptions;
         private System.Windows.Forms.TreeView treSourcebook;
         private System.Windows.Forms.CheckBox chkPrintNotes;
         private System.Windows.Forms.Label lblSourcebooksToUse;
@@ -4718,7 +4718,7 @@ namespace Chummer
         private System.Windows.Forms.ComboBox cboDefaultGameplayOption;
         private System.Windows.Forms.PictureBox imgLanguageFlag;
         private System.Windows.Forms.PictureBox imgSheetLanguageFlag;
-        private System.Windows.Forms.TableLayoutPanel tlpSelectedSourcebook;
+        private Chummer.BufferedTableLayoutPanel tlpSelectedSourcebook;
         private System.Windows.Forms.FlowLayoutPanel flpPDFOffset;
     }
 }

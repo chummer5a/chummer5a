@@ -44,7 +44,7 @@ namespace Chummer
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.nudRoommates = new System.Windows.Forms.NumericUpDown();
             this.lblRoommates = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).BeginInit();
@@ -354,7 +354,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.NumericUpDown nudRoommates;
         private System.Windows.Forms.Label lblRoommates;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

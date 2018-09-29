@@ -42,7 +42,7 @@ namespace Chummer
             this.lblDurationLabel = new System.Windows.Forms.Label();
             this.lblFV = new System.Windows.Forms.Label();
             this.lblFVLabel = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -305,7 +305,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblDurationLabel;
         private System.Windows.Forms.Label lblFV;
         private System.Windows.Forms.Label lblFVLabel;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

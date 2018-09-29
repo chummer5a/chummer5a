@@ -63,8 +63,8 @@ namespace Chummer
             this.lblType = new System.Windows.Forms.Label();
             this.lblPreferredPayment = new System.Windows.Forms.Label();
             this.lblHobbiesVice = new System.Windows.Forms.Label();
-            this.tlpStatBlock = new System.Windows.Forms.TableLayoutPanel();
-            this.tlpStatHeader = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpStatBlock = new Chummer.BufferedTableLayoutPanel();
+            this.tlpStatHeader = new Chummer.BufferedTableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudConnection)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLoyalty)).BeginInit();
             this.cmsContact.SuspendLayout();
@@ -609,7 +609,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblType;
         private System.Windows.Forms.Label lblPreferredPayment;
         private System.Windows.Forms.Label lblHobbiesVice;
-        private System.Windows.Forms.TableLayoutPanel tlpStatBlock;
-        private System.Windows.Forms.TableLayoutPanel tlpStatHeader;
+        private Chummer.BufferedTableLayoutPanel tlpStatBlock;
+        private Chummer.BufferedTableLayoutPanel tlpStatHeader;
     }
 }

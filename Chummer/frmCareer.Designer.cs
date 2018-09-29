@@ -194,7 +194,7 @@ namespace Chummer
             this.lblArmor = new Chummer.LabelWithToolTip();
             this.tabInfo = new System.Windows.Forms.TabControl();
             this.tabOtherInfo = new System.Windows.Forms.TabPage();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel();
             this.lblFlyLabel = new System.Windows.Forms.Label();
             this.lblFly = new System.Windows.Forms.Label();
             this.lblSwimLabel = new System.Windows.Forms.Label();
@@ -217,7 +217,7 @@ namespace Chummer
             this.lblRemainingNuyen = new System.Windows.Forms.Label();
             this.lblESSMax = new System.Windows.Forms.Label();
             this.tabConditionMonitor = new System.Windows.Forms.TabPage();
-            this.tblCMTab = new System.Windows.Forms.TableLayoutPanel();
+            this.tblCMTab = new Chummer.BufferedTableLayoutPanel();
             this.grpCMStun = new System.Windows.Forms.GroupBox();
             this.panStunCM = new System.Windows.Forms.FlowLayoutPanel();
             this.chkStunCM1 = new System.Windows.Forms.CheckBox();
@@ -277,7 +277,7 @@ namespace Chummer
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblEDGInfo = new System.Windows.Forms.Label();
             this.tabDefences = new System.Windows.Forms.TabPage();
-            this.tlpSpellDefense = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpSpellDefense = new Chummer.BufferedTableLayoutPanel();
             this.nudCounterspellingDice = new System.Windows.Forms.NumericUpDown();
             this.lblSpellDefenceIndirectDodge = new Chummer.LabelWithToolTip();
             this.lblSpellDefenceIndirectSoak = new Chummer.LabelWithToolTip();
@@ -373,12 +373,12 @@ namespace Chummer
             this.splitMain = new System.Windows.Forms.SplitContainer();
             this.tabCharacterTabs = new System.Windows.Forms.TabControl();
             this.tabCommon = new System.Windows.Forms.TabPage();
-            this.tlpCommon = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpCommon = new Chummer.BufferedTableLayoutPanel();
             this.cboAttributeCategory = new Chummer.ElasticComboBox();
-            this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel8 = new Chummer.BufferedTableLayoutPanel();
             this.treQualities = new System.Windows.Forms.TreeView();
             this.nudQualityLevel = new System.Windows.Forms.NumericUpDown();
-            this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel9 = new Chummer.BufferedTableLayoutPanel();
             this.lblQualitySource = new System.Windows.Forms.Label();
             this.lblQualityBP = new System.Windows.Forms.Label();
             this.lblQualitySourceLabel = new System.Windows.Forms.Label();
@@ -403,7 +403,7 @@ namespace Chummer
             this.tabLimits = new System.Windows.Forms.TabPage();
             this.lmtControl = new Chummer.UI.Shared.LimitTabUserControl();
             this.tabMartialArts = new System.Windows.Forms.TabPage();
-            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel3 = new Chummer.BufferedTableLayoutPanel();
             this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddMartialArt = new SplitButton();
             this.cmdDeleteMartialArt = new System.Windows.Forms.Button();
@@ -411,7 +411,7 @@ namespace Chummer
             this.lblMartialArtSource = new System.Windows.Forms.Label();
             this.lblMartialArtSourceLabel = new System.Windows.Forms.Label();
             this.tabMagician = new System.Windows.Forms.TabPage();
-            this.tlpMagician = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpMagician = new Chummer.BufferedTableLayoutPanel();
             this.cmdAddSpirit = new System.Windows.Forms.Button();
             this.panSpirits = new System.Windows.Forms.Panel();
             this.flowLayoutPanel5 = new System.Windows.Forms.FlowLayoutPanel();
@@ -463,7 +463,7 @@ namespace Chummer
             this.lblTraditionName = new System.Windows.Forms.Label();
             this.tabAdept = new System.Windows.Forms.TabPage();
             this.tabTechnomancer = new System.Windows.Forms.TabPage();
-            this.tlpTechnomancer = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpTechnomancer = new Chummer.BufferedTableLayoutPanel();
             this.cmdAddSprite = new System.Windows.Forms.Button();
             this.panSprites = new System.Windows.Forms.Panel();
             this.treComplexForms = new System.Windows.Forms.TreeView();
@@ -488,7 +488,7 @@ namespace Chummer
             this.lblParagonLabel = new System.Windows.Forms.Label();
             this.lblParagon = new System.Windows.Forms.Label();
             this.tabAdvancedPrograms = new System.Windows.Forms.TabPage();
-            this.tlpAdvancedPrograms = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpAdvancedPrograms = new Chummer.BufferedTableLayoutPanel();
             this.flowLayoutPanel8 = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddAIProgram = new System.Windows.Forms.Button();
             this.cmdDeleteAIProgram = new System.Windows.Forms.Button();
@@ -498,7 +498,7 @@ namespace Chummer
             this.lblAIProgramsRequires = new System.Windows.Forms.Label();
             this.lblAIProgramsSourceLabel = new System.Windows.Forms.Label();
             this.tabCritter = new System.Windows.Forms.TabPage();
-            this.tlpCritter = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpCritter = new Chummer.BufferedTableLayoutPanel();
             this.treCritterPowers = new System.Windows.Forms.TreeView();
             this.lblCritterPowerPointCost = new System.Windows.Forms.Label();
             this.chkCritterPowerCount = new System.Windows.Forms.CheckBox();
@@ -523,13 +523,13 @@ namespace Chummer
             this.cmdAddCritterPower = new System.Windows.Forms.Button();
             this.cmdDeleteCritterPower = new System.Windows.Forms.Button();
             this.tabInitiation = new System.Windows.Forms.TabPage();
-            this.tlpInitiation = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpInitiation = new Chummer.BufferedTableLayoutPanel();
             this.treMetamagic = new System.Windows.Forms.TreeView();
             this.chkInitiationOrdeal = new System.Windows.Forms.CheckBox();
             this.chkInitiationGroup = new System.Windows.Forms.CheckBox();
             this.lblMetamagicSource = new System.Windows.Forms.Label();
             this.lblMetamagicSourceLabel = new System.Windows.Forms.Label();
-            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel4 = new Chummer.BufferedTableLayoutPanel();
             this.lblGroupNotes = new System.Windows.Forms.Label();
             this.txtGroupName = new System.Windows.Forms.TextBox();
             this.txtGroupNotes = new System.Windows.Forms.TextBox();
@@ -539,7 +539,7 @@ namespace Chummer
             this.cmdAddMetamagic = new System.Windows.Forms.Button();
             this.chkInitiationSchooling = new System.Windows.Forms.CheckBox();
             this.tabCyberware = new System.Windows.Forms.TabPage();
-            this.tlpCyberware = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpCyberware = new Chummer.BufferedTableLayoutPanel();
             this.flowLayoutPanel9 = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddCyberware = new SplitButton();
             this.cmdAddBioware = new System.Windows.Forms.Button();
@@ -575,7 +575,7 @@ namespace Chummer
             this.lblCyberwareCapacity = new System.Windows.Forms.Label();
             this.lblCyberwareCostLabel = new System.Windows.Forms.Label();
             this.lblCyberwareCost = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.tabCyberwareCM = new System.Windows.Forms.TabControl();
             this.tabCyberwareMatrixCM = new System.Windows.Forms.TabPage();
             this.chkCyberwareMatrixCM1 = new System.Windows.Forms.CheckBox();
@@ -635,7 +635,7 @@ namespace Chummer
             this.tabStreetGear = new System.Windows.Forms.TabPage();
             this.tabStreetGearTabs = new System.Windows.Forms.TabControl();
             this.tabGear = new System.Windows.Forms.TabPage();
-            this.tlpGear = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpGear = new Chummer.BufferedTableLayoutPanel();
             this.cmdCreateStackedFocus = new System.Windows.Forms.Button();
             this.chkGearActiveCommlink = new System.Windows.Forms.CheckBox();
             this.treFoci = new System.Windows.Forms.TreeView();
@@ -714,7 +714,7 @@ namespace Chummer
             this.chkGearMatrixCM23 = new System.Windows.Forms.CheckBox();
             this.chkGearMatrixCM24 = new System.Windows.Forms.CheckBox();
             this.tabArmor = new System.Windows.Forms.TabPage();
-            this.tlpArmor = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpArmor = new Chummer.BufferedTableLayoutPanel();
             this.lblArmorEquipped = new System.Windows.Forms.Label();
             this.chkIncludedInArmor = new System.Windows.Forms.CheckBox();
             this.cmdArmorEquipAll = new System.Windows.Forms.Button();
@@ -752,7 +752,7 @@ namespace Chummer
             this.lblArmorSleazeLabel = new System.Windows.Forms.Label();
             this.lblArmorAttackLabel = new System.Windows.Forms.Label();
             this.tabWeapons = new System.Windows.Forms.TabPage();
-            this.tlpWeapons = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpWeapons = new Chummer.BufferedTableLayoutPanel();
             this.lblWeaponCapacity = new System.Windows.Forms.Label();
             this.treWeapons = new System.Windows.Forms.TreeView();
             this.lblWeaponCapacityLabel = new System.Windows.Forms.Label();
@@ -794,7 +794,7 @@ namespace Chummer
             this.lblWeaponConcealLabel = new System.Windows.Forms.Label();
             this.lblWeaponMode = new System.Windows.Forms.Label();
             this.lblWeaponConceal = new System.Windows.Forms.Label();
-            this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel6 = new Chummer.BufferedTableLayoutPanel();
             this.lblWeaponRangeLabel = new System.Windows.Forms.Label();
             this.lblWeaponAlternateRangeExtreme = new System.Windows.Forms.Label();
             this.lblWeaponRangeAlternate = new System.Windows.Forms.Label();
@@ -820,7 +820,7 @@ namespace Chummer
             this.lblWeaponAmmoRemainingLabel = new System.Windows.Forms.Label();
             this.lblWeaponAmmoRemaining = new System.Windows.Forms.Label();
             this.cmdFireWeapon = new SplitButton();
-            this.tlpWeaponMatrix = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpWeaponMatrix = new Chummer.BufferedTableLayoutPanel();
             this.tabWeaponMatrixCM = new System.Windows.Forms.TabControl();
             this.tabWeaponMatrixCMPage = new System.Windows.Forms.TabPage();
             this.chkWeaponMatrixCM1 = new System.Windows.Forms.CheckBox();
@@ -858,7 +858,7 @@ namespace Chummer
             this.cboWeaponGearAttack = new Chummer.ElasticComboBox();
             this.lblWeaponSleazeLabel = new System.Windows.Forms.Label();
             this.tabDrugs = new System.Windows.Forms.TabPage();
-            this.tblDrugDescription = new System.Windows.Forms.TableLayoutPanel();
+            this.tblDrugDescription = new Chummer.BufferedTableLayoutPanel();
             this.lblDrugEffectsLabel = new System.Windows.Forms.Label();
             this.treCustomDrugs = new System.Windows.Forms.TreeView();
             this.lblDrugEffect = new System.Windows.Forms.Label();
@@ -887,7 +887,7 @@ namespace Chummer
             this.btnCreateCustomDrug = new System.Windows.Forms.Button();
             this.btnDeleteCustomDrug = new System.Windows.Forms.Button();
             this.tabLifestyle = new System.Windows.Forms.TabPage();
-            this.tblLifestyleDetails = new System.Windows.Forms.TableLayoutPanel();
+            this.tblLifestyleDetails = new Chummer.BufferedTableLayoutPanel();
             this.lblLifestyleCostLabel = new System.Windows.Forms.Label();
             this.treLifestyles = new System.Windows.Forms.TreeView();
             this.lblLifestyleCost = new System.Windows.Forms.Label();
@@ -906,7 +906,7 @@ namespace Chummer
             this.cmdAddLifestyle = new SplitButton();
             this.cmdDeleteLifestyle = new System.Windows.Forms.Button();
             this.tabVehicles = new System.Windows.Forms.TabPage();
-            this.tlpVehicles = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpVehicles = new Chummer.BufferedTableLayoutPanel();
             this.lblVehicleNameLabel = new System.Windows.Forms.Label();
             this.lblVehicleName = new System.Windows.Forms.Label();
             this.lblVehicleWeaponAccuracy = new System.Windows.Forms.Label();
@@ -985,7 +985,7 @@ namespace Chummer
             this.lblFiringModeLabel = new System.Windows.Forms.Label();
             this.cboVehicleWeaponFiringMode = new Chummer.ElasticComboBox();
             this.flowLayoutPanel27 = new System.Windows.Forms.FlowLayoutPanel();
-            this.tlpVehicleWeapon = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpVehicleWeapon = new Chummer.BufferedTableLayoutPanel();
             this.lblVehicleWeaponAlternateRangeExtreme = new System.Windows.Forms.Label();
             this.cmdRollVehicleWeapon = new System.Windows.Forms.Button();
             this.lblVehicleWeaponDicePool = new System.Windows.Forms.Label();
@@ -1094,7 +1094,7 @@ namespace Chummer
             this.chkVehicleMatrixCM39 = new System.Windows.Forms.CheckBox();
             this.chkVehicleMatrixCM40 = new System.Windows.Forms.CheckBox();
             this.tabCharacterInfo = new System.Windows.Forms.TabPage();
-            this.tlpCharacterInfo = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpCharacterInfo = new Chummer.BufferedTableLayoutPanel();
             this.txtNotes = new System.Windows.Forms.TextBox();
             this.lblNotes = new System.Windows.Forms.Label();
             this.txtConcept = new System.Windows.Forms.TextBox();
@@ -1161,7 +1161,7 @@ namespace Chummer
             this.cmdNuyenEdit = new System.Windows.Forms.Button();
             this.chkShowFreeNuyen = new System.Windows.Forms.CheckBox();
             this.tabCalendar = new System.Windows.Forms.TabPage();
-            this.tblCalendar = new System.Windows.Forms.TableLayoutPanel();
+            this.tblCalendar = new Chummer.BufferedTableLayoutPanel();
             this.flowLayoutPanel13 = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddWeek = new System.Windows.Forms.Button();
             this.cmdEditWeek = new System.Windows.Forms.Button();
@@ -1173,7 +1173,7 @@ namespace Chummer
             this.tabNotes = new System.Windows.Forms.TabPage();
             this.txtGameNotes = new System.Windows.Forms.TextBox();
             this.tabImprovements = new System.Windows.Forms.TabPage();
-            this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel5 = new Chummer.BufferedTableLayoutPanel();
             this.treImprovements = new System.Windows.Forms.TreeView();
             this.lblImprovementTypeLabel = new System.Windows.Forms.Label();
             this.lblImprovementType = new System.Windows.Forms.Label();

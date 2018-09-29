@@ -270,6 +270,12 @@
     <Compile Include="frmLoading.Designer.cs">
       <DependentUpon>frmLoading.cs</DependentUpon>
     </Compile>
+    <Compile Include="helpers\BufferedTableLayoutPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="helpers\BufferedTableLayoutPanel.Designer.cs">
+      <DependentUpon>BufferedTableLayoutPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="helpers\DataGridViewTextBoxColumnTranslated.cs" />
     <Compile Include="helpers\ElasticComboBox.cs">
       <SubType>Component</SubType>

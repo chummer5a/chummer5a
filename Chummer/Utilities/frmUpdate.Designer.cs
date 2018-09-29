@@ -35,8 +35,8 @@ namespace Chummer
             this.lblUpdaterStatusLabel = new System.Windows.Forms.Label();
             this.lblUpdaterStatus = new System.Windows.Forms.Label();
             this.cmdRestart = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
+            this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
@@ -202,7 +202,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblUpdaterStatusLabel;
         private System.Windows.Forms.Label lblUpdaterStatus;
         private System.Windows.Forms.Button cmdRestart;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel2;
     }
 }

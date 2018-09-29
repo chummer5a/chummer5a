@@ -30,12 +30,12 @@ namespace Chummer.UI.Shared
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Selected Vehicles");
-            this.tlpParent = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpParent = new Chummer.BufferedTableLayoutPanel();
             this.treVehicles = new System.Windows.Forms.TreeView();
             this.flowButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddVehicleLocation = new System.Windows.Forms.Button();
             this.flowInfoBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.tlpCommonInfos = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpCommonInfos = new Chummer.BufferedTableLayoutPanel();
             this.lblVehicleCategoryLabel = new System.Windows.Forms.Label();
             this.lblVehicleNameLabel = new System.Windows.Forms.Label();
             this.lblVehicleName = new System.Windows.Forms.Label();
@@ -55,7 +55,7 @@ namespace Chummer.UI.Shared
             this.flpQuantity = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdVehicleGearReduceQty = new System.Windows.Forms.Button();
             this.cmdVehicleMoveToInventory = new System.Windows.Forms.Button();
-            this.tlpVehicleInfos = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpVehicleInfos = new Chummer.BufferedTableLayoutPanel();
             this.lblVehicleHandlingLabel = new System.Windows.Forms.Label();
             this.lblVehicleHandling = new System.Windows.Forms.Label();
             this.lblVehicleAccelLabel = new System.Windows.Forms.Label();
@@ -88,7 +88,7 @@ namespace Chummer.UI.Shared
             this.lblVehicleSlotsLabel = new System.Windows.Forms.Label();
             this.lblVehicleSlots = new System.Windows.Forms.Label();
             this.lblVehicleCosmetic = new System.Windows.Forms.Label();
-            this.tlpMatrixInfos = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpMatrixInfos = new Chummer.BufferedTableLayoutPanel();
             this.lblVehicleDeviceLabel = new System.Windows.Forms.Label();
             this.lblVehicleDevice = new System.Windows.Forms.Label();
             this.lblVehicleAttackLabel = new System.Windows.Forms.Label();
@@ -97,7 +97,7 @@ namespace Chummer.UI.Shared
             this.lblVehicleFirewallLabel = new System.Windows.Forms.Label();
             this.chkVehicleHomeNode = new System.Windows.Forms.CheckBox();
             this.chkVehicleActiveCommlink = new System.Windows.Forms.CheckBox();
-            this.tlpVehicleWeapon = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpVehicleWeapon = new Chummer.BufferedTableLayoutPanel();
             this.lblVehicleWeaponAlternateRangeExtreme = new System.Windows.Forms.Label();
             this.cmdRollVehicleWeapon = new System.Windows.Forms.Button();
             this.lblVehicleWeaponDicePool = new System.Windows.Forms.Label();
@@ -122,7 +122,7 @@ namespace Chummer.UI.Shared
             this.lblVehicleWeaponAlternateRangeLong = new System.Windows.Forms.Label();
             this.lblFiringModeLabel = new System.Windows.Forms.Label();
             this.flowVehicleWeaponDicePool = new System.Windows.Forms.FlowLayoutPanel();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.lblVehicleWeaponModeLabel = new System.Windows.Forms.Label();
             this.lblVehicleWeaponMode = new System.Windows.Forms.Label();
             this.lblVehicleWeaponAmmoLabel = new System.Windows.Forms.Label();
@@ -3450,14 +3450,14 @@ namespace Chummer.UI.Shared
 
         #endregion
 
-        private System.Windows.Forms.TableLayoutPanel tlpParent;
+        private Chummer.BufferedTableLayoutPanel tlpParent;
         private System.Windows.Forms.FlowLayoutPanel flowButtons;
         private SplitButton cmdAddVehicle;
         private SplitButton cmdDeleteVehicle;
         private System.Windows.Forms.Button cmdAddVehicleLocation;
         private System.Windows.Forms.TreeView treVehicles;
         private System.Windows.Forms.FlowLayoutPanel flowInfoBoxes;
-        private System.Windows.Forms.TableLayoutPanel tlpCommonInfos;
+        private Chummer.BufferedTableLayoutPanel tlpCommonInfos;
         private System.Windows.Forms.Label lblVehicleNameLabel;
         private System.Windows.Forms.Label lblVehicleName;
         private System.Windows.Forms.Label lblVehicleCategoryLabel;
@@ -3477,7 +3477,7 @@ namespace Chummer.UI.Shared
         private System.Windows.Forms.FlowLayoutPanel flpQuantity;
         private System.Windows.Forms.Button cmdVehicleGearReduceQty;
         private System.Windows.Forms.Button cmdVehicleMoveToInventory;
-        private System.Windows.Forms.TableLayoutPanel tlpVehicleInfos;
+        private Chummer.BufferedTableLayoutPanel tlpVehicleInfos;
         private System.Windows.Forms.Label lblVehicleHandlingLabel;
         private System.Windows.Forms.Label lblVehicleHandling;
         private System.Windows.Forms.Label lblVehicleAccelLabel;
@@ -3510,7 +3510,7 @@ namespace Chummer.UI.Shared
         private System.Windows.Forms.Label lblVehicleSlotsLabel;
         private System.Windows.Forms.Label lblVehicleSlots;
         private System.Windows.Forms.Label lblVehicleCosmetic;
-        private System.Windows.Forms.TableLayoutPanel tlpMatrixInfos;
+        private Chummer.BufferedTableLayoutPanel tlpMatrixInfos;
         private System.Windows.Forms.Label lblVehicleDeviceLabel;
         private System.Windows.Forms.Label lblVehicleDevice;
         private System.Windows.Forms.Label lblVehicleAttackLabel;
@@ -3523,7 +3523,7 @@ namespace Chummer.UI.Shared
         private ElasticComboBox cboVehicleGearFirewall;
         private System.Windows.Forms.CheckBox chkVehicleHomeNode;
         private System.Windows.Forms.CheckBox chkVehicleActiveCommlink;
-        private System.Windows.Forms.TableLayoutPanel tlpVehicleWeapon;
+        private Chummer.BufferedTableLayoutPanel tlpVehicleWeapon;
         private System.Windows.Forms.Label lblVehicleWeaponAlternateRangeExtreme;
         private System.Windows.Forms.Label lblVehicleWeaponDicePool;
         private System.Windows.Forms.Label lblVehicleWeaponRangeAlternate;
@@ -3551,7 +3551,7 @@ namespace Chummer.UI.Shared
         private System.Windows.Forms.Label lblFiringModeLabel;
         private ElasticComboBox cboVehicleWeaponFiringMode;
         private System.Windows.Forms.FlowLayoutPanel flowVehicleWeaponDicePool;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label lblVehicleWeaponModeLabel;
         private System.Windows.Forms.Label lblVehicleWeaponMode;
         private System.Windows.Forms.Label lblVehicleWeaponAmmoLabel;

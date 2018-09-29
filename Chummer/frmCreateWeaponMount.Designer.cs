@@ -53,7 +53,7 @@ namespace Chummer
             this.cmdAddMod = new System.Windows.Forms.Button();
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
             this.tlpMain.SuspendLayout();
@@ -504,7 +504,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdAddMod;
         private System.Windows.Forms.Label lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
-        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

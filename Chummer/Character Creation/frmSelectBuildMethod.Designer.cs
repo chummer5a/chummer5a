@@ -40,7 +40,7 @@ namespace Chummer
             this.lblDescription = new System.Windows.Forms.Label();
             this.nudMaxNuyen = new System.Windows.Forms.NumericUpDown();
             this.lblMaxNuyen = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.lblSumToX = new System.Windows.Forms.Label();
             this.nudSumtoTen = new System.Windows.Forms.NumericUpDown();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
@@ -357,7 +357,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblDescription;
         private System.Windows.Forms.NumericUpDown nudMaxNuyen;
         private System.Windows.Forms.Label lblMaxNuyen;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.NumericUpDown nudSumtoTen;
         private System.Windows.Forms.Label lblSumToX;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
