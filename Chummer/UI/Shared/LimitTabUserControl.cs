@@ -56,14 +56,14 @@ namespace Chummer.UI.Shared
                 _objCharacter = new Character();
             }
 
-            Utils.DoDatabinding(lblPhysical, "Text", _objCharacter, nameof(Character.LimitPhysical));
-            Utils.DoDatabinding(lblPhysical, "ToolTipText", _objCharacter, nameof(Character.LimitPhysicalToolTip));
-            Utils.DoDatabinding(lblMental, "Text", _objCharacter, nameof(Character.LimitMental));
-            Utils.DoDatabinding(lblMental, "ToolTipText", _objCharacter, nameof(Character.LimitMentalToolTip));
-            Utils.DoDatabinding(lblSocial, "Text", _objCharacter, nameof(Character.LimitSocial));
-            Utils.DoDatabinding(lblSocial, "ToolTipText", _objCharacter, nameof(Character.LimitSocialToolTip));
-            Utils.DoDatabinding(lblAstral, "Text", _objCharacter, nameof(Character.LimitAstral));
-            Utils.DoDatabinding(lblAstral, "ToolTipText", _objCharacter, nameof(Character.LimitAstralToolTip));
+            lblPhysical.DoDatabinding("Text", _objCharacter, nameof(Character.LimitPhysical));
+            lblPhysical.DoDatabinding("ToolTipText", _objCharacter, nameof(Character.LimitPhysicalToolTip));
+            lblMental.DoDatabinding("Text", _objCharacter, nameof(Character.LimitMental));
+            lblMental.DoDatabinding("ToolTipText", _objCharacter, nameof(Character.LimitMentalToolTip));
+            lblSocial.DoDatabinding("Text", _objCharacter, nameof(Character.LimitSocial));
+            lblSocial.DoDatabinding("ToolTipText", _objCharacter, nameof(Character.LimitSocialToolTip));
+            lblAstral.DoDatabinding("Text", _objCharacter, nameof(Character.LimitAstral));
+            lblAstral.DoDatabinding("ToolTipText", _objCharacter, nameof(Character.LimitAstralToolTip));
 
             _objCharacter.LimitModifiers.CollectionChanged += LimitModifierCollectionChanged;
         }

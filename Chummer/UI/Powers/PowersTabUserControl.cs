@@ -208,6 +208,8 @@ namespace Chummer.UI.Powers
                 if (objPower.Create(objXmlPower))
                 {
                     _objCharacter.Powers.Add(objPower);
+
+                    MakeDirtyWithCharacterUpdate?.Invoke(null, null);
                 }
             }
             while (blnAddAgain);
