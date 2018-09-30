@@ -63,7 +63,7 @@ namespace Chummer
             this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
             this.chkPrototypeTranshuman = new System.Windows.Forms.CheckBox();
             this.chkHideBannedGrades = new System.Windows.Forms.CheckBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.chkShowOnlyAffordItems = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdOK = new System.Windows.Forms.Button();
@@ -782,7 +782,7 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
         private System.Windows.Forms.CheckBox chkPrototypeTranshuman;
         private System.Windows.Forms.CheckBox chkHideBannedGrades;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.CheckBox chkShowOnlyAffordItems;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Label lblRatingNALabel;

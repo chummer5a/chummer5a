@@ -32,7 +32,7 @@ namespace Chummer
             this.labelCopyright = new System.Windows.Forms.Label();
             this.labelVersion = new System.Windows.Forms.Label();
             this.labelProductName = new System.Windows.Forms.Label();
-            this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel = new Chummer.BufferedTableLayoutPanel();
             this.textBoxContributors = new System.Windows.Forms.TextBox();
             this.okButton = new System.Windows.Forms.Button();
             this.logoPictureBox = new System.Windows.Forms.PictureBox();
@@ -234,7 +234,7 @@ namespace Chummer
         private System.Windows.Forms.Label labelCopyright;
         private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.Label labelProductName;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel;
         private System.Windows.Forms.TextBox txtDisclaimer;
         private System.Windows.Forms.TextBox textBoxContributors;
         private System.Windows.Forms.Button okButton;

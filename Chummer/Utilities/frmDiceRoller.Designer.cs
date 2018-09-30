@@ -45,8 +45,8 @@ namespace Chummer
             this.nudThreshold = new System.Windows.Forms.NumericUpDown();
             this.lblThreshold = new System.Windows.Forms.Label();
             this.chkBubbleDie = new System.Windows.Forms.CheckBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
+            this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel();
             this.lblResults = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudDice)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGremlins)).BeginInit();
@@ -350,8 +350,8 @@ namespace Chummer
         private System.Windows.Forms.NumericUpDown nudThreshold;
         private System.Windows.Forms.Label lblThreshold;
         private System.Windows.Forms.CheckBox chkBubbleDie;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Label lblResults;
     }
 }

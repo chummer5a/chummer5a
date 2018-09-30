@@ -43,7 +43,7 @@ namespace Chummer
             this.lblCharacterSheet = new System.Windows.Forms.Label();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.cboLanguage = new Chummer.ElasticComboBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.imgSheetLanguageFlag = new System.Windows.Forms.PictureBox();
             this.cmsSaveButton.SuspendLayout();
             this.cmsPrintButton.SuspendLayout();
@@ -258,7 +258,7 @@ namespace Chummer
         private SplitButton cmdSaveAsPdf;
         private System.Windows.Forms.WebBrowser webBrowser1;
         private ElasticComboBox cboLanguage;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.PictureBox imgSheetLanguageFlag;
     }
 

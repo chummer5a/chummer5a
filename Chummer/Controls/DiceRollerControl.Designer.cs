@@ -28,20 +28,20 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.txtResults = new System.Windows.Forms.RichTextBox();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel();
             this.nudLimit = new System.Windows.Forms.NumericUpDown();
             this.cboEdgeUse = new System.Windows.Forms.ComboBox();
             this.lblLimit = new System.Windows.Forms.Label();
             this.lblResults = new System.Windows.Forms.Label();
             this.nudGremlins = new System.Windows.Forms.NumericUpDown();
             this.lblGremlins = new System.Windows.Forms.Label();
-            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel3 = new Chummer.BufferedTableLayoutPanel();
             this.chkBubbleDie = new System.Windows.Forms.CheckBox();
             this.nudThreshold = new System.Windows.Forms.NumericUpDown();
             this.lblThreshold = new System.Windows.Forms.Label();
-            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel4 = new Chummer.BufferedTableLayoutPanel();
             this.chkRuleOf6 = new System.Windows.Forms.CheckBox();
             this.cmdRollDice = new System.Windows.Forms.Button();
             this.chkRushJob = new System.Windows.Forms.CheckBox();
@@ -349,17 +349,17 @@ namespace Chummer
 
         #endregion
 
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.RichTextBox txtResults;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.NumericUpDown nudGremlins;
         private System.Windows.Forms.Label lblGremlins;
         private System.Windows.Forms.Label lblLimit;
         private System.Windows.Forms.Label lblResults;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel3;
         private System.Windows.Forms.Label lblThreshold;
         private System.Windows.Forms.NumericUpDown nudThreshold;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel4;
         private System.Windows.Forms.CheckBox chkRuleOf6;
         private System.Windows.Forms.Button cmdRollDice;
         private System.Windows.Forms.CheckBox chkRushJob;

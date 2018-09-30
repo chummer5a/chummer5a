@@ -56,7 +56,7 @@ namespace Chummer
             this.lblBOD = new System.Windows.Forms.Label();
             this.lblBODLabel = new System.Windows.Forms.Label();
             this.lstMetatypes = new System.Windows.Forms.ListBox();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel();
             this.lblMetavariantKarma = new System.Windows.Forms.Label();
             this.lblSpecialAttributes = new System.Windows.Forms.Label();
             this.lblSpecialAttributesLabel = new System.Windows.Forms.Label();
@@ -67,7 +67,7 @@ namespace Chummer
             this.cboSkill3 = new Chummer.ElasticComboBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.cboTalents = new Chummer.ElasticComboBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.lblHeritageLabel = new System.Windows.Forms.Label();
             this.lblAttributesLabel = new System.Windows.Forms.Label();
             this.cboResources = new Chummer.ElasticComboBox();
@@ -890,7 +890,7 @@ namespace Chummer
         private ElasticComboBox cboSkill2;
         internal System.Windows.Forms.Label lblMetavariantKarmaLabel;
         private ElasticComboBox cboSkill3;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label lblHeritageLabel;
         private System.Windows.Forms.Label lblAttributesLabel;
         private ElasticComboBox cboResources;
@@ -902,7 +902,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblSkillsLabel;
         private ElasticComboBox cboHeritage;
         private System.Windows.Forms.Label lblSumtoTen;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

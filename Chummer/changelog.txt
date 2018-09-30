@@ -89,6 +89,7 @@ Application Changes:
 - Fixed an issue where increasing the quantity of gear that contained plugins would count the cost from its children incorrectly. Fixes #3003.
 - Fixed a bug where group layout boxes and controls within those group layout boxes would not get translated. Fixes #3052.
 - Added preliminary support for right-to-left scripts to Chummer5a's translation system and the Translator tool. It's currently relatively untested, but bugs will be ironed out if/when translations that use right-to-left scripts get included with the program.
+- Fixed a bug where improvements that grant extra damage resistance dice would also get added to armor when printing character information. Fixes #3058.
 
 Data Changes:
 

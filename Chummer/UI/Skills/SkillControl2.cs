@@ -49,19 +49,19 @@ namespace Chummer.UI.Skills
                 LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
             }
             
-            Utils.DoDatabinding(this, "Enabled", skill, nameof(Skill.Enabled));
+            this.DoDatabinding("Enabled", skill, nameof(Skill.Enabled));
 
             //Display
             _normalName = lblName.Font;
             _italicName = new Font(lblName.Font, FontStyle.Italic);
             
-            Utils.DoDatabinding(this, "BackColor", skill, nameof(Skill.PreferredControlColor));
+            this.DoDatabinding("BackColor", skill, nameof(Skill.PreferredControlColor));
             
-            Utils.DoDatabinding(lblName, "Text", skill, nameof(Skill.DisplayName));
-            Utils.DoDatabinding(lblName, "ForeColor", skill, nameof(Skill.PreferredColor));
-            Utils.DoDatabinding(lblName, "ToolTipText", skill, nameof(Skill.SkillToolTip));
+            lblName.DoDatabinding("Text", skill, nameof(Skill.DisplayName));
+            lblName.DoDatabinding("ForeColor", skill, nameof(Skill.PreferredColor));
+            lblName.DoDatabinding("ToolTipText", skill, nameof(Skill.SkillToolTip));
 
-            Utils.DoDatabinding(lblModifiedRating, "ToolTipText", skill, nameof(Skill.PoolToolTip));
+            lblModifiedRating.DoDatabinding("ToolTipText", skill, nameof(Skill.PoolToolTip));
 
             _attributeActive = skill.AttributeObject;
             _skill.PropertyChanged += Skill_PropertyChanged;

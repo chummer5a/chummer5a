@@ -3520,55 +3520,56 @@ namespace Chummer
 
             // </attributes>
             objWriter.WriteEndElement();
-            int dr = ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance);
             // <armor />
-            objWriter.WriteElementString("armor", (TotalArmorRating + dr).ToString(objCulture));
+            objWriter.WriteElementString("armor", (TotalArmorRating).ToString(objCulture));
             // <firearmor />
-            objWriter.WriteElementString("firearmor", (TotalFireArmorRating + dr).ToString(objCulture));
+            objWriter.WriteElementString("firearmor", (TotalFireArmorRating).ToString(objCulture));
             // <coldarmor />
-            objWriter.WriteElementString("coldarmor", (TotalColdArmorRating + dr).ToString(objCulture));
+            objWriter.WriteElementString("coldarmor", (TotalColdArmorRating).ToString(objCulture));
             // <electricityarmor />
-            objWriter.WriteElementString("electricityarmor", (TotalElectricityArmorRating + dr).ToString(objCulture));
+            objWriter.WriteElementString("electricityarmor", (TotalElectricityArmorRating).ToString(objCulture));
             // <acidarmor />
-            objWriter.WriteElementString("acidarmor", (TotalAcidArmorRating + dr).ToString(objCulture));
+            objWriter.WriteElementString("acidarmor", (TotalAcidArmorRating).ToString(objCulture));
             // <fallingarmor />
-            objWriter.WriteElementString("fallingarmor", (TotalFallingArmorRating + dr).ToString(objCulture));
+            objWriter.WriteElementString("fallingarmor", (TotalFallingArmorRating).ToString(objCulture));
+
+            int intDamageResistanceDice = ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance);
             // <armordicestun />
             objWriter.WriteElementString("armordicestun",
-                (BOD.TotalValue + dr + TotalArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalArmorRating).ToString(objCulture));
             // <firearmordicestun />
             objWriter.WriteElementString("firearmordicestun",
-                (BOD.TotalValue + dr + TotalFireArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalFireArmorRating).ToString(objCulture));
             // <coldarmordicestun />
             objWriter.WriteElementString("coldarmordicestun",
-                (BOD.TotalValue + dr + TotalColdArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalColdArmorRating).ToString(objCulture));
             // <electricityarmordicestun />
             objWriter.WriteElementString("electricityarmordicestun",
-                (BOD.TotalValue + dr + TotalElectricityArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalElectricityArmorRating).ToString(objCulture));
             // <acidarmordicestun />
             objWriter.WriteElementString("acidarmordicestun",
-                (BOD.TotalValue + dr + TotalAcidArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalAcidArmorRating).ToString(objCulture));
             // <fallingarmordicestun />
             objWriter.WriteElementString("fallingarmordicestun",
-                (BOD.TotalValue + dr + TotalFallingArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalFallingArmorRating).ToString(objCulture));
             // <armordicephysical />
             objWriter.WriteElementString("armordicephysical",
-                (BOD.TotalValue + dr + TotalArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalArmorRating).ToString(objCulture));
             // <firearmordicephysical />
             objWriter.WriteElementString("firearmordicephysical",
-                (BOD.TotalValue + dr + TotalFireArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalFireArmorRating).ToString(objCulture));
             // <coldarmordicephysical />
             objWriter.WriteElementString("coldarmordicephysical",
-                (BOD.TotalValue + dr + TotalColdArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalColdArmorRating).ToString(objCulture));
             // <electricityarmordicephysical />
             objWriter.WriteElementString("electricityarmordicephysical",
-                (BOD.TotalValue + dr + TotalElectricityArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalElectricityArmorRating).ToString(objCulture));
             // <acidarmordicephysical />
             objWriter.WriteElementString("acidarmordicephysical",
-                (BOD.TotalValue + dr + TotalAcidArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalAcidArmorRating).ToString(objCulture));
             // <fallingarmordicephysical />
             objWriter.WriteElementString("fallingarmordicephysical",
-                (BOD.TotalValue + dr + TotalFallingArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalFallingArmorRating).ToString(objCulture));
 
             bool blnIsAI = IsAI;
             bool blnPhysicalTrackIsCore = blnIsAI && !(HomeNode is Vehicle);

@@ -39,7 +39,7 @@ namespace Chummer
             this.lblCostLabel = new System.Windows.Forms.Label();
             this.lblCyberwareLabel = new System.Windows.Forms.Label();
             this.lblCyberware = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -258,7 +258,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblCostLabel;
         private System.Windows.Forms.Label lblCyberwareLabel;
         private System.Windows.Forms.Label lblCyberware;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

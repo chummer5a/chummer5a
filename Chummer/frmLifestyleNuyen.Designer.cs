@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmLifestyleNuyen
     {
@@ -33,7 +33,7 @@
             this.lblDice = new System.Windows.Forms.Label();
             this.lblResult = new System.Windows.Forms.Label();
             this.nudDiceResult = new System.Windows.Forms.NumericUpDown();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudDiceResult)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
@@ -168,7 +168,7 @@
         private System.Windows.Forms.Label lblDice;
         private System.Windows.Forms.Label lblResult;
         private System.Windows.Forms.NumericUpDown nudDiceResult;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }
