@@ -1766,7 +1766,7 @@ namespace Chummer.Backend.Equipment
                     strCategory = "Unarmed Combat";
                 }
 
-                string strUseSkill = Skill.Name;
+                string strUseSkill = Skill?.Name;
 
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
