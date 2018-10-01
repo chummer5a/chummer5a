@@ -104,15 +104,13 @@ namespace Chummer
 
         public override bool Equals(object obj)
         {
-            if (Root != null)
+            if (obj is DependancyGraphNode<T> objOtherNode)
             {
-                if (obj is DependancyGraphNode<T> objOtherNode)
-                {
+                if (Root != null)
                     return Root == objOtherNode.Root && (MyObject == null && objOtherNode.MyObject == null || MyObject?.Equals(objOtherNode.MyObject) == true);
-                }
+                if (objOtherNode.Root != null)
+                    return false;
             }
-            else if (obj is DependancyGraphNode<T> objOtherNode && objOtherNode.Root != null)
-                return false;
 
             // ReSharper disable once BaseObjectEqualsIsObjectEquals
             return base.Equals(obj);

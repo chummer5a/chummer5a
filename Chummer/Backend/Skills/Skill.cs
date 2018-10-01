@@ -1209,6 +1209,7 @@ namespace Chummer.Backend.Skills
                 if (_intCachedCyberwareRating != int.MinValue)
                     return _intCachedCyberwareRating;
 
+                ExoticSkill objThisAsExoticSkill = this as ExoticSkill;
                 //TODO: method is here, but not used in any form, needs testing (worried about child items...)
                 //this might do hardwires if i understand how they works correctly
                 int intMaxHardwire = -1;
@@ -1216,9 +1217,9 @@ namespace Chummer.Backend.Skills
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.Hardwire && objImprovement.Enabled)
                     {
-                        if (this is ExoticSkill objExoticSkill)
+                        if (objThisAsExoticSkill != null)
                         {
-                            if (objImprovement.ImprovedName == Name + " (" + objExoticSkill.Specific + ')')
+                            if (objImprovement.ImprovedName == Name + " (" + objThisAsExoticSkill.Specific + ')')
                                 intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value);
                         }
                         else if (objImprovement.ImprovedName == Name)
@@ -1239,9 +1240,9 @@ namespace Chummer.Backend.Skills
                     {
                         if (objSkillsoftImprovement.ImproveType == Improvement.ImprovementType.Activesoft && objSkillsoftImprovement.Enabled)
                         {
-                            if (this is ExoticSkill objExoticSkill)
+                            if (objThisAsExoticSkill != null)
                             {
-                                if (objSkillsoftImprovement.ImprovedName == Name + " (" + objExoticSkill.Specific + ')')
+                                if (objSkillsoftImprovement.ImprovedName == Name + " (" + objThisAsExoticSkill.Specific + ')')
                                     intMaxHardwire = Math.Max(intMaxHardwire, objSkillsoftImprovement.Value);
                             }
                             else if (objSkillsoftImprovement.ImprovedName == Name)
@@ -1307,12 +1308,9 @@ namespace Chummer.Backend.Skills
                 _intCachedForcedNotBuyWithKarma = -1;
             if (lstNamesOfChangedProperties.Contains(nameof(CyberwareRating)))
                 _intCachedCyberwareRating = int.MinValue;
-            if (PropertyChanged != null)
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
-                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
-                {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-                }
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
         }
 

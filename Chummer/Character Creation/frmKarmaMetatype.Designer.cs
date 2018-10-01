@@ -33,7 +33,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.pnlMetatypes = new System.Windows.Forms.Panel();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.lstMetatypes = new System.Windows.Forms.ListBox();
             this.cboCategory = new Chummer.ElasticComboBox();
             this.lblCHALabel = new System.Windows.Forms.Label();
@@ -41,7 +41,7 @@ namespace Chummer
             this.lblSTRLabel = new System.Windows.Forms.Label();
             this.nudForce = new System.Windows.Forms.NumericUpDown();
             this.lblSTR = new System.Windows.Forms.Label();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel();
             this.chkBloodSpirit = new System.Windows.Forms.CheckBox();
             this.chkPossessionBased = new System.Windows.Forms.CheckBox();
             this.cboPossessionMethod = new Chummer.ElasticComboBox();

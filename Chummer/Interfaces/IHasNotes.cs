@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -25,5 +26,36 @@ namespace Chummer
         string Notes { get; set; }
 
         Color PreferredColor { get; }
+    }
+
+    public static class Notes
+    {
+        /// <summary>
+        /// Writes notes to an IHasNotes object, returns True if notes were changed and False otherwise.
+        /// </summary>
+        /// <param name="objNotes"></param>
+        public static bool WriteNotes(this IHasNotes objNotes, TreeNode treNode)
+        {
+            string strOldValue = objNotes.Notes;
+            frmNotes frmItemNotes = new frmNotes
+            {
+                Notes = strOldValue
+            };
+            frmItemNotes.ShowDialog();
+
+            if (frmItemNotes.DialogResult == DialogResult.OK)
+            {
+                objNotes.Notes = frmItemNotes.Notes;
+                if (objNotes.Notes != strOldValue)
+                {
+                    treNode.ForeColor = objNotes.PreferredColor;
+                    treNode.ToolTipText = objNotes.Notes.WordWrap(100);
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

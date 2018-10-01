@@ -2742,7 +2742,7 @@ namespace Chummer
                 {
                     foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
                     {
-                        if (intCyberwaresCount % 2 == 0)
+                        if ((intCyberwaresCount & 1) == 0)
                         {
                             if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" &&
                                 objCyberware.Forced != "Left")
@@ -3202,7 +3202,7 @@ namespace Chummer
             {
                 // This character doesn't have any improvements tied to a cached Mentor Spirit value, so re-apply the improvement that adds the Mentor spirit
                 if (!Improvements.Any(imp =>
-                    imp.ImproveType == Improvement.ImprovementType.MentorSpirit && imp.ImprovedName != string.Empty))
+                    imp.ImproveType == Improvement.ImprovementType.MentorSpirit && !string.IsNullOrEmpty(imp.ImprovedName)))
                 {
                     /* This gets confusing when selecting a mentor spirit mid-load, so just show the error and let the player manually re-apply
                     ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, objMentorQuality.InternalId);
@@ -3520,55 +3520,56 @@ namespace Chummer
 
             // </attributes>
             objWriter.WriteEndElement();
-            int dr = ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance);
             // <armor />
-            objWriter.WriteElementString("armor", (TotalArmorRating + dr).ToString(objCulture));
+            objWriter.WriteElementString("armor", (TotalArmorRating).ToString(objCulture));
             // <firearmor />
-            objWriter.WriteElementString("firearmor", (TotalFireArmorRating + dr).ToString(objCulture));
+            objWriter.WriteElementString("firearmor", (TotalFireArmorRating).ToString(objCulture));
             // <coldarmor />
-            objWriter.WriteElementString("coldarmor", (TotalColdArmorRating + dr).ToString(objCulture));
+            objWriter.WriteElementString("coldarmor", (TotalColdArmorRating).ToString(objCulture));
             // <electricityarmor />
-            objWriter.WriteElementString("electricityarmor", (TotalElectricityArmorRating + dr).ToString(objCulture));
+            objWriter.WriteElementString("electricityarmor", (TotalElectricityArmorRating).ToString(objCulture));
             // <acidarmor />
-            objWriter.WriteElementString("acidarmor", (TotalAcidArmorRating + dr).ToString(objCulture));
+            objWriter.WriteElementString("acidarmor", (TotalAcidArmorRating).ToString(objCulture));
             // <fallingarmor />
-            objWriter.WriteElementString("fallingarmor", (TotalFallingArmorRating + dr).ToString(objCulture));
+            objWriter.WriteElementString("fallingarmor", (TotalFallingArmorRating).ToString(objCulture));
+
+            int intDamageResistanceDice = ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance);
             // <armordicestun />
             objWriter.WriteElementString("armordicestun",
-                (BOD.TotalValue + dr + TotalArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalArmorRating).ToString(objCulture));
             // <firearmordicestun />
             objWriter.WriteElementString("firearmordicestun",
-                (BOD.TotalValue + dr + TotalFireArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalFireArmorRating).ToString(objCulture));
             // <coldarmordicestun />
             objWriter.WriteElementString("coldarmordicestun",
-                (BOD.TotalValue + dr + TotalColdArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalColdArmorRating).ToString(objCulture));
             // <electricityarmordicestun />
             objWriter.WriteElementString("electricityarmordicestun",
-                (BOD.TotalValue + dr + TotalElectricityArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalElectricityArmorRating).ToString(objCulture));
             // <acidarmordicestun />
             objWriter.WriteElementString("acidarmordicestun",
-                (BOD.TotalValue + dr + TotalAcidArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalAcidArmorRating).ToString(objCulture));
             // <fallingarmordicestun />
             objWriter.WriteElementString("fallingarmordicestun",
-                (BOD.TotalValue + dr + TotalFallingArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalFallingArmorRating).ToString(objCulture));
             // <armordicephysical />
             objWriter.WriteElementString("armordicephysical",
-                (BOD.TotalValue + dr + TotalArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalArmorRating).ToString(objCulture));
             // <firearmordicephysical />
             objWriter.WriteElementString("firearmordicephysical",
-                (BOD.TotalValue + dr + TotalFireArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalFireArmorRating).ToString(objCulture));
             // <coldarmordicephysical />
             objWriter.WriteElementString("coldarmordicephysical",
-                (BOD.TotalValue + dr + TotalColdArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalColdArmorRating).ToString(objCulture));
             // <electricityarmordicephysical />
             objWriter.WriteElementString("electricityarmordicephysical",
-                (BOD.TotalValue + dr + TotalElectricityArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalElectricityArmorRating).ToString(objCulture));
             // <acidarmordicephysical />
             objWriter.WriteElementString("acidarmordicephysical",
-                (BOD.TotalValue + dr + TotalAcidArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalAcidArmorRating).ToString(objCulture));
             // <fallingarmordicephysical />
             objWriter.WriteElementString("fallingarmordicephysical",
-                (BOD.TotalValue + dr + TotalFallingArmorRating).ToString(objCulture));
+                (BOD.TotalValue + intDamageResistanceDice + TotalFallingArmorRating).ToString(objCulture));
 
             bool blnIsAI = IsAI;
             bool blnPhysicalTrackIsCore = blnIsAI && !(HomeNode is Vehicle);
@@ -4865,7 +4866,7 @@ namespace Chummer
                 // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
                 if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount &&
                     (objLoopCyberware.Location == objModularCyberware.Location ||
-                     objModularCyberware.Location == string.Empty) &&
+                     string.IsNullOrEmpty(objModularCyberware.Location)) &&
                     objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name &&
                     objLoopCyberware != objModularCyberware)
                 {
@@ -7299,7 +7300,7 @@ namespace Chummer
                         }
                         else
                         {
-                            XmlNode xmlTraditionListDataNode = XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions/");
+                            XmlNode xmlTraditionListDataNode = XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions");
                             if (xmlTraditionListDataNode != null)
                             {
                                 XmlNode xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"Default\"]");
@@ -7512,7 +7513,7 @@ namespace Chummer
                         }
                         else
                         {
-                            XmlNode xmlTraditionListDataNode = XmlManager.Load("traditions.xml").SelectSingleNode("/chummer/traditions/");
+                            XmlNode xmlTraditionListDataNode = XmlManager.Load("traditions.xml").SelectSingleNode("/chummer/traditions");
                             if (xmlTraditionListDataNode != null)
                             {
                                 XmlNode xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[id = \"" + Tradition.CustomMagicalTraditionGuid + "\"]");
@@ -13835,12 +13836,9 @@ namespace Chummer
                 }
             }
 
-            if (PropertyChanged != null)
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
-                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
-                {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-                }
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
 
             foreach (Character objLoopOpenCharacter in Program.MainForm.OpenCharacters)

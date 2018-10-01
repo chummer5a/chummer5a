@@ -32,7 +32,6 @@ namespace Translator
 {
     public partial class frmTranslatorMain
     {
-        private static readonly TextInfo s_ObjEnUSTextInfo = (new CultureInfo("en-US", false)).TextInfo;
         private static readonly string PATH = Application.StartupPath;
         private readonly BackgroundWorker _workerDataProcessor = new BackgroundWorker();
         private bool _blnQueueDataProcessorRun;
@@ -143,7 +142,8 @@ namespace Translator
                     int intCountryNameIndex = strName.LastIndexOf('(');
                     if (intCountryNameIndex != -1)
                         strName = strName.Substring(0, intCountryNameIndex).Trim();
-                    txtLanguageName.Text = s_ObjEnUSTextInfo.ToTitleCase(strName);
+                    txtLanguageName.Text = objSelectedCulture.TextInfo.ToTitleCase(strName);
+                    chkRightToLeft.Checked = objSelectedCulture.TextInfo.IsRightToLeft;
                 }
                 catch (CultureNotFoundException)
                 {
@@ -167,9 +167,12 @@ namespace Translator
                     string strName = objSelectedCulture.NativeName;
                     int intCountryNameIndex = strName.LastIndexOf('(');
                     if (intCountryNameIndex != -1)
-                        strName = s_ObjEnUSTextInfo.ToTitleCase(strName.Substring(0, intCountryNameIndex).Trim());
+                        strName = objSelectedCulture.TextInfo.ToTitleCase(strName.Substring(0, intCountryNameIndex).Trim());
                     if (strName != "Unknown Locale")
+                    {
                         txtLanguageName.Text = strName;
+                        chkRightToLeft.Checked = objSelectedCulture.TextInfo.IsRightToLeft;
+                    }
                 }
                 catch (CultureNotFoundException)
                 {
@@ -202,9 +205,11 @@ namespace Translator
                 return;
             }
 
+            TextInfo objTextInfoForCapitalization = null;
             try
             {
-                CultureInfo _ = CultureInfo.GetCultureInfo(strLowerCode);
+                CultureInfo objCultureInfo = CultureInfo.GetCultureInfo(strLowerCode);
+                objTextInfoForCapitalization = objCultureInfo.TextInfo;
             }
             catch (CultureNotFoundException)
             {
@@ -282,7 +287,8 @@ namespace Translator
                 s_LstOpenTranslateWindows.Remove(frmOpenTranslate);
             }
 
-            _strLanguageToLoad = s_ObjEnUSTextInfo.ToTitleCase(txtLanguageName.Text) + " (" + txtLanguageCode.Text.ToLower() + '-' + txtRegionCode.Text.ToUpper() + ')';
+            _strLanguageToLoad = (objTextInfoForCapitalization ?? (new CultureInfo("en-US", false)).TextInfo)
+                                 .ToTitleCase(txtLanguageName.Text) + " (" + txtLanguageCode.Text.ToLower() + '-' + txtRegionCode.Text.ToUpper() + ')';
             _astrArgs[0] = strLowerCode;
             _astrArgs[1] = _strLanguageToLoad;
             _astrArgs[2] = bool.TrueString;
@@ -472,6 +478,10 @@ namespace Translator
             }
         }
 
+        private void chkRightToLeft_CheckedChanged(object sender, EventArgs e)
+        {
+            txtLanguageName.RightToLeft = chkRightToLeft.Checked ? RightToLeft.Yes : RightToLeft.No;
+        }
         #endregion Control Events
 
         #region BackgroundWorker Events
@@ -537,6 +547,14 @@ namespace Translator
                 xmlVersionNode = objDoc.CreateElement("version");
                 xmlVersionNode.InnerText = "-500";
                 xmlRootChummerNode.AppendChild(xmlVersionNode);
+            }
+
+            XmlNode xmlRightToLeftNode = xmlRootChummerNode.SelectSingleNode("righttoleft");
+            if (xmlRightToLeftNode == null)
+            {
+                xmlRightToLeftNode = objDoc.CreateElement("righttoleft");
+                xmlRightToLeftNode.InnerText = chkRightToLeft.Checked.ToString();
+                xmlRootChummerNode.AppendChild(xmlRightToLeftNode);
             }
 
             XmlNode xmlTranslatedStringsNode = xmlRootChummerNode.SelectSingleNode("strings");

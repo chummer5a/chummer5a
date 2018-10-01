@@ -175,7 +175,7 @@ namespace Chummer
             }
             if (sb.Length > 0)
                 sb.Length -= 2; // remove trailing comma
-            if (chkBubbleDie.Checked && results.Count % 2 == 0 && results.Count / 2 == glitches + Gremlins)
+            if (chkBubbleDie.Checked && (results.Count & 1) == 0 && results.Count / 2 == glitches + Gremlins)
             {
                 do
                 {

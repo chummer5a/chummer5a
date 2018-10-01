@@ -29,6 +29,7 @@ namespace Translator
         private void InitializeComponent()
         {
             this.gbxCreate = new System.Windows.Forms.GroupBox();
+            this.chkRightToLeft = new System.Windows.Forms.CheckBox();
             this.lblDash = new System.Windows.Forms.Label();
             this.txtRegionCode = new System.Windows.Forms.TextBox();
             this.txtLanguageName = new System.Windows.Forms.TextBox();
@@ -37,18 +38,19 @@ namespace Translator
             this.txtLanguageCode = new System.Windows.Forms.TextBox();
             this.lblLanguageCode = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cmdUpdate = new System.Windows.Forms.Button();
             this.cmdRebuild = new System.Windows.Forms.Button();
             this.cmdEdit = new System.Windows.Forms.Button();
             this.cboLanguages = new System.Windows.Forms.ComboBox();
             this.pbProcessProgress = new System.Windows.Forms.ProgressBar();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.cmdUpdate = new System.Windows.Forms.Button();
             this.gbxCreate.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // gbxCreate
             // 
+            this.gbxCreate.Controls.Add(this.chkRightToLeft);
             this.gbxCreate.Controls.Add(this.lblDash);
             this.gbxCreate.Controls.Add(this.txtRegionCode);
             this.gbxCreate.Controls.Add(this.txtLanguageName);
@@ -62,6 +64,17 @@ namespace Translator
             this.gbxCreate.TabIndex = 0;
             this.gbxCreate.TabStop = false;
             this.gbxCreate.Text = "Create a Language File";
+            // 
+            // chkRightToLeft
+            // 
+            this.chkRightToLeft.AutoSize = true;
+            this.chkRightToLeft.Location = new System.Drawing.Point(13, 71);
+            this.chkRightToLeft.Name = "chkRightToLeft";
+            this.chkRightToLeft.Size = new System.Drawing.Size(84, 17);
+            this.chkRightToLeft.TabIndex = 9;
+            this.chkRightToLeft.Text = "Right-to-Left";
+            this.chkRightToLeft.UseVisualStyleBackColor = true;
+            this.chkRightToLeft.CheckedChanged += new System.EventHandler(this.chkRightToLeft_CheckedChanged);
             // 
             // lblDash
             // 
@@ -144,6 +157,17 @@ namespace Translator
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Edit Language File";
             // 
+            // cmdUpdate
+            // 
+            this.cmdUpdate.Enabled = false;
+            this.cmdUpdate.Location = new System.Drawing.Point(74, 78);
+            this.cmdUpdate.Name = "cmdUpdate";
+            this.cmdUpdate.Size = new System.Drawing.Size(62, 23);
+            this.cmdUpdate.TabIndex = 8;
+            this.cmdUpdate.Text = "Update";
+            this.cmdUpdate.UseVisualStyleBackColor = true;
+            this.cmdUpdate.Click += new System.EventHandler(this.cmdUpdate_Click);
+            // 
             // cmdRebuild
             // 
             this.cmdRebuild.Enabled = false;
@@ -195,17 +219,6 @@ namespace Translator
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
-            // cmdUpdate
-            // 
-            this.cmdUpdate.Enabled = false;
-            this.cmdUpdate.Location = new System.Drawing.Point(74, 78);
-            this.cmdUpdate.Name = "cmdUpdate";
-            this.cmdUpdate.Size = new System.Drawing.Size(62, 23);
-            this.cmdUpdate.TabIndex = 8;
-            this.cmdUpdate.Text = "Update";
-            this.cmdUpdate.UseVisualStyleBackColor = true;
-            this.cmdUpdate.Click += new System.EventHandler(this.cmdUpdate_Click);
-            // 
             // frmTranslatorMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -242,6 +255,7 @@ namespace Translator
         private ProgressBar pbProcessProgress;
         private Button cmdCancel;
         private Button cmdUpdate;
+        private CheckBox chkRightToLeft;
     }
 }
 

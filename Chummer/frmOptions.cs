@@ -1490,22 +1490,22 @@ namespace Chummer
             }
         }
 
-        private void UpdateSourcebookInfoPath(string path)
+        private void UpdateSourcebookInfoPath(string strPath)
         {
-            string tag = treSourcebook.SelectedNode.Tag.ToString();
-            SourcebookInfo foundSource = GlobalOptions.SourcebookInfo.FirstOrDefault(x => x.Code == tag);
+            string strTag = lstGlobalSourcebookInfos.SelectedValue?.ToString();
+            SourcebookInfo objFoundSource = GlobalOptions.SourcebookInfo.FirstOrDefault(x => x.Code == strTag);
 
-            if (foundSource != null)
+            if (objFoundSource != null)
             {
-                foundSource.Path = path;
+                objFoundSource.Path = strPath;
             }
             else
             {
                 // If the Sourcebook was not found in the options, add it.
                 SourcebookInfo objNewSource = new SourcebookInfo
                 {
-                    Code = tag,
-                    Path = path
+                    Code = strTag,
+                    Path = strPath
                 };
                 GlobalOptions.SourcebookInfo.Add(objNewSource);
             }

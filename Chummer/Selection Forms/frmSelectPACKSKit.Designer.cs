@@ -37,7 +37,7 @@ namespace Chummer
             this.label1 = new System.Windows.Forms.Label();
             this.treContents = new System.Windows.Forms.TreeView();
             this.cmdDelete = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -242,7 +242,7 @@ namespace Chummer
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TreeView treContents;
         private System.Windows.Forms.Button cmdDelete;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

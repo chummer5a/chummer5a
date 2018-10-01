@@ -208,6 +208,8 @@ namespace Chummer.UI.Powers
                 if (objPower.Create(objXmlPower))
                 {
                     _objCharacter.Powers.Add(objPower);
+
+                    MakeDirtyWithCharacterUpdate?.Invoke(null, null);
                 }
             }
             while (blnAddAgain);
@@ -253,11 +255,11 @@ namespace Chummer.UI.Powers
 
         private void InitializeTable()
         {
-            _table = new TableView<Power>()
+            _table = new TableView<Power>
             {
-                Location = new Point(3, 3)
+                Location = new Point(3, 3),
+                ToolTip = _tipTooltip
             };
-            _table.ToolTip = _tipTooltip;
             // create columns
             TableColumn<Power> nameColumn = new TableColumn<Power>(() => new TextTableCell())
             {
