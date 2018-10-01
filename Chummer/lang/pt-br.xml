@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 <chummer>
   <version>-500</version>
   <name>Português (pt-BR)</name>
+  <righttoleft>False</righttoleft>
   <strings>
     <!-- Region Common Strings -->
     <string>
@@ -256,7 +257,15 @@
     </string>
     <string>
       <key>String_Special</key>
+      <text>Especial</text>
+    </string>
+    <string>
+      <key>String_SpecialAttributes</key>
       <text>Atributos Especiais</text>
+    </string>
+    <string>
+      <key>Label_SpecialAttributes</key>
+      <text>Atributos Especiais:</text>
     </string>
     <string>
       <key>String_SpecialAttributePoints</key>
@@ -348,7 +357,7 @@
     </string>
     <string>
       <key>String_Of</key>
-      <text>de</text>
+      <text xml:space="preserve"> de </text>
     </string>
     <string>
       <key>String_Remaining</key>
@@ -689,6 +698,10 @@
     <string>
       <key>String_Qualities</key>
       <text>Qualidades</text>
+    </string>
+    <string>
+      <key>Label_Qualities</key>
+      <text>Qualidades:</text>
     </string>
     <string>
       <key>String_Quality</key>
@@ -1779,10 +1792,6 @@
       <text>Você deve selecionar uma Arte Marcial para adicionar uma Vantagem.</text>
     </string>
     <string>
-      <key>Message_SelectLimitModifier</key>
-      <text>Você deve selecionar um Limite para adicionar um Modificador.</text>
-    </string>
-    <string>
       <key>MessageTitle_SelectMartialArtTechnique</key>
       <text>Selecione Arte Marcial</text>
     </string>
@@ -1840,7 +1849,7 @@
     </string>
     <string>
       <key>Message_RegisteredSpriteLimit</key>
-      <text>Seu número de Sprites registrados não pode exceder seu valor de CAR.</text>
+      <text>Seu número de Sprites registrados não pode exceder seu valor de LOG.</text>
     </string>
     <string>
       <key>MessageTitle_RegisteredSpriteLimit</key>
@@ -3924,6 +3933,14 @@
       <key>Button_AddPower</key>
       <text>&amp;Adicionar Poder</text>
     </string>
+    <string>
+      <key>ColumnHeader_Action</key>
+      <text>Ação</text>
+    </string>
+    <string>
+      <key>ColumnHeader_Power_Points</key>
+      <text>Pontos de Poder</text>
+    </string>
     <!-- End Region -->
     <!-- Region Technomancer Tab -->
     <string>
@@ -5178,7 +5195,7 @@
     </string>
     <string>
       <key>Tip_RecoilAccessories</key>
-      <text> + {0} ({1} (Utilizável))</text>
+      <text>{0} ({1} (Utilizável))</text>
     </string>
     <string>
       <key>Tip_RemainingVehicleModCapacity</key>
@@ -6273,7 +6290,7 @@
     </string>
     <string>
       <key>Tab_Options_Character</key>
-      <text>Personagem e Impressão</text>
+      <text>Personagem</text>
     </string>
     <string>
       <key>Tab_Options_Miscellaneous</key>
@@ -7023,19 +7040,19 @@
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Base_Lifestyle</key>
-      <text>Estilo de Vida:</text>
+      <text>[{0}/{1}]</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_PositiveQualities</key>
+      <key>Node_SelectAdvancedLifestyle_PositiveQualities</key>
       <text>Qualidades Positivas</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_NegativeQualities</key>
+      <key>Node_SelectAdvancedLifestyle_NegativeQualities</key>
       <text>Qualidades Negativas</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Base_Comforts</key>
-      <text>Confortos: [{0}/{1}]</text>
+      <text>[{0}/{1}]</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Comforts</key>
@@ -7062,12 +7079,16 @@
       <text>Necessidades:</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_Base_Area</key>
-      <text>Área: [{0}/{1}]</text>
+      <key>Label_SelectAdvancedLifestyle_Base_Neighborhood</key>
+      <text>[{0}/{1}]</text>
+    </string>
+    <string>
+      <key>Label_SelectAdvancedLifestyle_Neighborhood</key>
+      <text>Bairro:</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Base_Security</key>
-      <text>Segurança: [{0}/{1}]</text>
+      <text>[{0}/{1}]</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Security</key>
@@ -7115,11 +7136,11 @@
     </string>
     <string>
       <key>Label_SelectBP_MaxAvail</key>
-      <text>Disponibilidade\nMáxima</text>
+      <text>Disponibilidade Máxima</text>
     </string>
     <string>
       <key>Label_SelectBP_StartingKarma</key>
-      <text>Carma\nInicial</text>
+      <text>Carma Inicial</text>
     </string>
     <string>
       <key>Label_SelectBP_SumToX</key>
@@ -7772,7 +7793,7 @@
     </string>
     <string>
       <key>Checkbox_SelectSpell_LimitedSpell</key>
-      <text>Feitiço Limitado</text>
+      <text>Feitiço Limitado (SG 212)</text>
     </string>
     <string>
       <key>Tip_SelectSpell_LimitedSpell</key>
@@ -7780,11 +7801,11 @@
     </string>
     <string>
       <key>Checkbox_SelectSpell_ExtendedSpell</key>
-      <text>Feitiço Extendido</text>
+      <text>Feitiço Extendido (SR5 285)</text>
     </string>
     <string>
       <key>Checkbox_SelectSpell_Alchemical</key>
-      <text>Preparação Alquímica</text>
+      <text>Preparação Alquímica (SR5 305)</text>
     </string>
     <string>
       <key>Tip_SelectSpell_ExtendedSpell</key>

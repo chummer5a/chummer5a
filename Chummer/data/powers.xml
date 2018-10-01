@@ -169,10 +169,10 @@
       <source>SR5</source>
       <page>309</page>
       <bonus>
-        <selectskill skillcategory="Combat Active">
-          <val>0</val>
-          <applytoaccuracy>True</applytoaccuracy>
-        </selectskill>
+        <weaponskillaccuracy precedence="0">
+          <selectskill skillcategory="Combat Active" excludeskill="Unarmed Combat" />
+          <value>1</value>
+        </weaponskillaccuracy>
       </bonus>
     </power>
     <power>
@@ -371,11 +371,11 @@
       <points>.25</points>
       <levels>True</levels>
       <limit>1</limit>
+      <source>SR5</source>
+      <page>310</page>
       <bonus>
         <judgeintentionsdefense>Rating</judgeintentionsdefense>
       </bonus>
-      <source>SR5</source>
-      <page>310</page>
     </power>
     <power>
       <id>ce7df757-792e-4fac-a86e-6b587586deb2</id>
@@ -423,18 +423,18 @@
       <points>.25</points>
       <levels>True</levels>
       <limit>1</limit>
+      <source>SR5</source>
+      <page>311</page>
       <bonus>
-        <toxincontactresist>Rating</toxincontactresist>
-        <toxiningestionresist>Rating</toxiningestionresist>
-        <toxininhalationresist>Rating</toxininhalationresist>
-        <toxininjectionresist>Rating</toxininjectionresist>
         <pathogencontactresist>Rating</pathogencontactresist>
         <pathogeningestionresist>Rating</pathogeningestionresist>
         <pathogeninhalationresist>Rating</pathogeninhalationresist>
         <pathogeninjectionresist>Rating</pathogeninjectionresist>
+        <toxincontactresist>Rating</toxincontactresist>
+        <toxiningestionresist>Rating</toxiningestionresist>
+        <toxininhalationresist>Rating</toxininhalationresist>
+        <toxininjectionresist>Rating</toxininjectionresist>
       </bonus>
-      <source>SR5</source>
-      <page>311</page>
     </power>
     <power>
       <id>545a4bec-c144-42a1-b553-6d6c0c91f07f</id>
@@ -482,8 +482,8 @@
         </required>
       </adeptwayrequires>
       <bonus>
-        <stuncmrecovery>Rating</stuncmrecovery>
         <physicalcmrecovery>Rating</physicalcmrecovery>
+        <stuncmrecovery>Rating</stuncmrecovery>
       </bonus>
     </power>
     <power>
@@ -537,6 +537,10 @@
         </required>
       </adeptwayrequires>
       <bonus>
+        <specificskill>
+          <name>Impersonation</name>
+          <bonus>Rating</bonus>
+        </specificskill>
         <sociallimit>Rating</sociallimit>
       </bonus>
     </power>
@@ -656,11 +660,11 @@
       <points>.25</points>
       <levels>True</levels>
       <limit>1</limit>
+      <source>SG</source>
+      <page>169</page>
       <bonus>
         <detectionspellresist>Rating</detectionspellresist>
       </bonus>
-      <source>SG</source>
-      <page>169</page>
     </power>
     <power>
       <id>deec22db-cf2c-47b6-ac34-95a13bcd0bf8</id>
@@ -767,17 +771,17 @@
       <page>170</page>
       <action>Complex</action>
       <adeptway>.5</adeptway>
+      <bonus>
+        <addweapon>
+          <name>Elemental Body</name>
+        </addweapon>
+        <selecttext />
+      </bonus>
       <required>
         <oneof>
           <power>Elemental Strike</power>
         </oneof>
       </required>
-      <bonus>
-        <selecttext />
-        <addweapon>
-          <name>Elemental Body</name>
-        </addweapon>
-      </bonus>
     </power>
     <power>
       <id>3d27c3bb-9cca-45c2-b8b1-6225a236069b</id>
@@ -789,11 +793,6 @@
       <page>170</page>
       <action>Simple</action>
       <adeptway>.25</adeptway>
-      <required>
-        <oneof>
-          <power>Killing Hands</power>
-        </oneof>
-      </required>
       <adeptwayrequires>
         <required>
           <oneof>
@@ -805,6 +804,11 @@
       <bonus>
         <selecttext />
       </bonus>
+      <required>
+        <oneof>
+          <power>Killing Hands</power>
+        </oneof>
+      </required>
     </power>
     <power>
       <id>eb323003-4112-42ad-955a-00211e43e6d1</id>
@@ -1237,12 +1241,12 @@
       <points>.25</points>
       <levels>True</levels>
       <limit>1</limit>
-      <bonus>
-        <firearmor>Rating</firearmor>
-        <coldarmor>Rating</coldarmor>
-      </bonus>
       <source>SG</source>
       <page>175</page>
+      <bonus>
+        <coldarmor>Rating</coldarmor>
+        <firearmor>Rating</firearmor>
+      </bonus>
     </power>
     <power>
       <id>61406917-9d88-440f-a756-16bdf6ffb37e</id>
@@ -1274,14 +1278,14 @@
       <page>176</page>
       <action>Simple</action>
       <adeptway>.25</adeptway>
+      <bonus>
+        <selecttext />
+      </bonus>
       <required>
         <oneof>
           <power>Killing Hands</power>
         </oneof>
       </required>
-      <bonus>
-        <selecttext />
-      </bonus>
     </power>
     <!-- End Region -->
     <!-- Region Bullets and Bandages -->
@@ -1422,11 +1426,11 @@
       <points>.25</points>
       <levels>True</levels>
       <limit>1</limit>
+      <source>SSP</source>
+      <page>23</page>
       <bonus>
         <fatigueresist>Rating</fatigueresist>
       </bonus>
-      <source>SSP</source>
-      <page>23</page>
     </power>
     <power>
       <id>ad169692-909f-4945-a3b8-fc0d19e2ed28</id>
@@ -1507,14 +1511,14 @@
       <page>24</page>
       <adeptway>0.5</adeptway>
       <bonus>
-        <walkmultiplier>
-          <category>Swim</category>
-          <percent>100</percent>
-        </walkmultiplier>
         <sprintbonus>
           <category>Swim</category>
           <val>200</val>
         </sprintbonus>
+        <walkmultiplier>
+          <category>Swim</category>
+          <percent>100</percent>
+        </walkmultiplier>
       </bonus>
       <forbidden>
         <oneof>
@@ -1536,14 +1540,14 @@
       <page>24</page>
       <adeptway>0.5</adeptway>
       <bonus>
-        <walkmultiplier>
-          <category>Swim</category>
-          <percent>100</percent>
-        </walkmultiplier>
         <sprintbonus>
           <category>Swim</category>
           <val>400</val>
         </sprintbonus>
+        <walkmultiplier>
+          <category>Swim</category>
+          <percent>100</percent>
+        </walkmultiplier>
       </bonus>
       <required>
         <oneof>
@@ -1652,7 +1656,7 @@
       <source>HT</source>
       <page>190</page>
       <bonus>
-        <throwrange>Rating*2</throwrange>
+        <throwrangestr>Rating*2</throwrangestr>
       </bonus>
       <maxlevels>3</maxlevels>
     </power>
@@ -1672,6 +1676,12 @@
           <power>Facial Sculpt</power>
         </oneof>
       </required>
+      <bonus>
+        <specificskill>
+          <name>Disguise</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </bonus>
     </power>
     <!-- Region Cutting Aces -->
     <power>

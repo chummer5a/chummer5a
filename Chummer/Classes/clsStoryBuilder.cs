@@ -31,9 +31,6 @@ namespace Chummer
         private readonly ConcurrentDictionary<string, string> persistenceDictionary = new ConcurrentDictionary<string, string>();
         private readonly Character _objCharacter;
 
-        private readonly object _objRandomLock = new object();
-        private readonly Random _objRandom = MersenneTwister.SfmtRandom.Create();
-
         public StoryBuilder(Character objCharacter)
         {
             _objCharacter = objCharacter;
@@ -90,7 +87,7 @@ namespace Chummer
 
             return string.Join(Environment.NewLine + Environment.NewLine, story);
         }
-        
+
         private void Write(StringBuilder story, string innerText, int levels, XPathNavigator xmlBaseMacrosNode)
         {
             if (levels <= 0) return;
@@ -113,7 +110,7 @@ namespace Chummer
                 string trim = word.Trim();
                 if (string.IsNullOrEmpty(trim))
                     continue;
-                
+
                 if (trim.StartsWith('$'))
                 {
                     if (trim.StartsWith("$DOLLAR"))
@@ -190,7 +187,7 @@ namespace Chummer
             }
 
             //Did not meet predefined macros, check user defined
-            
+
             XPathNavigator xmlUserMacroNode = xmlBaseMacrosNode?.SelectSingleNode(macroName);
 
             if (xmlUserMacroNode != null)
@@ -214,23 +211,12 @@ namespace Chummer
                                     ++i;
                                 }
 
-                                int intModuloTemp = 1;
-                                if (strNames.Length > 1)
-                                {
-                                    int intModuloCheck = int.MaxValue - int.MaxValue % strNames.Length;
-                                    do
-                                    {
-                                        lock (_objRandomLock)
-                                            intModuloTemp = _objRandom.Next();
-                                    }
-                                    while (intModuloTemp >= intModuloCheck); // Modulo bias removal
-                                }
-                                strSelectedNodeName = strNames[intModuloTemp % strNames.Length];
+                                strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
                             }
                         }
                         else if (xmlUserMacroFirstChild.Name == "persistent")
                         {
-                            //Any node not named 
+                            //Any node not named
                             XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.Select("./*[not(self::default)]");
                             if (xmlPossibleNodeList.Count > 0)
                             {
@@ -242,18 +228,7 @@ namespace Chummer
                                     ++i;
                                 }
 
-                                int intModuloTemp = 1;
-                                if (strNames.Length > 1)
-                                {
-                                    int intModuloCheck = int.MaxValue - int.MaxValue % strNames.Length;
-                                    do
-                                    {
-                                        lock (_objRandomLock)
-                                            intModuloTemp = _objRandom.Next();
-                                    }
-                                    while (intModuloTemp >= intModuloCheck); // Modulo bias removal
-                                }
-                                strSelectedNodeName = strNames[intModuloTemp % strNames.Length];
+                                strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
                                 if (!persistenceDictionary.TryAdd(macroPool, strSelectedNodeName))
                                     persistenceDictionary.TryGetValue(macroPool, out strSelectedNodeName);
                             }

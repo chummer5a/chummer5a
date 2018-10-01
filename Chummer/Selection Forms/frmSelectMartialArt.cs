@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml.XPath;
 
@@ -26,13 +27,14 @@ namespace Chummer
 {
     public partial class frmSelectMartialArt : Form
     {
+        private bool _blnLoading = true;
         private string _strSelectedMartialArt = string.Empty;
-        
+
         private bool _blnAddAgain;
         private string _strForcedValue = string.Empty;
-        private bool _blnShowQualities;
 
         private readonly XPathNavigator _xmlBaseMartialArtsNode;
+        private readonly XPathNavigator _xmlBaseMartialArtsTechniquesNode;
         private readonly Character _objCharacter;
 
         #region Control Events
@@ -43,42 +45,27 @@ namespace Chummer
             _objCharacter = objCharacter;
 
             // Load the Martial Arts information.
-            _xmlBaseMartialArtsNode = XmlManager.Load("martialarts.xml").GetFastNavigator().SelectSingleNode("/chummer/martialarts");
+            XPathNavigator xmlBaseMartialArtsDocumentNode = XmlManager.Load("martialarts.xml").GetFastNavigator();
+            _xmlBaseMartialArtsNode = xmlBaseMartialArtsDocumentNode.SelectSingleNode("/chummer/martialarts");
+            _xmlBaseMartialArtsTechniquesNode = xmlBaseMartialArtsDocumentNode.SelectSingleNode("/chummer/techniques");
         }
 
         private void frmSelectMartialArt_Load(object sender, EventArgs e)
         {
-            XPathNodeIterator objArtList = null;
-            // Populate the Martial Arts list.
             if (!string.IsNullOrEmpty(_strForcedValue))
             {
-                objArtList = _xmlBaseMartialArtsNode.Select("martialart[name = \"" + _strForcedValue + "\"]");
-            }
-            if (objArtList == null || objArtList.Count == 0)
-                objArtList = _xmlBaseMartialArtsNode.Select("martialart[" + _objCharacter.Options.BookXPath() + "]");
-
-            List<ListItem> lstMartialArt = new List<ListItem>();
-            foreach (XPathNavigator objXmlArt in objArtList)
-            {
-                string strId = objXmlArt.SelectSingleNode("id")?.Value;
-                if (!string.IsNullOrEmpty(strId) && _blnShowQualities == (objXmlArt.SelectSingleNode("quality") != null) && objXmlArt.RequirementsMet(_objCharacter))
+                _blnAddAgain = false;
+                string strSelectedId = _xmlBaseMartialArtsNode.SelectSingleNode("martialart[name = \"" + _strForcedValue + "\"]/id")?.Value;
+                if (!string.IsNullOrEmpty(strSelectedId))
                 {
-                    lstMartialArt.Add(new ListItem(strId, objXmlArt.SelectSingleNode("translate")?.Value ?? objXmlArt.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
+                    _strSelectedMartialArt = strSelectedId;
+                    DialogResult = DialogResult.OK;
                 }
             }
-            lstMartialArt.Sort(CompareListItems.CompareNames);
-            lstMartialArts.BeginUpdate();
-            lstMartialArts.ValueMember = "Value";
-            lstMartialArts.DisplayMember = "Name";
-            lstMartialArts.DataSource = lstMartialArt;
 
-            if (lstMartialArts.Items.Count == 1)
-            {
-                lstMartialArts.SelectedIndex = 0;
-                _blnAddAgain = false;
-                AcceptForm();
-            }
-            lstMartialArts.EndUpdate();
+            _blnLoading = false;
+
+            RefreshArtList();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -99,6 +86,9 @@ namespace Chummer
 
         private void lstMartialArts_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_blnLoading)
+                return;
+
             string strSelectedId = lstMartialArts.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
@@ -107,22 +97,55 @@ namespace Chummer
 
                 if (objXmlArt != null)
                 {
+                    lblKarmaCost.Text = objXmlArt.SelectSingleNode("cost")?.Value ?? 7.ToString(GlobalOptions.CultureInfo);
+                    lblKarmaCostLabel.Visible = !string.IsNullOrEmpty(lblKarmaCost.Text);
+
+                    StringBuilder objTechniqueStringBuilder = new StringBuilder();
+                    foreach (XPathNavigator xmlMartialArtsTechnique in objXmlArt.Select("techniques/technique"))
+                    {
+                        string strLoopTechniqueName = xmlMartialArtsTechnique.SelectSingleNode("name")?.Value ?? string.Empty;
+                        if (!string.IsNullOrEmpty(strLoopTechniqueName))
+                        {
+                            XPathNavigator xmlTechniqueNode = _xmlBaseMartialArtsTechniquesNode.SelectSingleNode("technique[name = \"" + strLoopTechniqueName + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+                            if (xmlTechniqueNode != null)
+                            {
+                                if (objTechniqueStringBuilder.Length > 0)
+                                    objTechniqueStringBuilder.AppendLine(",");
+                                
+                                objTechniqueStringBuilder.Append(GlobalOptions.Language != GlobalOptions.DefaultLanguage ? xmlTechniqueNode.SelectSingleNode("translate")?.Value ?? strLoopTechniqueName: strLoopTechniqueName);
+                            }
+                        }
+                    }
+                    lblIncludedTechniques.Text = objTechniqueStringBuilder.ToString();
+                    lblIncludedTechniquesLabel.Visible = !string.IsNullOrEmpty(lblIncludedTechniques.Text);
+
                     string strSource = objXmlArt.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                     string strPage = objXmlArt.SelectSingleNode("altpage")?.Value ?? objXmlArt.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-
-                    tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                    string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                    lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 }
                 else
                 {
+                    lblKarmaCostLabel.Visible = false;
+                    lblKarmaCost.Text = string.Empty;
+                    lblIncludedTechniquesLabel.Visible = false;
+                    lblIncludedTechniques.Text = string.Empty;
+                    lblSourceLabel.Visible = false;
                     lblSource.Text = string.Empty;
-                    tipTooltip.SetToolTip(lblSource, string.Empty);
+                    lblSource.SetToolTip(string.Empty);
                 }
             }
             else
             {
+                lblKarmaCostLabel.Visible = false;
+                lblKarmaCost.Text = string.Empty;
+                lblIncludedTechniquesLabel.Visible = false;
+                lblIncludedTechniques.Text = string.Empty;
+                lblSourceLabel.Visible = false;
                 lblSource.Text = string.Empty;
-                tipTooltip.SetToolTip(lblSource, string.Empty);
+                lblSource.SetToolTip(string.Empty);
             }
         }
 
@@ -130,6 +153,11 @@ namespace Chummer
         {
             _blnAddAgain = true;
             AcceptForm();
+        }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            RefreshArtList();
         }
         #endregion
 
@@ -147,11 +175,7 @@ namespace Chummer
         /// <summary>
         /// Only show Martial Arts that are provided by a quality
         /// </summary>
-        public bool ShowQualities
-        {
-            get => _blnShowQualities;
-            set => _blnShowQualities = value;
-        }
+        public bool ShowQualities { get; set; }
 
         /// <summary>
         /// Force a Martial Art to be selected.
@@ -174,6 +198,49 @@ namespace Chummer
                 _strSelectedMartialArt = lstMartialArts.SelectedValue.ToString();
                 DialogResult = DialogResult.OK;
             }
+        }
+
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
+        }
+
+        /// <summary>
+        /// Populate the Martial Arts list.
+        /// </summary>
+        private void RefreshArtList()
+        {
+            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
+            if (ShowQualities)
+                strFilter += " and isquality = \"" + bool.TrueString + "\"";
+            else
+                strFilter += " and not(isquality = \"" + bool.TrueString + "\")";
+            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+
+            XPathNodeIterator objArtList = _xmlBaseMartialArtsNode.Select("martialart[" + strFilter + "]");
+            
+            List<ListItem> lstMartialArt = new List<ListItem>();
+            foreach (XPathNavigator objXmlArt in objArtList)
+            {
+                string strId = objXmlArt.SelectSingleNode("id")?.Value;
+                if (!string.IsNullOrEmpty(strId) && objXmlArt.RequirementsMet(_objCharacter))
+                {
+                    lstMartialArt.Add(new ListItem(strId, objXmlArt.SelectSingleNode("translate")?.Value ?? objXmlArt.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
+                }
+            }
+            lstMartialArt.Sort(CompareListItems.CompareNames);
+            string strOldSelected = lstMartialArts.SelectedValue?.ToString();
+            _blnLoading = true;
+            lstMartialArts.BeginUpdate();
+            lstMartialArts.ValueMember = "Value";
+            lstMartialArts.DisplayMember = "Name";
+            lstMartialArts.DataSource = lstMartialArt;
+            _blnLoading = false;
+            if (!string.IsNullOrEmpty(strOldSelected))
+                lstMartialArts.SelectedValue = strOldSelected;
+            else
+                lstMartialArts.SelectedIndex = -1;
+            lstMartialArts.EndUpdate();
         }
         #endregion
     }

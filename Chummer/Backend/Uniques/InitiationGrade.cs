@@ -29,7 +29,7 @@ namespace Chummer
     /// An Initiation Grade.
     /// </summary>
     [DebuggerDisplay("{" + nameof(Grade) + "}")]
-    public class InitiationGrade : IHasInternalId, IComparable
+    public class InitiationGrade : IHasInternalId, IComparable, ICanRemove
     {
         private Guid _guiID;
         private bool _blnGroup;
@@ -87,7 +87,7 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            if (objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 _guiID = Guid.NewGuid();
             objNode.TryGetBoolFieldQuickly("res", ref _blnTechnomancer);
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
@@ -200,23 +200,24 @@ namespace Chummer
         /// </summary>
         public string Text(string strLanguage)
         {
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
             StringBuilder strReturn = new StringBuilder(LanguageManager.GetString("String_Grade", strLanguage));
-            strReturn.Append(' ');
+            strReturn.Append(strSpaceCharacter);
             strReturn.Append(Grade.ToString());
             if (Group || Ordeal)
             {
-                strReturn.Append(" (");
+                strReturn.Append(strSpaceCharacter + '(');
                 if (Group)
                 {
                     strReturn.Append(Technomancer ? LanguageManager.GetString("String_Network", strLanguage) : LanguageManager.GetString("String_Group", strLanguage));
                     if (Ordeal || Schooling)
-                        strReturn.Append(", ");
+                        strReturn.Append(',' + strSpaceCharacter);
                 }
                 if (Ordeal)
                 {
                     strReturn.Append(Technomancer ? LanguageManager.GetString("String_Task", strLanguage) : LanguageManager.GetString("String_Ordeal", strLanguage));
                     if (Schooling)
-                        strReturn.Append(", ");
+                        strReturn.Append(',' + strSpaceCharacter);
                 }
                 if (Schooling)
                 {
@@ -236,6 +237,19 @@ namespace Chummer
             get => _strNotes;
             set => _strNotes = value;
         }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+
+                return SystemColors.WindowText;
+            }
+        }
         #endregion
 
         #region Methods
@@ -246,13 +260,10 @@ namespace Chummer
                 ContextMenuStrip = cmsInitiationGrade,
                 Name = InternalId,
                 Text = Text(GlobalOptions.Language),
-                Tag = InternalId
+                Tag = this,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!string.IsNullOrEmpty(Notes))
-            {
-                objNode.ForeColor = Color.SaddleBrown;
-            }
-            objNode.ToolTipText = Notes.WordWrap(100);
             return objNode;
         }
 
@@ -266,5 +277,47 @@ namespace Chummer
             return Grade.CompareTo(obj.Grade);
         }
         #endregion
+
+        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
+        {
+            // Stop if this isn't the highest grade
+            if (characterObject.MAGEnabled)
+            {
+                if (Grade != characterObject.InitiateGrade)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+
+                if (blnConfirmDelete)
+                {
+                    if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade",
+                        GlobalOptions.Language)))
+                        return false;
+                }
+
+                characterObject.InitiationGrades.Remove(this);
+            }
+            else if (characterObject.RESEnabled)
+            {
+                if (Grade != characterObject.SubmersionGrade)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+
+                if (blnConfirmDelete)
+                {
+                    if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade",
+                        GlobalOptions.Language)))
+                        return false;
+                }
+
+                characterObject.InitiationGrades.Remove(this);
+            }
+            else
+                return false;
+            return true;
+        }
     }
 }

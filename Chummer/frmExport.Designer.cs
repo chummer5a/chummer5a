@@ -1,5 +1,3 @@
-using System.Windows.Controls;
-
 namespace Chummer
 {
     partial class frmExport
@@ -18,7 +16,6 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                htmlToolTip1?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -32,12 +29,11 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.lblExport = new System.Windows.Forms.Label();
-            this.cboXSLT = new System.Windows.Forms.ComboBox();
+            this.cboXSLT = new ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.SaveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.rtbText = new System.Windows.Forms.RichTextBox();
-            this.htmlToolTip1 = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.SuspendLayout();
             // 
             // lblExport
@@ -52,6 +48,8 @@ namespace Chummer
             // 
             // cboXSLT
             // 
+            this.cboXSLT.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cboXSLT.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboXSLT.FormattingEnabled = true;
             this.cboXSLT.Location = new System.Drawing.Point(70, 6);
@@ -64,7 +62,7 @@ namespace Chummer
             // 
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(293, 274);
+            this.cmdCancel.Location = new System.Drawing.Point(296, 246);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 3;
@@ -76,7 +74,7 @@ namespace Chummer
             // cmdOK
             // 
             this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdOK.Location = new System.Drawing.Point(374, 274);
+            this.cmdOK.Location = new System.Drawing.Point(377, 246);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 2;
@@ -87,22 +85,17 @@ namespace Chummer
             // 
             // rtbText
             // 
+            this.rtbText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.rtbText.Location = new System.Drawing.Point(12, 33);
             this.rtbText.Name = "rtbText";
             this.rtbText.ReadOnly = true;
-            this.rtbText.Size = new System.Drawing.Size(437, 235);
+            this.rtbText.Size = new System.Drawing.Size(437, 207);
             this.rtbText.TabIndex = 4;
             this.rtbText.Text = "";
             this.rtbText.MouseLeave += new System.EventHandler(this.rtbText_Leave);
             this.rtbText.MouseUp += new System.Windows.Forms.MouseEventHandler(this.rtbText_MouseUp);
-            // 
-            // htmlToolTip1
-            // 
-            this.htmlToolTip1.AllowLinksHandling = true;
-            this.htmlToolTip1.BaseStylesheet = null;
-            this.htmlToolTip1.MaximumSize = new System.Drawing.Size(0, 0);
-            this.htmlToolTip1.OwnerDraw = true;
-            this.htmlToolTip1.TooltipCssClass = "htmltooltip";
             // 
             // frmExport
             // 
@@ -110,7 +103,7 @@ namespace Chummer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(461, 309);
+            this.ClientSize = new System.Drawing.Size(464, 281);
             this.Controls.Add(this.rtbText);
             this.Controls.Add(this.cmdCancel);
             this.Controls.Add(this.cmdOK);
@@ -132,11 +125,10 @@ namespace Chummer
         #endregion
 
         private System.Windows.Forms.Label lblExport;
-        private System.Windows.Forms.ComboBox cboXSLT;
+        private ElasticComboBox cboXSLT;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
         internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
         private System.Windows.Forms.RichTextBox rtbText;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip htmlToolTip1;
     }
 }

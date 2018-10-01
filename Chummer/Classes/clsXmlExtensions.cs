@@ -34,8 +34,8 @@ namespace Chummer
 
         /// <summary>
         /// This method is syntaxtic sugar for atempting to read a data field
-        /// from an XmlNode. This version sets the output variable to its 
-        /// default value in case of a failed read and can be used for 
+        /// from an XmlNode. This version sets the output variable to its
+        /// default value in case of a failed read and can be used for
         /// initializing variables
         /// </summary>
         /// <typeparam name="T">The type to convert to</typeparam>
@@ -103,7 +103,7 @@ namespace Chummer
 
                 //Otherwise just log it
 #if DEBUG
-                System.Reflection.MethodBase mth 
+                System.Reflection.MethodBase mth
                     = new StackTrace().GetFrame(1).GetMethod();
                 string errorMsg = string.Format("Tried to read missing field \"{0}\" in {1}.{2}", field, mth.ReflectedType?.Name, mth);
 #else
@@ -120,8 +120,8 @@ namespace Chummer
 
         /// <summary>
         /// This method is syntaxtic sugar for atempting to read a data field
-        /// from an XmlNode. This version sets the output variable to its 
-        /// default value in case of a failed read and can be used for 
+        /// from an XmlNode. This version sets the output variable to its
+        /// default value in case of a failed read and can be used for
         /// initializing variables. It can work on any type, but it requires
         /// a tryParse style function that is fed the nodes InnerText
         /// </summary>
@@ -179,7 +179,7 @@ namespace Chummer
         /// <summary>
         /// This method is syntaxtic sugar for atempting to read a data field
         /// from an XmlNode. This version preserves the output variable in case
-        /// of a failed read 
+        /// of a failed read
         /// </summary>
         /// <typeparam name="T">The type to convert to</typeparam>
         /// <param name="node">The XmlNode to read from</param>
@@ -385,19 +385,16 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetStringFieldQuickly(this XmlNode node, string field, ref string read)
         {
-            XmlElement objField = node[field];
+            XmlElement objField = node?[field];
             if (objField != null)
             {
                 read = objField.InnerText;
                 return true;
             }
-            XmlAttribute objAttribute = node.Attributes?[field];
-            if (objAttribute != null)
-            {
-                read = objAttribute.InnerText;
-                return true;
-            }
-            return false;
+            XmlAttribute objAttribute = node?.Attributes?[field];
+            if (objAttribute == null) return false;
+            read = objAttribute.InnerText;
+            return true;
         }
 
         /// <summary>
@@ -406,18 +403,13 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetInt32FieldQuickly(this XmlNode node, string field, ref int read, IFormatProvider objCulture = null)
         {
-            XmlElement objField = node[field];
-            if (objField != null)
-            {
-                if (objCulture == null)
-                    objCulture = GlobalOptions.InvariantCultureInfo;
-                if (int.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out int intTmp))
-                {
-                    read = intTmp;
-                    return true;
-                }
-            }
-            return false;
+            XmlElement objField = node?[field];
+            if (objField == null) return false;
+            if (objCulture == null)
+                objCulture = GlobalOptions.InvariantCultureInfo;
+            if (!int.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out int intTmp)) return false;
+            read = intTmp;
+            return true;
         }
 
         /// <summary>
@@ -426,16 +418,11 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetBoolFieldQuickly(this XmlNode node, string field, ref bool read)
         {
-            XmlElement objField = node[field];
-            if (objField != null)
-            {
-                if (bool.TryParse(objField.InnerText, out bool blnTmp))
-                {
-                    read = blnTmp;
-                    return true;
-                }
-            }
-            return false;
+            XmlElement objField = node?[field];
+            if (objField == null) return false;
+            if (!bool.TryParse(objField.InnerText, out bool blnTmp)) return false;
+            read = blnTmp;
+            return true;
         }
 
         /// <summary>
@@ -444,18 +431,13 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetDecFieldQuickly(this XmlNode node, string field, ref decimal read, IFormatProvider objCulture = null)
         {
-            XmlElement objField = node[field];
-            if (objField != null)
-            {
-                if (objCulture == null)
-                    objCulture = GlobalOptions.InvariantCultureInfo;
-                if (decimal.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out decimal decTmp))
-                {
-                    read = decTmp;
-                    return true;
-                }
-            }
-            return false;
+            XmlElement objField = node?[field];
+            if (objField == null) return false;
+            if (objCulture == null)
+                objCulture = GlobalOptions.InvariantCultureInfo;
+            if (!decimal.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out decimal decTmp)) return false;
+            read = decTmp;
+            return true;
         }
 
         /// <summary>
@@ -464,18 +446,13 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetDoubleFieldQuickly(this XmlNode node, string field, ref double read, IFormatProvider objCulture = null)
         {
-            XmlElement objField = node[field];
-            if (objField != null)
-            {
-                if (objCulture == null)
-                    objCulture = GlobalOptions.InvariantCultureInfo;
-                if (double.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out double dblTmp))
-                {
-                    read = dblTmp;
-                    return true;
-                }
-            }
-            return false;
+            XmlElement objField = node?[field];
+            if (objField == null) return false;
+            if (objCulture == null)
+                objCulture = GlobalOptions.InvariantCultureInfo;
+            if (!double.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out double dblTmp)) return false;
+            read = dblTmp;
+            return true;
         }
 
         /// <summary>
@@ -484,18 +461,13 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetFloatFieldQuickly(this XmlNode node, string field, ref float read, IFormatProvider objCulture = null)
         {
-            XmlElement objField = node[field];
-            if (objField != null)
-            {
-                if (objCulture == null)
-                    objCulture = GlobalOptions.InvariantCultureInfo;
-                if (float.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out float fltTmp))
-                {
-                    read = fltTmp;
-                    return true;
-                }
-            }
-            return false;
+            XmlElement objField = node?[field];
+            if (objField == null) return false;
+            if (objCulture == null)
+                objCulture = GlobalOptions.InvariantCultureInfo;
+            if (!float.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out float fltTmp)) return false;
+            read = fltTmp;
+            return true;
         }
 
         /// <summary>

@@ -16,7 +16,6 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                tipTooltip?.Dispose();
                 UnbindContactControl();
             }
             base.Dispose(disposing);
@@ -37,8 +36,7 @@ namespace Chummer
             this.tsContactOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.tsRemoveCharacter = new System.Windows.Forms.ToolStripMenuItem();
             this.tsAttachCharacter = new System.Windows.Forms.ToolStripMenuItem();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
-            this.cboContactRole = new System.Windows.Forms.ComboBox();
+            this.cboContactRole = new Chummer.ElasticComboBox();
             this.txtContactName = new System.Windows.Forms.TextBox();
             this.txtContactLocation = new System.Windows.Forms.TextBox();
             this.cmdExpand = new System.Windows.Forms.Button();
@@ -51,13 +49,13 @@ namespace Chummer
             this.chkFamily = new System.Windows.Forms.CheckBox();
             this.lblConnection = new System.Windows.Forms.Label();
             this.lblLoyalty = new System.Windows.Forms.Label();
-            this.cboMetatype = new System.Windows.Forms.ComboBox();
-            this.cboSex = new System.Windows.Forms.ComboBox();
-            this.cboType = new System.Windows.Forms.ComboBox();
-            this.cboPreferredPayment = new System.Windows.Forms.ComboBox();
-            this.cboAge = new System.Windows.Forms.ComboBox();
-            this.cboHobbiesVice = new System.Windows.Forms.ComboBox();
-            this.cboPersonalLife = new System.Windows.Forms.ComboBox();
+            this.cboMetatype = new Chummer.ElasticComboBox();
+            this.cboSex = new Chummer.ElasticComboBox();
+            this.cboType = new Chummer.ElasticComboBox();
+            this.cboPreferredPayment = new Chummer.ElasticComboBox();
+            this.cboAge = new Chummer.ElasticComboBox();
+            this.cboHobbiesVice = new Chummer.ElasticComboBox();
+            this.cboPersonalLife = new Chummer.ElasticComboBox();
             this.lblMetatype = new System.Windows.Forms.Label();
             this.lblSex = new System.Windows.Forms.Label();
             this.lblAge = new System.Windows.Forms.Label();
@@ -65,8 +63,8 @@ namespace Chummer
             this.lblType = new System.Windows.Forms.Label();
             this.lblPreferredPayment = new System.Windows.Forms.Label();
             this.lblHobbiesVice = new System.Windows.Forms.Label();
-            this.tlpStatBlock = new System.Windows.Forms.TableLayoutPanel();
-            this.tlpStatHeader = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpStatBlock = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpStatHeader = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudConnection)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLoyalty)).BeginInit();
             this.cmsContact.SuspendLayout();
@@ -127,6 +125,8 @@ namespace Chummer
             // cmdDelete
             // 
             this.cmdDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdDelete.AutoSize = true;
+            this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDelete.FlatAppearance.BorderSize = 0;
             this.cmdDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmdDelete.Image = global::Chummer.Properties.Resources.delete;
@@ -174,20 +174,6 @@ namespace Chummer
             this.tsAttachCharacter.Text = "Attach Character";
             this.tsAttachCharacter.Click += new System.EventHandler(this.tsAttachCharacter_Click);
             // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AllowLinksHandling = true;
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.BaseStylesheet = null;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipTooltip.OwnerDraw = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.TooltipCssClass = "htmltooltip";
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
-            // 
             // cboContactRole
             // 
             this.cboContactRole.FormattingEnabled = true;
@@ -195,6 +181,7 @@ namespace Chummer
             this.cboContactRole.Name = "cboContactRole";
             this.cboContactRole.Size = new System.Drawing.Size(120, 21);
             this.cboContactRole.TabIndex = 2;
+            this.cboContactRole.TooltipText = "";
             this.cboContactRole.TextChanged += new System.EventHandler(this.cboContactRole_TextChanged);
             // 
             // txtContactName
@@ -338,6 +325,7 @@ namespace Chummer
             this.cboMetatype.Name = "cboMetatype";
             this.cboMetatype.Size = new System.Drawing.Size(164, 21);
             this.cboMetatype.TabIndex = 20;
+            this.cboMetatype.TooltipText = "";
             this.cboMetatype.TextChanged += new System.EventHandler(this.cboMetatype_TextChanged);
             // 
             // cboSex
@@ -348,6 +336,7 @@ namespace Chummer
             this.cboSex.Name = "cboSex";
             this.cboSex.Size = new System.Drawing.Size(164, 21);
             this.cboSex.TabIndex = 21;
+            this.cboSex.TooltipText = "";
             this.cboSex.TextChanged += new System.EventHandler(this.cboSex_TextChanged);
             // 
             // cboType
@@ -358,6 +347,7 @@ namespace Chummer
             this.cboType.Name = "cboType";
             this.cboType.Size = new System.Drawing.Size(164, 21);
             this.cboType.TabIndex = 22;
+            this.cboType.TooltipText = "";
             this.cboType.TextChanged += new System.EventHandler(this.cboType_TextChanged);
             // 
             // cboPreferredPayment
@@ -368,6 +358,7 @@ namespace Chummer
             this.cboPreferredPayment.Name = "cboPreferredPayment";
             this.cboPreferredPayment.Size = new System.Drawing.Size(165, 21);
             this.cboPreferredPayment.TabIndex = 23;
+            this.cboPreferredPayment.TooltipText = "";
             this.cboPreferredPayment.TextChanged += new System.EventHandler(this.cboPreferredPayment_TextChanged);
             // 
             // cboAge
@@ -378,6 +369,7 @@ namespace Chummer
             this.cboAge.Name = "cboAge";
             this.cboAge.Size = new System.Drawing.Size(164, 21);
             this.cboAge.TabIndex = 24;
+            this.cboAge.TooltipText = "";
             this.cboAge.TextChanged += new System.EventHandler(this.cboAge_TextChanged);
             // 
             // cboHobbiesVice
@@ -388,6 +380,7 @@ namespace Chummer
             this.cboHobbiesVice.Name = "cboHobbiesVice";
             this.cboHobbiesVice.Size = new System.Drawing.Size(165, 21);
             this.cboHobbiesVice.TabIndex = 25;
+            this.cboHobbiesVice.TooltipText = "";
             this.cboHobbiesVice.TextChanged += new System.EventHandler(this.cboHobbiesVice_TextChanged);
             // 
             // cboPersonalLife
@@ -398,6 +391,7 @@ namespace Chummer
             this.cboPersonalLife.Name = "cboPersonalLife";
             this.cboPersonalLife.Size = new System.Drawing.Size(165, 21);
             this.cboPersonalLife.TabIndex = 26;
+            this.cboPersonalLife.TooltipText = "";
             this.cboPersonalLife.TextChanged += new System.EventHandler(this.cboPersonalLife_TextChanged);
             // 
             // lblMetatype
@@ -599,9 +593,8 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsContactOpen;
         private System.Windows.Forms.ToolStripMenuItem tsRemoveCharacter;
         private System.Windows.Forms.ToolStripMenuItem tsAttachCharacter;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.PictureBox imgNotes;
-        private System.Windows.Forms.ComboBox cboContactRole;
+        private ElasticComboBox cboContactRole;
         private System.Windows.Forms.TextBox txtContactName;
         private System.Windows.Forms.TextBox txtContactLocation;
         private System.Windows.Forms.Button cmdExpand;
@@ -612,13 +605,13 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkFamily;
         private System.Windows.Forms.Label lblConnection;
         private System.Windows.Forms.Label lblLoyalty;
-        private System.Windows.Forms.ComboBox cboMetatype;
-        private System.Windows.Forms.ComboBox cboSex;
-        private System.Windows.Forms.ComboBox cboType;
-        private System.Windows.Forms.ComboBox cboPreferredPayment;
-        private System.Windows.Forms.ComboBox cboAge;
-        private System.Windows.Forms.ComboBox cboHobbiesVice;
-        private System.Windows.Forms.ComboBox cboPersonalLife;
+        private ElasticComboBox cboMetatype;
+        private ElasticComboBox cboSex;
+        private ElasticComboBox cboType;
+        private ElasticComboBox cboPreferredPayment;
+        private ElasticComboBox cboAge;
+        private ElasticComboBox cboHobbiesVice;
+        private ElasticComboBox cboPersonalLife;
         private System.Windows.Forms.Label lblMetatype;
         private System.Windows.Forms.Label lblSex;
         private System.Windows.Forms.Label lblAge;
@@ -626,7 +619,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblType;
         private System.Windows.Forms.Label lblPreferredPayment;
         private System.Windows.Forms.Label lblHobbiesVice;
-        private System.Windows.Forms.TableLayoutPanel tlpStatBlock;
-        private System.Windows.Forms.TableLayoutPanel tlpStatHeader;
+        private Chummer.BufferedTableLayoutPanel tlpStatBlock;
+        private Chummer.BufferedTableLayoutPanel tlpStatHeader;
     }
 }

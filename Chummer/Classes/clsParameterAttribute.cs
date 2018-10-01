@@ -48,7 +48,7 @@ namespace Chummer
         /// <param name="attribute"></param>
         public ParameterAttribute(Gear gear, string attribute)
         {
-            
+
             _gear = gear;
             _attribute = attribute;
 
@@ -62,7 +62,7 @@ namespace Chummer
                 string vals = m.Groups[1].Value;
 
                 //Regex to extract anything inbetween [ ]
-                //Not sure why i don't just split by , and remove it durring 
+                //Not sure why i don't just split by , and remove it durring
                 //next phase
                 MatchCollection m2 = Regex.Matches(vals, @"\[([^\]]*)\]");
 
@@ -79,7 +79,7 @@ namespace Chummer
             }
             else
             {
-                
+
             }
 
             

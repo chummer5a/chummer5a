@@ -1569,6 +1569,15 @@
       <specs />
     </skill>
     <skill>
+      <id>8879baa1-4e10-4667-bd00-62f4f594dbbb</id>
+      <name>Area Knowledge: Neo-Tokyo</name>
+      <attribute>INT</attribute>
+      <category>Street</category>
+      <default>False</default>
+      <skillgroup />
+      <specs />
+    </skill>
+    <skill>
       <id>f9f9badb-0f5e-4662-8b34-fdd8e2994caa</id>
       <name>Area Knowledge: Portland</name>
       <attribute>INT</attribute>
@@ -2775,6 +2784,23 @@
         <spec>Marines</spec>
         <spec>Navy</spec>
         <spec>Special Forces</spec>
+      </specs>
+    </skill>
+    <skill>
+      <id>0e5b89c5-1143-4e73-ab71-0700910fcaaa</id>
+      <name>Mixed Unit Tactics</name>
+      <attribute>INT</attribute>
+      <category>Interest</category>
+      <default>False</default>
+      <skillgroup />
+      <specs>
+        <spec>Aerial/Aircraft</spec>
+        <spec>Armored Infantry</spec>
+        <spec>Artillery</spec>
+        <spec>Naval</spec>
+        <spec>Mechanized Infantry</spec>
+        <spec>Standard Infantry</spec>
+        <spec>[Single Unit Type]</spec>
       </specs>
     </skill>
     <skill>

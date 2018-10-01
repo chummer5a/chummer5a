@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,20 +28,25 @@ using System.Linq;
 [assembly: CLSCompliant(true)]
 namespace Chummer
 {
-    static class Program
+    internal static class Program
     {
         private const string strChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
-        private static Mutex s_MutexGlobal;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
-            using (s_MutexGlobal = new Mutex(false, @"Global\" + strChummerGuid))
+            using (GlobalChummerMutex = new Mutex(false, @"Global\" + strChummerGuid))
             {
-                ProfileOptimization.SetProfileRoot(Application.StartupPath);
-                ProfileOptimization.StartProfile("chummerprofile");
+                IsMono = Type.GetType("Mono.Runtime") != null;
+                // Mono doesn't always play nice with ProfileOptimization, so it's better to just not bother with it when running under Mono
+                if (!IsMono)
+                {
+                    ProfileOptimization.SetProfileRoot(Application.StartupPath);
+                    ProfileOptimization.StartProfile("chummerprofile");
+                }
+
                 Stopwatch sw = Stopwatch.StartNew();
                 //If debuging and launched from other place (Bootstrap), launch debugger
                 if (Environment.GetCommandLineArgs().Contains("/debug") && !Debugger.IsAttached)
@@ -49,7 +54,7 @@ namespace Chummer
                     Debugger.Launch();
                 }
                 sw.TaskEnd("dbgchk");
-                //Various init stuff (that mostly "can" be removed as they serve 
+                //Various init stuff (that mostly "can" be removed as they serve
                 //debugging more than function
 
 
@@ -60,15 +65,15 @@ namespace Chummer
                 sw.TaskEnd("fixcwd");
                 //Log exceptions that is caught. Wanting to know about this cause of performance
                 AppDomain.CurrentDomain.FirstChanceException += Log.FirstChanceException;
-                AppDomain.CurrentDomain.FirstChanceException += s_Heatmap.OnException;
+                AppDomain.CurrentDomain.FirstChanceException += ExceptionHeatmap.OnException;
 
                 sw.TaskEnd("appdomain 2");
 
-                string info =
+                string strInfo =
                     $"Application Chummer5a build {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version} started at {DateTime.UtcNow} with command line arguments {Environment.CommandLine}";
                 sw.TaskEnd("infogen");
 
-                Log.Info(info);
+                Log.Info(strInfo);
                 sw.TaskEnd("infoprnt");
 
                 Application.EnableVisualStyles();
@@ -105,28 +110,36 @@ namespace Chummer
                 // Make sure the default language has been loaded before attempting to open the Main Form.
                 LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
 
-                s_FrmMainForm = new frmChummerMain();
-                Application.Run(s_FrmMainForm);
+                MainForm = new frmChummerMain();
+                Application.Run(MainForm);
 
-                Log.Info(s_Heatmap.GenerateInfo());
+                Log.Info(ExceptionHeatmap.GenerateInfo());
             }
         }
 
-        private static frmChummerMain s_FrmMainForm;
         /// <summary>
         /// Main application form.
         /// </summary>
         public static frmChummerMain MainForm
         {
-            get => s_FrmMainForm;
-            set => s_FrmMainForm = value;
+            get;
+            set;
         }
 
-        static readonly ExceptionHeatMap s_Heatmap = new ExceptionHeatMap();
+        /// <summary>
+        /// Whether the application is running under Mono (true) or .NET (false)
+        /// </summary>
+        public static bool IsMono
+        {
+            get;
+            private set;
+        }
+
+        private static ExceptionHeatMap ExceptionHeatmap { get; } = new ExceptionHeatMap();
 
         static void FixCwd()
         {
-            //If launched by file assiocation, the cwd is file location. 
+            //If launched by file assiocation, the cwd is file location.
             //Chummer looks for data in cwd, to be able to move exe (legacy+bootstraper uses this)
 
             if (Directory.Exists(Path.Combine(Application.StartupPath, "data"))
@@ -141,6 +154,10 @@ namespace Chummer
             Environment.CurrentDirectory = Application.StartupPath;
         }
 
-        public static Mutex GlobalChummerMutex => s_MutexGlobal;
+        public static Mutex GlobalChummerMutex
+        {
+            get;
+            private set;
+        }
     }
 }

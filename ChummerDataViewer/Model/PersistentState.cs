@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using Amazon.Runtime;
 
@@ -29,7 +29,7 @@ namespace ChummerDataViewer.Model
 
 			Directory.CreateDirectory(BulkFolder);
 		}
-		
+
 		static PersistentState()
 		{
 			if (File.Exists(Path.Combine(DatabaseFolder, "persistent.db")))

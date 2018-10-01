@@ -17,6 +17,7 @@ namespace Translator.Properties
 			defaultInstance = (Settings)Synchronized(new Settings());
 		}
 
+	    // ReSharper disable once EmptyConstructor
 		public Settings()
 		{
 		}

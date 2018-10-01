@@ -33,6 +33,7 @@ namespace Chummer
         private string _strIncludeSkillGroup = string.Empty;
         private string _strExcludeSkillGroup = string.Empty;
         private string _strLimitToSkill = string.Empty;
+        private string _strExcludeSkill = string.Empty;
         private string _strLimitToCategories = string.Empty;
         private string _strForceSkill = string.Empty;
         private readonly string _strSourceName;
@@ -66,7 +67,7 @@ namespace Chummer
             else
             {
                 if (!string.IsNullOrEmpty(_strLimitToCategories))
-                    objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[category = " + _strLimitToCategories + " and (" + _objCharacter.Options.BookXPath() + ")]");
+                    objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + _strLimitToCategories + " and (" + _objCharacter.Options.BookXPath() + ")]");
                 else
                 {
                     string strFilter = "not(exotic)";
@@ -130,27 +131,41 @@ namespace Chummer
                         strFilter = strFilter.Substring(0, strFilter.Length - 4);
                         strFilter += ')';
                     }
+                    if (!string.IsNullOrEmpty(_strExcludeSkill))
+                    {
+                        strFilter += " and (";
+                        string[] strValue = _strExcludeSkill.Split(',');
+                        foreach (string strSkill in strValue)
+                            strFilter += "name != \"" + strSkill.Trim() + "\" and ";
+                        // Remove the trailing " or ".
+                        strFilter = strFilter.Substring(0, strFilter.Length - 4);
+                        strFilter += ')';
+                    }
                     objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + strFilter + " and (" + _objCharacter.Options.BookXPath() + ")]");
                 }
             }
 
             // Add the Skills to the list.
-            foreach (XmlNode objXmlSkill in objXmlSkillList)
+            if (objXmlSkillList?.Count > 0)
             {
-                string strXmlSkillName = objXmlSkill["name"].InnerText;
-                Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(strXmlSkillName);
-                if (objExistingSkill == null)
+                foreach (XmlNode objXmlSkill in objXmlSkillList)
                 {
-                    if (_intMinimumRating > 0)
+                    string strXmlSkillName = objXmlSkill["name"]?.InnerText;
+                    Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(strXmlSkillName);
+                    if (objExistingSkill == null)
+                    {
+                        if (_intMinimumRating > 0)
+                        {
+                            continue;
+                        }
+                    }
+                    else if (objExistingSkill.Rating < _intMinimumRating || objExistingSkill.Rating > _intMaximumRating)
                     {
                         continue;
                     }
+
+                    lstSkills.Add(new ListItem(strXmlSkillName, objXmlSkill["translate"]?.InnerText ?? strXmlSkillName));
                 }
-                else if (objExistingSkill.Rating < _intMinimumRating || objExistingSkill.Rating > _intMaximumRating)
-                {
-                    continue;
-                }
-                lstSkills.Add(new ListItem(strXmlSkillName, objXmlSkill["translate"]?.InnerText ?? strXmlSkillName));
             }
 
             // Add in any Exotic Skills the character has.
@@ -176,6 +191,8 @@ namespace Chummer
                             blnAddSkill = !_strExcludeSkillGroup.Contains(objExoticSkill.SkillGroup);
                         else if (!string.IsNullOrEmpty(_strLimitToSkill))
                             blnAddSkill = _strLimitToSkill.Contains(objExoticSkill.Name);
+                        else if (!string.IsNullOrEmpty(_strExcludeSkill))
+                            blnAddSkill = !_strExcludeSkill.Contains(objExoticSkill.Name);
                     }
 
                     if (blnAddSkill)
@@ -194,7 +211,7 @@ namespace Chummer
                 DialogResult = DialogResult.Cancel;
                 return;
             }
-            
+
             lstSkills.Sort(CompareListItems.CompareNames);
             cboSkill.BeginUpdate();
             cboSkill.ValueMember = "Value";
@@ -299,6 +316,14 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Only Skills not among the selected should be in the list.
+        /// </summary>
+        public string ExcludeSkill
+        {
+            set => _strExcludeSkill = value;
+        }
+
+        /// <summary>
         /// Skill that was selected in the dialogue.
         /// </summary>
         public string SelectedSkill => _strReturnValue;
@@ -327,7 +352,5 @@ namespace Chummer
             set => _intMaximumRating = value;
         }
         #endregion
-
-        public  Character objCharacter { get; set; }
     }
 }

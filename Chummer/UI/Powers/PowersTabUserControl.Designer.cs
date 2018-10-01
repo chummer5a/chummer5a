@@ -28,36 +28,22 @@ namespace Chummer.UI.Powers
         /// </summary>
         private void InitializeComponent()
         {
-            this.cboSort = new System.Windows.Forms.ComboBox();
+            this.components = new System.ComponentModel.Container();
             this.cmdAddPower = new System.Windows.Forms.Button();
-            this.cboDisplayFilter = new System.Windows.Forms.ComboBox();
+            this.cboDisplayFilter = new ElasticComboBox();
             this.lblPowerPoints = new System.Windows.Forms.Label();
             this.lblPowerPointsLabel = new System.Windows.Forms.Label();
             this.pnlPowers = new System.Windows.Forms.Panel();
-            this.lblLevels = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.lblDiscountLabel = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this._tipTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
-            // 
-            // cboSort
-            // 
-            this.cboSort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboSort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboSort.FormattingEnabled = true;
-            this.cboSort.IntegralHeight = false;
-            this.cboSort.Location = new System.Drawing.Point(487, 3);
-            this.cboSort.Name = "cboSort";
-            this.cboSort.Size = new System.Drawing.Size(133, 21);
-            this.cboSort.TabIndex = 7;
-            this.cboSort.SelectedIndexChanged += new System.EventHandler(this.cboSort_SelectedIndexChanged);
             // 
             // cmdAddPower
             // 
             this.cmdAddPower.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdAddPower.Location = new System.Drawing.Point(392, 3);
+            this.cmdAddPower.AutoSize = true;
+            this.cmdAddPower.Location = new System.Drawing.Point(531, 3);
             this.cmdAddPower.Name = "cmdAddPower";
-            this.cmdAddPower.Size = new System.Drawing.Size(89, 21);
+            this.cmdAddPower.Size = new System.Drawing.Size(89, 23);
             this.cmdAddPower.TabIndex = 6;
             this.cmdAddPower.Tag = "Button_AddPower";
             this.cmdAddPower.Text = "Add Power";
@@ -101,66 +87,28 @@ namespace Chummer.UI.Powers
             this.pnlPowers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlPowers.AutoScroll = true;
             this.pnlPowers.Location = new System.Drawing.Point(6, 47);
             this.pnlPowers.Name = "pnlPowers";
             this.pnlPowers.Size = new System.Drawing.Size(821, 561);
             this.pnlPowers.TabIndex = 10;
             // 
-            // lblLevels
-            // 
-            this.lblLevels.AutoSize = true;
-            this.lblLevels.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblLevels.Location = new System.Drawing.Point(330, 30);
-            this.lblLevels.Name = "lblLevels";
-            this.lblLevels.Size = new System.Drawing.Size(41, 13);
-            this.lblLevels.TabIndex = 2;
-            this.lblLevels.Tag = "Label_PowerLevels";
-            this.lblLevels.Text = "Levels:";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(376, 30);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(72, 13);
-            this.label1.TabIndex = 11;
-            this.label1.Text = "Power Points:";
-            // 
-            // lblDiscountLabel
-            // 
-            this.lblDiscountLabel.AutoSize = true;
-            this.lblDiscountLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDiscountLabel.Location = new System.Drawing.Point(454, 30);
-            this.lblDiscountLabel.Name = "lblDiscountLabel";
-            this.lblDiscountLabel.Size = new System.Drawing.Size(74, 13);
-            this.lblDiscountLabel.TabIndex = 12;
-            this.lblDiscountLabel.Tag = "Label_Power_DiscountedBy";
-            this.lblDiscountLabel.Text = "Discounted by";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(285, 30);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(39, 13);
-            this.label2.TabIndex = 13;
-            this.label2.Tag = "Label_Action";
-            this.label2.Text = "Action:";
+            // _tipTooltip
+            //
+            this._tipTooltip.AutoPopDelay = 10000;
+            this._tipTooltip.InitialDelay = 250;
+            this._tipTooltip.IsBalloon = true;
+            this._tipTooltip.ReshowDelay = 100;
+            this._tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this._tipTooltip.ToolTipTitle = "Chummer Help";
             // 
             // PowersTabUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.lblDiscountLabel);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.lblLevels);
             this.Controls.Add(this.pnlPowers);
             this.Controls.Add(this.lblPowerPoints);
             this.Controls.Add(this.lblPowerPointsLabel);
-            this.Controls.Add(this.cboSort);
             this.Controls.Add(this.cmdAddPower);
             this.Controls.Add(this.cboDisplayFilter);
             this.Name = "PowersTabUserControl";
@@ -172,16 +120,12 @@ namespace Chummer.UI.Powers
         }
 
         #endregion
-
-        private System.Windows.Forms.ComboBox cboSort;
+        
         private System.Windows.Forms.Button cmdAddPower;
-        private System.Windows.Forms.ComboBox cboDisplayFilter;
+        private ElasticComboBox cboDisplayFilter;
         private System.Windows.Forms.Label lblPowerPoints;
         private System.Windows.Forms.Label lblPowerPointsLabel;
         private System.Windows.Forms.Panel pnlPowers;
-        private System.Windows.Forms.Label lblLevels;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label lblDiscountLabel;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ToolTip _tipTooltip;
     }
 }

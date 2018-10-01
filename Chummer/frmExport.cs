@@ -45,6 +45,7 @@ namespace Chummer
 
         private void frmExport_Load(object sender, EventArgs e)
         {
+            cboXSLT.Items.Add("Export JSON");
             // Populate the XSLT list with all of the XSL files found in the sheets directory.
             string exportDirectoryPath = Path.Combine(Application.StartupPath, "export");
             foreach (string strFile in Directory.GetFiles(exportDirectoryPath))
@@ -56,8 +57,6 @@ namespace Chummer
                     cboXSLT.Items.Add(strFileName);
                 }
             }
-
-            cboXSLT.Items.Add("Export JSON");
 
             if (cboXSLT.Items.Count > 0)
                 cboXSLT.SelectedIndex = 0;
@@ -146,7 +145,7 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
-            
+
             File.WriteAllText(strSaveFile, rtbText.Text); // Change this to a proper path.
 
             DialogResult = DialogResult.OK;

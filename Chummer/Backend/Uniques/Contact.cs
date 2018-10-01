@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Annotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,6 +25,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -45,7 +47,7 @@ namespace Chummer
     /// A Contact or Enemy.
     /// </summary>
     [DebuggerDisplay("{" + nameof(Name) + "} ({DisplayRoleMethod(GlobalOptions.DefaultLanguage)})")]
-    public class Contact : INotifyPropertyChanged, IHasName, IHasMugshots
+    public class Contact : INotifyMultiplePropertyChanged, IHasName, IHasMugshots, IHasNotes
     {
         private string _strName = string.Empty;
         private string _strRole = string.Empty;
@@ -69,19 +71,122 @@ namespace Chummer
         private Character _objLinkedCharacter;
         private string _strNotes = string.Empty;
         private Color _objColour;
-        private bool _blnFree;
         private bool _blnIsGroup;
         private readonly Character _objCharacter;
         private bool _blnBlackmail;
         private bool _blnFamily;
         private bool _blnGroupEnabled = true;
         private bool _blnReadOnly;
-        private int _intForcedLoyalty;
-
+        private bool _blnFree;
         private readonly List<Image> _lstMugshots = new List<Image>();
         private int _intMainMugshotIndex = -1;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
+        {
+            OnMultiplePropertyChanged(strPropertyName);
+        }
+
+        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        {
+            ICollection<string> lstNamesOfChangedProperties = null;
+            foreach (string strPropertyName in lstPropertyNames)
+            {
+                if (lstNamesOfChangedProperties == null)
+                    lstNamesOfChangedProperties = ContactDependencyGraph.GetWithAllDependants(strPropertyName);
+                else
+                {
+                    foreach (string strLoopChangedProperty in ContactDependencyGraph.GetWithAllDependants(strPropertyName))
+                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                }
+            }
+
+            if ((lstNamesOfChangedProperties?.Count > 0) != true)
+                return;
+
+            if (lstNamesOfChangedProperties.Contains(nameof(ForcedLoyalty)))
+            {
+                _intCachedForcedLoyalty = int.MinValue;
+            }
+            if (lstNamesOfChangedProperties.Contains(nameof(GroupEnabled)))
+            {
+                _intCachedGroupEnabled = -1;
+            }
+            if (lstNamesOfChangedProperties.Contains(nameof(Free)))
+            {
+                _intCachedFreeFromImprovement = -1;
+            }
+
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+            }
+        }
+
+        private static readonly DependancyGraph<string> ContactDependencyGraph =
+            new DependancyGraph<string>(
+                new DependancyGraphNode<string>(nameof(NoLinkedCharacter),
+                    new DependancyGraphNode<string>(nameof(LinkedCharacter))
+                ),
+                new DependancyGraphNode<string>(nameof(Name),
+                    new DependancyGraphNode<string>(nameof(LinkedCharacter))
+                ),
+                new DependancyGraphNode<string>(nameof(DisplaySex),
+                    new DependancyGraphNode<string>(nameof(Sex),
+                        new DependancyGraphNode<string>(nameof(LinkedCharacter))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplayMetatype),
+                    new DependancyGraphNode<string>(nameof(Metatype),
+                        new DependancyGraphNode<string>(nameof(LinkedCharacter))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(DisplayAge),
+                    new DependancyGraphNode<string>(nameof(Age),
+                        new DependancyGraphNode<string>(nameof(LinkedCharacter))
+                    )
+                ),
+                new DependancyGraphNode<string>(nameof(MainMugshot),
+                    new DependancyGraphNode<string>(nameof(LinkedCharacter)),
+                    new DependancyGraphNode<string>(nameof(Mugshots),
+                        new DependancyGraphNode<string>(nameof(LinkedCharacter))
+                    ),
+                    new DependancyGraphNode<string>(nameof(MainMugshotIndex))
+                ),
+                new DependancyGraphNode<string>(nameof(IsNotEnemy),
+                    new DependancyGraphNode<string>(nameof(EntityType))
+                ),
+                new DependancyGraphNode<string>(nameof(NotReadOnly),
+                    new DependancyGraphNode<string>(nameof(ReadOnly))
+                ),
+                new DependancyGraphNode<string>(nameof(GroupEnabled),
+                    new DependancyGraphNode<string>(nameof(ReadOnly))
+                ),
+                new DependancyGraphNode<string>(nameof(LoyaltyEnabled),
+                    new DependancyGraphNode<string>(nameof(IsGroup)),
+                    new DependancyGraphNode<string>(nameof(ForcedLoyalty)),
+                    new DependancyGraphNode<string>(nameof(ReadOnly))
+                ),
+                new DependancyGraphNode<string>(nameof(ContactPoints),
+                    new DependancyGraphNode<string>(nameof(Free)),
+                    new DependancyGraphNode<string>(nameof(Connection),
+                        new DependancyGraphNode<string>(nameof(ConnectionMaximum))
+                    ),
+                    new DependancyGraphNode<string>(nameof(Loyalty)),
+                    new DependancyGraphNode<string>(nameof(Family)),
+                    new DependancyGraphNode<string>(nameof(Blackmail))
+                ),
+                new DependancyGraphNode<string>(nameof(QuickText),
+                    new DependancyGraphNode<string>(nameof(Connection)),
+                    new DependancyGraphNode<string>(nameof(IsGroup)),
+                    new DependancyGraphNode<string>(nameof(Loyalty),
+                        new DependancyGraphNode<string>(nameof(IsGroup)),
+                        new DependancyGraphNode<string>(nameof(ForcedLoyalty))
+                    )
+                )
+            );
 
         #region Helper Methods
         /// <summary>
@@ -105,9 +210,17 @@ namespace Chummer
         #endregion
 
         #region Constructor, Save, Load, and Print Methods
-        public Contact(Character objCharacter)
+        public Contact(Character objCharacter, bool blnIsReadOnly = false)
         {
             _objCharacter = objCharacter;
+            _objCharacter.PropertyChanged += CharacterObjectOnPropertyChanged;
+            _blnReadOnly = blnIsReadOnly;
+        }
+
+        private void CharacterObjectOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Character.Created) || e.PropertyName == nameof(Character.FriendsInHighPlaces))
+                OnPropertyChanged(nameof(ConnectionMaximum));
         }
 
         /// <summary>
@@ -135,11 +248,10 @@ namespace Chummer
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("groupname", _strGroupName);
             objWriter.WriteElementString("colour", _objColour.ToArgb().ToString());
-            objWriter.WriteElementString("free", _blnFree.ToString());
             objWriter.WriteElementString("group", _blnIsGroup.ToString());
-            objWriter.WriteElementString("forcedloyalty", _intForcedLoyalty.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("family", _blnFamily.ToString());
             objWriter.WriteElementString("blackmail", _blnBlackmail.ToString());
+            objWriter.WriteElementString("free", _blnFree.ToString());
             objWriter.WriteElementString("groupenabled", _blnGroupEnabled.ToString());
 
             if (_blnReadOnly)
@@ -184,11 +296,11 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("file", ref _strFileName);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetStringFieldQuickly("groupname", ref _strGroupName);
-            objNode.TryGetBoolFieldQuickly("free", ref _blnFree);
             objNode.TryGetBoolFieldQuickly("group", ref _blnIsGroup);
             objNode.TryGetStringFieldQuickly("guid", ref _strUnique);
             objNode.TryGetBoolFieldQuickly("family", ref _blnFamily);
             objNode.TryGetBoolFieldQuickly("blackmail", ref _blnBlackmail);
+            objNode.TryGetBoolFieldQuickly("free", ref _blnFree);
             if (objNode.SelectSingleNode("colour") != null)
             {
                 int intTmp = _objColour.ToArgb();
@@ -198,28 +310,12 @@ namespace Chummer
 
             _blnReadOnly = objNode.SelectSingleNode("readonly") != null;
 
-            if (!objNode.TryGetInt32FieldQuickly("forcedloyalty", ref _intForcedLoyalty))
-            {
-                if (objNode.SelectSingleNode("forceloyalty") != null)
-                {
-                    bool blnIsLoyaltyForced = false;
-                    if (objNode.TryGetBoolFieldQuickly("forceloyalty", ref blnIsLoyaltyForced) && blnIsLoyaltyForced)
-                        _intForcedLoyalty = _intLoyalty;
-                }
-                else if (objNode.SelectSingleNode("mademan") != null)
-                {
-                    bool blnIsLoyaltyForced = false;
-                    if (objNode.TryGetBoolFieldQuickly("mademan", ref blnIsLoyaltyForced) && blnIsLoyaltyForced)
-                        _intForcedLoyalty = _intLoyalty;
-                }
-            }
-
             if (!objNode.TryGetBoolFieldQuickly("groupenabled", ref _blnGroupEnabled))
             {
                 objNode.TryGetBoolFieldQuickly("mademan", ref _blnGroupEnabled);
             }
-            
-            RefreshLinkedCharacter(false);
+
+            RefreshLinkedCharacter();
 
             // Mugshots
             LoadMugshots(objNode);
@@ -253,7 +349,7 @@ namespace Chummer
             objWriter.WriteElementString("forcedloyalty", ForcedLoyalty.ToString(objCulture));
             objWriter.WriteElementString("blackmail", Blackmail.ToString());
             objWriter.WriteElementString("family", Family.ToString());
-            if (_objCharacter.Options.PrintNotes)
+            if (CharacterObject.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
 
             PrintMugshots(objWriter);
@@ -264,27 +360,10 @@ namespace Chummer
 
         #region Properties
 
-        public bool ReadOnly
-        {
-            get => _blnReadOnly;
-            set
-            {
-                if (_blnReadOnly != value)
-                {
-                    _blnReadOnly = value;
-                    if (PropertyChanged != null)
-                    {
-                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(ReadOnly)));
-                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(NotReadOnly)));
-                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(GroupEnabled)));
-                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(LoyaltyEnabled)));
-                    }
-                }
-            }
-        }
+        public bool ReadOnly => _blnReadOnly;
 
         public bool NotReadOnly => !ReadOnly;
-
+        
         /// <summary>
         /// Total points used for this contact.
         /// </summary>
@@ -314,7 +393,14 @@ namespace Chummer
                     return LinkedCharacter.CharacterName;
                 return _strName;
             }
-            set => _strName = value;
+            set
+            {
+                if (_strName != value)
+                {
+                    _strName = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public string DisplayRoleMethod(string strLanguage)
@@ -328,7 +414,7 @@ namespace Chummer
         public string DisplayRole
         {
             get => DisplayRoleMethod(GlobalOptions.Language);
-            set => _strRole = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => Role = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
         }
 
         /// <summary>
@@ -337,7 +423,14 @@ namespace Chummer
         public string Role
         {
             get => _strRole;
-            set => _strRole = value;
+            set
+            {
+                if (_strRole != value)
+                {
+                    _strRole = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -346,7 +439,14 @@ namespace Chummer
         public string Location
         {
             get => _strLocation;
-            set => _strLocation = value;
+            set
+            {
+                if (_strLocation != value)
+                {
+                    _strLocation = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -354,17 +454,14 @@ namespace Chummer
         /// </summary>
         public int Connection
         {
-            get => _intConnection;
+            get => Math.Min(_intConnection, ConnectionMaximum);
             set
             {
+                value = Math.Max(Math.Min(value, ConnectionMaximum), 1);
                 if (_intConnection != value)
                 {
                     _intConnection = value;
-                    if (PropertyChanged != null)
-                    {
-                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Connection)));
-                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(QuickText)));
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -386,12 +483,8 @@ namespace Chummer
             {
                 if (_intLoyalty != value)
                 {
-                    _intLoyalty = value;
-                    if (PropertyChanged != null)
-                    {
-                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Loyalty)));
-                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(QuickText)));
-                    }
+                    _intLoyalty = Math.Max(value, 1);
+                    OnPropertyChanged();
                 }
             }
         }
@@ -417,7 +510,9 @@ namespace Chummer
                     objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + LinkedCharacter.Metavariant + "\"]");
 
                     string strMetatypeTranslate = objMetatypeNode?["translate"]?.InnerText;
-                    strReturn += !string.IsNullOrEmpty(strMetatypeTranslate) ? " (" + strMetatypeTranslate + ')' : " (" + LanguageManager.TranslateExtra(LinkedCharacter.Metavariant, strLanguage) + ')';
+                    strReturn += !string.IsNullOrEmpty(strMetatypeTranslate)
+                        ? LanguageManager.GetString("String_Space", strLanguage) + '(' + strMetatypeTranslate + ')'
+                        : LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(LinkedCharacter.Metavariant, strLanguage) + ')';
                 }
             }
             else
@@ -428,7 +523,7 @@ namespace Chummer
         public string DisplayMetatype
         {
             get => DisplayMetatypeMethod(GlobalOptions.Language);
-            set => _strMetatype = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => Metatype = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
         }
 
         /// <summary>
@@ -442,15 +537,22 @@ namespace Chummer
                 {
                     string strMetatype = LinkedCharacter.Metatype;
 
-                    if (!string.IsNullOrEmpty(LinkedCharacter.Metavariant))
+                    if (!string.IsNullOrEmpty(LinkedCharacter.Metavariant) && LinkedCharacter.Metavariant != "None")
                     {
-                        strMetatype += " (" + LinkedCharacter.Metavariant + ')';
+                        strMetatype += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LinkedCharacter.Metavariant + ')';
                     }
                     return strMetatype;
                 }
                 return _strMetatype;
             }
-            set => _strMetatype = value;
+            set
+            {
+                if (_strMetatype != value)
+                {
+                    _strMetatype = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public string DisplaySexMethod(string strLanguage)
@@ -464,7 +566,7 @@ namespace Chummer
         public string DisplaySex
         {
             get => DisplaySexMethod(GlobalOptions.Language);
-            set => _strSex = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => Sex = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
         }
 
         /// <summary>
@@ -478,7 +580,14 @@ namespace Chummer
                     return LinkedCharacter.Sex;
                 return _strSex;
             }
-            set => _strSex = value;
+            set
+            {
+                if (_strSex != value)
+                {
+                    _strSex = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public string DisplayAgeMethod(string strLanguage)
@@ -492,7 +601,7 @@ namespace Chummer
         public string DisplayAge
         {
             get => DisplayAgeMethod(GlobalOptions.Language);
-            set => _strAge = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => Age = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
         }
 
         /// <summary>
@@ -506,7 +615,14 @@ namespace Chummer
                     return LinkedCharacter.Age;
                 return _strAge;
             }
-            set => _strAge = value;
+            set
+            {
+                if (_strAge != value)
+                {
+                    _strAge = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public string DisplayTypeMethod(string strLanguage)
@@ -520,7 +636,7 @@ namespace Chummer
         public string DisplayType
         {
             get => DisplayTypeMethod(GlobalOptions.Language);
-            set => _strType = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => Type = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
         }
 
         /// <summary>
@@ -529,7 +645,14 @@ namespace Chummer
         public string Type
         {
             get => _strType;
-            set => _strType = value;
+            set
+            {
+                if (_strType != value)
+                {
+                    _strType = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public string DisplayPreferredPaymentMethod(string strLanguage)
@@ -543,7 +666,7 @@ namespace Chummer
         public string DisplayPreferredPayment
         {
             get => DisplayPreferredPaymentMethod(GlobalOptions.Language);
-            set => _strPreferredPayment = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => PreferredPayment = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
         }
 
         /// <summary>
@@ -552,7 +675,14 @@ namespace Chummer
         public string PreferredPayment
         {
             get => _strPreferredPayment;
-            set => _strPreferredPayment = value;
+            set
+            {
+                if (_strPreferredPayment != value)
+                {
+                    _strPreferredPayment = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public string DisplayHobbiesViceMethod(string strLanguage)
@@ -566,7 +696,7 @@ namespace Chummer
         public string DisplayHobbiesVice
         {
             get => DisplayHobbiesViceMethod(GlobalOptions.Language);
-            set => _strHobbiesVice = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => HobbiesVice = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
         }
 
         /// <summary>
@@ -575,7 +705,14 @@ namespace Chummer
         public string HobbiesVice
         {
             get => _strHobbiesVice;
-            set => _strHobbiesVice = value;
+            set
+            {
+                if (_strHobbiesVice != value)
+                {
+                    _strHobbiesVice = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public string DisplayPersonalLifeMethod(string strLanguage)
@@ -589,7 +726,7 @@ namespace Chummer
         public string DisplayPersonalLife
         {
             get => DisplayPersonalLifeMethod(GlobalOptions.Language);
-            set => _strPersonalLife = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            set => PersonalLife = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
         }
 
         /// <summary>
@@ -598,7 +735,14 @@ namespace Chummer
         public string PersonalLife
         {
             get => _strPersonalLife;
-            set => _strPersonalLife = value;
+            set
+            {
+                if (_strPersonalLife != value)
+                {
+                    _strPersonalLife = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -612,21 +756,16 @@ namespace Chummer
                 if (_blnIsGroup != value)
                 {
                     _blnIsGroup = value;
-                    if (PropertyChanged != null)
-                    {
-                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(IsGroup)));
-                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(LoyaltyEnabled)));
-                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(QuickText)));
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
 
         public bool LoyaltyEnabled => !ReadOnly && !IsGroup && ForcedLoyalty <= 0;
 
-        public int ConnectionMaximum => _objCharacter.Created || _objCharacter.FriendsInHighPlaces ? 12 : 6;
+        public int ConnectionMaximum => CharacterObject.Created || CharacterObject.FriendsInHighPlaces ? 12 : 6;
 
-        public string QuickText => $"({Connection}/{(IsGroup ? $"{Loyalty}G" : Loyalty.ToString())})";
+        public string QuickText => $"({Connection}/{(IsGroup ? $"{Loyalty}G" : Loyalty.ToString(GlobalOptions.CultureInfo))})";
 
         /// <summary>
         /// The Contact's type, either Contact or Enemy.
@@ -634,7 +773,14 @@ namespace Chummer
         public ContactType EntityType
         {
             get => _eContactType;
-            set => _eContactType = value;
+            set
+            {
+                if (_eContactType != value)
+                {
+                    _eContactType = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public bool IsNotEnemy => EntityType != ContactType.Enemy;
@@ -677,7 +823,14 @@ namespace Chummer
         public string Notes
         {
             get => _strNotes;
-            set => _strNotes = value;
+            set
+            {
+                if (_strNotes != value)
+                {
+                    _strNotes = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -686,13 +839,20 @@ namespace Chummer
         public string GroupName
         {
             get => _strGroupName;
-            set => _strGroupName = value;
+            set
+            {
+                if (_strGroupName != value)
+                {
+                    _strGroupName = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
         /// Contact Colour.
         /// </summary>
-        public Color Colour
+        public Color PreferredColor
         {
             get => _objColour;
             set
@@ -700,44 +860,57 @@ namespace Chummer
                 if (_objColour != value)
                 {
                     _objColour = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Colour)));
+                    OnPropertyChanged();
                 }
             }
         }
+
+        private int _intCachedFreeFromImprovement = -1;
 
         /// <summary>
         /// Whether or not this is a free contact.
         /// </summary>
         public bool Free
         {
-            get => _blnFree;
+            get
+            {
+                if (_blnFree) return _blnFree;
+
+                if (_intCachedFreeFromImprovement < 0)
+                {
+                    _intCachedFreeFromImprovement = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ContactMakeFree && GUID == x.ImprovedName && x.Enabled) ? 1 : 0;
+                }
+
+                return _intCachedFreeFromImprovement > 0;
+            }
             set
             {
-                if (_blnFree != value)
-                {
-                    _blnFree = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Free)));
-                }
+                _blnFree = value;
             }
         }
+
+        public bool FreeEnabled => _intCachedFreeFromImprovement < 1;
+
         /// <summary>
         /// Unique ID for this contact
         /// </summary>
         public string GUID => _strUnique;
+
+        private int _intCachedGroupEnabled = -1;
 
         /// <summary>
         /// Whether or not the contact's group status can be modified through the UI
         /// </summary>
         public bool GroupEnabled
         {
-            get => _blnGroupEnabled && !ReadOnly;
-            set
+            get
             {
-                if (_blnGroupEnabled != value)
+                if (_intCachedGroupEnabled < 0)
                 {
-                    _blnGroupEnabled = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GroupEnabled)));
+                    _intCachedGroupEnabled = !ReadOnly && !CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ContactForceGroup && GUID == x.ImprovedName && x.Enabled) ? 1 : 0;
                 }
+
+                return _intCachedGroupEnabled > 0;
             }
         }
 
@@ -749,7 +922,7 @@ namespace Chummer
                 if (_blnBlackmail != value)
                 {
                     _blnBlackmail = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Blackmail)));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -762,40 +935,31 @@ namespace Chummer
                 if (_blnFamily != value)
                 {
                     _blnFamily = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Family)));
+                    OnPropertyChanged();
                 }
             }
         }
+
+        private int _intCachedForcedLoyalty = int.MinValue;
 
         public int ForcedLoyalty
         {
-            get => _intForcedLoyalty;
-            set
+            get
             {
-                if (_intForcedLoyalty != value)
+                if (_intCachedForcedLoyalty != int.MinValue)
+                    return _intCachedForcedLoyalty;
+
+                int intMaxForcedLoyalty = 0;
+                foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
-                    _intForcedLoyalty = value;
-                    if (PropertyChanged != null)
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.ContactForcedLoyalty && objImprovement.ImprovedName == GUID && objImprovement.Enabled)
                     {
-                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(ForcedLoyalty)));
-                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(LoyaltyEnabled)));
+                        intMaxForcedLoyalty = Math.Max(intMaxForcedLoyalty, objImprovement.Value);
                     }
                 }
-            }
-        }
 
-        public void RecalculateForcedLoyalty()
-        {
-            int intMaxForcedLoyalty = 0;
-            foreach (Improvement objImprovement in CharacterObject.Improvements)
-            {
-                if (objImprovement.ImproveType == Improvement.ImprovementType.ContactForcedLoyalty && objImprovement.ImprovedName == GUID && objImprovement.Enabled)
-                {
-                    intMaxForcedLoyalty = Math.Max(intMaxForcedLoyalty, objImprovement.Value);
-                }
+                return _intCachedForcedLoyalty = intMaxForcedLoyalty;
             }
-
-            ForcedLoyalty = intMaxForcedLoyalty;
         }
 
         public Character CharacterObject => _objCharacter;
@@ -804,15 +968,10 @@ namespace Chummer
 
         public bool NoLinkedCharacter => _objLinkedCharacter == null;
 
-        public void RefreshForControl()
+        public void RefreshLinkedCharacter(bool blnShowError = false)
         {
-            RefreshLinkedCharacter(false);
-        }
-
-        public void RefreshLinkedCharacter(bool blnShowError)
-        {
-            Character _objOldLinkedCharacter = _objLinkedCharacter;
-            _objCharacter.LinkedCharacters.Remove(_objLinkedCharacter);
+            Character objOldLinkedCharacter = _objLinkedCharacter;
+            CharacterObject.LinkedCharacters.Remove(_objLinkedCharacter);
             bool blnError = false;
             bool blnUseRelative = false;
 
@@ -840,17 +999,18 @@ namespace Chummer
                     Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
                     _objLinkedCharacter = objOpenCharacter ?? Program.MainForm.LoadCharacter(strFile, string.Empty, false, false);
                     if (_objLinkedCharacter != null)
-                        _objCharacter.LinkedCharacters.Add(_objLinkedCharacter);
+                        CharacterObject.LinkedCharacters.Add(_objLinkedCharacter);
                 }
             }
-            if (_objLinkedCharacter != _objOldLinkedCharacter)
+            if (_objLinkedCharacter != objOldLinkedCharacter)
             {
-                if (_objOldLinkedCharacter != null)
+                if (objOldLinkedCharacter != null)
                 {
-                    if (!Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(_objOldLinkedCharacter) && x != _objOldLinkedCharacter))
+                    objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
+                    if (!Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(objOldLinkedCharacter) && x != objOldLinkedCharacter))
                     {
-                        Program.MainForm.OpenCharacters.Remove(_objOldLinkedCharacter);
-                        _objOldLinkedCharacter.DeleteCharacter();
+                        Program.MainForm.OpenCharacters.Remove(objOldLinkedCharacter);
+                        objOldLinkedCharacter.DeleteCharacter();
                     }
                 }
                 if (_objLinkedCharacter != null)
@@ -863,32 +1023,44 @@ namespace Chummer
                         _strSex = Sex;
                     if (string.IsNullOrEmpty(_strMetatype) && !string.IsNullOrEmpty(Metatype))
                         _strMetatype = Metatype;
+
+                    _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
                 }
-                PropertyChangedEventHandler objPropertyChanged = PropertyChanged;
-                if (objPropertyChanged != null)
-                {
-                    objPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
-                    objPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Age)));
-                    objPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Sex)));
-                    objPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Metatype)));
-                    objPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(NoLinkedCharacter)));
-                }
+                OnPropertyChanged(nameof(LinkedCharacter));
             }
+        }
+
+        private void LinkedCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Character.Name))
+                OnPropertyChanged(nameof(Name));
+            else if (e.PropertyName == nameof(Character.Age))
+                OnPropertyChanged(nameof(Age));
+            else if (e.PropertyName == nameof(Character.Sex))
+                OnPropertyChanged(nameof(Sex));
+            else if (e.PropertyName == nameof(Character.Metatype) || e.PropertyName == nameof(Character.Metavariant))
+                OnPropertyChanged(nameof(Metatype));
+            else if (e.PropertyName == nameof(Character.Mugshots))
+                OnPropertyChanged(nameof(Mugshots));
+            else if (e.PropertyName == nameof(Character.MainMugshot))
+                OnPropertyChanged(nameof(MainMugshot));
+            else if (e.PropertyName == nameof(Character.MainMugshotIndex))
+                OnPropertyChanged(nameof(MainMugshotIndex));
         }
         #endregion
 
         #region IHasMugshots
         /// <summary>
-		/// Character's portraits encoded using Base64.
-		/// </summary>
-		public IList<Image> Mugshots
+        /// Character's portraits encoded using Base64.
+        /// </summary>
+        public IList<Image> Mugshots
         {
             get
             {
                 if (LinkedCharacter != null)
                     return LinkedCharacter.Mugshots;
-                else
-                    return _lstMugshots;
+
+                return _lstMugshots;
             }
         }
 
@@ -901,10 +1073,9 @@ namespace Chummer
             {
                 if (LinkedCharacter != null)
                     return LinkedCharacter.MainMugshot;
-                else if (MainMugshotIndex >= Mugshots.Count || MainMugshotIndex < 0)
+                if (MainMugshotIndex >= Mugshots.Count || MainMugshotIndex < 0)
                     return null;
-                else
-                    return Mugshots[MainMugshotIndex];
+                return Mugshots[MainMugshotIndex];
             }
             set
             {
@@ -940,17 +1111,23 @@ namespace Chummer
             {
                 if (LinkedCharacter != null)
                     return LinkedCharacter.MainMugshotIndex;
-                else
-                    return _intMainMugshotIndex;
+
+                return _intMainMugshotIndex;
             }
             set
             {
                 if (LinkedCharacter != null)
                     LinkedCharacter.MainMugshotIndex = value;
-                else if (value >= _lstMugshots.Count || value < -1)
-                    _intMainMugshotIndex = -1;
                 else
-                    _intMainMugshotIndex = value;
+                {
+                    if (value >= _lstMugshots.Count || value < -1)
+                        value = -1;
+                    if (_intMainMugshotIndex != value)
+                    {
+                        _intMainMugshotIndex = value;
+                        OnPropertyChanged();
+                    }
+                }
             }
         }
 

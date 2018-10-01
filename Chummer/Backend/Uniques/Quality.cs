@@ -72,7 +72,7 @@ namespace Chummer
     /// A Quality.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Quality : IHasInternalId, IHasName, IHasXmlNode
+    public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -295,7 +295,7 @@ namespace Chummer
 
                 if (string.IsNullOrEmpty(strQualityNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
-                    string strTranslatedNameOnPage = DisplayName(GlobalOptions.Language);
+                    string strTranslatedNameOnPage = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
                     // don't check again it is not translated
                     if (strTranslatedNameOnPage != _strName)
@@ -310,6 +310,29 @@ namespace Chummer
                 }
                 else
                     Notes = strQualityNotes;
+            }
+        }
+
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == null)
+                {
+                    string strSource = Source;
+                    string strPage = DisplayPage(GlobalOptions.Language);
+                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                    {
+                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                    }
+                }
+
+                return _objCachedSourceDetail;
             }
         }
 
@@ -423,12 +446,13 @@ namespace Chummer
         {
             if (AllowPrint)
             {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguageToPrint);
                 string strRatingString = string.Empty;
                 if (intRating > 1)
-                    strRatingString = ' ' + intRating.ToString(objCulture);
+                    strRatingString = strSpaceCharacter + intRating.ToString(objCulture);
                 string strSourceName = string.Empty;
                 if (!string.IsNullOrWhiteSpace(SourceName))
-                    strSourceName = " (" + GetSourceName(strLanguageToPrint) + ')';
+                    strSourceName = strSpaceCharacter + '(' + GetSourceName(strLanguageToPrint) + ')';
                 objWriter.WriteStartElement("quality");
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
                 objWriter.WriteElementString("name_english", Name + strRatingString);
@@ -515,16 +539,19 @@ namespace Chummer
             get => _strPage;
             set => _strPage = value;
         }
-
+        
         /// <summary>
-        /// Page Number.
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty. 
         /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Page;
-
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         /// <summary>
@@ -622,19 +649,20 @@ namespace Chummer
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// If there is more than one instance of the same quality, it's: Name (Extra) Number
         /// </summary>
-        public string DisplayName(string strLanguage)
+        public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
 
-            if (!string.IsNullOrEmpty(_strExtra))
+            if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             }
 
             int intLevels = Levels;
             if (intLevels > 1)
-                strReturn += ' ' + intLevels.ToString(GlobalOptions.CultureInfo);
+                strReturn += strSpaceCharacter + intLevels.ToString(objCulture);
 
             return strReturn;
         }
@@ -647,7 +675,7 @@ namespace Chummer
         {
             get
             {
-                return _objCharacter.Qualities.Count(objExistingQuality => objExistingQuality.QualityId == QualityId && objExistingQuality.Extra == Extra && objExistingQuality.SourceName == SourceName);
+                return _objCharacter.Qualities.Count(objExistingQuality => objExistingQuality.QualityId == QualityId && objExistingQuality.Extra == Extra && objExistingQuality.SourceName == SourceName && objExistingQuality.Type == Type);
             }
         }
 
@@ -759,7 +787,7 @@ namespace Chummer
         }
         #endregion
 
-        #region Methods
+        #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsQuality)
         {
             if ((OriginSource == QualitySource.BuiltIn ||
@@ -772,28 +800,38 @@ namespace Chummer
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = DisplayName(GlobalOptions.Language),
+                Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language),
                 Tag = this,
-                ContextMenuStrip = cmsQuality
+                ContextMenuStrip = cmsQuality,
+                ForeColor = PreferredColor,
+                ToolTipText = Notes.WordWrap(100)
             };
-            if (!Implemented)
-            {
-                objNode.ForeColor = Color.Red;
-            }
-            else if (!string.IsNullOrEmpty(Notes))
-            {
-                objNode.ForeColor = Color.SaddleBrown;
-            }
-            else if (OriginSource == QualitySource.BuiltIn ||
-                OriginSource == QualitySource.Improvement ||
-                OriginSource == QualitySource.LifeModule ||
-                OriginSource == QualitySource.Metatype)
-            {
-                objNode.ForeColor = SystemColors.GrayText;
-            }
-            objNode.ToolTipText = Notes.WordWrap(100);
 
             return objNode;
+        }
+
+        public Color PreferredColor
+        {
+            get
+            {
+                if (!Implemented)
+                {
+                    return Color.Red;
+                }
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return Color.SaddleBrown;
+                }
+                if (OriginSource == QualitySource.BuiltIn ||
+                    OriginSource == QualitySource.Improvement ||
+                    OriginSource == QualitySource.LifeModule ||
+                    OriginSource == QualitySource.Metatype)
+                {
+                    return SystemColors.GrayText;
+                }
+
+                return SystemColors.WindowText;
+            }
         }
         #endregion
 
@@ -968,5 +1006,127 @@ namespace Chummer
             return workNode;
         }
         #endregion
+
+        /// <summary>
+        /// Swaps an old quality for a new one. 
+        /// </summary>
+        /// <param name="objOldQuality">Old quality that's being removed.</param>
+        /// <param name="objCharacter">Character object that the quality will be removed from.</param>
+        /// <param name="objXmlQuality">XML entry for the new quality.</param>
+        /// <param name="source">QualitySource type. Expected to be QualitySource.Selected in most cases.</param>
+        /// <returns></returns>
+        public bool Swap(Quality objOldQuality, Character objCharacter, XmlNode objXmlQuality, QualitySource source = QualitySource.Selected)
+        {
+            List<Weapon> lstWeapons = new List<Weapon>();
+            Create(objXmlQuality, source, lstWeapons);
+
+            bool blnAddItem = true;
+            int intKarmaCost = (BP - objOldQuality.BP) * objCharacter.Options.KarmaQuality;
+            // Make sure the character has enough Karma to pay for the Quality.
+            if (Type == QualityType.Positive)
+            {
+                if (!objCharacter.Options.DontDoubleQualityPurchases)
+                {
+                    intKarmaCost *= 2;
+                }
+                if (intKarmaCost > objCharacter.Karma)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    blnAddItem = false;
+                }
+
+                if (blnAddItem)
+                {
+                    if (!objCharacter.ConfirmKarmaExpense(LanguageManager.GetString("Message_QualitySwap", GlobalOptions.Language).Replace("{0}", objOldQuality.DisplayNameShort(GlobalOptions.Language)).Replace("{1}", DisplayNameShort(GlobalOptions.Language))))
+                        blnAddItem = false;
+                }
+
+                if (!blnAddItem) return false;
+                if (objCharacter.Created)
+                {
+                    // Create the Karma expense.
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
+                    objExpense.Create(intKarmaCost * -1,
+                        LanguageManager.GetString("String_ExpenseSwapPositiveQuality", GlobalOptions.Language)
+                            .Replace("{0}", DisplayNameShort(GlobalOptions.Language))
+                            .Replace("{1}", DisplayNameShort(GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now);
+                    objCharacter.ExpenseEntries.AddWithSort(objExpense);
+                    objCharacter.Karma -= intKarmaCost;
+                }
+            }
+            else
+            {
+                if (!objCharacter.Options.DontDoubleQualityRefunds)
+                {
+                    intKarmaCost *= 2;
+                }
+                // This should only happen when a character is trading up to a less-costly Quality.
+                if (intKarmaCost > 0)
+                {
+                    if (intKarmaCost > objCharacter.Karma)
+                    {
+                        MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        blnAddItem = false;
+                    }
+
+                    if (blnAddItem)
+                    {
+                        if (!objCharacter.ConfirmKarmaExpense(LanguageManager.GetString("Message_QualitySwap", GlobalOptions.Language).Replace("{0}", objOldQuality.DisplayNameShort(GlobalOptions.Language)).Replace("{1}", DisplayNameShort(GlobalOptions.Language))))
+                            blnAddItem = false;
+                    }
+                }
+
+                if (!blnAddItem) return false;
+                if (objCharacter.Created)
+                {
+                    // Create the Karma expense.
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
+                    objExpense.Create(intKarmaCost * -1,
+                        LanguageManager.GetString("String_ExpenseSwapNegativeQuality", GlobalOptions.Language)
+                            .Replace("{0}", DisplayNameShort(GlobalOptions.Language))
+                            .Replace("{1}", DisplayNameShort(GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now);
+                    objCharacter.ExpenseEntries.AddWithSort(objExpense);
+                    objCharacter.Karma -= intKarmaCost;
+                }
+            }
+
+            // Add any created Weapons to the character.
+            foreach (Weapon objWeapon in lstWeapons)
+            {
+                objCharacter.Weapons.Add(objWeapon);
+            }
+
+            // Remove any Improvements for the old Quality.
+            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Quality, objOldQuality.InternalId);
+            objCharacter.Qualities.Remove(objOldQuality);
+
+            // Remove any Weapons created by the old Quality if applicable.
+            if (!objOldQuality.WeaponID.IsEmptyGuid())
+            {
+                List<Weapon> lstOldWeapons = objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objOldQuality.InternalId).ToList();
+                foreach (Weapon objWeapon in lstOldWeapons)
+                {
+                    objWeapon.DeleteWeapon();
+                    // We can remove here because lstWeapons is separate from the Weapons that were yielded through DeepWhere
+                    if (objWeapon.Parent != null)
+                        objWeapon.Parent.Children.Remove(objWeapon);
+                    else
+                        objCharacter.Weapons.Remove(objWeapon);
+                }
+            }
+
+            // Add the new Quality to the character.
+            objCharacter.Qualities.Add(this);
+
+
+            return true;
+        }
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
+        }
     }
 }

@@ -105,15 +105,16 @@ namespace Chummer
         #region Controls Methods
         private void frmAbout_Load(object sender, EventArgs e)
         {
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             string strReturn = LanguageManager.GetString("Label_About", GlobalOptions.Language, false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = "About";
-            Text = strReturn + ' ' + AssemblyTitle;
+            Text = strReturn + strSpaceCharacter + AssemblyTitle;
             labelProductName.Text = AssemblyProduct;
             strReturn = LanguageManager.GetString("String_Version", GlobalOptions.Language, false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = "Version";
-            labelVersion.Text = strReturn + ' ' + AssemblyVersion;
+            labelVersion.Text = strReturn + strSpaceCharacter + AssemblyVersion;
             strReturn = LanguageManager.GetString("About_Copyright_Text", GlobalOptions.Language, false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = AssemblyCopyright;
@@ -129,7 +130,7 @@ namespace Chummer
             textBoxContributors.Text += Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, Properties.Contributors.Usernames) + Environment.NewLine + "/u/Iridios";
             txtDisclaimer.Text = LanguageManager.GetString("About_Label_Disclaimer_Text", GlobalOptions.Language);
         }
-        
+
         private void txt_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)

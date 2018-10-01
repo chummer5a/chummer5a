@@ -73,9 +73,9 @@ namespace Chummer
 
         private void frmSelectCyberwareSuite_Load(object sender, EventArgs e)
         {
-            if (_objCharacter.DEPEnabled)
+            if (_objCharacter.IsAI)
                 return;
-            
+
             IList<Grade> lstGrades = _objCharacter.GetGradeList(_eSource);
 
             using (XmlNodeList xmlSuiteList = _objXmlDocument.SelectNodes("/chummer/suites/suite"))
@@ -92,20 +92,22 @@ namespace Chummer
                                                                         (_eSource == Improvement.ImprovementSource.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade))
                                                                        && strGrade.Contains(x.ImprovedName) && x.Enabled)))
                                 continue;
-                            lstCyberware.Items.Add(strName);
+                            lstCyberware.Items.Add(new ListItem(objXmlSuite["id"]?.InnerText ?? strName, strName));
                         }
                     }
+            lstCyberware.ValueMember = "Value";
+            lstCyberware.DisplayMember = "Name";
         }
 
         private void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string strSelectedSuite = lstCyberware.Text;
+            string strSelectedSuite = lstCyberware.SelectedItem?.ToString();
             XmlNode xmlSuite = null;
             string strGrade;
             Grade objGrade = null;
-            if (!string.IsNullOrEmpty(lstCyberware.Text))
+            if (strSelectedSuite != null)
             {
-                xmlSuite = _objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + strSelectedSuite + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+                xmlSuite = _objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = \"" + strSelectedSuite + "\"]");
                 string strSuiteGradeEntry = xmlSuite?["grade"]?.InnerText;
                 if (!string.IsNullOrEmpty(strSuiteGradeEntry))
                 {
@@ -140,7 +142,7 @@ namespace Chummer
             }
 
             lblCyberware.Text = objCyberwareLabelString.ToString();
-            lblEssence.Text = decimal.Round(decTotalESS, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero).ToString(GlobalOptions.CultureInfo);
+            lblEssence.Text = decTotalESS.ToString(_objCharacter.Options.EssenceFormat, GlobalOptions.CultureInfo);
             lblCost.Text = decTotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             lblGrade.Text = objGrade.DisplayName(GlobalOptions.Language);
             _decCost = decTotalCost;
@@ -166,10 +168,10 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            string strSelectedId = lstCyberware.SelectedValue?.ToString();
+            string strSelectedId = lstCyberware.SelectedItem?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                _strSelectedSuite = lstCyberware.Text;
+                _strSelectedSuite = strSelectedId;
                 DialogResult = DialogResult.OK;
             }
         }

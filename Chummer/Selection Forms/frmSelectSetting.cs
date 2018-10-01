@@ -34,7 +34,6 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            MoveControls();
         }
 
         private void frmSelectSetting_Load(object sender, EventArgs e)
@@ -88,14 +87,7 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
         #endregion
-
-        #region Methods
-        private void MoveControls()
-        {
-            cboSetting.Left = lblSetting.Left + lblSetting.Width + 6;
-        }
-        #endregion
-
+        
         #region Properties
         /// <summary>
         /// Settings file that was selected in the dialogue.

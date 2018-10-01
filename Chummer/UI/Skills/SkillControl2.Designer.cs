@@ -20,7 +20,6 @@ namespace Chummer.UI.Skills
             if (disposing)
             {
                 components?.Dispose();
-                tipTooltip?.Dispose();
                 _italic?.Dispose();
                 _italicName?.Dispose();
                 UnbindSkillControl();
@@ -37,23 +36,22 @@ namespace Chummer.UI.Skills
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.lblName = new System.Windows.Forms.Label();
+            this.lblName = new Chummer.LabelWithToolTip();
             this.cmsSkillLabel = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsSkillLabelNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.lblAttribute = new System.Windows.Forms.Label();
             this.nudKarma = new Chummer.NumericUpDownEx();
             this.nudSkill = new Chummer.NumericUpDownEx();
-            this.lblModifiedRating = new System.Windows.Forms.Label();
-            this.cboSpec = new System.Windows.Forms.ComboBox();
+            this.lblModifiedRating = new Chummer.LabelWithToolTip();
+            this.cboSpec = new ElasticComboBox();
             this.chkKarma = new System.Windows.Forms.CheckBox();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.lblCareerRating = new System.Windows.Forms.Label();
-            this.btnCareerIncrease = new System.Windows.Forms.Button();
+            this.btnCareerIncrease = new Chummer.ButtonWithToolTip();
             this.lblCareerSpec = new System.Windows.Forms.Label();
-            this.btnAddSpec = new System.Windows.Forms.Button();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
+            this.btnAddSpec = new Chummer.ButtonWithToolTip();
             this.btnAttribute = new System.Windows.Forms.Button();
-            this.cboSelectAttribute = new System.Windows.Forms.ComboBox();
+            this.cboSelectAttribute = new ElasticComboBox();
             this.cmsSkillLabel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSkill)).BeginInit();
@@ -67,6 +65,7 @@ namespace Chummer.UI.Skills
             this.lblName.Size = new System.Drawing.Size(35, 13);
             this.lblName.TabIndex = 0;
             this.lblName.Text = "label1";
+            this.lblName.ToolTipText = "";
             this.lblName.Click += new System.EventHandler(this.lblName_Click);
             // 
             // cmsSkillLabel
@@ -129,6 +128,7 @@ namespace Chummer.UI.Skills
             this.lblModifiedRating.Size = new System.Drawing.Size(14, 13);
             this.lblModifiedRating.TabIndex = 16;
             this.lblModifiedRating.Text = "0";
+            this.lblModifiedRating.ToolTipText = "";
             // 
             // cboSpec
             // 
@@ -162,7 +162,6 @@ namespace Chummer.UI.Skills
             this.cmdDelete.Tag = "String_Delete";
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.UseVisualStyleBackColor = true;
-            this.cmdDelete.Visible = false;
             // 
             // lblCareerRating
             // 
@@ -172,7 +171,6 @@ namespace Chummer.UI.Skills
             this.lblCareerRating.Size = new System.Drawing.Size(19, 13);
             this.lblCareerRating.TabIndex = 20;
             this.lblCareerRating.Text = "00";
-            this.lblCareerRating.Visible = false;
             // 
             // btnCareerIncrease
             // 
@@ -181,8 +179,8 @@ namespace Chummer.UI.Skills
             this.btnCareerIncrease.Name = "btnCareerIncrease";
             this.btnCareerIncrease.Size = new System.Drawing.Size(24, 24);
             this.btnCareerIncrease.TabIndex = 21;
+            this.btnCareerIncrease.ToolTipText = "";
             this.btnCareerIncrease.UseVisualStyleBackColor = true;
-            this.btnCareerIncrease.Visible = false;
             this.btnCareerIncrease.Click += new System.EventHandler(this.btnCareerIncrease_Click);
             // 
             // lblCareerSpec
@@ -193,7 +191,6 @@ namespace Chummer.UI.Skills
             this.lblCareerSpec.Size = new System.Drawing.Size(35, 13);
             this.lblCareerSpec.TabIndex = 22;
             this.lblCareerSpec.Text = "label1";
-            this.lblCareerSpec.Visible = false;
             // 
             // btnAddSpec
             // 
@@ -203,23 +200,9 @@ namespace Chummer.UI.Skills
             this.btnAddSpec.Name = "btnAddSpec";
             this.btnAddSpec.Size = new System.Drawing.Size(24, 24);
             this.btnAddSpec.TabIndex = 23;
+            this.btnAddSpec.ToolTipText = "";
             this.btnAddSpec.UseVisualStyleBackColor = true;
-            this.btnAddSpec.Visible = false;
             this.btnAddSpec.Click += new System.EventHandler(this.btnAddSpec_Click);
-            // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AllowLinksHandling = true;
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.BaseStylesheet = null;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipTooltip.OwnerDraw = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.TooltipCssClass = "htmltooltip";
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Chummer Help";
             // 
             // btnAttribute
             // 
@@ -232,7 +215,6 @@ namespace Chummer.UI.Skills
             this.btnAttribute.TabIndex = 24;
             this.btnAttribute.Text = "ATR";
             this.btnAttribute.UseVisualStyleBackColor = true;
-            this.btnAttribute.Visible = false;
             this.btnAttribute.Click += new System.EventHandler(this.btnAttribute_Click);
             // 
             // cboSelectAttribute
@@ -243,7 +225,6 @@ namespace Chummer.UI.Skills
             this.cboSelectAttribute.Name = "cboSelectAttribute";
             this.cboSelectAttribute.Size = new System.Drawing.Size(39, 21);
             this.cboSelectAttribute.TabIndex = 25;
-            this.cboSelectAttribute.Visible = false;
             this.cboSelectAttribute.DropDownClosed += new System.EventHandler(this.cboSelectAttribute_Closed);
             // 
             // SkillControl2
@@ -277,21 +258,20 @@ namespace Chummer.UI.Skills
 
         #endregion
 
-        private System.Windows.Forms.Label lblName;
+        private LabelWithToolTip lblName;
         private System.Windows.Forms.Label lblAttribute;
         private NumericUpDownEx nudKarma;
         private NumericUpDownEx nudSkill;
-        private System.Windows.Forms.Label lblModifiedRating;
-        private System.Windows.Forms.ComboBox cboSpec;
+        private LabelWithToolTip lblModifiedRating;
+        private ElasticComboBox cboSpec;
         private System.Windows.Forms.CheckBox chkKarma;
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.Label lblCareerRating;
-        private System.Windows.Forms.Button btnCareerIncrease;
+        private ButtonWithToolTip btnCareerIncrease;
         private System.Windows.Forms.Label lblCareerSpec;
-        private System.Windows.Forms.Button btnAddSpec;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
+        private ButtonWithToolTip btnAddSpec;
         private System.Windows.Forms.Button btnAttribute;
-        private System.Windows.Forms.ComboBox cboSelectAttribute;
+        private ElasticComboBox cboSelectAttribute;
         private ContextMenuStrip cmsSkillLabel;
         private ToolStripMenuItem tsSkillLabelNotes;
     }

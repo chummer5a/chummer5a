@@ -224,11 +224,7 @@
       <avail>12</avail>
       <cost>24000</cost>
       <bonus>
-        <limitmodifier>
-          <limit>Physical</limit>
-          <value>1</value>
-          <condition>Only for Escape Artist</condition>
-        </limitmodifier>
+        <physicallimit>1</physicallimit>
         <specificskill>
           <name>Escape Artist</name>
           <bonus>1</bonus>
@@ -237,6 +233,7 @@
       <forbidden>
         <oneof>
           <cyberware>Smart Articulation</cyberware>
+          <bioware>Elastic Joints</bioware>
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -388,7 +385,7 @@
     </bioware>
     <bioware>
       <id>17a6ba49-c21c-461b-9830-3beae8a237fc</id>
-      <name>Reflex Recorder (Skill)</name>
+      <name>Reflex Recorder</name>
       <limit>False</limit>
       <category>Cultured</category>
       <nosecondhand />
@@ -836,6 +833,13 @@
           <condition>Only for Escape Artist</condition>
         </limitmodifier>
       </bonus>
+        <forbidden>
+          <oneof>
+            <bioware>Elastic Joints</bioware>
+            <bioware>Enhanced Articulation</bioware>
+            <cyberware>Smart Articulation</cyberware>
+          </oneof>
+        </forbidden>
       <source>CF</source>
       <page>112</page>
     </bioware>
@@ -862,6 +866,7 @@
       <avail>8</avail>
       <cost>1000</cost>
       <selectside />
+      <limit>{arm}</limit>
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
@@ -887,6 +892,7 @@
       <avail>8</avail>
       <cost>1000</cost>
       <selectside />
+      <limit>{leg}</limit>
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
@@ -2602,6 +2608,21 @@
       <page>164</page>
     </bioware>
     <bioware>
+      <id>a950129b-00a6-4445-a1b6-d82f158e83dc</id>
+      <name>Transgenic Alteration</name>
+      <category>Genemods</category>
+      <ess>0.3</ess>
+      <capacity>0</capacity>
+      <avail>10</avail>
+      <cost>Variable(30000-1000000)</cost>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <forcegrade>None</forcegrade>
+      <source>CF</source>
+      <page>164</page>
+    </bioware>
+    <bioware>
       <id>5c277258-ea34-46a3-b10a-323e0eed4dfa</id>
       <name>Control Rig Optimization</name>
       <category>Genemods</category>
@@ -3641,5 +3662,18 @@
       <page>205</page>
     </bioware>
     <!-- Ende SR5 2050 -->
+    <!-- Region Kill Code -->
+    <bioware>
+      <id>b5af679d-e70d-43f3-9aa4-f3638796e948</id>
+      <name>MCT Biolink</name>
+      <category>Basic</category>
+      <ess>0.5</ess>
+      <capacity>0</capacity>
+      <avail>10</avail>
+      <cost>15000</cost>
+      <source>KC</source>
+      <page>67</page>
+    </bioware>
+    <!-- End Region -->
   </biowares>
 </chummer>

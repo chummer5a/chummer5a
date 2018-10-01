@@ -1,47 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
-    Chummer5a is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  Chummer5a is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    Chummer5a is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  Chummer5a is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License
+  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
 
-    You can obtain the full source code for Chummer5a at
-    https://github.com/chummer5a/chummer5a
+  You can obtain the full source code for Chummer5a at
+  https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <version>0</version>
+  <categories>
+    <category>Foundation</category>
+    <category>Block</category>
+    <category>Enhancer</category>
+  </categories>
+  <grades>
+    <grade>
+      <id>b00a075a-2c2c-4816-bb4a-0d0a33d06370</id>
+      <name>Standard</name>
+      <cost>1</cost>
+      <source>CF</source>
+    </grade>
+    <grade>
+      <id>b8b70858-6433-451a-835b-49b67d7b63e2</id>
+      <name>Street Cooked</name>
+      <cost>0.5</cost>
+      <source>CF</source>
+    </grade>
+    <grade>
+      <id>b3366009-4884-44d7-9efa-34e213a75e7e</id>
+      <name>Pharmaceutical</name>
+      <cost>2</cost>
+      <addictionthreshold>-1</addictionthreshold>
+      <source>CF</source>
+    </grade>
+    <grade>
+      <id>cd20695d-fedb-476b-956b-1a1ecdd65f03</id>
+      <name>Designer</name>
+      <cost>6</cost>
+      <source>CF</source>
+    </grade>
+  </grades>
   <drugcomponents>
-    <!--Foundations-->
+    <!--Region Foundations-->
     <drugcomponent>
+      <id>33ae6b1c-62f6-4824-967d-0e2b37c7d1b9</id>
       <name>Tank</name>
       <category>Foundation</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>BOD</name>
             <value>2</value>
+          </attribute>
+          <attribute>
+            <name>CHA</name>
+            <value>-2</value>
           </attribute>
           <attribute>
             <name>WIL</name>
             <value>1</value>
           </attribute>
           <quality>High Pain Tolerance III</quality>
-          <attribute>
-            <name>CHA</name>
-            <value>-2</value>
-          </attribute>
-        </level>
+        </effect>
       </effects>
-      <availability>4</availability>
+      <availability>+4R</availability>
       <cost>75</cost>
       <rating>6</rating>
       <threshold>2</threshold>
@@ -49,10 +82,12 @@
       <page>190</page>
     </drugcomponent>
     <drugcomponent>
+      <id>ca5e7e5e-6aab-472a-a273-6d21d4e9ad2e</id>
       <name>Defender</name>
       <category>Foundation</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>AGI</name>
             <value>1</value>
@@ -73,9 +108,9 @@
             <name>LOG</name>
             <value>-1</value>
           </attribute>
-        </level>
+        </effect>
       </effects>
-      <availability>4</availability>
+      <availability>+4R</availability>
       <cost>75</cost>
       <rating>6</rating>
       <threshold>2</threshold>
@@ -83,10 +118,12 @@
       <page>190</page>
     </drugcomponent>
     <drugcomponent>
+      <id>cf8a2d2b-03b9-4440-873b-829c7d82489e</id>
       <name>Genius</name>
       <category>Foundation</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>LOG</name>
             <value>2</value>
@@ -103,9 +140,9 @@
             <name>REA</name>
             <value>-1</value>
           </attribute>
-        </level>
+        </effect>
       </effects>
-      <availability>4</availability>
+      <availability>+4R</availability>
       <cost>75</cost>
       <rating>6</rating>
       <threshold>2</threshold>
@@ -113,25 +150,27 @@
       <page>190</page>
     </drugcomponent>
     <drugcomponent>
+      <id>8ec241f7-31c0-4655-80dd-3d4ce2a0b56d</id>
       <name>Charmer</name>
       <category>Foundation</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>CHA</name>
             <value>1</value>
+          </attribute>
+          <attribute>
+            <name>AGI</name>
+            <value>-1</value>
           </attribute>
           <limit>
             <name>Social</name>
             <value>1</value>
           </limit>
-          <attribute>
-            <name>AGI</name>
-            <value>-1</value>
-          </attribute>
-        </level>
+        </effect>
       </effects>
-      <availability>4</availability>
+      <availability>+4R</availability>
       <cost>75</cost>
       <rating>6</rating>
       <threshold>2</threshold>
@@ -139,10 +178,12 @@
       <page>190</page>
     </drugcomponent>
     <drugcomponent>
+      <id>e93015ca-12ff-48c4-b45e-f1387f2ea1ef</id>
       <name>Warrior</name>
       <category>Foundation</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>STR</name>
             <value>1</value>
@@ -159,21 +200,24 @@
             <name>WIL</name>
             <value>-1</value>
           </attribute>
-        </level>
+        </effect>
       </effects>
-      <availability>4</availability>
+      <availability>+4R</availability>
       <cost>75</cost>
       <rating>6</rating>
       <threshold>2</threshold>
       <source>CF</source>
       <page>190</page>
     </drugcomponent>
-    <!--Blocks-->
+    <!--End Region -->
+    <!--Region Blocks-->
     <drugcomponent>
+      <id>9f4c87ba-4a0d-48e8-8c90-08b689da7203</id>
       <name>Crush</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>STR</name>
             <value>1</value>
@@ -182,8 +226,9 @@
             <name>INT</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>STR</name>
             <value>2</value>
@@ -193,8 +238,9 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>2</level>
           <attribute>
             <name>STR</name>
             <value>3</value>
@@ -203,20 +249,22 @@
             <name>INT</name>
             <value>-1</value>
           </attribute>
-          <quality>Low Pain Tolerance</quality>
           <crashdamage>2</crashdamage>
-        </level>
+          <quality>Low Pain Tolerance</quality>
+        </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>20</cost>
       <source>CF</source>
       <page>190</page>
     </drugcomponent>
     <drugcomponent>
+      <id>7eebc516-8298-4a7f-afef-10dceebb5e58</id>
       <name>Brute</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>BOD</name>
             <value>1</value>
@@ -225,8 +273,9 @@
             <name>LOG</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>BOD</name>
             <value>2</value>
@@ -236,8 +285,9 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>2</level>
           <attribute>
             <name>BOD</name>
             <value>3</value>
@@ -251,18 +301,20 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
+        </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>20</cost>
       <source>CF</source>
       <page>190</page>
     </drugcomponent>
     <drugcomponent>
+      <id>e6001189-e413-43bc-86ee-2136ca5d10bf</id>
       <name>Strike</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>AGI</name>
             <value>1</value>
@@ -271,8 +323,9 @@
             <name>STR</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>AGI</name>
             <value>2</value>
@@ -282,8 +335,9 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>2</level>
           <attribute>
             <name>AGI</name>
             <value>3</value>
@@ -292,20 +346,22 @@
             <name>STR</name>
             <value>-1</value>
           </attribute>
-          <quality>Unsteady Hands</quality>
           <crashdamage>2</crashdamage>
-        </level>
+          <quality>Unsteady Hands</quality>
+        </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>20</cost>
       <source>CF</source>
       <page>190</page>
     </drugcomponent>
     <drugcomponent>
+      <id>04f24ebd-e1cc-4b57-abe7-c8aa3fa91539</id>
       <name>Lighting</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>REA</name>
             <value>1</value>
@@ -314,8 +370,9 @@
             <name>LOG</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>REA</name>
             <value>2</value>
@@ -328,8 +385,9 @@
             <name>WIL</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>2</level>
           <attribute>
             <name>REA</name>
             <value>3</value>
@@ -343,18 +401,20 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
+        </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>20</cost>
       <source>CF</source>
       <page>190</page>
     </drugcomponent>
     <drugcomponent>
+      <id>7b479fef-bcb4-4f9e-80c9-b1c17c79466b</id>
       <name>Einstein</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>LOG</name>
             <value>1</value>
@@ -363,8 +423,9 @@
             <name>WIL</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>LOG</name>
             <value>2</value>
@@ -377,8 +438,9 @@
             <name>INT</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>2</level>
           <attribute>
             <name>LOG</name>
             <value>3</value>
@@ -392,18 +454,20 @@
             <value>-1</value>
           </attribute>
           <info>Crash Effect: -1d6 initiative dice</info>
-        </level>
+        </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>20</cost>
       <source>CF</source>
       <page>190</page>
     </drugcomponent>
     <drugcomponent>
+      <id>ef191753-a06e-4762-9674-47e3fe90ed1e</id>
       <name>Gut Check</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>INT</name>
             <value>1</value>
@@ -412,8 +476,9 @@
             <name>STR</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>INT</name>
             <value>2</value>
@@ -426,8 +491,9 @@
             <name>REA</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>2</level>
           <attribute>
             <name>INT</name>
             <value>3</value>
@@ -441,18 +507,20 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
+        </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>20</cost>
       <source>CF</source>
       <page>190</page>
     </drugcomponent>
     <drugcomponent>
+      <id>47387cd3-836c-4283-a1ce-c62487dd669b</id>
       <name>Stonewall</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>WIL</name>
             <value>1</value>
@@ -461,8 +529,9 @@
             <name>BOD</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>WIL</name>
             <value>2</value>
@@ -475,8 +544,9 @@
             <name>AGI</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>2</level>
           <attribute>
             <name>WIL</name>
             <value>3</value>
@@ -493,18 +563,20 @@
             <name>STR</name>
             <value>-1</value>
           </attribute>
-        </level>
+        </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>20</cost>
       <source>CF</source>
       <page>191</page>
     </drugcomponent>
     <drugcomponent>
+      <id>41018f6e-beb4-4a6c-8d59-501db802ce1a</id>
       <name>Smoothtalk</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>CHA</name>
             <value>1</value>
@@ -513,8 +585,9 @@
             <name>STR</name>
             <value>-1</value>
           </attribute>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>CHA</name>
             <value>2</value>
@@ -524,8 +597,9 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>2</level>
           <attribute>
             <name>CHA</name>
             <value>3</value>
@@ -534,24 +608,28 @@
             <name>STR</name>
             <value>-1</value>
           </attribute>
-          <quality>Uncouth</quality>
           <crashdamage>2</crashdamage>
-        </level>
+          <quality>Uncouth</quality>
+        </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>20</cost>
       <source>CF</source>
       <page>191</page>
     </drugcomponent>
     <drugcomponent>
+      <id>ebbb6a0e-f3b1-47f3-85c1-e408b4a6ceb2</id>
       <name>Shock and Awe</name>
       <category>Block</category>
       <effects>
-        <level>
-          <initiativedice>1</initiativedice>
+        <effect>
+          <level>0</level>
           <crashdamage>4</crashdamage>
-        </level>
-        <level>
+          <initiativedice>1</initiativedice>
+        </effect>
+        <effect>
+          <level>1</level>
+          <crashdamage>4</crashdamage>
           <initiativedice>2</initiativedice>
           <limit>
             <name>Physical</name>
@@ -565,9 +643,10 @@
             <name>Social</name>
             <value>-1</value>
           </limit>
-          <crashdamage>4</crashdamage>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>2</level>
+          <crashdamage>8</crashdamage>
           <initiativedice>3</initiativedice>
           <limit>
             <name>Physical</name>
@@ -581,19 +660,20 @@
             <name>Social</name>
             <value>-2</value>
           </limit>
-          <crashdamage>8</crashdamage>
-        </level>
+        </effect>
       </effects>
-      <availability>2</availability>
+      <availability>+2</availability>
       <cost>40</cost>
       <source>CF</source>
       <page>191</page>
     </drugcomponent>
     <drugcomponent>
+      <id>5ff4db39-aa0e-42f5-ae24-2bf79560670b</id>
       <name>Razor Mind</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>INT</name>
             <value>1</value>
@@ -607,8 +687,9 @@
             <value>-1</value>
           </attribute>
           <crashdamage>1</crashdamage>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>INT</name>
             <value>2</value>
@@ -622,18 +703,20 @@
             <value>-2</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
+        </effect>
       </effects>
-      <availability>2</availability>
+      <availability>+2</availability>
       <cost>30</cost>
       <source>CF</source>
       <page>191</page>
     </drugcomponent>
     <drugcomponent>
+      <id>c1a7dd91-61c9-49e1-8dfd-892882bd1816</id>
       <name>The General</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>CHA</name>
             <value>1</value>
@@ -647,8 +730,9 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>CHA</name>
             <value>2</value>
@@ -666,18 +750,20 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
+        </effect>
       </effects>
-      <availability>2</availability>
+      <availability>+2</availability>
       <cost>30</cost>
       <source>CF</source>
       <page>191</page>
     </drugcomponent>
     <drugcomponent>
+      <id>c98d587d-5651-4a53-a9ab-cc2262236658</id>
       <name>Resist</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>BOD</name>
             <value>1</value>
@@ -691,8 +777,9 @@
             <value>-1</value>
           </attribute>
           <crashdamage>1</crashdamage>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>BOD</name>
             <value>2</value>
@@ -710,18 +797,20 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
+        </effect>
       </effects>
-      <availability>2</availability>
+      <availability>+2</availability>
       <cost>30</cost>
       <source>CF</source>
       <page>191</page>
     </drugcomponent>
     <drugcomponent>
+      <id>1ed8c102-3b31-42ae-bf0f-4d9fe22fc4fb</id>
       <name>Speed Demon</name>
       <category>Block</category>
       <effects>
-        <level>
+        <effect>
+          <level>0</level>
           <attribute>
             <name>AGI</name>
             <value>1</value>
@@ -735,8 +824,9 @@
             <value>-1</value>
           </attribute>
           <crashdamage>1</crashdamage>
-        </level>
-        <level>
+        </effect>
+        <effect>
+          <level>1</level>
           <attribute>
             <name>AGI</name>
             <value>2</value>
@@ -754,23 +844,25 @@
             <value>-1</value>
           </attribute>
           <crashdamage>2</crashdamage>
-        </level>
+        </effect>
       </effects>
-      <availability>2</availability>
+      <availability>+2</availability>
       <cost>30</cost>
       <source>CF</source>
       <page>191</page>
     </drugcomponent>
-    <!--Enhancers-->
+    <!--End Region -->
+    <!--Region Enhancers-->
     <drugcomponent>
+      <id>a4d7e764-5aa7-4394-92f1-43ff58c1a801</id>
       <name>Ingestion Enhancer</name>
       <category>Enhancer</category>
       <effects>
-        <level>
-          <info>Ingestion Vector</info>
-        </level>
+        <effect>
+          <info>Ingestion</info>
+        </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>50</cost>
       <rating>1</rating>
       <threshold>1</threshold>
@@ -778,14 +870,15 @@
       <page>191</page>
     </drugcomponent>
     <drugcomponent>
+      <id>0737b976-ec7d-45cf-a84f-1c0524dac6f9</id>
       <name>Inhalation Enhancer</name>
       <category>Enhancer</category>
       <effects>
-        <level>
-          <info>Inhalation Vector</info>
-        </level>
+        <effect>
+          <info>Inhalation</info>
+        </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>50</cost>
       <rating>1</rating>
       <threshold>1</threshold>
@@ -793,14 +886,15 @@
       <page>191</page>
     </drugcomponent>
     <drugcomponent>
+      <id>fdca4090-a933-4393-a3bd-7633aad967a2</id>
       <name>Speed Enhancer</name>
       <category>Enhancer</category>
       <effects>
-        <level>
+        <effect>
           <speed>1</speed>
-        </level>
+        </effect>
       </effects>
-      <availability>1</availability>
+      <availability>+1</availability>
       <cost>50</cost>
       <rating>1</rating>
       <threshold>1</threshold>
@@ -808,19 +902,21 @@
       <page>191</page>
     </drugcomponent>
     <drugcomponent>
+      <id>d67dbda7-b03f-4914-9f1d-a6a238f6944e</id>
       <name>Duration Enhancer</name>
       <category>Enhancer</category>
-      <availability>1</availability>
       <effects>
-        <level>
+        <effect>
           <duration>1</duration>
-        </level>
+        </effect>
       </effects>
+      <availability>+1</availability>
       <cost>50</cost>
       <rating>1</rating>
       <threshold>1</threshold>
       <source>CF</source>
       <page>191</page>
     </drugcomponent>
+    <!-- End Region -->
   </drugcomponents>
 </chummer>

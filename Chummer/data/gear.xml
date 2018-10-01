@@ -43,6 +43,8 @@
     <category>Critter Gear</category>
     <category>Currency</category>
     <category>Custom</category>
+    <category blackmarket="Electronics">Custom Cyberdeck Attributes</category>
+    <category blackmarket="Drugs">Custom Drug</category>
     <category blackmarket="Electronics">Cyberdeck Modules</category>
     <category blackmarket="Electronics">Cyberdecks</category>
     <category blackmarket="Electronics">Cyberterminals</category>
@@ -84,6 +86,8 @@
     <category blackmarket="Drugs">Toxins</category>
     <category blackmarket="Electronics">Vision Devices</category>
     <category blackmarket="Electronics">Vision Enhancements</category>
+    <category blackmarket="Electronics">Matrix Accessories</category>
+    <category blackmarket="Electronics">Booster Chips</category>
   </categories>
   <gears>
     <!-- Region Ammo -->
@@ -114,7 +118,7 @@
       <id>39042c0a-4b22-4762-8d56-623033860178</id>
       <name>Arrow: Monotip Head</name>
       <category>Ammunition</category>
-      <rating>10</rating>
+      <rating>12</rating>
       <source>HT</source>
       <page>187</page>
       <avail>8R</avail>
@@ -485,7 +489,7 @@
       <source>RG</source>
       <page>55</page>
       <avail>8R</avail>
-      <cost>75</cost>
+      <cost>150</cost>
       <costfor>10</costfor>
     </gear>
     <gear>
@@ -508,10 +512,24 @@
       </weaponbonus>
     </gear>
     <gear>
+      <id>9bb893c0-2cab-4f7f-a0cf-bdacc940254b</id>
+      <name>Ammo: DMSO Rounds</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SR5G</source>
+      <page>436</page>
+      <avail>2R</avail>
+      <addoncategory>Drugs</addoncategory>
+      <addoncategory>Toxins</addoncategory>
+      <addoncategory>Custom</addoncategory>
+      <cost>20</cost>
+      <costfor>10</costfor>
+    </gear>
+    <gear>
       <id>9e7a685f-e612-4b6b-955c-a7bc42b23682</id>
       <name>Arrow: Standard</name>
       <category>Ammunition</category>
-      <rating>10</rating>
+      <rating>12</rating>
       <source>SR5</source>
       <page>423</page>
       <avail>Rating</avail>
@@ -522,7 +540,7 @@
       <id>775d2fed-57ab-4e63-b2e4-638ccf4a21d0</id>
       <name>Arrow: Injection</name>
       <category>Ammunition</category>
-      <rating>10</rating>
+      <rating>12</rating>
       <source>SR5</source>
       <page>424</page>
       <avail>(Rating + 2)R</avail>
@@ -579,7 +597,7 @@
       <id>dd6e4f80-8200-47fa-8f78-9204e9c0f70d</id>
       <name>Arrow: Barbed Head</name>
       <category>Ammunition</category>
-      <rating>10</rating>
+      <rating>12</rating>
       <source>RG</source>
       <page>23</page>
       <avail>(Rating)R</avail>
@@ -593,7 +611,7 @@
       <id>d09f3ebd-28fb-4375-ad0f-49fd1b521c12</id>
       <name>Arrow: Explosive Head</name>
       <category>Ammunition</category>
-      <rating>10</rating>
+      <rating>12</rating>
       <source>RG</source>
       <page>23</page>
       <avail>(Rating)F</avail>
@@ -609,7 +627,7 @@
       <id>8fb09c1d-f890-444b-bb2b-cf1a5e6825b8</id>
       <name>Arrow: Hammerhead</name>
       <category>Ammunition</category>
-      <rating>10</rating>
+      <rating>12</rating>
       <source>RG</source>
       <page>24</page>
       <avail>Rating</avail>
@@ -625,7 +643,7 @@
       <id>f245f0d0-22ba-4367-97ee-6762df9137bc</id>
       <name>Arrow: Incendiary Head</name>
       <category>Ammunition</category>
-      <rating>10</rating>
+      <rating>12</rating>
       <source>RG</source>
       <page>24</page>
       <avail>12F</avail>
@@ -639,7 +657,7 @@
       <id>1cdea5f7-df85-4ebe-bc32-f8dbfa27dad3</id>
       <name>Arrow: Screamer Head</name>
       <category>Ammunition</category>
-      <rating>10</rating>
+      <rating>12</rating>
       <source>RG</source>
       <page>24</page>
       <avail>Rating</avail>
@@ -655,7 +673,7 @@
       <id>4ddbecdf-fc04-4b1d-851b-63d5e9e57dbb</id>
       <name>Arrow: Stick-n-Shock</name>
       <category>Ammunition</category>
-      <rating>10</rating>
+      <rating>12</rating>
       <source>RG</source>
       <page>24</page>
       <avail>(Rating)R</avail>
@@ -670,7 +688,7 @@
       <id>258049dc-6f94-4d41-be97-cadeba20ff36</id>
       <name>Arrow: Stick-n-Shock w/Static Shaft</name>
       <category>Ammunition</category>
-      <rating>10</rating>
+      <rating>12</rating>
       <source>RG</source>
       <page>24</page>
       <avail>6R</avail>
@@ -1349,6 +1367,254 @@
       <addweapon>Missile: High Explosive</addweapon>
       <cost>2100</cost>
     </gear>
+    <gear>
+      <id>9ff4b57d-4aaf-482f-ab67-66e10ed58e13</id>
+      <name>Ammo: Renraku/Ingram Supermach</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>132</page>
+      <avail>16F</avail>
+      <cost>20</cost>
+      <costfor>10</costfor>
+    </gear>
+    <!-- Region Kill Code-->
+
+      <gear>
+          <id>7e104b61-69b3-4a7e-8221-a6190314c411</id>
+          <name>Ammo: Zapper</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>12R</avail>
+          <cost>140</cost>
+          <costfor>10</costfor>
+          <weaponbonus>
+              <damagetype>(M)</damagetype>
+          </weaponbonus>
+      </gear>
+      <gear>
+          <id>b8ad4fef-4092-42ac-87ad-518dd8b60fb7</id>
+          <name>Ammo: Looper</name>
+          <category>Ammunition</category>
+          <rating>6</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>FixedValues(7R,8R,9R,10R,11R,12R)</avail>
+          <cost>FixedValues(20,30,40,50,100,200)</cost>
+          <costfor>10</costfor>
+          <weaponbonus>
+              <userange>Light Pistol</userange>
+          </weaponbonus>
+      </gear>
+      <gear>
+          <id>c40a91b0-7896-4ad1-b1e6-f39c9c93bf1b</id>
+          <name>Ammo: Fuzzy</name>
+          <category>Ammunition</category>
+          <rating>2</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>FixedValues(10R,12R)</avail>
+          <cost>FixedValues(30,50)</cost>
+          <costfor>10</costfor>
+          <weaponbonus>
+              <userange>Light Pistol</userange>
+          </weaponbonus>
+      </gear>
+      <gear>
+          <id>efa87c80-d712-41d8-813e-768a2f4ffcf7</id>
+          <name>Ammo: E0-E0 (Public Grid)</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>5R</avail>
+          <cost>50</cost>
+          <costfor>10</costfor>
+          <weaponbonus>
+              <damagetype>(M)</damagetype>
+              <userange>Light Pistol</userange>
+          </weaponbonus>
+      </gear>
+      <gear>
+          <id>f4be287a-2ed8-4e7b-8244-32243905fe84</id>
+          <name>Ammo: E0-E0 (Local Grid)</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>5R</avail>
+          <cost>60</cost>
+          <bonus>
+              <selecttext />
+          </bonus>
+          <costfor>10</costfor>
+          <weaponbonus>
+              <damagetype>(M)</damagetype>
+              <userange>Light Pistol</userange>
+          </weaponbonus>
+      </gear>
+      <gear>
+          <id>8ddf2080-2444-4d9a-a601-5be4147b183d</id>
+          <name>Ammo: E0-E0 (Megacorporate Grid)</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>5R</avail>
+          <cost>100</cost>
+          <bonus>
+              <selecttext />
+          </bonus>
+          <costfor>10</costfor>
+          <weaponbonus>
+              <damagetype>(M)</damagetype>
+              <userange>Light Pistol</userange>
+          </weaponbonus>
+      </gear>
+      <gear>
+          <id>bf9001db-6484-47ab-9449-5f068f5fe04b</id>
+          <name>Ammo: E0-E0 Rifle (Public Grid)</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>5R</avail>
+          <cost>50</cost>
+          <costfor>10</costfor>
+          <weaponbonus>
+              <damagetype>(M)</damagetype>
+              <userange>Light Pistol</userange>
+          </weaponbonus>
+      </gear>
+      <gear>
+          <id>d1e0807b-6c6e-44bb-a230-c6f328ee26a5</id>
+          <name>Ammo: E0-E0 Rifle (Local Grid)</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>5R</avail>
+          <cost>60</cost>
+          <bonus>
+              <selecttext />
+          </bonus>
+          <costfor>10</costfor>
+          <weaponbonus>
+              <damagetype>(M)</damagetype>
+              <userange>Light Pistol</userange>
+          </weaponbonus>
+      </gear>
+      <gear>
+          <id>b580d8fc-9987-403a-9be5-760b1d88f926</id>
+          <name>Ammo: E0-E0 Rifle (Megacorporate Grid)</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>5R</avail>
+          <cost>100</cost>
+          <bonus>
+              <selecttext />
+          </bonus>
+          <costfor>10</costfor>
+          <weaponbonus>
+              <damage>-4</damage>
+              <ap>-4</ap>
+              <damagetype>(M)</damagetype>
+              <userange>Light Pistol</userange>
+          </weaponbonus>
+      </gear>
+      <gear>
+          <id>05a9f4e2-b7c0-4bf8-8614-33b1ee0f406d</id>
+          <name>Arrow: Arrowlink (50m)</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>6R</avail>
+          <cost>25</cost>
+      </gear>
+      <gear>
+          <id>2d3b26aa-a2c1-4514-915e-62aa08203456</id>
+          <name>Arrow: Arrowlink (100m)</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>8R</avail>
+          <cost>75</cost>
+      </gear>
+      <gear>
+          <id>74906d00-018e-4d1a-8a9c-4b77918de761</id>
+          <name>Arrow: Arrowlink (200m)</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>10R</avail>
+          <cost>200</cost>
+      </gear>
+      <gear>
+          <id>65a853d4-52d6-44c7-a867-10ea1beaece3</id>
+          <name>Arrow: Arrowlink (500m)</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>12R</avail>
+          <cost>400</cost>
+      </gear>
+      <gear>
+          <id>051ceea6-65c2-4058-95bd-f63d86a45984</id>
+          <name>Grenade: Fuzzy Boom Boom Bunnies</name>
+          <category>Ammunition</category>
+          <rating>20</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>10R</avail>
+          <cost>Rating*20</cost>
+          <!-- TODO: Grenade weapons
+          <addweapon>Grenade: Fuzzy Boom Boom Bunnies</addweapon>-->
+      </gear>
+      <gear>
+          <id>7470ed31-0d81-4992-bae6-38f9de198020</id>
+          <name>Grenade: COS</name>
+          <category>Ammunition</category>
+          <rating>0</rating>
+          <source>KC</source>
+          <page>48</page>
+          <avail>10R</avail>
+          <cost>500</cost>
+          <!-- TODO: Grenade weapons
+          <addweapon>Grenade: COS</addweapon>-->
+      </gear>
+    <gear>
+      <id>0c98750a-4286-4ec5-9035-b76f36c03ce4</id>
+      <name>Grenade: Douser</name>
+      <category>Ammunition</category>
+      <rating>10</rating>
+      <source>KC</source>
+      <page>48</page>
+      <avail>Rating*2F</avail>
+      <cost>Rating*50</cost>
+      <!-- TODO: Grenade weapons
+      <addweapon>Grenade: Douser</addweapon>-->
+    </gear>
+    <gear>
+      <id>965ccb60-f9e2-4a44-8a11-05e6c5bd4457</id>
+      <name>Grenade: DumDum</name>
+      <category>Ammunition</category>
+      <rating>10</rating>
+      <source>KC</source>
+      <page>48</page>
+      <avail>Rating*2R</avail>
+      <cost>Rating*50</cost>
+      <!-- TODO: Grenade weapons
+      <addweapon>Grenade: DumDum</addweapon>-->
+    </gear>
+    <!-- End Region -->
     <!-- End Region -->
     <!-- Region Explosives -->
     <gear>
@@ -1728,6 +1994,42 @@
       <page>178</page>
       <avail>16F</avail>
       <cost>Variable(2000-15000)</cost>
+    </gear>
+    <gear>
+      <id>d05a6375-7c82-4d32-952e-cc356b5b079d</id>
+      <name>Faceless - Specific Face</name>
+      <category>Disguises</category>
+      <rating>10</rating>
+      <source>KC</source>
+      <page>57</page>
+      <avail>(Rating*2)+4F</avail>
+      <cost>(Rating*500)+5000</cost>
+      <bonus>
+        <selecttext />
+      </bonus>
+    </gear>
+    <gear>
+      <id>3cc7b3d8-0f5f-4598-b9a0-96083966e6f9</id>
+      <name>Faceless - Generic</name>
+      <category>Disguises</category>
+      <rating>10</rating>
+      <source>KC</source>
+      <page>57</page>
+      <avail>(Rating*2)+2F</avail>
+      <cost>(Rating*500)+1000</cost>
+      <bonus>
+        <selecttext />
+      </bonus>
+    </gear>
+    <gear>
+      <id>4d36bc74-d75e-46ce-9739-9b58ca72b518</id>
+      <name>Faceless - Blurred Face</name>
+      <category>Disguises</category>
+      <rating>10</rating>
+      <source>KC</source>
+      <page>57</page>
+      <avail>(Rating*2)F</avail>
+      <cost>Rating*500</cost>
     </gear>
     <!-- End Region -->
     <!-- Region Commlinks and Cyberdecks -->
@@ -2415,6 +2717,673 @@
       </gears>
     </gear>
     <gear>
+      <id>d2c64947-9d23-4ec8-916a-e5345b94b96b</id>
+      <name>Fuchi Cyber-N</name>
+      <category>Cyberdecks</category>
+      <rating>100000</rating>
+      <source>KC</source>
+      <page>60</page>
+      <avail>Rating*2R</avail>
+      <capacity>0</capacity>
+      <cost>Rating*10000</cost>
+      <devicerating>{Rating}</devicerating>
+	  <!-- TODO: This should have a more robust method to lock the attribute array. -->
+      <attack>0</attack>
+      <sleaze>0</sleaze>
+      <dataprocessing>0</dataprocessing>
+      <firewall>0</firewall>
+      <programs>1</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>00ccda48-98a0-42b1-a997-1e1cf1f5269a</id>
+      <name>Fuchi Cyber-Ex</name>
+      <category>Cyberdecks</category>
+      <rating>100000</rating>
+      <source>KC</source>
+      <page>60</page>
+      <avail>Rating*2R</avail>
+      <capacity>0</capacity>
+      <cost>Rating*10000</cost>
+      <devicerating>{Rating}</devicerating>
+      <!-- TODO: This should have a more robust method to lock the attribute array. -->
+      <attack>0</attack>
+      <sleaze>0</sleaze>
+      <dataprocessing>0</dataprocessing>
+      <firewall>0</firewall>
+      <programs>{Rating}+2</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>101acb97-2528-4812-a852-a8591b68145f</id>
+      <name>[Custom Cyberdeck] Attack</name>
+      <category>Custom Cyberdeck Attributes</category>
+      <rating>{Parent Rating}</rating>
+      <source>KC</source>
+      <page>60</page>
+      <avail>0</avail>
+      <armorcapacity>[2]</armorcapacity>
+      <cost>(Rating*Rating*Rating)*500</cost>
+      <modattack>{Rating}</modattack>
+      <required>
+        <geardetails>
+            <OR>
+              <name>Fuchi Cyber-N</name>
+              <name>Fuchi Cyber-Ex</name>
+            </OR>
+        </geardetails>
+      </required>
+    </gear>
+    <gear>
+      <id>cc6cb58a-a6a1-441d-84f6-a0ea3091317e</id>
+      <name>[Custom Cyberdeck] Sleaze</name>
+      <category>Custom Cyberdeck Attributes</category>
+      <rating>{Parent Rating}</rating>
+      <source>KC</source>
+      <page>60</page>
+      <avail>0</avail>
+      <armorcapacity>[2]</armorcapacity>
+      <cost>(Rating*Rating)*500</cost>
+      <modsleaze>{Rating}</modsleaze>
+      <required>
+        <geardetails>
+            <OR>
+              <name>Fuchi Cyber-N</name>
+              <name>Fuchi Cyber-Ex</name>
+            </OR>
+        </geardetails>
+      </required>
+    </gear>
+    <gear>
+      <id>c4760ef1-5fe0-477b-8579-a457aaf16bf9</id>
+      <name>[Custom Cyberdeck] Data Processing</name>
+      <category>Custom Cyberdeck Attributes</category>
+      <rating>{Parent Rating}</rating>
+      <source>KC</source>
+      <page>60</page>
+      <avail>0</avail>
+      <armorcapacity>[2]</armorcapacity>
+      <cost>(Rating*Rating)*500</cost>
+      <moddataprocessing>{Rating}</moddataprocessing>
+      <required>
+        <geardetails>
+            <OR>
+              <name>Fuchi Cyber-N</name>
+              <name>Fuchi Cyber-Ex</name>
+            </OR>
+        </geardetails>
+      </required>
+    </gear>
+    <gear>
+      <id>37c5f8bc-025a-4eca-93a8-1e93e0cabcd9</id>
+      <name>[Custom Cyberdeck] Firewall</name>
+      <category>Custom Cyberdeck Attributes</category>
+      <rating>{Parent Rating}</rating>
+      <source>KC</source>
+      <page>60</page>
+      <avail>(Rating*4)R</avail>
+      <armorcapacity>[2]</armorcapacity>
+      <cost>(Rating*Rating*Rating)*500</cost>
+      <modfirewall>{Rating}</modfirewall>
+      <required>
+        <geardetails>
+            <OR>
+              <name>Fuchi Cyber-N</name>
+              <name>Fuchi Cyber-Ex</name>
+            </OR>
+        </geardetails>
+      </required>
+    </gear>
+    <!-- Region Security Decks -->
+    <gear>
+      <id>51ca2b4d-fdbb-48cc-89b3-9d56757d1682</id>
+      <name>Security Deck: Guard</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>61</page>
+      <avail>3R</avail>
+      <capacity>0</capacity>
+      <cost>39000</cost>
+      <devicerating>2</devicerating>
+      <attack>3</attack>
+      <sleaze>1</sleaze>
+      <dataprocessing>2</dataprocessing>
+      <firewall>4</firewall>
+      <programs>1</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Encryption</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>81206ac6-631a-4ec7-8013-96050510726f</id>
+      <name>Security Deck: Shield</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>61</page>
+      <avail>6R</avail>
+      <capacity>0</capacity>
+      <cost>98000</cost>
+      <devicerating>4</devicerating>
+      <attack>4</attack>
+      <sleaze>1</sleaze>
+      <dataprocessing>3</dataprocessing>
+      <firewall>5</firewall>
+      <programs>2</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Encryption</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Shell</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>737f6986-d565-4f65-9f83-8142d1f72b56</id>
+      <name>Security Deck: Fortress</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>61</page>
+      <avail>9R</avail>
+      <capacity>0</capacity>
+      <cost>377000</cost>
+      <devicerating>6</devicerating>
+      <attack>6</attack>
+      <sleaze>1</sleaze>
+      <dataprocessing>5</dataprocessing>
+      <firewall>8</firewall>
+      <programs>3</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Encryption</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Shell</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Armor</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>49482a90-ffc4-449a-b6b5-21ab0bcd3879</id>
+      <name>Security Deck: Great Wall</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>61</page>
+      <avail>12R</avail>
+      <capacity>0</capacity>
+      <cost>774000</cost>
+      <devicerating>8</devicerating>
+      <attack>8</attack>
+      <sleaze>1</sleaze>
+      <dataprocessing>6</dataprocessing>
+      <firewall>10</firewall>
+      <programs>4</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Encryption</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Shell</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Armor</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Biofeedback Filter</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+<!-- End Region -->
+<!-- Region Hunter Decks -->
+    <gear>
+      <id>17003ab0-8e96-4661-898d-8d57963a6e8d</id>
+      <name>Hunter Deck: Fox</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>62</page>
+      <avail>4R</avail>
+      <capacity>0</capacity>
+      <cost>68500</cost>
+      <devicerating>2</devicerating>
+      <attack>4</attack>
+      <sleaze>1</sleaze>
+      <dataprocessing>3</dataprocessing>
+      <firewall>4</firewall>
+      <programs>3</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Track</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Shell</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Hammer</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>26171ce4-fadc-4dae-85e0-5d165d312f56</id>
+      <name>Hunter Deck: Wolf</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>61</page>
+      <avail>8R</avail>
+      <capacity>0</capacity>
+      <cost>133000</cost>
+      <devicerating>4</devicerating>
+      <attack>5</attack>
+      <sleaze>1</sleaze>
+      <dataprocessing>4</dataprocessing>
+      <firewall>5</firewall>
+      <programs>4</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Track</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Shell</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Hammer</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Decryption</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>b705d027-1ba6-4322-9710-b951278c6b3f</id>
+      <name>Hunter Deck: Tiger</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>61</page>
+      <avail>12R</avail>
+      <capacity>0</capacity>
+      <cost>530000</cost>
+      <devicerating>6</devicerating>
+      <attack>8</attack>
+      <sleaze>1</sleaze>
+      <dataprocessing>6</dataprocessing>
+      <firewall>8</firewall>
+      <programs>5</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Track</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Shell</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Hammer</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Decryption</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Hammer</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>7bd2d975-c4c7-41f4-ba28-be8431e22c36</id>
+      <name>Hunter Deck: Shark</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>61</page>
+      <avail>16R</avail>
+      <capacity>0</capacity>
+      <cost>1032000</cost>
+      <devicerating>8</devicerating>
+      <attack>10</attack>
+      <sleaze>1</sleaze>
+      <dataprocessing>8</dataprocessing>
+      <firewall>10</firewall>
+      <programs>6</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Track</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Shell</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Hammer</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Decryption</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Hammer</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Fork</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Biofeedback Filter</name>
+	      <category>Common Programs</category>
+        </usegear>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+<!-- End Region -->
+    <gear>
+      <id>96ce16be-8fca-4b3a-af65-0e3c38280b1d</id>
+      <name>Aztechnology Shadow Warrior</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>62</page>
+      <avail>10R</avail>
+      <capacity>0</capacity>
+      <cost>225000</cost>
+      <devicerating>3</devicerating>
+      <attributearray>6,5,4,3</attributearray>
+      <programs>3</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>3927e552-374f-4f41-a304-9be621b2dac8</id>
+      <name>Evo Sublime</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>62</page>
+      <avail>12R</avail>
+      <capacity>0</capacity>
+      <cost>375000</cost>
+      <devicerating>4</devicerating>
+      <attributearray>7,6,5,5</attributearray>
+      <programs>4</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>b00002dd-2aed-47d7-9ecf-88c7fafb4746</id>
+      <name>Fairlight Destiny Blade</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>62</page>
+      <avail>12R</avail>
+      <capacity>0</capacity>
+      <cost>400000</cost>
+      <devicerating>4</devicerating>
+      <attributearray>7,6,5,5</attributearray>
+      <programs>4</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>dcfe2e17-fe33-4bb2-876d-64ee419b9ff6</id>
+      <name>Aztechnology Defender</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>63</page>
+      <avail>14R</avail>
+      <capacity>0</capacity>
+      <cost>560000</cost>
+      <devicerating>5</devicerating>
+      <attributearray>8,7,5,5</attributearray>
+      <programs>5</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>7cd53ac3-c79f-4854-9bda-e1d75cf276f8</id>
+      <name>Kitbashed Sleeper</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>63</page>
+      <avail>14F</avail>
+      <capacity>0</capacity>
+      <cost>375000</cost>
+      <devicerating>4</devicerating>
+      <attributearray>7,5,5,4</attributearray>
+      <programs>4</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
       <id>73e98bb9-4521-45a2-9185-13067fe6b90b</id>
       <name>Renraku Aguchi</name>
       <category>Commlinks</category>
@@ -2911,6 +3880,70 @@
             </usegear>
           </gears>
         </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>a6c0cc9d-d63c-44b3-a668-5c9eb2c9e457</id>
+      <name>Saeder-Krupp Last Chance Link</name>
+      <category>Commlinks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>68</page>
+      <avail>11</avail>
+      <capacity>0</capacity>
+      <cost>5000</cost>
+      <devicerating>3</devicerating>
+      <dataprocessing>3</dataprocessing>
+      <firewall>3</firewall>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>22a38a8a-7298-416c-bf92-5f572e3f09b2</id>
+      <name>Horizon Flow</name>
+      <category>Commlinks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>68</page>
+      <avail>12</avail>
+      <capacity>0</capacity>
+      <cost>4000</cost>
+      <devicerating>5</devicerating>
+      <dataprocessing>5</dataprocessing>
+      <firewall>5</firewall>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>d4b0d4b5-291f-435e-9b61-cd4324c5b1c0</id>
+      <name>Wuxing Frequency</name>
+      <category>Commlinks</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>68</page>
+      <avail>10</avail>
+      <capacity>0</capacity>
+      <cost>3500</cost>
+      <devicerating>4</devicerating>
+      <dataprocessing>4</dataprocessing>
+      <firewall>4</firewall>
+      <programs>4</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
         <usegear>
           <name>Commlink Functionality</name>
           <category>Electronics Accessories</category>
@@ -4019,6 +5052,50 @@
         </usegear>
       </gears>
     </gear>
+    <gear>
+      <id>e265d7a1-8046-406d-b92b-7c9eea8682bd</id>
+      <name>Shiawase Cyber-6</name>
+      <category>Rigger Command Consoles</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>68</page>
+      <avail>12R</avail>
+      <capacity>0</capacity>
+      <cost>72000</cost>
+      <devicerating>5</devicerating>
+      <dataprocessing>5</dataprocessing>
+      <firewall>5</firewall>
+      <programs>5</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>42414f23-7a0e-4e4f-87f8-29a90b0c72d0</id>
+      <name>Spinrad Global Skirmisher</name>
+      <category>Rigger Command Consoles</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>68</page>
+      <avail>8R</avail>
+      <capacity>0</capacity>
+      <cost>50000</cost>
+      <devicerating>4</devicerating>
+      <dataprocessing>5</dataprocessing>
+      <firewall>5</firewall>
+      <programs>4</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
     <!-- End Region -->
     <!-- Region Commlink Apps -->
     <gear>
@@ -4500,6 +5577,76 @@
       <avail>4R</avail>
       <cost>250</cost>
     </gear>
+    <gear>
+      <id>d900aa9c-5914-4e5b-baa4-b4e0c0625123</id>
+      <name>Pantheon Industries "Co-Pilot" Mk I</name>
+      <category>Pi-Tac Programs</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>70</page>
+      <avail>12R</avail>
+      <cost>400</cost>
+    </gear>
+    <gear>
+      <id>5294813b-3421-46b6-b30a-de8cab38f89f</id>
+      <name>Pantheon Industries "Co-Pilot" Mk II</name>
+      <category>Pi-Tac Programs</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>70</page>
+      <avail>12R</avail>
+      <cost>400</cost>
+    </gear>
+    <gear>
+      <id>3727d9a2-c556-4133-8083-d1c61f239034</id>
+      <name>Pantheon Industries "Co-Pilot" Mk III</name>
+      <category>Pi-Tac Programs</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>70</page>
+      <avail>12R</avail>
+      <cost>400</cost>
+    </gear>
+    <gear>
+      <id>cf954b05-0c06-4fdd-8af6-15b03770bccc</id>
+      <name>Pantheon Industries "Door Gunner"</name>
+      <category>Pi-Tac Programs</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>70</page>
+      <avail>12R</avail>
+      <cost>200</cost>
+    </gear>
+    <gear>
+      <id>52adb8cf-22a4-4581-a354-0f7b9bcf6999</id>
+      <name>Pantheon Industries "ECM-Warrior"</name>
+      <category>Pi-Tac Programs</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>70</page>
+      <avail>12R</avail>
+      <cost>200</cost>
+    </gear>
+    <gear>
+      <id>4b7ec6a4-243b-490c-92f5-d337e5cc36de</id>
+      <name>Pantheon Industries Mobile CNC</name>
+      <category>Pi-Tac Programs</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>70</page>
+      <avail>12R</avail>
+      <cost>300</cost>
+    </gear>
+    <gear>
+      <id>a9edf32b-dea2-4939-9fa1-016ed3693a23</id>
+      <name>Pantheon Industries Shield Wall</name>
+      <category>Pi-Tac Programs</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>70</page>
+      <avail>12R</avail>
+      <cost>200</cost>
+    </gear>
     <!-- End Region -->
     <!-- Region Software-->
     <gear>
@@ -4510,7 +5657,7 @@
       <source>SR5</source>
       <page>246</page>
       <avail>Rating * 3</avail>
-      <cost>FixedValues([1000],[2000],[3000],[8000],[10000],[12000])</cost>
+      <cost>FixedValues(1000,2000,3000,8000,10000,12000)</cost>
     </gear>
     <gear>
       <id>c4da5448-0069-447c-b3e4-4147e6bf4ca7</id>
@@ -4763,6 +5910,92 @@
         <selecttext />
       </bonus>
       <cost>Rating * 500</cost>
+    </gear>
+    <!-- End Region -->
+    <!-- Region Booster Chips-->
+    <gear>
+      <id>b8ad45b8-35f7-4c2c-b9cd-29fbeb59b8e9</id>
+      <name>Attack Booster</name>
+      <category>Booster Chips</category>
+      <rating>2</rating>
+      <source>KC</source>
+      <page>59</page>
+      <avail>0</avail>
+      <cost>Rating*50</cost>
+    </gear>
+    <gear>
+      <id>666dbb45-2898-4262-aab6-94e80954b480</id>
+      <name>Sleaze Booster</name>
+      <category>Booster Chips</category>
+      <rating>2</rating>
+      <source>KC</source>
+      <page>59</page>
+      <avail>0</avail>
+      <cost>Rating*50</cost>
+    </gear>
+    <gear>
+      <id>f5b287cc-98c1-479e-8e54-e5155fa6917a</id>
+      <name>Data Processing Booster</name>
+      <category>Booster Chips</category>
+      <rating>2</rating>
+      <source>KC</source>
+      <page>59</page>
+      <avail>0</avail>
+      <cost>Rating*50</cost>
+    </gear>
+    <gear>
+      <id>c29db797-db4b-4f14-b662-622935c3204e</id>
+      <name>Firewall Booster</name>
+      <category>Booster Chips</category>
+      <rating>2</rating>
+      <source>KC</source>
+      <page>59</page>
+      <avail>0</avail>
+      <cost>Rating*50</cost>
+    </gear>
+    <gear>
+      <id>3d107000-9bfc-46f6-9a1e-99e6cecc3897</id>
+      <name>Armor Defeating</name>
+      <category>Booster Chips</category>
+      <rating>4</rating>
+      <source>KC</source>
+      <page>59</page>
+      <avail>Rating*4R</avail>
+      <cost>Rating*250</cost>
+      <minrating>3</minrating>
+    </gear>
+    <gear>
+      <id>8dfceac4-1c5a-4b30-bcd2-81b16553c6ce</id>
+      <name>Slick Willy</name>
+      <category>Booster Chips</category>
+      <rating></rating>
+      <source>KC</source>
+      <page>59</page>
+      <avail>Rating*4R</avail>
+      <cost>Rating*250</cost>
+      <minrating>3</minrating>
+    </gear>
+    <gear>
+      <id>0ee14c43-e334-4ca5-a87c-c99d94bfe31a</id>
+      <name>Data Dynamo</name>
+      <category>Booster Chips</category>
+      <rating>4</rating>
+      <source>KC</source>
+      <page>59</page>
+      <avail>Rating*4R</avail>
+      <cost>Rating*250</cost>
+      <minrating>3</minrating>
+    </gear>
+    <gear>
+      <id>7b8e0c95-375d-4982-b523-576952aced75</id>
+      <name>Fortified</name>
+      <category>Booster Chips</category>
+      <rating></rating>
+      <source>KC</source>
+      <page>59</page>
+      <avail>Rating*4R</avail>
+      <cost>Rating*250</cost>
+      <minrating>3</minrating>
     </gear>
     <!-- End Region -->
     <!-- Region Software Tweaks -->
@@ -5023,6 +6256,31 @@
       <devicerating>3</devicerating>
     </gear>
     <gear>
+      <id>d1d0bbce-a2a2-4d92-b54c-b1152befb96f</id>
+      <name>Trode Patch</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>60</page>
+      <avail>4</avail>
+      <cost>1250</cost>
+      <devicerating>4</devicerating>
+    </gear>
+    <gear>
+      <id>2d9b2e2d-5460-4e1a-b4dc-82c7092b6a7e</id>
+      <name>Trode Patch Cover</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>60</page>
+      <avail>4</avail>
+      <cost>250</cost>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <devicerating>4</devicerating>
+    </gear>
+    <gear>
       <id>a14a00c5-439f-45d1-9703-55bf5525e7f8</id>
       <name>SmartSafety Bracelet</name>
       <category>Electronics Accessories</category>
@@ -5032,6 +6290,60 @@
       <avail>0</avail>
       <armorcapacity>[0]</armorcapacity>
       <cost>50</cost>
+    </gear>
+    <gear>
+      <id>77f02897-28c1-4d53-86b4-eae1dbd85f35</id>
+      <name>Pantheon Industries Tactical Program Dongle</name>
+      <category>Electronics Accessories</category>
+      <rating>100</rating>
+      <source>KC</source>
+      <page>70</page>
+      <avail>10R</avail>
+      <cost>Rating*200</cost>
+    </gear>
+    <!-- End Region -->
+    <!-- Region Grids (Mainly for TranslateExtra) -->
+    <gear>
+      <id>b97df325-ff46-42e5-823e-d81f6df39d16</id>
+      <name>Public Grid</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>233</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>43adba99-3484-43be-9ea8-7836c0afe2b9</id>
+      <name>Local Grid</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>234</page>
+      <avail>0</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>f52b018a-a80d-4fcb-87d3-50cf9db2347e</id>
+      <name>Global Grid</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>234</page>
+      <avail>0</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
     </gear>
     <!-- End Region -->
     <!-- Region RFID Tags -->
@@ -5472,6 +6784,13 @@
       <bonus>
         <selecttext />
       </bonus>
+      <forbidden>
+        <geardetails>
+          <OR>
+            <name>Fake SIN</name>
+          </OR>
+        </geardetails>
+      </forbidden>
       <cost>Rating * 2500</cost>
       <addoncategory>ID/Credsticks</addoncategory>
       <addoncategory>Custom</addoncategory>
@@ -5954,7 +7273,7 @@
       <id>fd1aac8c-3b55-4577-b2d6-20ec886eae0c</id>
       <name>Fab Sensor</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>HT</source>
       <page>195</page>
       <avail>+8R</avail>
@@ -5974,7 +7293,7 @@
       <id>ce63e6c6-409a-49dd-bdcc-f8efb2f9dadf</id>
       <name>X-Ray</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>R5</source>
       <page>138</page>
       <avail>0</avail>
@@ -6052,7 +7371,7 @@
       <id>5c3b9966-ad7e-42e3-b0e0-f656021784cf</id>
       <name>Atmosphere Sensor</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -6072,7 +7391,7 @@
       <id>ffc069af-d3ec-4201-887c-0178dcdfeef9</id>
       <name>Camera</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -6092,7 +7411,7 @@
       <id>c6f60201-524f-4e3f-adc7-727eace4c7bd</id>
       <name>Cyberware Scanner</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -6112,7 +7431,7 @@
       <id>1345a189-50d2-44e0-aeea-73ce0f28390b</id>
       <name>Directional Microphone</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -6132,7 +7451,7 @@
       <id>d98f419f-7625-4228-9723-0217950d8155</id>
       <name>Geiger Counter</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -6152,7 +7471,7 @@
       <id>f25e4819-209c-4cbf-b24f-668359a7a2ad</id>
       <name>Laser Microphone</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -6172,7 +7491,7 @@
       <id>3a79e046-8106-4089-a1ab-895eee956b86</id>
       <name>Laser Range Finder</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -6192,7 +7511,7 @@
       <id>ff0f7ab6-ee55-47aa-bdec-0646acca4bff</id>
       <name>MAD Scanner</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -6212,7 +7531,7 @@
       <id>e853967a-a2b8-4d89-9a97-773034489a16</id>
       <name>Motion Sensor</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -6232,7 +7551,7 @@
       <id>c763fac2-8b08-4c61-8dc2-6291d905a2df</id>
       <name>Olfactory Scanner</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -6252,7 +7571,7 @@
       <id>0f13599a-2a4e-4b75-80e2-fab4405a7a87</id>
       <name>Omni-directional Microphone</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -6272,7 +7591,7 @@
       <id>4d12e4a1-edd3-4abf-830f-aa95874b7531</id>
       <name>Radio Signal Scanner</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -6292,7 +7611,7 @@
       <id>e140b671-dc22-429d-b12a-dfbf46951049</id>
       <name>Ultrasound</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -6332,7 +7651,7 @@
       <id>0b5e77ce-7fa8-4458-89de-ee9bb61eafd7</id>
       <name>Nanoscanner</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>CF</source>
       <page>153</page>
       <avail>8</avail>
@@ -7568,7 +8887,7 @@
       <source>BB</source>
       <page>17</page>
       <avail>6</avail>
-      <cost>FixedValues([100],[400],[900],[1600],[2500],[3600])</cost>
+      <cost>FixedValues(100,400,900,1600,2500,3600)</cost>
     </gear>
     <gear>
       <id>47e12d78-cb99-4e20-aff5-11cbed1e715e</id>
@@ -7652,6 +8971,39 @@
     </gear>
     <!-- End Region -->
     <!-- Region Contracts and Upkeep -->
+    <gear>
+      <id>f13d9739-aa52-4260-ad2f-0eacde7b9e13</id>
+      <name>Public Grid</name>
+      <category>Contracts/Upkeep</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>233</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <hide />
+    </gear>
+    <gear>
+      <id>9bb90566-c924-477e-b6ee-71d350548e9b</id>
+      <name>Local Grid</name>
+      <category>Contracts/Upkeep</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>234</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <hide />
+    </gear>
+    <gear>
+      <id>42d552fd-d939-42db-a88a-7cde7451dded</id>
+      <name>Global Grid</name>
+      <category>Contracts/Upkeep</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>234</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <hide />
+    </gear>
     <gear>
       <id>20543d97-0eb6-4eda-b0d0-d18000a094ab</id>
       <name>Fab Sensor Upkeep (1 Month Advance Payment)</name>
@@ -7937,6 +9289,7 @@
           <name>Alchemy</name>
           <bonus>Rating</bonus>
         </specificskill>
+        <selecttradition />
       </bonus>
       <cost>Rating * 5000</cost>
     </gear>
@@ -7953,6 +9306,7 @@
           <name>Disenchanting</name>
           <bonus>Rating</bonus>
         </specificskill>
+        <selecttradition />
       </bonus>
       <cost>Rating * 5000</cost>
     </gear>
@@ -7964,6 +9318,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 9000</cost>
     </gear>
     <gear>
@@ -7974,6 +9331,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 9000</cost>
     </gear>
     <gear>
@@ -7984,6 +9344,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 9000</cost>
     </gear>
     <gear>
@@ -7994,6 +9357,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 9000</cost>
     </gear>
     <gear>
@@ -8009,6 +9375,7 @@
           <name precedence="0">MAG</name>
           <bonus>Rating</bonus>
         </skillattribute>
+        <selecttradition />
       </bonus>
       <cost>Rating * 18000</cost>
     </gear>
@@ -8040,6 +9407,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8050,6 +9420,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8065,6 +9438,7 @@
           <name>Combat</name>
           <val>Rating</val>
         </spellcategory>
+        <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -8076,6 +9450,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8086,6 +9463,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8096,6 +9476,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8111,6 +9494,7 @@
           <name>Detection</name>
           <val>Rating</val>
         </spellcategory>
+        <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -8122,6 +9506,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8132,6 +9519,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8142,6 +9532,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8157,6 +9550,7 @@
           <name>Health</name>
           <val>Rating</val>
         </spellcategory>
+        <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -8168,6 +9562,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8178,6 +9575,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8188,6 +9588,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8203,6 +9606,7 @@
           <name>Illusion</name>
           <val>Rating</val>
         </spellcategory>
+        <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -8214,6 +9618,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8224,6 +9631,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8234,6 +9644,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8249,6 +9662,7 @@
           <name>Manipulation</name>
           <val>Rating</val>
         </spellcategory>
+        <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -8260,6 +9674,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -8325,10 +9742,7 @@
       <page>318</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <specificskill>
-          <name>Alchemy</name>
-          <bonus>Rating</bonus>
-        </specificskill>
+        <selecttradition />
       </bonus>
       <cost>Rating * 1250</cost>
     </gear>
@@ -8341,10 +9755,7 @@
       <page>319</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <specificskill>
-          <name>Disenchanting</name>
-          <bonus>Rating</bonus>
-        </specificskill>
+        <selecttradition />
       </bonus>
       <cost>Rating * 1250</cost>
     </gear>
@@ -8356,6 +9767,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 2250</cost>
     </gear>
     <gear>
@@ -8366,6 +9780,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 2250</cost>
     </gear>
     <gear>
@@ -8376,6 +9793,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 2250</cost>
     </gear>
     <gear>
@@ -8386,6 +9806,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 2250</cost>
     </gear>
     <gear>
@@ -8396,6 +9819,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 4)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 4500</cost>
     </gear>
     <gear>
@@ -8406,6 +9832,9 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 750</cost>
     </gear>
     <gear>
@@ -8416,6 +9845,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8426,6 +9858,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8436,6 +9871,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8446,6 +9884,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8456,6 +9897,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8466,6 +9910,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8476,6 +9923,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8486,6 +9936,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8496,6 +9949,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8506,6 +9962,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8516,6 +9975,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8526,6 +9988,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8536,6 +10001,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8546,6 +10014,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8556,6 +10027,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8566,6 +10040,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8576,6 +10053,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8586,6 +10066,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8596,6 +10079,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8606,6 +10092,9 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
       <cost>Rating * 1000</cost>
     </gear>
     <gear>
@@ -8755,6 +10244,9 @@
       <page>326</page>
       <avail>Rating * 2</avail>
       <cost>Rating * 500</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
     </gear>
     <gear>
       <id>ef37af30-1204-4918-af66-dfbdd33cd045</id>
@@ -8765,6 +10257,9 @@
       <page>317</page>
       <avail>0</avail>
       <cost>20</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
     </gear>
     <gear>
       <id>76e908e1-9f0b-4846-bf9e-d9a3b7fe0e7c</id>
@@ -8775,6 +10270,9 @@
       <page>24</page>
       <avail>6</avail>
       <cost>350</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
     </gear>
     <gear>
       <id>377cfe85-9280-46f9-a0c6-570b862fea70</id>
@@ -8785,6 +10283,9 @@
       <page>24</page>
       <avail>8</avail>
       <cost>4500</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
     </gear>
     <gear>
       <id>a1c4884b-b9b2-471e-99fd-6fb31a62ad52</id>
@@ -8804,6 +10305,9 @@
       <source>SG</source>
       <page>212</page>
       <avail>4</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
       <cost>2000</cost>
     </gear>
     <gear>
@@ -8874,6 +10378,9 @@
       <source>SG</source>
       <page>213</page>
       <avail>Rating * Rating</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
       <cost>Rating * 1500</cost>
     </gear>
     <gear>
@@ -9170,7 +10677,7 @@
     </gear>
     <gear>
       <id>875bf273-1a0d-4a42-80ab-6547d7a1235a</id>
-      <name>Narcoject</name>
+      <name>Narcojet</name>
       <category>Toxins</category>
       <rating>0</rating>
       <source>SR5</source>
@@ -10446,6 +11953,38 @@
         </geardetails>
       </required>
     </gear>
+    <gear>
+      <id>55e05d6a-bc67-469f-b16c-648b4688eb37</id>
+      <name>Multiprogram Operating System</name>
+      <category>Commlink Accessories</category>
+      <rating>4</rating>
+      <source>KC</source>
+      <page>58</page>
+      <avail>6</avail>
+      <armorcapacity>[0]</armorcapacity>
+      <cost>Rating * 4000</cost>
+      <addoncategory>Common Programs</addoncategory>
+      <addoncategory>Hacking Programs</addoncategory>
+      <devicerating>0</devicerating>
+      <programs>Rating</programs>
+      <gears>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+      </gears>
+      <required>
+        <geardetails>
+          <OR>
+            <NONE />
+            <category>Commlink</category>
+            <category>Cyberdecks</category>
+            <category>Cyberterminals</category>
+            <category>Custom</category>
+          </OR>
+        </geardetails>
+      </required>
+    </gear>
     <!-- End Region -->
     <!-- Region Commlink and Cyberdeck Form Factors -->
     <gear>
@@ -10780,6 +12319,14 @@
           </OR>
         </geardetails>
       </required>
+      <forbidden>
+        <geardetails>
+          <OR>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
+        </geardetails>
+      </forbidden>
       <addoncategory>Electronic Modification</addoncategory>
     </gear>
     <gear>
@@ -10802,6 +12349,14 @@
           </OR>
         </geardetails>
       </required>
+      <forbidden>
+        <geardetails>
+          <OR>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
+        </geardetails>
+      </forbidden>
       <addoncategory>Electronic Modification</addoncategory>
     </gear>
     <gear>
@@ -10836,6 +12391,8 @@
             <attributearray operation="exists" />
             <sleaze operation="greaterthan">0</sleaze>
             <name>Add Sleaze Modification</name>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -10858,6 +12415,8 @@
             <attributearray operation="exists" />
             <attack operation="greaterthan">0</attack>
             <name>Add Attack Modification</name>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -10879,6 +12438,8 @@
           <OR>
             <attributearray operation="exists" />
             <dataprocessing operation="greaterthan">0</dataprocessing>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -10900,6 +12461,8 @@
           <OR>
             <attributearray operation="exists" />
             <firewall operation="greaterthan">0</firewall>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -10922,6 +12485,8 @@
           <OR>
             <attributearray operation="exists" />
             <sleaze operation="greaterthan">0</sleaze>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -10944,6 +12509,8 @@
           <OR>
             <attributearray operation="exists" />
             <attack operation="greaterthan">0</attack>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -10966,6 +12533,8 @@
           <OR>
             <attributearray operation="exists" />
             <dataprocessing operation="greaterthan">0</dataprocessing>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -10988,6 +12557,8 @@
           <OR>
             <attributearray operation="exists" />
             <firewall operation="greaterthan">0</firewall>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -11006,8 +12577,14 @@
       <modsleaze>-1</modsleaze>
       <required>
         <geardetails>
-          <attack operation="greaterthan">0</attack>
-          <sleaze operation="greaterthan">0</sleaze>
+          <OR>
+            <AND>
+              <attack operation="greaterthan">0</attack>
+              <sleaze operation="greaterthan">0</sleaze>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -11025,8 +12602,14 @@
       <moddataprocessing>-1</moddataprocessing>
       <required>
         <geardetails>
-          <attack operation="greaterthan">0</attack>
-          <dataprocessing operation="greaterthan">0</dataprocessing>
+          <OR>
+            <AND>
+              <attack operation="greaterthan">0</attack>
+              <dataprocessing operation="greaterthan">0</dataprocessing>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -11044,8 +12627,14 @@
       <modfirewall>-1</modfirewall>
       <required>
         <geardetails>
-          <attack operation="greaterthan">0</attack>
-          <firewall operation="greaterthan">0</firewall>
+          <OR>
+            <AND>
+              <attack operation="greaterthan">0</attack>
+              <firewall operation="greaterthan">0</firewall>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -11063,8 +12652,14 @@
       <modsleaze>1</modsleaze>
       <required>
         <geardetails>
-          <attack operation="greaterthan">0</attack>
-          <sleaze operation="greaterthan">0</sleaze>
+          <OR>
+            <AND>
+              <attack operation="greaterthan">0</attack>
+              <sleaze operation="greaterthan">0</sleaze>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -11082,8 +12677,14 @@
       <moddataprocessing>-1</moddataprocessing>
       <required>
         <geardetails>
-          <sleaze operation="greaterthan">0</sleaze>
-          <dataprocessing operation="greaterthan">0</dataprocessing>
+          <OR>
+            <AND>
+              <sleaze operation="greaterthan">0</sleaze>
+              <dataprocessing operation="greaterthan">0</dataprocessing>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -11101,8 +12702,14 @@
       <modfirewall>-1</modfirewall>
       <required>
         <geardetails>
-          <sleaze operation="greaterthan">0</sleaze>
-          <firewall operation="greaterthan">0</firewall>
+          <OR>
+            <AND>
+              <sleaze operation="greaterthan">0</sleaze>
+              <firewall operation="greaterthan">0</firewall>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -11120,8 +12727,14 @@
       <moddataprocessing>1</moddataprocessing>
       <required>
         <geardetails>
-          <attack operation="greaterthan">0</attack>
-          <dataprocessing operation="greaterthan">0</dataprocessing>
+          <OR>
+            <AND>
+              <attack operation="greaterthan">0</attack>
+              <dataprocessing operation="greaterthan">0</dataprocessing>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -11139,8 +12752,14 @@
       <moddataprocessing>1</moddataprocessing>
       <required>
         <geardetails>
-          <sleaze operation="greaterthan">0</sleaze>
-          <dataprocessing operation="greaterthan">0</dataprocessing>
+          <OR>
+            <AND>
+              <sleaze operation="greaterthan">0</sleaze>
+              <dataprocessing operation="greaterthan">0</dataprocessing>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -11158,8 +12777,14 @@
       <modfirewall>-1</modfirewall>
       <required>
         <geardetails>
-          <dataprocessing operation="greaterthan">0</dataprocessing>
-          <firewall operation="greaterthan">0</firewall>
+          <OR>
+            <AND>
+              <dataprocessing operation="greaterthan">0</dataprocessing>
+              <firewall operation="greaterthan">0</firewall>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -11177,8 +12802,14 @@
       <modfirewall>1</modfirewall>
       <required>
         <geardetails>
-          <attack operation="greaterthan">0</attack>
-          <firewall operation="greaterthan">0</firewall>
+          <OR>
+            <AND>
+              <attack operation="greaterthan">0</attack>
+              <firewall operation="greaterthan">0</firewall>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -11196,8 +12827,14 @@
       <modfirewall>1</modfirewall>
       <required>
         <geardetails>
-          <sleaze operation="greaterthan">0</sleaze>
-          <firewall operation="greaterthan">0</firewall>
+          <OR>
+            <AND>
+              <sleaze operation="greaterthan">0</sleaze>
+              <firewall operation="greaterthan">0</firewall>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -11215,8 +12852,14 @@
       <modfirewall>1</modfirewall>
       <required>
         <geardetails>
-          <dataprocessing operation="greaterthan">0</dataprocessing>
-          <firewall operation="greaterthan">0</firewall>
+          <OR>
+            <AND>
+              <dataprocessing operation="greaterthan">0</dataprocessing>
+              <firewall operation="greaterthan">0</firewall>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -13909,7 +15552,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -13923,7 +15566,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -13937,7 +15580,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -13951,7 +15594,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -13965,7 +15608,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -13979,7 +15622,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -13993,7 +15636,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -14007,7 +15650,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -14021,7 +15664,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>149</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -14035,7 +15678,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>149</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -14049,7 +15692,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>149</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -14063,7 +15706,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>149</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -14077,7 +15720,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>149</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -14091,7 +15734,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>149</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -14105,7 +15748,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -14153,6 +15796,168 @@
       <page>184</page>
       <avail>0</avail>
       <cost>235</cost>
+    </gear>
+    <!-- End Region -->
+    <!-- Region Matrix Accessories -->
+    <gear>
+      <id>ae96a184-0615-463a-b10d-bf994ac75cab</id>
+      <name>Booster Cloud [Brute Force]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>250</cost>
+    </gear>
+    <gear>
+      <id>2ba507c4-5f5c-4675-96fd-890d52df27e1</id>
+      <name>Booster Cloud [Control Device]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>200</cost>
+    </gear>
+    <gear>
+      <id>182d3050-c14c-4d47-b02a-ea6d9828e3e7</id>
+      <name>Booster Cloud [Crack File]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>150</cost>
+    </gear>
+    <gear>
+      <id>59795250-558e-47f5-b5d7-db410b36a23a</id>
+      <name>Booster Cloud [Crash Program]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>150</cost>
+    </gear>
+    <gear>
+      <id>1797a4a7-c59e-4264-a360-2aa00adadd65</id>
+      <name>Booster Cloud [Data Spike]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>8R</avail>
+      <cost>300</cost>
+    </gear>
+    <gear>
+      <id>44726953-66fa-4619-8168-85794bfca8f0</id>
+      <name>Booster Cloud [Edit File]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>0</avail>
+      <cost>150</cost>
+    </gear>
+    <gear>
+      <id>2d6d3555-3f3d-4f6d-9b48-897d3f5be68b</id>
+      <name>Booster Cloud [Erase Mark]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>150</cost>
+    </gear>
+    <gear>
+      <id>9bd48bd3-ad36-4f34-96bc-37afd97dc520</id>
+      <name>Booster Cloud [Hack on the Fly]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>250</cost>
+    </gear>
+    <gear>
+      <id>93ce7855-436d-47db-b8bc-ae7ba35efc2d</id>
+      <name>Booster Cloud [Hide]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>150</cost>
+    </gear>
+    <gear>
+      <id>5e801a2b-03b1-4f2f-bacd-cf7951c770c3</id>
+      <name>Booster Cloud [Jam Signals]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>150</cost>
+    </gear>
+    <gear>
+      <id>bfcfe6d3-b341-427c-be65-1fa21e043b0a</id>
+      <name>Booster Cloud [Matrix Perception]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>0</avail>
+      <cost>100</cost>
+    </gear>
+    <gear>
+      <id>d7dc17cc-7e55-4cbc-89e7-7e8468687e75</id>
+      <name>Booster Cloud [Reboot Device]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>250</cost>
+    </gear>
+    <gear>
+      <id>ad9307c3-3dc0-4733-bfb2-11c9af467fd8</id>
+      <name>Booster Cloud [Snoop]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>200</cost>
+    </gear>
+    <gear>
+      <id>04aaca9c-42e6-4cb8-a73e-1b36ffab2104</id>
+      <name>Booster Cloud [Spoof Command]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6R</avail>
+      <cost>250</cost>
+    </gear>
+    <gear>
+      <id>4a7731f9-3534-4d5c-92e4-02025ac5c4da</id>
+      <name>Booster Cloud [Trace Icon]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>8R</avail>
+      <cost>200</cost>
+    </gear>
+    <gear>
+      <id>8646d733-4017-4efb-8c89-ff9b72217e54</id>
+      <name>Booster Cloud [Custom Case]</name>
+      <category>Matrix Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>56</page>
+      <avail>6</avail>
+      <cost>200</cost>
     </gear>
     <!-- End Region -->
     <gear>
@@ -16102,6 +17907,51 @@
       <cost>5000</cost>
     </gear>
     <!-- End Region -->
+    <!-- End Region -->
+    <!-- Region Street Lethal -->
+    <gear>
+      <id>be56ed13-cff0-47a8-b6ba-556f2313f64f</id>
+      <name>Urban Explorer Daedalus Replacement Parachute</name>
+      <category>Survival Gear</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>48</page>
+      <avail>0</avail>
+      <cost>750</cost>
+    </gear>
+    <gear>
+      <id>d2a1cc9b-72e3-49df-957c-8ed6fb47a813</id>
+      <name>Narcojet Dazzler</name>
+      <category>Survival Gear</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>46</page>
+      <avail>15R</avail>
+      <cost>1000</cost>
+    </gear>
+    <!-- End Region -->
+    <!-- Region Kill Code -->
+    <gear>
+      <id>06d57f7d-c372-433b-8a81-c33229a19f9b</id>
+      <name>Pantheon Industries "Mercury-Alpha" Battlefield Signal Booster</name>
+      <category>PI-Tac</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>73</page>
+      <avail>12R</avail>
+      <cost>3500</cost>
+      <devicerating>5</devicerating>
+    </gear>
+    <gear>
+      <id>60f11ea5-297d-4898-9fec-a0f67b4d517e</id>
+      <name>Pantheon Industries Micro-Dish Transmitter</name>
+      <category>PI-Tac</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>73</page>
+      <avail>10R</avail>
+      <cost>1200</cost>
+    </gear>
     <!-- End Region -->
   </gears>
 </chummer>

@@ -128,6 +128,11 @@
       <code>SHB2</code>
     </book>
     <book>
+      <id>08dea2f1-3add-4516-bdbe-b47ab9a5e31f</id>
+      <name>Schattenhandbuch 3 (German Handbook)</name>
+      <code>SHB3</code>
+    </book>
+    <book>
       <id>a1055d3f-7bc1-4ca3-a005-681c54a046a1</id>
       <name>Rigger 5.0</name>
       <code>R5</code>
@@ -226,6 +231,16 @@
       <id>42d5ed10-66e8-47de-8685-851fdfdcae35</id>
       <name>The Seattle Gambit</name>
       <code>TSG</code>
+    </book>
+	  <book>
+		  <id>bfe6c53b-1c68-4d7a-b11d-9d47461df1cd</id>
+		  <name>Street Lethal</name>
+		  <code>SL</code>
+	  </book>
+    <book>
+      <id>35f513da-865a-45ce-a8f9-eb0336e47427</id>
+      <name>Kill Code</name>
+      <code>KC</code>
     </book>
   </books>
 </chummer>

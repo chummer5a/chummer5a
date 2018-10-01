@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -1601,8 +1601,8 @@
 			</bioware>
 			<bioware>
 				<id>17a6ba49-c21c-461b-9830-3beae8a237fc</id>
-				<name>Reflex Recorder (Skill)</name>
-				<translate>Gravador de Reflexos (Perícia)</translate>
+				<name>Reflex Recorder</name>
+				<translate>Gravador de Reflexos</translate>
 				<altpage>460</altpage>
 			</bioware>
 			<bioware translated="True">
@@ -34348,8 +34348,8 @@
 			</vehicle>
 			<vehicle>
 				<id>0ff86ef9-e35d-4f8f-bc64-0303f81f11c7</id>
-				<name>Neonet Prarie Dog (Small)</name>
-				<translate>Neonet Prarie Dog (Small)</translate>
+				<name>NeoNET Prarie Dog (Small)</name>
+				<translate>NeoNET Prarie Dog (Small)</translate>
 				<altpage>134</altpage>
 			</vehicle>
 			<vehicle>
@@ -34504,8 +34504,8 @@
 			</vehicle>
 			<vehicle>
 				<id>a88f58ad-f4e0-448a-ba5c-00cbdd0076f6</id>
-				<name>NeoNet Avenging Angel (Huge)</name>
-				<translate>NeoNet Avenging Angel (Huge)</translate>
+				<name>NeoNET Avenging Angel (Huge)</name>
+				<translate>NeoNET Avenging Angel (Huge)</translate>
 				<altpage>145</altpage>
 			</vehicle>
 			<vehicle translated="True">
@@ -34846,8 +34846,8 @@
 			</vehicle>
 			<vehicle>
 				<id>50e6572c-ea59-4756-83e4-7c51f8f614c9</id>
-				<name>Modified Dassault Janatorial Drone (Large)</name>
-				<translate>Modified Dassault Janatorial Drone (Large)</translate>
+				<name>Modified Dassault Janitorial Drone (Large)</name>
+				<translate>Modified Dassault Janitorial Drone (Large)</translate>
 				<altpage>179</altpage>
 			</vehicle>
 			<vehicle>
@@ -35338,8 +35338,8 @@
 			</vehicle>
 			<vehicle>
 				<id>b448855b-57e7-435a-b523-174adb276674</id>
-				<name>NeoNet Juggernaut</name>
-				<translate>NeoNet Juggernaut</translate>
+				<name>NeoNET Juggernaut</name>
+				<translate>NeoNET Juggernaut</translate>
 				<altpage>147</altpage>
 			</vehicle>
 			<vehicle>

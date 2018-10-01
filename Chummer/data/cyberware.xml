@@ -208,6 +208,7 @@
     <category blackmarket="Cyberware">Cyberlimb Enhancement</category>
     <category blackmarket="Cyberware">Cybersuite</category>
     <category blackmarket="Cyberware">Cyber Implant Weapon</category>
+    <category blackmarket="Cyberware">Cyber Implant Weapon Accessory</category>
     <category blackmarket="Cyberware">Earware</category>
     <category blackmarket="Cyberware">Eyeware</category>
     <category blackmarket="Cyberware">Hard Nanoware</category>
@@ -1743,13 +1744,20 @@
       <id>ec5ed166-d1dc-4afe-80a1-71bc315f7d75</id>
       <name>External Clip Port</name>
       <limit>False</limit>
-      <category>Cyber Implant Weapon</category>
+      <category>Cyber Implant Weapon Accessory</category>
       <ess>0.1</ess>
+      <addtoparentess />
       <capacity>[1]</capacity>
+      <addtoparentcapacity />
       <avail>0</avail>
       <cost>1000</cost>
       <source>SR5</source>
       <page>458</page>
+      <required>
+        <parentdetails>
+          <category>Cyber Implant Weapon</category>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>c7ba7834-7337-452c-90e4-d1dd4abcbca5</id>
@@ -1763,6 +1771,9 @@
       <source>SR5</source>
       <page>458</page>
       <addweapon>Cyber Microgrenade Launcher</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>ba93ab8d-fd7f-4fc4-bfa3-5f987fd15d77</id>
@@ -1776,6 +1787,9 @@
       <source>SR5</source>
       <page>458</page>
       <addweapon>Hand Blade</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>923d1629-5267-4093-a978-34eb4543cb15</id>
@@ -1789,6 +1803,9 @@
       <source>SR5</source>
       <page>458</page>
       <addweapon>Hand Razors</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>e2997f83-e2a7-4f15-92a2-be9b5081ed59</id>
@@ -1802,6 +1819,9 @@
       <source>SR5</source>
       <page>458</page>
       <addweapon>Heavy Cyber Pistol</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>abe607f4-ba21-4d7f-b6e1-327f03fab901</id>
@@ -1815,19 +1835,28 @@
       <source>SR5</source>
       <page>458</page>
       <addweapon>Cyber Hold-Out</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>c8df9efc-e88e-4dec-becf-0453f20cdb34</id>
       <name>Laser Sight</name>
       <limit>False</limit>
-      <category>Cyber Implant Weapon</category>
+      <category>Cyber Implant Weapon Accessory</category>
       <ess>0</ess>
+      <addtoparentess />
       <capacity>[1]</capacity>
+      <addtoparentcapacity />
       <avail>0</avail>
       <cost>1000</cost>
       <source>SR5</source>
       <page>458</page>
-      <requireparent />
+      <required>
+        <parentdetails>
+          <category>Cyber Implant Weapon</category>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>45a32fd5-6db3-4e1d-aa34-76d1e299ae8b</id>
@@ -1841,6 +1870,9 @@
       <source>SR5</source>
       <page>458</page>
       <addweapon>Light Cyber Pistol</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>b6e0d583-33e8-4711-8304-a1d8de86d391</id>
@@ -1854,6 +1886,9 @@
       <source>SR5</source>
       <page>458</page>
       <addweapon>Cyber Machine Pistol</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>1aa7fe36-10ab-4c3c-9a4f-f26e8460c0a8</id>
@@ -1879,6 +1914,9 @@
           </OR>
         </parentdetails>
       </required>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>841cac06-6839-4041-a8dc-2050048df076</id>
@@ -1892,32 +1930,28 @@
       <source>SR5</source>
       <page>458</page>
       <addweapon>Cyber Shotgun</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>8b9541a9-e10a-488d-a076-4e5b1c469839</id>
-      <name>Silencer</name>
+      <name>Silencer/Suppressor</name>
       <limit>False</limit>
-      <category>Cyber Implant Weapon</category>
+      <category>Cyber Implant Weapon Accessory</category>
       <ess>0</ess>
+      <addtoparentess />
       <capacity>[2]</capacity>
+      <addtoparentcapacity />
       <avail>0</avail>
       <cost>1000</cost>
       <source>SR5</source>
       <page>458</page>
-      <requireparent />
-    </cyberware>
-    <cyberware>
-      <id>e8fad85e-01c7-4fda-a5e0-73af457f4cf7</id>
-      <name>Sound Suppressor</name>
-      <limit>False</limit>
-      <category>Cyber Implant Weapon</category>
-      <ess>0</ess>
-      <capacity>[2]</capacity>
-      <avail>0</avail>
-      <cost>1000</cost>
-      <source>SR5</source>
-      <page>458</page>
-      <requireparent />
+      <required>
+        <parentdetails>
+          <category>Cyber Implant Weapon</category>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>c9e4a11f-ef4f-4cb6-9392-ce7378456d82</id>
@@ -1931,6 +1965,9 @@
       <source>SR5</source>
       <page>458</page>
       <addweapon>Spurs</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>13841067-a929-4e8d-b7e3-e8eb68a0dec1</id>
@@ -1944,6 +1981,9 @@
       <source>SR5</source>
       <page>458</page>
       <addweapon>Cyber Submachine Gun</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <!-- End Region -->
     <!-- Region Chrome Flesh -->
@@ -4636,6 +4676,9 @@
       <cost>20000</cost>
       <source>CF</source>
       <page>90</page>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>0260f9dd-7f5b-4ed7-b2d5-bd89f3ada24f</id>
@@ -4648,6 +4691,9 @@
       <cost>3800</cost>
       <source>CF</source>
       <page>90</page>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>f965a86c-9022-48e1-a349-14ee74473507</id>
@@ -4660,6 +4706,9 @@
       <cost>1800</cost>
       <source>CF</source>
       <page>90</page>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>40926566-7004-4996-922c-408ea2317511</id>
@@ -4672,6 +4721,9 @@
       <cost>3500</cost>
       <source>CF</source>
       <page>90</page>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>25900e3b-d523-4bae-932c-d199a7c00d0f</id>
@@ -4684,6 +4736,9 @@
       <cost>3000</cost>
       <source>CF</source>
       <page>90</page>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>2aede5f8-9c4f-4afb-9e33-ecb34cffdef2</id>
@@ -4701,6 +4756,9 @@
       <bonus>
         <selecttext />
       </bonus>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>56f1ca37-a6fb-416c-aa38-9dcc02c9c868</id>
@@ -4713,6 +4771,9 @@
       <cost>7000</cost>
       <source>CF</source>
       <page>90</page>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>7784dca8-7196-4c73-a5b2-86b0c1c7153d</id>
@@ -4736,6 +4797,9 @@
           </OR>
         </parentdetails>
       </required>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>4887ede8-dbfa-4e09-9ce5-ecaeee31ada3</id>
@@ -4759,18 +4823,28 @@
           </OR>
         </parentdetails>
       </required>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>a086de85-fd2c-4d87-8658-92ce2967cb96</id>
       <name>Weapon Launcher</name>
       <limit>False</limit>
-      <category>Cyber Implant Weapon</category>
+      <category>Cyber Implant Weapon Accessory</category>
       <ess>0.2</ess>
+      <addtoparentess />
       <capacity>[2]</capacity>
+      <addtoparentcapacity />
       <avail>12F</avail>
       <cost>500</cost>
       <source>CF</source>
       <page>92</page>
+      <required>
+        <parentdetails>
+          <category>Cyber Implant Weapon</category>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>8e5c5340-e5f0-490e-9655-b664badc94d9</id>
@@ -4799,6 +4873,9 @@
           </OR>
         </parentdetails>
       </required>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>6683716f-d70a-484c-b6f3-842e6de12ea2</id>
@@ -4822,6 +4899,9 @@
           </OR>
         </parentdetails>
       </required>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>6b167278-501e-4876-8e16-28f9e86064ba</id>
@@ -4835,18 +4915,28 @@
       <source>CF</source>
       <page>91</page>
       <addweapon>Flametosser</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>1c2e5421-84f6-4963-bcac-b2fca6001f35</id>
       <name>Flametosser, Expanded Tank</name>
       <limit>False</limit>
-      <category>Cyber Implant Weapon</category>
+      <category>Cyber Implant Weapon Accessory</category>
       <ess>0.2</ess>
+      <addtoparentess />
       <capacity>[2]</capacity>
+      <addtoparentcapacity />
       <avail>12F</avail>
       <cost>500</cost>
       <source>CF</source>
       <page>91</page>
+      <required>
+        <parentdetails>
+          <name>Flametosser</name>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>1619b516-2909-46db-90f3-4ac1784acad5</id>
@@ -4859,6 +4949,9 @@
       <cost>4000</cost>
       <source>CF</source>
       <page>90</page>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <!-- End Region -->
     <!-- Region Nanocybernetics -->
@@ -5534,6 +5627,31 @@
       </subsystems>
     </cyberware>
     <!-- End Region -->
+    <!-- End Region -->
+    <!-- Region Bullets and Bandages -->
+    <cyberware>
+      <id>b933e9e1-3ec3-45fd-8918-f88cc14d3ea0</id>
+      <name>STATscan</name>
+      <limit>{arm}</limit>
+      <category>Cyberlimb Accessory</category>
+      <ess>0</ess>
+      <capacity>[2]</capacity>
+      <avail>8</avail>
+      <cost>2500</cost>
+      <source>BB</source>
+      <page>22</page>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <required>
+        <parentdetails>
+          <OR>
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Hand</name>
+            <name operation="contains">Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
+    </cyberware>
     <!-- End Region -->
     <!-- Region Hard Targets -->
     <cyberware>
@@ -6402,11 +6520,11 @@
           <rating>3</rating>
         </cyberware>
         <bioware>
-          <name>Reflex Recorder (Skill)</name>
+          <name>Reflex Recorder</name>
           <forced>Locksmith</forced>
         </bioware>
         <bioware>
-          <name>Reflex Recorder (Skill)</name>
+          <name>Reflex Recorder</name>
           <forced>Pistols</forced>
         </bioware>
         <cyberware>
@@ -6463,11 +6581,11 @@
           <rating>3</rating>
         </bioware>
         <bioware>
-          <name>Reflex Recorder (Skill)</name>
+          <name>Reflex Recorder</name>
           <forced>Automatics</forced>
         </bioware>
         <bioware>
-          <name>Reflex Recorder (Skill)</name>
+          <name>Reflex Recorder</name>
           <forced>Unarmed Combat</forced>
         </bioware>
         <bioware>
@@ -6619,11 +6737,11 @@
           <rating>4</rating>
         </bioware>
         <bioware>
-          <name>Reflex Recorder (Skill)</name>
+          <name>Reflex Recorder</name>
           <forced>Pistols</forced>
         </bioware>
         <bioware>
-          <name>Reflex Recorder (Skill)</name>
+          <name>Reflex Recorder</name>
           <forced>Unarmed Combat</forced>
         </bioware>
         <bioware>
@@ -7355,12 +7473,15 @@
       <source>2050</source>
       <page>203</page>
       <addweapon>Hand Razors, Fixed (2050)</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>c6334eb1-2f37-4f7c-9e5a-1f2255f96a93</id>
       <name>Hand Razors, Retractable (2050)</name>
       <limit>False</limit>
-      <category>Bodyware</category>
+      <category>Cyber Implant Weapon</category>
       <ess>0.2</ess>
       <capacity>[2]</capacity>
       <avail>5F</avail>
@@ -7368,12 +7489,15 @@
       <source>2050</source>
       <page>203</page>
       <addweapon>Hand Razors, Retractable (2050)</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>6a2a5b60-c9d5-464c-9756-f3e6e0f63b36</id>
       <name>Spur, Fixed (2050)</name>
       <limit>False</limit>
-      <category>Bodyware</category>
+      <category>Cyber Implant Weapon</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
       <avail>3F</avail>
@@ -7381,12 +7505,15 @@
       <source>2050</source>
       <page>203</page>
       <addweapon>Spur, Fixed (2050)</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>0ed1c1e6-d938-48b1-bf41-9680d04e237f</id>
       <name>Spur, Retractable (2050)</name>
       <limit>False</limit>
-      <category>Bodyware</category>
+      <category>Cyber Implant Weapon</category>
       <ess>0.3</ess>
       <capacity>[3]</capacity>
       <avail>3F</avail>
@@ -7394,6 +7521,9 @@
       <source>2050</source>
       <page>203</page>
       <addweapon>Spur, Retractable (2050)</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>1fd9fa93-a617-4261-b0ab-9255a4750fcb</id>
@@ -7487,6 +7617,9 @@
       <source>2050</source>
       <page>204</page>
       <addweapon>Cyber Holdout Pistol (2050)</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>eb8ac46d-f961-4bbd-99b9-7993ecbacfff</id>
@@ -7500,6 +7633,9 @@
       <source>2050</source>
       <page>204</page>
       <addweapon>Cyber Light Pistol (2050)</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>ce0e344f-4428-499e-8cb9-f83f9041dc9a</id>
@@ -7513,6 +7649,9 @@
       <source>2050</source>
       <page>204</page>
       <addweapon>Cyber Machine Pistol (2050)</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>acffef6c-d88f-4e80-bfd3-924c516ce6f9</id>
@@ -7526,6 +7665,9 @@
       <source>2050</source>
       <page>204</page>
       <addweapon>Cyber Heavy Pistol (2050)</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>f1413ac9-d373-4080-a373-60e5b890b304</id>
@@ -7539,6 +7681,9 @@
       <source>2050</source>
       <page>204</page>
       <addweapon>Cyber Submachine Gun (2050)</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <cyberware>
       <id>dbf70a83-ce18-4c55-b937-f326392ddee5</id>
@@ -7552,6 +7697,9 @@
       <source>2050</source>
       <page>204</page>
       <addweapon>Cyber Shotgun (2050)</addweapon>
+      <allowsubsystems>
+        <category>Cyber Implant Weapon Accessory</category>
+      </allowsubsystems>
     </cyberware>
     <!-- End Region 2050 -->
     <!-- Region SotA ADL -->
@@ -7970,6 +8118,52 @@
       <hide />
       <page>30</page>
       <rating>0</rating>
+    </cyberware>
+    <!-- End Region -->
+    <!-- Region Kill Code-->
+    <cyberware>
+      <id>8496afd6-ad34-4e73-b3f4-191ef11e121c</id>
+      <name>Datajack Plus</name>
+      <limit>False</limit>
+      <category>Headware</category>
+      <ess>0.15</ess>
+      <capacity>0</capacity>
+      <avail>4</avail>
+      <cost>Rating*3500</cost>
+      <rating>3</rating>
+      <programs>Rating</programs>
+      <gears>
+        <usegear>
+          <name>Universal Connector Cord (Meter)</name>
+          <category>Tools</category>
+        </usegear>
+      </gears>
+      <source>KC</source>
+      <page>65</page>
+    </cyberware>
+    <cyberware>
+      <id>d9a05e96-3913-4d40-ae1a-397da8a6f344</id>
+      <name>Enhanced Augmented Reality Reflex System</name>
+      <limit>1</limit>
+      <category>Headware</category>
+      <ess>0.75</ess>
+      <capacity>0</capacity>
+      <avail>10R</avail>
+      <cost>30000</cost>
+      <source>KC</source>
+      <page>66</page>
+    </cyberware>
+    <cyberware>
+      <id>ba91b21a-2c8d-466f-a353-64293e09a9a8</id>
+      <name>Cranial Shield</name>
+      <limit>1</limit>
+      <category>Headware</category>
+      <ess>0.5</ess>
+      <capacity>0</capacity>
+      <avail>12</avail>
+      <cost>5000</cost>
+      <source>KC</source>
+      <page>66</page>
     </cyberware>
     <!-- End Region -->
   </cyberwares>

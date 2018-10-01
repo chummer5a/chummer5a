@@ -38,7 +38,7 @@ namespace Chummer
         string ModDataProcessing { get; set; }
         string ModFirewall { get; set; }
         string Overclocked { get; set; }
-        
+
         string CanFormPersona { get; set; }
         bool IsCommlink { get; }
 
@@ -228,7 +228,7 @@ namespace Chummer
         {
             if (objThis == null)
                 return false;
-            
+
             string strTemp;
             Action<string> funcAttributePropertySetter;
 

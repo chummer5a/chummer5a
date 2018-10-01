@@ -17,6 +17,27 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
+
+<!-- Documentation of the tags used in armor.xml
+
+<armor> a container for a single tradition
+	<name> Human readable name
+	<source> The Rulebook of this armor
+	<page> reference to the page in the rulebook the armor is described in
+	<category> the category of the armor as specified in <categories>
+	<armor> the actual armor value of the armor
+	<armorcapacity> ?
+	<avail> availability of the armor
+	<cost> price in NewYen or "Variable(nn-mm)"
+	<gears> container for included gear
+	<bonus> container for bonus from the armor
+		<limitmodifier> container for modifier to a single limit
+			<limit> the limit to be modified
+			<value> the modifier
+			<condition> textual description of the condition of the modifier
+	<addmodcategory> the category of available modifications/addons to the armor
+-->
+
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema armor.xsd">
   <version>0</version>
   <categories>
@@ -2942,7 +2963,111 @@
         </specificskill>
       </bonus>
       <source>TCT</source>
-      <page>186</page>
+    </armor>
+    <!-- End Region -->
+    <!-- Region Street Lethal-->
+    <armor>
+      <id>403adcb1-0739-4b20-816f-7854005eb227</id>
+      <name>Urban Explorer Daedalus</name>
+      <category>Specialty Armor</category>
+      <armor>9</armor>
+      <armorcapacity>4</armorcapacity>
+      <avail>8</avail>
+      <cost>3200</cost>
+      <mods>
+        <name>Parachute (Urban Explorer Daedalus)</name>
+      </mods>
+      <source>SL</source>
+      <page>48</page>
+    </armor>
+    <armor>
+      <id>7f7cfaaf-d28c-4cd2-b1c2-55ece741732f</id>
+      <name>Urban Explorer Daedalus: Helmet</name>
+      <category>Specialty Armor</category>
+      <armor>+2</armor>
+      <armorcapacity>6</armorcapacity>
+      <avail>0</avail>
+      <cost>100</cost>
+      <source>SL</source>
+      <page>48</page>
+    </armor>
+    <armor>
+      <id>40cf0da9-29d7-4a7b-8ef0-822ba05917b7</id>
+      <name>Ares Arms Bug Stomper Custom Armor</name>
+      <category>Armor</category>
+      <armor>20</armor>
+      <armorcapacity>20</armorcapacity>
+      <avail>30F</avail>
+      <cost>35000</cost>
+      <bonus>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>1</value>
+          <condition>Must be visible, only for Intimidation</condition>
+        </limitmodifier>
+      </bonus>
+      <mods>
+        <name>Custom Fit</name>
+        <name>Gear Access</name>
+        <name>Holster</name>
+      </mods>
+      <source>SL</source>
+      <page>130</page>
+    </armor>
+    <armor>
+      <id>8136ccfb-d5ce-4e18-bc4a-21d33bb6b089</id>
+      <name>EVO/Yamatetsu Naval Technologies Rampart</name>
+      <category>Armor</category>
+      <armor>+10</armor>
+      <armorcapacity>0</armorcapacity>
+      <avail>12F</avail>
+      <cost>3000</cost>
+      <source>SL</source>
+      <page>130</page>
+    </armor>
+    <!-- End Region -->
+    <!-- Region Kill Code-->
+    <armor>
+      <id>5ad79730-ee4b-4191-822d-205af7320281</id>
+      <name>Pantheon Industries Hard Case CCOB</name>
+      <category>Armor</category>
+      <armor>12</armor>
+      <armorcapacity>8</armorcapacity>
+      <avail>12R</avail>
+      <cost>1700</cost>
+      <mods>
+        <name>Drag Handle</name>
+        <name>Micro-Hardpoint</name>
+        <name>Micro-Hardpoint</name>
+        <name>Micro-Hardpoint</name>
+        <name>Pantheon Quick-Charge Battery Pack</name>
+      </mods>
+      <gears>
+        <usegear>Holster</usegear>
+      </gears>
+      <source>KC</source>
+      <page>70</page>
+    </armor>
+    <armor>
+      <id>62ad0f12-c603-4c88-b778-e456ca2355f6</id>
+      <name>Generic CCOB</name>
+      <category>Armor</category>
+      <armor>8</armor>
+      <armorcapacity>8</armorcapacity>
+      <avail>10</avail>
+      <cost>1000</cost>
+      <mods>
+        <name>Drag Handle</name>
+        <name>Micro-Hardpoint</name>
+        <name>Micro-Hardpoint</name>
+        <name>Micro-Hardpoint</name>
+      </mods>
+      <gears>
+        <usegear>Holster</usegear>
+        <usegear rating="4">Medkit</usegear>
+      </gears>
+      <source>KC</source>
+      <page>70</page>
     </armor>
     <!-- End Region -->
   </armors>
@@ -3759,6 +3884,70 @@
       <cost>50</cost>
       <source>CA</source>
       <page>138</page>
+    </mod>
+    <!-- End Region -->
+    <!-- Region Street Lethal -->
+    <mod>
+      <id>0a7930f5-5466-439a-956d-2bba57f25ed9</id>
+      <name>Parachute (Urban Explorer Daedalus)</name>
+      <category>Parachute</category>
+      <hide />
+      <maxrating>0</maxrating>
+      <armorcapacity>[0]</armorcapacity>
+      <avail>8</avail>
+      <cost>0</cost>
+      <source>SL</source>
+      <page>48</page>
+    </mod>
+    <!-- End Region -->
+    <!-- Region Kill Code -->
+    <mod>
+      <id>f4c1163d-bf9e-42c5-8504-37b21c01531e</id>
+      <name>Pantheon Armored Shell</name>
+      <category>General</category>
+      <armor>0</armor>
+      <maxrating>1</maxrating>
+      <gearcapacity>[14]</gearcapacity>
+      <avail>4</avail>
+      <cost>150</cost>
+      <source>KC</source>
+      <page>73</page>
+    </mod>
+    <mod>
+      <id>52b315a3-cf10-4534-a0d9-86b4ac346136</id>
+      <name>Pantheon Quick-Charge Battery Pack</name>
+      <category>General</category>
+      <armor>0</armor>
+      <maxrating>1</maxrating>
+      <gearcapacity>[14]</gearcapacity>
+      <avail>4</avail>
+      <cost>150</cost>
+      <source>KC</source>
+      <page>73</page>
+    </mod>
+    <mod>
+      <id>c2fdc729-bc1d-4d3a-a0da-1d5dfa3b897d</id>
+      <name>Micro-Hardpoint</name>
+      <category>General</category>
+      <armor>0</armor>
+      <maxrating>1</maxrating>
+      <gearcapacity>[0]</gearcapacity>
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>KC</source>
+      <page>73</page>
+    </mod>
+    <mod>
+      <id>a1c9f8ee-d58d-4583-8ff3-12517dbf76f5</id>
+      <name>Personal Drone Rack</name>
+      <category>General</category>
+      <armor>0</armor>
+      <maxrating>1</maxrating>
+      <armorcapacity>[1]</armorcapacity>
+      <avail>12R</avail>
+      <cost>500</cost>
+      <source>KC</source>
+      <page>73</page>
     </mod>
     <!-- End Region -->
   </mods>

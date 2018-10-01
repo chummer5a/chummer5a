@@ -33,20 +33,23 @@
             // 
             // txtRevisionHistory
             // 
+            this.txtRevisionHistory.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtRevisionHistory.BackColor = System.Drawing.Color.White;
             this.txtRevisionHistory.Location = new System.Drawing.Point(12, 12);
             this.txtRevisionHistory.Multiline = true;
             this.txtRevisionHistory.Name = "txtRevisionHistory";
             this.txtRevisionHistory.ReadOnly = true;
             this.txtRevisionHistory.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtRevisionHistory.Size = new System.Drawing.Size(760, 438);
+            this.txtRevisionHistory.Size = new System.Drawing.Size(760, 537);
             this.txtRevisionHistory.TabIndex = 0;
             // 
             // frmHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 462);
+            this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.txtRevisionHistory);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;

@@ -44,8 +44,9 @@
             // 
             // cmdSelectCharacter
             // 
+            this.cmdSelectCharacter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdSelectCharacter.AutoSize = true;
-            this.cmdSelectCharacter.Location = new System.Drawing.Point(271, 12);
+            this.cmdSelectCharacter.Location = new System.Drawing.Point(346, 12);
             this.cmdSelectCharacter.Name = "cmdSelectCharacter";
             this.cmdSelectCharacter.Size = new System.Drawing.Size(106, 23);
             this.cmdSelectCharacter.TabIndex = 1;
@@ -56,8 +57,9 @@
             // 
             // cmdPrint
             // 
+            this.cmdPrint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdPrint.AutoSize = true;
-            this.cmdPrint.Location = new System.Drawing.Point(271, 107);
+            this.cmdPrint.Location = new System.Drawing.Point(346, 220);
             this.cmdPrint.Name = "cmdPrint";
             this.cmdPrint.Size = new System.Drawing.Size(106, 23);
             this.cmdPrint.TabIndex = 3;
@@ -68,8 +70,9 @@
             // 
             // cmdDelete
             // 
+            this.cmdDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdDelete.AutoSize = true;
-            this.cmdDelete.Location = new System.Drawing.Point(271, 41);
+            this.cmdDelete.Location = new System.Drawing.Point(346, 41);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(106, 23);
             this.cmdDelete.TabIndex = 2;
@@ -80,20 +83,25 @@
             // 
             // treCharacters
             // 
+            this.treCharacters.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.treCharacters.HideSelection = false;
             this.treCharacters.Location = new System.Drawing.Point(12, 12);
             this.treCharacters.Name = "treCharacters";
             this.treCharacters.ShowLines = false;
             this.treCharacters.ShowPlusMinus = false;
             this.treCharacters.ShowRootLines = false;
-            this.treCharacters.Size = new System.Drawing.Size(253, 214);
+            this.treCharacters.Size = new System.Drawing.Size(328, 231);
             this.treCharacters.TabIndex = 0;
             // 
             // prgProgress
             // 
-            this.prgProgress.Location = new System.Drawing.Point(12, 232);
+            this.prgProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.prgProgress.Location = new System.Drawing.Point(12, 249);
             this.prgProgress.Name = "prgProgress";
-            this.prgProgress.Size = new System.Drawing.Size(359, 23);
+            this.prgProgress.Size = new System.Drawing.Size(440, 23);
             this.prgProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.prgProgress.TabIndex = 4;
             // 
@@ -101,7 +109,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(383, 264);
+            this.ClientSize = new System.Drawing.Size(464, 281);
             this.Controls.Add(this.prgProgress);
             this.Controls.Add(this.treCharacters);
             this.Controls.Add(this.cmdDelete);

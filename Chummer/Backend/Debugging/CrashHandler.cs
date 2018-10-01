@@ -17,12 +17,14 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
@@ -38,95 +40,141 @@ namespace Chummer.Backend
             internal static extern uint GetCurrentThreadId();
         }
 
-        private sealed class DumpData
+        private sealed class DumpData : ISerializable
         {
-            public DumpData()
+            public DumpData(Exception ex)
             {
-                AddDefaultInfo();
-            }
+                _dicPretendFiles = new Dictionary<string, string> {{"exception.txt", ex?.ToString() ?? "No Exception Specified"}};
 
-            // JavaScriptSerializer requires that all properties it accesses be public.
-            // ReSharper disable once MemberCanBePrivate.Local 
-            public readonly List<string> capturefiles = new List<string>();
-            // ReSharper disable once MemberCanBePrivate.Local 
-            public readonly Dictionary<string, string> pretendfiles = new Dictionary<string, string>();
-            // ReSharper disable once MemberCanBePrivate.Local 
-            public readonly Dictionary<string, string> attributes = new Dictionary<string, string>();
-            public int processid = Process.GetCurrentProcess().Id;
-            public uint threadId = NativeMethods.GetCurrentThreadId();
-
-            void AddDefaultInfo()
-            {
-                //Crash handler will make visible-{whatever} visible in the upload while the rest will exists in a file named attributes.txt
-                attributes.Add("visible-crash-id", Guid.NewGuid().ToString("D"));
-
-                attributes.Add("visible-build-type",
-                    #if DEBUG
-                    "DEBUG"
-                    #else
-                    "RELEASE"
-                    #endif
-                    );
-                attributes.Add("commandline", Environment.CommandLine);
-                attributes.Add("visible-version", Application.ProductVersion);
-
-                if (Registry.LocalMachine != null)
+                _dicAttributes = new Dictionary<string, string>
                 {
-                    RegistryKey cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+                    {"visible-crash-id", Guid.NewGuid().ToString("D")},
+#if DEBUG
+                    {"visible-build-type", "DEBUG"},
+#else
+                    {"visible-build-type", "RELEASE"},
+#endif
+                    {"commandline", Environment.CommandLine},
+                    {"visible-version", Application.ProductVersion},
+                    {"machine-name", Environment.MachineName},
+                    {"current-dir", Application.StartupPath},
+                    {"application-dir", Application.ExecutablePath},
+                    {"os-type", Environment.OSVersion.VersionString},
+                    {"visible-error-friendly", ex?.Message ?? "No description available"}
+                };
 
-                    if (cv?.GetValueNames().Contains("ProductId") == false)
-                    {
-                        //On 32 bit builds? get 64 bit registry
-                        cv.Close();
-                        cv = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
-                    }
-
-                    if (cv != null)
-                    {
-                        attributes.Add("machine-id", cv.GetValue("ProductId").ToString());
-                        attributes.Add("os-name", cv.GetValue("ProductName").ToString());
-
-                        cv.Close();
-                    }
+                try
+                {
+                    _dicAttributes.Add("chummer-ui-language", GlobalOptions.Language);
+                }
+                catch (Exception e)
+                {
+                    _dicAttributes.Add("chummer-ui-language", e.ToString());
+                }
+                try
+                {
+                    _dicAttributes.Add("chummer-cultureinfo", GlobalOptions.CultureInfo.ToString());
+                }
+                catch (Exception e)
+                {
+                    _dicAttributes.Add("chummer-cultureinfo", e.ToString());
+                }
+                try
+                {
+                    _dicAttributes.Add("system-cultureinfo", GlobalOptions.SystemCultureInfo.ToString());
+                }
+                catch (Exception e)
+                {
+                    _dicAttributes.Add("system-cultureinfo", e.ToString());
                 }
 
-                attributes.Add("machine-name", Environment.MachineName);
-                attributes.Add("current-dir", Application.StartupPath);
-                attributes.Add("application-dir", Application.ExecutablePath);
-                attributes.Add("os-type", Environment.OSVersion.VersionString);
+                //Crash handler will make visible-{whatever} visible in the upload while the rest will exists in a file named attributes.txt
+                if (Registry.LocalMachine != null)
+                {
+                    RegistryKey objCurrentVersionKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
 
+                    if (objCurrentVersionKey?.GetValueNames().Contains("ProductId") == false)
+                    {
+                        //On 32 bit builds? get 64 bit registry
+                        objCurrentVersionKey.Close();
+                        objCurrentVersionKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+                    }
 
-                attributes.Add("visible-error-friendly", "No description available");
+                    if (objCurrentVersionKey != null)
+                    {
+                        try
+                        {
+                            _dicAttributes.Add("machine-id", objCurrentVersionKey.GetValue("ProductId").ToString());
+                        }
+                        catch (Exception e)
+                        {
+                            _dicAttributes.Add("machine-id", e.ToString());
+                        }
+
+                        try
+                        {
+                            _dicAttributes.Add("os-name", objCurrentVersionKey.GetValue("ProductName").ToString());
+                        }
+                        catch (Exception e)
+                        {
+                            _dicAttributes.Add("os-name", e.ToString());
+                        }
+
+                        objCurrentVersionKey.Close();
+                    }
+                }
 
                 PropertyInfo[] systemInformation = typeof(SystemInformation).GetProperties();
                 foreach (PropertyInfo propertyInfo in systemInformation)
                 {
-                    attributes.Add("system-info-"+ propertyInfo.Name, propertyInfo.GetValue(null).ToString());
+                    _dicAttributes.Add("system-info-" + propertyInfo.Name, propertyInfo.GetValue(null).ToString());
                 }
             }
 
-            public void AddException(Exception ex)
-            {
-                pretendfiles.Add("exception.txt", ex.ToString());
-
-                attributes["visible-error-friendly"] = ex.Message;
-            }
+            // JavaScriptSerializer requires that all properties it accesses be public.
+            // ReSharper disable once MemberCanBePrivate.Local
+            public readonly ConcurrentDictionary<string, string> _dicCapturedFiles = new ConcurrentDictionary<string, string>();
+            // ReSharper disable once MemberCanBePrivate.Local
+            public readonly Dictionary<string, string> _dicPretendFiles;
+            // ReSharper disable once MemberCanBePrivate.Local
+            public readonly Dictionary<string, string> _dicAttributes;
+            // ReSharper disable once MemberCanBePrivate.Local
+            public readonly int _intProcessId = Process.GetCurrentProcess().Id;
+            // ReSharper disable once MemberCanBePrivate.Local
+            public readonly uint _uintThreadId = NativeMethods.GetCurrentThreadId();
 
             public string SerializeBase64()
             {
                 string altson = new JavaScriptSerializer().Serialize(this);
-                string sReturn = Convert.ToBase64String(Encoding.UTF8.GetBytes(altson));
-                return sReturn;
+                return Convert.ToBase64String(Encoding.UTF8.GetBytes(altson));
             }
 
-            public void AddFile(string file)
+            public void AddFile(string strFileName)
             {
-                capturefiles.Add(file);
+                string strContents;
+                try
+                {
+                    strContents = File.ReadAllText(strFileName);
+                }
+                catch (Exception e)
+                {
+                    strContents = e.ToString();
+                }
+
+                if (!_dicCapturedFiles.TryAdd(strFileName, strContents))
+                    _dicCapturedFiles[strFileName] = strContents;
             }
 
-            public void AddPrentendFile(string filename, string contents)
+            public void GetObjectData(SerializationInfo info, StreamingContext context)
             {
-                pretendfiles.Add(filename, contents);
+                info.AddValue("procesid", _intProcessId);
+                info.AddValue("threadid", _uintThreadId);
+                foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicAttributes)
+                    info.AddValue(objLoopKeyValuePair.Key, objLoopKeyValuePair.Value);
+                foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicPretendFiles)
+                    info.AddValue(objLoopKeyValuePair.Key, objLoopKeyValuePair.Value);
+                foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicCapturedFiles)
+                    info.AddValue(objLoopKeyValuePair.Key, objLoopKeyValuePair.Value);
             }
         }
 
@@ -134,9 +182,7 @@ namespace Chummer.Backend
         {
             try
             {
-                DumpData dump = new DumpData();
-
-                dump.AddException(ex);
+                DumpData dump = new DumpData(ex);
                 dump.AddFile(Path.Combine(Application.StartupPath, "settings", "default.xml"));
                 dump.AddFile(Path.Combine(Application.StartupPath, "chummerlog.txt"));
 

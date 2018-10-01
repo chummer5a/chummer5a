@@ -28,13 +28,13 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.cboMembership = new ElasticComboBox();
+            this.cboMembership = new Chummer.ElasticComboBox();
             this.lblMembershipLabel = new System.Windows.Forms.Label();
-            this.cboAreaOfInfluence = new ElasticComboBox();
+            this.cboAreaOfInfluence = new Chummer.ElasticComboBox();
             this.lblAreaOfInfluenceLabel = new System.Windows.Forms.Label();
-            this.cboMagicalResources = new ElasticComboBox();
+            this.cboMagicalResources = new Chummer.ElasticComboBox();
             this.lblMagicalResourcesLabel = new System.Windows.Forms.Label();
-            this.cboMatrixResources = new ElasticComboBox();
+            this.cboMatrixResources = new Chummer.ElasticComboBox();
             this.lblMatrixResourcesLabel = new System.Windows.Forms.Label();
             this.lblTotalConnectionModifierLabel = new System.Windows.Forms.Label();
             this.lblTotalConnectionModifier = new System.Windows.Forms.Label();
@@ -44,22 +44,29 @@ namespace Chummer
             this.txtGroupName = new System.Windows.Forms.TextBox();
             this.cmdChangeColour = new System.Windows.Forms.Button();
             this.chkFreeContact = new System.Windows.Forms.CheckBox();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.tableLayoutPanel1.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // cboMembership
             // 
             this.cboMembership.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMembership.FormattingEnabled = true;
-            this.cboMembership.Location = new System.Drawing.Point(152, 38);
+            this.cboMembership.Location = new System.Drawing.Point(183, 29);
             this.cboMembership.Name = "cboMembership";
-            this.cboMembership.Size = new System.Drawing.Size(198, 21);
+            this.cboMembership.Size = new System.Drawing.Size(174, 21);
             this.cboMembership.TabIndex = 3;
+            this.cboMembership.TooltipText = "";
             this.cboMembership.SelectedIndexChanged += new System.EventHandler(this.cboMembership_SelectedIndexChanged);
             // 
             // lblMembershipLabel
             // 
+            this.lblMembershipLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMembershipLabel.AutoSize = true;
-            this.lblMembershipLabel.Location = new System.Drawing.Point(12, 41);
+            this.lblMembershipLabel.Location = new System.Drawing.Point(110, 32);
+            this.lblMembershipLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMembershipLabel.Name = "lblMembershipLabel";
             this.lblMembershipLabel.Size = new System.Drawing.Size(67, 13);
             this.lblMembershipLabel.TabIndex = 2;
@@ -70,16 +77,19 @@ namespace Chummer
             // 
             this.cboAreaOfInfluence.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboAreaOfInfluence.FormattingEnabled = true;
-            this.cboAreaOfInfluence.Location = new System.Drawing.Point(152, 65);
+            this.cboAreaOfInfluence.Location = new System.Drawing.Point(183, 56);
             this.cboAreaOfInfluence.Name = "cboAreaOfInfluence";
-            this.cboAreaOfInfluence.Size = new System.Drawing.Size(198, 21);
+            this.cboAreaOfInfluence.Size = new System.Drawing.Size(174, 21);
             this.cboAreaOfInfluence.TabIndex = 5;
+            this.cboAreaOfInfluence.TooltipText = "";
             this.cboAreaOfInfluence.SelectedIndexChanged += new System.EventHandler(this.cboAreaOfInfluence_SelectedIndexChanged);
             // 
             // lblAreaOfInfluenceLabel
             // 
+            this.lblAreaOfInfluenceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblAreaOfInfluenceLabel.AutoSize = true;
-            this.lblAreaOfInfluenceLabel.Location = new System.Drawing.Point(12, 68);
+            this.lblAreaOfInfluenceLabel.Location = new System.Drawing.Point(86, 59);
+            this.lblAreaOfInfluenceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAreaOfInfluenceLabel.Name = "lblAreaOfInfluenceLabel";
             this.lblAreaOfInfluenceLabel.Size = new System.Drawing.Size(91, 13);
             this.lblAreaOfInfluenceLabel.TabIndex = 4;
@@ -90,16 +100,19 @@ namespace Chummer
             // 
             this.cboMagicalResources.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMagicalResources.FormattingEnabled = true;
-            this.cboMagicalResources.Location = new System.Drawing.Point(152, 92);
+            this.cboMagicalResources.Location = new System.Drawing.Point(183, 83);
             this.cboMagicalResources.Name = "cboMagicalResources";
-            this.cboMagicalResources.Size = new System.Drawing.Size(198, 21);
+            this.cboMagicalResources.Size = new System.Drawing.Size(174, 21);
             this.cboMagicalResources.TabIndex = 7;
+            this.cboMagicalResources.TooltipText = "";
             this.cboMagicalResources.SelectedIndexChanged += new System.EventHandler(this.cboMagicalResources_SelectedIndexChanged);
             // 
             // lblMagicalResourcesLabel
             // 
+            this.lblMagicalResourcesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMagicalResourcesLabel.AutoSize = true;
-            this.lblMagicalResourcesLabel.Location = new System.Drawing.Point(12, 95);
+            this.lblMagicalResourcesLabel.Location = new System.Drawing.Point(76, 86);
+            this.lblMagicalResourcesLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMagicalResourcesLabel.Name = "lblMagicalResourcesLabel";
             this.lblMagicalResourcesLabel.Size = new System.Drawing.Size(101, 13);
             this.lblMagicalResourcesLabel.TabIndex = 6;
@@ -110,16 +123,19 @@ namespace Chummer
             // 
             this.cboMatrixResources.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMatrixResources.FormattingEnabled = true;
-            this.cboMatrixResources.Location = new System.Drawing.Point(152, 119);
+            this.cboMatrixResources.Location = new System.Drawing.Point(183, 110);
             this.cboMatrixResources.Name = "cboMatrixResources";
-            this.cboMatrixResources.Size = new System.Drawing.Size(198, 21);
+            this.cboMatrixResources.Size = new System.Drawing.Size(174, 21);
             this.cboMatrixResources.TabIndex = 9;
+            this.cboMatrixResources.TooltipText = "";
             this.cboMatrixResources.SelectedIndexChanged += new System.EventHandler(this.cboMatrixResources_SelectedIndexChanged);
             // 
             // lblMatrixResourcesLabel
             // 
+            this.lblMatrixResourcesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMatrixResourcesLabel.AutoSize = true;
-            this.lblMatrixResourcesLabel.Location = new System.Drawing.Point(12, 122);
+            this.lblMatrixResourcesLabel.Location = new System.Drawing.Point(85, 113);
+            this.lblMatrixResourcesLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMatrixResourcesLabel.Name = "lblMatrixResourcesLabel";
             this.lblMatrixResourcesLabel.Size = new System.Drawing.Size(92, 13);
             this.lblMatrixResourcesLabel.TabIndex = 8;
@@ -128,8 +144,10 @@ namespace Chummer
             // 
             // lblTotalConnectionModifierLabel
             // 
+            this.lblTotalConnectionModifierLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTotalConnectionModifierLabel.AutoSize = true;
-            this.lblTotalConnectionModifierLabel.Location = new System.Drawing.Point(12, 153);
+            this.lblTotalConnectionModifierLabel.Location = new System.Drawing.Point(46, 140);
+            this.lblTotalConnectionModifierLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblTotalConnectionModifierLabel.Name = "lblTotalConnectionModifierLabel";
             this.lblTotalConnectionModifierLabel.Size = new System.Drawing.Size(131, 13);
             this.lblTotalConnectionModifierLabel.TabIndex = 10;
@@ -139,7 +157,8 @@ namespace Chummer
             // lblTotalConnectionModifier
             // 
             this.lblTotalConnectionModifier.AutoSize = true;
-            this.lblTotalConnectionModifier.Location = new System.Drawing.Point(149, 153);
+            this.lblTotalConnectionModifier.Location = new System.Drawing.Point(183, 140);
+            this.lblTotalConnectionModifier.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblTotalConnectionModifier.Name = "lblTotalConnectionModifier";
             this.lblTotalConnectionModifier.Size = new System.Drawing.Size(13, 13);
             this.lblTotalConnectionModifier.TabIndex = 11;
@@ -147,8 +166,11 @@ namespace Chummer
             // 
             // cmdCancel
             // 
+            this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdCancel.AutoSize = true;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(194, 243);
+            this.cmdCancel.Location = new System.Drawing.Point(0, 0);
+            this.cmdCancel.Margin = new System.Windows.Forms.Padding(0);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 15;
@@ -159,7 +181,10 @@ namespace Chummer
             // 
             // cmdOK
             // 
-            this.cmdOK.Location = new System.Drawing.Point(275, 243);
+            this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdOK.AutoSize = true;
+            this.cmdOK.Location = new System.Drawing.Point(78, 0);
+            this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 14;
@@ -170,8 +195,10 @@ namespace Chummer
             // 
             // lblGroupNameLabel
             // 
+            this.lblGroupNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblGroupNameLabel.AutoSize = true;
-            this.lblGroupNameLabel.Location = new System.Drawing.Point(12, 15);
+            this.lblGroupNameLabel.Location = new System.Drawing.Point(47, 6);
+            this.lblGroupNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblGroupNameLabel.Name = "lblGroupNameLabel";
             this.lblGroupNameLabel.Size = new System.Drawing.Size(130, 13);
             this.lblGroupNameLabel.TabIndex = 0;
@@ -180,17 +207,20 @@ namespace Chummer
             // 
             // txtGroupName
             // 
-            this.txtGroupName.Location = new System.Drawing.Point(152, 12);
+            this.txtGroupName.Location = new System.Drawing.Point(183, 3);
             this.txtGroupName.Name = "txtGroupName";
-            this.txtGroupName.Size = new System.Drawing.Size(198, 20);
+            this.txtGroupName.Size = new System.Drawing.Size(174, 20);
             this.txtGroupName.TabIndex = 1;
             this.txtGroupName.TextChanged += new System.EventHandler(this.txtGroupName_TextChanged);
             // 
             // cmdChangeColour
             // 
-            this.cmdChangeColour.Location = new System.Drawing.Point(194, 214);
+            this.cmdChangeColour.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdChangeColour.Location = new System.Drawing.Point(183, 162);
             this.cmdChangeColour.Name = "cmdChangeColour";
-            this.cmdChangeColour.Size = new System.Drawing.Size(156, 23);
+            this.cmdChangeColour.Size = new System.Drawing.Size(174, 23);
             this.cmdChangeColour.TabIndex = 13;
             this.cmdChangeColour.Tag = "Button_SelectContactConnection_ChangeColor";
             this.cmdChangeColour.Text = "Change Colour";
@@ -199,39 +229,82 @@ namespace Chummer
             // 
             // chkFreeContact
             // 
+            this.chkFreeContact.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.chkFreeContact.AutoSize = true;
-            this.chkFreeContact.Location = new System.Drawing.Point(15, 179);
+            this.chkFreeContact.Location = new System.Drawing.Point(3, 163);
+            this.chkFreeContact.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkFreeContact.Name = "chkFreeContact";
-            this.chkFreeContact.Size = new System.Drawing.Size(87, 17);
+            this.chkFreeContact.Size = new System.Drawing.Size(174, 21);
             this.chkFreeContact.TabIndex = 12;
             this.chkFreeContact.Tag = "Checkbox_SelectContactConnection_FreeContact";
             this.chkFreeContact.Text = "Free Contact";
             this.chkFreeContact.UseVisualStyleBackColor = true;
             this.chkFreeContact.CheckedChanged += new System.EventHandler(this.chkFreeContact_CheckedChanged);
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.AutoSize = true;
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Controls.Add(this.chkFreeContact, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.lblGroupNameLabel, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblMembershipLabel, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.txtGroupName, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblAreaOfInfluenceLabel, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lblTotalConnectionModifier, 1, 5);
+            this.tableLayoutPanel1.Controls.Add(this.lblMagicalResourcesLabel, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.lblTotalConnectionModifierLabel, 0, 5);
+            this.tableLayoutPanel1.Controls.Add(this.lblMatrixResourcesLabel, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.cboMatrixResources, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.cboMembership, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.cboMagicalResources, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.cboAreaOfInfluence, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 8);
+            this.tableLayoutPanel1.Controls.Add(this.cmdChangeColour, 1, 6);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 12);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 9;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(360, 237);
+            this.tableLayoutPanel1.TabIndex = 16;
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel1.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 2);
+            this.flowLayoutPanel1.Controls.Add(this.cmdOK);
+            this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
+            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(207, 214);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(153, 23);
+            this.flowLayoutPanel1.TabIndex = 14;
+            // 
             // frmSelectContactConnection
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(362, 274);
-            this.Controls.Add(this.chkFreeContact);
-            this.Controls.Add(this.cmdChangeColour);
-            this.Controls.Add(this.txtGroupName);
-            this.Controls.Add(this.lblGroupNameLabel);
-            this.Controls.Add(this.cmdCancel);
-            this.Controls.Add(this.cmdOK);
-            this.Controls.Add(this.lblTotalConnectionModifier);
-            this.Controls.Add(this.lblTotalConnectionModifierLabel);
-            this.Controls.Add(this.cboMatrixResources);
-            this.Controls.Add(this.lblMatrixResourcesLabel);
-            this.Controls.Add(this.cboMagicalResources);
-            this.Controls.Add(this.lblMagicalResourcesLabel);
-            this.Controls.Add(this.cboAreaOfInfluence);
-            this.Controls.Add(this.lblAreaOfInfluenceLabel);
-            this.Controls.Add(this.cboMembership);
-            this.Controls.Add(this.lblMembershipLabel);
+            this.ClientSize = new System.Drawing.Size(384, 261);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -241,6 +314,10 @@ namespace Chummer
             this.Tag = "Title_SelectContactConnection";
             this.Text = "Advanced Contact Options";
             this.Load += new System.EventHandler(this.frmSelectContactConnection_Load);
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -264,6 +341,7 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtGroupName;
         private System.Windows.Forms.Button cmdChangeColour;
         private System.Windows.Forms.CheckBox chkFreeContact;
-
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

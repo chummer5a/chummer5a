@@ -38,7 +38,6 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            MoveControls();
         }
 
         private void cboMembership_SelectedIndexChanged(object sender, EventArgs e)
@@ -224,11 +223,6 @@ namespace Chummer
             _blnFree = chkFreeContact.Checked;
 
             lblTotalConnectionModifier.Text = (_intMembership + _intAreaOfInfluence + _intMagicalResources + _intMatrixResources).ToString();
-        }
-
-        private void MoveControls()
-        {
-            lblTotalConnectionModifier.Left = lblTotalConnectionModifierLabel.Left + lblTotalConnectionModifierLabel.Width + 6;
         }
         #endregion
     }

@@ -27,8 +27,6 @@ namespace Chummer
         // used when the user has filled out the information
         private readonly InitiativeUserControl parentControl;
         private Character _character;
-        private readonly Random _objRandom = MersenneTwister.SfmtRandom.Create();
-        private int _intModuloTemp;
 
         public frmAddToken(InitiativeUserControl init)
         {
@@ -36,7 +34,7 @@ namespace Chummer
             //LanguageManager.Load(GlobalOptions.Language, this);
             CenterToParent();
             parentControl = init;
-            
+
         }
 
         /// <summary>
@@ -100,52 +98,34 @@ namespace Chummer
         {
             if (_character != null)
             {
-                _character.InitialInit = (int)nudInitStart.Value;
-                _character.Delayed = false;
-                _character.InitPasses = (int)nudInit.Value;
-                if (chkAutoRollInit.Checked)
-                {
-                    int intInitRoll = 0;
-                    for (int j = 0; j < _character.InitPasses; j++)
-                    {
-                        do
-                        {
-                            _intModuloTemp = _objRandom.Next();
-                        }
-                        while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
-                        intInitRoll += 1 + _intModuloTemp % 6;
-                    }
-                    _character.InitRoll = intInitRoll + _character.InitialInit;
-                }
-                else
-                    _character.InitRoll = int.MinValue;
                 _character.Name = txtName.Text;
+                _character.InitPasses = (int)nudInit.Value;
+                _character.Delayed = false;
+                _character.InitialInit = (int)nudInitStart.Value;
             }
             else
             {
-                _character = new Character()
+                _character = new Character
                 {
                     Name = txtName.Text,
                     InitPasses = (int)nudInit.Value,
-                    InitRoll = int.MinValue,
                     Delayed = false,
                     InitialInit = (int)nudInitStart.Value
                 };
-                if (chkAutoRollInit.Checked)
-                {
-                    int intInitRoll = 0;
-                    for (int j = 0; j < _character.InitPasses; j++)
-                    {
-                        do
-                        {
-                            _intModuloTemp = _objRandom.Next();
-                        }
-                        while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
-                        intInitRoll += 1 + _intModuloTemp % 6;
-                    }
-                    _character.InitRoll = intInitRoll + _character.InitialInit;
-                }
             }
+            if (chkAutoRollInit.Checked)
+            {
+                int intInitPasses = _character.InitPasses;
+                int intInitRoll = intInitPasses;
+                for (int j = 0; j < intInitPasses; ++j)
+                {
+                    intInitRoll += GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                }
+                _character.InitRoll = intInitRoll + _character.InitialInit;
+            }
+            else
+                _character.InitRoll = int.MinValue;
+
             parentControl.AddToken(_character);
             Close();
         }

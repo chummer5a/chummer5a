@@ -33,6 +33,7 @@ namespace Chummer
         private string _strSelectedWeapon = string.Empty;
         private decimal _decMarkup;
 
+        private bool _blnLoading = true;
         private bool _blnSkipUpdate;
         private bool _blnAddAgain;
         private bool _blnBlackMarketDiscount;
@@ -54,7 +55,6 @@ namespace Chummer
             nudMarkup.Visible = objCharacter.Created;
             lblMarkupPercentLabel.Visible = objCharacter.Created;
             _objCharacter = objCharacter;
-            MoveControls();
             // Load the Weapon information.
             _objXmlDocument = XmlManager.Load("weapons.xml");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objXmlDocument);
@@ -69,7 +69,7 @@ namespace Chummer
                 NullValue = null
             };
             dgvc_Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
-            
+
             if (_objCharacter.Created)
             {
                 chkHideOverAvailLimit.Visible = false;
@@ -118,7 +118,8 @@ namespace Chummer
                 cboCategory.SelectedIndex = 0;
             cboCategory.EndUpdate();
 
-            cboCategory_SelectedIndexChanged(sender, e);
+            _blnLoading = false;
+            RefreshList();
         }
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -128,6 +129,9 @@ namespace Chummer
 
         private void lstWeapon_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_blnLoading || _blnSkipUpdate)
+                return;
+            
             // Retireve the information for the selected Weapon.
             XmlNode xmlWeapon = null;
             string strSelectedId = lstWeapon.SelectedValue?.ToString();
@@ -147,23 +151,30 @@ namespace Chummer
 
         private void UpdateWeaponInfo()
         {
-            if (_blnSkipUpdate)
+            if (_blnLoading || _blnSkipUpdate)
                 return;
             _blnSkipUpdate = true;
             if (_objSelectedWeapon != null)
             {
-                chkBlackMarketDiscount.Enabled = true;
                 chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(_objSelectedWeapon.Category);
 
                 _objSelectedWeapon.DiscountCost = chkBlackMarketDiscount.Checked;
-
-                lblWeaponReach.Text = _objSelectedWeapon.TotalReach.ToString();
+                
+                lblWeaponReach.Text = _objSelectedWeapon.TotalReach.ToString(GlobalOptions.CultureInfo);
+                lblWeaponReachLabel.Visible = !string.IsNullOrEmpty(lblWeaponReach.Text);
                 lblWeaponDamage.Text = _objSelectedWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblWeaponDamageLabel.Visible = !string.IsNullOrEmpty(lblWeaponDamage.Text);
                 lblWeaponAP.Text = _objSelectedWeapon.TotalAP(GlobalOptions.Language);
+                lblWeaponAPLabel.Visible = !string.IsNullOrEmpty(lblWeaponAP.Text);
                 lblWeaponMode.Text = _objSelectedWeapon.CalculatedMode(GlobalOptions.Language);
-                lblWeaponRC.Text = _objSelectedWeapon.TotalRC;
+                lblWeaponModeLabel.Visible = !string.IsNullOrEmpty(lblWeaponMode.Text);
+                lblWeaponRC.Text = _objSelectedWeapon.TotalRC(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
+                lblWeaponRC.SetToolTip(_objSelectedWeapon.RCToolTip);
+                lblWeaponRCLabel.Visible = !string.IsNullOrEmpty(lblWeaponRC.Text);
                 lblWeaponAmmo.Text = _objSelectedWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblWeaponAccuracy.Text = _objSelectedWeapon.TotalAccuracy.ToString();
+                lblWeaponAmmoLabel.Visible = !string.IsNullOrEmpty(lblWeaponAmmo.Text);
+                lblWeaponAccuracy.Text = _objSelectedWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblWeaponAccuracyLabel.Visible = !string.IsNullOrEmpty(lblWeaponAccuracy.Text);
 
                 decimal decItemCost = 0;
                 if (chkFreeItem.Checked)
@@ -174,13 +185,15 @@ namespace Chummer
                 {
                     lblWeaponCost.Text = _objSelectedWeapon.DisplayCost(out decItemCost, nudMarkup.Value / 100.0m);
                 }
+                lblWeaponCostLabel.Visible = !string.IsNullOrEmpty(lblWeaponCost.Text);
 
                 AvailabilityValue objTotalAvail = _objSelectedWeapon.TotalAvailTuple();
                 lblWeaponAvail.Text = objTotalAvail.ToString(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblWeaponAvailLabel.Visible = !string.IsNullOrEmpty(lblWeaponAvail.Text);
                 lblTest.Text = _objCharacter.AvailTest(decItemCost, objTotalAvail);
-
-                string strPage = _objSelectedWeapon.DisplayPage(GlobalOptions.Language);
-                lblSource.Text = CommonFunctions.LanguageBookShort(_objSelectedWeapon.Source, GlobalOptions.Language) + ' ' + strPage;
+                lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
+                _objSelectedWeapon.SetSourceDetail(lblSource);
+                lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
                 // Build a list of included Accessories and Modifications that come with the weapon.
                 StringBuilder strAccessories = new StringBuilder();
@@ -192,26 +205,37 @@ namespace Chummer
                     strAccessories.Length -= Environment.NewLine.Length;
 
                 lblIncludedAccessories.Text = strAccessories.Length == 0 ? LanguageManager.GetString("String_None", GlobalOptions.Language) : strAccessories.ToString();
-
-                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(_objSelectedWeapon.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                lblIncludedAccessoriesLabel.Visible = !string.IsNullOrEmpty(lblIncludedAccessories.Text);
             }
             else
             {
-                chkBlackMarketDiscount.Enabled = false;
                 chkBlackMarketDiscount.Checked = false;
                 lblWeaponReach.Text = string.Empty;
+                lblWeaponReachLabel.Visible = false;
                 lblWeaponDamage.Text = string.Empty;
+                lblWeaponDamageLabel.Visible = false;
                 lblWeaponAP.Text = string.Empty;
+                lblWeaponAPLabel.Visible = false;
                 lblWeaponMode.Text = string.Empty;
+                lblWeaponModeLabel.Visible = false;
                 lblWeaponRC.Text = string.Empty;
+                lblWeaponRC.SetToolTip(string.Empty);
+                lblWeaponRCLabel.Visible = false;
                 lblWeaponAmmo.Text = string.Empty;
+                lblWeaponAmmoLabel.Visible = false;
                 lblWeaponAccuracy.Text = string.Empty;
+                lblWeaponAccuracyLabel.Visible = false;
                 lblWeaponCost.Text = string.Empty;
+                lblWeaponCostLabel.Visible = false;
                 lblWeaponAvail.Text = string.Empty;
+                lblWeaponAvailLabel.Visible = false;
                 lblTest.Text = string.Empty;
+                lblTestLabel.Visible = false;
                 lblSource.Text = string.Empty;
+                lblSourceLabel.Visible = false;
                 lblIncludedAccessories.Text = string.Empty;
-                tipTooltip.SetToolTip(lblSource, string.Empty);
+                lblIncludedAccessoriesLabel.Visible = false;
+                lblSource.SetToolTip(string.Empty);
             }
             _blnSkipUpdate = false;
         }
@@ -225,11 +249,9 @@ namespace Chummer
                 tabWeapons.Columns.Add("WeaponName");
                 tabWeapons.Columns.Add("Dice");
                 tabWeapons.Columns.Add("Accuracy");
-                tabWeapons.Columns["Accuracy"].DataType = typeof(int);
                 tabWeapons.Columns.Add("Damage");
                 tabWeapons.Columns.Add("AP");
                 tabWeapons.Columns.Add("RC");
-                tabWeapons.Columns["RC"].DataType = typeof(int);
                 tabWeapons.Columns.Add("Ammo");
                 tabWeapons.Columns.Add("Mode");
                 tabWeapons.Columns.Add("Reach");
@@ -253,59 +275,71 @@ namespace Chummer
                         continue;
                     if (chkHideOverAvailLimit.Checked && !SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
                         continue;
+                    if (!chkFreeItem.Checked && chkShowOnlyAffordItems.Checked)
+                    {
+                        decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                        if (_setBlackMarketMaps.Contains(objXmlWeapon["category"]?.InnerText))
+                            decCostMultiplier *= 0.9m;
+                        if (!SelectionShared.CheckNuyenRestriction(objXmlWeapon, _objCharacter.Nuyen, decCostMultiplier))
+                            continue;
+                    }
 
                     Weapon objWeapon = new Weapon(_objCharacter);
                     objWeapon.Create(objXmlWeapon, null, true, false, true);
 
                     string strID = objWeapon.SourceID.ToString("D");
                     string strWeaponName = objWeapon.DisplayName(GlobalOptions.Language);
-                    string strDice = objWeapon.GetDicePool(GlobalOptions.CultureInfo);
-                    int intAccuracy = objWeapon.TotalAccuracy;
+                    string strDice = objWeapon.GetDicePool(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    string strAccuracy = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     string strDamage = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     string strAP = objWeapon.TotalAP(GlobalOptions.Language);
                     if (strAP == "-")
                         strAP = "0";
-                    int.TryParse(objWeapon.TotalRC, out int intRC);
+                    string strRC = objWeapon.TotalRC(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
                     string strAmmo = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     string strMode = objWeapon.CalculatedMode(GlobalOptions.Language);
                     string strReach = objWeapon.TotalReach.ToString();
-                    StringBuilder strAccessories = new StringBuilder();
+                    StringBuilder strbldAccessories = new StringBuilder();
                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                     {
-                        strAccessories.AppendLine(objAccessory.DisplayName(GlobalOptions.Language));
+                        strbldAccessories.AppendLine(objAccessory.DisplayName(GlobalOptions.Language));
                     }
-                    if (strAccessories.Length > 0)
-                        strAccessories.Length -= Environment.NewLine.Length;
+                    if (strbldAccessories.Length > 0)
+                        strbldAccessories.Length -= Environment.NewLine.Length;
                     AvailabilityValue objAvail = objWeapon.TotalAvailTuple();
-                    SourceString strSource = new SourceString(objWeapon.Source, objWeapon.DisplayPage(GlobalOptions.Language));
+                    SourceString strSource = new SourceString(objWeapon.Source, objWeapon.DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
                     NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal _));
 
-                    tabWeapons.Rows.Add(strID, strWeaponName, strDice, intAccuracy, strDamage, strAP, intRC, strAmmo, strMode, strReach, strAccessories.ToString(), objAvail, strSource, strCost);
+                    tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP, strRC, strAmmo, strMode, strReach, strbldAccessories.ToString(), objAvail, strSource, strCost);
                 }
 
                 DataSet set = new DataSet("weapons");
                 set.Tables.Add(tabWeapons);
-
-                if (cboCategory.SelectedValue == null || cboCategory.SelectedValue.ToString() == "Show All")
+                string strSelectedCategory = cboCategory.SelectedValue?.ToString();
+                if (string.IsNullOrEmpty(strSelectedCategory) || strSelectedCategory == "Show All")
                 {
-                    dgvWeapons.Columns[5].Visible = true;
+                    //dgvWeapons.Columns[5].Visible = true;
                     dgvWeapons.Columns[6].Visible = true;
                     dgvWeapons.Columns[7].Visible = true;
                     dgvWeapons.Columns[8].Visible = true;
                 }
-                else if (cboCategory.SelectedValue.ToString() == "Blades" || cboCategory.SelectedValue.ToString() == "Clubs" || cboCategory.SelectedValue.ToString() == "Improvised Weapons" || cboCategory.SelectedValue.ToString() == "Exotic Melee Weapons" || cboCategory.SelectedValue.ToString() == "Unarmed")
+                else if (strSelectedCategory == "Blades" ||
+                         strSelectedCategory == "Clubs" ||
+                         strSelectedCategory == "Improvised Weapons" ||
+                         strSelectedCategory == "Exotic Melee Weapons" ||
+                         strSelectedCategory == "Unarmed")
                 {
-                    dgvWeapons.Columns[5].Visible = false;
+                    //dgvWeapons.Columns[5].Visible = false;
                     dgvWeapons.Columns[6].Visible = false;
                     dgvWeapons.Columns[7].Visible = false;
-                    dgvWeapons.Columns[8].Visible = true;
+                    dgvWeapons.Columns[8].Visible = false;
                 }
                 else
                 {
-                    dgvWeapons.Columns[5].Visible = true;
+                    //dgvWeapons.Columns[5].Visible = true;
                     dgvWeapons.Columns[6].Visible = true;
                     dgvWeapons.Columns[7].Visible = true;
-                    dgvWeapons.Columns[8].Visible = false;
+                    dgvWeapons.Columns[8].Visible = true;
                 }
                 dgvWeapons.Columns[0].Visible = false;
                 dgvWeapons.Columns[12].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopRight;
@@ -337,14 +371,29 @@ namespace Chummer
                     {
                         continue;
                     }
+                    if (!chkFreeItem.Checked && chkShowOnlyAffordItems.Checked)
+                    {
+                        decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                        if (_setBlackMarketMaps.Contains(objXmlWeapon["category"]?.InnerText))
+                            decCostMultiplier *= 0.9m;
+                        if (!SelectionShared.CheckNuyenRestriction(objXmlWeapon, _objCharacter.Nuyen, decCostMultiplier))
+                            continue;
+                    }
                     lstWeapons.Add(new ListItem(objXmlWeapon["id"]?.InnerText, objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"]?.InnerText));
                 }
+                
                 lstWeapons.Sort(CompareListItems.CompareNames);
+                string strOldSelected = lstWeapon.SelectedValue?.ToString();
+                _blnLoading = true;
                 lstWeapon.BeginUpdate();
-                lstWeapon.DataSource = null;
                 lstWeapon.ValueMember = "Value";
                 lstWeapon.DisplayMember = "Name";
                 lstWeapon.DataSource = lstWeapons;
+                _blnLoading = false;
+                if (!string.IsNullOrEmpty(strOldSelected))
+                    lstWeapon.SelectedValue = strOldSelected;
+                else
+                    lstWeapon.SelectedIndex = -1;
                 lstWeapon.EndUpdate();
             }
         }
@@ -373,11 +422,19 @@ namespace Chummer
 
         private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
+            if (chkShowOnlyAffordItems.Checked)
+            {
+                RefreshList();
+            }
             UpdateWeaponInfo();
         }
 
         private void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
+            if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
+            {
+                RefreshList();
+            }
             UpdateWeaponInfo();
         }
 
@@ -555,40 +612,9 @@ namespace Chummer
             }
         }
 
-        private void MoveControls()
+        private void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            int intWidth = Math.Max(lblWeaponDamageLabel.Width, lblWeaponAPLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponReachLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponAvailLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponCostLabel.Width);
-
-            lblWeaponDamage.Left = lblWeaponDamageLabel.Left + intWidth + 6;
-            lblWeaponAP.Left = lblWeaponAPLabel.Left + intWidth + 6;
-            lblWeaponReach.Left = lblWeaponReachLabel.Left + intWidth + 6;
-            lblWeaponAvail.Left = lblWeaponAvailLabel.Left + intWidth + 6;
-            lblWeaponCost.Left = lblWeaponCostLabel.Left + intWidth + 6;
-
-            lblWeaponRCLabel.Left = lblWeaponAP.Left + 74;
-            lblWeaponRC.Left = lblWeaponRCLabel.Left + lblWeaponRCLabel.Width + 6;
-
-            intWidth = Math.Max(lblWeaponAmmoLabel.Width, lblWeaponModeLabel.Width);
-            intWidth = Math.Max(intWidth, lblTestLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponAccuracy.Width);
-            lblWeaponAmmoLabel.Left = lblWeaponAP.Left + 74;
-            lblWeaponAmmo.Left = lblWeaponAmmoLabel.Left + intWidth + 6;
-            lblWeaponModeLabel.Left = lblWeaponAP.Left + 74;
-            lblWeaponMode.Left = lblWeaponModeLabel.Left + intWidth + 6;
-            lblTestLabel.Left = lblWeaponAP.Left + 74;
-            lblTest.Left = lblTestLabel.Left + intWidth + 6;
-            lblWeaponAccuracyLabel.Left = lblWeaponAP.Left + 74;
-            lblWeaponAccuracy.Left = lblWeaponAccuracyLabel.Left + intWidth + 6;
-
-            nudMarkup.Left = lblMarkupLabel.Left + lblMarkupLabel.Width + 6;
-            lblMarkupPercentLabel.Left = nudMarkup.Left + nudMarkup.Width;
-
-            lblSource.Left = lblSourceLabel.Left + lblSourceLabel.Width + 6;
-
-            lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
+            CommonFunctions.OpenPDFFromControl(sender, e);
         }
 
         private void tmrSearch_Tick(object sender, EventArgs e)
@@ -596,6 +622,11 @@ namespace Chummer
             tmrSearch.Stop();
             tmrSearch.Enabled = false;
 
+            RefreshList();
+        }
+
+        private void chkShowOnlyAffordItems_CheckedChanged(object sender, EventArgs e)
+        {
             RefreshList();
         }
 

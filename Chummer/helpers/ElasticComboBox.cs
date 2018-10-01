@@ -17,7 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -25,7 +24,6 @@ namespace Chummer
     public sealed class ElasticComboBox : ComboBox
     {
         private readonly ToolTip _tt;
-        private readonly Graphics _objGraphics;
 
         private string _strToolTipText = string.Empty;
         public string TooltipText
@@ -57,8 +55,6 @@ namespace Chummer
 
             MouseEnter += Label_MouseEnter;
             MouseLeave += Label_MouseLeave;
-
-            _objGraphics = CreateGraphics();
         }
 
         private void Label_MouseEnter(object sender, EventArgs ea)
@@ -120,7 +116,7 @@ namespace Chummer
                     strItemText = objListItem.Name;
                 if (string.IsNullOrEmpty(strItemText))
                     strItemText = GetItemText(objItem);
-                float fltLoopItemWidth = _objGraphics.MeasureString(strItemText, Font).Width;
+                float fltLoopItemWidth = TextRenderer.MeasureText(strItemText, Font).Width;
                 if (fltLoopItemWidth > fltMaxItemWidth)
                     fltMaxItemWidth = fltLoopItemWidth;
             }
@@ -132,7 +128,6 @@ namespace Chummer
             if (disposing)
             {
                 _tt?.Dispose();
-                _objGraphics?.Dispose();
             }
             base.Dispose(disposing);
         }

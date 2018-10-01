@@ -266,6 +266,7 @@
   <xsl:variable name="lang.CoreTrack"  select="'Core Damage Track'"/>
   <xsl:variable name="lang.CritterPowers"    select="'Critter Powers'"/>
   <xsl:variable name="lang.CurrentEdge"    select="'Current Edge Points'"/>
+  <xsl:variable name="lang.CurrentForm"    select="'Current Form'"/>
   <xsl:variable name="lang.DamageType"  select="'Damage Type'"/>
   <xsl:variable name="lang.DataProc"      select="'Data Proc.'"/>
   <xsl:variable name="lang.DataProcessing"  select="'Data Processing'"/>
@@ -287,6 +288,7 @@
   <xsl:variable name="lang.MatrixHot"      select="'Matrix Hot'"/>
   <xsl:variable name="lang.MatrixTrack"    select="'Matrix Damage Track'"/>
   <xsl:variable name="lang.MeleeWeapons"    select="'Melee Weapons'"/>
+  <xsl:variable name="lang.MentalAttributes"  select="'Mental Attributes'"/>
   <xsl:variable name="lang.NotAddictedYet"  select="'Not Addicted Yet'"/>
   <xsl:variable name="lang.Nothing2Show4Devices"    select="'No Devices to list'"/>
   <xsl:variable name="lang.Nothing2Show4Notes"    select="'No Notes to list'"/>
@@ -295,9 +297,9 @@
   <xsl:variable name="lang.OtherArmor"      select="'Other Armor'"/>
   <xsl:variable name="lang.OtherMugshots"    select="'Other Portraits'"/>
   <xsl:variable name="lang.PageBreak"      select="'Page Break: '"/>
-  <xsl:variable name="lang.ToxinsAndPathogens"  select="'Toxins and Pathogens'"/>
   <xsl:variable name="lang.PersonalData"    select="'Personal Data'"/>
   <xsl:variable name="lang.PersonalLife"    select="'Personal Life'"/>
+  <xsl:variable name="lang.PhysicalAttributes"  select="'Physical Attributes'"/>
   <xsl:variable name="lang.PhysicalNaturalRecovery"  select="'Natural Recovery Pool (1 day)'"/>
   <xsl:variable name="lang.PhysicalTrack"  select="'Physical Damage Track'"/>
   <xsl:variable name="lang.PreferredPayment"    select="'Preferred Payment Method'"/>
@@ -310,12 +312,14 @@
   <xsl:variable name="lang.RiggerInitiative"  select="'Rigger Initiative'"/>
   <xsl:variable name="lang.SkillGroup"    select="'Skill Group'"/>
   <xsl:variable name="lang.SkillGroups"   select="'Skill Groups'"/>
+  <xsl:variable name="lang.SpecialAttributes"  select="'Special Attributes'"/>
   <xsl:variable name="lang.StreetCred"    select="'Street Cred'"/>
   <xsl:variable name="lang.StreetName"    select="'Street Name'"/>
   <xsl:variable name="lang.StunNaturalRecovery"  select="'Natural Recovery Pool (1 hour)'"/>
   <xsl:variable name="lang.StunTrack"    select="'Stun Damage Track'"/>
   <xsl:variable name="lang.SubmersionGrade"  select="'Submersion Grade'"/>
   <xsl:variable name="lang.TotalArmor"  select="'Total of equipped single highest armor and accessories'"/>
+  <xsl:variable name="lang.ToxinsAndPathogens"  select="'Toxins and Pathogens'"/>
   <xsl:variable name="lang.UnnamedCharacter"  select="'Unnamed Character'"/>
   <xsl:variable name="lang.VehicleBody"    select="'Body'"/>
   <xsl:variable name="lang.VehicleCost"    select="'Vehicle Cost'"/>

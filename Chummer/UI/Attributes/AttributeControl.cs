@@ -40,26 +40,29 @@ namespace Chummer.UI.Attributes
             _objCharacter = attribute.CharacterObject;
             InitializeComponent();
             _dataSource = _objCharacter.AttributeSection.GetAttributeBindingByName(AttributeName);
-
+            _objCharacter.AttributeSection.PropertyChanged += AttributePropertyChanged;
             //Display
             lblName.DataBindings.Add("Text", _dataSource, nameof(CharacterAttrib.DisplayNameFormatted), false, DataSourceUpdateMode.OnPropertyChanged);
             lblValue.DataBindings.Add("Text", _dataSource, nameof(CharacterAttrib.DisplayValue), false, DataSourceUpdateMode.OnPropertyChanged);
             lblLimits.DataBindings.Add("Text", _dataSource, nameof(CharacterAttrib.AugmentedMetatypeLimits), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblValue.DataBindings.Add("TooltipText", _dataSource, nameof(CharacterAttrib.ToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+            lblValue.DataBindings.Add("ToolTipText", _dataSource, nameof(CharacterAttrib.ToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
             if (_objCharacter.Created)
             {
                 nudBase.Visible = false;
                 nudKarma.Visible = false;
-                cmdImproveATT.DataBindings.Add("TooltipText", _dataSource, nameof(CharacterAttrib.UpgradeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
+                cmdImproveATT.DataBindings.Add("ToolTipText", _dataSource, nameof(CharacterAttrib.UpgradeToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
                 cmdImproveATT.Visible = true;
                 cmdImproveATT.DataBindings.Add("Enabled", _dataSource, nameof(CharacterAttrib.CanUpgradeCareer), false, DataSourceUpdateMode.OnPropertyChanged);
                 cmdBurnEdge.Visible = AttributeName == "EDG";
-                cmdBurnEdge.TooltipText = LanguageManager.GetString("Tip_CommonBurnEdge", GlobalOptions.Language);
+                cmdBurnEdge.ToolTipText = LanguageManager.GetString("Tip_CommonBurnEdge", GlobalOptions.Language);
             }
             else
             {
                 while (_objAttribute.KarmaMaximum < 0 && _objAttribute.Base > 0)
                     _objAttribute.Base -= 1;
+                // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
+                if (_objAttribute.Karma > _objAttribute.KarmaMaximum)
+                    _objAttribute.Karma = _objAttribute.KarmaMaximum;
 
                 nudBase.DataBindings.Add("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.DataBindings.Add("Maximum", _dataSource, nameof(CharacterAttrib.PriorityMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -78,14 +81,20 @@ namespace Chummer.UI.Attributes
                 cmdBurnEdge.Visible = false;
             }
         }
-        
-		public void ResetBinding(CharacterAttrib attrib)
-		{
-			_dataSource.DataSource = attrib;
-		}
+
+        private void AttributePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(AttributeSection.AttributeCategory))
+            {
+                _dataSource.DataSource = _objCharacter.AttributeSection.GetAttributeByName(_objAttribute.Abbrev);
+                _dataSource.ResetBindings(false);
+            }
+        }
 
         public void UnbindAttributeControl()
         {
+            _objCharacter.AttributeSection.PropertyChanged -= AttributePropertyChanged;
+
             foreach (Control objControl in Controls)
             {
                 objControl.DataBindings.Clear();
@@ -133,6 +142,16 @@ namespace Chummer.UI.Attributes
             {
                 if (!ShowAttributeRule(Math.Max(decimal.ToInt32(nudBase.Value) + _objAttribute.FreeBase + _objAttribute.RawMinimum + _objAttribute.AttributeValueModifiers, _objAttribute.TotalMinimum) + decimal.ToInt32(d)))
                 {
+                    // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to. 
+                    if (_oldKarma > _objAttribute.KarmaMaximum)
+                    {
+                        _oldKarma = _objAttribute.KarmaMaximum - 1;
+                    }
+                    if (_oldKarma < 0)
+                    {
+                        nudBase.Value = Math.Max(nudBase.Value - _oldKarma, 0);
+                        _oldKarma = 0;
+                    }
                     nudKarma.Value = _oldKarma;
                     return;
                 }

@@ -16,7 +16,6 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -31,7 +30,6 @@ namespace Chummer
         private readonly ConcurrentDictionary<string, StoryModule> _dicPersistentModules = new ConcurrentDictionary<string, StoryModule>();
         private readonly Character _objCharacter;
         private readonly ObservableCollection<StoryModule> _lstStoryModules = new ObservableCollection<StoryModule>();
-        private readonly Random _objRandom = MersenneTwister.SfmtRandom.Create();
         private bool _blnNeedToRegeneratePersistents = true;
 
         // Note: as long as this is only used to generate language-agnostic information, it can be cached once when the object is created and left that way.
@@ -84,22 +82,6 @@ namespace Chummer
 
         public ConcurrentDictionary<string, StoryModule> PersistentModules => _dicPersistentModules;
 
-        private readonly object _objRandomLock = new object();
-
-        public int GetNextRandomThreadSafe(int intMaxValueExclusive)
-        {
-            int intReturn;
-            int intModuloBiasRemove = int.MaxValue % intMaxValueExclusive;
-            do
-            {
-                lock (_objRandomLock)
-                    intReturn = _objRandom.Next();
-            }
-            while (intReturn >= int.MaxValue - intModuloBiasRemove); // Modulo bias removal
-
-            return intReturn % intMaxValueExclusive;
-        }
-
         public StoryModule GeneratePersistentModule(string strFunction)
         {
             XPathNavigator xmlStoryPool = _xmlStoryDocumentBaseNode.SelectSingleNode("storypools/storypool[name = \"" + strFunction + "\"]");
@@ -123,7 +105,7 @@ namespace Chummer
                     }
                 }
 
-                int intRandomResult = GetNextRandomThreadSafe(intTotalWeight);
+                int intRandomResult = GlobalOptions.RandomGenerator.NextModuloBiasRemoved(intTotalWeight);
                 string strSelectedId = string.Empty;
                 foreach (KeyValuePair<string, int> objStoryId in dicStoriesListWithWeights)
                 {

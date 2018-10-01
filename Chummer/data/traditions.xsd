@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:include schemaLocation="bonuses.xsd" />
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
@@ -14,6 +15,7 @@
                     <xs:element name="name" type="xs:string" />
                     <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="drain" type="xs:string" />
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
                     <xs:element name="source" type="xs:string" />
                     <xs:element name="page" type="xs:unsignedShort" />
                     <xs:element minOccurs="0" name="spiritform" type="xs:string" />

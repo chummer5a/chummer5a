@@ -31,7 +31,6 @@ namespace Chummer
             _objCharacter = objCharacter;
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            MoveControls();
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -51,7 +50,6 @@ namespace Chummer
             nudDiceResult.Maximum = Dice * 6;
             nudDiceResult.Minimum = Dice;
             nudDiceResult_ValueChanged(sender, e);
-            MoveControls();
         }
 
         private void nudDiceResult_ValueChanged(object sender, EventArgs e)
@@ -82,14 +80,6 @@ namespace Chummer
         /// </summary>
         public decimal StartingNuyen => ((nudDiceResult.Value + Extra) * Multiplier);
 
-        #endregion
-
-        #region Methods
-        private void MoveControls()
-        {
-            nudDiceResult.Left = lblDice.Left + lblDice.Width + 6;
-            lblResult.Left = nudDiceResult.Left + nudDiceResult.Width + 6;
-        }
         #endregion
     }
 }

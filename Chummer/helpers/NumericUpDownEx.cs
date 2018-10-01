@@ -241,7 +241,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// If set, incrementing value will cause it to restart from Minimum 
+        /// If set, incrementing value will cause it to restart from Minimum
         /// when Maximum is reached (and viceversa).
         /// </summary>
         [Category("Behavior")]
@@ -254,7 +254,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// If set, incrementing value will cause it to restart from Minimum 
+        /// If set, incrementing value will cause it to restart from Minimum
         /// when Maximum is reached (and viceversa).
         /// </summary>
         [Category("Behavior")]

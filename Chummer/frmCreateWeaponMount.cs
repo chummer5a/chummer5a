@@ -114,7 +114,7 @@ namespace Chummer
                     cboSize.SelectedIndex = 0;
             else
                 RefreshCBOs();
-            
+
             nudMarkup.Visible = AllowDiscounts;
             lblMarkupLabel.Visible = AllowDiscounts;
             lblMarkupPercentLabel.Visible = AllowDiscounts;
@@ -219,7 +219,7 @@ namespace Chummer
                 }
                 if (!blnRequirementsMet)
                     return;
-                
+
                 strStringToCheck = xmlSelectedFlexibility["name"]?.InnerText;
                 if (!string.IsNullOrEmpty(strStringToCheck))
                 {
@@ -367,6 +367,7 @@ namespace Chummer
 
             cmdDeleteMod.Enabled = false;
             string strSelectedModId = treMods.SelectedNode?.Tag.ToString();
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             if (!string.IsNullOrEmpty(strSelectedModId) && strSelectedModId.IsGuid())
             {
                 VehicleMod objMod = _lstMods.FirstOrDefault(x => x.InternalId == strSelectedModId);
@@ -375,7 +376,7 @@ namespace Chummer
                     cmdDeleteMod.Enabled = !objMod.IncludedInVehicle;
                     lblSlots.Text = objMod.CalculatedSlots.ToString();
                     lblAvailability.Text = objMod.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                    
+
                     if (chkFreeItem.Checked)
                     {
                         lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
@@ -402,21 +403,23 @@ namespace Chummer
                         lblCost.Text = (objMod.TotalCostInMountCreation(intTotalSlots) * (1 + (nudMarkup.Value / 100.0m))).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     }
 
-                    string strModPage = objMod.Page(GlobalOptions.Language);
-                    lblSource.Text = CommonFunctions.LanguageBookShort(objMod.Source, GlobalOptions.Language) + ' ' + strModPage;
-
-                    tipTooltip.SetToolTip(lblSource,
-                        CommonFunctions.LanguageBookLong(objMod.Source, GlobalOptions.Language) + ' ' +
-                        LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strModPage);
+                    objMod.SetSourceDetail(lblSource);
+                    lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
+                    lblSlotsLabel.Visible = !string.IsNullOrEmpty(lblSlots.Text);
+                    lblAvailabilityLabel.Visible = !string.IsNullOrEmpty(lblAvailability.Text);
+                    lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                     return;
                 }
             }
-            
+
             if (xmlSelectedMount == null)
             {
                 lblCost.Text = string.Empty;
                 lblSlots.Text = string.Empty;
                 lblAvailability.Text = string.Empty;
+                lblCostLabel.Visible = false;
+                lblSlotsLabel.Visible = false;
+                lblAvailabilityLabel.Visible = false;
                 return;
             }
 	        decimal decCost = !chkFreeItem.Checked ? Convert.ToDecimal(xmlSelectedMount["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo) : 0;
@@ -489,15 +492,17 @@ namespace Chummer
 	        lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 	        lblSlots.Text = intSlots.ToString();
 	        lblAvailability.Text = strAvailText;
+	        lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
+	        lblSlotsLabel.Visible = !string.IsNullOrEmpty(lblSlots.Text);
+	        lblAvailabilityLabel.Visible = !string.IsNullOrEmpty(lblAvailability.Text);
 
             string strSource = xmlSelectedMount["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
             string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-
-            tipTooltip.SetToolTip(lblSource,
-                CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' +
-                LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
-        }
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter +
+                LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+	        lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+	    }
 
         private void cmdAddMod_Click(object sender, EventArgs e)
         {
@@ -528,6 +533,7 @@ namespace Chummer
                 intSlots += objMod.CalculatedSlots;
             }
 
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             TreeNode objModsParentNode = treMods.FindNode("Node_AdditionalMods");
             do
             {
@@ -614,7 +620,7 @@ namespace Chummer
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1,
                         LanguageManager.GetString("String_ExpensePurchaseVehicleMod", GlobalOptions.Language) +
-                        ' ' + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        strSpaceCharacter + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.AddWithSort(objExpense);
                     _objCharacter.Nuyen -= decCost;
 
@@ -624,18 +630,6 @@ namespace Chummer
                 }
                 _lstMods.Add(objMod);
                 intSlots += objMod.CalculatedSlots;
-
-                // Check for Improved Sensor bonus.
-                if (objMod.Bonus?["selecttext"] != null)
-                {
-                    frmSelectText frmPickText = new frmSelectText
-                    {
-                        Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", objMod.DisplayNameShort(GlobalOptions.Language))
-                    };
-                    frmPickText.ShowDialog(this);
-                    objMod.Extra = frmPickText.SelectedValue;
-                    frmPickText.Dispose();
-                }
 
                 TreeNode objNewNode = objMod.CreateTreeNode(null, null, null, null, null, null);
 

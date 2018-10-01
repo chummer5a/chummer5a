@@ -1092,8 +1092,8 @@
       </bioware>
       <bioware>
         <id>17a6ba49-c21c-461b-9830-3beae8a237fc</id>
-        <name>Reflex Recorder (Skill)</name>
-        <translate>反射記録器（技能）</translate>
+        <name>Reflex Recorder</name>
+        <translate>反射記録器</translate>
         <page>370</page>
       </bioware>
       <bioware>
@@ -18947,8 +18947,8 @@
       </vehicle>
       <vehicle>
         <id>50e6572c-ea59-4756-83e4-7c51f8f614c9</id>
-        <name>Modified Dassault Janatorial Drone (Large)</name>
-        <translate>Modified Dassault Janatorial Drone (Large)</translate>
+        <name>Modified Dassault Janitorial Drone (Large)</name>
+        <translate>Modified Dassault Janitorial Drone (Large)</translate>
         <page>50e6572c-ea59-4756-83e4-7c51f8f614c9</page>
       </vehicle>
       <vehicle>

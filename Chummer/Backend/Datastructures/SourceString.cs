@@ -17,62 +17,79 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Xml;
+using System.Windows.Forms;
 
 namespace Chummer
 {
-    class SourceString : IComparable
+    public class SourceString : IComparable
     {
-        private readonly string _strCode;
         private readonly int _intPage;
+        private readonly string _strCachedSpace;
 
-        public string Code => _strCode;
-        public int Page => _intPage;
-
-        public SourceString(string strSourceString)
+        public SourceString(string strSourceString, string strLanguage)
         {
+            Language = strLanguage;
+            string strCode = strSourceString;
             int intWhitespaceIndex = strSourceString.IndexOf(' ');
             if (intWhitespaceIndex != -1)
             {
-                _strCode = strSourceString.Substring(0, intWhitespaceIndex);
+                strCode = strSourceString.Substring(0, intWhitespaceIndex);
                 if (intWhitespaceIndex + 1 < strSourceString.Length)
                     int.TryParse(strSourceString.Substring(intWhitespaceIndex + 1), out _intPage);
             }
-            else
-                _strCode = strSourceString;
+
+            Code = CommonFunctions.LanguageBookShort(strCode, Language);
+            _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strCode, Language) +
+                                _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage;
         }
 
-        public SourceString(string strSource, string strPage)
+        public SourceString(string strSource, string strPage, string strLanguage)
         {
-            _strCode = strSource;
+            Language = strLanguage;
             int.TryParse(strPage, out _intPage);
+
+            Code = CommonFunctions.LanguageBookShort(strSource, Language);
+            _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language) +
+                                _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage;
         }
 
-        public SourceString(string strSource, int intPage)
+        public SourceString(string strSource, int intPage, string strLanguage)
         {
-            _strCode = strSource;
+            Language = strLanguage;
             _intPage = intPage;
-        }
 
+            Code = CommonFunctions.LanguageBookShort(strSource, Language);
+            _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language) +
+                                _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage;
+        }
+        
         public override string ToString()
         {
-            return ToString(GlobalOptions.Language);
+            return Code + _strCachedSpace + Page;
         }
 
-        public string ToString(string strLanguage)
-        {
-            return DisplayCode(strLanguage) + ' ' + _intPage.ToString();
-        }
+        /// <summary>
+        /// Language code originally used to construct the source info (alters book code, possibly alters page numbers)
+        /// </summary>
+        public string Language { get; }
 
-        public string DisplayCode(string strLanguage)
-        {
-            if (!string.IsNullOrWhiteSpace(_strCode))
-            {
-                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + _strCode + "\"]/altcode");
-                return objXmlBook?.InnerText ?? _strCode;
-            }
-            return _strCode;
-        }
+        /// <summary>
+        /// Book code of the source info, possibly modified from English by the language of the source info
+        /// </summary>
+        public string Code { get; }
+
+        /// <summary>
+        /// Page of the source info, possibly modified from English by the language of the source info
+        /// </summary>
+        public int Page => _intPage;
+
+        /// <summary>
+        /// Provides the long-form name of the object's sourcebook and page reference. 
+        /// </summary>
+        public string LanguageBookTooltip { get; }
 
         public int CompareTo(object obj)
         {
@@ -81,12 +98,26 @@ namespace Chummer
 
         public int CompareTo(SourceString strOther)
         {
-            int intCompareResult = string.Compare(DisplayCode(GlobalOptions.Language), strOther.DisplayCode(GlobalOptions.Language), false, GlobalOptions.CultureInfo);
+            int intCompareResult = string.Compare(Language, strOther.Language, false, GlobalOptions.CultureInfo);
             if (intCompareResult == 0)
             {
-                intCompareResult = _intPage.CompareTo(strOther.Page);
+                intCompareResult = string.Compare(Code, strOther.Code, false, GlobalOptions.CultureInfo);
+                if (intCompareResult == 0)
+                {
+                    intCompareResult = _intPage.CompareTo(strOther.Page);
+                }
             }
             return intCompareResult;
+        }
+
+        /// <summary>
+        /// Set the Text and ToolTips for the selected control. 
+        /// </summary>
+        /// <param name="source"></param>
+        public void SetControl(Control source)
+        {
+            source.Text = ToString();
+            source.SetToolTip(LanguageBookTooltip);
         }
     }
 }

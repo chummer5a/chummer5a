@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmOmae
     {
@@ -39,7 +39,6 @@
             this.cmdUpload = new System.Windows.Forms.Button();
             this.cmdSearch = new System.Windows.Forms.Button();
             this.panOmae = new System.Windows.Forms.Panel();
-            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.cmdPasswordReset = new System.Windows.Forms.Button();
             this.cmdMyAccount = new System.Windows.Forms.Button();
             this.cmdUploadLanguage = new System.Windows.Forms.Button();
@@ -128,7 +127,7 @@
             this.cmdRegister.TabIndex = 6;
             this.cmdRegister.Tag = "Button_Omae_Register";
             this.cmdRegister.Text = "Register";
-            this.tipTooltip.SetToolTip(this.cmdRegister, "Register an Omae account. You only need to register if you want to upload charact" +
+            this.ToolTipFactory.SetToolTip(this.cmdRegister, "Register an Omae account. You only need to register if you want to upload charact" +
         "ers. No registration is need to browse and download.");
             this.cmdRegister.UseVisualStyleBackColor = true;
             this.cmdRegister.Click += new System.EventHandler(this.cmdRegister_Click);
@@ -142,7 +141,7 @@
             this.cmdLogin.TabIndex = 5;
             this.cmdLogin.Tag = "Button_Omae_Login";
             this.cmdLogin.Text = "Login";
-            this.tipTooltip.SetToolTip(this.cmdLogin, "Login to Omae.");
+            this.ToolTipFactory.SetToolTip(this.cmdLogin, "Login to Omae.");
             this.cmdLogin.UseVisualStyleBackColor = true;
             this.cmdLogin.Click += new System.EventHandler(this.cmdLogin_Click);
             // 
@@ -176,15 +175,6 @@
             this.panOmae.Size = new System.Drawing.Size(760, 394);
             this.panOmae.TabIndex = 7;
             // 
-            // tipTooltip
-            // 
-            this.tipTooltip.AutoPopDelay = 10000;
-            this.tipTooltip.InitialDelay = 250;
-            this.tipTooltip.IsBalloon = true;
-            this.tipTooltip.ReshowDelay = 100;
-            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.tipTooltip.ToolTipTitle = "Omae Help";
-            // 
             // cmdPasswordReset
             // 
             this.cmdPasswordReset.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -194,7 +184,7 @@
             this.cmdPasswordReset.TabIndex = 7;
             this.cmdPasswordReset.Tag = "Button_Omae_PasswordReset";
             this.cmdPasswordReset.Text = "PW Reset";
-            this.tipTooltip.SetToolTip(this.cmdPasswordReset, "Forgot your password? Click here to have a new password emailed to you.");
+            this.ToolTipFactory.SetToolTip(this.cmdPasswordReset, "Forgot your password? Click here to have a new password emailed to you.");
             this.cmdPasswordReset.UseVisualStyleBackColor = true;
             this.cmdPasswordReset.Click += new System.EventHandler(this.cmdPasswordReset_Click);
             // 
@@ -207,7 +197,7 @@
             this.cmdMyAccount.TabIndex = 8;
             this.cmdMyAccount.Tag = "Button_Omae_MyAccount";
             this.cmdMyAccount.Text = "My Account";
-            this.tipTooltip.SetToolTip(this.cmdMyAccount, "Edit your Omae account information.");
+            this.ToolTipFactory.SetToolTip(this.cmdMyAccount, "Edit your Omae account information.");
             this.cmdMyAccount.UseVisualStyleBackColor = true;
             this.cmdMyAccount.Click += new System.EventHandler(this.cmdMyAccount_Click);
             // 
@@ -601,7 +591,6 @@
         private System.Windows.Forms.Button cmdUpload;
         private System.Windows.Forms.Button cmdSearch;
         private System.Windows.Forms.Panel panOmae;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.Panel panLogin;
         private System.Windows.Forms.Panel panLoggedIn;
         private System.Windows.Forms.Label lblLoggedIn;

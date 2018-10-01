@@ -41,8 +41,6 @@ namespace Chummer
         private int _intRound;
         private bool _blnFinishedCombatTurn;
         private int totalChummersWithNoInit;
-        private readonly Random _objRandom = MersenneTwister.SfmtRandom.Create();
-        private int _intModuloTemp;
 
         /// <summary>
         /// Default constructor
@@ -54,7 +52,7 @@ namespace Chummer
             lblRound.Text = lblRound.Text.Split(' ')[0] + " 1";
             _intRound = 1;
 
-            // setup the list of chummers to show 
+            // setup the list of chummers to show
             chkBoxChummer.DisplayMember = "DisplayInit";
         }
 
@@ -273,7 +271,7 @@ namespace Chummer
                 ResetListBoxChummers();
             }
         }
-        
+
         /*
          * Reset button pressed
          */
@@ -285,15 +283,11 @@ namespace Chummer
                 if (chkBoxChummer.CheckedIndices.Contains(i))
                 {
                     Character objLoopCharacter = characters[i];
-                    int intInitRoll = 0;
-                    for (int j = 0; j < objLoopCharacter.InitPasses; j++)
+                    int intInitPasses = objLoopCharacter.InitPasses;
+                    int intInitRoll = intInitPasses;
+                    for (int j = 0; j < intInitPasses; j++)
                     {
-                        do
-                        {
-                            _intModuloTemp = _objRandom.Next();
-                        }
-                        while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
-                        intInitRoll += 1 + _intModuloTemp % 6;
+                        intInitRoll += GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
                     }
                     objLoopCharacter.InitRoll = intInitRoll + objLoopCharacter.InitialInit;
                 }

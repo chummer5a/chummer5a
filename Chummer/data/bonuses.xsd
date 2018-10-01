@@ -60,6 +60,7 @@
             </xs:element>
           </xs:sequence>
           <xs:attribute name="excludecategory" type="xs:string" use="optional" />
+          <xs:attribute name="excludeskill" type="xs:string" use="optional" />
           <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
           <xs:attribute name="limittoskill" type="xs:string" use="optional" />
           <xs:attribute name="minimumrating" type="xs:string" use="optional" />
@@ -355,6 +356,7 @@
               <xs:attribute name="skillgroup" type="xs:string" use="optional" />
               <xs:attribute name="skillcategory" type="xs:string" use="optional" />
               <xs:attribute name="excludecategory" type="xs:string" use="optional" />
+              <xs:attribute name="excludeskill" type="xs:string" use="optional" />
               <xs:attribute name="limittoskill" type="xs:string" use="optional" />
               <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
             </xs:extension>
@@ -464,7 +466,9 @@
           <xs:sequence>
             <xs:element name="attack" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="dataprocessing" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="devicerating" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="firewall" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="matrixcm" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="programlimit" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="sleaze" type="xs:string" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
@@ -473,7 +477,6 @@
       <xs:element name="mademan" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="magicianswaydiscount" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="manaillusionresist" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="manamanipulationresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="martialart" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="matrixinitiative" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="matrixinitiativedice" minOccurs="0" maxOccurs="1">
@@ -488,6 +491,7 @@
       <xs:element name="matrixinitiativediceadd" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="memory" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="mentallimit" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="mentalmanipulationresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="movementreplace" minOccurs="0" maxOccurs="8">
         <xs:complexType>
           <xs:sequence>
@@ -686,7 +690,6 @@
             <xs:element name="max" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="disablespecializationeffects" type="xs:string" minOccurs="0" maxOccurs="1" />
-            <xs:element name="applytoaccuracy" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="applytorating" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="skillcategories" minOccurs="0" maxOccurs="1">
               <xs:complexType>
@@ -697,6 +700,7 @@
             </xs:element>
           </xs:sequence>
           <xs:attribute name="excludecategory" type="xs:string" use="optional" />
+          <xs:attribute name="excludeskill" type="xs:string" use="optional" />
           <xs:attribute name="knowledgeskills" type="xs:string" use="optional" />
           <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
           <xs:attribute name="limittoskill" type="xs:string" use="optional" />
@@ -718,6 +722,7 @@
       <xs:element name="selectspell" minOccurs="0" maxOccurs="1" />
       <xs:element name="selectsprite" minOccurs="0" maxOccurs="1" />
       <xs:element name="selecttext" minOccurs="0" maxOccurs="1" />
+      <xs:element name="selecttradition" minOccurs="0" maxOccurs="1" />
       <xs:element name="selectweapon" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:attribute name="excludecategory" type="xs:string" use="optional" />
@@ -957,6 +962,7 @@
             </xs:element>
           </xs:sequence>
           <xs:attribute name="excludecategory" type="xs:string" use="optional" />
+          <xs:attribute name="excludeskill" type="xs:string" use="optional" />
           <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
           <xs:attribute name="limittoskill" type="xs:string" use="optional" />
           <xs:attribute name="minimumrating" type="xs:string" use="optional" />
@@ -1017,7 +1023,6 @@
                   <xs:element name="max" type="xs:string" minOccurs="0" maxOccurs="1" />
                   <xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
                   <xs:element name="disablespecializationeffects" type="xs:string" minOccurs="0" maxOccurs="1" />
-                  <xs:element name="applytoaccuracy" type="xs:string" minOccurs="0" maxOccurs="1" />
                   <xs:element name="applytorating" type="xs:string" minOccurs="0" maxOccurs="1" />
                   <xs:element name="skillcategories" minOccurs="0" maxOccurs="1">
                     <xs:complexType>
@@ -1028,6 +1033,7 @@
                   </xs:element>
                 </xs:sequence>
                 <xs:attribute name="excludecategory" type="xs:string" use="optional" />
+                <xs:attribute name="excludeskill" type="xs:string" use="optional" />
                 <xs:attribute name="knowledgeskills" type="xs:string" use="optional" />
                 <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
                 <xs:attribute name="limittoskill" type="xs:string" use="optional" />
@@ -1132,6 +1138,7 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="throwrange" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="throwrangestr" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="throwstr" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="toxincontactimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="toxincontactresist" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -1178,6 +1185,7 @@
                   </xs:element>
                 </xs:sequence>
                 <xs:attribute name="excludecategory" type="xs:string" use="optional" />
+                <xs:attribute name="excludeskill" type="xs:string" use="optional" />
                 <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
                 <xs:attribute name="limittoskill" type="xs:string" use="optional" />
                 <xs:attribute name="minimumrating" type="xs:string" use="optional" />
@@ -1211,6 +1219,36 @@
               </xs:complexType>
             </xs:element>
           </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="weaponskillaccuracy" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="selectskill" minOccurs="0" maxOccurs="1">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="skillcategories" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                      </xs:sequence>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+                <xs:attribute name="excludecategory" type="xs:string" use="optional" />
+                <xs:attribute name="excludeskill" type="xs:string" use="optional" />
+                <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
+                <xs:attribute name="limittoskill" type="xs:string" use="optional" />
+                <xs:attribute name="minimumrating" type="xs:string" use="optional" />
+                <xs:attribute name="maximumrating" type="xs:string" use="optional" />
+                <xs:attribute name="skillcategory" type="xs:string" use="optional" />
+                <xs:attribute name="skillgroup" type="xs:string" use="optional" />
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+          <xs:attribute name="precedence" type="xs:integer" use="optional" />
         </xs:complexType>
       </xs:element>
     </xs:sequence>

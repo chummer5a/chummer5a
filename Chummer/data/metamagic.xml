@@ -86,9 +86,9 @@
     <metamagic>
       <id>406f096a-c093-4a02-b60f-002eb01a20b9</id>
       <name>Power Point</name>
-      <limit>False</limit>
       <adept>True</adept>
       <magician>False</magician>
+      <limit>False</limit>
       <bonus>
         <adeptpowerpoints>1</adeptpowerpoints>
       </bonus>
@@ -142,12 +142,12 @@
     <metamagic>
       <id>9540267c-d53c-4547-9bd2-e1f06723caee</id>
       <name>Sympathetic Linking</name>
-      <adept>False</adept>
+      <adept>True</adept>
       <magician>True</magician>
       <required>
         <allof>
-          <metamagic>Psychometry</metamagic>
           <art>Psychometry</art>
+          <metamagic>Psychometry</metamagic>
         </allof>
       </required>
       <source>SG</source>
@@ -156,12 +156,15 @@
     <metamagic>
       <id>49f33f95-55fd-487f-9753-8b6207d021b9</id>
       <name>Psychometry</name>
-      <adept>False</adept>
+      <adept>True</adept>
       <magician>True</magician>
       <required>
         <oneof>
           <art>Psychometry</art>
-          <quality>The Spiritual Way</quality>
+          <group>
+            <power>Astral Perception</power>
+            <quality>The Spiritual Way</quality>
+          </group>
         </oneof>
       </required>
       <source>SG</source>
@@ -214,8 +217,8 @@
       <magician>True</magician>
       <required>
         <allof>
-          <metamagic>Masking</metamagic>
           <art>Masking</art>
+          <metamagic>Masking</metamagic>
         </allof>
       </required>
       <source>SG</source>
@@ -254,8 +257,8 @@
       <magician>True</magician>
       <required>
         <allof>
-          <metamagic>Shielding</metamagic>
           <art>Apotropaic Magic</art>
+          <metamagic>Shielding</metamagic>
         </allof>
       </required>
       <source>SG</source>
@@ -268,8 +271,8 @@
       <magician>True</magician>
       <required>
         <allof>
-          <metamagic>Shielding</metamagic>
           <art>Apotropaic Magic</art>
+          <metamagic>Shielding</metamagic>
         </allof>
       </required>
       <source>SG</source>
@@ -282,8 +285,8 @@
       <magician>True</magician>
       <required>
         <allof>
-          <metamagic>Quickening</metamagic>
           <art>Quickening</art>
+          <metamagic>Quickening</metamagic>
         </allof>
       </required>
       <source>SG</source>
@@ -296,8 +299,8 @@
       <magician>True</magician>
       <required>
         <allof>
-          <metamagic>Fixation</metamagic>
           <art>Advanced Alchemy</art>
+          <metamagic>Fixation</metamagic>
         </allof>
       </required>
       <source>SG</source>
@@ -430,8 +433,8 @@
       </bonus>
       <required>
         <allof>
-          <spell>Attune Animal</spell>
           <quality>The Beast's Way</quality>
+          <spell>Attune Animal</spell>
         </allof>
       </required>
       <source>SG</source>
@@ -547,16 +550,16 @@
       <name>Movement</name>
       <adept>True</adept>
       <magician>False</magician>
-      <required>
-        <allof>
-          <quality extra="Horse">Mentor Spirit</quality>
-        </allof>
-      </required>
       <bonus>
         <critterpowers>
           <power select="Self-Only × 3">Movement</power>
         </critterpowers>  
       </bonus>
+      <required>
+        <allof>
+          <quality extra="Horse">Mentor Spirit</quality>
+        </allof>
+      </required>
       <source>SR5</source>
       <page>399</page>
     </metamagic>
@@ -620,11 +623,11 @@
       <name>Structured Spellcasting</name>
       <adept>False</adept>
       <magician>True</magician>
-      <source>FA</source>
-      <page>44</page>
       <bonus>
         <drainvalue>-1</drainvalue>
       </bonus>
+      <source>FA</source>
+      <page>44</page>
     </metamagic>
     <metamagic>
       <id>59d0beab-4fba-48a9-a135-02e396ded7a4</id>
@@ -774,7 +777,7 @@
           <quality>Infected: Wendigo</quality>
         </oneof>
       </required>
-      <source>FA</source>
+      <source>DTR</source>
       <page>165</page>
     </metamagic>
     <metamagic>
@@ -787,7 +790,7 @@
           <critterpower>Mist Form</critterpower>
         </allof>
       </required>
-      <source>FA</source>
+      <source>DTR</source>
       <page>165</page>
     </metamagic>
     <!-- End Region -->

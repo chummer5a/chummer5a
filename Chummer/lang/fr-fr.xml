@@ -20,6 +20,7 @@
 <chummer>
   <version>-494</version>
   <name>Français (fr-FR)</name>
+  <righttoleft>False</righttoleft>
   <strings>
 	<!-- Meta Strings -->
 	<string>
@@ -40,12 +41,24 @@
       <text>Karma</text>
     </string>
     <string>
+      <key>String_SumtoTen</key>
+      <text>Système à 10 points</text>
+    </string>
+    <string>
+      <key>String_LifeModule</key>
+      <text>Modules chronologiques</text>
+    </string>
+    <string>
+      <key>String_Life_Module</key>
+      <text>Modules chronologiques</text>
+    </string>
+    <string>
       <key>String_Page</key>
       <text>page</text>
     </string>
     <string>
       <key>String_Of</key>
-      <text>sur</text>
+      <text xml:space="preserve"> sur </text>
     </string>
     <string>
       <key>String_Remaining</key>
@@ -334,6 +347,10 @@
     <string>
       <key>String_Qualities</key>
       <text>Traits</text>
+    </string>
+    <string>
+      <key>Label_Qualities</key>
+      <text>Traits:</text>
     </string>
     <string>
       <key>Label_Metavariant</key>
@@ -1258,7 +1275,7 @@
     </string>
     <string>
       <key>Message_RegisteredSpriteLimit</key>
-      <text>Le nombre de sprites enregistrés ne peut pas excéder votre score de CHR.</text>
+      <text>Le nombre de sprites enregistrés ne peut pas excéder votre score de LOG.</text>
     </string>
     <string>
       <key>MessageTitle_RegisteredSpriteLimit</key>
@@ -2918,6 +2935,14 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <key>Button_AddPower</key>
       <text>&amp;Ajout Pouvoir</text>
     </string>
+    <string>
+      <key>ColumnHeader_Action</key>
+      <text>Action</text>
+    </string>
+    <string>
+      <key>ColumnHeader_Power_Points</key>
+      <text>Pts de Pouvoir</text>
+    </string>
     <!-- Technomancer Tab -->
     <string>
       <key>Label_ComplexForms</key>
@@ -3926,6 +3951,42 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <!-- Individual Form- and UserControl-specific strings below this point -->
     <!-- Contacts/Enemies -->
+    <string>
+      <key>String_Relationships</key>
+      <text>Contacts</text>
+    </string>
+    <string>
+      <key>Button_SwapOrdering</key>
+      <text>Changer l'&amp;ordre</text>
+    </string>
+    <string>
+      <key>Button_ContactsExpansionToggle</key>
+      <text>&amp;Tout développer/réduire</text>
+    </string>
+    <string>
+      <key>Label_FreeContactPoints</key>
+      <text>Points gratuits restants pour les contacts :</text>
+    </string>
+    <string>
+      <key>Checkbox_Contact_Blackmail</key>
+      <text>Chantage</text>
+    </string>
+    <string>
+      <key>Checkbox_Contact_Family</key>
+      <text>Famille</text>
+    </string>
+    <string>
+      <key>Label_Contact_PersonalLife</key>
+      <text>Vie personnelle :</text>
+    </string>
+    <string>
+      <key>Label_Contact_PreferredPayment</key>
+      <text>Méthode de paiement préférée :</text>
+    </string>
+    <string>
+      <key>Label_Contact_HobbiesVice</key>
+      <text>Vices ou hobbies :</text>
+    </string>
     <string>
       <key>Label_Contact_Connection</key>
       <text>Influence :</text>
@@ -4953,7 +5014,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Tab_Options_Character</key>
-      <text>Personnage et Impression</text>
+      <text>Personnage</text>
     </string>
     <string>
       <key>Tab_Options_Miscellaneous</key>
@@ -5515,11 +5576,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Niveau de vie avançés</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_PositiveQualities</key>
+      <key>Node_SelectAdvancedLifestyle_PositiveQualities</key>
       <text>Traits positifs</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_NegativeQualities</key>
+      <key>Node_SelectAdvancedLifestyle_NegativeQualities</key>
       <text>Traits négatifs</text>
     </string>
     <string>
@@ -5580,19 +5641,39 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Label_SelectBP_MaxAvail</key>
-      <text>Dispo. Max :</text>
+      <text>Dispo. max :</text>
     </string>
     <string>
+      <key>Label_SelectBP_StartingKarma</key>
+      <text>Karma de départ :</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_SumToX</key>
+      <text>Système à X points :</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_MaxNuyen</key>
+      <text>Max. nuyen en Karma :</text>
+    </string>
+	<string>
       <key>Checkbox_SelectBP_IgnoreRules</key>
       <text>Ignorer les règles de création</text>
     </string>
     <string>
       <key>String_SelectBP_BPSummary</key>
-      <text>Saisissez le nombre de Points de création disponibles pour créer un personnage ({0} par défaut).</text>
+      <text>Saisissez le nombre de points de création disponibles pour créer un personnage ({0} par défaut).</text>
     </string>
     <string>
       <key>String_SelectBP_KarmaSummary</key>
-      <text>Saisisswz le nombre de points de Karma disponibles pour créer un personnage ({0} par défaut).</text>
+      <text>Saisissez le nombre de points de karma disponibles pour créer un personnage ({0} par défaut).</text>
+    </string>
+    <string>
+      <key>String_SelectBP_PrioritySummary</key>
+      <text>Saisissez la disponibilité maximum autorisée lors de la création de votre personnage.</text>
+    </string>
+    <string>
+      <key>String_SelectBP_LifeModuleSummary</key>
+      <text>Saissisez la disponibilité maximum et le nombre de points de karma disponibles pour créer un personnage ({0} par défaut).</text>
     </string>
     <string>
       <key>Tip_SelectBP_IgnoreRules</key>
@@ -6109,7 +6190,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Checkbox_SelectSpell_LimitedSpell</key>
-      <text>Sort limité</text>
+      <text>Sort limité (SG 212)</text>
     </string>
     <string>
       <key>Tip_SelectSpell_LimitedSpell</key>
@@ -6613,7 +6694,15 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>String_Special</key>
+      <text>Spécial</text>
+    </string>
+    <string>
+      <key>String_SpecialAttributes</key>
       <text>Attributs Spéciaux</text>
+    </string>
+    <string>
+      <key>Label_SpecialAttributes</key>
+      <text>Attributs Spéciaux:</text>
     </string>
     <string>
       <key>String_SpecialAttributePoints</key>
@@ -6734,10 +6823,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     <string>
       <key>MessageTitle_CannotDeleteLimitModifier</key>
       <text>Impossible de supprimer</text>
-    </string>
-    <string>
-      <key>Message_SelectLimitModifier</key>
-      <text>Vous devez sélectionner une limite pour ajouter un modificateur</text>
     </string>
     <string>
       <key>MessageTitle_SelectLimitModifier</key>
@@ -7021,7 +7106,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Checkbox_SelectSpell_Alchemical</key>
-      <text>Préparation Alchimique</text>
+      <text>Préparation Alchimique (SR5 305)</text>
     </string>
     <string>
       <key>Checkbox_Options_Knucks</key>

@@ -16,7 +16,6 @@ namespace Chummer.UI.Skills
             if (disposing)
             {
                 components?.Dispose();
-                tipToolTip?.Dispose();
                 UnbindSkillGroupControl();
             }
             base.Dispose(disposing);
@@ -30,10 +29,9 @@ namespace Chummer.UI.Skills
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblName = new System.Windows.Forms.Label();
+            this.lblName = new LabelWithToolTip();
             this.lblGroupRating = new System.Windows.Forms.Label();
-            this.btnCareerIncrease = new System.Windows.Forms.Button();
-            this.tipToolTip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
+            this.btnCareerIncrease = new ButtonWithToolTip();
             this.nudKarma = new Chummer.NumericUpDownEx();
             this.nudSkill = new Chummer.NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
@@ -58,7 +56,6 @@ namespace Chummer.UI.Skills
             this.lblGroupRating.Size = new System.Drawing.Size(41, 13);
             this.lblGroupRating.TabIndex = 7;
             this.lblGroupRating.Text = "label1";
-            this.lblGroupRating.Visible = false;
             // 
             // btnCareerIncrease
             // 
@@ -68,16 +65,7 @@ namespace Chummer.UI.Skills
             this.btnCareerIncrease.Size = new System.Drawing.Size(24, 24);
             this.btnCareerIncrease.TabIndex = 22;
             this.btnCareerIncrease.UseVisualStyleBackColor = true;
-            this.btnCareerIncrease.Visible = false;
             this.btnCareerIncrease.Click += new System.EventHandler(this.btnCareerIncrease_Click);
-            // 
-            // tipToolTip
-            // 
-            this.tipToolTip.AllowLinksHandling = true;
-            this.tipToolTip.BaseStylesheet = null;
-            this.tipToolTip.MaximumSize = new System.Drawing.Size(0, 0);
-            this.tipToolTip.OwnerDraw = true;
-            this.tipToolTip.TooltipCssClass = "htmltooltip";
             // 
             // nudKarma
             // 
@@ -128,9 +116,8 @@ namespace Chummer.UI.Skills
 
         private NumericUpDownEx nudSkill;
         private NumericUpDownEx nudKarma;
-        private System.Windows.Forms.Label lblName;
+        private LabelWithToolTip lblName;
         private System.Windows.Forms.Label lblGroupRating;
-        private System.Windows.Forms.Button btnCareerIncrease;
-        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipToolTip;
+        private ButtonWithToolTip btnCareerIncrease;
     }
 }

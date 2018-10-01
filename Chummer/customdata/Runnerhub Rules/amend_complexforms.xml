@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <complexforms>
+    <complexform>
+      <name>Static Veil</name>
+      <fv>L-4</fv>
+    </complexform>
+    <complexform>
+      <name>Pulse Storm</name>
+      <duration>S</duration>
+    </complexform>
+    <complexform>
+      <name>Resonance Channel</name>
+      <fv>L-4</fv>
+    </complexform>
+    <complexform>
+      <name>Resonance Veil</name>
+      <fv>L-4</fv>
+    </complexform>
+    <complexform>
+      <name>Stitches</name>
+      <fv>L-5</fv>
+    </complexform>
+    <complexform>
+      <name>Tattletale</name>
+      <fv>L-5</fv>
+    </complexform>
+    <complexform>
+      <name>Derezz</name>
+      <fv>L-1</fv>
+    </complexform>
+    <complexform>
+      <name>FAQ</name>
+      <fv>L-3</fv>
+    </complexform>
+    <complexform>
+      <name>IC Tray</name>
+      <fv>L-5</fv>
+    </complexform>
+    <complexform>
+      <name>Redundancy</name>
+      <fv>L-3</fv>
+    </complexform>
+    <complexform>
+      <name>Misread Marks</name>
+      <fv>L-1</fv>
+    </complexform>
+    <complexform>
+      <name>Coriolis</name>
+      <fv>L</fv>
+    </complexform>
+    <complexform>
+      <name>Overdrive</name>
+      <fv>L-2</fv>
+    </complexform>
+    <complexform>
+      <name>LOTO</name>
+      <fv>L-4</fv>
+    </complexform>
+    <complexform>
+      <name>Sprite Pet</name>
+      <fv>L-5</fv>
+    </complexform>
+    <complexform>
+      <name>Causal Nexus</name>
+      <fv>L-3</fv>
+    </complexform>
+    <complexform>
+      <name>Dissonance Spike</name>
+      <fv>L+3</fv>
+    </complexform>
+    <complexform>
+      <name>Forced Heuristics</name>
+      <fv>L-2</fv>
+    </complexform>
+    <complexform>
+      <name>Arc Feedback</name>
+      <fv>L-5</fv>
+    </complexform>
+    <complexform>
+      <name>Bootleg Program</name>
+      <fv>L-5</fv>
+    </complexform>
+    <complexform>
+      <name>Host Emulator</name>
+      <hide />
+    </complexform>
+    <complexform>
+      <name>Mirrored Persona</name>
+      <fv>L-5</fv>
+    </complexform>
+    <complexform>
+      <name>Pinch</name>
+      <fv>L-1</fv>
+    </complexform>
+    <complexform>
+      <name>Primed Charge</name>
+      <fv>L-3</fv>
+    </complexform>
+    <complexform>
+      <name>Resonance Bind</name>
+      <fv>L-5</fv>
+    </complexform>
+    <complexform>
+      <name>Resonance Cache</name>
+      <fv>L-5</fv>
+    </complexform>
+    <complexform>
+      <name>Search History</name>
+      <fv>L-5</fv>
+    </complexform>
+    <complexform>
+      <name>Weaken Data Bomb</name>
+      <fv>L-5</fv>
+    </complexform>
+    <complexform>
+      <name>Weaken Encryption</name>
+      <fv>L-6</fv>
+    </complexform>
+  </complexforms>
+</chummer>

@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmNaturalWeapon
     {
@@ -28,12 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.cboSkill = new System.Windows.Forms.ComboBox();
+            this.cboSkill = new ElasticComboBox();
             this.lblName = new System.Windows.Forms.Label();
             this.txtName = new System.Windows.Forms.TextBox();
             this.lblActiveSkill = new System.Windows.Forms.Label();
             this.lblDV = new System.Windows.Forms.Label();
-            this.cboDVBase = new System.Windows.Forms.ComboBox();
+            this.cboDVBase = new ElasticComboBox();
             this.nudDVMod = new System.Windows.Forms.NumericUpDown();
             this.lblDVPlus = new System.Windows.Forms.Label();
             this.nudAP = new System.Windows.Forms.NumericUpDown();
@@ -42,7 +42,7 @@
             this.cmdOK = new System.Windows.Forms.Button();
             this.nudReach = new System.Windows.Forms.NumericUpDown();
             this.lblReach = new System.Windows.Forms.Label();
-            this.cboDVType = new System.Windows.Forms.ComboBox();
+            this.cboDVType = new ElasticComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudDVMod)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudAP)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudReach)).BeginInit();
@@ -255,12 +255,12 @@
 
         #endregion
 
-        private System.Windows.Forms.ComboBox cboSkill;
+        private ElasticComboBox cboSkill;
         private System.Windows.Forms.Label lblName;
         private System.Windows.Forms.TextBox txtName;
         private System.Windows.Forms.Label lblActiveSkill;
         private System.Windows.Forms.Label lblDV;
-        private System.Windows.Forms.ComboBox cboDVBase;
+        private ElasticComboBox cboDVBase;
         private System.Windows.Forms.NumericUpDown nudDVMod;
         private System.Windows.Forms.Label lblDVPlus;
         private System.Windows.Forms.NumericUpDown nudAP;
@@ -269,6 +269,6 @@
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.NumericUpDown nudReach;
         private System.Windows.Forms.Label lblReach;
-        private System.Windows.Forms.ComboBox cboDVType;
+        private ElasticComboBox cboDVType;
     }
 }
