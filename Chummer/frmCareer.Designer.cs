@@ -565,7 +565,7 @@ namespace Chummer
             this.lblEssenceHoleESSLabel = new System.Windows.Forms.Label();
             this.lblCyberwareESS = new System.Windows.Forms.Label();
             this.lblCyberwareSourceLabel = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lblEssenceConsumptionLabel = new System.Windows.Forms.Label();
             this.lblCyberwareSource = new System.Windows.Forms.Label();
             this.lblBiowareESSLabel = new System.Windows.Forms.Label();
             this.lblCyberwareRatingLabel = new System.Windows.Forms.Label();
@@ -1141,16 +1141,17 @@ namespace Chummer
             this.tabKarma = new System.Windows.Forms.TabPage();
             this.splitKarmaNuyen = new System.Windows.Forms.SplitContainer();
             this.chtKarma = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.lstKarma = new System.Windows.Forms.ListView();
-            this.colKarmaDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colKarmaAmount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colKarmaReason = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.tlpKarma = new System.Windows.Forms.TableLayoutPanel();
             this.flowLayoutPanel11 = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdKarmaGained = new System.Windows.Forms.Button();
             this.cmdKarmaSpent = new System.Windows.Forms.Button();
             this.cmdKarmaEdit = new System.Windows.Forms.Button();
             this.chkShowFreeKarma = new System.Windows.Forms.CheckBox();
-            this.chtNuyen = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.lstKarma = new System.Windows.Forms.ListView();
+            this.colKarmaDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colKarmaAmount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colKarmaReason = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.tlpNuyen = new System.Windows.Forms.TableLayoutPanel();
             this.lstNuyen = new System.Windows.Forms.ListView();
             this.colNuyenDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colNuyenAmount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -1160,6 +1161,7 @@ namespace Chummer
             this.cmdNuyenSpent = new System.Windows.Forms.Button();
             this.cmdNuyenEdit = new System.Windows.Forms.Button();
             this.chkShowFreeNuyen = new System.Windows.Forms.CheckBox();
+            this.chtNuyen = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tabCalendar = new System.Windows.Forms.TabPage();
             this.tblCalendar = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flowLayoutPanel13 = new System.Windows.Forms.FlowLayoutPanel();
@@ -1191,22 +1193,22 @@ namespace Chummer
             this.tabPeople = new System.Windows.Forms.TabControl();
             this.tabContacts = new System.Windows.Forms.TabPage();
             this.tlpContacts = new System.Windows.Forms.TableLayoutPanel();
+            this.panContacts = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblContactArchtypeLabel = new System.Windows.Forms.Label();
+            this.lblContactNameLabel = new System.Windows.Forms.Label();
+            this.lblContactLocationLabel = new System.Windows.Forms.Label();
             this.flowLayoutPanel16 = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddContact = new SplitButton();
             this.cmsAddContact = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAddFromFile = new System.Windows.Forms.ToolStripMenuItem();
             this.cmdContactsExpansionToggle = new System.Windows.Forms.Button();
             this.cmdSwapContactOrder = new System.Windows.Forms.Button();
-            this.panContacts = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblContactArchtypeLabel = new System.Windows.Forms.Label();
-            this.lblContactNameLabel = new System.Windows.Forms.Label();
-            this.lblContactLocationLabel = new System.Windows.Forms.Label();
             this.tabEnemies = new System.Windows.Forms.TabPage();
             this.tlpEnemies = new System.Windows.Forms.TableLayoutPanel();
-            this.panEnemies = new System.Windows.Forms.FlowLayoutPanel();
             this.label10 = new System.Windows.Forms.Label();
             this.flowLayoutPanel28 = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddEnemy = new SplitButton();
+            this.panEnemies = new System.Windows.Forms.FlowLayoutPanel();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.tabPets = new System.Windows.Forms.TabPage();
@@ -1264,8 +1266,6 @@ namespace Chummer
             this.tsVehicleWeaponMountAddUnderbarrel = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleWeaponMountNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.tsWeaponMountLocation = new System.Windows.Forms.ToolStripMenuItem();
-            this.tlpKarma = new System.Windows.Forms.TableLayoutPanel();
-            this.tlpNuyen = new System.Windows.Forms.TableLayoutPanel();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -1403,9 +1403,11 @@ namespace Chummer
             this.splitKarmaNuyen.Panel2.SuspendLayout();
             this.splitKarmaNuyen.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chtKarma)).BeginInit();
+            this.tlpKarma.SuspendLayout();
             this.flowLayoutPanel11.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chtNuyen)).BeginInit();
+            this.tlpNuyen.SuspendLayout();
             this.flowLayoutPanel12.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chtNuyen)).BeginInit();
             this.tabCalendar.SuspendLayout();
             this.tblCalendar.SuspendLayout();
             this.flowLayoutPanel13.SuspendLayout();
@@ -1444,8 +1446,6 @@ namespace Chummer
             this.cmsTechnique.SuspendLayout();
             this.cmsAdvancedProgram.SuspendLayout();
             this.cmsWeaponMount.SuspendLayout();
-            this.tlpKarma.SuspendLayout();
-            this.tlpNuyen.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblTraditionSource
@@ -7356,7 +7356,6 @@ namespace Chummer
             // 
             // tlpCyberware
             // 
-            this.tlpCyberware.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpCyberware.AutoSize = true;
             this.tlpCyberware.ColumnCount = 7;
             this.tlpCyberware.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
@@ -7388,7 +7387,7 @@ namespace Chummer
             this.tlpCyberware.Controls.Add(this.lblEssenceHoleESSLabel, 1, 11);
             this.tlpCyberware.Controls.Add(this.lblCyberwareESS, 2, 9);
             this.tlpCyberware.Controls.Add(this.lblCyberwareSourceLabel, 1, 6);
-            this.tlpCyberware.Controls.Add(this.label2, 1, 8);
+            this.tlpCyberware.Controls.Add(this.lblEssenceConsumptionLabel, 1, 8);
             this.tlpCyberware.Controls.Add(this.lblCyberwareSource, 2, 6);
             this.tlpCyberware.Controls.Add(this.lblBiowareESSLabel, 1, 10);
             this.tlpCyberware.Controls.Add(this.lblCyberwareRatingLabel, 4, 2);
@@ -7399,10 +7398,11 @@ namespace Chummer
             this.tlpCyberware.Controls.Add(this.lblCyberwareCostLabel, 4, 4);
             this.tlpCyberware.Controls.Add(this.lblCyberwareCost, 5, 4);
             this.tlpCyberware.Controls.Add(this.tableLayoutPanel1, 1, 13);
-            this.tlpCyberware.Location = new System.Drawing.Point(12, 12);
+            this.tlpCyberware.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpCyberware.Location = new System.Drawing.Point(3, 3);
             this.tlpCyberware.Name = "tlpCyberware";
             this.tlpCyberware.Padding = new System.Windows.Forms.Padding(6);
-            this.tlpCyberware.RowCount = 14;
+            this.tlpCyberware.RowCount = 15;
             this.tlpCyberware.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCyberware.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCyberware.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -7417,7 +7417,8 @@ namespace Chummer
             this.tlpCyberware.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCyberware.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tlpCyberware.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpCyberware.Size = new System.Drawing.Size(179, 742);
+            this.tlpCyberware.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpCyberware.Size = new System.Drawing.Size(835, 625);
             this.tlpCyberware.TabIndex = 246;
             // 
             // flowLayoutPanel9
@@ -7474,8 +7475,9 @@ namespace Chummer
             // 
             // treCyberware
             // 
-            this.treCyberware.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+            this.treCyberware.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.treCyberware.HideSelection = false;
             this.treCyberware.Location = new System.Drawing.Point(9, 38);
             this.treCyberware.Name = "treCyberware";
@@ -7492,10 +7494,10 @@ namespace Chummer
             treeNode17,
             treeNode18,
             treeNode19});
-            this.tlpCyberware.SetRowSpan(this.treCyberware, 13);
+            this.tlpCyberware.SetRowSpan(this.treCyberware, 14);
             this.treCyberware.ShowNodeToolTips = true;
             this.treCyberware.ShowRootLines = false;
-            this.treCyberware.Size = new System.Drawing.Size(295, 695);
+            this.treCyberware.Size = new System.Drawing.Size(295, 578);
             this.treCyberware.TabIndex = 28;
             this.treCyberware.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCyberware_AfterSelect);
             this.treCyberware.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCyberware_KeyDown);
@@ -7505,10 +7507,10 @@ namespace Chummer
             // 
             this.lblCyberwareNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberwareNameLabel.AutoSize = true;
-            this.lblCyberwareNameLabel.Location = new System.Drawing.Point(310, 41);
+            this.lblCyberwareNameLabel.Location = new System.Drawing.Point(373, 41);
             this.lblCyberwareNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareNameLabel.Name = "lblCyberwareNameLabel";
-            this.lblCyberwareNameLabel.Size = new System.Drawing.Size(1, 1);
+            this.lblCyberwareNameLabel.Size = new System.Drawing.Size(38, 13);
             this.lblCyberwareNameLabel.TabIndex = 29;
             this.lblCyberwareNameLabel.Tag = "Label_Name";
             this.lblCyberwareNameLabel.Text = "Name:";
@@ -7519,9 +7521,9 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCyberwareChangeMount.AutoSize = true;
             this.tlpCyberware.SetColumnSpan(this.cmdCyberwareChangeMount, 3);
-            this.cmdCyberwareChangeMount.Location = new System.Drawing.Point(310, 123);
+            this.cmdCyberwareChangeMount.Location = new System.Drawing.Point(310, 188);
             this.cmdCyberwareChangeMount.Name = "cmdCyberwareChangeMount";
-            this.cmdCyberwareChangeMount.Size = new System.Drawing.Size(1, 23);
+            this.cmdCyberwareChangeMount.Size = new System.Drawing.Size(254, 23);
             this.cmdCyberwareChangeMount.TabIndex = 228;
             this.cmdCyberwareChangeMount.Tag = "Button_ChangeMountedLocation";
             this.cmdCyberwareChangeMount.Text = "Change Mounted Location";
@@ -7532,20 +7534,20 @@ namespace Chummer
             // lblCyberwareName
             // 
             this.lblCyberwareName.AutoSize = true;
-            this.lblCyberwareName.Location = new System.Drawing.Point(283, 41);
+            this.lblCyberwareName.Location = new System.Drawing.Point(417, 41);
             this.lblCyberwareName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareName.Name = "lblCyberwareName";
-            this.lblCyberwareName.Size = new System.Drawing.Size(1, 1);
+            this.lblCyberwareName.Size = new System.Drawing.Size(41, 13);
             this.lblCyberwareName.TabIndex = 30;
             this.lblCyberwareName.Text = "[Name]";
             // 
             // lblCyberlimbSTR
             // 
             this.lblCyberlimbSTR.AutoSize = true;
-            this.lblCyberlimbSTR.Location = new System.Drawing.Point(218, 101);
+            this.lblCyberlimbSTR.Location = new System.Drawing.Point(677, 166);
             this.lblCyberlimbSTR.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberlimbSTR.Name = "lblCyberlimbSTR";
-            this.lblCyberlimbSTR.Size = new System.Drawing.Size(1, 13);
+            this.lblCyberlimbSTR.Size = new System.Drawing.Size(19, 13);
             this.lblCyberlimbSTR.TabIndex = 220;
             this.lblCyberlimbSTR.Text = "[0]";
             this.lblCyberlimbSTR.Visible = false;
@@ -7554,10 +7556,10 @@ namespace Chummer
             // 
             this.lblCyberwareCategoryLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberwareCategoryLabel.AutoSize = true;
-            this.lblCyberwareCategoryLabel.Location = new System.Drawing.Point(310, 53);
+            this.lblCyberwareCategoryLabel.Location = new System.Drawing.Point(359, 66);
             this.lblCyberwareCategoryLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareCategoryLabel.Name = "lblCyberwareCategoryLabel";
-            this.lblCyberwareCategoryLabel.Size = new System.Drawing.Size(1, 1);
+            this.lblCyberwareCategoryLabel.Size = new System.Drawing.Size(52, 13);
             this.lblCyberwareCategoryLabel.TabIndex = 31;
             this.lblCyberwareCategoryLabel.Tag = "Label_Category";
             this.lblCyberwareCategoryLabel.Text = "Category:";
@@ -7565,10 +7567,10 @@ namespace Chummer
             // lblCyberlimbAGI
             // 
             this.lblCyberlimbAGI.AutoSize = true;
-            this.lblCyberlimbAGI.Location = new System.Drawing.Point(218, 89);
+            this.lblCyberlimbAGI.Location = new System.Drawing.Point(677, 141);
             this.lblCyberlimbAGI.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberlimbAGI.Name = "lblCyberlimbAGI";
-            this.lblCyberlimbAGI.Size = new System.Drawing.Size(1, 1);
+            this.lblCyberlimbAGI.Size = new System.Drawing.Size(19, 13);
             this.lblCyberlimbAGI.TabIndex = 219;
             this.lblCyberlimbAGI.Text = "[0]";
             this.lblCyberlimbAGI.Visible = false;
@@ -7576,17 +7578,17 @@ namespace Chummer
             // lblCyberwareCategory
             // 
             this.lblCyberwareCategory.AutoSize = true;
-            this.lblCyberwareCategory.Location = new System.Drawing.Point(283, 53);
+            this.lblCyberwareCategory.Location = new System.Drawing.Point(417, 66);
             this.lblCyberwareCategory.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareCategory.Name = "lblCyberwareCategory";
-            this.lblCyberwareCategory.Size = new System.Drawing.Size(1, 1);
+            this.lblCyberwareCategory.Size = new System.Drawing.Size(55, 13);
             this.lblCyberwareCategory.TabIndex = 32;
             this.lblCyberwareCategory.Text = "[Category]";
             // 
             // lblCyberlimbSTRLabel
             // 
             this.lblCyberlimbSTRLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblCyberlimbSTRLabel.Location = new System.Drawing.Point(245, 101);
+            this.lblCyberlimbSTRLabel.Location = new System.Drawing.Point(670, 166);
             this.lblCyberlimbSTRLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberlimbSTRLabel.Name = "lblCyberlimbSTRLabel";
             this.lblCyberlimbSTRLabel.Size = new System.Drawing.Size(1, 13);
@@ -7599,10 +7601,10 @@ namespace Chummer
             // 
             this.lblCyberwareGradeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberwareGradeLabel.AutoSize = true;
-            this.lblCyberwareGradeLabel.Location = new System.Drawing.Point(310, 65);
+            this.lblCyberwareGradeLabel.Location = new System.Drawing.Point(372, 91);
             this.lblCyberwareGradeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareGradeLabel.Name = "lblCyberwareGradeLabel";
-            this.lblCyberwareGradeLabel.Size = new System.Drawing.Size(1, 1);
+            this.lblCyberwareGradeLabel.Size = new System.Drawing.Size(39, 13);
             this.lblCyberwareGradeLabel.TabIndex = 37;
             this.lblCyberwareGradeLabel.Tag = "Label_Grade";
             this.lblCyberwareGradeLabel.Text = "Grade:";
@@ -7611,10 +7613,10 @@ namespace Chummer
             // 
             this.lblCyberlimbAGILabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberlimbAGILabel.AutoSize = true;
-            this.lblCyberlimbAGILabel.Location = new System.Drawing.Point(245, 89);
+            this.lblCyberlimbAGILabel.Location = new System.Drawing.Point(607, 141);
             this.lblCyberlimbAGILabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberlimbAGILabel.Name = "lblCyberlimbAGILabel";
-            this.lblCyberlimbAGILabel.Size = new System.Drawing.Size(1, 1);
+            this.lblCyberlimbAGILabel.Size = new System.Drawing.Size(64, 13);
             this.lblCyberlimbAGILabel.TabIndex = 217;
             this.lblCyberlimbAGILabel.Tag = "Label_CyberlimbAGI";
             this.lblCyberlimbAGILabel.Text = "Agility (AGI):";
@@ -7623,10 +7625,10 @@ namespace Chummer
             // lblCyberwareGrade
             // 
             this.lblCyberwareGrade.AutoSize = true;
-            this.lblCyberwareGrade.Location = new System.Drawing.Point(283, 65);
+            this.lblCyberwareGrade.Location = new System.Drawing.Point(417, 91);
             this.lblCyberwareGrade.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareGrade.Name = "lblCyberwareGrade";
-            this.lblCyberwareGrade.Size = new System.Drawing.Size(1, 1);
+            this.lblCyberwareGrade.Size = new System.Drawing.Size(42, 13);
             this.lblCyberwareGrade.TabIndex = 49;
             this.lblCyberwareGrade.Text = "[Grade]";
             // 
@@ -7634,10 +7636,10 @@ namespace Chummer
             // 
             this.lblCyberwareEssenceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberwareEssenceLabel.AutoSize = true;
-            this.lblCyberwareEssenceLabel.Location = new System.Drawing.Point(310, 77);
+            this.lblCyberwareEssenceLabel.Location = new System.Drawing.Point(360, 116);
             this.lblCyberwareEssenceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareEssenceLabel.Name = "lblCyberwareEssenceLabel";
-            this.lblCyberwareEssenceLabel.Size = new System.Drawing.Size(1, 1);
+            this.lblCyberwareEssenceLabel.Size = new System.Drawing.Size(51, 13);
             this.lblCyberwareEssenceLabel.TabIndex = 33;
             this.lblCyberwareEssenceLabel.Tag = "Label_Essence";
             this.lblCyberwareEssenceLabel.Text = "Essence:";
@@ -7645,10 +7647,10 @@ namespace Chummer
             // lblCyberwareEssence
             // 
             this.lblCyberwareEssence.AutoSize = true;
-            this.lblCyberwareEssence.Location = new System.Drawing.Point(283, 77);
+            this.lblCyberwareEssence.Location = new System.Drawing.Point(417, 116);
             this.lblCyberwareEssence.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareEssence.Name = "lblCyberwareEssence";
-            this.lblCyberwareEssence.Size = new System.Drawing.Size(1, 1);
+            this.lblCyberwareEssence.Size = new System.Drawing.Size(34, 13);
             this.lblCyberwareEssence.TabIndex = 34;
             this.lblCyberwareEssence.Text = "[ESS]";
             // 
@@ -7656,10 +7658,10 @@ namespace Chummer
             // 
             this.lblCyberwareAvailLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberwareAvailLabel.AutoSize = true;
-            this.lblCyberwareAvailLabel.Location = new System.Drawing.Point(310, 89);
+            this.lblCyberwareAvailLabel.Location = new System.Drawing.Point(378, 141);
             this.lblCyberwareAvailLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareAvailLabel.Name = "lblCyberwareAvailLabel";
-            this.lblCyberwareAvailLabel.Size = new System.Drawing.Size(1, 1);
+            this.lblCyberwareAvailLabel.Size = new System.Drawing.Size(33, 13);
             this.lblCyberwareAvailLabel.TabIndex = 38;
             this.lblCyberwareAvailLabel.Tag = "Label_Avail";
             this.lblCyberwareAvailLabel.Text = "Avail:";
@@ -7667,30 +7669,30 @@ namespace Chummer
             // lblEssenceHoleESS
             // 
             this.lblEssenceHoleESS.AutoSize = true;
-            this.lblEssenceHoleESS.Location = new System.Drawing.Point(283, 191);
+            this.lblEssenceHoleESS.Location = new System.Drawing.Point(417, 295);
             this.lblEssenceHoleESS.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblEssenceHoleESS.Name = "lblEssenceHoleESS";
-            this.lblEssenceHoleESS.Size = new System.Drawing.Size(1, 1);
+            this.lblEssenceHoleESS.Size = new System.Drawing.Size(19, 13);
             this.lblEssenceHoleESS.TabIndex = 68;
             this.lblEssenceHoleESS.Text = "[0]";
             // 
             // lblCyberwareAvail
             // 
             this.lblCyberwareAvail.AutoSize = true;
-            this.lblCyberwareAvail.Location = new System.Drawing.Point(283, 89);
+            this.lblCyberwareAvail.Location = new System.Drawing.Point(417, 141);
             this.lblCyberwareAvail.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareAvail.Name = "lblCyberwareAvail";
-            this.lblCyberwareAvail.Size = new System.Drawing.Size(1, 1);
+            this.lblCyberwareAvail.Size = new System.Drawing.Size(36, 13);
             this.lblCyberwareAvail.TabIndex = 39;
             this.lblCyberwareAvail.Text = "[Avail]";
             // 
             // lblBiowareESS
             // 
             this.lblBiowareESS.AutoSize = true;
-            this.lblBiowareESS.Location = new System.Drawing.Point(283, 179);
+            this.lblBiowareESS.Location = new System.Drawing.Point(417, 270);
             this.lblBiowareESS.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBiowareESS.Name = "lblBiowareESS";
-            this.lblBiowareESS.Size = new System.Drawing.Size(1, 1);
+            this.lblBiowareESS.Size = new System.Drawing.Size(19, 13);
             this.lblBiowareESS.TabIndex = 65;
             this.lblBiowareESS.Text = "[0]";
             // 
@@ -7698,10 +7700,10 @@ namespace Chummer
             // 
             this.lblEssenceHoleESSLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblEssenceHoleESSLabel.AutoSize = true;
-            this.lblEssenceHoleESSLabel.Location = new System.Drawing.Point(310, 191);
+            this.lblEssenceHoleESSLabel.Location = new System.Drawing.Point(335, 295);
             this.lblEssenceHoleESSLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblEssenceHoleESSLabel.Name = "lblEssenceHoleESSLabel";
-            this.lblEssenceHoleESSLabel.Size = new System.Drawing.Size(1, 1);
+            this.lblEssenceHoleESSLabel.Size = new System.Drawing.Size(76, 13);
             this.lblEssenceHoleESSLabel.TabIndex = 67;
             this.lblEssenceHoleESSLabel.Tag = "Label_EssenceHole";
             this.lblEssenceHoleESSLabel.Text = "Essence Hole:";
@@ -7709,10 +7711,10 @@ namespace Chummer
             // lblCyberwareESS
             // 
             this.lblCyberwareESS.AutoSize = true;
-            this.lblCyberwareESS.Location = new System.Drawing.Point(283, 167);
+            this.lblCyberwareESS.Location = new System.Drawing.Point(417, 245);
             this.lblCyberwareESS.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareESS.Name = "lblCyberwareESS";
-            this.lblCyberwareESS.Size = new System.Drawing.Size(1, 1);
+            this.lblCyberwareESS.Size = new System.Drawing.Size(19, 13);
             this.lblCyberwareESS.TabIndex = 64;
             this.lblCyberwareESS.Text = "[0]";
             // 
@@ -7720,33 +7722,33 @@ namespace Chummer
             // 
             this.lblCyberwareSourceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberwareSourceLabel.AutoSize = true;
-            this.lblCyberwareSourceLabel.Location = new System.Drawing.Point(310, 101);
+            this.lblCyberwareSourceLabel.Location = new System.Drawing.Point(367, 166);
             this.lblCyberwareSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareSourceLabel.Name = "lblCyberwareSourceLabel";
-            this.lblCyberwareSourceLabel.Size = new System.Drawing.Size(1, 13);
+            this.lblCyberwareSourceLabel.Size = new System.Drawing.Size(44, 13);
             this.lblCyberwareSourceLabel.TabIndex = 47;
             this.lblCyberwareSourceLabel.Tag = "Label_Source";
             this.lblCyberwareSourceLabel.Text = "Source:";
             // 
-            // label2
+            // lblEssenceConsumptionLabel
             // 
-            this.label2.AutoSize = true;
-            this.tlpCyberware.SetColumnSpan(this.label2, 3);
-            this.label2.Location = new System.Drawing.Point(310, 155);
-            this.label2.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(1, 1);
-            this.label2.TabIndex = 66;
-            this.label2.Tag = "Label_EssenceConsumption";
-            this.label2.Text = "Essence Consumption";
+            this.lblEssenceConsumptionLabel.AutoSize = true;
+            this.tlpCyberware.SetColumnSpan(this.lblEssenceConsumptionLabel, 3);
+            this.lblEssenceConsumptionLabel.Location = new System.Drawing.Point(310, 220);
+            this.lblEssenceConsumptionLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblEssenceConsumptionLabel.Name = "lblEssenceConsumptionLabel";
+            this.lblEssenceConsumptionLabel.Size = new System.Drawing.Size(112, 13);
+            this.lblEssenceConsumptionLabel.TabIndex = 66;
+            this.lblEssenceConsumptionLabel.Tag = "Label_EssenceConsumption";
+            this.lblEssenceConsumptionLabel.Text = "Essence Consumption";
             // 
             // lblCyberwareSource
             // 
             this.lblCyberwareSource.AutoSize = true;
-            this.lblCyberwareSource.Location = new System.Drawing.Point(283, 101);
+            this.lblCyberwareSource.Location = new System.Drawing.Point(417, 166);
             this.lblCyberwareSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareSource.Name = "lblCyberwareSource";
-            this.lblCyberwareSource.Size = new System.Drawing.Size(1, 13);
+            this.lblCyberwareSource.Size = new System.Drawing.Size(47, 13);
             this.lblCyberwareSource.TabIndex = 48;
             this.lblCyberwareSource.Text = "[Source]";
             this.lblCyberwareSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
@@ -7755,10 +7757,10 @@ namespace Chummer
             // 
             this.lblBiowareESSLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBiowareESSLabel.AutoSize = true;
-            this.lblBiowareESSLabel.Location = new System.Drawing.Point(310, 179);
+            this.lblBiowareESSLabel.Location = new System.Drawing.Point(363, 270);
             this.lblBiowareESSLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBiowareESSLabel.Name = "lblBiowareESSLabel";
-            this.lblBiowareESSLabel.Size = new System.Drawing.Size(1, 1);
+            this.lblBiowareESSLabel.Size = new System.Drawing.Size(48, 13);
             this.lblBiowareESSLabel.TabIndex = 63;
             this.lblBiowareESSLabel.Tag = "Label_Bioware";
             this.lblBiowareESSLabel.Text = "Bioware:";
@@ -7767,10 +7769,10 @@ namespace Chummer
             // 
             this.lblCyberwareRatingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberwareRatingLabel.AutoSize = true;
-            this.lblCyberwareRatingLabel.Location = new System.Drawing.Point(245, 53);
+            this.lblCyberwareRatingLabel.Location = new System.Drawing.Point(630, 66);
             this.lblCyberwareRatingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareRatingLabel.Name = "lblCyberwareRatingLabel";
-            this.lblCyberwareRatingLabel.Size = new System.Drawing.Size(1, 1);
+            this.lblCyberwareRatingLabel.Size = new System.Drawing.Size(41, 13);
             this.lblCyberwareRatingLabel.TabIndex = 42;
             this.lblCyberwareRatingLabel.Tag = "Label_Rating";
             this.lblCyberwareRatingLabel.Text = "Rating:";
@@ -7779,10 +7781,10 @@ namespace Chummer
             // 
             this.lblCyberwareESSLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberwareESSLabel.AutoSize = true;
-            this.lblCyberwareESSLabel.Location = new System.Drawing.Point(310, 167);
+            this.lblCyberwareESSLabel.Location = new System.Drawing.Point(351, 245);
             this.lblCyberwareESSLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareESSLabel.Name = "lblCyberwareESSLabel";
-            this.lblCyberwareESSLabel.Size = new System.Drawing.Size(1, 1);
+            this.lblCyberwareESSLabel.Size = new System.Drawing.Size(60, 13);
             this.lblCyberwareESSLabel.TabIndex = 62;
             this.lblCyberwareESSLabel.Tag = "Label_Cyberware";
             this.lblCyberwareESSLabel.Text = "Cyberware:";
@@ -7790,10 +7792,10 @@ namespace Chummer
             // lblCyberwareRating
             // 
             this.lblCyberwareRating.AutoSize = true;
-            this.lblCyberwareRating.Location = new System.Drawing.Point(218, 53);
+            this.lblCyberwareRating.Location = new System.Drawing.Point(677, 66);
             this.lblCyberwareRating.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareRating.Name = "lblCyberwareRating";
-            this.lblCyberwareRating.Size = new System.Drawing.Size(1, 1);
+            this.lblCyberwareRating.Size = new System.Drawing.Size(44, 13);
             this.lblCyberwareRating.TabIndex = 50;
             this.lblCyberwareRating.Text = "[Rating]";
             // 
@@ -7801,10 +7803,10 @@ namespace Chummer
             // 
             this.lblCyberwareCapacityLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberwareCapacityLabel.AutoSize = true;
-            this.lblCyberwareCapacityLabel.Location = new System.Drawing.Point(245, 65);
+            this.lblCyberwareCapacityLabel.Location = new System.Drawing.Point(620, 91);
             this.lblCyberwareCapacityLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareCapacityLabel.Name = "lblCyberwareCapacityLabel";
-            this.lblCyberwareCapacityLabel.Size = new System.Drawing.Size(1, 1);
+            this.lblCyberwareCapacityLabel.Size = new System.Drawing.Size(51, 13);
             this.lblCyberwareCapacityLabel.TabIndex = 35;
             this.lblCyberwareCapacityLabel.Tag = "Label_Capacity";
             this.lblCyberwareCapacityLabel.Text = "Capacity:";
@@ -7812,10 +7814,10 @@ namespace Chummer
             // lblCyberwareCapacity
             // 
             this.lblCyberwareCapacity.AutoSize = true;
-            this.lblCyberwareCapacity.Location = new System.Drawing.Point(218, 65);
+            this.lblCyberwareCapacity.Location = new System.Drawing.Point(677, 91);
             this.lblCyberwareCapacity.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareCapacity.Name = "lblCyberwareCapacity";
-            this.lblCyberwareCapacity.Size = new System.Drawing.Size(1, 1);
+            this.lblCyberwareCapacity.Size = new System.Drawing.Size(54, 13);
             this.lblCyberwareCapacity.TabIndex = 36;
             this.lblCyberwareCapacity.Text = "[Capacity]";
             // 
@@ -7823,10 +7825,10 @@ namespace Chummer
             // 
             this.lblCyberwareCostLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberwareCostLabel.AutoSize = true;
-            this.lblCyberwareCostLabel.Location = new System.Drawing.Point(245, 77);
+            this.lblCyberwareCostLabel.Location = new System.Drawing.Point(640, 116);
             this.lblCyberwareCostLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareCostLabel.Name = "lblCyberwareCostLabel";
-            this.lblCyberwareCostLabel.Size = new System.Drawing.Size(1, 1);
+            this.lblCyberwareCostLabel.Size = new System.Drawing.Size(31, 13);
             this.lblCyberwareCostLabel.TabIndex = 40;
             this.lblCyberwareCostLabel.Tag = "Label_Cost";
             this.lblCyberwareCostLabel.Text = "Cost:";
@@ -7834,18 +7836,17 @@ namespace Chummer
             // lblCyberwareCost
             // 
             this.lblCyberwareCost.AutoSize = true;
-            this.lblCyberwareCost.Location = new System.Drawing.Point(218, 77);
+            this.lblCyberwareCost.Location = new System.Drawing.Point(677, 116);
             this.lblCyberwareCost.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareCost.Name = "lblCyberwareCost";
-            this.lblCyberwareCost.Size = new System.Drawing.Size(1, 1);
+            this.lblCyberwareCost.Size = new System.Drawing.Size(34, 13);
             this.lblCyberwareCost.TabIndex = 41;
             this.lblCyberwareCost.Text = "[Cost]";
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.AutoSize = true;
+            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.ColumnCount = 10;
             this.tlpCyberware.SetColumnSpan(this.tableLayoutPanel1, 6);
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13.5F));
@@ -7873,14 +7874,15 @@ namespace Chummer
             this.tableLayoutPanel1.Controls.Add(this.lblCyberSleazeLabel, 4, 1);
             this.tableLayoutPanel1.Controls.Add(this.lblCyberDeviceRating, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.lblCyberAttackLabel, 2, 1);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(307, 227);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(307, 344);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1, 509);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(522, 210);
             this.tableLayoutPanel1.TabIndex = 229;
             // 
             // tabCyberwareCM
@@ -7888,7 +7890,7 @@ namespace Chummer
             this.tableLayoutPanel1.SetColumnSpan(this.tabCyberwareCM, 10);
             this.tabCyberwareCM.Controls.Add(this.tabCyberwareMatrixCM);
             this.tabCyberwareCM.ItemSize = new System.Drawing.Size(176, 18);
-            this.tabCyberwareCM.Location = new System.Drawing.Point(3, 57);
+            this.tabCyberwareCM.Location = new System.Drawing.Point(3, 68);
             this.tabCyberwareCM.Name = "tabCyberwareCM";
             this.tabCyberwareCM.SelectedIndex = 0;
             this.tabCyberwareCM.Size = new System.Drawing.Size(1, 113);
@@ -8432,9 +8434,9 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboCyberwareGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCyberwareGearFirewall.FormattingEnabled = true;
-            this.cboCyberwareGearFirewall.Location = new System.Drawing.Point(3, 30);
+            this.cboCyberwareGearFirewall.Location = new System.Drawing.Point(485, 30);
             this.cboCyberwareGearFirewall.Name = "cboCyberwareGearFirewall";
-            this.cboCyberwareGearFirewall.Size = new System.Drawing.Size(1, 21);
+            this.cboCyberwareGearFirewall.Size = new System.Drawing.Size(34, 21);
             this.cboCyberwareGearFirewall.TabIndex = 213;
             this.cboCyberwareGearFirewall.TooltipText = "";
             this.cboCyberwareGearFirewall.Visible = false;
@@ -8446,9 +8448,9 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboCyberwareGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCyberwareGearDataProcessing.FormattingEnabled = true;
-            this.cboCyberwareGearDataProcessing.Location = new System.Drawing.Point(3, 30);
+            this.cboCyberwareGearDataProcessing.Location = new System.Drawing.Point(382, 30);
             this.cboCyberwareGearDataProcessing.Name = "cboCyberwareGearDataProcessing";
-            this.cboCyberwareGearDataProcessing.Size = new System.Drawing.Size(1, 21);
+            this.cboCyberwareGearDataProcessing.Size = new System.Drawing.Size(27, 21);
             this.cboCyberwareGearDataProcessing.TabIndex = 214;
             this.cboCyberwareGearDataProcessing.TooltipText = "";
             this.cboCyberwareGearDataProcessing.Visible = false;
@@ -8461,9 +8463,9 @@ namespace Chummer
             this.tableLayoutPanel1.SetColumnSpan(this.cboCyberwareGearOverclocker, 3);
             this.cboCyberwareGearOverclocker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCyberwareGearOverclocker.FormattingEnabled = true;
-            this.cboCyberwareGearOverclocker.Location = new System.Drawing.Point(3, 3);
+            this.cboCyberwareGearOverclocker.Location = new System.Drawing.Point(106, 3);
             this.cboCyberwareGearOverclocker.Name = "cboCyberwareGearOverclocker";
-            this.cboCyberwareGearOverclocker.Size = new System.Drawing.Size(1, 21);
+            this.cboCyberwareGearOverclocker.Size = new System.Drawing.Size(167, 21);
             this.cboCyberwareGearOverclocker.TabIndex = 216;
             this.cboCyberwareGearOverclocker.TooltipText = "";
             this.cboCyberwareGearOverclocker.Visible = false;
@@ -8473,10 +8475,10 @@ namespace Chummer
             // 
             this.lblCyberFirewallLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberFirewallLabel.AutoSize = true;
-            this.lblCyberFirewallLabel.Location = new System.Drawing.Point(3, 33);
+            this.lblCyberFirewallLabel.Location = new System.Drawing.Point(434, 33);
             this.lblCyberFirewallLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberFirewallLabel.Name = "lblCyberFirewallLabel";
-            this.lblCyberFirewallLabel.Size = new System.Drawing.Size(1, 13);
+            this.lblCyberFirewallLabel.Size = new System.Drawing.Size(45, 13);
             this.lblCyberFirewallLabel.TabIndex = 184;
             this.lblCyberFirewallLabel.Tag = "Label_Firewall";
             this.lblCyberFirewallLabel.Text = "Firewall:";
@@ -8489,10 +8491,10 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chkCyberwareHomeNode.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.chkCyberwareHomeNode, 2);
-            this.chkCyberwareHomeNode.Location = new System.Drawing.Point(3, 4);
+            this.chkCyberwareHomeNode.Location = new System.Drawing.Point(279, 4);
             this.chkCyberwareHomeNode.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkCyberwareHomeNode.Name = "chkCyberwareHomeNode";
-            this.chkCyberwareHomeNode.Size = new System.Drawing.Size(1, 19);
+            this.chkCyberwareHomeNode.Size = new System.Drawing.Size(97, 19);
             this.chkCyberwareHomeNode.TabIndex = 244;
             this.chkCyberwareHomeNode.Tag = "Checkbox_HomeNode";
             this.chkCyberwareHomeNode.Text = "Home Node";
@@ -8506,9 +8508,9 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboCyberwareGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCyberwareGearSleaze.FormattingEnabled = true;
-            this.cboCyberwareGearSleaze.Location = new System.Drawing.Point(3, 30);
+            this.cboCyberwareGearSleaze.Location = new System.Drawing.Point(279, 30);
             this.cboCyberwareGearSleaze.Name = "cboCyberwareGearSleaze";
-            this.cboCyberwareGearSleaze.Size = new System.Drawing.Size(1, 21);
+            this.cboCyberwareGearSleaze.Size = new System.Drawing.Size(27, 21);
             this.cboCyberwareGearSleaze.TabIndex = 212;
             this.cboCyberwareGearSleaze.TooltipText = "";
             this.cboCyberwareGearSleaze.Visible = false;
@@ -8521,10 +8523,10 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chkCyberwareActiveCommlink.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.chkCyberwareActiveCommlink, 3);
-            this.chkCyberwareActiveCommlink.Location = new System.Drawing.Point(3, 4);
+            this.chkCyberwareActiveCommlink.Location = new System.Drawing.Point(382, 4);
             this.chkCyberwareActiveCommlink.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkCyberwareActiveCommlink.Name = "chkCyberwareActiveCommlink";
-            this.chkCyberwareActiveCommlink.Size = new System.Drawing.Size(1, 19);
+            this.chkCyberwareActiveCommlink.Size = new System.Drawing.Size(137, 19);
             this.chkCyberwareActiveCommlink.TabIndex = 245;
             this.chkCyberwareActiveCommlink.Tag = "Checkbox_ActiveCommlink";
             this.chkCyberwareActiveCommlink.Text = "Active Commlink";
@@ -8536,10 +8538,10 @@ namespace Chummer
             // 
             this.lblCyberDataProcessingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberDataProcessingLabel.AutoSize = true;
-            this.lblCyberDataProcessingLabel.Location = new System.Drawing.Point(3, 33);
+            this.lblCyberDataProcessingLabel.Location = new System.Drawing.Point(314, 33);
             this.lblCyberDataProcessingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberDataProcessingLabel.Name = "lblCyberDataProcessingLabel";
-            this.lblCyberDataProcessingLabel.Size = new System.Drawing.Size(1, 13);
+            this.lblCyberDataProcessingLabel.Size = new System.Drawing.Size(62, 26);
             this.lblCyberDataProcessingLabel.TabIndex = 182;
             this.lblCyberDataProcessingLabel.Tag = "Label_DataProcessing";
             this.lblCyberDataProcessingLabel.Text = "Data Processing:";
@@ -8551,9 +8553,9 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboCyberwareGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCyberwareGearAttack.FormattingEnabled = true;
-            this.cboCyberwareGearAttack.Location = new System.Drawing.Point(3, 30);
+            this.cboCyberwareGearAttack.Location = new System.Drawing.Point(176, 30);
             this.cboCyberwareGearAttack.Name = "cboCyberwareGearAttack";
-            this.cboCyberwareGearAttack.Size = new System.Drawing.Size(1, 21);
+            this.cboCyberwareGearAttack.Size = new System.Drawing.Size(27, 21);
             this.cboCyberwareGearAttack.TabIndex = 211;
             this.cboCyberwareGearAttack.TooltipText = "";
             this.cboCyberwareGearAttack.Visible = false;
@@ -8563,7 +8565,7 @@ namespace Chummer
             // 
             this.lblCyberwareGearOverclocker.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.lblCyberwareGearOverclocker, 2);
-            this.lblCyberwareGearOverclocker.Location = new System.Drawing.Point(3, 6);
+            this.lblCyberwareGearOverclocker.Location = new System.Drawing.Point(99, 6);
             this.lblCyberwareGearOverclocker.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareGearOverclocker.Name = "lblCyberwareGearOverclocker";
             this.lblCyberwareGearOverclocker.Size = new System.Drawing.Size(1, 13);
@@ -8576,10 +8578,10 @@ namespace Chummer
             // 
             this.lblCyberDeviceRatingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberDeviceRatingLabel.AutoSize = true;
-            this.lblCyberDeviceRatingLabel.Location = new System.Drawing.Point(3, 33);
+            this.lblCyberDeviceRatingLabel.Location = new System.Drawing.Point(23, 33);
             this.lblCyberDeviceRatingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberDeviceRatingLabel.Name = "lblCyberDeviceRatingLabel";
-            this.lblCyberDeviceRatingLabel.Size = new System.Drawing.Size(1, 13);
+            this.lblCyberDeviceRatingLabel.Size = new System.Drawing.Size(44, 26);
             this.lblCyberDeviceRatingLabel.TabIndex = 176;
             this.lblCyberDeviceRatingLabel.Tag = "Label_DeviceRating";
             this.lblCyberDeviceRatingLabel.Text = "Device Rating:";
@@ -8589,10 +8591,10 @@ namespace Chummer
             // 
             this.lblCyberSleazeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberSleazeLabel.AutoSize = true;
-            this.lblCyberSleazeLabel.Location = new System.Drawing.Point(3, 33);
+            this.lblCyberSleazeLabel.Location = new System.Drawing.Point(231, 33);
             this.lblCyberSleazeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberSleazeLabel.Name = "lblCyberSleazeLabel";
-            this.lblCyberSleazeLabel.Size = new System.Drawing.Size(1, 13);
+            this.lblCyberSleazeLabel.Size = new System.Drawing.Size(42, 13);
             this.lblCyberSleazeLabel.TabIndex = 180;
             this.lblCyberSleazeLabel.Tag = "Label_Sleaze";
             this.lblCyberSleazeLabel.Text = "Sleaze:";
@@ -8601,10 +8603,10 @@ namespace Chummer
             // lblCyberDeviceRating
             // 
             this.lblCyberDeviceRating.AutoSize = true;
-            this.lblCyberDeviceRating.Location = new System.Drawing.Point(3, 33);
+            this.lblCyberDeviceRating.Location = new System.Drawing.Point(73, 33);
             this.lblCyberDeviceRating.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberDeviceRating.Name = "lblCyberDeviceRating";
-            this.lblCyberDeviceRating.Size = new System.Drawing.Size(1, 13);
+            this.lblCyberDeviceRating.Size = new System.Drawing.Size(19, 13);
             this.lblCyberDeviceRating.TabIndex = 177;
             this.lblCyberDeviceRating.Text = "[0]";
             this.lblCyberDeviceRating.Visible = false;
@@ -8613,10 +8615,10 @@ namespace Chummer
             // 
             this.lblCyberAttackLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberAttackLabel.AutoSize = true;
-            this.lblCyberAttackLabel.Location = new System.Drawing.Point(3, 33);
+            this.lblCyberAttackLabel.Location = new System.Drawing.Point(129, 33);
             this.lblCyberAttackLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberAttackLabel.Name = "lblCyberAttackLabel";
-            this.lblCyberAttackLabel.Size = new System.Drawing.Size(1, 13);
+            this.lblCyberAttackLabel.Size = new System.Drawing.Size(41, 13);
             this.lblCyberAttackLabel.TabIndex = 178;
             this.lblCyberAttackLabel.Tag = "Label_Attack";
             this.lblCyberAttackLabel.Text = "Attack:";
@@ -15500,7 +15502,7 @@ namespace Chummer
             this.splitKarmaNuyen.Panel2.Controls.Add(this.chtNuyen);
             this.splitKarmaNuyen.Panel2.Resize += new System.EventHandler(this.splitKarmaNuyen_Panel2_Resize);
             this.splitKarmaNuyen.Size = new System.Drawing.Size(835, 625);
-            this.splitKarmaNuyen.SplitterDistance = 415;
+            this.splitKarmaNuyen.SplitterDistance = 414;
             this.splitKarmaNuyen.TabIndex = 6;
             // 
             // chtKarma
@@ -15514,43 +15516,21 @@ namespace Chummer
             this.chtKarma.TabIndex = 4;
             this.chtKarma.Text = "chart1";
             // 
-            // lstKarma
+            // tlpKarma
             // 
-            this.lstKarma.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colKarmaDate,
-            this.colKarmaAmount,
-            this.colKarmaReason});
-            this.lstKarma.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lstKarma.FullRowSelect = true;
-            this.lstKarma.GridLines = true;
-            this.lstKarma.HideSelection = false;
-            this.lstKarma.Location = new System.Drawing.Point(3, 32);
-            this.lstKarma.MultiSelect = false;
-            this.lstKarma.Name = "lstKarma";
-            this.lstKarma.Size = new System.Drawing.Size(409, 590);
-            this.lstKarma.TabIndex = 0;
-            this.lstKarma.UseCompatibleStateImageBehavior = false;
-            this.lstKarma.View = System.Windows.Forms.View.Details;
-            this.lstKarma.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lstKarma_ColumnClick);
-            this.lstKarma.DoubleClick += new System.EventHandler(this.lstKarma_DoubleClick);
-            // 
-            // colKarmaDate
-            // 
-            this.colKarmaDate.Tag = "String_Date";
-            this.colKarmaDate.Text = "Date";
-            this.colKarmaDate.Width = 130;
-            // 
-            // colKarmaAmount
-            // 
-            this.colKarmaAmount.Tag = "String_Amount";
-            this.colKarmaAmount.Text = "Amount";
-            this.colKarmaAmount.Width = 65;
-            // 
-            // colKarmaReason
-            // 
-            this.colKarmaReason.Tag = "String_Reason";
-            this.colKarmaReason.Text = "Reason";
-            this.colKarmaReason.Width = 214;
+            this.tlpKarma.ColumnCount = 1;
+            this.tlpKarma.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpKarma.Controls.Add(this.flowLayoutPanel11, 0, 0);
+            this.tlpKarma.Controls.Add(this.lstKarma, 0, 1);
+            this.tlpKarma.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpKarma.Location = new System.Drawing.Point(0, 0);
+            this.tlpKarma.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpKarma.Name = "tlpKarma";
+            this.tlpKarma.RowCount = 2;
+            this.tlpKarma.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpKarma.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpKarma.Size = new System.Drawing.Size(414, 625);
+            this.tlpKarma.TabIndex = 7;
             // 
             // flowLayoutPanel11
             // 
@@ -15564,7 +15544,7 @@ namespace Chummer
             this.flowLayoutPanel11.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel11.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel11.Name = "flowLayoutPanel11";
-            this.flowLayoutPanel11.Size = new System.Drawing.Size(415, 29);
+            this.flowLayoutPanel11.Size = new System.Drawing.Size(414, 29);
             this.flowLayoutPanel11.TabIndex = 6;
             // 
             // cmdKarmaGained
@@ -15619,16 +15599,58 @@ namespace Chummer
             this.chkShowFreeKarma.UseVisualStyleBackColor = true;
             this.chkShowFreeKarma.CheckedChanged += new System.EventHandler(this.PopulateExpenseList);
             // 
-            // chtNuyen
+            // lstKarma
             // 
-            this.chtNuyen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            chartArea2.Name = "NuyenArea";
-            this.chtNuyen.ChartAreas.Add(chartArea2);
-            this.chtNuyen.Location = new System.Drawing.Point(0, 414);
-            this.chtNuyen.Name = "chtNuyen";
-            this.chtNuyen.Size = new System.Drawing.Size(547, 208);
-            this.chtNuyen.TabIndex = 7;
-            this.chtNuyen.Text = "chart1";
+            this.lstKarma.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colKarmaDate,
+            this.colKarmaAmount,
+            this.colKarmaReason});
+            this.lstKarma.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstKarma.FullRowSelect = true;
+            this.lstKarma.GridLines = true;
+            this.lstKarma.HideSelection = false;
+            this.lstKarma.Location = new System.Drawing.Point(3, 32);
+            this.lstKarma.MultiSelect = false;
+            this.lstKarma.Name = "lstKarma";
+            this.lstKarma.Size = new System.Drawing.Size(408, 590);
+            this.lstKarma.TabIndex = 0;
+            this.lstKarma.UseCompatibleStateImageBehavior = false;
+            this.lstKarma.View = System.Windows.Forms.View.Details;
+            this.lstKarma.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lstKarma_ColumnClick);
+            this.lstKarma.DoubleClick += new System.EventHandler(this.lstKarma_DoubleClick);
+            // 
+            // colKarmaDate
+            // 
+            this.colKarmaDate.Tag = "String_Date";
+            this.colKarmaDate.Text = "Date";
+            this.colKarmaDate.Width = 130;
+            // 
+            // colKarmaAmount
+            // 
+            this.colKarmaAmount.Tag = "String_Amount";
+            this.colKarmaAmount.Text = "Amount";
+            this.colKarmaAmount.Width = 65;
+            // 
+            // colKarmaReason
+            // 
+            this.colKarmaReason.Tag = "String_Reason";
+            this.colKarmaReason.Text = "Reason";
+            this.colKarmaReason.Width = 214;
+            // 
+            // tlpNuyen
+            // 
+            this.tlpNuyen.ColumnCount = 1;
+            this.tlpNuyen.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpNuyen.Controls.Add(this.lstNuyen, 0, 1);
+            this.tlpNuyen.Controls.Add(this.flowLayoutPanel12, 0, 0);
+            this.tlpNuyen.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpNuyen.Location = new System.Drawing.Point(0, 0);
+            this.tlpNuyen.Name = "tlpNuyen";
+            this.tlpNuyen.RowCount = 2;
+            this.tlpNuyen.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpNuyen.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpNuyen.Size = new System.Drawing.Size(417, 625);
+            this.tlpNuyen.TabIndex = 9;
             // 
             // lstNuyen
             // 
@@ -15643,7 +15665,7 @@ namespace Chummer
             this.lstNuyen.Location = new System.Drawing.Point(3, 32);
             this.lstNuyen.MultiSelect = false;
             this.lstNuyen.Name = "lstNuyen";
-            this.lstNuyen.Size = new System.Drawing.Size(410, 590);
+            this.lstNuyen.Size = new System.Drawing.Size(411, 590);
             this.lstNuyen.TabIndex = 3;
             this.lstNuyen.UseCompatibleStateImageBehavior = false;
             this.lstNuyen.View = System.Windows.Forms.View.Details;
@@ -15680,7 +15702,7 @@ namespace Chummer
             this.flowLayoutPanel12.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel12.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel12.Name = "flowLayoutPanel12";
-            this.flowLayoutPanel12.Size = new System.Drawing.Size(416, 29);
+            this.flowLayoutPanel12.Size = new System.Drawing.Size(417, 29);
             this.flowLayoutPanel12.TabIndex = 8;
             // 
             // cmdNuyenGained
@@ -15734,6 +15756,17 @@ namespace Chummer
             this.chkShowFreeNuyen.Text = "Show Free Entries";
             this.chkShowFreeNuyen.UseVisualStyleBackColor = true;
             this.chkShowFreeNuyen.CheckedChanged += new System.EventHandler(this.PopulateExpenseList);
+            // 
+            // chtNuyen
+            // 
+            this.chtNuyen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            chartArea2.Name = "NuyenArea";
+            this.chtNuyen.ChartAreas.Add(chartArea2);
+            this.chtNuyen.Location = new System.Drawing.Point(0, 414);
+            this.chtNuyen.Name = "chtNuyen";
+            this.chtNuyen.Size = new System.Drawing.Size(547, 208);
+            this.chtNuyen.TabIndex = 7;
+            this.chtNuyen.Text = "chart1";
             // 
             // tabCalendar
             // 
@@ -16144,6 +16177,56 @@ namespace Chummer
             this.tlpContacts.Size = new System.Drawing.Size(827, 599);
             this.tlpContacts.TabIndex = 53;
             // 
+            // panContacts
+            // 
+            this.panContacts.AutoScroll = true;
+            this.tlpContacts.SetColumnSpan(this.panContacts, 4);
+            this.panContacts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panContacts.Location = new System.Drawing.Point(9, 57);
+            this.panContacts.Name = "panContacts";
+            this.panContacts.Size = new System.Drawing.Size(809, 533);
+            this.panContacts.TabIndex = 25;
+            this.panContacts.Click += new System.EventHandler(this.panContacts_Click);
+            this.panContacts.DragDrop += new System.Windows.Forms.DragEventHandler(this.panContacts_DragDrop);
+            this.panContacts.DragEnter += new System.Windows.Forms.DragEventHandler(this.panContacts_DragEnter);
+            this.panContacts.DragOver += new System.Windows.Forms.DragEventHandler(this.panContacts_DragOver);
+            // 
+            // lblContactArchtypeLabel
+            // 
+            this.lblContactArchtypeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblContactArchtypeLabel.AutoSize = true;
+            this.lblContactArchtypeLabel.Location = new System.Drawing.Point(293, 38);
+            this.lblContactArchtypeLabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblContactArchtypeLabel.Name = "lblContactArchtypeLabel";
+            this.lblContactArchtypeLabel.Size = new System.Drawing.Size(52, 13);
+            this.lblContactArchtypeLabel.TabIndex = 44;
+            this.lblContactArchtypeLabel.Tag = "Label_Archtype";
+            this.lblContactArchtypeLabel.Text = "Archtype:";
+            // 
+            // lblContactNameLabel
+            // 
+            this.lblContactNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblContactNameLabel.AutoSize = true;
+            this.lblContactNameLabel.Location = new System.Drawing.Point(37, 38);
+            this.lblContactNameLabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblContactNameLabel.Name = "lblContactNameLabel";
+            this.lblContactNameLabel.Size = new System.Drawing.Size(38, 13);
+            this.lblContactNameLabel.TabIndex = 42;
+            this.lblContactNameLabel.Tag = "Label_Name";
+            this.lblContactNameLabel.Text = "Name:";
+            // 
+            // lblContactLocationLabel
+            // 
+            this.lblContactLocationLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblContactLocationLabel.AutoSize = true;
+            this.lblContactLocationLabel.Location = new System.Drawing.Point(165, 38);
+            this.lblContactLocationLabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblContactLocationLabel.Name = "lblContactLocationLabel";
+            this.lblContactLocationLabel.Size = new System.Drawing.Size(51, 13);
+            this.lblContactLocationLabel.TabIndex = 43;
+            this.lblContactLocationLabel.Tag = "Label_Location";
+            this.lblContactLocationLabel.Text = "Location:";
+            // 
             // flowLayoutPanel16
             // 
             this.flowLayoutPanel16.AutoSize = true;
@@ -16211,56 +16294,6 @@ namespace Chummer
             this.cmdSwapContactOrder.UseVisualStyleBackColor = true;
             this.cmdSwapContactOrder.Click += new System.EventHandler(this.cmdSwapContactOrder_Click);
             // 
-            // panContacts
-            // 
-            this.panContacts.AutoScroll = true;
-            this.tlpContacts.SetColumnSpan(this.panContacts, 4);
-            this.panContacts.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panContacts.Location = new System.Drawing.Point(9, 57);
-            this.panContacts.Name = "panContacts";
-            this.panContacts.Size = new System.Drawing.Size(809, 533);
-            this.panContacts.TabIndex = 25;
-            this.panContacts.Click += new System.EventHandler(this.panContacts_Click);
-            this.panContacts.DragDrop += new System.Windows.Forms.DragEventHandler(this.panContacts_DragDrop);
-            this.panContacts.DragEnter += new System.Windows.Forms.DragEventHandler(this.panContacts_DragEnter);
-            this.panContacts.DragOver += new System.Windows.Forms.DragEventHandler(this.panContacts_DragOver);
-            // 
-            // lblContactArchtypeLabel
-            // 
-            this.lblContactArchtypeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblContactArchtypeLabel.AutoSize = true;
-            this.lblContactArchtypeLabel.Location = new System.Drawing.Point(293, 38);
-            this.lblContactArchtypeLabel.Margin = new System.Windows.Forms.Padding(3);
-            this.lblContactArchtypeLabel.Name = "lblContactArchtypeLabel";
-            this.lblContactArchtypeLabel.Size = new System.Drawing.Size(52, 13);
-            this.lblContactArchtypeLabel.TabIndex = 44;
-            this.lblContactArchtypeLabel.Tag = "Label_Archtype";
-            this.lblContactArchtypeLabel.Text = "Archtype:";
-            // 
-            // lblContactNameLabel
-            // 
-            this.lblContactNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblContactNameLabel.AutoSize = true;
-            this.lblContactNameLabel.Location = new System.Drawing.Point(37, 38);
-            this.lblContactNameLabel.Margin = new System.Windows.Forms.Padding(3);
-            this.lblContactNameLabel.Name = "lblContactNameLabel";
-            this.lblContactNameLabel.Size = new System.Drawing.Size(38, 13);
-            this.lblContactNameLabel.TabIndex = 42;
-            this.lblContactNameLabel.Tag = "Label_Name";
-            this.lblContactNameLabel.Text = "Name:";
-            // 
-            // lblContactLocationLabel
-            // 
-            this.lblContactLocationLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblContactLocationLabel.AutoSize = true;
-            this.lblContactLocationLabel.Location = new System.Drawing.Point(165, 38);
-            this.lblContactLocationLabel.Margin = new System.Windows.Forms.Padding(3);
-            this.lblContactLocationLabel.Name = "lblContactLocationLabel";
-            this.lblContactLocationLabel.Size = new System.Drawing.Size(51, 13);
-            this.lblContactLocationLabel.TabIndex = 43;
-            this.lblContactLocationLabel.Tag = "Label_Location";
-            this.lblContactLocationLabel.Text = "Location:";
-            // 
             // tabEnemies
             // 
             this.tabEnemies.BackColor = System.Drawing.SystemColors.ButtonFace;
@@ -16268,7 +16301,7 @@ namespace Chummer
             this.tabEnemies.Location = new System.Drawing.Point(4, 22);
             this.tabEnemies.Name = "tabEnemies";
             this.tabEnemies.Padding = new System.Windows.Forms.Padding(3);
-            this.tabEnemies.Size = new System.Drawing.Size(178, 42);
+            this.tabEnemies.Size = new System.Drawing.Size(184, 48);
             this.tabEnemies.TabIndex = 1;
             this.tabEnemies.Tag = "Label_Enemies";
             this.tabEnemies.Text = "Enemies";
@@ -16292,19 +16325,8 @@ namespace Chummer
             this.tlpEnemies.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpEnemies.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpEnemies.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpEnemies.Size = new System.Drawing.Size(172, 36);
+            this.tlpEnemies.Size = new System.Drawing.Size(178, 42);
             this.tlpEnemies.TabIndex = 50;
-            // 
-            // panEnemies
-            // 
-            this.panEnemies.AutoScroll = true;
-            this.tlpEnemies.SetColumnSpan(this.panEnemies, 3);
-            this.panEnemies.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panEnemies.Location = new System.Drawing.Point(9, 57);
-            this.panEnemies.Name = "panEnemies";
-            this.panEnemies.Size = new System.Drawing.Size(154, 527);
-            this.panEnemies.TabIndex = 41;
-            this.panEnemies.Click += new System.EventHandler(this.panEnemies_Click);
             // 
             // label10
             // 
@@ -16340,6 +16362,17 @@ namespace Chummer
             this.cmdAddEnemy.UseVisualStyleBackColor = true;
             this.cmdAddEnemy.Click += new System.EventHandler(this.cmdAddEnemy_Click);
             // 
+            // panEnemies
+            // 
+            this.panEnemies.AutoScroll = true;
+            this.tlpEnemies.SetColumnSpan(this.panEnemies, 3);
+            this.panEnemies.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panEnemies.Location = new System.Drawing.Point(9, 57);
+            this.panEnemies.Name = "panEnemies";
+            this.panEnemies.Size = new System.Drawing.Size(160, 527);
+            this.panEnemies.TabIndex = 41;
+            this.panEnemies.Click += new System.EventHandler(this.panEnemies_Click);
+            // 
             // label11
             // 
             this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -16371,7 +16404,7 @@ namespace Chummer
             this.tabPets.Location = new System.Drawing.Point(4, 22);
             this.tabPets.Name = "tabPets";
             this.tabPets.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPets.Size = new System.Drawing.Size(178, 42);
+            this.tabPets.Size = new System.Drawing.Size(184, 48);
             this.tabPets.TabIndex = 4;
             this.tabPets.Tag = "Tab_Pets";
             this.tabPets.Text = "Pets and Cohorts";
@@ -16389,7 +16422,7 @@ namespace Chummer
             this.tlpPets.RowCount = 2;
             this.tlpPets.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpPets.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpPets.Size = new System.Drawing.Size(172, 36);
+            this.tlpPets.Size = new System.Drawing.Size(178, 42);
             this.tlpPets.TabIndex = 26;
             // 
             // flowLayoutPanel29
@@ -16422,7 +16455,7 @@ namespace Chummer
             this.panPets.Location = new System.Drawing.Point(6, 35);
             this.panPets.Margin = new System.Windows.Forms.Padding(0);
             this.panPets.Name = "panPets";
-            this.panPets.Size = new System.Drawing.Size(160, 552);
+            this.panPets.Size = new System.Drawing.Size(166, 552);
             this.panPets.TabIndex = 25;
             // 
             // panAttributes
@@ -16847,37 +16880,6 @@ namespace Chummer
             this.tsWeaponMountLocation.Tag = "Menu_RenameLocation";
             this.tsWeaponMountLocation.Text = "Rename &Location";
             // 
-            // tlpKarma
-            // 
-            this.tlpKarma.ColumnCount = 1;
-            this.tlpKarma.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpKarma.Controls.Add(this.flowLayoutPanel11, 0, 0);
-            this.tlpKarma.Controls.Add(this.lstKarma, 0, 1);
-            this.tlpKarma.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpKarma.Location = new System.Drawing.Point(0, 0);
-            this.tlpKarma.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpKarma.Name = "tlpKarma";
-            this.tlpKarma.RowCount = 2;
-            this.tlpKarma.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpKarma.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpKarma.Size = new System.Drawing.Size(415, 625);
-            this.tlpKarma.TabIndex = 7;
-            // 
-            // tlpNuyen
-            // 
-            this.tlpNuyen.ColumnCount = 1;
-            this.tlpNuyen.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpNuyen.Controls.Add(this.lstNuyen, 0, 1);
-            this.tlpNuyen.Controls.Add(this.flowLayoutPanel12, 0, 0);
-            this.tlpNuyen.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpNuyen.Location = new System.Drawing.Point(0, 0);
-            this.tlpNuyen.Name = "tlpNuyen";
-            this.tlpNuyen.RowCount = 2;
-            this.tlpNuyen.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpNuyen.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpNuyen.Size = new System.Drawing.Size(416, 625);
-            this.tlpNuyen.TabIndex = 9;
-            // 
             // frmCareer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -17095,11 +17097,15 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.splitKarmaNuyen)).EndInit();
             this.splitKarmaNuyen.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.chtKarma)).EndInit();
+            this.tlpKarma.ResumeLayout(false);
+            this.tlpKarma.PerformLayout();
             this.flowLayoutPanel11.ResumeLayout(false);
             this.flowLayoutPanel11.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chtNuyen)).EndInit();
+            this.tlpNuyen.ResumeLayout(false);
+            this.tlpNuyen.PerformLayout();
             this.flowLayoutPanel12.ResumeLayout(false);
             this.flowLayoutPanel12.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chtNuyen)).EndInit();
             this.tabCalendar.ResumeLayout(false);
             this.tblCalendar.ResumeLayout(false);
             this.tblCalendar.PerformLayout();
@@ -17150,10 +17156,6 @@ namespace Chummer
             this.cmsTechnique.ResumeLayout(false);
             this.cmsAdvancedProgram.ResumeLayout(false);
             this.cmsWeaponMount.ResumeLayout(false);
-            this.tlpKarma.ResumeLayout(false);
-            this.tlpKarma.PerformLayout();
-            this.tlpNuyen.ResumeLayout(false);
-            this.tlpNuyen.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -17654,7 +17656,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblCyberDeviceRatingLabel;
         private System.Windows.Forms.Label lblEssenceHoleESS;
         private System.Windows.Forms.Label lblEssenceHoleESSLabel;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblEssenceConsumptionLabel;
         private System.Windows.Forms.Label lblBiowareESS;
         private System.Windows.Forms.Label lblCyberwareESS;
         private System.Windows.Forms.Label lblBiowareESSLabel;
