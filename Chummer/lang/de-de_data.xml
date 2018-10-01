@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
 	Chummer5a is free software: you can redistribute it and/or modify
@@ -40769,7 +40769,7 @@
 				<id>63dcfdb6-bbd9-4a58-bbf4-cd35f7614fdc</id>
 				<name>Unarmed Attack</name>
 				<translate>Waffenlos</translate>
-				<altpage></altpage>
+				<altpage>132</altpage>
 			</weapon>
 			<weapon>
 				<id>9c267b03-103e-43f4-bfe8-986c69dc17d2</id>

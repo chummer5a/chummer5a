@@ -1119,13 +1119,19 @@ namespace Chummer.Backend.Skills
         public SkillGroup SkillGroupObject { get; }
 
         public string Page { get; private set; }
-
+        
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty. 
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Page;
-
-            return GetNode()?["altpage"]?.InnerText ?? Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         public string Source { get; private set; }
