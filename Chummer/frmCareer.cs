@@ -300,7 +300,7 @@ namespace Chummer
             CharacterObject.Calendar.ListChanged += CalendarWeekListChanged;
             CharacterObjectOptions.PropertyChanged += OptionsChanged;
             CharacterObject.Drugs.CollectionChanged += DrugCollectionChanged;
-            ctlWeaponDicePool.DiceRollerOpenedInt += DiceRollerOpenedInt;
+            //ctlWeaponDicePool.DiceRollerOpenedInt += DiceRollerOpenedInt;
 
             // Populate the Magician Traditions list.
             XPathNavigator xmlTraditionsBaseChummerNode = XmlManager.Load("traditions.xml").GetFastNavigator().SelectSingleNode("/chummer");
@@ -13477,7 +13477,7 @@ namespace Chummer
 
             if (treWeapons.SelectedNode?.Tag is IHasDicePool)
             {
-                ctlWeaponDicePool.PoolObject = treWeapons.SelectedNode?.Tag as IHasDicePool;
+                //ctlWeaponDicePool.PoolObject = treWeapons.SelectedNode?.Tag as IHasDicePool;
             }
             if (treWeapons.SelectedNode?.Tag is Weapon objWeapon)
             {

@@ -16,7 +16,8 @@ namespace Chummer.UI.Shared.Components
         public event Action<Character, int> DiceRollerOpenedInt;
 
         private Character _characterObject;
-        private IHasDicePool _poolObject;
+        private int _dicePool = 0;
+        private string _dicePoolTooltip = string.Empty;
 
         public DicePoolControl()
         {
@@ -36,6 +37,10 @@ namespace Chummer.UI.Shared.Components
                 Utils.BreakIfDebug();
                 _characterObject = new Character();
             }
+
+            lblDicePool.DoDatabinding("Text", this, nameof(this._dicePool));
+            lblDicePool.DoDatabinding("ToolTipText", this, nameof(this._dicePoolTooltip));
+
             cmdRoll.SetToolTip(LanguageManager.GetString("Tip_DiceRoller", GlobalOptions.Language));
             cmdRoll.Visible = _characterObject.Options.AllowSkillDiceRolling;
 
@@ -45,26 +50,16 @@ namespace Chummer.UI.Shared.Components
 
         private void cmdRoll_Click(object sender, EventArgs e)
         {
-            if (_poolObject == null) return;
-            DiceRollerOpenedInt?.Invoke(_characterObject, PoolObject.DicePool);
+            DiceRollerOpenedInt?.Invoke(_characterObject, _dicePool);
         }
 
         public IHasDicePool PoolObject
         {
-            get => _poolObject;
             set
             {
-                _poolObject = value;
                 if (value == null) return;
-                if (lblDicePool.DataBindings.Count == 0)
-                {
-                    Utils.DoDatabinding(lblDicePool, "Text", PoolObject, nameof(PoolObject.DicePool));
-                    Utils.DoDatabinding(lblDicePool, "ToolTipText", PoolObject, nameof(PoolObject.DicePoolTooltip));
-                }
-                else
-                {
-                    lblDicePool.ResetBindings();
-                }
+                _dicePool = value.DicePool;
+                _dicePoolTooltip = value.DicePoolTooltip;
             }
         }
     }
