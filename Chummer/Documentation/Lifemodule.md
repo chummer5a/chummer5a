@@ -8,11 +8,11 @@ better detailed in [bonus] and [addquality]
 
 
 ## Table of Contents
-1. [File layout](#File-layout)
+1. [File layout](#file-layout)
    * [stages](#stages)
    * [modules](#modules)
    * [storybuilder](#storybuilder)
-2. [Nodes](#Nodes)
+2. [Nodes](#nodes)
    * [stages](#stages-1)
    * [modules](#modules)
    * [bonus](#modules)
@@ -20,11 +20,12 @@ better detailed in [bonus] and [addquality]
    * [addquality](#addquality)
    * [story](#story)
    * [forbidden](#forbidden)
+   * [required](#required)
 3. [Storybuilder](#storybuilder-1)
    * [Storybuilder Basics](#storybuilder-basics)
-   * [Random](#Random)
+   * [Random](#random)
    * [persistent](#persistent)
-   * [System Macros](#System-Macros)
+   * [System Macros](#system-macros)
 
 ### required
 
