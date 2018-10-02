@@ -27,9 +27,6 @@ better detailed in [bonus] and [addquality]
    * [persistent](#persistent)
    * [System Macros](#system-macros)
 
-### required
-
-
 ## File layout
 Under the root node `chummer`, there are 3 nodes used by life modules. Those are `stages`, `modules` and `storybuilder`.
 
