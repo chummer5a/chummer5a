@@ -101,7 +101,7 @@ namespace ChummerDataViewer.Model
 			string keypart = key.Split(':')[1];
 
 			return Enumerable.Range(0, keypart.Length)
-					 .Where(x => x % 2 == 0)
+					 .Where(x => (x & 1) == 0)
 					 .Select(x => Convert.ToByte(keypart.Substring(x, 2), 16))
 					 .ToArray();
 		}
@@ -111,7 +111,7 @@ namespace ChummerDataViewer.Model
 			string ivpart = iv.Split(':')[0];
 
 			return Enumerable.Range(0, ivpart.Length)
-					 .Where(x => x % 2 == 0)
+					 .Where(x => (x & 1) == 0)
 					 .Select(x => Convert.ToByte(ivpart.Substring(x, 2), 16))
 					 .ToArray();
 

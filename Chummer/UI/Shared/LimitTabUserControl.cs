@@ -1,19 +1,33 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer.UI.Shared
 {
     public partial class LimitTabUserControl : UserControl
     {
-        private Character _characterObject;
+        private Character _objCharacter;
         public event PropertyChangedEventHandler MakeDirty;
         public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
 
@@ -24,7 +38,7 @@ namespace Chummer.UI.Shared
 
         private void LimitTabUserControl_Load(object sender, EventArgs e)
         {
-            if (_characterObject != null) return;
+            if (_objCharacter != null) return;
             if (ParentForm != null)
                 ParentForm.Cursor = Cursors.WaitCursor;
             RealLoad();
@@ -35,23 +49,23 @@ namespace Chummer.UI.Shared
         public void RealLoad()
         {
             if (ParentForm is CharacterShared frmParent)
-                _characterObject = frmParent.CharacterObject;
+                _objCharacter = frmParent.CharacterObject;
             else
             {
                 Utils.BreakIfDebug();
-                _characterObject = new Character();
+                _objCharacter = new Character();
             }
 
-            Utils.DoDatabinding(lblPhysical, "Text", _characterObject, nameof(Character.LimitPhysical));
-            Utils.DoDatabinding(lblPhysical, "ToolTipText", _characterObject, nameof(Character.LimitPhysicalToolTip));
-            Utils.DoDatabinding(lblMental, "Text", _characterObject, nameof(Character.LimitMental));
-            Utils.DoDatabinding(lblMental, "ToolTipText", _characterObject, nameof(Character.LimitMentalToolTip));
-            Utils.DoDatabinding(lblSocial, "Text", _characterObject, nameof(Character.LimitSocial));
-            Utils.DoDatabinding(lblSocial, "ToolTipText", _characterObject, nameof(Character.LimitSocialToolTip));
-            Utils.DoDatabinding(lblAstral, "Text", _characterObject, nameof(Character.LimitAstral));
-            Utils.DoDatabinding(lblAstral, "ToolTipText", _characterObject, nameof(Character.LimitAstralToolTip));
+            lblPhysical.DoDatabinding("Text", _objCharacter, nameof(Character.LimitPhysical));
+            lblPhysical.DoDatabinding("ToolTipText", _objCharacter, nameof(Character.LimitPhysicalToolTip));
+            lblMental.DoDatabinding("Text", _objCharacter, nameof(Character.LimitMental));
+            lblMental.DoDatabinding("ToolTipText", _objCharacter, nameof(Character.LimitMentalToolTip));
+            lblSocial.DoDatabinding("Text", _objCharacter, nameof(Character.LimitSocial));
+            lblSocial.DoDatabinding("ToolTipText", _objCharacter, nameof(Character.LimitSocialToolTip));
+            lblAstral.DoDatabinding("Text", _objCharacter, nameof(Character.LimitAstral));
+            lblAstral.DoDatabinding("ToolTipText", _objCharacter, nameof(Character.LimitAstralToolTip));
 
-            _characterObject.LimitModifiers.CollectionChanged += LimitModifierCollectionChanged;
+            _objCharacter.LimitModifiers.CollectionChanged += LimitModifierCollectionChanged;
         }
         #region Click Events
         private void cmdAddLimitModifier_Click(object sender, EventArgs e)
@@ -63,19 +77,19 @@ namespace Chummer.UI.Shared
                 return;
 
             // Create the new limit modifier.
-            LimitModifier objLimitModifier = new LimitModifier(_characterObject);
+            LimitModifier objLimitModifier = new LimitModifier(_objCharacter);
             objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition);
             if (objLimitModifier.InternalId.IsEmptyGuid())
                 return;
 
-            _characterObject.LimitModifiers.Add(objLimitModifier);
+            _objCharacter.LimitModifiers.Add(objLimitModifier);
             MakeDirtyWithCharacterUpdate?.Invoke(null, null);
         }
 
         private void cmdDeleteLimitModifier_Click(object sender, EventArgs e)
         {
             if (!(treLimit.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(_characterObject, _characterObject.Options.ConfirmDelete)) return;
+            if (!selectedObject.Remove(_objCharacter, _objCharacter.Options.ConfirmDelete)) return;
             MakeDirtyWithCharacterUpdate?.Invoke(null, null);
         }
         private void treLimit_KeyDown(object sender, KeyEventArgs e)
@@ -97,7 +111,7 @@ namespace Chummer.UI.Shared
             else
             {
                 // the limit modifier has a source
-                foreach (Improvement objImprovement in _characterObject.Improvements)
+                foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
                     if (objImprovement.ImproveType != Improvement.ImprovementType.LimitModifier ||
                         objImprovement.SourceName != treLimit.SelectedNode?.Tag.ToString()) continue;
@@ -160,7 +174,7 @@ namespace Chummer.UI.Shared
                 treLimit.Nodes.Clear();
 
                 // Add Limit Modifiers.
-                foreach (LimitModifier objLimitModifier in _characterObject.LimitModifiers)
+                foreach (LimitModifier objLimitModifier in _objCharacter.LimitModifiers)
                 {
                     int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
                     TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
@@ -171,7 +185,7 @@ namespace Chummer.UI.Shared
                 }
 
                 // Add Limit Modifiers from Improvements
-                foreach (Improvement objImprovement in _characterObject.Improvements.Where(objImprovement => objImprovement.ImproveSource == Improvement.ImprovementSource.Custom))
+                foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == Improvement.ImprovementSource.Custom))
                 {
                     int intTargetLimit = -1;
                     switch (objImprovement.ImproveType)
@@ -381,7 +395,7 @@ namespace Chummer.UI.Shared
             string strGuid = (objSelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
             if (string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())
                 return;
-            LimitModifier objLimitModifier = _characterObject.LimitModifiers.FindById(strGuid);
+            LimitModifier objLimitModifier = _objCharacter.LimitModifiers.FindById(strGuid);
             //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
             if (objLimitModifier == null)
             {
@@ -396,13 +410,13 @@ namespace Chummer.UI.Shared
                     return;
 
                 //Remove the old LimitModifier to ensure we don't double up.
-                _characterObject.LimitModifiers.Remove(objLimitModifier);
+                _objCharacter.LimitModifiers.Remove(objLimitModifier);
                 // Create the new limit modifier.
-                objLimitModifier = new LimitModifier(_characterObject);
+                objLimitModifier = new LimitModifier(_objCharacter);
                 objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition);
                 objLimitModifier.Guid = new Guid(strGuid);
 
-                _characterObject.LimitModifiers.Add(objLimitModifier);
+                _objCharacter.LimitModifiers.Add(objLimitModifier);
 
                 MakeDirtyWithCharacterUpdate?.Invoke(null, null);
             }

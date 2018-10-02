@@ -52,7 +52,7 @@ namespace Chummer
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.lblKarma = new System.Windows.Forms.Label();
             this.lblKarmaLabel = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblRatingNALabel = new System.Windows.Forms.Label();
             this.txtSearch = new System.Windows.Forms.TextBox();
@@ -534,7 +534,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdOKAdd;
         private System.Windows.Forms.Label lblKarma;
         private System.Windows.Forms.Label lblKarmaLabel;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Label lblRatingNALabel;
         private System.Windows.Forms.TextBox txtSearch;

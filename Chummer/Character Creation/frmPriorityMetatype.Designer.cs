@@ -30,12 +30,12 @@ namespace Chummer
         {
             this.nudForce = new System.Windows.Forms.NumericUpDown();
             this.lblForceLabel = new System.Windows.Forms.Label();
-            this.cboCategory = new ElasticComboBox();
+            this.cboCategory = new Chummer.ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.lblMetavariantQualities = new System.Windows.Forms.Label();
             this.lblMetavariantQualitiesLabel = new System.Windows.Forms.Label();
             this.lblMetavariantLabel = new System.Windows.Forms.Label();
-            this.cboMetavariant = new ElasticComboBox();
+            this.cboMetavariant = new Chummer.ElasticComboBox();
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblINILabel = new System.Windows.Forms.Label();
             this.lblINI = new System.Windows.Forms.Label();
@@ -56,33 +56,33 @@ namespace Chummer
             this.lblBOD = new System.Windows.Forms.Label();
             this.lblBODLabel = new System.Windows.Forms.Label();
             this.lstMetatypes = new System.Windows.Forms.ListBox();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel();
             this.lblMetavariantKarma = new System.Windows.Forms.Label();
             this.lblSpecialAttributes = new System.Windows.Forms.Label();
             this.lblSpecialAttributesLabel = new System.Windows.Forms.Label();
             this.lblMetavariantKarmaLabel = new System.Windows.Forms.Label();
             this.lblMetatypeSkillSelection = new System.Windows.Forms.Label();
-            this.cboSkill1 = new ElasticComboBox();
-            this.cboSkill2 = new ElasticComboBox();
-            this.cboSkill3 = new ElasticComboBox();
-            this.cboTalents = new ElasticComboBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.cboSkill1 = new Chummer.ElasticComboBox();
+            this.cboSkill2 = new Chummer.ElasticComboBox();
+            this.cboSkill3 = new Chummer.ElasticComboBox();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.cboTalents = new Chummer.ElasticComboBox();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.lblHeritageLabel = new System.Windows.Forms.Label();
             this.lblAttributesLabel = new System.Windows.Forms.Label();
-            this.cboResources = new ElasticComboBox();
+            this.cboResources = new Chummer.ElasticComboBox();
             this.lblTalentLabel = new System.Windows.Forms.Label();
-            this.cboSkills = new ElasticComboBox();
+            this.cboSkills = new Chummer.ElasticComboBox();
             this.lblResourcesLabel = new System.Windows.Forms.Label();
-            this.cboTalent = new ElasticComboBox();
-            this.cboAttributes = new ElasticComboBox();
+            this.cboTalent = new Chummer.ElasticComboBox();
+            this.cboAttributes = new Chummer.ElasticComboBox();
             this.lblSkillsLabel = new System.Windows.Forms.Label();
-            this.cboHeritage = new ElasticComboBox();
+            this.cboHeritage = new Chummer.ElasticComboBox();
             this.lblSumtoTen = new System.Windows.Forms.Label();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudForce)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // nudForce
@@ -134,6 +134,7 @@ namespace Chummer
             this.cboCategory.Name = "cboCategory";
             this.cboCategory.Size = new System.Drawing.Size(205, 21);
             this.cboCategory.TabIndex = 6;
+            this.cboCategory.TooltipText = "";
             this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
             // 
             // cmdCancel
@@ -204,6 +205,7 @@ namespace Chummer
             this.cboMetavariant.Name = "cboMetavariant";
             this.cboMetavariant.Size = new System.Drawing.Size(388, 21);
             this.cboMetavariant.TabIndex = 59;
+            this.cboMetavariant.TooltipText = "";
             this.cboMetavariant.SelectedIndexChanged += new System.EventHandler(this.cboMetavariant_SelectedIndexChanged);
             // 
             // cmdOK
@@ -594,6 +596,7 @@ namespace Chummer
             this.cboSkill1.Name = "cboSkill1";
             this.cboSkill1.Size = new System.Drawing.Size(511, 21);
             this.cboSkill1.TabIndex = 9;
+            this.cboSkill1.TooltipText = "";
             this.cboSkill1.Visible = false;
             // 
             // cboSkill2
@@ -607,6 +610,7 @@ namespace Chummer
             this.cboSkill2.Name = "cboSkill2";
             this.cboSkill2.Size = new System.Drawing.Size(511, 21);
             this.cboSkill2.TabIndex = 10;
+            this.cboSkill2.TooltipText = "";
             this.cboSkill2.Visible = false;
             // 
             // cboSkill3
@@ -620,7 +624,22 @@ namespace Chummer
             this.cboSkill3.Name = "cboSkill3";
             this.cboSkill3.Size = new System.Drawing.Size(511, 21);
             this.cboSkill3.TabIndex = 78;
+            this.cboSkill3.TooltipText = "";
             this.cboSkill3.Visible = false;
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel1.AutoSize = true;
+            this.tableLayoutPanel2.SetColumnSpan(this.flowLayoutPanel1, 6);
+            this.flowLayoutPanel1.Controls.Add(this.cmdOK);
+            this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
+            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(572, 349);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(156, 23);
+            this.flowLayoutPanel1.TabIndex = 79;
             // 
             // cboTalents
             // 
@@ -632,6 +651,7 @@ namespace Chummer
             this.cboTalents.Name = "cboTalents";
             this.cboTalents.Size = new System.Drawing.Size(293, 21);
             this.cboTalents.TabIndex = 8;
+            this.cboTalents.TooltipText = "";
             this.cboTalents.SelectedIndexChanged += new System.EventHandler(this.cboTalents_SelectedIndexChanged);
             // 
             // tableLayoutPanel1
@@ -699,6 +719,7 @@ namespace Chummer
             this.cboResources.Name = "cboResources";
             this.cboResources.Size = new System.Drawing.Size(292, 21);
             this.cboResources.TabIndex = 5;
+            this.cboResources.TooltipText = "";
             this.cboResources.SelectedIndexChanged += new System.EventHandler(this.cboResources_SelectedIndexChanged);
             // 
             // lblTalentLabel
@@ -723,6 +744,7 @@ namespace Chummer
             this.cboSkills.Name = "cboSkills";
             this.cboSkills.Size = new System.Drawing.Size(292, 21);
             this.cboSkills.TabIndex = 4;
+            this.cboSkills.TooltipText = "";
             this.cboSkills.SelectedIndexChanged += new System.EventHandler(this.cboSkills_SelectedIndexChanged);
             // 
             // lblResourcesLabel
@@ -747,6 +769,7 @@ namespace Chummer
             this.cboTalent.Name = "cboTalent";
             this.cboTalent.Size = new System.Drawing.Size(292, 21);
             this.cboTalent.TabIndex = 3;
+            this.cboTalent.TooltipText = "";
             this.cboTalent.SelectedIndexChanged += new System.EventHandler(this.cboTalent_SelectedIndexChanged);
             // 
             // cboAttributes
@@ -759,6 +782,7 @@ namespace Chummer
             this.cboAttributes.Name = "cboAttributes";
             this.cboAttributes.Size = new System.Drawing.Size(292, 21);
             this.cboAttributes.TabIndex = 2;
+            this.cboAttributes.TooltipText = "";
             this.cboAttributes.SelectedIndexChanged += new System.EventHandler(this.cboAttributes_SelectedIndexChanged);
             // 
             // lblSkillsLabel
@@ -783,6 +807,7 @@ namespace Chummer
             this.cboHeritage.Name = "cboHeritage";
             this.cboHeritage.Size = new System.Drawing.Size(292, 21);
             this.cboHeritage.TabIndex = 1;
+            this.cboHeritage.TooltipText = "";
             this.cboHeritage.SelectedIndexChanged += new System.EventHandler(this.cboHeritage_SelectedIndexChanged);
             // 
             // lblSumtoTen
@@ -801,20 +826,6 @@ namespace Chummer
             this.lblSumtoTen.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblSumtoTen.Visible = false;
             // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel2.SetColumnSpan(this.flowLayoutPanel1, 6);
-            this.flowLayoutPanel1.Controls.Add(this.cmdOK);
-            this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(572, 349);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(156, 23);
-            this.flowLayoutPanel1.TabIndex = 79;
-            // 
             // frmPriorityMetatype
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -832,10 +843,10 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudForce)).EndInit();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -879,7 +890,7 @@ namespace Chummer
         private ElasticComboBox cboSkill2;
         internal System.Windows.Forms.Label lblMetavariantKarmaLabel;
         private ElasticComboBox cboSkill3;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label lblHeritageLabel;
         private System.Windows.Forms.Label lblAttributesLabel;
         private ElasticComboBox cboResources;
@@ -891,7 +902,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblSkillsLabel;
         private ElasticComboBox cboHeritage;
         private System.Windows.Forms.Label lblSumtoTen;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

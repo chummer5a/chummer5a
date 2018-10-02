@@ -165,6 +165,8 @@ namespace Chummer
         private static readonly RegistryKey _objBaseChummerKey;
         public const string DefaultLanguage = "en-us";
         public const string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Skills grouped by Rating greater 0)";
+        public const string DefaultBuildMethodDefaultValue = "Priority";
+        public const string DefaultGameplayOptionDefaultValue = "Standard";
 
         private static bool _blnAutomaticUpdate;
         private static bool _blnLiveCustomData;
@@ -179,7 +181,10 @@ namespace Chummer
         private static bool _blnDronemodsMaximumPilot;
         private static bool _blnPreferNightlyUpdates;
         private static bool _blnLiveUpdateCleanCharacterFiles;
-        private static bool _hideCharacterRoster;
+        private static bool _blnHideCharacterRoster;
+        private static bool _blnCreateBackupOnCareer;
+        private static string _strDefaultBuildMethod = DefaultBuildMethodDefaultValue;
+        private static string _strDefaultGameplayOption = DefaultGameplayOptionDefaultValue;
 
         public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(DsfmtRandom.Create(DsfmtEdition.OptGen_216091));
 
@@ -391,7 +396,9 @@ namespace Chummer
 
             LoadBoolFromRegistry(ref _blnDronemodsMaximumPilot, "dronemodsPilot");
 
-            LoadBoolFromRegistry(ref _hideCharacterRoster, "hidecharacterroster");
+            LoadBoolFromRegistry(ref _blnHideCharacterRoster, "hidecharacterroster");
+
+            LoadBoolFromRegistry(ref _blnCreateBackupOnCareer, "createbackuponcareer");
 
             // Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
             LoadBoolFromRegistry(ref _blnPrintToFileFirst, "printtofilefirst");
@@ -400,6 +407,10 @@ namespace Chummer
             LoadStringFromRegistry(ref _strDefaultCharacterSheet, "defaultsheet");
             if (_strDefaultCharacterSheet == "Shadowrun (Rating greater 0)")
                 _strDefaultCharacterSheet = DefaultCharacterSheetDefaultValue;
+
+            LoadStringFromRegistry(ref _strDefaultBuildMethod, "defaultbuildmethod");
+
+            LoadStringFromRegistry(ref _strDefaultGameplayOption, "defaultgameplayoption");
 
             // Omae Settings.
             // Username.
@@ -478,14 +489,22 @@ namespace Chummer
         #endregion
 
         #region Properties
+        /// <summary>
+        /// Whether or not to create backups of characters before moving them to career mode. If true, a separate savefile is created before marking the current character as created.
+        /// </summary>
+        public static bool CreateBackupOnCareer
+        {
+            get => _blnCreateBackupOnCareer;
+            set => _blnCreateBackupOnCareer = value;
+        }
 
         /// <summary>
         /// Whether or not the Character Roster should be shown. If true, prevents the roster from being removed or hidden. 
         /// </summary>
         public static bool HideCharacterRoster
         {
-            get => _hideCharacterRoster;
-            set => _hideCharacterRoster = value;
+            get => _blnHideCharacterRoster;
+            set => _blnHideCharacterRoster = value;
         }
 
         /// <summary>
@@ -679,6 +698,24 @@ namespace Chummer
         {
             get => _strDefaultCharacterSheet;
             set => _strDefaultCharacterSheet = value;
+        }
+
+        /// <summary>
+        /// Default build method to select when creating a new character
+        /// </summary>
+        public static string DefaultBuildMethod
+        {
+            get => _strDefaultBuildMethod;
+            set => _strDefaultBuildMethod = value;
+        }
+
+        /// <summary>
+        /// Default gameplay option to select when creating a new character
+        /// </summary>
+        public static string DefaultGameplayOption
+        {
+            get => _strDefaultGameplayOption;
+            set => _strDefaultGameplayOption = value;
         }
 
         public static RegistryKey ChummerRegistryKey => _objBaseChummerKey;

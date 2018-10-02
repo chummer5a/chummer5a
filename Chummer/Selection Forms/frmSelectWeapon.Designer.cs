@@ -58,7 +58,7 @@ namespace Chummer
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabListView = new System.Windows.Forms.TabPage();
             this.lstWeapon = new System.Windows.Forms.ListBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.lblWeaponRC = new System.Windows.Forms.Label();
             this.lblWeaponRCLabel = new System.Windows.Forms.Label();
             this.lblWeaponAccuracyLabel = new System.Windows.Forms.Label();
@@ -92,7 +92,7 @@ namespace Chummer
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.tabBrowse = new System.Windows.Forms.TabPage();
             this.tmrSearch = new System.Windows.Forms.Timer(this.components);
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.dgvWeapons)).BeginInit();
             this.tabControl.SuspendLayout();
@@ -1036,9 +1036,9 @@ namespace Chummer
         private DataGridViewTextBoxColumnTranslated Label_Avail;
         private DataGridViewTextBoxColumnTranslated Label_Source;
         private DataGridViewTextBoxColumnTranslated dgvc_Cost;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.CheckBox chkShowOnlyAffordItems;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

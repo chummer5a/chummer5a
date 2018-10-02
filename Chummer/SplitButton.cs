@@ -416,7 +416,7 @@ public class SplitButton : Button
         Point middle = new Point(Convert.ToInt32(dropDownRect.Left + dropDownRect.Width / 2), Convert.ToInt32(dropDownRect.Top + dropDownRect.Height / 2));
 
         //if the width is odd - favor pushing it over one pixel right.
-        middle.X += (dropDownRect.Width % 2);
+        middle.X += (dropDownRect.Width & 1);
 
         Point[] arrow = { new Point(middle.X - 2, middle.Y - 1), new Point(middle.X + 3, middle.Y - 1), new Point(middle.X, middle.Y + 2) };
 

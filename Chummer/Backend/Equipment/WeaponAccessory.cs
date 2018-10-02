@@ -232,14 +232,11 @@ namespace Chummer.Backend.Equipment
                 {
                     string strSource = Source;
                     string strPage = Page(GlobalOptions.Language);
-                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
-                    {
-                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
-                    }
-                    else
+                    if (string.IsNullOrEmpty(strSource) || string.IsNullOrEmpty(strPage))
                     {
                         Utils.BreakIfDebug();
                     }
+                    _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
                 }
 
                 return _objCachedSourceDetail;

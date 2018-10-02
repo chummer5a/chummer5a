@@ -414,7 +414,7 @@ namespace Chummer.Backend.Equipment
             {
                 string strSubsystem = string.Empty;
                 XmlNodeList lstSubSystems = objXmlCyberware.SelectNodes("allowsubsystems/category");
-                for (int i = 0; i < lstSubSystems.Count; i++)
+                for (int i = 0; i < lstSubSystems?.Count; i++)
                 {
                     strSubsystem += lstSubSystems[i].InnerText;
                     if (i != lstSubSystems.Count - 1)
@@ -608,7 +608,7 @@ namespace Chummer.Backend.Equipment
                             // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
                             intCount = intCount > 0 ? 1 : 0;
                         }
-                        if (intCount % 2 == 1 && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString("D") + "Pair", PairBonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
+                        if ((intCount & 1) == 1 && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString("D") + "Pair", PairBonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
                         {
                             _guiID = Guid.Empty;
                             return;
@@ -1106,7 +1106,7 @@ namespace Chummer.Backend.Equipment
                             // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
                             intCount = intCount > 0 ? 1 : 0;
                         }
-                        if (intCount % 2 == 1)
+                        if ((intCount & 1) == 1)
                         {
                             ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId + "Pair", PairBonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
                         }
@@ -1709,7 +1709,7 @@ namespace Chummer.Backend.Equipment
                         // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
                         intCount = intCount > 0 ? 1 : 0;
                     }
-                    if (intCount % 2 == 1)
+                    if ((intCount & 1) == 1)
                     {
                         ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId + "Pair", PairBonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
                     }
@@ -1744,7 +1744,7 @@ namespace Chummer.Backend.Equipment
                     {
                         ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair");
                         // Go down the list and create pair bonuses for every second item
-                        if (intCount > 0 && intCount % 2 == 0)
+                        if (intCount > 0 && (intCount & 1) == 0)
                         {
                             ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                         }
@@ -2322,7 +2322,8 @@ namespace Chummer.Backend.Equipment
                 {
                     if (objChild.ParentID == InternalId ||
                         !objChild.IsModularCurrentlyEquipped &&
-                         objChild.PlugsIntoModularMount != string.Empty) continue;
+                         !string.IsNullOrEmpty(objChild.PlugsIntoModularMount))
+                        continue;
                     AvailabilityValue objLoopAvailTuple = objChild.TotalAvailTuple();
                     if (objLoopAvailTuple.AddToParent)
                         intAvail += objLoopAvailTuple.Value;
@@ -3433,7 +3434,7 @@ namespace Chummer.Backend.Equipment
                 {
                     ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair");
                     // Go down the list and create pair bonuses for every second item
-                    if (intCount > 0 && intCount % 2 == 0)
+                    if (intCount > 0 && (intCount & 1) == 0)
                     {
                         ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                     }
@@ -3520,6 +3521,29 @@ namespace Chummer.Backend.Equipment
                 }
 
                 return SystemColors.WindowText;
+            }
+        }
+
+        public void SetupChildrenCyberwareCollectionChanged(bool blnAdd, TreeView treCyberware, ContextMenuStrip cmsCyberware = null, ContextMenuStrip cmsCyberwareGear = null)
+        {
+            if (blnAdd)
+            {
+                Children.AddTaggedCollectionChanged(treCyberware, (x, y) => this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, null, y));
+                Gear.AddTaggedCollectionChanged(treCyberware, (x, y) => this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, () => Children.Count, y));
+
+                foreach (Cyberware objChild in Children)
+                    objChild.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware, cmsCyberwareGear);
+                foreach (Gear objGear in Gear)
+                    objGear.SetupChildrenGearsCollectionChanged(true, treCyberware, cmsCyberwareGear);
+            }
+            else
+            {
+                Children.RemoveTaggedCollectionChanged(treCyberware);
+                Gear.RemoveTaggedCollectionChanged(treCyberware);
+                foreach (Cyberware objChild in Children)
+                    objChild.SetupChildrenCyberwareCollectionChanged(false, treCyberware);
+                foreach (Gear objGear in Gear)
+                    objGear.SetupChildrenGearsCollectionChanged(false, treCyberware);
             }
         }
         #endregion

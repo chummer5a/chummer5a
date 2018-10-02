@@ -28,7 +28,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.lblLoadingInfo = new System.Windows.Forms.Label();
             this.pgbLoadingProgress = new System.Windows.Forms.ProgressBar();
             this.tableLayoutPanel1.SuspendLayout();
@@ -100,7 +100,7 @@ namespace Chummer
 
         #endregion
 
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label lblLoadingInfo;
         private System.Windows.Forms.ProgressBar pgbLoadingProgress;
     }

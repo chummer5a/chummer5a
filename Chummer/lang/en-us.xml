@@ -20,6 +20,7 @@
 <chummer>
   <version>-350</version>
   <name>English (en-US)</name>
+  <righttoleft>False</righttoleft>
   <strings>
 	  <!-- Region Meta Strings -->
 	<string>
@@ -1445,8 +1446,12 @@
       <text>Create PACKS Kit</text>
     </string>
     <string>
+      <key>Menu_SpecialChangePriorities</key>
+      <text>Change &amp;Priority Selection</text>
+    </string>
+    <string>
       <key>Menu_SpecialChangeMetatype</key>
-      <text>Change Priority Selection</text>
+      <text>Change &amp;Metatype</text>
     </string>
     <string>
       <key>Menu_SpecialChangeOptions</key>
@@ -5386,7 +5391,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_Options_UseCyberlimbCalculation</key>
-      <text>Don't use Cyberlimbs for calculating augmented Attributes</text>
+      <text>Do not use Cyberlimbs when calculating augmented Attributes</text>
     </string>
     <string>
       <key>Checkbox_Options_PreferNightlyBuilds</key>
@@ -6957,31 +6962,51 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Tab_Options_Global</key>
-      <text>Global</text>
+      <text>Global Options</text>
     </string>
     <string>
       <key>Tab_Options_Character</key>
-      <text>Character and Printing</text>
+      <text>Character Options</text>
+    </string>
+    <string>
+      <key>Tab_Options_GitHubIssues</key>
+      <text>GitHub Issues</text>
     </string>
     <string>
       <key>Tab_Options_Miscellaneous</key>
       <text>Miscellaneous</text>
     </string>
     <string>
-      <key>Label_Options_AdditionalBooks</key>
-      <text>Additional Sourcebooks to Use</text>
+      <key>Label_Options_EditSourcebookInfo</key>
+      <text>Edit Sourcebook Info</text>
+    </string>
+    <string>
+      <key>Label_Options_SourcebooksToUse</key>
+      <text>Sourcebooks to Use</text>
+    </string>
+    <string>
+      <key>Label_Options_SelectedSourcebook</key>
+      <text>Selected Sourcebook:</text>
+    </string>
+    <string>
+      <key>Label_Options_CustomDataDirectories</key>
+      <text>Custom Data Directories to Use (Changes Are Only Applied After a Restart)</text>
+    </string>
+    <string>
+      <key>Button_Options_UploadPastebin</key>
+      <text>Upload file to Pastebin</text>
     </string>
     <string>
       <key>Label_Options_Defaults</key>
-      <text>Defaults for New Characters</text>
+      <text>Defaults for New Characters:</text>
     </string>
     <string>
       <key>Label_Options_CyberlimbCount</key>
-      <text>Limbs for Standard Characters:</text>
+      <text>Limb Count for Cyberlimbs:</text>
     </string>
     <string>
       <key>Label_Options_NuyenPerBP</key>
-      <text>Nuyen per Build Point:</text>
+      <text>Nuyen per Karma</text>
     </string>
     <string>
       <key>Checkbox_Options_MayBuyQualities</key>
@@ -7332,6 +7357,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>New Advanced Program (AI)</text>
     </string>
     <string>
+      <key>Label_Options_MetatypesCostKarma</key>
+      <text>Metatype Karma Cost Multiplier</text>
+    </string>
+    <string>
       <key>Button_Options_RestoreDefaults</key>
       <text>Restore Defaults</text>
     </string>
@@ -7377,7 +7406,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_Options_MoreLethalGameplace</key>
-      <text>More Lethal Gameplay (SR4 75)</text>
+      <text>Use 4th Edition Rules for More Lethal Gameplay (SR4 75)</text>
     </string>
     <string>
       <key>Checkbox_Options_LimitSkills</key>
@@ -7386,10 +7415,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Checkbox_Options_SkillRegroup</key>
       <text>Allow Skills to be re-Grouped if all Ratings are the same</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_MetatypesCostKarma</key>
-      <text>Metatypes cost Karma equal to their Karma</text>
     </string>
     <string>
       <key>Checkbox_Options_FreeContactPointsKarma</key>
@@ -7561,7 +7586,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_Option_CreateBackupOnCareer</key>
-      <text>Create backup of character before moving them to Career Mode</text>
+      <text>Create backup of characters before moving them to Career Mode</text>
     </string>
     <string>
       <key>Checkbox_Option_AllowExceedAttributeBP</key>
@@ -7713,7 +7738,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Label_Options_CharacterRoster</key>
-      <text>Character Roster Watch Folder</text>
+      <text>Character Roster Watch Folder:</text>
     </string>
     <string>
       <key>Label_Options_NuyenDecimalsMinimum</key>

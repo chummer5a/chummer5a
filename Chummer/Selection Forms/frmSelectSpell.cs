@@ -152,7 +152,7 @@ namespace Chummer
                 cboCategory.SelectedIndex = 0;
             cboCategory.EndUpdate();
 
-            // Don't show the Extended Spell checkbox if the option to Extend any Detection Spell is diabled.
+            // Don't show the Extended Spell checkbox if the option to Extend any Detection Spell is disabled.
             chkExtended.Visible = _objCharacter.Options.ExtendAnyDetectionSpell;
             _blnLoading = false;
             BuildSpellList();

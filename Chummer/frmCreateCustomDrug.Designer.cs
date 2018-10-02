@@ -46,7 +46,7 @@ namespace Chummer
             this.txtDrugName = new System.Windows.Forms.TextBox();
             this.lblGrade = new System.Windows.Forms.Label();
             this.cboGrade = new ElasticComboBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -266,6 +266,6 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtDrugName;
 		private System.Windows.Forms.Label lblGrade;
 		private ElasticComboBox cboGrade;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
     }
 }

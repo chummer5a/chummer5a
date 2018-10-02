@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
 	Chummer5a is free software: you can redistribute it and/or modify
@@ -3153,10 +3153,10 @@
 				<translate>Shadowrun: Mission Sioux-Nation</translate>
 				<altcode>SFCC</altcode>
 			</book>
-			<book>
+			<book translated="True">
 				<id>c74e950e-3554-4a44-9060-5a2840302538</id>
 				<name>Dark Terrors</name>
-				<translate>Im Herzen der Dunkelheit</translate>
+				<translate>Im Herz der Dunkelheit</translate>
 				<altcode>DTR</altcode>
 			</book>
 			<book>
@@ -10278,8 +10278,8 @@
 			<echo>
 				<id>2c5953bf-3680-4ce5-9087-2e1e419937b2</id>
 				<name>Defrag</name>
-				<translate>Defrag</translate>
-				<altpage>85</altpage>
+				<translate>Defragmentieren</translate>
+				<altpage>84</altpage>
 			</echo>
 			<echo>
 				<id>64710f70-897a-4505-829d-7d0ade750b24</id>
@@ -17718,17 +17718,17 @@
 				<translate>Ewiger Tresor</translate>
 				<altpage>186</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>466b1d86-e088-4973-b914-a405ba0829f7</id>
 				<name>NanoScrub</name>
 				<translate>NanoScrub</translate>
-				<altpage>83</altpage>
+				<altpage>82</altpage>
 			</gear>
 			<gear>
 				<id>a9b847fd-d3ec-46e1-a7b0-e339b4221453</id>
 				<name>Overwriter Nanites</name>
-				<translate>Overwriter Nanites</translate>
-				<altpage>83</altpage>
+				<translate>Überschreiber-Naniten</translate>
+				<altpage>82</altpage>
 			</gear>
 			<gear>
 				<id>9bb893c0-2cab-4f7f-a0cf-bdacc940254b</id>
@@ -18317,6 +18317,24 @@
 				<name>Narcojet Dazzler</name>
 				<translate>Narcojet Dazzler</translate>
 				<altpage>46</altpage>
+			</gear>
+			<gear>
+				<id>f13d9739-aa52-4260-ad2f-0eacde7b9e13</id>
+				<name>Public Grid</name>
+				<translate>Öffentliches Gitter</translate>
+				<altpage>231</altpage>
+			</gear>
+			<gear>
+				<id>9bb90566-c924-477e-b6ee-71d350548e9b</id>
+				<name>Local Grid</name>
+				<translate>Lokales Gitter</translate>
+				<altpage>231</altpage>
+			</gear>
+			<gear>
+				<id>42d552fd-d939-42db-a88a-7cde7451dded</id>
+				<name>Global Grid</name>
+				<translate>Globales Gitter</translate>
+				<altpage>231</altpage>
 			</gear>
 		</gears>
 	</chummer>
@@ -21974,20 +21992,20 @@
 			<metamagic>
 				<id>0ab2d588-34f5-4204-aee2-b944e5db411a</id>
 				<name>Essence Expansion</name>
-				<translate>Essence Expansion</translate>
-				<altpage>165</altpage>
+				<translate>Essenzerweiterung</translate>
+				<altpage>166</altpage>
 			</metamagic>
 			<metamagic>
 				<id>2bd5228e-6698-4905-aecb-45fa5653456c</id>
 				<name>Enhanced Mist Form</name>
-				<translate>Enhanced Mist Form</translate>
-				<altpage>165</altpage>
+				<translate>Verbesserte Nebelgestalt</translate>
+				<altpage>166</altpage>
 			</metamagic>
 			<metamagic>
 				<id>42f5af49-ade3-43a7-b501-25ae975a574b</id>
 				<name>Spiritual Sacrifice</name>
-				<translate>Spiritual Sacrifice</translate>
-				<altpage>165</altpage>
+				<translate>Echoverbindung</translate>
+				<altpage>166</altpage>
 			</metamagic>
 		</metamagics>
 		<arts>
@@ -28496,26 +28514,28 @@
 			<quality>
 				<id>b0321887-df33-49d9-9d2e-e718eca9c7a0</id>
 				<name>Wildcard Chimera</name>
-				<translate>Wildcard Chimera</translate>
-				<altpage>163</altpage>
+				<translate>Unberechenbare Mutation</translate>
+				<altpage>165</altpage>
 			</quality>
 			<quality>
 				<id>b3373640-35cc-4a29-b2b0-6ded9acd8d4b</id>
 				<name>It Works If You Work It</name>
-				<translate>It Works If You Work It</translate>
-				<altpage>164</altpage>
+				<translate>Wo ein Wille ist, ist auch ein Weg</translate>
+				<altpage>165</altpage>
 			</quality>
 			<quality>
 				<id>254c19fc-0a5b-4f75-a6d9-614f885e3d19</id>
 				<name>Soul Swallower</name>
-				<translate>Soul Swallower</translate>
-				<altpage>164</altpage>
+				<translate>Seelenreißer</translate>
+				<altpage>165</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>94702bfe-ec3e-4b57-ba3e-8c45f214e9f1</id>
 				<name>Metaviral Attunement</name>
-				<translate>Metaviral Attunement</translate>
+				<translate>Metavirale Einstimmung</translate>
 				<altpage>164</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>3109f474-0d10-4c75-bc07-ef22afdd92ab</id>
@@ -36266,7 +36286,7 @@
 			<tradition>
 				<id>66826a89-61fb-4f4d-99d9-d96c0956b83f</id>
 				<name>Dark Magic</name>
-				<translate>Dark Magic</translate>
+				<translate>Dunkle Magie</translate>
 				<altpage>165</altpage>
 			</tradition>
 			<tradition>
@@ -36923,7 +36943,7 @@
 			</vehicle>
 			<vehicle>
 				<id>50e6572c-ea59-4756-83e4-7c51f8f614c9</id>
-				<name>Modified Dassault Janatorial Drone (Large)</name>
+				<name>Modified Dassault Janitorial Drone (Large)</name>
 				<translate>Modifizierte Dassault Hausmeisterdrohne</translate>
 				<altpage>193</altpage>
 			</vehicle>
@@ -37962,7 +37982,7 @@
 			</vehicle>
 			<vehicle>
 				<id>0ff86ef9-e35d-4f8f-bc64-0303f81f11c7</id>
-				<name>Neonet Prarie Dog (Small)</name>
+				<name>NeoNET Prarie Dog (Small)</name>
 				<translate>NeoNET Prarie Dog</translate>
 				<altpage>141</altpage>
 			</vehicle>
@@ -38118,7 +38138,7 @@
 			</vehicle>
 			<vehicle>
 				<id>a88f58ad-f4e0-448a-ba5c-00cbdd0076f6</id>
-				<name>NeoNet Avenging Angel (Huge)</name>
+				<name>NeoNET Avenging Angel (Huge)</name>
 				<translate>NeoNET Avenging Angel</translate>
 				<altpage>153</altpage>
 			</vehicle>
@@ -38238,7 +38258,7 @@
 			</vehicle>
 			<vehicle>
 				<id>b448855b-57e7-435a-b523-174adb276674</id>
-				<name>NeoNet Juggernaut</name>
+				<name>NeoNET Juggernaut</name>
 				<translate>NeoNET Juggernaught</translate>
 				<altpage>154</altpage>
 			</vehicle>
@@ -40749,7 +40769,7 @@
 				<id>63dcfdb6-bbd9-4a58-bbf4-cd35f7614fdc</id>
 				<name>Unarmed Attack</name>
 				<translate>Waffenlos</translate>
-				<altpage></altpage>
+				<altpage>132</altpage>
 			</weapon>
 			<weapon>
 				<id>9c267b03-103e-43f4-bfe8-986c69dc17d2</id>

@@ -60,7 +60,7 @@ namespace Chummer
             this.lblVehicleCapacity = new System.Windows.Forms.Label();
             this.lblVehicleCapacityLabel = new System.Windows.Forms.Label();
             this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.chkShowOnlyAffordItems = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblRatingNALabel = new System.Windows.Forms.Label();
@@ -655,7 +655,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblVehicleCapacity;
         private System.Windows.Forms.Label lblVehicleCapacityLabel;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.CheckBox chkShowOnlyAffordItems;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Label lblRatingNALabel;

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 <chummer>
 	<version>-495</version>
 	<name>Deutsch (de-DE)</name>
+  <righttoleft>False</righttoleft>
 	<strings>
 		<string>
 			<key>Message_Insufficient_Permissions_Warning</key>
@@ -4192,10 +4193,6 @@
 			<text>Weitere nutzbare Quellenbücher</text>
 		</string>
 		<string>
-			<key>Label_Options_Defaults</key>
-			<text>Standardwerte für neue Charaktere</text>
-		</string>
-		<string>
 			<key>Label_Options_CyberlimbCount</key>
 			<text>Gliedmaßen für Standard-Charaktere:</text>
 		</string>
@@ -6208,7 +6205,7 @@
 		</string>
 		<string>
 			<key>Tab_Options_Character</key>
-			<text>Charakter und ausdrucken</text>
+			<text>Charakter</text>
 		</string>
 		<string>
 			<key>Tab_Options_Miscellaneous</key>
@@ -6521,7 +6518,7 @@
 		</string>
 		<string>
 			<key>Label_Options_PDFOffset</key>
-			<text>Seitenanzahl:</text>
+			<text>Seitenversatz:</text>
 		</string>
 		<string>
 			<key>Button_Options_PDFTest</key>
@@ -6574,7 +6571,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Option_PrintToFileFirst</key>
-			<text>Linux Druckfehler-Fix nutzen.</text>
+			<text>Linux Druckfehler-Fix nutzen</text>
 		</string>
 		<string>
 			<key>Checkbox_Aerodynamic</key>
@@ -9187,6 +9184,42 @@
 			<text>Formulare schließen</text>
 		</string>
 		<string>
+			<key>Label_Options_EditSourcebookInfo</key>
+			<text>Quellenbuchangaben bearbeiten</text>
+		</string>
+		<string>
+			<key>Label_Options_SelectedSourcebook</key>
+			<text>Ausgewähltes Quellenbuch:</text>
+		</string>
+		<string>
+			<key>Label_Options_Defaults</key>
+			<text>Vorbelegung für neue Charaktere:</text>
+		</string>
+		<string>
+			<key>String_NotSupported</key>
+			<text>"Diese Kombiantion von Rasse/Metavariante ist aktuell noch unvollständig und wird in künftige Versionen vervollständigt. Versuche, einen Charakter mit dieser Kombination zu erstellen, können zu unerwarteten Ergebnissen führen."</text>
+		</string>
+		<string>
+			<key>Warning_NoLimitFound</key>
+			<text>Es konnte kein passendes Limit zum Ändern gefunden werden. Stellen Sie sicher, dass Sie einen benutzerdefinierten Limit-Modifikator gewählt haben.</text>
+		</string>
+		<string>
+			<key>Label_Options_SourcebooksToUse</key>
+			<text>Zu verwendende Quellenbücher</text>
+		</string>
+		<string>
+			<key>Label_Updater_Status</key>
+			<text>Status der Aktualisierung:</text>
+		</string>
+		<string>
+			<key>Label_Options_MetatypesCostKarma</key>
+			<text>Faktor für Metatyp Karmakosten</text>
+		</string>
+		<string>
+			<key>Label_Options_CustomDataDirectories</key>
+			<text>Anzuwendende Sonderregeln (Änderungen werden erst nach einem Programmneustart aktiv)</text>
+    </string>
+    <string>
 			<key>About_Description_Text</key>
 			<text>Charaktergenerator für Shadowrun 5. Edition\n\r\n\rDanke an Keith für die wundervolle Arbeit, die er in die Erstellung und Pflege von Chummer für die 4. Edition gesteck hat. Ohne ihn wäre das alles nicht möglich.\n\r\n\rHerzlichen Dank an alle der 'Dumpshock community', dass sie dieses Projekt mit all ihren wertvollen Rückmeldungen, tollen Ideen, Verbesserungsvorschlägen und Hinweise auf enthaltene Fehler unterstützt haben. Ein großen Dankeschön auch an alle, die sich freiwillig gemeldet haben um Chummer in andere Sprachen zu übersetzen!</text>
 		</string>

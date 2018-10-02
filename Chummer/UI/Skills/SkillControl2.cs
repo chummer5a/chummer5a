@@ -30,6 +30,7 @@ namespace Chummer.UI.Skills
     [DebuggerDisplay("{_skill.Name} {Visible} {btnAddSpec.Visible}")]
     public sealed partial class SkillControl2 : UserControl
     {
+        private bool _blnLoading = true;
         private readonly Skill _skill;
         private readonly Font _normal;
         private readonly Font _italic;
@@ -48,19 +49,19 @@ namespace Chummer.UI.Skills
                 LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
             }
             
-            Utils.DoDatabinding(this, "Enabled", skill, nameof(Skill.Enabled));
+            this.DoDatabinding("Enabled", skill, nameof(Skill.Enabled));
 
             //Display
             _normalName = lblName.Font;
             _italicName = new Font(lblName.Font, FontStyle.Italic);
             
-            Utils.DoDatabinding(this, "BackColor", skill, nameof(Skill.PreferredControlColor));
+            this.DoDatabinding("BackColor", skill, nameof(Skill.PreferredControlColor));
             
-            Utils.DoDatabinding(lblName, "Text", skill, nameof(Skill.DisplayName));
-            Utils.DoDatabinding(lblName, "ForeColor", skill, nameof(Skill.PreferredColor));
-            Utils.DoDatabinding(lblName, "ToolTipText", skill, nameof(Skill.SkillToolTip));
+            lblName.DoDatabinding("Text", skill, nameof(Skill.DisplayName));
+            lblName.DoDatabinding("ForeColor", skill, nameof(Skill.PreferredColor));
+            lblName.DoDatabinding("ToolTipText", skill, nameof(Skill.SkillToolTip));
 
-            Utils.DoDatabinding(lblModifiedRating, "ToolTipText", skill, nameof(Skill.PoolToolTip));
+            lblModifiedRating.DoDatabinding("ToolTipText", skill, nameof(Skill.PoolToolTip));
 
             _attributeActive = skill.AttributeObject;
             _skill.PropertyChanged += Skill_PropertyChanged;
@@ -164,11 +165,15 @@ namespace Chummer.UI.Skills
             lblName.Font = !_skill.Default ? _italicName : _normalName;
             lblModifiedRating.Text = _skill.DisplayOtherAttribute(_attributeActive.TotalValue, _attributeActive.Abbrev);
 
+            _blnLoading = false;
             ResumeLayout();
         }
 
         private void AttributeSection_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (_blnLoading)
+                return;
+
             if (e.PropertyName == nameof(AttributeSection.AttributeCategory))
             {
                 _attributeActive.PropertyChanged -= AttributeActiveOnPropertyChanged;
@@ -181,6 +186,9 @@ namespace Chummer.UI.Skills
 
         private void Skill_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
+            if (_blnLoading)
+                return;
+
             bool blnUpdateAll = false;
             //I learned something from this but i'm not sure it is a good solution
             //scratch that, i'm sure it is a bad solution. (Tooltip manager from tooltip, properties from reflection?
@@ -349,6 +357,9 @@ namespace Chummer.UI.Skills
 
         private void AttributeActiveOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
+            if (_blnLoading)
+                return;
+
             Skill_PropertyChanged(sender, new PropertyChangedEventArgs(nameof(Skill.Rating)));
         }
 
@@ -359,6 +370,9 @@ namespace Chummer.UI.Skills
 
         private void cboSpec_TextChanged(object sender, EventArgs e)
         {
+            if (_blnLoading)
+                return;
+
             if (!_skill.CharacterObject.Options.AllowPointBuySpecializationsOnKarmaSkills &&
                 !string.IsNullOrWhiteSpace(cboSpec.Text) && (nudSkill.Value == 0 || !nudSkill.Enabled))
             {

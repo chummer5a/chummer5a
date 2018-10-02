@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
@@ -52,6 +51,8 @@ namespace Chummer
         private MouseButtons _eDragButton = MouseButtons.None;
         private bool _blnDraggingGear;
 
+        public TreeView FociTree => treFoci;
+
         private readonly ListViewColumnSorter _lvwKarmaColumnSorter;
         private readonly ListViewColumnSorter _lvwNuyenColumnSorter;
 
@@ -73,7 +74,9 @@ namespace Chummer
 
             tabPowerUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
-            
+            lmtControl.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
+            lmtControl.MakeDirty += MakeDirty;
+
             Program.MainForm.OpenCharacterForms.Add(this);
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
@@ -159,7 +162,6 @@ namespace Chummer
             lstNuyen.ListViewItemSorter = _lvwNuyenColumnSorter;
 
             SetTooltips();
-            MoveControls();
         }
 
         private void TreeView_MouseDown(object sender, MouseEventArgs e)
@@ -204,24 +206,24 @@ namespace Chummer
             txtGroupNotes.DataBindings.Add("Text", CharacterObject, nameof(Character.GroupNotes), false, DataSourceUpdateMode.OnPropertyChanged);
             chkJoinGroup.Checked = CharacterObject.GroupMember;
 
-            Utils.DoDatabinding(txtCharacterName, "Text", CharacterObject, nameof(Character.Name));
-            Utils.DoDatabinding(txtSex, "Text", CharacterObject, nameof(Character.Sex));
-            Utils.DoDatabinding(txtAge, "Text", CharacterObject, nameof(Character.Age));
-            Utils.DoDatabinding(txtEyes, "Text", CharacterObject, nameof(Character.Eyes));
-            Utils.DoDatabinding(txtHeight, "Text", CharacterObject, nameof(Character.Height));
-            Utils.DoDatabinding(txtWeight, "Text", CharacterObject, nameof(Character.Weight));
-            Utils.DoDatabinding(txtSkin, "Text", CharacterObject, nameof(Character.Skin));
-            Utils.DoDatabinding(txtHair, "Text", CharacterObject, nameof(Character.Hair));
-            Utils.DoDatabinding(txtDescription, "Text", CharacterObject, nameof(Character.Description));
-            Utils.DoDatabinding(txtBackground, "Text", CharacterObject, nameof(Character.Background));
-            Utils.DoDatabinding(txtConcept, "Text", CharacterObject, nameof(Character.Concept));
-            Utils.DoDatabinding(txtNotes, "Text", CharacterObject, nameof(Character.Notes));
-            Utils.DoDatabinding(txtGameNotes, "Text", CharacterObject, nameof(Character.GameNotes));
-            Utils.DoDatabinding(txtAlias, "Text", CharacterObject, nameof(Character.Alias));
-            Utils.DoDatabinding(txtPlayerName, "Text", CharacterObject, nameof(Character.PlayerName));
+            txtCharacterName.DoDatabinding("Text", CharacterObject, nameof(Character.Name));
+            txtSex.DoDatabinding("Text", CharacterObject, nameof(Character.Sex));
+            txtAge.DoDatabinding("Text", CharacterObject, nameof(Character.Age));
+            txtEyes.DoDatabinding("Text", CharacterObject, nameof(Character.Eyes));
+            txtHeight.DoDatabinding("Text", CharacterObject, nameof(Character.Height));
+            txtWeight.DoDatabinding("Text", CharacterObject, nameof(Character.Weight));
+            txtSkin.DoDatabinding("Text", CharacterObject, nameof(Character.Skin));
+            txtHair.DoDatabinding("Text", CharacterObject, nameof(Character.Hair));
+            txtDescription.DoDatabinding("Text", CharacterObject, nameof(Character.Description));
+            txtBackground.DoDatabinding("Text", CharacterObject, nameof(Character.Background));
+            txtConcept.DoDatabinding("Text", CharacterObject, nameof(Character.Concept));
+            txtNotes.DoDatabinding("Text", CharacterObject, nameof(Character.Notes));
+            txtGameNotes.DoDatabinding("Text", CharacterObject, nameof(Character.GameNotes));
+            txtAlias.DoDatabinding("Text", CharacterObject, nameof(Character.Alias));
+            txtPlayerName.DoDatabinding("Text", CharacterObject, nameof(Character.PlayerName));
 
 
-            Utils.DoDatabinding(chkInitiationGroup, "Checked", CharacterObject, nameof(Character.GroupMember));
+            chkInitiationGroup.DoDatabinding("Checked", CharacterObject, nameof(Character.GroupMember));
 
             // If the character has a mugshot, decode it and put it in the PictureBox.
             if (CharacterObject.Mugshots.Count > 0)
@@ -240,10 +242,10 @@ namespace Chummer
 
             // Refresh character information fields.
             RefreshMetatypeFields();
-            Utils.DoDatabinding(nudStreetCred,  "Value", CharacterObject, nameof(Character.StreetCred));
-            Utils.DoDatabinding(nudNotoriety,   "Value", CharacterObject, nameof(Character.Notoriety));
-            Utils.DoDatabinding(nudPublicAware, "Value", CharacterObject, nameof(Character.PublicAwareness));
-            Utils.DoDatabinding(cmdAddMetamagic, "Enabled", CharacterObject, nameof(Character.AddInitiationsAllowed));
+            nudStreetCred.DoDatabinding("Value", CharacterObject, nameof(Character.StreetCred));
+            nudNotoriety.DoDatabinding("Value", CharacterObject, nameof(Character.Notoriety));
+            nudPublicAware.DoDatabinding("Value", CharacterObject, nameof(Character.PublicAwareness));
+            cmdAddMetamagic.DoDatabinding("Enabled", CharacterObject, nameof(Character.AddInitiationsAllowed));
 
             RefreshQualities(treQualities, cmsQuality);
             RefreshSpirits(panSpirits, panSprites);
@@ -347,16 +349,16 @@ namespace Chummer
             cboDrain.ValueMember = nameof(ListItem.Value);
             cboDrain.DisplayMember = nameof(ListItem.Name);
             cboDrain.DataSource = lstDrainAttributes;
-            Utils.DoDatabinding(cboDrain, "SelectedValue", CharacterObject.MagicTradition, nameof(Tradition.DrainExpression));
+            cboDrain.DoDatabinding("SelectedValue", CharacterObject.MagicTradition, nameof(Tradition.DrainExpression));
             cboDrain.EndUpdate();
             
-            Utils.DoDatabinding(lblDrainAttributes, "Text", CharacterObject.MagicTradition, nameof(Tradition.DisplayDrainExpression));
-            Utils.DoDatabinding(lblDrainAttributesValue, "Text", CharacterObject.MagicTradition, nameof(Tradition.DrainValue));
-            Utils.DoDatabinding(lblDrainAttributesValue, "ToolTipText", CharacterObject.MagicTradition, nameof(Tradition.DrainValueToolTip));
+            lblDrainAttributes.DoDatabinding("Text", CharacterObject.MagicTradition, nameof(Tradition.DisplayDrainExpression));
+            lblDrainAttributesValue.DoDatabinding("Text", CharacterObject.MagicTradition, nameof(Tradition.DrainValue));
+            lblDrainAttributesValue.DoDatabinding("ToolTipText", CharacterObject.MagicTradition, nameof(Tradition.DrainValueToolTip));
 
-            Utils.DoDatabinding(lblFadingAttributes, "Text", CharacterObject.MagicTradition, nameof(Tradition.DisplayDrainExpression));
-            Utils.DoDatabinding(lblFadingAttributesValue, "Text", CharacterObject.MagicTradition, nameof(Tradition.DrainValue));
-            Utils.DoDatabinding(lblFadingAttributesValue, "ToolTipText", CharacterObject.MagicTradition, nameof(Tradition.DrainValueToolTip));
+            lblFadingAttributes.DoDatabinding("Text", CharacterObject.MagicTradition, nameof(Tradition.DisplayDrainExpression));
+            lblFadingAttributesValue.DoDatabinding("Text", CharacterObject.MagicTradition, nameof(Tradition.DrainValue));
+            lblFadingAttributesValue.DoDatabinding("ToolTipText", CharacterObject.MagicTradition, nameof(Tradition.DrainValueToolTip));
 
             HashSet<string> limit = new HashSet<string>();
             foreach (Improvement improvement in CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LimitSpiritCategory && x.Enabled))
@@ -390,7 +392,7 @@ namespace Chummer
             cboSpiritCombat.ValueMember = "Value";
             cboSpiritCombat.DisplayMember = "Name";
             cboSpiritCombat.DataSource = lstCombat;
-            Utils.DoDatabinding(cboSpiritCombat, "SelectedValue", CharacterObject.MagicTradition, nameof(Tradition.SpiritCombat));
+            cboSpiritCombat.DoDatabinding("SelectedValue", CharacterObject.MagicTradition, nameof(Tradition.SpiritCombat));
             lblSpiritCombat.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
             cboSpiritCombat.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
             cboSpiritCombat.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
@@ -401,7 +403,7 @@ namespace Chummer
             cboSpiritDetection.ValueMember = "Value";
             cboSpiritDetection.DisplayMember = "Name";
             cboSpiritDetection.DataSource = lstDetection;
-            Utils.DoDatabinding(cboSpiritDetection, "SelectedValue", CharacterObject.MagicTradition, nameof(Tradition.SpiritDetection));
+            cboSpiritDetection.DoDatabinding("SelectedValue", CharacterObject.MagicTradition, nameof(Tradition.SpiritDetection));
             lblSpiritDetection.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
             cboSpiritDetection.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
             cboSpiritDetection.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
@@ -412,7 +414,7 @@ namespace Chummer
             cboSpiritHealth.ValueMember = "Value";
             cboSpiritHealth.DisplayMember = "Name";
             cboSpiritHealth.DataSource = lstHealth;
-            Utils.DoDatabinding(cboSpiritHealth, "SelectedValue", CharacterObject.MagicTradition, nameof(Tradition.SpiritHealth));
+            cboSpiritHealth.DoDatabinding("SelectedValue", CharacterObject.MagicTradition, nameof(Tradition.SpiritHealth));
             lblSpiritHealth.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
             cboSpiritHealth.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
             cboSpiritHealth.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
@@ -423,7 +425,7 @@ namespace Chummer
             cboSpiritIllusion.ValueMember = "Value";
             cboSpiritIllusion.DisplayMember = "Name";
             cboSpiritIllusion.DataSource = lstIllusion;
-            Utils.DoDatabinding(cboSpiritIllusion, "SelectedValue", CharacterObject.MagicTradition, nameof(Tradition.SpiritIllusion));
+            cboSpiritIllusion.DoDatabinding("SelectedValue", CharacterObject.MagicTradition, nameof(Tradition.SpiritIllusion));
             lblSpiritIllusion.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
             cboSpiritIllusion.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
             cboSpiritIllusion.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
@@ -434,7 +436,7 @@ namespace Chummer
             cboSpiritManipulation.ValueMember = "Value";
             cboSpiritManipulation.DisplayMember = "Name";
             cboSpiritManipulation.DataSource = lstManip;
-            Utils.DoDatabinding(cboSpiritManipulation, "SelectedValue", CharacterObject.MagicTradition, nameof(Tradition.SpiritManipulation));
+            cboSpiritManipulation.DoDatabinding("SelectedValue", CharacterObject.MagicTradition, nameof(Tradition.SpiritManipulation));
             lblSpiritManipulation.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
             cboSpiritManipulation.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
             cboSpiritManipulation.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
@@ -491,8 +493,8 @@ namespace Chummer
                 cboAttributeCategory.SelectedValue = "Standard";
             }
 
-            Utils.DoDatabinding(lblMysticAdeptMAGAdept, "Text", CharacterObject, nameof(Character.MysticAdeptPowerPoints));
-            Utils.DoDatabinding(cmdIncreasePowerPoints, "Enabled", CharacterObject, nameof(Character.CanAffordCareerPP));
+            lblMysticAdeptMAGAdept.DoDatabinding("Text", CharacterObject, nameof(Character.MysticAdeptPowerPoints));
+            cmdIncreasePowerPoints.DoDatabinding("Enabled", CharacterObject, nameof(Character.CanAffordCareerPP));
 
             // Populate vehicle weapon fire mode list.
             List<ListItem> lstFireModes = new List<ListItem>();
@@ -515,7 +517,7 @@ namespace Chummer
             else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
                 cboTradition.SelectedIndex = 0;
 
-            Utils.DoDatabinding(txtTraditionName, "Text", CharacterObject.MagicTradition, nameof(Tradition.Name));
+            txtTraditionName.DoDatabinding("Text", CharacterObject.MagicTradition, nameof(Tradition.Name));
 
             // Select the Technomancer's Stream.
             if (CharacterObject.MagicTradition.Type == TraditionType.RES)
@@ -560,92 +562,92 @@ namespace Chummer
             foreach (PropertyInfo objProperty in CharacterObject.GetType().GetProperties())
                 OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(objProperty.Name));
 
-            Utils.DoDatabinding(lblCMPenalty,   "Text", CharacterObject, nameof(Character.WoundModifier));
-            Utils.DoDatabinding(lblCMPhysical,  "Text", CharacterObject, nameof(Character.PhysicalCM));
-            Utils.DoDatabinding(lblCMStun,      "Text", CharacterObject, nameof(Character.StunCM));
+            lblCMPenalty.DoDatabinding("Text", CharacterObject, nameof(Character.WoundModifier));
+            lblCMPhysical.DoDatabinding("Text", CharacterObject, nameof(Character.PhysicalCM));
+            lblCMStun.DoDatabinding("Text", CharacterObject, nameof(Character.StunCM));
 
-            Utils.DoDatabinding(lblESSMax, "Text", CharacterObject, nameof(Character.DisplayEssence));
-            Utils.DoDatabinding(lblCyberwareESS, "Text", CharacterObject, nameof(Character.DisplayCyberwareEssence));
-            Utils.DoDatabinding(lblBiowareESS, "Text", CharacterObject, nameof(Character.DisplayBiowareEssence));
-            Utils.DoDatabinding(lblEssenceHoleESS, "Text", CharacterObject, nameof(Character.DisplayEssenceHole));
+            lblESSMax.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayEssence));
+            lblCyberwareESS.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayCyberwareEssence));
+            lblBiowareESS.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayBiowareEssence));
+            lblEssenceHoleESS.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayEssenceHole));
 
-            Utils.DoDatabinding(lblArmor, "Text", CharacterObject, nameof(Character.TotalArmorRating));
-            Utils.DoDatabinding(lblArmor, "ToolTipText", CharacterObject, nameof(Character.TotalArmorRatingToolTip));
-            Utils.DoDatabinding(lblCMArmor, "Text", CharacterObject, nameof(Character.TotalArmorRating));
-            Utils.DoDatabinding(lblCMArmor, "ToolTipText", CharacterObject, nameof(Character.TotalArmorRatingToolTip));
+            lblArmor.DoDatabinding("Text", CharacterObject, nameof(Character.TotalArmorRating));
+            lblArmor.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.TotalArmorRatingToolTip));
+            lblCMArmor.DoDatabinding("Text", CharacterObject, nameof(Character.TotalArmorRating));
+            lblCMArmor.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.TotalArmorRatingToolTip));
 
-            Utils.DoDatabinding(lblSpellDefenceIndirectDodge, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseIndirectDodge));
-            Utils.DoDatabinding(lblSpellDefenceIndirectDodge, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseIndirectDodgeToolTip));
-            Utils.DoDatabinding(lblSpellDefenceIndirectSoak, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseIndirectSoak));
-            Utils.DoDatabinding(lblSpellDefenceIndirectSoak, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseIndirectSoakToolTip));
-            Utils.DoDatabinding(lblSpellDefenceDirectSoakMana, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDirectSoakMana));
-            Utils.DoDatabinding(lblSpellDefenceDirectSoakMana, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDirectSoakManaToolTip));
-            Utils.DoDatabinding(lblSpellDefenceDirectSoakPhysical, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDirectSoakPhysical));
-            Utils.DoDatabinding(lblSpellDefenceDirectSoakPhysical, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDirectSoakPhysicalToolTip));
-            Utils.DoDatabinding(lblSpellDefenceDetection, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDetection));
-            Utils.DoDatabinding(lblSpellDefenceDetection, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDetectionToolTip));
-            Utils.DoDatabinding(lblSpellDefenceDecAttBOD, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseBOD));
-            Utils.DoDatabinding(lblSpellDefenceDecAttBOD, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseBODToolTip));
-            Utils.DoDatabinding(lblSpellDefenceDecAttAGI, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseAGI));
-            Utils.DoDatabinding(lblSpellDefenceDecAttAGI, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseAGIToolTip));
-            Utils.DoDatabinding(lblSpellDefenceDecAttREA, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseREA));
-            Utils.DoDatabinding(lblSpellDefenceDecAttREA, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseREAToolTip));
-            Utils.DoDatabinding(lblSpellDefenceDecAttSTR, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseSTR));
-            Utils.DoDatabinding(lblSpellDefenceDecAttSTR, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseSTRToolTip));
-            Utils.DoDatabinding(lblSpellDefenceDecAttCHA, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseCHA));
-            Utils.DoDatabinding(lblSpellDefenceDecAttCHA, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseCHAToolTip));
-            Utils.DoDatabinding(lblSpellDefenceDecAttINT, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseINT));
-            Utils.DoDatabinding(lblSpellDefenceDecAttINT, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseINTToolTip));
-            Utils.DoDatabinding(lblSpellDefenceDecAttLOG, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseLOG));
-            Utils.DoDatabinding(lblSpellDefenceDecAttLOG, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseLOGToolTip));
-            Utils.DoDatabinding(lblSpellDefenceDecAttWIL, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseWIL));
-            Utils.DoDatabinding(lblSpellDefenceDecAttWIL, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseWILToolTip));
-            Utils.DoDatabinding(lblSpellDefenceIllusionMana, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseIllusionMana));
-            Utils.DoDatabinding(lblSpellDefenceIllusionMana, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseIllusionManaToolTip));
-            Utils.DoDatabinding(lblSpellDefenceIllusionPhysical, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseIllusionPhysical));
-            Utils.DoDatabinding(lblSpellDefenceIllusionPhysical, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseIllusionPhysicalToolTip));
-            Utils.DoDatabinding(lblSpellDefenceManipMental, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseManipulationMental));
-            Utils.DoDatabinding(lblSpellDefenceManipMental, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseManipulationMentalToolTip));
-            Utils.DoDatabinding(lblSpellDefenceManipPhysical, "Text", CharacterObject, nameof(Character.DisplaySpellDefenseManipulationPhysical));
-            Utils.DoDatabinding(lblSpellDefenceManipPhysical, "ToolTipText", CharacterObject, nameof(Character.SpellDefenseManipulationPhysicalToolTip));
-            Utils.DoDatabinding(nudCounterspellingDice, "Value", CharacterObject, nameof(Character.CurrentCounterspellingDice));
+            lblSpellDefenceIndirectDodge.DoDatabinding("Text", CharacterObject, nameof(Character.DisplaySpellDefenseIndirectDodge));
+            lblSpellDefenceIndirectDodge.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.SpellDefenseIndirectDodgeToolTip));
+            lblSpellDefenceIndirectSoak.DoDatabinding("Text", CharacterObject, nameof(Character.DisplaySpellDefenseIndirectSoak));
+            lblSpellDefenceIndirectSoak.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.SpellDefenseIndirectSoakToolTip));
+            lblSpellDefenceDirectSoakMana.DoDatabinding("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDirectSoakMana));
+            lblSpellDefenceDirectSoakMana.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDirectSoakManaToolTip));
+            lblSpellDefenceDirectSoakPhysical.DoDatabinding("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDirectSoakPhysical));
+            lblSpellDefenceDirectSoakPhysical.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDirectSoakPhysicalToolTip));
+            lblSpellDefenceDetection.DoDatabinding("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDetection));
+            lblSpellDefenceDetection.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDetectionToolTip));
+            lblSpellDefenceDecAttBOD.DoDatabinding("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseBOD));
+            lblSpellDefenceDecAttBOD.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseBODToolTip));
+            lblSpellDefenceDecAttAGI.DoDatabinding("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseAGI));
+            lblSpellDefenceDecAttAGI.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseAGIToolTip));
+            lblSpellDefenceDecAttREA.DoDatabinding("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseREA));
+            lblSpellDefenceDecAttREA.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseREAToolTip));
+            lblSpellDefenceDecAttSTR.DoDatabinding("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseSTR));
+            lblSpellDefenceDecAttSTR.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseSTRToolTip));
+            lblSpellDefenceDecAttCHA.DoDatabinding("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseCHA));
+            lblSpellDefenceDecAttCHA.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseCHAToolTip));
+            lblSpellDefenceDecAttINT.DoDatabinding("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseINT));
+            lblSpellDefenceDecAttINT.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseINTToolTip));
+            lblSpellDefenceDecAttLOG.DoDatabinding("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseLOG));
+            lblSpellDefenceDecAttLOG.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseLOGToolTip));
+            lblSpellDefenceDecAttWIL.DoDatabinding("Text", CharacterObject, nameof(Character.DisplaySpellDefenseDecreaseWIL));
+            lblSpellDefenceDecAttWIL.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.SpellDefenseDecreaseWILToolTip));
+            lblSpellDefenceIllusionMana.DoDatabinding("Text", CharacterObject, nameof(Character.DisplaySpellDefenseIllusionMana));
+            lblSpellDefenceIllusionMana.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.SpellDefenseIllusionManaToolTip));
+            lblSpellDefenceIllusionPhysical.DoDatabinding("Text", CharacterObject, nameof(Character.DisplaySpellDefenseIllusionPhysical));
+            lblSpellDefenceIllusionPhysical.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.SpellDefenseIllusionPhysicalToolTip));
+            lblSpellDefenceManipMental.DoDatabinding("Text", CharacterObject, nameof(Character.DisplaySpellDefenseManipulationMental));
+            lblSpellDefenceManipMental.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.SpellDefenseManipulationMentalToolTip));
+            lblSpellDefenceManipPhysical.DoDatabinding("Text", CharacterObject, nameof(Character.DisplaySpellDefenseManipulationPhysical));
+            lblSpellDefenceManipPhysical.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.SpellDefenseManipulationPhysicalToolTip));
+            nudCounterspellingDice.DoDatabinding("Value", CharacterObject, nameof(Character.CurrentCounterspellingDice));
 
-            Utils.DoDatabinding(lblMovement, "Text", CharacterObject, nameof(Character.DisplayMovement));
-            Utils.DoDatabinding(lblSwim, "Text", CharacterObject, nameof(Character.DisplaySwim));
-            Utils.DoDatabinding(lblFly, "Text", CharacterObject, nameof(Character.DisplayFly));
+            lblMovement.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayMovement));
+            lblSwim.DoDatabinding("Text", CharacterObject, nameof(Character.DisplaySwim));
+            lblFly.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayFly));
 
-            Utils.DoDatabinding(lblRemainingNuyen, "Text", CharacterObject, nameof(Character.DisplayNuyen));
-            Utils.DoDatabinding(lblCareerKarma, "Text", CharacterObject, nameof(Character.DisplayCareerKarma));
-            Utils.DoDatabinding(lblCareerNuyen, "Text", CharacterObject, nameof(Character.DisplayCareerNuyen));
+            lblRemainingNuyen.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayNuyen));
+            lblCareerKarma.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayCareerKarma));
+            lblCareerNuyen.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayCareerNuyen));
 
-            Utils.DoDatabinding(lblStreetCredTotal, "Text", CharacterObject, nameof(Character.TotalStreetCred));
-            Utils.DoDatabinding(lblStreetCredTotal, "ToolTipText", CharacterObject, nameof(Character.StreetCredTooltip));
-            Utils.DoDatabinding(lblNotorietyTotal, "Text", CharacterObject, nameof(Character.TotalNotoriety));
-            Utils.DoDatabinding(lblNotorietyTotal, "ToolTipText", CharacterObject, nameof(Character.NotorietyTooltip));
-            Utils.DoDatabinding(lblPublicAwareTotal, "Text", CharacterObject, nameof(Character.TotalPublicAwareness));
-            Utils.DoDatabinding(lblPublicAwareTotal, "ToolTipText", CharacterObject, nameof(Character.PublicAwarenessTooltip));
+            lblStreetCredTotal.DoDatabinding("Text", CharacterObject, nameof(Character.TotalStreetCred));
+            lblStreetCredTotal.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.StreetCredTooltip));
+            lblNotorietyTotal.DoDatabinding("Text", CharacterObject, nameof(Character.TotalNotoriety));
+            lblNotorietyTotal.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.NotorietyTooltip));
+            lblPublicAwareTotal.DoDatabinding("Text", CharacterObject, nameof(Character.TotalPublicAwareness));
+            lblPublicAwareTotal.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.PublicAwarenessTooltip));
 
-            Utils.DoDatabinding(lblMentorSpirit, "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayName));
-            Utils.DoDatabinding(lblMentorSpiritInformation, "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayInformation));
-            Utils.DoDatabinding(lblParagon, "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayName));
-            Utils.DoDatabinding(lblParagonInformation, "Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayInformation));
+            lblMentorSpirit.DoDatabinding("Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayName));
+            lblMentorSpiritInformation.DoDatabinding("Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayInformation));
+            lblParagon.DoDatabinding("Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayName));
+            lblParagonInformation.DoDatabinding("Text", CharacterObject, nameof(Character.FirstMentorSpiritDisplayInformation));
 
-            Utils.DoDatabinding(lblComposure, "ToolTipText", CharacterObject, nameof(Character.ComposureToolTip));
-            Utils.DoDatabinding(lblComposure, "Text", CharacterObject, nameof(Character.Composure));
-            Utils.DoDatabinding(lblJudgeIntentions, "ToolTipText", CharacterObject, nameof(Character.JudgeIntentionsToolTip));
-            Utils.DoDatabinding(lblJudgeIntentions, "Text", CharacterObject, nameof(Character.JudgeIntentions));
-            Utils.DoDatabinding(lblLiftCarry, "ToolTipText", CharacterObject, nameof(Character.LiftAndCarryToolTip));
-            Utils.DoDatabinding(lblLiftCarry, "Text", CharacterObject, nameof(Character.LiftAndCarry));
-            Utils.DoDatabinding(lblMemory, "ToolTipText", CharacterObject, nameof(Character.MemoryToolTip));
-            Utils.DoDatabinding(lblMemory, "Text", CharacterObject, nameof(Character.Memory));
+            lblComposure.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.ComposureToolTip));
+            lblComposure.DoDatabinding("Text", CharacterObject, nameof(Character.Composure));
+            lblJudgeIntentions.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.JudgeIntentionsToolTip));
+            lblJudgeIntentions.DoDatabinding("Text", CharacterObject, nameof(Character.JudgeIntentions));
+            lblLiftCarry.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.LiftAndCarryToolTip));
+            lblLiftCarry.DoDatabinding("Text", CharacterObject, nameof(Character.LiftAndCarry));
+            lblMemory.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.MemoryToolTip));
+            lblMemory.DoDatabinding("Text", CharacterObject, nameof(Character.Memory));
 
-            Utils.DoDatabinding(cmdAddCyberware, "Enabled", CharacterObject, nameof(Character.AddCyberwareEnabled));
-            Utils.DoDatabinding(cmdAddBioware, "Enabled", CharacterObject, nameof(Character.AddBiowareEnabled));
-            Utils.DoDatabinding(cmdBurnStreetCred, "Enabled", CharacterObject, nameof(Character.CanBurnStreetCred));
+            cmdAddCyberware.DoDatabinding("Enabled", CharacterObject, nameof(Character.AddCyberwareEnabled));
+            cmdAddBioware.DoDatabinding("Enabled", CharacterObject, nameof(Character.AddBiowareEnabled));
+            cmdBurnStreetCred.DoDatabinding("Enabled", CharacterObject, nameof(Character.CanBurnStreetCred));
 
-            Utils.DoDatabinding(lblEDGInfo, "Text", CharacterObject.EDG, nameof(CharacterAttrib.CareerRemainingString));
-            Utils.DoDatabinding(lblCMDamageResistancePool, "ToolTipText", CharacterObject, nameof(Character.DamageResistancePoolToolTip));
-            Utils.DoDatabinding(lblCMDamageResistancePool, "Text", CharacterObject, nameof(Character.DamageResistancePool));
+            lblEDGInfo.DoDatabinding("Text", CharacterObject.EDG, nameof(CharacterAttrib.CareerRemainingString));
+            lblCMDamageResistancePool.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.DamageResistancePoolToolTip));
+            lblCMDamageResistancePool.DoDatabinding("Text", CharacterObject, nameof(Character.DamageResistancePool));
 
             RefreshAttributes(pnlAttributes);
 
@@ -667,7 +669,6 @@ namespace Chummer
             // Clear the Dirty flag which gets set when creating a new Character.
             IsDirty = false;
             RefreshPasteStatus();
-            frmCareer_Resize(sender, e);
             picMugshot_SizeChanged(sender, e);
             // Stupid hack to get the MDI icon to show up properly.
             Icon = Icon.Clone() as Icon;
@@ -683,6 +684,8 @@ namespace Chummer
                     CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
                 }
             }
+
+            Cursor = Cursors.Default;
         }
 
         private void OptionsChanged(object sender, PropertyChangedEventArgs e)
@@ -979,29 +982,6 @@ namespace Chummer
             ToolStripManager.RevertMerge("toolStrip");
             ToolStripManager.Merge(toolStrip, "toolStrip");
         }
-
-        private void frmCareer_Shown(object sender, EventArgs e)
-        {
-            frmCareer_Resize(sender, e);
-        }
-
-        private void frmCareer_Resize(object sender, EventArgs e)
-        {
-            TabPage objPage = tabCharacterTabs.SelectedTab;
-            // Reseize the form elements with the form.
-            // Character Info Tab.
-            int intHeight = ((objPage.Height - lblDescription.Top) / 4 - 20);
-            txtDescription.Height = intHeight;
-            lblBackground.Top = txtDescription.Top + txtDescription.Height + 3;
-            txtBackground.Top = lblBackground.Top + lblBackground.Height + 3;
-            txtBackground.Height = intHeight;
-            lblConcept.Top = txtBackground.Top + txtBackground.Height + 3;
-            txtConcept.Top = lblConcept.Top + lblConcept.Height + 3;
-            txtConcept.Height = intHeight;
-            lblNotes.Top = txtConcept.Top + txtConcept.Height + 3;
-            txtNotes.Top = lblNotes.Top + lblNotes.Height + 3;
-            txtNotes.Height = intHeight;
-        }
         #endregion
 
         #region Character Events
@@ -1076,12 +1056,6 @@ namespace Chummer
                             chkJoinGroup.Visible = true;
                             chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedGroup", GlobalOptions.Language);
 
-                            treMetamagic.Top = chkInitiationSchooling.Top + chkInitiationSchooling.Height + 6;
-                            cmdAddMetamagic.Left = treMetamagic.Left + treMetamagic.Width - cmdAddMetamagic.Width;
-                            cmdDeleteMetamagic.Left = cmdAddMetamagic.Left;
-                            lblMetamagicSourceLabel.Left = treMetamagic.Left + treMetamagic.Left + treMetamagic.Width + 6;
-                            lblMetamagicSource.Left = lblMetamagicSourceLabel.Left + lblMetamagicSourceLabel.Width + 6;
-
                             if (!SpecialAttributes.Contains(CharacterObject.MAG))
                             {
                                 SpecialAttributes.Add(CharacterObject.MAG);
@@ -1131,12 +1105,6 @@ namespace Chummer
                             cmdAddMetamagic.SetToolTip(strInitTip);
                             chkJoinGroup.Visible = true;
                             chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedNetwork", GlobalOptions.Language);
-
-                            treMetamagic.Top = chkInitiationSchooling.Top + chkInitiationSchooling.Height + 6;
-                            cmdAddMetamagic.Left = treMetamagic.Left + treMetamagic.Width - cmdAddMetamagic.Width;
-                            cmdDeleteMetamagic.Left = cmdAddMetamagic.Left;
-                            lblMetamagicSourceLabel.Left = treMetamagic.Left + treMetamagic.Left + treMetamagic.Width + 6;
-                            lblMetamagicSource.Left = lblMetamagicSourceLabel.Left + lblMetamagicSourceLabel.Width + 6;
 
                             if (!SpecialAttributes.Contains(CharacterObject.RES))
                             {
@@ -2194,7 +2162,7 @@ namespace Chummer
                 {
                     foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
                     {
-                        if (intCyberwaresCount % 2 == 0)
+                        if ((intCyberwaresCount & 1) == 0)
                         {
                             if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" && objCyberware.Forced != "Left")
                                 ImprovementManager.ForcedValue = objCyberware.Forced;
@@ -4649,7 +4617,7 @@ namespace Chummer
 
                     CharacterObject.Gear.Add(objGear);
 
-                    AddGearImprovements(objGear);
+                    objGear.AddGearImprovements();
                 }
                 else
                 {
@@ -7194,6 +7162,7 @@ namespace Chummer
         {
             tsVehicleSensorAddAsPlugin_Click(sender, e);
         }
+
         private void cmsAmmoSingleShot_Click(object sender, EventArgs e)
         {
             // Locate the selected Weapon.
@@ -8694,7 +8663,7 @@ namespace Chummer
                 return;
             }
 
-            if (strSelectedId == string.Empty)
+            if (string.IsNullOrEmpty(strSelectedId))
                 return;
 
             bool blnAddAgain;
@@ -10118,12 +10087,16 @@ namespace Chummer
             UpdateQualityLevelValue(objQuality);
             if (objQuality == null)
             {
+                lblQualitySourceLabel.Visible = false;
+                lblQualityBPLabel.Visible = false;
                 lblQualitySource.Text = string.Empty;
                 lblQualitySource.SetToolTip(null);
                 lblQualityBP.Text = string.Empty;
             }
             else
             {
+                lblQualitySourceLabel.Visible = true;
+                lblQualityBPLabel.Visible = true;
                 objQuality.SetSourceDetail(lblQualitySource);
                 lblQualityBP.Text = (objQuality.BP * objQuality.Levels * CharacterObjectOptions.KarmaQuality).ToString() + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
             }
@@ -10451,202 +10424,14 @@ namespace Chummer
         private void cmdReloadWeapon_Click(object sender, EventArgs e)
         {
             if (!(treWeapons?.SelectedNode?.Tag is Weapon objWeapon)) return;
-            ReloadWeapon(objWeapon, CharacterObject.Gear, treGear);
+            objWeapon.Reload(CharacterObject.Gear, treGear);
             lblWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
 
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
         }
-
-        private void ReloadWeapon(Weapon weapon, ObservableCollection<Gear> gears, TreeView gearView)
-        {
-            List<Gear> lstAmmo = new List<Gear>();
-            List<string> lstCount = new List<string>();
-            bool blnExternalSource = false;
-            Gear objExternalSource = new Gear(CharacterObject)
-            {
-                Name = "External Source"
-            };
-
-            string ammoString = weapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
-            // Determine which loading methods are available to the Weapon.
-            if (ammoString.IndexOfAny('x', '+') != -1 || ammoString.Contains(" or ") || ammoString.Contains("Special"))
-            {
-                string strWeaponAmmo = ammoString.ToLower();
-                if (strWeaponAmmo.Contains("external source"))
-                    blnExternalSource = true;
-                // Get rid of external source, special, or belt, and + energy.
-                strWeaponAmmo = strWeaponAmmo.Replace("external source", "100")
-                    .Replace("special", "100")
-                    .FastEscapeOnceFromEnd(" + energy")
-                    .Replace(" or belt", " or 250(belt)");
-
-                string[] strAmmos = strWeaponAmmo.Split(new[] {" or "}, StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (string strAmmo in strAmmos)
-                {
-                    string strThisAmmo = strAmmo.TrimStartOnce("2x", "3x", "4x").TrimEndOnce("x2", "x3", "x4");
-
-                    int intPos = strThisAmmo.IndexOf('(');
-                    if (intPos != -1)
-                        strThisAmmo = strThisAmmo.Substring(0, intPos);
-
-                    lstCount.Add(strThisAmmo);
-                }
-            }
-            else
-            {
-                // Nothing weird in the ammo string, so just use the number given.
-                string strAmmo = ammoString;
-                int intPos = strAmmo.IndexOf('(');
-                if (intPos != -1)
-                    strAmmo = strAmmo.Substring(0, intPos);
-                lstCount.Add(strAmmo);
-            }
-
-            if (!weapon.RequireAmmo)
-            {
-                // If the Weapon does not require Ammo, just use External Source.
-                lstAmmo.Add(objExternalSource);
-            }
-            else
-            {
-                // Find all of the Ammo for the current Weapon that the character is carrying.
-                HashSet<string> setAmmoPrefixStringSet = new HashSet<string>(weapon.AmmoPrefixStrings);
-                // This is a standard Weapon, so consume traditional Ammunition.
-                lstAmmo.AddRange(gears.DeepWhere(x => x.Children, x =>
-                    x.Quantity > 0 && (x.Category == "Ammunition" && x.Extra == weapon.AmmoCategory ||
-                                       !string.IsNullOrWhiteSpace(weapon.AmmoName) && x.Name == weapon.AmmoName ||
-                                       string.IsNullOrEmpty(x.Extra) && setAmmoPrefixStringSet.Any(y => x.Name.StartsWith(y)) ||
-                                       weapon.UseSkill == "Throwing Weapons" && weapon.Name == x.Name)));
-
-                // If the Weapon is allowed to use an External Source, put in an External Source item.
-                if (blnExternalSource)
-                {
-                    lstAmmo.Add(objExternalSource);
-                }
-
-                // Make sure the character has some form of Ammunition for this Weapon.
-                if (lstAmmo.Count == 0)
-                {
-                    MessageBox.Show(
-                        LanguageManager.GetString("Message_OutOfAmmoType", GlobalOptions.Language)
-                            .Replace("{0}", weapon.DisplayAmmoCategory(GlobalOptions.Language)),
-                        LanguageManager.GetString("MessageTitle_OutOfAmmo", GlobalOptions.Language), MessageBoxButtons.OK,
-                        MessageBoxIcon.Exclamation);
-                    return;
-                }
-            }
-
-            // Show the Ammunition Selection window.
-            frmReload frmReloadWeapon = new frmReload
-            {
-                Ammo = lstAmmo,
-                Count = lstCount
-            };
-            frmReloadWeapon.ShowDialog(this);
-
-            if (frmReloadWeapon.DialogResult == DialogResult.Cancel)
-                return;
-
-            // Return any unspent rounds to the Ammo.
-            if (weapon.AmmoRemaining > 0)
-            {
-                foreach (Gear objAmmo in gears)
-                {
-                    if (objAmmo.InternalId == weapon.AmmoLoaded)
-                    {
-                        objAmmo.Quantity += weapon.AmmoRemaining;
-
-                        // Refresh the Gear tree.
-                        TreeNode objNode = gearView.FindNode(objAmmo.InternalId);
-                        if (objNode != null)
-                        {
-                            objNode.Text = objAmmo.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                        }
-
-                        break;
-                    }
-
-                    foreach (Gear objChild in objAmmo.Children.GetAllDescendants(x => x.Children))
-                    {
-                        if (objChild.InternalId == weapon.AmmoLoaded)
-                        {
-                            // If this is a plugin for a Spare Clip, move any extra rounds to the character instead of messing with the Clip amount.
-                            if (objChild.Parent is Gear parent &&
-                                (parent.Name.StartsWith("Spare Clip") || parent.Name.StartsWith("Speed Loader")))
-                            {
-                                Gear objNewGear = new Gear(CharacterObject);
-                                objNewGear.Copy(objChild);
-                                objNewGear.Quantity = weapon.AmmoRemaining;
-                                gears.Add(objNewGear);
-
-                                goto EndLoop;
-                            }
-
-                            objChild.Quantity += weapon.AmmoRemaining;
-
-                            // Refresh the Gear tree.
-                            TreeNode objNode = gearView.FindNode(objChild.InternalId);
-                            if (objNode != null)
-                            {
-                                objNode.Text = objAmmo.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                            }
-
-                            break;
-                        }
-                    }
-                }
-
-                EndLoop:;
-            }
-
-            Gear objSelectedAmmo;
-            decimal decQty = frmReloadWeapon.SelectedCount;
-            // If an External Source is not being used, consume ammo.
-            if (frmReloadWeapon.SelectedAmmo != objExternalSource.InternalId)
-            {
-                objSelectedAmmo = gears.DeepFindById(frmReloadWeapon.SelectedAmmo);
-
-                if (objSelectedAmmo.Quantity == decQty && objSelectedAmmo.Parent != null)
-                {
-                    // If the Ammo is coming from a Spare Clip, reduce the container quantity instead of the plugin quantity.
-                    if (objSelectedAmmo.Parent is Gear objParent &&
-                        (objParent.Name.StartsWith("Spare Clip") || objParent.Name.StartsWith("Speed Loader")))
-                    {
-                        if (objParent.Quantity > 0)
-                            objParent.Quantity -= 1;
-                        TreeNode objNode = gearView.FindNode(objParent.InternalId);
-                        objNode.Text = objParent.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                    }
-                }
-                else
-                {
-                    // Deduct the ammo qty from the ammo. If there isn't enough remaining, use whatever is left.
-                    if (objSelectedAmmo.Quantity > decQty)
-                        objSelectedAmmo.Quantity -= decQty;
-                    else
-                    {
-                        decQty = objSelectedAmmo.Quantity;
-                        objSelectedAmmo.Quantity = 0;
-                    }
-                }
-
-                // Refresh the Gear tree.
-                TreeNode objSelectedNode = gearView.FindNode(objSelectedAmmo.InternalId);
-                if (objSelectedNode != null)
-                    objSelectedNode.Text = objSelectedAmmo.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
-            }
-            else
-            {
-                objSelectedAmmo = objExternalSource;
-            }
-
-            weapon.AmmoRemaining = decimal.ToInt32(decQty);
-            weapon.AmmoLoaded = objSelectedAmmo.InternalId;
-        }
-
+        
         private void chkWeaponAccessoryInstalled_CheckedChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
@@ -11433,7 +11218,7 @@ namespace Chummer
         private void cmdReloadVehicleWeapon_Click(object sender, EventArgs e)
         {
             if (!(treVehicles?.SelectedNode?.Tag is Weapon objWeapon)) return;
-            ReloadWeapon(objWeapon, objWeapon.ParentVehicle.Gear, treVehicles);
+            objWeapon.Reload(objWeapon.ParentVehicle.Gear, treVehicles);
             lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
 
             IsCharacterUpdateRequested = true;
@@ -12750,32 +12535,22 @@ namespace Chummer
         #region Splitter Resize Events
         private void splitKarmaNuyen_Panel1_Resize(object sender, EventArgs e)
         {
-            lstKarma.Width = splitKarmaNuyen.Panel1.Width;
-            chtKarma.Width = splitKarmaNuyen.Panel1.Width;
-            chtKarma.Height = 210;
-            chtKarma.Top = splitKarmaNuyen.Panel1.Height - 6 - chtKarma.Height;
-            lstKarma.Height = chtKarma.Top - 6 - lstKarma.Top;
-            if (lstKarma.Columns.Count > 2)
+            if (lstKarma.Columns.Count >= 2)
             {
                 if (lstKarma.Width > 409)
                 {
-                    lstKarma.Columns[2].Width = lstKarma.Width - 220;
+                    lstKarma.Columns[2].Width = lstKarma.Width - 195;
                 }
             }
         }
 
         private void splitKarmaNuyen_Panel2_Resize(object sender, EventArgs e)
         {
-            lstNuyen.Width = splitKarmaNuyen.Panel2.Width;
-            chtNuyen.Width = splitKarmaNuyen.Panel2.Width;
-            chtNuyen.Height = 210;
-            chtNuyen.Top = splitKarmaNuyen.Panel2.Height - 6 - chtNuyen.Height;
-            lstNuyen.Height = chtNuyen.Top - 6 - lstNuyen.Top;
-            if (lstNuyen.Columns.Count > 2)
+            if (lstNuyen.Columns.Count >= 2)
             {
                 if (lstNuyen.Width > 409)
                 {
-                    lstNuyen.Columns[2].Width = lstNuyen.Width - 220;
+                    lstNuyen.Columns[2].Width = lstNuyen.Width - 195;
                 }
             }
         }
@@ -13177,7 +12952,7 @@ namespace Chummer
             {
                 _blnSkipRefresh = true;
                 lblDrugName.Text = objDrug.Name;
-                lblDrugAvail.Text = objDrug.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language).ToString();
+                lblDrugAvail.Text = objDrug.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblDrugGrade.Text = objDrug.Grade;
                 lblDrugCost.Text = objDrug.Cost.ToString(CharacterObject.Options.NuyenFormat) + '¥';
                 lblDrugCategory.Text = objDrug.Category;
@@ -14349,7 +14124,7 @@ namespace Chummer
                         chkGearEquipped.Checked = objGear.Equipped;
 
                         // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
-                        if (objGear.IsProgram && CharacterObjectOptions.CalculateCommlinkResponse)
+                        if (objGear.IsProgram)
                         {
                             if (objGear.Parent is IHasMatrixAttributes objCommlink && objCommlink.IsCommlink)
                             {
@@ -14407,7 +14182,7 @@ namespace Chummer
         /// <summary>
         /// Open the Select Cyberware window and handle adding to the Tree and Character.
         /// </summary>
-        private bool PickCyberware(Cyberware objSelectedCyberware, Improvement.ImprovementSource objSource)
+        public bool PickCyberware(Cyberware objSelectedCyberware, Improvement.ImprovementSource objSource)
         {
             frmSelectCyberware frmPickCyberware = new frmSelectCyberware(CharacterObject, objSource, objSelectedCyberware);
             decimal decMultiplier = 1.0m;
@@ -14740,7 +14515,7 @@ namespace Chummer
                     return frmPickGear.AddAgain;
                 // If a match was found, we need to use the cost of a single item in the stack which can include plugins.
                 foreach (Gear objPlugin in objStackWith.Children)
-                    decCost += (objPlugin.TotalCost - objPlugin.OwnCost) * frmPickGear.SelectedQty;
+                    decCost += objPlugin.TotalCost * frmPickGear.SelectedQty;
             }
             if (!blnNullParent && !blnAmmoOnly)
                 decCost *= objSelectedGear.Quantity;
@@ -15051,8 +14826,6 @@ namespace Chummer
             _blnSkipRefresh = true;
             if (treLifestyles.SelectedNode == null || treLifestyles.SelectedNode.Level == 0)
             {
-                tblLifestyleDetails.Visible = false;
-
                 _blnSkipRefresh = false;
                 return;
             }
@@ -15064,7 +14837,6 @@ namespace Chummer
                 return;
             }
 
-            tblLifestyleDetails.Visible = true;
             cmdIncreaseLifestyleMonths.Visible = true;
             cmdDecreaseLifestyleMonths.Visible = true;
 
@@ -15090,7 +14862,6 @@ namespace Chummer
                     strIncrementString = LanguageManager.GetString("String_Months", GlobalOptions.Language);
                     break;
             }
-            lblLifestyleCost.Left = lblLifestyleCostLabel.Left + lblLifestyleCostLabel.Width + 6;
 
             lblLifestyleMonthsLabel.Text = strIncrementString + LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Language).Replace("{0}", objLifestyle.IncrementsRequiredForPermanent.ToString(GlobalOptions.CultureInfo));
             cmdIncreaseLifestyleMonths.SetToolTip(LanguageManager.GetString("Tab_IncreaseLifestyleMonths", GlobalOptions.Language).Replace("{0}", strIncrementString));
@@ -15137,8 +14908,7 @@ namespace Chummer
         /// <param name="blnDisplay">Whether to hide or show the objects.</param>
         private void DisplayVehicleWeaponStats(bool blnDisplay)
         {
-            lblVehicleWeaponName.Visible = blnDisplay;
-            lblVehicleWeaponCategory.Visible = blnDisplay;
+            tlpVehicleWeapon.Visible = blnDisplay;
             lblVehicleWeaponAP.Visible = blnDisplay;
             lblVehicleWeaponDamage.Visible = blnDisplay;
             lblVehicleWeaponAccuracy.Visible = blnDisplay;
@@ -15150,9 +14920,7 @@ namespace Chummer
             lblVehicleWeaponRangeMedium.Visible = blnDisplay;
             lblVehicleWeaponRangeLong.Visible = blnDisplay;
             lblVehicleWeaponRangeExtreme.Visible = blnDisplay;
-
-            lblVehicleWeaponNameLabel.Visible = blnDisplay;
-            lblVehicleWeaponCategoryLabel.Visible = blnDisplay;
+            
             lblVehicleWeaponAPLabel.Visible = blnDisplay;
             lblVehicleWeaponDamageLabel.Visible = blnDisplay;
             lblVehicleWeaponAccuracyLabel.Visible = blnDisplay;
@@ -15278,6 +15046,9 @@ namespace Chummer
         private void RefreshSelectedVehicle()
         {
             _blnSkipRefresh = true;
+            System.Windows.Forms.Cursor eOldCursor = Cursor;
+            Cursor = Cursors.WaitCursor;
+            tlpVehicles.SuspendLayout();
             string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
             cmdDeleteVehicle.Enabled = !string.IsNullOrEmpty(strSelectedId) && strSelectedId != "Node_SelectedVehicles" && strSelectedId != "String_WeaponMounts";
             cmdVehicleCyberwareChangeMount.Visible = false;
@@ -15306,6 +15077,8 @@ namespace Chummer
 
                 chkVehicleWeaponAccessoryInstalled.Enabled = false;
                 _blnSkipRefresh = false;
+                tlpVehicles.ResumeLayout();
+                Cursor = eOldCursor;
                 return;
             }
 
@@ -15494,8 +15267,10 @@ namespace Chummer
                     objWeapon.IncludedInWeapon || !string.IsNullOrEmpty(objWeapon.ParentID))
                     cmdDeleteVehicle.Enabled = false;
                 DisplayVehicleWeaponStats(true);
-                lblVehicleWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
-                lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
+                DisplayVehicleStats(false);
+                
+                lblVehicleName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
+                lblVehicleCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
                 lblVehicleWeaponDamage.Text =
                     objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblVehicleWeaponAccuracy.Text =
@@ -15524,8 +15299,6 @@ namespace Chummer
                 DisplayVehicleStats(false);
 
                 cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
-                lblVehicleWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
-                lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
                 lblVehicleWeaponDamage.Text =
                     objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblVehicleWeaponAccuracy.Text =
@@ -15720,8 +15493,7 @@ namespace Chummer
             {
                 if (objGear.IncludedInParent)
                     cmdDeleteVehicle.Enabled = false;
-
-                lblVehicleGearQty.Text = objGear.Quantity.ToString(GlobalOptions.CultureInfo);
+                
                 cmdVehicleGearReduceQty.Enabled = !objGear.IncludedInParent;
                 cmdVehicleMoveToInventory.Enabled = !objGear.IncludedInParent;
 
@@ -15774,6 +15546,8 @@ namespace Chummer
             }
 
             _blnSkipRefresh = false;
+            tlpVehicles.ResumeLayout();
+            Cursor = eOldCursor;
         }
         
         /// <summary>
@@ -16041,390 +15815,8 @@ namespace Chummer
                 lblPublicAware.SetToolTip(LanguageManager.GetString("Tip_PublicAwareness", GlobalOptions.Language));
             }
             cmdBurnStreetCred.SetToolTip(LanguageManager.GetString("Tip_BurnStreetCred", GlobalOptions.Language));
-
-            // Reposition controls based on their new sizes.
-            // Common Tab.
-            txtAlias.Left = lblAlias.Left + lblAlias.Width + 6;
-            txtAlias.Width = lblMetatypeLabel.Left - 6 - txtAlias.Left;
-            cmdSwapQuality.Left = cmdAddQuality.Left + cmdAddQuality.Width + 6;
-            cmdDeleteQuality.Left = cmdSwapQuality.Left + cmdSwapQuality.Width + 6;
-            // Martial Arts Tab.
-            cmdDeleteMartialArt.Left = cmdAddMartialArt.Left + cmdAddMartialArt.Width + 6;
-            // Magician Tab.
-            cmdDeleteSpell.Left = cmdAddSpell.Left + cmdAddSpell.Width + 6;
-            // Technomancer Tab.
-            cmdDeleteComplexForm.Left = cmdAddComplexForm.Left + cmdAddComplexForm.Width + 6;
-            // Critter Powers Tab.
-            cmdDeleteCritterPower.Left = cmdAddCritterPower.Left + cmdAddCritterPower.Width + 6;
-            // Initiation Tab.
-            // Cyberware Tab.
-            cmdAddBioware.Left = cmdAddCyberware.Left + cmdAddCyberware.Width + 6;
-            cmdDeleteCyberware.Left = cmdAddBioware.Left + cmdAddBioware.Width + 6;
-            // Lifestyle Tab.
-            cmdDeleteLifestyle.Left = cmdAddLifestyle.Left + cmdAddLifestyle.Width + 6;
-            // Armor Tab.
-            cmdDeleteArmor.Left = cmdAddArmor.Left + cmdAddArmor.Width + 6;
-            cmdAddArmorBundle.Left = cmdDeleteArmor.Left + cmdDeleteArmor.Width + 6;
-            cmdArmorEquipAll.Left = chkArmorEquipped.Left + chkArmorEquipped.Width + 6;
-            cmdArmorUnEquipAll.Left = cmdArmorEquipAll.Left + cmdArmorEquipAll.Width + 6;
-            // Weapons Tab.
-            cmdDeleteWeapon.Left = cmdAddWeapon.Left + cmdAddWeapon.Width + 6;
-            cmdAddWeaponLocation.Left = cmdDeleteWeapon.Left + cmdDeleteWeapon.Width + 6;
-            // Gear Tab.
-            cmdDeleteGear.Left = cmdAddGear.Left + cmdAddGear.Width + 6;
-            cmdAddLocation.Left = cmdDeleteGear.Left + cmdDeleteGear.Width + 6;
-            // Vehicle Tab.
-            cmdDeleteVehicle.Left = cmdAddVehicle.Left + cmdAddVehicle.Width + 6;
-            cmdAddVehicleLocation.Left = cmdDeleteVehicle.Left + cmdDeleteVehicle.Width + 6;
-            // Improvements Tab.
-            cmdImprovementsEnableAll.Left = chkImprovementActive.Left + chkImprovementActive.Width + 6;
-            cmdImprovementsDisableAll.Left = cmdImprovementsEnableAll.Left + cmdImprovementsEnableAll.Width + 6;
         }
-
-        private void MoveControls()
-        {
-            // Critter Powers tab.
-            lblCritterPowerPointsLabel.Left = cmdDeleteCritterPower.Left + cmdDeleteCritterPower.Width + 16;
-            lblCritterPowerPoints.Left = lblCritterPowerPointsLabel.Left + lblCritterPowerPointsLabel.Width + 6;
-
-            int intWidth = Math.Max(lblCritterPowerNameLabel.Width, lblCritterPowerCategoryLabel.Width);
-            intWidth = Math.Max(intWidth, lblCritterPowerTypeLabel.Width);
-            intWidth = Math.Max(intWidth, lblCritterPowerActionLabel.Width);
-            intWidth = Math.Max(intWidth, lblCritterPowerRangeLabel.Width);
-            intWidth = Math.Max(intWidth, lblCritterPowerDurationLabel.Width);
-            intWidth = Math.Max(intWidth, lblCritterPowerSourceLabel.Width);
-            intWidth = Math.Max(intWidth, lblCritterPowerPointCostLabel.Width);
-
-            lblCritterPowerName.Left = lblCritterPowerNameLabel.Left + intWidth + 6;
-            lblCritterPowerCategory.Left = lblCritterPowerCategoryLabel.Left + intWidth + 6;
-            lblCritterPowerType.Left = lblCritterPowerTypeLabel.Left + intWidth + 6;
-            lblCritterPowerAction.Left = lblCritterPowerActionLabel.Left + intWidth + 6;
-            lblCritterPowerRange.Left = lblCritterPowerRangeLabel.Left + intWidth + 6;
-            lblCritterPowerDuration.Left = lblCritterPowerDurationLabel.Left + intWidth + 6;
-            lblCritterPowerSource.Left = lblCritterPowerSourceLabel.Left + intWidth + 6;
-            lblCritterPowerPointCost.Left = lblCritterPowerPointCostLabel.Left + intWidth + 6;
-
-            // Initiation and Submersion tab.
-
-            // Cyberware and Bioware tab.
-            intWidth = Math.Max(lblCyberwareNameLabel.Width, lblCyberwareCategoryLabel.Width);
-            intWidth = Math.Max(intWidth, lblCyberwareGradeLabel.Width);
-            intWidth = Math.Max(intWidth, lblCyberwareEssenceLabel.Width);
-            intWidth = Math.Max(intWidth, lblCyberwareAvailLabel.Width);
-            intWidth = Math.Max(intWidth, lblCyberwareSourceLabel.Width);
-
-            lblCyberwareName.Left = lblCyberwareNameLabel.Left + intWidth + 6;
-            lblCyberwareCategory.Left = lblCyberwareCategoryLabel.Left + intWidth + 6;
-            lblCyberwareGrade.Left = lblCyberwareGradeLabel.Left + intWidth + 6;
-            lblCyberwareEssence.Left = lblCyberwareEssenceLabel.Left + intWidth + 6;
-            lblCyberwareAvail.Left = lblCyberwareAvailLabel.Left + intWidth + 6;
-            lblCyberwareSource.Left = lblCyberwareSourceLabel.Left + intWidth + 6;
-
-            intWidth = lblEssenceHoleESSLabel.Width;
-            lblCyberwareESS.Left = lblEssenceHoleESSLabel.Left + intWidth + 6;
-            lblBiowareESS.Left = lblEssenceHoleESSLabel.Left + intWidth + 6;
-            lblEssenceHoleESS.Left = lblEssenceHoleESSLabel.Left + intWidth + 6;
-
-            intWidth = Math.Max(lblCyberwareRatingLabel.Width, lblCyberwareCapacityLabel.Width);
-            intWidth = Math.Max(intWidth, lblCyberwareCostLabel.Width);
-            intWidth = Math.Max(intWidth, lblCyberlimbSTRLabel.Width);
-
-            lblCyberAttackLabel.Left = lblCyberDeviceRating.Left + lblCyberDeviceRating.Width + 20;
-            cboCyberwareGearAttack.Left = lblCyberAttackLabel.Left + lblCyberAttackLabel.Width + 6;
-            lblCyberSleazeLabel.Left = cboCyberwareGearAttack.Left + cboCyberwareGearAttack.Width + 20;
-            cboCyberwareGearSleaze.Left = lblCyberSleazeLabel.Left + lblCyberSleazeLabel.Width + 6;
-            lblCyberDataProcessingLabel.Left = cboCyberwareGearSleaze.Left + cboCyberwareGearSleaze.Width + 20;
-            cboCyberwareGearDataProcessing.Left = lblCyberDataProcessingLabel.Left + lblCyberDataProcessingLabel.Width + 6;
-            lblCyberFirewallLabel.Left = cboCyberwareGearDataProcessing.Left + cboCyberwareGearDataProcessing.Width + 20;
-            cboCyberwareGearFirewall.Left = lblCyberFirewallLabel.Left + lblCyberFirewallLabel.Width + 6;
-
-            lblCyberwareRatingLabel.Left = lblCyberwareName.Left + 208;
-            lblCyberwareRating.Left = lblCyberwareRatingLabel.Left + intWidth + 6;
-            lblCyberwareCapacityLabel.Left = lblCyberwareName.Left + 208;
-            lblCyberwareCapacity.Left = lblCyberwareCapacityLabel.Left + intWidth + 6;
-            lblCyberwareCostLabel.Left = lblCyberwareName.Left + 208;
-            lblCyberwareCost.Left = lblCyberwareCostLabel.Left + intWidth + 6;
-            lblCyberlimbAGILabel.Left = lblCyberwareName.Left + 208;
-            lblCyberlimbAGI.Left = lblCyberlimbAGILabel.Left + intWidth + 6;
-            lblCyberlimbSTRLabel.Left = lblCyberwareName.Left + 208;
-            lblCyberlimbSTR.Left = lblCyberlimbSTRLabel.Left + intWidth + 6;
-
-            // Street Gear tab.
-
-            // Armor tab.
-            intWidth = lblArmorValueLabel.Width;
-            intWidth = Math.Max(intWidth, lblArmorRatingLabel.Width);
-            intWidth = Math.Max(intWidth, lblArmorCapacityLabel.Width);
-            intWidth = Math.Max(intWidth, lblArmorSourceLabel.Width);
-
-            lblArmorValue.Left = lblArmorValueLabel.Left + intWidth + 6;
-            lblArmorRating.Left = lblArmorRatingLabel.Left + intWidth + 6;
-            lblArmorCapacity.Left = lblArmorCapacityLabel.Left + intWidth + 6;
-            lblArmorSource.Left = lblArmorSourceLabel.Left + intWidth + 6;
-
-            lblArmorAvailLabel.Left = lblArmorRating.Left + Math.Max(lblArmorRating.Width, 50) + 6;
-            lblArmorAvail.Left = lblArmorAvailLabel.Left + lblArmorAvailLabel.Width + 6;
-
-            lblArmorCostLabel.Left = lblArmorAvail.Left + Math.Max(lblArmorAvail.Width, 50) + 6;
-            lblArmorCost.Left = lblArmorCostLabel.Left + lblArmorCostLabel.Width + 6;
-
-            cmdArmorIncrease.Left = lblArmorValue.Left + 45;
-            cmdArmorDecrease.Left = cmdArmorIncrease.Left + cmdArmorIncrease.Width + 6;
-
-            lblArmorAttackLabel.Left = lblArmorDeviceRating.Left + lblArmorDeviceRating.Width + 20;
-            lblArmorAttack.Left = lblArmorAttackLabel.Left + lblArmorAttackLabel.Width + 6;
-            lblArmorSleazeLabel.Left = lblArmorAttack.Left + lblArmorAttack.Width + 20;
-            lblArmorSleaze.Left = lblArmorSleazeLabel.Left + lblArmorSleazeLabel.Width + 6;
-            lblArmorDataProcessingLabel.Left = lblArmorSleaze.Left + lblArmorSleaze.Width + 20;
-            lblArmorDataProcessing.Left = lblArmorDataProcessingLabel.Left + lblArmorDataProcessingLabel.Width + 6;
-            lblArmorFirewallLabel.Left = lblArmorDataProcessing.Left + lblArmorDataProcessing.Width + 20;
-            lblArmorFirewall.Left = lblArmorFirewallLabel.Left + lblArmorFirewallLabel.Width + 6;
-
-            // Weapons tab.
-            lblWeaponName.Left = lblWeaponNameLabel.Left + lblWeaponNameLabel.Width + 6;
-            lblWeaponCategory.Left = lblWeaponCategoryLabel.Left + lblWeaponCategoryLabel.Width + 6;
-
-            intWidth = Math.Max(lblWeaponNameLabel.Width, lblWeaponCategoryLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponDamageLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponReachLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponAvailLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponSlotsLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponSourceLabel.Width);
-
-            lblWeaponName.Left = lblWeaponNameLabel.Left + intWidth + 6;
-            lblWeaponCategory.Left = lblWeaponCategoryLabel.Left + intWidth + 6;
-            lblWeaponDamage.Left = lblWeaponDamageLabel.Left + intWidth + 6;
-            lblWeaponReach.Left = lblWeaponReachLabel.Left + intWidth + 6;
-            lblWeaponAvail.Left = lblWeaponAvailLabel.Left + intWidth + 6;
-            lblWeaponSlots.Left = lblWeaponSlotsLabel.Left + intWidth + 6;
-            lblWeaponSource.Left = lblWeaponSourceLabel.Left + intWidth + 6;
-
-            intWidth = Math.Max(lblWeaponRCLabel.Width, lblWeaponModeLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponCostLabel.Width);
-
-            lblWeaponRCLabel.Left = lblWeaponDamageLabel.Left + 176;
-            lblWeaponRC.Left = lblWeaponRCLabel.Left + intWidth + 6;
-            lblWeaponModeLabel.Left = lblWeaponDamageLabel.Left + 176;
-            lblWeaponMode.Left = lblWeaponModeLabel.Left + intWidth + 6;
-            lblWeaponCostLabel.Left = lblWeaponDamageLabel.Left + 176;
-            lblWeaponCost.Left = lblWeaponCostLabel.Left + intWidth + 6;
-            chkIncludedInWeapon.Left = lblWeaponDamageLabel.Left + 176;
-            lblWeaponAccuracy.Left = lblWeaponAccuracyLabel.Left + lblWeaponAccuracyLabel.Width + 6;
-
-            intWidth = Math.Max(lblWeaponAPLabel.Width, lblWeaponAmmoLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponConcealLabel.Width);
-
-            lblWeaponAPLabel.Left = lblWeaponRC.Left + 95;
-            lblWeaponAP.Left = lblWeaponAPLabel.Left + intWidth + 6;
-            lblWeaponAmmoLabel.Left = lblWeaponRC.Left + 95;
-            lblWeaponAmmo.Left = lblWeaponAmmoLabel.Left + intWidth + 6;
-            lblWeaponConcealLabel.Left = lblWeaponRC.Left + 95;
-            lblWeaponConceal.Left = lblWeaponConcealLabel.Left + intWidth + 6;
-            chkWeaponAccessoryInstalled.Left = lblWeaponRC.Left + 95;
-            cmdWeaponMoveToVehicle.Left = chkWeaponAccessoryInstalled.Left + chkWeaponAccessoryInstalled.Width + 6;
-
-            intWidth = Math.Max(lblWeaponAmmoRemainingLabel.Width, lblWeaponAmmoTypeLabel.Width);
-            intWidth = Math.Max(intWidth, lblWeaponDicePoolLabel.Width);
-
-            lblWeaponAmmoRemaining.Left = lblWeaponAmmoRemainingLabel.Left + intWidth + 6;
-            cboWeaponAmmo.Left = lblWeaponAmmoTypeLabel.Left + intWidth + 6;
-            ctlWeaponDicePool.Left = lblWeaponDicePoolLabel.Left + intWidth + 6;
-
-            cmdFireWeapon.Left = lblWeaponAmmoRemaining.Left + 123;
-            cmdReloadWeapon.Left = cmdFireWeapon.Left + cmdFireWeapon.Width + 6;
-            cmdWeaponBuyAmmo.Left = cmdReloadWeapon.Left + cmdReloadWeapon.Width + 6;
-
-            lblWeaponAttackLabel.Left = lblWeaponDeviceRating.Left + lblWeaponDeviceRating.Width + 20;
-            cboWeaponGearAttack.Left = lblWeaponAttackLabel.Left + lblWeaponAttackLabel.Width + 6;
-            lblWeaponSleazeLabel.Left = cboWeaponGearAttack.Left + cboWeaponGearAttack.Width + 20;
-            cboWeaponGearSleaze.Left = lblWeaponSleazeLabel.Left + lblWeaponSleazeLabel.Width + 6;
-            lblWeaponDataProcessingLabel.Left = cboWeaponGearSleaze.Left + cboWeaponGearSleaze.Width + 20;
-            cboWeaponGearDataProcessing.Left = lblWeaponDataProcessingLabel.Left + lblWeaponDataProcessingLabel.Width + 6;
-            lblWeaponFirewallLabel.Left = cboWeaponGearDataProcessing.Left + cboWeaponGearDataProcessing.Width + 20;
-            cboWeaponGearFirewall.Left = lblWeaponFirewallLabel.Left + lblWeaponFirewallLabel.Width + 6;
-
-            // Gear tab.
-            intWidth = Math.Max(lblGearNameLabel.Width, lblGearCategoryLabel.Width);
-            intWidth = Math.Max(intWidth, lblGearRatingLabel.Width);
-            intWidth = Math.Max(intWidth, lblGearCapacityLabel.Width);
-            intWidth = Math.Max(intWidth, lblGearQtyLabel.Width);
-
-            chkCommlinks.Left = cmdAddLocation.Left + cmdAddLocation.Width + 16;
-
-            lblGearName.Left = lblGearNameLabel.Left + intWidth + 6;
-            lblGearCategory.Left = lblGearCategoryLabel.Left + intWidth + 6;
-            lblGearRating.Left = lblGearRatingLabel.Left + intWidth + 6;
-            lblGearCapacity.Left = lblGearCapacityLabel.Left + intWidth + 6;
-            lblGearQty.Left = lblGearQtyLabel.Left + intWidth + 6;
-
-            cmdGearIncreaseQty.Left = lblGearQty.Left + 57;
-            cmdGearReduceQty.Left = cmdGearIncreaseQty.Left + cmdGearIncreaseQty.Width + 6;
-            cmdGearSplitQty.Left = cmdGearReduceQty.Left + 79;
-            cmdGearMergeQty.Left = cmdGearSplitQty.Left + cmdGearSplitQty.Width + 6;
-            cmdGearMoveToVehicle.Left = cmdGearMergeQty.Left + 56;
-
-            intWidth = lblGearDamageLabel.Width;
-            lblGearDamage.Left = lblGearDamageLabel.Left + intWidth + 6;
-
-            intWidth = lblGearAPLabel.Width;
-            lblGearAP.Left = lblGearAPLabel.Left + intWidth + 6;
-
-            lblGearSource.Left = lblGearSourceLabel.Left + lblGearSourceLabel.Width + 6;
-            chkGearHomeNode.Left = chkGearEquipped.Left + chkGearEquipped.Width + 16;
-
-            // Vehicles and Drones tab.
-            intWidth = Math.Max(lblVehicleNameLabel.Width, lblVehicleCategoryLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleHandlingLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleAttackLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehiclePilotLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleFirewallLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleAvailLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleRatingLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleGearQtyLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleSourceLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleWeaponNameLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleWeaponCategoryLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleWeaponDamageLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleWeaponAccuracyLabel.Width);
-
-            lblVehicleName.Left = lblVehicleNameLabel.Left + intWidth + 6;
-            lblVehicleCategory.Left = lblVehicleCategoryLabel.Left + intWidth + 6;
-            lblVehicleHandling.Left = lblVehicleHandlingLabel.Left + intWidth + 6;
-            lblVehiclePilot.Left = lblVehiclePilotLabel.Left + intWidth + 6;
-            cboVehicleGearAttack.Left = lblVehicleAttackLabel.Left + intWidth + 6;
-            cboVehicleGearFirewall.Left = lblVehicleFirewallLabel.Left + intWidth + 6;
-            lblVehicleAvail.Left = lblVehicleAvailLabel.Left + intWidth + 6;
-            lblVehicleRating.Left = lblVehicleRatingLabel.Left + intWidth + 6;
-            lblVehicleGearQty.Left = lblVehicleGearQtyLabel.Left + intWidth + 6;
-            lblVehicleSource.Left = lblVehicleSourceLabel.Left + intWidth + 6;
-            lblVehicleWeaponName.Left = lblVehicleWeaponNameLabel.Left + intWidth + 6;
-            lblVehicleWeaponCategory.Left = lblVehicleWeaponCategoryLabel.Left + intWidth + 6;
-            lblVehicleWeaponDamage.Left = lblVehicleWeaponDamageLabel.Left + intWidth + 6;
-            lblVehicleWeaponAccuracy.Left = lblVehicleWeaponDamageLabel.Left + intWidth + 6;
-            intWidth = Math.Max(lblVehicleAccelLabel.Width, lblVehicleBodyLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleCostLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleProtectionLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleElectromagneticLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleSleazeLabel.Width);
-
-            lblVehicleAccelLabel.Left = lblVehicleHandling.Left + 60;
-            lblVehicleAccel.Left = lblVehicleAccelLabel.Left + intWidth + 6;
-            lblVehicleBodyLabel.Left = lblVehicleHandling.Left + 60;
-            lblVehicleBody.Left = lblVehicleBodyLabel.Left + intWidth + 6;
-            lblVehicleCostLabel.Left = lblVehicleHandling.Left + 60;
-            lblVehicleCost.Left = lblVehicleCostLabel.Left + intWidth + 6;
-            lblVehicleProtectionLabel.Left = lblVehicleHandling.Left + 60;
-            lblVehicleProtection.Left = lblVehicleProtectionLabel.Left + intWidth + 6;
-            lblVehicleElectromagneticLabel.Left = lblVehicleHandling.Left + 60;
-            lblVehicleElectromagnetic.Left = lblVehicleElectromagneticLabel.Left + intWidth + 6;
-            lblVehicleSleazeLabel.Left = lblVehicleHandling.Left + 60;
-            cboVehicleGearSleaze.Left = lblVehicleSleazeLabel.Left + intWidth + 6;
-
-            cmdVehicleGearReduceQty.Left = lblVehicleGearQtyLabel.Left + 144;
-            cmdVehicleMoveToInventory.Left = cmdVehicleGearReduceQty.Left + 29;
-            chkVehicleIncludedInWeapon.Left = lblVehicleAccel.Left;
-
-            intWidth = Math.Max(lblVehicleSpeedLabel.Width, lblVehicleArmorLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleDataProcessingLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehiclePowertrainLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleCosmeticLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleDeviceLabel.Width);
-
-            lblVehicleSpeedLabel.Left = lblVehicleAccel.Left + 60;
-            lblVehicleSpeed.Left = lblVehicleSpeedLabel.Left + intWidth + 6;
-            lblVehicleArmorLabel.Left = lblVehicleAccel.Left + 60;
-            lblVehicleArmor.Left = lblVehicleArmorLabel.Left + intWidth + 6;
-            lblVehiclePowertrainLabel.Left = lblVehicleAccel.Left + 60;
-            lblVehiclePowertrain.Left = lblVehiclePowertrainLabel.Left + intWidth + 6;
-            lblVehicleCosmeticLabel.Left = lblVehicleAccel.Left + 60;
-            lblVehicleCosmetic.Left = lblVehicleCosmeticLabel.Left + intWidth + 6;
-            lblVehicleDataProcessingLabel.Left = lblVehicleAccel.Left + 60;
-            cboVehicleGearDataProcessing.Left = lblVehicleDataProcessingLabel.Left + intWidth + 6;
-            lblVehicleDeviceLabel.Left = lblVehicleAccel.Left + 60;
-            lblVehicleDevice.Left = lblVehicleDeviceLabel.Left + intWidth + 6;
-
-            intWidth = Math.Max(lblVehicleFirewallLabel.Width, lblVehicleSensorLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleSeatsLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleDroneModSlotsLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleSlotsLabel.Width);
-
-            lblVehicleSensorLabel.Left = lblVehicleSpeed.Left + 60;
-            lblVehicleSensor.Left = lblVehicleSensorLabel.Left + intWidth + 6;
-            lblVehicleSeatsLabel.Left = lblVehicleSpeed.Left + 60;
-            lblVehicleSeats.Left = lblVehicleSeatsLabel.Left + intWidth + 6;
-            lblVehicleFirewallLabel.Left = lblVehicleSpeed.Left + 60;
-            lblVehicleDroneModSlotsLabel.Left = lblVehicleSpeed.Left + 60;
-            lblVehicleDroneModSlots.Left = lblVehicleDroneModSlotsLabel.Left + intWidth + 6;
-
-            cboVehicleGearFirewall.Left = lblVehicleFirewallLabel.Left + intWidth + 6;
-
-            lblVehicleSlotsLabel.Left = lblVehicleSpeed.Left + 60;
-            lblVehicleSlots.Left = lblVehicleSlotsLabel.Left + intWidth + 6;
-
-            chkVehicleHomeNode.Left = lblVehicleSlotsLabel.Left;
-            chkVehicleWeaponAccessoryInstalled.Left = lblVehicleSlotsLabel.Left;
-
-            // Character Info.
-            intWidth = Math.Max(lblSex.Width, lblHeight.Width);
-            txtSex.Left = lblSex.Left + intWidth + 6;
-            txtSex.Width = lblAge.Left - txtSex.Left - 16;
-            txtHeight.Left = lblHeight.Left + intWidth + 6;
-            txtHeight.Width = lblWeight.Left - txtHeight.Left - 16;
-
-            intWidth = Math.Max(lblAge.Width, lblWeight.Width);
-            txtAge.Left = lblAge.Left + intWidth + 6;
-            txtAge.Width = lblEyes.Left - txtAge.Left - 16;
-            txtWeight.Left = lblWeight.Left + intWidth + 6;
-            txtWeight.Width = lblSkin.Left - txtWeight.Left - 16;
-
-            intWidth = Math.Max(lblEyes.Width, lblSkin.Width);
-            txtEyes.Left = lblEyes.Left + intWidth + 6;
-            txtEyes.Width = lblHair.Left - txtEyes.Left - 16;
-            txtSkin.Left = lblSkin.Left + intWidth + 6;
-            txtSkin.Width = lblCharacterName.Left - txtSkin.Left - 16;
-
-            intWidth = Math.Max(lblHair.Width, lblCharacterName.Width);
-            txtHair.Left = lblHair.Left + intWidth + 6;
-            txtHair.Width = lblPlayerName.Left - txtHair.Left - 16;
-            txtCharacterName.Left = lblCharacterName.Left + intWidth + 6;
-            txtCharacterName.Width = lblPlayerName.Left - txtCharacterName.Left - 16;
-
-            txtPlayerName.Left = lblPlayerName.Left + lblPlayerName.Width + 6;
-            txtPlayerName.Width = tabCharacterInfo.Width - txtPlayerName.Left - 16;
-
-            intWidth = Math.Max(lblStreetCred.Width, lblNotoriety.Width);
-            intWidth = Math.Max(intWidth, lblPublicAware.Width);
-
-            nudStreetCred.Left = lblStreetCred.Left + intWidth + 6;
-            nudNotoriety.Left = lblNotoriety.Left + intWidth + 6;
-            nudPublicAware.Left = lblPublicAware.Left + intWidth + 6;
-            lblStreetCredTotal.Left = nudStreetCred.Left + nudStreetCred.Width + 6;
-            lblNotorietyTotal.Left = nudNotoriety.Left + nudNotoriety.Width + 6;
-            lblPublicAwareTotal.Left = nudPublicAware.Left + nudPublicAware.Width + 6;
-
-            // Expense Tab.
-            cmdKarmaSpent.Left = cmdKarmaGained.Left + cmdKarmaGained.Width + 6;
-            cmdKarmaEdit.Left = cmdKarmaSpent.Left + cmdKarmaSpent.Width + 6;
-            chkShowFreeKarma.Left = cmdKarmaEdit.Left + cmdKarmaEdit.Width + 6;
-            cmdNuyenSpent.Left = cmdNuyenGained.Left + cmdNuyenGained.Width + 6;
-            cmdNuyenEdit.Left = cmdNuyenSpent.Left + cmdNuyenSpent.Width + 6;
-            chkShowFreeNuyen.Left = cmdNuyenEdit.Left + cmdNuyenEdit.Width + 6;
-            // Calendar Tab.
-            cmdEditWeek.Left = cmdAddWeek.Left + cmdAddWeek.Width + 6;
-
-            // Improvements tab.
-            cmdEditImprovement.Left = cmdAddImprovement.Left + cmdAddImprovement.Width + 6;
-            cmdDeleteImprovement.Left = cmdEditImprovement.Left + cmdEditImprovement.Width + 6;
-            cmdAddImprovementGroup.Left = cmdDeleteImprovement.Left + cmdDeleteImprovement.Width + 6;
-            lblImprovementType.Left = lblImprovementTypeLabel.Left + lblImprovementTypeLabel.Width + 6;
-            
-            // Relationships tab
-            cmdContactsExpansionToggle.Left = cmdAddContact.Right + 6;
-            cmdSwapContactOrder.Left = cmdContactsExpansionToggle.Right + 6;
-        }
-
-
-
+        
         /// <summary>
         /// Recheck all mods to see if Sensor has changed.
         /// </summary>
@@ -16440,11 +15832,6 @@ namespace Chummer
                     objNode.Text = objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 }
             }
-        }
-        
-        private void AdjustBurnStreetCredButtonLocation(object sender, EventArgs e)
-        {
-            cmdBurnStreetCred.Left = lblStreetCredTotal.Left + lblStreetCredTotal.Width + 6;
         }
 
         /// <summary>
@@ -16520,29 +15907,7 @@ namespace Chummer
             foreach (Cyberware objChild in objCyberware.Children)
                 CopyCyberwareImprovements(objSource, objDestination, objChild);
         }
-
-        /// <summary>
-        /// Recursive method to add a Gear's Improvements to a character when moving them from a Vehicle.
-        /// </summary>
-        /// <param name="objGear">Gear to create Improvements for.
-        /// </param>
-        private void AddGearImprovements(Gear objGear)
-        {
-            string strForce = string.Empty;
-            if (objGear.Bonus != null || (objGear.WirelessOn && objGear.WirelessBonus != null))
-            {
-                if (!string.IsNullOrEmpty(objGear.Extra))
-                    strForce = objGear.Extra;
-                ImprovementManager.ForcedValue = strForce;
-                if (objGear.Bonus != null)
-                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, true, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
-                if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, true, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
-            }
-            foreach (Gear objChild in objGear.Children)
-                AddGearImprovements(objChild);
-        }
-
+        
         /// <summary>
         /// Enable/Disable the Paste Menu and ToolStrip items as appropriate.
         /// </summary>
@@ -16719,27 +16084,6 @@ namespace Chummer
             IsDirty = true;
         }
 #endregion
-
-        private void cmdAddLimitModifier_Click(object sender, EventArgs e)
-        {
-            frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(null, "Physical", "Mental", "Social");
-            frmPickLimitModifier.ShowDialog(this);
-
-            if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
-                return;
-
-            // Create the new limit modifier.
-            LimitModifier objLimitModifier = new LimitModifier(CharacterObject);
-            objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition);
-            if (objLimitModifier.InternalId.IsEmptyGuid())
-                return;
-
-            CharacterObject.LimitModifiers.Add(objLimitModifier);
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
 
         private void cmdIncreasePowerPoints_Click(object sender, EventArgs e)
         {
@@ -17354,10 +16698,9 @@ namespace Chummer
         
         private void picMugshot_SizeChanged(object sender, EventArgs e)
         {
-            if (picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width)
-                picMugshot.SizeMode = PictureBoxSizeMode.CenterImage;
-            else
-                picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
+            picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
+                ? PictureBoxSizeMode.CenterImage
+                : PictureBoxSizeMode.Zoom;
         }
 
         private void cmdCyberwareChangeMount_Click(object sender, EventArgs e)

@@ -11617,7 +11617,7 @@
       </bonus>
       <required>
         <oneof>
-          <ess grade="Betaware">1</ess>
+          <ess grade="Betaware,Deltaware,Gammaware">1</ess>
         </oneof>
       </required>
       <source>CF</source>
@@ -16753,9 +16753,9 @@
       <category>Positive</category>
       <bonus />
       <required>
-        <allof>
+        <oneof>
           <quality>Technomancer</quality>
-        </allof>
+        </oneof>
       </required>
       <source>KC</source>
       <page>96</page>
@@ -16893,6 +16893,23 @@
           <quality>Technomancer</quality>
         </oneof>
       </forbidden>
+      <source>KC</source>
+      <page>97</page>
+    </quality>
+    <quality>
+      <id>eeb4db5b-f5b7-4ab5-b310-1d7107cd722f</id>
+      <name>Sprite Affinity</name>
+      <karma>7</karma>
+      <category>Positive</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
       <page>97</page>
     </quality>

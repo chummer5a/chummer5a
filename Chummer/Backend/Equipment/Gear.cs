@@ -1545,12 +1545,19 @@ namespace Chummer.Backend.Equipment
             set => _strPage = value;
         }
 
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty. 
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
-                return _strPage;
-
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
+                return Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         /// <summary>
@@ -2859,6 +2866,88 @@ namespace Chummer.Backend.Equipment
             if (blnExpandNode)
                 objParentNode.Expand();
         }
+
+        public void SetupChildrenGearsCollectionChanged(bool blnAdd, TreeView treGear, ContextMenuStrip cmsGear = null)
+        {
+            if (blnAdd)
+            {
+                Children.AddTaggedCollectionChanged(treGear, (x, y) => this.RefreshChildrenGears(treGear, cmsGear, null, y));
+                foreach (Gear objChild in Children)
+                {
+                    objChild.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear);
+                }
+            }
+            else
+            {
+                Children.RemoveTaggedCollectionChanged(treGear);
+                foreach (Gear objChild in Children)
+                {
+                    objChild.SetupChildrenGearsCollectionChanged(false, treGear);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Refreshes a single focus' rating (for changing ratings in create mode)
+        /// </summary>
+        /// <param name="treFoci">TreeView of foci.</param>
+        /// <param name="intNewRating">New rating that the focus is supposed to have.</param>
+        /// <returns>True if the new rating complies by focus limits or the gear is not bonded, false otherwise</returns>
+        public bool RefreshSingleFocusRating(TreeView treFoci, int intNewRating)
+        {
+            if (Bonded)
+            {
+                int intMaxFocusTotal = _objCharacter.MAG.TotalValue * 5;
+                if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                    intMaxFocusTotal = Math.Min(intMaxFocusTotal, _objCharacter.MAGAdept.TotalValue * 5);
+
+                int intFociTotal = _objCharacter.Foci.Where(x => x.GearObject != this).Sum(x => x.Rating);
+
+                if (intFociTotal + intNewRating > intMaxFocusTotal && !_objCharacter.IgnoreRules)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumForce", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return false;
+                }
+            }
+
+            Rating = intNewRating;
+
+            switch (Category)
+            {
+                case "Foci":
+                case "Metamagic Foci":
+                    {
+                        TreeNode nodFocus = treFoci.FindNodeByTag(this);
+                        if (nodFocus != null)
+                        {
+                            nodFocus.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language).Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                        }
+                    }
+                    break;
+                case "Stacked Focus":
+                    {
+                        for (int i = _objCharacter.StackedFoci.Count - 1; i >= 0; --i)
+                        {
+                            if (i < _objCharacter.StackedFoci.Count)
+                            {
+                                StackedFocus objStack = _objCharacter.StackedFoci[i];
+                                if (objStack.GearId == InternalId)
+                                {
+                                    TreeNode nodFocus = treFoci.FindNode(objStack.InternalId);
+                                    if (nodFocus != null)
+                                    {
+                                        nodFocus.Text = DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language).Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            return true;
+        }
         #endregion
         #endregion
 
@@ -2885,6 +2974,28 @@ namespace Chummer.Backend.Equipment
                 )
             );
         #endregion
+
+        /// <summary>
+        /// Recursive method to add a Gear's Improvements to a character when moving them from a Vehicle.
+        /// </summary>
+        /// <param name="objGear">Gear to create Improvements for.
+        /// </param>
+        public void AddGearImprovements()
+        {
+            string strForce = string.Empty;
+            if (Bonus != null || (WirelessOn && WirelessBonus != null))
+            {
+                if (!string.IsNullOrEmpty(Extra))
+                    strForce = Extra;
+                ImprovementManager.ForcedValue = strForce;
+                if (Bonus != null)
+                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, InternalId, Bonus, true, Rating, DisplayNameShort(GlobalOptions.Language));
+                if (WirelessOn && WirelessBonus != null)
+                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, InternalId, WirelessBonus, true, Rating, DisplayNameShort(GlobalOptions.Language));
+            }
+            foreach (Gear objChild in Children)
+                objChild.AddGearImprovements();
+        }
 
         public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
@@ -2935,7 +3046,7 @@ namespace Chummer.Backend.Equipment
             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Nuyen += decAmount;
         }
-
+        
         public void SetSourceDetail(Control sourceControl)
         {
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
@@ -2965,13 +3076,10 @@ namespace Chummer.Backend.Equipment
 
             if ((lstNamesOfChangedProperties?.Count > 0) != true)
                 return;
-            
-            if (PropertyChanged != null)
+
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
-                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
-                {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-                }
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
         }
     }

@@ -70,7 +70,7 @@ namespace Chummer
             this.lblVehicleSeatsLabel = new System.Windows.Forms.Label();
             this.lblVehicleSeats = new System.Windows.Forms.Label();
             this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.chkShowOnlyAffordItems = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudUsedVehicleDiscount)).BeginInit();
@@ -800,7 +800,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblVehicleSeatsLabel;
         private System.Windows.Forms.Label lblVehicleSeats;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.CheckBox chkShowOnlyAffordItems;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }

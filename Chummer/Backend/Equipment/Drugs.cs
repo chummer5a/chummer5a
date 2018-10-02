@@ -100,6 +100,7 @@ namespace Chummer.Backend.Equipment
             objXmlData.TryGetDecFieldQuickly("quantity", ref _decQty);
             objXmlData.TryGetInt32FieldQuickly("rating", ref _intAddictionRating);
             objXmlData.TryGetInt32FieldQuickly("threshold", ref _intAddictionThreshold);
+            objXmlData.TryGetStringFieldQuickly("grade", ref _strGrade);
             //objXmlData.TryGetField("source", out _strSource);
             //objXmlData.TryGetField("page", out _strPage);
         }
@@ -127,6 +128,7 @@ namespace Chummer.Backend.Equipment
                 objXmlWriter.WriteElementString("rating", _intAddictionRating.ToString());
             if (_intAddictionThreshold != 0)
                 objXmlWriter.WriteElementString("threshold", _intAddictionThreshold.ToString());
+            objXmlWriter.WriteElementString("grade", _strGrade);
             /*if (source != null)
                 objXmlWriter.WriteElementString("source", source);
             if (page != 0)
@@ -238,7 +240,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_strDescription == string.Empty)
+                if (string.IsNullOrEmpty(_strDescription))
                     _strDescription = GenerateDescription(0);
                 return _strDescription;
             }
@@ -252,7 +254,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_strEffectDescription == string.Empty)
+                if (string.IsNullOrEmpty(_strEffectDescription))
                     _strEffectDescription = GenerateDescription(0, true);
                 return _strEffectDescription;
             }
@@ -559,13 +561,25 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_blnCachedAttributeFlag) return _dicCachedAttributes;
-                _dicCachedAttributes =
-                    (from d in Components
-                        from de in d.DrugEffects.Where(de => de.Level == d.Level)
-                        where de.Attributes.Count > 0
-                        from attribute in de.Attributes
-                        select attribute).GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.Sum(y => y.Value));
+                if (_blnCachedAttributeFlag)
+                    return _dicCachedAttributes;
+                _dicCachedAttributes = new Dictionary<string, int>();
+                foreach (DrugComponent objComponent in Components)
+                {
+                    foreach (DrugEffect objDrugEffect in objComponent.DrugEffects)
+                    {
+                        if (objDrugEffect.Level == objComponent.Level && objDrugEffect.Attributes.Count > 0)
+                        {
+                            foreach (KeyValuePair<string, int> objAttributeEntry in objDrugEffect.Attributes)
+                            {
+                                if (_dicCachedAttributes.ContainsKey(objAttributeEntry.Key))
+                                    _dicCachedAttributes[objAttributeEntry.Key] += objAttributeEntry.Value;
+                                else
+                                    _dicCachedAttributes.Add(objAttributeEntry.Key, objAttributeEntry.Value);
+                            }
+                        }
+                    }
+                }
                 _blnCachedAttributeFlag = true;
                 return _dicCachedAttributes;
             }
@@ -793,18 +807,24 @@ namespace Chummer.Backend.Equipment
                     {
                         foreach (XmlNode objXmlEffect in xmlEffectChildNodeList)
                         {
-                            objXmlEffect.TryGetField("name", out string effectName);
-                            objXmlEffect.TryGetField("value", out var effectValue, 1);
+                            string strEffectName = string.Empty;
+                            objXmlEffect.TryGetStringFieldQuickly("name", ref strEffectName);
                             switch (objXmlEffect.Name)
                             {
                                 case "attribute":
-                                    if (effectName != null)
-                                        objDrugEffect.Attributes[effectName] = effectValue;
+                                {
+                                    int intEffectValue = 0;
+                                    if (!string.IsNullOrEmpty(strEffectName) && objXmlEffect.TryGetInt32FieldQuickly("value", ref intEffectValue))
+                                        objDrugEffect.Attributes[strEffectName] = intEffectValue;
+                                }
                                     break;
                                 case "limit":
-                                    if (effectName != null)
-                                        objDrugEffect.Limits[effectName] = effectValue;
+                                {
+                                    int intEffectValue = 0;
+                                    if (!string.IsNullOrEmpty(strEffectName) && objXmlEffect.TryGetInt32FieldQuickly("value", ref intEffectValue))
+                                        objDrugEffect.Limits[strEffectName] = intEffectValue;
                                     break;
+                                }
                                 case "quality":
                                     objDrugEffect.Qualities.Add(objXmlEffect.InnerText);
                                     break;
@@ -812,22 +832,37 @@ namespace Chummer.Backend.Equipment
                                     objDrugEffect.Infos.Add(objXmlEffect.InnerText);
                                     break;
                                 case "initiative":
-                                    objDrugEffect.Initiative = int.Parse(objXmlEffect.InnerText);
+                                {
+                                    if (int.TryParse(objXmlEffect.InnerText, out int intInnerText))
+                                        objDrugEffect.Initiative = intInnerText;
                                     break;
+                                }
                                 case "initiativedice":
-                                    objDrugEffect.InitiativeDice = int.Parse(objXmlEffect.InnerText);
+                                {
+                                    if (int.TryParse(objXmlEffect.InnerText, out int intInnerText))
+                                        objDrugEffect.InitiativeDice = intInnerText;
                                     break;
+                                }
                                 case "crashdamage":
-                                    objDrugEffect.CrashDamage = int.Parse(objXmlEffect.InnerText);
+                                {
+                                    if (int.TryParse(objXmlEffect.InnerText, out int intInnerText))
+                                        objDrugEffect.CrashDamage = intInnerText;
                                     break;
+                                }
                                 case "speed":
-                                    objDrugEffect.Speed = int.Parse(objXmlEffect.InnerText);
+                                {
+                                    if (int.TryParse(objXmlEffect.InnerText, out int intInnerText))
+                                        objDrugEffect.Speed = intInnerText;
                                     break;
+                                }
                                 case "duration":
-                                    objDrugEffect.Duration = int.Parse(objXmlEffect.InnerText);
+                                {
+                                    if (int.TryParse(objXmlEffect.InnerText, out int intInnerText))
+                                        objDrugEffect.Duration = intInnerText;
                                     break;
+                                }
                                 default:
-                                    Log.Warning(info: $"Unknown drug effect {objXmlEffect.Name} in component {effectName}");
+                                    Log.Warning(info: $"Unknown drug effect {objXmlEffect.Name} in component {strEffectName}");
                                     break;
                             }
                         }
@@ -839,8 +874,9 @@ namespace Chummer.Backend.Equipment
 
 		    objXmlData.TryGetStringFieldQuickly("availability", ref _strAvailability);
 			objXmlData.TryGetStringFieldQuickly("cost", ref _strCost);
-			objXmlData.TryGetField("rating", out _intAddictionRating);
-			objXmlData.TryGetField("threshold", out _intAddictionThreshold);
+		    objXmlData.TryGetInt32FieldQuickly("level", ref _intLevel);
+            objXmlData.TryGetInt32FieldQuickly("rating", ref _intAddictionRating);
+			objXmlData.TryGetInt32FieldQuickly("threshold", ref _intAddictionThreshold);
 			objXmlData.TryGetStringFieldQuickly("source", ref _strSource);
 			objXmlData.TryGetStringFieldQuickly("page", ref _strPage);
 		}
@@ -853,30 +889,30 @@ namespace Chummer.Backend.Equipment
 			objXmlWriter.WriteElementString("category", _strCategory);
 
 			objXmlWriter.WriteStartElement("effects");
-			foreach (var objDrugEffect in _lstEffects)
+			foreach (DrugEffect objDrugEffect in _lstEffects)
 			{
 				objXmlWriter.WriteStartElement("effect");
-				foreach (var objAttribute in objDrugEffect.Attributes)
+				foreach (KeyValuePair<string, int> objAttribute in objDrugEffect.Attributes)
 				{
 					objXmlWriter.WriteStartElement("attribute");
 					objXmlWriter.WriteElementString("name", objAttribute.Key);
 					objXmlWriter.WriteElementString("value", objAttribute.Value.ToString());
 					objXmlWriter.WriteEndElement();
 				}
-				foreach (var objLimit in objDrugEffect.Limits)
+				foreach (KeyValuePair<string, int> objLimit in objDrugEffect.Limits)
 				{
 					objXmlWriter.WriteStartElement("limit");
 					objXmlWriter.WriteElementString("name", objLimit.Key);
 					objXmlWriter.WriteElementString("value", objLimit.Value.ToString());
 					objXmlWriter.WriteEndElement();
 				}
-				foreach (string quality in objDrugEffect.Qualities)
+				foreach (string strQuality in objDrugEffect.Qualities)
 				{
-					objXmlWriter.WriteElementString("quality", quality);
+					objXmlWriter.WriteElementString("quality", strQuality);
 				}
-				foreach (string info in objDrugEffect.Infos)
+				foreach (string strInfo in objDrugEffect.Infos)
 				{
-					objXmlWriter.WriteElementString("info", info);
+					objXmlWriter.WriteElementString("info", strInfo);
 				}
 				if (objDrugEffect.Initiative != 0)
 					objXmlWriter.WriteElementString("initiative", objDrugEffect.Initiative.ToString());
@@ -894,6 +930,7 @@ namespace Chummer.Backend.Equipment
 
 		    objXmlWriter.WriteElementString("availability", _strAvailability);
             objXmlWriter.WriteElementString("cost", _strCost);
+            objXmlWriter.WriteElementString("level", _intLevel.ToString());
             if (_intAddictionRating != 0)
 				objXmlWriter.WriteElementString("rating", _intAddictionRating.ToString());
 			if (_intAddictionThreshold != 0)
@@ -1112,7 +1149,7 @@ namespace Chummer.Backend.Equipment
 
             if (intLevel != -1)
 			{
-				DrugEffect objDrugEffect = _lstEffects.ElementAt(intLevel);
+				DrugEffect objDrugEffect = _lstEffects[intLevel];
 
 				foreach (KeyValuePair<string, int> objAttribute in objDrugEffect.Attributes)
 				{

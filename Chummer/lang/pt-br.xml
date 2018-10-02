@@ -20,6 +20,7 @@
 <chummer>
   <version>-500</version>
   <name>Português (pt-BR)</name>
+  <righttoleft>False</righttoleft>
   <strings>
     <!-- Region Common Strings -->
     <string>
@@ -6289,7 +6290,7 @@
     </string>
     <string>
       <key>Tab_Options_Character</key>
-      <text>Personagem e Impressão</text>
+      <text>Personagem</text>
     </string>
     <string>
       <key>Tab_Options_Miscellaneous</key>

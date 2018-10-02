@@ -54,7 +54,7 @@ namespace Chummer
 			this.chkFreeBonus = new System.Windows.Forms.CheckBox();
 			this.lblCategory = new System.Windows.Forms.Label();
 			this.cboCategory = new Chummer.ElasticComboBox();
-			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+			this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
 			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
@@ -511,7 +511,7 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkFreeBonus;
         private System.Windows.Forms.Label lblCategory;
         private ElasticComboBox cboCategory;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

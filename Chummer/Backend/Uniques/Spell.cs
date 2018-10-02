@@ -105,9 +105,9 @@ namespace Chummer
             objXmlSpellNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlSpellNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
-            
+
             /*
-            if (_strNotes == string.Empty)
+            if (string.IsNullOrEmpty(_strNotes))
             {
                 _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
             }*/
@@ -682,12 +682,18 @@ namespace Chummer
             set => _strPage = value;
         }
 
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty. 
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Page;
-
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         /// <summary>
