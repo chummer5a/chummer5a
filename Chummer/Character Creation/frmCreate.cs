@@ -10106,6 +10106,7 @@ namespace Chummer
         public void RefreshSelectedCyberware()
         {
             _blnSkipRefresh = true;
+            tlpCyberware.SuspendLayout();
             lblCyberDeviceRating.Visible = false;
             lblCyberAttack.Visible = false;
             lblCyberSleaze.Visible = false;
@@ -10138,6 +10139,7 @@ namespace Chummer
                 lblCyberlimbSTR.Visible = false;
                 lblCyberlimbSTRLabel.Visible = false;
                 _blnSkipRefresh = false;
+                tlpCyberware.ResumeLayout();
                 return;
             }
 
@@ -10215,7 +10217,7 @@ namespace Chummer
 
                     chkCyberwareActiveCommlink.Visible = objCyberware.IsCommlink;
                     chkCyberwareActiveCommlink.Checked = objCyberware.IsActiveCommlink(CharacterObject);
-                    if (CharacterObject.Metatype == "A.I.")
+                    if (CharacterObject.IsAI)
                     {
                         chkCyberwareHomeNode.Visible = true;
                         chkCyberwareHomeNode.Checked = objCyberware.IsHomeNode(CharacterObject);
@@ -10288,7 +10290,7 @@ namespace Chummer
 
                 chkCyberwareActiveCommlink.Visible = objGear.IsCommlink;
                 chkCyberwareActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
-                if (CharacterObject.Metatype == "A.I.")
+                if (CharacterObject.IsAI)
                 {
                     chkCyberwareHomeNode.Visible = true;
                     chkCyberwareHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
@@ -10318,6 +10320,7 @@ namespace Chummer
                 treCyberware.SelectedNode.Text = objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
             }
             _blnSkipRefresh = false;
+            tlpCyberware.ResumeLayout();
         }
         
         /// <summary>
@@ -10883,7 +10886,7 @@ namespace Chummer
                 chkGearActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
                 chkGearActiveCommlink.Enabled = objGear.IsCommlink;
 
-                if (CharacterObject.Metatype == "A.I.")
+                if (CharacterObject.IsAI)
                 {
                     chkGearHomeNode.Visible = true;
                     chkGearHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
@@ -12104,7 +12107,7 @@ namespace Chummer
 
                 chkVehicleActiveCommlink.Visible = objCyberware.IsCommlink;
                 chkVehicleActiveCommlink.Checked = objCyberware.IsActiveCommlink(CharacterObject);
-                if (CharacterObject.Metatype == "A.I.")
+                if (CharacterObject.IsAI)
                 {
                     chkVehicleHomeNode.Visible = true;
                     chkVehicleHomeNode.Checked = objCyberware.IsHomeNode(CharacterObject);
@@ -12184,7 +12187,7 @@ namespace Chummer
 
                 chkVehicleActiveCommlink.Visible = objGear.IsCommlink;
                 chkVehicleActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
-                if (CharacterObject.Metatype == "A.I.")
+                if (CharacterObject.IsAI)
                 {
                     chkVehicleHomeNode.Visible = true;
                     chkVehicleHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
