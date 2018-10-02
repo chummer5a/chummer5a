@@ -34,6 +34,8 @@ namespace Chummer.UI.Shared
         public LimitTabUserControl()
         {
             InitializeComponent();
+
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         private void LimitTabUserControl_Load(object sender, EventArgs e)
