@@ -8,23 +8,23 @@ better detailed in [bonus] and [addquality]
 
 
 ## Table of Contents
-1. [File layout](#File layout)
-   * [stages](#stages)
-   * [modules](#modules)
+1. [File layout](#File-layout)
+   * [Stages](#Stages)
+   * [Modules](#Modules)
    * [storybuilder](#storybuilder)
 2. [Nodes](#Nodes)
    * [stages](#stages)
-   * [modules]
-   * [bonus]
-   * [versions]
-   * [addquality]
-   * [story]
-   * [forbidden]
+   * [modules](#modules)
+   * [bonus](#modules)
+   * [versions](#versions)
+   * [addquality](#addquality)
+   * [story](#story)
+   * [forbidden](#forbidden)
 3. [Storybuilder](#Storybuilder)
-   * [Basics]
-   * [Random]
-   * [persistent]
-   * [System Macros]
+   * [Storybuilder Basics](#Storybuilder-Basics)
+   * [Random](#Random)
+   * [persistent](#persistent)
+   * [System Macros](#System-Macros)
 
 ### required
 
@@ -32,11 +32,11 @@ better detailed in [bonus] and [addquality]
 ## File layout
 Under the root node `chummer`, there are 3 nodes used by life modules. Those are `stages`, `modules` and `storybuilder`.
 
-### stages  
+### Stages  
 Stages contain information about the order the different life modules are presented in.  
 Once reaching the last stage, Chummer5a will allow you to continue adding more modules from that stage.
 
-### modules  
+### Modules  
 Modules contain the acctual modules that can be added to a character, including what bonuses they give, their cost, requirements and possible versions.
 
 ### storybuilder
@@ -121,7 +121,7 @@ This will only give a brief discription on how the [addquality] node works. See 
 
 
 ## Storybuilder
-### Basics
+### Storybuilder Basics
 
 Storybuilder is a feature that dynamicaly creates a backstory based on selected life modules.
 
