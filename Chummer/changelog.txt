@@ -91,6 +91,7 @@ Application Changes:
 - Added preliminary support for right-to-left scripts to Chummer5a's translation system and the Translator tool. It's currently relatively untested, but bugs will be ironed out if/when translations that use right-to-left scripts get included with the program.
 - Fixed a bug where improvements that grant extra damage resistance dice would also get added to armor when printing character information. Fixes #3058.
 - Fixed behaviour of DisplayPage property to not return an empty string if that's in the data file. Fixes #3064
+- Ugly workaround fix for characters that managed to get a power rating higher than total maximum magic to prevent them from crashing. Fixes #3062.
 
 Data Changes:
 
@@ -136,6 +137,7 @@ Data Changes:
 - Fixed a typo in the name of the Dassault Janitorial Drone.
 - All instances of "NeoNET" are now capitalized as such (some items previously said "NeoNet" or "Neonet"). Fixes #3033.
 - Added (hidden) Gear items for Public Grid, Local Grid, and Global Grid so that these phrases can be handled by TranslateExtra. Part of #3002.
+- Fixed an issue with the Text-Only sheet that caused it to fail to load the LOG attribute.
 
 New Strings:
 

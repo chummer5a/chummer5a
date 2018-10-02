@@ -33,8 +33,8 @@ namespace Chummer.UI.Shared
             this.flowButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddLimitModifier = new System.Windows.Forms.Button();
             this.cmdDeleteLimitModifier = new System.Windows.Forms.Button();
-            this.tlpParent = new Chummer.BufferedTableLayoutPanel();
-            this.tableDetails = new Chummer.BufferedTableLayoutPanel();
+            this.tlpParent = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tableDetails = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblMentalLimitLabel = new System.Windows.Forms.Label();
             this.lblSocialLimitLabel = new System.Windows.Forms.Label();
             this.lblPhysicalLimitLabel = new System.Windows.Forms.Label();
@@ -56,12 +56,12 @@ namespace Chummer.UI.Shared
             // 
             this.treLimit.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treLimit.HideSelection = false;
-            this.treLimit.Location = new System.Drawing.Point(3, 38);
+            this.treLimit.Location = new System.Drawing.Point(3, 32);
             this.treLimit.Name = "treLimit";
             this.treLimit.ShowNodeToolTips = true;
             this.treLimit.ShowPlusMinus = false;
             this.treLimit.ShowRootLines = false;
-            this.treLimit.Size = new System.Drawing.Size(295, 385);
+            this.treLimit.Size = new System.Drawing.Size(295, 391);
             this.treLimit.TabIndex = 91;
             this.treLimit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treLimit_KeyDown);
             // 
@@ -75,14 +75,13 @@ namespace Chummer.UI.Shared
             this.flowButtons.Location = new System.Drawing.Point(0, 0);
             this.flowButtons.Margin = new System.Windows.Forms.Padding(0);
             this.flowButtons.Name = "flowButtons";
-            this.flowButtons.Size = new System.Drawing.Size(200, 35);
+            this.flowButtons.Size = new System.Drawing.Size(197, 29);
             this.flowButtons.TabIndex = 92;
             // 
             // cmdAddLimitModifier
             // 
             this.cmdAddLimitModifier.AutoSize = true;
-            this.cmdAddLimitModifier.Location = new System.Drawing.Point(6, 6);
-            this.cmdAddLimitModifier.Margin = new System.Windows.Forms.Padding(6, 6, 3, 6);
+            this.cmdAddLimitModifier.Location = new System.Drawing.Point(3, 3);
             this.cmdAddLimitModifier.Name = "cmdAddLimitModifier";
             this.cmdAddLimitModifier.Size = new System.Drawing.Size(105, 23);
             this.cmdAddLimitModifier.TabIndex = 80;
@@ -94,8 +93,7 @@ namespace Chummer.UI.Shared
             // cmdDeleteLimitModifier
             // 
             this.cmdDeleteLimitModifier.AutoSize = true;
-            this.cmdDeleteLimitModifier.Location = new System.Drawing.Point(117, 6);
-            this.cmdDeleteLimitModifier.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.cmdDeleteLimitModifier.Location = new System.Drawing.Point(114, 3);
             this.cmdDeleteLimitModifier.Name = "cmdDeleteLimitModifier";
             this.cmdDeleteLimitModifier.Size = new System.Drawing.Size(80, 23);
             this.cmdDeleteLimitModifier.TabIndex = 78;
@@ -123,6 +121,8 @@ namespace Chummer.UI.Shared
             // 
             // tableDetails
             // 
+            this.tableDetails.AutoSize = true;
+            this.tableDetails.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableDetails.ColumnCount = 2;
             this.tableDetails.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableDetails.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -135,14 +135,14 @@ namespace Chummer.UI.Shared
             this.tableDetails.Controls.Add(this.lblSocial, 1, 2);
             this.tableDetails.Controls.Add(this.lblAstralLabel, 0, 3);
             this.tableDetails.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableDetails.Location = new System.Drawing.Point(304, 38);
+            this.tableDetails.Location = new System.Drawing.Point(304, 32);
             this.tableDetails.Name = "tableDetails";
             this.tableDetails.RowCount = 4;
             this.tableDetails.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableDetails.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableDetails.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableDetails.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableDetails.Size = new System.Drawing.Size(656, 385);
+            this.tableDetails.Size = new System.Drawing.Size(656, 391);
             this.tableDetails.TabIndex = 93;
             // 
             // lblMentalLimitLabel

@@ -42,6 +42,8 @@ namespace Chummer.UI.Shared
         public VehiclesTabUserControl()
         {
             InitializeComponent();
+
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         private void VehiclesTabUserControl_Load(object sender, EventArgs e)
@@ -1179,7 +1181,7 @@ namespace Chummer.UI.Shared
 
                 chkVehicleActiveCommlink.Visible = objCyberware.IsCommlink;
                 chkVehicleActiveCommlink.Checked = objCyberware.IsActiveCommlink(_objCharacter);
-                if (_objCharacter.Metatype == "A.I.")
+                if (_objCharacter.IsAI)
                 {
                     chkVehicleHomeNode.Visible = true;
                     chkVehicleHomeNode.Checked = objCyberware.IsHomeNode(_objCharacter);
@@ -1280,7 +1282,7 @@ namespace Chummer.UI.Shared
 
                 chkVehicleActiveCommlink.Visible = objGear.IsCommlink;
                 chkVehicleActiveCommlink.Checked = objGear.IsActiveCommlink(_objCharacter);
-                if (_objCharacter.Metatype == "A.I.")
+                if (_objCharacter.IsAI)
                 {
                     chkVehicleHomeNode.Visible = true;
                     chkVehicleHomeNode.Checked = objGear.IsHomeNode(_objCharacter);

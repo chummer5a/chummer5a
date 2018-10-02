@@ -7928,15 +7928,15 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>String_SelectBP_BPSummary</key>
-      <text>Enter the amount of Build Points you are allowed to create your character with (Default {0}).</text>
+      <text>Enter the amount of Build Points with which you are allowed to create your character (Default {0}).</text>
     </string>
     <string>
       <key>String_SelectBP_KarmaSummary</key>
-      <text>Enter the amount of Karma you are allowed to create your character with (Default {0}).</text>
+      <text>Enter the amount of Karma with which you are allowed to create your character (Default {0}).</text>
     </string>
     <string>
       <key>String_SelectBP_PrioritySummary</key>
-      <text>Enter the maxiumum availability you are allowed to create your character with.</text>
+      <text>Enter the maximum availability with which you are allowed to create your character.</text>
     </string>
     <string>
       <key>Tip_SelectKarma_IgnoreRules</key>

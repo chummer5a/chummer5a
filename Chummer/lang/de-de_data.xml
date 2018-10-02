@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
 	Chummer5a is free software: you can redistribute it and/or modify
@@ -20066,8 +20066,8 @@
 			</mentor>
 			<mentor translated="True">
 				<id>7a837193-2b58-49be-9dbb-c1c0c108ca6e</id>
-				<name>Great Mother</name>
-				<translate>Große Mutter</translate>
+				<name>Great Mother (SASS)</name>
+				<translate>Große Mutter (SASS)</translate>
 				<choices>
 					<choice>
 						<name>+2 to First Aid</name>
@@ -29847,6 +29847,12 @@
 				<translate>Paragon</translate>
 				<altpage>102</altpage>
 			</quality>
+			<quality>
+				<id>eeb4db5b-f5b7-4ab5-b310-1d7107cd722f</id>
+				<name>Sprite Affinity</name>
+				<translate>Sprite Affinity</translate>
+				<altpage>97</altpage>
+			</quality>
 		</qualities>
 	</chummer>
 	<chummer file="skills.xml">
@@ -34454,11 +34460,11 @@
 				<translate>Schallbarriere</translate>
 				<altpage>115</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>370e0dfb-550e-4330-92eb-9ef3b8a044b5</id>
 				<name>Stealth</name>
-				<translate>Heimlichkeit</translate>
-				<altpage>240</altpage>
+				<translate>Leiser Schritt</translate>
+				<altpage>283</altpage>
 			</spell>
 			<spell>
 				<id>ecd4d99e-7e5c-43be-bfb7-7af989879236</id>
@@ -38270,7 +38276,7 @@
 			</vehicle>
 			<vehicle translated="True">
 				<id>17d1e41b-6650-45e2-b898-d047c3b8702a</id>
-				<name>Shiawase I-Doll</name>
+				<name>Shiawase i-Doll</name>
 				<translate>Shiawase i-Doll</translate>
 				<altpage>156</altpage>
 			</vehicle>

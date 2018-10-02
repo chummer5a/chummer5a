@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 <chummer>
 	<version>-495</version>
 	<name>Deutsch (de-DE)</name>
-  <righttoleft>False</righttoleft>
+	<righttoleft>False</righttoleft>
 	<strings>
 		<string>
 			<key>Message_Insufficient_Permissions_Warning</key>
@@ -4189,10 +4189,6 @@
 			<text>Hausregeln</text>
 		</string>
 		<string>
-			<key>Label_Options_AdditionalBooks</key>
-			<text>Weitere nutzbare Quellenbücher</text>
-		</string>
-		<string>
 			<key>Label_Options_CyberlimbCount</key>
 			<text>Gliedmaßen für Standard-Charaktere:</text>
 		</string>
@@ -4367,10 +4363,6 @@
 		<string>
 			<key>Checkbox_Options_SkillRegroup</key>
 			<text>Erlaube das Regruppieren von Fertigkeiten, wenn alle den selben Wert haben.</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_MetatypesCostKarma</key>
-			<text>Karma-Kosten für Metatypen sind gleich der GP-Kosten</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_Dronemods</key>
@@ -9218,22 +9210,22 @@
 		<string>
 			<key>Label_Options_CustomDataDirectories</key>
 			<text>Anzuwendende Sonderregeln (Änderungen werden erst nach einem Programmneustart aktiv)</text>
-    </string>
-    <string>
+		</string>
+		<string>
 			<key>About_Description_Text</key>
 			<text>Charaktergenerator für Shadowrun 5. Edition\n\r\n\rDanke an Keith für die wundervolle Arbeit, die er in die Erstellung und Pflege von Chummer für die 4. Edition gesteck hat. Ohne ihn wäre das alles nicht möglich.\n\r\n\rHerzlichen Dank an alle der 'Dumpshock community', dass sie dieses Projekt mit all ihren wertvollen Rückmeldungen, tollen Ideen, Verbesserungsvorschlägen und Hinweise auf enthaltene Fehler unterstützt haben. Ein großen Dankeschön auch an alle, die sich freiwillig gemeldet haben um Chummer in andere Sprachen zu übersetzen!</text>
 		</string>
 		<string>
 			<key>String_WorkingForTheMan</key>
-			<text>Für die Gemeinschaft erbracht</text>
+			<text>Für den Mann arbeiten</text>
 		</string>
 		<string>
 			<key>String_WorkingForThePeople</key>
-			<text>Für die Gemeinschaft erbracht</text>
+			<text>Für die Leute arbeiten</text>
 		</string>
 		<string>
 			<key>String_WorkingForTheManPeople</key>
-			<text>Für die Gemeinschaft erbracht</text>
+			<text>Für den Mann/die Leute arbeiten</text>
 		</string>
 		<string>
 			<key>Tip_LifeModule_Warning</key>
@@ -9257,7 +9249,7 @@
 		</string>
 		<string>
 			<key>About_Label_Contributors</key>
-			<text>Vielen Dank an alle GitHub-Mitarbeiter!</text>
+			<text>Vielen Dank an alle GitHub Mitwirkenden!</text>
 		</string>
 		<string>
 			<key>About_Label_Disclaimer</key>
@@ -9278,6 +9270,54 @@
 		<string>
 			<key>Tip_Omae_Warning</key>
 			<text>Omae liegt außerhalb der Kontrolle der aktuellen Entwickler und enthält alte Charaktere, die möglicherweise nicht funktionieren oder die aktuelle Version von Chummer zum Absturz bringen. Die Benutzung erfolgt auf eigene Gefahr. Wollen Sie fortfahren?</text>
+		</string>
+		<string>
+			<key>Message_KarmaValue</key>
+			<text>Neben Punkten für Wissensfertigkeiten aus Lebensmodulen und dem Ignorieren von Metatypeffekten, für die der Karmawert nicht objektiv beurteilt werden kann, hat dieser Charakter folgenden Karmawert:</text>
+		</string>
+		<string>
+			<key>String_Nightly_Changelog_Warning</key>
+			<text>Versionen im nightly Changelog sind temporär.</text>
+		</string>
+		<string>
+			<key>Button_Options_UploadPastebin</key>
+			<text>Datei zu Pastebin hochladen</text>
+		</string>
+		<string>
+			<key>Tab_Options_GitHubIssues</key>
+			<text>GitHub Issues</text>
+		</string>
+		<string>
+			<key>Message_MetagenicQualitiesInsufficientKarma</key>
+			<text>Es ist 1 Karma notwendig um metagenetische Nachteile und Vorteile auszugleichen. Aktuell verfügbar: {0}</text>
+		</string>
+		<string>
+			<key>Message_MetagenicQualitiesSubtractingKarma</key>
+			<text>Es ist 1 Karma notwendig um metagenetische Nachteile und Vorteile auszugleichen. Aktuell verfügbar: {0}.\nIst es in Ordnung, dieses Karma auszugeben?</text>
+		</string>
+		<string>
+			<key>Message_MetagenicQualitiesUnbalanced</key>
+			<text>Die metagenetischen Vor-/Nachteile sind nicht ausgeglichen. Aktuell: {0} Erwartet: {1} oder {2}</text>
+		</string>
+		<string>
+			<key>String_MaximumDrugBlockLevel</key>
+			<text>Ein Baustein, der ein Attribut erhöht, das durch die gewählte Basis gesenkt wird, darf maximal die Stufe 2 haben. (CF 191)</text>
+		</string>
+		<string>
+			<key>Message_InvalidExConWare</key>
+			<text>Die folgende limitierte Cyber-/Bioware ist auf einer ExCon nicht erlaubt:</text>
+		</string>
+		<string>
+			<key>Menu_SpecialChangePriorities</key>
+			<text>Ändere &amp;Prioritätenauswahl</text>
+		</string>
+		<string>
+			<key>String_Dashboard</key>
+			<text>Dashboard</text>
+		</string>
+		<string>
+			<key>Label_Stage</key>
+			<text>Phase:</text>
 		</string>
 	</strings>
 </chummer>

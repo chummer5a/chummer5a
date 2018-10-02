@@ -545,11 +545,17 @@ namespace Chummer
         private decimal Discount => DiscountedAdeptWay ? AdeptWayDiscount : 0;
 
         /// <summary>
-        /// The current Rating of the Power.
+        /// The current 'paid' Rating of the Power.
         /// </summary>
         public int Rating
         {
-            get => _intRating;
+            get
+            {
+                //TODO: This isn't super safe, but it's more reliable than checking it at load as improvement effects like Essence Loss take effect after powers are loaded. Might need another solution. 
+                if (_intRating <= TotalMaximumLevels) return _intRating;
+                _intRating = TotalMaximumLevels;
+                return _intRating;
+            }
             set
             {
                 if (_intRating != value)
