@@ -1140,8 +1140,8 @@ namespace Chummer
             this.cmdDeleteMugshot = new System.Windows.Forms.Button();
             this.tabKarma = new System.Windows.Forms.TabPage();
             this.splitKarmaNuyen = new System.Windows.Forms.SplitContainer();
-            this.chtKarma = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tlpKarma = new System.Windows.Forms.TableLayoutPanel();
+            this.chtKarma = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.flowLayoutPanel11 = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdKarmaGained = new System.Windows.Forms.Button();
             this.cmdKarmaSpent = new System.Windows.Forms.Button();
@@ -1152,6 +1152,7 @@ namespace Chummer
             this.colKarmaAmount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colKarmaReason = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tlpNuyen = new System.Windows.Forms.TableLayoutPanel();
+            this.chtNuyen = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.lstNuyen = new System.Windows.Forms.ListView();
             this.colNuyenDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colNuyenAmount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -1161,7 +1162,6 @@ namespace Chummer
             this.cmdNuyenSpent = new System.Windows.Forms.Button();
             this.cmdNuyenEdit = new System.Windows.Forms.Button();
             this.chkShowFreeNuyen = new System.Windows.Forms.CheckBox();
-            this.chtNuyen = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tabCalendar = new System.Windows.Forms.TabPage();
             this.tblCalendar = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flowLayoutPanel13 = new System.Windows.Forms.FlowLayoutPanel();
@@ -1402,12 +1402,12 @@ namespace Chummer
             this.splitKarmaNuyen.Panel1.SuspendLayout();
             this.splitKarmaNuyen.Panel2.SuspendLayout();
             this.splitKarmaNuyen.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chtKarma)).BeginInit();
             this.tlpKarma.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chtKarma)).BeginInit();
             this.flowLayoutPanel11.SuspendLayout();
             this.tlpNuyen.SuspendLayout();
-            this.flowLayoutPanel12.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chtNuyen)).BeginInit();
+            this.flowLayoutPanel12.SuspendLayout();
             this.tabCalendar.SuspendLayout();
             this.tblCalendar.SuspendLayout();
             this.flowLayoutPanel13.SuspendLayout();
@@ -15491,7 +15491,6 @@ namespace Chummer
             // splitKarmaNuyen.Panel1
             // 
             this.splitKarmaNuyen.Panel1.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.splitKarmaNuyen.Panel1.Controls.Add(this.chtKarma);
             this.splitKarmaNuyen.Panel1.Controls.Add(this.tlpKarma);
             this.splitKarmaNuyen.Panel1.Resize += new System.EventHandler(this.splitKarmaNuyen_Panel1_Resize);
             // 
@@ -15499,38 +15498,41 @@ namespace Chummer
             // 
             this.splitKarmaNuyen.Panel2.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.splitKarmaNuyen.Panel2.Controls.Add(this.tlpNuyen);
-            this.splitKarmaNuyen.Panel2.Controls.Add(this.chtNuyen);
             this.splitKarmaNuyen.Panel2.Resize += new System.EventHandler(this.splitKarmaNuyen_Panel2_Resize);
             this.splitKarmaNuyen.Size = new System.Drawing.Size(835, 625);
-            this.splitKarmaNuyen.SplitterDistance = 414;
+            this.splitKarmaNuyen.SplitterDistance = 415;
             this.splitKarmaNuyen.TabIndex = 6;
-            // 
-            // chtKarma
-            // 
-            this.chtKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            chartArea1.Name = "KarmaArea";
-            this.chtKarma.ChartAreas.Add(chartArea1);
-            this.chtKarma.Location = new System.Drawing.Point(0, 414);
-            this.chtKarma.Name = "chtKarma";
-            this.chtKarma.Size = new System.Drawing.Size(531, 208);
-            this.chtKarma.TabIndex = 4;
-            this.chtKarma.Text = "chart1";
             // 
             // tlpKarma
             // 
             this.tlpKarma.ColumnCount = 1;
             this.tlpKarma.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpKarma.Controls.Add(this.chtKarma, 0, 2);
             this.tlpKarma.Controls.Add(this.flowLayoutPanel11, 0, 0);
             this.tlpKarma.Controls.Add(this.lstKarma, 0, 1);
             this.tlpKarma.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpKarma.Location = new System.Drawing.Point(0, 0);
             this.tlpKarma.Margin = new System.Windows.Forms.Padding(0);
             this.tlpKarma.Name = "tlpKarma";
-            this.tlpKarma.RowCount = 2;
+            this.tlpKarma.RowCount = 3;
             this.tlpKarma.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpKarma.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpKarma.Size = new System.Drawing.Size(414, 625);
+            this.tlpKarma.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpKarma.Size = new System.Drawing.Size(415, 625);
             this.tlpKarma.TabIndex = 7;
+            // 
+            // chtKarma
+            // 
+            this.chtKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            chartArea1.Name = "KarmaArea";
+            this.chtKarma.ChartAreas.Add(chartArea1);
+            this.chtKarma.Location = new System.Drawing.Point(3, 422);
+            this.chtKarma.Name = "chtKarma";
+            this.chtKarma.Size = new System.Drawing.Size(409, 200);
+            this.chtKarma.TabIndex = 4;
+            this.chtKarma.Text = "chart1";
             // 
             // flowLayoutPanel11
             // 
@@ -15544,7 +15546,7 @@ namespace Chummer
             this.flowLayoutPanel11.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel11.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel11.Name = "flowLayoutPanel11";
-            this.flowLayoutPanel11.Size = new System.Drawing.Size(414, 29);
+            this.flowLayoutPanel11.Size = new System.Drawing.Size(415, 29);
             this.flowLayoutPanel11.TabIndex = 6;
             // 
             // cmdKarmaGained
@@ -15612,7 +15614,7 @@ namespace Chummer
             this.lstKarma.Location = new System.Drawing.Point(3, 32);
             this.lstKarma.MultiSelect = false;
             this.lstKarma.Name = "lstKarma";
-            this.lstKarma.Size = new System.Drawing.Size(408, 590);
+            this.lstKarma.Size = new System.Drawing.Size(409, 384);
             this.lstKarma.TabIndex = 0;
             this.lstKarma.UseCompatibleStateImageBehavior = false;
             this.lstKarma.View = System.Windows.Forms.View.Details;
@@ -15635,22 +15637,37 @@ namespace Chummer
             // 
             this.colKarmaReason.Tag = "String_Reason";
             this.colKarmaReason.Text = "Reason";
-            this.colKarmaReason.Width = 214;
+            this.colKarmaReason.Width = 208;
             // 
             // tlpNuyen
             // 
             this.tlpNuyen.ColumnCount = 1;
             this.tlpNuyen.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpNuyen.Controls.Add(this.chtNuyen, 0, 2);
             this.tlpNuyen.Controls.Add(this.lstNuyen, 0, 1);
             this.tlpNuyen.Controls.Add(this.flowLayoutPanel12, 0, 0);
             this.tlpNuyen.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpNuyen.Location = new System.Drawing.Point(0, 0);
             this.tlpNuyen.Name = "tlpNuyen";
-            this.tlpNuyen.RowCount = 2;
+            this.tlpNuyen.RowCount = 3;
             this.tlpNuyen.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpNuyen.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpNuyen.Size = new System.Drawing.Size(417, 625);
+            this.tlpNuyen.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpNuyen.Size = new System.Drawing.Size(416, 625);
             this.tlpNuyen.TabIndex = 9;
+            // 
+            // chtNuyen
+            // 
+            this.chtNuyen.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            chartArea2.Name = "NuyenArea";
+            this.chtNuyen.ChartAreas.Add(chartArea2);
+            this.chtNuyen.Location = new System.Drawing.Point(3, 422);
+            this.chtNuyen.Name = "chtNuyen";
+            this.chtNuyen.Size = new System.Drawing.Size(410, 200);
+            this.chtNuyen.TabIndex = 7;
+            this.chtNuyen.Text = "chart1";
             // 
             // lstNuyen
             // 
@@ -15665,7 +15682,7 @@ namespace Chummer
             this.lstNuyen.Location = new System.Drawing.Point(3, 32);
             this.lstNuyen.MultiSelect = false;
             this.lstNuyen.Name = "lstNuyen";
-            this.lstNuyen.Size = new System.Drawing.Size(411, 590);
+            this.lstNuyen.Size = new System.Drawing.Size(410, 384);
             this.lstNuyen.TabIndex = 3;
             this.lstNuyen.UseCompatibleStateImageBehavior = false;
             this.lstNuyen.View = System.Windows.Forms.View.Details;
@@ -15688,7 +15705,7 @@ namespace Chummer
             // 
             this.colNuyenReason.Tag = "String_Reason";
             this.colNuyenReason.Text = "Reason";
-            this.colNuyenReason.Width = 215;
+            this.colNuyenReason.Width = 208;
             // 
             // flowLayoutPanel12
             // 
@@ -15702,7 +15719,7 @@ namespace Chummer
             this.flowLayoutPanel12.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel12.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel12.Name = "flowLayoutPanel12";
-            this.flowLayoutPanel12.Size = new System.Drawing.Size(417, 29);
+            this.flowLayoutPanel12.Size = new System.Drawing.Size(416, 29);
             this.flowLayoutPanel12.TabIndex = 8;
             // 
             // cmdNuyenGained
@@ -15756,17 +15773,6 @@ namespace Chummer
             this.chkShowFreeNuyen.Text = "Show Free Entries";
             this.chkShowFreeNuyen.UseVisualStyleBackColor = true;
             this.chkShowFreeNuyen.CheckedChanged += new System.EventHandler(this.PopulateExpenseList);
-            // 
-            // chtNuyen
-            // 
-            this.chtNuyen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            chartArea2.Name = "NuyenArea";
-            this.chtNuyen.ChartAreas.Add(chartArea2);
-            this.chtNuyen.Location = new System.Drawing.Point(0, 414);
-            this.chtNuyen.Name = "chtNuyen";
-            this.chtNuyen.Size = new System.Drawing.Size(547, 208);
-            this.chtNuyen.TabIndex = 7;
-            this.chtNuyen.Text = "chart1";
             // 
             // tabCalendar
             // 
@@ -17096,16 +17102,16 @@ namespace Chummer
             this.splitKarmaNuyen.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitKarmaNuyen)).EndInit();
             this.splitKarmaNuyen.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.chtKarma)).EndInit();
             this.tlpKarma.ResumeLayout(false);
             this.tlpKarma.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chtKarma)).EndInit();
             this.flowLayoutPanel11.ResumeLayout(false);
             this.flowLayoutPanel11.PerformLayout();
             this.tlpNuyen.ResumeLayout(false);
             this.tlpNuyen.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chtNuyen)).EndInit();
             this.flowLayoutPanel12.ResumeLayout(false);
             this.flowLayoutPanel12.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chtNuyen)).EndInit();
             this.tabCalendar.ResumeLayout(false);
             this.tblCalendar.ResumeLayout(false);
             this.tblCalendar.PerformLayout();
