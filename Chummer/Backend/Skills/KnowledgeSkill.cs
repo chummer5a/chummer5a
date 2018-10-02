@@ -89,45 +89,75 @@ namespace Chummer.Backend.Skills
             set
             {
                 if (ForcedName)
+                {
                     return;
-                string strNewName = value;
-                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                {
-                    XmlDocument xmlSkillDoc = XmlManager.Load("skills.xml", GlobalOptions.Language);
-                    XmlNode xmlNewNode = xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[translate = \"" + value + "\" and category = \"" + Type + "\"]") ??
-                                         xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[translate = \"" + value + "\"]");
-                    if (xmlNewNode != null)
-                        strNewName = xmlNewNode["name"]?.InnerText ?? value;
-                    else
-                        strNewName = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
                 }
-                if (Name != strNewName)
+
+                if (string.Equals(DisplayName, value))
                 {
-                    Name = strNewName;
-                    LoadDefaultType();
-                    OnPropertyChanged();
+                    return;
                 }
+
+                var defaultLanguageSkillName = GetDefaultLanguageSkillName(value);
+                LoadDefaultType(defaultLanguageSkillName);
+
+                Name = value;
+                OnPropertyChanged();
             }
         }
 
-        public bool LoadDefaultType()
+        private static XmlNode GetSkillTranslationNode(string value)
         {
-            XmlDocument xmlSkillDoc = XmlManager.Load("skills.xml", GlobalOptions.Language);
-            XmlNode xmlNewNode = xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\" and category = \"" + Type + "\"]") ??
-                                 xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\"]");
-            if (xmlNewNode != null)
+            var xmlSkillDoc = XmlManager.Load("skills.xml", GlobalOptions.Language);
+            var skillNode = xmlSkillDoc.SelectSingleNode($"/chummer/knowledgeskills/skill[translate = \"{ value }\"]");
+            return skillNode;
+        }
+
+        private string GetDefaultLanguageSkillName(string value)
+        {
+            var skillTranslationNode = GetSkillTranslationNode(value);
+
+            if (GlobalOptions.Language == GlobalOptions.DefaultLanguage)
             {
-                SkillId = xmlNewNode.TryGetField("id", Guid.TryParse, out Guid guidTemp) ? guidTemp : Guid.Empty;
-                string strCategory = xmlNewNode["category"]?.InnerText;
-                if (!string.IsNullOrEmpty(strCategory))
-                    Type = strCategory;
-                string strAttribute = xmlNewNode["attribute"]?.InnerText;
-                if (!string.IsNullOrEmpty(strAttribute))
-                    AttributeObject = CharacterObject.GetAttribute(strAttribute) ?? CharacterObject.LOG;
-                return true;
+                return value;
             }
-            SkillId = Guid.Empty;
-            return false;
+            
+            if (skillTranslationNode == null)
+            {
+                return LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            }
+
+            return skillTranslationNode["name"]?.InnerText ?? value;
+        }
+        
+        private void LoadDefaultType(string skillName)
+        {
+            var xmlSkillDoc = XmlManager.Load("skills.xml", GlobalOptions.Language);
+            var skillNode = xmlSkillDoc.SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{ skillName }\"]");
+
+            if (skillNode == null)
+            {
+                SkillId = Guid.Empty;
+                return;
+            }
+
+            SkillId = skillNode.TryGetField("id", Guid.TryParse, out Guid guidTemp)
+                ? guidTemp
+                : Guid.Empty;
+
+            var strCategory = skillNode["category"]?.InnerText;
+
+            if (!string.IsNullOrEmpty(strCategory))
+            {
+                Type = strCategory;
+            }
+
+            var strAttribute = skillNode["attribute"]?.InnerText;
+
+            if (!string.IsNullOrEmpty(strAttribute))
+            {
+                AttributeObject = CharacterObject.GetAttribute(strAttribute) ?? CharacterObject.LOG;
+            }
         }
 
         public override string SkillCategory => Type;
