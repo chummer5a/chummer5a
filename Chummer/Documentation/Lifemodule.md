@@ -9,27 +9,27 @@ better detailed in [bonus] and [addquality]
 
 ## Table of Contents
 1. [File layout](#File layout)
-   1.1. [stages](#stages)
-   1.2. [modules](#modules)
-   1.3. [storybuilder](#storybuilder)
+   * [stages](#stages)
+   * [modules](#modules)
+   * [storybuilder](#storybuilder)
 2. [Nodes](#Nodes)
-   2.1. [stages](#stages)
-   2.2. [modules]
-   2.3. [bonus]
-   2.4. [versions]
-   2.5. [addquality]
-   2.6. [story]
-   2.7. [forbidden]
+   * [stages](#stages)
+   * [modules]
+   * [bonus]
+   * [versions]
+   * [addquality]
+   * [story]
+   * [forbidden]
 3. [Storybuilder](#Storybuilder)
-   3.1. [Basics]
-   3.2. [Random]
-   3.3. [persistent]
-   3.4. [System Macros]
+   * [Basics]
+   * [Random]
+   * [persistent]
+   * [System Macros]
 
 ### required
 
 
-##File layout
+## File layout
 Under the root node `chummer`, there are 3 nodes used by life modules. Those are `stages`, `modules` and `storybuilder`.
 
 ### stages  
