@@ -835,6 +835,8 @@ namespace Chummer
             this.tabPeople = new System.Windows.Forms.TabControl();
             this.tabContacts = new System.Windows.Forms.TabPage();
             this.tlpContacts = new System.Windows.Forms.TableLayoutPanel();
+            this.panContacts = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblContactArchtypeLabel = new System.Windows.Forms.Label();
             this.flowLayoutPanel9 = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddContact = new SplitButton();
             this.cmsAddContact = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -843,8 +845,6 @@ namespace Chummer
             this.cmdSwapContactOrder = new System.Windows.Forms.Button();
             this.lblContactPoints_Label = new System.Windows.Forms.Label();
             this.lblContactPoints = new System.Windows.Forms.Label();
-            this.panContacts = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblContactArchtypeLabel = new System.Windows.Forms.Label();
             this.lblContactLocationLabel = new System.Windows.Forms.Label();
             this.lblContactNameLabel = new System.Windows.Forms.Label();
             this.tabEnemies = new System.Windows.Forms.TabPage();
@@ -10979,6 +10979,33 @@ namespace Chummer
             this.tlpContacts.Size = new System.Drawing.Size(827, 599);
             this.tlpContacts.TabIndex = 52;
             // 
+            // panContacts
+            // 
+            this.panContacts.AllowDrop = true;
+            this.panContacts.AutoScroll = true;
+            this.tlpContacts.SetColumnSpan(this.panContacts, 4);
+            this.panContacts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panContacts.Location = new System.Drawing.Point(9, 57);
+            this.panContacts.Name = "panContacts";
+            this.panContacts.Size = new System.Drawing.Size(809, 533);
+            this.panContacts.TabIndex = 25;
+            this.panContacts.Click += new System.EventHandler(this.panContacts_Click);
+            this.panContacts.DragDrop += new System.Windows.Forms.DragEventHandler(this.panContacts_DragDrop);
+            this.panContacts.DragEnter += new System.Windows.Forms.DragEventHandler(this.panContacts_DragEnter);
+            this.panContacts.DragOver += new System.Windows.Forms.DragEventHandler(this.panContacts_DragOver);
+            // 
+            // lblContactArchtypeLabel
+            // 
+            this.lblContactArchtypeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblContactArchtypeLabel.AutoSize = true;
+            this.lblContactArchtypeLabel.Location = new System.Drawing.Point(293, 38);
+            this.lblContactArchtypeLabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblContactArchtypeLabel.Name = "lblContactArchtypeLabel";
+            this.lblContactArchtypeLabel.Size = new System.Drawing.Size(52, 13);
+            this.lblContactArchtypeLabel.TabIndex = 44;
+            this.lblContactArchtypeLabel.Tag = "Label_Archtype";
+            this.lblContactArchtypeLabel.Text = "Archtype:";
+            // 
             // flowLayoutPanel9
             // 
             this.flowLayoutPanel9.AutoSize = true;
@@ -11069,33 +11096,6 @@ namespace Chummer
             this.lblContactPoints.TabIndex = 48;
             this.lblContactPoints.Text = "[0]";
             // 
-            // panContacts
-            // 
-            this.panContacts.AllowDrop = true;
-            this.panContacts.AutoScroll = true;
-            this.tlpContacts.SetColumnSpan(this.panContacts, 4);
-            this.panContacts.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panContacts.Location = new System.Drawing.Point(9, 57);
-            this.panContacts.Name = "panContacts";
-            this.panContacts.Size = new System.Drawing.Size(809, 533);
-            this.panContacts.TabIndex = 25;
-            this.panContacts.Click += new System.EventHandler(this.panContacts_Click);
-            this.panContacts.DragDrop += new System.Windows.Forms.DragEventHandler(this.panContacts_DragDrop);
-            this.panContacts.DragEnter += new System.Windows.Forms.DragEventHandler(this.panContacts_DragEnter);
-            this.panContacts.DragOver += new System.Windows.Forms.DragEventHandler(this.panContacts_DragOver);
-            // 
-            // lblContactArchtypeLabel
-            // 
-            this.lblContactArchtypeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblContactArchtypeLabel.AutoSize = true;
-            this.lblContactArchtypeLabel.Location = new System.Drawing.Point(293, 38);
-            this.lblContactArchtypeLabel.Margin = new System.Windows.Forms.Padding(3);
-            this.lblContactArchtypeLabel.Name = "lblContactArchtypeLabel";
-            this.lblContactArchtypeLabel.Size = new System.Drawing.Size(52, 13);
-            this.lblContactArchtypeLabel.TabIndex = 44;
-            this.lblContactArchtypeLabel.Tag = "Label_Archtype";
-            this.lblContactArchtypeLabel.Text = "Archtype:";
-            // 
             // lblContactLocationLabel
             // 
             this.lblContactLocationLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -11127,7 +11127,7 @@ namespace Chummer
             this.tabEnemies.Location = new System.Drawing.Point(4, 22);
             this.tabEnemies.Name = "tabEnemies";
             this.tabEnemies.Padding = new System.Windows.Forms.Padding(3);
-            this.tabEnemies.Size = new System.Drawing.Size(178, 42);
+            this.tabEnemies.Size = new System.Drawing.Size(833, 605);
             this.tabEnemies.TabIndex = 1;
             this.tabEnemies.Tag = "Label_Enemies";
             this.tabEnemies.Text = "Enemies";
@@ -11151,7 +11151,7 @@ namespace Chummer
             this.tlpEnemies.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpEnemies.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpEnemies.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpEnemies.Size = new System.Drawing.Size(172, 36);
+            this.tlpEnemies.Size = new System.Drawing.Size(827, 599);
             this.tlpEnemies.TabIndex = 50;
             // 
             // panEnemies
@@ -11163,7 +11163,7 @@ namespace Chummer
             this.tlpEnemies.SetColumnSpan(this.panEnemies, 3);
             this.panEnemies.Location = new System.Drawing.Point(9, 57);
             this.panEnemies.Name = "panEnemies";
-            this.panEnemies.Size = new System.Drawing.Size(154, 548);
+            this.panEnemies.Size = new System.Drawing.Size(809, 548);
             this.panEnemies.TabIndex = 41;
             this.panEnemies.Click += new System.EventHandler(this.panEnemies_Click);
             // 
@@ -11173,7 +11173,7 @@ namespace Chummer
             this.label6.Location = new System.Drawing.Point(265, 38);
             this.label6.Margin = new System.Windows.Forms.Padding(3);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(1, 13);
+            this.label6.Size = new System.Drawing.Size(52, 13);
             this.label6.TabIndex = 49;
             this.label6.Tag = "Label_Archtype";
             this.label6.Text = "Archtype:";
@@ -11232,7 +11232,7 @@ namespace Chummer
             this.tabPets.Location = new System.Drawing.Point(4, 22);
             this.tabPets.Name = "tabPets";
             this.tabPets.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPets.Size = new System.Drawing.Size(178, 42);
+            this.tabPets.Size = new System.Drawing.Size(833, 605);
             this.tabPets.TabIndex = 4;
             this.tabPets.Tag = "Tab_Pets";
             this.tabPets.Text = "Pets and Cohorts";
@@ -11250,7 +11250,7 @@ namespace Chummer
             this.tlpPets.RowCount = 2;
             this.tlpPets.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpPets.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpPets.Size = new System.Drawing.Size(172, 36);
+            this.tlpPets.Size = new System.Drawing.Size(827, 599);
             this.tlpPets.TabIndex = 25;
             // 
             // panPets
@@ -11262,7 +11262,7 @@ namespace Chummer
             this.panPets.Location = new System.Drawing.Point(6, 35);
             this.panPets.Margin = new System.Windows.Forms.Padding(0);
             this.panPets.Name = "panPets";
-            this.panPets.Size = new System.Drawing.Size(160, 573);
+            this.panPets.Size = new System.Drawing.Size(815, 573);
             this.panPets.TabIndex = 24;
             // 
             // flowLayoutPanel17

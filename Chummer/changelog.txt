@@ -137,6 +137,7 @@ Data Changes:
 - Fixed a typo in the name of the Dassault Janitorial Drone.
 - All instances of "NeoNET" are now capitalized as such (some items previously said "NeoNet" or "Neonet"). Fixes #3033.
 - Added (hidden) Gear items for Public Grid, Local Grid, and Global Grid so that these phrases can be handled by TranslateExtra. Part of #3002.
+- Fixed an issue with the Text-Only sheet that caused it to fail to load the LOG attribute.
 
 New Strings:
 
