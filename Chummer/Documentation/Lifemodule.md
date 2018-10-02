@@ -1,5 +1,4 @@
-﻿Life Modules Documentation
-==========================
+﻿# Life Modules Documentation
 
 This document details how to format the lifemodules.xml file in chummer5a  
 The nodes <[bonus]> and <[addquality]> only have a rudimentary explanation and are
@@ -8,12 +7,29 @@ better detailed in [bonus] and [addquality]
 **NOTICE:** If you are unfamiliar with XML, please see this tutoral by [w3shools.com](http://www.w3schools.com/xml/)
 
 
-Table of Contents
------------------
+## Table of Contents
+* [File layout]
+** [stages]
+** [modules]
+** [storybuilder]
+* [Nodes]
+** [stages]
+** [modules]
+** [bonus]
+** [versions]
+** [addquality]
+** [story]
+** [forbidden]
+* [Storybuilder]
+** [Basics]
+** [Random]
+** [persistent]
+** [System Macros]
+
+### required
 
 
-File layout
------------
+##File layout
 Under the root node `chummer`, there are 3 nodes used by life modules. Those are `stages`, `modules` and `storybuilder`.
 
 ### stages  
@@ -27,9 +43,8 @@ Modules contain the acctual modules that can be added to a character, including 
 Storybuilder is a feature on life modules where each module can contain a small piece of backstory based on that module. 
 Then, as multiple life modules are added, a small backstory is written for that character, that can then either be the backstory, provide inspiration or scraped in favour of another backstory
 
-
-Stages
-------
+## Nodes
+### stages
 A stage module looks like this
 ```XML
 <stage order="index">Stage</stage>
@@ -47,9 +62,8 @@ Each stage is placed under `chummer/stages` and looks like this
 It is possible to add the last stage multiple times, increasing the number of stages will lead to Chummer5a automaticaly detecting the increase and changing the last.  
 If a gap is placed in the index, Chummer5a will offer no options for continuing, halting progress.
 
-Modules
--------
-### Basics
+### module
+#### Basics
 The most basic module looks like this
 ```XML
 <module>
@@ -89,23 +103,24 @@ This is the bare minimum required to make a Life Module, but said Life Module wi
 In the following selection we will explore how to make a Life Module add bonuses to a character, 
 add requirements for it showing up, bundle qualities and automaticaly writing a backstory.
 
-### The `bonus` node
+### bonus
 This will only give a brief discription on how the [bonus] node works. See [bonus] for all possible options.
 
-### The `versions` node
+### versions
 
-### The `addquality` node
+### addquality
 This will only give a brief discription on how the [addquality] node works. See [addquality] for all possible options.
 
-### The `story` node
+### story
 
-### The `forbidden` and `required` nodes
+### forbidden
+
+### required
 
 
 
 
-Storybuilder
-------------
+## Storybuilder
 ### Basics
 
 Storybuilder is a feature that dynamicaly creates a backstory based on selected life modules.
@@ -165,7 +180,7 @@ Only one ! is needed or allowed
 Macros inside parenthesis are not evaluated so it is not possible to do
 $RMEGA(!$OTHERMEGA)
 
-### Persistent
+### persistent
 it is also possible to place a `persistent` node instead of a `random`
 ```XML
 <body>
@@ -247,6 +262,4 @@ This evaluates to the $ sign.
 
 
 
-[bonus]: javascript:alert("broken")
-[addquality]: javascript:alert("broken")
 [XML]: http://www.w3schools.com/xml/
