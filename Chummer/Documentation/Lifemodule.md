@@ -1,8 +1,8 @@
 ﻿# Life Modules Documentation
 
 This document details how to format the lifemodules.xml file in chummer5a  
-The nodes <[bonus]> and <[addquality]> only have a rudimentary explanation and are
-better detailed in [bonus] and [addquality]
+
+This documentation is far from complete, feel free to expand it!
 
 **NOTICE:** If you are unfamiliar with XML, please see this tutoral by [w3shools.com](http://www.w3schools.com/xml/)
 
