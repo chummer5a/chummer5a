@@ -2104,7 +2104,7 @@
 		</string>
 		<string>
 			<key>String_DamageAsDrugToxin</key>
-			<text>wie Droge/Gift</text>
+			<text>wie Droge/Toxin</text>
 		</string>
 		<string>
 			<key>String_DamageAsRound</key>
@@ -9318,6 +9318,18 @@
 		<string>
 			<key>Label_Stage</key>
 			<text>Phase:</text>
+		</string>
+		<string>
+			<key>Message_MissingGameplayOption</key>
+			<text>Dieser Charakter wurde mit der folgenden Spieloption angelegt:\n\n{0}\n\nDiese Option konnte in den aktuellen Daten nicht gefunden werden. Um das Laden des Charakters fortzusetzen, muss eine neue Spieloption dafür gewählt werden.</text>
+		</string>
+		<string>
+			<key>Message_MissingGameplayOption_Title</key>
+			<text>Fehlende Spieloption</text>
+		</string>
+		<string>
+			<key>Button_ChangeMountedLocation</key>
+			<text>Verwendeten Ort ändern</text>
 		</string>
 	</strings>
 </chummer>
