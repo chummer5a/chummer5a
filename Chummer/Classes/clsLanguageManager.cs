@@ -153,7 +153,7 @@ namespace Chummer
         #region Constructor
         static LanguageManager()
         {
-            if (!Utils.IsRunningInVisualStudio)
+            if (!Utils.IsDesignerMode)
             {
                 XmlDocument objEnglishDocument = new XmlDocument();
                 string strFilePath = Path.Combine(Application.StartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
@@ -215,7 +215,7 @@ namespace Chummer
         /// <param name="objObject">Object to translate.</param>
         public static void TranslateWinForm(string strIntoLanguage, Control objObject)
         {
-            if (!Utils.IsRunningInVisualStudio)
+            if (!Utils.IsDesignerMode)
             {
                 if (LoadLanguage(strIntoLanguage))
                 {
@@ -434,7 +434,7 @@ namespace Chummer
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
         public static string GetString(string strKey, string strLanguage, bool blnReturnError = true)
         {
-            if (Utils.IsRunningInVisualStudio)
+            if (Utils.IsDesignerMode)
                 return strKey;
             string strReturn;
             if (LoadLanguage(strLanguage))

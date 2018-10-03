@@ -192,7 +192,7 @@ namespace Chummer.Backend.Attributes
                 if (value != _intMetatypeMin)
                 {
                     _intMetatypeMin = value;
-                    OnPropertyChanged(nameof(TotalMinimum));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -225,7 +225,7 @@ namespace Chummer.Backend.Attributes
                 if (value != _intMetatypeMax)
                 {
                     _intMetatypeMax = value;
-                    OnPropertyChanged(nameof(TotalMaximum));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -241,7 +241,7 @@ namespace Chummer.Backend.Attributes
                 if (value != _intMetatypeAugMax)
                 {
                     _intMetatypeAugMax = value;
-                    OnPropertyChanged(nameof(TotalAugmentedMaximum));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -257,7 +257,7 @@ namespace Chummer.Backend.Attributes
                 if (value != _intBase)
                 {
                     _intBase = value;
-                    OnPropertyChanged(nameof(Base));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -280,7 +280,7 @@ namespace Chummer.Backend.Attributes
                 if (value != _intKarma)
                 {
                     _intKarma = value;
-                    OnPropertyChanged(nameof(Karma));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -467,7 +467,7 @@ namespace Chummer.Backend.Attributes
 
             //The most that any attribute can be increased by is 4, plus/minus any improvements that affect the augmented max. 
             //TODO: Should probably be in AttributeModifiers property directly?
-            int intMeat = Value + Math.Min(AttributeModifiers,4+AugmentedMaximumModifiers);
+            int intMeat = Value + Math.Min(AttributeModifiers, MetatypeAugmentedMaximum - MetatypeMaximum + AugmentedMaximumModifiers);
             int intReturn = intMeat;
 
             //// If this is AGI or STR, factor in any Cyberlimbs.
@@ -565,13 +565,8 @@ namespace Chummer.Backend.Attributes
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
-
-                int intReturn = MetatypeMaximum + MaximumModifiers;
-
-                if (intReturn < 0)
-                    intReturn = 0;
-
-                return intReturn;
+                
+                return Math.Max(0, MetatypeMaximum + MaximumModifiers);
             }
         }
 
@@ -585,18 +580,8 @@ namespace Chummer.Backend.Attributes
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
-
-                int intReturn;
-                if (Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
-                    intReturn = TotalMaximum + AugmentedMaximumModifiers;
-                else
-                    intReturn = TotalMaximum + 4 + AugmentedMaximumModifiers;
-                // intReturn = TotalMaximum + Convert.ToInt32(Math.Floor((Convert.ToDecimal(TotalMaximum, GlobalOptions.CultureInfo) / 2))) + AugmentedMaximumModifiers;
-
-                if (intReturn < 0)
-                    intReturn = 0;
-
-                return intReturn;
+                
+                return Math.Max(0, MetatypeAugmentedMaximum + MaximumModifiers + AugmentedMaximumModifiers);
             }
         }
 
@@ -1086,12 +1071,12 @@ namespace Chummer.Backend.Attributes
                         new DependancyGraphNode<string>(nameof(HasModifiers)),
                         new DependancyGraphNode<string>(nameof(TotalValue),
                             new DependancyGraphNode<string>(nameof(AttributeModifiers)),
+                            new DependancyGraphNode<string>(nameof(MetatypeAugmentedMaximum)),
+                            new DependancyGraphNode<string>(nameof(MetatypeMaximum)),
                             new DependancyGraphNode<string>(nameof(TotalAugmentedMaximum),
                                 new DependancyGraphNode<string>(nameof(AugmentedMaximumModifiers)),
-                                new DependancyGraphNode<string>(nameof(TotalMaximum),
-                                    new DependancyGraphNode<string>(nameof(MetatypeMaximum)),
-                                    new DependancyGraphNode<string>(nameof(MaximumModifiers))
-                                )
+                                new DependancyGraphNode<string>(nameof(MetatypeAugmentedMaximum)),
+                                new DependancyGraphNode<string>(nameof(MaximumModifiers))
                             ),
                             new DependancyGraphNode<string>(nameof(Value),
                                 new DependancyGraphNode<string>(nameof(Karma)),
@@ -1104,7 +1089,10 @@ namespace Chummer.Backend.Attributes
                                         new DependancyGraphNode<string>(nameof(MinimumModifiers))
                                     )
                                 ),
-                                new DependancyGraphNode<string>(nameof(TotalMaximum))
+                                new DependancyGraphNode<string>(nameof(TotalMaximum),
+                                    new DependancyGraphNode<string>(nameof(MetatypeMaximum)),
+                                    new DependancyGraphNode<string>(nameof(MaximumModifiers))
+                                )
                             )
                         )
                     )
