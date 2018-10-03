@@ -72,14 +72,14 @@ namespace Chummer.Backend.Skills
         private string _strType = string.Empty;
         public bool ForcedName { get; }
 
-        public KnowledgeSkill(Character character) : base(character)
+        public KnowledgeSkill(Character objCharacter) : base(objCharacter)
         {
-            AttributeObject = character.LOG;
+            AttributeObject = objCharacter.LOG;
         }
 
-        public KnowledgeSkill(Character character, string forcedName) : this(character)
+        public KnowledgeSkill(Character objCharacter, string strForcedName) : this(objCharacter)
         {
-            WriteableName = forcedName;
+            WriteableName = strForcedName;
             ForcedName = true;
         }
 
@@ -98,36 +98,35 @@ namespace Chummer.Backend.Skills
                     return;
                 }
                 
-                LoadSkill(value);
+                LoadSkillFromData(value);
                 Name = value;
                 OnPropertyChanged();
             }
         }
         
-        private void LoadSkill(string inputSkillName)
+        private void LoadSkillFromData(string strInputSkillName)
         {
-            var skillName = GetSkillName(inputSkillName);
-            var xmlSkillDoc = XmlManager.Load("skills.xml", GlobalOptions.Language);
-            var skillNode = xmlSkillDoc.SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{ skillName }\"]");
+            string strSkillName = GetSkillNameFromData(strInputSkillName);
+            XmlNode xmlSkillNode = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{ strSkillName }\"]");
 
-            if (skillNode == null)
+            if (xmlSkillNode == null)
             {
                 SkillId = Guid.Empty;
                 return;
             }
 
-            SkillId = skillNode.TryGetField("id", Guid.TryParse, out Guid guidTemp)
+            SkillId = xmlSkillNode.TryGetField("id", Guid.TryParse, out Guid guidTemp)
                 ? guidTemp
                 : Guid.Empty;
 
-            var strCategory = skillNode["category"]?.InnerText;
+            string strCategory = xmlSkillNode["category"]?.InnerText;
 
             if (!string.IsNullOrEmpty(strCategory))
             {
                 Type = strCategory;
             }
 
-            var strAttribute = skillNode["attribute"]?.InnerText;
+            string strAttribute = xmlSkillNode["attribute"]?.InnerText;
 
             if (!string.IsNullOrEmpty(strAttribute))
             {
@@ -135,28 +134,21 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private static string GetSkillName(string inputSkillName)
+        private static string GetSkillNameFromData(string strInputSkillName)
         {
             if (GlobalOptions.Language == GlobalOptions.DefaultLanguage)
             {
-                return inputSkillName;
+                return strInputSkillName;
             }
-
-            var result = GetDefaultLanguageSkillName(inputSkillName);
-            return result;
-        }
-
-        private static string GetDefaultLanguageSkillName(string translatedSkillName)
-        {
-            var xmlSkillDoc = XmlManager.Load("skills.xml", GlobalOptions.Language);
-            var skillTranslationNode = xmlSkillDoc.SelectSingleNode($"/chummer/knowledgeskills/skill[translate = \"{ translatedSkillName }\"]");
             
-            if (skillTranslationNode == null)
+            XmlNode xmlSkillTranslationNode = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectSingleNode($"/chummer/knowledgeskills/skill[translate = \"{ strInputSkillName }\"]");
+
+            if (xmlSkillTranslationNode == null)
             {
-                return LanguageManager.ReverseTranslateExtra(translatedSkillName, GlobalOptions.Language);
+                return LanguageManager.ReverseTranslateExtra(strInputSkillName, GlobalOptions.Language);
             }
 
-            return skillTranslationNode["name"]?.InnerText ?? translatedSkillName;
+            return xmlSkillTranslationNode["name"]?.InnerText ?? strInputSkillName;
         }
 
         public override string SkillCategory => Type;

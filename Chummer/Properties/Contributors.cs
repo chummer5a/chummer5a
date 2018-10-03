@@ -53,6 +53,7 @@ namespace Chummer.Properties
             "gdelmee",
             "masterki",
             "rolfman",
+            "handcraftedsource",
             "AMDX9",
             "Kadrack",
             "Lochabar",
