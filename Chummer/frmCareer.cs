@@ -1471,6 +1471,9 @@ namespace Chummer
                         {
                             tabCharacterTabs.TabPages.Remove(tabInitiation);
                         }
+                        chkInitiationGroup.Visible = CharacterObject.InitiationEnabled;
+                        chkInitiationOrdeal.Visible = CharacterObject.InitiationEnabled;
+                        chkInitiationSchooling.Visible = CharacterObject.InitiationEnabled;
                     }
                     break;
                 case nameof(Character.QuickeningEnabled):
