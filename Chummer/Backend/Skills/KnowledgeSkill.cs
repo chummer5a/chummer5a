@@ -97,41 +97,16 @@ namespace Chummer.Backend.Skills
                 {
                     return;
                 }
-
-                var defaultLanguageSkillName = GetDefaultLanguageSkillName(value);
-                LoadDefaultType(defaultLanguageSkillName);
-
+                
+                LoadSkill(value);
                 Name = value;
                 OnPropertyChanged();
             }
         }
-
-        private static XmlNode GetSkillTranslationNode(string value)
-        {
-            var xmlSkillDoc = XmlManager.Load("skills.xml", GlobalOptions.Language);
-            var skillNode = xmlSkillDoc.SelectSingleNode($"/chummer/knowledgeskills/skill[translate = \"{ value }\"]");
-            return skillNode;
-        }
-
-        private string GetDefaultLanguageSkillName(string value)
-        {
-            var skillTranslationNode = GetSkillTranslationNode(value);
-
-            if (GlobalOptions.Language == GlobalOptions.DefaultLanguage)
-            {
-                return value;
-            }
-            
-            if (skillTranslationNode == null)
-            {
-                return LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
-            }
-
-            return skillTranslationNode["name"]?.InnerText ?? value;
-        }
         
-        private void LoadDefaultType(string skillName)
+        private void LoadSkill(string inputSkillName)
         {
+            var skillName = GetSkillName(inputSkillName);
             var xmlSkillDoc = XmlManager.Load("skills.xml", GlobalOptions.Language);
             var skillNode = xmlSkillDoc.SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{ skillName }\"]");
 
@@ -158,6 +133,30 @@ namespace Chummer.Backend.Skills
             {
                 AttributeObject = CharacterObject.GetAttribute(strAttribute) ?? CharacterObject.LOG;
             }
+        }
+
+        private static string GetSkillName(string inputSkillName)
+        {
+            if (GlobalOptions.Language == GlobalOptions.DefaultLanguage)
+            {
+                return inputSkillName;
+            }
+
+            var result = GetDefaultLanguageSkillName(inputSkillName);
+            return result;
+        }
+
+        private static string GetDefaultLanguageSkillName(string translatedSkillName)
+        {
+            var xmlSkillDoc = XmlManager.Load("skills.xml", GlobalOptions.Language);
+            var skillTranslationNode = xmlSkillDoc.SelectSingleNode($"/chummer/knowledgeskills/skill[translate = \"{ translatedSkillName }\"]");
+            
+            if (skillTranslationNode == null)
+            {
+                return LanguageManager.ReverseTranslateExtra(translatedSkillName, GlobalOptions.Language);
+            }
+
+            return skillTranslationNode["name"]?.InnerText ?? translatedSkillName;
         }
 
         public override string SkillCategory => Type;
@@ -233,7 +232,7 @@ namespace Chummer.Backend.Skills
                 //2018-22-03: Causes any attempt to alter the Type for skills with names that match
                 //default skills to reset to the default Type for that skill. If we want to disable
                 //that behaviour, better to disable it via the control.
-                /*if (!LoadDefaultType())
+                /*if (!LoadSkill())
                     {
                         if (s_CategoriesSkillMap.TryGetValue(value, out string strNewAttributeValue))
                         {
