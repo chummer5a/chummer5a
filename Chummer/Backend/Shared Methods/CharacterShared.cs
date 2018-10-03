@@ -48,6 +48,8 @@ namespace Chummer
         private readonly ObservableCollection<CharacterAttrib> _lstSpecialAttributes;
         private readonly CharacterOptions _objOptions;
         private bool _blnIsDirty;
+        private bool _blnIsRefreshing;
+        private bool _blnLoading = true;
         private frmViewer _frmPrintView;
 
         protected CharacterShared(Character objCharacter)
@@ -6301,6 +6303,9 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Whether or not the character has changes that can be saved
+        /// </summary>
         public bool IsDirty
         {
             get => _blnIsDirty;
@@ -6310,6 +6315,45 @@ namespace Chummer
                 {
                     _blnIsDirty = value;
                     UpdateWindowTitle(true);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the form is currently in the middle of refreshing some UI elements
+        /// </summary>
+        public bool IsRefreshing
+        {
+            get => _blnIsRefreshing;
+            set
+            {
+                //if (_blnIsRefreshing != value)
+                {
+                    _blnIsRefreshing = value;
+                    /*
+                    if (value)
+                        SuspendLayout();
+                    else if (!IsLoading)
+                        ResumeLayout();
+                        */
+                }
+            }
+        }
+
+        public bool IsLoading
+        {
+            get => _blnLoading;
+            set
+            {
+                //if (_blnLoading != value)
+                {
+                    _blnLoading = value;
+                    /*
+                    if (value)
+                        SuspendLayout();
+                    else if (!IsRefreshing)
+                        ResumeLayout();
+                        */
                 }
             }
         }

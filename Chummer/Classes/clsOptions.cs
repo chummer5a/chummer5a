@@ -338,7 +338,7 @@ namespace Chummer
 
         static GlobalOptions()
         {
-            if (Utils.IsRunningInVisualStudio)
+            if (Utils.IsDesignerMode)
                 return;
 
             string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
