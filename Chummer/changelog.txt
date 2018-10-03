@@ -93,6 +93,7 @@ Application Changes:
 - Fixed behaviour of DisplayPage property to not return an empty string if that's in the data file. Fixes #3064
 - Ugly workaround fix for characters that managed to get a power rating higher than total maximum magic to prevent them from crashing. Fixes #3062.
 - Base augmented attribute maxima are now properly fetched from a character's metatype/metavariant data instead of being fixed to 4 for regular attributes and 0 for special attributes.
+- Fixed an issue where an advanced lifestyle could not be edited during character creation if the final cost of the lifestyle was more than the character's current nuyen.
 
 Data Changes:
 
