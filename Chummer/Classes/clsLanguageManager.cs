@@ -153,7 +153,7 @@ namespace Chummer
         #region Constructor
         static LanguageManager()
         {
-            if (!Utils.IsRunningInVisualStudio)
+            if (!Utils.IsDesignerMode)
             {
                 XmlDocument objEnglishDocument = new XmlDocument();
                 string strFilePath = Path.Combine(Application.StartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
@@ -215,17 +215,21 @@ namespace Chummer
         /// <param name="objObject">Object to translate.</param>
         public static void TranslateWinForm(string strIntoLanguage, Control objObject)
         {
-            if (LoadLanguage(strIntoLanguage))
+            if (!Utils.IsDesignerMode)
             {
-                RightToLeft eIntoRightToLeft = RightToLeft.No;
-                if (DictionaryLanguages.TryGetValue(strIntoLanguage, out LanguageData objLanguageData))
+                if (LoadLanguage(strIntoLanguage))
                 {
-                    eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
+                    RightToLeft eIntoRightToLeft = RightToLeft.No;
+                    if (DictionaryLanguages.TryGetValue(strIntoLanguage, out LanguageData objLanguageData))
+                    {
+                        eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
+                    }
+
+                    UpdateControls(objObject, strIntoLanguage, eIntoRightToLeft);
                 }
-                UpdateControls(objObject, strIntoLanguage, eIntoRightToLeft);
+                else if (strIntoLanguage != GlobalOptions.DefaultLanguage)
+                    UpdateControls(objObject, GlobalOptions.DefaultLanguage, RightToLeft.No);
             }
-            else if (strIntoLanguage != GlobalOptions.DefaultLanguage)
-                UpdateControls(objObject, GlobalOptions.DefaultLanguage, RightToLeft.No);
         }
 
         private static bool LoadLanguage(string strLanguage)
@@ -430,6 +434,8 @@ namespace Chummer
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
         public static string GetString(string strKey, string strLanguage, bool blnReturnError = true)
         {
+            if (Utils.IsDesignerMode)
+                return strKey;
             string strReturn;
             if (LoadLanguage(strLanguage))
             {

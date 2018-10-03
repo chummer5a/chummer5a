@@ -41,10 +41,7 @@ namespace Chummer
     public partial class frmCreate : CharacterShared
     {
         // Set the default culture to en-US so we work with decimals correctly.
-
-        private bool _blnSkipRefresh;
         private bool _blnSkipUpdate;
-        private bool _blnLoading = true;
         private bool _blnSkipToolStripRevert;
         private bool _blnReapplyImprovements;
         private bool _blnFreestyle;
@@ -177,6 +174,8 @@ namespace Chummer
         {
             Timekeeper.Finish("load_free");
             Timekeeper.Start("load_frm_create");
+
+            SuspendLayout();
 
             if (!CharacterObject.IsCritter && (CharacterObject.BuildMethod == CharacterBuildMethod.Karma && CharacterObject.BuildKarma == 0) || (CharacterObject.BuildMethod == CharacterBuildMethod.Priority && CharacterObject.BuildKarma == 0))
             {
@@ -502,7 +501,7 @@ namespace Chummer
             nudMysticAdeptMAGMagician.DoDatabinding("Maximum", CharacterObject.MAG, nameof(CharacterAttrib.TotalValue));
             nudMysticAdeptMAGMagician.DoDatabinding("Value",   CharacterObject, nameof(Character.MysticAdeptPowerPoints));
             
-            _blnLoading = false;
+            IsLoading = false;
 
             // Select the Magician's Tradition.
             if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
@@ -669,6 +668,7 @@ namespace Chummer
                 }
             }
 
+            ResumeLayout();
             Cursor = Cursors.Default;
         }
 
@@ -694,7 +694,7 @@ namespace Chummer
             // Reset the ToolStrip so the Save button is removed for the currently closing window.
             if (!e.Cancel)
             {
-                _blnLoading = true;
+                IsLoading = true;
                 Cursor = Cursors.WaitCursor;
                 Application.Idle -= UpdateCharacterInfo;
                 Application.Idle -= LiveUpdateFromCharacterFile;
@@ -3075,7 +3075,7 @@ namespace Chummer
         #region Martial Tab Control Events
         private void treMartialArts_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            _blnSkipRefresh = true;
+            IsRefreshing = true;
             if (treMartialArts.SelectedNode?.Tag is IHasSource selected)
             {
                 selected.SetSourceDetail(lblMartialArtSource);
@@ -3094,7 +3094,7 @@ namespace Chummer
                 lblMartialArtSource.Text = string.Empty;
                 lblMartialArtSource.SetToolTip(string.Empty);
             }
-            _blnSkipRefresh = false;
+            IsRefreshing = false;
         }
 #endregion
 
@@ -5325,10 +5325,10 @@ namespace Chummer
                 }
                 frmPickGear.Dispose();
 
-                _blnSkipRefresh = true;
+                IsRefreshing = true;
                 nudVehicleGearQty.Increment = objGear.CostFor;
                 //nudVehicleGearQty.Minimum = objGear.CostFor;
-                _blnSkipRefresh = false;
+                IsRefreshing = false;
 
                 objSensor.Children.Add(objGear);
 
@@ -7086,7 +7086,7 @@ namespace Chummer
 
         private void cboCyberwareGrade_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!_blnSkipRefresh && !_blnLoading)
+            if (!IsRefreshing && !IsLoading)
             {
                 string strSelectedGrade = cboCyberwareGrade.SelectedValue?.ToString();
                 if (!string.IsNullOrEmpty(strSelectedGrade))
@@ -7111,7 +7111,7 @@ namespace Chummer
 
         private void chkPrototypeTranshuman_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_blnSkipRefresh)
+            if (!IsRefreshing)
             {
                 if (treCyberware.SelectedNode?.Tag is Cyberware objCyberware)
                 {
@@ -7127,7 +7127,7 @@ namespace Chummer
 
         private void nudCyberwareRating_ValueChanged(object sender, EventArgs e)
         {
-            if (!_blnSkipRefresh)
+            if (!IsRefreshing)
             {
                 // Locate the selected piece of Cyberware.
                 if (treCyberware.SelectedNode?.Tag is Cyberware objCyberware)
@@ -7189,9 +7189,9 @@ namespace Chummer
                     {
                         if (!objGear.RefreshSingleFocusRating(treFoci, decimal.ToInt32(nudCyberwareRating.Value)))
                         {
-                            _blnSkipRefresh = true;
+                            IsRefreshing = true;
                             nudCyberwareRating.Value = objGear.Rating;
-                            _blnSkipRefresh = false;
+                            IsRefreshing = false;
                             return;
                         }
                     }
@@ -7477,7 +7477,7 @@ namespace Chummer
         {
             if (treLifestyles.SelectedNode?.Level > 0)
             {
-                _blnSkipRefresh = true;
+                IsRefreshing = true;
 
                 // Locate the selected Lifestyle.
                 if (!(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
@@ -7485,7 +7485,7 @@ namespace Chummer
 
                 objLifestyle.Increments = decimal.ToInt32(nudLifestyleMonths.Value);
 
-                _blnSkipRefresh = false;
+                IsRefreshing = false;
 
                 IsCharacterUpdateRequested = true;
 
@@ -7501,7 +7501,7 @@ namespace Chummer
 
         private void nudGearRating_ValueChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (IsRefreshing)
                 return;
 
             if (treGear.SelectedNode.Level > 0)
@@ -7513,9 +7513,9 @@ namespace Chummer
                 {
                     if (!objGear.RefreshSingleFocusRating(treFoci, decimal.ToInt32(nudGearRating.Value)))
                     {
-                        _blnSkipRefresh = true;
+                        IsRefreshing = true;
                         nudGearRating.Value = objGear.Rating;
-                        _blnSkipRefresh = false;
+                        IsRefreshing = false;
                         return;
                     }
                 }
@@ -7554,7 +7554,7 @@ namespace Chummer
 
         private void nudGearQty_ValueChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh || treGear.SelectedNode == null)
+            if (IsRefreshing || treGear.SelectedNode == null)
                 return;
             // Attempt to locate the selected piece of Gear.
             if (treGear.SelectedNode.Level > 0)
@@ -7571,9 +7571,8 @@ namespace Chummer
         }
         private void nudDrugQty_ValueChanged(object sender, EventArgs e)
         {
-
             // Don't attempt to do anything while the data is still being populated.
-            if (_blnLoading || _blnSkipRefresh)
+            if (IsLoading || IsRefreshing)
                 return;
 
             if (treCustomDrugs.SelectedNode?.Tag is Drug objDrug)
@@ -7588,7 +7587,7 @@ namespace Chummer
 
 		private void chkArmorEquipped_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh || treArmor.SelectedNode == null)
+            if (IsRefreshing || treArmor.SelectedNode == null)
                 return;
 
             // Locate the selected Armor or Armor Mod.
@@ -7626,7 +7625,7 @@ namespace Chummer
 
         private void chkWeaponAccessoryInstalled_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh || treWeapons.SelectedNode == null)
+            if (IsRefreshing || treWeapons.SelectedNode == null)
                 return;
             // Locate the selected Weapon Accessory or Modification.
             if (treWeapons.SelectedNode?.Tag is WeaponAccessory objAccessory)
@@ -7649,7 +7648,7 @@ namespace Chummer
 
         private void chkIncludedInWeapon_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh || treWeapons.SelectedNode == null)
+            if (IsRefreshing || treWeapons.SelectedNode == null)
                 return;
             // Locate the selected Weapon Accessory or Modification.
             if (treWeapons.SelectedNode?.Tag is WeaponAccessory objAccessory)
@@ -7744,7 +7743,7 @@ namespace Chummer
 
         private void chkGearEquipped_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh || treGear.SelectedNode == null)
+            if (IsRefreshing || treGear.SelectedNode == null)
                 return;
 
             // Attempt to locate the selected piece of Gear.
@@ -7760,7 +7759,7 @@ namespace Chummer
 
         private void chkGearHomeNode_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh || treGear.SelectedNode == null)
+            if (IsRefreshing || treGear.SelectedNode == null)
                 return;
             if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objCommlink)
             {
@@ -7773,7 +7772,7 @@ namespace Chummer
 
         private void chkCyberwareHomeNode_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (IsRefreshing)
                 return;
             if (treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objCommlink)
             {
@@ -7786,7 +7785,7 @@ namespace Chummer
 
         private void chkIncludedInArmor_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (IsRefreshing)
                 return;
 
             // Locate the selected Armor Modification.
@@ -7806,7 +7805,7 @@ namespace Chummer
 
         private void chkGearActiveCommlink_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh || treGear.SelectedNode == null)
+            if (IsRefreshing || treGear.SelectedNode == null)
                 return;
 
             // Attempt to locate the selected piece of Gear.
@@ -7821,7 +7820,7 @@ namespace Chummer
 
         private void chkCyberwareActiveCommlink_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (IsRefreshing)
                 return;
 
             if (treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink)
@@ -7835,7 +7834,7 @@ namespace Chummer
 
         private void chkVehicleActiveCommlink_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (IsRefreshing)
                 return;
             
             if (treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink)
@@ -7849,10 +7848,10 @@ namespace Chummer
 
         private void cboGearAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh || !cboGearAttack.Enabled)
+            if (IsRefreshing || !cboGearAttack.Enabled)
                 return;
 
-            _blnLoading = true;
+            IsRefreshing = true;
             if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget)
             {
                 if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboGearAttack, cboGearAttack,
@@ -7863,14 +7862,14 @@ namespace Chummer
                 }
             }
 
-            _blnLoading = false;
+            IsRefreshing = false;
         }
         private void cboGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh || !cboGearSleaze.Enabled)
+            if (IsRefreshing || !cboGearSleaze.Enabled)
                 return;
 
-            _blnLoading = true;
+            IsRefreshing = true;
             if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget)
             {
                 if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboGearAttack, cboGearAttack,
@@ -7881,14 +7880,14 @@ namespace Chummer
                 }
             }
 
-            _blnLoading = false;
+            IsRefreshing = false;
         }
         private void cboGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh || !cboGearDataProcessing.Enabled)
+            if (IsRefreshing || !cboGearDataProcessing.Enabled)
                 return;
 
-            _blnLoading = true;
+            IsRefreshing = true;
             if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget)
             {
                 if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboGearAttack, cboGearAttack,
@@ -7899,14 +7898,14 @@ namespace Chummer
                 }
             }
 
-            _blnLoading = false;
+            IsRefreshing = false;
         }
         private void cboGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh || !cboGearFirewall.Enabled)
+            if (IsRefreshing || !cboGearFirewall.Enabled)
                 return;
 
-            _blnLoading = true;
+            IsRefreshing = true;
             if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget)
             {
                 if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboGearAttack, cboGearAttack,
@@ -7917,14 +7916,14 @@ namespace Chummer
                 }
             }
 
-            _blnLoading = false;
+            IsRefreshing = false;
         }
         private void cboVehicleGearAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh || !cboVehicleGearAttack.Enabled)
+            if (IsRefreshing || !cboVehicleGearAttack.Enabled)
                 return;
 
-            _blnLoading = true;
+            IsRefreshing = true;
             if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget)
             {
                 if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleGearAttack, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
@@ -7934,14 +7933,14 @@ namespace Chummer
                 }
             }
 
-            _blnLoading = false;
+            IsRefreshing = false;
         }
         private void cboVehicleGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh || !cboVehicleGearSleaze.Enabled)
+            if (IsRefreshing || !cboVehicleGearSleaze.Enabled)
                 return;
 
-            _blnLoading = true;
+            IsRefreshing = true;
             if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget)
             {
                 if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleGearAttack, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
@@ -7951,14 +7950,14 @@ namespace Chummer
                 }
             }
 
-            _blnLoading = false;
+            IsRefreshing = false;
         }
         private void cboVehicleGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh || !cboVehicleGearFirewall.Enabled)
+            if (IsRefreshing || !cboVehicleGearFirewall.Enabled)
                 return;
 
-            _blnLoading = true;
+            IsRefreshing = true;
             if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget)
             {
                 if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleGearAttack, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
@@ -7968,14 +7967,14 @@ namespace Chummer
                 }
             }
 
-            _blnLoading = false;
+            IsRefreshing = false;
         }
         private void cboVehicleGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh || !cboVehicleGearDataProcessing.Enabled)
+            if (IsRefreshing || !cboVehicleGearDataProcessing.Enabled)
                 return;
 
-            _blnLoading = true;
+            IsRefreshing = true;
             if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget)
             {
                 if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleGearAttack, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
@@ -7985,7 +7984,7 @@ namespace Chummer
                 }
             }
 
-            _blnLoading = false;
+            IsRefreshing = false;
         }
 #endregion
 
@@ -8080,7 +8079,7 @@ namespace Chummer
 
         private void nudVehicleRating_ValueChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (IsRefreshing)
                 return;
 
             if (treVehicles.SelectedNode?.Tag is VehicleMod objMod)
@@ -8094,9 +8093,9 @@ namespace Chummer
                 {
                     if (!objGear.RefreshSingleFocusRating(treFoci, decimal.ToInt32(nudVehicleRating.Value)))
                     {
-                        _blnSkipRefresh = true;
+                        IsRefreshing = true;
                         nudVehicleRating.Value = objGear.Rating;
-                        _blnSkipRefresh = false;
+                        IsRefreshing = false;
                         return;
                     }
                 }
@@ -8120,7 +8119,7 @@ namespace Chummer
 
         private void chkVehicleWeaponAccessoryInstalled_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (IsRefreshing)
                 return;
             if (treVehicles.SelectedNode?.Tag is WeaponAccessory objAccessory)
             {
@@ -8148,7 +8147,7 @@ namespace Chummer
 
         private void nudVehicleGearQty_ValueChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (IsRefreshing)
                 return;
 
             if (treVehicles.SelectedNode?.Tag is Gear objGear)
@@ -8163,7 +8162,7 @@ namespace Chummer
 
         private void chkVehicleHomeNode_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (IsRefreshing)
                 return;
             if (treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget)
             {
@@ -8178,7 +8177,7 @@ namespace Chummer
 #region Additional Spells and Spirits Tab Control Events
         private void treSpells_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            _blnSkipRefresh = true;
+            IsRefreshing = true;
             if (treSpells.SelectedNode.Level > 0 && e.Node.Tag is Spell objSpell)
             {
                 cmdDeleteSpell.Enabled = objSpell.Grade == 0;
@@ -8249,7 +8248,7 @@ namespace Chummer
                 lblSpellSource.SetToolTip(null);
                 lblSpellDV.SetToolTip(null);
             }
-            _blnSkipRefresh = false;
+            IsRefreshing = false;
         }
 
         private void treFoci_AfterCheck(object sender, TreeViewEventArgs e)
@@ -8436,7 +8435,7 @@ namespace Chummer
 
         private void nudArmorRating_ValueChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (IsRefreshing)
                 return;
             
             // Locate the selected ArmorMod.
@@ -8462,9 +8461,9 @@ namespace Chummer
                 {
                     if (!objGear.RefreshSingleFocusRating(treFoci, decimal.ToInt32(nudArmorRating.Value)))
                     {
-                        _blnSkipRefresh = true;
+                        IsRefreshing = true;
                         nudArmorRating.Value = objGear.Rating;
-                        _blnSkipRefresh = false;
+                        IsRefreshing = false;
                         return;
                     }
                 }
@@ -8499,7 +8498,7 @@ namespace Chummer
 
         private void cboTradition_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading || CharacterObject.MagicTradition.Type == TraditionType.RES)
+            if (IsLoading || IsRefreshing || CharacterObject.MagicTradition.Type == TraditionType.RES)
                 return;
             string strSelectedId = cboTradition.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedId) || strSelectedId == CharacterObject.MagicTradition.SourceID)
@@ -8609,7 +8608,7 @@ namespace Chummer
 #region Additional Sprites and Complex Forms Tab Control Events
         private void treComplexForms_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (IsRefreshing)
                 return;
 
             // Locate the Program that is selected in the tree.
@@ -8637,7 +8636,7 @@ namespace Chummer
 
         private void cboStream_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading || CharacterObject.MagicTradition.Type == TraditionType.MAG)
+            if (IsLoading || IsRefreshing || CharacterObject.MagicTradition.Type == TraditionType.MAG)
                 return;
             string strSelectedId = cboStream.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedId) || strSelectedId == CharacterObject.MagicTradition.SourceID)
@@ -9814,7 +9813,7 @@ namespace Chummer
 
         private void LiveUpdateFromCharacterFile(object sender, EventArgs e)
         {
-            if (IsDirty || !GlobalOptions.LiveUpdateCleanCharacterFiles || _blnLoading || _blnSkipUpdate || IsCharacterUpdateRequested)
+            if (IsDirty || !GlobalOptions.LiveUpdateCleanCharacterFiles || IsLoading || _blnSkipUpdate || IsCharacterUpdateRequested)
                 return;
 
             string strCharacterFile = CharacterObject.FileName;
@@ -9878,7 +9877,7 @@ namespace Chummer
         private void UpdateCharacterInfo(object sender = null, EventArgs e = null)
         {
             // TODO: Databind as much of this as possible
-            if (_blnLoading || _blnSkipUpdate || !IsCharacterUpdateRequested)
+            if (IsLoading || _blnSkipUpdate || !IsCharacterUpdateRequested)
                 return;
 
             _blnSkipUpdate = true;
@@ -10105,7 +10104,7 @@ namespace Chummer
         /// </summary>
         public void RefreshSelectedCyberware()
         {
-            _blnSkipRefresh = true;
+            IsRefreshing = true;
             tlpCyberware.SuspendLayout();
             lblCyberDeviceRating.Visible = false;
             lblCyberAttack.Visible = false;
@@ -10138,7 +10137,7 @@ namespace Chummer
                 lblCyberlimbAGILabel.Visible = false;
                 lblCyberlimbSTR.Visible = false;
                 lblCyberlimbSTRLabel.Visible = false;
-                _blnSkipRefresh = false;
+                IsRefreshing = false;
                 tlpCyberware.ResumeLayout();
                 return;
             }
@@ -10319,7 +10318,7 @@ namespace Chummer
                 }
                 treCyberware.SelectedNode.Text = objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
             }
-            _blnSkipRefresh = false;
+            IsRefreshing = false;
             tlpCyberware.ResumeLayout();
         }
         
@@ -10328,7 +10327,7 @@ namespace Chummer
         /// </summary>
         public void RefreshSelectedWeapon()
         {
-            _blnSkipRefresh = true;
+            IsRefreshing = true;
             cmdDeleteWeapon.Enabled = treWeapons.SelectedNode?.Tag.ToString() != "Node_SelectedWeapons";
 
             if (treWeapons.SelectedNode?.Tag is Weapon objWeapon)
@@ -10600,12 +10599,12 @@ namespace Chummer
                     lblWeaponAlternateRangeLong.Text = string.Empty;
                     lblWeaponAlternateRangeExtreme.Text = string.Empty;
 
-                    _blnSkipRefresh = false;
+                    IsRefreshing = false;
                     return;
                 }
             }
             
-            _blnSkipRefresh = false;
+            IsRefreshing = false;
         }
 
         /// <summary>
@@ -10613,7 +10612,7 @@ namespace Chummer
         /// </summary>
         public void RefreshSelectedArmor()
         {
-            _blnSkipRefresh = true;
+            IsRefreshing = true;
             cmdDeleteArmor.Enabled = treArmor.SelectedNode?.Tag is ICanRemove;
             lblArmorEquipped.Visible = false;
             cmdArmorEquipAll.Visible = false;
@@ -10824,10 +10823,10 @@ namespace Chummer
                 nudArmorRating.Enabled = false;
                 nudArmorRating.Value = 1;
                 chkArmorEquipped.Enabled = false;
-                _blnSkipRefresh = false;
+                IsRefreshing = false;
                 return;
             }
-            _blnSkipRefresh = false;
+            IsRefreshing = false;
         }
 
         /// <summary>
@@ -10835,7 +10834,7 @@ namespace Chummer
         /// </summary>
         public void RefreshSelectedGear()
         {
-            _blnSkipRefresh = true;
+            IsRefreshing = true;
             cmdDeleteGear.Enabled = treGear.SelectedNode?.Tag.ToString() != "Node_SelectedGear";
             if (treGear.SelectedNode == null || treGear.SelectedNode.Level == 0)
             {
@@ -10847,7 +10846,7 @@ namespace Chummer
                 chkGearEquipped.Visible = false;
                 chkGearActiveCommlink.Enabled = false;
                 chkGearActiveCommlink.Checked = false;
-                _blnSkipRefresh = false;
+                IsRefreshing = false;
                 return;
             }
             chkGearHomeNode.Visible = false;
@@ -10988,7 +10987,7 @@ namespace Chummer
 
                 treGear.SelectedNode.Text = objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
             }
-            _blnSkipRefresh = false;
+            IsRefreshing = false;
         }
 
         protected override string FormMode => LanguageManager.GetString("Title_CreateNewCharacter", GlobalOptions.Language);
@@ -11522,7 +11521,7 @@ namespace Chummer
         /// </summary>
         private void RefreshSelectedLifestyle()
         {
-            _blnSkipRefresh = true;
+            IsRefreshing = true;
             if (treLifestyles.SelectedNode == null || treLifestyles.SelectedNode.Level <= 0)
             {
                 cmdDeleteLifestyle.Enabled = false;
@@ -11534,14 +11533,14 @@ namespace Chummer
                 lblLifestyleCostLabel.Text = string.Empty;
                 nudLifestyleMonths.Visible = false;
                 lblLifestyleMonthsLabel.Text = string.Empty;
-                _blnSkipRefresh = false;
+                IsRefreshing = false;
                 return;
             }
 
             // Locate the selected Lifestyle.
             if (!(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
             {
-                _blnSkipRefresh = false;
+                IsRefreshing = false;
                 return;
             }
             cmdDeleteLifestyle.Enabled = true;
@@ -11611,7 +11610,7 @@ namespace Chummer
                 lblLifestyleQualities.Text = string.Empty;
             }
 
-            _blnSkipRefresh = false;
+            IsRefreshing = false;
         }
 
         /// <summary>
@@ -11746,7 +11745,7 @@ namespace Chummer
         /// </summary>
         private void RefreshSelectedVehicle()
         {
-            _blnSkipRefresh = true;
+            IsRefreshing = true;
             tlpVehicles.SuspendLayout();
             Cursor eOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
@@ -11779,7 +11778,7 @@ namespace Chummer
                 lblVehicleSource.Text = string.Empty;
 
                 chkVehicleWeaponAccessoryInstalled.Enabled = false;
-                _blnSkipRefresh = false;
+                IsRefreshing = false;
                 tlpVehicles.ResumeLayout();
                 Cursor = eOldCursor;
                 return;
@@ -12198,7 +12197,7 @@ namespace Chummer
                 chkVehicleWeaponAccessoryInstalled.Enabled = false;
                 chkVehicleIncludedInWeapon.Checked = false;
             }
-            _blnSkipRefresh = false;
+            IsRefreshing = false;
             tlpVehicles.ResumeLayout();
             Cursor = eOldCursor;
         }
@@ -12223,7 +12222,7 @@ namespace Chummer
             // Locate the selected Vehicle.
             if (treCustomDrugs.SelectedNode?.Tag is Drug objDrug)
             {
-                _blnSkipRefresh = true;
+                IsRefreshing = true;
                 lblDrugName.Text = objDrug.Name;
                 lblDrugAvail.Text = objDrug.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblDrugGrade.Text = objDrug.Grade;
@@ -12241,7 +12240,7 @@ namespace Chummer
                 {
                     lblDrugComponents.Text += objComponent.CurrentDisplayName + '\n';
                 }
-                _blnSkipRefresh = false;
+                IsRefreshing = false;
 
             }
         }
@@ -14839,7 +14838,7 @@ namespace Chummer
         
         private void chkInitiationSchooling_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (IsRefreshing)
                 return;
 
             IsCharacterUpdateRequested = true;
@@ -14857,7 +14856,7 @@ namespace Chummer
 
         private void cboPrimaryArm_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading || CharacterObject.Ambidextrous)
+            if (IsLoading || IsRefreshing || CharacterObject.Ambidextrous)
                 return;
             CharacterObject.PrimaryArm = cboPrimaryArm.SelectedValue.ToString();
 
