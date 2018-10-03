@@ -7135,7 +7135,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_ExtendAnyDetectionSpell</key>
-			<text>Allow any Detection Spell to be taken as Extended range version (SM 165)</text>
+			<text>Wahrnehmungszauber als Variante mit erweiterter Reichweite zulassen (SM 165)</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_DroneArmorMultiplier</key>
