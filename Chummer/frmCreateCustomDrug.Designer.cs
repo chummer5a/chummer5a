@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmCreateCustomDrug
     {
@@ -45,8 +45,8 @@
             this.lblDrugNameLabel = new System.Windows.Forms.Label();
             this.txtDrugName = new System.Windows.Forms.TextBox();
             this.lblGrade = new System.Windows.Forms.Label();
-            this.cboGrade = new System.Windows.Forms.ComboBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.cboGrade = new ElasticComboBox();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -265,7 +265,7 @@
         private System.Windows.Forms.Label lblDrugNameLabel;
         private System.Windows.Forms.TextBox txtDrugName;
 		private System.Windows.Forms.Label lblGrade;
-		private System.Windows.Forms.ComboBox cboGrade;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+		private ElasticComboBox cboGrade;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
     }
 }

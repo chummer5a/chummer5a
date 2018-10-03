@@ -40,7 +40,7 @@ namespace Chummer
             this.nudPercent = new System.Windows.Forms.NumericUpDown();
             this.lblPercent = new System.Windows.Forms.Label();
             this.chkKarmaNuyenExchange = new System.Windows.Forms.CheckBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudAmount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercent)).BeginInit();
@@ -320,7 +320,7 @@ namespace Chummer
         private System.Windows.Forms.NumericUpDown nudPercent;
         private System.Windows.Forms.Label lblPercent;
         private System.Windows.Forms.CheckBox chkKarmaNuyenExchange;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

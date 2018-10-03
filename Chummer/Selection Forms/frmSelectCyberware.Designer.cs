@@ -28,10 +28,10 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.cboCategory = new System.Windows.Forms.ComboBox();
+            this.cboCategory = new ElasticComboBox();
             this.lblCategory = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.cboGrade = new System.Windows.Forms.ComboBox();
+            this.cboGrade = new ElasticComboBox();
             this.lstCyberware = new System.Windows.Forms.ListBox();
             this.lblEssenceLabel = new System.Windows.Forms.Label();
             this.lblEssence = new System.Windows.Forms.Label();
@@ -63,7 +63,7 @@ namespace Chummer
             this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
             this.chkPrototypeTranshuman = new System.Windows.Forms.CheckBox();
             this.chkHideBannedGrades = new System.Windows.Forms.CheckBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.chkShowOnlyAffordItems = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdOK = new System.Windows.Forms.Button();
@@ -747,10 +747,10 @@ namespace Chummer
 
         #endregion
 
-        private System.Windows.Forms.ComboBox cboCategory;
+        private ElasticComboBox cboCategory;
         private System.Windows.Forms.Label lblCategory;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox cboGrade;
+        private ElasticComboBox cboGrade;
         private System.Windows.Forms.ListBox lstCyberware;
         private System.Windows.Forms.Label lblEssenceLabel;
         private System.Windows.Forms.Label lblEssence;
@@ -782,7 +782,7 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
         private System.Windows.Forms.CheckBox chkPrototypeTranshuman;
         private System.Windows.Forms.CheckBox chkHideBannedGrades;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.CheckBox chkShowOnlyAffordItems;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Label lblRatingNALabel;

@@ -28,7 +28,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.cboLifestyle = new System.Windows.Forms.ComboBox();
+            this.cboLifestyle = new ElasticComboBox();
             this.lblLifestyles = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -44,7 +44,7 @@ namespace Chummer
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.nudRoommates = new System.Windows.Forms.NumericUpDown();
             this.lblRoommates = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).BeginInit();
@@ -338,7 +338,7 @@ namespace Chummer
 
         #endregion
 
-        private System.Windows.Forms.ComboBox cboLifestyle;
+        private ElasticComboBox cboLifestyle;
         private System.Windows.Forms.Label lblLifestyles;
         private System.Windows.Forms.Button cmdOKAdd;
         private System.Windows.Forms.Button cmdCancel;
@@ -354,7 +354,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.NumericUpDown nudRoommates;
         private System.Windows.Forms.Label lblRoommates;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

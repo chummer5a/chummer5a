@@ -30,7 +30,7 @@ namespace Chummer
         {
             this.lstLifestyleQualities = new System.Windows.Forms.ListBox();
             this.lblCategory = new System.Windows.Forms.Label();
-            this.cboCategory = new System.Windows.Forms.ComboBox();
+            this.cboCategory = new ElasticComboBox();
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
@@ -46,7 +46,7 @@ namespace Chummer
             this.lblMinimum = new System.Windows.Forms.Label();
             this.lblCostLabel = new System.Windows.Forms.Label();
             this.lblCost = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -365,7 +365,7 @@ namespace Chummer
 
         private System.Windows.Forms.ListBox lstLifestyleQualities;
         private System.Windows.Forms.Label lblCategory;
-        private System.Windows.Forms.ComboBox cboCategory;
+        private ElasticComboBox cboCategory;
         private System.Windows.Forms.Label lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.Button cmdOKAdd;
@@ -381,7 +381,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblMinimum;
         private System.Windows.Forms.Label lblCostLabel;
         private System.Windows.Forms.Label lblCost;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

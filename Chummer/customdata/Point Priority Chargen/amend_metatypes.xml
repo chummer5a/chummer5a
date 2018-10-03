@@ -263,7 +263,7 @@
     </metatype>
     <!-- End Region -->
     <!-- Region Shapeshifter -->
-    <metatype xpathfilter="contains(name,'Shapeshifter')" amendoperation="remove">
+    <metatype xpathfilter="contains(name,'Shapeshifter')" amendoperation="remove" />
     <!-- Shapeshifters are now handled by qualities -->
     <!-- End Region -->
   </metatypes>

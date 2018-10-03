@@ -39,6 +39,22 @@ namespace Chummer
             else
                 funcToRun.Invoke();
         }
+
+        /// <summary>
+        /// Bind a control's property to a property via OnPropertyChanged
+        /// </summary>
+        /// <param name="objControl">Control to bind</param>
+        /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
+        /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
+        /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
+        public static void DoDatabinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
+        {
+            if (!objControl.IsHandleCreated)
+            {
+                objControl.CreateControl();
+            }
+            objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false, DataSourceUpdateMode.OnPropertyChanged);
+        }
         #endregion
 
         #region ComboBox Extensions

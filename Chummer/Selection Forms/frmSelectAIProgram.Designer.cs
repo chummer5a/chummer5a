@@ -41,9 +41,9 @@ namespace Chummer
             this.lblSearchLabel = new System.Windows.Forms.Label();
             this.chkLimitList = new System.Windows.Forms.CheckBox();
             this.lblCategory = new System.Windows.Forms.Label();
-            this.cboCategory = new System.Windows.Forms.ComboBox();
+            this.cboCategory = new ElasticComboBox();
             this.lstAIPrograms = new System.Windows.Forms.ListBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -302,9 +302,9 @@ namespace Chummer
         private System.Windows.Forms.Label lblSearchLabel;
         private System.Windows.Forms.CheckBox chkLimitList;
         private System.Windows.Forms.Label lblCategory;
-        private System.Windows.Forms.ComboBox cboCategory;
+        private ElasticComboBox cboCategory;
         private System.Windows.Forms.ListBox lstAIPrograms;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

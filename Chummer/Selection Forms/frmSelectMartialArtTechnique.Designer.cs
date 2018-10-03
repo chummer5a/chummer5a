@@ -34,7 +34,7 @@ namespace Chummer
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
@@ -216,7 +216,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Label lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label lblSearchLabel;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;

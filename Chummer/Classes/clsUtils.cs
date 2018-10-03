@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
  using System;
+ using System.ComponentModel;
  using System.Diagnostics;
 ﻿using System.IO;
  using System.Reflection;
@@ -35,6 +36,8 @@ namespace Chummer
         }
 
         public static bool IsRunningInVisualStudio => Process.GetCurrentProcess().ProcessName == "devenv";
+
+        public static bool IsDesignerMode => LicenseManager.UsageMode == LicenseUsageMode.Designtime;
 
         private static Version s_VersionCachedGitVersion;
         public static Version CachedGitVersion
@@ -112,15 +115,6 @@ namespace Chummer
             };
             Application.Exit();
             Process.Start(startInfo);
-        }
-
-        public static void DoDatabinding(Control objControl, string PropertyName, object dataSource, string dataMember)
-        {
-            if (!objControl.IsHandleCreated)
-            {
-                objControl.CreateControl();
-            }
-            objControl.DataBindings.Add(PropertyName, dataSource, dataMember, false, DataSourceUpdateMode.OnPropertyChanged);
         }
     }
 }

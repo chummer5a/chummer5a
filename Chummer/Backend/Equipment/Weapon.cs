@@ -1365,12 +1365,18 @@ namespace Chummer.Backend.Equipment
             set => _strPage = value;
         }
 
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty. 
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Page;
-
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         public Weapon Parent
@@ -1765,14 +1771,17 @@ namespace Chummer.Backend.Equipment
                 {
                     strCategory = "Unarmed Combat";
                 }
+
+                string strUseSkill = Skill?.Name;
+
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV && objImprovement.Enabled && (objImprovement.ImprovedName == strCategory || "Cyberware " + objImprovement.ImprovedName == strCategory))
-                        intImprove += objImprovement.Value;
-                    if (!string.IsNullOrEmpty(_strUseSkill))
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV && objImprovement.Enabled &&
+                        (objImprovement.ImprovedName == strCategory ||
+                         objImprovement.ImprovedName == strUseSkill ||
+                         "Cyberware " + objImprovement.ImprovedName == strCategory))
                     {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV && objImprovement.Enabled && (objImprovement.ImprovedName == _strUseSkill || "Cyberware " + objImprovement.ImprovedName == strCategory))
-                            intImprove += objImprovement.Value;
+                        intImprove += objImprovement.Value;
                     }
                 }
             }
@@ -1821,11 +1830,8 @@ namespace Chummer.Backend.Equipment
             }
             if (intImprove != 0)
                 strDamage += " + " + intImprove.ToString();
-
-            CharacterOptions objOptions = _objCharacter.Options;
-            int intBonus = 0;
-            if (objOptions.MoreLethalGameplay)
-                intBonus = 2;
+            
+            int intBonus = _objCharacter.Options.MoreLethalGameplay ? 2 : 0;
 
             // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
             if (!string.IsNullOrEmpty(AmmoLoaded))
@@ -3613,7 +3619,7 @@ namespace Chummer.Backend.Equipment
                         break;
                     }
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(FireMode));
             }
 
             return (intDicePool + intDicePoolModifier).ToString(objCulture) + strExtra;
@@ -3634,12 +3640,12 @@ namespace Chummer.Backend.Equipment
                 string strSkill = GetSkillName(strCategory, ref strSpec);
 
                 // Use the Skill defined by the Weapon if one is present.
-                if (!string.IsNullOrEmpty(_strUseSkill))
+                if (!string.IsNullOrEmpty(UseSkill))
                 {
-                    strSkill = _strUseSkill;
+                    strSkill = UseSkill;
                     strSpec = string.Empty;
 
-                    if (_strUseSkill.Contains("Exotic"))
+                    if (UseSkill.Contains("Exotic"))
                         strSpec = Name;
                 }
 
@@ -4514,6 +4520,194 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
+        public void Reload(IList<Gear> lstGears, TreeView treGearView)
+        {
+            List<Gear> lstAmmo = new List<Gear>();
+            List<string> lstCount = new List<string>();
+            bool blnExternalSource = false;
+            Gear objExternalSource = new Gear(_objCharacter)
+            {
+                Name = "External Source"
+            };
+
+            string ammoString = CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
+            // Determine which loading methods are available to the Weapon.
+            if (ammoString.IndexOfAny('x', '+') != -1 || ammoString.Contains(" or ") || ammoString.Contains("Special"))
+            {
+                string strWeaponAmmo = ammoString.ToLower();
+                if (strWeaponAmmo.Contains("external source"))
+                    blnExternalSource = true;
+                // Get rid of external source, special, or belt, and + energy.
+                strWeaponAmmo = strWeaponAmmo.Replace("external source", "100")
+                    .Replace("special", "100")
+                    .FastEscapeOnceFromEnd(" + energy")
+                    .Replace(" or belt", " or 250(belt)");
+
+                string[] strAmmos = strWeaponAmmo.Split(new[] { " or " }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (string strAmmo in strAmmos)
+                {
+                    string strThisAmmo = strAmmo.TrimStartOnce("2x", "3x", "4x").TrimEndOnce("x2", "x3", "x4");
+
+                    int intPos = strThisAmmo.IndexOf('(');
+                    if (intPos != -1)
+                        strThisAmmo = strThisAmmo.Substring(0, intPos);
+
+                    lstCount.Add(strThisAmmo);
+                }
+            }
+            else
+            {
+                // Nothing weird in the ammo string, so just use the number given.
+                string strAmmo = ammoString;
+                int intPos = strAmmo.IndexOf('(');
+                if (intPos != -1)
+                    strAmmo = strAmmo.Substring(0, intPos);
+                lstCount.Add(strAmmo);
+            }
+
+            if (!RequireAmmo)
+            {
+                // If the Weapon does not require Ammo, just use External Source.
+                lstAmmo.Add(objExternalSource);
+            }
+            else
+            {
+                // Find all of the Ammo for the current Weapon that the character is carrying.
+                HashSet<string> setAmmoPrefixStringSet = new HashSet<string>(AmmoPrefixStrings);
+                // This is a standard Weapon, so consume traditional Ammunition.
+                lstAmmo.AddRange(lstGears.DeepWhere(x => x.Children, x =>
+                    x.Quantity > 0 && (x.Category == "Ammunition" && x.Extra == AmmoCategory ||
+                                       !string.IsNullOrWhiteSpace(AmmoName) && x.Name == AmmoName ||
+                                       string.IsNullOrEmpty(x.Extra) && setAmmoPrefixStringSet.Any(y => x.Name.StartsWith(y)) ||
+                                       UseSkill == "Throwing Weapons" && Name == x.Name)));
+
+                // If the Weapon is allowed to use an External Source, put in an External Source item.
+                if (blnExternalSource)
+                {
+                    lstAmmo.Add(objExternalSource);
+                }
+
+                // Make sure the character has some form of Ammunition for this Weapon.
+                if (lstAmmo.Count == 0)
+                {
+                    MessageBox.Show(
+                        LanguageManager.GetString("Message_OutOfAmmoType", GlobalOptions.Language)
+                            .Replace("{0}", DisplayAmmoCategory(GlobalOptions.Language)),
+                        LanguageManager.GetString("MessageTitle_OutOfAmmo", GlobalOptions.Language), MessageBoxButtons.OK,
+                        MessageBoxIcon.Exclamation);
+                    return;
+                }
+            }
+
+            // Show the Ammunition Selection window.
+            frmReload frmReloadWeapon = new frmReload
+            {
+                Ammo = lstAmmo,
+                Count = lstCount
+            };
+            frmReloadWeapon.ShowDialog();
+
+            if (frmReloadWeapon.DialogResult == DialogResult.Cancel)
+                return;
+
+            // Return any unspent rounds to the Ammo.
+            if (AmmoRemaining > 0)
+            {
+                foreach (Gear objAmmo in lstGears)
+                {
+                    if (objAmmo.InternalId == AmmoLoaded)
+                    {
+                        objAmmo.Quantity += AmmoRemaining;
+
+                        // Refresh the Gear tree.
+                        TreeNode objNode = treGearView.FindNode(objAmmo.InternalId);
+                        if (objNode != null)
+                        {
+                            objNode.Text = objAmmo.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                        }
+
+                        break;
+                    }
+
+                    foreach (Gear objChild in objAmmo.Children.GetAllDescendants(x => x.Children))
+                    {
+                        if (objChild.InternalId == AmmoLoaded)
+                        {
+                            // If this is a plugin for a Spare Clip, move any extra rounds to the character instead of messing with the Clip amount.
+                            if (objChild.Parent is Gear parent &&
+                                (parent.Name.StartsWith("Spare Clip") || parent.Name.StartsWith("Speed Loader")))
+                            {
+                                Gear objNewGear = new Gear(_objCharacter);
+                                objNewGear.Copy(objChild);
+                                objNewGear.Quantity = AmmoRemaining;
+                                lstGears.Add(objNewGear);
+
+                                goto EndLoop;
+                            }
+
+                            objChild.Quantity += AmmoRemaining;
+
+                            // Refresh the Gear tree.
+                            TreeNode objNode = treGearView.FindNode(objChild.InternalId);
+                            if (objNode != null)
+                            {
+                                objNode.Text = objAmmo.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                            }
+
+                            break;
+                        }
+                    }
+                }
+
+                EndLoop:;
+            }
+
+            Gear objSelectedAmmo;
+            decimal decQty = frmReloadWeapon.SelectedCount;
+            // If an External Source is not being used, consume ammo.
+            if (frmReloadWeapon.SelectedAmmo != objExternalSource.InternalId)
+            {
+                objSelectedAmmo = lstGears.DeepFindById(frmReloadWeapon.SelectedAmmo);
+
+                if (objSelectedAmmo.Quantity == decQty && objSelectedAmmo.Parent != null)
+                {
+                    // If the Ammo is coming from a Spare Clip, reduce the container quantity instead of the plugin quantity.
+                    if (objSelectedAmmo.Parent is Gear objParent &&
+                        (objParent.Name.StartsWith("Spare Clip") || objParent.Name.StartsWith("Speed Loader")))
+                    {
+                        if (objParent.Quantity > 0)
+                            objParent.Quantity -= 1;
+                        TreeNode objNode = treGearView.FindNode(objParent.InternalId);
+                        objNode.Text = objParent.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    }
+                }
+                else
+                {
+                    // Deduct the ammo qty from the ammo. If there isn't enough remaining, use whatever is left.
+                    if (objSelectedAmmo.Quantity > decQty)
+                        objSelectedAmmo.Quantity -= decQty;
+                    else
+                    {
+                        decQty = objSelectedAmmo.Quantity;
+                        objSelectedAmmo.Quantity = 0;
+                    }
+                }
+
+                // Refresh the Gear tree.
+                TreeNode objSelectedNode = treGearView.FindNode(objSelectedAmmo.InternalId);
+                if (objSelectedNode != null)
+                    objSelectedNode.Text = objSelectedAmmo.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+            }
+            else
+            {
+                objSelectedAmmo = objExternalSource;
+            }
+
+            AmmoRemaining = decimal.ToInt32(decQty);
+            AmmoLoaded = objSelectedAmmo.InternalId;
+        }
+
         #region UI Methods
         /// <summary>
         /// Add a Weapon to the TreeView.
@@ -4572,6 +4766,39 @@ namespace Chummer.Backend.Equipment
                 }
 
                 return SystemColors.WindowText;
+            }
+        }
+
+        public void SetupChildrenWeaponsCollectionChanged(bool blnAdd, TreeView treWeapons, ContextMenuStrip cmsWeapon = null, ContextMenuStrip cmsWeaponAccessory = null, ContextMenuStrip cmsWeaponAccessoryGear = null)
+        {
+            if (blnAdd)
+            {
+                UnderbarrelWeapons.AddTaggedCollectionChanged(treWeapons, (x, y) => this.RefreshChildrenWeapons(treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, null, y));
+                WeaponAccessories.AddTaggedCollectionChanged(treWeapons, (x, y) => this.RefreshWeaponAccessories(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear, () => UnderbarrelWeapons.Count, y));
+                foreach (Weapon objChild in UnderbarrelWeapons)
+                {
+                    objChild.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                }
+
+                foreach (WeaponAccessory objChild in WeaponAccessories)
+                {
+                    foreach (Gear objGear in objChild.Gear)
+                        objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear);
+                }
+            }
+            else
+            {
+                UnderbarrelWeapons.RemoveTaggedCollectionChanged(treWeapons);
+                WeaponAccessories.RemoveTaggedCollectionChanged(treWeapons);
+                foreach (Weapon objChild in UnderbarrelWeapons)
+                {
+                    objChild.SetupChildrenWeaponsCollectionChanged(false, treWeapons);
+                }
+                foreach (WeaponAccessory objChild in WeaponAccessories)
+                {
+                    foreach (Gear objGear in objChild.Gear)
+                        objGear.SetupChildrenGearsCollectionChanged(false, treWeapons);
+                }
             }
         }
         #endregion

@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmSelectSide
     {
@@ -30,9 +30,9 @@
         {
             this.lblDescription = new System.Windows.Forms.Label();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.cboSide = new System.Windows.Forms.ComboBox();
+            this.cboSide = new ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -152,9 +152,9 @@
 
         private System.Windows.Forms.Label lblDescription;
         private System.Windows.Forms.Button cmdOK;
-        private System.Windows.Forms.ComboBox cboSide;
+        private ElasticComboBox cboSide;
         private System.Windows.Forms.Button cmdCancel;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

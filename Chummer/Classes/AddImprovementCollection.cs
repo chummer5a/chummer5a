@@ -3783,12 +3783,16 @@ namespace Chummer.Classes
                                 List<Power> lstExistingPowersList = _objCharacter.Powers.Where(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra).ToList();
 
                                 Log.Info("blnHasPower = " + (lstExistingPowersList.Count > 0).ToString());
-
+                                
                                 if (lstExistingPowersList.Count == 0)
                                 {
                                     _objCharacter.Powers.Add(objNewPower);
                                 }
-
+                                else
+                                {
+                                    // Another copy of the power already exists, so we ensure that we remove any improvements created by the power because we're discarding it. 
+                                    objNewPower.DeletePower();
+                                }
                                 Log.Info("Calling CreateImprovement");
                                 CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreePoints, objNewPower.Extra, 0, intLevels);
                             }

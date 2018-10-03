@@ -11,11 +11,14 @@
                   <xs:sequence>
                     <xs:element name="id" type="xs:string" />
                     <xs:element name="name" type="xs:string" />
-					<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="karma" type="xs:unsignedByte" />
-                    <xs:element name="maxavailability" type="xs:unsignedByte" />
-                    <xs:element name="maxnuyen" type="xs:unsignedByte" />
-                    <xs:element name="contactmultiplier" type="xs:unsignedByte" />
+                    <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="karma" type="xs:integer" />
+                    <xs:element name="pointbuykarma" type="xs:integer" />
+                    <xs:element name="lifemoduleskarma" type="xs:integer" />
+                    <xs:element name="sumtoten" type="xs:integer" />
+                    <xs:element name="maxavailability" type="xs:integer" />
+                    <xs:element name="maxnuyen" type="xs:integer" />
+                    <xs:element name="contactmultiplier" type="xs:integer" />
                     <xs:element minOccurs="0" name="default" type="xs:string" />
                   </xs:sequence>
                 </xs:complexType>

@@ -260,8 +260,8 @@ namespace Chummer.Backend.Equipment
                                 if (objXmlMod != null)
                                 {
                                     VehicleMod objMod = new VehicleMod(_objCharacter);
-                                    string strForcedValue = objXmlVehicleMod.Attributes["select"]?.InnerText ?? string.Empty;
-                                    int.TryParse(objXmlVehicleMod.Attributes["rating"]?.InnerText, out int intRating);
+                                    string strForcedValue = objXmlVehicleMod.Attributes?["select"]?.InnerText ?? string.Empty;
+                                    int.TryParse(objXmlVehicleMod.Attributes?["rating"]?.InnerText, out int intRating);
 
                                     objMod.Extra = strForcedValue;
                                     objMod.Create(objXmlMod, intRating, this, 0, strForcedValue);
@@ -296,19 +296,24 @@ namespace Chummer.Backend.Equipment
                 {
                     XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
 
-                    XmlNodeList objXmlGearList = xmlGears.SelectNodes("gear");
-                    foreach (XmlNode objXmlVehicleGear in objXmlGearList)
+                    using (XmlNodeList objXmlGearList = xmlGears.SelectNodes("gear"))
                     {
-                        Gear objGear = new Gear(_objCharacter);
-                        if (objGear.CreateFromNode(objXmlDocument, objXmlVehicleGear, lstWeapons))
+                        if (objXmlGearList?.Count > 0)
                         {
-                            objGear.Parent = this;
-                            objGear.ParentID = InternalId;
-                            Gear.Add(objGear);
-                            foreach (Weapon objWeapon in lstWeapons)
+                            foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                             {
-                                objWeapon.ParentVehicle = this;
-                                Weapons.Add(objWeapon);
+                                Gear objGear = new Gear(_objCharacter);
+                                if (objGear.CreateFromNode(objXmlDocument, objXmlVehicleGear, lstWeapons))
+                                {
+                                    objGear.Parent = this;
+                                    objGear.ParentID = InternalId;
+                                    Gear.Add(objGear);
+                                    foreach (Weapon objWeapon in lstWeapons)
+                                    {
+                                        objWeapon.ParentVehicle = this;
+                                        Weapons.Add(objWeapon);
+                                    }
+                                }
                             }
                         }
                     }

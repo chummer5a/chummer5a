@@ -76,6 +76,23 @@ Application Changes:
 - Fixed a bug where newly created characters would not get added to the list of characters open in internal memory, which could cause a whole lot of other issues, least of which was that the character's tab would not get properly updated if the character's alias was changed.
 - Added a loading bar/screen that is displayed when the program is performing its initial loading and whenever the program loads in a character.
 - Fixed a bug where the program's UI showed English page number references even for non-English languages. Fixes #3024.
+- Adept Way Discounts are no longer available to powers that don't have a populated Adept Way requirement. Fixes part of #3042
+- Fixed an issue with the Karma Metatype selector not showing the correct height.
+- The "ess" requirement used by Cyber-Snob and some other qualities can now filter based on multiple grades instead of just one. This allows a mixture of Betaware and Deltaware to qualify for Cyber-Snob, for example. Fixes #3047
+- Re-enabled the option to use More Lethal gameplay rules from 4th edition (the option is in the House Rules section).
+- Reorganized the options menu so that global options that are independent from the currently opened character are easier to tell apart, and so that the PDF information of individual sourcebooks can be modified even if a custom ruleset is enabled that disables the given sourcebooks.
+- The options menu now supports selecting a default gameplay option when creating a new character instead of modifying the default max availability and max starting karma amounts.
+- Gameplay options can now declare default values for karma levels under Point Buy, karma levels under Life Modules, and Sum-to-X value under Sum-to-Ten build methods in their XML entries.
+- Fixed a bug where improvements that added to a weapon type's DV would sometimes apply their bonus twice. Fixes #3036.
+- Fixed an issue where the dropdown menu option to change a character's metatype would show as "Change Priority Selection" regardless of the character's build method.
+- The Translator tool now warns users that the "Rebuild" option will delete translations for any data entries that are not present in the core Chummer5a data files, and now has a separate "Update" option that does not delete such translations. Fixes #2932.
+- Fixed an issue where increasing the quantity of gear that contained plugins would count the cost from its children incorrectly. Fixes #3003.
+- Fixed a bug where group layout boxes and controls within those group layout boxes would not get translated. Fixes #3052.
+- Added preliminary support for right-to-left scripts to Chummer5a's translation system and the Translator tool. It's currently relatively untested, but bugs will be ironed out if/when translations that use right-to-left scripts get included with the program.
+- Fixed a bug where improvements that grant extra damage resistance dice would also get added to armor when printing character information. Fixes #3058.
+- Fixed behaviour of DisplayPage property to not return an empty string if that's in the data file. Fixes #3064
+- Ugly workaround fix for characters that managed to get a power rating higher than total maximum magic to prevent them from crashing. Fixes #3062.
+- Base augmented attribute maxima are now properly fetched from a character's metatype/metavariant data instead of being fixed to 4 for regular attributes and 0 for special attributes.
 
 Data Changes:
 
@@ -117,6 +134,11 @@ Data Changes:
 - Fixed a bug where Elementalist would disable access to the Enchanting skill group instead of disabling access to skills in the Enchanting group.
 - Pariah tradition now properly disables access to skills noted in its description and properly gives +2 to Banishing, Counterspelling, and Disenchanting.
 - Fixed incorrect Slots for the Workshop vehicle mod.
+- Fixed inability to take Cyber-Snob with Deltaware cyberware. 
+- Fixed a typo in the name of the Dassault Janitorial Drone.
+- All instances of "NeoNET" are now capitalized as such (some items previously said "NeoNet" or "Neonet"). Fixes #3033.
+- Added (hidden) Gear items for Public Grid, Local Grid, and Global Grid so that these phrases can be handled by TranslateExtra. Part of #3002.
+- Fixed an issue with the Text-Only sheet that caused it to fail to load the LOG attribute.
 
 New Strings:
 
@@ -156,6 +178,14 @@ New Strings:
 - String_LegacyFixes
 - String_GeneratedImprovements
 - String_UI
+- Tab_Options_GitHubIssues
+- Label_Options_EditSourcebookInfo
+- Label_Options_SourcebooksToUse
+- Label_Options_SelectedSourcebook
+- Label_Options_MetatypesCostKarma
+- Label_Options_CustomDataDirectories
+- Button_Options_UploadPastebin
+- Menu_SpecialChangePriorities
 
 Changed Strings:
 
@@ -170,10 +200,21 @@ Changed Strings:
 - Label_SelectBP_MaxNuyen
 - Label_AddictionThreshold
 - Menu_Notes
+- Tab_Options_Global
+- Tab_Options_Character
+- Label_Options_Defaults
+- Label_Options_CyberlimbCount
+- Label_Options_NuyenPerBP
+- Checkbox_Options_MoreLethalGameplace
+- Checkbox_Option_CreateBackupOnCareer
+- Label_Options_CharacterRoster
+- Menu_SpecialChangeMetatype
 
 Removed Strings:
 
 - Label_SelectAdvancedLifestyle_Base_Area
+- Label_Options_AdditionalBooks
+- Checkbox_Options_MetatypesCostKarma
 
 Build 202
 

@@ -50,7 +50,7 @@ namespace Chummer
             this.cmdOK = new System.Windows.Forms.Button();
             this.lstVehicle = new System.Windows.Forms.ListBox();
             this.lblCategory = new System.Windows.Forms.Label();
-            this.cboCategory = new System.Windows.Forms.ComboBox();
+            this.cboCategory = new ElasticComboBox();
             this.lblVehicleSensor = new System.Windows.Forms.Label();
             this.lblVehicleSensorLabel = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
@@ -70,7 +70,7 @@ namespace Chummer
             this.lblVehicleSeatsLabel = new System.Windows.Forms.Label();
             this.lblVehicleSeats = new System.Windows.Forms.Label();
             this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.chkShowOnlyAffordItems = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudUsedVehicleDiscount)).BeginInit();
@@ -780,7 +780,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.ListBox lstVehicle;
         private System.Windows.Forms.Label lblCategory;
-        private System.Windows.Forms.ComboBox cboCategory;
+        private ElasticComboBox cboCategory;
         private System.Windows.Forms.Label lblVehicleSensor;
         private System.Windows.Forms.Label lblVehicleSensorLabel;
         private System.Windows.Forms.Button cmdOKAdd;
@@ -800,7 +800,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblVehicleSeatsLabel;
         private System.Windows.Forms.Label lblVehicleSeats;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.CheckBox chkShowOnlyAffordItems;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }

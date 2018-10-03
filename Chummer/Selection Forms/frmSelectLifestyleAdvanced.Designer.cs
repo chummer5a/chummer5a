@@ -50,7 +50,7 @@ namespace Chummer
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.nudRoommates = new System.Windows.Forms.NumericUpDown();
             this.lblRoommates = new System.Windows.Forms.Label();
-            this.cboBaseLifestyle = new System.Windows.Forms.ComboBox();
+            this.cboBaseLifestyle = new ElasticComboBox();
             this.Label_SelectAdvancedLifestyle_Lifestyle = new System.Windows.Forms.Label();
             this.nudSecurity = new System.Windows.Forms.NumericUpDown();
             this.nudArea = new System.Windows.Forms.NumericUpDown();
@@ -76,7 +76,7 @@ namespace Chummer
             this.lblBonusLP = new System.Windows.Forms.Label();
             this.nudBonusLP = new System.Windows.Forms.NumericUpDown();
             this.chkBonusLPRandomize = new System.Windows.Forms.CheckBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.Label_SelectAdvancedLifestyle_Base_Comforts = new System.Windows.Forms.Label();
             this.Label_SelectAdvancedLifestyle_Base_Neighborhood = new System.Windows.Forms.Label();
             this.Label_SelectAdvancedLifestyle_Base_Security = new System.Windows.Forms.Label();
@@ -877,7 +877,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.NumericUpDown nudRoommates;
         private System.Windows.Forms.Label lblRoommates;
-        private System.Windows.Forms.ComboBox cboBaseLifestyle;
+        private ElasticComboBox cboBaseLifestyle;
         private System.Windows.Forms.Label Label_SelectAdvancedLifestyle_Lifestyle;
         private System.Windows.Forms.NumericUpDown nudSecurity;
         private System.Windows.Forms.NumericUpDown nudArea;

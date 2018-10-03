@@ -20,6 +20,7 @@
 <chummer>
 	<version>-495</version>
 	<name>Deutsch (de-DE)</name>
+	<righttoleft>False</righttoleft>
 	<strings>
 		<string>
 			<key>Message_Insufficient_Permissions_Warning</key>
@@ -4188,14 +4189,6 @@
 			<text>Hausregeln</text>
 		</string>
 		<string>
-			<key>Label_Options_AdditionalBooks</key>
-			<text>Weitere nutzbare Quellenbücher</text>
-		</string>
-		<string>
-			<key>Label_Options_Defaults</key>
-			<text>Standardwerte für neue Charaktere</text>
-		</string>
-		<string>
 			<key>Label_Options_CyberlimbCount</key>
 			<text>Gliedmaßen für Standard-Charaktere:</text>
 		</string>
@@ -4370,10 +4363,6 @@
 		<string>
 			<key>Checkbox_Options_SkillRegroup</key>
 			<text>Erlaube das Regruppieren von Fertigkeiten, wenn alle den selben Wert haben.</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_MetatypesCostKarma</key>
-			<text>Karma-Kosten für Metatypen sind gleich der GP-Kosten</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_Dronemods</key>
@@ -6208,7 +6197,7 @@
 		</string>
 		<string>
 			<key>Tab_Options_Character</key>
-			<text>Charakter und ausdrucken</text>
+			<text>Charakter</text>
 		</string>
 		<string>
 			<key>Tab_Options_Miscellaneous</key>
@@ -6521,7 +6510,7 @@
 		</string>
 		<string>
 			<key>Label_Options_PDFOffset</key>
-			<text>Seitenanzahl:</text>
+			<text>Seitenversatz:</text>
 		</string>
 		<string>
 			<key>Button_Options_PDFTest</key>
@@ -6574,7 +6563,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Option_PrintToFileFirst</key>
-			<text>Linux Druckfehler-Fix nutzen.</text>
+			<text>Linux Druckfehler-Fix nutzen</text>
 		</string>
 		<string>
 			<key>Checkbox_Aerodynamic</key>
@@ -9185,6 +9174,150 @@
 		<string>
 			<key>MessageTitle_Options_CloseForms</key>
 			<text>Formulare schließen</text>
+		</string>
+		<string>
+			<key>Label_Options_EditSourcebookInfo</key>
+			<text>Quellenbuchangaben bearbeiten</text>
+		</string>
+		<string>
+			<key>Label_Options_SelectedSourcebook</key>
+			<text>Ausgewähltes Quellenbuch:</text>
+		</string>
+		<string>
+			<key>Label_Options_Defaults</key>
+			<text>Vorbelegung für neue Charaktere:</text>
+		</string>
+		<string>
+			<key>String_NotSupported</key>
+			<text>"Diese Kombiantion von Rasse/Metavariante ist aktuell noch unvollständig und wird in künftige Versionen vervollständigt. Versuche, einen Charakter mit dieser Kombination zu erstellen, können zu unerwarteten Ergebnissen führen."</text>
+		</string>
+		<string>
+			<key>Warning_NoLimitFound</key>
+			<text>Es konnte kein passendes Limit zum Ändern gefunden werden. Stellen Sie sicher, dass Sie einen benutzerdefinierten Limit-Modifikator gewählt haben.</text>
+		</string>
+		<string>
+			<key>Label_Options_SourcebooksToUse</key>
+			<text>Zu verwendende Quellenbücher</text>
+		</string>
+		<string>
+			<key>Label_Updater_Status</key>
+			<text>Status der Aktualisierung:</text>
+		</string>
+		<string>
+			<key>Label_Options_MetatypesCostKarma</key>
+			<text>Faktor für Metatyp Karmakosten</text>
+		</string>
+		<string>
+			<key>Label_Options_CustomDataDirectories</key>
+			<text>Anzuwendende Sonderregeln (Änderungen werden erst nach einem Programmneustart aktiv)</text>
+		</string>
+		<string>
+			<key>About_Description_Text</key>
+			<text>Charaktergenerator für Shadowrun 5. Edition\n\r\n\rDanke an Keith für die wundervolle Arbeit, die er in die Erstellung und Pflege von Chummer für die 4. Edition gesteck hat. Ohne ihn wäre das alles nicht möglich.\n\r\n\rHerzlichen Dank an alle der 'Dumpshock community', dass sie dieses Projekt mit all ihren wertvollen Rückmeldungen, tollen Ideen, Verbesserungsvorschlägen und Hinweise auf enthaltene Fehler unterstützt haben. Ein großen Dankeschön auch an alle, die sich freiwillig gemeldet haben um Chummer in andere Sprachen zu übersetzen!</text>
+		</string>
+		<string>
+			<key>String_WorkingForTheMan</key>
+			<text>Für den Mann arbeiten</text>
+		</string>
+		<string>
+			<key>String_WorkingForThePeople</key>
+			<text>Für die Leute arbeiten</text>
+		</string>
+		<string>
+			<key>String_WorkingForTheManPeople</key>
+			<text>Für den Mann/die Leute arbeiten</text>
+		</string>
+		<string>
+			<key>Tip_LifeModule_Warning</key>
+			<text>Lebensmodule sind derzeit im Experimentierstadium mit eingeschränkten Funktionen. Siehe https://github.com/chummer5a/chummer5a/issues/2000 für Details zu den bestehenden Problemen. Die Verwendung erfolgt auf eigene Gefahr vor. Wollen Sie fortfahren?</text>
+		</string>
+		<string>
+			<key>Tip_RemainingVehicleModCapacity</key>
+			<text>Hier wird die Kapazität des Fahrzeugs/der Drohne angezeigt, nachdem die ausgewählte Modifikation installiert wurde.</text>
+		</string>
+		<string>
+			<key>Tip_TotalVehicleModCapacity</key>
+			<text>Hier wird die die insgesamt installierte/verfügbare Kapazität des Fahrzeugs/der Drohne angezeigt.</text>
+		</string>
+		<string>
+			<key>About_Copyright_Text</key>
+			<text>Copyright © Keith Rudolph 2013</text>
+		</string>
+		<string>
+			<key>About_Company_Text</key>
+			<text>Original Chummer für die 4. Edition von Keith Rudolph.\n\r\rChummer5 Update von Adam Schmidt: srchummer5@gmail.com\n\rChummer5a Update von Anonymous fa/tg/uy: chummer5isalive@gmail.com\n\r\r Zusätzliche 5a Updates von Johannes Elgaard: joha4270@gmail.com</text>
+		</string>
+		<string>
+			<key>About_Label_Contributors</key>
+			<text>Vielen Dank an alle GitHub Mitwirkenden!</text>
+		</string>
+		<string>
+			<key>About_Label_Disclaimer</key>
+			<text>Disclaimer</text>
+		</string>
+		<string>
+			<key>About_Label_Disclaimer_Text</key>
+			<text>Chummer ist völlig unabhängig und wird in keiner Weise von 'The Topps Company, Inc.' oder 'Catalyst Game Labs' unterstützt. The Topps Company, Inc. ist alleiniger Eigentümer der Namen, Logos, Kunstwerke, Marken, Fotos, Sounds, Audio, Video und/oder aller proprietären Materialien, die in Verbindung mit dem Spiel Shadowrun verwendet werden.Ohne schriftliche Zustimmung stellt der Ersteller (und jeder Mitwirkende seine Beiträge) zur Verfügung "Wie ist es" OHNE GEWÄHRLEISTUNGEN ODER BEDINGUNGEN JEGLICHER ART, weder ausdrücklich noch stillschweigend, einschließlich, aber nicht beschränkt auf Garantien oder Bedingungen von TITEL, NICHTVERLETZUNG, MARKTFÄHIGKEIT oder Eignung für einen bestimmten Zweck. Durch die Verwendung von Chummer erklären Sie sich damit einverstanden, dass Sie rechtlich Eigentümer einer Kopie der Shadowrun-Regeln und jedes Quellbuchs sind, dessen Informationen Sie zur Verwendung auswählen. Sie sind allein für die Feststellung der Angemessenheit der Nutzung oder Weiterverbreitung der von Ihnen erstellten Inhalte verantwortlich und übernehmen alle Risiken, die mit Ihrer Ausübung von Berechtigungen unter dieser Lizenz verbunden sind.\n\r\n\n\n\r\rChummer verwendet Symbole aus dem von Mark James erstellten 'Silk icon set', welches unter www.famfamfam.com. verfügbar ist.</text>
+		</string>
+		<string>
+			<key>String_Nightly</key>
+			<text>nightly</text>
+		</string>
+		<string>
+			<key>String_Stable</key>
+			<text>stable</text>
+		</string>
+		<string>
+			<key>Tip_Omae_Warning</key>
+			<text>Omae liegt außerhalb der Kontrolle der aktuellen Entwickler und enthält alte Charaktere, die möglicherweise nicht funktionieren oder die aktuelle Version von Chummer zum Absturz bringen. Die Benutzung erfolgt auf eigene Gefahr. Wollen Sie fortfahren?</text>
+		</string>
+		<string>
+			<key>Message_KarmaValue</key>
+			<text>Neben Punkten für Wissensfertigkeiten aus Lebensmodulen und dem Ignorieren von Metatypeffekten, für die der Karmawert nicht objektiv beurteilt werden kann, hat dieser Charakter folgenden Karmawert:</text>
+		</string>
+		<string>
+			<key>String_Nightly_Changelog_Warning</key>
+			<text>Versionen im nightly Changelog sind temporär.</text>
+		</string>
+		<string>
+			<key>Button_Options_UploadPastebin</key>
+			<text>Datei zu Pastebin hochladen</text>
+		</string>
+		<string>
+			<key>Tab_Options_GitHubIssues</key>
+			<text>GitHub Issues</text>
+		</string>
+		<string>
+			<key>Message_MetagenicQualitiesInsufficientKarma</key>
+			<text>Es ist 1 Karma notwendig um metagenetische Nachteile und Vorteile auszugleichen. Aktuell verfügbar: {0}</text>
+		</string>
+		<string>
+			<key>Message_MetagenicQualitiesSubtractingKarma</key>
+			<text>Es ist 1 Karma notwendig um metagenetische Nachteile und Vorteile auszugleichen. Aktuell verfügbar: {0}.\nIst es in Ordnung, dieses Karma auszugeben?</text>
+		</string>
+		<string>
+			<key>Message_MetagenicQualitiesUnbalanced</key>
+			<text>Die metagenetischen Vor-/Nachteile sind nicht ausgeglichen. Aktuell: {0} Erwartet: {1} oder {2}</text>
+		</string>
+		<string>
+			<key>String_MaximumDrugBlockLevel</key>
+			<text>Ein Baustein, der ein Attribut erhöht, das durch die gewählte Basis gesenkt wird, darf maximal die Stufe 2 haben. (CF 191)</text>
+		</string>
+		<string>
+			<key>Message_InvalidExConWare</key>
+			<text>Die folgende limitierte Cyber-/Bioware ist auf einer ExCon nicht erlaubt:</text>
+		</string>
+		<string>
+			<key>Menu_SpecialChangePriorities</key>
+			<text>Ändere &amp;Prioritätenauswahl</text>
+		</string>
+		<string>
+			<key>String_Dashboard</key>
+			<text>Dashboard</text>
+		</string>
+		<string>
+			<key>Label_Stage</key>
+			<text>Phase:</text>
 		</string>
 	</strings>
 </chummer>

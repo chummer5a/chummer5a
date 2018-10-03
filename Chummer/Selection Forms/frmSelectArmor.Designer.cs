@@ -41,7 +41,7 @@ namespace Chummer
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.lblCategory = new System.Windows.Forms.Label();
-            this.cboCategory = new System.Windows.Forms.ComboBox();
+            this.cboCategory = new ElasticComboBox();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
@@ -57,7 +57,7 @@ namespace Chummer
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabListDetail = new System.Windows.Forms.TabPage();
             this.lstArmor = new System.Windows.Forms.ListBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.lblSource = new System.Windows.Forms.Label();
             this.nudMarkup = new System.Windows.Forms.NumericUpDown();
             this.lblMarkupLabel = new System.Windows.Forms.Label();
@@ -90,7 +90,7 @@ namespace Chummer
             this.dataGridViewTextBoxColumnTranslated5 = new Chummer.DataGridViewTextBoxColumnTranslated();
             this.dataGridViewTextBoxColumnTranslated6 = new Chummer.DataGridViewTextBoxColumnTranslated();
             this.dataGridViewTextBoxColumnTranslated7 = new Chummer.DataGridViewTextBoxColumnTranslated();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.dgvArmor)).BeginInit();
             this.tabControl.SuspendLayout();
@@ -885,7 +885,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Label lblCategory;
-        private System.Windows.Forms.ComboBox cboCategory;
+        private ElasticComboBox cboCategory;
         private System.Windows.Forms.Button cmdOKAdd;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label lblSearchLabel;

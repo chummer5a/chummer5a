@@ -22,6 +22,7 @@
 <chummer>
   <version>-497</version>
   <name>日本語 (ja-JP)</name>
+  <righttoleft>False</righttoleft>
   <strings>
 	<!-- Meta Strings -->
 	<string>
@@ -4978,7 +4979,7 @@
     </string>
     <string>
       <key>Tab_Options_Character</key>
-      <text>キャラクターと印刷</text>
+      <text>キャラクター</text>
     </string>
     <string>
       <key>Tab_Options_Miscellaneous</key>

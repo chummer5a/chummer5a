@@ -690,6 +690,7 @@ namespace Chummer
         private void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
             _strPrintLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.Language;
+            imgSheetLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(_strPrintLanguage.Substring(3, 2));
             try
             {
                 _objPrintCulture = CultureInfo.GetCultureInfo(_strPrintLanguage);

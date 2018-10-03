@@ -50,7 +50,7 @@ namespace Chummer.UI.Table
             }
             else
             {
-                BackColor = (intIndex % 2 == 0) ? Color.White : Color.LightGray;
+                BackColor = (intIndex & 1 ) == 0 ? Color.White : Color.LightGray;
             }
         }
 

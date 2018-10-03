@@ -23,6 +23,7 @@
 <chummer>
 	<version>-350</version>
 	<name>汉语 (zh-CN)</name>
+  <righttoleft>False</righttoleft>
 	<strings>
 		<!-- Meta Strings -->
 		<string>
@@ -4374,7 +4375,7 @@
 		</string>
 		<string>
 			<key>Tab_Options_Character</key>
-			<text>角色与打印</text>
+			<text>角色</text>
 		</string>
 		<string>
 			<key>Tab_Options_Miscellaneous</key>

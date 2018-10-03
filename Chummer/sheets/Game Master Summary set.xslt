@@ -47,7 +47,11 @@
         <div id="GameMasterBlock">
           <table width="100%" cellspacing="0" cellpadding="2" border="0" style="border: solid 2px #000000;">
             <tr><td>
-              <strong><xsl:value-of select="name" /></strong> (<xsl:value-of select="metatype" />)
+              <strong><xsl:value-of select="name" /></strong>
+              <xsl:if test="alias != '' and alias != $lang.UnnamedCharacter">
+                <xsl:text> </xsl:text><xsl:value-of select="$lang.as"/><xsl:text> "</xsl:text><xsl:value-of select="alias"/><xsl:text>"</xsl:text>
+              </xsl:if>
+              <xsl:text> (</xsl:text><xsl:value-of select="metatype" /><xsl:text>)</xsl:text>
               &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
               <xsl:if test="movementwalk != '' and movementwalk != '0'">
                 <strong><xsl:value-of select="$lang.Movement"/>: </strong>
@@ -186,27 +190,16 @@
                   <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.Init"/></strong></td>
                   <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.Rigger"/></strong></td>
                   <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.Astral"/></strong></td>
-                  <td width="9%" align="center" valign="top">
-                    <strong>
-                      <xsl:value-of select="$lang.MatrixAR"/>
-                    </strong>
-                  </td>
-                  <td width="9%" align="center" valign="top">
-                    <strong>
-                      <xsl:value-of select="$lang.MatrixCold"/>
-                    </strong>
-                  </td>
-                  <td width="9%" align="center" valign="top">
-                    <strong>
-                      <xsl:value-of select="$lang.MatrixHot"/>
-                    </strong>
-                  </td>
+                  <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.MatrixAR"/></strong></td>
+                  <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.MatrixCold"/></strong></td>
+                  <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.MatrixHot"/></strong></td>
                   <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.CM"/></strong></td>
                   <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.PhysicalLimit"/></strong></td>
                   <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.MentalLimit"/></strong></td>
                   <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.SocialLimit"/></strong></td>
-                </tr>
-                <tr colspan="11">
+                  <xsl:if test="magenabled = 'True'">
+                    <td width="9%" align="center" valign="top"><strong><xsl:value-of select="$lang.AstralLimit"/></strong></td>
+                  </xsl:if>
                 </tr>
                 <tr colspan="11">
                   <td width="9%" align="center" valign="top">
@@ -239,6 +232,11 @@
                   <td width="9%" align="center" valign="top">
                     <xsl:value-of select="limitsocial" />
                   </td>
+                  <xsl:if test="magenabled = 'True'">
+                    <td width="9%" align="center" valign="top">
+                      <xsl:value-of select="limitastral" />
+                    </td>
+                  </xsl:if>
                 </tr>
               </table>
 
@@ -372,6 +370,7 @@
                               (<xsl:for-each select="armormods/armormod">
                                 <xsl:sort select="name" />
                                 <xsl:value-of select="name" />
+                                <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="rating"/></xsl:if>
                                 <xsl:if test="position() != last()">, </xsl:if>
                               </xsl:for-each>)
                             </td>
@@ -537,6 +536,8 @@
                 <xsl:for-each select="gears/gear">
                   <xsl:sort select="name" />
                   <xsl:value-of select="name" />
+                  <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
+                  <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
                   <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
                   <xsl:if test="children/gear">
                     [<xsl:call-template name="gearplugin">

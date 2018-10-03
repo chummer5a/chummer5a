@@ -87,7 +87,7 @@ namespace Chummer
         /// <summary>
         /// Skill that was selected in the dialogue.
         /// </summary>
-        public string SelectedExoticSkill => cboCategory.SelectedValue?.ToString();
+        public string SelectedExoticSkill => cboCategory.SelectedValue?.ToString() ?? string.Empty;
 
         /// <summary>
         /// Skill specialisation that was selected in the dialogue.

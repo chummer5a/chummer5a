@@ -150,7 +150,7 @@ namespace Chummer
             {
                 foreach (XmlNode objXmlSkill in objXmlSkillList)
                 {
-                    string strXmlSkillName = objXmlSkill["name"].InnerText;
+                    string strXmlSkillName = objXmlSkill["name"]?.InnerText;
                     Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(strXmlSkillName);
                     if (objExistingSkill == null)
                     {

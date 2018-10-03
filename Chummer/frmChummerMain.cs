@@ -499,10 +499,11 @@ namespace Chummer
 
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
             frmOptions frmOptions = new frmOptions();
             frmOptions.ShowDialog(this);
-            Cursor = Cursors.Default;
+            Cursor = objOldCursor;
         }
 
         private void mnuToolsUpdate_Click(object sender, EventArgs e)
@@ -577,12 +578,13 @@ namespace Chummer
             string settingsPath = Path.Combine(Application.StartupPath, "settings");
             string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
 
+            Cursor objOldCursor = Cursor;
             if (settingsFiles.Length > 1)
             {
                 Cursor = Cursors.WaitCursor;
                 frmSelectSetting frmPickSetting = new frmSelectSetting();
                 frmPickSetting.ShowDialog(this);
-                Cursor = Cursors.Default;
+                Cursor = objOldCursor;
 
                 if (frmPickSetting.DialogResult == DialogResult.Cancel)
                     return;
@@ -594,7 +596,7 @@ namespace Chummer
                 string strSettingsFile = settingsFiles[0];
                 objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
             }
-
+            
             Cursor = Cursors.WaitCursor;
 
             // Override the defaults for the setting.
@@ -606,10 +608,11 @@ namespace Chummer
             // Show the Metatype selection window.
             frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter, "critters.xml");
             frmSelectMetatype.ShowDialog();
-            Cursor = Cursors.Default;
+            Cursor = objOldCursor;
 
             if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                 return;
+            objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
 
             // Add the Unarmed Attack Weapon to the character.
@@ -632,16 +635,17 @@ namespace Chummer
             };
             frmNewCharacter.Show();
 
-            Cursor = Cursors.Default;
+            Cursor = objOldCursor;
         }
 
         private void mnuMRU_Click(object sender, EventArgs e)
         {
             string strFileName = ((ToolStripMenuItem)sender).Text;
             strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
+            Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
             Character objOpenCharacter = LoadCharacter(strFileName);
-            Cursor = Cursors.Default;
+            Cursor = objOldCursor;
             Program.MainForm.OpenCharacter(objOpenCharacter);
         }
 
@@ -659,9 +663,10 @@ namespace Chummer
         private void mnuStickyMRU_Click(object sender, EventArgs e)
         {
             string strFileName = ((ToolStripMenuItem)sender).Text;
+            Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
             Character objOpenCharacter = LoadCharacter(strFileName);
-            Cursor = Cursors.Default;
+            Cursor = objOldCursor;
             Program.MainForm.OpenCharacter(objOpenCharacter);
         }
 
@@ -848,7 +853,7 @@ namespace Chummer
         {
             if (Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0 || !IsVisibleOnAnyScreen())
             {
-                Size = new Size(1191, 752);
+                Size = new Size(1280, 720);
                 StartPosition = FormStartPosition.CenterScreen;
             }
             else
@@ -879,6 +884,7 @@ namespace Chummer
 
         private void frmChummerMain_DragDrop(object sender, DragEventArgs e)
         {
+            Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
             // Open each file that has been dropped into the window.
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
@@ -890,7 +896,7 @@ namespace Chummer
                 lock (lstCharactersLock)
                     lstCharacters[i] = objLoopCharacter;
             });
-            Cursor = Cursors.Default;
+            Cursor = objOldCursor;
             Program.MainForm.OpenCharacterList(lstCharacters);
         }
 
@@ -915,6 +921,7 @@ namespace Chummer
         private void ShowNewForm(object sender, EventArgs e)
         {
             string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
+            Cursor objOldCursor = Cursor;
             if (!File.Exists(strFilePath))
             {
                 if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
@@ -922,7 +929,7 @@ namespace Chummer
                     Cursor = Cursors.WaitCursor;
                     frmOptions frmOptions = new frmOptions();
                     frmOptions.ShowDialog();
-                    Cursor = Cursors.Default;
+                    Cursor = objOldCursor;
                 }
             }
             Cursor = Cursors.WaitCursor;
@@ -949,16 +956,17 @@ namespace Chummer
             // Show the BP selection window.
             frmSelectBuildMethod frmBP = new frmSelectBuildMethod(objCharacter);
             frmBP.ShowDialog();
-            Cursor = Cursors.Default;
+            Cursor = objOldCursor;
 
             if (frmBP.DialogResult == DialogResult.Cancel)
                 return;
             if (objCharacter.BuildMethod == CharacterBuildMethod.Karma || objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
             {
+                objOldCursor = Cursor;
                 Cursor = Cursors.WaitCursor;
                 frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter);
                 frmSelectMetatype.ShowDialog();
-                Cursor = Cursors.Default;
+                Cursor = objOldCursor;
 
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                 { return; }
@@ -966,14 +974,16 @@ namespace Chummer
             // Show the Metatype selection window.
             else if (objCharacter.BuildMethod == CharacterBuildMethod.Priority || objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
+                objOldCursor = Cursor;
                 Cursor = Cursors.WaitCursor;
                 frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(objCharacter);
                 frmSelectMetatype.ShowDialog();
-                Cursor = Cursors.Default;
+                Cursor = objOldCursor;
 
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                 { return; }
             }
+            objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
 
             // Add the Unarmed Attack Weapon to the character.
@@ -997,7 +1007,7 @@ namespace Chummer
             };
             frmNewCharacter.Show();
 
-            Cursor = Cursors.Default;
+            Cursor = objOldCursor;
         }
 
         /// <summary>
@@ -1014,6 +1024,7 @@ namespace Chummer
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
             {
                 Timekeeper.Start("load_sum");
+                Cursor objOldCursor = Cursor;
                 Cursor = Cursors.WaitCursor;
                 List<string> lstFilesToOpen = new List<string>(openFileDialog.FileNames.Length);
                 foreach (string strFile in openFileDialog.FileNames)
@@ -1036,7 +1047,8 @@ namespace Chummer
                     });
                     Program.MainForm.OpenCharacterList(lstCharacters);
                 }
-                Cursor = Cursors.Default;
+
+                Cursor = objOldCursor;
                 Application.DoEvents();
                 Timekeeper.Finish("load_sum");
                 Timekeeper.Log();
@@ -1061,6 +1073,7 @@ namespace Chummer
             if (lstCharacters == null)
                 return;
 
+            Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
 
             foreach (Character objCharacter in lstCharacters)
@@ -1098,7 +1111,7 @@ namespace Chummer
                 Timekeeper.Finish("load_event_time");
             }
 
-            Cursor = Cursors.Default;
+            Cursor = objOldCursor;
         }
 
         /// <summary>

@@ -32,7 +32,7 @@ namespace Chummer
             this.cmdOK = new System.Windows.Forms.Button();
             this.lstGear = new System.Windows.Forms.ListBox();
             this.lblCategory = new System.Windows.Forms.Label();
-            this.cboCategory = new System.Windows.Forms.ComboBox();
+            this.cboCategory = new Chummer.ElasticComboBox();
             this.nudRating = new System.Windows.Forms.NumericUpDown();
             this.lblRatingLabel = new System.Windows.Forms.Label();
             this.lblCost = new System.Windows.Forms.Label();
@@ -60,7 +60,7 @@ namespace Chummer
             this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
             this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
             this.chkShowOnlyAffordItems = new System.Windows.Forms.CheckBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.lblCapacityLabel = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
@@ -138,6 +138,7 @@ namespace Chummer
             this.cboCategory.Name = "cboCategory";
             this.cboCategory.Size = new System.Drawing.Size(222, 21);
             this.cboCategory.TabIndex = 34;
+            this.cboCategory.TooltipText = "";
             this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
             // 
             // nudRating
@@ -684,7 +685,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.ListBox lstGear;
         private System.Windows.Forms.Label lblCategory;
-        private System.Windows.Forms.ComboBox cboCategory;
+        private ElasticComboBox cboCategory;
         private System.Windows.Forms.NumericUpDown nudRating;
         private System.Windows.Forms.Label lblRatingLabel;
         private System.Windows.Forms.Label lblCost;
@@ -712,7 +713,7 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
         private System.Windows.Forms.CheckBox chkShowOnlyAffordItems;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label lblCapacityLabel;
         private System.Windows.Forms.Label lblMarkupPercentLabel;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;

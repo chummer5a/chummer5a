@@ -57,12 +57,9 @@ namespace Chummer.Backend.Attributes
             if ((lstNamesOfChangedProperties?.Count > 0) != true)
                 return;
 
-            if (PropertyChanged != null)
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
-                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
-                {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-                }
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
         }
 
@@ -286,21 +283,21 @@ namespace Chummer.Backend.Attributes
 			}
 		}
 
-		public static void CopyAttribute(CharacterAttrib source, CharacterAttrib target, string mv, XmlDocument xmlDoc)
+		public static void CopyAttribute(CharacterAttrib objSource, CharacterAttrib objTarget, string strMetavariantXPath, XmlDocument xmlDoc)
 		{
-            string strSourceAbbrev = source.Abbrev.ToLower();
+            string strSourceAbbrev = objSource.Abbrev.ToLower();
             if (strSourceAbbrev == "magadept")
                 strSourceAbbrev = "mag";
-            XmlNode node = xmlDoc.SelectSingleNode($"{mv}");
+            XmlNode node = !string.IsNullOrEmpty(strMetavariantXPath) ? xmlDoc.SelectSingleNode(strMetavariantXPath) : null;
 		    if (node != null)
 		    {
-		        target.MetatypeMinimum = Convert.ToInt32(node[$"{strSourceAbbrev}min"]?.InnerText);
-		        target.MetatypeMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}max"]?.InnerText);
-		        target.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}aug"]?.InnerText);
+		        objTarget.MetatypeMinimum = Convert.ToInt32(node[$"{strSourceAbbrev}min"]?.InnerText);
+		        objTarget.MetatypeMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}max"]?.InnerText);
+		        objTarget.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}aug"]?.InnerText);
 		    }
 
-		    target.Base = source.Base;
-			target.Karma = source.Karma;
+		    objTarget.Base = objSource.Base;
+		    objTarget.Karma = objSource.Karma;
         }
 
 		internal void Reset()

@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmCreateSpell
     {
@@ -31,16 +31,16 @@
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblCategory = new System.Windows.Forms.Label();
-            this.cboCategory = new System.Windows.Forms.ComboBox();
+            this.cboCategory = new ElasticComboBox();
             this.lblType = new System.Windows.Forms.Label();
-            this.cboType = new System.Windows.Forms.ComboBox();
+            this.cboType = new ElasticComboBox();
             this.lblRange = new System.Windows.Forms.Label();
-            this.cboRange = new System.Windows.Forms.ComboBox();
+            this.cboRange = new ElasticComboBox();
             this.chkRestricted = new System.Windows.Forms.CheckBox();
             this.chkVeryRestricted = new System.Windows.Forms.CheckBox();
             this.txtRestriction = new System.Windows.Forms.TextBox();
             this.lblDuration = new System.Windows.Forms.Label();
-            this.cboDuration = new System.Windows.Forms.ComboBox();
+            this.cboDuration = new ElasticComboBox();
             this.lblDVLabel = new System.Windows.Forms.Label();
             this.lblDV = new System.Windows.Forms.Label();
             this.lblSpellOptions = new System.Windows.Forms.Label();
@@ -521,16 +521,16 @@
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Label lblCategory;
-        private System.Windows.Forms.ComboBox cboCategory;
+        private ElasticComboBox cboCategory;
         private System.Windows.Forms.Label lblType;
-        private System.Windows.Forms.ComboBox cboType;
+        private ElasticComboBox cboType;
         private System.Windows.Forms.Label lblRange;
-        private System.Windows.Forms.ComboBox cboRange;
+        private ElasticComboBox cboRange;
         private System.Windows.Forms.CheckBox chkRestricted;
         private System.Windows.Forms.CheckBox chkVeryRestricted;
         private System.Windows.Forms.TextBox txtRestriction;
         private System.Windows.Forms.Label lblDuration;
-        private System.Windows.Forms.ComboBox cboDuration;
+        private ElasticComboBox cboDuration;
         private System.Windows.Forms.Label lblDVLabel;
         private System.Windows.Forms.Label lblDV;
         private System.Windows.Forms.Label lblSpellOptions;

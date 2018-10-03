@@ -60,6 +60,7 @@ namespace Chummer.Backend.Equipment
         private string _strNotes = string.Empty;
         private string _strDicePool = string.Empty;
         private int _intAccuracy;
+        private int _intMaxRating;
         private int _intRating;
         private int _intRCGroup;
         private int _intAmmoSlots;
@@ -112,6 +113,7 @@ namespace Chummer.Backend.Equipment
             _strMount = strMount.Item1;
             _strExtraMount = strMount.Item2;
             _intRating = intRating;
+            objXmlAccessory.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
             objXmlAccessory.TryGetStringFieldQuickly("avail", ref _strAvail);
             // Check for a Variable Cost.
             if (blnSkipCost)
@@ -232,14 +234,11 @@ namespace Chummer.Backend.Equipment
                 {
                     string strSource = Source;
                     string strPage = Page(GlobalOptions.Language);
-                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
-                    {
-                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
-                    }
-                    else
+                    if (string.IsNullOrEmpty(strSource) || string.IsNullOrEmpty(strPage))
                     {
                         Utils.BreakIfDebug();
                     }
+                    _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
                 }
 
                 return _objCachedSourceDetail;
@@ -258,6 +257,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("mount", _strMount);
             objWriter.WriteElementString("extramount", _strExtraMount);
             objWriter.WriteElementString("rc", _strRC);
+            objWriter.WriteElementString("maxrating", _intMaxRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rcgroup", _intRCGroup.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rcdeployable", _blnDeployable.ToString());
@@ -322,7 +322,11 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetInt32FieldQuickly("rcgroup", ref _intRCGroup);
             objNode.TryGetInt32FieldQuickly("accuracy", ref _intAccuracy);
-            objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
+            if (!objNode.TryGetInt32FieldQuickly("maxrating", ref _intMaxRating))
+            {
+                // Loading older save before maxrating was tracked for Weapon Accessories
+                GetNode()?.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
+            }
             objNode.TryGetStringFieldQuickly("conceal", ref _strConceal);
             objNode.TryGetBoolFieldQuickly("rcdeployable", ref _blnDeployable);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
@@ -635,6 +639,22 @@ namespace Chummer.Backend.Equipment
                         // This will update a child's rating if it would become out of bounds due to its parent's rating changing
                         objChild.Rating = objChild.Rating;
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum Rating of the Weapon Accessory
+        /// </summary>
+        public int MaxRating
+        {
+            get => _intMaxRating;
+            set
+            {
+                _intMaxRating = value;
+                if (Rating > value)
+                {
+                    Rating = value;
                 }
             }
         }

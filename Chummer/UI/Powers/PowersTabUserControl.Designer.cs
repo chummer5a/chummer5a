@@ -30,7 +30,7 @@ namespace Chummer.UI.Powers
         {
             this.components = new System.ComponentModel.Container();
             this.cmdAddPower = new System.Windows.Forms.Button();
-            this.cboDisplayFilter = new System.Windows.Forms.ComboBox();
+            this.cboDisplayFilter = new ElasticComboBox();
             this.lblPowerPoints = new System.Windows.Forms.Label();
             this.lblPowerPointsLabel = new System.Windows.Forms.Label();
             this.pnlPowers = new System.Windows.Forms.Panel();
@@ -122,7 +122,7 @@ namespace Chummer.UI.Powers
         #endregion
         
         private System.Windows.Forms.Button cmdAddPower;
-        private System.Windows.Forms.ComboBox cboDisplayFilter;
+        private ElasticComboBox cboDisplayFilter;
         private System.Windows.Forms.Label lblPowerPoints;
         private System.Windows.Forms.Label lblPowerPointsLabel;
         private System.Windows.Forms.Panel pnlPowers;
