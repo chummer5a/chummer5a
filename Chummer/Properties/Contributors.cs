@@ -39,6 +39,7 @@ namespace Chummer.Properties
             "Youneko17",
             "cfresquet",
             "angelforest",
+            "Ramesch",
             "cnschu",
             "Ternega",
             "sethsatan",

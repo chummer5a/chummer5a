@@ -10835,6 +10835,7 @@ namespace Chummer
         public void RefreshSelectedGear()
         {
             IsRefreshing = true;
+            tlpGear.SuspendLayout();
             cmdDeleteGear.Enabled = treGear.SelectedNode?.Tag.ToString() != "Node_SelectedGear";
             if (treGear.SelectedNode == null || treGear.SelectedNode.Level == 0)
             {
@@ -10847,6 +10848,7 @@ namespace Chummer
                 chkGearActiveCommlink.Enabled = false;
                 chkGearActiveCommlink.Checked = false;
                 IsRefreshing = false;
+                tlpGear.ResumeLayout();
                 return;
             }
             chkGearHomeNode.Visible = false;
@@ -10988,6 +10990,7 @@ namespace Chummer
                 treGear.SelectedNode.Text = objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
             }
             IsRefreshing = false;
+            tlpGear.ResumeLayout();
         }
 
         protected override string FormMode => LanguageManager.GetString("Title_CreateNewCharacter", GlobalOptions.Language);

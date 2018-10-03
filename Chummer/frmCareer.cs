@@ -14007,6 +14007,7 @@ namespace Chummer
         public void RefreshSelectedGear()
         {
             IsRefreshing = true;
+            tlpGear.SuspendLayout();
             cmdDeleteGear.Enabled = treGear.SelectedNode?.Tag is ICanRemove;
             if (treGear.SelectedNode == null || treGear.SelectedNode.Level == 0)
             {
@@ -14022,6 +14023,7 @@ namespace Chummer
                 cmdGearMergeQty.Enabled = false;
                 cmdGearMoveToVehicle.Enabled = false;
                 tabGearMatrixCM.Visible = false;
+                tlpGear.ResumeLayout();
                 return;
             }
             chkGearHomeNode.Visible = false;
@@ -14184,6 +14186,7 @@ namespace Chummer
                 }
             }
             IsRefreshing = false;
+            tlpGear.ResumeLayout();
         }
 
         protected override string FormMode => LanguageManager.GetString("Title_CareerMode", GlobalOptions.Language);
