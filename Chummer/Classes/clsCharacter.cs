@@ -300,64 +300,93 @@ namespace Chummer
                         new DependancyGraphNode<string>(nameof(RESEnabled)),
                         new DependancyGraphNode<string>(nameof(InitiationForceDisabled))
                     ),
-                    new DependancyGraphNode<string>(nameof(Initiative),
-                        new DependancyGraphNode<string>(nameof(InitiativeDice)),
-                        new DependancyGraphNode<string>(nameof(InitiativeValue),
-                            new DependancyGraphNode<string>(nameof(WoundModifier))
+                    new DependancyGraphNode<string>(nameof(InitiativeToolTip),
+                        new DependancyGraphNode<string>(nameof(Initiative),
+                            new DependancyGraphNode<string>(nameof(InitiativeDice)),
+                            new DependancyGraphNode<string>(nameof(InitiativeValue),
+                                new DependancyGraphNode<string>(nameof(WoundModifier))
+                            )
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(AstralInitiative),
-                        new DependancyGraphNode<string>(nameof(AstralInitiativeDice)),
-                        new DependancyGraphNode<string>(nameof(AstralInitiativeValue),
-                            new DependancyGraphNode<string>(nameof(WoundModifier))
-                        )
-                    ),
-                    new DependancyGraphNode<string>(nameof(MatrixInitiative),
-                        new DependancyGraphNode<string>(nameof(MatrixInitiativeDice),
-                            new DependancyGraphNode<string>(nameof(IsAI)),
-                            new DependancyGraphNode<string>(nameof(InitiativeDice), () => !IsAI)
+                    new DependancyGraphNode<string>(nameof(AstralInitiativeToolTip),
+                        new DependancyGraphNode<string>(nameof(AstralInitiative),
+                            new DependancyGraphNode<string>(nameof(AstralInitiativeDice)),
+                            new DependancyGraphNode<string>(nameof(AstralInitiativeValue),
+                                new DependancyGraphNode<string>(nameof(WoundModifier))
+                            )
                         ),
-                        new DependancyGraphNode<string>(nameof(MatrixInitiativeValue),
-                            new DependancyGraphNode<string>(nameof(IsAI)),
-                            new DependancyGraphNode<string>(nameof(HomeNode), () => IsAI),
-                            new DependancyGraphNode<string>(nameof(WoundModifier), () => IsAI),
-                            new DependancyGraphNode<string>(nameof(InitiativeValue), () => !IsAI)
+                        new DependancyGraphNode<string>(nameof(MAGEnabled))
+                    ),
+                    new DependancyGraphNode<string>(nameof(MatrixInitiativeToolTip),
+                        new DependancyGraphNode<string>(nameof(MatrixInitiative),
+                            new DependancyGraphNode<string>(nameof(MatrixInitiativeDice),
+                                new DependancyGraphNode<string>(nameof(IsAI)),
+                                new DependancyGraphNode<string>(nameof(InitiativeDice), () => !IsAI)
+                            ),
+                            new DependancyGraphNode<string>(nameof(MatrixInitiativeValue),
+                                new DependancyGraphNode<string>(nameof(IsAI)),
+                                new DependancyGraphNode<string>(nameof(HomeNode), () => IsAI),
+                                new DependancyGraphNode<string>(nameof(WoundModifier), () => IsAI),
+                                new DependancyGraphNode<string>(nameof(InitiativeValue), () => !IsAI)
+                            )
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(MatrixInitiativeCold),
-                        new DependancyGraphNode<string>(nameof(IsAI)),
-                        new DependancyGraphNode<string>(nameof(MatrixInitiative), () => IsAI),
-                        new DependancyGraphNode<string>(nameof(ActiveCommlink), () => !IsAI),
-                        new DependancyGraphNode<string>(nameof(MatrixInitiativeColdDice),
+                    new DependancyGraphNode<string>(nameof(MatrixInitiativeColdToolTip),
+                        new DependancyGraphNode<string>(nameof(MatrixInitiativeCold),
                             new DependancyGraphNode<string>(nameof(IsAI)),
-                            new DependancyGraphNode<string>(nameof(MatrixInitiativeDice), () => IsAI)
-                        ),
-                        new DependancyGraphNode<string>(nameof(MatrixInitiativeColdValue),
+                            new DependancyGraphNode<string>(nameof(MatrixInitiative), () => IsAI),
                             new DependancyGraphNode<string>(nameof(ActiveCommlink), () => !IsAI),
-                            new DependancyGraphNode<string>(nameof(IsAI)),
-                            new DependancyGraphNode<string>(nameof(MatrixInitiativeValue), () => IsAI),
-                            new DependancyGraphNode<string>(nameof(WoundModifier), () => !IsAI)
+                            new DependancyGraphNode<string>(nameof(MatrixInitiativeColdDice),
+                                new DependancyGraphNode<string>(nameof(IsAI)),
+                                new DependancyGraphNode<string>(nameof(MatrixInitiativeDice), () => IsAI)
+                            ),
+                            new DependancyGraphNode<string>(nameof(MatrixInitiativeColdValue),
+                                new DependancyGraphNode<string>(nameof(ActiveCommlink), () => !IsAI),
+                                new DependancyGraphNode<string>(nameof(IsAI)),
+                                new DependancyGraphNode<string>(nameof(MatrixInitiativeValue), () => IsAI),
+                                new DependancyGraphNode<string>(nameof(WoundModifier), () => !IsAI)
+                            )
                         )
                     ),
-                    new DependancyGraphNode<string>(nameof(MatrixInitiativeHot),
-                        new DependancyGraphNode<string>(nameof(IsAI)),
-                        new DependancyGraphNode<string>(nameof(MatrixInitiative), () => IsAI),
-                        new DependancyGraphNode<string>(nameof(ActiveCommlink), () => !IsAI),
-                        new DependancyGraphNode<string>(nameof(MatrixInitiativeHotDice),
+                    new DependancyGraphNode<string>(nameof(MatrixInitiativeHotToolTip),
+                        new DependancyGraphNode<string>(nameof(MatrixInitiativeHot),
                             new DependancyGraphNode<string>(nameof(IsAI)),
-                            new DependancyGraphNode<string>(nameof(MatrixInitiativeDice), () => IsAI)
-                        ),
-                        new DependancyGraphNode<string>(nameof(MatrixInitiativeHotValue),
+                            new DependancyGraphNode<string>(nameof(MatrixInitiative), () => IsAI),
                             new DependancyGraphNode<string>(nameof(ActiveCommlink), () => !IsAI),
-                            new DependancyGraphNode<string>(nameof(IsAI)),
-                            new DependancyGraphNode<string>(nameof(MatrixInitiativeValue), () => IsAI),
-                            new DependancyGraphNode<string>(nameof(WoundModifier), () => !IsAI)
+                            new DependancyGraphNode<string>(nameof(MatrixInitiativeHotDice),
+                                new DependancyGraphNode<string>(nameof(IsAI)),
+                                new DependancyGraphNode<string>(nameof(MatrixInitiativeDice), () => IsAI)
+                            ),
+                            new DependancyGraphNode<string>(nameof(MatrixInitiativeHotValue),
+                                new DependancyGraphNode<string>(nameof(ActiveCommlink), () => !IsAI),
+                                new DependancyGraphNode<string>(nameof(IsAI)),
+                                new DependancyGraphNode<string>(nameof(MatrixInitiativeValue), () => IsAI),
+                                new DependancyGraphNode<string>(nameof(WoundModifier), () => !IsAI)
+                            )
                         )
                     ),
                     new DependancyGraphNode<string>(nameof(IsSprite),
                         new DependancyGraphNode<string>(nameof(IsFreeSprite),
                             new DependancyGraphNode<string>(nameof(MetatypeCategory))
                         )
+                    ),
+                    new DependancyGraphNode<string>(nameof(PhysicalCMLabelText),
+                        new DependancyGraphNode<string>(nameof(IsAI)),
+                        new DependancyGraphNode<string>(nameof(HomeNode))
+                    ),
+                    new DependancyGraphNode<string>(nameof(PhysicalCMToolTip),
+                        new DependancyGraphNode<string>(nameof(PhysicalCM))
+                    ),
+                    new DependancyGraphNode<string>(nameof(StunCMToolTip),
+                        new DependancyGraphNode<string>(nameof(StunCM))
+                    ),
+                    new DependancyGraphNode<string>(nameof(StunCMVisible),
+                        new DependancyGraphNode<string>(nameof(IsAI)),
+                        new DependancyGraphNode<string>(nameof(HomeNode))
+                    ),
+                    new DependancyGraphNode<string>(nameof(StunCMLabelText),
+                        new DependancyGraphNode<string>(nameof(IsAI)),
+                        new DependancyGraphNode<string>(nameof(HomeNode))
                     ),
                     new DependancyGraphNode<string>(nameof(WoundModifier),
                         new DependancyGraphNode<string>(nameof(PhysicalCMFilled),
@@ -7836,15 +7865,35 @@ namespace Chummer
         /// <summary>
         /// Physical Initiative.
         /// </summary>
-        public string Initiative => LanguageManager.GetString("String_Initiative", GlobalOptions.Language)
-            .Replace("{0}", InitiativeValue.ToString())
-            .Replace("{1}", InitiativeDice.ToString());
+        public string Initiative => string.Format(LanguageManager.GetString("String_Initiative", GlobalOptions.Language),
+            InitiativeValue.ToString(GlobalOptions.CultureInfo),
+            InitiativeDice.ToString(GlobalOptions.CultureInfo));
 
         public string GetInitiative(CultureInfo objCulture, string strLanguage)
         {
-            return LanguageManager.GetString("String_Initiative", strLanguage)
-                .Replace("{0}", InitiativeValue.ToString(objCulture))
-                .Replace("{1}", InitiativeDice.ToString(objCulture));
+            return string.Format(LanguageManager.GetString("String_Initiative", strLanguage),
+                InitiativeValue.ToString(objCulture),
+                InitiativeDice.ToString(objCulture));
+        }
+
+        public string InitiativeToolTip
+        {
+            get
+            {
+                int intINTAttributeModifiers = INT.AttributeModifiers;
+                int intREAAttributeModifiers = REA.AttributeModifiers;
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+
+                string strInit = REA.DisplayAbbrev + strSpaceCharacter + '(' + REA.Value.ToString(GlobalOptions.CultureInfo) + ')'
+                                 + strSpaceCharacter + '+' + strSpaceCharacter + INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.Value.ToString(GlobalOptions.CultureInfo) + ')';
+                if (ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) != 0 || intINTAttributeModifiers != 0 || intREAAttributeModifiers != 0 || WoundModifier != 0)
+                {
+                    strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter +
+                               '(' + (ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) + intINTAttributeModifiers + intREAAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo) + ')';
+                }
+
+                return string.Format(LanguageManager.GetString("String_Initiative", GlobalOptions.Language), strInit, InitiativeDice.ToString(GlobalOptions.CultureInfo));
+            }
         }
 
         /// <summary>
@@ -7880,15 +7929,31 @@ namespace Chummer
         /// <summary>
         /// Astral Initiative.
         /// </summary>
-        public string AstralInitiative => LanguageManager.GetString("String_Initiative", GlobalOptions.Language)
-            .Replace("{0}", AstralInitiativeValue.ToString())
-            .Replace("{1}", AstralInitiativeDice.ToString());
+        public string AstralInitiative => string.Format(LanguageManager.GetString("String_Initiative", GlobalOptions.Language),
+                AstralInitiativeValue.ToString(GlobalOptions.CultureInfo),
+                AstralInitiativeDice.ToString(GlobalOptions.CultureInfo));
 
         public string GetAstralInitiative(CultureInfo objCulture, string strLanguageToPrint)
         {
-            return LanguageManager.GetString("String_Initiative", strLanguageToPrint)
-                .Replace("{0}", AstralInitiativeValue.ToString(objCulture))
-                .Replace("{1}", AstralInitiativeDice.ToString(objCulture));
+            return string.Format(LanguageManager.GetString("String_Initiative", strLanguageToPrint),
+                AstralInitiativeValue.ToString(objCulture),
+                AstralInitiativeDice.ToString(objCulture));
+        }
+
+        public string AstralInitiativeToolTip
+        {
+            get
+            {
+                if (!MAGEnabled)
+                    return string.Empty;
+                int intINTAttributeModifiers = INT.AttributeModifiers;
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                string strInit = INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.Value.ToString(GlobalOptions.CultureInfo) + ')' +
+                                 strSpaceCharacter + '×' + strSpaceCharacter + 2.ToString(GlobalOptions.CultureInfo);
+                if (intINTAttributeModifiers != 0 || WoundModifier != 0)
+                    strInit += LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter + '(' + (intINTAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo) + ')';
+                return string.Format(LanguageManager.GetString("String_Initiative", GlobalOptions.Language), strInit, AstralInitiativeDice.ToString());
+            }
         }
 
         /// <summary>
@@ -7910,15 +7975,64 @@ namespace Chummer
         /// <summary>
         /// Formatted AR Matrix Initiative.
         /// </summary>
-        public string MatrixInitiative => LanguageManager.GetString("String_Initiative", GlobalOptions.Language)
-            .Replace("{0}", MatrixInitiativeValue.ToString())
-            .Replace("{1}", MatrixInitiativeDice.ToString());
+        public string MatrixInitiative => string.Format(LanguageManager.GetString("String_Initiative", GlobalOptions.Language),
+            MatrixInitiativeValue.ToString(),
+            MatrixInitiativeDice.ToString());
 
         public string GetMatrixInitiative(CultureInfo objCulture, string strLanguageToPrint)
         {
-            return LanguageManager.GetString("String_Initiative", strLanguageToPrint)
-                .Replace("{0}", MatrixInitiativeValue.ToString(objCulture))
-                .Replace("{1}", MatrixInitiativeDice.ToString(objCulture));
+            return string.Format(LanguageManager.GetString("String_Initiative", strLanguageToPrint),
+                MatrixInitiativeValue.ToString(objCulture),
+                MatrixInitiativeDice.ToString(objCulture));
+        }
+
+        public string MatrixInitiativeToolTip
+        {
+            get
+            {
+                int intINTAttributeModifiers = INT.AttributeModifiers;
+                
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+
+                string strInit;
+                if (IsAI)
+                {
+                    strInit = INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.Value.ToString(GlobalOptions.CultureInfo) + ')';
+                              
+                    if (HomeNode != null)
+                    {
+                        int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
+                        if (HomeNode is Vehicle objHomeNodeVehicle)
+                        {
+                            int intHomeNodePilot = objHomeNodeVehicle.Pilot;
+                            if (intHomeNodePilot > intHomeNodeDP)
+                                intHomeNodeDP = intHomeNodePilot;
+                        }
+
+                        strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_DataProcessing") + strSpaceCharacter + '(' + intHomeNodeDP.ToString(GlobalOptions.CultureInfo) + ')';
+                    }
+
+                    if (intINTAttributeModifiers != 0 || WoundModifier != 0)
+                    {
+                        strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter +
+                                   '(' + (intINTAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo) + ')';
+                    }
+                }
+                else
+                {
+                    int intREAAttributeModifiers = REA.AttributeModifiers;
+
+                    strInit = REA.DisplayAbbrev + strSpaceCharacter + '(' + REA.Value.ToString(GlobalOptions.CultureInfo) + ')'
+                              + strSpaceCharacter + '+' + strSpaceCharacter + INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.Value.ToString(GlobalOptions.CultureInfo) + ')';
+                    if (ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) != 0 || intINTAttributeModifiers != 0 || intREAAttributeModifiers != 0 || WoundModifier != 0)
+                    {
+                        strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter +
+                                   '(' + (ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) + intINTAttributeModifiers + intREAAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo) + ')';
+                    }
+                }
+
+                return string.Format(LanguageManager.GetString("String_Initiative", GlobalOptions.Language), strInit, MatrixInitiativeDice.ToString(GlobalOptions.CultureInfo));
+            }
         }
 
         /// <summary>
@@ -7988,11 +8102,9 @@ namespace Chummer
                     return MatrixInitiative;
                 }
 
-                return LanguageManager
-                    .GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative",
-                        GlobalOptions.Language)
-                    .Replace("{0}", MatrixInitiativeColdValue.ToString())
-                    .Replace("{1}", MatrixInitiativeColdDice.ToString());
+                return string.Format(LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative", GlobalOptions.Language),
+                    MatrixInitiativeColdValue.ToString(),
+                    MatrixInitiativeColdDice.ToString());
             }
         }
 
@@ -8003,10 +8115,40 @@ namespace Chummer
                 return GetMatrixInitiative(objCulture, strLanguageToPrint);
             }
 
-            return LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative",
-                    strLanguageToPrint)
-                .Replace("{0}", MatrixInitiativeColdValue.ToString(objCulture))
-                .Replace("{1}", MatrixInitiativeColdDice.ToString(objCulture));
+            return string.Format(LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative", strLanguageToPrint),
+                MatrixInitiativeColdValue.ToString(objCulture),
+                MatrixInitiativeColdDice.ToString(objCulture));
+        }
+
+        public string MatrixInitiativeColdToolTip
+        {
+            get
+            {
+                if (IsAI)
+                {
+                    return MatrixInitiativeToolTip;
+                }
+
+                int intINTAttributeModifiers = INT.AttributeModifiers;
+
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                
+
+                string strInit = INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.Value.ToString(GlobalOptions.CultureInfo) + ')';
+                if (ActiveCommlink != null)
+                {
+                    strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_DataProcessing") + strSpaceCharacter + '(' + ActiveCommlink.GetTotalMatrixAttribute("Data Processing").ToString(GlobalOptions.CultureInfo) + ')';
+                }
+
+                if (ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative) != 0 || intINTAttributeModifiers != 0 || WoundModifier != 0)
+                {
+                    strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter +
+                               '(' + (ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative) + intINTAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo) + ')';
+                }
+
+                return string.Format(LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiativeLong" : "String_Initiative", GlobalOptions.Language),
+                    strInit, MatrixInitiativeColdDice.ToString());
+            }
         }
 
         /// <summary>
@@ -8060,11 +8202,9 @@ namespace Chummer
                     return MatrixInitiative;
                 }
 
-                return
-                    LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative",
-                            GlobalOptions.Language)
-                        .Replace("{0}", MatrixInitiativeHotValue.ToString())
-                        .Replace("{1}", MatrixInitiativeHotDice.ToString());
+                return string.Format(LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative", GlobalOptions.Language),
+                        MatrixInitiativeHotValue.ToString(),
+                        MatrixInitiativeHotDice.ToString());
             }
         }
 
@@ -8075,11 +8215,40 @@ namespace Chummer
                 return GetMatrixInitiative(objCulture, strLanguageToPrint);
             }
 
-            return
-                LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative",
-                        strLanguageToPrint)
-                    .Replace("{0}", MatrixInitiativeHotValue.ToString(objCulture))
-                    .Replace("{1}", MatrixInitiativeHotDice.ToString(objCulture));
+            return string.Format(LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative", strLanguageToPrint),
+                    MatrixInitiativeHotValue.ToString(objCulture),
+                    MatrixInitiativeHotDice.ToString(objCulture));
+        }
+
+        public string MatrixInitiativeHotToolTip
+        {
+            get
+            {
+                if (IsAI)
+                {
+                    return MatrixInitiativeToolTip;
+                }
+
+                int intINTAttributeModifiers = INT.AttributeModifiers;
+
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+
+
+                string strInit = INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.Value.ToString(GlobalOptions.CultureInfo) + ')';
+                if (ActiveCommlink != null)
+                {
+                    strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_DataProcessing") + strSpaceCharacter + '(' + ActiveCommlink.GetTotalMatrixAttribute("Data Processing").ToString(GlobalOptions.CultureInfo) + ')';
+                }
+
+                if (ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative) != 0 || intINTAttributeModifiers != 0 || WoundModifier != 0)
+                {
+                    strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter +
+                               '(' + (ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative) + intINTAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo) + ')';
+                }
+
+                return string.Format(LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiativeLong" : "String_Initiative", GlobalOptions.Language),
+                    strInit, MatrixInitiativeHotDice.ToString());
+            }
         }
 
         /// <summary>
@@ -10331,6 +10500,66 @@ namespace Chummer
             }
         }
 
+        public string PhysicalCMLabelText
+        {
+            get
+            {
+                if (IsAI)
+                {
+                    return HomeNode == null
+                        ? LanguageManager.GetString("Label_OtherCoreCM", GlobalOptions.Language)
+                        : LanguageManager.GetString(HomeNode is Vehicle ? "Label_OtherPhysicalCM" : "Label_OtherCoreCM", GlobalOptions.Language);
+                }
+                return LanguageManager.GetString("Label_OtherPhysicalCM", GlobalOptions.Language);
+            }
+        }
+
+        public string PhysicalCMToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                string strModifiers = LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language);
+                string strCM;
+                int intBonus;
+                if (IsAI)
+                {
+                    if (HomeNode is Vehicle objVehicleHomeNode)
+                    {
+                        strCM = objVehicleHomeNode.BasePhysicalBoxes.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '+' + strSpaceCharacter +
+                                       '(' + BOD.DisplayAbbrev + '÷' + 2.ToString(GlobalOptions.CultureInfo) + ')' + strSpaceCharacter +
+                                       '(' + ((objVehicleHomeNode.TotalBody + 1) / 2).ToString(GlobalOptions.CultureInfo) + ')';
+
+                        intBonus = objVehicleHomeNode.Mods.Sum(objMod => objMod.ConditionMonitor);
+                        if (intBonus != 0)
+                            strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
+                    }
+                    else
+                    {
+                        strCM = 8.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '+' + strSpaceCharacter +
+                                '(' + DEP.DisplayAbbrev + '÷' + 2.ToString(GlobalOptions.CultureInfo) + ')' + strSpaceCharacter +
+                                '(' + ((DEP.TotalValue + 1) / 2).ToString(GlobalOptions.CultureInfo) + ')';
+
+                        intBonus = ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCM);
+                        if (intBonus != 0)
+                            strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
+                    }
+                }
+                else
+                {
+                    strCM = 8.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '+' + strSpaceCharacter +
+                            '(' + BOD.DisplayAbbrev + '÷' + 2.ToString(GlobalOptions.CultureInfo) + ')' + strSpaceCharacter +
+                            '(' + ((BOD.TotalValue + 1) / 2).ToString(GlobalOptions.CultureInfo) + ')';
+
+                    intBonus = ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCM);
+                    if (intBonus != 0)
+                        strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
+                }
+
+                return strCM;
+            }
+        }
+
         /// <summary>
         /// Number of Stun Condition Monitor boxes.
         /// </summary>
@@ -10355,6 +10584,57 @@ namespace Chummer
                 }
 
                 return intCMStun;
+            }
+        }
+
+        public bool StunCMVisible => !IsAI || HomeNode != null;
+
+        public string StunCMLabelText
+        {
+            get
+            {
+                if (IsAI)
+                {
+                    return HomeNode == null ? string.Empty : LanguageManager.GetString("Label_OtherMatrixCM", GlobalOptions.Language);
+                }
+                return LanguageManager.GetString("Label_OtherStunCM", GlobalOptions.Language);
+            }
+        }
+
+        public string StunCMToolTip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                string strModifiers = LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language);
+                string strCM = string.Empty;
+                int intBonus;
+
+                if (IsAI)
+                {
+                    if (HomeNode != null)
+                    {
+                        strCM = 8.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '+' + strSpaceCharacter +
+                                       '(' + LanguageManager.GetString("String_DeviceRating", GlobalOptions.Language) + '÷' + 2.ToString(GlobalOptions.CultureInfo) + ')' + strSpaceCharacter +
+                                       '(' + ((HomeNode.GetTotalMatrixAttribute("Device Rating") + 1) / 2).ToString(GlobalOptions.CultureInfo) + ')';
+
+                        intBonus = HomeNode.TotalBonusMatrixBoxes;
+                        if (intBonus != 0)
+                            strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
+                    }
+                }
+                else
+                {
+                    strCM = 8.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '+' + strSpaceCharacter +
+                            '(' + WIL.DisplayAbbrev + '÷' + 2.ToString(GlobalOptions.CultureInfo) + ')' + strSpaceCharacter +
+                            '(' + ((WIL.TotalValue + 1) / 2).ToString(GlobalOptions.CultureInfo) + ')';
+
+                    intBonus = ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCM);
+                    if (intBonus != 0)
+                        strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
+                }
+
+                return strCM;
             }
         }
 

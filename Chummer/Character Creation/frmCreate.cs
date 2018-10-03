@@ -553,8 +553,13 @@ namespace Chummer
             nudNuyen.DoDatabinding("Value", CharacterObject, nameof(Character.NuyenBP));
             nudNuyen.DoDatabinding("Maximum", CharacterObject, nameof(Character.TotalNuyenMaximumBP));
 
+            lblCMPhysical.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.PhysicalCMToolTip));
             lblCMPhysical.DoDatabinding("Text", CharacterObject, nameof(Character.PhysicalCM));
+            lblCMPhysicalLabel.DoDatabinding("Text", CharacterObject, nameof(Character.PhysicalCMLabelText));
+            lblCMStun.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.StunCMToolTip));
             lblCMStun.DoDatabinding("Text", CharacterObject, nameof(Character.StunCM));
+            lblCMStun.DoDatabinding("Visible", CharacterObject, nameof(Character.StunCMVisible));
+            lblCMStunLabel.DoDatabinding("Text", CharacterObject, nameof(Character.StunCMLabelText));
 
             lblESSMax.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayEssence));
             lblCyberwareESS.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayCyberwareEssence));
@@ -630,6 +635,19 @@ namespace Chummer
             lblLiftCarry.DoDatabinding("Text", CharacterObject, nameof(Character.LiftAndCarry));
             lblMemory.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.MemoryToolTip));
             lblMemory.DoDatabinding("Text", CharacterObject, nameof(Character.Memory));
+
+            lblINI.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.InitiativeToolTip));
+            lblINI.DoDatabinding("Text", CharacterObject, nameof(Character.Initiative));
+            lblAstralINI.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.AstralInitiativeToolTip));
+            lblAstralINI.DoDatabinding("Text", CharacterObject, nameof(Character.AstralInitiative));
+            lblMatrixINI.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.MatrixInitiativeToolTip));
+            lblMatrixINI.DoDatabinding("Text", CharacterObject, nameof(Character.MatrixInitiative));
+            lblMatrixINICold.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.MatrixInitiativeColdToolTip));
+            lblMatrixINICold.DoDatabinding("Text", CharacterObject, nameof(Character.MatrixInitiativeCold));
+            lblMatrixINIHot.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.MatrixInitiativeHotToolTip));
+            lblMatrixINIHot.DoDatabinding("Text", CharacterObject, nameof(Character.MatrixInitiativeHot));
+            lblRiggingINI.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.InitiativeToolTip));
+            lblRiggingINI.DoDatabinding("Text", CharacterObject, nameof(Character.Initiative));
 
             cmdAddCyberware.DoDatabinding("Enabled", CharacterObject, nameof(Character.AddCyberwareEnabled));
             cmdAddBioware.DoDatabinding("Enabled", CharacterObject, nameof(Character.AddBiowareEnabled));
@@ -9884,137 +9902,7 @@ namespace Chummer
 
             // TODO: DataBind these wherever possible
 
-            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-            string strModifiers = LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language);
-
             UpdateSkillRelatedInfo();
-            
-            // Update the Condition Monitor labels.
-            bool blnIsAI = CharacterObject.IsAI;
-            if (blnIsAI)
-            {
-                if (CharacterObject.HomeNode == null)
-                {
-                    lblCMPhysicalLabel.Text = LanguageManager.GetString("Label_OtherCoreCM", GlobalOptions.Language);
-                    lblCMStunLabel.Text = string.Empty;
-                    lblCMStun.Visible = false;
-                    string strCM = $"8{strSpaceCharacter}+{strSpaceCharacter}({CharacterObject.DEP.DisplayAbbrev}/2)({(CharacterObject.DEP.TotalValue + 1) / 2})";
-
-                    int intBonus = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.PhysicalCM);
-                    if (intBonus != 0)
-                        strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
-
-                    lblCMPhysical.SetToolTip(strCM);
-                    lblCMStun.SetToolTip(string.Empty);
-                }
-                else
-                {
-                    lblCMStunLabel.Text = LanguageManager.GetString("Label_OtherMatrixCM", GlobalOptions.Language);
-                    lblCMStun.Visible = true;
-
-                    string strCM = $"8{strSpaceCharacter }+{strSpaceCharacter}({LanguageManager.GetString("String_DeviceRating", GlobalOptions.Language)}/2)({(CharacterObject.HomeNode.GetTotalMatrixAttribute("Device Rating") + 1) / 2})";
-
-                    int intBonus = CharacterObject.HomeNode.TotalBonusMatrixBoxes;
-                    if (intBonus != 0)
-                        strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
-
-                    lblCMPhysical.SetToolTip(strCM);
-
-                    if (CharacterObject.HomeNode is Vehicle objVehicleHomeNode)
-                    {
-                        lblCMPhysicalLabel.Text = LanguageManager.GetString("Label_OtherPhysicalCM", GlobalOptions.Language);
-                        strCM = $"{objVehicleHomeNode.BasePhysicalBoxes}{strSpaceCharacter}+{strSpaceCharacter}({CharacterObject.BOD.DisplayAbbrev}/2)({(objVehicleHomeNode.TotalBody + 1) / 2})";
-
-                        intBonus = objVehicleHomeNode.Mods.Sum(objMod => objMod.ConditionMonitor);
-                        if (intBonus != 0)
-                            strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
-
-                        lblCMPhysical.SetToolTip(strCM);
-                    }
-                    else
-                    {
-                        lblCMPhysicalLabel.Text = LanguageManager.GetString("Label_OtherCoreCM", GlobalOptions.Language);
-                        strCM = $"8{strSpaceCharacter}+{strSpaceCharacter}({CharacterObject.DEP.DisplayAbbrev}/2)({(CharacterObject.DEP.TotalValue + 1) / 2})";
-
-                        intBonus = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.PhysicalCM);
-                        if (intBonus != 0)
-                            strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
-
-                        lblCMPhysical.SetToolTip(strCM);
-                    }
-                }
-            }
-            else
-            {
-                lblCMPhysicalLabel.Text = LanguageManager.GetString("Label_OtherPhysicalCM", GlobalOptions.Language);
-                lblCMStunLabel.Text = LanguageManager.GetString("Label_OtherStunCM", GlobalOptions.Language);
-                lblCMStun.Visible = true;
-
-                string strCM = $"8{strSpaceCharacter}+{strSpaceCharacter}({CharacterObject.BOD.DisplayAbbrev}/2)({(CharacterObject.BOD.TotalValue + 1) / 2})";
-
-                int intBonus = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.PhysicalCM);
-                if (intBonus != 0)
-                    strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
-                lblCMPhysical.SetToolTip(strCM);
-
-                strCM = $"8{strSpaceCharacter}+{strSpaceCharacter}({CharacterObject.WIL.DisplayAbbrev}/2)({(CharacterObject.WIL.TotalValue + 1) / 2})";
-                intBonus = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.StunCM);
-                if (intBonus != 0)
-                    strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
-                lblCMStun.SetToolTip(strCM);
-            }
-            
-            int intINTAttributeModifiers = CharacterObject.INT.AttributeModifiers;
-            int intREAAttributeModifiers = CharacterObject.REA.AttributeModifiers;
-            
-            // Initiative.
-            lblINI.Text = CharacterObject.Initiative;
-            string strInitText = LanguageManager.GetString("String_Initiative", GlobalOptions.Language);
-            string strMatrixInitText = LanguageManager.GetString("String_MatrixInitiativeLong", GlobalOptions.Language);
-            string strInit = $"{CharacterObject.REA.DisplayAbbrev}{strSpaceCharacter}({CharacterObject.REA.Value}){strSpaceCharacter}+{strSpaceCharacter}{CharacterObject.INT.DisplayAbbrev}{strSpaceCharacter}({CharacterObject.INT.Value})";
-            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Initiative) > 0 || intINTAttributeModifiers > 0 || intREAAttributeModifiers > 0)
-                strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter + '(' + (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Initiative) + intINTAttributeModifiers + intREAAttributeModifiers) + ')';
-            lblINI.SetToolTip(strInitText.Replace("{0}", strInit).Replace("{1}", CharacterObject.InitiativeDice.ToString()));
-
-            // Astral Initiative.
-            lblAstralINI.Text = CharacterObject.AstralInitiative;
-            if (CharacterObject.MAGEnabled)
-            {
-                strInit = $"{CharacterObject.INT.DisplayAbbrev}{strSpaceCharacter}({CharacterObject.INT.Value}){strSpaceCharacter}×{strSpaceCharacter}2";
-                if (intINTAttributeModifiers > 0)
-                    strInit += $"{strModifiers}{strSpaceCharacter}({intINTAttributeModifiers})";
-                lblAstralINI.SetToolTip(strInitText.Replace("{0}", strInit).Replace("{1}", CharacterObject.AstralInitiativeDice.ToString()));
-            }
-            else
-                lblAstralINI.SetToolTip(string.Empty);
-
-            // Matrix Initiative (AR).
-            lblMatrixINI.Text = CharacterObject.MatrixInitiative;
-            strInit = $"{CharacterObject.REA.DisplayAbbrev}{strSpaceCharacter}({CharacterObject.REA.Value}){strSpaceCharacter}+{strSpaceCharacter}{CharacterObject.INT.DisplayAbbrev}{strSpaceCharacter}({CharacterObject.INT.Value})";
-            if (intINTAttributeModifiers > 0 || intREAAttributeModifiers > 0)
-                strInit += $"{strModifiers}{strSpaceCharacter}({intREAAttributeModifiers + intINTAttributeModifiers})";
-            lblMatrixINI.SetToolTip(strInitText.Replace("{0}", strInit).Replace("{1}", CharacterObject.InitiativeDice.ToString(GlobalOptions.CultureInfo)));
-
-            // Matrix Initiative (Cold).
-            lblMatrixINICold.Text = CharacterObject.MatrixInitiativeCold;
-            strInit = strMatrixInitText.Replace("{0}", CharacterObject.INT.Value.ToString(GlobalOptions.CultureInfo)).Replace("{1}", CharacterObject.MatrixInitiativeColdDice.ToString(GlobalOptions.CultureInfo));
-            if (intINTAttributeModifiers > 0)
-                strInit += $"{strModifiers}{strSpaceCharacter}({intINTAttributeModifiers})";
-            lblMatrixINICold.SetToolTip(strInit);
-
-            // Matrix Initiative (Hot).
-            lblMatrixINIHot.Text = CharacterObject.MatrixInitiativeHot;
-            strInit = strMatrixInitText.Replace("{0}", CharacterObject.INT.Value.ToString(GlobalOptions.CultureInfo)).Replace("{1}", CharacterObject.MatrixInitiativeHotDice.ToString(GlobalOptions.CultureInfo));
-            if (intINTAttributeModifiers > 0)
-                strInit += $"{strModifiers}{strSpaceCharacter}({intINTAttributeModifiers})";
-            lblMatrixINIHot.SetToolTip(strInit);
-
-            // Rigger Initiative.
-            lblRiggingINI.Text = CharacterObject.Initiative;
-            strInit = $"{CharacterObject.REA.DisplayAbbrev}{strSpaceCharacter}({CharacterObject.REA.Value}){strSpaceCharacter}+{strSpaceCharacter}{CharacterObject.INT.DisplayAbbrev}{strSpaceCharacter}({CharacterObject.INT.Value})";
-            if (intINTAttributeModifiers > 0 || intREAAttributeModifiers > 0)
-                strInit += $"{strModifiers}{strSpaceCharacter}({intREAAttributeModifiers + intINTAttributeModifiers})";
-            lblRiggingINI.SetToolTip(strInitText.Replace("{0}", strInit).Replace("{1}", CharacterObject.InitiativeDice.ToString()));
             
             // Calculate the number of Build Points remaining.
             CalculateBP();
@@ -10063,8 +9951,7 @@ namespace Chummer
             decimal decDeductions = 0;
 
             // Cyberware/Bioware cost.
-            foreach (Cyberware objCyberware in CharacterObject.Cyberware)
-                decDeductions += objCyberware.TotalCost;
+            decDeductions += CharacterObject.Cyberware.AsParallel().Sum(x => x.TotalCost);
 
             // Initiation Grade cost.
             foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
@@ -10074,27 +9961,22 @@ namespace Chummer
             }
 
             // Armor cost.
-            foreach (Armor objArmor in CharacterObject.Armor)
-                decDeductions += objArmor.TotalCost;
+            decDeductions += CharacterObject.Armor.AsParallel().Sum(x => x.TotalCost);
 
             // Weapon cost.
-            foreach (Weapon objWeapon in CharacterObject.Weapons)
-                decDeductions += objWeapon.TotalCost;
+            decDeductions += CharacterObject.Weapons.AsParallel().Sum(x => x.TotalCost);
 
             // Gear cost.
-            foreach (Gear objGear in CharacterObject.Gear)
-                decDeductions += objGear.TotalCost;
+            decDeductions += CharacterObject.Gear.AsParallel().Sum(x => x.TotalCost);
 
             // Lifestyle cost.
-            foreach (Lifestyle objLifestyle in CharacterObject.Lifestyles)
-                decDeductions += objLifestyle.TotalCost;
+            decDeductions += CharacterObject.Lifestyles.AsParallel().Sum(x => x.TotalCost);
 
             // Vehicle cost.
-            foreach (Vehicle objVehicle in CharacterObject.Vehicles)
-                decDeductions += objVehicle.TotalCost;
+            decDeductions += CharacterObject.Vehicles.AsParallel().Sum(x => x.TotalCost);
 
 			// Drug cost.
-            decDeductions += CharacterObject.Drugs.Sum(drug => drug.TotalCost);
+            decDeductions += CharacterObject.Drugs.AsParallel().Sum(x => x.TotalCost);
 
             return CharacterObject.Nuyen = CharacterObject.TotalStartingNuyen - decDeductions;
         }

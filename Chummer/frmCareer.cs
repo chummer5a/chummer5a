@@ -561,8 +561,13 @@ namespace Chummer
                 OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(objProperty.Name));
 
             lblCMPenalty.DoDatabinding("Text", CharacterObject, nameof(Character.WoundModifier));
+            lblCMPhysical.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.PhysicalCMToolTip));
             lblCMPhysical.DoDatabinding("Text", CharacterObject, nameof(Character.PhysicalCM));
+            lblCMPhysicalLabel.DoDatabinding("Text", CharacterObject, nameof(Character.PhysicalCMLabelText));
+            lblCMStun.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.StunCMToolTip));
             lblCMStun.DoDatabinding("Text", CharacterObject, nameof(Character.StunCM));
+            lblCMStun.DoDatabinding("Visible", CharacterObject, nameof(Character.StunCMVisible));
+            lblCMStunLabel.DoDatabinding("Text", CharacterObject, nameof(Character.StunCMLabelText));
 
             lblESSMax.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayEssence));
             lblCyberwareESS.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayCyberwareEssence));
@@ -638,6 +643,19 @@ namespace Chummer
             lblLiftCarry.DoDatabinding("Text", CharacterObject, nameof(Character.LiftAndCarry));
             lblMemory.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.MemoryToolTip));
             lblMemory.DoDatabinding("Text", CharacterObject, nameof(Character.Memory));
+
+            lblINI.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.InitiativeToolTip));
+            lblINI.DoDatabinding("Text", CharacterObject, nameof(Character.Initiative));
+            lblAstralINI.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.AstralInitiativeToolTip));
+            lblAstralINI.DoDatabinding("Text", CharacterObject, nameof(Character.AstralInitiative));
+            lblMatrixINI.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.MatrixInitiativeToolTip));
+            lblMatrixINI.DoDatabinding("Text", CharacterObject, nameof(Character.MatrixInitiative));
+            lblMatrixINICold.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.MatrixInitiativeColdToolTip));
+            lblMatrixINICold.DoDatabinding("Text", CharacterObject, nameof(Character.MatrixInitiativeCold));
+            lblMatrixINIHot.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.MatrixInitiativeHotToolTip));
+            lblMatrixINIHot.DoDatabinding("Text", CharacterObject, nameof(Character.MatrixInitiativeHot));
+            lblRiggingINI.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.InitiativeToolTip));
+            lblRiggingINI.DoDatabinding("Text", CharacterObject, nameof(Character.Initiative));
 
             cmdAddCyberware.DoDatabinding("Enabled", CharacterObject, nameof(Character.AddCyberwareEnabled));
             cmdAddBioware.DoDatabinding("Enabled", CharacterObject, nameof(Character.AddBiowareEnabled));
@@ -1471,9 +1489,6 @@ namespace Chummer
                         {
                             tabCharacterTabs.TabPages.Remove(tabInitiation);
                         }
-                        chkInitiationGroup.Visible = CharacterObject.InitiationEnabled;
-                        chkInitiationOrdeal.Visible = CharacterObject.InitiationEnabled;
-                        chkInitiationSchooling.Visible = CharacterObject.InitiationEnabled;
                     }
                     break;
                 case nameof(Character.QuickeningEnabled):
@@ -13040,143 +13055,6 @@ namespace Chummer
 
             // TODO: DataBind these wherever possible
             
-            string strModifiers = LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language);
-
-            // Update the Condition Monitor labels.
-            bool blnIsAI = CharacterObject.IsAI;
-            if (blnIsAI)
-            {
-                if (CharacterObject.HomeNode == null)
-                {
-                    lblCMPhysicalLabel.Text = LanguageManager.GetString("Label_OtherCoreCM", GlobalOptions.Language);
-                    lblCMStunLabel.Text = string.Empty;
-                    lblCMStun.Visible = false;
-
-                    string strCM = $"8 + ({CharacterObject.DEP.DisplayAbbrev}/2)({(CharacterObject.DEP.TotalValue + 1) / 2})";
-
-                    int intBonus = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.PhysicalCM);
-                    if (intBonus != 0)
-                        strCM += " + " + strModifiers + " (" + intBonus.ToString() + ')';
-
-                    lblCMPhysical.SetToolTip(strCM);
-                    lblCMStun.SetToolTip(string.Empty);
-                }
-                else
-                {
-                    lblCMStunLabel.Text = LanguageManager.GetString("Label_OtherMatrixCM", GlobalOptions.Language);
-                    lblCMStun.Visible = true;
-
-                    string strCM = $"8 + ({LanguageManager.GetString("String_DeviceRating", GlobalOptions.Language)}/2)({(CharacterObject.HomeNode.GetTotalMatrixAttribute("Device Rating") + 1) / 2})";
-
-                    int intBonus = CharacterObject.HomeNode.TotalBonusMatrixBoxes;
-                    if (intBonus != 0)
-                        strCM += " + " + strModifiers + " (" + intBonus.ToString() + ')';
-
-                    lblCMPhysical.SetToolTip(strCM);
-
-                    if (CharacterObject.HomeNode is Vehicle objVehicleHomeNode)
-                    {
-                        lblCMPhysicalLabel.Text = LanguageManager.GetString("Label_OtherPhysicalCM", GlobalOptions.Language);
-                        strCM = $"{objVehicleHomeNode.BasePhysicalBoxes} + ({CharacterObject.BOD.DisplayAbbrev}/2)({(objVehicleHomeNode.TotalBody + 1) / 2})";
-
-                        intBonus = objVehicleHomeNode.Mods.Sum(objMod => objMod.ConditionMonitor);
-                        if (intBonus != 0)
-                            strCM += " + " + strModifiers + " (" + intBonus.ToString() + ')';
-
-                        lblCMPhysical.SetToolTip(strCM);
-                    }
-                    else
-                    {
-                        lblCMPhysicalLabel.Text = LanguageManager.GetString("Label_OtherCoreCM", GlobalOptions.Language);
-                        strCM = $"8 + ({CharacterObject.DEP.DisplayAbbrev}/2)({(CharacterObject.DEP.TotalValue + 1) / 2})";
-
-                        intBonus = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.PhysicalCM);
-                        if (intBonus != 0)
-                            strCM += " + " + strModifiers + " (" + intBonus.ToString() + ')';
-
-                        lblCMPhysical.SetToolTip(strCM);
-                    }
-                }
-            }
-            else
-            {
-                lblCMPhysicalLabel.Text = LanguageManager.GetString("Label_OtherPhysicalCM", GlobalOptions.Language);
-                lblCMStunLabel.Text = LanguageManager.GetString("Label_OtherStunCM", GlobalOptions.Language);
-                lblCMStun.Visible = true;
-                string strCM = $"8 + ({CharacterObject.BOD.DisplayAbbrev}/2)({(CharacterObject.BOD.TotalValue + 1) / 2})";
-
-                int intBonus = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.PhysicalCM);
-                if (intBonus != 0)
-                    strCM += " + " + strModifiers + " (" + intBonus.ToString() + ')';
-                lblCMPhysical.SetToolTip(strCM);
-
-                strCM = $"8 + ({CharacterObject.WIL.DisplayAbbrev}/2)({(CharacterObject.WIL.TotalValue + 1) / 2})";
-                intBonus = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.StunCM);
-                if (intBonus != 0)
-                    strCM += " + " + strModifiers + " (" + intBonus.ToString() + ')';
-                lblCMStun.SetToolTip(strCM);
-            }
-            
-            int intINTAttributeModifiers = CharacterObject.INT.AttributeModifiers;
-            int intREAAttributeModifiers = CharacterObject.REA.AttributeModifiers;
-
-            // Initiative.
-            lblINI.Text = CharacterObject.Initiative;
-            string strInitText = LanguageManager.GetString("String_Initiative", GlobalOptions.Language);
-            string strMatrixInitText = LanguageManager.GetString("String_MatrixInitiativeLong", GlobalOptions.Language);
-            string strInit =
-                $"{CharacterObject.REA.DisplayAbbrev} ({CharacterObject.REA.Value}) + {CharacterObject.INT.DisplayAbbrev} ({CharacterObject.INT.Value})";
-            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Initiative) > 0 ||
-                intINTAttributeModifiers > 0 || intREAAttributeModifiers > 0)
-                strInit += " + " + strModifiers + " (" +
-                           (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Initiative) +
-                            intINTAttributeModifiers + intREAAttributeModifiers) + ')';
-            lblINI.SetToolTip(strInitText.Replace("{0}", strInit).Replace("{1}", CharacterObject.InitiativeDice.ToString()));
-
-            // Astral Initiative.
-            lblAstralINI.Text = CharacterObject.AstralInitiative;
-            if (CharacterObject.MAGEnabled)
-            {
-                strInit = $"{CharacterObject.INT.DisplayAbbrev} ({CharacterObject.INT.Value}) x 2";
-                if (intINTAttributeModifiers > 0)
-                    strInit += $"{strModifiers} ({intINTAttributeModifiers})";
-                lblAstralINI.SetToolTip(strInitText.Replace("{0}", strInit).Replace("{1}", CharacterObject.AstralInitiativeDice.ToString()));
-            }
-            else
-                lblAstralINI.SetToolTip(string.Empty);
-
-            // Matrix Initiative (AR).
-            lblMatrixINI.Text = CharacterObject.MatrixInitiative;
-            strInit =
-                $"{CharacterObject.REA.DisplayAbbrev} ({CharacterObject.REA.Value}) + {CharacterObject.INT.DisplayAbbrev} ({CharacterObject.INT.Value})";
-            if (intINTAttributeModifiers > 0 || intREAAttributeModifiers > 0)
-                strInit += $"{strModifiers} ({intREAAttributeModifiers + intINTAttributeModifiers})";
-            lblMatrixINI.SetToolTip(strInitText.Replace("{0}", strInit).Replace("{1}", CharacterObject.InitiativeDice.ToString()));
-
-            // Matrix Initiative (Cold).
-            lblMatrixINICold.Text = CharacterObject.MatrixInitiativeCold;
-            strInit = strMatrixInitText.Replace("{0}", CharacterObject.INT.Value.ToString())
-                .Replace("{1}", CharacterObject.MatrixInitiativeColdDice.ToString());
-            if (intINTAttributeModifiers > 0)
-                strInit += $"{strModifiers} ({intINTAttributeModifiers})";
-            lblMatrixINICold.SetToolTip(strInit);
-
-            // Matrix Initiative (Hot).
-            lblMatrixINIHot.Text = CharacterObject.MatrixInitiativeHot;
-            strInit = strMatrixInitText.Replace("{0}", CharacterObject.INT.Value.ToString())
-                .Replace("{1}", CharacterObject.MatrixInitiativeHotDice.ToString());
-            if (intINTAttributeModifiers > 0)
-                strInit += $"{strModifiers} ({intINTAttributeModifiers})";
-            lblMatrixINIHot.SetToolTip(strInit);
-
-            // Rigger Initiative.
-            lblRiggingINI.Text = CharacterObject.Initiative;
-            strInit =
-                $"{CharacterObject.REA.DisplayAbbrev} ({CharacterObject.REA.Value}) + {CharacterObject.INT.DisplayAbbrev} ({CharacterObject.INT.Value})";
-            if (intINTAttributeModifiers > 0 || intREAAttributeModifiers > 0)
-                strInit += $"{strModifiers} ({intREAAttributeModifiers + intINTAttributeModifiers})";
-            lblRiggingINI.SetToolTip(strInitText.Replace("{0}", strInit).Replace("{1}", CharacterObject.InitiativeDice.ToString()));
-
             if ((CharacterObject.Metatype == "Free Spirit" && !CharacterObject.IsCritter) ||
                 CharacterObject.MetatypeCategory.EndsWith("Spirits"))
             {

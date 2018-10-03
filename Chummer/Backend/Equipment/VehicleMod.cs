@@ -522,7 +522,16 @@ namespace Chummer.Backend.Equipment
         public int Rating
         {
             get => _intRating;
-            set => _intRating = Math.Max(0, value);
+            set
+            {
+                int intNewRating = Math.Max(0, value);
+                if (_intRating != intNewRating)
+                {
+                    _intRating = intNewRating;
+                    if (!IncludedInVehicle && Equipped && _objCharacter.IsAI && _objCharacter.HomeNode is Vehicle)
+                        _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCM));
+                }
+            }
         }
 
         /// <summary>
@@ -587,7 +596,15 @@ namespace Chummer.Backend.Equipment
         public XmlNode Bonus
         {
             get => _nodBonus;
-            set => _nodBonus = value;
+            set
+            {
+                if (_nodBonus != value)
+                {
+                    _nodBonus = value;
+                    if (!IncludedInVehicle && Equipped && _objCharacter.IsAI && _objCharacter.HomeNode is Vehicle)
+                        _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCM));
+                }
+            }
         }
 
         /// <summary>

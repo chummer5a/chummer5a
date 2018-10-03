@@ -105,6 +105,13 @@ namespace Chummer.Backend.Equipment
 
             _lstGear.CollectionChanged += MatrixAttributeChildrenOnCollectionChanged;
             _lstWeapons.CollectionChanged += MatrixAttributeChildrenOnCollectionChanged;
+            _lstVehicleMods.CollectionChanged += LstVehicleModsOnCollectionChanged;
+        }
+
+        private void LstVehicleModsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (_objCharacter.IsAI && this == _objCharacter.HomeNode && e.Action != NotifyCollectionChangedAction.Move)
+                _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCM));
         }
 
         private void MatrixAttributeChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
