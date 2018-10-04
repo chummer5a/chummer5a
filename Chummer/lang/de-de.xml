@@ -9331,5 +9331,21 @@
 			<key>Button_ChangeMountedLocation</key>
 			<text>Verwendeten Ort ändern</text>
 		</string>
+		<string>
+			<key>String_Weapon</key>
+			<text>Waffe</text>
+		</string>
+		<string>
+			<key>String_Vehicle</key>
+			<text>Fahrzeug</text>
+		</string>
+		<string>
+			<key>String_Matrix</key>
+			<text>Matrix</text>
+		</string>
+		<string>
+			<key>String_Info</key>
+			<text>Info</text>
+		</string>
 	</strings>
 </chummer>
