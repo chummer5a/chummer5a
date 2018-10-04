@@ -189,6 +189,8 @@ New Strings:
 - Menu_SpecialChangePriorities
 - String_Matrix
 - String_Info
+- String_Vehicle
+- String_Weapon
 
 Changed Strings:
 
