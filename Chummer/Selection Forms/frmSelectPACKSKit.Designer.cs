@@ -28,16 +28,17 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblCategory = new System.Windows.Forms.Label();
-            this.cboCategory = new ElasticComboBox();
+            this.cboCategory = new Chummer.ElasticComboBox();
             this.lstKits = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.treContents = new System.Windows.Forms.TreeView();
             this.cmdDelete = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -106,8 +107,9 @@ namespace Chummer
             this.cboCategory.FormattingEnabled = true;
             this.cboCategory.Location = new System.Drawing.Point(94, 3);
             this.cboCategory.Name = "cboCategory";
-            this.cboCategory.Size = new System.Drawing.Size(282, 21);
+            this.cboCategory.Size = new System.Drawing.Size(285, 21);
             this.cboCategory.TabIndex = 1;
+            this.cboCategory.TooltipText = "";
             this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
             // 
             // lstKits
@@ -119,7 +121,7 @@ namespace Chummer
             this.lstKits.FormattingEnabled = true;
             this.lstKits.Location = new System.Drawing.Point(3, 32);
             this.lstKits.Name = "lstKits";
-            this.lstKits.Size = new System.Drawing.Size(373, 472);
+            this.lstKits.Size = new System.Drawing.Size(376, 472);
             this.lstKits.TabIndex = 2;
             this.lstKits.SelectedIndexChanged += new System.EventHandler(this.lstKits_SelectedIndexChanged);
             this.lstKits.DoubleClick += new System.EventHandler(this.lstKits_DoubleClick);
@@ -128,7 +130,7 @@ namespace Chummer
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(382, 10);
+            this.label1.Location = new System.Drawing.Point(385, 10);
             this.label1.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(52, 13);
@@ -142,20 +144,20 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.treContents, 2);
-            this.treContents.Location = new System.Drawing.Point(382, 32);
+            this.treContents.Location = new System.Drawing.Point(385, 32);
             this.treContents.Name = "treContents";
             this.treContents.ShowPlusMinus = false;
             this.treContents.ShowRootLines = false;
-            this.treContents.Size = new System.Drawing.Size(375, 472);
+            this.treContents.Size = new System.Drawing.Size(378, 472);
             this.treContents.TabIndex = 4;
             // 
             // cmdDelete
             // 
             this.cmdDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdDelete.AutoSize = true;
-            this.cmdDelete.Location = new System.Drawing.Point(682, 3);
+            this.cmdDelete.Location = new System.Drawing.Point(683, 3);
             this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(75, 23);
+            this.cmdDelete.Size = new System.Drawing.Size(80, 23);
             this.cmdDelete.TabIndex = 8;
             this.cmdDelete.Tag = "String_Delete";
             this.cmdDelete.Text = "Delete";
@@ -165,9 +167,6 @@ namespace Chummer
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.AutoSize = true;
             this.tableLayoutPanel1.ColumnCount = 4;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12F));
@@ -181,26 +180,27 @@ namespace Chummer
             this.tableLayoutPanel1.Controls.Add(this.lblCategory, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.label1, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 2);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 12);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(760, 537);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(766, 543);
             this.tableLayoutPanel1.TabIndex = 9;
             // 
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.AutoSize = true;
+            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 4);
             this.flowLayoutPanel1.Controls.Add(this.cmdOK);
             this.flowLayoutPanel1.Controls.Add(this.cmdOKAdd);
             this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(523, 514);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(526, 517);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(237, 23);
             this.flowLayoutPanel1.TabIndex = 9;
@@ -217,6 +217,7 @@ namespace Chummer
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmSelectPACKSKit";
+            this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectPACKSKit";

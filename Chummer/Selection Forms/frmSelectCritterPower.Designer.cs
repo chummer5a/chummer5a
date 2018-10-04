@@ -28,6 +28,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.lblCritterPowerSource = new System.Windows.Forms.Label();
             this.lblCritterPowerSourceLabel = new System.Windows.Forms.Label();
             this.lblCritterPowerDuration = new System.Windows.Forms.Label();
@@ -46,29 +47,30 @@ namespace Chummer
             this.cmdOK = new System.Windows.Forms.Button();
             this.trePowers = new System.Windows.Forms.TreeView();
             this.lblCategory = new System.Windows.Forms.Label();
-            this.cboCategory = new ElasticComboBox();
+            this.cboCategory = new Chummer.ElasticComboBox();
             this.lblPowerPoints = new System.Windows.Forms.Label();
             this.lblPowerPointsLabel = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.lblKarma = new System.Windows.Forms.Label();
             this.lblKarmaLabel = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.txtSearch = new System.Windows.Forms.TextBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblRatingNALabel = new System.Windows.Forms.Label();
-            this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudCritterPowerRating)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblCritterPowerSource
             // 
             this.lblCritterPowerSource.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.lblCritterPowerSource, 2);
-            this.lblCritterPowerSource.Location = new System.Drawing.Point(363, 184);
+            this.lblCritterPowerSource.Location = new System.Drawing.Point(362, 183);
             this.lblCritterPowerSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCritterPowerSource.Name = "lblCritterPowerSource";
             this.lblCritterPowerSource.Size = new System.Drawing.Size(47, 13);
@@ -80,7 +82,7 @@ namespace Chummer
             // 
             this.lblCritterPowerSourceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCritterPowerSourceLabel.AutoSize = true;
-            this.lblCritterPowerSourceLabel.Location = new System.Drawing.Point(313, 184);
+            this.lblCritterPowerSourceLabel.Location = new System.Drawing.Point(312, 183);
             this.lblCritterPowerSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCritterPowerSourceLabel.Name = "lblCritterPowerSourceLabel";
             this.lblCritterPowerSourceLabel.Size = new System.Drawing.Size(44, 13);
@@ -91,8 +93,7 @@ namespace Chummer
             // lblCritterPowerDuration
             // 
             this.lblCritterPowerDuration.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.lblCritterPowerDuration, 2);
-            this.lblCritterPowerDuration.Location = new System.Drawing.Point(363, 133);
+            this.lblCritterPowerDuration.Location = new System.Drawing.Point(362, 132);
             this.lblCritterPowerDuration.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCritterPowerDuration.Name = "lblCritterPowerDuration";
             this.lblCritterPowerDuration.Size = new System.Drawing.Size(53, 13);
@@ -103,7 +104,7 @@ namespace Chummer
             // 
             this.lblCritterPowerDurationLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCritterPowerDurationLabel.AutoSize = true;
-            this.lblCritterPowerDurationLabel.Location = new System.Drawing.Point(307, 133);
+            this.lblCritterPowerDurationLabel.Location = new System.Drawing.Point(306, 132);
             this.lblCritterPowerDurationLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCritterPowerDurationLabel.Name = "lblCritterPowerDurationLabel";
             this.lblCritterPowerDurationLabel.Size = new System.Drawing.Size(50, 13);
@@ -114,8 +115,7 @@ namespace Chummer
             // lblCritterPowerRange
             // 
             this.lblCritterPowerRange.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.lblCritterPowerRange, 2);
-            this.lblCritterPowerRange.Location = new System.Drawing.Point(363, 108);
+            this.lblCritterPowerRange.Location = new System.Drawing.Point(362, 107);
             this.lblCritterPowerRange.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCritterPowerRange.Name = "lblCritterPowerRange";
             this.lblCritterPowerRange.Size = new System.Drawing.Size(45, 13);
@@ -126,7 +126,7 @@ namespace Chummer
             // 
             this.lblCritterPowerRangeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCritterPowerRangeLabel.AutoSize = true;
-            this.lblCritterPowerRangeLabel.Location = new System.Drawing.Point(315, 108);
+            this.lblCritterPowerRangeLabel.Location = new System.Drawing.Point(314, 107);
             this.lblCritterPowerRangeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCritterPowerRangeLabel.Name = "lblCritterPowerRangeLabel";
             this.lblCritterPowerRangeLabel.Size = new System.Drawing.Size(42, 13);
@@ -137,8 +137,7 @@ namespace Chummer
             // lblCritterPowerAction
             // 
             this.lblCritterPowerAction.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.lblCritterPowerAction, 2);
-            this.lblCritterPowerAction.Location = new System.Drawing.Point(363, 83);
+            this.lblCritterPowerAction.Location = new System.Drawing.Point(362, 82);
             this.lblCritterPowerAction.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCritterPowerAction.Name = "lblCritterPowerAction";
             this.lblCritterPowerAction.Size = new System.Drawing.Size(43, 13);
@@ -149,7 +148,7 @@ namespace Chummer
             // 
             this.lblCritterPowerActionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCritterPowerActionLabel.AutoSize = true;
-            this.lblCritterPowerActionLabel.Location = new System.Drawing.Point(317, 83);
+            this.lblCritterPowerActionLabel.Location = new System.Drawing.Point(316, 82);
             this.lblCritterPowerActionLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCritterPowerActionLabel.Name = "lblCritterPowerActionLabel";
             this.lblCritterPowerActionLabel.Size = new System.Drawing.Size(40, 13);
@@ -160,8 +159,7 @@ namespace Chummer
             // lblCritterPowerType
             // 
             this.lblCritterPowerType.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.lblCritterPowerType, 2);
-            this.lblCritterPowerType.Location = new System.Drawing.Point(363, 58);
+            this.lblCritterPowerType.Location = new System.Drawing.Point(362, 57);
             this.lblCritterPowerType.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCritterPowerType.Name = "lblCritterPowerType";
             this.lblCritterPowerType.Size = new System.Drawing.Size(37, 13);
@@ -172,7 +170,7 @@ namespace Chummer
             // 
             this.lblCritterPowerTypeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCritterPowerTypeLabel.AutoSize = true;
-            this.lblCritterPowerTypeLabel.Location = new System.Drawing.Point(323, 58);
+            this.lblCritterPowerTypeLabel.Location = new System.Drawing.Point(322, 57);
             this.lblCritterPowerTypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCritterPowerTypeLabel.Name = "lblCritterPowerTypeLabel";
             this.lblCritterPowerTypeLabel.Size = new System.Drawing.Size(34, 13);
@@ -183,8 +181,7 @@ namespace Chummer
             // lblCritterPowerCategory
             // 
             this.lblCritterPowerCategory.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.lblCritterPowerCategory, 2);
-            this.lblCritterPowerCategory.Location = new System.Drawing.Point(363, 33);
+            this.lblCritterPowerCategory.Location = new System.Drawing.Point(362, 32);
             this.lblCritterPowerCategory.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCritterPowerCategory.Name = "lblCritterPowerCategory";
             this.lblCritterPowerCategory.Size = new System.Drawing.Size(55, 13);
@@ -195,7 +192,7 @@ namespace Chummer
             // 
             this.lblCritterPowerCategoryLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCritterPowerCategoryLabel.AutoSize = true;
-            this.lblCritterPowerCategoryLabel.Location = new System.Drawing.Point(305, 33);
+            this.lblCritterPowerCategoryLabel.Location = new System.Drawing.Point(304, 32);
             this.lblCritterPowerCategoryLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCritterPowerCategoryLabel.Name = "lblCritterPowerCategoryLabel";
             this.lblCritterPowerCategoryLabel.Size = new System.Drawing.Size(52, 13);
@@ -207,7 +204,7 @@ namespace Chummer
             // 
             this.lblCritterPowerRatingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCritterPowerRatingLabel.AutoSize = true;
-            this.lblCritterPowerRatingLabel.Location = new System.Drawing.Point(316, 158);
+            this.lblCritterPowerRatingLabel.Location = new System.Drawing.Point(315, 157);
             this.lblCritterPowerRatingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCritterPowerRatingLabel.Name = "lblCritterPowerRatingLabel";
             this.lblCritterPowerRatingLabel.Size = new System.Drawing.Size(41, 13);
@@ -217,6 +214,8 @@ namespace Chummer
             // 
             // nudCritterPowerRating
             // 
+            this.nudCritterPowerRating.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.nudCritterPowerRating.Enabled = false;
             this.nudCritterPowerRating.Location = new System.Drawing.Point(3, 3);
             this.nudCritterPowerRating.Minimum = new decimal(new int[] {
@@ -225,7 +224,7 @@ namespace Chummer
             0,
             0});
             this.nudCritterPowerRating.Name = "nudCritterPowerRating";
-            this.nudCritterPowerRating.Size = new System.Drawing.Size(156, 20);
+            this.nudCritterPowerRating.Size = new System.Drawing.Size(75, 20);
             this.nudCritterPowerRating.TabIndex = 14;
             this.nudCritterPowerRating.Value = new decimal(new int[] {
             1,
@@ -264,19 +263,16 @@ namespace Chummer
             // 
             // trePowers
             // 
-            this.trePowers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.SetColumnSpan(this.trePowers, 2);
+            this.tableLayoutPanel2.SetColumnSpan(this.trePowers, 2);
+            this.trePowers.Dock = System.Windows.Forms.DockStyle.Fill;
             this.trePowers.FullRowSelect = true;
             this.trePowers.HideSelection = false;
             this.trePowers.Location = new System.Drawing.Point(3, 30);
             this.trePowers.Name = "trePowers";
-            this.tableLayoutPanel1.SetRowSpan(this.trePowers, 10);
             this.trePowers.ShowLines = false;
             this.trePowers.ShowPlusMinus = false;
             this.trePowers.ShowRootLines = false;
-            this.trePowers.Size = new System.Drawing.Size(294, 384);
+            this.trePowers.Size = new System.Drawing.Size(295, 390);
             this.trePowers.TabIndex = 0;
             this.trePowers.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.trePowers_AfterSelect);
             this.trePowers.DoubleClick += new System.EventHandler(this.trePowers_DoubleClick);
@@ -285,7 +281,7 @@ namespace Chummer
             // 
             this.lblCategory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCategory.AutoSize = true;
-            this.lblCategory.Location = new System.Drawing.Point(17, 6);
+            this.lblCategory.Location = new System.Drawing.Point(20, 6);
             this.lblCategory.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCategory.Name = "lblCategory";
             this.lblCategory.Size = new System.Drawing.Size(52, 13);
@@ -299,17 +295,17 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCategory.FormattingEnabled = true;
-            this.cboCategory.Location = new System.Drawing.Point(75, 3);
+            this.cboCategory.Location = new System.Drawing.Point(78, 3);
             this.cboCategory.Name = "cboCategory";
-            this.cboCategory.Size = new System.Drawing.Size(222, 21);
+            this.cboCategory.Size = new System.Drawing.Size(220, 21);
             this.cboCategory.TabIndex = 2;
+            this.cboCategory.TooltipText = "";
             this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
             // 
             // lblPowerPoints
             // 
             this.lblPowerPoints.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.lblPowerPoints, 2);
-            this.lblPowerPoints.Location = new System.Drawing.Point(363, 209);
+            this.lblPowerPoints.Location = new System.Drawing.Point(362, 208);
             this.lblPowerPoints.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblPowerPoints.Name = "lblPowerPoints";
             this.lblPowerPoints.Size = new System.Drawing.Size(75, 13);
@@ -321,7 +317,7 @@ namespace Chummer
             // 
             this.lblPowerPointsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblPowerPointsLabel.AutoSize = true;
-            this.lblPowerPointsLabel.Location = new System.Drawing.Point(318, 209);
+            this.lblPowerPointsLabel.Location = new System.Drawing.Point(317, 208);
             this.lblPowerPointsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblPowerPointsLabel.Name = "lblPowerPointsLabel";
             this.lblPowerPointsLabel.Size = new System.Drawing.Size(39, 13);
@@ -347,8 +343,7 @@ namespace Chummer
             // lblKarma
             // 
             this.lblKarma.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.lblKarma, 2);
-            this.lblKarma.Location = new System.Drawing.Point(363, 234);
+            this.lblKarma.Location = new System.Drawing.Point(362, 233);
             this.lblKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarma.Name = "lblKarma";
             this.lblKarma.Size = new System.Drawing.Size(43, 13);
@@ -359,7 +354,7 @@ namespace Chummer
             // 
             this.lblKarmaLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblKarmaLabel.AutoSize = true;
-            this.lblKarmaLabel.Location = new System.Drawing.Point(317, 234);
+            this.lblKarmaLabel.Location = new System.Drawing.Point(316, 233);
             this.lblKarmaLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaLabel.Name = "lblKarmaLabel";
             this.lblKarmaLabel.Size = new System.Drawing.Size(40, 13);
@@ -369,37 +364,34 @@ namespace Chummer
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 5;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 38F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13F));
-            this.tableLayoutPanel1.Controls.Add(this.txtSearch, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.trePowers, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblCategory, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 3, 6);
-            this.tableLayoutPanel1.Controls.Add(this.cboCategory, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblSearchLabel, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblKarma, 3, 9);
-            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerCategoryLabel, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblKarmaLabel, 2, 9);
-            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerCategory, 3, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerTypeLabel, 2, 2);
-            this.tableLayoutPanel1.Controls.Add(this.lblPowerPoints, 3, 8);
-            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerType, 3, 2);
-            this.tableLayoutPanel1.Controls.Add(this.lblPowerPointsLabel, 2, 8);
-            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerActionLabel, 2, 3);
-            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerAction, 3, 3);
-            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerRangeLabel, 2, 4);
-            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerRange, 3, 4);
-            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerDurationLabel, 2, 5);
-            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerDuration, 3, 5);
-            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerSource, 3, 7);
-            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerSourceLabel, 2, 7);
-            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerRatingLabel, 2, 6);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel2, 2, 10);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 12);
+            this.tableLayoutPanel1.ColumnCount = 3;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.Controls.Add(this.txtSearch, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 2, 6);
+            this.tableLayoutPanel1.Controls.Add(this.lblSearchLabel, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblKarma, 2, 9);
+            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerCategoryLabel, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.lblKarmaLabel, 1, 9);
+            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerCategory, 2, 1);
+            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerTypeLabel, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lblPowerPoints, 2, 8);
+            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerType, 2, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lblPowerPointsLabel, 1, 8);
+            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerActionLabel, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerAction, 2, 3);
+            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerRangeLabel, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerRange, 2, 4);
+            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerDurationLabel, 1, 5);
+            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerDuration, 2, 5);
+            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerSource, 2, 7);
+            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerSourceLabel, 1, 7);
+            this.tableLayoutPanel1.Controls.Add(this.lblCritterPowerRatingLabel, 1, 6);
+            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel2, 1, 10);
+            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 11;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -413,8 +405,18 @@ namespace Chummer
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(600, 417);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 423);
             this.tableLayoutPanel1.TabIndex = 24;
+            // 
+            // txtSearch
+            // 
+            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSearch.Location = new System.Drawing.Point(362, 3);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(241, 20);
+            this.txtSearch.TabIndex = 26;
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
             // flowLayoutPanel1
             // 
@@ -423,17 +425,17 @@ namespace Chummer
             this.flowLayoutPanel1.AutoSize = true;
             this.flowLayoutPanel1.Controls.Add(this.nudCritterPowerRating);
             this.flowLayoutPanel1.Controls.Add(this.lblRatingNALabel);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(360, 152);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(359, 151);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(162, 26);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(247, 26);
             this.flowLayoutPanel1.TabIndex = 25;
             this.flowLayoutPanel1.WrapContents = false;
             // 
             // lblRatingNALabel
             // 
             this.lblRatingNALabel.AutoSize = true;
-            this.lblRatingNALabel.Location = new System.Drawing.Point(165, 6);
+            this.lblRatingNALabel.Location = new System.Drawing.Point(84, 6);
             this.lblRatingNALabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 7);
             this.lblRatingNALabel.Name = "lblRatingNALabel";
             this.lblRatingNALabel.Size = new System.Drawing.Size(27, 13);
@@ -442,22 +444,11 @@ namespace Chummer
             this.lblRatingNALabel.Text = "N/A";
             this.lblRatingNALabel.Visible = false;
             // 
-            // txtSearch
-            // 
-            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.SetColumnSpan(this.txtSearch, 2);
-            this.txtSearch.Location = new System.Drawing.Point(363, 3);
-            this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(234, 20);
-            this.txtSearch.TabIndex = 26;
-            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
-            // 
             // lblSearchLabel
             // 
             this.lblSearchLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSearchLabel.AutoSize = true;
-            this.lblSearchLabel.Location = new System.Drawing.Point(313, 6);
+            this.lblSearchLabel.Location = new System.Drawing.Point(312, 6);
             this.lblSearchLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSearchLabel.Name = "lblSearchLabel";
             this.lblSearchLabel.Size = new System.Drawing.Size(44, 13);
@@ -469,22 +460,41 @@ namespace Chummer
             // 
             this.flowLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel2.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel2, 3);
+            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel2, 2);
             this.flowLayoutPanel2.Controls.Add(this.cmdOK);
             this.flowLayoutPanel2.Controls.Add(this.cmdOKAdd);
             this.flowLayoutPanel2.Controls.Add(this.cmdCancel);
             this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(363, 394);
-            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(366, 397);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Size = new System.Drawing.Size(237, 23);
             this.flowLayoutPanel2.TabIndex = 27;
+            // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 2;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75F));
+            this.tableLayoutPanel2.Controls.Add(this.lblCategory, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.cboCategory, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.trePowers, 0, 1);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 2;
+            this.tableLayoutPanel1.SetRowSpan(this.tableLayoutPanel2, 11);
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(301, 423);
+            this.tableLayoutPanel2.TabIndex = 28;
             // 
             // frmSelectCritterPower
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.tableLayoutPanel1);
@@ -492,6 +502,7 @@ namespace Chummer
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmSelectCritterPower";
+            this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectCritterPower";
@@ -504,6 +515,8 @@ namespace Chummer
             this.flowLayoutPanel1.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel2.PerformLayout();
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -540,5 +553,6 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label lblSearchLabel;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
     }
 }
