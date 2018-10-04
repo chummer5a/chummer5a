@@ -979,6 +979,22 @@
       <key>String_LifeModules</key>
       <text>Life Modules</text>
     </string>
+    <string>
+      <key>String_Info</key>
+      <text>Info</text>
+    </string>
+    <string>
+      <key>String_Matrix</key>
+      <text>Matrix</text>
+    </string>
+    <string>
+      <key>String_Vehicle</key>
+      <text>Vehicle</text>
+    </string>
+    <string>
+      <key>String_Weapon</key>
+      <text>Weapon</text>
+    </string>
     <!-- End Region -->
     <!-- Region Printout Strings -->
     <string>

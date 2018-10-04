@@ -561,8 +561,13 @@ namespace Chummer
                 OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(objProperty.Name));
 
             lblCMPenalty.DoDatabinding("Text", CharacterObject, nameof(Character.WoundModifier));
+            lblCMPhysical.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.PhysicalCMToolTip));
             lblCMPhysical.DoDatabinding("Text", CharacterObject, nameof(Character.PhysicalCM));
+            lblCMPhysicalLabel.DoDatabinding("Text", CharacterObject, nameof(Character.PhysicalCMLabelText));
+            lblCMStun.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.StunCMToolTip));
             lblCMStun.DoDatabinding("Text", CharacterObject, nameof(Character.StunCM));
+            lblCMStun.DoDatabinding("Visible", CharacterObject, nameof(Character.StunCMVisible));
+            lblCMStunLabel.DoDatabinding("Text", CharacterObject, nameof(Character.StunCMLabelText));
 
             lblESSMax.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayEssence));
             lblCyberwareESS.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayCyberwareEssence));
@@ -638,6 +643,19 @@ namespace Chummer
             lblLiftCarry.DoDatabinding("Text", CharacterObject, nameof(Character.LiftAndCarry));
             lblMemory.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.MemoryToolTip));
             lblMemory.DoDatabinding("Text", CharacterObject, nameof(Character.Memory));
+
+            lblINI.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.InitiativeToolTip));
+            lblINI.DoDatabinding("Text", CharacterObject, nameof(Character.Initiative));
+            lblAstralINI.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.AstralInitiativeToolTip));
+            lblAstralINI.DoDatabinding("Text", CharacterObject, nameof(Character.AstralInitiative));
+            lblMatrixINI.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.MatrixInitiativeToolTip));
+            lblMatrixINI.DoDatabinding("Text", CharacterObject, nameof(Character.MatrixInitiative));
+            lblMatrixINICold.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.MatrixInitiativeColdToolTip));
+            lblMatrixINICold.DoDatabinding("Text", CharacterObject, nameof(Character.MatrixInitiativeCold));
+            lblMatrixINIHot.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.MatrixInitiativeHotToolTip));
+            lblMatrixINIHot.DoDatabinding("Text", CharacterObject, nameof(Character.MatrixInitiativeHot));
+            lblRiggingINI.DoDatabinding("ToolTipText", CharacterObject, nameof(Character.InitiativeToolTip));
+            lblRiggingINI.DoDatabinding("Text", CharacterObject, nameof(Character.Initiative));
 
             cmdAddCyberware.DoDatabinding("Enabled", CharacterObject, nameof(Character.AddCyberwareEnabled));
             cmdAddBioware.DoDatabinding("Enabled", CharacterObject, nameof(Character.AddBiowareEnabled));
@@ -1471,9 +1489,6 @@ namespace Chummer
                         {
                             tabCharacterTabs.TabPages.Remove(tabInitiation);
                         }
-                        chkInitiationGroup.Visible = CharacterObject.InitiationEnabled;
-                        chkInitiationOrdeal.Visible = CharacterObject.InitiationEnabled;
-                        chkInitiationSchooling.Visible = CharacterObject.InitiationEnabled;
                     }
                     break;
                 case nameof(Character.QuickeningEnabled):
@@ -2791,9 +2806,16 @@ namespace Chummer
         private void treMartialArts_AfterSelect(object sender, TreeViewEventArgs e)
         {
             IsRefreshing = true;
-            if (treMartialArts.SelectedNode?.Tag is IHasSource selected)
+            if (treMartialArts.SelectedNode?.Tag is IHasSource objSelected)
             {
-                selected.SetSourceDetail(lblMartialArtSource);
+                lblMartialArtSourceLabel.Visible = true;
+                lblMartialArtSource.Visible = true;
+                objSelected.SetSourceDetail(lblMartialArtSource);
+            }
+            else
+            {
+                lblMartialArtSourceLabel.Visible = false;
+                lblMartialArtSource.Visible = false;
             }
             if (treMartialArts.SelectedNode?.Tag is MartialArt objMartialArt)
             {
@@ -10097,16 +10119,18 @@ namespace Chummer
             {
                 lblQualitySourceLabel.Visible = false;
                 lblQualityBPLabel.Visible = false;
-                lblQualitySource.Text = string.Empty;
-                lblQualitySource.SetToolTip(null);
-                lblQualityBP.Text = string.Empty;
+                lblQualitySource.Visible = false;
+                lblQualityBP.Visible = false;
             }
             else
             {
                 lblQualitySourceLabel.Visible = true;
                 lblQualityBPLabel.Visible = true;
+                lblQualitySource.Visible = true;
+                lblQualityBP.Visible = true;
                 objQuality.SetSourceDetail(lblQualitySource);
-                lblQualityBP.Text = (objQuality.BP * objQuality.Levels * CharacterObjectOptions.KarmaQuality).ToString() + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
+                lblQualityBP.Text = (objQuality.BP * objQuality.Levels * CharacterObjectOptions.KarmaQuality).ToString(GlobalOptions.CultureInfo) +
+                                    LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
             }
         }
 #endregion
@@ -10920,14 +10944,14 @@ namespace Chummer
 
         private void cboVehicleGearAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !cboVehicleGearAttack.Enabled)
+            if (IsRefreshing || !cboVehicleAttack.Enabled)
                 return;
 
             IsRefreshing = true;
 
             if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
-            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleGearAttack, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
+            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleAttack, cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -10937,14 +10961,14 @@ namespace Chummer
         }
         private void cboVehicleGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !cboVehicleGearSleaze.Enabled)
+            if (IsRefreshing || !cboVehicleSleaze.Enabled)
                 return;
 
             IsRefreshing = true;
 
             if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
-            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleGearSleaze, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
+            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleSleaze, cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -10954,14 +10978,14 @@ namespace Chummer
         }
         private void cboVehicleGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !cboVehicleGearFirewall.Enabled)
+            if (IsRefreshing || !cboVehicleFirewall.Enabled)
                 return;
 
             IsRefreshing = true;
 
             if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
-            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleGearFirewall, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
+            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleFirewall, cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -10971,14 +10995,14 @@ namespace Chummer
         }
         private void cboVehicleGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !cboVehicleGearDataProcessing.Enabled)
+            if (IsRefreshing || !cboVehicleDataProcessing.Enabled)
                 return;
 
             IsRefreshing = true;
 
             if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
-            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleGearDataProcessing, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
+            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleDataProcessing, cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -10987,9 +11011,9 @@ namespace Chummer
             IsRefreshing = false;
         }
 
-        private void cboCyberwareGearAttack_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboCyberwareAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !cboCyberwareGearAttack.Enabled)
+            if (IsRefreshing || !cboCyberwareAttack.Enabled)
                 return;
 
             IsRefreshing = true;
@@ -10997,7 +11021,7 @@ namespace Chummer
             if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
 
-            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboCyberwareGearAttack, cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall))
+            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboCyberwareAttack, cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -11005,9 +11029,9 @@ namespace Chummer
 
             IsRefreshing = false;
         }
-        private void cboCyberwareGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboCyberwareSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !cboCyberwareGearSleaze.Enabled)
+            if (IsRefreshing || !cboCyberwareSleaze.Enabled)
                 return;
 
             IsRefreshing = true;
@@ -11015,7 +11039,7 @@ namespace Chummer
             if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
 
-            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboCyberwareGearSleaze, cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall))
+            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboCyberwareSleaze, cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -11023,9 +11047,9 @@ namespace Chummer
 
             IsRefreshing = false;
         }
-        private void cboCyberwareGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboCyberwareDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !cboCyberwareGearDataProcessing.Enabled)
+            if (IsRefreshing || !cboCyberwareDataProcessing.Enabled)
                 return;
 
             IsRefreshing = true;
@@ -11033,7 +11057,7 @@ namespace Chummer
             if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
 
-            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboCyberwareGearDataProcessing, cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall))
+            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboCyberwareDataProcessing, cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -11041,9 +11065,9 @@ namespace Chummer
 
             IsRefreshing = false;
         }
-        private void cboCyberwareGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboCyberwareFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !cboCyberwareGearFirewall.Enabled)
+            if (IsRefreshing || !cboCyberwareFirewall.Enabled)
                 return;
 
             IsRefreshing = true;
@@ -11051,7 +11075,7 @@ namespace Chummer
             if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
 
-            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboCyberwareGearFirewall, cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall))
+            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboCyberwareFirewall, cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -11864,9 +11888,16 @@ namespace Chummer
         #region Additional Initiation Tab Control Events
         private void treMetamagic_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (treMetamagic.SelectedNode?.Tag is IHasSource selected)
+            if (treMetamagic.SelectedNode?.Tag is IHasSource objSelected)
             {
-                selected.SetSourceDetail(lblMetamagicSource);
+                lblMetamagicSourceLabel.Visible = true;
+                lblMetamagicSource.Visible = true;
+                objSelected.SetSourceDetail(lblMetamagicSource);
+            }
+            else
+            {
+                lblMetamagicSourceLabel.Visible = false;
+                lblMetamagicSource.Visible = false;
             }
             switch (treMetamagic.SelectedNode?.Tag)
             {
@@ -13040,143 +13071,6 @@ namespace Chummer
 
             // TODO: DataBind these wherever possible
             
-            string strModifiers = LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language);
-
-            // Update the Condition Monitor labels.
-            bool blnIsAI = CharacterObject.IsAI;
-            if (blnIsAI)
-            {
-                if (CharacterObject.HomeNode == null)
-                {
-                    lblCMPhysicalLabel.Text = LanguageManager.GetString("Label_OtherCoreCM", GlobalOptions.Language);
-                    lblCMStunLabel.Text = string.Empty;
-                    lblCMStun.Visible = false;
-
-                    string strCM = $"8 + ({CharacterObject.DEP.DisplayAbbrev}/2)({(CharacterObject.DEP.TotalValue + 1) / 2})";
-
-                    int intBonus = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.PhysicalCM);
-                    if (intBonus != 0)
-                        strCM += " + " + strModifiers + " (" + intBonus.ToString() + ')';
-
-                    lblCMPhysical.SetToolTip(strCM);
-                    lblCMStun.SetToolTip(string.Empty);
-                }
-                else
-                {
-                    lblCMStunLabel.Text = LanguageManager.GetString("Label_OtherMatrixCM", GlobalOptions.Language);
-                    lblCMStun.Visible = true;
-
-                    string strCM = $"8 + ({LanguageManager.GetString("String_DeviceRating", GlobalOptions.Language)}/2)({(CharacterObject.HomeNode.GetTotalMatrixAttribute("Device Rating") + 1) / 2})";
-
-                    int intBonus = CharacterObject.HomeNode.TotalBonusMatrixBoxes;
-                    if (intBonus != 0)
-                        strCM += " + " + strModifiers + " (" + intBonus.ToString() + ')';
-
-                    lblCMPhysical.SetToolTip(strCM);
-
-                    if (CharacterObject.HomeNode is Vehicle objVehicleHomeNode)
-                    {
-                        lblCMPhysicalLabel.Text = LanguageManager.GetString("Label_OtherPhysicalCM", GlobalOptions.Language);
-                        strCM = $"{objVehicleHomeNode.BasePhysicalBoxes} + ({CharacterObject.BOD.DisplayAbbrev}/2)({(objVehicleHomeNode.TotalBody + 1) / 2})";
-
-                        intBonus = objVehicleHomeNode.Mods.Sum(objMod => objMod.ConditionMonitor);
-                        if (intBonus != 0)
-                            strCM += " + " + strModifiers + " (" + intBonus.ToString() + ')';
-
-                        lblCMPhysical.SetToolTip(strCM);
-                    }
-                    else
-                    {
-                        lblCMPhysicalLabel.Text = LanguageManager.GetString("Label_OtherCoreCM", GlobalOptions.Language);
-                        strCM = $"8 + ({CharacterObject.DEP.DisplayAbbrev}/2)({(CharacterObject.DEP.TotalValue + 1) / 2})";
-
-                        intBonus = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.PhysicalCM);
-                        if (intBonus != 0)
-                            strCM += " + " + strModifiers + " (" + intBonus.ToString() + ')';
-
-                        lblCMPhysical.SetToolTip(strCM);
-                    }
-                }
-            }
-            else
-            {
-                lblCMPhysicalLabel.Text = LanguageManager.GetString("Label_OtherPhysicalCM", GlobalOptions.Language);
-                lblCMStunLabel.Text = LanguageManager.GetString("Label_OtherStunCM", GlobalOptions.Language);
-                lblCMStun.Visible = true;
-                string strCM = $"8 + ({CharacterObject.BOD.DisplayAbbrev}/2)({(CharacterObject.BOD.TotalValue + 1) / 2})";
-
-                int intBonus = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.PhysicalCM);
-                if (intBonus != 0)
-                    strCM += " + " + strModifiers + " (" + intBonus.ToString() + ')';
-                lblCMPhysical.SetToolTip(strCM);
-
-                strCM = $"8 + ({CharacterObject.WIL.DisplayAbbrev}/2)({(CharacterObject.WIL.TotalValue + 1) / 2})";
-                intBonus = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.StunCM);
-                if (intBonus != 0)
-                    strCM += " + " + strModifiers + " (" + intBonus.ToString() + ')';
-                lblCMStun.SetToolTip(strCM);
-            }
-            
-            int intINTAttributeModifiers = CharacterObject.INT.AttributeModifiers;
-            int intREAAttributeModifiers = CharacterObject.REA.AttributeModifiers;
-
-            // Initiative.
-            lblINI.Text = CharacterObject.Initiative;
-            string strInitText = LanguageManager.GetString("String_Initiative", GlobalOptions.Language);
-            string strMatrixInitText = LanguageManager.GetString("String_MatrixInitiativeLong", GlobalOptions.Language);
-            string strInit =
-                $"{CharacterObject.REA.DisplayAbbrev} ({CharacterObject.REA.Value}) + {CharacterObject.INT.DisplayAbbrev} ({CharacterObject.INT.Value})";
-            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Initiative) > 0 ||
-                intINTAttributeModifiers > 0 || intREAAttributeModifiers > 0)
-                strInit += " + " + strModifiers + " (" +
-                           (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Initiative) +
-                            intINTAttributeModifiers + intREAAttributeModifiers) + ')';
-            lblINI.SetToolTip(strInitText.Replace("{0}", strInit).Replace("{1}", CharacterObject.InitiativeDice.ToString()));
-
-            // Astral Initiative.
-            lblAstralINI.Text = CharacterObject.AstralInitiative;
-            if (CharacterObject.MAGEnabled)
-            {
-                strInit = $"{CharacterObject.INT.DisplayAbbrev} ({CharacterObject.INT.Value}) x 2";
-                if (intINTAttributeModifiers > 0)
-                    strInit += $"{strModifiers} ({intINTAttributeModifiers})";
-                lblAstralINI.SetToolTip(strInitText.Replace("{0}", strInit).Replace("{1}", CharacterObject.AstralInitiativeDice.ToString()));
-            }
-            else
-                lblAstralINI.SetToolTip(string.Empty);
-
-            // Matrix Initiative (AR).
-            lblMatrixINI.Text = CharacterObject.MatrixInitiative;
-            strInit =
-                $"{CharacterObject.REA.DisplayAbbrev} ({CharacterObject.REA.Value}) + {CharacterObject.INT.DisplayAbbrev} ({CharacterObject.INT.Value})";
-            if (intINTAttributeModifiers > 0 || intREAAttributeModifiers > 0)
-                strInit += $"{strModifiers} ({intREAAttributeModifiers + intINTAttributeModifiers})";
-            lblMatrixINI.SetToolTip(strInitText.Replace("{0}", strInit).Replace("{1}", CharacterObject.InitiativeDice.ToString()));
-
-            // Matrix Initiative (Cold).
-            lblMatrixINICold.Text = CharacterObject.MatrixInitiativeCold;
-            strInit = strMatrixInitText.Replace("{0}", CharacterObject.INT.Value.ToString())
-                .Replace("{1}", CharacterObject.MatrixInitiativeColdDice.ToString());
-            if (intINTAttributeModifiers > 0)
-                strInit += $"{strModifiers} ({intINTAttributeModifiers})";
-            lblMatrixINICold.SetToolTip(strInit);
-
-            // Matrix Initiative (Hot).
-            lblMatrixINIHot.Text = CharacterObject.MatrixInitiativeHot;
-            strInit = strMatrixInitText.Replace("{0}", CharacterObject.INT.Value.ToString())
-                .Replace("{1}", CharacterObject.MatrixInitiativeHotDice.ToString());
-            if (intINTAttributeModifiers > 0)
-                strInit += $"{strModifiers} ({intINTAttributeModifiers})";
-            lblMatrixINIHot.SetToolTip(strInit);
-
-            // Rigger Initiative.
-            lblRiggingINI.Text = CharacterObject.Initiative;
-            strInit =
-                $"{CharacterObject.REA.DisplayAbbrev} ({CharacterObject.REA.Value}) + {CharacterObject.INT.DisplayAbbrev} ({CharacterObject.INT.Value})";
-            if (intINTAttributeModifiers > 0 || intREAAttributeModifiers > 0)
-                strInit += $"{strModifiers} ({intREAAttributeModifiers + intINTAttributeModifiers})";
-            lblRiggingINI.SetToolTip(strInitText.Replace("{0}", strInit).Replace("{1}", CharacterObject.InitiativeDice.ToString()));
-
             if ((CharacterObject.Metatype == "Free Spirit" && !CharacterObject.IsCritter) ||
                 CharacterObject.MetatypeCategory.EndsWith("Spirits"))
             {
@@ -13222,98 +13116,86 @@ namespace Chummer
         public void RefreshSelectedCyberware()
         {
             IsRefreshing = true;
-            tlpCyberware.SuspendLayout();
-            cboCyberwareGearAttack.Visible = false;
-            cboCyberwareGearSleaze.Visible = false;
-            cboCyberwareGearDataProcessing.Visible = false;
-            cboCyberwareGearFirewall.Visible = false;
-            cboCyberwareGearOverclocker.Visible = false;
-            lblCyberDeviceRating.Visible = false;
-            lblCyberDeviceRatingLabel.Visible = false;
-            lblCyberAttackLabel.Visible = false;
-            lblCyberSleazeLabel.Visible = false;
-            lblCyberDataProcessingLabel.Visible = false;
-            lblCyberFirewallLabel.Visible = false;
-            cmdDeleteCyberware.Enabled = treCyberware.SelectedNode != null && treCyberware.SelectedNode.Level != 0;
-            cmdCyberwareChangeMount.Visible = false;
-            tabCyberwareCM.Visible = false;
-
-            chkCyberwareActiveCommlink.Visible = false;
-            chkCyberwareHomeNode.Visible = false;
-
+            flpCyberware.SuspendLayout();
+            
             if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level == 0)
             {
-                lblCyberwareName.Text = string.Empty;
-                lblCyberwareCategory.Text = string.Empty;
-                lblCyberwareRating.Text = string.Empty;
-                lblCyberwareAvail.Text = string.Empty;
-                lblCyberwareCost.Text = string.Empty;
-                lblCyberwareCapacity.Text = string.Empty;
-                lblCyberwareEssence.Text = string.Empty;
-                lblCyberwareSource.Text = string.Empty;
-                lblCyberwareSource.SetToolTip(null);
-                lblCyberlimbAGI.Visible = false;
-                lblCyberlimbAGILabel.Visible = false;
-                lblCyberlimbSTR.Visible = false;
-                lblCyberlimbSTRLabel.Visible = false;
+                gpbCyberwareCommon.Visible = false;
+                gpbCyberwareMatrix.Visible = false;
+                tabCyberwareCM.Visible = false;
+
+                // Buttons
+                cmdDeleteCyberware.Enabled = false;
+
                 IsRefreshing = false;
-                tlpCyberware.ResumeLayout();
+                flpCyberware.ResumeLayout();
                 return;
             }
 
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             string strESSFormat = CharacterObjectOptions.EssenceFormat;
-            if (treCyberware.SelectedNode?.Tag is IHasSource selected)
+            if (treCyberware.SelectedNode?.Tag is IHasSource objSelected)
             {
-                selected.SetSourceDetail(lblCyberwareSource);
+                lblCyberwareSourceLabel.Visible = true;
+                lblCyberwareSource.Visible = true;
+                objSelected.SetSourceDetail(lblCyberwareSource);
             }
-            // Locate the selected piece of Cyberware.
+            else
+            {
+                lblCyberwareSourceLabel.Visible = false;
+                lblCyberwareSource.Visible = false;
+            }
             if (treCyberware.SelectedNode?.Tag is Cyberware objCyberware)
             {
-                if (!string.IsNullOrEmpty(objCyberware.ParentID))
-                    cmdDeleteCyberware.Enabled = false;
-                cmdCyberwareChangeMount.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount);
+                gpbCyberwareCommon.Visible = true;
+                gpbCyberwareMatrix.Visible = tabCyberwareCM.Visible = objCyberware.SourceType == Improvement.ImprovementSource.Cyberware;
+
+                // Buttons
+                cmdDeleteCyberware.Enabled = string.IsNullOrEmpty(objCyberware.ParentID);
+
+                // gpbCyberwareCommon
                 lblCyberwareName.Text = objCyberware.DisplayNameShort(GlobalOptions.Language);
                 lblCyberwareCategory.Text = objCyberware.DisplayCategory(GlobalOptions.Language);
-                lblCyberwareRating.Text = objCyberware.Rating.ToString();
-
+                lblCyberwareGradeLabel.Visible = true;
+                lblCyberwareGrade.Visible = true;
                 lblCyberwareGrade.Text = objCyberware.Grade.DisplayName(GlobalOptions.Language);
-
+                lblCyberwareEssenceLabel.Visible = true;
+                lblCyberwareEssence.Visible = true;
+                if (objCyberware.Parent == null)
+                    lblCyberwareEssence.Text = objCyberware.CalculatedESS().ToString(strESSFormat, GlobalOptions.CultureInfo);
+                else if (objCyberware.AddToParentESS)
+                    lblCyberwareEssence.Text = '+' + objCyberware.CalculatedESS().ToString(strESSFormat, GlobalOptions.CultureInfo);
+                else
+                    lblCyberwareEssence.Text = (0.0m).ToString(strESSFormat, GlobalOptions.CultureInfo);
+                lblCyberwareAvail.Text = objCyberware.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                cmdCyberwareChangeMount.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount);
+                lblCyberwareRating.Text = objCyberware.Rating.ToString();
+                lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + strSpace + '(' + objCyberware.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) +
+                                            strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
+                lblCyberwareCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 if (objCyberware.Category.Equals("Cyberlimb"))
                 {
-                    lblCyberlimbAGI.Visible = true;
                     lblCyberlimbAGILabel.Visible = true;
-                    lblCyberlimbSTR.Visible = true;
-                    lblCyberlimbSTRLabel.Visible = true;
-
+                    lblCyberlimbAGI.Visible = true;
                     lblCyberlimbAGI.Text = objCyberware.TotalAgility.ToString();
+                    lblCyberlimbSTRLabel.Visible = true;
+                    lblCyberlimbSTR.Visible = true;
                     lblCyberlimbSTR.Text = objCyberware.TotalStrength.ToString();
                 }
                 else
                 {
-                    lblCyberlimbAGI.Visible = false;
                     lblCyberlimbAGILabel.Visible = false;
-                    lblCyberlimbSTR.Visible = false;
+                    lblCyberlimbAGI.Visible = false;
                     lblCyberlimbSTRLabel.Visible = false;
+                    lblCyberlimbSTR.Visible = false;
                 }
 
-                if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
+                // gpbCyberwareMatrix
+                if (gpbCyberwareMatrix.Visible)
                 {
-                    // Locate the selected Cyberware.
-                    tabCyberwareCM.Visible = (treCyberware.SelectedNode?.Tag is IHasMatrixConditionMonitor);
-
-                    if (treCyberware.SelectedNode?.Tag is IHasMatrixConditionMonitor objMatrixCM)
-                    {
-                        ProcessEquipmentConditionMonitorBoxDisplays(tabCyberwareCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
-                    }
-
-                    lblCyberDeviceRating.Text = objCyberware.GetTotalMatrixAttribute("Device Rating").ToString();
-                    lblCyberDeviceRating.Visible = true;
-                    lblCyberDeviceRatingLabel.Visible = true;
-                    lblCyberAttackLabel.Visible = true;
-                    lblCyberSleazeLabel.Visible = true;
-                    lblCyberDataProcessingLabel.Visible = true;
-                    lblCyberFirewallLabel.Visible = true;
-                    objCyberware.RefreshMatrixAttributeCBOs(cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall);
+                    int intDeviceRating = objCyberware.GetTotalMatrixAttribute("Device Rating");
+                    lblCyberDeviceRating.Text = intDeviceRating.ToString();
+                    objCyberware.RefreshMatrixAttributeCBOs(cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall);
 
                     chkCyberwareActiveCommlink.Visible = objCyberware.IsCommlink;
                     chkCyberwareActiveCommlink.Checked = objCyberware.IsActiveCommlink(CharacterObject);
@@ -13321,35 +13203,62 @@ namespace Chummer
                     {
                         chkCyberwareHomeNode.Visible = true;
                         chkCyberwareHomeNode.Checked = objCyberware.IsHomeNode(CharacterObject);
-                        chkCyberwareHomeNode.Enabled = chkCyberwareActiveCommlink.Visible && objCyberware.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objCyberware.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
+                        chkCyberwareHomeNode.Enabled = chkCyberwareActiveCommlink.Visible &&
+                                                       objCyberware.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
                     }
-                }
-                else
-                {
-                    tabCyberwareCM.Visible = false;
-                }
+                    else
+                        chkCyberwareHomeNode.Visible = false;
 
-                lblCyberwareAvail.Text = objCyberware.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblCyberwareCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + " (" +
-                                            objCyberware.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) +
-                                            LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
-                if (objCyberware.Parent == null)
-                    lblCyberwareEssence.Text = objCyberware.CalculatedESS().ToString(strESSFormat, GlobalOptions.CultureInfo);
-                else if (objCyberware.AddToParentESS)
-                    lblCyberwareEssence.Text = '+' + objCyberware.CalculatedESS().ToString(strESSFormat, GlobalOptions.CultureInfo);
-                else
-                    lblCyberwareEssence.Text = (0.0m).ToString(strESSFormat, GlobalOptions.CultureInfo);
+                    lblCyberwareGearOverclocker.Visible = false;
+                    cboCyberwareOverclocker.Visible = false;
+                }
             }
             else if (treCyberware.SelectedNode?.Tag is Gear objGear)
             {
-                // Locate the selected piece of Gear.
-                if (objGear.IncludedInParent)
-                    cmdDeleteCyberware.Enabled = false;
+                gpbCyberwareCommon.Visible = true;
+                gpbCyberwareMatrix.Visible = true;
+                tabCyberwareCM.Visible = true;
+
+                // Buttons
+                cmdDeleteCyberware.Enabled = !objGear.IncludedInParent;
+
+                // gpbCyberwareCommon
+                lblCyberwareName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
+                lblCyberwareCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
+                lblCyberwareGradeLabel.Visible = false;
+                lblCyberwareGrade.Visible = false;
+                lblCyberwareEssenceLabel.Visible = false;
+                lblCyberwareEssence.Visible = false;
+                lblCyberwareAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+
+                lblCyberwareRating.Text = objGear.Rating.ToString();
+                lblCyberwareCapacity.Text = objGear.CalculatedCapacity + strSpace + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) +
+                                            strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
+                lblCyberwareCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblCyberlimbAGILabel.Visible = false;
+                lblCyberlimbAGI.Visible = false;
+                lblCyberlimbSTRLabel.Visible = false;
+                lblCyberlimbSTR.Visible = false;
+
+                // gpbCyberwareMatrix
+                int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
+                lblCyberDeviceRating.Text = intDeviceRating.ToString();
+                objGear.RefreshMatrixAttributeCBOs(cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall);
+                
+                chkCyberwareActiveCommlink.Visible = objGear.IsCommlink;
+                chkCyberwareActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
+                if (CharacterObject.IsAI)
+                {
+                    chkCyberwareHomeNode.Visible = true;
+                    chkCyberwareHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
+                    chkCyberwareHomeNode.Enabled = chkCyberwareActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                }
+                else
+                    chkCyberwareHomeNode.Visible = false;
 
                 if (CharacterObject.Overclocker && objGear.Category == "Cyberdecks")
                 {
-                    cboCyberwareGearOverclocker.Visible = true;
+                    cboCyberwareOverclocker.Visible = true;
                     lblCyberwareGearOverclocker.Visible = true;
                     List<ListItem> lstOverclocker = new List<ListItem>
                         {
@@ -13360,53 +13269,36 @@ namespace Chummer
                             new ListItem("Firewall", LanguageManager.GetString("String_Firewall", GlobalOptions.Language))
                         };
 
-                    cboCyberwareGearOverclocker.BindingContext = new BindingContext();
-                    cboCyberwareGearOverclocker.DisplayMember = "Name";
-                    cboCyberwareGearOverclocker.ValueMember = "Value";
-                    cboCyberwareGearOverclocker.DataSource = lstOverclocker;
-                    cboCyberwareGearOverclocker.SelectedValue = objGear.Overclocked;
-                    if (cboCyberwareGearOverclocker.SelectedIndex == -1)
-                        cboCyberwareGearOverclocker.SelectedIndex = 0;
-                    cboCyberwareGearOverclocker.EndUpdate();
+                    cboCyberwareOverclocker.DataSource = null;
+                    cboCyberwareOverclocker.DisplayMember = nameof(ListItem.Name);
+                    cboCyberwareOverclocker.ValueMember = nameof(ListItem.Value);
+                    cboCyberwareOverclocker.DataSource = lstOverclocker;
+                    cboCyberwareOverclocker.SelectedValue = objGear.Overclocked;
+                    if (cboCyberwareOverclocker.SelectedIndex == -1)
+                        cboCyberwareOverclocker.SelectedIndex = 0;
+                    cboCyberwareOverclocker.EndUpdate();
                 }
                 else
                 {
-                    cboCyberwareGearOverclocker.Visible = false;
+                    cboCyberwareOverclocker.Visible = false;
                     lblCyberwareGearOverclocker.Visible = false;
                 }
-
-                objGear.RefreshMatrixAttributeCBOs(cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall);
-
-                int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
-                chkCyberwareActiveCommlink.Visible = objGear.IsCommlink;
-                chkCyberwareActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
-                if (CharacterObject.IsAI)
-                {
-                    chkCyberwareHomeNode.Visible = true;
-                    chkCyberwareHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                    chkCyberwareHomeNode.Enabled = chkCyberwareActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
-                }
-
-                lblCyberDeviceRating.Text = intDeviceRating.ToString();
-                lblCyberDeviceRating.Visible = true;
-                lblCyberDeviceRatingLabel.Visible = true;
-                lblCyberAttackLabel.Visible = true;
-                lblCyberSleazeLabel.Visible = true;
-                lblCyberDataProcessingLabel.Visible = true;
-                lblCyberFirewallLabel.Visible = true;
-
-                lblCyberwareName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
-                lblCyberwareCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
-                lblCyberwareAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblCyberwareCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                lblCyberwareCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) +
-                                            LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
-                lblCyberwareEssence.Text = (0.0m).ToString(strESSFormat, GlobalOptions.CultureInfo);
-                lblCyberwareGrade.Text = string.Empty;
-                lblCyberwareRating.Text = objGear.Rating.ToString();
             }
+
+            if (tabCyberwareCM.Visible)
+            {
+                if (treCyberware.SelectedNode?.Tag is IHasMatrixConditionMonitor objMatrixCM)
+                {
+                    ProcessEquipmentConditionMonitorBoxDisplays(tabCyberwareCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
+                }
+                else
+                {
+                    tabCyberwareCM.Visible = false;
+                }
+            }
+
             IsRefreshing = false;
-            tlpCyberware.ResumeLayout();
+            flpCyberware.ResumeLayout();
         }
 
         /// <summary>
@@ -13483,9 +13375,16 @@ namespace Chummer
                 ProcessEquipmentConditionMonitorBoxDisplays(tabWeaponMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
             }
 
-            if (treWeapons.SelectedNode?.Tag is IHasSource selected)
+            if (treWeapons.SelectedNode?.Tag is IHasSource objSelected)
             {
-                selected.SetSourceDetail(lblWeaponSource);
+                lblWeaponSourceLabel.Visible = true;
+                lblWeaponSource.Visible = true;
+                objSelected.SetSourceDetail(lblWeaponSource);
+            }
+            else
+            {
+                lblWeaponSourceLabel.Visible = false;
+                lblWeaponSource.Visible = false;
             }
             if (treWeapons.SelectedNode?.Tag is Weapon objWeapon)
             {
@@ -13825,9 +13724,16 @@ namespace Chummer
             cmdArmorUnEquipAll.Visible = false;
             lblArmorEquippedLabel.Visible = false;
             lblArmorEquipped.Visible = false;
-            if (treArmor.SelectedNode?.Tag is IHasSource selected)
+            if (treArmor.SelectedNode?.Tag is IHasSource objSelected)
             {
-                selected.SetSourceDetail(lblArmorSource);
+                lblArmorSourceLabel.Visible = true;
+                lblArmorSource.Visible = true;
+                objSelected.SetSourceDetail(lblArmorSource);
+            }
+            else
+            {
+                lblArmorSourceLabel.Visible = false;
+                lblArmorSource.Visible = false;
             }
             if (treArmor.SelectedNode?.Tag is Armor objArmor)
             {
@@ -14010,6 +13916,7 @@ namespace Chummer
         public void RefreshSelectedGear()
         {
             IsRefreshing = true;
+            tlpGear.SuspendLayout();
             cmdDeleteGear.Enabled = treGear.SelectedNode?.Tag is ICanRemove;
             if (treGear.SelectedNode == null || treGear.SelectedNode.Level == 0)
             {
@@ -14025,6 +13932,7 @@ namespace Chummer
                 cmdGearMergeQty.Enabled = false;
                 cmdGearMoveToVehicle.Enabled = false;
                 tabGearMatrixCM.Visible = false;
+                tlpGear.ResumeLayout();
                 return;
             }
             chkGearHomeNode.Visible = false;
@@ -14187,6 +14095,7 @@ namespace Chummer
                 }
             }
             IsRefreshing = false;
+            tlpGear.ResumeLayout();
         }
 
         protected override string FormMode => LanguageManager.GetString("Title_CareerMode", GlobalOptions.Language);
@@ -14913,314 +14822,208 @@ namespace Chummer
             }
             IsRefreshing = false;
         }
-
-        /// <summary>
-        /// Switches the visibility of Weapon attributes on the Vehicles and Drones form.
-        /// </summary>
-        /// <param name="blnDisplay">Whether to hide or show the objects.</param>
-        private void DisplayVehicleWeaponStats(bool blnDisplay)
-        {
-            tlpVehicleWeapon.Visible = blnDisplay;
-            lblVehicleWeaponAP.Visible = blnDisplay;
-            lblVehicleWeaponDamage.Visible = blnDisplay;
-            lblVehicleWeaponAccuracy.Visible = blnDisplay;
-            lblVehicleWeaponMode.Visible = blnDisplay;
-            lblVehicleWeaponAmmo.Visible = blnDisplay;
-            lblVehicleWeaponDicePool.Visible = blnDisplay;
-
-            lblVehicleWeaponRangeShort.Visible = blnDisplay;
-            lblVehicleWeaponRangeMedium.Visible = blnDisplay;
-            lblVehicleWeaponRangeLong.Visible = blnDisplay;
-            lblVehicleWeaponRangeExtreme.Visible = blnDisplay;
-            
-            lblVehicleWeaponAPLabel.Visible = blnDisplay;
-            lblVehicleWeaponDamageLabel.Visible = blnDisplay;
-            lblVehicleWeaponAccuracyLabel.Visible = blnDisplay;
-            lblVehicleWeaponModeLabel.Visible = blnDisplay;
-            lblVehicleWeaponAmmoLabel.Visible = blnDisplay;
-            lblVehicleWeaponRangeLabel.Visible = blnDisplay;
-            lblVehicleWeaponDicePoolLabel.Visible = blnDisplay;
-            lblVehicleWeaponAmmoTypeLabel.Visible = blnDisplay;
-
-            lblVehicleWeaponRangeMain.Visible = blnDisplay;
-            lblVehicleWeaponRangeAlternate.Visible = blnDisplay;
-            lblVehicleWeaponRangeShortLabel.Visible = blnDisplay;
-            lblVehicleWeaponRangeMediumLabel.Visible = blnDisplay;
-            lblVehicleWeaponRangeLongLabel.Visible = blnDisplay;
-            lblVehicleWeaponRangeExtremeLabel.Visible = blnDisplay;
-            lblVehicleWeaponAlternateRangeShort.Visible = blnDisplay;
-            lblVehicleWeaponAlternateRangeMedium.Visible = blnDisplay;
-            lblVehicleWeaponAlternateRangeLong.Visible = blnDisplay;
-            lblVehicleWeaponAlternateRangeExtreme.Visible = blnDisplay;
-
-            lblFiringModeLabel.Visible = blnDisplay;
-            cboVehicleWeaponFiringMode.Visible = blnDisplay;
-            cboVehicleWeaponAmmo.Visible = blnDisplay;
-            cmdFireVehicleWeapon.Visible = blnDisplay;
-            cmdReloadVehicleWeapon.Visible = blnDisplay;
-            cmdFireVehicleWeapon.Enabled = blnDisplay;
-            cmdReloadVehicleWeapon.Enabled = blnDisplay;
-            lblVehicleWeaponAmmoRemainingLabel.Visible = blnDisplay;
-            lblVehicleWeaponAmmoRemaining.Visible = blnDisplay;
-        }
-
-        /// <summary>
-        /// Switches the visibility of Commlink attributes on the Vehicles and Drones form.
-        /// </summary>
-        /// <param name="blnDisplay">Whether to hide or show the objects.</param>
-        private void DisplayVehicleCommlinkStats(bool blnDisplay)
-        {
-            cboVehicleGearAttack.Visible = blnDisplay;
-            cboVehicleGearSleaze.Visible = blnDisplay;
-            cboVehicleGearDataProcessing.Visible = blnDisplay;
-            cboVehicleGearFirewall.Visible = blnDisplay;
-            lblVehicleAttackLabel.Visible = blnDisplay;
-            lblVehicleSleazeLabel.Visible = blnDisplay;
-            lblVehicleDataProcessingLabel.Visible = blnDisplay;
-            lblVehicleFirewallLabel.Visible = blnDisplay;
-            lblVehicleDevice.Visible = blnDisplay;
-            lblVehicleDeviceLabel.Visible = blnDisplay;
-        }
-
-        /// <summary>
-        /// Switches the visibility of Commlink attributes on the Vehicles and Drones form.
-        /// </summary>
-        /// <param name="blnDisplay">Whether to hide or show the objects.</param>
-        private void DisplayVehicleStats(bool blnDisplay)
-        {
-            lblVehicleHandling.Visible = blnDisplay;
-            lblVehicleAccel.Visible = blnDisplay;
-            lblVehicleSpeed.Visible = blnDisplay;
-            lblVehicleDevice.Visible = blnDisplay;
-            lblVehiclePilot.Visible = blnDisplay;
-            lblVehicleBody.Visible = blnDisplay;
-            lblVehicleArmor.Visible = blnDisplay;
-            lblVehicleSensor.Visible = blnDisplay;
-            lblVehicleHandlingLabel.Visible = blnDisplay;
-            lblVehicleAccelLabel.Visible = blnDisplay;
-            lblVehicleSpeedLabel.Visible = blnDisplay;
-            lblVehicleDeviceLabel.Visible = blnDisplay;
-            lblVehiclePilotLabel.Visible = blnDisplay;
-            lblVehicleBodyLabel.Visible = blnDisplay;
-            lblVehicleArmorLabel.Visible = blnDisplay;
-            lblVehicleSensorLabel.Visible = blnDisplay;
-            lblVehiclePowertrainLabel.Visible = blnDisplay;
-            lblVehiclePowertrain.Visible = blnDisplay;
-            lblVehicleCosmeticLabel.Visible = blnDisplay;
-            lblVehicleCosmetic.Visible = blnDisplay;
-            lblVehicleElectromagneticLabel.Visible = blnDisplay;
-            lblVehicleElectromagnetic.Visible = blnDisplay;
-            lblVehicleBodymodLabel.Visible = blnDisplay;
-            lblVehicleBodymod.Visible = blnDisplay;
-            lblVehicleWeaponsmodLabel.Visible = blnDisplay;
-            lblVehicleWeaponsmod.Visible = blnDisplay;
-            lblVehicleProtectionLabel.Visible = blnDisplay;
-            lblVehicleProtection.Visible = blnDisplay;
-            lblVehicleDroneModSlotsLabel.Visible = blnDisplay;
-            lblVehicleDroneModSlots.Visible = blnDisplay;
-            lblVehicleSeatsLabel.Visible = blnDisplay;
-            lblVehicleSeats.Visible = blnDisplay;
-        }
-
-        /// <summary>
-        /// Switches the visibility of Vehicle (non-drone) Mods on the Vehicles and Drones form.
-        /// </summary>
-        /// <param name="blnDisplay">Whether to hide or show the objects.</param>
-        private void DisplayVehicleMods(bool blnDisplay)
-        {
-            lblVehiclePowertrainLabel.Visible = blnDisplay;
-            lblVehiclePowertrain.Visible = blnDisplay;
-            lblVehicleCosmeticLabel.Visible = blnDisplay;
-            lblVehicleCosmetic.Visible = blnDisplay;
-            lblVehicleElectromagneticLabel.Visible = blnDisplay;
-            lblVehicleElectromagnetic.Visible = blnDisplay;
-            lblVehicleBodymodLabel.Visible = blnDisplay;
-            lblVehicleBodymod.Visible = blnDisplay;
-            lblVehicleWeaponsmodLabel.Visible = blnDisplay;
-            lblVehicleWeaponsmod.Visible = blnDisplay;
-            lblVehicleProtectionLabel.Visible = blnDisplay;
-            lblVehicleProtection.Visible = blnDisplay;
-        }
-
-        /// <summary>
-        /// Switches the visibility of Drone Mods on the Vehicles and Drones form.
-        /// </summary>
-        /// <param name="blnDisplay">Whether to hide or show the objects.</param>
-        private void DisplayVehicleDroneMods(bool blnDisplay)
-        {
-            lblVehicleDroneModSlotsLabel.Visible = blnDisplay;
-            lblVehicleDroneModSlots.Visible = blnDisplay;
-        }
-
+        
         /// <summary>
         /// Refresh the currently-selected Vehicle.
         /// </summary>
         private void RefreshSelectedVehicle()
         {
             IsRefreshing = true;
-            System.Windows.Forms.Cursor eOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-            tlpVehicles.SuspendLayout();
+            flpVehicles.SuspendLayout();
+
             string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
-            cmdDeleteVehicle.Enabled = !string.IsNullOrEmpty(strSelectedId) && strSelectedId != "Node_SelectedVehicles" && strSelectedId != "String_WeaponMounts";
-            cmdVehicleCyberwareChangeMount.Visible = false;
-
-            lblVehicleGearQty.Text = string.Empty;
-            cmdVehicleGearReduceQty.Enabled = false;
-            cmdVehicleMoveToInventory.Enabled = false;
-
-            chkVehicleHomeNode.Visible = false;
-            chkVehicleActiveCommlink.Visible = false;
-            lblVehicleSlotsLabel.Visible = false;
-            lblVehicleSlots.Visible = false;
 
             if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0 || strSelectedId == "String_WeaponMounts")
             {
                 panVehicleCM.Visible = false;
-                DisplayVehicleWeaponStats(false);
-                DisplayVehicleCommlinkStats(false);
-                DisplayVehicleStats(false);
+                gpbVehiclesCommon.Visible = false;
+                gpbVehiclesVehicle.Visible = false;
+                gpbVehiclesWeapon.Visible = false;
+                gpbVehiclesMatrix.Visible = false;
 
-                lblVehicleCategory.Text = string.Empty;
-                lblVehicleName.Text = string.Empty;
-                lblVehicleAvail.Text = string.Empty;
-                lblVehicleCost.Text = string.Empty;
-                lblVehicleSource.Text = string.Empty;
+                // Buttons
+                cmdDeleteVehicle.Enabled = false;
 
-                chkVehicleWeaponAccessoryInstalled.Enabled = false;
                 IsRefreshing = false;
-                tlpVehicles.ResumeLayout();
-                Cursor = eOldCursor;
+                flpVehicles.ResumeLayout();
                 return;
             }
 
-            if (treVehicles.SelectedNode?.Tag is IHasSource selected)
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+
+            if (treVehicles.SelectedNode?.Tag is IHasSource objSelected)
             {
-                selected.SetSourceDetail(lblVehicleSource);
+                lblVehicleSourceLabel.Visible = true;
+                lblVehicleSource.Visible = true;
+                objSelected.SetSourceDetail(lblVehicleSource);
+            }
+            else
+            {
+                lblVehicleSourceLabel.Visible = false;
+                lblVehicleSource.Visible = false;
             }
             // Locate the selected Vehicle.
             if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle)
             {
-                if (!string.IsNullOrEmpty(objVehicle.ParentID))
-                    cmdDeleteVehicle.Enabled = false;
+                gpbVehiclesCommon.Visible = true;
+                gpbVehiclesVehicle.Visible = true;
+                gpbVehiclesWeapon.Visible = false;
+                gpbVehiclesMatrix.Visible = true;
+
+                // Buttons
+                cmdDeleteVehicle.Enabled = string.IsNullOrEmpty(objVehicle.ParentID);
+
+                // gpbVehiclesCommon
+                lblVehicleName.Text = objVehicle.DisplayNameShort(GlobalOptions.Language);
+                lblVehicleCategory.Text = objVehicle.DisplayCategory(GlobalOptions.Language);
                 lblVehicleRatingLabel.Visible = false;
                 lblVehicleRating.Visible = false;
-
-                lblVehicleName.Text = objVehicle.DisplayNameShort(GlobalOptions.Language);
-                lblVehicleNameLabel.Visible = true;
-                lblVehicleCategory.Text = objVehicle.DisplayCategory(GlobalOptions.Language);
-                lblVehicleCategoryLabel.Visible = true;
-                lblVehicleAvailLabel.Visible = true;
+                lblVehicleGearQtyLabel.Visible = false;
+                lblVehicleGearQty.Visible = false;
+                cmdVehicleGearReduceQty.Visible = false;
                 lblVehicleAvail.Text = objVehicle.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblVehicleCostLabel.Visible = true;
                 lblVehicleCost.Text = objVehicle.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblVehicleSlotsLabel.Visible = !CharacterObjectOptions.BookEnabled("R5");
+                lblVehicleSlots.Visible = !CharacterObjectOptions.BookEnabled("R5");
+                if (!CharacterObjectOptions.BookEnabled("R5"))
+                    lblVehicleSlots.Text = objVehicle.Slots + strSpace + '(' + (objVehicle.Slots - objVehicle.SlotsUsed) +
+                                           strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
+                cmdVehicleMoveToInventory.Visible = false;
+                cmdVehicleCyberwareChangeMount.Visible = false;
+                chkVehicleWeaponAccessoryInstalled.Visible = false;
+                chkVehicleIncludedInWeapon.Visible = false;
+
+                // gpbVehiclesVehicle
                 lblVehicleHandling.Text = objVehicle.TotalHandling;
                 lblVehicleAccel.Text = objVehicle.TotalAccel;
                 lblVehicleSpeed.Text = objVehicle.TotalSpeed;
-                lblVehicleDevice.Text = objVehicle.GetTotalMatrixAttribute("Device Rating").ToString();
-                lblVehiclePilot.Text = objVehicle.Pilot.ToString();
-                lblVehicleBody.Text = objVehicle.TotalBody.ToString();
-                lblVehicleArmor.Text = objVehicle.TotalArmor.ToString();
-                lblVehicleSeats.Text = objVehicle.TotalSeats.ToString();
-
-                // Update the vehicle mod slots
-                if (objVehicle.IsDrone && GlobalOptions.Dronemods)
+                lblVehiclePilot.Text = objVehicle.Pilot.ToString(GlobalOptions.CultureInfo);
+                lblVehicleBody.Text = objVehicle.TotalBody.ToString(GlobalOptions.CultureInfo);
+                lblVehicleArmor.Text = objVehicle.TotalArmor.ToString(GlobalOptions.CultureInfo);
+                lblVehicleSeats.Text = objVehicle.TotalSeats.ToString(GlobalOptions.CultureInfo);
+                lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString(GlobalOptions.CultureInfo);
+                if (CharacterObjectOptions.BookEnabled("R5"))
                 {
-                    lblVehicleDroneModSlots.Text = objVehicle.DroneModSlotsUsed.ToString() + '/' + objVehicle.DroneModSlots;
+                    if (objVehicle.IsDrone && GlobalOptions.Dronemods)
+                    {
+                        lblVehiclePowertrainLabel.Visible = false;
+                        lblVehiclePowertrain.Visible = false;
+                        lblVehicleCosmeticLabel.Visible = false;
+                        lblVehicleCosmetic.Visible = false;
+                        lblVehicleElectromagneticLabel.Visible = false;
+                        lblVehicleElectromagnetic.Visible = false;
+                        lblVehicleBodymodLabel.Visible = false;
+                        lblVehicleBodymod.Visible = false;
+                        lblVehicleWeaponsmodLabel.Visible = false;
+                        lblVehicleWeaponsmod.Visible = false;
+                        lblVehicleProtectionLabel.Visible = false;
+                        lblVehicleProtection.Visible = false;
+                        lblVehicleDroneModSlotsLabel.Visible = true;
+                        lblVehicleDroneModSlots.Visible = true;
+                        lblVehicleDroneModSlots.Text = objVehicle.DroneModSlotsUsed.ToString() + '/' + objVehicle.DroneModSlots;
+                    }
+                    else
+                    {
+                        lblVehiclePowertrainLabel.Visible = true;
+                        lblVehiclePowertrain.Visible = true;
+                        lblVehiclePowertrain.Text = objVehicle.PowertrainModSlotsUsed();
+                        lblVehicleCosmeticLabel.Visible = true;
+                        lblVehicleCosmetic.Visible = true;
+                        lblVehicleCosmetic.Text = objVehicle.CosmeticModSlotsUsed();
+                        lblVehicleElectromagneticLabel.Visible = true;
+                        lblVehicleElectromagnetic.Visible = true;
+                        lblVehicleElectromagnetic.Text = objVehicle.ElectromagneticModSlotsUsed();
+                        lblVehicleBodymodLabel.Visible = true;
+                        lblVehicleBodymod.Visible = true;
+                        lblVehicleBodymod.Text = objVehicle.BodyModSlotsUsed();
+                        lblVehicleWeaponsmodLabel.Visible = true;
+                        lblVehicleWeaponsmod.Visible = true;
+                        lblVehicleWeaponsmod.Text = objVehicle.WeaponModSlotsUsed();
+                        lblVehicleProtectionLabel.Visible = true;
+                        lblVehicleProtection.Visible = true;
+                        lblVehicleProtection.Text = objVehicle.ProtectionModSlotsUsed();
+                        lblVehicleDroneModSlotsLabel.Visible = false;
+                        lblVehicleDroneModSlots.Visible = false;
+                    }
                 }
                 else
                 {
-                    lblVehiclePowertrain.Text = objVehicle.PowertrainModSlotsUsed();
-                    lblVehicleCosmetic.Text = objVehicle.CosmeticModSlotsUsed();
-                    lblVehicleElectromagnetic.Text = objVehicle.ElectromagneticModSlotsUsed();
-                    lblVehicleBodymod.Text = objVehicle.BodyModSlotsUsed();
-                    lblVehicleWeaponsmod.Text = objVehicle.WeaponModSlotsUsed();
-                    lblVehicleProtection.Text = objVehicle.ProtectionModSlotsUsed();
-
-                    lblVehiclePowertrainLabel.SetToolTip(LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
-                    lblVehicleCosmeticLabel.SetToolTip(LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
-                    lblVehicleElectromagneticLabel.SetToolTip(LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
-                    lblVehicleBodymodLabel.SetToolTip(LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
-                    lblVehicleWeaponsmodLabel.SetToolTip(LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
-                    lblVehicleProtectionLabel.SetToolTip(LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
+                    lblVehiclePowertrainLabel.Visible = false;
+                    lblVehiclePowertrain.Visible = false;
+                    lblVehicleCosmeticLabel.Visible = false;
+                    lblVehicleCosmetic.Visible = false;
+                    lblVehicleElectromagneticLabel.Visible = false;
+                    lblVehicleElectromagnetic.Visible = false;
+                    lblVehicleBodymodLabel.Visible = false;
+                    lblVehicleBodymod.Visible = false;
+                    lblVehicleWeaponsmodLabel.Visible = false;
+                    lblVehicleWeaponsmod.Visible = false;
+                    lblVehicleProtectionLabel.Visible = false;
+                    lblVehicleProtection.Visible = false;
+                    lblVehicleDroneModSlotsLabel.Visible = false;
+                    lblVehicleDroneModSlots.Visible = false;
                 }
 
-                lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString();
-                UpdateSensor(objVehicle);
-
-                chkVehicleWeaponAccessoryInstalled.Enabled = false;
-                chkVehicleIncludedInWeapon.Checked = false;
-
-                objVehicle.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
-
+                // gpbVehiclesMatrix
+                int intDeviceRating = objVehicle.GetTotalMatrixAttribute("Device Rating");
+                lblVehicleDevice.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
+                objVehicle.RefreshMatrixAttributeCBOs(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
                 chkVehicleActiveCommlink.Visible = objVehicle.IsCommlink;
                 chkVehicleActiveCommlink.Checked = objVehicle.IsActiveCommlink(CharacterObject);
-                if (CharacterObject.Metatype.Contains("A.I.") || CharacterObject.MetatypeCategory == "Protosapients")
+                if (CharacterObject.IsAI)
                 {
                     chkVehicleHomeNode.Visible = true;
                     chkVehicleHomeNode.Checked = objVehicle.IsHomeNode(CharacterObject);
-                    chkVehicleHomeNode.Enabled = objVehicle.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objVehicle.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
-                }
-
-                DisplayVehicleWeaponStats(false);
-                DisplayVehicleCommlinkStats(true);
-                DisplayVehicleStats(true);
-                if (CharacterObjectOptions.BookEnabled("R5"))
-                {
-                    DisplayVehicleDroneMods(objVehicle.IsDrone && GlobalOptions.Dronemods);
-                    DisplayVehicleMods(!(objVehicle.IsDrone && GlobalOptions.Dronemods));
+                    chkVehicleHomeNode.Enabled = objVehicle.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
                 }
                 else
-                {
-                    DisplayVehicleMods(false);
-                    DisplayVehicleDroneMods(false);
-                    lblVehicleSlotsLabel.Visible = true;
-                    lblVehicleSlots.Visible = true;
-                    lblVehicleSlots.Text = objVehicle.Slots + " (" + (objVehicle.Slots - objVehicle.SlotsUsed) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
-                }
+                    chkVehicleHomeNode.Visible = false;
+
+                UpdateSensor(objVehicle);
             }
             else if (treVehicles.SelectedNode?.Tag is WeaponMount objWeaponMount)
             {
+                gpbVehiclesCommon.Visible = true;
+                gpbVehiclesVehicle.Visible = false;
+                gpbVehiclesWeapon.Visible = false;
+                gpbVehiclesMatrix.Visible = false;
+
+                // Buttons
                 cmdDeleteVehicle.Enabled = !objWeaponMount.IncludedInVehicle;
 
+                // gpbVehiclesCommon
+                lblVehicleCategory.Text = objWeaponMount.DisplayCategory(GlobalOptions.Language);
+                lblVehicleName.Text = objWeaponMount.DisplayNameShort(GlobalOptions.Language);
                 lblVehicleRatingLabel.Visible = false;
                 lblVehicleRating.Visible = false;
-
-                DisplayVehicleWeaponStats(false);
-                DisplayVehicleCommlinkStats(false);
-                DisplayVehicleStats(false);
-
-                lblVehicleCategoryLabel.Visible = true;
-                lblVehicleCategory.Text = objWeaponMount.DisplayCategory(GlobalOptions.Language);
-                lblVehicleNameLabel.Visible = true;
-                lblVehicleName.Text = objWeaponMount.DisplayNameShort(GlobalOptions.Language);
-                lblVehicleAvailLabel.Visible = true;
+                lblVehicleGearQtyLabel.Visible = false;
+                lblVehicleGearQty.Visible = false;
+                cmdVehicleGearReduceQty.Visible = false;
                 lblVehicleAvail.Text = objWeaponMount.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblVehicleCostLabel.Visible = true;
-                lblVehicleCost.Text =
-                    objWeaponMount.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo);
-
-                chkVehicleWeaponAccessoryInstalled.Checked = objWeaponMount.Equipped;
-                chkVehicleWeaponAccessoryInstalled.Enabled = !objWeaponMount.IncludedInVehicle;
-                chkVehicleIncludedInWeapon.Checked = false;
-
+                lblVehicleCost.Text = objWeaponMount.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo);
                 lblVehicleSlotsLabel.Visible = true;
                 lblVehicleSlots.Visible = true;
                 lblVehicleSlots.Text = objWeaponMount.CalculatedSlots.ToString();
-
-                string strPage = objWeaponMount.Page(GlobalOptions.Language);
-                lblVehicleSource.Text =
-                    CommonFunctions.LanguageBookShort(objWeaponMount.Source, GlobalOptions.Language) +
-                    LanguageManager.GetString("String_Space", GlobalOptions.Language) + strPage;
-                lblVehicleSource.SetToolTip(CommonFunctions.LanguageBookLong(objWeaponMount.Source, GlobalOptions.Language) +
-                    LanguageManager.GetString("String_Space", GlobalOptions.Language) +
-                    LanguageManager.GetString("String_Page", GlobalOptions.Language) +
-                    LanguageManager.GetString("String_Space", GlobalOptions.Language) + strPage);
+                cmdVehicleMoveToInventory.Visible = false;
+                cmdVehicleCyberwareChangeMount.Visible = false;
+                chkVehicleWeaponAccessoryInstalled.Visible = true;
+                chkVehicleWeaponAccessoryInstalled.Checked = objWeaponMount.Equipped;
+                chkVehicleWeaponAccessoryInstalled.Enabled = !objWeaponMount.IncludedInVehicle;
+                chkVehicleIncludedInWeapon.Visible = false;
             }
             else if (treVehicles.SelectedNode?.Tag is VehicleMod objMod)
             {
-                if (objMod.IncludedInVehicle)
-                    cmdDeleteVehicle.Enabled = false;
+                gpbVehiclesCommon.Visible = true;
+                gpbVehiclesVehicle.Visible = false;
+                gpbVehiclesWeapon.Visible = false;
+                gpbVehiclesMatrix.Visible = false;
+
+                // Buttons
+                cmdDeleteVehicle.Enabled = !objMod.IncludedInVehicle;
+
+                // gpbVehiclesCommon
+                lblVehicleName.Text = objMod.DisplayNameShort(GlobalOptions.Language);
+                lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification", GlobalOptions.Language);
                 if (objMod.MaxRating != "qty")
                 {
                     if (objMod.MaxRating == "Seats")
@@ -15236,60 +15039,132 @@ namespace Chummer
                     if (Convert.ToInt32(objMod.MaxRating) > 0)
                     {
                         lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
+                        lblVehicleRatingLabel.Visible = true;
                         lblVehicleRating.Text = objMod.Rating.ToString();
+                        lblVehicleRating.Visible = true;
                     }
                     else
                     {
-                        lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
-                        lblVehicleRating.Text = string.Empty;
+                        lblVehicleRatingLabel.Visible = false;
+                        lblVehicleRating.Visible = false;
                     }
                 }
                 else
                 {
                     lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Qty", GlobalOptions.Language);
+                    lblVehicleRatingLabel.Visible = true;
                     lblVehicleRating.Text = objMod.Rating.ToString();
+                    lblVehicleRating.Visible = true;
                 }
-
-                DisplayVehicleStats(false);
-                DisplayVehicleWeaponStats(false);
-                DisplayVehicleCommlinkStats(false);
-
-                lblVehicleName.Text = objMod.DisplayNameShort(GlobalOptions.Language);
-                lblVehicleNameLabel.Visible = true;
-                lblVehicleCategoryLabel.Visible = true;
-                lblVehicleCategory.Text =
-                    LanguageManager.GetString("String_VehicleModification", GlobalOptions.Language);
-                lblVehicleAvailLabel.Visible = true;
+                lblVehicleGearQtyLabel.Visible = false;
+                lblVehicleGearQty.Visible = false;
+                cmdVehicleGearReduceQty.Visible = false;
                 lblVehicleAvail.Text = objMod.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblVehicleCostLabel.Visible = true;
-                lblVehicleCost.Text =
-                    objMod.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-
-                chkVehicleWeaponAccessoryInstalled.Checked = objMod.Equipped;
-                chkVehicleWeaponAccessoryInstalled.Enabled = !objMod.IncludedInVehicle;
-                chkVehicleIncludedInWeapon.Checked = false;
-
+                lblVehicleCost.Text = objMod.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblVehicleSlotsLabel.Visible = true;
                 lblVehicleSlots.Visible = true;
                 lblVehicleSlots.Text = objMod.CalculatedSlots.ToString();
+                cmdVehicleMoveToInventory.Visible = false;
+                cmdVehicleCyberwareChangeMount.Visible = false;
+                chkVehicleWeaponAccessoryInstalled.Visible = true;
+                chkVehicleWeaponAccessoryInstalled.Checked = objMod.Equipped;
+                chkVehicleWeaponAccessoryInstalled.Enabled = !objMod.IncludedInVehicle;
+                chkVehicleIncludedInWeapon.Visible = false;
             }
             else if (treVehicles.SelectedNode?.Tag is Weapon objWeapon)
             {
-                if (objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality") ||
-                    objWeapon.IncludedInWeapon || !string.IsNullOrEmpty(objWeapon.ParentID))
-                    cmdDeleteVehicle.Enabled = false;
-                DisplayVehicleWeaponStats(true);
-                DisplayVehicleStats(false);
-                
+                gpbVehiclesCommon.Visible = true;
+                gpbVehiclesVehicle.Visible = false;
+                gpbVehiclesWeapon.Visible = true;
+                gpbVehiclesMatrix.Visible = true;
+
+                // Buttons
+                cmdDeleteVehicle.Enabled = !objWeapon.Cyberware && objWeapon.Category != "Gear" && !objWeapon.IncludedInWeapon && string.IsNullOrEmpty(objWeapon.ParentID) && !objWeapon.Category.StartsWith("Quality");
+
+                // gpbVehiclesCommon
                 lblVehicleName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
                 lblVehicleCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
-                lblVehicleWeaponDamage.Text =
-                    objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblVehicleWeaponAccuracy.Text =
-                    objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblVehicleRatingLabel.Visible = false;
+                lblVehicleRating.Visible = false;
+                lblVehicleGearQtyLabel.Visible = false;
+                lblVehicleGearQty.Visible = false;
+                cmdVehicleGearReduceQty.Visible = false;
+                lblVehicleAvail.Text = objWeapon.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblVehicleCost.Text = objWeapon.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblVehicleSlotsLabel.Visible = true;
+                lblVehicleSlots.Visible = true;
+                if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
+                {
+                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                    {
+                        StringBuilder strSlotsText = new StringBuilder();
+                        foreach (string strMount in objWeapon.AccessoryMounts.Split('/'))
+                        {
+                            strSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount, GlobalOptions.Language));
+                            strSlotsText.Append('/');
+                        }
+                        strSlotsText.Length -= 1;
+                        lblWeaponSlots.Text = strSlotsText.ToString();
+                    }
+                    else
+                        lblWeaponSlots.Text = objWeapon.AccessoryMounts;
+                }
+                else
+                    lblWeaponSlots.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
+                cmdVehicleMoveToInventory.Visible = !objWeapon.IncludedInWeapon;
+                cmdVehicleCyberwareChangeMount.Visible = false;
+                chkVehicleWeaponAccessoryInstalled.Visible = true;
+                chkVehicleWeaponAccessoryInstalled.Checked = objWeapon.Equipped;
+                chkVehicleWeaponAccessoryInstalled.Enabled = objWeapon.ParentID != objWeapon.Parent?.InternalId && objWeapon.ParentID != objWeapon.ParentVehicle.InternalId;
+                chkVehicleIncludedInWeapon.Visible = true;
+                chkVehicleIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
+
+                // gpbVehiclesWeapon
+                lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblVehicleWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
-                lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
+                lblVehicleWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                // Determine the Dice Pool size.
+                int intPilot = objWeapon.ParentVehicle.Pilot;
+                int intAutosoft = 0;
+                foreach (Gear objAutosoft in objWeapon.ParentVehicle.Gear)
+                {
+                    if (objAutosoft.Extra == objWeapon.DisplayCategory(GlobalOptions.DefaultLanguage) &&
+                        (objAutosoft.Name == "[Weapon] Targeting Autosoft" || objAutosoft.Name == "[Weapon] Melee Autosoft"))
+                    {
+                        if (objAutosoft.Rating > intAutosoft)
+                        {
+                            intAutosoft = objAutosoft.Rating;
+                        }
+                    }
+                }
+                if (intAutosoft == 0)
+                    intPilot -= 1;
+                lblVehicleWeaponDicePool.Text = (intPilot + intAutosoft).ToString();
+                if (objWeapon.WeaponType == "Ranged")
+                {
+                    lblVehicleWeaponAmmoLabel.Visible = true;
+                    lblVehicleWeaponAmmo.Visible = true;
+                    lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    lblVehicleWeaponModeLabel.Visible = true;
+                    lblVehicleWeaponMode.Visible = true;
+                    lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
+                }
+                else
+                {
+                    if (objWeapon.Ammo != "0")
+                    {
+                        lblVehicleWeaponAmmoLabel.Visible = true;
+                        lblVehicleWeaponAmmo.Visible = true;
+                        lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        lblVehicleWeaponAmmoLabel.Visible = false;
+                        lblVehicleWeaponAmmo.Visible = false;
+                    }
+                    lblVehicleWeaponModeLabel.Visible = false;
+                    lblVehicleWeaponMode.Visible = false;
+                }
 
                 lblVehicleWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
                 lblVehicleWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
@@ -15302,26 +15177,14 @@ namespace Chummer
                 lblVehicleWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
                 lblVehicleWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
                 lblVehicleWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
-
-                lblVehicleName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
-                lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeapon", GlobalOptions.Language);
-                lblVehicleAvail.Text = objWeapon.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblVehicleCost.Text =
-                    objWeapon.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                DisplayVehicleStats(false);
-
+                
                 cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
-                lblVehicleWeaponDamage.Text =
-                    objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblVehicleWeaponAccuracy.Text =
-                    objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblVehicleWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
-                lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
                 if (objWeapon.WeaponType == "Ranged" || (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0"))
                 {
-                    lblVehicleWeaponAmmo.Text =
-                        objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    lblVehicleWeaponAmmoRemainingLabel.Visible = true;
+                    lblVehicleWeaponAmmoRemaining.Visible = true;
                     lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
+                    cmdReloadVehicleWeapon.Visible = true;
 
                     cmsVehicleAmmoSingleShot.Enabled =
                         objWeapon.AllowMode(LanguageManager.GetString("String_ModeSingleShot",
@@ -15387,28 +15250,27 @@ namespace Chummer
                                 strAmmoName =
                                     LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language)
                                         .Replace("{0}", i.ToString()) +
-                                    LanguageManager.GetString("String_Space", GlobalOptions.Language) +
+                                    strSpace +
                                     LanguageManager.GetString("String_Empty", GlobalOptions.Language);
                             else
                                 strAmmoName =
                                     LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language)
                                         .Replace("{0}", i.ToString()) +
-                                    LanguageManager.GetString("String_Space", GlobalOptions.Language) +
+                                    strSpace +
                                     LanguageManager.GetString("String_ExternalSource", GlobalOptions.Language);
                         }
                         else
                             strAmmoName =
                                 LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language)
                                     .Replace("{0}", i.ToString()) +
-                                LanguageManager.GetString("String_Space", GlobalOptions.Language) +
+                                strSpace +
                                 objVehicleGear.DisplayNameShort(GlobalOptions.Language);
 
                         if (!string.IsNullOrEmpty(strPlugins))
                             strAmmoName += " [" + strPlugins + "]";
                         lstAmmo.Add(new ListItem(i.ToString(), strAmmoName));
                     }
-
-                    cmdVehicleMoveToInventory.Enabled = true;
+                    
                     objWeapon.ActiveAmmoSlot = intCurrentSlot;
                     cboVehicleWeaponAmmo.BeginUpdate();
                     cboVehicleWeaponAmmo.ValueMember = "Value";
@@ -15417,21 +15279,61 @@ namespace Chummer
                     cboVehicleWeaponAmmo.SelectedValue = objWeapon.ActiveAmmoSlot.ToString();
                     if (cboVehicleWeaponAmmo.SelectedIndex == -1)
                         cboVehicleWeaponAmmo.SelectedIndex = 0;
+                    cboVehicleWeaponAmmo.Enabled = lstAmmo.Count > 1;
                     cboVehicleWeaponAmmo.EndUpdate();
                 }
+                else
+                {
+                    lblVehicleWeaponAmmoRemainingLabel.Visible = false;
+                    lblVehicleWeaponAmmoRemaining.Visible = false;
+                    cmdReloadVehicleWeapon.Visible = false;
+                }
+
+                // gpbVehiclesMatrix
+                int intDeviceRating = objWeapon.GetTotalMatrixAttribute("Device Rating");
+                lblVehicleDevice.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
+                objWeapon.RefreshMatrixAttributeCBOs(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
+                chkVehicleActiveCommlink.Visible = objWeapon.IsCommlink;
+                chkVehicleActiveCommlink.Checked = objWeapon.IsActiveCommlink(CharacterObject);
+                if (CharacterObject.IsAI)
+                {
+                    chkVehicleHomeNode.Visible = true;
+                    chkVehicleHomeNode.Checked = objWeapon.IsHomeNode(CharacterObject);
+                    chkVehicleHomeNode.Enabled = objWeapon.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                }
+                else
+                    chkVehicleHomeNode.Visible = false;
             }
             else if (treVehicles.SelectedNode?.Tag is WeaponAccessory objAccessory)
             {
-                if (objAccessory.IncludedInWeapon)
-                    cmdDeleteVehicle.Enabled = false;
+                gpbVehiclesCommon.Visible = true;
+                gpbVehiclesVehicle.Visible = false;
+                gpbVehiclesWeapon.Visible = false;
+                gpbVehiclesMatrix.Visible = false;
+
+                // Buttons
+                cmdDeleteVehicle.Enabled = !objAccessory.IncludedInWeapon;
+
+                // gpbVehiclesCommon
                 lblVehicleName.Text = objAccessory.DisplayNameShort(GlobalOptions.Language);
                 lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeaponAccessory", GlobalOptions.Language);
+                if (objAccessory.MaxRating > 0)
+                {
+                    lblVehicleRatingLabel.Visible = true;
+                    lblVehicleRating.Visible = true;
+                    lblVehicleRating.Text = objAccessory.Rating.ToString(GlobalOptions.CultureInfo);
+                }
+                else
+                {
+                    lblVehicleRatingLabel.Visible = false;
+                    lblVehicleRating.Visible = false;
+                }
+
+                lblVehicleGearQtyLabel.Visible = false;
+                lblVehicleGearQty.Visible = false;
+                cmdVehicleGearReduceQty.Visible = false;
                 lblVehicleAvail.Text = objAccessory.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblVehicleCost.Text = objAccessory.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-
-                DisplayVehicleWeaponStats(false);
-                DisplayVehicleStats(false);
-
                 string[] strMounts = objAccessory.Mount.Split('/');
                 StringBuilder strMount = new StringBuilder();
                 foreach (string strCurrentMount in strMounts)
@@ -15462,35 +15364,56 @@ namespace Chummer
                     if (boolHaveAddedItem)
                         strMount.Length -= 1;
                 }
-
                 lblVehicleSlotsLabel.Visible = true;
                 lblVehicleSlots.Visible = true;
                 lblVehicleSlots.Text = strMount.ToString();
+                cmdVehicleMoveToInventory.Visible = false;
+                cmdVehicleCyberwareChangeMount.Visible = false;
+                chkVehicleWeaponAccessoryInstalled.Visible = true;
                 chkVehicleWeaponAccessoryInstalled.Enabled = true;
                 chkVehicleWeaponAccessoryInstalled.Checked = objAccessory.Equipped;
+                chkVehicleIncludedInWeapon.Visible = true;
                 chkVehicleIncludedInWeapon.Checked = objAccessory.IncludedInWeapon;
             }
             else if (treVehicles.SelectedNode?.Tag is Cyberware objCyberware)
             {
-                if (!string.IsNullOrEmpty(objCyberware.ParentID))
-                    cmdDeleteVehicle.Enabled = false;
-                lblVehicleName.Text = objCyberware.DisplayNameShort(GlobalOptions.Language);
-                lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
-                lblVehicleRating.Visible = true;
-                lblVehicleRating.Text = objCyberware.Rating.ToString(GlobalOptions.CultureInfo);
-                cmdVehicleCyberwareChangeMount.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount);
+                gpbVehiclesCommon.Visible = true;
+                gpbVehiclesVehicle.Visible = false;
+                gpbVehiclesWeapon.Visible = false;
+                gpbVehiclesMatrix.Visible = true;
 
+                // Buttons
+                cmdDeleteVehicle.Enabled = string.IsNullOrEmpty(objCyberware.ParentID);
+
+                // gpbVehiclesCommon
                 lblVehicleName.Text = objCyberware.DisplayNameShort(GlobalOptions.Language);
-                lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification", GlobalOptions.Language);
+                lblVehicleCategory.Text = objCyberware.DisplayCategory(GlobalOptions.Language);
+                if (objCyberware.MaxRating == 0)
+                {
+                    lblVehicleRating.Visible = false;
+                    lblVehicleRatingLabel.Visible = false;
+                }
+                else
+                {
+                    lblVehicleRating.Visible = true;
+                    lblVehicleRating.Text = objCyberware.Rating.ToString(GlobalOptions.CultureInfo);
+                    lblVehicleRatingLabel.Visible = true;
+                    lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
+                }
+                lblVehicleGearQtyLabel.Visible = false;
+                lblVehicleGearQty.Visible = false;
+                cmdVehicleGearReduceQty.Visible = false;
                 lblVehicleAvail.Text = objCyberware.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblVehicleCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                cmdVehicleMoveToInventory.Visible = false;
+                cmdVehicleCyberwareChangeMount.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount);
+                chkVehicleWeaponAccessoryInstalled.Visible = false;
+                chkVehicleIncludedInWeapon.Visible = false;
 
-                lblVehicleDevice.Text = objCyberware.GetTotalMatrixAttribute("Device Rating").ToString();
-                objCyberware.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
-
-                DisplayVehicleWeaponStats(false);
-                DisplayVehicleStats(false);
-                DisplayVehicleCommlinkStats(true);
+                // gpbVehiclesMatrix
+                int intDeviceRating = objCyberware.GetTotalMatrixAttribute("Device Rating");
+                lblVehicleDevice.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
+                objCyberware.RefreshMatrixAttributeCBOs(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
 
                 chkVehicleActiveCommlink.Visible = objCyberware.IsCommlink;
                 chkVehicleActiveCommlink.Checked = objCyberware.IsActiveCommlink(CharacterObject);
@@ -15498,38 +15421,46 @@ namespace Chummer
                 {
                     chkVehicleHomeNode.Visible = true;
                     chkVehicleHomeNode.Checked = objCyberware.IsHomeNode(CharacterObject);
-                    chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objCyberware.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objCyberware.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
+                    chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objCyberware.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
                 }
+                else
+                    chkVehicleHomeNode.Visible = false;
             }
             else if (treVehicles.SelectedNode?.Tag is Gear objGear)
             {
-                if (objGear.IncludedInParent)
-                    cmdDeleteVehicle.Enabled = false;
-                
-                cmdVehicleGearReduceQty.Enabled = !objGear.IncludedInParent;
-                cmdVehicleMoveToInventory.Enabled = !objGear.IncludedInParent;
+                gpbVehiclesCommon.Visible = true;
+                gpbVehiclesVehicle.Visible = false;
+                gpbVehiclesWeapon.Visible = false;
+                gpbVehiclesMatrix.Visible = true;
 
-                lblVehicleGearQtyLabel.Visible = true;
-                lblVehicleGearQty.Visible = true;
-                lblVehicleGearQty.Text = objGear.Quantity.ToString(objGear.Name.StartsWith("Nuyen") ? CharacterObjectOptions.NuyenFormat : (objGear.Category == "Currency" ? "#,0.00" : "#,0"), GlobalOptions.CultureInfo);
+                // Buttons
+                cmdDeleteVehicle.Enabled = !objGear.IncludedInParent;
 
+                // gpbVehiclesCommon
+                lblVehicleName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
+                lblVehicleCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
+                lblVehicleRatingLabel.Visible = true;
                 lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
                 lblVehicleRating.Visible = true;
                 lblVehicleRating.Text = objGear.Rating.ToString(GlobalOptions.CultureInfo);
-
-                lblVehicleName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
-                lblVehicleCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
+                lblVehicleGearQtyLabel.Visible = true;
+                lblVehicleGearQty.Visible = true;
+                lblVehicleGearQty.Text = objGear.Quantity.ToString(objGear.Name.StartsWith("Nuyen") ? CharacterObjectOptions.NuyenFormat : (objGear.Category == "Currency" ? "#,0.00" : "#,0"), GlobalOptions.CultureInfo);
+                cmdVehicleGearReduceQty.Enabled = !objGear.IncludedInParent;
                 lblVehicleAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblVehicleCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblVehicleSlotsLabel.Visible = true;
                 lblVehicleSlots.Visible = true;
                 lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
+                cmdVehicleMoveToInventory.Enabled = !objGear.IncludedInParent;
+                cmdVehicleCyberwareChangeMount.Visible = false;
+                chkVehicleWeaponAccessoryInstalled.Visible = false;
+                chkVehicleIncludedInWeapon.Visible = false;
 
-                objGear.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
-
-                DisplayVehicleStats(false);
-                DisplayVehicleWeaponStats(false);
-                DisplayVehicleCommlinkStats(true);
+                // gpbVehiclesMatrix
+                int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
+                lblVehicleDevice.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
+                objGear.RefreshMatrixAttributeCBOs(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
 
                 chkVehicleActiveCommlink.Visible = objGear.IsCommlink;
                 chkVehicleActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
@@ -15537,29 +15468,40 @@ namespace Chummer
                 {
                     chkVehicleHomeNode.Visible = true;
                     chkVehicleHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                    chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
+                    chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
                 }
+                else
+                    chkVehicleHomeNode.Visible = false;
+            }
+            else
+            {
+                gpbVehiclesCommon.Visible = false;
+                gpbVehiclesVehicle.Visible = false;
+                gpbVehiclesWeapon.Visible = false;
+                gpbVehiclesMatrix.Visible = false;
 
-                chkVehicleWeaponAccessoryInstalled.Checked = true;
-                chkVehicleWeaponAccessoryInstalled.Enabled = false;
-                chkVehicleIncludedInWeapon.Checked = false;
+                // Buttons
+                cmdDeleteVehicle.Enabled = false;
             }
 
             panVehicleCM.Visible = (treVehicles.SelectedNode?.Tag is IHasPhysicalConditionMonitor ||
                                     treVehicles.SelectedNode?.Tag is IHasMatrixConditionMonitor);
 
-            if (treVehicles.SelectedNode?.Tag is IHasPhysicalConditionMonitor objCM)
+            if (panVehicleCM.Visible)
             {
-                ProcessEquipmentConditionMonitorBoxDisplays(tabVehiclePhysicalCM, objCM.PhysicalCM, objCM.PhysicalCMFilled);
-            }
-            if (treVehicles.SelectedNode?.Tag is IHasMatrixConditionMonitor objMatrixCM)
-            {
-                ProcessEquipmentConditionMonitorBoxDisplays(tabVehicleMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
+                if (treVehicles.SelectedNode?.Tag is IHasPhysicalConditionMonitor objCM)
+                {
+                    ProcessEquipmentConditionMonitorBoxDisplays(tabVehiclePhysicalCM, objCM.PhysicalCM, objCM.PhysicalCMFilled);
+                }
+
+                if (treVehicles.SelectedNode?.Tag is IHasMatrixConditionMonitor objMatrixCM)
+                {
+                    ProcessEquipmentConditionMonitorBoxDisplays(tabVehicleMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
+                }
             }
 
             IsRefreshing = false;
-            tlpVehicles.ResumeLayout();
-            Cursor = eOldCursor;
+            flpVehicles.ResumeLayout();
         }
         
         /// <summary>
@@ -16581,8 +16523,8 @@ namespace Chummer
             }*/
             if (!(treCyberware.SelectedNode?.Tag is Gear objCommlink))
                 return;
-            objCommlink.Overclocked = cboCyberwareGearOverclocker.SelectedValue.ToString();
-            objCommlink.RefreshMatrixAttributeCBOs(cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall);
+            objCommlink.Overclocked = cboCyberwareOverclocker.SelectedValue.ToString();
+            objCommlink.RefreshMatrixAttributeCBOs(cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall);
         }
 
         private void cmdAddAIProgram_Click(object sender, EventArgs e)

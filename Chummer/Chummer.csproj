@@ -439,12 +439,12 @@
     <Compile Include="UI\Shared\LimitTabUserControl.Designer.cs">
       <DependentUpon>LimitTabUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Shared\VehiclesTabUserControl.cs">
+    <None Include="UI\Shared\VehiclesTabUserControl.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Shared\VehiclesTabUserControl.Designer.cs">
+    </None>
+    <None Include="UI\Shared\VehiclesTabUserControl.Designer.cs">
       <DependentUpon>VehiclesTabUserControl.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="UI\Skills\KnowledgeSkillControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

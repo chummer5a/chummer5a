@@ -32,30 +32,30 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Selected Positive Qualities");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Selected Negative Qualities");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Selected Martial Arts");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Selected Qualities");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Selected Combat Spells");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Selected Detection Spells");
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Selected Health Spells");
-            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Selected Illusion Spells");
-            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Selected Manipulation Spells");
-            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Selected Rituals");
-            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Selected Enchantments");
-            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Selected Complex Forms");
-            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Selected AI Programs and Advanced Programs");
-            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Critter Powers");
-            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Weaknesses");
-            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Selected Cyberware");
-            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Selected Bioware");
-            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Unequipped Modular Cyberware");
-            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Selected Gear");
-            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Selected Armor");
-            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Selected Weapons");
-            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Selected Drugs");
-            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Selected Vehicles");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Selected Positive Qualities");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Selected Negative Qualities");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Selected Martial Arts");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Selected Qualities");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Selected Combat Spells");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Selected Detection Spells");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Selected Health Spells");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Selected Illusion Spells");
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Selected Manipulation Spells");
+            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Selected Rituals");
+            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Selected Enchantments");
+            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Selected Complex Forms");
+            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Selected AI Programs and Advanced Programs");
+            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Critter Powers");
+            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Weaknesses");
+            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Selected Cyberware");
+            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Selected Bioware");
+            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Unequipped Modular Cyberware");
+            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Selected Gear");
+            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Selected Armor");
+            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Selected Weapons");
+            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Selected Drugs");
+            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
+            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Selected Vehicles");
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Selected Improvements");
@@ -200,20 +200,20 @@ namespace Chummer
             this.lblSwimLabel = new System.Windows.Forms.Label();
             this.lblCareerNuyen = new System.Windows.Forms.Label();
             this.lblSwim = new System.Windows.Forms.Label();
-            this.lblRiggingINI = new System.Windows.Forms.Label();
+            this.lblRiggingINI = new Chummer.LabelWithToolTip();
             this.lblMovement = new System.Windows.Forms.Label();
             this.lblMemory = new Chummer.LabelWithToolTip();
             this.lblLiftCarry = new Chummer.LabelWithToolTip();
-            this.lblCMPhysical = new System.Windows.Forms.Label();
+            this.lblCMPhysical = new Chummer.LabelWithToolTip();
             this.lblJudgeIntentions = new Chummer.LabelWithToolTip();
-            this.lblMatrixINIHot = new System.Windows.Forms.Label();
+            this.lblMatrixINIHot = new Chummer.LabelWithToolTip();
             this.lblComposure = new Chummer.LabelWithToolTip();
-            this.lblCMStun = new System.Windows.Forms.Label();
-            this.lblMatrixINICold = new System.Windows.Forms.Label();
-            this.lblINI = new System.Windows.Forms.Label();
-            this.lblMatrixINI = new System.Windows.Forms.Label();
+            this.lblCMStun = new Chummer.LabelWithToolTip();
+            this.lblMatrixINICold = new Chummer.LabelWithToolTip();
+            this.lblINI = new Chummer.LabelWithToolTip();
+            this.lblMatrixINI = new Chummer.LabelWithToolTip();
             this.lblCareerKarma = new System.Windows.Forms.Label();
-            this.lblAstralINI = new System.Windows.Forms.Label();
+            this.lblAstralINI = new Chummer.LabelWithToolTip();
             this.lblRemainingNuyen = new System.Windows.Forms.Label();
             this.lblESSMax = new System.Windows.Forms.Label();
             this.tabConditionMonitor = new System.Windows.Forms.TabPage();
@@ -559,6 +559,7 @@ namespace Chummer
             this.lblCyberwareESS = new System.Windows.Forms.Label();
             this.lblBiowareESS = new System.Windows.Forms.Label();
             this.lblEssenceHoleESS = new System.Windows.Forms.Label();
+            this.gpbCyberwareCommon = new System.Windows.Forms.GroupBox();
             this.tlpCyberwareCommon = new System.Windows.Forms.TableLayoutPanel();
             this.lblCyberwareNameLabel = new System.Windows.Forms.Label();
             this.lblCyberwareName = new System.Windows.Forms.Label();
@@ -583,6 +584,7 @@ namespace Chummer
             this.lblCyberwareAvail = new System.Windows.Forms.Label();
             this.lblCyberwareAvailLabel = new System.Windows.Forms.Label();
             this.lblCyberwareEssence = new System.Windows.Forms.Label();
+            this.gpbCyberwareMatrix = new System.Windows.Forms.GroupBox();
             this.tlpCyberwareMatrix = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblCyberFirewallLabel = new System.Windows.Forms.Label();
             this.lblCyberDataProcessingLabel = new System.Windows.Forms.Label();
@@ -590,13 +592,13 @@ namespace Chummer
             this.lblCyberSleazeLabel = new System.Windows.Forms.Label();
             this.lblCyberAttackLabel = new System.Windows.Forms.Label();
             this.lblCyberDeviceRating = new System.Windows.Forms.Label();
-            this.cboCyberwareGearAttack = new Chummer.ElasticComboBox();
-            this.cboCyberwareGearSleaze = new Chummer.ElasticComboBox();
-            this.cboCyberwareGearDataProcessing = new Chummer.ElasticComboBox();
-            this.cboCyberwareGearFirewall = new Chummer.ElasticComboBox();
+            this.cboCyberwareAttack = new Chummer.ElasticComboBox();
+            this.cboCyberwareSleaze = new Chummer.ElasticComboBox();
+            this.cboCyberwareDataProcessing = new Chummer.ElasticComboBox();
+            this.cboCyberwareFirewall = new Chummer.ElasticComboBox();
             this.chkCyberwareHomeNode = new System.Windows.Forms.CheckBox();
             this.chkCyberwareActiveCommlink = new System.Windows.Forms.CheckBox();
-            this.cboCyberwareGearOverclocker = new Chummer.ElasticComboBox();
+            this.cboCyberwareOverclocker = new Chummer.ElasticComboBox();
             this.lblCyberwareGearOverclocker = new System.Windows.Forms.Label();
             this.tabCyberwareCM = new System.Windows.Forms.TabControl();
             this.tabCyberwareMatrixCM = new System.Windows.Forms.TabPage();
@@ -915,109 +917,124 @@ namespace Chummer
             this.cmdDeleteLifestyle = new System.Windows.Forms.Button();
             this.tabVehicles = new System.Windows.Forms.TabPage();
             this.tlpVehicles = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.lblVehicleNameLabel = new System.Windows.Forms.Label();
-            this.lblVehicleName = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponAccuracy = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponAccuracyLabel = new System.Windows.Forms.Label();
             this.flowLayoutPanel10 = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddVehicle = new SplitButton();
             this.cmdDeleteVehicle = new SplitButton();
             this.cmdAddVehicleLocation = new System.Windows.Forms.Button();
+            this.flpVehicles = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowLayoutPanel27 = new System.Windows.Forms.FlowLayoutPanel();
+            this.gpbVehiclesCommon = new System.Windows.Forms.GroupBox();
+            this.tlpVehiclesCommon = new System.Windows.Forms.TableLayoutPanel();
+            this.lblVehicleName = new System.Windows.Forms.Label();
             this.lblVehicleCategoryLabel = new System.Windows.Forms.Label();
-            this.cmdVehicleCyberwareChangeMount = new System.Windows.Forms.Button();
-            this.chkVehicleActiveCommlink = new System.Windows.Forms.CheckBox();
             this.lblVehicleCategory = new System.Windows.Forms.Label();
-            this.lblVehicleHandlingLabel = new System.Windows.Forms.Label();
-            this.lblVehicleHandling = new System.Windows.Forms.Label();
-            this.lblVehicleAccelLabel = new System.Windows.Forms.Label();
-            this.lblVehicleAccel = new System.Windows.Forms.Label();
-            this.lblVehicleSpeedLabel = new System.Windows.Forms.Label();
-            this.lblVehiclePilotLabel = new System.Windows.Forms.Label();
-            this.lblVehicleCosmetic = new System.Windows.Forms.Label();
-            this.chkVehicleHomeNode = new System.Windows.Forms.CheckBox();
-            this.lblVehicleDroneModSlots = new System.Windows.Forms.Label();
-            this.lblVehicleCosmeticLabel = new System.Windows.Forms.Label();
-            this.lblVehicleElectromagnetic = new System.Windows.Forms.Label();
-            this.treVehicles = new System.Windows.Forms.TreeView();
-            this.lblVehicleSeats = new System.Windows.Forms.Label();
-            this.lblVehicleGearQty = new System.Windows.Forms.Label();
-            this.lblVehicleBodymod = new System.Windows.Forms.Label();
+            this.lblVehicleNameLabel = new System.Windows.Forms.Label();
+            this.lblVehicleRatingLabel = new System.Windows.Forms.Label();
+            this.lblVehicleRating = new System.Windows.Forms.Label();
             this.lblVehicleGearQtyLabel = new System.Windows.Forms.Label();
-            this.lblVehicleElectromagneticLabel = new System.Windows.Forms.Label();
-            this.lblVehicleDroneModSlotsLabel = new System.Windows.Forms.Label();
-            this.lblVehiclePowertrain = new System.Windows.Forms.Label();
-            this.lblVehicleProtection = new System.Windows.Forms.Label();
-            this.lblVehicleBodymodLabel = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponsmod = new System.Windows.Forms.Label();
-            this.chkVehicleIncludedInWeapon = new System.Windows.Forms.CheckBox();
-            this.lblVehiclePilot = new System.Windows.Forms.Label();
-            this.lblVehicleSeatsLabel = new System.Windows.Forms.Label();
-            this.lblVehiclePowertrainLabel = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponAP = new System.Windows.Forms.Label();
-            this.lblVehicleBodyLabel = new System.Windows.Forms.Label();
-            this.lblVehicleBody = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponAPLabel = new System.Windows.Forms.Label();
-            this.lblVehicleProtectionLabel = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponDamage = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponDamageLabel = new System.Windows.Forms.Label();
-            this.lblVehicleArmorLabel = new System.Windows.Forms.Label();
-            this.lblVehicleArmor = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponsmodLabel = new System.Windows.Forms.Label();
-            this.lblVehicleSensorLabel = new System.Windows.Forms.Label();
-            this.lblVehicleSensor = new System.Windows.Forms.Label();
-            this.lblVehicleAttackLabel = new System.Windows.Forms.Label();
-            this.cboVehicleGearAttack = new Chummer.ElasticComboBox();
-            this.lblVehicleSleazeLabel = new System.Windows.Forms.Label();
-            this.cboVehicleGearSleaze = new Chummer.ElasticComboBox();
-            this.lblVehicleDataProcessingLabel = new System.Windows.Forms.Label();
-            this.lblVehicleSource = new System.Windows.Forms.Label();
-            this.cboVehicleGearDataProcessing = new Chummer.ElasticComboBox();
+            this.flpVehiclesCommonQuantity = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblVehicleGearQty = new System.Windows.Forms.Label();
             this.lblVehicleSourceLabel = new System.Windows.Forms.Label();
-            this.lblVehicleFirewallLabel = new System.Windows.Forms.Label();
-            this.cboVehicleGearFirewall = new Chummer.ElasticComboBox();
+            this.lblVehicleSource = new System.Windows.Forms.Label();
+            this.flpVehiclesCommonCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
+            this.chkVehicleIncludedInWeapon = new System.Windows.Forms.CheckBox();
             this.lblVehicleAvailLabel = new System.Windows.Forms.Label();
             this.lblVehicleAvail = new System.Windows.Forms.Label();
             this.lblVehicleCostLabel = new System.Windows.Forms.Label();
-            this.lblVehicleRating = new System.Windows.Forms.Label();
             this.lblVehicleCost = new System.Windows.Forms.Label();
-            this.lblVehicleDeviceLabel = new System.Windows.Forms.Label();
-            this.lblVehicleDevice = new System.Windows.Forms.Label();
-            this.lblVehicleRatingLabel = new System.Windows.Forms.Label();
             this.lblVehicleSlotsLabel = new System.Windows.Forms.Label();
             this.lblVehicleSlots = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponAmmoLabel = new System.Windows.Forms.Label();
+            this.flpVehiclesCommonMoveButtons = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmdVehicleCyberwareChangeMount = new System.Windows.Forms.Button();
+            this.gpbVehiclesVehicle = new System.Windows.Forms.GroupBox();
+            this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
+            this.lblVehicleBodymodLabel = new System.Windows.Forms.Label();
+            this.lblVehicleHandlingLabel = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponsmod = new System.Windows.Forms.Label();
+            this.lblVehicleElectromagnetic = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponsmodLabel = new System.Windows.Forms.Label();
+            this.lblVehicleCosmetic = new System.Windows.Forms.Label();
+            this.lblVehicleElectromagneticLabel = new System.Windows.Forms.Label();
+            this.lblVehiclePilotLabel = new System.Windows.Forms.Label();
+            this.lblVehicleProtection = new System.Windows.Forms.Label();
+            this.lblVehiclePowertrain = new System.Windows.Forms.Label();
+            this.lblVehicleCosmeticLabel = new System.Windows.Forms.Label();
+            this.lblVehicleProtectionLabel = new System.Windows.Forms.Label();
+            this.lblVehicleDroneModSlots = new System.Windows.Forms.Label();
+            this.lblVehicleSpeedLabel = new System.Windows.Forms.Label();
+            this.lblVehiclePowertrainLabel = new System.Windows.Forms.Label();
+            this.lblVehicleBodymod = new System.Windows.Forms.Label();
+            this.lblVehicleAccel = new System.Windows.Forms.Label();
+            this.lblVehicleHandling = new System.Windows.Forms.Label();
+            this.lblVehicleDroneModSlotsLabel = new System.Windows.Forms.Label();
+            this.lblVehicleSeats = new System.Windows.Forms.Label();
+            this.lblVehicleAccelLabel = new System.Windows.Forms.Label();
             this.lblVehicleSpeed = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponAmmo = new System.Windows.Forms.Label();
+            this.lblVehiclePilot = new System.Windows.Forms.Label();
+            this.lblVehicleBodyLabel = new System.Windows.Forms.Label();
+            this.lblVehicleBody = new System.Windows.Forms.Label();
+            this.lblVehicleArmorLabel = new System.Windows.Forms.Label();
+            this.lblVehicleArmor = new System.Windows.Forms.Label();
+            this.lblVehicleSeatsLabel = new System.Windows.Forms.Label();
+            this.lblVehicleSensorLabel = new System.Windows.Forms.Label();
+            this.lblVehicleSensor = new System.Windows.Forms.Label();
+            this.gpbVehiclesWeapon = new System.Windows.Forms.GroupBox();
+            this.flpVehiclesWeapon = new System.Windows.Forms.FlowLayoutPanel();
+            this.tlpVehiclesWeaponCommon = new System.Windows.Forms.TableLayoutPanel();
+            this.lblVehicleWeaponDamageLabel = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponDamage = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponAccuracy = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponAPLabel = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponDicePoolLabel = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponAccuracyLabel = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponAP = new System.Windows.Forms.Label();
+            this.flpVehiclesWeaponDicePool = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblVehicleWeaponDicePool = new System.Windows.Forms.Label();
+            this.cmdRollVehicleWeapon = new System.Windows.Forms.Button();
             this.lblVehicleWeaponModeLabel = new System.Windows.Forms.Label();
             this.lblVehicleWeaponMode = new System.Windows.Forms.Label();
-            this.lblFiringModeLabel = new System.Windows.Forms.Label();
-            this.cboVehicleWeaponFiringMode = new Chummer.ElasticComboBox();
-            this.flowLayoutPanel27 = new System.Windows.Forms.FlowLayoutPanel();
-            this.tlpVehicleWeapon = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblVehicleWeaponAmmoLabel = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponAmmo = new System.Windows.Forms.Label();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.lblVehicleWeaponAlternateRangeExtreme = new System.Windows.Forms.Label();
-            this.cmdRollVehicleWeapon = new System.Windows.Forms.Button();
-            this.lblVehicleWeaponDicePool = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponRangeAlternate = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponDicePoolLabel = new System.Windows.Forms.Label();
-            this.cboVehicleWeaponAmmo = new Chummer.ElasticComboBox();
             this.lblVehicleWeaponRangeLabel = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponAmmoTypeLabel = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponAmmoRemainingLabel = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponRangeMain = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponAlternateRangeShort = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponRangeAlternate = new System.Windows.Forms.Label();
             this.lblVehicleWeaponRangeShortLabel = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponRangeExtreme = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponRangeExtremeLabel = new System.Windows.Forms.Label();
             this.lblVehicleWeaponRangeShort = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponAmmoRemaining = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponAlternateRangeShort = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponAlternateRangeMedium = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponRangeMain = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponAlternateRangeLong = new System.Windows.Forms.Label();
             this.lblVehicleWeaponRangeMediumLabel = new System.Windows.Forms.Label();
             this.lblVehicleWeaponRangeMedium = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponAlternateRangeMedium = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponRangeExtreme = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponRangeLongLabel = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponRangeExtremeLabel = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponRangeLong = new System.Windows.Forms.Label();
+            this.tlpVehiclesWeaponCareer = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblVehicleWeaponAmmoRemainingLabel = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponAmmoRemaining = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponAmmoTypeLabel = new System.Windows.Forms.Label();
+            this.cboVehicleWeaponAmmo = new Chummer.ElasticComboBox();
+            this.lblFiringModeLabel = new System.Windows.Forms.Label();
+            this.cboVehicleWeaponFiringMode = new Chummer.ElasticComboBox();
+            this.flpVehiclesWeaponCareerButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdFireVehicleWeapon = new SplitButton();
             this.cmdReloadVehicleWeapon = new System.Windows.Forms.Button();
-            this.lblVehicleWeaponRangeLongLabel = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponRangeLong = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponAlternateRangeLong = new System.Windows.Forms.Label();
+            this.gpbVehiclesMatrix = new System.Windows.Forms.GroupBox();
+            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.chkVehicleActiveCommlink = new System.Windows.Forms.CheckBox();
+            this.chkVehicleHomeNode = new System.Windows.Forms.CheckBox();
+            this.lblVehicleDataProcessingLabel = new System.Windows.Forms.Label();
+            this.cboVehicleDataProcessing = new Chummer.ElasticComboBox();
+            this.cboVehicleFirewall = new Chummer.ElasticComboBox();
+            this.lblVehicleFirewallLabel = new System.Windows.Forms.Label();
+            this.lblVehicleSleazeLabel = new System.Windows.Forms.Label();
+            this.cboVehicleSleaze = new Chummer.ElasticComboBox();
+            this.lblVehicleDeviceLabel = new System.Windows.Forms.Label();
+            this.lblVehicleDevice = new System.Windows.Forms.Label();
+            this.cboVehicleAttack = new Chummer.ElasticComboBox();
+            this.lblVehicleAttackLabel = new System.Windows.Forms.Label();
             this.panVehicleCM = new System.Windows.Forms.TabControl();
             this.tabVehiclePhysicalCM = new System.Windows.Forms.TabPage();
             this.chkVehiclePhysicalCM40 = new System.Windows.Forms.CheckBox();
@@ -1101,6 +1118,7 @@ namespace Chummer
             this.chkVehicleMatrixCM38 = new System.Windows.Forms.CheckBox();
             this.chkVehicleMatrixCM39 = new System.Windows.Forms.CheckBox();
             this.chkVehicleMatrixCM40 = new System.Windows.Forms.CheckBox();
+            this.treVehicles = new System.Windows.Forms.TreeView();
             this.tabCharacterInfo = new System.Windows.Forms.TabPage();
             this.tlpCharacterInfo = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtNotes = new System.Windows.Forms.TextBox();
@@ -1367,7 +1385,9 @@ namespace Chummer
             this.flpCyberware.SuspendLayout();
             this.gpbEssenceConsumption.SuspendLayout();
             this.tlpCyberwareEssenceConsumption.SuspendLayout();
+            this.gpbCyberwareCommon.SuspendLayout();
             this.tlpCyberwareCommon.SuspendLayout();
+            this.gpbCyberwareMatrix.SuspendLayout();
             this.tlpCyberwareMatrix.SuspendLayout();
             this.tabCyberwareCM.SuspendLayout();
             this.tabCyberwareMatrixCM.SuspendLayout();
@@ -1402,8 +1422,23 @@ namespace Chummer
             this.tabVehicles.SuspendLayout();
             this.tlpVehicles.SuspendLayout();
             this.flowLayoutPanel10.SuspendLayout();
-            this.flowLayoutPanel27.SuspendLayout();
-            this.tlpVehicleWeapon.SuspendLayout();
+            this.flpVehicles.SuspendLayout();
+            this.gpbVehiclesCommon.SuspendLayout();
+            this.tlpVehiclesCommon.SuspendLayout();
+            this.flpVehiclesCommonQuantity.SuspendLayout();
+            this.flpVehiclesCommonCheckBoxes.SuspendLayout();
+            this.flpVehiclesCommonMoveButtons.SuspendLayout();
+            this.gpbVehiclesVehicle.SuspendLayout();
+            this.tableLayoutPanel7.SuspendLayout();
+            this.gpbVehiclesWeapon.SuspendLayout();
+            this.flpVehiclesWeapon.SuspendLayout();
+            this.tlpVehiclesWeaponCommon.SuspendLayout();
+            this.flpVehiclesWeaponDicePool.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
+            this.tlpVehiclesWeaponCareer.SuspendLayout();
+            this.flpVehiclesWeaponCareerButtons.SuspendLayout();
+            this.gpbVehiclesMatrix.SuspendLayout();
+            this.tableLayoutPanel4.SuspendLayout();
             this.panVehicleCM.SuspendLayout();
             this.tabVehiclePhysicalCM.SuspendLayout();
             this.tabVehicleMatrixCM.SuspendLayout();
@@ -2034,10 +2069,9 @@ namespace Chummer
             // 
             this.cmdVehicleGearReduceQty.AutoSize = true;
             this.cmdVehicleGearReduceQty.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdVehicleGearReduceQty.Enabled = false;
             this.cmdVehicleGearReduceQty.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdVehicleGearReduceQty.Image = global::Chummer.Properties.Resources.delete;
-            this.cmdVehicleGearReduceQty.Location = new System.Drawing.Point(506, 261);
+            this.cmdVehicleGearReduceQty.Location = new System.Drawing.Point(38, 3);
             this.cmdVehicleGearReduceQty.Name = "cmdVehicleGearReduceQty";
             this.cmdVehicleGearReduceQty.Size = new System.Drawing.Size(22, 22);
             this.cmdVehicleGearReduceQty.TabIndex = 112;
@@ -2049,10 +2083,9 @@ namespace Chummer
             // 
             this.cmdVehicleMoveToInventory.AutoSize = true;
             this.cmdVehicleMoveToInventory.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdVehicleMoveToInventory.Enabled = false;
             this.cmdVehicleMoveToInventory.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdVehicleMoveToInventory.Image = global::Chummer.Properties.Resources.car_go;
-            this.cmdVehicleMoveToInventory.Location = new System.Drawing.Point(538, 261);
+            this.cmdVehicleMoveToInventory.Location = new System.Drawing.Point(3, 3);
             this.cmdVehicleMoveToInventory.Name = "cmdVehicleMoveToInventory";
             this.cmdVehicleMoveToInventory.Size = new System.Drawing.Size(22, 22);
             this.cmdVehicleMoveToInventory.TabIndex = 136;
@@ -2066,12 +2099,11 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chkVehicleWeaponAccessoryInstalled.AutoSize = true;
-            this.tlpVehicles.SetColumnSpan(this.chkVehicleWeaponAccessoryInstalled, 2);
             this.chkVehicleWeaponAccessoryInstalled.Enabled = false;
-            this.chkVehicleWeaponAccessoryInstalled.Location = new System.Drawing.Point(703, 237);
+            this.chkVehicleWeaponAccessoryInstalled.Location = new System.Drawing.Point(3, 4);
             this.chkVehicleWeaponAccessoryInstalled.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkVehicleWeaponAccessoryInstalled.Name = "chkVehicleWeaponAccessoryInstalled";
-            this.chkVehicleWeaponAccessoryInstalled.Size = new System.Drawing.Size(129, 17);
+            this.chkVehicleWeaponAccessoryInstalled.Size = new System.Drawing.Size(65, 17);
             this.chkVehicleWeaponAccessoryInstalled.TabIndex = 89;
             this.chkVehicleWeaponAccessoryInstalled.Tag = "Checkbox_Installed";
             this.chkVehicleWeaponAccessoryInstalled.Text = "Installed";
@@ -2931,6 +2963,7 @@ namespace Chummer
             this.lblRiggingINI.Size = new System.Drawing.Size(13, 13);
             this.lblRiggingINI.TabIndex = 88;
             this.lblRiggingINI.Text = "0";
+            this.lblRiggingINI.ToolTipText = "";
             // 
             // lblMovement
             // 
@@ -2973,6 +3006,7 @@ namespace Chummer
             this.lblCMPhysical.Size = new System.Drawing.Size(13, 13);
             this.lblCMPhysical.TabIndex = 24;
             this.lblCMPhysical.Text = "0";
+            this.lblCMPhysical.ToolTipText = "";
             // 
             // lblJudgeIntentions
             // 
@@ -2994,6 +3028,7 @@ namespace Chummer
             this.lblMatrixINIHot.Size = new System.Drawing.Size(13, 13);
             this.lblMatrixINIHot.TabIndex = 86;
             this.lblMatrixINIHot.Text = "0";
+            this.lblMatrixINIHot.ToolTipText = "";
             // 
             // lblComposure
             // 
@@ -3015,6 +3050,7 @@ namespace Chummer
             this.lblCMStun.Size = new System.Drawing.Size(13, 13);
             this.lblCMStun.TabIndex = 25;
             this.lblCMStun.Text = "0";
+            this.lblCMStun.ToolTipText = "";
             // 
             // lblMatrixINICold
             // 
@@ -3025,6 +3061,7 @@ namespace Chummer
             this.lblMatrixINICold.Size = new System.Drawing.Size(13, 13);
             this.lblMatrixINICold.TabIndex = 84;
             this.lblMatrixINICold.Text = "0";
+            this.lblMatrixINICold.ToolTipText = "";
             // 
             // lblINI
             // 
@@ -3035,6 +3072,7 @@ namespace Chummer
             this.lblINI.Size = new System.Drawing.Size(13, 13);
             this.lblINI.TabIndex = 80;
             this.lblINI.Text = "0";
+            this.lblINI.ToolTipText = "";
             // 
             // lblMatrixINI
             // 
@@ -3045,6 +3083,7 @@ namespace Chummer
             this.lblMatrixINI.Size = new System.Drawing.Size(13, 13);
             this.lblMatrixINI.TabIndex = 81;
             this.lblMatrixINI.Text = "0";
+            this.lblMatrixINI.ToolTipText = "";
             // 
             // lblCareerKarma
             // 
@@ -3065,6 +3104,7 @@ namespace Chummer
             this.lblAstralINI.Size = new System.Drawing.Size(13, 13);
             this.lblAstralINI.TabIndex = 82;
             this.lblAstralINI.Text = "0";
+            this.lblAstralINI.ToolTipText = "";
             // 
             // lblRemainingNuyen
             // 
@@ -5077,20 +5117,20 @@ namespace Chummer
             // treQualities
             // 
             this.tlpCommonLeftSide.SetColumnSpan(this.treQualities, 4);
-            this.treQualities.Dock = System.Windows.Forms.DockStyle.Top;
+            this.treQualities.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treQualities.HideSelection = false;
             this.treQualities.Indent = 15;
             this.treQualities.Location = new System.Drawing.Point(3, 58);
             this.treQualities.Name = "treQualities";
-            treeNode2.Name = "nodPositiveQualityRoot";
-            treeNode2.Tag = "Node_SelectedPositiveQualities";
-            treeNode2.Text = "Selected Positive Qualities";
-            treeNode3.Name = "nodNegativeQualityRoot";
-            treeNode3.Tag = "Node_SelectedNegativeQualities";
-            treeNode3.Text = "Selected Negative Qualities";
+            treeNode1.Name = "nodPositiveQualityRoot";
+            treeNode1.Tag = "Node_SelectedPositiveQualities";
+            treeNode1.Text = "Selected Positive Qualities";
+            treeNode2.Name = "nodNegativeQualityRoot";
+            treeNode2.Tag = "Node_SelectedNegativeQualities";
+            treeNode2.Text = "Selected Negative Qualities";
             this.treQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode2,
-            treeNode3});
+            treeNode1,
+            treeNode2});
             this.treQualities.ShowNodeToolTips = true;
             this.treQualities.ShowPlusMinus = false;
             this.treQualities.ShowRootLines = false;
@@ -5153,6 +5193,7 @@ namespace Chummer
             this.lblQualitySource.Size = new System.Drawing.Size(47, 13);
             this.lblQualitySource.TabIndex = 68;
             this.lblQualitySource.Text = "[Source]";
+            this.lblQualitySource.Visible = false;
             this.lblQualitySource.Click += new System.EventHandler(this.OpenSourceFromLabel);
             // 
             // lblQualityBP
@@ -5165,6 +5206,7 @@ namespace Chummer
             this.lblQualityBP.Size = new System.Drawing.Size(43, 13);
             this.lblQualityBP.TabIndex = 70;
             this.lblQualityBP.Text = "[Karma]";
+            this.lblQualityBP.Visible = false;
             // 
             // lblQualitySourceLabel
             // 
@@ -5177,6 +5219,7 @@ namespace Chummer
             this.lblQualitySourceLabel.TabIndex = 67;
             this.lblQualitySourceLabel.Tag = "Label_Source";
             this.lblQualitySourceLabel.Text = "Source:";
+            this.lblQualitySourceLabel.Visible = false;
             // 
             // lblQualityBPLabel
             // 
@@ -5189,6 +5232,7 @@ namespace Chummer
             this.lblQualityBPLabel.TabIndex = 69;
             this.lblQualityBPLabel.Tag = "Label_Karma";
             this.lblQualityBPLabel.Text = "Karma:";
+            this.lblQualityBPLabel.Visible = false;
             // 
             // lblQualityLevelLabel
             // 
@@ -5499,15 +5543,15 @@ namespace Chummer
             this.treMartialArts.HideSelection = false;
             this.treMartialArts.Location = new System.Drawing.Point(3, 32);
             this.treMartialArts.Name = "treMartialArts";
-            treeNode4.Name = "treMartialArtsRoot";
-            treeNode4.Tag = "Node_SelectedMartialArts";
-            treeNode4.Text = "Selected Martial Arts";
-            treeNode5.Name = "nodQualities";
-            treeNode5.Tag = "Node_SelectedQualities";
-            treeNode5.Text = "Selected Qualities";
+            treeNode3.Name = "treMartialArtsRoot";
+            treeNode3.Tag = "Node_SelectedMartialArts";
+            treeNode3.Text = "Selected Martial Arts";
+            treeNode4.Name = "nodQualities";
+            treeNode4.Tag = "Node_SelectedQualities";
+            treeNode4.Text = "Selected Qualities";
             this.treMartialArts.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode4,
-            treeNode5});
+            treeNode3,
+            treeNode4});
             this.treMartialArts.ShowNodeToolTips = true;
             this.treMartialArts.ShowPlusMinus = false;
             this.treMartialArts.ShowRootLines = false;
@@ -5710,35 +5754,35 @@ namespace Chummer
             this.treSpells.HideSelection = false;
             this.treSpells.Location = new System.Drawing.Point(3, 32);
             this.treSpells.Name = "treSpells";
-            treeNode6.Name = "nodSpellCombatRoot";
-            treeNode6.Tag = "Node_SelectedCombatSpells";
-            treeNode6.Text = "Selected Combat Spells";
-            treeNode7.Name = "nodSpellDetectionRoot";
-            treeNode7.Tag = "Node_SelectedDetectionSpells";
-            treeNode7.Text = "Selected Detection Spells";
-            treeNode8.Name = "nodSpellHealthRoot";
-            treeNode8.Tag = "Node_SelectedHealthSpells";
-            treeNode8.Text = "Selected Health Spells";
-            treeNode9.Name = "nodSpellIllusionRoot";
-            treeNode9.Tag = "Node_SelectedIllusionSpells";
-            treeNode9.Text = "Selected Illusion Spells";
-            treeNode10.Name = "nodSpellManipulationRoot";
-            treeNode10.Tag = "Node_SelectedManipulationSpells";
-            treeNode10.Text = "Selected Manipulation Spells";
-            treeNode11.Name = "nodSpellGeomancyRoot";
-            treeNode11.Tag = "Node_SelectedGeomancyRituals";
-            treeNode11.Text = "Selected Rituals";
-            treeNode12.Name = "nodSpellEnchantmentRoot";
-            treeNode12.Tag = "Node_SelectedEnchantments";
-            treeNode12.Text = "Selected Enchantments";
+            treeNode5.Name = "nodSpellCombatRoot";
+            treeNode5.Tag = "Node_SelectedCombatSpells";
+            treeNode5.Text = "Selected Combat Spells";
+            treeNode6.Name = "nodSpellDetectionRoot";
+            treeNode6.Tag = "Node_SelectedDetectionSpells";
+            treeNode6.Text = "Selected Detection Spells";
+            treeNode7.Name = "nodSpellHealthRoot";
+            treeNode7.Tag = "Node_SelectedHealthSpells";
+            treeNode7.Text = "Selected Health Spells";
+            treeNode8.Name = "nodSpellIllusionRoot";
+            treeNode8.Tag = "Node_SelectedIllusionSpells";
+            treeNode8.Text = "Selected Illusion Spells";
+            treeNode9.Name = "nodSpellManipulationRoot";
+            treeNode9.Tag = "Node_SelectedManipulationSpells";
+            treeNode9.Text = "Selected Manipulation Spells";
+            treeNode10.Name = "nodSpellGeomancyRoot";
+            treeNode10.Tag = "Node_SelectedGeomancyRituals";
+            treeNode10.Text = "Selected Rituals";
+            treeNode11.Name = "nodSpellEnchantmentRoot";
+            treeNode11.Tag = "Node_SelectedEnchantments";
+            treeNode11.Text = "Selected Enchantments";
             this.treSpells.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode5,
             treeNode6,
             treeNode7,
             treeNode8,
             treeNode9,
             treeNode10,
-            treeNode11,
-            treeNode12});
+            treeNode11});
             this.tlpMagician.SetRowSpan(this.treSpells, 13);
             this.treSpells.ShowNodeToolTips = true;
             this.treSpells.ShowRootLines = false;
@@ -6387,11 +6431,11 @@ namespace Chummer
             this.treComplexForms.HideSelection = false;
             this.treComplexForms.Location = new System.Drawing.Point(3, 32);
             this.treComplexForms.Name = "treComplexForms";
-            treeNode13.Name = "nodProgramAdvancedRoot";
-            treeNode13.Tag = "Node_SelectedAdvancedComplexForms";
-            treeNode13.Text = "Selected Complex Forms";
+            treeNode12.Name = "nodProgramAdvancedRoot";
+            treeNode12.Tag = "Node_SelectedAdvancedComplexForms";
+            treeNode12.Text = "Selected Complex Forms";
             this.treComplexForms.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode13});
+            treeNode12});
             this.tlpTechnomancer.SetRowSpan(this.treComplexForms, 9);
             this.treComplexForms.ShowNodeToolTips = true;
             this.treComplexForms.ShowRootLines = false;
@@ -6747,11 +6791,11 @@ namespace Chummer
             this.treAIPrograms.HideSelection = false;
             this.treAIPrograms.Location = new System.Drawing.Point(3, 32);
             this.treAIPrograms.Name = "treAIPrograms";
-            treeNode14.Name = "nodAIProgramsRoot";
-            treeNode14.Tag = "Node_SelectedAIPrograms";
-            treeNode14.Text = "Selected AI Programs and Advanced Programs";
+            treeNode13.Name = "nodAIProgramsRoot";
+            treeNode13.Tag = "Node_SelectedAIPrograms";
+            treeNode13.Text = "Selected AI Programs and Advanced Programs";
             this.treAIPrograms.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode14});
+            treeNode13});
             this.tlpAdvancedPrograms.SetRowSpan(this.treAIPrograms, 2);
             this.treAIPrograms.ShowNodeToolTips = true;
             this.treAIPrograms.ShowRootLines = false;
@@ -6860,15 +6904,15 @@ namespace Chummer
             this.treCritterPowers.HideSelection = false;
             this.treCritterPowers.Location = new System.Drawing.Point(3, 32);
             this.treCritterPowers.Name = "treCritterPowers";
-            treeNode15.Name = "nodCritterPowerRoot";
-            treeNode15.Tag = "Node_CritterPowers";
-            treeNode15.Text = "Critter Powers";
-            treeNode16.Name = "nodCritterWeaknessRoot";
-            treeNode16.Tag = "Node_CritterWeaknesses";
-            treeNode16.Text = "Weaknesses";
+            treeNode14.Name = "nodCritterPowerRoot";
+            treeNode14.Tag = "Node_CritterPowers";
+            treeNode14.Text = "Critter Powers";
+            treeNode15.Name = "nodCritterWeaknessRoot";
+            treeNode15.Tag = "Node_CritterWeaknesses";
+            treeNode15.Text = "Weaknesses";
             this.treCritterPowers.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode15,
-            treeNode16});
+            treeNode14,
+            treeNode15});
             this.tlpCritter.SetRowSpan(this.treCritterPowers, 9);
             this.treCritterPowers.ShowNodeToolTips = true;
             this.treCritterPowers.ShowPlusMinus = false;
@@ -7487,19 +7531,19 @@ namespace Chummer
             this.treCyberware.HideSelection = false;
             this.treCyberware.Location = new System.Drawing.Point(3, 32);
             this.treCyberware.Name = "treCyberware";
-            treeNode17.Name = "nodCyberwareRoot";
-            treeNode17.Tag = "Node_SelectedCyberware";
-            treeNode17.Text = "Selected Cyberware";
-            treeNode18.Name = "nodBioware";
-            treeNode18.Tag = "Node_SelectedBioware";
-            treeNode18.Text = "Selected Bioware";
-            treeNode19.Name = "nodUnequippedModularCyberware";
-            treeNode19.Tag = "Node_UnequippedModularCyberware";
-            treeNode19.Text = "Unequipped Modular Cyberware";
+            treeNode16.Name = "nodCyberwareRoot";
+            treeNode16.Tag = "Node_SelectedCyberware";
+            treeNode16.Text = "Selected Cyberware";
+            treeNode17.Name = "nodBioware";
+            treeNode17.Tag = "Node_SelectedBioware";
+            treeNode17.Text = "Selected Bioware";
+            treeNode18.Name = "nodUnequippedModularCyberware";
+            treeNode18.Tag = "Node_UnequippedModularCyberware";
+            treeNode18.Text = "Unequipped Modular Cyberware";
             this.treCyberware.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode16,
             treeNode17,
-            treeNode18,
-            treeNode19});
+            treeNode18});
             this.treCyberware.ShowNodeToolTips = true;
             this.treCyberware.ShowRootLines = false;
             this.treCyberware.Size = new System.Drawing.Size(295, 590);
@@ -7510,27 +7554,29 @@ namespace Chummer
             // 
             // flpCyberware
             // 
+            this.flpCyberware.AutoScroll = true;
             this.flpCyberware.AutoSize = true;
             this.flpCyberware.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpCyberware.Controls.Add(this.gpbEssenceConsumption);
-            this.flpCyberware.Controls.Add(this.tlpCyberwareCommon);
-            this.flpCyberware.Controls.Add(this.tlpCyberwareMatrix);
+            this.flpCyberware.Controls.Add(this.gpbCyberwareCommon);
+            this.flpCyberware.Controls.Add(this.gpbCyberwareMatrix);
             this.flpCyberware.Controls.Add(this.tabCyberwareCM);
             this.flpCyberware.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpCyberware.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpCyberware.Location = new System.Drawing.Point(304, 32);
+            this.flpCyberware.Location = new System.Drawing.Point(301, 29);
+            this.flpCyberware.Margin = new System.Windows.Forms.Padding(0);
             this.flpCyberware.Name = "flpCyberware";
-            this.flpCyberware.Size = new System.Drawing.Size(528, 590);
+            this.flpCyberware.Size = new System.Drawing.Size(534, 596);
             this.flpCyberware.TabIndex = 230;
             // 
             // gpbEssenceConsumption
             // 
             this.gpbEssenceConsumption.AutoSize = true;
+            this.gpbEssenceConsumption.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbEssenceConsumption.Controls.Add(this.tlpCyberwareEssenceConsumption);
-            this.gpbEssenceConsumption.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gpbEssenceConsumption.Location = new System.Drawing.Point(3, 3);
+            this.gpbEssenceConsumption.MinimumSize = new System.Drawing.Size(250, 0);
             this.gpbEssenceConsumption.Name = "gpbEssenceConsumption";
-            this.gpbEssenceConsumption.Size = new System.Drawing.Size(514, 94);
+            this.gpbEssenceConsumption.Size = new System.Drawing.Size(250, 94);
             this.gpbEssenceConsumption.TabIndex = 232;
             this.gpbEssenceConsumption.TabStop = false;
             this.gpbEssenceConsumption.Tag = "Label_EssenceConsumption";
@@ -7539,6 +7585,7 @@ namespace Chummer
             // tlpCyberwareEssenceConsumption
             // 
             this.tlpCyberwareEssenceConsumption.AutoSize = true;
+            this.tlpCyberwareEssenceConsumption.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpCyberwareEssenceConsumption.ColumnCount = 2;
             this.tlpCyberwareEssenceConsumption.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpCyberwareEssenceConsumption.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -7557,7 +7604,7 @@ namespace Chummer
             this.tlpCyberwareEssenceConsumption.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCyberwareEssenceConsumption.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCyberwareEssenceConsumption.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCyberwareEssenceConsumption.Size = new System.Drawing.Size(508, 75);
+            this.tlpCyberwareEssenceConsumption.Size = new System.Drawing.Size(244, 75);
             this.tlpCyberwareEssenceConsumption.TabIndex = 230;
             // 
             // lblCyberwareESSLabel
@@ -7626,6 +7673,20 @@ namespace Chummer
             this.lblEssenceHoleESS.TabIndex = 68;
             this.lblEssenceHoleESS.Text = "[0]";
             // 
+            // gpbCyberwareCommon
+            // 
+            this.gpbCyberwareCommon.AutoSize = true;
+            this.gpbCyberwareCommon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbCyberwareCommon.Controls.Add(this.tlpCyberwareCommon);
+            this.gpbCyberwareCommon.Location = new System.Drawing.Point(3, 103);
+            this.gpbCyberwareCommon.MinimumSize = new System.Drawing.Size(500, 0);
+            this.gpbCyberwareCommon.Name = "gpbCyberwareCommon";
+            this.gpbCyberwareCommon.Size = new System.Drawing.Size(500, 198);
+            this.gpbCyberwareCommon.TabIndex = 234;
+            this.gpbCyberwareCommon.TabStop = false;
+            this.gpbCyberwareCommon.Tag = "String_Info";
+            this.gpbCyberwareCommon.Text = "Info";
+            // 
             // tlpCyberwareCommon
             // 
             this.tlpCyberwareCommon.AutoSize = true;
@@ -7659,7 +7720,7 @@ namespace Chummer
             this.tlpCyberwareCommon.Controls.Add(this.lblCyberwareAvailLabel, 0, 4);
             this.tlpCyberwareCommon.Controls.Add(this.lblCyberwareEssence, 1, 3);
             this.tlpCyberwareCommon.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpCyberwareCommon.Location = new System.Drawing.Point(0, 100);
+            this.tlpCyberwareCommon.Location = new System.Drawing.Point(3, 16);
             this.tlpCyberwareCommon.Margin = new System.Windows.Forms.Padding(0);
             this.tlpCyberwareCommon.Name = "tlpCyberwareCommon";
             this.tlpCyberwareCommon.RowCount = 7;
@@ -7670,14 +7731,14 @@ namespace Chummer
             this.tlpCyberwareCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCyberwareCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCyberwareCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpCyberwareCommon.Size = new System.Drawing.Size(520, 179);
+            this.tlpCyberwareCommon.Size = new System.Drawing.Size(494, 179);
             this.tlpCyberwareCommon.TabIndex = 231;
             // 
             // lblCyberwareNameLabel
             // 
             this.lblCyberwareNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberwareNameLabel.AutoSize = true;
-            this.lblCyberwareNameLabel.Location = new System.Drawing.Point(89, 6);
+            this.lblCyberwareNameLabel.Location = new System.Drawing.Point(82, 6);
             this.lblCyberwareNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareNameLabel.Name = "lblCyberwareNameLabel";
             this.lblCyberwareNameLabel.Size = new System.Drawing.Size(38, 13);
@@ -7688,7 +7749,8 @@ namespace Chummer
             // lblCyberwareName
             // 
             this.lblCyberwareName.AutoSize = true;
-            this.lblCyberwareName.Location = new System.Drawing.Point(133, 6);
+            this.tlpCyberwareCommon.SetColumnSpan(this.lblCyberwareName, 3);
+            this.lblCyberwareName.Location = new System.Drawing.Point(126, 6);
             this.lblCyberwareName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareName.Name = "lblCyberwareName";
             this.lblCyberwareName.Size = new System.Drawing.Size(41, 13);
@@ -7699,14 +7761,13 @@ namespace Chummer
             // 
             this.lblCyberlimbSTRLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberlimbSTRLabel.AutoSize = true;
-            this.lblCyberlimbSTRLabel.Location = new System.Drawing.Point(306, 131);
+            this.lblCyberlimbSTRLabel.Location = new System.Drawing.Point(285, 131);
             this.lblCyberlimbSTRLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberlimbSTRLabel.Name = "lblCyberlimbSTRLabel";
             this.lblCyberlimbSTRLabel.Size = new System.Drawing.Size(81, 13);
             this.lblCyberlimbSTRLabel.TabIndex = 218;
             this.lblCyberlimbSTRLabel.Tag = "Label_CyberlimbSTR";
             this.lblCyberlimbSTRLabel.Text = "Strength (STR):";
-            this.lblCyberlimbSTRLabel.Visible = false;
             // 
             // cmdCyberwareChangeMount
             // 
@@ -7720,14 +7781,13 @@ namespace Chummer
             this.cmdCyberwareChangeMount.Tag = "Button_ChangeMountedLocation";
             this.cmdCyberwareChangeMount.Text = "Change Mounted Location";
             this.cmdCyberwareChangeMount.UseVisualStyleBackColor = true;
-            this.cmdCyberwareChangeMount.Visible = false;
             this.cmdCyberwareChangeMount.Click += new System.EventHandler(this.cmdCyberwareChangeMount_Click);
             // 
             // lblCyberwareCategoryLabel
             // 
             this.lblCyberwareCategoryLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberwareCategoryLabel.AutoSize = true;
-            this.lblCyberwareCategoryLabel.Location = new System.Drawing.Point(75, 31);
+            this.lblCyberwareCategoryLabel.Location = new System.Drawing.Point(68, 31);
             this.lblCyberwareCategoryLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareCategoryLabel.Name = "lblCyberwareCategoryLabel";
             this.lblCyberwareCategoryLabel.Size = new System.Drawing.Size(52, 13);
@@ -7738,18 +7798,17 @@ namespace Chummer
             // lblCyberlimbSTR
             // 
             this.lblCyberlimbSTR.AutoSize = true;
-            this.lblCyberlimbSTR.Location = new System.Drawing.Point(393, 131);
+            this.lblCyberlimbSTR.Location = new System.Drawing.Point(372, 131);
             this.lblCyberlimbSTR.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberlimbSTR.Name = "lblCyberlimbSTR";
             this.lblCyberlimbSTR.Size = new System.Drawing.Size(19, 13);
             this.lblCyberlimbSTR.TabIndex = 220;
             this.lblCyberlimbSTR.Text = "[0]";
-            this.lblCyberlimbSTR.Visible = false;
             // 
             // lblCyberwareRating
             // 
             this.lblCyberwareRating.AutoSize = true;
-            this.lblCyberwareRating.Location = new System.Drawing.Point(393, 31);
+            this.lblCyberwareRating.Location = new System.Drawing.Point(372, 31);
             this.lblCyberwareRating.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareRating.Name = "lblCyberwareRating";
             this.lblCyberwareRating.Size = new System.Drawing.Size(44, 13);
@@ -7760,7 +7819,7 @@ namespace Chummer
             // 
             this.lblCyberwareRatingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberwareRatingLabel.AutoSize = true;
-            this.lblCyberwareRatingLabel.Location = new System.Drawing.Point(346, 31);
+            this.lblCyberwareRatingLabel.Location = new System.Drawing.Point(325, 31);
             this.lblCyberwareRatingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareRatingLabel.Name = "lblCyberwareRatingLabel";
             this.lblCyberwareRatingLabel.Size = new System.Drawing.Size(41, 13);
@@ -7771,7 +7830,7 @@ namespace Chummer
             // lblCyberwareCategory
             // 
             this.lblCyberwareCategory.AutoSize = true;
-            this.lblCyberwareCategory.Location = new System.Drawing.Point(133, 31);
+            this.lblCyberwareCategory.Location = new System.Drawing.Point(126, 31);
             this.lblCyberwareCategory.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareCategory.Name = "lblCyberwareCategory";
             this.lblCyberwareCategory.Size = new System.Drawing.Size(55, 13);
@@ -7781,18 +7840,17 @@ namespace Chummer
             // lblCyberlimbAGI
             // 
             this.lblCyberlimbAGI.AutoSize = true;
-            this.lblCyberlimbAGI.Location = new System.Drawing.Point(393, 106);
+            this.lblCyberlimbAGI.Location = new System.Drawing.Point(372, 106);
             this.lblCyberlimbAGI.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberlimbAGI.Name = "lblCyberlimbAGI";
             this.lblCyberlimbAGI.Size = new System.Drawing.Size(19, 13);
             this.lblCyberlimbAGI.TabIndex = 219;
             this.lblCyberlimbAGI.Text = "[0]";
-            this.lblCyberlimbAGI.Visible = false;
             // 
             // lblCyberwareCapacity
             // 
             this.lblCyberwareCapacity.AutoSize = true;
-            this.lblCyberwareCapacity.Location = new System.Drawing.Point(393, 56);
+            this.lblCyberwareCapacity.Location = new System.Drawing.Point(372, 56);
             this.lblCyberwareCapacity.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareCapacity.Name = "lblCyberwareCapacity";
             this.lblCyberwareCapacity.Size = new System.Drawing.Size(54, 13);
@@ -7803,7 +7861,7 @@ namespace Chummer
             // 
             this.lblCyberwareCapacityLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberwareCapacityLabel.AutoSize = true;
-            this.lblCyberwareCapacityLabel.Location = new System.Drawing.Point(336, 56);
+            this.lblCyberwareCapacityLabel.Location = new System.Drawing.Point(315, 56);
             this.lblCyberwareCapacityLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareCapacityLabel.Name = "lblCyberwareCapacityLabel";
             this.lblCyberwareCapacityLabel.Size = new System.Drawing.Size(51, 13);
@@ -7815,7 +7873,7 @@ namespace Chummer
             // 
             this.lblCyberwareGradeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberwareGradeLabel.AutoSize = true;
-            this.lblCyberwareGradeLabel.Location = new System.Drawing.Point(88, 56);
+            this.lblCyberwareGradeLabel.Location = new System.Drawing.Point(81, 56);
             this.lblCyberwareGradeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareGradeLabel.Name = "lblCyberwareGradeLabel";
             this.lblCyberwareGradeLabel.Size = new System.Drawing.Size(39, 13);
@@ -7826,7 +7884,7 @@ namespace Chummer
             // lblCyberwareGrade
             // 
             this.lblCyberwareGrade.AutoSize = true;
-            this.lblCyberwareGrade.Location = new System.Drawing.Point(133, 56);
+            this.lblCyberwareGrade.Location = new System.Drawing.Point(126, 56);
             this.lblCyberwareGrade.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareGrade.Name = "lblCyberwareGrade";
             this.lblCyberwareGrade.Size = new System.Drawing.Size(42, 13);
@@ -7837,7 +7895,7 @@ namespace Chummer
             // 
             this.lblCyberwareCostLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberwareCostLabel.AutoSize = true;
-            this.lblCyberwareCostLabel.Location = new System.Drawing.Point(356, 81);
+            this.lblCyberwareCostLabel.Location = new System.Drawing.Point(335, 81);
             this.lblCyberwareCostLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareCostLabel.Name = "lblCyberwareCostLabel";
             this.lblCyberwareCostLabel.Size = new System.Drawing.Size(31, 13);
@@ -7849,19 +7907,18 @@ namespace Chummer
             // 
             this.lblCyberlimbAGILabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberlimbAGILabel.AutoSize = true;
-            this.lblCyberlimbAGILabel.Location = new System.Drawing.Point(323, 106);
+            this.lblCyberlimbAGILabel.Location = new System.Drawing.Point(302, 106);
             this.lblCyberlimbAGILabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberlimbAGILabel.Name = "lblCyberlimbAGILabel";
             this.lblCyberlimbAGILabel.Size = new System.Drawing.Size(64, 13);
             this.lblCyberlimbAGILabel.TabIndex = 217;
             this.lblCyberlimbAGILabel.Tag = "Label_CyberlimbAGI";
             this.lblCyberlimbAGILabel.Text = "Agility (AGI):";
-            this.lblCyberlimbAGILabel.Visible = false;
             // 
             // lblCyberwareCost
             // 
             this.lblCyberwareCost.AutoSize = true;
-            this.lblCyberwareCost.Location = new System.Drawing.Point(393, 81);
+            this.lblCyberwareCost.Location = new System.Drawing.Point(372, 81);
             this.lblCyberwareCost.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareCost.Name = "lblCyberwareCost";
             this.lblCyberwareCost.Size = new System.Drawing.Size(34, 13);
@@ -7872,7 +7929,7 @@ namespace Chummer
             // 
             this.lblCyberwareEssenceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberwareEssenceLabel.AutoSize = true;
-            this.lblCyberwareEssenceLabel.Location = new System.Drawing.Point(76, 81);
+            this.lblCyberwareEssenceLabel.Location = new System.Drawing.Point(69, 81);
             this.lblCyberwareEssenceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareEssenceLabel.Name = "lblCyberwareEssenceLabel";
             this.lblCyberwareEssenceLabel.Size = new System.Drawing.Size(51, 13);
@@ -7883,7 +7940,7 @@ namespace Chummer
             // lblCyberwareSource
             // 
             this.lblCyberwareSource.AutoSize = true;
-            this.lblCyberwareSource.Location = new System.Drawing.Point(133, 131);
+            this.lblCyberwareSource.Location = new System.Drawing.Point(126, 131);
             this.lblCyberwareSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareSource.Name = "lblCyberwareSource";
             this.lblCyberwareSource.Size = new System.Drawing.Size(47, 13);
@@ -7895,7 +7952,7 @@ namespace Chummer
             // 
             this.lblCyberwareSourceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberwareSourceLabel.AutoSize = true;
-            this.lblCyberwareSourceLabel.Location = new System.Drawing.Point(83, 131);
+            this.lblCyberwareSourceLabel.Location = new System.Drawing.Point(76, 131);
             this.lblCyberwareSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareSourceLabel.Name = "lblCyberwareSourceLabel";
             this.lblCyberwareSourceLabel.Size = new System.Drawing.Size(44, 13);
@@ -7906,7 +7963,7 @@ namespace Chummer
             // lblCyberwareAvail
             // 
             this.lblCyberwareAvail.AutoSize = true;
-            this.lblCyberwareAvail.Location = new System.Drawing.Point(133, 106);
+            this.lblCyberwareAvail.Location = new System.Drawing.Point(126, 106);
             this.lblCyberwareAvail.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareAvail.Name = "lblCyberwareAvail";
             this.lblCyberwareAvail.Size = new System.Drawing.Size(36, 13);
@@ -7917,7 +7974,7 @@ namespace Chummer
             // 
             this.lblCyberwareAvailLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberwareAvailLabel.AutoSize = true;
-            this.lblCyberwareAvailLabel.Location = new System.Drawing.Point(94, 106);
+            this.lblCyberwareAvailLabel.Location = new System.Drawing.Point(87, 106);
             this.lblCyberwareAvailLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareAvailLabel.Name = "lblCyberwareAvailLabel";
             this.lblCyberwareAvailLabel.Size = new System.Drawing.Size(33, 13);
@@ -7928,12 +7985,26 @@ namespace Chummer
             // lblCyberwareEssence
             // 
             this.lblCyberwareEssence.AutoSize = true;
-            this.lblCyberwareEssence.Location = new System.Drawing.Point(133, 81);
+            this.lblCyberwareEssence.Location = new System.Drawing.Point(126, 81);
             this.lblCyberwareEssence.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareEssence.Name = "lblCyberwareEssence";
             this.lblCyberwareEssence.Size = new System.Drawing.Size(34, 13);
             this.lblCyberwareEssence.TabIndex = 34;
             this.lblCyberwareEssence.Text = "[ESS]";
+            // 
+            // gpbCyberwareMatrix
+            // 
+            this.gpbCyberwareMatrix.AutoSize = true;
+            this.gpbCyberwareMatrix.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbCyberwareMatrix.Controls.Add(this.tlpCyberwareMatrix);
+            this.gpbCyberwareMatrix.Location = new System.Drawing.Point(3, 307);
+            this.gpbCyberwareMatrix.MinimumSize = new System.Drawing.Size(500, 0);
+            this.gpbCyberwareMatrix.Name = "gpbCyberwareMatrix";
+            this.gpbCyberwareMatrix.Size = new System.Drawing.Size(516, 98);
+            this.gpbCyberwareMatrix.TabIndex = 233;
+            this.gpbCyberwareMatrix.TabStop = false;
+            this.gpbCyberwareMatrix.Tag = "String_Matrix";
+            this.gpbCyberwareMatrix.Text = "Matrix";
             // 
             // tlpCyberwareMatrix
             // 
@@ -7951,16 +8022,16 @@ namespace Chummer
             this.tlpCyberwareMatrix.Controls.Add(this.lblCyberSleazeLabel, 2, 1);
             this.tlpCyberwareMatrix.Controls.Add(this.lblCyberAttackLabel, 1, 1);
             this.tlpCyberwareMatrix.Controls.Add(this.lblCyberDeviceRating, 0, 2);
-            this.tlpCyberwareMatrix.Controls.Add(this.cboCyberwareGearAttack, 1, 2);
-            this.tlpCyberwareMatrix.Controls.Add(this.cboCyberwareGearSleaze, 2, 2);
-            this.tlpCyberwareMatrix.Controls.Add(this.cboCyberwareGearDataProcessing, 3, 2);
-            this.tlpCyberwareMatrix.Controls.Add(this.cboCyberwareGearFirewall, 4, 2);
+            this.tlpCyberwareMatrix.Controls.Add(this.cboCyberwareAttack, 1, 2);
+            this.tlpCyberwareMatrix.Controls.Add(this.cboCyberwareSleaze, 2, 2);
+            this.tlpCyberwareMatrix.Controls.Add(this.cboCyberwareDataProcessing, 3, 2);
+            this.tlpCyberwareMatrix.Controls.Add(this.cboCyberwareFirewall, 4, 2);
             this.tlpCyberwareMatrix.Controls.Add(this.chkCyberwareHomeNode, 2, 0);
             this.tlpCyberwareMatrix.Controls.Add(this.chkCyberwareActiveCommlink, 3, 0);
-            this.tlpCyberwareMatrix.Controls.Add(this.cboCyberwareGearOverclocker, 1, 0);
+            this.tlpCyberwareMatrix.Controls.Add(this.cboCyberwareOverclocker, 1, 0);
             this.tlpCyberwareMatrix.Controls.Add(this.lblCyberwareGearOverclocker, 0, 0);
             this.tlpCyberwareMatrix.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpCyberwareMatrix.Location = new System.Drawing.Point(0, 279);
+            this.tlpCyberwareMatrix.Location = new System.Drawing.Point(3, 16);
             this.tlpCyberwareMatrix.Margin = new System.Windows.Forms.Padding(0);
             this.tlpCyberwareMatrix.Name = "tlpCyberwareMatrix";
             this.tlpCyberwareMatrix.RowCount = 3;
@@ -7968,34 +8039,32 @@ namespace Chummer
             this.tlpCyberwareMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCyberwareMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCyberwareMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCyberwareMatrix.Size = new System.Drawing.Size(520, 79);
+            this.tlpCyberwareMatrix.Size = new System.Drawing.Size(510, 79);
             this.tlpCyberwareMatrix.TabIndex = 229;
             // 
             // lblCyberFirewallLabel
             // 
             this.lblCyberFirewallLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblCyberFirewallLabel.AutoSize = true;
-            this.lblCyberFirewallLabel.Location = new System.Drawing.Point(419, 33);
+            this.lblCyberFirewallLabel.Location = new System.Drawing.Point(411, 33);
             this.lblCyberFirewallLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberFirewallLabel.Name = "lblCyberFirewallLabel";
             this.lblCyberFirewallLabel.Size = new System.Drawing.Size(45, 13);
             this.lblCyberFirewallLabel.TabIndex = 184;
             this.lblCyberFirewallLabel.Tag = "Label_Firewall";
             this.lblCyberFirewallLabel.Text = "Firewall:";
-            this.lblCyberFirewallLabel.Visible = false;
             // 
             // lblCyberDataProcessingLabel
             // 
             this.lblCyberDataProcessingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblCyberDataProcessingLabel.AutoSize = true;
-            this.lblCyberDataProcessingLabel.Location = new System.Drawing.Point(315, 33);
+            this.lblCyberDataProcessingLabel.Location = new System.Drawing.Point(309, 33);
             this.lblCyberDataProcessingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberDataProcessingLabel.Name = "lblCyberDataProcessingLabel";
             this.lblCyberDataProcessingLabel.Size = new System.Drawing.Size(88, 13);
             this.lblCyberDataProcessingLabel.TabIndex = 182;
             this.lblCyberDataProcessingLabel.Tag = "Label_DataProcessing";
             this.lblCyberDataProcessingLabel.Text = "Data Processing:";
-            this.lblCyberDataProcessingLabel.Visible = false;
             // 
             // lblCyberDeviceRatingLabel
             // 
@@ -8008,33 +8077,30 @@ namespace Chummer
             this.lblCyberDeviceRatingLabel.TabIndex = 176;
             this.lblCyberDeviceRatingLabel.Tag = "Label_DeviceRating";
             this.lblCyberDeviceRatingLabel.Text = "Device Rating:";
-            this.lblCyberDeviceRatingLabel.Visible = false;
             // 
             // lblCyberSleazeLabel
             // 
             this.lblCyberSleazeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblCyberSleazeLabel.AutoSize = true;
-            this.lblCyberSleazeLabel.Location = new System.Drawing.Point(211, 33);
+            this.lblCyberSleazeLabel.Location = new System.Drawing.Point(207, 33);
             this.lblCyberSleazeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberSleazeLabel.Name = "lblCyberSleazeLabel";
             this.lblCyberSleazeLabel.Size = new System.Drawing.Size(42, 13);
             this.lblCyberSleazeLabel.TabIndex = 180;
             this.lblCyberSleazeLabel.Tag = "Label_Sleaze";
             this.lblCyberSleazeLabel.Text = "Sleaze:";
-            this.lblCyberSleazeLabel.Visible = false;
             // 
             // lblCyberAttackLabel
             // 
             this.lblCyberAttackLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblCyberAttackLabel.AutoSize = true;
-            this.lblCyberAttackLabel.Location = new System.Drawing.Point(107, 33);
+            this.lblCyberAttackLabel.Location = new System.Drawing.Point(105, 33);
             this.lblCyberAttackLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberAttackLabel.Name = "lblCyberAttackLabel";
             this.lblCyberAttackLabel.Size = new System.Drawing.Size(41, 13);
             this.lblCyberAttackLabel.TabIndex = 178;
             this.lblCyberAttackLabel.Tag = "Label_Attack";
             this.lblCyberAttackLabel.Text = "Attack:";
-            this.lblCyberAttackLabel.Visible = false;
             // 
             // lblCyberDeviceRating
             // 
@@ -8045,63 +8111,58 @@ namespace Chummer
             this.lblCyberDeviceRating.Size = new System.Drawing.Size(19, 13);
             this.lblCyberDeviceRating.TabIndex = 177;
             this.lblCyberDeviceRating.Text = "[0]";
-            this.lblCyberDeviceRating.Visible = false;
             // 
-            // cboCyberwareGearAttack
+            // cboCyberwareAttack
             // 
-            this.cboCyberwareGearAttack.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.cboCyberwareAttack.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboCyberwareGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboCyberwareGearAttack.FormattingEnabled = true;
-            this.cboCyberwareGearAttack.Location = new System.Drawing.Point(107, 55);
-            this.cboCyberwareGearAttack.Name = "cboCyberwareGearAttack";
-            this.cboCyberwareGearAttack.Size = new System.Drawing.Size(98, 21);
-            this.cboCyberwareGearAttack.TabIndex = 211;
-            this.cboCyberwareGearAttack.TooltipText = "";
-            this.cboCyberwareGearAttack.Visible = false;
-            this.cboCyberwareGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearAttack_SelectedIndexChanged);
+            this.cboCyberwareAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboCyberwareAttack.FormattingEnabled = true;
+            this.cboCyberwareAttack.Location = new System.Drawing.Point(105, 55);
+            this.cboCyberwareAttack.Name = "cboCyberwareAttack";
+            this.cboCyberwareAttack.Size = new System.Drawing.Size(96, 21);
+            this.cboCyberwareAttack.TabIndex = 211;
+            this.cboCyberwareAttack.TooltipText = "";
+            this.cboCyberwareAttack.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareAttack_SelectedIndexChanged);
             // 
-            // cboCyberwareGearSleaze
+            // cboCyberwareSleaze
             // 
-            this.cboCyberwareGearSleaze.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.cboCyberwareSleaze.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboCyberwareGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboCyberwareGearSleaze.FormattingEnabled = true;
-            this.cboCyberwareGearSleaze.Location = new System.Drawing.Point(211, 55);
-            this.cboCyberwareGearSleaze.Name = "cboCyberwareGearSleaze";
-            this.cboCyberwareGearSleaze.Size = new System.Drawing.Size(98, 21);
-            this.cboCyberwareGearSleaze.TabIndex = 212;
-            this.cboCyberwareGearSleaze.TooltipText = "";
-            this.cboCyberwareGearSleaze.Visible = false;
-            this.cboCyberwareGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearSleaze_SelectedIndexChanged);
+            this.cboCyberwareSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboCyberwareSleaze.FormattingEnabled = true;
+            this.cboCyberwareSleaze.Location = new System.Drawing.Point(207, 55);
+            this.cboCyberwareSleaze.Name = "cboCyberwareSleaze";
+            this.cboCyberwareSleaze.Size = new System.Drawing.Size(96, 21);
+            this.cboCyberwareSleaze.TabIndex = 212;
+            this.cboCyberwareSleaze.TooltipText = "";
+            this.cboCyberwareSleaze.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareSleaze_SelectedIndexChanged);
             // 
-            // cboCyberwareGearDataProcessing
+            // cboCyberwareDataProcessing
             // 
-            this.cboCyberwareGearDataProcessing.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.cboCyberwareDataProcessing.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboCyberwareGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboCyberwareGearDataProcessing.FormattingEnabled = true;
-            this.cboCyberwareGearDataProcessing.Location = new System.Drawing.Point(315, 55);
-            this.cboCyberwareGearDataProcessing.Name = "cboCyberwareGearDataProcessing";
-            this.cboCyberwareGearDataProcessing.Size = new System.Drawing.Size(98, 21);
-            this.cboCyberwareGearDataProcessing.TabIndex = 214;
-            this.cboCyberwareGearDataProcessing.TooltipText = "";
-            this.cboCyberwareGearDataProcessing.Visible = false;
-            this.cboCyberwareGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearDataProcessing_SelectedIndexChanged);
+            this.cboCyberwareDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboCyberwareDataProcessing.FormattingEnabled = true;
+            this.cboCyberwareDataProcessing.Location = new System.Drawing.Point(309, 55);
+            this.cboCyberwareDataProcessing.Name = "cboCyberwareDataProcessing";
+            this.cboCyberwareDataProcessing.Size = new System.Drawing.Size(96, 21);
+            this.cboCyberwareDataProcessing.TabIndex = 214;
+            this.cboCyberwareDataProcessing.TooltipText = "";
+            this.cboCyberwareDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareDataProcessing_SelectedIndexChanged);
             // 
-            // cboCyberwareGearFirewall
+            // cboCyberwareFirewall
             // 
-            this.cboCyberwareGearFirewall.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.cboCyberwareFirewall.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboCyberwareGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboCyberwareGearFirewall.FormattingEnabled = true;
-            this.cboCyberwareGearFirewall.Location = new System.Drawing.Point(419, 55);
-            this.cboCyberwareGearFirewall.Name = "cboCyberwareGearFirewall";
-            this.cboCyberwareGearFirewall.Size = new System.Drawing.Size(98, 21);
-            this.cboCyberwareGearFirewall.TabIndex = 213;
-            this.cboCyberwareGearFirewall.TooltipText = "";
-            this.cboCyberwareGearFirewall.Visible = false;
-            this.cboCyberwareGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearFirewall_SelectedIndexChanged);
+            this.cboCyberwareFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboCyberwareFirewall.FormattingEnabled = true;
+            this.cboCyberwareFirewall.Location = new System.Drawing.Point(411, 55);
+            this.cboCyberwareFirewall.Name = "cboCyberwareFirewall";
+            this.cboCyberwareFirewall.Size = new System.Drawing.Size(96, 21);
+            this.cboCyberwareFirewall.TabIndex = 213;
+            this.cboCyberwareFirewall.TooltipText = "";
+            this.cboCyberwareFirewall.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareFirewall_SelectedIndexChanged);
             // 
             // chkCyberwareHomeNode
             // 
@@ -8109,15 +8170,14 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chkCyberwareHomeNode.AutoSize = true;
-            this.chkCyberwareHomeNode.Location = new System.Drawing.Point(211, 4);
+            this.chkCyberwareHomeNode.Location = new System.Drawing.Point(207, 4);
             this.chkCyberwareHomeNode.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkCyberwareHomeNode.Name = "chkCyberwareHomeNode";
-            this.chkCyberwareHomeNode.Size = new System.Drawing.Size(98, 19);
+            this.chkCyberwareHomeNode.Size = new System.Drawing.Size(96, 19);
             this.chkCyberwareHomeNode.TabIndex = 244;
             this.chkCyberwareHomeNode.Tag = "Checkbox_HomeNode";
             this.chkCyberwareHomeNode.Text = "Home Node";
             this.chkCyberwareHomeNode.UseVisualStyleBackColor = true;
-            this.chkCyberwareHomeNode.Visible = false;
             this.chkCyberwareHomeNode.CheckedChanged += new System.EventHandler(this.chkCyberwareHomeNode_CheckedChanged);
             // 
             // chkCyberwareActiveCommlink
@@ -8127,36 +8187,34 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chkCyberwareActiveCommlink.AutoSize = true;
             this.tlpCyberwareMatrix.SetColumnSpan(this.chkCyberwareActiveCommlink, 2);
-            this.chkCyberwareActiveCommlink.Location = new System.Drawing.Point(315, 4);
+            this.chkCyberwareActiveCommlink.Location = new System.Drawing.Point(309, 4);
             this.chkCyberwareActiveCommlink.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkCyberwareActiveCommlink.Name = "chkCyberwareActiveCommlink";
-            this.chkCyberwareActiveCommlink.Size = new System.Drawing.Size(202, 19);
+            this.chkCyberwareActiveCommlink.Size = new System.Drawing.Size(198, 19);
             this.chkCyberwareActiveCommlink.TabIndex = 245;
             this.chkCyberwareActiveCommlink.Tag = "Checkbox_ActiveCommlink";
             this.chkCyberwareActiveCommlink.Text = "Active Commlink";
             this.chkCyberwareActiveCommlink.UseVisualStyleBackColor = true;
-            this.chkCyberwareActiveCommlink.Visible = false;
             this.chkCyberwareActiveCommlink.CheckedChanged += new System.EventHandler(this.chkCyberwareActiveCommlink_CheckedChanged);
             // 
-            // cboCyberwareGearOverclocker
+            // cboCyberwareOverclocker
             // 
-            this.cboCyberwareGearOverclocker.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.cboCyberwareOverclocker.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboCyberwareGearOverclocker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboCyberwareGearOverclocker.FormattingEnabled = true;
-            this.cboCyberwareGearOverclocker.Location = new System.Drawing.Point(107, 3);
-            this.cboCyberwareGearOverclocker.Name = "cboCyberwareGearOverclocker";
-            this.cboCyberwareGearOverclocker.Size = new System.Drawing.Size(98, 21);
-            this.cboCyberwareGearOverclocker.TabIndex = 216;
-            this.cboCyberwareGearOverclocker.TooltipText = "";
-            this.cboCyberwareGearOverclocker.Visible = false;
-            this.cboCyberwareGearOverclocker.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearOverclocker_SelectedIndexChanged);
+            this.cboCyberwareOverclocker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboCyberwareOverclocker.FormattingEnabled = true;
+            this.cboCyberwareOverclocker.Location = new System.Drawing.Point(105, 3);
+            this.cboCyberwareOverclocker.Name = "cboCyberwareOverclocker";
+            this.cboCyberwareOverclocker.Size = new System.Drawing.Size(96, 21);
+            this.cboCyberwareOverclocker.TabIndex = 216;
+            this.cboCyberwareOverclocker.TooltipText = "";
+            this.cboCyberwareOverclocker.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearOverclocker_SelectedIndexChanged);
             // 
             // lblCyberwareGearOverclocker
             // 
             this.lblCyberwareGearOverclocker.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCyberwareGearOverclocker.AutoSize = true;
-            this.lblCyberwareGearOverclocker.Location = new System.Drawing.Point(33, 6);
+            this.lblCyberwareGearOverclocker.Location = new System.Drawing.Point(31, 6);
             this.lblCyberwareGearOverclocker.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareGearOverclocker.Name = "lblCyberwareGearOverclocker";
             this.lblCyberwareGearOverclocker.Size = new System.Drawing.Size(68, 13);
@@ -8168,10 +8226,11 @@ namespace Chummer
             // 
             this.tabCyberwareCM.Controls.Add(this.tabCyberwareMatrixCM);
             this.tabCyberwareCM.ItemSize = new System.Drawing.Size(176, 18);
-            this.tabCyberwareCM.Location = new System.Drawing.Point(3, 361);
+            this.tabCyberwareCM.Location = new System.Drawing.Point(3, 411);
+            this.tabCyberwareCM.MinimumSize = new System.Drawing.Size(240, 0);
             this.tabCyberwareCM.Name = "tabCyberwareCM";
             this.tabCyberwareCM.SelectedIndex = 0;
-            this.tabCyberwareCM.Size = new System.Drawing.Size(358, 113);
+            this.tabCyberwareCM.Size = new System.Drawing.Size(355, 109);
             this.tabCyberwareCM.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabCyberwareCM.TabIndex = 203;
             // 
@@ -8220,7 +8279,7 @@ namespace Chummer
             this.tabCyberwareMatrixCM.Location = new System.Drawing.Point(4, 22);
             this.tabCyberwareMatrixCM.Name = "tabCyberwareMatrixCM";
             this.tabCyberwareMatrixCM.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCyberwareMatrixCM.Size = new System.Drawing.Size(350, 87);
+            this.tabCyberwareMatrixCM.Size = new System.Drawing.Size(347, 83);
             this.tabCyberwareMatrixCM.TabIndex = 1;
             this.tabCyberwareMatrixCM.Tag = "Tab_MatrixConditionMonitor";
             this.tabCyberwareMatrixCM.Text = "Matrix Condition Monitor";
@@ -8397,7 +8456,7 @@ namespace Chummer
             // chkCyberwareMatrixCM15
             // 
             this.chkCyberwareMatrixCM15.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM15.Location = new System.Drawing.Point(5, 31);
+            this.chkCyberwareMatrixCM15.Location = new System.Drawing.Point(5, 30);
             this.chkCyberwareMatrixCM15.Name = "chkCyberwareMatrixCM15";
             this.chkCyberwareMatrixCM15.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM15.TabIndex = 63;
@@ -8409,7 +8468,7 @@ namespace Chummer
             // chkCyberwareMatrixCM16
             // 
             this.chkCyberwareMatrixCM16.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM16.Location = new System.Drawing.Point(29, 31);
+            this.chkCyberwareMatrixCM16.Location = new System.Drawing.Point(29, 30);
             this.chkCyberwareMatrixCM16.Name = "chkCyberwareMatrixCM16";
             this.chkCyberwareMatrixCM16.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM16.TabIndex = 64;
@@ -8421,7 +8480,7 @@ namespace Chummer
             // chkCyberwareMatrixCM17
             // 
             this.chkCyberwareMatrixCM17.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM17.Location = new System.Drawing.Point(53, 31);
+            this.chkCyberwareMatrixCM17.Location = new System.Drawing.Point(53, 30);
             this.chkCyberwareMatrixCM17.Name = "chkCyberwareMatrixCM17";
             this.chkCyberwareMatrixCM17.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM17.TabIndex = 65;
@@ -8433,7 +8492,7 @@ namespace Chummer
             // chkCyberwareMatrixCM18
             // 
             this.chkCyberwareMatrixCM18.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM18.Location = new System.Drawing.Point(77, 31);
+            this.chkCyberwareMatrixCM18.Location = new System.Drawing.Point(77, 30);
             this.chkCyberwareMatrixCM18.Name = "chkCyberwareMatrixCM18";
             this.chkCyberwareMatrixCM18.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM18.TabIndex = 66;
@@ -8445,7 +8504,7 @@ namespace Chummer
             // chkCyberwareMatrixCM19
             // 
             this.chkCyberwareMatrixCM19.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM19.Location = new System.Drawing.Point(101, 31);
+            this.chkCyberwareMatrixCM19.Location = new System.Drawing.Point(101, 30);
             this.chkCyberwareMatrixCM19.Name = "chkCyberwareMatrixCM19";
             this.chkCyberwareMatrixCM19.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM19.TabIndex = 67;
@@ -8457,7 +8516,7 @@ namespace Chummer
             // chkCyberwareMatrixCM20
             // 
             this.chkCyberwareMatrixCM20.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM20.Location = new System.Drawing.Point(125, 31);
+            this.chkCyberwareMatrixCM20.Location = new System.Drawing.Point(125, 30);
             this.chkCyberwareMatrixCM20.Name = "chkCyberwareMatrixCM20";
             this.chkCyberwareMatrixCM20.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM20.TabIndex = 68;
@@ -8469,7 +8528,7 @@ namespace Chummer
             // chkCyberwareMatrixCM21
             // 
             this.chkCyberwareMatrixCM21.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM21.Location = new System.Drawing.Point(149, 31);
+            this.chkCyberwareMatrixCM21.Location = new System.Drawing.Point(149, 30);
             this.chkCyberwareMatrixCM21.Name = "chkCyberwareMatrixCM21";
             this.chkCyberwareMatrixCM21.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM21.TabIndex = 69;
@@ -8481,7 +8540,7 @@ namespace Chummer
             // chkCyberwareMatrixCM22
             // 
             this.chkCyberwareMatrixCM22.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM22.Location = new System.Drawing.Point(173, 31);
+            this.chkCyberwareMatrixCM22.Location = new System.Drawing.Point(173, 30);
             this.chkCyberwareMatrixCM22.Name = "chkCyberwareMatrixCM22";
             this.chkCyberwareMatrixCM22.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM22.TabIndex = 70;
@@ -8493,7 +8552,7 @@ namespace Chummer
             // chkCyberwareMatrixCM23
             // 
             this.chkCyberwareMatrixCM23.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM23.Location = new System.Drawing.Point(197, 31);
+            this.chkCyberwareMatrixCM23.Location = new System.Drawing.Point(197, 30);
             this.chkCyberwareMatrixCM23.Name = "chkCyberwareMatrixCM23";
             this.chkCyberwareMatrixCM23.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM23.TabIndex = 71;
@@ -8505,7 +8564,7 @@ namespace Chummer
             // chkCyberwareMatrixCM24
             // 
             this.chkCyberwareMatrixCM24.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM24.Location = new System.Drawing.Point(221, 31);
+            this.chkCyberwareMatrixCM24.Location = new System.Drawing.Point(221, 30);
             this.chkCyberwareMatrixCM24.Name = "chkCyberwareMatrixCM24";
             this.chkCyberwareMatrixCM24.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM24.TabIndex = 72;
@@ -8517,7 +8576,7 @@ namespace Chummer
             // chkCyberwareMatrixCM25
             // 
             this.chkCyberwareMatrixCM25.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM25.Location = new System.Drawing.Point(245, 31);
+            this.chkCyberwareMatrixCM25.Location = new System.Drawing.Point(245, 30);
             this.chkCyberwareMatrixCM25.Name = "chkCyberwareMatrixCM25";
             this.chkCyberwareMatrixCM25.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM25.TabIndex = 73;
@@ -8529,7 +8588,7 @@ namespace Chummer
             // chkCyberwareMatrixCM26
             // 
             this.chkCyberwareMatrixCM26.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM26.Location = new System.Drawing.Point(269, 31);
+            this.chkCyberwareMatrixCM26.Location = new System.Drawing.Point(269, 30);
             this.chkCyberwareMatrixCM26.Name = "chkCyberwareMatrixCM26";
             this.chkCyberwareMatrixCM26.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM26.TabIndex = 74;
@@ -8541,7 +8600,7 @@ namespace Chummer
             // chkCyberwareMatrixCM27
             // 
             this.chkCyberwareMatrixCM27.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM27.Location = new System.Drawing.Point(293, 31);
+            this.chkCyberwareMatrixCM27.Location = new System.Drawing.Point(293, 30);
             this.chkCyberwareMatrixCM27.Name = "chkCyberwareMatrixCM27";
             this.chkCyberwareMatrixCM27.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM27.TabIndex = 75;
@@ -8553,7 +8612,7 @@ namespace Chummer
             // chkCyberwareMatrixCM28
             // 
             this.chkCyberwareMatrixCM28.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM28.Location = new System.Drawing.Point(317, 31);
+            this.chkCyberwareMatrixCM28.Location = new System.Drawing.Point(317, 30);
             this.chkCyberwareMatrixCM28.Name = "chkCyberwareMatrixCM28";
             this.chkCyberwareMatrixCM28.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM28.TabIndex = 76;
@@ -8565,7 +8624,7 @@ namespace Chummer
             // chkCyberwareMatrixCM29
             // 
             this.chkCyberwareMatrixCM29.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM29.Location = new System.Drawing.Point(5, 55);
+            this.chkCyberwareMatrixCM29.Location = new System.Drawing.Point(5, 54);
             this.chkCyberwareMatrixCM29.Name = "chkCyberwareMatrixCM29";
             this.chkCyberwareMatrixCM29.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM29.TabIndex = 77;
@@ -8577,7 +8636,7 @@ namespace Chummer
             // chkCyberwareMatrixCM30
             // 
             this.chkCyberwareMatrixCM30.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM30.Location = new System.Drawing.Point(29, 55);
+            this.chkCyberwareMatrixCM30.Location = new System.Drawing.Point(29, 54);
             this.chkCyberwareMatrixCM30.Name = "chkCyberwareMatrixCM30";
             this.chkCyberwareMatrixCM30.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM30.TabIndex = 78;
@@ -8589,7 +8648,7 @@ namespace Chummer
             // chkCyberwareMatrixCM31
             // 
             this.chkCyberwareMatrixCM31.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM31.Location = new System.Drawing.Point(53, 55);
+            this.chkCyberwareMatrixCM31.Location = new System.Drawing.Point(53, 54);
             this.chkCyberwareMatrixCM31.Name = "chkCyberwareMatrixCM31";
             this.chkCyberwareMatrixCM31.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM31.TabIndex = 79;
@@ -8601,7 +8660,7 @@ namespace Chummer
             // chkCyberwareMatrixCM32
             // 
             this.chkCyberwareMatrixCM32.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM32.Location = new System.Drawing.Point(77, 55);
+            this.chkCyberwareMatrixCM32.Location = new System.Drawing.Point(77, 54);
             this.chkCyberwareMatrixCM32.Name = "chkCyberwareMatrixCM32";
             this.chkCyberwareMatrixCM32.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM32.TabIndex = 80;
@@ -8613,7 +8672,7 @@ namespace Chummer
             // chkCyberwareMatrixCM33
             // 
             this.chkCyberwareMatrixCM33.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM33.Location = new System.Drawing.Point(101, 55);
+            this.chkCyberwareMatrixCM33.Location = new System.Drawing.Point(101, 54);
             this.chkCyberwareMatrixCM33.Name = "chkCyberwareMatrixCM33";
             this.chkCyberwareMatrixCM33.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM33.TabIndex = 81;
@@ -8625,7 +8684,7 @@ namespace Chummer
             // chkCyberwareMatrixCM34
             // 
             this.chkCyberwareMatrixCM34.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM34.Location = new System.Drawing.Point(125, 55);
+            this.chkCyberwareMatrixCM34.Location = new System.Drawing.Point(125, 54);
             this.chkCyberwareMatrixCM34.Name = "chkCyberwareMatrixCM34";
             this.chkCyberwareMatrixCM34.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM34.TabIndex = 82;
@@ -8637,7 +8696,7 @@ namespace Chummer
             // chkCyberwareMatrixCM35
             // 
             this.chkCyberwareMatrixCM35.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM35.Location = new System.Drawing.Point(149, 55);
+            this.chkCyberwareMatrixCM35.Location = new System.Drawing.Point(149, 54);
             this.chkCyberwareMatrixCM35.Name = "chkCyberwareMatrixCM35";
             this.chkCyberwareMatrixCM35.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM35.TabIndex = 83;
@@ -8649,7 +8708,7 @@ namespace Chummer
             // chkCyberwareMatrixCM36
             // 
             this.chkCyberwareMatrixCM36.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM36.Location = new System.Drawing.Point(173, 55);
+            this.chkCyberwareMatrixCM36.Location = new System.Drawing.Point(173, 54);
             this.chkCyberwareMatrixCM36.Name = "chkCyberwareMatrixCM36";
             this.chkCyberwareMatrixCM36.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM36.TabIndex = 84;
@@ -8661,7 +8720,7 @@ namespace Chummer
             // chkCyberwareMatrixCM37
             // 
             this.chkCyberwareMatrixCM37.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM37.Location = new System.Drawing.Point(197, 55);
+            this.chkCyberwareMatrixCM37.Location = new System.Drawing.Point(197, 54);
             this.chkCyberwareMatrixCM37.Name = "chkCyberwareMatrixCM37";
             this.chkCyberwareMatrixCM37.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM37.TabIndex = 85;
@@ -8673,7 +8732,7 @@ namespace Chummer
             // chkCyberwareMatrixCM38
             // 
             this.chkCyberwareMatrixCM38.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM38.Location = new System.Drawing.Point(221, 55);
+            this.chkCyberwareMatrixCM38.Location = new System.Drawing.Point(221, 54);
             this.chkCyberwareMatrixCM38.Name = "chkCyberwareMatrixCM38";
             this.chkCyberwareMatrixCM38.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM38.TabIndex = 86;
@@ -8685,7 +8744,7 @@ namespace Chummer
             // chkCyberwareMatrixCM39
             // 
             this.chkCyberwareMatrixCM39.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM39.Location = new System.Drawing.Point(245, 55);
+            this.chkCyberwareMatrixCM39.Location = new System.Drawing.Point(245, 54);
             this.chkCyberwareMatrixCM39.Name = "chkCyberwareMatrixCM39";
             this.chkCyberwareMatrixCM39.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM39.TabIndex = 87;
@@ -8697,7 +8756,7 @@ namespace Chummer
             // chkCyberwareMatrixCM40
             // 
             this.chkCyberwareMatrixCM40.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkCyberwareMatrixCM40.Location = new System.Drawing.Point(269, 55);
+            this.chkCyberwareMatrixCM40.Location = new System.Drawing.Point(269, 54);
             this.chkCyberwareMatrixCM40.Name = "chkCyberwareMatrixCM40";
             this.chkCyberwareMatrixCM40.Size = new System.Drawing.Size(24, 24);
             this.chkCyberwareMatrixCM40.TabIndex = 88;
@@ -8989,11 +9048,11 @@ namespace Chummer
             this.treGear.HideSelection = false;
             this.treGear.Location = new System.Drawing.Point(3, 32);
             this.treGear.Name = "treGear";
-            treeNode20.Name = "nodGearRoot";
-            treeNode20.Tag = "Node_SelectedGear";
-            treeNode20.Text = "Selected Gear";
+            treeNode19.Name = "nodGearRoot";
+            treeNode19.Tag = "Node_SelectedGear";
+            treeNode19.Text = "Selected Gear";
             this.treGear.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode20});
+            treeNode19});
             this.tlpGear.SetRowSpan(this.treGear, 13);
             this.treGear.ShowNodeToolTips = true;
             this.treGear.Size = new System.Drawing.Size(295, 564);
@@ -9968,11 +10027,11 @@ namespace Chummer
             this.treArmor.HideSelection = false;
             this.treArmor.Location = new System.Drawing.Point(3, 61);
             this.treArmor.Name = "treArmor";
-            treeNode21.Name = "nodArmorRoot";
-            treeNode21.Tag = "Node_SelectedArmor";
-            treeNode21.Text = "Selected Armor";
+            treeNode20.Name = "nodArmorRoot";
+            treeNode20.Tag = "Node_SelectedArmor";
+            treeNode20.Text = "Selected Armor";
             this.treArmor.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode21});
+            treeNode20});
             this.tlpArmor.SetRowSpan(this.treArmor, 8);
             this.treArmor.ShowNodeToolTips = true;
             this.treArmor.Size = new System.Drawing.Size(295, 1681);
@@ -10434,11 +10493,11 @@ namespace Chummer
             this.treWeapons.HideSelection = false;
             this.treWeapons.Location = new System.Drawing.Point(3, 32);
             this.treWeapons.Name = "treWeapons";
-            treeNode22.Name = "nodWeaponsRoot";
-            treeNode22.Tag = "Node_SelectedWeapons";
-            treeNode22.Text = "Selected Weapons";
+            treeNode21.Name = "nodWeaponsRoot";
+            treeNode21.Tag = "Node_SelectedWeapons";
+            treeNode21.Text = "Selected Weapons";
             this.treWeapons.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode22});
+            treeNode21});
             this.tlpWeapons.SetRowSpan(this.treWeapons, 9);
             this.treWeapons.ShowNodeToolTips = true;
             this.treWeapons.Size = new System.Drawing.Size(295, 564);
@@ -11858,11 +11917,11 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.treCustomDrugs.Location = new System.Drawing.Point(3, 32);
             this.treCustomDrugs.Name = "treCustomDrugs";
-            treeNode23.Name = "nodSelectedDrug";
-            treeNode23.Tag = "Node_SelectedDrugs";
-            treeNode23.Text = "Selected Drugs";
+            treeNode22.Name = "nodSelectedDrug";
+            treeNode22.Tag = "Node_SelectedDrugs";
+            treeNode22.Text = "Selected Drugs";
             this.treCustomDrugs.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode23});
+            treeNode22});
             this.tblDrugDescription.SetRowSpan(this.treCustomDrugs, 10);
             this.treCustomDrugs.Size = new System.Drawing.Size(295, 564);
             this.treCustomDrugs.TabIndex = 2;
@@ -12219,11 +12278,11 @@ namespace Chummer
             this.treLifestyles.HideSelection = false;
             this.treLifestyles.Location = new System.Drawing.Point(3, 32);
             this.treLifestyles.Name = "treLifestyles";
-            treeNode24.Name = "nodLifestylesRoot";
-            treeNode24.Tag = "Node_SelectedLifestyles";
-            treeNode24.Text = "Selected Lifestyles";
+            treeNode23.Name = "nodLifestylesRoot";
+            treeNode23.Tag = "Node_SelectedLifestyles";
+            treeNode23.Text = "Selected Lifestyles";
             this.treLifestyles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode24});
+            treeNode23});
             this.tblLifestyleDetails.SetRowSpan(this.treLifestyles, 5);
             this.treLifestyles.ShowNodeToolTips = true;
             this.treLifestyles.ShowRootLines = false;
@@ -12433,118 +12492,25 @@ namespace Chummer
             // 
             // tlpVehicles
             // 
-            this.tlpVehicles.ColumnCount = 10;
+            this.tlpVehicles.ColumnCount = 2;
             this.tlpVehicles.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
-            this.tlpVehicles.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13F));
-            this.tlpVehicles.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12F));
-            this.tlpVehicles.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13F));
-            this.tlpVehicles.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6F));
-            this.tlpVehicles.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6F));
-            this.tlpVehicles.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13F));
-            this.tlpVehicles.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12F));
-            this.tlpVehicles.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13F));
-            this.tlpVehicles.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12F));
-            this.tlpVehicles.Controls.Add(this.lblVehicleNameLabel, 1, 1);
-            this.tlpVehicles.Controls.Add(this.lblVehicleName, 2, 1);
-            this.tlpVehicles.Controls.Add(this.lblVehicleWeaponAccuracy, 9, 1);
-            this.tlpVehicles.Controls.Add(this.lblVehicleWeaponAccuracyLabel, 8, 1);
+            this.tlpVehicles.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpVehicles.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpVehicles.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpVehicles.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpVehicles.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpVehicles.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpVehicles.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpVehicles.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpVehicles.Controls.Add(this.flowLayoutPanel10, 0, 0);
-            this.tlpVehicles.Controls.Add(this.lblVehicleCategoryLabel, 1, 2);
-            this.tlpVehicles.Controls.Add(this.cmdVehicleCyberwareChangeMount, 1, 12);
-            this.tlpVehicles.Controls.Add(this.chkVehicleActiveCommlink, 8, 11);
-            this.tlpVehicles.Controls.Add(this.lblVehicleCategory, 2, 2);
-            this.tlpVehicles.Controls.Add(this.lblVehicleHandlingLabel, 1, 3);
-            this.tlpVehicles.Controls.Add(this.lblVehicleHandling, 2, 3);
-            this.tlpVehicles.Controls.Add(this.lblVehicleAccelLabel, 3, 3);
-            this.tlpVehicles.Controls.Add(this.lblVehicleAccel, 4, 3);
-            this.tlpVehicles.Controls.Add(this.lblVehicleSpeedLabel, 6, 3);
-            this.tlpVehicles.Controls.Add(this.lblVehiclePilotLabel, 1, 4);
-            this.tlpVehicles.Controls.Add(this.lblVehicleCosmetic, 7, 8);
-            this.tlpVehicles.Controls.Add(this.chkVehicleHomeNode, 8, 10);
-            this.tlpVehicles.Controls.Add(this.lblVehicleDroneModSlots, 9, 7);
-            this.tlpVehicles.Controls.Add(this.lblVehicleCosmeticLabel, 6, 8);
-            this.tlpVehicles.Controls.Add(this.lblVehicleElectromagnetic, 4, 8);
+            this.tlpVehicles.Controls.Add(this.flpVehicles, 1, 1);
             this.tlpVehicles.Controls.Add(this.treVehicles, 0, 1);
-            this.tlpVehicles.Controls.Add(this.lblVehicleSeats, 9, 6);
-            this.tlpVehicles.Controls.Add(this.lblVehicleGearQty, 2, 10);
-            this.tlpVehicles.Controls.Add(this.lblVehicleBodymod, 2, 8);
-            this.tlpVehicles.Controls.Add(this.lblVehicleGearQtyLabel, 1, 10);
-            this.tlpVehicles.Controls.Add(this.lblVehicleElectromagneticLabel, 3, 8);
-            this.tlpVehicles.Controls.Add(this.lblVehicleDroneModSlotsLabel, 8, 7);
-            this.tlpVehicles.Controls.Add(this.lblVehiclePowertrain, 7, 7);
-            this.tlpVehicles.Controls.Add(this.lblVehicleProtection, 4, 7);
-            this.tlpVehicles.Controls.Add(this.lblVehicleBodymodLabel, 1, 8);
-            this.tlpVehicles.Controls.Add(this.lblVehicleWeaponsmod, 2, 7);
-            this.tlpVehicles.Controls.Add(this.chkVehicleWeaponAccessoryInstalled, 8, 9);
-            this.tlpVehicles.Controls.Add(this.chkVehicleIncludedInWeapon, 4, 9);
-            this.tlpVehicles.Controls.Add(this.lblVehiclePilot, 2, 4);
-            this.tlpVehicles.Controls.Add(this.lblVehicleSeatsLabel, 8, 6);
-            this.tlpVehicles.Controls.Add(this.lblVehiclePowertrainLabel, 6, 7);
-            this.tlpVehicles.Controls.Add(this.lblVehicleWeaponAP, 7, 1);
-            this.tlpVehicles.Controls.Add(this.lblVehicleBodyLabel, 3, 4);
-            this.tlpVehicles.Controls.Add(this.lblVehicleBody, 4, 4);
-            this.tlpVehicles.Controls.Add(this.lblVehicleWeaponAPLabel, 6, 1);
-            this.tlpVehicles.Controls.Add(this.lblVehicleProtectionLabel, 3, 7);
-            this.tlpVehicles.Controls.Add(this.lblVehicleWeaponDamage, 4, 1);
-            this.tlpVehicles.Controls.Add(this.lblVehicleWeaponDamageLabel, 3, 1);
-            this.tlpVehicles.Controls.Add(this.lblVehicleArmorLabel, 6, 4);
-            this.tlpVehicles.Controls.Add(this.lblVehicleArmor, 7, 4);
-            this.tlpVehicles.Controls.Add(this.lblVehicleWeaponsmodLabel, 1, 7);
-            this.tlpVehicles.Controls.Add(this.lblVehicleSensorLabel, 8, 4);
-            this.tlpVehicles.Controls.Add(this.lblVehicleSensor, 9, 4);
-            this.tlpVehicles.Controls.Add(this.lblVehicleAttackLabel, 1, 5);
-            this.tlpVehicles.Controls.Add(this.cboVehicleGearAttack, 2, 5);
-            this.tlpVehicles.Controls.Add(this.lblVehicleSleazeLabel, 3, 5);
-            this.tlpVehicles.Controls.Add(this.cboVehicleGearSleaze, 4, 5);
-            this.tlpVehicles.Controls.Add(this.lblVehicleDataProcessingLabel, 6, 5);
-            this.tlpVehicles.Controls.Add(this.lblVehicleSource, 2, 11);
-            this.tlpVehicles.Controls.Add(this.cboVehicleGearDataProcessing, 7, 5);
-            this.tlpVehicles.Controls.Add(this.lblVehicleSourceLabel, 1, 11);
-            this.tlpVehicles.Controls.Add(this.lblVehicleFirewallLabel, 8, 5);
-            this.tlpVehicles.Controls.Add(this.cboVehicleGearFirewall, 9, 5);
-            this.tlpVehicles.Controls.Add(this.lblVehicleAvailLabel, 1, 6);
-            this.tlpVehicles.Controls.Add(this.lblVehicleAvail, 2, 6);
-            this.tlpVehicles.Controls.Add(this.lblVehicleCostLabel, 3, 6);
-            this.tlpVehicles.Controls.Add(this.cmdVehicleMoveToInventory, 5, 10);
-            this.tlpVehicles.Controls.Add(this.lblVehicleRating, 2, 9);
-            this.tlpVehicles.Controls.Add(this.cmdVehicleGearReduceQty, 4, 10);
-            this.tlpVehicles.Controls.Add(this.lblVehicleCost, 4, 6);
-            this.tlpVehicles.Controls.Add(this.lblVehicleDeviceLabel, 6, 6);
-            this.tlpVehicles.Controls.Add(this.lblVehicleDevice, 7, 6);
-            this.tlpVehicles.Controls.Add(this.lblVehicleRatingLabel, 1, 9);
-            this.tlpVehicles.Controls.Add(this.lblVehicleSlotsLabel, 8, 8);
-            this.tlpVehicles.Controls.Add(this.lblVehicleSlots, 9, 8);
-            this.tlpVehicles.Controls.Add(this.lblVehicleWeaponAmmoLabel, 8, 3);
-            this.tlpVehicles.Controls.Add(this.lblVehicleSpeed, 7, 3);
-            this.tlpVehicles.Controls.Add(this.lblVehicleWeaponAmmo, 9, 3);
-            this.tlpVehicles.Controls.Add(this.lblVehicleWeaponModeLabel, 3, 2);
-            this.tlpVehicles.Controls.Add(this.lblVehicleWeaponMode, 4, 2);
-            this.tlpVehicles.Controls.Add(this.lblFiringModeLabel, 6, 2);
-            this.tlpVehicles.Controls.Add(this.cboVehicleWeaponFiringMode, 8, 2);
-            this.tlpVehicles.Controls.Add(this.flowLayoutPanel27, 1, 14);
             this.tlpVehicles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpVehicles.Location = new System.Drawing.Point(3, 3);
             this.tlpVehicles.Name = "tlpVehicles";
-            this.tlpVehicles.RowCount = 15;
+            this.tlpVehicles.RowCount = 2;
             this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
@@ -12556,50 +12522,6 @@ namespace Chummer
             this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpVehicles.Size = new System.Drawing.Size(835, 625);
             this.tlpVehicles.TabIndex = 249;
-            // 
-            // lblVehicleNameLabel
-            // 
-            this.lblVehicleNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleNameLabel.AutoSize = true;
-            this.lblVehicleNameLabel.Location = new System.Drawing.Point(329, 35);
-            this.lblVehicleNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleNameLabel.Name = "lblVehicleNameLabel";
-            this.lblVehicleNameLabel.Size = new System.Drawing.Size(38, 13);
-            this.lblVehicleNameLabel.TabIndex = 51;
-            this.lblVehicleNameLabel.Tag = "Label_Name";
-            this.lblVehicleNameLabel.Text = "Name:";
-            // 
-            // lblVehicleName
-            // 
-            this.lblVehicleName.AutoSize = true;
-            this.lblVehicleName.Location = new System.Drawing.Point(373, 35);
-            this.lblVehicleName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleName.Name = "lblVehicleName";
-            this.lblVehicleName.Size = new System.Drawing.Size(41, 13);
-            this.lblVehicleName.TabIndex = 52;
-            this.lblVehicleName.Text = "[Name]";
-            // 
-            // lblVehicleWeaponAccuracy
-            // 
-            this.lblVehicleWeaponAccuracy.AutoSize = true;
-            this.lblVehicleWeaponAccuracy.Location = new System.Drawing.Point(772, 35);
-            this.lblVehicleWeaponAccuracy.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponAccuracy.Name = "lblVehicleWeaponAccuracy";
-            this.lblVehicleWeaponAccuracy.Size = new System.Drawing.Size(58, 13);
-            this.lblVehicleWeaponAccuracy.TabIndex = 246;
-            this.lblVehicleWeaponAccuracy.Text = "[Accuracy]";
-            // 
-            // lblVehicleWeaponAccuracyLabel
-            // 
-            this.lblVehicleWeaponAccuracyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponAccuracyLabel.AutoSize = true;
-            this.lblVehicleWeaponAccuracyLabel.Location = new System.Drawing.Point(711, 35);
-            this.lblVehicleWeaponAccuracyLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponAccuracyLabel.Name = "lblVehicleWeaponAccuracyLabel";
-            this.lblVehicleWeaponAccuracyLabel.Size = new System.Drawing.Size(55, 13);
-            this.lblVehicleWeaponAccuracyLabel.TabIndex = 245;
-            this.lblVehicleWeaponAccuracyLabel.Tag = "Label_Accuracy";
-            this.lblVehicleWeaponAccuracyLabel.Text = "Accuracy:";
             // 
             // flowLayoutPanel10
             // 
@@ -12653,11 +12575,103 @@ namespace Chummer
             this.cmdAddVehicleLocation.UseVisualStyleBackColor = true;
             this.cmdAddVehicleLocation.Click += new System.EventHandler(this.cmdAddVehicleLocation_Click);
             // 
+            // flpVehicles
+            // 
+            this.flpVehicles.AutoScroll = true;
+            this.flpVehicles.Controls.Add(this.flowLayoutPanel27);
+            this.flpVehicles.Controls.Add(this.gpbVehiclesCommon);
+            this.flpVehicles.Controls.Add(this.gpbVehiclesVehicle);
+            this.flpVehicles.Controls.Add(this.gpbVehiclesWeapon);
+            this.flpVehicles.Controls.Add(this.gpbVehiclesMatrix);
+            this.flpVehicles.Controls.Add(this.panVehicleCM);
+            this.flpVehicles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpVehicles.Location = new System.Drawing.Point(301, 29);
+            this.flpVehicles.Margin = new System.Windows.Forms.Padding(0);
+            this.flpVehicles.Name = "flpVehicles";
+            this.flpVehicles.Size = new System.Drawing.Size(534, 596);
+            this.flpVehicles.TabIndex = 251;
+            // 
+            // flowLayoutPanel27
+            // 
+            this.flowLayoutPanel27.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel27.AutoSize = true;
+            this.flowLayoutPanel27.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutPanel27.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanel27.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel27.Name = "flowLayoutPanel27";
+            this.flowLayoutPanel27.Size = new System.Drawing.Size(0, 0);
+            this.flowLayoutPanel27.TabIndex = 250;
+            // 
+            // gpbVehiclesCommon
+            // 
+            this.gpbVehiclesCommon.AutoSize = true;
+            this.gpbVehiclesCommon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbVehiclesCommon.Controls.Add(this.tlpVehiclesCommon);
+            this.gpbVehiclesCommon.Location = new System.Drawing.Point(3, 3);
+            this.gpbVehiclesCommon.MinimumSize = new System.Drawing.Size(500, 0);
+            this.gpbVehiclesCommon.Name = "gpbVehiclesCommon";
+            this.gpbVehiclesCommon.Size = new System.Drawing.Size(500, 201);
+            this.gpbVehiclesCommon.TabIndex = 252;
+            this.gpbVehiclesCommon.TabStop = false;
+            this.gpbVehiclesCommon.Tag = "String_Info";
+            this.gpbVehiclesCommon.Text = "Info";
+            // 
+            // tlpVehiclesCommon
+            // 
+            this.tlpVehiclesCommon.AutoSize = true;
+            this.tlpVehiclesCommon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpVehiclesCommon.ColumnCount = 4;
+            this.tlpVehiclesCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpVehiclesCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpVehiclesCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpVehiclesCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpVehiclesCommon.Controls.Add(this.lblVehicleName, 1, 0);
+            this.tlpVehiclesCommon.Controls.Add(this.lblVehicleCategoryLabel, 0, 1);
+            this.tlpVehiclesCommon.Controls.Add(this.lblVehicleCategory, 1, 1);
+            this.tlpVehiclesCommon.Controls.Add(this.lblVehicleNameLabel, 0, 0);
+            this.tlpVehiclesCommon.Controls.Add(this.lblVehicleRatingLabel, 0, 2);
+            this.tlpVehiclesCommon.Controls.Add(this.lblVehicleRating, 1, 2);
+            this.tlpVehiclesCommon.Controls.Add(this.lblVehicleGearQtyLabel, 0, 3);
+            this.tlpVehiclesCommon.Controls.Add(this.flpVehiclesCommonQuantity, 1, 3);
+            this.tlpVehiclesCommon.Controls.Add(this.lblVehicleSourceLabel, 0, 4);
+            this.tlpVehiclesCommon.Controls.Add(this.lblVehicleSource, 1, 4);
+            this.tlpVehiclesCommon.Controls.Add(this.flpVehiclesCommonCheckBoxes, 2, 4);
+            this.tlpVehiclesCommon.Controls.Add(this.lblVehicleAvailLabel, 2, 0);
+            this.tlpVehiclesCommon.Controls.Add(this.lblVehicleAvail, 3, 0);
+            this.tlpVehiclesCommon.Controls.Add(this.lblVehicleCostLabel, 2, 1);
+            this.tlpVehiclesCommon.Controls.Add(this.lblVehicleCost, 3, 1);
+            this.tlpVehiclesCommon.Controls.Add(this.lblVehicleSlotsLabel, 2, 2);
+            this.tlpVehiclesCommon.Controls.Add(this.lblVehicleSlots, 3, 2);
+            this.tlpVehiclesCommon.Controls.Add(this.flpVehiclesCommonMoveButtons, 2, 3);
+            this.tlpVehiclesCommon.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpVehiclesCommon.Location = new System.Drawing.Point(3, 16);
+            this.tlpVehiclesCommon.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpVehiclesCommon.Name = "tlpVehiclesCommon";
+            this.tlpVehiclesCommon.RowCount = 5;
+            this.tlpVehiclesCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpVehiclesCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpVehiclesCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpVehiclesCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpVehiclesCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpVehiclesCommon.Size = new System.Drawing.Size(494, 182);
+            this.tlpVehiclesCommon.TabIndex = 0;
+            // 
+            // lblVehicleName
+            // 
+            this.lblVehicleName.AutoSize = true;
+            this.lblVehicleName.Location = new System.Drawing.Point(126, 6);
+            this.lblVehicleName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleName.Name = "lblVehicleName";
+            this.lblVehicleName.Size = new System.Drawing.Size(41, 13);
+            this.lblVehicleName.TabIndex = 52;
+            this.lblVehicleName.Text = "[Name]";
+            // 
             // lblVehicleCategoryLabel
             // 
             this.lblVehicleCategoryLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleCategoryLabel.AutoSize = true;
-            this.lblVehicleCategoryLabel.Location = new System.Drawing.Point(315, 60);
+            this.lblVehicleCategoryLabel.Location = new System.Drawing.Point(68, 31);
             this.lblVehicleCategoryLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleCategoryLabel.Name = "lblVehicleCategoryLabel";
             this.lblVehicleCategoryLabel.Size = new System.Drawing.Size(52, 13);
@@ -12665,238 +12679,55 @@ namespace Chummer
             this.lblVehicleCategoryLabel.Tag = "Label_Category";
             this.lblVehicleCategoryLabel.Text = "Category:";
             // 
-            // cmdVehicleCyberwareChangeMount
-            // 
-            this.cmdVehicleCyberwareChangeMount.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdVehicleCyberwareChangeMount.AutoSize = true;
-            this.tlpVehicles.SetColumnSpan(this.cmdVehicleCyberwareChangeMount, 3);
-            this.cmdVehicleCyberwareChangeMount.Location = new System.Drawing.Point(304, 314);
-            this.cmdVehicleCyberwareChangeMount.Name = "cmdVehicleCyberwareChangeMount";
-            this.cmdVehicleCyberwareChangeMount.Size = new System.Drawing.Size(196, 23);
-            this.cmdVehicleCyberwareChangeMount.TabIndex = 242;
-            this.cmdVehicleCyberwareChangeMount.Tag = "Button_ChangeMountedLocation";
-            this.cmdVehicleCyberwareChangeMount.Text = "Change Mounted Location";
-            this.cmdVehicleCyberwareChangeMount.UseVisualStyleBackColor = true;
-            this.cmdVehicleCyberwareChangeMount.Visible = false;
-            this.cmdVehicleCyberwareChangeMount.Click += new System.EventHandler(this.cmdVehicleCyberwareChangeMount_Click);
-            // 
-            // chkVehicleActiveCommlink
-            // 
-            this.chkVehicleActiveCommlink.AutoSize = true;
-            this.tlpVehicles.SetColumnSpan(this.chkVehicleActiveCommlink, 2);
-            this.chkVehicleActiveCommlink.Location = new System.Drawing.Point(703, 290);
-            this.chkVehicleActiveCommlink.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkVehicleActiveCommlink.Name = "chkVehicleActiveCommlink";
-            this.chkVehicleActiveCommlink.Size = new System.Drawing.Size(104, 17);
-            this.chkVehicleActiveCommlink.TabIndex = 243;
-            this.chkVehicleActiveCommlink.Tag = "Checkbox_ActiveCommlink";
-            this.chkVehicleActiveCommlink.Text = "Active Commlink";
-            this.chkVehicleActiveCommlink.UseVisualStyleBackColor = true;
-            this.chkVehicleActiveCommlink.Visible = false;
-            this.chkVehicleActiveCommlink.CheckedChanged += new System.EventHandler(this.chkVehicleActiveCommlink_CheckedChanged);
-            // 
             // lblVehicleCategory
             // 
             this.lblVehicleCategory.AutoSize = true;
-            this.lblVehicleCategory.Location = new System.Drawing.Point(373, 60);
+            this.lblVehicleCategory.Location = new System.Drawing.Point(126, 31);
             this.lblVehicleCategory.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleCategory.Name = "lblVehicleCategory";
             this.lblVehicleCategory.Size = new System.Drawing.Size(55, 13);
             this.lblVehicleCategory.TabIndex = 54;
             this.lblVehicleCategory.Text = "[Category]";
             // 
-            // lblVehicleHandlingLabel
+            // lblVehicleNameLabel
             // 
-            this.lblVehicleHandlingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleHandlingLabel.AutoSize = true;
-            this.lblVehicleHandlingLabel.Location = new System.Drawing.Point(315, 87);
-            this.lblVehicleHandlingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleHandlingLabel.Name = "lblVehicleHandlingLabel";
-            this.lblVehicleHandlingLabel.Size = new System.Drawing.Size(52, 13);
-            this.lblVehicleHandlingLabel.TabIndex = 33;
-            this.lblVehicleHandlingLabel.Tag = "Label_Handling";
-            this.lblVehicleHandlingLabel.Text = "Handling:";
+            this.lblVehicleNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleNameLabel.AutoSize = true;
+            this.lblVehicleNameLabel.Location = new System.Drawing.Point(82, 6);
+            this.lblVehicleNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleNameLabel.Name = "lblVehicleNameLabel";
+            this.lblVehicleNameLabel.Size = new System.Drawing.Size(38, 13);
+            this.lblVehicleNameLabel.TabIndex = 51;
+            this.lblVehicleNameLabel.Tag = "Label_Name";
+            this.lblVehicleNameLabel.Text = "Name:";
             // 
-            // lblVehicleHandling
+            // lblVehicleRatingLabel
             // 
-            this.lblVehicleHandling.AutoSize = true;
-            this.lblVehicleHandling.Location = new System.Drawing.Point(373, 87);
-            this.lblVehicleHandling.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleHandling.Name = "lblVehicleHandling";
-            this.lblVehicleHandling.Size = new System.Drawing.Size(55, 13);
-            this.lblVehicleHandling.TabIndex = 34;
-            this.lblVehicleHandling.Text = "[Handling]";
+            this.lblVehicleRatingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleRatingLabel.AutoSize = true;
+            this.lblVehicleRatingLabel.Location = new System.Drawing.Point(79, 56);
+            this.lblVehicleRatingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleRatingLabel.Name = "lblVehicleRatingLabel";
+            this.lblVehicleRatingLabel.Size = new System.Drawing.Size(41, 13);
+            this.lblVehicleRatingLabel.TabIndex = 55;
+            this.lblVehicleRatingLabel.Tag = "Label_Rating";
+            this.lblVehicleRatingLabel.Text = "Rating:";
             // 
-            // lblVehicleAccelLabel
+            // lblVehicleRating
             // 
-            this.lblVehicleAccelLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleAccelLabel.AutoSize = true;
-            this.lblVehicleAccelLabel.Location = new System.Drawing.Point(463, 87);
-            this.lblVehicleAccelLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleAccelLabel.Name = "lblVehicleAccelLabel";
-            this.lblVehicleAccelLabel.Size = new System.Drawing.Size(37, 13);
-            this.lblVehicleAccelLabel.TabIndex = 35;
-            this.lblVehicleAccelLabel.Tag = "Label_Accel";
-            this.lblVehicleAccelLabel.Text = "Accel:";
-            // 
-            // lblVehicleAccel
-            // 
-            this.lblVehicleAccel.AutoSize = true;
-            this.tlpVehicles.SetColumnSpan(this.lblVehicleAccel, 2);
-            this.lblVehicleAccel.Location = new System.Drawing.Point(506, 87);
-            this.lblVehicleAccel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleAccel.Name = "lblVehicleAccel";
-            this.lblVehicleAccel.Size = new System.Drawing.Size(40, 13);
-            this.lblVehicleAccel.TabIndex = 36;
-            this.lblVehicleAccel.Text = "[Accel]";
-            // 
-            // lblVehicleSpeedLabel
-            // 
-            this.lblVehicleSpeedLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleSpeedLabel.AutoSize = true;
-            this.lblVehicleSpeedLabel.Location = new System.Drawing.Point(592, 87);
-            this.lblVehicleSpeedLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleSpeedLabel.Name = "lblVehicleSpeedLabel";
-            this.lblVehicleSpeedLabel.Size = new System.Drawing.Size(41, 13);
-            this.lblVehicleSpeedLabel.TabIndex = 37;
-            this.lblVehicleSpeedLabel.Tag = "Label_Speed";
-            this.lblVehicleSpeedLabel.Text = "Speed:";
-            // 
-            // lblVehiclePilotLabel
-            // 
-            this.lblVehiclePilotLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehiclePilotLabel.AutoSize = true;
-            this.lblVehiclePilotLabel.Location = new System.Drawing.Point(337, 112);
-            this.lblVehiclePilotLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehiclePilotLabel.Name = "lblVehiclePilotLabel";
-            this.lblVehiclePilotLabel.Size = new System.Drawing.Size(30, 13);
-            this.lblVehiclePilotLabel.TabIndex = 39;
-            this.lblVehiclePilotLabel.Tag = "Label_Pilot";
-            this.lblVehiclePilotLabel.Text = "Pilot:";
-            // 
-            // lblVehicleCosmetic
-            // 
-            this.lblVehicleCosmetic.AutoSize = true;
-            this.lblVehicleCosmetic.Location = new System.Drawing.Point(639, 214);
-            this.lblVehicleCosmetic.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleCosmetic.Name = "lblVehicleCosmetic";
-            this.lblVehicleCosmetic.Size = new System.Drawing.Size(56, 13);
-            this.lblVehicleCosmetic.TabIndex = 222;
-            this.lblVehicleCosmetic.Text = "[Cosmetic]";
-            // 
-            // chkVehicleHomeNode
-            // 
-            this.chkVehicleHomeNode.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkVehicleHomeNode.AutoSize = true;
-            this.tlpVehicles.SetColumnSpan(this.chkVehicleHomeNode, 2);
-            this.chkVehicleHomeNode.Location = new System.Drawing.Point(703, 262);
-            this.chkVehicleHomeNode.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkVehicleHomeNode.Name = "chkVehicleHomeNode";
-            this.chkVehicleHomeNode.Size = new System.Drawing.Size(129, 20);
-            this.chkVehicleHomeNode.TabIndex = 135;
-            this.chkVehicleHomeNode.Tag = "Checkbox_HomeNode";
-            this.chkVehicleHomeNode.Text = "Home Node";
-            this.chkVehicleHomeNode.UseVisualStyleBackColor = true;
-            this.chkVehicleHomeNode.Visible = false;
-            this.chkVehicleHomeNode.CheckedChanged += new System.EventHandler(this.chkVehicleHomeNode_CheckedChanged);
-            // 
-            // lblVehicleDroneModSlots
-            // 
-            this.lblVehicleDroneModSlots.AutoSize = true;
-            this.lblVehicleDroneModSlots.Location = new System.Drawing.Point(772, 189);
-            this.lblVehicleDroneModSlots.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleDroneModSlots.Name = "lblVehicleDroneModSlots";
-            this.lblVehicleDroneModSlots.Size = new System.Drawing.Size(57, 13);
-            this.lblVehicleDroneModSlots.TabIndex = 224;
-            this.lblVehicleDroneModSlots.Text = "[ModSlots]";
-            this.lblVehicleDroneModSlots.Visible = false;
-            // 
-            // lblVehicleCosmeticLabel
-            // 
-            this.lblVehicleCosmeticLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleCosmeticLabel.AutoSize = true;
-            this.lblVehicleCosmeticLabel.Location = new System.Drawing.Point(580, 214);
-            this.lblVehicleCosmeticLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleCosmeticLabel.Name = "lblVehicleCosmeticLabel";
-            this.lblVehicleCosmeticLabel.Size = new System.Drawing.Size(53, 13);
-            this.lblVehicleCosmeticLabel.TabIndex = 216;
-            this.lblVehicleCosmeticLabel.Tag = "Label_Cosmetic";
-            this.lblVehicleCosmeticLabel.Text = "Cosmetic:";
-            // 
-            // lblVehicleElectromagnetic
-            // 
-            this.lblVehicleElectromagnetic.AutoSize = true;
-            this.tlpVehicles.SetColumnSpan(this.lblVehicleElectromagnetic, 2);
-            this.lblVehicleElectromagnetic.Location = new System.Drawing.Point(506, 214);
-            this.lblVehicleElectromagnetic.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleElectromagnetic.Name = "lblVehicleElectromagnetic";
-            this.lblVehicleElectromagnetic.Size = new System.Drawing.Size(34, 13);
-            this.lblVehicleElectromagnetic.TabIndex = 221;
-            this.lblVehicleElectromagnetic.Text = "[Elec]";
-            // 
-            // treVehicles
-            // 
-            this.treVehicles.AllowDrop = true;
-            this.treVehicles.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.treVehicles.HideSelection = false;
-            this.treVehicles.Location = new System.Drawing.Point(3, 32);
-            this.treVehicles.Name = "treVehicles";
-            treeNode1.Name = "nodVehiclesRoot";
-            treeNode1.Tag = "Node_SelectedVehicles";
-            treeNode1.Text = "Selected Vehicles";
-            this.treVehicles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1});
-            this.tlpVehicles.SetRowSpan(this.treVehicles, 14);
-            this.treVehicles.ShowNodeToolTips = true;
-            this.treVehicles.ShowRootLines = false;
-            this.treVehicles.Size = new System.Drawing.Size(295, 661);
-            this.treVehicles.TabIndex = 30;
-            this.treVehicles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treVehicles_AfterSelect);
-            this.treVehicles.DragOver += new System.Windows.Forms.DragEventHandler(this.treVehicles_DragOver);
-            this.treVehicles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treVehicles_KeyDown);
-            this.treVehicles.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
-            // 
-            // lblVehicleSeats
-            // 
-            this.lblVehicleSeats.AutoSize = true;
-            this.lblVehicleSeats.Location = new System.Drawing.Point(772, 164);
-            this.lblVehicleSeats.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleSeats.Name = "lblVehicleSeats";
-            this.lblVehicleSeats.Size = new System.Drawing.Size(40, 13);
-            this.lblVehicleSeats.TabIndex = 226;
-            this.lblVehicleSeats.Text = "[Seats]";
-            // 
-            // lblVehicleGearQty
-            // 
-            this.lblVehicleGearQty.AutoSize = true;
-            this.tlpVehicles.SetColumnSpan(this.lblVehicleGearQty, 2);
-            this.lblVehicleGearQty.Location = new System.Drawing.Point(373, 264);
-            this.lblVehicleGearQty.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleGearQty.Name = "lblVehicleGearQty";
-            this.lblVehicleGearQty.Size = new System.Drawing.Size(44, 13);
-            this.lblVehicleGearQty.TabIndex = 111;
-            this.lblVehicleGearQty.Text = "[Rating]";
-            // 
-            // lblVehicleBodymod
-            // 
-            this.lblVehicleBodymod.AutoSize = true;
-            this.lblVehicleBodymod.Location = new System.Drawing.Point(373, 214);
-            this.lblVehicleBodymod.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleBodymod.Name = "lblVehicleBodymod";
-            this.lblVehicleBodymod.Size = new System.Drawing.Size(37, 13);
-            this.lblVehicleBodymod.TabIndex = 220;
-            this.lblVehicleBodymod.Text = "[Body]";
+            this.lblVehicleRating.AutoSize = true;
+            this.lblVehicleRating.Location = new System.Drawing.Point(126, 56);
+            this.lblVehicleRating.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleRating.Name = "lblVehicleRating";
+            this.lblVehicleRating.Size = new System.Drawing.Size(44, 13);
+            this.lblVehicleRating.TabIndex = 61;
+            this.lblVehicleRating.Text = "[Rating]";
             // 
             // lblVehicleGearQtyLabel
             // 
             this.lblVehicleGearQtyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleGearQtyLabel.AutoSize = true;
-            this.lblVehicleGearQtyLabel.Location = new System.Drawing.Point(315, 264);
+            this.lblVehicleGearQtyLabel.Location = new System.Drawing.Point(68, 81);
             this.lblVehicleGearQtyLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleGearQtyLabel.Name = "lblVehicleGearQtyLabel";
             this.lblVehicleGearQtyLabel.Size = new System.Drawing.Size(52, 13);
@@ -12904,80 +12735,70 @@ namespace Chummer
             this.lblVehicleGearQtyLabel.Tag = "Label_GearQty";
             this.lblVehicleGearQtyLabel.Text = "Gear Qty:";
             // 
-            // lblVehicleElectromagneticLabel
+            // flpVehiclesCommonQuantity
             // 
-            this.lblVehicleElectromagneticLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleElectromagneticLabel.AutoSize = true;
-            this.lblVehicleElectromagneticLabel.Location = new System.Drawing.Point(469, 214);
-            this.lblVehicleElectromagneticLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleElectromagneticLabel.Name = "lblVehicleElectromagneticLabel";
-            this.lblVehicleElectromagneticLabel.Size = new System.Drawing.Size(31, 13);
-            this.lblVehicleElectromagneticLabel.TabIndex = 215;
-            this.lblVehicleElectromagneticLabel.Tag = "Label_Electromagnetic";
-            this.lblVehicleElectromagneticLabel.Text = "Elec:";
+            this.flpVehiclesCommonQuantity.AutoSize = true;
+            this.flpVehiclesCommonQuantity.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpVehiclesCommonQuantity.Controls.Add(this.lblVehicleGearQty);
+            this.flpVehiclesCommonQuantity.Controls.Add(this.cmdVehicleGearReduceQty);
+            this.flpVehiclesCommonQuantity.Location = new System.Drawing.Point(123, 75);
+            this.flpVehiclesCommonQuantity.Margin = new System.Windows.Forms.Padding(0);
+            this.flpVehiclesCommonQuantity.Name = "flpVehiclesCommonQuantity";
+            this.flpVehiclesCommonQuantity.Size = new System.Drawing.Size(63, 28);
+            this.flpVehiclesCommonQuantity.TabIndex = 112;
+            this.flpVehiclesCommonQuantity.WrapContents = false;
             // 
-            // lblVehicleDroneModSlotsLabel
+            // lblVehicleGearQty
             // 
-            this.lblVehicleDroneModSlotsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleDroneModSlotsLabel.AutoSize = true;
-            this.lblVehicleDroneModSlotsLabel.Location = new System.Drawing.Point(709, 189);
-            this.lblVehicleDroneModSlotsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleDroneModSlotsLabel.Name = "lblVehicleDroneModSlotsLabel";
-            this.lblVehicleDroneModSlotsLabel.Size = new System.Drawing.Size(57, 13);
-            this.lblVehicleDroneModSlotsLabel.TabIndex = 223;
-            this.lblVehicleDroneModSlotsLabel.Tag = "Label_DroneModSlots";
-            this.lblVehicleDroneModSlotsLabel.Text = "Mod Slots:";
-            this.lblVehicleDroneModSlotsLabel.Visible = false;
+            this.lblVehicleGearQty.AutoSize = true;
+            this.lblVehicleGearQty.Location = new System.Drawing.Point(3, 6);
+            this.lblVehicleGearQty.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleGearQty.Name = "lblVehicleGearQty";
+            this.lblVehicleGearQty.Size = new System.Drawing.Size(29, 13);
+            this.lblVehicleGearQty.TabIndex = 111;
+            this.lblVehicleGearQty.Text = "[Qty]";
             // 
-            // lblVehiclePowertrain
+            // lblVehicleSourceLabel
             // 
-            this.lblVehiclePowertrain.AutoSize = true;
-            this.lblVehiclePowertrain.Location = new System.Drawing.Point(639, 189);
-            this.lblVehiclePowertrain.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehiclePowertrain.Name = "lblVehiclePowertrain";
-            this.lblVehiclePowertrain.Size = new System.Drawing.Size(43, 13);
-            this.lblVehiclePowertrain.TabIndex = 217;
-            this.lblVehiclePowertrain.Text = "[Power]";
+            this.lblVehicleSourceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleSourceLabel.AutoSize = true;
+            this.lblVehicleSourceLabel.Location = new System.Drawing.Point(76, 110);
+            this.lblVehicleSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleSourceLabel.Name = "lblVehicleSourceLabel";
+            this.lblVehicleSourceLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblVehicleSourceLabel.TabIndex = 59;
+            this.lblVehicleSourceLabel.Tag = "Label_Source";
+            this.lblVehicleSourceLabel.Text = "Source:";
             // 
-            // lblVehicleProtection
+            // lblVehicleSource
             // 
-            this.lblVehicleProtection.AutoSize = true;
-            this.tlpVehicles.SetColumnSpan(this.lblVehicleProtection, 2);
-            this.lblVehicleProtection.Location = new System.Drawing.Point(506, 189);
-            this.lblVehicleProtection.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleProtection.Name = "lblVehicleProtection";
-            this.lblVehicleProtection.Size = new System.Drawing.Size(32, 13);
-            this.lblVehicleProtection.TabIndex = 218;
-            this.lblVehicleProtection.Text = "[Prot]";
+            this.lblVehicleSource.AutoSize = true;
+            this.lblVehicleSource.Location = new System.Drawing.Point(126, 110);
+            this.lblVehicleSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleSource.Name = "lblVehicleSource";
+            this.lblVehicleSource.Size = new System.Drawing.Size(47, 13);
+            this.lblVehicleSource.TabIndex = 60;
+            this.lblVehicleSource.Text = "[Source]";
+            this.lblVehicleSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
             // 
-            // lblVehicleBodymodLabel
+            // flpVehiclesCommonCheckBoxes
             // 
-            this.lblVehicleBodymodLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleBodymodLabel.AutoSize = true;
-            this.lblVehicleBodymodLabel.Location = new System.Drawing.Point(304, 214);
-            this.lblVehicleBodymodLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleBodymodLabel.Name = "lblVehicleBodymodLabel";
-            this.lblVehicleBodymodLabel.Size = new System.Drawing.Size(63, 13);
-            this.lblVehicleBodymodLabel.TabIndex = 214;
-            this.lblVehicleBodymodLabel.Tag = "Label_Bodymod";
-            this.lblVehicleBodymodLabel.Text = "Body Mods:";
-            // 
-            // lblVehicleWeaponsmod
-            // 
-            this.lblVehicleWeaponsmod.AutoSize = true;
-            this.lblVehicleWeaponsmod.Location = new System.Drawing.Point(373, 189);
-            this.lblVehicleWeaponsmod.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponsmod.Name = "lblVehicleWeaponsmod";
-            this.lblVehicleWeaponsmod.Size = new System.Drawing.Size(42, 13);
-            this.lblVehicleWeaponsmod.TabIndex = 219;
-            this.lblVehicleWeaponsmod.Text = "[Weap]";
+            this.flpVehiclesCommonCheckBoxes.AutoSize = true;
+            this.flpVehiclesCommonCheckBoxes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpVehiclesCommon.SetColumnSpan(this.flpVehiclesCommonCheckBoxes, 2);
+            this.flpVehiclesCommonCheckBoxes.Controls.Add(this.chkVehicleWeaponAccessoryInstalled);
+            this.flpVehiclesCommonCheckBoxes.Controls.Add(this.chkVehicleIncludedInWeapon);
+            this.flpVehiclesCommonCheckBoxes.Location = new System.Drawing.Point(246, 104);
+            this.flpVehiclesCommonCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
+            this.flpVehiclesCommonCheckBoxes.Name = "flpVehiclesCommonCheckBoxes";
+            this.flpVehiclesCommonCheckBoxes.Size = new System.Drawing.Size(204, 25);
+            this.flpVehiclesCommonCheckBoxes.TabIndex = 113;
             // 
             // chkVehicleIncludedInWeapon
             // 
             this.chkVehicleIncludedInWeapon.AutoSize = true;
-            this.tlpVehicles.SetColumnSpan(this.chkVehicleIncludedInWeapon, 3);
             this.chkVehicleIncludedInWeapon.Enabled = false;
-            this.chkVehicleIncludedInWeapon.Location = new System.Drawing.Point(506, 237);
+            this.chkVehicleIncludedInWeapon.Location = new System.Drawing.Point(74, 4);
             this.chkVehicleIncludedInWeapon.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkVehicleIncludedInWeapon.Name = "chkVehicleIncludedInWeapon";
             this.chkVehicleIncludedInWeapon.Size = new System.Drawing.Size(127, 17);
@@ -12986,309 +12807,11 @@ namespace Chummer
             this.chkVehicleIncludedInWeapon.Text = "Part of base Weapon";
             this.chkVehicleIncludedInWeapon.UseVisualStyleBackColor = true;
             // 
-            // lblVehiclePilot
-            // 
-            this.lblVehiclePilot.AutoSize = true;
-            this.lblVehiclePilot.Location = new System.Drawing.Point(373, 112);
-            this.lblVehiclePilot.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehiclePilot.Name = "lblVehiclePilot";
-            this.lblVehiclePilot.Size = new System.Drawing.Size(33, 13);
-            this.lblVehiclePilot.TabIndex = 40;
-            this.lblVehiclePilot.Text = "[Pilot]";
-            // 
-            // lblVehicleSeatsLabel
-            // 
-            this.lblVehicleSeatsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleSeatsLabel.AutoSize = true;
-            this.lblVehicleSeatsLabel.Location = new System.Drawing.Point(729, 164);
-            this.lblVehicleSeatsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleSeatsLabel.Name = "lblVehicleSeatsLabel";
-            this.lblVehicleSeatsLabel.Size = new System.Drawing.Size(37, 13);
-            this.lblVehicleSeatsLabel.TabIndex = 225;
-            this.lblVehicleSeatsLabel.Tag = "Label_VehicleSeats";
-            this.lblVehicleSeatsLabel.Text = "Seats:";
-            // 
-            // lblVehiclePowertrainLabel
-            // 
-            this.lblVehiclePowertrainLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehiclePowertrainLabel.AutoSize = true;
-            this.lblVehiclePowertrainLabel.Location = new System.Drawing.Point(593, 189);
-            this.lblVehiclePowertrainLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehiclePowertrainLabel.Name = "lblVehiclePowertrainLabel";
-            this.lblVehiclePowertrainLabel.Size = new System.Drawing.Size(40, 13);
-            this.lblVehiclePowertrainLabel.TabIndex = 211;
-            this.lblVehiclePowertrainLabel.Tag = "Label_Powertrain";
-            this.lblVehiclePowertrainLabel.Text = "Power:";
-            // 
-            // lblVehicleWeaponAP
-            // 
-            this.lblVehicleWeaponAP.AutoSize = true;
-            this.lblVehicleWeaponAP.Location = new System.Drawing.Point(639, 35);
-            this.lblVehicleWeaponAP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponAP.Name = "lblVehicleWeaponAP";
-            this.lblVehicleWeaponAP.Size = new System.Drawing.Size(27, 13);
-            this.lblVehicleWeaponAP.TabIndex = 72;
-            this.lblVehicleWeaponAP.Text = "[AP]";
-            // 
-            // lblVehicleBodyLabel
-            // 
-            this.lblVehicleBodyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleBodyLabel.AutoSize = true;
-            this.lblVehicleBodyLabel.Location = new System.Drawing.Point(466, 112);
-            this.lblVehicleBodyLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleBodyLabel.Name = "lblVehicleBodyLabel";
-            this.lblVehicleBodyLabel.Size = new System.Drawing.Size(34, 13);
-            this.lblVehicleBodyLabel.TabIndex = 41;
-            this.lblVehicleBodyLabel.Tag = "Label_Body";
-            this.lblVehicleBodyLabel.Text = "Body:";
-            // 
-            // lblVehicleBody
-            // 
-            this.lblVehicleBody.AutoSize = true;
-            this.tlpVehicles.SetColumnSpan(this.lblVehicleBody, 2);
-            this.lblVehicleBody.Location = new System.Drawing.Point(506, 112);
-            this.lblVehicleBody.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleBody.Name = "lblVehicleBody";
-            this.lblVehicleBody.Size = new System.Drawing.Size(37, 13);
-            this.lblVehicleBody.TabIndex = 42;
-            this.lblVehicleBody.Text = "[Body]";
-            // 
-            // lblVehicleWeaponAPLabel
-            // 
-            this.lblVehicleWeaponAPLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponAPLabel.AutoSize = true;
-            this.lblVehicleWeaponAPLabel.Location = new System.Drawing.Point(609, 35);
-            this.lblVehicleWeaponAPLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponAPLabel.Name = "lblVehicleWeaponAPLabel";
-            this.lblVehicleWeaponAPLabel.Size = new System.Drawing.Size(24, 13);
-            this.lblVehicleWeaponAPLabel.TabIndex = 71;
-            this.lblVehicleWeaponAPLabel.Tag = "Label_AP";
-            this.lblVehicleWeaponAPLabel.Text = "AP:";
-            // 
-            // lblVehicleProtectionLabel
-            // 
-            this.lblVehicleProtectionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleProtectionLabel.AutoSize = true;
-            this.lblVehicleProtectionLabel.Location = new System.Drawing.Point(471, 189);
-            this.lblVehicleProtectionLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleProtectionLabel.Name = "lblVehicleProtectionLabel";
-            this.lblVehicleProtectionLabel.Size = new System.Drawing.Size(29, 13);
-            this.lblVehicleProtectionLabel.TabIndex = 212;
-            this.lblVehicleProtectionLabel.Tag = "Label_Protection";
-            this.lblVehicleProtectionLabel.Text = "Prot:";
-            // 
-            // lblVehicleWeaponDamage
-            // 
-            this.lblVehicleWeaponDamage.AutoSize = true;
-            this.tlpVehicles.SetColumnSpan(this.lblVehicleWeaponDamage, 2);
-            this.lblVehicleWeaponDamage.Location = new System.Drawing.Point(506, 35);
-            this.lblVehicleWeaponDamage.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponDamage.Name = "lblVehicleWeaponDamage";
-            this.lblVehicleWeaponDamage.Size = new System.Drawing.Size(53, 13);
-            this.lblVehicleWeaponDamage.TabIndex = 68;
-            this.lblVehicleWeaponDamage.Text = "[Damage]";
-            // 
-            // lblVehicleWeaponDamageLabel
-            // 
-            this.lblVehicleWeaponDamageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponDamageLabel.AutoSize = true;
-            this.lblVehicleWeaponDamageLabel.Location = new System.Drawing.Point(450, 35);
-            this.lblVehicleWeaponDamageLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponDamageLabel.Name = "lblVehicleWeaponDamageLabel";
-            this.lblVehicleWeaponDamageLabel.Size = new System.Drawing.Size(50, 13);
-            this.lblVehicleWeaponDamageLabel.TabIndex = 67;
-            this.lblVehicleWeaponDamageLabel.Tag = "Label_Damage";
-            this.lblVehicleWeaponDamageLabel.Text = "Damage:";
-            // 
-            // lblVehicleArmorLabel
-            // 
-            this.lblVehicleArmorLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleArmorLabel.AutoSize = true;
-            this.lblVehicleArmorLabel.Location = new System.Drawing.Point(596, 112);
-            this.lblVehicleArmorLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleArmorLabel.Name = "lblVehicleArmorLabel";
-            this.lblVehicleArmorLabel.Size = new System.Drawing.Size(37, 13);
-            this.lblVehicleArmorLabel.TabIndex = 43;
-            this.lblVehicleArmorLabel.Tag = "Label_Armor";
-            this.lblVehicleArmorLabel.Text = "Armor:";
-            // 
-            // lblVehicleArmor
-            // 
-            this.lblVehicleArmor.AutoSize = true;
-            this.lblVehicleArmor.Location = new System.Drawing.Point(639, 112);
-            this.lblVehicleArmor.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleArmor.Name = "lblVehicleArmor";
-            this.lblVehicleArmor.Size = new System.Drawing.Size(40, 13);
-            this.lblVehicleArmor.TabIndex = 44;
-            this.lblVehicleArmor.Text = "[Armor]";
-            // 
-            // lblVehicleWeaponsmodLabel
-            // 
-            this.lblVehicleWeaponsmodLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponsmodLabel.AutoSize = true;
-            this.lblVehicleWeaponsmodLabel.Location = new System.Drawing.Point(311, 189);
-            this.lblVehicleWeaponsmodLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponsmodLabel.Name = "lblVehicleWeaponsmodLabel";
-            this.lblVehicleWeaponsmodLabel.Size = new System.Drawing.Size(56, 13);
-            this.lblVehicleWeaponsmodLabel.TabIndex = 213;
-            this.lblVehicleWeaponsmodLabel.Tag = "Label_Weapons";
-            this.lblVehicleWeaponsmodLabel.Text = "Weapons:";
-            // 
-            // lblVehicleSensorLabel
-            // 
-            this.lblVehicleSensorLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleSensorLabel.AutoSize = true;
-            this.lblVehicleSensorLabel.Location = new System.Drawing.Point(723, 112);
-            this.lblVehicleSensorLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleSensorLabel.Name = "lblVehicleSensorLabel";
-            this.lblVehicleSensorLabel.Size = new System.Drawing.Size(43, 13);
-            this.lblVehicleSensorLabel.TabIndex = 45;
-            this.lblVehicleSensorLabel.Tag = "Label_Sensor";
-            this.lblVehicleSensorLabel.Text = "Sensor:";
-            // 
-            // lblVehicleSensor
-            // 
-            this.lblVehicleSensor.AutoSize = true;
-            this.lblVehicleSensor.Location = new System.Drawing.Point(772, 112);
-            this.lblVehicleSensor.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleSensor.Name = "lblVehicleSensor";
-            this.lblVehicleSensor.Size = new System.Drawing.Size(46, 13);
-            this.lblVehicleSensor.TabIndex = 46;
-            this.lblVehicleSensor.Text = "[Sensor]";
-            // 
-            // lblVehicleAttackLabel
-            // 
-            this.lblVehicleAttackLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleAttackLabel.AutoSize = true;
-            this.lblVehicleAttackLabel.Location = new System.Drawing.Point(326, 137);
-            this.lblVehicleAttackLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleAttackLabel.Name = "lblVehicleAttackLabel";
-            this.lblVehicleAttackLabel.Size = new System.Drawing.Size(41, 13);
-            this.lblVehicleAttackLabel.TabIndex = 194;
-            this.lblVehicleAttackLabel.Tag = "Label_Attack";
-            this.lblVehicleAttackLabel.Text = "Attack:";
-            // 
-            // cboVehicleGearAttack
-            // 
-            this.cboVehicleGearAttack.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboVehicleGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboVehicleGearAttack.FormattingEnabled = true;
-            this.cboVehicleGearAttack.Location = new System.Drawing.Point(373, 134);
-            this.cboVehicleGearAttack.Name = "cboVehicleGearAttack";
-            this.cboVehicleGearAttack.Size = new System.Drawing.Size(58, 21);
-            this.cboVehicleGearAttack.TabIndex = 203;
-            this.cboVehicleGearAttack.TooltipText = "";
-            this.cboVehicleGearAttack.Visible = false;
-            this.cboVehicleGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearAttack_SelectedIndexChanged);
-            // 
-            // lblVehicleSleazeLabel
-            // 
-            this.lblVehicleSleazeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleSleazeLabel.AutoSize = true;
-            this.lblVehicleSleazeLabel.Location = new System.Drawing.Point(458, 137);
-            this.lblVehicleSleazeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleSleazeLabel.Name = "lblVehicleSleazeLabel";
-            this.lblVehicleSleazeLabel.Size = new System.Drawing.Size(42, 13);
-            this.lblVehicleSleazeLabel.TabIndex = 196;
-            this.lblVehicleSleazeLabel.Tag = "Label_Sleaze";
-            this.lblVehicleSleazeLabel.Text = "Sleaze:";
-            // 
-            // cboVehicleGearSleaze
-            // 
-            this.cboVehicleGearSleaze.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpVehicles.SetColumnSpan(this.cboVehicleGearSleaze, 2);
-            this.cboVehicleGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboVehicleGearSleaze.FormattingEnabled = true;
-            this.cboVehicleGearSleaze.Location = new System.Drawing.Point(506, 134);
-            this.cboVehicleGearSleaze.Name = "cboVehicleGearSleaze";
-            this.cboVehicleGearSleaze.Size = new System.Drawing.Size(58, 21);
-            this.cboVehicleGearSleaze.TabIndex = 204;
-            this.cboVehicleGearSleaze.TooltipText = "";
-            this.cboVehicleGearSleaze.Visible = false;
-            this.cboVehicleGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearSleaze_SelectedIndexChanged);
-            // 
-            // lblVehicleDataProcessingLabel
-            // 
-            this.lblVehicleDataProcessingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleDataProcessingLabel.AutoSize = true;
-            this.lblVehicleDataProcessingLabel.Location = new System.Drawing.Point(575, 137);
-            this.lblVehicleDataProcessingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleDataProcessingLabel.Name = "lblVehicleDataProcessingLabel";
-            this.lblVehicleDataProcessingLabel.Size = new System.Drawing.Size(58, 13);
-            this.lblVehicleDataProcessingLabel.TabIndex = 198;
-            this.lblVehicleDataProcessingLabel.Tag = "Label_DataProcessing";
-            this.lblVehicleDataProcessingLabel.Text = "Data Proc:";
-            // 
-            // lblVehicleSource
-            // 
-            this.lblVehicleSource.AutoSize = true;
-            this.lblVehicleSource.Location = new System.Drawing.Point(373, 292);
-            this.lblVehicleSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleSource.Name = "lblVehicleSource";
-            this.lblVehicleSource.Size = new System.Drawing.Size(47, 13);
-            this.lblVehicleSource.TabIndex = 60;
-            this.lblVehicleSource.Text = "[Source]";
-            this.lblVehicleSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
-            // 
-            // cboVehicleGearDataProcessing
-            // 
-            this.cboVehicleGearDataProcessing.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboVehicleGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboVehicleGearDataProcessing.FormattingEnabled = true;
-            this.cboVehicleGearDataProcessing.Location = new System.Drawing.Point(639, 134);
-            this.cboVehicleGearDataProcessing.Name = "cboVehicleGearDataProcessing";
-            this.cboVehicleGearDataProcessing.Size = new System.Drawing.Size(58, 21);
-            this.cboVehicleGearDataProcessing.TabIndex = 206;
-            this.cboVehicleGearDataProcessing.TooltipText = "";
-            this.cboVehicleGearDataProcessing.Visible = false;
-            this.cboVehicleGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearDataProcessing_SelectedIndexChanged);
-            // 
-            // lblVehicleSourceLabel
-            // 
-            this.lblVehicleSourceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleSourceLabel.AutoSize = true;
-            this.lblVehicleSourceLabel.Location = new System.Drawing.Point(323, 292);
-            this.lblVehicleSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleSourceLabel.Name = "lblVehicleSourceLabel";
-            this.lblVehicleSourceLabel.Size = new System.Drawing.Size(44, 13);
-            this.lblVehicleSourceLabel.TabIndex = 59;
-            this.lblVehicleSourceLabel.Tag = "Label_Source";
-            this.lblVehicleSourceLabel.Text = "Source:";
-            // 
-            // lblVehicleFirewallLabel
-            // 
-            this.lblVehicleFirewallLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleFirewallLabel.AutoSize = true;
-            this.lblVehicleFirewallLabel.Location = new System.Drawing.Point(721, 137);
-            this.lblVehicleFirewallLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleFirewallLabel.Name = "lblVehicleFirewallLabel";
-            this.lblVehicleFirewallLabel.Size = new System.Drawing.Size(45, 13);
-            this.lblVehicleFirewallLabel.TabIndex = 200;
-            this.lblVehicleFirewallLabel.Tag = "Label_Firewall";
-            this.lblVehicleFirewallLabel.Text = "Firewall:";
-            // 
-            // cboVehicleGearFirewall
-            // 
-            this.cboVehicleGearFirewall.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboVehicleGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboVehicleGearFirewall.FormattingEnabled = true;
-            this.cboVehicleGearFirewall.Location = new System.Drawing.Point(772, 134);
-            this.cboVehicleGearFirewall.Name = "cboVehicleGearFirewall";
-            this.cboVehicleGearFirewall.Size = new System.Drawing.Size(60, 21);
-            this.cboVehicleGearFirewall.TabIndex = 205;
-            this.cboVehicleGearFirewall.TooltipText = "";
-            this.cboVehicleGearFirewall.Visible = false;
-            this.cboVehicleGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearFirewall_SelectedIndexChanged);
-            // 
             // lblVehicleAvailLabel
             // 
             this.lblVehicleAvailLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleAvailLabel.AutoSize = true;
-            this.lblVehicleAvailLabel.Location = new System.Drawing.Point(334, 164);
+            this.lblVehicleAvailLabel.Location = new System.Drawing.Point(333, 6);
             this.lblVehicleAvailLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleAvailLabel.Name = "lblVehicleAvailLabel";
             this.lblVehicleAvailLabel.Size = new System.Drawing.Size(33, 13);
@@ -13299,7 +12822,7 @@ namespace Chummer
             // lblVehicleAvail
             // 
             this.lblVehicleAvail.AutoSize = true;
-            this.lblVehicleAvail.Location = new System.Drawing.Point(373, 164);
+            this.lblVehicleAvail.Location = new System.Drawing.Point(372, 6);
             this.lblVehicleAvail.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleAvail.Name = "lblVehicleAvail";
             this.lblVehicleAvail.Size = new System.Drawing.Size(36, 13);
@@ -13310,7 +12833,7 @@ namespace Chummer
             // 
             this.lblVehicleCostLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleCostLabel.AutoSize = true;
-            this.lblVehicleCostLabel.Location = new System.Drawing.Point(469, 164);
+            this.lblVehicleCostLabel.Location = new System.Drawing.Point(335, 31);
             this.lblVehicleCostLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleCostLabel.Name = "lblVehicleCostLabel";
             this.lblVehicleCostLabel.Size = new System.Drawing.Size(31, 13);
@@ -13318,67 +12841,21 @@ namespace Chummer
             this.lblVehicleCostLabel.Tag = "Label_Cost";
             this.lblVehicleCostLabel.Text = "Cost:";
             // 
-            // lblVehicleRating
-            // 
-            this.lblVehicleRating.AutoSize = true;
-            this.tlpVehicles.SetColumnSpan(this.lblVehicleRating, 2);
-            this.lblVehicleRating.Location = new System.Drawing.Point(373, 239);
-            this.lblVehicleRating.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleRating.Name = "lblVehicleRating";
-            this.lblVehicleRating.Size = new System.Drawing.Size(44, 13);
-            this.lblVehicleRating.TabIndex = 61;
-            this.lblVehicleRating.Text = "[Rating]";
-            // 
             // lblVehicleCost
             // 
             this.lblVehicleCost.AutoSize = true;
-            this.tlpVehicles.SetColumnSpan(this.lblVehicleCost, 2);
-            this.lblVehicleCost.Location = new System.Drawing.Point(506, 164);
+            this.lblVehicleCost.Location = new System.Drawing.Point(372, 31);
             this.lblVehicleCost.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleCost.Name = "lblVehicleCost";
             this.lblVehicleCost.Size = new System.Drawing.Size(34, 13);
             this.lblVehicleCost.TabIndex = 50;
             this.lblVehicleCost.Text = "[Cost]";
             // 
-            // lblVehicleDeviceLabel
-            // 
-            this.lblVehicleDeviceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleDeviceLabel.AutoSize = true;
-            this.lblVehicleDeviceLabel.Location = new System.Drawing.Point(589, 164);
-            this.lblVehicleDeviceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleDeviceLabel.Name = "lblVehicleDeviceLabel";
-            this.lblVehicleDeviceLabel.Size = new System.Drawing.Size(44, 13);
-            this.lblVehicleDeviceLabel.TabIndex = 115;
-            this.lblVehicleDeviceLabel.Tag = "Label_Device";
-            this.lblVehicleDeviceLabel.Text = "Device:";
-            // 
-            // lblVehicleDevice
-            // 
-            this.lblVehicleDevice.AutoSize = true;
-            this.lblVehicleDevice.Location = new System.Drawing.Point(639, 164);
-            this.lblVehicleDevice.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleDevice.Name = "lblVehicleDevice";
-            this.lblVehicleDevice.Size = new System.Drawing.Size(47, 13);
-            this.lblVehicleDevice.TabIndex = 116;
-            this.lblVehicleDevice.Text = "[Device]";
-            // 
-            // lblVehicleRatingLabel
-            // 
-            this.lblVehicleRatingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleRatingLabel.AutoSize = true;
-            this.lblVehicleRatingLabel.Location = new System.Drawing.Point(326, 239);
-            this.lblVehicleRatingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleRatingLabel.Name = "lblVehicleRatingLabel";
-            this.lblVehicleRatingLabel.Size = new System.Drawing.Size(41, 13);
-            this.lblVehicleRatingLabel.TabIndex = 55;
-            this.lblVehicleRatingLabel.Tag = "Label_Rating";
-            this.lblVehicleRatingLabel.Text = "Rating:";
-            // 
             // lblVehicleSlotsLabel
             // 
             this.lblVehicleSlotsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleSlotsLabel.AutoSize = true;
-            this.lblVehicleSlotsLabel.Location = new System.Drawing.Point(733, 214);
+            this.lblVehicleSlotsLabel.Location = new System.Drawing.Point(333, 56);
             this.lblVehicleSlotsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSlotsLabel.Name = "lblVehicleSlotsLabel";
             this.lblVehicleSlotsLabel.Size = new System.Drawing.Size(33, 13);
@@ -13389,50 +12866,621 @@ namespace Chummer
             // lblVehicleSlots
             // 
             this.lblVehicleSlots.AutoSize = true;
-            this.lblVehicleSlots.Location = new System.Drawing.Point(772, 214);
+            this.lblVehicleSlots.Location = new System.Drawing.Point(372, 56);
             this.lblVehicleSlots.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSlots.Name = "lblVehicleSlots";
             this.lblVehicleSlots.Size = new System.Drawing.Size(36, 13);
             this.lblVehicleSlots.TabIndex = 58;
             this.lblVehicleSlots.Text = "[Slots]";
             // 
-            // lblVehicleWeaponAmmoLabel
+            // flpVehiclesCommonMoveButtons
             // 
-            this.lblVehicleWeaponAmmoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponAmmoLabel.AutoSize = true;
-            this.lblVehicleWeaponAmmoLabel.Location = new System.Drawing.Point(727, 87);
-            this.lblVehicleWeaponAmmoLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponAmmoLabel.Name = "lblVehicleWeaponAmmoLabel";
-            this.lblVehicleWeaponAmmoLabel.Size = new System.Drawing.Size(39, 13);
-            this.lblVehicleWeaponAmmoLabel.TabIndex = 87;
-            this.lblVehicleWeaponAmmoLabel.Tag = "Label_Ammo";
-            this.lblVehicleWeaponAmmoLabel.Text = "Ammo:";
+            this.flpVehiclesCommonMoveButtons.AutoSize = true;
+            this.tlpVehiclesCommon.SetColumnSpan(this.flpVehiclesCommonMoveButtons, 2);
+            this.flpVehiclesCommonMoveButtons.Controls.Add(this.cmdVehicleMoveToInventory);
+            this.flpVehiclesCommonMoveButtons.Controls.Add(this.cmdVehicleCyberwareChangeMount);
+            this.flpVehiclesCommonMoveButtons.Location = new System.Drawing.Point(246, 75);
+            this.flpVehiclesCommonMoveButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.flpVehiclesCommonMoveButtons.Name = "flpVehiclesCommonMoveButtons";
+            this.flpVehiclesCommonMoveButtons.Size = new System.Drawing.Size(177, 29);
+            this.flpVehiclesCommonMoveButtons.TabIndex = 114;
+            // 
+            // cmdVehicleCyberwareChangeMount
+            // 
+            this.cmdVehicleCyberwareChangeMount.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdVehicleCyberwareChangeMount.AutoSize = true;
+            this.cmdVehicleCyberwareChangeMount.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdVehicleCyberwareChangeMount.Location = new System.Drawing.Point(31, 3);
+            this.cmdVehicleCyberwareChangeMount.Name = "cmdVehicleCyberwareChangeMount";
+            this.cmdVehicleCyberwareChangeMount.Size = new System.Drawing.Size(143, 23);
+            this.cmdVehicleCyberwareChangeMount.TabIndex = 242;
+            this.cmdVehicleCyberwareChangeMount.Tag = "Button_ChangeMountedLocation";
+            this.cmdVehicleCyberwareChangeMount.Text = "Change Mounted Location";
+            this.cmdVehicleCyberwareChangeMount.UseVisualStyleBackColor = true;
+            this.cmdVehicleCyberwareChangeMount.Visible = false;
+            this.cmdVehicleCyberwareChangeMount.Click += new System.EventHandler(this.cmdVehicleCyberwareChangeMount_Click);
+            // 
+            // gpbVehiclesVehicle
+            // 
+            this.gpbVehiclesVehicle.Controls.Add(this.tableLayoutPanel7);
+            this.gpbVehiclesVehicle.Location = new System.Drawing.Point(3, 210);
+            this.gpbVehiclesVehicle.MinimumSize = new System.Drawing.Size(510, 0);
+            this.gpbVehiclesVehicle.Name = "gpbVehiclesVehicle";
+            this.gpbVehiclesVehicle.Size = new System.Drawing.Size(510, 130);
+            this.gpbVehiclesVehicle.TabIndex = 252;
+            this.gpbVehiclesVehicle.TabStop = false;
+            this.gpbVehiclesVehicle.Tag = "String_Vehicle";
+            this.gpbVehiclesVehicle.Text = "Vehicle";
+            // 
+            // tableLayoutPanel7
+            // 
+            this.tableLayoutPanel7.AutoSize = true;
+            this.tableLayoutPanel7.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tableLayoutPanel7.ColumnCount = 8;
+            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleHandlingLabel, 0, 0);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleWeaponsmod, 7, 2);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleElectromagnetic, 5, 3);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleWeaponsmodLabel, 6, 2);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleCosmetic, 7, 3);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleElectromagneticLabel, 4, 3);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehiclePilotLabel, 6, 0);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleProtection, 5, 2);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehiclePowertrain, 3, 2);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleCosmeticLabel, 6, 3);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleProtectionLabel, 4, 2);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleDroneModSlots, 1, 2);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleSpeedLabel, 4, 0);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehiclePowertrainLabel, 2, 2);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleBodymod, 3, 3);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleAccel, 3, 0);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleHandling, 1, 0);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleDroneModSlotsLabel, 0, 2);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleSeats, 5, 1);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleBodymodLabel, 0, 3);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleAccelLabel, 2, 0);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleSpeed, 5, 0);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehiclePilot, 7, 0);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleBodyLabel, 0, 1);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleBody, 1, 1);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleArmorLabel, 2, 1);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleArmor, 3, 1);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleSeatsLabel, 4, 1);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleSensorLabel, 6, 1);
+            this.tableLayoutPanel7.Controls.Add(this.lblVehicleSensor, 7, 1);
+            this.tableLayoutPanel7.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel7.Location = new System.Drawing.Point(3, 16);
+            this.tableLayoutPanel7.Name = "tableLayoutPanel7";
+            this.tableLayoutPanel7.RowCount = 4;
+            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel7.Size = new System.Drawing.Size(504, 111);
+            this.tableLayoutPanel7.TabIndex = 0;
+            // 
+            // lblVehicleBodymodLabel
+            // 
+            this.lblVehicleBodymodLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleBodymodLabel.AutoSize = true;
+            this.tableLayoutPanel7.SetColumnSpan(this.lblVehicleBodymodLabel, 3);
+            this.lblVehicleBodymodLabel.Location = new System.Drawing.Point(123, 81);
+            this.lblVehicleBodymodLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleBodymodLabel.Name = "lblVehicleBodymodLabel";
+            this.lblVehicleBodymodLabel.Size = new System.Drawing.Size(63, 13);
+            this.lblVehicleBodymodLabel.TabIndex = 214;
+            this.lblVehicleBodymodLabel.Tag = "Label_Bodymod";
+            this.lblVehicleBodymodLabel.Text = "Body Mods:";
+            // 
+            // lblVehicleHandlingLabel
+            // 
+            this.lblVehicleHandlingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleHandlingLabel.AutoSize = true;
+            this.lblVehicleHandlingLabel.Location = new System.Drawing.Point(8, 6);
+            this.lblVehicleHandlingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleHandlingLabel.Name = "lblVehicleHandlingLabel";
+            this.lblVehicleHandlingLabel.Size = new System.Drawing.Size(52, 13);
+            this.lblVehicleHandlingLabel.TabIndex = 33;
+            this.lblVehicleHandlingLabel.Tag = "Label_Handling";
+            this.lblVehicleHandlingLabel.Text = "Handling:";
+            // 
+            // lblVehicleWeaponsmod
+            // 
+            this.lblVehicleWeaponsmod.AutoSize = true;
+            this.lblVehicleWeaponsmod.Location = new System.Drawing.Point(444, 56);
+            this.lblVehicleWeaponsmod.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponsmod.Name = "lblVehicleWeaponsmod";
+            this.lblVehicleWeaponsmod.Size = new System.Drawing.Size(42, 13);
+            this.lblVehicleWeaponsmod.TabIndex = 219;
+            this.lblVehicleWeaponsmod.Text = "[Weap]";
+            // 
+            // lblVehicleElectromagnetic
+            // 
+            this.lblVehicleElectromagnetic.AutoSize = true;
+            this.lblVehicleElectromagnetic.Location = new System.Drawing.Point(318, 81);
+            this.lblVehicleElectromagnetic.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleElectromagnetic.Name = "lblVehicleElectromagnetic";
+            this.lblVehicleElectromagnetic.Size = new System.Drawing.Size(34, 13);
+            this.lblVehicleElectromagnetic.TabIndex = 221;
+            this.lblVehicleElectromagnetic.Text = "[Elec]";
+            // 
+            // lblVehicleWeaponsmodLabel
+            // 
+            this.lblVehicleWeaponsmodLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponsmodLabel.AutoSize = true;
+            this.lblVehicleWeaponsmodLabel.Location = new System.Drawing.Point(382, 56);
+            this.lblVehicleWeaponsmodLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponsmodLabel.Name = "lblVehicleWeaponsmodLabel";
+            this.lblVehicleWeaponsmodLabel.Size = new System.Drawing.Size(56, 13);
+            this.lblVehicleWeaponsmodLabel.TabIndex = 213;
+            this.lblVehicleWeaponsmodLabel.Tag = "Label_Weapons";
+            this.lblVehicleWeaponsmodLabel.Text = "Weapons:";
+            // 
+            // lblVehicleCosmetic
+            // 
+            this.lblVehicleCosmetic.AutoSize = true;
+            this.lblVehicleCosmetic.Location = new System.Drawing.Point(444, 81);
+            this.lblVehicleCosmetic.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleCosmetic.Name = "lblVehicleCosmetic";
+            this.lblVehicleCosmetic.Size = new System.Drawing.Size(56, 13);
+            this.lblVehicleCosmetic.TabIndex = 222;
+            this.lblVehicleCosmetic.Text = "[Cosmetic]";
+            // 
+            // lblVehicleElectromagneticLabel
+            // 
+            this.lblVehicleElectromagneticLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleElectromagneticLabel.AutoSize = true;
+            this.lblVehicleElectromagneticLabel.Location = new System.Drawing.Point(281, 81);
+            this.lblVehicleElectromagneticLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleElectromagneticLabel.Name = "lblVehicleElectromagneticLabel";
+            this.lblVehicleElectromagneticLabel.Size = new System.Drawing.Size(31, 13);
+            this.lblVehicleElectromagneticLabel.TabIndex = 215;
+            this.lblVehicleElectromagneticLabel.Tag = "Label_Electromagnetic";
+            this.lblVehicleElectromagneticLabel.Text = "Elec:";
+            // 
+            // lblVehiclePilotLabel
+            // 
+            this.lblVehiclePilotLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehiclePilotLabel.AutoSize = true;
+            this.lblVehiclePilotLabel.Location = new System.Drawing.Point(408, 6);
+            this.lblVehiclePilotLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehiclePilotLabel.Name = "lblVehiclePilotLabel";
+            this.lblVehiclePilotLabel.Size = new System.Drawing.Size(30, 13);
+            this.lblVehiclePilotLabel.TabIndex = 39;
+            this.lblVehiclePilotLabel.Tag = "Label_Pilot";
+            this.lblVehiclePilotLabel.Text = "Pilot:";
+            // 
+            // lblVehicleProtection
+            // 
+            this.lblVehicleProtection.AutoSize = true;
+            this.lblVehicleProtection.Location = new System.Drawing.Point(318, 56);
+            this.lblVehicleProtection.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleProtection.Name = "lblVehicleProtection";
+            this.lblVehicleProtection.Size = new System.Drawing.Size(32, 13);
+            this.lblVehicleProtection.TabIndex = 218;
+            this.lblVehicleProtection.Text = "[Prot]";
+            // 
+            // lblVehiclePowertrain
+            // 
+            this.lblVehiclePowertrain.AutoSize = true;
+            this.lblVehiclePowertrain.Location = new System.Drawing.Point(192, 56);
+            this.lblVehiclePowertrain.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehiclePowertrain.Name = "lblVehiclePowertrain";
+            this.lblVehiclePowertrain.Size = new System.Drawing.Size(43, 13);
+            this.lblVehiclePowertrain.TabIndex = 217;
+            this.lblVehiclePowertrain.Text = "[Power]";
+            // 
+            // lblVehicleCosmeticLabel
+            // 
+            this.lblVehicleCosmeticLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleCosmeticLabel.AutoSize = true;
+            this.lblVehicleCosmeticLabel.Location = new System.Drawing.Point(385, 81);
+            this.lblVehicleCosmeticLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleCosmeticLabel.Name = "lblVehicleCosmeticLabel";
+            this.lblVehicleCosmeticLabel.Size = new System.Drawing.Size(53, 13);
+            this.lblVehicleCosmeticLabel.TabIndex = 216;
+            this.lblVehicleCosmeticLabel.Tag = "Label_Cosmetic";
+            this.lblVehicleCosmeticLabel.Text = "Cosmetic:";
+            // 
+            // lblVehicleProtectionLabel
+            // 
+            this.lblVehicleProtectionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleProtectionLabel.AutoSize = true;
+            this.lblVehicleProtectionLabel.Location = new System.Drawing.Point(283, 56);
+            this.lblVehicleProtectionLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleProtectionLabel.Name = "lblVehicleProtectionLabel";
+            this.lblVehicleProtectionLabel.Size = new System.Drawing.Size(29, 13);
+            this.lblVehicleProtectionLabel.TabIndex = 212;
+            this.lblVehicleProtectionLabel.Tag = "Label_Protection";
+            this.lblVehicleProtectionLabel.Text = "Prot:";
+            // 
+            // lblVehicleDroneModSlots
+            // 
+            this.lblVehicleDroneModSlots.AutoSize = true;
+            this.lblVehicleDroneModSlots.Location = new System.Drawing.Point(66, 56);
+            this.lblVehicleDroneModSlots.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleDroneModSlots.Name = "lblVehicleDroneModSlots";
+            this.lblVehicleDroneModSlots.Size = new System.Drawing.Size(45, 13);
+            this.lblVehicleDroneModSlots.TabIndex = 224;
+            this.lblVehicleDroneModSlots.Text = "[MSlots]";
+            this.lblVehicleDroneModSlots.Visible = false;
+            // 
+            // lblVehicleSpeedLabel
+            // 
+            this.lblVehicleSpeedLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleSpeedLabel.AutoSize = true;
+            this.lblVehicleSpeedLabel.Location = new System.Drawing.Point(271, 6);
+            this.lblVehicleSpeedLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleSpeedLabel.Name = "lblVehicleSpeedLabel";
+            this.lblVehicleSpeedLabel.Size = new System.Drawing.Size(41, 13);
+            this.lblVehicleSpeedLabel.TabIndex = 37;
+            this.lblVehicleSpeedLabel.Tag = "Label_Speed";
+            this.lblVehicleSpeedLabel.Text = "Speed:";
+            // 
+            // lblVehiclePowertrainLabel
+            // 
+            this.lblVehiclePowertrainLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehiclePowertrainLabel.AutoSize = true;
+            this.lblVehiclePowertrainLabel.Location = new System.Drawing.Point(146, 56);
+            this.lblVehiclePowertrainLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehiclePowertrainLabel.Name = "lblVehiclePowertrainLabel";
+            this.lblVehiclePowertrainLabel.Size = new System.Drawing.Size(40, 13);
+            this.lblVehiclePowertrainLabel.TabIndex = 211;
+            this.lblVehiclePowertrainLabel.Tag = "Label_Powertrain";
+            this.lblVehiclePowertrainLabel.Text = "Power:";
+            // 
+            // lblVehicleBodymod
+            // 
+            this.lblVehicleBodymod.AutoSize = true;
+            this.lblVehicleBodymod.Location = new System.Drawing.Point(192, 81);
+            this.lblVehicleBodymod.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleBodymod.Name = "lblVehicleBodymod";
+            this.lblVehicleBodymod.Size = new System.Drawing.Size(37, 13);
+            this.lblVehicleBodymod.TabIndex = 220;
+            this.lblVehicleBodymod.Text = "[Body]";
+            // 
+            // lblVehicleAccel
+            // 
+            this.lblVehicleAccel.AutoSize = true;
+            this.lblVehicleAccel.Location = new System.Drawing.Point(192, 6);
+            this.lblVehicleAccel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleAccel.Name = "lblVehicleAccel";
+            this.lblVehicleAccel.Size = new System.Drawing.Size(40, 13);
+            this.lblVehicleAccel.TabIndex = 36;
+            this.lblVehicleAccel.Text = "[Accel]";
+            // 
+            // lblVehicleHandling
+            // 
+            this.lblVehicleHandling.AutoSize = true;
+            this.lblVehicleHandling.Location = new System.Drawing.Point(66, 6);
+            this.lblVehicleHandling.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleHandling.Name = "lblVehicleHandling";
+            this.lblVehicleHandling.Size = new System.Drawing.Size(55, 13);
+            this.lblVehicleHandling.TabIndex = 34;
+            this.lblVehicleHandling.Text = "[Handling]";
+            // 
+            // lblVehicleDroneModSlotsLabel
+            // 
+            this.lblVehicleDroneModSlotsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleDroneModSlotsLabel.AutoSize = true;
+            this.lblVehicleDroneModSlotsLabel.Location = new System.Drawing.Point(3, 56);
+            this.lblVehicleDroneModSlotsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleDroneModSlotsLabel.Name = "lblVehicleDroneModSlotsLabel";
+            this.lblVehicleDroneModSlotsLabel.Size = new System.Drawing.Size(57, 13);
+            this.lblVehicleDroneModSlotsLabel.TabIndex = 223;
+            this.lblVehicleDroneModSlotsLabel.Tag = "Label_DroneModSlots";
+            this.lblVehicleDroneModSlotsLabel.Text = "Mod Slots:";
+            this.lblVehicleDroneModSlotsLabel.Visible = false;
+            // 
+            // lblVehicleSeats
+            // 
+            this.lblVehicleSeats.AutoSize = true;
+            this.lblVehicleSeats.Location = new System.Drawing.Point(318, 31);
+            this.lblVehicleSeats.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleSeats.Name = "lblVehicleSeats";
+            this.lblVehicleSeats.Size = new System.Drawing.Size(40, 13);
+            this.lblVehicleSeats.TabIndex = 226;
+            this.lblVehicleSeats.Text = "[Seats]";
+            // 
+            // lblVehicleAccelLabel
+            // 
+            this.lblVehicleAccelLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleAccelLabel.AutoSize = true;
+            this.lblVehicleAccelLabel.Location = new System.Drawing.Point(149, 6);
+            this.lblVehicleAccelLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleAccelLabel.Name = "lblVehicleAccelLabel";
+            this.lblVehicleAccelLabel.Size = new System.Drawing.Size(37, 13);
+            this.lblVehicleAccelLabel.TabIndex = 35;
+            this.lblVehicleAccelLabel.Tag = "Label_Accel";
+            this.lblVehicleAccelLabel.Text = "Accel:";
             // 
             // lblVehicleSpeed
             // 
             this.lblVehicleSpeed.AutoSize = true;
-            this.lblVehicleSpeed.Location = new System.Drawing.Point(639, 87);
+            this.lblVehicleSpeed.Location = new System.Drawing.Point(318, 6);
             this.lblVehicleSpeed.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSpeed.Name = "lblVehicleSpeed";
             this.lblVehicleSpeed.Size = new System.Drawing.Size(44, 13);
             this.lblVehicleSpeed.TabIndex = 38;
             this.lblVehicleSpeed.Text = "[Speed]";
             // 
-            // lblVehicleWeaponAmmo
+            // lblVehiclePilot
             // 
-            this.lblVehicleWeaponAmmo.AutoSize = true;
-            this.lblVehicleWeaponAmmo.Location = new System.Drawing.Point(772, 87);
-            this.lblVehicleWeaponAmmo.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponAmmo.Name = "lblVehicleWeaponAmmo";
-            this.lblVehicleWeaponAmmo.Size = new System.Drawing.Size(42, 13);
-            this.lblVehicleWeaponAmmo.TabIndex = 88;
-            this.lblVehicleWeaponAmmo.Text = "[Ammo]";
+            this.lblVehiclePilot.AutoSize = true;
+            this.lblVehiclePilot.Location = new System.Drawing.Point(444, 6);
+            this.lblVehiclePilot.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehiclePilot.Name = "lblVehiclePilot";
+            this.lblVehiclePilot.Size = new System.Drawing.Size(33, 13);
+            this.lblVehiclePilot.TabIndex = 40;
+            this.lblVehiclePilot.Text = "[Pilot]";
+            // 
+            // lblVehicleBodyLabel
+            // 
+            this.lblVehicleBodyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleBodyLabel.AutoSize = true;
+            this.lblVehicleBodyLabel.Location = new System.Drawing.Point(26, 31);
+            this.lblVehicleBodyLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleBodyLabel.Name = "lblVehicleBodyLabel";
+            this.lblVehicleBodyLabel.Size = new System.Drawing.Size(34, 13);
+            this.lblVehicleBodyLabel.TabIndex = 41;
+            this.lblVehicleBodyLabel.Tag = "Label_Body";
+            this.lblVehicleBodyLabel.Text = "Body:";
+            // 
+            // lblVehicleBody
+            // 
+            this.lblVehicleBody.AutoSize = true;
+            this.lblVehicleBody.Location = new System.Drawing.Point(66, 31);
+            this.lblVehicleBody.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleBody.Name = "lblVehicleBody";
+            this.lblVehicleBody.Size = new System.Drawing.Size(37, 13);
+            this.lblVehicleBody.TabIndex = 42;
+            this.lblVehicleBody.Text = "[Body]";
+            // 
+            // lblVehicleArmorLabel
+            // 
+            this.lblVehicleArmorLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleArmorLabel.AutoSize = true;
+            this.lblVehicleArmorLabel.Location = new System.Drawing.Point(149, 31);
+            this.lblVehicleArmorLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleArmorLabel.Name = "lblVehicleArmorLabel";
+            this.lblVehicleArmorLabel.Size = new System.Drawing.Size(37, 13);
+            this.lblVehicleArmorLabel.TabIndex = 43;
+            this.lblVehicleArmorLabel.Tag = "Label_Armor";
+            this.lblVehicleArmorLabel.Text = "Armor:";
+            // 
+            // lblVehicleArmor
+            // 
+            this.lblVehicleArmor.AutoSize = true;
+            this.lblVehicleArmor.Location = new System.Drawing.Point(192, 31);
+            this.lblVehicleArmor.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleArmor.Name = "lblVehicleArmor";
+            this.lblVehicleArmor.Size = new System.Drawing.Size(40, 13);
+            this.lblVehicleArmor.TabIndex = 44;
+            this.lblVehicleArmor.Text = "[Armor]";
+            // 
+            // lblVehicleSeatsLabel
+            // 
+            this.lblVehicleSeatsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleSeatsLabel.AutoSize = true;
+            this.lblVehicleSeatsLabel.Location = new System.Drawing.Point(275, 31);
+            this.lblVehicleSeatsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleSeatsLabel.Name = "lblVehicleSeatsLabel";
+            this.lblVehicleSeatsLabel.Size = new System.Drawing.Size(37, 13);
+            this.lblVehicleSeatsLabel.TabIndex = 225;
+            this.lblVehicleSeatsLabel.Tag = "Label_VehicleSeats";
+            this.lblVehicleSeatsLabel.Text = "Seats:";
+            // 
+            // lblVehicleSensorLabel
+            // 
+            this.lblVehicleSensorLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleSensorLabel.AutoSize = true;
+            this.lblVehicleSensorLabel.Location = new System.Drawing.Point(395, 31);
+            this.lblVehicleSensorLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleSensorLabel.Name = "lblVehicleSensorLabel";
+            this.lblVehicleSensorLabel.Size = new System.Drawing.Size(43, 13);
+            this.lblVehicleSensorLabel.TabIndex = 45;
+            this.lblVehicleSensorLabel.Tag = "Label_Sensor";
+            this.lblVehicleSensorLabel.Text = "Sensor:";
+            // 
+            // lblVehicleSensor
+            // 
+            this.lblVehicleSensor.AutoSize = true;
+            this.lblVehicleSensor.Location = new System.Drawing.Point(444, 31);
+            this.lblVehicleSensor.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleSensor.Name = "lblVehicleSensor";
+            this.lblVehicleSensor.Size = new System.Drawing.Size(46, 13);
+            this.lblVehicleSensor.TabIndex = 46;
+            this.lblVehicleSensor.Text = "[Sensor]";
+            // 
+            // gpbVehiclesWeapon
+            // 
+            this.gpbVehiclesWeapon.AutoSize = true;
+            this.gpbVehiclesWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbVehiclesWeapon.Controls.Add(this.flpVehiclesWeapon);
+            this.gpbVehiclesWeapon.Location = new System.Drawing.Point(3, 346);
+            this.gpbVehiclesWeapon.MinimumSize = new System.Drawing.Size(500, 0);
+            this.gpbVehiclesWeapon.Name = "gpbVehiclesWeapon";
+            this.gpbVehiclesWeapon.Size = new System.Drawing.Size(500, 217);
+            this.gpbVehiclesWeapon.TabIndex = 0;
+            this.gpbVehiclesWeapon.TabStop = false;
+            this.gpbVehiclesWeapon.Tag = "String_Weapon";
+            this.gpbVehiclesWeapon.Text = "Weapon";
+            // 
+            // flpVehiclesWeapon
+            // 
+            this.flpVehiclesWeapon.AutoSize = true;
+            this.flpVehiclesWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpVehiclesWeapon.Controls.Add(this.tlpVehiclesWeaponCommon);
+            this.flpVehiclesWeapon.Controls.Add(this.tableLayoutPanel1);
+            this.flpVehiclesWeapon.Controls.Add(this.tlpVehiclesWeaponCareer);
+            this.flpVehiclesWeapon.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpVehiclesWeapon.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpVehiclesWeapon.Location = new System.Drawing.Point(3, 16);
+            this.flpVehiclesWeapon.Margin = new System.Windows.Forms.Padding(0);
+            this.flpVehiclesWeapon.Name = "flpVehiclesWeapon";
+            this.flpVehiclesWeapon.Size = new System.Drawing.Size(494, 198);
+            this.flpVehiclesWeapon.TabIndex = 0;
+            // 
+            // tlpVehiclesWeaponCommon
+            // 
+            this.tlpVehiclesWeaponCommon.AutoSize = true;
+            this.tlpVehiclesWeaponCommon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpVehiclesWeaponCommon.ColumnCount = 6;
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponDamageLabel, 0, 0);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponDamage, 1, 0);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAccuracy, 5, 0);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAPLabel, 2, 0);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponDicePoolLabel, 0, 1);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAccuracyLabel, 4, 0);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAP, 3, 0);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.flpVehiclesWeaponDicePool, 1, 1);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponModeLabel, 2, 1);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponMode, 3, 1);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAmmoLabel, 4, 1);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAmmo, 5, 1);
+            this.tlpVehiclesWeaponCommon.Location = new System.Drawing.Point(0, 0);
+            this.tlpVehiclesWeaponCommon.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
+            this.tlpVehiclesWeaponCommon.Name = "tlpVehiclesWeaponCommon";
+            this.tlpVehiclesWeaponCommon.RowCount = 2;
+            this.tlpVehiclesWeaponCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpVehiclesWeaponCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpVehiclesWeaponCommon.Size = new System.Drawing.Size(432, 55);
+            this.tlpVehiclesWeaponCommon.TabIndex = 0;
+            // 
+            // lblVehicleWeaponDamageLabel
+            // 
+            this.lblVehicleWeaponDamageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponDamageLabel.AutoSize = true;
+            this.lblVehicleWeaponDamageLabel.Location = new System.Drawing.Point(18, 6);
+            this.lblVehicleWeaponDamageLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponDamageLabel.Name = "lblVehicleWeaponDamageLabel";
+            this.lblVehicleWeaponDamageLabel.Size = new System.Drawing.Size(50, 13);
+            this.lblVehicleWeaponDamageLabel.TabIndex = 67;
+            this.lblVehicleWeaponDamageLabel.Tag = "Label_Damage";
+            this.lblVehicleWeaponDamageLabel.Text = "Damage:";
+            // 
+            // lblVehicleWeaponDamage
+            // 
+            this.lblVehicleWeaponDamage.AutoSize = true;
+            this.lblVehicleWeaponDamage.Location = new System.Drawing.Point(74, 6);
+            this.lblVehicleWeaponDamage.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponDamage.Name = "lblVehicleWeaponDamage";
+            this.lblVehicleWeaponDamage.Size = new System.Drawing.Size(53, 13);
+            this.lblVehicleWeaponDamage.TabIndex = 68;
+            this.lblVehicleWeaponDamage.Text = "[Damage]";
+            // 
+            // lblVehicleWeaponAccuracy
+            // 
+            this.lblVehicleWeaponAccuracy.AutoSize = true;
+            this.lblVehicleWeaponAccuracy.Location = new System.Drawing.Point(358, 6);
+            this.lblVehicleWeaponAccuracy.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponAccuracy.Name = "lblVehicleWeaponAccuracy";
+            this.lblVehicleWeaponAccuracy.Size = new System.Drawing.Size(32, 13);
+            this.lblVehicleWeaponAccuracy.TabIndex = 246;
+            this.lblVehicleWeaponAccuracy.Text = "[Acc]";
+            // 
+            // lblVehicleWeaponAPLabel
+            // 
+            this.lblVehicleWeaponAPLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponAPLabel.AutoSize = true;
+            this.lblVehicleWeaponAPLabel.Location = new System.Drawing.Point(186, 6);
+            this.lblVehicleWeaponAPLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponAPLabel.Name = "lblVehicleWeaponAPLabel";
+            this.lblVehicleWeaponAPLabel.Size = new System.Drawing.Size(24, 13);
+            this.lblVehicleWeaponAPLabel.TabIndex = 71;
+            this.lblVehicleWeaponAPLabel.Tag = "Label_AP";
+            this.lblVehicleWeaponAPLabel.Text = "AP:";
+            // 
+            // lblVehicleWeaponDicePoolLabel
+            // 
+            this.lblVehicleWeaponDicePoolLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponDicePoolLabel.AutoSize = true;
+            this.lblVehicleWeaponDicePoolLabel.Location = new System.Drawing.Point(12, 31);
+            this.lblVehicleWeaponDicePoolLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponDicePoolLabel.Name = "lblVehicleWeaponDicePoolLabel";
+            this.lblVehicleWeaponDicePoolLabel.Size = new System.Drawing.Size(56, 13);
+            this.lblVehicleWeaponDicePoolLabel.TabIndex = 133;
+            this.lblVehicleWeaponDicePoolLabel.Tag = "Label_DicePool";
+            this.lblVehicleWeaponDicePoolLabel.Text = "Dice Pool:";
+            // 
+            // lblVehicleWeaponAccuracyLabel
+            // 
+            this.lblVehicleWeaponAccuracyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponAccuracyLabel.AutoSize = true;
+            this.lblVehicleWeaponAccuracyLabel.Location = new System.Drawing.Point(297, 6);
+            this.lblVehicleWeaponAccuracyLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponAccuracyLabel.Name = "lblVehicleWeaponAccuracyLabel";
+            this.lblVehicleWeaponAccuracyLabel.Size = new System.Drawing.Size(55, 13);
+            this.lblVehicleWeaponAccuracyLabel.TabIndex = 245;
+            this.lblVehicleWeaponAccuracyLabel.Tag = "Label_Accuracy";
+            this.lblVehicleWeaponAccuracyLabel.Text = "Accuracy:";
+            // 
+            // lblVehicleWeaponAP
+            // 
+            this.lblVehicleWeaponAP.AutoSize = true;
+            this.lblVehicleWeaponAP.Location = new System.Drawing.Point(216, 6);
+            this.lblVehicleWeaponAP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponAP.Name = "lblVehicleWeaponAP";
+            this.lblVehicleWeaponAP.Size = new System.Drawing.Size(27, 13);
+            this.lblVehicleWeaponAP.TabIndex = 72;
+            this.lblVehicleWeaponAP.Text = "[AP]";
+            // 
+            // flpVehiclesWeaponDicePool
+            // 
+            this.flpVehiclesWeaponDicePool.AutoSize = true;
+            this.flpVehiclesWeaponDicePool.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpVehiclesWeaponDicePool.Controls.Add(this.lblVehicleWeaponDicePool);
+            this.flpVehiclesWeaponDicePool.Controls.Add(this.cmdRollVehicleWeapon);
+            this.flpVehiclesWeaponDicePool.Location = new System.Drawing.Point(71, 25);
+            this.flpVehiclesWeaponDicePool.Margin = new System.Windows.Forms.Padding(0);
+            this.flpVehiclesWeaponDicePool.Name = "flpVehiclesWeaponDicePool";
+            this.flpVehiclesWeaponDicePool.Size = new System.Drawing.Size(71, 30);
+            this.flpVehiclesWeaponDicePool.TabIndex = 247;
+            this.flpVehiclesWeaponDicePool.WrapContents = false;
+            // 
+            // lblVehicleWeaponDicePool
+            // 
+            this.lblVehicleWeaponDicePool.AutoSize = true;
+            this.lblVehicleWeaponDicePool.Location = new System.Drawing.Point(3, 6);
+            this.lblVehicleWeaponDicePool.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponDicePool.Name = "lblVehicleWeaponDicePool";
+            this.lblVehicleWeaponDicePool.Size = new System.Drawing.Size(34, 13);
+            this.lblVehicleWeaponDicePool.TabIndex = 134;
+            this.lblVehicleWeaponDicePool.Text = "[Pool]";
+            // 
+            // cmdRollVehicleWeapon
+            // 
+            this.cmdRollVehicleWeapon.FlatAppearance.BorderSize = 0;
+            this.cmdRollVehicleWeapon.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdRollVehicleWeapon.Image = global::Chummer.Properties.Resources.die;
+            this.cmdRollVehicleWeapon.Location = new System.Drawing.Point(43, 3);
+            this.cmdRollVehicleWeapon.Name = "cmdRollVehicleWeapon";
+            this.cmdRollVehicleWeapon.Size = new System.Drawing.Size(26, 24);
+            this.cmdRollVehicleWeapon.TabIndex = 137;
+            this.cmdRollVehicleWeapon.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.cmdRollVehicleWeapon.UseVisualStyleBackColor = true;
+            this.cmdRollVehicleWeapon.Visible = false;
+            this.cmdRollVehicleWeapon.Click += new System.EventHandler(this.cmdRollVehicleWeapon_Click);
             // 
             // lblVehicleWeaponModeLabel
             // 
             this.lblVehicleWeaponModeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleWeaponModeLabel.AutoSize = true;
-            this.lblVehicleWeaponModeLabel.Location = new System.Drawing.Point(463, 60);
+            this.lblVehicleWeaponModeLabel.Location = new System.Drawing.Point(173, 31);
             this.lblVehicleWeaponModeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponModeLabel.Name = "lblVehicleWeaponModeLabel";
             this.lblVehicleWeaponModeLabel.Size = new System.Drawing.Size(37, 13);
@@ -13443,20 +13491,348 @@ namespace Chummer
             // lblVehicleWeaponMode
             // 
             this.lblVehicleWeaponMode.AutoSize = true;
-            this.tlpVehicles.SetColumnSpan(this.lblVehicleWeaponMode, 2);
-            this.lblVehicleWeaponMode.Location = new System.Drawing.Point(506, 60);
+            this.lblVehicleWeaponMode.Location = new System.Drawing.Point(216, 31);
             this.lblVehicleWeaponMode.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponMode.Name = "lblVehicleWeaponMode";
             this.lblVehicleWeaponMode.Size = new System.Drawing.Size(40, 13);
             this.lblVehicleWeaponMode.TabIndex = 86;
             this.lblVehicleWeaponMode.Text = "[Mode]";
             // 
+            // lblVehicleWeaponAmmoLabel
+            // 
+            this.lblVehicleWeaponAmmoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponAmmoLabel.AutoSize = true;
+            this.lblVehicleWeaponAmmoLabel.Location = new System.Drawing.Point(313, 31);
+            this.lblVehicleWeaponAmmoLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponAmmoLabel.Name = "lblVehicleWeaponAmmoLabel";
+            this.lblVehicleWeaponAmmoLabel.Size = new System.Drawing.Size(39, 13);
+            this.lblVehicleWeaponAmmoLabel.TabIndex = 87;
+            this.lblVehicleWeaponAmmoLabel.Tag = "Label_Ammo";
+            this.lblVehicleWeaponAmmoLabel.Text = "Ammo:";
+            // 
+            // lblVehicleWeaponAmmo
+            // 
+            this.lblVehicleWeaponAmmo.AutoSize = true;
+            this.lblVehicleWeaponAmmo.Location = new System.Drawing.Point(358, 31);
+            this.lblVehicleWeaponAmmo.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponAmmo.Name = "lblVehicleWeaponAmmo";
+            this.lblVehicleWeaponAmmo.Size = new System.Drawing.Size(42, 13);
+            this.lblVehicleWeaponAmmo.TabIndex = 88;
+            this.lblVehicleWeaponAmmo.Text = "[Ammo]";
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.AutoSize = true;
+            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tableLayoutPanel1.ColumnCount = 5;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel1.Controls.Add(this.lblVehicleWeaponAlternateRangeExtreme, 4, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lblVehicleWeaponRangeLabel, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblVehicleWeaponRangeAlternate, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lblVehicleWeaponRangeShortLabel, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblVehicleWeaponRangeShort, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.lblVehicleWeaponAlternateRangeShort, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lblVehicleWeaponAlternateRangeMedium, 2, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lblVehicleWeaponRangeMain, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.lblVehicleWeaponAlternateRangeLong, 3, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lblVehicleWeaponRangeMediumLabel, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblVehicleWeaponRangeMedium, 2, 1);
+            this.tableLayoutPanel1.Controls.Add(this.lblVehicleWeaponRangeExtreme, 4, 1);
+            this.tableLayoutPanel1.Controls.Add(this.lblVehicleWeaponRangeLongLabel, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblVehicleWeaponRangeExtremeLabel, 4, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblVehicleWeaponRangeLong, 3, 1);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 61);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 3;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(480, 75);
+            this.tableLayoutPanel1.TabIndex = 250;
+            // 
+            // lblVehicleWeaponAlternateRangeExtreme
+            // 
+            this.lblVehicleWeaponAlternateRangeExtreme.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponAlternateRangeExtreme.AutoSize = true;
+            this.lblVehicleWeaponAlternateRangeExtreme.Location = new System.Drawing.Point(387, 56);
+            this.lblVehicleWeaponAlternateRangeExtreme.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponAlternateRangeExtreme.Name = "lblVehicleWeaponAlternateRangeExtreme";
+            this.lblVehicleWeaponAlternateRangeExtreme.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponAlternateRangeExtreme.TabIndex = 230;
+            this.lblVehicleWeaponAlternateRangeExtreme.Text = "[0]";
+            this.lblVehicleWeaponAlternateRangeExtreme.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // lblVehicleWeaponRangeLabel
+            // 
+            this.lblVehicleWeaponRangeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponRangeLabel.AutoSize = true;
+            this.lblVehicleWeaponRangeLabel.Location = new System.Drawing.Point(3, 6);
+            this.lblVehicleWeaponRangeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponRangeLabel.Name = "lblVehicleWeaponRangeLabel";
+            this.lblVehicleWeaponRangeLabel.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponRangeLabel.TabIndex = 99;
+            this.lblVehicleWeaponRangeLabel.Tag = "Label_RangeHeading";
+            this.lblVehicleWeaponRangeLabel.Text = "Range";
+            this.lblVehicleWeaponRangeLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // lblVehicleWeaponRangeAlternate
+            // 
+            this.lblVehicleWeaponRangeAlternate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponRangeAlternate.AutoSize = true;
+            this.lblVehicleWeaponRangeAlternate.Location = new System.Drawing.Point(3, 56);
+            this.lblVehicleWeaponRangeAlternate.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponRangeAlternate.Name = "lblVehicleWeaponRangeAlternate";
+            this.lblVehicleWeaponRangeAlternate.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponRangeAlternate.TabIndex = 232;
+            this.lblVehicleWeaponRangeAlternate.Tag = "";
+            this.lblVehicleWeaponRangeAlternate.Text = "[Alternate Range]";
+            this.lblVehicleWeaponRangeAlternate.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // lblVehicleWeaponRangeShortLabel
+            // 
+            this.lblVehicleWeaponRangeShortLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponRangeShortLabel.AutoSize = true;
+            this.lblVehicleWeaponRangeShortLabel.Location = new System.Drawing.Point(99, 6);
+            this.lblVehicleWeaponRangeShortLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponRangeShortLabel.Name = "lblVehicleWeaponRangeShortLabel";
+            this.lblVehicleWeaponRangeShortLabel.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponRangeShortLabel.TabIndex = 100;
+            this.lblVehicleWeaponRangeShortLabel.Tag = "Label_RangeShort";
+            this.lblVehicleWeaponRangeShortLabel.Text = "Short (-0)";
+            this.lblVehicleWeaponRangeShortLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // lblVehicleWeaponRangeShort
+            // 
+            this.lblVehicleWeaponRangeShort.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponRangeShort.AutoSize = true;
+            this.lblVehicleWeaponRangeShort.Location = new System.Drawing.Point(99, 31);
+            this.lblVehicleWeaponRangeShort.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponRangeShort.Name = "lblVehicleWeaponRangeShort";
+            this.lblVehicleWeaponRangeShort.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponRangeShort.TabIndex = 104;
+            this.lblVehicleWeaponRangeShort.Text = "[0]";
+            this.lblVehicleWeaponRangeShort.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // lblVehicleWeaponAlternateRangeShort
+            // 
+            this.lblVehicleWeaponAlternateRangeShort.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponAlternateRangeShort.AutoSize = true;
+            this.lblVehicleWeaponAlternateRangeShort.Location = new System.Drawing.Point(99, 56);
+            this.lblVehicleWeaponAlternateRangeShort.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponAlternateRangeShort.Name = "lblVehicleWeaponAlternateRangeShort";
+            this.lblVehicleWeaponAlternateRangeShort.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponAlternateRangeShort.TabIndex = 227;
+            this.lblVehicleWeaponAlternateRangeShort.Text = "[0]";
+            this.lblVehicleWeaponAlternateRangeShort.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // lblVehicleWeaponAlternateRangeMedium
+            // 
+            this.lblVehicleWeaponAlternateRangeMedium.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponAlternateRangeMedium.AutoSize = true;
+            this.lblVehicleWeaponAlternateRangeMedium.Location = new System.Drawing.Point(195, 56);
+            this.lblVehicleWeaponAlternateRangeMedium.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponAlternateRangeMedium.Name = "lblVehicleWeaponAlternateRangeMedium";
+            this.lblVehicleWeaponAlternateRangeMedium.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponAlternateRangeMedium.TabIndex = 228;
+            this.lblVehicleWeaponAlternateRangeMedium.Text = "[0]";
+            this.lblVehicleWeaponAlternateRangeMedium.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // lblVehicleWeaponRangeMain
+            // 
+            this.lblVehicleWeaponRangeMain.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponRangeMain.AutoSize = true;
+            this.lblVehicleWeaponRangeMain.Location = new System.Drawing.Point(22, 31);
+            this.lblVehicleWeaponRangeMain.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponRangeMain.Name = "lblVehicleWeaponRangeMain";
+            this.lblVehicleWeaponRangeMain.Size = new System.Drawing.Size(71, 13);
+            this.lblVehicleWeaponRangeMain.TabIndex = 231;
+            this.lblVehicleWeaponRangeMain.Tag = "";
+            this.lblVehicleWeaponRangeMain.Text = "[Main Range]";
+            this.lblVehicleWeaponRangeMain.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // lblVehicleWeaponAlternateRangeLong
+            // 
+            this.lblVehicleWeaponAlternateRangeLong.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponAlternateRangeLong.AutoSize = true;
+            this.lblVehicleWeaponAlternateRangeLong.Location = new System.Drawing.Point(291, 56);
+            this.lblVehicleWeaponAlternateRangeLong.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponAlternateRangeLong.Name = "lblVehicleWeaponAlternateRangeLong";
+            this.lblVehicleWeaponAlternateRangeLong.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponAlternateRangeLong.TabIndex = 229;
+            this.lblVehicleWeaponAlternateRangeLong.Text = "[0]";
+            this.lblVehicleWeaponAlternateRangeLong.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // lblVehicleWeaponRangeMediumLabel
+            // 
+            this.lblVehicleWeaponRangeMediumLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponRangeMediumLabel.AutoSize = true;
+            this.lblVehicleWeaponRangeMediumLabel.Location = new System.Drawing.Point(195, 6);
+            this.lblVehicleWeaponRangeMediumLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponRangeMediumLabel.Name = "lblVehicleWeaponRangeMediumLabel";
+            this.lblVehicleWeaponRangeMediumLabel.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponRangeMediumLabel.TabIndex = 101;
+            this.lblVehicleWeaponRangeMediumLabel.Tag = "Label_RangeMedium";
+            this.lblVehicleWeaponRangeMediumLabel.Text = "Medium (-1)";
+            this.lblVehicleWeaponRangeMediumLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // lblVehicleWeaponRangeMedium
+            // 
+            this.lblVehicleWeaponRangeMedium.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponRangeMedium.AutoSize = true;
+            this.lblVehicleWeaponRangeMedium.Location = new System.Drawing.Point(195, 31);
+            this.lblVehicleWeaponRangeMedium.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponRangeMedium.Name = "lblVehicleWeaponRangeMedium";
+            this.lblVehicleWeaponRangeMedium.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponRangeMedium.TabIndex = 105;
+            this.lblVehicleWeaponRangeMedium.Text = "[0]";
+            this.lblVehicleWeaponRangeMedium.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // lblVehicleWeaponRangeExtreme
+            // 
+            this.lblVehicleWeaponRangeExtreme.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponRangeExtreme.AutoSize = true;
+            this.lblVehicleWeaponRangeExtreme.Location = new System.Drawing.Point(387, 31);
+            this.lblVehicleWeaponRangeExtreme.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponRangeExtreme.Name = "lblVehicleWeaponRangeExtreme";
+            this.lblVehicleWeaponRangeExtreme.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponRangeExtreme.TabIndex = 107;
+            this.lblVehicleWeaponRangeExtreme.Text = "[0]";
+            this.lblVehicleWeaponRangeExtreme.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // lblVehicleWeaponRangeLongLabel
+            // 
+            this.lblVehicleWeaponRangeLongLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponRangeLongLabel.AutoSize = true;
+            this.lblVehicleWeaponRangeLongLabel.Location = new System.Drawing.Point(291, 6);
+            this.lblVehicleWeaponRangeLongLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponRangeLongLabel.Name = "lblVehicleWeaponRangeLongLabel";
+            this.lblVehicleWeaponRangeLongLabel.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponRangeLongLabel.TabIndex = 102;
+            this.lblVehicleWeaponRangeLongLabel.Tag = "Label_RangeLong";
+            this.lblVehicleWeaponRangeLongLabel.Text = "Long (-3)";
+            this.lblVehicleWeaponRangeLongLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // lblVehicleWeaponRangeExtremeLabel
+            // 
+            this.lblVehicleWeaponRangeExtremeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponRangeExtremeLabel.AutoSize = true;
+            this.lblVehicleWeaponRangeExtremeLabel.Location = new System.Drawing.Point(387, 6);
+            this.lblVehicleWeaponRangeExtremeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponRangeExtremeLabel.Name = "lblVehicleWeaponRangeExtremeLabel";
+            this.lblVehicleWeaponRangeExtremeLabel.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponRangeExtremeLabel.TabIndex = 103;
+            this.lblVehicleWeaponRangeExtremeLabel.Tag = "Label_RangeExtreme";
+            this.lblVehicleWeaponRangeExtremeLabel.Text = "Extreme (-6)";
+            this.lblVehicleWeaponRangeExtremeLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // lblVehicleWeaponRangeLong
+            // 
+            this.lblVehicleWeaponRangeLong.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponRangeLong.AutoSize = true;
+            this.lblVehicleWeaponRangeLong.Location = new System.Drawing.Point(291, 31);
+            this.lblVehicleWeaponRangeLong.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponRangeLong.Name = "lblVehicleWeaponRangeLong";
+            this.lblVehicleWeaponRangeLong.Size = new System.Drawing.Size(90, 13);
+            this.lblVehicleWeaponRangeLong.TabIndex = 106;
+            this.lblVehicleWeaponRangeLong.Text = "[0]";
+            this.lblVehicleWeaponRangeLong.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // tlpVehiclesWeaponCareer
+            // 
+            this.tlpVehiclesWeaponCareer.AutoSize = true;
+            this.tlpVehiclesWeaponCareer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpVehiclesWeaponCareer.ColumnCount = 4;
+            this.tlpVehiclesWeaponCareer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpVehiclesWeaponCareer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpVehiclesWeaponCareer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpVehiclesWeaponCareer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpVehiclesWeaponCareer.Controls.Add(this.lblVehicleWeaponAmmoRemainingLabel, 2, 0);
+            this.tlpVehiclesWeaponCareer.Controls.Add(this.lblVehicleWeaponAmmoRemaining, 3, 0);
+            this.tlpVehiclesWeaponCareer.Controls.Add(this.lblVehicleWeaponAmmoTypeLabel, 0, 0);
+            this.tlpVehiclesWeaponCareer.Controls.Add(this.cboVehicleWeaponAmmo, 1, 0);
+            this.tlpVehiclesWeaponCareer.Controls.Add(this.lblFiringModeLabel, 0, 1);
+            this.tlpVehiclesWeaponCareer.Controls.Add(this.cboVehicleWeaponFiringMode, 1, 1);
+            this.tlpVehiclesWeaponCareer.Controls.Add(this.flpVehiclesWeaponCareerButtons, 2, 1);
+            this.tlpVehiclesWeaponCareer.Location = new System.Drawing.Point(0, 142);
+            this.tlpVehiclesWeaponCareer.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            this.tlpVehiclesWeaponCareer.Name = "tlpVehiclesWeaponCareer";
+            this.tlpVehiclesWeaponCareer.RowCount = 2;
+            this.tlpVehiclesWeaponCareer.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpVehiclesWeaponCareer.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpVehiclesWeaponCareer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpVehiclesWeaponCareer.Size = new System.Drawing.Size(392, 56);
+            this.tlpVehiclesWeaponCareer.TabIndex = 249;
+            // 
+            // lblVehicleWeaponAmmoRemainingLabel
+            // 
+            this.lblVehicleWeaponAmmoRemainingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponAmmoRemainingLabel.AutoSize = true;
+            this.lblVehicleWeaponAmmoRemainingLabel.Location = new System.Drawing.Point(199, 6);
+            this.lblVehicleWeaponAmmoRemainingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponAmmoRemainingLabel.Name = "lblVehicleWeaponAmmoRemainingLabel";
+            this.lblVehicleWeaponAmmoRemainingLabel.Size = new System.Drawing.Size(92, 13);
+            this.lblVehicleWeaponAmmoRemainingLabel.TabIndex = 79;
+            this.lblVehicleWeaponAmmoRemainingLabel.Tag = "Label_AmmoRemaining";
+            this.lblVehicleWeaponAmmoRemainingLabel.Text = "Ammo Remaining:";
+            // 
+            // lblVehicleWeaponAmmoRemaining
+            // 
+            this.lblVehicleWeaponAmmoRemaining.AutoSize = true;
+            this.lblVehicleWeaponAmmoRemaining.Location = new System.Drawing.Point(297, 6);
+            this.lblVehicleWeaponAmmoRemaining.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponAmmoRemaining.Name = "lblVehicleWeaponAmmoRemaining";
+            this.lblVehicleWeaponAmmoRemaining.Size = new System.Drawing.Size(42, 13);
+            this.lblVehicleWeaponAmmoRemaining.TabIndex = 80;
+            this.lblVehicleWeaponAmmoRemaining.Text = "[Ammo]";
+            // 
+            // lblVehicleWeaponAmmoTypeLabel
+            // 
+            this.lblVehicleWeaponAmmoTypeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleWeaponAmmoTypeLabel.AutoSize = true;
+            this.lblVehicleWeaponAmmoTypeLabel.Location = new System.Drawing.Point(19, 6);
+            this.lblVehicleWeaponAmmoTypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponAmmoTypeLabel.Name = "lblVehicleWeaponAmmoTypeLabel";
+            this.lblVehicleWeaponAmmoTypeLabel.Size = new System.Drawing.Size(76, 13);
+            this.lblVehicleWeaponAmmoTypeLabel.TabIndex = 82;
+            this.lblVehicleWeaponAmmoTypeLabel.Tag = "Label_CurrentAmmo";
+            this.lblVehicleWeaponAmmoTypeLabel.Text = "Current Ammo:";
+            // 
+            // cboVehicleWeaponAmmo
+            // 
+            this.cboVehicleWeaponAmmo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboVehicleWeaponAmmo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboVehicleWeaponAmmo.FormattingEnabled = true;
+            this.cboVehicleWeaponAmmo.Location = new System.Drawing.Point(101, 3);
+            this.cboVehicleWeaponAmmo.Name = "cboVehicleWeaponAmmo";
+            this.cboVehicleWeaponAmmo.Size = new System.Drawing.Size(92, 21);
+            this.cboVehicleWeaponAmmo.TabIndex = 114;
+            this.cboVehicleWeaponAmmo.TooltipText = "";
+            this.cboVehicleWeaponAmmo.SelectedIndexChanged += new System.EventHandler(this.cboVehicleWeaponAmmo_SelectedIndexChanged);
+            // 
             // lblFiringModeLabel
             // 
             this.lblFiringModeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFiringModeLabel.AutoSize = true;
-            this.tlpVehicles.SetColumnSpan(this.lblFiringModeLabel, 2);
-            this.lblFiringModeLabel.Location = new System.Drawing.Point(632, 60);
+            this.lblFiringModeLabel.Location = new System.Drawing.Point(30, 33);
             this.lblFiringModeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblFiringModeLabel.Name = "lblFiringModeLabel";
             this.lblFiringModeLabel.Size = new System.Drawing.Size(65, 13);
@@ -13468,337 +13844,37 @@ namespace Chummer
             // 
             this.cboVehicleWeaponFiringMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpVehicles.SetColumnSpan(this.cboVehicleWeaponFiringMode, 2);
             this.cboVehicleWeaponFiringMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboVehicleWeaponFiringMode.Enabled = false;
             this.cboVehicleWeaponFiringMode.FormattingEnabled = true;
-            this.cboVehicleWeaponFiringMode.Location = new System.Drawing.Point(703, 57);
+            this.cboVehicleWeaponFiringMode.Location = new System.Drawing.Point(101, 30);
             this.cboVehicleWeaponFiringMode.Name = "cboVehicleWeaponFiringMode";
-            this.cboVehicleWeaponFiringMode.Size = new System.Drawing.Size(129, 21);
+            this.cboVehicleWeaponFiringMode.Size = new System.Drawing.Size(92, 21);
             this.cboVehicleWeaponFiringMode.TabIndex = 248;
             this.cboVehicleWeaponFiringMode.TooltipText = "";
             this.cboVehicleWeaponFiringMode.SelectedIndexChanged += new System.EventHandler(this.cboVehicleWeaponFiringMode_SelectedIndexChanged);
             // 
-            // flowLayoutPanel27
+            // flpVehiclesWeaponCareerButtons
             // 
-            this.flowLayoutPanel27.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel27.AutoSize = true;
-            this.tlpVehicles.SetColumnSpan(this.flowLayoutPanel27, 9);
-            this.flowLayoutPanel27.Controls.Add(this.tlpVehicleWeapon);
-            this.flowLayoutPanel27.Controls.Add(this.panVehicleCM);
-            this.flowLayoutPanel27.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel27.Location = new System.Drawing.Point(301, 381);
-            this.flowLayoutPanel27.Margin = new System.Windows.Forms.Padding(0);
-            this.flowLayoutPanel27.Name = "flowLayoutPanel27";
-            this.flowLayoutPanel27.Size = new System.Drawing.Size(534, 315);
-            this.flowLayoutPanel27.TabIndex = 250;
-            // 
-            // tlpVehicleWeapon
-            // 
-            this.tlpVehicleWeapon.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpVehicleWeapon.AutoSize = true;
-            this.tlpVehicleWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpVehicleWeapon.ColumnCount = 7;
-            this.tlpVehicleWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpVehicleWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlpVehicleWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7.5F));
-            this.tlpVehicleWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 17.5F));
-            this.tlpVehicleWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.tlpVehicleWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.tlpVehicleWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlpVehicleWeapon.Controls.Add(this.lblVehicleWeaponAlternateRangeExtreme, 6, 2);
-            this.tlpVehicleWeapon.Controls.Add(this.cmdRollVehicleWeapon, 2, 5);
-            this.tlpVehicleWeapon.Controls.Add(this.lblVehicleWeaponDicePool, 1, 5);
-            this.tlpVehicleWeapon.Controls.Add(this.lblVehicleWeaponRangeAlternate, 0, 2);
-            this.tlpVehicleWeapon.Controls.Add(this.lblVehicleWeaponDicePoolLabel, 0, 5);
-            this.tlpVehicleWeapon.Controls.Add(this.cboVehicleWeaponAmmo, 1, 4);
-            this.tlpVehicleWeapon.Controls.Add(this.lblVehicleWeaponRangeLabel, 0, 0);
-            this.tlpVehicleWeapon.Controls.Add(this.lblVehicleWeaponAmmoTypeLabel, 0, 4);
-            this.tlpVehicleWeapon.Controls.Add(this.lblVehicleWeaponAmmoRemainingLabel, 0, 3);
-            this.tlpVehicleWeapon.Controls.Add(this.lblVehicleWeaponRangeMain, 0, 1);
-            this.tlpVehicleWeapon.Controls.Add(this.lblVehicleWeaponAlternateRangeShort, 1, 2);
-            this.tlpVehicleWeapon.Controls.Add(this.lblVehicleWeaponRangeShortLabel, 1, 0);
-            this.tlpVehicleWeapon.Controls.Add(this.lblVehicleWeaponRangeExtreme, 6, 1);
-            this.tlpVehicleWeapon.Controls.Add(this.lblVehicleWeaponRangeExtremeLabel, 6, 0);
-            this.tlpVehicleWeapon.Controls.Add(this.lblVehicleWeaponRangeShort, 1, 1);
-            this.tlpVehicleWeapon.Controls.Add(this.lblVehicleWeaponAmmoRemaining, 1, 3);
-            this.tlpVehicleWeapon.Controls.Add(this.lblVehicleWeaponRangeMediumLabel, 2, 0);
-            this.tlpVehicleWeapon.Controls.Add(this.lblVehicleWeaponRangeMedium, 2, 1);
-            this.tlpVehicleWeapon.Controls.Add(this.lblVehicleWeaponAlternateRangeMedium, 2, 2);
-            this.tlpVehicleWeapon.Controls.Add(this.cmdFireVehicleWeapon, 2, 3);
-            this.tlpVehicleWeapon.Controls.Add(this.cmdReloadVehicleWeapon, 5, 3);
-            this.tlpVehicleWeapon.Controls.Add(this.lblVehicleWeaponRangeLongLabel, 4, 0);
-            this.tlpVehicleWeapon.Controls.Add(this.lblVehicleWeaponRangeLong, 4, 1);
-            this.tlpVehicleWeapon.Controls.Add(this.lblVehicleWeaponAlternateRangeLong, 4, 2);
-            this.tlpVehicleWeapon.Location = new System.Drawing.Point(0, 0);
-            this.tlpVehicleWeapon.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpVehicleWeapon.Name = "tlpVehicleWeapon";
-            this.tlpVehicleWeapon.RowCount = 6;
-            this.tlpVehicleWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehicleWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehicleWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehicleWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehicleWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehicleWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehicleWeapon.Size = new System.Drawing.Size(534, 196);
-            this.tlpVehicleWeapon.TabIndex = 249;
-            // 
-            // lblVehicleWeaponAlternateRangeExtreme
-            // 
-            this.lblVehicleWeaponAlternateRangeExtreme.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponAlternateRangeExtreme.Location = new System.Drawing.Point(426, 56);
-            this.lblVehicleWeaponAlternateRangeExtreme.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponAlternateRangeExtreme.Name = "lblVehicleWeaponAlternateRangeExtreme";
-            this.lblVehicleWeaponAlternateRangeExtreme.Size = new System.Drawing.Size(105, 13);
-            this.lblVehicleWeaponAlternateRangeExtreme.TabIndex = 230;
-            this.lblVehicleWeaponAlternateRangeExtreme.Text = "[0]";
-            this.lblVehicleWeaponAlternateRangeExtreme.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // cmdRollVehicleWeapon
-            // 
-            this.cmdRollVehicleWeapon.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdRollVehicleWeapon.FlatAppearance.BorderSize = 0;
-            this.cmdRollVehicleWeapon.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmdRollVehicleWeapon.Image = global::Chummer.Properties.Resources.die;
-            this.cmdRollVehicleWeapon.Location = new System.Drawing.Point(210, 134);
-            this.cmdRollVehicleWeapon.Name = "cmdRollVehicleWeapon";
-            this.cmdRollVehicleWeapon.Size = new System.Drawing.Size(26, 24);
-            this.cmdRollVehicleWeapon.TabIndex = 137;
-            this.cmdRollVehicleWeapon.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.cmdRollVehicleWeapon.UseVisualStyleBackColor = true;
-            this.cmdRollVehicleWeapon.Visible = false;
-            this.cmdRollVehicleWeapon.Click += new System.EventHandler(this.cmdRollVehicleWeapon_Click);
-            // 
-            // lblVehicleWeaponDicePool
-            // 
-            this.lblVehicleWeaponDicePool.AutoSize = true;
-            this.lblVehicleWeaponDicePool.Location = new System.Drawing.Point(101, 137);
-            this.lblVehicleWeaponDicePool.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponDicePool.Name = "lblVehicleWeaponDicePool";
-            this.lblVehicleWeaponDicePool.Size = new System.Drawing.Size(34, 13);
-            this.lblVehicleWeaponDicePool.TabIndex = 134;
-            this.lblVehicleWeaponDicePool.Text = "[Pool]";
-            // 
-            // lblVehicleWeaponRangeAlternate
-            // 
-            this.lblVehicleWeaponRangeAlternate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponRangeAlternate.AutoSize = true;
-            this.lblVehicleWeaponRangeAlternate.Location = new System.Drawing.Point(5, 56);
-            this.lblVehicleWeaponRangeAlternate.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponRangeAlternate.Name = "lblVehicleWeaponRangeAlternate";
-            this.lblVehicleWeaponRangeAlternate.Size = new System.Drawing.Size(90, 13);
-            this.lblVehicleWeaponRangeAlternate.TabIndex = 232;
-            this.lblVehicleWeaponRangeAlternate.Tag = "";
-            this.lblVehicleWeaponRangeAlternate.Text = "[Alternate Range]";
-            this.lblVehicleWeaponRangeAlternate.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // lblVehicleWeaponDicePoolLabel
-            // 
-            this.lblVehicleWeaponDicePoolLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponDicePoolLabel.AutoSize = true;
-            this.lblVehicleWeaponDicePoolLabel.Location = new System.Drawing.Point(39, 137);
-            this.lblVehicleWeaponDicePoolLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponDicePoolLabel.Name = "lblVehicleWeaponDicePoolLabel";
-            this.lblVehicleWeaponDicePoolLabel.Size = new System.Drawing.Size(56, 13);
-            this.lblVehicleWeaponDicePoolLabel.TabIndex = 133;
-            this.lblVehicleWeaponDicePoolLabel.Tag = "Label_DicePool";
-            this.lblVehicleWeaponDicePoolLabel.Text = "Dice Pool:";
-            // 
-            // cboVehicleWeaponAmmo
-            // 
-            this.cboVehicleWeaponAmmo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpVehicleWeapon.SetColumnSpan(this.cboVehicleWeaponAmmo, 6);
-            this.cboVehicleWeaponAmmo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboVehicleWeaponAmmo.FormattingEnabled = true;
-            this.cboVehicleWeaponAmmo.Location = new System.Drawing.Point(101, 107);
-            this.cboVehicleWeaponAmmo.Name = "cboVehicleWeaponAmmo";
-            this.cboVehicleWeaponAmmo.Size = new System.Drawing.Size(430, 21);
-            this.cboVehicleWeaponAmmo.TabIndex = 114;
-            this.cboVehicleWeaponAmmo.TooltipText = "";
-            this.cboVehicleWeaponAmmo.SelectedIndexChanged += new System.EventHandler(this.cboVehicleWeaponAmmo_SelectedIndexChanged);
-            // 
-            // lblVehicleWeaponRangeLabel
-            // 
-            this.lblVehicleWeaponRangeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponRangeLabel.AutoSize = true;
-            this.lblVehicleWeaponRangeLabel.Location = new System.Drawing.Point(3, 6);
-            this.lblVehicleWeaponRangeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponRangeLabel.Name = "lblVehicleWeaponRangeLabel";
-            this.lblVehicleWeaponRangeLabel.Size = new System.Drawing.Size(92, 13);
-            this.lblVehicleWeaponRangeLabel.TabIndex = 99;
-            this.lblVehicleWeaponRangeLabel.Tag = "Label_RangeHeading";
-            this.lblVehicleWeaponRangeLabel.Text = "Range";
-            this.lblVehicleWeaponRangeLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // lblVehicleWeaponAmmoTypeLabel
-            // 
-            this.lblVehicleWeaponAmmoTypeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponAmmoTypeLabel.AutoSize = true;
-            this.lblVehicleWeaponAmmoTypeLabel.Location = new System.Drawing.Point(19, 110);
-            this.lblVehicleWeaponAmmoTypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponAmmoTypeLabel.Name = "lblVehicleWeaponAmmoTypeLabel";
-            this.lblVehicleWeaponAmmoTypeLabel.Size = new System.Drawing.Size(76, 13);
-            this.lblVehicleWeaponAmmoTypeLabel.TabIndex = 82;
-            this.lblVehicleWeaponAmmoTypeLabel.Tag = "Label_CurrentAmmo";
-            this.lblVehicleWeaponAmmoTypeLabel.Text = "Current Ammo:";
-            // 
-            // lblVehicleWeaponAmmoRemainingLabel
-            // 
-            this.lblVehicleWeaponAmmoRemainingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponAmmoRemainingLabel.AutoSize = true;
-            this.lblVehicleWeaponAmmoRemainingLabel.Location = new System.Drawing.Point(3, 81);
-            this.lblVehicleWeaponAmmoRemainingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponAmmoRemainingLabel.Name = "lblVehicleWeaponAmmoRemainingLabel";
-            this.lblVehicleWeaponAmmoRemainingLabel.Size = new System.Drawing.Size(92, 13);
-            this.lblVehicleWeaponAmmoRemainingLabel.TabIndex = 79;
-            this.lblVehicleWeaponAmmoRemainingLabel.Tag = "Label_AmmoRemaining";
-            this.lblVehicleWeaponAmmoRemainingLabel.Text = "Ammo Remaining:";
-            // 
-            // lblVehicleWeaponRangeMain
-            // 
-            this.lblVehicleWeaponRangeMain.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponRangeMain.AutoSize = true;
-            this.lblVehicleWeaponRangeMain.Location = new System.Drawing.Point(24, 31);
-            this.lblVehicleWeaponRangeMain.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponRangeMain.Name = "lblVehicleWeaponRangeMain";
-            this.lblVehicleWeaponRangeMain.Size = new System.Drawing.Size(71, 13);
-            this.lblVehicleWeaponRangeMain.TabIndex = 231;
-            this.lblVehicleWeaponRangeMain.Tag = "";
-            this.lblVehicleWeaponRangeMain.Text = "[Main Range]";
-            this.lblVehicleWeaponRangeMain.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // lblVehicleWeaponAlternateRangeShort
-            // 
-            this.lblVehicleWeaponAlternateRangeShort.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponAlternateRangeShort.Location = new System.Drawing.Point(101, 56);
-            this.lblVehicleWeaponAlternateRangeShort.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponAlternateRangeShort.Name = "lblVehicleWeaponAlternateRangeShort";
-            this.lblVehicleWeaponAlternateRangeShort.Size = new System.Drawing.Size(103, 13);
-            this.lblVehicleWeaponAlternateRangeShort.TabIndex = 227;
-            this.lblVehicleWeaponAlternateRangeShort.Text = "[0]";
-            this.lblVehicleWeaponAlternateRangeShort.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // lblVehicleWeaponRangeShortLabel
-            // 
-            this.lblVehicleWeaponRangeShortLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponRangeShortLabel.AutoSize = true;
-            this.lblVehicleWeaponRangeShortLabel.Location = new System.Drawing.Point(101, 6);
-            this.lblVehicleWeaponRangeShortLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponRangeShortLabel.Name = "lblVehicleWeaponRangeShortLabel";
-            this.lblVehicleWeaponRangeShortLabel.Size = new System.Drawing.Size(103, 13);
-            this.lblVehicleWeaponRangeShortLabel.TabIndex = 100;
-            this.lblVehicleWeaponRangeShortLabel.Tag = "Label_RangeShort";
-            this.lblVehicleWeaponRangeShortLabel.Text = "Short (-0)";
-            this.lblVehicleWeaponRangeShortLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // lblVehicleWeaponRangeExtreme
-            // 
-            this.lblVehicleWeaponRangeExtreme.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponRangeExtreme.Location = new System.Drawing.Point(426, 31);
-            this.lblVehicleWeaponRangeExtreme.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponRangeExtreme.Name = "lblVehicleWeaponRangeExtreme";
-            this.lblVehicleWeaponRangeExtreme.Size = new System.Drawing.Size(105, 13);
-            this.lblVehicleWeaponRangeExtreme.TabIndex = 107;
-            this.lblVehicleWeaponRangeExtreme.Text = "[0]";
-            this.lblVehicleWeaponRangeExtreme.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // lblVehicleWeaponRangeExtremeLabel
-            // 
-            this.lblVehicleWeaponRangeExtremeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponRangeExtremeLabel.AutoSize = true;
-            this.lblVehicleWeaponRangeExtremeLabel.Location = new System.Drawing.Point(426, 6);
-            this.lblVehicleWeaponRangeExtremeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponRangeExtremeLabel.Name = "lblVehicleWeaponRangeExtremeLabel";
-            this.lblVehicleWeaponRangeExtremeLabel.Size = new System.Drawing.Size(105, 13);
-            this.lblVehicleWeaponRangeExtremeLabel.TabIndex = 103;
-            this.lblVehicleWeaponRangeExtremeLabel.Tag = "Label_RangeExtreme";
-            this.lblVehicleWeaponRangeExtremeLabel.Text = "Extreme (-6)";
-            this.lblVehicleWeaponRangeExtremeLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // lblVehicleWeaponRangeShort
-            // 
-            this.lblVehicleWeaponRangeShort.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponRangeShort.Location = new System.Drawing.Point(101, 31);
-            this.lblVehicleWeaponRangeShort.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponRangeShort.Name = "lblVehicleWeaponRangeShort";
-            this.lblVehicleWeaponRangeShort.Size = new System.Drawing.Size(103, 13);
-            this.lblVehicleWeaponRangeShort.TabIndex = 104;
-            this.lblVehicleWeaponRangeShort.Text = "[0]";
-            this.lblVehicleWeaponRangeShort.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // lblVehicleWeaponAmmoRemaining
-            // 
-            this.lblVehicleWeaponAmmoRemaining.AutoSize = true;
-            this.lblVehicleWeaponAmmoRemaining.Location = new System.Drawing.Point(101, 81);
-            this.lblVehicleWeaponAmmoRemaining.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponAmmoRemaining.Name = "lblVehicleWeaponAmmoRemaining";
-            this.lblVehicleWeaponAmmoRemaining.Size = new System.Drawing.Size(95, 13);
-            this.lblVehicleWeaponAmmoRemaining.TabIndex = 80;
-            this.lblVehicleWeaponAmmoRemaining.Text = "[Ammo Remaining]";
-            // 
-            // lblVehicleWeaponRangeMediumLabel
-            // 
-            this.lblVehicleWeaponRangeMediumLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponRangeMediumLabel.AutoSize = true;
-            this.tlpVehicleWeapon.SetColumnSpan(this.lblVehicleWeaponRangeMediumLabel, 2);
-            this.lblVehicleWeaponRangeMediumLabel.Location = new System.Drawing.Point(210, 6);
-            this.lblVehicleWeaponRangeMediumLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponRangeMediumLabel.Name = "lblVehicleWeaponRangeMediumLabel";
-            this.lblVehicleWeaponRangeMediumLabel.Size = new System.Drawing.Size(102, 13);
-            this.lblVehicleWeaponRangeMediumLabel.TabIndex = 101;
-            this.lblVehicleWeaponRangeMediumLabel.Tag = "Label_RangeMedium";
-            this.lblVehicleWeaponRangeMediumLabel.Text = "Medium (-1)";
-            this.lblVehicleWeaponRangeMediumLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // lblVehicleWeaponRangeMedium
-            // 
-            this.lblVehicleWeaponRangeMedium.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpVehicleWeapon.SetColumnSpan(this.lblVehicleWeaponRangeMedium, 2);
-            this.lblVehicleWeaponRangeMedium.Location = new System.Drawing.Point(210, 31);
-            this.lblVehicleWeaponRangeMedium.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponRangeMedium.Name = "lblVehicleWeaponRangeMedium";
-            this.lblVehicleWeaponRangeMedium.Size = new System.Drawing.Size(102, 13);
-            this.lblVehicleWeaponRangeMedium.TabIndex = 105;
-            this.lblVehicleWeaponRangeMedium.Text = "[0]";
-            this.lblVehicleWeaponRangeMedium.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // lblVehicleWeaponAlternateRangeMedium
-            // 
-            this.lblVehicleWeaponAlternateRangeMedium.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpVehicleWeapon.SetColumnSpan(this.lblVehicleWeaponAlternateRangeMedium, 2);
-            this.lblVehicleWeaponAlternateRangeMedium.Location = new System.Drawing.Point(210, 56);
-            this.lblVehicleWeaponAlternateRangeMedium.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponAlternateRangeMedium.Name = "lblVehicleWeaponAlternateRangeMedium";
-            this.lblVehicleWeaponAlternateRangeMedium.Size = new System.Drawing.Size(102, 13);
-            this.lblVehicleWeaponAlternateRangeMedium.TabIndex = 228;
-            this.lblVehicleWeaponAlternateRangeMedium.Text = "[0]";
-            this.lblVehicleWeaponAlternateRangeMedium.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.flpVehiclesWeaponCareerButtons.AutoSize = true;
+            this.flpVehiclesWeaponCareerButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpVehiclesWeaponCareer.SetColumnSpan(this.flpVehiclesWeaponCareerButtons, 2);
+            this.flpVehiclesWeaponCareerButtons.Controls.Add(this.cmdFireVehicleWeapon);
+            this.flpVehiclesWeaponCareerButtons.Controls.Add(this.cmdReloadVehicleWeapon);
+            this.flpVehiclesWeaponCareerButtons.Location = new System.Drawing.Point(196, 27);
+            this.flpVehiclesWeaponCareerButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.flpVehiclesWeaponCareerButtons.Name = "flpVehiclesWeaponCareerButtons";
+            this.flpVehiclesWeaponCareerButtons.Size = new System.Drawing.Size(125, 29);
+            this.flpVehiclesWeaponCareerButtons.TabIndex = 249;
             // 
             // cmdFireVehicleWeapon
             // 
-            this.cmdFireVehicleWeapon.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdFireVehicleWeapon.AutoSize = true;
-            this.tlpVehicleWeapon.SetColumnSpan(this.cmdFireVehicleWeapon, 3);
             this.cmdFireVehicleWeapon.ContextMenuStrip = this.cmdVehicleAmmoExpense;
             this.cmdFireVehicleWeapon.Enabled = false;
-            this.cmdFireVehicleWeapon.Location = new System.Drawing.Point(210, 78);
+            this.cmdFireVehicleWeapon.Location = new System.Drawing.Point(3, 3);
             this.cmdFireVehicleWeapon.Name = "cmdFireVehicleWeapon";
-            this.cmdFireVehicleWeapon.Size = new System.Drawing.Size(156, 23);
+            this.cmdFireVehicleWeapon.Size = new System.Drawing.Size(62, 23);
             this.cmdFireVehicleWeapon.SplitMenuStrip = this.cmdVehicleAmmoExpense;
             this.cmdFireVehicleWeapon.TabIndex = 81;
             this.cmdFireVehicleWeapon.Tag = "Button_Fire";
@@ -13808,66 +13884,231 @@ namespace Chummer
             // 
             // cmdReloadVehicleWeapon
             // 
-            this.cmdReloadVehicleWeapon.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpVehicleWeapon.SetColumnSpan(this.cmdReloadVehicleWeapon, 2);
+            this.cmdReloadVehicleWeapon.AutoSize = true;
+            this.cmdReloadVehicleWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdReloadVehicleWeapon.Enabled = false;
-            this.cmdReloadVehicleWeapon.Location = new System.Drawing.Point(372, 78);
+            this.cmdReloadVehicleWeapon.Location = new System.Drawing.Point(71, 3);
             this.cmdReloadVehicleWeapon.Name = "cmdReloadVehicleWeapon";
-            this.cmdReloadVehicleWeapon.Size = new System.Drawing.Size(159, 23);
+            this.cmdReloadVehicleWeapon.Size = new System.Drawing.Size(51, 23);
             this.cmdReloadVehicleWeapon.TabIndex = 84;
             this.cmdReloadVehicleWeapon.Tag = "Button_Reload";
             this.cmdReloadVehicleWeapon.Text = "Reload";
             this.cmdReloadVehicleWeapon.UseVisualStyleBackColor = true;
             this.cmdReloadVehicleWeapon.Click += new System.EventHandler(this.cmdReloadVehicleWeapon_Click);
             // 
-            // lblVehicleWeaponRangeLongLabel
+            // gpbVehiclesMatrix
             // 
-            this.lblVehicleWeaponRangeLongLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.gpbVehiclesMatrix.AutoSize = true;
+            this.gpbVehiclesMatrix.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbVehiclesMatrix.Controls.Add(this.tableLayoutPanel4);
+            this.gpbVehiclesMatrix.Location = new System.Drawing.Point(3, 569);
+            this.gpbVehiclesMatrix.MinimumSize = new System.Drawing.Size(500, 0);
+            this.gpbVehiclesMatrix.Name = "gpbVehiclesMatrix";
+            this.gpbVehiclesMatrix.Size = new System.Drawing.Size(516, 96);
+            this.gpbVehiclesMatrix.TabIndex = 251;
+            this.gpbVehiclesMatrix.TabStop = false;
+            this.gpbVehiclesMatrix.Tag = "String_Matrix";
+            this.gpbVehiclesMatrix.Text = "Matrix";
+            // 
+            // tableLayoutPanel4
+            // 
+            this.tableLayoutPanel4.AutoSize = true;
+            this.tableLayoutPanel4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tableLayoutPanel4.ColumnCount = 5;
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel4.Controls.Add(this.chkVehicleHomeNode, 2, 0);
+            this.tableLayoutPanel4.Controls.Add(this.chkVehicleActiveCommlink, 3, 0);
+            this.tableLayoutPanel4.Controls.Add(this.lblVehicleDataProcessingLabel, 3, 1);
+            this.tableLayoutPanel4.Controls.Add(this.cboVehicleDataProcessing, 3, 2);
+            this.tableLayoutPanel4.Controls.Add(this.cboVehicleFirewall, 4, 2);
+            this.tableLayoutPanel4.Controls.Add(this.lblVehicleFirewallLabel, 4, 1);
+            this.tableLayoutPanel4.Controls.Add(this.lblVehicleSleazeLabel, 2, 1);
+            this.tableLayoutPanel4.Controls.Add(this.cboVehicleSleaze, 2, 2);
+            this.tableLayoutPanel4.Controls.Add(this.lblVehicleDeviceLabel, 0, 1);
+            this.tableLayoutPanel4.Controls.Add(this.lblVehicleDevice, 0, 2);
+            this.tableLayoutPanel4.Controls.Add(this.cboVehicleAttack, 1, 2);
+            this.tableLayoutPanel4.Controls.Add(this.lblVehicleAttackLabel, 1, 1);
+            this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 16);
+            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+            this.tableLayoutPanel4.RowCount = 3;
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(510, 77);
+            this.tableLayoutPanel4.TabIndex = 0;
+            // 
+            // chkVehicleActiveCommlink
+            // 
+            this.chkVehicleActiveCommlink.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVehicleWeaponRangeLongLabel.AutoSize = true;
-            this.tlpVehicleWeapon.SetColumnSpan(this.lblVehicleWeaponRangeLongLabel, 2);
-            this.lblVehicleWeaponRangeLongLabel.Location = new System.Drawing.Point(318, 6);
-            this.lblVehicleWeaponRangeLongLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponRangeLongLabel.Name = "lblVehicleWeaponRangeLongLabel";
-            this.lblVehicleWeaponRangeLongLabel.Size = new System.Drawing.Size(102, 13);
-            this.lblVehicleWeaponRangeLongLabel.TabIndex = 102;
-            this.lblVehicleWeaponRangeLongLabel.Tag = "Label_RangeLong";
-            this.lblVehicleWeaponRangeLongLabel.Text = "Long (-3)";
-            this.lblVehicleWeaponRangeLongLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.chkVehicleActiveCommlink.AutoSize = true;
+            this.tableLayoutPanel4.SetColumnSpan(this.chkVehicleActiveCommlink, 2);
+            this.chkVehicleActiveCommlink.Location = new System.Drawing.Point(309, 4);
+            this.chkVehicleActiveCommlink.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkVehicleActiveCommlink.Name = "chkVehicleActiveCommlink";
+            this.chkVehicleActiveCommlink.Size = new System.Drawing.Size(198, 17);
+            this.chkVehicleActiveCommlink.TabIndex = 243;
+            this.chkVehicleActiveCommlink.Tag = "Checkbox_ActiveCommlink";
+            this.chkVehicleActiveCommlink.Text = "Active Commlink";
+            this.chkVehicleActiveCommlink.UseVisualStyleBackColor = true;
+            this.chkVehicleActiveCommlink.Visible = false;
+            this.chkVehicleActiveCommlink.CheckedChanged += new System.EventHandler(this.chkVehicleActiveCommlink_CheckedChanged);
             // 
-            // lblVehicleWeaponRangeLong
+            // chkVehicleHomeNode
             // 
-            this.lblVehicleWeaponRangeLong.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.chkVehicleHomeNode.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpVehicleWeapon.SetColumnSpan(this.lblVehicleWeaponRangeLong, 2);
-            this.lblVehicleWeaponRangeLong.Location = new System.Drawing.Point(318, 31);
-            this.lblVehicleWeaponRangeLong.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponRangeLong.Name = "lblVehicleWeaponRangeLong";
-            this.lblVehicleWeaponRangeLong.Size = new System.Drawing.Size(102, 13);
-            this.lblVehicleWeaponRangeLong.TabIndex = 106;
-            this.lblVehicleWeaponRangeLong.Text = "[0]";
-            this.lblVehicleWeaponRangeLong.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.chkVehicleHomeNode.AutoSize = true;
+            this.chkVehicleHomeNode.Location = new System.Drawing.Point(207, 4);
+            this.chkVehicleHomeNode.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkVehicleHomeNode.Name = "chkVehicleHomeNode";
+            this.chkVehicleHomeNode.Size = new System.Drawing.Size(96, 17);
+            this.chkVehicleHomeNode.TabIndex = 135;
+            this.chkVehicleHomeNode.Tag = "Checkbox_HomeNode";
+            this.chkVehicleHomeNode.Text = "Home Node";
+            this.chkVehicleHomeNode.UseVisualStyleBackColor = true;
+            this.chkVehicleHomeNode.Visible = false;
+            this.chkVehicleHomeNode.CheckedChanged += new System.EventHandler(this.chkVehicleHomeNode_CheckedChanged);
             // 
-            // lblVehicleWeaponAlternateRangeLong
+            // lblVehicleDataProcessingLabel
             // 
-            this.lblVehicleWeaponAlternateRangeLong.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.lblVehicleDataProcessingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblVehicleDataProcessingLabel.AutoSize = true;
+            this.lblVehicleDataProcessingLabel.Location = new System.Drawing.Point(309, 31);
+            this.lblVehicleDataProcessingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleDataProcessingLabel.Name = "lblVehicleDataProcessingLabel";
+            this.lblVehicleDataProcessingLabel.Size = new System.Drawing.Size(58, 13);
+            this.lblVehicleDataProcessingLabel.TabIndex = 198;
+            this.lblVehicleDataProcessingLabel.Tag = "Label_DataProcessing";
+            this.lblVehicleDataProcessingLabel.Text = "Data Proc:";
+            // 
+            // cboVehicleDataProcessing
+            // 
+            this.cboVehicleDataProcessing.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpVehicleWeapon.SetColumnSpan(this.lblVehicleWeaponAlternateRangeLong, 2);
-            this.lblVehicleWeaponAlternateRangeLong.Location = new System.Drawing.Point(318, 56);
-            this.lblVehicleWeaponAlternateRangeLong.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblVehicleWeaponAlternateRangeLong.Name = "lblVehicleWeaponAlternateRangeLong";
-            this.lblVehicleWeaponAlternateRangeLong.Size = new System.Drawing.Size(102, 13);
-            this.lblVehicleWeaponAlternateRangeLong.TabIndex = 229;
-            this.lblVehicleWeaponAlternateRangeLong.Text = "[0]";
-            this.lblVehicleWeaponAlternateRangeLong.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.cboVehicleDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboVehicleDataProcessing.FormattingEnabled = true;
+            this.cboVehicleDataProcessing.Location = new System.Drawing.Point(309, 53);
+            this.cboVehicleDataProcessing.Name = "cboVehicleDataProcessing";
+            this.cboVehicleDataProcessing.Size = new System.Drawing.Size(96, 21);
+            this.cboVehicleDataProcessing.TabIndex = 206;
+            this.cboVehicleDataProcessing.TooltipText = "";
+            this.cboVehicleDataProcessing.Visible = false;
+            this.cboVehicleDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearDataProcessing_SelectedIndexChanged);
+            // 
+            // cboVehicleFirewall
+            // 
+            this.cboVehicleFirewall.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboVehicleFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboVehicleFirewall.FormattingEnabled = true;
+            this.cboVehicleFirewall.Location = new System.Drawing.Point(411, 53);
+            this.cboVehicleFirewall.Name = "cboVehicleFirewall";
+            this.cboVehicleFirewall.Size = new System.Drawing.Size(96, 21);
+            this.cboVehicleFirewall.TabIndex = 205;
+            this.cboVehicleFirewall.TooltipText = "";
+            this.cboVehicleFirewall.Visible = false;
+            this.cboVehicleFirewall.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearFirewall_SelectedIndexChanged);
+            // 
+            // lblVehicleFirewallLabel
+            // 
+            this.lblVehicleFirewallLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblVehicleFirewallLabel.AutoSize = true;
+            this.lblVehicleFirewallLabel.Location = new System.Drawing.Point(411, 31);
+            this.lblVehicleFirewallLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleFirewallLabel.Name = "lblVehicleFirewallLabel";
+            this.lblVehicleFirewallLabel.Size = new System.Drawing.Size(45, 13);
+            this.lblVehicleFirewallLabel.TabIndex = 200;
+            this.lblVehicleFirewallLabel.Tag = "Label_Firewall";
+            this.lblVehicleFirewallLabel.Text = "Firewall:";
+            // 
+            // lblVehicleSleazeLabel
+            // 
+            this.lblVehicleSleazeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblVehicleSleazeLabel.AutoSize = true;
+            this.lblVehicleSleazeLabel.Location = new System.Drawing.Point(207, 31);
+            this.lblVehicleSleazeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleSleazeLabel.Name = "lblVehicleSleazeLabel";
+            this.lblVehicleSleazeLabel.Size = new System.Drawing.Size(42, 13);
+            this.lblVehicleSleazeLabel.TabIndex = 196;
+            this.lblVehicleSleazeLabel.Tag = "Label_Sleaze";
+            this.lblVehicleSleazeLabel.Text = "Sleaze:";
+            // 
+            // cboVehicleSleaze
+            // 
+            this.cboVehicleSleaze.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboVehicleSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboVehicleSleaze.FormattingEnabled = true;
+            this.cboVehicleSleaze.Location = new System.Drawing.Point(207, 53);
+            this.cboVehicleSleaze.Name = "cboVehicleSleaze";
+            this.cboVehicleSleaze.Size = new System.Drawing.Size(96, 21);
+            this.cboVehicleSleaze.TabIndex = 204;
+            this.cboVehicleSleaze.TooltipText = "";
+            this.cboVehicleSleaze.Visible = false;
+            this.cboVehicleSleaze.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearSleaze_SelectedIndexChanged);
+            // 
+            // lblVehicleDeviceLabel
+            // 
+            this.lblVehicleDeviceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblVehicleDeviceLabel.AutoSize = true;
+            this.lblVehicleDeviceLabel.Location = new System.Drawing.Point(3, 31);
+            this.lblVehicleDeviceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleDeviceLabel.Name = "lblVehicleDeviceLabel";
+            this.lblVehicleDeviceLabel.Size = new System.Drawing.Size(78, 13);
+            this.lblVehicleDeviceLabel.TabIndex = 115;
+            this.lblVehicleDeviceLabel.Tag = "Label_DeviceRating";
+            this.lblVehicleDeviceLabel.Text = "Device Rating:";
+            // 
+            // lblVehicleDevice
+            // 
+            this.lblVehicleDevice.AutoSize = true;
+            this.lblVehicleDevice.Location = new System.Drawing.Point(3, 56);
+            this.lblVehicleDevice.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleDevice.Name = "lblVehicleDevice";
+            this.lblVehicleDevice.Size = new System.Drawing.Size(47, 13);
+            this.lblVehicleDevice.TabIndex = 116;
+            this.lblVehicleDevice.Text = "[Device]";
+            // 
+            // cboVehicleAttack
+            // 
+            this.cboVehicleAttack.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboVehicleAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboVehicleAttack.FormattingEnabled = true;
+            this.cboVehicleAttack.Location = new System.Drawing.Point(105, 53);
+            this.cboVehicleAttack.Name = "cboVehicleAttack";
+            this.cboVehicleAttack.Size = new System.Drawing.Size(96, 21);
+            this.cboVehicleAttack.TabIndex = 203;
+            this.cboVehicleAttack.TooltipText = "";
+            this.cboVehicleAttack.Visible = false;
+            this.cboVehicleAttack.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearAttack_SelectedIndexChanged);
+            // 
+            // lblVehicleAttackLabel
+            // 
+            this.lblVehicleAttackLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblVehicleAttackLabel.AutoSize = true;
+            this.lblVehicleAttackLabel.Location = new System.Drawing.Point(105, 31);
+            this.lblVehicleAttackLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleAttackLabel.Name = "lblVehicleAttackLabel";
+            this.lblVehicleAttackLabel.Size = new System.Drawing.Size(41, 13);
+            this.lblVehicleAttackLabel.TabIndex = 194;
+            this.lblVehicleAttackLabel.Tag = "Label_Attack";
+            this.lblVehicleAttackLabel.Text = "Attack:";
             // 
             // panVehicleCM
             // 
             this.panVehicleCM.Controls.Add(this.tabVehiclePhysicalCM);
             this.panVehicleCM.Controls.Add(this.tabVehicleMatrixCM);
             this.panVehicleCM.ItemSize = new System.Drawing.Size(176, 18);
-            this.panVehicleCM.Location = new System.Drawing.Point(3, 199);
+            this.panVehicleCM.Location = new System.Drawing.Point(3, 671);
             this.panVehicleCM.Name = "panVehicleCM";
             this.panVehicleCM.SelectedIndex = 0;
             this.panVehicleCM.Size = new System.Drawing.Size(360, 113);
@@ -14936,6 +15177,29 @@ namespace Chummer
             this.chkVehicleMatrixCM40.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkVehicleMatrixCM40.UseVisualStyleBackColor = true;
             this.chkVehicleMatrixCM40.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+            // 
+            // treVehicles
+            // 
+            this.treVehicles.AllowDrop = true;
+            this.treVehicles.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.treVehicles.HideSelection = false;
+            this.treVehicles.Location = new System.Drawing.Point(3, 32);
+            this.treVehicles.Name = "treVehicles";
+            treeNode24.Name = "nodVehiclesRoot";
+            treeNode24.Tag = "Node_SelectedVehicles";
+            treeNode24.Text = "Selected Vehicles";
+            this.treVehicles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode24});
+            this.treVehicles.ShowNodeToolTips = true;
+            this.treVehicles.ShowRootLines = false;
+            this.treVehicles.Size = new System.Drawing.Size(295, 590);
+            this.treVehicles.TabIndex = 30;
+            this.treVehicles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treVehicles_AfterSelect);
+            this.treVehicles.DragOver += new System.Windows.Forms.DragEventHandler(this.treVehicles_DragOver);
+            this.treVehicles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treVehicles_KeyDown);
+            this.treVehicles.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // tabCharacterInfo
             // 
@@ -17113,8 +17377,12 @@ namespace Chummer
             this.gpbEssenceConsumption.PerformLayout();
             this.tlpCyberwareEssenceConsumption.ResumeLayout(false);
             this.tlpCyberwareEssenceConsumption.PerformLayout();
+            this.gpbCyberwareCommon.ResumeLayout(false);
+            this.gpbCyberwareCommon.PerformLayout();
             this.tlpCyberwareCommon.ResumeLayout(false);
             this.tlpCyberwareCommon.PerformLayout();
+            this.gpbCyberwareMatrix.ResumeLayout(false);
+            this.gpbCyberwareMatrix.PerformLayout();
             this.tlpCyberwareMatrix.ResumeLayout(false);
             this.tlpCyberwareMatrix.PerformLayout();
             this.tabCyberwareCM.ResumeLayout(false);
@@ -17172,10 +17440,40 @@ namespace Chummer
             this.tlpVehicles.PerformLayout();
             this.flowLayoutPanel10.ResumeLayout(false);
             this.flowLayoutPanel10.PerformLayout();
-            this.flowLayoutPanel27.ResumeLayout(false);
-            this.flowLayoutPanel27.PerformLayout();
-            this.tlpVehicleWeapon.ResumeLayout(false);
-            this.tlpVehicleWeapon.PerformLayout();
+            this.flpVehicles.ResumeLayout(false);
+            this.flpVehicles.PerformLayout();
+            this.gpbVehiclesCommon.ResumeLayout(false);
+            this.gpbVehiclesCommon.PerformLayout();
+            this.tlpVehiclesCommon.ResumeLayout(false);
+            this.tlpVehiclesCommon.PerformLayout();
+            this.flpVehiclesCommonQuantity.ResumeLayout(false);
+            this.flpVehiclesCommonQuantity.PerformLayout();
+            this.flpVehiclesCommonCheckBoxes.ResumeLayout(false);
+            this.flpVehiclesCommonCheckBoxes.PerformLayout();
+            this.flpVehiclesCommonMoveButtons.ResumeLayout(false);
+            this.flpVehiclesCommonMoveButtons.PerformLayout();
+            this.gpbVehiclesVehicle.ResumeLayout(false);
+            this.gpbVehiclesVehicle.PerformLayout();
+            this.tableLayoutPanel7.ResumeLayout(false);
+            this.tableLayoutPanel7.PerformLayout();
+            this.gpbVehiclesWeapon.ResumeLayout(false);
+            this.gpbVehiclesWeapon.PerformLayout();
+            this.flpVehiclesWeapon.ResumeLayout(false);
+            this.flpVehiclesWeapon.PerformLayout();
+            this.tlpVehiclesWeaponCommon.ResumeLayout(false);
+            this.tlpVehiclesWeaponCommon.PerformLayout();
+            this.flpVehiclesWeaponDicePool.ResumeLayout(false);
+            this.flpVehiclesWeaponDicePool.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
+            this.tlpVehiclesWeaponCareer.ResumeLayout(false);
+            this.tlpVehiclesWeaponCareer.PerformLayout();
+            this.flpVehiclesWeaponCareerButtons.ResumeLayout(false);
+            this.flpVehiclesWeaponCareerButtons.PerformLayout();
+            this.gpbVehiclesMatrix.ResumeLayout(false);
+            this.gpbVehiclesMatrix.PerformLayout();
+            this.tableLayoutPanel4.ResumeLayout(false);
+            this.tableLayoutPanel4.PerformLayout();
             this.panVehicleCM.ResumeLayout(false);
             this.tabVehiclePhysicalCM.ResumeLayout(false);
             this.tabVehicleMatrixCM.ResumeLayout(false);
@@ -17271,8 +17569,8 @@ namespace Chummer
         private System.Windows.Forms.Label lblESSMax;
         private System.Windows.Forms.Label lblESS;
         private LabelWithToolTip lblArmor;
-        private System.Windows.Forms.Label lblCMStun;
-        private System.Windows.Forms.Label lblCMPhysical;
+        private LabelWithToolTip lblCMStun;
+        private LabelWithToolTip lblCMPhysical;
         private System.Windows.Forms.Label lblCMStunLabel;
         private System.Windows.Forms.Label lblCMPhysicalLabel;
         private System.Windows.Forms.Label lblRemainingNuyen;
@@ -17482,15 +17780,15 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialAddBiowareSuite;
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialAddCyberwareSuite;
         private System.Windows.Forms.Label lblArmorLabel;
-        private System.Windows.Forms.Label lblRiggingINI;
+        private LabelWithToolTip lblRiggingINI;
         private System.Windows.Forms.Label lblRiggingINILabel;
-        private System.Windows.Forms.Label lblMatrixINIHot;
+        private LabelWithToolTip lblMatrixINIHot;
         private System.Windows.Forms.Label lblMatrixINIHotLabel;
-        private System.Windows.Forms.Label lblMatrixINICold;
+        private LabelWithToolTip lblMatrixINICold;
         private System.Windows.Forms.Label lblMatrixINIColdLabel;
-        private System.Windows.Forms.Label lblAstralINI;
-        private System.Windows.Forms.Label lblMatrixINI;
-        private System.Windows.Forms.Label lblINI;
+        private LabelWithToolTip lblAstralINI;
+        private LabelWithToolTip lblMatrixINI;
+        private LabelWithToolTip lblINI;
         private System.Windows.Forms.Label lblAstralINILabel;
         private System.Windows.Forms.Label lblMatrixINILabel;
         private System.Windows.Forms.Label lblINILabel;
@@ -17701,11 +17999,11 @@ namespace Chummer
         private System.Windows.Forms.Label lblCyberlimbAGI;
         private System.Windows.Forms.Label lblCyberlimbSTRLabel;
         private System.Windows.Forms.Label lblCyberlimbAGILabel;
-        private ElasticComboBox cboCyberwareGearOverclocker;
-        private ElasticComboBox cboCyberwareGearDataProcessing;
-        private ElasticComboBox cboCyberwareGearFirewall;
-        private ElasticComboBox cboCyberwareGearSleaze;
-        private ElasticComboBox cboCyberwareGearAttack;
+        private ElasticComboBox cboCyberwareOverclocker;
+        private ElasticComboBox cboCyberwareDataProcessing;
+        private ElasticComboBox cboCyberwareFirewall;
+        private ElasticComboBox cboCyberwareSleaze;
+        private ElasticComboBox cboCyberwareAttack;
         private System.Windows.Forms.TabControl tabCyberwareCM;
         private System.Windows.Forms.TabPage tabCyberwareMatrixCM;
         private System.Windows.Forms.CheckBox chkCyberwareMatrixCM1;
@@ -17803,10 +18101,10 @@ namespace Chummer
         private System.Windows.Forms.Label lblVehicleWeaponsmodLabel;
         private System.Windows.Forms.Label lblVehicleProtectionLabel;
         private System.Windows.Forms.Label lblVehiclePowertrainLabel;
-        private ElasticComboBox cboVehicleGearDataProcessing;
-        private ElasticComboBox cboVehicleGearFirewall;
-        private ElasticComboBox cboVehicleGearSleaze;
-        private ElasticComboBox cboVehicleGearAttack;
+        private ElasticComboBox cboVehicleDataProcessing;
+        private ElasticComboBox cboVehicleFirewall;
+        private ElasticComboBox cboVehicleSleaze;
+        private ElasticComboBox cboVehicleAttack;
         private System.Windows.Forms.TabControl panVehicleCM;
         private System.Windows.Forms.TabPage tabVehiclePhysicalCM;
         private System.Windows.Forms.CheckBox chkVehiclePhysicalCM40;
@@ -17959,7 +18257,6 @@ namespace Chummer
         private System.Windows.Forms.Button cmdVehicleMoveToInventory;
         private System.Windows.Forms.Button cmdVehicleGearReduceQty;
         private SplitButton cmdAddVehicle;
-        private SplitButton cmdFireVehicleWeapon;
         private SplitButton cmdDeleteVehicle;
         private System.Windows.Forms.TabPage tabCharacterInfo;
         private System.Windows.Forms.Button cmdBurnStreetCred;
@@ -18452,7 +18749,7 @@ namespace Chummer
         private BufferedTableLayoutPanel tlpCyberware;
         private BufferedTableLayoutPanel tlpCyberwareMatrix;
         private BufferedTableLayoutPanel tlpVehicles;
-        private BufferedTableLayoutPanel tlpVehicleWeapon;
+        private BufferedTableLayoutPanel tlpVehiclesWeaponCareer;
         private BufferedTableLayoutPanel tableLayoutPanel5;
         private BufferedTableLayoutPanel tlpCharacterInfo;
         private BufferedTableLayoutPanel tlpGear;
@@ -18480,5 +18777,24 @@ namespace Chummer
         private Label lblCyberwareGearOverclocker;
         private FlowLayoutPanel flpMysticAdeptMAGAdept;
         private FlowLayoutPanel flpStreetCredTotal;
+        private GroupBox gpbCyberwareCommon;
+        private GroupBox gpbCyberwareMatrix;
+        private FlowLayoutPanel flpVehicles;
+        private GroupBox gpbVehiclesWeapon;
+        private FlowLayoutPanel flpVehiclesWeapon;
+        private TableLayoutPanel tlpVehiclesWeaponCommon;
+        private FlowLayoutPanel flpVehiclesWeaponDicePool;
+        private SplitButton cmdFireVehicleWeapon;
+        private TableLayoutPanel tableLayoutPanel1;
+        private FlowLayoutPanel flpVehiclesWeaponCareerButtons;
+        private GroupBox gpbVehiclesMatrix;
+        private TableLayoutPanel tableLayoutPanel4;
+        private GroupBox gpbVehiclesCommon;
+        private TableLayoutPanel tlpVehiclesCommon;
+        private FlowLayoutPanel flpVehiclesCommonQuantity;
+        private FlowLayoutPanel flpVehiclesCommonCheckBoxes;
+        private FlowLayoutPanel flpVehiclesCommonMoveButtons;
+        private GroupBox gpbVehiclesVehicle;
+        private TableLayoutPanel tableLayoutPanel7;
     }
 }

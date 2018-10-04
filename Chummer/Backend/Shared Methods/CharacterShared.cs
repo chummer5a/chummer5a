@@ -249,6 +249,7 @@ namespace Chummer
         {
             if (notifyCollectionChangedEventArgs == null)
             {
+                pnlAttributes.SuspendLayout();
                 pnlAttributes.Controls.Clear();
 
                 foreach (CharacterAttrib objAttrib in _lstPrimaryAttributes.Concat(_lstSpecialAttributes))
@@ -259,6 +260,7 @@ namespace Chummer
                     objControl.Width = pnlAttributes.Width;
                     objControl.Anchor |= AnchorStyles.Right;
                 }
+                pnlAttributes.ResumeLayout();
             }
             else
             {

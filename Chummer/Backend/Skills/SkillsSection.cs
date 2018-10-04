@@ -567,7 +567,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public int KnowledgeSkillRanksSum
         {
-            get { return KnowledgeSkills.Sum(x => x.CurrentSpCost); }
+            get { return KnowledgeSkills.AsParallel().Sum(x => x.CurrentSpCost); }
         }
 
         /// <summary>
