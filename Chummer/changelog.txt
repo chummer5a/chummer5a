@@ -187,6 +187,8 @@ New Strings:
 - Label_Options_CustomDataDirectories
 - Button_Options_UploadPastebin
 - Menu_SpecialChangePriorities
+- String_Matrix
+- String_Info
 
 Changed Strings:
 
