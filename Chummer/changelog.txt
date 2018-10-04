@@ -140,6 +140,7 @@ Data Changes:
 - All instances of "NeoNET" are now capitalized as such (some items previously said "NeoNet" or "Neonet"). Fixes #3033.
 - Added (hidden) Gear items for Public Grid, Local Grid, and Global Grid so that these phrases can be handled by TranslateExtra. Part of #3002.
 - Fixed an issue with the Text-Only sheet that caused it to fail to load the LOG attribute.
+- Fixed incorrect RC and page reference for the Cavalier Thunderstruck. Fixes #3083.
 
 New Strings:
 
