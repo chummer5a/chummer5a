@@ -8401,7 +8401,7 @@
 		</string>
 		<string>
 			<key>Message_Options_CloseForms</key>
-			<text>Einstellungen werden nur beim Laden des Charakters angewendet. Sollten die Anwendung neu gestartet werden?</text>
+			<text>Einstellungen werden nur beim Laden des Charakters angewendet. Soll die Anwendung neu gestartet werden?</text>
 		</string>
 		<string>
 			<key>Message_Options_Restart</key>
