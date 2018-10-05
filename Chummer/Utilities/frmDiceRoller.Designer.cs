@@ -28,6 +28,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDiceRoller));
             this.lblRoll = new System.Windows.Forms.Label();
             this.nudDice = new System.Windows.Forms.NumericUpDown();
@@ -38,15 +39,15 @@ namespace Chummer
             this.lblResultsLabel = new System.Windows.Forms.Label();
             this.lblGremlins = new System.Windows.Forms.Label();
             this.nudGremlins = new System.Windows.Forms.NumericUpDown();
-            this.cboMethod = new ElasticComboBox();
+            this.cboMethod = new Chummer.ElasticComboBox();
             this.chkCinematicGameplay = new System.Windows.Forms.CheckBox();
             this.cmdReroll = new System.Windows.Forms.Button();
             this.chkRushJob = new System.Windows.Forms.CheckBox();
             this.nudThreshold = new System.Windows.Forms.NumericUpDown();
             this.lblThreshold = new System.Windows.Forms.Label();
             this.chkBubbleDie = new System.Windows.Forms.CheckBox();
-            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
-            this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblResults = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudDice)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGremlins)).BeginInit();
@@ -69,9 +70,9 @@ namespace Chummer
             // nudDice
             // 
             this.nudDice.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.nudDice.Location = new System.Drawing.Point(47, 3);
+            this.nudDice.Location = new System.Drawing.Point(34, 3);
             this.nudDice.Name = "nudDice";
-            this.nudDice.Size = new System.Drawing.Size(82, 20);
+            this.nudDice.Size = new System.Drawing.Size(79, 20);
             this.nudDice.TabIndex = 1;
             this.nudDice.Value = new decimal(new int[] {
             1,
@@ -82,7 +83,7 @@ namespace Chummer
             // lblD6
             // 
             this.lblD6.AutoSize = true;
-            this.lblD6.Location = new System.Drawing.Point(135, 6);
+            this.lblD6.Location = new System.Drawing.Point(119, 6);
             this.lblD6.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblD6.Name = "lblD6";
             this.lblD6.Size = new System.Drawing.Size(21, 13);
@@ -92,10 +93,11 @@ namespace Chummer
             // 
             // cmdRollDice
             // 
+            this.cmdRollDice.AutoSize = true;
             this.cmdRollDice.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdRollDice.Location = new System.Drawing.Point(333, 3);
+            this.cmdRollDice.Location = new System.Drawing.Point(316, 3);
             this.cmdRollDice.Name = "cmdRollDice";
-            this.cmdRollDice.Size = new System.Drawing.Size(104, 23);
+            this.cmdRollDice.Size = new System.Drawing.Size(127, 23);
             this.cmdRollDice.TabIndex = 10;
             this.cmdRollDice.Tag = "Button_DiceRoller_Roll";
             this.cmdRollDice.Text = "&Roll";
@@ -117,12 +119,12 @@ namespace Chummer
             // 
             // lstResults
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.lstResults, 2);
+            this.tableLayoutPanel1.SetColumnSpan(this.lstResults, 3);
             this.lstResults.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstResults.FormattingEnabled = true;
             this.lstResults.Location = new System.Drawing.Point(3, 61);
             this.lstResults.Name = "lstResults";
-            this.lstResults.Size = new System.Drawing.Size(126, 193);
+            this.lstResults.Size = new System.Drawing.Size(137, 199);
             this.lstResults.TabIndex = 9;
             // 
             // lblResultsLabel
@@ -149,7 +151,7 @@ namespace Chummer
             // 
             // nudGremlins
             // 
-            this.nudGremlins.Location = new System.Drawing.Point(80, 79);
+            this.nudGremlins.Location = new System.Drawing.Point(66, 79);
             this.nudGremlins.Maximum = new decimal(new int[] {
             4,
             0,
@@ -164,17 +166,18 @@ namespace Chummer
             this.cboMethod.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMethod.FormattingEnabled = true;
-            this.cboMethod.Location = new System.Drawing.Point(179, 3);
+            this.cboMethod.Location = new System.Drawing.Point(146, 3);
             this.cboMethod.Name = "cboMethod";
-            this.cboMethod.Size = new System.Drawing.Size(148, 21);
+            this.cboMethod.Size = new System.Drawing.Size(164, 21);
             this.cboMethod.TabIndex = 3;
+            this.cboMethod.TooltipText = "";
             this.cboMethod.SelectedIndexChanged += new System.EventHandler(this.cboMethod_SelectedIndexChanged);
             // 
             // chkCinematicGameplay
             // 
             this.chkCinematicGameplay.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.chkCinematicGameplay, 2);
-            this.chkCinematicGameplay.Location = new System.Drawing.Point(135, 33);
+            this.chkCinematicGameplay.Location = new System.Drawing.Point(119, 33);
             this.chkCinematicGameplay.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkCinematicGameplay.Name = "chkCinematicGameplay";
             this.chkCinematicGameplay.Size = new System.Drawing.Size(99, 17);
@@ -187,9 +190,9 @@ namespace Chummer
             // 
             this.cmdReroll.AutoSize = true;
             this.cmdReroll.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdReroll.Location = new System.Drawing.Point(333, 32);
+            this.cmdReroll.Location = new System.Drawing.Point(316, 32);
             this.cmdReroll.Name = "cmdReroll";
-            this.cmdReroll.Size = new System.Drawing.Size(104, 23);
+            this.cmdReroll.Size = new System.Drawing.Size(127, 23);
             this.cmdReroll.TabIndex = 11;
             this.cmdReroll.Tag = "Button_DiceRoller_RollMisses";
             this.cmdReroll.Text = "Re-Roll Misses";
@@ -211,7 +214,7 @@ namespace Chummer
             // 
             // nudThreshold
             // 
-            this.nudThreshold.Location = new System.Drawing.Point(80, 53);
+            this.nudThreshold.Location = new System.Drawing.Point(66, 53);
             this.nudThreshold.Name = "nudThreshold";
             this.nudThreshold.Size = new System.Drawing.Size(45, 20);
             this.nudThreshold.TabIndex = 14;
@@ -243,11 +246,11 @@ namespace Chummer
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 5;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 66.66666F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.Controls.Add(this.lblRoll, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.nudDice, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblD6, 2, 0);
@@ -257,22 +260,23 @@ namespace Chummer
             this.tableLayoutPanel1.Controls.Add(this.chkCinematicGameplay, 2, 1);
             this.tableLayoutPanel1.Controls.Add(this.cboMethod, 3, 0);
             this.tableLayoutPanel1.Controls.Add(this.cmdRollDice, 4, 0);
-            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 2, 2);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 12);
+            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 3, 2);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(440, 257);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(446, 263);
             this.tableLayoutPanel1.TabIndex = 16;
             // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel1.SetColumnSpan(this.tableLayoutPanel2, 3);
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75F));
+            this.tableLayoutPanel1.SetColumnSpan(this.tableLayoutPanel2, 2);
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.Controls.Add(this.lblResults, 1, 4);
             this.tableLayoutPanel2.Controls.Add(this.lblResultsLabel, 0, 4);
             this.tableLayoutPanel2.Controls.Add(this.nudGremlins, 1, 3);
@@ -282,7 +286,7 @@ namespace Chummer
             this.tableLayoutPanel2.Controls.Add(this.lblGremlins, 0, 3);
             this.tableLayoutPanel2.Controls.Add(this.chkRushJob, 0, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(132, 58);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(143, 58);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 5;
@@ -290,14 +294,14 @@ namespace Chummer
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(308, 199);
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(303, 205);
             this.tableLayoutPanel2.TabIndex = 12;
             // 
             // lblResults
             // 
             this.lblResults.AutoSize = true;
-            this.lblResults.Location = new System.Drawing.Point(80, 108);
+            this.lblResults.Location = new System.Drawing.Point(66, 108);
             this.lblResults.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblResults.Name = "lblResults";
             this.lblResults.Size = new System.Drawing.Size(45, 13);
@@ -317,6 +321,7 @@ namespace Chummer
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmDiceRoller";
+            this.Padding = new System.Windows.Forms.Padding(9);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_DiceRoller";
             this.Text = "Dice Roller";
