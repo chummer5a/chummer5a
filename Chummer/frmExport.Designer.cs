@@ -29,17 +29,22 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.lblExport = new System.Windows.Forms.Label();
-            this.cboXSLT = new ElasticComboBox();
+            this.cboXSLT = new Chummer.ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.SaveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.rtbText = new System.Windows.Forms.RichTextBox();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.tableLayoutPanel1.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblExport
             // 
             this.lblExport.AutoSize = true;
-            this.lblExport.Location = new System.Drawing.Point(12, 9);
+            this.lblExport.Location = new System.Drawing.Point(3, 6);
+            this.lblExport.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblExport.Name = "lblExport";
             this.lblExport.Size = new System.Drawing.Size(52, 13);
             this.lblExport.TabIndex = 0;
@@ -52,17 +57,20 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboXSLT.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboXSLT.FormattingEnabled = true;
-            this.cboXSLT.Location = new System.Drawing.Point(70, 6);
+            this.cboXSLT.Location = new System.Drawing.Point(61, 3);
             this.cboXSLT.Name = "cboXSLT";
-            this.cboXSLT.Size = new System.Drawing.Size(379, 21);
+            this.cboXSLT.Size = new System.Drawing.Size(382, 21);
             this.cboXSLT.TabIndex = 1;
+            this.cboXSLT.TooltipText = "";
             this.cboXSLT.SelectedIndexChanged += new System.EventHandler(this.cboXSLT_SelectedIndexChanged);
             // 
             // cmdCancel
             // 
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdCancel.AutoSize = true;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(296, 246);
+            this.cmdCancel.Location = new System.Drawing.Point(0, 0);
+            this.cmdCancel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 3;
@@ -74,7 +82,9 @@ namespace Chummer
             // cmdOK
             // 
             this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdOK.Location = new System.Drawing.Point(377, 246);
+            this.cmdOK.AutoSize = true;
+            this.cmdOK.Location = new System.Drawing.Point(81, 0);
+            this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 2;
@@ -85,17 +95,49 @@ namespace Chummer
             // 
             // rtbText
             // 
-            this.rtbText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.rtbText.Location = new System.Drawing.Point(12, 33);
+            this.tableLayoutPanel1.SetColumnSpan(this.rtbText, 2);
+            this.rtbText.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbText.Location = new System.Drawing.Point(3, 30);
             this.rtbText.Name = "rtbText";
             this.rtbText.ReadOnly = true;
-            this.rtbText.Size = new System.Drawing.Size(437, 207);
+            this.rtbText.Size = new System.Drawing.Size(440, 201);
             this.rtbText.TabIndex = 4;
             this.rtbText.Text = "";
             this.rtbText.MouseLeave += new System.EventHandler(this.rtbText_Leave);
             this.rtbText.MouseUp += new System.Windows.Forms.MouseEventHandler(this.rtbText_MouseUp);
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.lblExport, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.cboXSLT, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.rtbText, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 2);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 3;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(446, 263);
+            this.tableLayoutPanel1.TabIndex = 5;
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel1.AutoSize = true;
+            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 2);
+            this.flowLayoutPanel1.Controls.Add(this.cmdOK);
+            this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
+            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(287, 237);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(156, 23);
+            this.flowLayoutPanel1.TabIndex = 5;
             // 
             // frmExport
             // 
@@ -104,21 +146,21 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(464, 281);
-            this.Controls.Add(this.rtbText);
-            this.Controls.Add(this.cmdCancel);
-            this.Controls.Add(this.cmdOK);
-            this.Controls.Add(this.lblExport);
-            this.Controls.Add(this.cboXSLT);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmExport";
+            this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Export Character";
             this.Load += new System.EventHandler(this.frmExport_Load);
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -130,5 +172,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdOK;
         internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
         private System.Windows.Forms.RichTextBox rtbText;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

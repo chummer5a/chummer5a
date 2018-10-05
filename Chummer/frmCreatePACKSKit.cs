@@ -38,7 +38,6 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            MoveControls();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -759,15 +758,6 @@ namespace Chummer
             }
             // </gears>
             objWriter.WriteEndElement();
-        }
-
-        private void MoveControls()
-        {
-            int intWidth = Math.Max(lblNameLabel.Width, lblFileNameLabel.Width);
-            txtName.Left = lblNameLabel.Left + intWidth + 6;
-            txtName.Width = Width - txtName.Left - 19;
-            txtFileName.Left = lblFileNameLabel.Left + intWidth + 6;
-            txtFileName.Width = Width - txtFileName.Left - 19;
         }
 #endregion
     }

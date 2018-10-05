@@ -9972,7 +9972,6 @@ namespace Chummer
         /// </summary>
         private void UpdateCharacterInfo(object sender = null, EventArgs e = null)
         {
-            // TODO: Databind as much of this as possible
             if (IsLoading || _blnSkipUpdate || !IsCharacterUpdateRequested)
                 return;
 
