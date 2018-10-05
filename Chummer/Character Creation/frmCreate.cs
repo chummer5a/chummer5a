@@ -10008,6 +10008,7 @@ namespace Chummer
             RefreshSelectedCyberware();
             RefreshSelectedArmor();
             RefreshSelectedGear();
+            RefreshSelectedDrug();
             RefreshSelectedLifestyle();
             RefreshSelectedVehicle();
             RefreshSelectedWeapon();
@@ -11464,34 +11465,22 @@ namespace Chummer
         private void RefreshSelectedLifestyle()
         {
             IsRefreshing = true;
-            if (treLifestyles.SelectedNode == null || treLifestyles.SelectedNode.Level <= 0)
+            flpLifestyleDetails.SuspendLayout();
+            if (treLifestyles.SelectedNode == null || treLifestyles.SelectedNode.Level <= 0 || !(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
             {
+                flpLifestyleDetails.Visible = false;
                 cmdDeleteLifestyle.Enabled = false;
-                lblLifestyleCost.Text = string.Empty;
-                lblLifestyleTotalCost.Text = string.Empty;
-                lblLifestyleSource.Text = string.Empty;
-                lblLifestyleSource.SetToolTip(null);
-                lblLifestyleQualities.Text = string.Empty;
-                lblLifestyleCostLabel.Text = string.Empty;
-                nudLifestyleMonths.Visible = false;
-                lblLifestyleMonthsLabel.Text = string.Empty;
                 IsRefreshing = false;
+                flpLifestyleDetails.ResumeLayout();
                 return;
             }
 
-            // Locate the selected Lifestyle.
-            if (!(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
-            {
-                IsRefreshing = false;
-                return;
-            }
+            flpLifestyleDetails.Visible = true;
             cmdDeleteLifestyle.Enabled = true;
-            nudLifestyleMonths.Visible = true;
-
+            
             lblLifestyleCost.Text = objLifestyle.TotalMonthlyCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             nudLifestyleMonths.Value = Convert.ToDecimal(objLifestyle.Increments, GlobalOptions.InvariantCultureInfo);
             lblLifestyleStartingNuyen.Text = objLifestyle.Dice + LanguageManager.GetString("String_D6", GlobalOptions.Language) + " × " + objLifestyle.Multiplier.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-            objLifestyle.SetSourceDetail(lblLifestyleSource);
             objLifestyle.SetSourceDetail(lblLifestyleSource);
             lblLifestyleTotalCost.Text = objLifestyle.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
@@ -11517,9 +11506,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
             {
                 string strQualities = string.Join(",\n", objLifestyle.LifestyleQualities.Select(r => r.FormattedDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)));
-
-                lblLifestyleQualities.Text = string.Empty;
-
+                
                 foreach (Improvement objImprovement in CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LifestyleCost && x.Enabled))
                 {
                     if (strQualities.Length > 0)
@@ -11544,15 +11531,19 @@ namespace Chummer
                 }
 
                 lblBaseLifestyle.Text = objLifestyle.DisplayNameShort(GlobalOptions.Language);
-                lblLifestyleQualities.Text += strQualities;
+                lblLifestyleQualities.Text = strQualities;
+                lblLifestyleQualitiesLabel.Visible = true;
+                lblLifestyleQualities.Visible = true;
             }
             else
             {
                 lblBaseLifestyle.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
-                lblLifestyleQualities.Text = string.Empty;
+                lblLifestyleQualitiesLabel.Visible = false;
+                lblLifestyleQualities.Visible = false;
             }
 
             IsRefreshing = false;
+            flpLifestyleDetails.ResumeLayout();
         }
         
         /// <summary>
@@ -12161,43 +12152,38 @@ namespace Chummer
         /// </summary>
         private void RefreshSelectedDrug()
         {
-            if (treCustomDrugs.SelectedNode?.Level == 0)
-            {
-                lblDrugAvail.Text = string.Empty;
-                lblDrugGrade.Text = string.Empty;
-                lblDrugCost.Text = string.Empty;
-                lblDrugCategory.Text = string.Empty;
-                lblDrugAddictionRating.Text = string.Empty;
-                lblDrugAddictionThreshold.Text = string.Empty;
-                lblDrugComponents.Text = string.Empty;
-                lblDrugEffect.Text = string.Empty;
-                nudDrugQty.Visible = false;
-            }
+            IsRefreshing = true;
+            flpDrugs.SuspendLayout();
 
-            // Locate the selected Vehicle.
-            if (treCustomDrugs.SelectedNode?.Tag is Drug objDrug)
+            if (treCustomDrugs.SelectedNode?.Level != 0 && treCustomDrugs.SelectedNode?.Tag is Drug objDrug)
             {
-                IsRefreshing = true;
+
+                flpDrugs.Visible = true;
+                btnDeleteCustomDrug.Enabled = true;
+
                 lblDrugName.Text = objDrug.Name;
                 lblDrugAvail.Text = objDrug.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblDrugGrade.Text = objDrug.Grade;
                 lblDrugCost.Text = objDrug.Cost.ToString(CharacterObject.Options.NuyenFormat) + '¥';
-                lblDrugCategory.Text = objDrug.Category;
-                lblDrugAddictionRating.Text = objDrug.AddictionRating.ToString();
-                lblDrugAddictionThreshold.Text = objDrug.AddictionThreshold.ToString();
-                lblDrugEffect.Text = objDrug.EffectDescription;
-                nudDrugQty.Enabled = true;
-                nudDrugQty.Visible = true;
                 nudDrugQty.Value = objDrug.Quantity;
-
-                lblDrugComponents.Text = "";
+                lblDrugCategory.Text = objDrug.Category;
+                lblDrugAddictionRating.Text = objDrug.AddictionRating.ToString(GlobalOptions.CultureInfo);
+                lblDrugAddictionThreshold.Text = objDrug.AddictionThreshold.ToString(GlobalOptions.CultureInfo);
+                lblDrugEffect.Text = objDrug.EffectDescription;
+                lblDrugComponents.Text = string.Empty;
                 foreach (DrugComponent objComponent in objDrug.Components)
                 {
                     lblDrugComponents.Text += objComponent.CurrentDisplayName + '\n';
                 }
-                IsRefreshing = false;
-
             }
+            else
+            {
+                flpDrugs.Visible = false;
+                btnDeleteCustomDrug.Enabled = false;
+            }
+
+            IsRefreshing = false;
+            flpDrugs.ResumeLayout();
         }
 		/// <summary>
 		/// Add or remove the Adapsin Cyberware Grade categories.
