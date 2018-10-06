@@ -10810,22 +10810,6 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void chkIncludedInArmor_CheckedChanged(object sender, EventArgs e)
-        {
-            if (IsRefreshing)
-                return;
-
-            // Locate the selected Armor Modification.
-            if ((treArmor.SelectedNode?.Tag is ArmorMod objMod))
-            {
-                objMod.IncludedInArmor = chkIncludedInArmor.Checked;
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
-        }
-
         private void chkCommlinks_CheckedChanged(object sender, EventArgs e)
         {
             RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
@@ -13309,74 +13293,23 @@ namespace Chummer
         public void RefreshSelectedWeapon()
         {
             IsRefreshing = true;
-            string strSelectedId = treWeapons.SelectedNode?.Tag is IHasInternalId objHasInternalId ? objHasInternalId.InternalId : treWeapons.SelectedNode?.Tag.ToString();
-            cmdDeleteWeapon.Enabled = !string.IsNullOrEmpty(strSelectedId) && strSelectedId != "Node_SelectedWeapons";
+            flpWeapons.SuspendLayout();
 
-            if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level == 0)
+            if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level <= 0)
             {
-                lblWeaponName.Text = string.Empty;
-                lblWeaponCategory.Text = string.Empty;
-                lblWeaponAvail.Text = string.Empty;
-                lblWeaponCost.Text = string.Empty;
-                lblWeaponConceal.Text = string.Empty;
-                lblWeaponAccuracy.Text = string.Empty;
-                lblWeaponDamage.Text = string.Empty;
-                lblWeaponRC.Text = string.Empty;
-                lblWeaponAP.Text = string.Empty;
-                lblWeaponReach.Text = string.Empty;
-                lblWeaponMode.Text = string.Empty;
-                lblWeaponAmmo.Text = string.Empty;
-                lblWeaponRating.Text = string.Empty;
-                lblWeaponSource.Text = string.Empty;
-                cboWeaponAmmo.Enabled = false;
-                lblWeaponSource.SetToolTip(null);
-                chkWeaponAccessoryInstalled.Enabled = false;
-                chkIncludedInWeapon.Enabled = false;
-                chkIncludedInWeapon.Checked = false;
-                tabWeaponMatrixCM.Visible = false;
+                gpbWeaponsCommon.Visible = false;
+                gpbWeaponsWeapon.Visible = false;
+                gpbWeaponsMatrix.Visible = false;
 
-                lblWeaponCapacity.Visible = false;
-                lblWeaponCapacityLabel.Visible = false;
+                // Buttons
+                cmdDeleteWeapon.Enabled = false;
 
-                lblWeaponDeviceRatingLabel.Visible = false;
-                lblWeaponDeviceRating.Visible = false;
-                lblWeaponFirewallLabel.Visible = false;
-                lblWeaponDataProcessingLabel.Visible = false;
-                lblWeaponSleazeLabel.Visible = false;
-                lblWeaponAttackLabel.Visible = false;
-                cboWeaponGearAttack.Visible = false;
-                cboWeaponGearDataProcessing.Visible = false;
-                cboWeaponGearFirewall.Visible = false;
-                cboWeaponGearSleaze.Visible = false;
-
-                // Hide Weapon Ranges.
-                lblWeaponRangeMain.Text = string.Empty;
-                lblWeaponRangeAlternate.Text = string.Empty;
-                lblWeaponRangeShort.Text = string.Empty;
-                lblWeaponRangeMedium.Text = string.Empty;
-                lblWeaponRangeLong.Text = string.Empty;
-                lblWeaponRangeExtreme.Text = string.Empty;
-                lblWeaponAlternateRangeShort.Text = string.Empty;
-                lblWeaponAlternateRangeMedium.Text = string.Empty;
-                lblWeaponAlternateRangeLong.Text = string.Empty;
-                lblWeaponAlternateRangeExtreme.Text = string.Empty;
-
-                // Disable the fire button.
-                cmdFireWeapon.Enabled = false;
-                cmdReloadWeapon.Enabled = false;
-                cmdWeaponBuyAmmo.Enabled = false;
-                cboWeaponAmmo.Enabled = false;
                 IsRefreshing = false;
+                flpWeapons.ResumeLayout();
+
                 return;
             }
-
-            tabWeaponMatrixCM.Visible = (treWeapons.SelectedNode?.Tag is IHasMatrixConditionMonitor);
-
-            if (treWeapons.SelectedNode?.Tag is IHasMatrixConditionMonitor objMatrixCM)
-            {
-                ProcessEquipmentConditionMonitorBoxDisplays(tabWeaponMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
-            }
-
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             if (treWeapons.SelectedNode?.Tag is IHasSource objSelected)
             {
                 lblWeaponSourceLabel.Visible = true;
@@ -13388,46 +13321,145 @@ namespace Chummer
                 lblWeaponSourceLabel.Visible = false;
                 lblWeaponSource.Visible = false;
             }
+
             if (treWeapons.SelectedNode?.Tag is Weapon objWeapon)
             {
-                if (objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality") || objWeapon.IncludedInWeapon || !string.IsNullOrEmpty(objWeapon.ParentID))
-                    cmdDeleteWeapon.Enabled = false;
+                gpbWeaponsCommon.Visible = true;
+                gpbWeaponsWeapon.Visible = true;
+                gpbWeaponsMatrix.Visible = true;
+
+                // Buttons
+                cmdDeleteWeapon.Enabled = !objWeapon.IncludedInWeapon &&
+                                          !objWeapon.Cyberware &&
+                                          objWeapon.Category != "Gear" &&
+                                          !objWeapon.Category.StartsWith("Quality") &&
+                                          string.IsNullOrEmpty(objWeapon.ParentID);
+
+                // gpbWeaponsCommon
                 lblWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
                 lblWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
-
+                lblWeaponRatingLabel.Visible = false;
+                lblWeaponRating.Visible = false;
+                lblWeaponCapacityLabel.Visible = false;
+                lblWeaponCapacity.Visible = false;
+                lblWeaponAvail.Text = objWeapon.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblWeaponCost.Text = objWeapon.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblWeaponSlotsLabel.Visible = true;
+                lblWeaponSlots.Visible = true;
+                if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
+                {
+                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                    {
+                        StringBuilder strSlotsText = new StringBuilder();
+                        foreach (string strMount in objWeapon.AccessoryMounts.Split('/'))
+                        {
+                            strSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount, GlobalOptions.Language));
+                            strSlotsText.Append('/');
+                        }
+                        strSlotsText.Length -= 1;
+                        lblWeaponSlots.Text = strSlotsText.ToString();
+                    }
+                    else
+                        lblWeaponSlots.Text = objWeapon.AccessoryMounts;
+                }
+                else
+                    lblWeaponSlots.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
+                lblWeaponConcealLabel.Visible = true;
+                lblWeaponConceal.Visible = true;
+                lblWeaponConceal.Text = objWeapon.CalculatedConcealability(GlobalOptions.CultureInfo);
+                cmdWeaponMoveToVehicle.Visible = cmdDeleteWeapon.Enabled && CharacterObject.Vehicles.Count > 0;
+                chkWeaponAccessoryInstalled.Visible = true;
                 chkWeaponAccessoryInstalled.Enabled = objWeapon.Parent != null;
                 chkWeaponAccessoryInstalled.Checked = objWeapon.Equipped;
+                chkIncludedInWeapon.Visible = objWeapon.Parent != null;
                 chkIncludedInWeapon.Enabled = false;
                 chkIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
 
-                objWeapon.RefreshMatrixAttributeCBOs(cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall);
-                lblWeaponDeviceRatingLabel.Visible = true;
-                lblWeaponDeviceRating.Visible = true;
-                lblWeaponDeviceRating.Text = objWeapon.GetTotalMatrixAttribute("Device Rating").ToString();
-                lblWeaponAttackLabel.Visible = true;
-                lblWeaponSleazeLabel.Visible = true;
-                lblWeaponDataProcessingLabel.Visible = true;
-                lblWeaponFirewallLabel.Visible = true;
+                // gpbWeaponsWeapon
+                gpbWeaponsWeapon.Text = LanguageManager.GetString("String_Weapon", GlobalOptions.Language);
+                lblWeaponDamageLabel.Visible = true;
+                lblWeaponDamage.Visible = true;
+                lblWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblWeaponAPLabel.Visible = true;
+                lblWeaponAP.Visible = true;
+                lblWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
+                lblWeaponAccuracyLabel.Visible = true;
+                lblWeaponAccuracy.Visible = true;
+                lblWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblWeaponDicePoolLabel.Visible = true;
+                lblWeaponDicePool.Visible = true;
+                lblWeaponDicePool.Text = objWeapon.GetDicePool(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblWeaponDicePool.SetToolTip(objWeapon.DicePoolTooltip);
+                if (objWeapon.WeaponType == "Ranged")
+                {
+                    lblWeaponReachLabel.Visible = false;
+                    lblWeaponReach.Visible = false;
+                    lblWeaponRCLabel.Visible = true;
+                    lblWeaponRC.Visible = true;
+                    lblWeaponRC.Text = objWeapon.TotalRC(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
+                    lblWeaponRC.SetToolTip(objWeapon.RCToolTip);
+                    lblWeaponAmmoLabel.Visible = true;
+                    lblWeaponAmmo.Visible = true;
+                    lblWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    lblWeaponModeLabel.Visible = true;
+                    lblWeaponMode.Visible = true;
+                    lblWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
+                    
+                    tlpWeaponsRanges.Visible = true;
+                    lblWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
+                    lblWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
+                    IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                    lblWeaponRangeShort.Text = dictionaryRanges["short"];
+                    lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
+                    lblWeaponRangeLong.Text = dictionaryRanges["long"];
+                    lblWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
+                    lblWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
+                    lblWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
+                    lblWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
+                    lblWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
+                }
+                else
+                {
+                    lblWeaponReachLabel.Visible = true;
+                    lblWeaponReach.Visible = true;
+                    lblWeaponReach.Text = objWeapon.TotalReach.ToString();
+                    lblWeaponRCLabel.Visible = false;
+                    lblWeaponRC.Visible = false;
+                    if (objWeapon.Ammo != "0")
+                    {
+                        lblWeaponAmmoLabel.Visible = true;
+                        lblWeaponAmmo.Visible = true;
+                        lblWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        lblWeaponAmmoLabel.Visible = false;
+                        lblWeaponAmmo.Visible = false;
+                    }
+                    lblWeaponModeLabel.Visible = false;
+                    lblWeaponMode.Visible = false;
 
-                lblWeaponCapacity.Visible = false;
-                lblWeaponCapacityLabel.Visible = false;
-
-                cmdWeaponMoveToVehicle.Enabled = cmdDeleteWeapon.Enabled && CharacterObject.Vehicles.Count > 0;
-
+                    tlpWeaponsRanges.Visible = false;
+                }
                 // Enable the fire button if the Weapon is Ranged.
                 if (objWeapon.WeaponType == "Ranged" || (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0"))
                 {
-                    cmdFireWeapon.Enabled = true;
-                    cmdReloadWeapon.Enabled = true;
-                    cmdWeaponBuyAmmo.Enabled = true;
+                    tlpWeaponsCareer.Visible = true;
                     lblWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
-                    //lblWeaponAmmoType.Text = "External Source";
 
-                    cmsAmmoSingleShot.Enabled      = objWeapon.AllowMode(LanguageManager.GetString("String_ModeSingleShot",    GlobalOptions.Language)) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic", GlobalOptions.Language));
-                    cmsAmmoShortBurst.Enabled      = objWeapon.AllowMode(LanguageManager.GetString("String_ModeBurstFire",     GlobalOptions.Language)) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
-                    cmsAmmoLongBurst.Enabled       = objWeapon.AllowMode(LanguageManager.GetString("String_ModeBurstFire",     GlobalOptions.Language)) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
-                    cmsAmmoFullBurst.Enabled       = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
-                    cmsAmmoSuppressiveFire.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
+                    cmsAmmoSingleShot.Enabled =
+                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeSingleShot", GlobalOptions.Language)) ||
+                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic", GlobalOptions.Language));
+                    cmsAmmoShortBurst.Enabled =
+                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeBurstFire", GlobalOptions.Language)) ||
+                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
+                    cmsAmmoLongBurst.Enabled =
+                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeBurstFire", GlobalOptions.Language)) ||
+                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
+                    cmsAmmoFullBurst.Enabled =
+                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
+                    cmsAmmoSuppressiveFire.Enabled =
+                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
 
                     // Melee Weapons with Ammo are considered to be Single Shot.
                     if (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0")
@@ -13484,109 +13516,47 @@ namespace Chummer
                 }
                 else
                 {
-                    cmdFireWeapon.Enabled = false;
-                    cmdReloadWeapon.Enabled = false;
-                    cmdWeaponBuyAmmo.Enabled = false;
-                    lblWeaponAmmoRemaining.Text = string.Empty;
-                    cboWeaponAmmo.Enabled = false;
+                    tlpWeaponsCareer.Visible = false;
                 }
-                lblWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
-                lblWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
-                IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
-                lblWeaponRangeShort.Text = dictionaryRanges["short"];
-                lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
-                lblWeaponRangeLong.Text = dictionaryRanges["long"];
-                lblWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
-                lblWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
-                lblWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
-                lblWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
-                lblWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
 
-                lblWeaponAvail.Text = objWeapon.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblWeaponCost.Text = objWeapon.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                lblWeaponConceal.Text = objWeapon.CalculatedConcealability(GlobalOptions.CultureInfo);
-                lblWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblWeaponRC.Text = objWeapon.TotalRC(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
-                lblWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
-                lblWeaponReach.Text = objWeapon.TotalReach.ToString();
-                lblWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
-                lblWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblWeaponRating.Text = string.Empty;
-                if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
-                {
-                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                    {
-                        StringBuilder strSlotsText = new StringBuilder();
-                        foreach (string strMount in objWeapon.AccessoryMounts.Split('/'))
-                        {
-                            strSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount, GlobalOptions.Language));
-                            strSlotsText.Append('/');
-                        }
-                        strSlotsText.Length -= 1;
-                        lblWeaponSlots.Text = strSlotsText.ToString();
-                    }
-                    else
-                        lblWeaponSlots.Text = objWeapon.AccessoryMounts;
-                }
-                else
-                    lblWeaponSlots.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
-                lblWeaponDicePool.Text = objWeapon.GetDicePool(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblWeaponDicePool.SetToolTip(objWeapon.DicePoolTooltip);
-                lblWeaponRC.SetToolTip(objWeapon.RCToolTip);
+                // gpbWeaponsMatrix
+                lblWeaponDeviceRating.Text = objWeapon.GetTotalMatrixAttribute("Device Rating").ToString();
+                objWeapon.RefreshMatrixAttributeCBOs(cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall);
             }
             else if (treWeapons.SelectedNode?.Tag is WeaponAccessory objSelectedAccessory)
             {
-                if (objSelectedAccessory.IncludedInWeapon)
-                    cmdDeleteWeapon.Enabled = false;
+                gpbWeaponsCommon.Visible = true;
+                gpbWeaponsWeapon.Visible = true;
+                gpbWeaponsMatrix.Visible = false;
 
-                cmdWeaponMoveToVehicle.Enabled = false;
-                lblWeaponDicePool.Text = string.Empty;
-                lblWeaponDicePool.SetToolTip(string.Empty);
-                cmdFireWeapon.Enabled = false;
-                cmdReloadWeapon.Enabled = false;
-                cmdWeaponBuyAmmo.Enabled = false;
-                cboWeaponAmmo.Enabled = false;
+                // Buttons
+                cmdDeleteWeapon.Enabled = !objSelectedAccessory.IncludedInWeapon;
 
-                objWeapon = objSelectedAccessory.Parent;
+                // gpbWeaponsCommon
                 lblWeaponName.Text = objSelectedAccessory.DisplayNameShort(GlobalOptions.Language);
                 lblWeaponCategory.Text = LanguageManager.GetString("String_WeaponAccessory", GlobalOptions.Language);
-                lblWeaponAvail.Text =
-                    objSelectedAccessory.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblWeaponAccuracy.Text =
-                    objSelectedAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
-                lblWeaponCost.Text =
-                    objSelectedAccessory.TotalCost.ToString(CharacterObjectOptions.NuyenFormat,
-                        GlobalOptions.CultureInfo) + '¥';
-                lblWeaponConceal.Text =
-                    objSelectedAccessory.TotalConcealability.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
-                lblWeaponDamage.Text = string.Empty;
-                lblWeaponRC.Text = objSelectedAccessory.RC;
-                lblWeaponAP.Text = string.Empty;
-                lblWeaponReach.Text = string.Empty;
-                lblWeaponMode.Text = string.Empty;
-                lblWeaponAmmo.Text = string.Empty;
+                lblWeaponRatingLabel.Visible = true;
+                lblWeaponRating.Visible = true;
                 lblWeaponRating.Text = objSelectedAccessory.Rating.ToString();
-
-                lblWeaponCapacity.Visible = false;
                 lblWeaponCapacityLabel.Visible = false;
-
+                lblWeaponCapacity.Visible = false;
+                lblWeaponAvail.Text = objSelectedAccessory.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblWeaponCost.Text = objSelectedAccessory.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblWeaponSlotsLabel.Visible = true;
+                lblWeaponSlots.Visible = true;
                 StringBuilder strSlotsText = new StringBuilder(objSelectedAccessory.Mount);
                 if (strSlotsText.Length > 0 && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     strSlotsText.Clear();
                     foreach (string strMount in objSelectedAccessory.Mount.Split('/'))
                     {
-                        strSlotsText.Append(
-                            LanguageManager.GetString("String_Mount" + strMount, GlobalOptions.Language));
+                        strSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount, GlobalOptions.Language));
                         strSlotsText.Append('/');
                     }
-
                     strSlotsText.Length -= 1;
                 }
 
-                if (!string.IsNullOrEmpty(objSelectedAccessory.ExtraMount) &&
-                    (objSelectedAccessory.ExtraMount != "None"))
+                if (!string.IsNullOrEmpty(objSelectedAccessory.ExtraMount) && (objSelectedAccessory.ExtraMount != "None"))
                 {
                     bool boolHaveAddedItem = false;
                     string[] strExtraMounts = objSelectedAccessory.ExtraMount.Split('/');
@@ -13599,117 +13569,169 @@ namespace Chummer
                                 strSlotsText.Append(" + ");
                                 boolHaveAddedItem = true;
                             }
-
-                            strSlotsText.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount,
-                                GlobalOptions.Language));
+                            strSlotsText.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount, GlobalOptions.Language));
                             strSlotsText.Append('/');
                         }
                     }
-
                     // Remove the trailing /
                     if (boolHaveAddedItem)
                         strSlotsText.Length -= 1;
                 }
-
                 lblWeaponSlots.Text = strSlotsText.ToString();
-                chkWeaponAccessoryInstalled.Enabled = true;
+                lblWeaponConcealLabel.Visible = objSelectedAccessory.TotalConcealability != 0;
+                lblWeaponConceal.Visible = objSelectedAccessory.TotalConcealability != 0;
+                lblWeaponConceal.Text = objSelectedAccessory.TotalConcealability.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
+                chkWeaponAccessoryInstalled.Visible = true;
+                chkWeaponAccessoryInstalled.Enabled = objSelectedAccessory.Parent != null;
                 chkWeaponAccessoryInstalled.Checked = objSelectedAccessory.Equipped;
+                chkIncludedInWeapon.Visible = objSelectedAccessory.Parent != null;
                 chkIncludedInWeapon.Enabled = CharacterObjectOptions.AllowEditPartOfBaseWeapon;
                 chkIncludedInWeapon.Checked = objSelectedAccessory.IncludedInWeapon;
 
-                objWeapon.RefreshMatrixAttributeCBOs(cboWeaponGearAttack, cboWeaponGearSleaze,
-                    cboWeaponGearDataProcessing, cboWeaponGearFirewall);
-                lblWeaponDeviceRatingLabel.Visible = true;
-                lblWeaponDeviceRating.Visible = true;
-                lblWeaponDeviceRating.Text = objWeapon.GetTotalMatrixAttribute("Device Rating").ToString();
-                lblWeaponAttackLabel.Visible = true;
-                lblWeaponSleazeLabel.Visible = true;
-                lblWeaponDataProcessingLabel.Visible = true;
-                lblWeaponFirewallLabel.Visible = true;
+                // gpbWeaponsWeapon
+                gpbWeaponsWeapon.Text = LanguageManager.GetString("String_WeaponAccessory", GlobalOptions.Language);
+                if (string.IsNullOrEmpty(objSelectedAccessory.Damage))
+                {
+                    lblWeaponDamageLabel.Visible = false;
+                    lblWeaponDamage.Visible = false;
+                }
+                else
+                {
+                    lblWeaponDamageLabel.Visible = !string.IsNullOrEmpty(objSelectedAccessory.Damage);
+                    lblWeaponDamage.Visible = !string.IsNullOrEmpty(objSelectedAccessory.Damage);
+                    lblWeaponDamage.Text = Convert.ToInt32(objSelectedAccessory.Damage).ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
+                }
+                if (string.IsNullOrEmpty(objSelectedAccessory.AP))
+                {
+                    lblWeaponAPLabel.Visible = false;
+                    lblWeaponAP.Visible = false;
+                }
+                else
+                {
+                    lblWeaponAPLabel.Visible = true;
+                    lblWeaponAP.Visible = true;
+                    lblWeaponAP.Text = Convert.ToInt32(objSelectedAccessory.AP).ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
+                }
+                if (objSelectedAccessory.Accuracy == 0)
+                {
+                    lblWeaponAccuracyLabel.Visible = false;
+                    lblWeaponAccuracy.Visible = false;
+                }
+                else
+                {
+                    lblWeaponAccuracyLabel.Visible = true;
+                    lblWeaponAccuracy.Visible = true;
+                    lblWeaponAccuracy.Text = objSelectedAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
+                }
+                if (objSelectedAccessory.DicePool == 0)
+                {
+                    lblWeaponDicePoolLabel.Visible = false;
+                    lblWeaponDicePool.Visible = false;
+                }
+                else
+                {
+                    lblWeaponDicePoolLabel.Visible = true;
+                    lblWeaponDicePool.Visible = true;
+                    lblWeaponDicePool.Text = objSelectedAccessory.DicePool.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
+                }
+                lblWeaponReachLabel.Visible = false;
+                lblWeaponReach.Visible = false;
+                if (string.IsNullOrEmpty(objSelectedAccessory.RC))
+                {
+                    lblWeaponRCLabel.Visible = false;
+                    lblWeaponRC.Visible = false;
+                }
+                else
+                {
+                    lblWeaponRCLabel.Visible = true;
+                    lblWeaponRC.Visible = true;
+                    lblWeaponRC.Text = Convert.ToInt32(objSelectedAccessory.RC).ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
+                }
+                if (objSelectedAccessory.AmmoBonus != 0 && !string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity) && objSelectedAccessory.ModifyAmmoCapacity != "0")
+                {
+                    lblWeaponAmmoLabel.Visible = true;
+                    lblWeaponAmmo.Visible = true;
+                    StringBuilder strbldAmmoBonus = new StringBuilder();
+                    if (objSelectedAccessory.AmmoBonus != 0)
+                        strbldAmmoBonus.Append(objSelectedAccessory.AmmoBonus.ToString("+#,0%;-#,0%;0%", GlobalOptions.CultureInfo));
+                    if (!string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity) && objSelectedAccessory.ModifyAmmoCapacity != "0")
+                        strbldAmmoBonus.Append(objSelectedAccessory.ModifyAmmoCapacity);
+                    lblWeaponAmmo.Text = strbldAmmoBonus.ToString();
+                }
+                else
+                {
+                    lblWeaponAmmoLabel.Visible = false;
+                    lblWeaponAmmo.Visible = false;
+                }
+                lblWeaponModeLabel.Visible = false;
+                lblWeaponMode.Visible = false;
+
+                tlpWeaponsRanges.Visible = false;
+                tlpWeaponsCareer.Visible = false;
             }
             else if (treWeapons.SelectedNode?.Tag is Gear objGear)
             {
-                if (objGear.IncludedInParent)
-                    cmdDeleteWeapon.Enabled = false;
+                gpbWeaponsCommon.Visible = true;
+                gpbWeaponsWeapon.Visible = false;
+                gpbWeaponsMatrix.Visible = true;
+
+                // Buttons
+                cmdDeleteWeapon.Enabled = !objGear.IncludedInParent;
+
+                // gpbWeaponsCommon
                 lblWeaponName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
                 lblWeaponCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
+                int intGearMaxRatingValue = objGear.MaxRatingValue;
+                if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
+                {
+                    lblWeaponRatingLabel.Visible = true;
+                    lblWeaponRating.Visible = true;
+                    lblWeaponRating.Text = objGear.Rating.ToString(GlobalOptions.CultureInfo);
+                }
+                else
+                {
+                    lblWeaponRatingLabel.Visible = false;
+                    lblWeaponRating.Visible = false;
+                }
+                lblWeaponCapacityLabel.Visible = true;
+                lblWeaponCapacity.Visible = true;
+                lblWeaponCapacity.Text = objGear.CalculatedCapacity + strSpace + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo)
+                                         + strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                 lblWeaponAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblWeaponCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                //lblWeaponAccuracy.Text = objWeapon.DisplayAccuracy(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblWeaponAccuracy.Text = string.Empty;
-                lblWeaponConceal.Text = string.Empty;
-                lblWeaponDamage.Text = string.Empty;
-                lblWeaponRC.Text = string.Empty;
-                lblWeaponAP.Text = string.Empty;
-                lblWeaponReach.Text = string.Empty;
-                lblWeaponMode.Text = string.Empty;
-                lblWeaponAmmo.Text = string.Empty;
-                lblWeaponRating.Text = string.Empty;
-                lblWeaponSlots.Text = string.Empty;
-                chkWeaponAccessoryInstalled.Enabled = true;
+                lblWeaponSlotsLabel.Visible = false;
+                lblWeaponSlots.Visible = false;
+                lblWeaponConcealLabel.Visible = false;
+                lblWeaponConceal.Visible = false;
+                chkWeaponAccessoryInstalled.Visible = true;
+                chkWeaponAccessoryInstalled.Enabled = objGear.IncludedInParent;
                 chkWeaponAccessoryInstalled.Checked = objGear.Equipped;
-                chkIncludedInWeapon.Enabled = false;
-                chkIncludedInWeapon.Checked = false;
+                chkIncludedInWeapon.Visible = false;
 
-                lblWeaponCapacity.Visible = true;
-                lblWeaponCapacityLabel.Visible = true;
-                lblWeaponCapacity.Text = objGear.CalculatedCapacity + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
-
-                objGear.RefreshMatrixAttributeCBOs(cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall);
-                lblWeaponDeviceRatingLabel.Visible = true;
-                lblWeaponDeviceRating.Visible = true;
+                // gpbWeaponsMatrix
                 lblWeaponDeviceRating.Text = objGear.GetTotalMatrixAttribute("Device Rating").ToString();
-                lblWeaponDeviceRatingLabel.Visible = true;
-                lblWeaponAttackLabel.Visible = true;
-                lblWeaponSleazeLabel.Visible = true;
-                lblWeaponDataProcessingLabel.Visible = true;
-                lblWeaponFirewallLabel.Visible = true;
-
-                // Hide Weapon Ranges.
-                lblWeaponRangeMain.Text = string.Empty;
-                lblWeaponRangeAlternate.Text = string.Empty;
-                lblWeaponRangeShort.Text = string.Empty;
-                lblWeaponRangeMedium.Text = string.Empty;
-                lblWeaponRangeLong.Text = string.Empty;
-                lblWeaponRangeExtreme.Text = string.Empty;
-                lblWeaponAlternateRangeShort.Text = string.Empty;
-                lblWeaponAlternateRangeMedium.Text = string.Empty;
-                lblWeaponAlternateRangeLong.Text = string.Empty;
-                lblWeaponAlternateRangeExtreme.Text = string.Empty;
-            }
-
-            /* TODO: Find some clever way to have the parent weapon propogate down through all children.
-            // Show the Weapon Ranges.
-            if (objWeapon != null)
-            {
-                lblWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
-                lblWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
-                IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
-                lblWeaponRangeShort.Text = dictionaryRanges["short"];
-                lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
-                lblWeaponRangeLong.Text = dictionaryRanges["long"];
-                lblWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
-                lblWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
-                lblWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
-                lblWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
-                lblWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
+                objGear.RefreshMatrixAttributeCBOs(cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall);
             }
             else
             {
-                // Hide Weapon Ranges.
-                lblWeaponRangeMain.Text = string.Empty;
-                lblWeaponRangeAlternate.Text = string.Empty;
-                lblWeaponRangeShort.Text = string.Empty;
-                lblWeaponRangeMedium.Text = string.Empty;
-                lblWeaponRangeLong.Text = string.Empty;
-                lblWeaponRangeExtreme.Text = string.Empty;
-                lblWeaponAlternateRangeShort.Text = string.Empty;
-                lblWeaponAlternateRangeMedium.Text = string.Empty;
-                lblWeaponAlternateRangeLong.Text = string.Empty;
-                lblWeaponAlternateRangeExtreme.Text = string.Empty;
-            }*/
+                gpbWeaponsCommon.Visible = false;
+                gpbWeaponsWeapon.Visible = false;
+                gpbWeaponsMatrix.Visible = false;
+
+                // Buttons
+                cmdDeleteWeapon.Enabled = false;
+            }
+
+            if (treWeapons.SelectedNode?.Tag is IHasMatrixConditionMonitor objMatrixCM)
+            {
+                tabWeaponMatrixCM.Visible = true;
+                ProcessEquipmentConditionMonitorBoxDisplays(tabWeaponMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
+            }
+            else
+                tabWeaponMatrixCM.Visible = false;
 
             IsRefreshing = false;
+            flpWeapons.ResumeLayout();
         }
 
         /// <summary>
@@ -13718,14 +13740,21 @@ namespace Chummer
         public void RefreshSelectedArmor()
         {
             IsRefreshing = true;
-            cmdDeleteArmor.Enabled = treArmor.SelectedNode?.Tag is ICanRemove;
-            cmdArmorDecrease.Enabled = false;
-            cmdArmorIncrease.Enabled = false;
-            lblArmorEquipped.Visible = false;
-            cmdArmorEquipAll.Visible = false;
-            cmdArmorUnEquipAll.Visible = false;
-            lblArmorEquippedLabel.Visible = false;
-            lblArmorEquipped.Visible = false;
+            flpArmor.SuspendLayout();
+
+            if (treArmor.SelectedNode == null)
+            {
+                gpbArmorCommon.Visible = false;
+                gpbArmorMatrix.Visible = false;
+                gpbArmorLocation.Visible = false;
+
+                // Buttons
+                cmdDeleteArmor.Enabled = false;
+
+                IsRefreshing = false;
+                flpArmor.ResumeLayout();
+            }
+            
             if (treArmor.SelectedNode?.Tag is IHasSource objSelected)
             {
                 lblArmorSourceLabel.Visible = true;
@@ -13737,116 +13766,140 @@ namespace Chummer
                 lblArmorSourceLabel.Visible = false;
                 lblArmorSource.Visible = false;
             }
+
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+
             if (treArmor.SelectedNode?.Tag is Armor objArmor)
             {
-                lblArmorDeviceRatingLabel.Visible = false;
-                lblArmorDeviceRating.Visible = false;
-                lblArmorAttackLabel.Visible = false;
-                lblArmorAttack.Visible = false;
-                lblArmorSleazeLabel.Visible = false;
-                lblArmorSleaze.Visible = false;
-                lblArmorDataProcessingLabel.Visible = false;
-                lblArmorDataProcessing.Visible = false;
-                lblArmorFirewallLabel.Visible = false;
-                lblArmorFirewall.Visible = false;
+                gpbArmorCommon.Visible = true;
+                gpbArmorMatrix.Visible = false;
+                gpbArmorLocation.Visible = false;
 
+                // Buttons
+                cmdDeleteArmor.Enabled = true;
+
+                // gpbArmorCommon
+                lblArmorValueLabel.Visible = true;
+                flpArmorValue.Visible = true;
                 lblArmorValue.Text = objArmor.DisplayArmorValue;
+                cmdArmorIncrease.Visible = true;
+                cmdArmorIncrease.Enabled = objArmor.ArmorDamage < objArmor.TotalArmor &&
+                                           objArmor.ArmorDamage < (string.IsNullOrEmpty(objArmor.ArmorOverrideValue) ? int.MaxValue : objArmor.TotalOverrideArmor);
+                cmdArmorDecrease.Visible = true;
+                cmdArmorDecrease.Enabled = objArmor.ArmorDamage > 0;
                 lblArmorAvail.Text = objArmor.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblArmorCapacity.Text = objArmor.CalculatedCapacity + " (" + objArmor.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
-                lblArmorRating.Text = string.Empty;
+                lblArmorCapacity.Text = objArmor.CalculatedCapacity + strSpace + '(' + objArmor.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo)
+                                        + strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
+                lblArmorRatingLabel.Visible = false;
+                lblArmorRating.Visible = false;
                 lblArmorCost.Text = objArmor.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                chkArmorEquipped.Visible = true;
                 chkArmorEquipped.Checked = objArmor.Equipped;
                 chkArmorEquipped.Enabled = true;
-                chkIncludedInArmor.Enabled = false;
-                chkIncludedInArmor.Checked = false;
-                cmdArmorDecrease.Enabled = true;
-                cmdArmorIncrease.Enabled = true;
+                chkIncludedInArmor.Visible = false;
             }
             else if (treArmor.SelectedNode?.Tag is ArmorMod objArmorMod)
             {
-                lblArmorDeviceRatingLabel.Visible = false;
-                lblArmorDeviceRating.Visible = false;
-                lblArmorAttackLabel.Visible = false;
-                lblArmorAttack.Visible = false;
-                lblArmorSleazeLabel.Visible = false;
-                lblArmorSleaze.Visible = false;
-                lblArmorDataProcessingLabel.Visible = false;
-                lblArmorDataProcessing.Visible = false;
-                lblArmorFirewallLabel.Visible = false;
-                lblArmorFirewall.Visible = false;
+                gpbArmorCommon.Visible = true;
+                gpbArmorMatrix.Visible = false;
+                gpbArmorLocation.Visible = false;
 
-                objArmor = objArmorMod.Parent;
-                if (objArmorMod.IncludedInArmor)
-                    cmdDeleteArmor.Enabled = false;
+                // Buttons
+                cmdDeleteArmor.Enabled = !objArmorMod.IncludedInArmor;
+
+                // gpbArmorCommon
+                lblArmorValueLabel.Visible = true;
+                flpArmorValue.Visible = true;
                 lblArmorValue.Text = objArmorMod.Armor.ToString("+0;-0;0");
+                cmdArmorIncrease.Visible = false;
+                cmdArmorDecrease.Visible = false;
                 lblArmorAvail.Text = objArmorMod.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblArmorCapacity.Text = objArmor.CapacityDisplayStyle == CapacityStyle.Zero
+                lblArmorCapacity.Text = objArmorMod.Parent.CapacityDisplayStyle == CapacityStyle.Zero
                     ? "[0]"
                     : objArmorMod.CalculatedCapacity;
                 if (!string.IsNullOrEmpty(objArmorMod.GearCapacity))
-                    lblArmorCapacity.Text = objArmorMod.GearCapacity + '/' + lblArmorCapacity.Text + " (" +
-                                            objArmorMod.GearCapacityRemaining.ToString("#,0.##",
-                                                GlobalOptions.CultureInfo) +
-                                            LanguageManager.GetString("String_Space", GlobalOptions.Language) +
-                                            LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
-                lblArmorCost.Text =
-                    objArmorMod.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-
+                    lblArmorCapacity.Text = objArmorMod.GearCapacity + '/' + lblArmorCapacity.Text + strSpace + '(' +
+                                            objArmorMod.GearCapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) +
+                                            strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
+                if (objArmorMod.MaximumRating > 1)
+                {
+                    lblArmorRatingLabel.Visible = true;
+                    lblArmorRating.Visible = true;
+                    lblArmorRating.Text = objArmorMod.Rating.ToString();
+                }
+                else
+                {
+                    lblArmorRatingLabel.Visible = false;
+                    lblArmorRating.Visible = false;
+                }
+                lblArmorCost.Text = objArmorMod.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                chkArmorEquipped.Visible = true;
                 chkArmorEquipped.Checked = objArmorMod.Equipped;
                 chkArmorEquipped.Enabled = true;
-                lblArmorRating.Text = objArmorMod.Rating.ToString();
-                chkIncludedInArmor.Enabled = true;
+                chkIncludedInArmor.Visible = true;
                 chkIncludedInArmor.Checked = objArmorMod.IncludedInArmor;
             }
             else if (treArmor.SelectedNode?.Tag is Gear objSelectedGear)
             {
-                if (objSelectedGear.IncludedInParent)
-                    cmdDeleteArmor.Enabled = false;
-                lblArmorValue.Text = string.Empty;
+                gpbArmorCommon.Visible = true;
+                gpbArmorMatrix.Visible = true;
+                gpbArmorLocation.Visible = false;
+
+                // Buttons
+                cmdDeleteArmor.Enabled = !objSelectedGear.IncludedInParent;
+
+                // gpbArmorCommon
+                lblArmorValueLabel.Visible = false;
+                flpArmorValue.Visible = false;
                 lblArmorAvail.Text = objSelectedGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-
                 CharacterObject.Armor.FindArmorGear(objSelectedGear.InternalId, out objArmor, out objArmorMod);
-
                 if (objArmorMod != null)
                     lblArmorCapacity.Text = objSelectedGear.CalculatedCapacity;
                 else if (objArmor.CapacityDisplayStyle == CapacityStyle.Zero)
                     lblArmorCapacity.Text = "[0]";
                 else
                     lblArmorCapacity.Text = objSelectedGear.CalculatedArmorCapacity;
-
+                int intMaxRatingValue = objSelectedGear.MaxRatingValue;
+                if (intMaxRatingValue > 1 && intMaxRatingValue != int.MaxValue)
+                {
+                    lblArmorRatingLabel.Visible = true;
+                    lblArmorRating.Visible = true;
+                    lblArmorRating.Text = objSelectedGear.Rating.ToString();
+                }
+                else
+                {
+                    lblArmorRatingLabel.Visible = false;
+                    lblArmorRating.Visible = false;
+                }
                 lblArmorCost.Text = objSelectedGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                chkArmorEquipped.Visible = true;
                 chkArmorEquipped.Checked = objSelectedGear.Equipped;
                 chkArmorEquipped.Enabled = true;
-                chkIncludedInArmor.Enabled = false;
+                chkIncludedInArmor.Visible = true;
                 chkIncludedInArmor.Checked = objSelectedGear.IncludedInParent;
-                lblArmorRating.Text = objSelectedGear.Rating.ToString();
 
+                // gpbArmorMatrix
                 lblArmorDeviceRating.Text = objSelectedGear.GetTotalMatrixAttribute("Device Rating").ToString();
                 lblArmorAttack.Text = objSelectedGear.GetTotalMatrixAttribute("Attack").ToString();
                 lblArmorSleaze.Text = objSelectedGear.GetTotalMatrixAttribute("Sleaze").ToString();
                 lblArmorDataProcessing.Text = objSelectedGear.GetTotalMatrixAttribute("Data Processing").ToString();
                 lblArmorFirewall.Text = objSelectedGear.GetTotalMatrixAttribute("Firewall").ToString();
-                lblArmorDeviceRatingLabel.Visible = true;
-                lblArmorDeviceRating.Visible = true;
-                lblArmorAttackLabel.Visible = true;
-                lblArmorAttack.Visible = true;
-                lblArmorSleazeLabel.Visible = true;
-                lblArmorSleaze.Visible = true;
-                lblArmorDataProcessingLabel.Visible = true;
-                lblArmorDataProcessing.Visible = true;
-                lblArmorFirewallLabel.Visible = true;
-                lblArmorFirewall.Visible = true;
             }
             else if (treArmor.SelectedNode?.Tag is Location objLocation)
             {
-                cmdArmorEquipAll.Visible = true;
-                cmdArmorUnEquipAll.Visible = true;
-                lblArmorEquippedLabel.Visible = true;
+                gpbArmorCommon.Visible = false;
+                gpbArmorMatrix.Visible = false;
+                gpbArmorLocation.Visible = true;
+
+                // Buttons
+                cmdDeleteArmor.Enabled = true;
+
+                // gpbArmorLocation
                 StringBuilder strArmorEquipped = new StringBuilder();
                 foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == objLocation))
                 {
                     strArmorEquipped.Append(objLoopArmor.DisplayName(GlobalOptions.Language));
-                    strArmorEquipped.Append(" (");
+                    strArmorEquipped.Append(strSpace + '(');
                     strArmorEquipped.Append(objLoopArmor.DisplayArmorValue);
                     strArmorEquipped.AppendLine(")");
                 }
@@ -13857,18 +13910,21 @@ namespace Chummer
                 }
                 else
                     lblArmorEquipped.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
-                lblArmorEquipped.Visible = true;
             }
             else if (treArmor.SelectedNode?.Tag.ToString() == "Node_SelectedArmor")
             {
-                cmdArmorEquipAll.Visible = true;
-                cmdArmorUnEquipAll.Visible = true;
-                lblArmorEquippedLabel.Visible = true;
+                gpbArmorCommon.Visible = false;
+                gpbArmorMatrix.Visible = false;
+                gpbArmorLocation.Visible = true;
+
+                // Buttons
+                cmdDeleteArmor.Enabled = false;
+
                 StringBuilder strArmorEquipped = new StringBuilder();
                 foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == null))
                 {
                     strArmorEquipped.Append(objLoopArmor.DisplayName(GlobalOptions.Language));
-                    strArmorEquipped.Append(" (");
+                    strArmorEquipped.Append(strSpace + '(');
                     strArmorEquipped.Append(objLoopArmor.DisplayArmorValue);
                     strArmorEquipped.AppendLine(")");
                 }
@@ -13879,37 +13935,19 @@ namespace Chummer
                 }
                 else
                     lblArmorEquipped.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
-                lblArmorEquipped.Visible = true;
             }
             else
             {
-                lblArmorDeviceRatingLabel.Visible = false;
-                lblArmorDeviceRating.Visible = false;
-                lblArmorAttackLabel.Visible = false;
-                lblArmorAttack.Visible = false;
-                lblArmorSleazeLabel.Visible = false;
-                lblArmorSleaze.Visible = false;
-                lblArmorDataProcessingLabel.Visible = false;
-                lblArmorDataProcessing.Visible = false;
-                lblArmorFirewallLabel.Visible = false;
-                lblArmorFirewall.Visible = false;
-                cmdArmorEquipAll.Visible = false;
-                cmdArmorUnEquipAll.Visible = false;
-                lblArmorEquippedLabel.Visible = false;
-                lblArmorEquipped.Visible = false;
-                chkIncludedInArmor.Enabled = false;
-                chkIncludedInArmor.Checked = false;
-                lblArmorValue.Text = string.Empty;
-                lblArmorAvail.Text = string.Empty;
-                lblArmorCost.Text = string.Empty;
-                lblArmorSource.Text = string.Empty;
-                lblArmorSource.SetToolTip(null);
-                lblArmorRating.Text = string.Empty;
-                chkArmorEquipped.Enabled = false;
-                IsRefreshing = false;
-                return;
+                gpbArmorCommon.Visible = false;
+                gpbArmorMatrix.Visible = false;
+                gpbArmorLocation.Visible = false;
+
+                // Buttons
+                cmdDeleteArmor.Enabled = false;
             }
+
             IsRefreshing = false;
+            flpArmor.ResumeLayout();
         }
 
         /// <summary>
@@ -15149,6 +15187,19 @@ namespace Chummer
                     lblVehicleWeaponModeLabel.Visible = true;
                     lblVehicleWeaponMode.Visible = true;
                     lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
+
+                    tlpWeaponsRanges.Visible = true;
+                    lblVehicleWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
+                    lblVehicleWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
+                    IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                    lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
+                    lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
+                    lblVehicleWeaponRangeLong.Text = dictionaryRanges["long"];
+                    lblVehicleWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
+                    lblVehicleWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
+                    lblVehicleWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
+                    lblVehicleWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
+                    lblVehicleWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
                 }
                 else
                 {
@@ -15165,47 +15216,29 @@ namespace Chummer
                     }
                     lblVehicleWeaponModeLabel.Visible = false;
                     lblVehicleWeaponMode.Visible = false;
-                }
 
-                lblVehicleWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
-                lblVehicleWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
-                IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
-                lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
-                lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
-                lblVehicleWeaponRangeLong.Text = dictionaryRanges["long"];
-                lblVehicleWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
-                lblVehicleWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
-                lblVehicleWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
-                lblVehicleWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
-                lblVehicleWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
+                    tlpWeaponsRanges.Visible = false;
+                }
                 
-                cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
                 if (objWeapon.WeaponType == "Ranged" || (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0"))
                 {
-                    lblVehicleWeaponAmmoRemainingLabel.Visible = true;
-                    lblVehicleWeaponAmmoRemaining.Visible = true;
+                    tlpVehiclesWeaponCareer.Visible = true;
                     lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
                     cmdReloadVehicleWeapon.Visible = true;
 
+                    cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
                     cmsVehicleAmmoSingleShot.Enabled =
-                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeSingleShot",
-                            GlobalOptions.Language)) ||
-                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic",
-                            GlobalOptions.Language));
+                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeSingleShot", GlobalOptions.Language)) ||
+                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic", GlobalOptions.Language));
                     cmsVehicleAmmoShortBurst.Enabled =
-                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeBurstFire",
-                            GlobalOptions.Language)) ||
-                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic",
-                            GlobalOptions.Language));
+                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeBurstFire", GlobalOptions.Language)) ||
+                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
                     cmsVehicleAmmoLongBurst.Enabled =
-                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic",
-                            GlobalOptions.Language));
+                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
                     cmsVehicleAmmoFullBurst.Enabled =
-                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic",
-                            GlobalOptions.Language));
+                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
                     cmsVehicleAmmoSuppressiveFire.Enabled =
-                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic",
-                            GlobalOptions.Language));
+                        objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
 
                     // Melee Weapons with Ammo are considered to be Single Shot.
                     if (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0")
@@ -15285,9 +15318,7 @@ namespace Chummer
                 }
                 else
                 {
-                    lblVehicleWeaponAmmoRemainingLabel.Visible = false;
-                    lblVehicleWeaponAmmoRemaining.Visible = false;
-                    cmdReloadVehicleWeapon.Visible = false;
+                    tlpVehiclesWeaponCareer.Visible = false;
                 }
 
                 // gpbVehiclesMatrix

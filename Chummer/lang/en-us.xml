@@ -980,6 +980,10 @@
       <text>Life Modules</text>
     </string>
     <string>
+      <key>String_Armor</key>
+      <text>Armor</text>
+    </string>
+    <string>
       <key>String_Info</key>
       <text>Info</text>
     </string>

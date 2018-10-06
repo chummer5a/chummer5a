@@ -1028,7 +1028,7 @@ namespace Chummer.Backend.Equipment
                 intTotalArmor += ArmorMods.Where(o => o.Equipped).Sum(o => o.Armor);
                 intTotalArmor -= ArmorDamage;
 
-                return intTotalArmor;
+                return Math.Max(intTotalArmor, 0);
             }
         }
 
@@ -1044,7 +1044,7 @@ namespace Chummer.Backend.Equipment
                 intTotalArmor += ArmorMods.Where(o => o.Equipped).Sum(o => o.Armor);
                 intTotalArmor -= ArmorDamage;
 
-                return intTotalArmor;
+                return Math.Max(intTotalArmor, 0);
             }
         }
 
