@@ -1348,6 +1348,7 @@ namespace Chummer
             }
 
             IsCharacterUpdateRequested = true;
+            Cursor = Cursors.Default;
         }
 
         private void mnuSpecialCyberzombie_Click(object sender, EventArgs e)
