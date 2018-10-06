@@ -7478,11 +7478,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_Improvement_SelectLimitNamed</key>
-			<text>Choose a Limit for {0} to affect.</text>
+			<text>Choisissez une limite pour {0} à affecter.</text>
 		</string>
 		<string>
 			<key>String_Improvement_SelectLimit</key>
-			<text>Choose a Limit to affect.</text>
+			<text>Choisissez une limite à affecter.</text>
 		</string>
 		<string>
 			<key>Label_Condition</key>
@@ -8169,6 +8169,62 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Button_DecreaseCustomDirectoryLoadOrder</key>
 			<text>Diminuer l'ordre de la charge</text>
+		</string>
+		<string>
+			<key>String_Armor</key>
+			<text>Armure</text>
+		</string>
+		<string>
+			<key>String_Checking_For_Update</key>
+			<text>Vérification des actualisations...</text>
+		</string>
+		<string>
+			<key>String_ExpensePurchaseDrug</key>
+			<text>Drogues achetées</text>
+		</string>
+		<string>
+			<key>String_Unknown</key>
+			<text>Inconnue</text>
+		</string>
+		<string>
+			<key>String_Up_To_Date</key>
+			<text>Chummer5 est à jour.</text>
+		</string>
+		<string>
+			<key>Tab_Drugs</key>
+			<text>Drogues</text>
+		</string>
+		<string>
+			<key>Title_SelectGeneric</key>
+			<text>Sélectionnez {0}</text>
+		</string>
+		<string>
+			<key>Warning_Update_CouldNotConnect</key>
+			<text>Chummer n'a pas pu connecter le serveur de update. Contrôlez les paramètres de votre firewall et de votre proxy.</text>
+		</string>
+		<string>
+			<key>Warning_Update_CouldNotConnectException</key>
+			<text>Chummer n'a pas pu connecter le serveur de update. Contrôlez les paramètres de votre firewall et de votre proxy.\n\nMessage d'erreur:\n{0}.</text>
+		</string>
+		<string>
+			<key>Title_SelectSkillSpecialization</key>
+			<text>Sélectionnez une spécialisation de compétence</text>
+		</string>
+		<string>
+			<key>Tip_RemainingVehicleModCapacity</key>
+			<text>Cela indique la capacité du véhicule une fois que le mod sélectionné a été installé.</text>
+		</string>
+		<string>
+			<key>String_SkillFilterBrokenSkillGroup</key>
+			<text>Montrer des compétences actives dans des groupes de compétences brisées</text>
+		</string>
+		<string>
+			<key>String_Quality</key>
+			<text>Qualité</text>
+		</string>
+		<string>
+			<key>String_Search</key>
+			<text>Chercher:</text>
 		</string>
 	</strings>
 </chummer>
