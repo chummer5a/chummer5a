@@ -905,9 +905,7 @@ namespace Chummer
                             IsCharacterUpdateRequested = true;
                         }
 
-                        lblFoci.Visible = CharacterObject.MAGEnabled;
-                        treFoci.Visible = CharacterObject.MAGEnabled;
-                        cmdCreateStackedFocus.Visible = CharacterObject.MAGEnabled;
+                        gpbGearBondedFoci.Visible = CharacterObject.MAGEnabled;
                         lblAstralINI.Visible = CharacterObject.MAGEnabled;
                         tsMetamagicAddArt.Visible = CharacterObject.MAGEnabled;
                         tsMetamagicAddEnchantment.Visible = CharacterObject.MAGEnabled;
@@ -10835,65 +10833,46 @@ namespace Chummer
         public void RefreshSelectedGear()
         {
             IsRefreshing = true;
-            tlpGear.SuspendLayout();
-            cmdDeleteGear.Enabled = treGear.SelectedNode?.Tag.ToString() != "Node_SelectedGear";
+            flpGear.SuspendLayout();
+
             if (treGear.SelectedNode == null || treGear.SelectedNode.Level == 0)
             {
-                nudGearRating.Minimum = 0;
-                nudGearRating.Maximum = 0;
-                nudGearRating.Enabled = false;
-                nudGearQty.Enabled = false;
-                chkGearEquipped.Text = LanguageManager.GetString("Checkbox_Equipped", GlobalOptions.Language);
-                chkGearEquipped.Visible = false;
-                chkGearActiveCommlink.Enabled = false;
-                chkGearActiveCommlink.Checked = false;
+                gpbGearCommon.Visible = false;
+                gpbGearMatrix.Visible = false;
+
+                // Buttons
+                cmdDeleteGear.Enabled = false;
+
                 IsRefreshing = false;
-                tlpGear.ResumeLayout();
+                flpGear.ResumeLayout();
                 return;
             }
-            chkGearHomeNode.Visible = false;
+
+            if (treGear.SelectedNode?.Tag is IHasSource objSelected)
+            {
+                lblGearSourceLabel.Visible = true;
+                lblGearSource.Visible = true;
+                objSelected.SetSourceDetail(lblGearSource);
+            }
+            else
+            {
+                lblGearSourceLabel.Visible = false;
+                lblGearSource.Visible = false;
+            }
+
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
             if (treGear.SelectedNode?.Tag is Gear objGear)
             {
-                if (objGear.IncludedInParent)
-                    cmdDeleteGear.Enabled = false;
+                gpbGearCommon.Visible = true;
+                gpbGearMatrix.Visible = true;
+
+                // Buttons
+                cmdDeleteGear.Enabled = !objGear.IncludedInParent;
+
+                // gpbGearCommon
                 lblGearName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
                 lblGearCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
-                lblGearAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                nudGearQty.Enabled = !objGear.IncludedInParent;
-                nudGearQty.Increment = objGear.CostFor;
-                try
-                {
-                    lblGearCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat + '¥', GlobalOptions.CultureInfo);
-                }
-                catch (FormatException)
-                {
-                    lblGearCost.Text = objGear.Cost + "¥";
-                }
-                lblGearCapacity.Text = objGear.CalculatedCapacity + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
-                objGear.SetSourceDetail(lblGearSource);
-
-                objGear.RefreshMatrixAttributeCBOs(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
-
-                lblGearDeviceRating.Text = objGear.GetTotalMatrixAttribute("Device Rating").ToString();
-
-                lblGearDeviceRating.Visible = true;
-                lblGearDeviceRatingLabel.Visible = true;
-                lblGearAttackLabel.Visible = true;
-                lblGearSleazeLabel.Visible = true;
-                lblGearDataProcessingLabel.Visible = true;
-                lblGearFirewallLabel.Visible = true;
-
-                chkGearActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
-                chkGearActiveCommlink.Enabled = objGear.IsCommlink;
-
-                if (CharacterObject.IsAI)
-                {
-                    chkGearHomeNode.Visible = true;
-                    chkGearHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                    chkGearHomeNode.Enabled = chkGearActiveCommlink.Enabled && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
-                }
-
                 int intGearMaxRatingValue = objGear.MaxRatingValue;
                 if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
                 {
@@ -10915,7 +10894,6 @@ namespace Chummer
                     nudGearRating.Enabled = false;
                 }
 
-                //nudGearQty.Minimum = objGear.CostFor;
                 nudGearQty.Increment = objGear.CostFor;
                 if (objGear.Name.StartsWith("Nuyen"))
                 {
@@ -10946,51 +10924,69 @@ namespace Chummer
                     nudGearQty.Minimum = 1.0m;
                 }
                 nudGearQty.Value = objGear.Quantity;
-
-                if (treGear.SelectedNode.Level == 1)
+                nudGearQty.Enabled = !objGear.IncludedInParent;
+                try
                 {
-                    //nudGearQty.Minimum = objGear.CostFor;
-                    chkGearEquipped.Visible = true;
-                    chkGearEquipped.Checked = objGear.Equipped;
+                    lblGearCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat + '¥', GlobalOptions.CultureInfo);
+                }
+                catch (FormatException)
+                {
+                    lblGearCost.Text = objGear.Cost + "¥";
+                }
+                lblGearAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                try
+                {
+                    lblGearCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                }
+                catch (FormatException)
+                {
+                    lblGearCost.Text = objGear.Cost + "¥";
+                }
+                lblGearCapacity.Text = objGear.CalculatedCapacity + strSpace + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo)
+                                       + strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
+                chkGearEquipped.Visible = true;
+                chkGearEquipped.Checked = objGear.Equipped;
+                // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
+                if (objGear.IsProgram && objGear.Parent is IHasMatrixAttributes objCommlink && objCommlink.IsCommlink)
+                {
+                    chkGearEquipped.Text = LanguageManager.GetString("Checkbox_SoftwareRunning", GlobalOptions.Language);
                 }
                 else
                 {
-                    //nudGearQty.Enabled = false;
-                    chkGearEquipped.Visible = true;
-                    chkGearEquipped.Checked = objGear.Equipped;
-
-                    // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
-                    if (objGear.IsProgram)
-                    {
-                        if ((objGear.Parent as Gear)?.IsCommlink == true)
-                        {
-                            chkGearEquipped.Text = LanguageManager.GetString("Checkbox_SoftwareRunning", GlobalOptions.Language);
-                        }
-                    }
+                    chkGearEquipped.Text = LanguageManager.GetString("Checkbox_Equipped", GlobalOptions.Language);
                 }
 
-                // Show the Weapon Bonus information if it's available.
-                if (objGear.WeaponBonus != null)
+
+                // gpbGearMatrix
+                int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
+                lblGearDeviceRating.Text = intDeviceRating.ToString();
+                objGear.RefreshMatrixAttributeCBOs(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
+                if (CharacterObject.IsAI)
                 {
-                    lblGearDamageLabel.Visible = true;
-                    lblGearDamage.Visible = true;
-                    lblGearAPLabel.Visible = true;
-                    lblGearAP.Visible = true;
-                    lblGearDamage.Text = objGear.WeaponBonusDamage(GlobalOptions.Language);
-                    lblGearAP.Text = objGear.WeaponBonusAP;
+                    chkGearHomeNode.Visible = true;
+                    chkGearHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
+                    chkGearHomeNode.Enabled = chkGearActiveCommlink.Enabled &&
+                                              objGear.GetTotalMatrixAttribute("Program Limit") >=
+                                              (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
                 }
                 else
-                {
-                    lblGearDamageLabel.Visible = false;
-                    lblGearDamage.Visible = false;
-                    lblGearAPLabel.Visible = false;
-                    lblGearAP.Visible = false;
-                }
+                    chkGearHomeNode.Visible = false;
+                chkGearActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
+                chkGearActiveCommlink.Visible = objGear.IsCommlink;
 
                 treGear.SelectedNode.Text = objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
             }
+            else
+            {
+                gpbGearCommon.Visible = false;
+                gpbGearMatrix.Visible = false;
+
+                // Buttons
+                cmdDeleteGear.Enabled = treGear.SelectedNode?.Tag is ICanRemove;
+            }
+
             IsRefreshing = false;
-            tlpGear.ResumeLayout();
+            flpGear.ResumeLayout();
         }
 
         protected override string FormMode => LanguageManager.GetString("Title_CreateNewCharacter", GlobalOptions.Language);

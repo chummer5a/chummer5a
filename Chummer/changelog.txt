@@ -142,6 +142,7 @@ Data Changes:
 - Added (hidden) Gear items for Public Grid, Local Grid, and Global Grid so that these phrases can be handled by TranslateExtra. Part of #3002.
 - Fixed an issue with the Text-Only sheet that caused it to fail to load the LOG attribute.
 - Fixed incorrect RC and page reference for the Cavalier Thunderstruck. Fixes #3083.
+- Fixed a rare crash that would happen on startup if/when different loading theads would collide with one another while performing initial loading.
 
 New Strings:
 
