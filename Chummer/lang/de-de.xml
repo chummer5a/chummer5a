@@ -8313,7 +8313,7 @@
 		</string>
 		<string>
 			<key>Label_Options_CharacterRoster</key>
-			<text>Charakterverzeichnis Überwachter Ordner</text>
+			<text>Ordner zur Charakterüberwachung:</text>
 		</string>
 		<string>
 			<key>Label_Options_URLApplicationPath</key>
@@ -9346,6 +9346,10 @@
 		<string>
 			<key>String_Info</key>
 			<text>Info</text>
+		</string>
+		<string>
+			<key>String_Armor</key>
+			<text>Panzerung</text>
 		</string>
 	</strings>
 </chummer>
