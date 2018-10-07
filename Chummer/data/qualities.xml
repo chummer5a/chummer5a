@@ -7034,41 +7034,49 @@
             <name>BOD</name>
             <min>6</min>
             <max>12</max>
+            <aug>16</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>2</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>5</min>
             <max>12</max>
+            <aug>16</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -7159,41 +7167,49 @@
             <name>BOD</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>2</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>3</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -7304,41 +7320,49 @@
             <name>BOD</name>
             <min>5</min>
             <max>12</max>
+            <aug>16</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>5</min>
             <max>12</max>
+            <aug>16</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -7445,41 +7469,49 @@
             <name>BOD</name>
             <min>5</min>
             <max>13</max>
+            <aug>17</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>5</min>
             <max>13</max>
+            <aug>17</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -7571,41 +7603,49 @@
             <name>BOD</name>
             <min>3</min>
             <max>12</max>
+            <aug>16</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>3</min>
             <max>11</max>
+            <aug>15</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>2</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -7705,41 +7745,49 @@
             <name>BOD</name>
             <min>1</min>
             <max>10</max>
+            <aug>14</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>2</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>1</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -7839,41 +7887,49 @@
             <name>BOD</name>
             <min>1</min>
             <max>10</max>
+            <aug>14</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>1</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -7973,41 +8029,49 @@
             <name>BOD</name>
             <min>4</min>
             <max>13</max>
+            <aug>17</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>3</min>
             <max>11</max>
+            <aug>15</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>3</max>
+            <aug>7</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -8107,41 +8171,49 @@
             <name>BOD</name>
             <min>6</min>
             <max>15</max>
+            <aug>19</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>5</min>
             <max>13</max>
+            <aug>17</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>3</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -8241,41 +8313,49 @@
             <name>BOD</name>
             <min>5</min>
             <max>14</max>
+            <aug>18</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>5</min>
             <max>13</max>
+            <aug>17</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>3</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -8367,41 +8447,49 @@
             <name>BOD</name>
             <min>3</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>3</min>
             <max>10</max>
+            <aug>14</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>2</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -8500,41 +8588,49 @@
             <name>BOD</name>
             <min>3</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>3</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>2</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -8658,41 +8754,49 @@
             <name>BOD</name>
             <min>4</min>
             <max>11</max>
+            <aug>15</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>3</min>
             <max>11</max>
+            <aug>15</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -8795,41 +8899,49 @@
             <name>BOD</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>2</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>1</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -8947,41 +9059,49 @@
             <name>BOD</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>1</min>
             <max>10</max>
+            <aug>14</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -9114,41 +9234,49 @@
             <name>BOD</name>
             <min>5</min>
             <max>12</max>
+            <aug>16</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>5</min>
             <max>13</max>
+            <aug>17</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -9272,41 +9400,49 @@
             <name>BOD</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -9414,41 +9550,49 @@
             <name>BOD</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -9551,41 +9695,49 @@
             <name>BOD</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -9687,41 +9839,49 @@
             <name>BOD</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -9825,41 +9985,49 @@
             <name>BOD</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -9983,41 +10151,49 @@
             <name>BOD</name>
             <min>4</min>
             <max>11</max>
+            <aug>15</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>3</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
