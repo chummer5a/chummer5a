@@ -850,8 +850,8 @@ namespace Chummer.Backend.Attributes
 
         public bool AtMetatypeMaximum => Value == TotalMaximum && TotalMinimum > 0;
 
-        public int KarmaMaximum => TotalMaximum - TotalBase;
-        public int PriorityMaximum => TotalMaximum - Karma - FreeBase - RawMinimum;
+        public int KarmaMaximum => Math.Max(TotalMaximum - TotalBase, 0);
+        public int PriorityMaximum => Math.Max(TotalMaximum - Karma - FreeBase - RawMinimum, 0);
 
         private int _intCachedUpgradeKarmaCost = int.MinValue;
         /// <summary>
