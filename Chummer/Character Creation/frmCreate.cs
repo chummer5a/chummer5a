@@ -9229,7 +9229,7 @@ namespace Chummer
                     {
                         if (objLoopQuality.Type == QualityType.Positive)
                         {
-                            if (objLoopQuality.DoubleCost)
+                            if (!objLoopQuality.DoubleCost)
                                 intPositiveQualitiesNoDoubleExcess += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
                             else
                                 intPositiveQualities += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
