@@ -96,6 +96,7 @@ Application Changes:
 - Fixed an issue where an advanced lifestyle could not be edited during character creation if the final cost of the lifestyle was more than the character's current nuyen.
 - Fixed an issue where armor degradation could cause a piece of armor to have negative value.
 - Fixed an issue with attribute controls causing a crash if the character has multiple attributes at max-1 and takes an improvement that reduces that attribute maximum. Fixes #3086
+- Fixed an issue where the title of the character roster form was not getting translated. Fixes #3092.
 
 Data Changes:
 
