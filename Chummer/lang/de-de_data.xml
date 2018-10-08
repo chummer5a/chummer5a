@@ -2903,11 +2903,11 @@
 				<translate>Transgene Veränderung</translate>
 				<altpage>165</altpage>
 			</bioware>
-			<bioware>
+			<bioware translated="True">
 				<id>b5af679d-e70d-43f3-9aa4-f3638796e948</id>
 				<name>MCT Biolink</name>
-				<translate>MCT Biolink</translate>
-				<altpage>67</altpage>
+				<translate>Biolink</translate>
+				<altpage>65</altpage>
 			</bioware>
 		</biowares>
 	</chummer>
@@ -10127,23 +10127,23 @@
 				<translate>Nanotatoos</translate>
 				<altpage>149</altpage>
 			</cyberware>
-			<cyberware>
+			<cyberware translated="True">
 				<id>8496afd6-ad34-4e73-b3f4-191ef11e121c</id>
 				<name>Datajack Plus</name>
-				<translate>Datajack Plus</translate>
-				<altpage>65</altpage>
+				<translate>Datenbuchse Plus</translate>
+				<altpage>64</altpage>
 			</cyberware>
-			<cyberware>
+			<cyberware translated="True">
 				<id>d9a05e96-3913-4d40-ae1a-397da8a6f344</id>
 				<name>Enhanced Augmented Reality Reflex System</name>
-				<translate>Enhanced Augmented Reality Reflex System</translate>
+				<translate>Simultan-Reflexsystem</translate>
 				<altpage>65</altpage>
 			</cyberware>
-			<cyberware>
+			<cyberware translated="True">
 				<id>ba91b21a-2c8d-466f-a353-64293e09a9a8</id>
 				<name>Cranial Shield</name>
-				<translate>Cranial Shield</translate>
-				<altpage>65</altpage>
+				<translate>Gehirnabschirmung</translate>
+				<altpage>64</altpage>
 			</cyberware>
 			<cyberware translated="True">
 				<id>b933e9e1-3ec3-45fd-8918-f88cc14d3ea0</id>
@@ -17820,127 +17820,127 @@
 				<translate>Urban Explorer Daedalus Ersatzfallschirm</translate>
 				<altpage>48</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>7e104b61-69b3-4a7e-8221-a6190314c411</id>
 				<name>Ammo: Zapper</name>
-				<translate>Ammo: Zapper</translate>
-				<altpage>48</altpage>
+				<translate>Munition: Überlastungsmunition</translate>
+				<altpage>51</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>b8ad4fef-4092-42ac-87ad-518dd8b60fb7</id>
 				<name>Ammo: Looper</name>
-				<translate>Ammo: Looper</translate>
-				<altpage>48</altpage>
+				<translate>Munition: Schleifenmunition</translate>
+				<altpage>49</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>c40a91b0-7896-4ad1-b1e6-f39c9c93bf1b</id>
 				<name>Ammo: Fuzzy</name>
-				<translate>Ammo: Fuzzy</translate>
-				<altpage>48</altpage>
+				<translate>Munition: Störmunition</translate>
+				<altpage>50</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>efa87c80-d712-41d8-813e-768a2f4ffcf7</id>
 				<name>Ammo: E0-E0 (Public Grid)</name>
-				<translate>Ammo: E0-E0 (Public Grid)</translate>
+				<translate>Munition: E0-E0 (Öffentliches Gitter)</translate>
 				<altpage>48</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>f4be287a-2ed8-4e7b-8244-32243905fe84</id>
 				<name>Ammo: E0-E0 (Local Grid)</name>
-				<translate>Ammo: E0-E0 (Local Grid)</translate>
+				<translate>Munition: E0-E0 (Lokales Gitter)</translate>
 				<altpage>48</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>8ddf2080-2444-4d9a-a601-5be4147b183d</id>
 				<name>Ammo: E0-E0 (Megacorporate Grid)</name>
-				<translate>Ammo: E0-E0 (Megacorporate Grid)</translate>
+				<translate>Munition: E0-E0 (Megakonzern-Gitter)</translate>
 				<altpage>48</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>bf9001db-6484-47ab-9449-5f068f5fe04b</id>
 				<name>Ammo: E0-E0 Rifle (Public Grid)</name>
-				<translate>Ammo: E0-E0 Rifle (Public Grid)</translate>
+				<translate>Munition: E0-E0 für Gewehre (Öffentliches Gitter Grid)</translate>
 				<altpage>48</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>d1e0807b-6c6e-44bb-a230-c6f328ee26a5</id>
 				<name>Ammo: E0-E0 Rifle (Local Grid)</name>
-				<translate>Ammo: E0-E0 Rifle (Local Grid)</translate>
+				<translate>Munition: E0-E0 für Gewehre (Lokales Gitter Grid)</translate>
 				<altpage>48</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>b580d8fc-9987-403a-9be5-760b1d88f926</id>
 				<name>Ammo: E0-E0 Rifle (Megacorporate Grid)</name>
-				<translate>Ammo: E0-E0 Rifle (Megacorporate Grid)</translate>
+				<translate>Munition: E0-E0 für Gewehre (Megakonzern-Gitter)</translate>
 				<altpage>48</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>05a9f4e2-b7c0-4bf8-8614-33b1ee0f406d</id>
 				<name>Arrow: Arrowlink (50m)</name>
-				<translate>Arrow: Arrowlink (50m)</translate>
-				<altpage>48</altpage>
+				<translate>Pfeil: ArrowLink (50m)</translate>
+				<altpage>52</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>2d3b26aa-a2c1-4514-915e-62aa08203456</id>
 				<name>Arrow: Arrowlink (100m)</name>
-				<translate>Arrow: Arrowlink (100m)</translate>
-				<altpage>48</altpage>
+				<translate>Pfeil: ArrowLink (100m)</translate>
+				<altpage>52</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>74906d00-018e-4d1a-8a9c-4b77918de761</id>
 				<name>Arrow: Arrowlink (200m)</name>
-				<translate>Arrow: Arrowlink (200m)</translate>
-				<altpage>48</altpage>
+				<translate>Pfeil: ArrowLink (200m)</translate>
+				<altpage>52</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>65a853d4-52d6-44c7-a867-10ea1beaece3</id>
 				<name>Arrow: Arrowlink (500m)</name>
-				<translate>Arrow: Arrowlink (500m)</translate>
-				<altpage>48</altpage>
+				<translate>Pfeil: ArrowLink (500m)</translate>
+				<altpage>52</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>051ceea6-65c2-4058-95bd-f63d86a45984</id>
 				<name>Grenade: Fuzzy Boom Boom Bunnies</name>
-				<translate>Grenade: Fuzzy Boom Boom Bunnies</translate>
-				<altpage>48</altpage>
+				<translate>Granate: Störgranate "Fuzzy Boom Boom Bunnies"</translate>
+				<altpage>55</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>7470ed31-0d81-4992-bae6-38f9de198020</id>
 				<name>Grenade: COS</name>
-				<translate>Grenade: COS</translate>
-				<altpage>48</altpage>
+				<translate>Granate: COS-Granate (Cancellation Ofservice)</translate>
+				<altpage>53</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>0c98750a-4286-4ec5-9035-b76f36c03ce4</id>
 				<name>Grenade: Douser</name>
-				<translate>Grenade: Douser</translate>
-				<altpage>48</altpage>
+				<translate>Granate: Löschgranate</translate>
+				<altpage>54</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>965ccb60-f9e2-4a44-8a11-05e6c5bd4457</id>
 				<name>Grenade: DumDum</name>
-				<translate>Grenade: DumDum</translate>
-				<altpage>48</altpage>
+				<translate>Granate: Overflow-Granate</translate>
+				<altpage>55</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>d05a6375-7c82-4d32-952e-cc356b5b079d</id>
 				<name>Faceless - Specific Face</name>
-				<translate>Faceless - Specific Face</translate>
+				<translate>Gesichtsverfälscher: Bestimmtes Gesicht</translate>
 				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>3cc7b3d8-0f5f-4598-b9a0-96083966e6f9</id>
 				<name>Faceless - Generic</name>
-				<translate>Faceless - Generic</translate>
+				<translate>Gesichtsverfälscher: Standardgesicht</translate>
 				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>d2c64947-9d23-4ec8-916a-e5345b94b96b</id>
 				<name>Fuchi Cyber-N</name>
 				<translate>Fuchi Cyber-N</translate>
 				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>00ccda48-98a0-42b1-a997-1e1cf1f5269a</id>
 				<name>Fuchi Cyber-Ex</name>
 				<translate>Fuchi Cyber-Ex</translate>
@@ -17970,53 +17970,53 @@
 				<translate>[Custom Cyberdeck] Firewall</translate>
 				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>51ca2b4d-fdbb-48cc-89b3-9d56757d1682</id>
 				<name>Security Deck: Guard</name>
-				<translate>Security Deck: Guard</translate>
-				<altpage>61</altpage>
+				<translate>Sicherheitsdeck: Wache</translate>
+				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>81206ac6-631a-4ec7-8013-96050510726f</id>
 				<name>Security Deck: Shield</name>
-				<translate>Security Deck: Shield</translate>
-				<altpage>61</altpage>
+				<translate>Sicherheitsdeck: Schild</translate>
+				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>737f6986-d565-4f65-9f83-8142d1f72b56</id>
 				<name>Security Deck: Fortress</name>
-				<translate>Security Deck: Fortress</translate>
-				<altpage>61</altpage>
+				<translate>Sicherheitsdeck: Festung</translate>
+				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>49482a90-ffc4-449a-b6b5-21ab0bcd3879</id>
 				<name>Security Deck: Great Wall</name>
-				<translate>Security Deck: Great Wall</translate>
-				<altpage>61</altpage>
+				<translate>Sicherheitsdeck: Große Mauer</translate>
+				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>17003ab0-8e96-4661-898d-8d57963a6e8d</id>
 				<name>Hunter Deck: Fox</name>
-				<translate>Hunter Deck: Fox</translate>
-				<altpage>62</altpage>
+				<translate>Jägerdeck: Fuchs</translate>
+				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>26171ce4-fadc-4dae-85e0-5d165d312f56</id>
 				<name>Hunter Deck: Wolf</name>
-				<translate>Hunter Deck: Wolf</translate>
-				<altpage>61</altpage>
+				<translate>Jägerdeck: Wolf</translate>
+				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>b705d027-1ba6-4322-9710-b951278c6b3f</id>
 				<name>Hunter Deck: Tiger</name>
-				<translate>Hunter Deck: Tiger</translate>
-				<altpage>61</altpage>
+				<translate>Jägerdeck: Tiger</translate>
+				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>7bd2d975-c4c7-41f4-ba28-be8431e22c36</id>
 				<name>Hunter Deck: Shark</name>
-				<translate>Hunter Deck: Shark</translate>
-				<altpage>61</altpage>
+				<translate>Jägerdeck: Hai</translate>
+				<altpage>60</altpage>
 			</gear>
 			<gear>
 				<id>96ce16be-8fca-4b3a-af65-0e3c38280b1d</id>
@@ -18120,161 +18120,161 @@
 				<translate>Pantheon Industries Shield Wall</translate>
 				<altpage>70</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>b8ad45b8-35f7-4c2c-b9cd-29fbeb59b8e9</id>
 				<name>Attack Booster</name>
-				<translate>Attack Booster</translate>
-				<altpage>59</altpage>
+				<translate>Angriffsbooster</translate>
+				<altpage>56</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>666dbb45-2898-4262-aab6-94e80954b480</id>
 				<name>Sleaze Booster</name>
-				<translate>Sleaze Booster</translate>
-				<altpage>59</altpage>
+				<translate>Schleicherbooster</translate>
+				<altpage>56</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>f5b287cc-98c1-479e-8e54-e5155fa6917a</id>
 				<name>Data Processing Booster</name>
-				<translate>Data Processing Booster</translate>
-				<altpage>59</altpage>
+				<translate>Datenverarbeitungsbooster</translate>
+				<altpage>56</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>c29db797-db4b-4f14-b662-622935c3204e</id>
 				<name>Firewall Booster</name>
-				<translate>Firewall Booster</translate>
-				<altpage>59</altpage>
+				<translate>Firewallbooster</translate>
+				<altpage>56</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>3d107000-9bfc-46f6-9a1e-99e6cecc3897</id>
 				<name>Armor Defeating</name>
-				<translate>Armor Defeating</translate>
-				<altpage>59</altpage>
+				<translate>Panzerbrecher</translate>
+				<altpage>56</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>8dfceac4-1c5a-4b30-bcd2-81b16553c6ce</id>
 				<name>Slick Willy</name>
-				<translate>Slick Willy</translate>
-				<altpage>59</altpage>
+				<translate>Aalhaut</translate>
+				<altpage>56</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>0ee14c43-e334-4ca5-a87c-c99d94bfe31a</id>
 				<name>Data Dynamo</name>
-				<translate>Data Dynamo</translate>
-				<altpage>59</altpage>
+				<translate>Datendynamo</translate>
+				<altpage>56</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>7b8e0c95-375d-4982-b523-576952aced75</id>
 				<name>Fortified</name>
-				<translate>Fortified</translate>
-				<altpage>59</altpage>
+				<translate>Festung</translate>
+				<altpage>56</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>77f02897-28c1-4d53-86b4-eae1dbd85f35</id>
 				<name>Pantheon Industries Tactical Program Dongle</name>
-				<translate>Pantheon Industries Tactical Program Dongle</translate>
-				<altpage>70</altpage>
+				<translate>Pantheon Industries Taktischer Programm-Dongle</translate>
+				<altpage>71</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>55e05d6a-bc67-469f-b16c-648b4688eb37</id>
 				<name>Multiprogram Operating System</name>
-				<translate>Multiprogram Operating System</translate>
-				<altpage>58</altpage>
+				<translate>Zusatzprogrammsystem (ZPS)</translate>
+				<altpage>59</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>ae96a184-0615-463a-b10d-bf994ac75cab</id>
 				<name>Booster Cloud [Brute Force]</name>
-				<translate>Booster Cloud [Brute Force]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Brute Force]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>2ba507c4-5f5c-4675-96fd-890d52df27e1</id>
 				<name>Booster Cloud [Control Device]</name>
-				<translate>Booster Cloud [Control Device]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Gerät steuern]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>182d3050-c14c-4d47-b02a-ea6d9828e3e7</id>
 				<name>Booster Cloud [Crack File]</name>
-				<translate>Booster Cloud [Crack File]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Datei cracken]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>59795250-558e-47f5-b5d7-db410b36a23a</id>
 				<name>Booster Cloud [Crash Program]</name>
-				<translate>Booster Cloud [Crash Program]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Programm abstürzen lassen]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>1797a4a7-c59e-4264-a360-2aa00adadd65</id>
 				<name>Booster Cloud [Data Spike]</name>
-				<translate>Booster Cloud [Data Spike]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwollke [Datenspike]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>44726953-66fa-4619-8168-85794bfca8f0</id>
 				<name>Booster Cloud [Edit File]</name>
-				<translate>Booster Cloud [Edit File]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Datei editieren]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>2d6d3555-3f3d-4f6d-9b48-897d3f5be68b</id>
 				<name>Booster Cloud [Erase Mark]</name>
-				<translate>Booster Cloud [Erase Mark]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Marke löschen]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>9bd48bd3-ad36-4f34-96bc-37afd97dc520</id>
 				<name>Booster Cloud [Hack on the Fly]</name>
-				<translate>Booster Cloud [Hack on the Fly]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Eiliges Hacken]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>93ce7855-436d-47db-b8bc-ae7ba35efc2d</id>
 				<name>Booster Cloud [Hide]</name>
-				<translate>Booster Cloud [Hide]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Verstecken]</translate>
+				<altpage>57</altpage>
 			</gear>
 			<gear>
 				<id>5e801a2b-03b1-4f2f-bacd-cf7951c770c3</id>
 				<name>Booster Cloud [Jam Signals]</name>
-				<translate>Booster Cloud [Jam Signals]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Signal stören]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>bfcfe6d3-b341-427c-be65-1fa21e043b0a</id>
 				<name>Booster Cloud [Matrix Perception]</name>
-				<translate>Booster Cloud [Matrix Perception]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Matrixwahrnehmung]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>d7dc17cc-7e55-4cbc-89e7-7e8468687e75</id>
 				<name>Booster Cloud [Reboot Device]</name>
-				<translate>Booster Cloud [Reboot Device]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Gerät neu starten]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>ad9307c3-3dc0-4733-bfb2-11c9af467fd8</id>
 				<name>Booster Cloud [Snoop]</name>
-				<translate>Booster Cloud [Snoop]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Übertragung abfangen]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>04aaca9c-42e6-4cb8-a73e-1b36ffab2104</id>
 				<name>Booster Cloud [Spoof Command]</name>
-				<translate>Booster Cloud [Spoof Command]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Befehl vortäuschen]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>4a7731f9-3534-4d5c-92e4-02025ac5c4da</id>
 				<name>Booster Cloud [Trace Icon]</name>
-				<translate>Booster Cloud [Trace Icon]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Icon aufspüren]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>8646d733-4017-4efb-8c89-ff9b72217e54</id>
 				<name>Booster Cloud [Custom Case]</name>
-				<translate>Booster Cloud [Custom Case]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Tarnbehälter]</translate>
+				<altpage>57</altpage>
 			</gear>
 			<gear>
 				<id>06d57f7d-c372-433b-8a81-c33229a19f9b</id>
@@ -18294,23 +18294,23 @@
 				<translate>Munnition: Renraku/Ingram Supermach</translate>
 				<altpage>140</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>4d36bc74-d75e-46ce-9739-9b58ca72b518</id>
 				<name>Faceless - Blurred Face</name>
-				<translate>Faceless - Blurred Face</translate>
+				<translate>Gesichtsverfälscher: verschwommenes Gesicht</translate>
 				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>d1d0bbce-a2a2-4d92-b54c-b1152befb96f</id>
 				<name>Trode Patch</name>
-				<translate>Trode Patch</translate>
-				<altpage>60</altpage>
+				<translate>Troden-Patch</translate>
+				<altpage>59</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>2d9b2e2d-5460-4e1a-b4dc-82c7092b6a7e</id>
 				<name>Trode Patch Cover</name>
-				<translate>Trode Patch Cover</translate>
-				<altpage>60</altpage>
+				<translate>Troden-Patch Abdeckung</translate>
+				<altpage>59</altpage>
 			</gear>
 			<gear translated="True">
 				<id>d2a1cc9b-72e3-49df-957c-8ed6fb47a813</id>
