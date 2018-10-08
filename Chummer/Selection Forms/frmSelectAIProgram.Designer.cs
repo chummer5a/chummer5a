@@ -70,7 +70,7 @@ namespace Chummer
             // 
             this.lblRequiresProgramLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblRequiresProgramLabel.AutoSize = true;
-            this.lblRequiresProgramLabel.Location = new System.Drawing.Point(322, 32);
+            this.lblRequiresProgramLabel.Location = new System.Drawing.Point(304, 32);
             this.lblRequiresProgramLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblRequiresProgramLabel.Name = "lblRequiresProgramLabel";
             this.lblRequiresProgramLabel.Size = new System.Drawing.Size(52, 13);
@@ -81,7 +81,7 @@ namespace Chummer
             // lblRequiresProgram
             // 
             this.lblRequiresProgram.AutoSize = true;
-            this.lblRequiresProgram.Location = new System.Drawing.Point(380, 32);
+            this.lblRequiresProgram.Location = new System.Drawing.Point(362, 32);
             this.lblRequiresProgram.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblRequiresProgram.Name = "lblRequiresProgram";
             this.lblRequiresProgram.Size = new System.Drawing.Size(39, 13);
@@ -120,7 +120,7 @@ namespace Chummer
             // lblSource
             // 
             this.lblSource.AutoSize = true;
-            this.lblSource.Location = new System.Drawing.Point(380, 57);
+            this.lblSource.Location = new System.Drawing.Point(362, 57);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
             this.lblSource.Size = new System.Drawing.Size(47, 13);
@@ -132,7 +132,7 @@ namespace Chummer
             // 
             this.lblSourceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSourceLabel.AutoSize = true;
-            this.lblSourceLabel.Location = new System.Drawing.Point(330, 57);
+            this.lblSourceLabel.Location = new System.Drawing.Point(312, 57);
             this.lblSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSourceLabel.Name = "lblSourceLabel";
             this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
@@ -144,9 +144,9 @@ namespace Chummer
             // 
             this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSearch.Location = new System.Drawing.Point(380, 3);
+            this.txtSearch.Location = new System.Drawing.Point(362, 3);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(223, 20);
+            this.txtSearch.Size = new System.Drawing.Size(241, 20);
             this.txtSearch.TabIndex = 1;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyDown);
@@ -156,7 +156,7 @@ namespace Chummer
             // 
             this.lblSearchLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSearchLabel.AutoSize = true;
-            this.lblSearchLabel.Location = new System.Drawing.Point(330, 6);
+            this.lblSearchLabel.Location = new System.Drawing.Point(312, 6);
             this.lblSearchLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSearchLabel.Name = "lblSearchLabel";
             this.lblSearchLabel.Size = new System.Drawing.Size(44, 13);
@@ -224,9 +224,8 @@ namespace Chummer
             this.tableLayoutPanel1.AutoSize = true;
             this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.lblRequiresProgramLabel, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.lblRequiresProgram, 2, 1);
             this.tableLayoutPanel1.Controls.Add(this.lblSourceLabel, 1, 2);
@@ -244,7 +243,7 @@ namespace Chummer
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 423);
             this.tableLayoutPanel1.TabIndex = 38;
             // 

@@ -104,7 +104,7 @@ namespace Chummer
             // 
             this.lblSource.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.lblSource, 3);
-            this.lblSource.Location = new System.Drawing.Point(364, 57);
+            this.lblSource.Location = new System.Drawing.Point(354, 57);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
             this.lblSource.Size = new System.Drawing.Size(47, 13);
@@ -116,7 +116,7 @@ namespace Chummer
             // 
             this.lblSourceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSourceLabel.AutoSize = true;
-            this.lblSourceLabel.Location = new System.Drawing.Point(314, 57);
+            this.lblSourceLabel.Location = new System.Drawing.Point(304, 57);
             this.lblSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSourceLabel.Name = "lblSourceLabel";
             this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
@@ -190,7 +190,7 @@ namespace Chummer
             // 
             this.lblBP.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.lblBP, 3);
-            this.lblBP.Location = new System.Drawing.Point(364, 32);
+            this.lblBP.Location = new System.Drawing.Point(354, 32);
             this.lblBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBP.Name = "lblBP";
             this.lblBP.Size = new System.Drawing.Size(27, 13);
@@ -201,7 +201,7 @@ namespace Chummer
             // 
             this.lblBPLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBPLabel.AutoSize = true;
-            this.lblBPLabel.Location = new System.Drawing.Point(318, 32);
+            this.lblBPLabel.Location = new System.Drawing.Point(308, 32);
             this.lblBPLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBPLabel.Name = "lblBPLabel";
             this.lblBPLabel.Size = new System.Drawing.Size(40, 13);
@@ -248,9 +248,9 @@ namespace Chummer
             this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.txtSearch, 3);
-            this.txtSearch.Location = new System.Drawing.Point(364, 3);
+            this.txtSearch.Location = new System.Drawing.Point(354, 3);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(239, 20);
+            this.txtSearch.Size = new System.Drawing.Size(249, 20);
             this.txtSearch.TabIndex = 1;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyDown);
@@ -260,7 +260,7 @@ namespace Chummer
             // 
             this.lblSearchLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSearchLabel.AutoSize = true;
-            this.lblSearchLabel.Location = new System.Drawing.Point(314, 6);
+            this.lblSearchLabel.Location = new System.Drawing.Point(304, 6);
             this.lblSearchLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSearchLabel.Name = "lblSearchLabel";
             this.lblSearchLabel.Size = new System.Drawing.Size(44, 13);
@@ -287,8 +287,6 @@ namespace Chummer
             // 
             // nudMinimumBP
             // 
-            this.nudMinimumBP.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.nudMinimumBP, 2);
             this.nudMinimumBP.Location = new System.Drawing.Point(304, 129);
             this.nudMinimumBP.Minimum = new decimal(new int[] {
@@ -297,7 +295,7 @@ namespace Chummer
             0,
             -2147483648});
             this.nudMinimumBP.Name = "nudMinimumBP";
-            this.nudMinimumBP.Size = new System.Drawing.Size(94, 20);
+            this.nudMinimumBP.Size = new System.Drawing.Size(95, 20);
             this.nudMinimumBP.TabIndex = 16;
             this.nudMinimumBP.TextChanged += new System.EventHandler(this.KarmaFilter);
             this.nudMinimumBP.ValueChanged += new System.EventHandler(this.KarmaFilter);
@@ -306,14 +304,14 @@ namespace Chummer
             // 
             this.nudValueBP.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudValueBP.Location = new System.Drawing.Point(404, 129);
+            this.nudValueBP.Location = new System.Drawing.Point(405, 129);
             this.nudValueBP.Minimum = new decimal(new int[] {
             100,
             0,
             0,
             -2147483648});
             this.nudValueBP.Name = "nudValueBP";
-            this.nudValueBP.Size = new System.Drawing.Size(95, 20);
+            this.nudValueBP.Size = new System.Drawing.Size(96, 20);
             this.nudValueBP.TabIndex = 17;
             this.nudValueBP.TextChanged += new System.EventHandler(this.KarmaFilter);
             this.nudValueBP.ValueChanged += new System.EventHandler(this.KarmaFilter);
@@ -322,14 +320,14 @@ namespace Chummer
             // 
             this.nudMaximumBP.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudMaximumBP.Location = new System.Drawing.Point(505, 129);
+            this.nudMaximumBP.Location = new System.Drawing.Point(507, 129);
             this.nudMaximumBP.Minimum = new decimal(new int[] {
             100,
             0,
             0,
             -2147483648});
             this.nudMaximumBP.Name = "nudMaximumBP";
-            this.nudMaximumBP.Size = new System.Drawing.Size(98, 20);
+            this.nudMaximumBP.Size = new System.Drawing.Size(96, 20);
             this.nudMaximumBP.TabIndex = 18;
             this.nudMaximumBP.TextChanged += new System.EventHandler(this.KarmaFilter);
             this.nudMaximumBP.ValueChanged += new System.EventHandler(this.KarmaFilter);
@@ -351,7 +349,7 @@ namespace Chummer
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(404, 107);
+            this.label2.Location = new System.Drawing.Point(405, 107);
             this.label2.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(44, 13);
@@ -363,7 +361,7 @@ namespace Chummer
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(505, 107);
+            this.label3.Location = new System.Drawing.Point(507, 107);
             this.label3.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(54, 13);
@@ -376,7 +374,7 @@ namespace Chummer
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.label1, 2);
-            this.label1.Location = new System.Drawing.Point(319, 82);
+            this.label1.Location = new System.Drawing.Point(320, 82);
             this.label1.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(79, 13);
@@ -388,11 +386,10 @@ namespace Chummer
             // 
             this.tableLayoutPanel1.ColumnCount = 5;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 19.996F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13.33733F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tableLayoutPanel1.Controls.Add(this.txtSearch, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.chkNotMetagenetic, 1, 9);
             this.tableLayoutPanel1.Controls.Add(this.lblSearchLabel, 1, 0);
