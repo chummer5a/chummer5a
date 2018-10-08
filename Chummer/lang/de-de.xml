@@ -9351,5 +9351,21 @@
 			<key>String_Armor</key>
 			<text>Panzerung</text>
 		</string>
+		<string>
+			<key>String_SubmersionType</key>
+			<text>Neue Wandlungsart</text>
+		</string>
+		<string>
+			<key>String_SubmersionNetwork</key>
+			<text>Netzwerk für neue Wandlung</text>
+		</string>
+		<string>
+			<key>String_InitiationGroup</key>
+			<text>Gruppe für neue Initiation</text>
+		</string>
+		<string>
+			<key>String_InitiationType</key>
+			<text>Neue Initiationsart</text>
+		</string>
 	</strings>
 </chummer>
