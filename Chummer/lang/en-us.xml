@@ -4558,8 +4558,24 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Group:</text>
     </string>
     <string>
+      <key>String_InitiationGroup</key>
+      <text>Group for New Initiation</text>
+    </string>
+    <string>
+      <key>String_InitiationType</key>
+      <text>New Initiation Type</text>
+    </string>
+    <string>
       <key>Label_Network</key>
       <text>Network:</text>
+    </string>
+    <string>
+      <key>String_SubmersionNetwork</key>
+      <text>Network for New Submersion</text>
+    </string>
+    <string>
+      <key>String_SubmersionType</key>
+      <text>New Submersion Type</text>
     </string>
     <string>
       <key>Checkbox_GroupInitiation</key>

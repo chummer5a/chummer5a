@@ -220,8 +220,7 @@ namespace Chummer
             txtGameNotes.DoDatabinding("Text", CharacterObject, nameof(Character.GameNotes));
             txtAlias.DoDatabinding("Text", CharacterObject, nameof(Character.Alias));
             txtPlayerName.DoDatabinding("Text", CharacterObject, nameof(Character.PlayerName));
-
-
+            
             chkInitiationGroup.DoDatabinding("Checked", CharacterObject, nameof(Character.GroupMember));
 
             // If the character has a mugshot, decode it and put it in the PictureBox.
@@ -1064,14 +1063,18 @@ namespace Chummer
                             tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddMetamagic", GlobalOptions.Language);
                             cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddInitiateGrade", GlobalOptions.Language);
                             chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_InitiationOrdeal", GlobalOptions.Language);
+                            gpbInitiationType.Text = LanguageManager.GetString("String_InitiationType", GlobalOptions.Language);
+                            gpbInitiationGroup.Text = LanguageManager.GetString("String_InitiationGroup", GlobalOptions.Language);
+
                             tsMetamagicAddArt.Visible = true;
                             tsMetamagicAddEnchantment.Visible = true;
                             tsMetamagicAddEnhancement.Visible = true;
                             tsMetamagicAddRitual.Visible = true;
+
                             string strInitTip = LanguageManager.GetString("Tip_ImproveInitiateGrade", GlobalOptions.Language).Replace("{0}", (CharacterObject.InitiateGrade + 1).ToString()).Replace("{1}", (CharacterObjectOptions.KarmaInititationFlat + ((CharacterObject.InitiateGrade + 1) * CharacterObjectOptions.KarmaInitiation)).ToString());
                             cmdAddMetamagic.SetToolTip(strInitTip);
-                            chkJoinGroup.Visible = true;
                             chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedGroup", GlobalOptions.Language);
+                            chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_GroupInitiation", GlobalOptions.Language);
 
                             if (!SpecialAttributes.Contains(CharacterObject.MAG))
                             {
@@ -1084,7 +1087,8 @@ namespace Chummer
                         }
                         else
                         {
-                            tabCharacterTabs.TabPages.Remove(tabInitiation);
+                            if (!CharacterObject.RESEnabled)
+                                tabCharacterTabs.TabPages.Remove(tabInitiation);
 
                             if (SpecialAttributes.Contains(CharacterObject.MAG))
                             {
@@ -1095,31 +1099,33 @@ namespace Chummer
                                 SpecialAttributes.Remove(CharacterObject.MAGAdept);
                             }
                         }
-                        chkInitiationGroup.Visible = CharacterObject.MAGEnabled;
-                        chkInitiationOrdeal.Visible = CharacterObject.MAGEnabled;
-                        chkInitiationSchooling.Visible = CharacterObject.MAGEnabled;
                         gpbGearBondedFoci.Visible = CharacterObject.MAGEnabled;
                         lblAstralINI.Visible = CharacterObject.MAGEnabled;
-                        panSpirits.Visible = CharacterObject.MAGEnabled;
-                        cmdAddSpirit.Visible = CharacterObject.MAGEnabled;
                     }
                     break;
                 case nameof(Character.RESEnabled):
                     {
                         if (CharacterObject.RESEnabled)
                         {
+                            if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
+                                tabCharacterTabs.TabPages.Insert(3, tabInitiation);
+
                             tabInitiation.Text = LanguageManager.GetString("Tab_Submersion", GlobalOptions.Language);
                             tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddEcho", GlobalOptions.Language);
                             cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddSubmersionGrade", GlobalOptions.Language);
                             chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_SubmersionTask", GlobalOptions.Language);
+                            gpbInitiationType.Text = LanguageManager.GetString("String_SubmersionType", GlobalOptions.Language);
+                            gpbInitiationGroup.Text = LanguageManager.GetString("String_SubmersionNetwork", GlobalOptions.Language);
+
                             tsMetamagicAddArt.Visible = false;
                             tsMetamagicAddEnchantment.Visible = false;
                             tsMetamagicAddEnhancement.Visible = false;
                             tsMetamagicAddRitual.Visible = false;
+
                             string strInitTip = LanguageManager.GetString("Tip_ImproveSubmersionGrade", GlobalOptions.Language).Replace("{0}", (CharacterObject.SubmersionGrade + 1).ToString()).Replace("{1}", (CharacterObjectOptions.KarmaInititationFlat + ((CharacterObject.SubmersionGrade + 1) * CharacterObjectOptions.KarmaInitiation)).ToString());
                             cmdAddMetamagic.SetToolTip(strInitTip);
-                            chkJoinGroup.Visible = true;
                             chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedNetwork", GlobalOptions.Language);
+                            chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_NetworkSubmersion", GlobalOptions.Language);
 
                             if (!SpecialAttributes.Contains(CharacterObject.RES))
                             {
@@ -1128,6 +1134,9 @@ namespace Chummer
                         }
                         else
                         {
+                            if (!CharacterObject.MAGEnabled)
+                                tabCharacterTabs.TabPages.Remove(tabInitiation);
+
                             if (SpecialAttributes.Contains(CharacterObject.RES))
                             {
                                 SpecialAttributes.Remove(CharacterObject.RES);
@@ -11868,6 +11877,14 @@ namespace Chummer
         #endregion
 
         #region Additional Initiation Tab Control Events
+        private void chkInitiationGroup_EnabledChanged(object sender, EventArgs e)
+        {
+            if (!chkInitiationGroup.Enabled)
+            {
+                chkInitiationGroup.Checked = false;
+            }
+        }
+
         private void treMetamagic_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (treMetamagic.SelectedNode?.Tag is IHasSource objSelected)
@@ -11924,7 +11941,7 @@ namespace Chummer
 
         private void chkJoinGroup_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || IsRefreshing)
+            if (IsRefreshing || IsLoading)
                 return;
 
             // Joining a Network does not cost Karma for Technomancers, so this only applies to Magicians/Adepts.
@@ -12020,15 +12037,17 @@ namespace Chummer
                 }
             }
             CharacterObject.GroupMember = chkJoinGroup.Checked;
+            chkInitiationGroup.DoDatabinding("Enabled", CharacterObject, nameof(Character.GroupMember));
+
+            if (!chkJoinGroup.Enabled)
+            {
+                chkInitiationGroup.Checked = false;
+            }
+
             IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
-
-        private void txtGroupName_TextChanged(object sender, EventArgs e)
-        {
-            IsDirty = true;
-        }
-
+        
         private void txtNotes_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Control && e.KeyCode == Keys.A)
@@ -12036,11 +12055,6 @@ namespace Chummer
                 e.SuppressKeyPress = true;
                 ((TextBox) sender)?.SelectAll();
             }
-        }
-
-        private void txtGroupNotes_TextChanged(object sender, EventArgs e)
-        {
-            IsDirty = true;
         }
 #endregion
 
