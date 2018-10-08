@@ -689,7 +689,7 @@ namespace Chummer
                 ActiveMdiChild.WindowState = FormWindowState.Maximized;
 
                 // If this is a new child form and does not have a tab page, create one.
-                if (ActiveMdiChild.Tag == null)
+                if (!(ActiveMdiChild.Tag is TabPage))
                 {
                     TabPage tp = new TabPage
                     {
@@ -702,11 +702,13 @@ namespace Chummer
                     {
                         tp.Text = frmCharacterShared.CharacterObject.CharacterName;
                     }
-                    else if (ActiveMdiChild.GetType() == typeof(frmCharacterRoster))
+                    else
                     {
-                        tp.Text = LanguageManager.GetString("String_CharacterRoster", GlobalOptions.Language);
+                        string strTagText = LanguageManager.GetString(ActiveMdiChild.Tag?.ToString(), GlobalOptions.Language, false);
+                        if (!string.IsNullOrEmpty(strTagText))
+                            tp.Text = strTagText;
                     }
-
+                    
                     tabForms.SelectedTab = tp;
 
                     ActiveMdiChild.Tag = tp;
