@@ -10326,7 +10326,7 @@
 			<echo translated="True">
 				<id>f7bd6993-efa4-494c-8c58-e9f0950af7b9</id>
 				<name>Daemon: Cyberadept</name>
-				<translate>Systemdienst: Cyberadpet</translate>
+				<translate>Systemdienst: Cyberadept</translate>
 				<altpage>90</altpage>
 			</echo>
 		</echoes>
