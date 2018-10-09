@@ -6187,8 +6187,8 @@ namespace Chummer.Classes
         {
             //TODO: I'm not happy with this. 
             Log.Info("cyberadeptdaemon");
-            decimal final = Math.Min((decimal) Math.Ceiling(0.5 * _objCharacter.SubmersionGrade), _objCharacter.CyberwareEssence);
-            CreateImprovement("RES", _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute, _strUnique, (int) final);
+            int final = (int) Math.Min((decimal) Math.Ceiling(0.5 * _objCharacter.SubmersionGrade), _objCharacter.CyberwareEssence);
+            CreateImprovement("RESBase", _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute, _strUnique, final, 1, 0, 0, final);
         }
         #endregion
     }
