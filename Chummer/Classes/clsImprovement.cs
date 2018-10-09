@@ -479,6 +479,10 @@ namespace Chummer
                 _strCondition = _strExclude;
                 _strExclude = string.Empty;
             }
+            if (_objImprovementType == ImprovementType.RestrictedGear && _intVal == 0)
+            {
+                _intVal = 24;
+            }
             objNode.TryGetBoolFieldQuickly("custom", ref _blnCustom);
             objNode.TryGetStringFieldQuickly("customname", ref _strCustomName);
             objNode.TryGetStringFieldQuickly("customid", ref _strCustomId);

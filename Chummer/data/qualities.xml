@@ -3086,7 +3086,7 @@
       <limit>3</limit>
       <nolevels />
       <bonus>
-        <restrictedgear />
+        <restrictedgear>24</restrictedgear>
       </bonus>
       <source>RF</source>
       <page>149</page>

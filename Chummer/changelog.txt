@@ -99,6 +99,7 @@ Application Changes:
 - Fixed an issue where the title of the character roster form was not getting translated. Fixes #3092.
 - Initiation Groups and Submersion Networks can now have their details edited at character creation.
 - Fixed behaviour of the Cyberadept Daemon to properly provide restored Essence. Due to legacy issues with the way Base attribute bonuses are calculated, this will not show up as a tooltip. This will be amended in a future patch.
+- The Restricted Gear bonus can now be set to apply to any availability limit at character generation instead of being hardcoded to 24.
 
 Data Changes:
 
@@ -147,6 +148,7 @@ Data Changes:
 - Fixed an issue with the Text-Only sheet that caused it to fail to load the LOG attribute.
 - Fixed incorrect RC and page reference for the Cavalier Thunderstruck. Fixes #3083.
 - Fixed a rare crash that would happen on startup if/when different loading theads would collide with one another while performing initial loading.
+- Fixed an issue where Combat Sense could not get discounted from The Invisible Way. Fixes #3098.
 
 New Strings:
 

@@ -85,6 +85,7 @@
         <required>
           <oneof>
             <quality>The Beast's Way</quality>
+            <quality>The Invisible Way</quality>
             <quality>The Spiritual Way</quality>
             <quality>The Warrior's Way</quality>
           </oneof>
