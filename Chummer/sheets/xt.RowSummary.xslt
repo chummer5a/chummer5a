@@ -121,7 +121,7 @@
 
     <table class="rowsummary">
     <tr>
-      <td width="30%" class="upper">
+      <td width="30%" class="upper" style="text-align: left">
         <xsl:value-of select="$txt"/>
       </td>
       <xsl:if test="$buttons != 'N'">
