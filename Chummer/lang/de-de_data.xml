@@ -1548,29 +1548,29 @@
 				<translate>Fallschirm (Urban Explorer Daedalus)</translate>
 				<altpage>48</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>f4c1163d-bf9e-42c5-8504-37b21c01531e</id>
 				<name>Pantheon Armored Shell</name>
-				<translate>Pantheon Armored Shell</translate>
-				<altpage>73</altpage>
+				<translate>Pantheon Gepanzerte Hülle</translate>
+				<altpage>70</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>52b315a3-cf10-4534-a0d9-86b4ac346136</id>
 				<name>Pantheon Quick-Charge Battery Pack</name>
-				<translate>Pantheon Quick-Charge Battery Pack</translate>
-				<altpage>73</altpage>
+				<translate>Pantheon Schnellladebatterie</translate>
+				<altpage>70</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>c2fdc729-bc1d-4d3a-a0da-1d5dfa3b897d</id>
 				<name>Micro-Hardpoint</name>
-				<translate>Micro-Hardpoint</translate>
-				<altpage>73</altpage>
+				<translate>Mikro-Halterungen</translate>
+				<altpage>70</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>a1c9f8ee-d58d-4583-8ff3-12517dbf76f5</id>
 				<name>Personal Drone Rack</name>
-				<translate>Personal Drone Rack</translate>
-				<altpage>73</altpage>
+				<translate>Tragbare Drohnenhalterung</translate>
+				<altpage>70</altpage>
 			</mod>
 		</mods>
 	</chummer>
@@ -1835,11 +1835,11 @@
 				<translate>Nierensieb (2050)</translate>
 				<altpage>205</altpage>
 			</bioware>
-			<bioware>
+			<bioware translated="True">
 				<id>d52e5797-416f-414a-ba7f-8ba3c6aef35a</id>
 				<name>Orthoskin (2050)</name>
 				<translate>Orthoskin (2050)</translate>
-				<altpage>205</altpage>
+				<altpage>206</altpage>
 			</bioware>
 			<bioware>
 				<id>0dcfb784-e30b-4d29-b8a9-46786770c5d0</id>
@@ -1877,11 +1877,11 @@
 				<translate>Synapsenbeschleuniger (2050)</translate>
 				<altpage>205</altpage>
 			</bioware>
-			<bioware>
+			<bioware translated="True">
 				<id>7ec6348a-2edd-4629-a984-e88f258e8599</id>
 				<name>Synthacardium (2050)</name>
 				<translate>Synthacardium (2050)</translate>
-				<altpage>205</altpage>
+				<altpage>206</altpage>
 			</bioware>
 			<bioware>
 				<id>8cf8dfaa-64b1-4b46-90a1-7fe01a43ad74</id>
@@ -10323,11 +10323,11 @@
 				<translate>Wille der Resonanz</translate>
 				<altpage>102</altpage>
 			</echo>
-			<echo>
+			<echo translated="True">
 				<id>f7bd6993-efa4-494c-8c58-e9f0950af7b9</id>
 				<name>Daemon: Cyberadept</name>
-				<translate>Daemon: Cyberadept</translate>
-				<altpage>0</altpage>
+				<translate>Systemdienst: Cyberadpet</translate>
+				<altpage>90</altpage>
 			</echo>
 		</echoes>
 	</chummer>
@@ -23621,8 +23621,8 @@
 		</limbcounts>
 		<blackmarketpipelinecategories>
 			<category translate="Panzerung">Armor</category>
-			<category translate="Bioware">Bioware</category>
-			<category translate="Cyberware">Cyberware</category>
+			<category translate="Bioware" translated="True">Bioware</category>
+			<category translate="Cyberware" translated="True">Cyberware</category>
 			<category translate="Drogen">Drugs</category>
 			<category translate="Elektronik">Electronics</category>
 			<category translate="Fahrzeuge und Drohnen">Vehicles</category>
@@ -23656,13 +23656,13 @@
 			<category translate="Resonanz">Resonance</category>
 		</categories>
 		<mentors>
-			<mentor>
+			<mentor translated="True">
 				<id>acadd628-ebb5-4c79-a3c2-953ce7fa1885</id>
 				<name>01</name>
 				<translate>01</translate>
 				<altadvantage>+1 Würfel für das Kompilieren und Registrieren von Sprites jeder Art.</altadvantage>
 				<altdisadvantage>Null-Eins ist die Perfektion des Codes und verlangt seinen Anhängern das Gleiche ab oder erteilt ihnen zumindest eine harte Lektion, wenn sie fehlschlagen. Null-Eins-Technomancer müssen 2 Punkte Edge ausgeben, um einen Patzer zu negieren oder einen kritischen Patzer abzuschwächen.</altdisadvantage>
-				<altpage>162</altpage>
+				<altpage>103</altpage>
 			</mentor>
 			<mentor>
 				<id>46f88748-8c6c-4230-ad59-2eccb463cc35</id>
@@ -23736,13 +23736,13 @@
 					</choice>
 				</choices>
 			</mentor>
-			<mentor>
+			<mentor translated="True">
 				<id>c45c123c-06c7-42b3-a2ee-01e37f2f7bf8</id>
 				<name>Delphi</name>
 				<translate>Delphi</translate>
 				<altadvantage>+2 Würfel auf Analyse-Proben</altadvantage>
 				<altdisadvantage>Delphi-Technomancer können sich nicht gut auf unerwartete Situationen einstellen. Ihnen muss eine Willenskraft + Logik (3)-Probe gelingen, um in Situationen, die sie nicht eingeplant haben, eine schnelle Entscheidung zu treffen.</altdisadvantage>
-				<altpage>162</altpage>
+				<altpage>104</altpage>
 				<choices>
 					<choice>
 						<name>+1 die for Code sprites</name>
@@ -29487,113 +29487,130 @@
 				<translate>Leerer Blick</translate>
 				<altpage>189</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>d85c6437-7611-47d3-b4c7-4e581e5349a4</id>
 				<name>Deck Builder</name>
-				<translate>Deck Builder</translate>
-				<altpage>0</altpage>
+				<translate>Deckbastler</translate>
+				<altpage>76</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>7ac54323-a913-4a8e-803e-c6ac2d4ba359</id>
 				<name>Impenetrable Logic</name>
-				<translate>Impenetrable Logic</translate>
-				<altpage>0</altpage>
+				<translate>Unerschütterlliche Logik</translate>
+				<altpage>76</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>fb8bce41-05ea-48af-a45b-dc80dc392f23</id>
 				<name>Rootkit</name>
-				<translate>Rootkit</translate>
-				<altpage>0</altpage>
+				<translate>Systemlücke</translate>
+				<altpage>76</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>eefe6c28-5d7b-403d-8c24-5bc26536b52b</id>
 				<name>Silence is Golden</name>
-				<translate>Silence is Golden</translate>
-				<altpage>0</altpage>
+				<translate>Schweigen ist Gold</translate>
+				<altpage>76</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>8e16f569-a1b1-499c-8046-85d25fb00041</id>
 				<name>AVRse</name>
-				<translate>AVRse</translate>
-				<altpage>0</altpage>
+				<translate>VR-Angst</translate>
+				<altpage>79</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>19042705-1c57-4973-bf2e-45186ea2b8d5</id>
 				<name>Basement Dweller</name>
-				<translate>Basement Dweller</translate>
-				<altpage>0</altpage>
+				<translate>Kellerbewohner</translate>
+				<altpage>78</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>2c3a3f51-53c5-4d47-b991-0c64f31472d3</id>
 				<name>Big Baby</name>
-				<translate>Big Baby</translate>
-				<altpage>0</altpage>
+				<translate>Großes Baby</translate>
+				<altpage>78</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>6bbeb733-a7cc-4427-924b-8c6174399051</id>
 				<name>Buddy System</name>
-				<translate>Buddy System</translate>
-				<altpage>0</altpage>
+				<translate>Nicht ohne Kumpel</translate>
+				<altpage>79</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>a3d131f2-5ed9-42d0-86c2-396e50a9117d</id>
 				<name>Discombobulated</name>
-				<translate>Discombobulated</translate>
-				<altpage>0</altpage>
+				<translate>Verwirrt</translate>
+				<altpage>79</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>282c446f-8156-4268-8baa-5d7e732fcd53</id>
 				<name>Down the Rabbit Hole</name>
-				<translate>Down the Rabbit Hole</translate>
-				<altpage>0</altpage>
+				<translate>Alternative Fakten</translate>
+				<altpage>77</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>1638946e-7e2e-4e57-a7cb-d20f2e4eead1</id>
 				<name>Echo Chamber</name>
-				<translate>Echo Chamber</translate>
-				<altpage>0</altpage>
+				<translate>Echokammer</translate>
+				<altpage>77</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>356eabd2-7d97-46bb-81a1-ac913a670364</id>
 				<name>Frostbite</name>
-				<translate>Frostbite</translate>
-				<altpage>0</altpage>
+				<translate>Frostbeulen</translate>
+				<altpage>77</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>96322f26-94cf-4d2c-9282-6525f9008fec</id>
 				<name>Information Auctioneer</name>
-				<translate>Information Auctioneer</translate>
-				<altpage>0</altpage>
+				<translate>Informationsauktionator</translate>
+				<altpage>78</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>c4dab0b4-32c4-4840-9713-aa46c2412835</id>
 				<name>Lazy Fingers</name>
-				<translate>Lazy Fingers</translate>
-				<altpage>0</altpage>
+				<translate>Nichts überstürzen</translate>
+				<altpage>79</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>f4a052dc-17ca-4bec-a9bf-30e6da80285e</id>
 				<name>Malware Infection</name>
-				<translate>Malware Infection</translate>
-				<altpage>0</altpage>
+				<translate>Malware-Infektion</translate>
+				<altpage>79</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>ba1644ab-2191-4366-8f5f-13c21eca1cc4</id>
 				<name>Matrix Troll</name>
-				<translate>Matrix Troll</translate>
-				<altpage>0</altpage>
+				<translate>Matrix-Troll</translate>
+				<altpage>79</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>5e75a946-b14e-488d-93ea-cd82e648286d</id>
 				<name>Sloppy Code</name>
-				<translate>Sloppy Code</translate>
-				<altpage>0</altpage>
+				<translate>Schlampiger Code</translate>
+				<altpage>79</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>b45b2d09-80d4-4e24-b96c-1e1f3665dee3</id>
 				<name>Well, Actually...</name>
-				<translate>Well, Actually...</translate>
-				<altpage>0</altpage>
+				<translate>Also, eigentlich ...</translate>
+				<altpage>77</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>522dbfb5-5ea0-4707-a7e8-1ac777b3aff7</id>
@@ -29619,71 +29636,81 @@
 				<translate>Better on the Net [Sleaze]</translate>
 				<altpage>0</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>63fd5450-5f3d-4090-933e-ad0cf39ef0e2</id>
 				<name>Brilliant Heuristics</name>
-				<translate>Brilliant Heuristics</translate>
-				<altpage>0</altpage>
+				<translate>Brilliante Heuristik</translate>
+				<altpage>96</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>cc967d0f-6b7a-4c62-b202-37f94242169c</id>
 				<name>Groveler</name>
-				<translate>Groveler</translate>
-				<altpage>0</altpage>
+				<translate>Datenparasit</translate>
+				<altpage>96</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>ad8d9751-d82f-4d80-b351-c102cd60c2b1</id>
 				<name>Hold the Door</name>
-				<translate>Hold the Door</translate>
-				<altpage>0</altpage>
+				<translate>Durchhalten</translate>
+				<altpage>97</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>530062d2-6dbe-4e19-b16a-82953c72745d</id>
 				<name>Fractal Punch</name>
-				<translate>Fractal Punch</translate>
-				<altpage>0</altpage>
+				<translate>Fraktalschlag</translate>
+				<altpage>97</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>ca9b24ba-3a2e-41cd-8434-b33f91d691aa</id>
 				<name>Lone Wolf</name>
-				<translate>Lone Wolf</translate>
-				<altpage>0</altpage>
+				<translate>Einsamer Wolf</translate>
+				<altpage>97</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>be396e6b-55f8-46ac-b6d8-866985b3cffd</id>
 				<name>Natural Hacker</name>
-				<translate>Natural Hacker</translate>
-				<altpage>0</altpage>
+				<translate>Geborener Hacker</translate>
+				<altpage>98</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>c80d0f3d-5be7-4d63-8891-ae3bccbfe48f</id>
 				<name>Reverberant</name>
-				<translate>Reverberant</translate>
-				<altpage>0</altpage>
+				<translate>Nachhall</translate>
+				<altpage>98</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>adf86253-baaf-4c03-87fe-aba3a453b3b5</id>
 				<name>Team Player</name>
-				<translate>Team Player</translate>
-				<altpage>0</altpage>
+				<translate>Teamspieler</translate>
+				<altpage>99</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>0b8c9e67-6767-48d3-b14d-8a9b2024447a</id>
 				<name>Trust Data, Not Lore</name>
-				<translate>Trust Data, Not Lore</translate>
-				<altpage>0</altpage>
+				<translate>Daten statt Instinkt</translate>
+				<altpage>96</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>223bad23-027c-4ea3-ac0b-1ccccace61fe</id>
 				<name>Trust Lore, Not Data</name>
-				<translate>Trust Lore, Not Data</translate>
-				<altpage>0</altpage>
+				<translate>Instinkt statt Daten</translate>
+				<altpage>98</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>ad35c6ec-664c-46a3-8dc5-ac48dfddd0cf</id>
 				<name>Unique Avatar</name>
-				<translate>Unique Avatar</translate>
-				<altpage>0</altpage>
+				<translate>Einzigartiger Avatar</translate>
+				<altpage>97</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>d40aee6b-80b7-43f5-b335-dabf8f1ad14d</id>
@@ -29709,65 +29736,75 @@
 				<translate>Brittle [Firewall]</translate>
 				<altpage>0</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>d3ed1f43-ffd8-4c96-8faf-de8bbf4c3c83</id>
 				<name>Code of Honor: Black Hat</name>
-				<translate>Code of Honor: Black Hat</translate>
-				<altpage>0</altpage>
+				<translate>Ehrenkodex: Black Hat</translate>
+				<altpage>99</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>7e172644-9b48-4822-8636-b45827ff6938</id>
 				<name>Data Hog</name>
-				<translate>Data Hog</translate>
-				<altpage>0</altpage>
+				<translate>Axt im Datenwald</translate>
+				<altpage>99</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>2cafaee0-fb4b-4b56-90e2-8eb864c5a033</id>
 				<name>Escaped Custody</name>
-				<translate>Escaped Custody</translate>
-				<altpage>0</altpage>
+				<translate>Entflohen</translate>
+				<altpage>100</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>57e260d7-7e08-4dae-a3e3-0d174bf61689</id>
 				<name>Know Your Limit</name>
-				<translate>Know Your Limit</translate>
-				<altpage>0</altpage>
+				<translate>Geschwunden</translate>
+				<altpage>100</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>ff939676-0195-4885-ba91-5ee536719b2f</id>
 				<name>On the Wagon</name>
-				<translate>On the Wagon</translate>
-				<altpage>0</altpage>
+				<translate>Abstinent</translate>
+				<altpage>99</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>f6a8d504-db7a-47eb-ace5-604de21c80fd</id>
 				<name>Resonant Burnout</name>
-				<translate>Resonant Burnout</translate>
-				<altpage>0</altpage>
+				<translate>Resonanzverschleiss</translate>
+				<altpage>100</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>4116d691-86f0-4fb5-bf78-f2059514956a</id>
 				<name>Sprite Combustion</name>
-				<translate>Sprite Combustion</translate>
-				<altpage>0</altpage>
+				<translate>Sprite-Instabilität</translate>
+				<altpage>100</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>153dc4b0-199d-4fc7-9b94-b8cf05afdf56</id>
 				<name>Taint of Dissonance</name>
-				<translate>Taint of Dissonance</translate>
-				<altpage>0</altpage>
+				<translate>Dissonanzbefleckt</translate>
+				<altpage>99</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>2509cf19-002f-4f24-a52f-f1441dd4d614</id>
 				<name>'Ware Intolerance</name>
-				<translate>'Ware Intolerance</translate>
-				<altpage>0</altpage>
+				<translate>Bodytechintoleranz</translate>
+				<altpage>99</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>102c4f07-f82c-4976-89bd-bcd3b906fb68</id>
 				<name>Wired User</name>
-				<translate>Wired User</translate>
-				<altpage>0</altpage>
+				<translate>Voll drauf</translate>
+				<altpage>100</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>d2873478-d265-45bb-8a9f-320b8d0d33d3</id>
@@ -29823,34 +29860,35 @@
 				<translate>Nullzauberer</translate>
 				<altpage>48</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>8bdd4868-191c-4c28-800b-526cb39f7786</id>
 				<name>One With the Matrix I</name>
-				<translate>One With the Matrix I</translate>
+				<translate>Eins mit der Matrix I</translate>
 				<altpage>97</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>3c83d73e-7aa7-4fe5-8f03-6e983648e2eb</id>
 				<name>One With the Matrix II</name>
-				<translate>One With the Matrix II</translate>
+				<translate>Eins mit der Matrix II</translate>
 				<altpage>97</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>b705a89c-219c-432c-ab47-98ff6c975b4a</id>
 				<name>One With the Matrix III</name>
-				<translate>One With the Matrix III</translate>
+				<translate>Eins mit der Matrix III</translate>
 				<altpage>97</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>c5311ee0-8a9b-41b9-857f-28541090968a</id>
 				<name>Paragon</name>
 				<translate>Paragon</translate>
 				<altpage>102</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>eeb4db5b-f5b7-4ab5-b310-1d7107cd722f</id>
 				<name>Sprite Affinity</name>
-				<translate>Sprite Affinity</translate>
+				<translate>Freundliche Sprites</translate>
 				<altpage>97</altpage>
 			</quality>
 		</qualities>
@@ -35967,16 +36005,16 @@
 				<translate>Maschinen-Sprite</translate>
 				<altpage>256</altpage>
 			</spirit>
-			<spirit>
+			<spirit translated="True">
 				<id>74db183e-2fef-4e6d-84a3-63e641d93bf0</id>
 				<name>Companion Sprite</name>
-				<translate>Companion Sprite</translate>
+				<translate>Begleiter-Sprite</translate>
 				<altpage>100</altpage>
 			</spirit>
-			<spirit>
+			<spirit translated="True">
 				<id>80788abc-4b14-40b0-8ffd-e36fe60653cb</id>
 				<name>Generalist Sprite</name>
-				<translate>Generalist Sprite</translate>
+				<translate>Generalisten-Sprite</translate>
 				<altpage>100</altpage>
 			</spirit>
 		</spirits>
@@ -44077,113 +44115,113 @@
 				<translate>Coriolis</translate>
 				<altpage>27</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>60b3f99f-f903-426a-ae13-ea604e77a956</id>
 				<name>Overdrive</name>
-				<translate>Overdrive</translate>
-				<altpage>0</altpage>
+				<translate>Übersteuern</translate>
+				<altpage>90</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>3bed693e-d9dd-4873-8d54-2cbe97202174</id>
 				<name>LOTO</name>
-				<translate>LOTO</translate>
-				<altpage>0</altpage>
+				<translate>Wartungssicherung</translate>
+				<altpage>91</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>174f61be-5dad-41ad-8d6b-641bc514b9bb</id>
 				<name>Hyperthreading</name>
-				<translate>Hyperthreading</translate>
-				<altpage>0</altpage>
+				<translate>Parallelweben</translate>
+				<altpage>91</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>c9eb7fba-b5dd-40b1-907a-a6683dc9977d</id>
 				<name>Sprite Pet</name>
-				<translate>Sprite Pet</translate>
-				<altpage>0</altpage>
+				<translate>Sprite-Haustier</translate>
+				<altpage>92</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>92b4cf59-62ca-443b-aeb8-f5044967c835</id>
 				<name>Causal Nexus</name>
-				<translate>Causal Nexus</translate>
-				<altpage>0</altpage>
+				<translate>Kausalnexus</translate>
+				<altpage>138</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>4856cfa1-89c8-484a-9127-ddc4a2327c63</id>
 				<name>Dissonance Spike</name>
-				<translate>Dissonance Spike</translate>
-				<altpage>0</altpage>
+				<translate>Dissonanzspike</translate>
+				<altpage>139</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>cadf7e01-c75d-4a49-8676-87ddcb0eaa74</id>
 				<name>Forced Heuristics</name>
-				<translate>Forced Heuristics</translate>
-				<altpage>0</altpage>
+				<translate>Erzwungene Heuristiken</translate>
+				<altpage>138</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>07b461db-3982-4fa2-8e24-cc5007c377a4</id>
 				<name>Arc Feedback</name>
-				<translate>Arc Feedback</translate>
-				<altpage>0</altpage>
+				<translate>Rückschlagbogen</translate>
+				<altpage>95</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>42a11004-5379-4b79-90fa-a30f7ddf4f14</id>
 				<name>Bootleg Program</name>
-				<translate>Bootleg Program</translate>
-				<altpage>0</altpage>
+				<translate>Raubkopie</translate>
+				<altpage>95</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>72630724-8d43-4a28-837c-160c735a0d0d</id>
 				<name>Host Emulator</name>
-				<translate>Host Emulator</translate>
-				<altpage>0</altpage>
+				<translate>Host-Emulator</translate>
+				<altpage>94</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>080013b7-deb3-4a2e-822f-400ecf8293b2</id>
 				<name>Mirrored Persona</name>
-				<translate>Mirrored Persona</translate>
-				<altpage>0</altpage>
+				<translate>Spiegelpersona</translate>
+				<altpage>96</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>7d98d12d-5b02-4bc8-bf1f-b0b3507ebdaf</id>
 				<name>Pinch</name>
-				<translate>Pinch</translate>
-				<altpage>0</altpage>
+				<translate>Abschiedsschmerz</translate>
+				<altpage>94</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>1a4a6137-53d6-4ada-a788-49e56f73bb86</id>
 				<name>Primed Charge</name>
-				<translate>Primed Charge</translate>
-				<altpage>0</altpage>
+				<translate>Resonanzladung</translate>
+				<altpage>95</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>b3e7f9e4-aec4-4114-bd49-e04a43be502f</id>
 				<name>Resonance Bind</name>
-				<translate>Resonance Bind</translate>
-				<altpage>0</altpage>
+				<translate>Resonanzfessel</translate>
+				<altpage>95</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>c5185f4d-32b4-4239-91a9-f0095ccf8572</id>
 				<name>Resonance Cache</name>
-				<translate>Resonance Cache</translate>
-				<altpage>0</altpage>
+				<translate>Resonanzgefängnis</translate>
+				<altpage>95</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>f89957e0-9c70-4503-b47d-0511b7bca5b6</id>
 				<name>Search History</name>
-				<translate>Search History</translate>
-				<altpage>0</altpage>
+				<translate>Chronik</translate>
+				<altpage>94</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>819a111f-b49d-498b-ac63-54f770cf7cd7</id>
 				<name>Weaken Data Bomb</name>
-				<translate>Weaken Data Bomb</translate>
-				<altpage>0</altpage>
+				<translate>Datenbombe schwächen</translate>
+				<altpage>94</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>9e849f66-6ad4-49fb-9ccd-e0b250b0625b</id>
 				<name>Weaken Encryption</name>
-				<translate>Weaken Encryption</translate>
-				<altpage>0</altpage>
+				<translate>Verschlüsselung schwächen</translate>
+				<altpage>96</altpage>
 			</complexform>
 		</complexforms>
 	</chummer>
@@ -45655,49 +45693,49 @@
 				<translate>Wasserzeichen</translate>
 				<altpage>254</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<name>Bodyguard</name>
 				<translate>Bodyguard</translate>
-				<altpage>100</altpage>
+				<altpage>101</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<name>Shield</name>
-				<translate>Shield</translate>
-				<altpage>100</altpage>
+				<translate>Schild</translate>
+				<altpage>101</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<name>Active Analytics</name>
-				<translate>Active Analytics</translate>
+				<translate>Aktive Analyse</translate>
 				<altpage>101</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<name>Borrowed IP</name>
-				<translate>Borrowed IP</translate>
+				<translate>Geborgtes Icon</translate>
 				<altpage>101</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<name>Decompiling Resistance</name>
-				<translate>Decompiling Resistance</translate>
+				<translate>Dekompilierungsresistenz</translate>
 				<altpage>101</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<name>Enhance</name>
-				<translate>Enhance</translate>
+				<translate>Verstärkung</translate>
 				<altpage>101</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<name>Navi</name>
 				<translate>Navi</translate>
 				<altpage>101</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<name>Resilient Code</name>
-				<translate>Resilient Code</translate>
+				<translate>Widerstandsfähiger Code</translate>
 				<altpage>101</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<name>Resonance Spooling</name>
-				<translate>Resonance Spooling</translate>
+				<translate>Resonanzwicklungen</translate>
 				<altpage>101</altpage>
 			</power>
 		</powers>
