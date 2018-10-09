@@ -11624,12 +11624,7 @@ namespace Chummer
 
                     strQualities += string.Join(",\n", objLifestyle.FreeGrids.Select(r => r.DisplayName(GlobalOptions.Language)));
                 }
-
-                if (strQualities.EndsWith(",\n"))
-                {
-                    strQualities = strQualities.Substring(0, strQualities.Length - 2);
-                }
-
+                
                 lblBaseLifestyle.Text = objLifestyle.DisplayNameShort(GlobalOptions.Language);
                 lblLifestyleQualities.Text = strQualities;
                 lblLifestyleQualitiesLabel.Visible = true;
