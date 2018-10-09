@@ -12034,17 +12034,19 @@ namespace Chummer
         /// <summary>
         /// Whether or not RestrictedGear is enabled.
         /// </summary>
-        public bool RestrictedGear
+        public int RestrictedGear
         {
             get
             {
                 if (_intCachedRestrictedGear < 0)
-                    _intCachedRestrictedGear = Improvements.Any(x =>
-                        x.ImproveType == Improvement.ImprovementType.RestrictedGear && x.Enabled)
-                        ? 1
-                        : 0;
+                {
+                    foreach (Improvement objImprovment in Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.RestrictedGear && x.Enabled))
+                    {
+                        _intCachedRestrictedGear = Math.Max(_intCachedRestrictedGear, objImprovment.Value);
+                    }
+                }
 
-                return _intCachedRestrictedGear > 0;
+                return _intCachedRestrictedGear;
             }
         }
 

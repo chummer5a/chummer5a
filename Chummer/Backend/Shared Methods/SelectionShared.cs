@@ -995,7 +995,7 @@ namespace Chummer
             if (objXmlGear == null)
                 return false;
             //TODO: Better handler for restricted gear
-            if (objCharacter.Created || objCharacter.RestrictedGear || objCharacter.IgnoreRules)
+            if (objCharacter.Created || objCharacter.RestrictedGear > 0 || objCharacter.IgnoreRules)
                 return true;
             // Avail.
 
@@ -2103,7 +2103,7 @@ namespace Chummer
             if (objXmlGear == null)
                 return false;
             //TODO: Better handler for restricted gear
-            if (objCharacter.Created || objCharacter.RestrictedGear || objCharacter.IgnoreRules)
+            if (objCharacter.Created || objCharacter.RestrictedGear > 0 || objCharacter.IgnoreRules)
                 return true;
             // Avail.
 

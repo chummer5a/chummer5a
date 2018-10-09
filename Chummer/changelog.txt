@@ -98,6 +98,7 @@ Application Changes:
 - Fixed an issue with attribute controls causing a crash if the character has multiple attributes at max-1 and takes an improvement that reduces that attribute maximum. Fixes #3086
 - Fixed an issue where the title of the character roster form was not getting translated. Fixes #3092.
 - Initiation Groups and Submersion Networks can now have their details edited at character creation.
+- The Restricted Gear bonus can now be set to apply to any availability limit at character generation instead of being hardcoded to 24.
 
 Data Changes:
 

@@ -12644,7 +12644,7 @@ namespace Chummer
                     int intAvailInt = objTotalAvail.Value;
                     if (intAvailInt > CharacterObject.MaximumAvailability)
                     {
-                        if (intAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
+                        if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                         {
                             blnRestrictedGearUsed = true;
                             strRestrictedItem = objCyberware.DisplayName(GlobalOptions.Language);
@@ -12680,7 +12680,7 @@ namespace Chummer
                 int intAvailInt = objArmor.TotalAvailTuple().Value;
                 if (intAvailInt > CharacterObject.MaximumAvailability)
                 {
-                    if (intAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
+                    if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                     {
                         blnRestrictedGearUsed = true;
                         strRestrictedItem = objArmor.DisplayName(GlobalOptions.Language);
@@ -12700,7 +12700,7 @@ namespace Chummer
                         int intModAvailInt = objTotalAvail.Value;
                         if (intModAvailInt > CharacterObject.MaximumAvailability)
                         {
-                            if (intModAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
+                            if (intModAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                             {
                                 blnRestrictedGearUsed = true;
                                 strRestrictedItem = objMod.DisplayName(GlobalOptions.Language);
@@ -12733,7 +12733,7 @@ namespace Chummer
                     int intAvailInt = objWeaponAvail.Value;
                     if (intAvailInt > CharacterObject.MaximumAvailability)
                     {
-                        if (intAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
+                        if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                         {
                             blnRestrictedGearUsed = true;
                             strRestrictedItem = objWeapon.DisplayName(GlobalOptions.Language);
@@ -12753,7 +12753,7 @@ namespace Chummer
                         int intAccessoryAvailInt = objAccessoryAvail.Value;
                         if (intAccessoryAvailInt > CharacterObject.MaximumAvailability)
                         {
-                            if (intAccessoryAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
+                            if (intAccessoryAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                             {
                                 blnRestrictedGearUsed = true;
                                 strRestrictedItem = objAccessory.DisplayName(GlobalOptions.Language);
@@ -12779,7 +12779,7 @@ namespace Chummer
                 int intAvailInt = objVehicle.TotalAvailTuple().Value;
                 if (intAvailInt > CharacterObject.MaximumAvailability)
                 {
-                    if (intAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
+                    if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                     {
                         blnRestrictedGearUsed = true;
                         strRestrictedItem = objVehicle.DisplayName(GlobalOptions.Language);
@@ -12798,7 +12798,7 @@ namespace Chummer
                         int intModAvailInt = objModAvail.Value;
                         if (intModAvailInt > CharacterObject.MaximumAvailability)
                         {
-                            if (intModAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
+                            if (intModAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                             {
                                 blnRestrictedGearUsed = true;
                                 strRestrictedItem = objVehicleMod.DisplayName(GlobalOptions.Language);
@@ -12817,7 +12817,7 @@ namespace Chummer
                                 int intWeaponAvailInt = objWeaponAvail.Value;
                                 if (intWeaponAvailInt > CharacterObject.MaximumAvailability)
                                 {
-                                    if (intWeaponAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
+                                    if (intWeaponAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                                     {
                                         blnRestrictedGearUsed = true;
                                         strRestrictedItem = objWeapon.DisplayName(GlobalOptions.Language);
@@ -12837,7 +12837,7 @@ namespace Chummer
                                     int intAccessoryAvailInt = objAccessoryAvail.Value;
                                     if (intAccessoryAvailInt > CharacterObject.MaximumAvailability)
                                     {
-                                        if (intAccessoryAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
+                                        if (intAccessoryAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                                         {
                                             blnRestrictedGearUsed = true;
                                             strRestrictedItem = objAccessory.DisplayName(GlobalOptions.Language);
@@ -13132,7 +13132,7 @@ namespace Chummer
                 //TODO: Make this dynamically update without having to validate the character.
                 if (intAvailInt > CharacterObject.MaximumAvailability)
                 {
-                    if (intAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
+                    if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                     {
                         blnRestrictedGearUsed = true;
                         strRestrictedItem = objGear.Parent == null ? objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language) : $"{objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objGear.Parent})";
