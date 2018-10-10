@@ -479,10 +479,6 @@ namespace Chummer
                     {
                         int intDV = Convert.ToInt32(Math.Floor(Convert.ToDouble(xprResult.ToString(), GlobalOptions.InvariantCultureInfo)));
 
-                        if (Limited)
-                        {
-                            intDV -= 2;
-                        }
                         if (Extended && !Name.EndsWith("Extended"))
                         {
                             intDV += 2;
