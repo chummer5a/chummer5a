@@ -9869,29 +9869,29 @@
 				<translate>Zentaur Hinterbein</translate>
 				<altpage>92</altpage>
 			</cyberware>
-			<cyberware>
+			<cyberware translated="True">
 				<id>85bd6c32-d0c3-4d1b-99ad-833aad376a54</id>
 				<name>Bulk Modification (Hand/Foot/Half-Skull)</name>
-				<translate>Bulk Modification (Hand/Foot/Half-Skull)</translate>
-				<altpage>86</altpage>
+				<translate>Größenanpassung (Hand/Fuß/partieller Schädel)</translate>
+				<altpage>91</altpage>
 			</cyberware>
-			<cyberware>
+			<cyberware translated="True">
 				<id>89733e57-d1e3-4b26-ae40-02ee2c2be733</id>
 				<name>Bulk Modification (Lower Arm/Lower Leg/Skull)</name>
-				<translate>Bulk Modification (Lower Arm/Lower Leg/Skull)</translate>
-				<altpage>86</altpage>
+				<translate>Größenanpassung (Unterarm/Unterschenkel/Schädel)</translate>
+				<altpage>91</altpage>
 			</cyberware>
-			<cyberware>
+			<cyberware translated="True">
 				<id>b1421a8e-6579-44d9-854c-dd15c477032a</id>
 				<name>Bulk Modification (Full Arm/Full Leg)</name>
-				<translate>Bulk Modification (Full Arm/Full Leg)</translate>
-				<altpage>86</altpage>
+				<translate>Größenanpassung (Ganzer Arm/Ganzes Bein)</translate>
+				<altpage>91</altpage>
 			</cyberware>
-			<cyberware>
+			<cyberware translated="True">
 				<id>08b7a781-4631-4a94-bbf2-505bd173d2c5</id>
 				<name>Bulk Modification (Torso/Liminal Chassis)</name>
-				<translate>Bulk Modification (Torso/Liminal Chassis)</translate>
-				<altpage>86</altpage>
+				<translate>Größenanpassung (Torso/Hybriduntersatz)</translate>
+				<altpage>91</altpage>
 			</cyberware>
 			<cyberware translated="True">
 				<id>92a3677e-cd4c-4ce1-9295-612281946709</id>
@@ -23645,7 +23645,7 @@
 				<name>Sumatra - Re-use instance</name>
 				<translate>Sumatra - Instanz wiederverwenden</translate>
 			</pdfargument>
-			<pdfargument>
+			<pdfargument translated="True">
 				<name>Sumatra</name>
 				<translate>Sumatra</translate>
 			</pdfargument>
@@ -29612,29 +29612,33 @@
 				<altpage>77</altpage>
 				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>522dbfb5-5ea0-4707-a7e8-1ac777b3aff7</id>
 				<name>Better on the Net [Attack]</name>
-				<translate>Better on the Net [Attack]</translate>
-				<altpage>0</altpage>
+				<translate>Besser im Netz [Angriff]</translate>
+				<altpage>96</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>39139f84-b8ab-4523-ac02-851350e3f2b6</id>
 				<name>Better on the Net [Data Processing]</name>
-				<translate>Better on the Net [Data Processing]</translate>
-				<altpage>0</altpage>
+				<translate>Besser im Netz [Datenverarbeitung]</translate>
+				<altpage>96</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>25d34c52-6927-44dd-85bd-684e9add1f89</id>
 				<name>Better on the Net [Firewall]</name>
-				<translate>Better on the Net [Firewall]</translate>
-				<altpage>0</altpage>
+				<translate>Besser im Netz [Firewall]</translate>
+				<altpage>96</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>59436ccc-5e4b-481d-8d63-d3ba912f2d8a</id>
 				<name>Better on the Net [Sleaze]</name>
-				<translate>Better on the Net [Sleaze]</translate>
-				<altpage>0</altpage>
+				<translate>Besser im Netz [Schleicher]</translate>
+				<altpage>96</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality translated="True">
 				<id>63fd5450-5f3d-4090-933e-ad0cf39ef0e2</id>
@@ -29712,29 +29716,32 @@
 				<altpage>97</altpage>
 				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>d40aee6b-80b7-43f5-b335-dabf8f1ad14d</id>
 				<name>Brittle [Attack]</name>
-				<translate>Brittle [Attack]</translate>
-				<altpage>0</altpage>
+				<translate>[Angriff]-Schwäche</translate>
+				<altpage>99</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>cb5bd1e5-b9ef-434f-af17-0e7b4decaa46</id>
 				<name>Brittle [Sleaze]</name>
-				<translate>Brittle [Sleaze]</translate>
-				<altpage>0</altpage>
+				<translate>[Schleicher]-Schwäche</translate>
+				<altpage>99</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>64d430b1-6d6a-4abc-9ef8-3ddaee2352ce</id>
 				<name>Brittle [Data Processing]</name>
-				<translate>Brittle [Data Processing]</translate>
-				<altpage>0</altpage>
+				<translate>[Datenverarbeitung]-Schwäche</translate>
+				<altpage>99</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>a1530804-a35b-4d2f-ae3e-50d647016903</id>
 				<name>Brittle [Firewall]</name>
-				<translate>Brittle [Firewall]</translate>
-				<altpage>0</altpage>
+				<translate>[Firewall]-Schwäche</translate>
+				<altpage>99</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality translated="True">
 				<id>d3ed1f43-ffd8-4c96-8faf-de8bbf4c3c83</id>
@@ -29806,47 +29813,54 @@
 				<altpage>100</altpage>
 				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>d2873478-d265-45bb-8a9f-320b8d0d33d3</id>
 				<name>Resonant Stream: Cyberadept</name>
-				<translate>Resonant Stream: Cyberadept</translate>
-				<altpage>0</altpage>
+				<translate>Resonante Strömung: Cyberadept</translate>
+				<altpage>90</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>e3d04705-b90a-4d94-90d0-4ad2c7adfa79</id>
 				<name>Resonant Stream: Machinist</name>
-				<translate>Resonant Stream: Machinist</translate>
-				<altpage>0</altpage>
+				<translate>Resonante Strömung: Maschinist</translate>
+				<altpage>90</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>11d6c3b6-47c4-4765-a625-7a5907ba1b4a</id>
 				<name>Resonant Stream: Sourceror</name>
-				<translate>Resonant Stream: Sourceror</translate>
-				<altpage>0</altpage>
+				<translate>Resonante Strömung: Sourcerer</translate>
+				<altpage>91</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>71511c8f-85f1-4e35-aeaa-be8fa3a45331</id>
 				<name>Resonant Stream: Technoshaman</name>
-				<translate>Resonant Stream: Technoshaman</translate>
-				<altpage>0</altpage>
+				<translate>Resonante Strömung: Technoschamanen</translate>
+				<altpage>92</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>e40e318d-ecde-4a20-bfc5-36d341a644b5</id>
 				<name>Dissonant Stream: Apophenian</name>
-				<translate>Dissonant Stream: Apophenian</translate>
-				<altpage>0</altpage>
+				<translate>Dissonante Strömung: Apophänianer</translate>
+				<altpage>138</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>ee5d131f-5606-4a40-8035-9970aa3b5b29</id>
 				<name>Dissonant Stream: Erisian</name>
-				<translate>Dissonant Stream: Erisian</translate>
-				<altpage>0</altpage>
+				<translate>Dissonante Strömung: Erisianer</translate>
+				<altpage>139</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>580c8ae5-899b-4fa9-8f2d-600c9ac758f9</id>
 				<name>Dissonant Stream: Morphinae</name>
-				<translate>Dissonant Stream: Morphinae</translate>
-				<altpage>0</altpage>
+				<translate>Dissonante Strömung: Morphinae</translate>
+				<altpage>137</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>90691f29-5b81-4a81-9ebc-21f2f5da1d55</id>
