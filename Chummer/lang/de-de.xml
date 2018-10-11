@@ -9367,5 +9367,13 @@
 			<key>String_InitiationType</key>
 			<text>Neue Initiationsart</text>
 		</string>
+		<string>
+			<key>String_Paragon</key>
+			<text>Paragon</text>
+		</string>
+		<string>
+			<key>String_Stream</key>
+			<text>Strömung</text>
+		</string>
 	</strings>
 </chummer>
