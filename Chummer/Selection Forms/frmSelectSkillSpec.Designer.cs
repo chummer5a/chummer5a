@@ -120,7 +120,7 @@ namespace Chummer
             this.chkKarma.Location = new System.Drawing.Point(3, 55);
             this.chkKarma.Name = "chkKarma";
             this.chkKarma.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.chkKarma.Size = new System.Drawing.Size(131, 25);
+            this.chkKarma.Size = new System.Drawing.Size(132, 25);
             this.chkKarma.TabIndex = 15;
             this.chkKarma.Tag = "String_BuyWithKarma";
             this.chkKarma.Text = "Buy with Karma";
@@ -129,6 +129,9 @@ namespace Chummer
             // 
             // tableLayoutPanel1
             // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.AutoSize = true;
             this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -139,7 +142,6 @@ namespace Chummer
             this.tableLayoutPanel1.Controls.Add(this.lblAmmoLabel, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.chkKarma, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 2, 2);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;

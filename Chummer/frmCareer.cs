@@ -15926,8 +15926,7 @@ namespace Chummer
 
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strDrain, out bool blnIsSuccess);
                     int intDrain = blnIsSuccess ? Convert.ToInt32(objProcess) : 0;
-                    int intBonusDrain = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance);
-                    intDrain += intBonusDrain;
+                    intDrain += ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance);
 
                     string strTip = lblDrainAttributes.Text;
 
@@ -15937,14 +15936,11 @@ namespace Chummer
                         strTip = strTip.CheapReplace(objAttrib.DisplayAbbrev, () => objAttrib.DisplayAbbrev + strSpace + '(' + objAttrib.TotalValue + ')');
                     }
 
-                    if (intBonusDrain != 0)
+                    foreach (Improvement objImprovement in CharacterObject.Improvements)
                     {
-                        foreach (Improvement objImprovement in CharacterObject.Improvements)
+                        if (objImprovement.ImproveType == Improvement.ImprovementType.DrainResistance && objImprovement.Enabled)
                         {
-                            if (objImprovement.ImproveType == Improvement.ImprovementType.DrainResistance && objImprovement.Enabled)
-                            {
-                                strTip += strSpace + '+' + strSpace + CharacterObject.GetObjectName(objImprovement, GlobalOptions.Language) + strSpace + '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')';
-                            }
+                            strTip += strSpace + '+' + strSpace + CharacterObject.GetObjectName(objImprovement, GlobalOptions.Language) + strSpace + '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')';
                         }
                     }
                     //if (objSpell.Limited)

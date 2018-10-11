@@ -862,14 +862,11 @@ namespace Chummer
                 }
 
                 // Include any Improvements to the Spell Category.
-                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellCategory, false, Category) != 0)
+                foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    foreach (Improvement objImprovement in _objCharacter.Improvements)
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.SpellCategory && objImprovement.Enabled && objImprovement.ImprovedName == Category)
                     {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.SpellCategory && objImprovement.Enabled && objImprovement.ImprovedName == Category)
-                        {
-                            strReturn += strSpaceCharacter + '+' + strSpaceCharacter + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')';
-                        }
+                        strReturn += strSpaceCharacter + '+' + strSpaceCharacter + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')';
                     }
                 }
                 return strReturn;

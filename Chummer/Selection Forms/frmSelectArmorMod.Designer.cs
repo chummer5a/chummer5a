@@ -334,7 +334,7 @@ namespace Chummer
             // lblTest
             // 
             this.lblTest.AutoSize = true;
-            this.lblTest.Location = new System.Drawing.Point(503, 57);
+            this.lblTest.Location = new System.Drawing.Point(502, 57);
             this.lblTest.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblTest.Name = "lblTest";
             this.lblTest.Size = new System.Drawing.Size(19, 13);
@@ -345,7 +345,7 @@ namespace Chummer
             // 
             this.lblTestLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTestLabel.AutoSize = true;
-            this.lblTestLabel.Location = new System.Drawing.Point(466, 57);
+            this.lblTestLabel.Location = new System.Drawing.Point(465, 57);
             this.lblTestLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblTestLabel.Name = "lblTestLabel";
             this.lblTestLabel.Size = new System.Drawing.Size(31, 13);
@@ -380,7 +380,7 @@ namespace Chummer
             this.chkHideOverAvailLimit.Location = new System.Drawing.Point(304, 232);
             this.chkHideOverAvailLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkHideOverAvailLimit.Name = "chkHideOverAvailLimit";
-            this.chkHideOverAvailLimit.Size = new System.Drawing.Size(299, 17);
+            this.chkHideOverAvailLimit.Size = new System.Drawing.Size(296, 17);
             this.chkHideOverAvailLimit.TabIndex = 65;
             this.chkHideOverAvailLimit.Tag = "Checkbox_HideOverAvailLimit";
             this.chkHideOverAvailLimit.Text = "Hide Items Over Avail Limit ({0})";
@@ -389,6 +389,9 @@ namespace Chummer
             // 
             // tableLayoutPanel1
             // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.AutoSize = true;
             this.tableLayoutPanel1.ColumnCount = 5;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
@@ -419,7 +422,6 @@ namespace Chummer
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel2, 1, 11);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 1, 6);
             this.tableLayoutPanel1.Controls.Add(this.flpMarkup, 2, 7);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 12;
@@ -435,7 +437,7 @@ namespace Chummer
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 423);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(603, 423);
             this.tableLayoutPanel1.TabIndex = 66;
             // 
             // txtSearch
@@ -445,7 +447,7 @@ namespace Chummer
             this.tableLayoutPanel1.SetColumnSpan(this.txtSearch, 3);
             this.txtSearch.Location = new System.Drawing.Point(361, 3);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(242, 20);
+            this.txtSearch.Size = new System.Drawing.Size(239, 20);
             this.txtSearch.TabIndex = 71;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
@@ -459,7 +461,7 @@ namespace Chummer
             this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(304, 257);
             this.chkShowOnlyAffordItems.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkShowOnlyAffordItems.Name = "chkShowOnlyAffordItems";
-            this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(299, 17);
+            this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(296, 17);
             this.chkShowOnlyAffordItems.TabIndex = 68;
             this.chkShowOnlyAffordItems.Tag = "Checkbox_ShowOnlyAffordItems";
             this.chkShowOnlyAffordItems.Text = "Show Only Items I Can Afford";
@@ -489,7 +491,7 @@ namespace Chummer
             this.flpRating.Location = new System.Drawing.Point(358, 101);
             this.flpRating.Margin = new System.Windows.Forms.Padding(0);
             this.flpRating.Name = "flpRating";
-            this.flpRating.Size = new System.Drawing.Size(248, 26);
+            this.flpRating.Size = new System.Drawing.Size(245, 26);
             this.flpRating.TabIndex = 69;
             this.flpRating.WrapContents = false;
             // 
@@ -514,7 +516,7 @@ namespace Chummer
             this.flowLayoutPanel2.Controls.Add(this.cmdOKAdd);
             this.flowLayoutPanel2.Controls.Add(this.cmdCancel);
             this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(366, 397);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(363, 397);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Size = new System.Drawing.Size(237, 23);
             this.flowLayoutPanel2.TabIndex = 72;
@@ -530,7 +532,7 @@ namespace Chummer
             this.flowLayoutPanel1.Location = new System.Drawing.Point(301, 152);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(305, 25);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(302, 25);
             this.flowLayoutPanel1.TabIndex = 73;
             // 
             // flpMarkup
@@ -544,7 +546,7 @@ namespace Chummer
             this.flpMarkup.Location = new System.Drawing.Point(358, 177);
             this.flpMarkup.Margin = new System.Windows.Forms.Padding(0);
             this.flpMarkup.Name = "flpMarkup";
-            this.flpMarkup.Size = new System.Drawing.Size(248, 26);
+            this.flpMarkup.Size = new System.Drawing.Size(245, 26);
             this.flpMarkup.TabIndex = 74;
             // 
             // frmSelectArmorMod

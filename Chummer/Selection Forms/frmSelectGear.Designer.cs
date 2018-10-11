@@ -515,6 +515,10 @@ namespace Chummer
             // 
             // tlpMain
             // 
+            this.tlpMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpMain.AutoSize = true;
             this.tlpMain.ColumnCount = 5;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -547,7 +551,6 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.flpQty, 2, 5);
             this.tlpMain.Controls.Add(this.flpMarkup, 2, 7);
             this.tlpMain.Controls.Add(this.flpCheckBoxes, 1, 6);
-            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 14;
@@ -730,6 +733,7 @@ namespace Chummer
             this.flpCheckBoxes.ResumeLayout(false);
             this.flpCheckBoxes.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
