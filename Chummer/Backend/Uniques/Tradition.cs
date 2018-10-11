@@ -87,6 +87,7 @@ namespace Chummer.Backend.Uniques
             SpiritForm = "Materialization";
             AvailableSpirits.Clear();
             Type = TraditionType.None;
+            _objCachedSourceDetail = null;
         }
 
         /// Create a Tradition from an XmlNode.

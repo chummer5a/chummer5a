@@ -3443,8 +3443,8 @@ namespace Chummer.Classes
 
             string strForce = ForcedValue;
             MentorSpirit objMentor = new MentorSpirit(_objCharacter);
-            _objCharacter.MentorSpirits.Add(objMentor);
             objMentor.Create(xmlMentor, Improvement.ImprovementType.MentorSpirit, ForcedValue, frmPickMentorSpirit.Choice1, frmPickMentorSpirit.Choice2, frmPickMentorSpirit.MentorsMask);
+            _objCharacter.MentorSpirits.Add(objMentor);
 
             ForcedValue = strForce;
             SelectedValue = strHoldValue;
@@ -3482,8 +3482,8 @@ namespace Chummer.Classes
 
             string strForce = ForcedValue;
             MentorSpirit objMentor = new MentorSpirit(_objCharacter);
-            _objCharacter.MentorSpirits.Add(objMentor);
             objMentor.Create(xmlMentor, Improvement.ImprovementType.Paragon, ForcedValue, frmPickMentorSpirit.Choice1, frmPickMentorSpirit.Choice2, frmPickMentorSpirit.MentorsMask);
+            _objCharacter.MentorSpirits.Add(objMentor);
 
             ForcedValue = strForce;
             SelectedValue = strHoldValue;
