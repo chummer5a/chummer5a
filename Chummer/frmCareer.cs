@@ -15923,6 +15923,7 @@ namespace Chummer
                         CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
                         strDrain = strDrain.CheapReplace(objAttrib.DisplayAbbrev, () => objAttrib.TotalValue.ToString());
                     }
+
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strDrain, out bool blnIsSuccess);
                     int intDrain = blnIsSuccess ? Convert.ToInt32(objProcess) : 0;
                     int intBonusDrain = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance);

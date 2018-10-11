@@ -12257,7 +12257,7 @@ namespace Chummer
                         strTip = strTip.CheapReplace(objAttrib.DisplayAbbrev, () => objAttrib.DisplayAbbrev + strSpace + '(' + objAttrib.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
                     }
 
-                    if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance) != 0)
+                    if (intBonusDrain != 0)
                     {
                         foreach (Improvement objImprovement in CharacterObject.Improvements)
                         {

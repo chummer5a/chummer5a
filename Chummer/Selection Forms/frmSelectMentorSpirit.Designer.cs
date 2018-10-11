@@ -47,8 +47,10 @@ namespace Chummer
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.tlpChoices = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
+            this.tlpChoices.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblDisadvantage
@@ -117,7 +119,7 @@ namespace Chummer
             this.lstMentor.FormattingEnabled = true;
             this.lstMentor.Location = new System.Drawing.Point(3, 3);
             this.lstMentor.Name = "lstMentor";
-            this.tableLayoutPanel1.SetRowSpan(this.lstMentor, 8);
+            this.tableLayoutPanel1.SetRowSpan(this.lstMentor, 7);
             this.lstMentor.Size = new System.Drawing.Size(295, 417);
             this.lstMentor.TabIndex = 0;
             this.lstMentor.SelectedIndexChanged += new System.EventHandler(this.lstMentor_SelectedIndexChanged);
@@ -150,7 +152,7 @@ namespace Chummer
             // 
             this.lblChoice1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblChoice1.AutoSize = true;
-            this.lblChoice1.Location = new System.Drawing.Point(311, 32);
+            this.lblChoice1.Location = new System.Drawing.Point(3, 6);
             this.lblChoice1.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblChoice1.Name = "lblChoice1";
             this.lblChoice1.Size = new System.Drawing.Size(69, 13);
@@ -163,7 +165,7 @@ namespace Chummer
             // 
             this.lblChoice2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblChoice2.AutoSize = true;
-            this.lblChoice2.Location = new System.Drawing.Point(311, 59);
+            this.lblChoice2.Location = new System.Drawing.Point(3, 33);
             this.lblChoice2.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblChoice2.Name = "lblChoice2";
             this.lblChoice2.Size = new System.Drawing.Size(69, 13);
@@ -178,9 +180,9 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboChoice1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboChoice1.FormattingEnabled = true;
-            this.cboChoice1.Location = new System.Drawing.Point(386, 29);
+            this.cboChoice1.Location = new System.Drawing.Point(78, 3);
             this.cboChoice1.Name = "cboChoice1";
-            this.cboChoice1.Size = new System.Drawing.Size(217, 21);
+            this.cboChoice1.Size = new System.Drawing.Size(224, 21);
             this.cboChoice1.TabIndex = 6;
             this.cboChoice1.TooltipText = "";
             this.cboChoice1.Visible = false;
@@ -191,24 +193,21 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboChoice2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboChoice2.FormattingEnabled = true;
-            this.cboChoice2.Location = new System.Drawing.Point(386, 56);
+            this.cboChoice2.Location = new System.Drawing.Point(78, 30);
             this.cboChoice2.Name = "cboChoice2";
-            this.cboChoice2.Size = new System.Drawing.Size(217, 21);
+            this.cboChoice2.Size = new System.Drawing.Size(224, 21);
             this.cboChoice2.TabIndex = 8;
             this.cboChoice2.TooltipText = "";
             this.cboChoice2.Visible = false;
             // 
             // chkMentorMask
             // 
-            this.chkMentorMask.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.chkMentorMask.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.chkMentorMask, 2);
             this.chkMentorMask.Location = new System.Drawing.Point(304, 84);
             this.chkMentorMask.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkMentorMask.Name = "chkMentorMask";
-            this.chkMentorMask.Size = new System.Drawing.Size(299, 17);
+            this.chkMentorMask.Size = new System.Drawing.Size(117, 17);
             this.chkMentorMask.TabIndex = 14;
             this.chkMentorMask.Text = "Use Mentor\'s Mask";
             this.chkMentorMask.UseVisualStyleBackColor = true;
@@ -238,23 +237,19 @@ namespace Chummer
             this.tableLayoutPanel1.Controls.Add(this.lstMentor, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.txtSearch, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblSearchLabel, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblSource, 2, 6);
-            this.tableLayoutPanel1.Controls.Add(this.lblSourceLabel, 1, 6);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 1, 7);
-            this.tableLayoutPanel1.Controls.Add(this.lblDisadvantage, 2, 5);
-            this.tableLayoutPanel1.Controls.Add(this.lblDisadvantageLabel, 1, 5);
-            this.tableLayoutPanel1.Controls.Add(this.lblAdvantageLabel, 1, 4);
-            this.tableLayoutPanel1.Controls.Add(this.lblAdvantage, 2, 4);
-            this.tableLayoutPanel1.Controls.Add(this.lblChoice1, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.chkMentorMask, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.cboChoice1, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblChoice2, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.cboChoice2, 2, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lblSource, 2, 5);
+            this.tableLayoutPanel1.Controls.Add(this.lblSourceLabel, 1, 5);
+            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 1, 6);
+            this.tableLayoutPanel1.Controls.Add(this.lblDisadvantage, 2, 4);
+            this.tableLayoutPanel1.Controls.Add(this.lblDisadvantageLabel, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.lblAdvantageLabel, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.lblAdvantage, 2, 3);
+            this.tableLayoutPanel1.Controls.Add(this.chkMentorMask, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.tlpChoices, 1, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 8;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowCount = 7;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -262,6 +257,7 @@ namespace Chummer
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 423);
             this.tableLayoutPanel1.TabIndex = 16;
             // 
@@ -300,6 +296,28 @@ namespace Chummer
             this.flowLayoutPanel1.Size = new System.Drawing.Size(156, 23);
             this.flowLayoutPanel1.TabIndex = 73;
             // 
+            // tlpChoices
+            // 
+            this.tlpChoices.AutoSize = true;
+            this.tlpChoices.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpChoices.ColumnCount = 2;
+            this.tableLayoutPanel1.SetColumnSpan(this.tlpChoices, 2);
+            this.tlpChoices.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpChoices.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpChoices.Controls.Add(this.lblChoice1, 0, 0);
+            this.tlpChoices.Controls.Add(this.lblChoice2, 0, 1);
+            this.tlpChoices.Controls.Add(this.cboChoice1, 1, 0);
+            this.tlpChoices.Controls.Add(this.cboChoice2, 1, 1);
+            this.tlpChoices.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpChoices.Location = new System.Drawing.Point(301, 26);
+            this.tlpChoices.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpChoices.Name = "tlpChoices";
+            this.tlpChoices.RowCount = 2;
+            this.tlpChoices.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpChoices.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpChoices.Size = new System.Drawing.Size(305, 54);
+            this.tlpChoices.TabIndex = 74;
+            // 
             // frmSelectMentorSpirit
             // 
             this.AcceptButton = this.cmdOK;
@@ -324,6 +342,8 @@ namespace Chummer
             this.tableLayoutPanel1.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
+            this.tlpChoices.ResumeLayout(false);
+            this.tlpChoices.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -349,5 +369,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblSearchLabel;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tlpChoices;
     }
 }
