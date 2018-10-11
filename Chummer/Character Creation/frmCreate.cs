@@ -1236,11 +1236,14 @@ namespace Chummer
                         gpbInitiationGroup.Visible = CharacterObject.InitiationEnabled;
                     }
                     break;
+                case nameof(Character.FirstMentorSpiritDisplayName):
+                {
+                    CharacterObject.MentorSpirits.FirstOrDefault()?.SetSourceDetail(lblMentorSpiritSource);
+                    break;
+                }
                 case nameof(Character.HasMentorSpirit):
                     {
-                        lblMentorSpirit.Visible = CharacterObject.HasMentorSpirit;
-                        lblMentorSpiritLabel.Visible = CharacterObject.HasMentorSpirit;
-                        lblMentorSpiritInformation.Visible = CharacterObject.HasMentorSpirit;
+                        gpbMagicianMentorSpirit.Visible = CharacterObject.HasMentorSpirit;
                         lblParagon.Visible = CharacterObject.HasMentorSpirit;
                         lblParagonLabel.Visible = CharacterObject.HasMentorSpirit;
                         lblParagonInformation.Visible = CharacterObject.HasMentorSpirit;
@@ -8280,7 +8283,9 @@ namespace Chummer
             IsRefreshing = true;
             if (treSpells.SelectedNode.Level > 0 && e.Node.Tag is Spell objSpell)
             {
+                gpbMagicianSpell.Visible = true;
                 cmdDeleteSpell.Enabled = objSpell.Grade == 0;
+
                 lblSpellDescriptors.Text = objSpell.DisplayDescriptors(GlobalOptions.Language);
                 lblSpellCategory.Text = objSpell.DisplayCategory(GlobalOptions.Language);
                 lblSpellType.Text = objSpell.DisplayType(GlobalOptions.Language);
@@ -8297,11 +8302,11 @@ namespace Chummer
 
                 // Build the DV tooltip.
                 lblSpellDV.SetToolTip(objSpell.DVTooltip);
-
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                
                 // Update the Drain CharacterAttribute Value.
                 if (CharacterObject.MAGEnabled && !string.IsNullOrEmpty(lblDrainAttributes.Text))
                 {
+                    string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                     string strDrain = lblDrainAttributes.Text;
 
                     foreach (string strAttribute in AttributeSection.AttributeStrings)
@@ -8319,11 +8324,11 @@ namespace Chummer
                     foreach (string strAttribute in AttributeSection.AttributeStrings)
                     {
                         CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
-                        strTip = strTip.CheapReplace(objAttrib.DisplayAbbrev, () => objAttrib.DisplayAbbrev + strSpaceCharacter + '(' + objAttrib.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                        strTip = strTip.CheapReplace(objAttrib.DisplayAbbrev, () => objAttrib.DisplayAbbrev + strSpace + '(' + objAttrib.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
                     }
 
                     if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance) != 0)
-                        strTip += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_Skill_DicePoolModifiers", GlobalOptions.Language) + strSpaceCharacter + '(' + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance).ToString(GlobalOptions.CultureInfo) + ')';
+                        strTip += strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_DicePoolModifiers", GlobalOptions.Language) + strSpace + '(' + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance).ToString(GlobalOptions.CultureInfo) + ')';
                     //if (objSpell.Limited)
                     //{
                     //    intDrain += 2;
@@ -8335,18 +8340,8 @@ namespace Chummer
             }
             else
             {
+                gpbMagicianSpell.Visible = false;
                 cmdDeleteSpell.Enabled = false;
-                lblSpellDescriptors.Text = string.Empty;
-                lblSpellCategory.Text = string.Empty;
-                lblSpellType.Text = string.Empty;
-                lblSpellRange.Text = string.Empty;
-                lblSpellDamage.Text = string.Empty;
-                lblSpellDuration.Text = string.Empty;
-                lblSpellDV.Text = string.Empty;
-                lblSpellSource.Text = string.Empty;
-                lblSpellDicePool.Text = string.Empty;
-                lblSpellSource.SetToolTip(null);
-                lblSpellDV.SetToolTip(null);
             }
             IsRefreshing = false;
         }

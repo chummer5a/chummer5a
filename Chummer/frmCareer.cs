@@ -1503,11 +1503,14 @@ namespace Chummer
                         cmdQuickenSpell.Visible = CharacterObject.QuickeningEnabled;
                         break;
                     }
+                case nameof(Character.FirstMentorSpiritDisplayName):
+                {
+                    CharacterObject.MentorSpirits.FirstOrDefault()?.SetSourceDetail(lblMentorSpiritSource);
+                    break;
+                }
                 case nameof(Character.HasMentorSpirit):
                     {
-                        lblMentorSpirit.Visible = CharacterObject.HasMentorSpirit;
-                        lblMentorSpiritLabel.Visible = CharacterObject.HasMentorSpirit;
-                        lblMentorSpiritInformation.Visible = CharacterObject.HasMentorSpirit;
+                        gpbMagicianMentorSpirit.Visible = CharacterObject.HasMentorSpirit;
                         lblParagon.Visible = CharacterObject.HasMentorSpirit;
                         lblParagonLabel.Visible = CharacterObject.HasMentorSpirit;
                         lblParagonInformation.Visible = CharacterObject.HasMentorSpirit;
@@ -11288,7 +11291,9 @@ namespace Chummer
             IsRefreshing = true;
             if (e.Node.Tag is Spell objSpell)
             {
+                gpbMagicianSpell.Visible = true;
                 cmdDeleteSpell.Enabled = objSpell.Grade == 0;
+
                 lblSpellDescriptors.Text = objSpell.DisplayDescriptors(GlobalOptions.Language);
                 lblSpellCategory.Text = objSpell.DisplayCategory(GlobalOptions.Language);
                 lblSpellType.Text = objSpell.DisplayType(GlobalOptions.Language);
@@ -11299,7 +11304,7 @@ namespace Chummer
                 objSpell.SetSourceDetail(lblSpellSource);
 
                 // Determine the size of the Spellcasting Dice Pool.
-                lblSpellDicePool.Text = objSpell.DicePool.ToString();
+                lblSpellDicePool.Text = objSpell.DicePool.ToString(GlobalOptions.CultureInfo);
                 lblSpellDicePool.SetToolTip(objSpell.DicePoolTooltip);
 
                 // Build the DV tooltip.
@@ -11308,6 +11313,7 @@ namespace Chummer
                 // Update the Drain CharacterAttribute Value.
                 if (CharacterObject.MAGEnabled && !string.IsNullOrEmpty(lblDrainAttributes.Text))
                 {
+                    string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                     string strDrain = lblDrainAttributes.Text;
 
                     foreach (string strAttribute in AttributeSection.AttributeStrings)
@@ -11324,11 +11330,11 @@ namespace Chummer
                     foreach (string strAttribute in AttributeSection.AttributeStrings)
                     {
                         CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
-                        strTip = strTip.CheapReplace(objAttrib.DisplayAbbrev, () => objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue + ')');
+                        strTip = strTip.CheapReplace(objAttrib.DisplayAbbrev, () => objAttrib.DisplayAbbrev + strSpace + '(' + objAttrib.TotalValue + ')');
                     }
 
                     if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance) != 0)
-                        strTip += " + " + LanguageManager.GetString("Tip_Skill_DicePoolModifiers", GlobalOptions.Language) + " (" + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance) + ')';
+                        strTip += strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_DicePoolModifiers", GlobalOptions.Language) + strSpace + '(' + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance) + ')';
                     //if (objSpell.Limited)
                     //{
                     //    intDrain += 2;
@@ -11340,18 +11346,8 @@ namespace Chummer
             }
             else
             {
+                gpbMagicianSpell.Visible = false;
                 cmdDeleteSpell.Enabled = false;
-                lblSpellDescriptors.Text = string.Empty;
-                lblSpellCategory.Text = string.Empty;
-                lblSpellType.Text = string.Empty;
-                lblSpellRange.Text = string.Empty;
-                lblSpellDamage.Text = string.Empty;
-                lblSpellDuration.Text = string.Empty;
-                lblSpellDV.Text = string.Empty;
-                lblSpellSource.Text = string.Empty;
-                lblSpellDicePool.Text = string.Empty;
-                lblSpellSource.SetToolTip(null);
-                lblSpellDV.SetToolTip(null);
             }
             IsRefreshing = false;
         }
