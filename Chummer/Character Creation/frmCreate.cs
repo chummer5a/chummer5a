@@ -1238,17 +1238,20 @@ namespace Chummer
                     break;
                 case nameof(Character.FirstMentorSpiritDisplayName):
                 {
-                    CharacterObject.MentorSpirits.FirstOrDefault()?.SetSourceDetail(lblMentorSpiritSource);
+                    MentorSpirit objMentor = CharacterObject.MentorSpirits.FirstOrDefault();
+                    if (objMentor != null)
+                    {
+                        objMentor.SetSourceDetail(lblMentorSpiritSource);
+                        objMentor.SetSourceDetail(lblParagonSource);
+                    }
                     break;
                 }
                 case nameof(Character.HasMentorSpirit):
-                    {
-                        gpbMagicianMentorSpirit.Visible = CharacterObject.HasMentorSpirit;
-                        lblParagon.Visible = CharacterObject.HasMentorSpirit;
-                        lblParagonLabel.Visible = CharacterObject.HasMentorSpirit;
-                        lblParagonInformation.Visible = CharacterObject.HasMentorSpirit;
-                        break;
-                    }
+                {
+                    gpbMagicianMentorSpirit.Visible = CharacterObject.HasMentorSpirit;
+                    gpbTechnomancerParagon.Visible = CharacterObject.HasMentorSpirit;
+                    break;
+                }
                 case nameof(Character.UseMysticAdeptPPs):
                     {
                         lblMysticAdeptAssignment.Visible = CharacterObject.UseMysticAdeptPPs;
@@ -8709,23 +8712,23 @@ namespace Chummer
             // Locate the Program that is selected in the tree.
             if (treComplexForms.SelectedNode?.Tag is ComplexForm objComplexForm)
             {
+                gpbTechnomancerComplexForm.Visible = true;
                 cmdDeleteComplexForm.Enabled = objComplexForm.Grade == 0;
                 lblDuration.Text = objComplexForm.DisplayDuration(GlobalOptions.Language);
                 lblTarget.Text = objComplexForm.DisplayTarget(GlobalOptions.Language);
                 lblFV.Text = objComplexForm.DisplayFV(GlobalOptions.Language);
                 lblFV.SetToolTip(objComplexForm.FVTooltip);
-                
+
+                // Determine the size of the Threading Dice Pool.
+                lblComplexFormDicePool.Text = objComplexForm.DicePool.ToString(GlobalOptions.CultureInfo);
+                lblComplexFormDicePool.SetToolTip(objComplexForm.DicePoolTooltip);
+
                 objComplexForm.SetSourceDetail(lblComplexFormSource);
             }
             else
             {
+                gpbTechnomancerComplexForm.Visible = false;
                 cmdDeleteComplexForm.Enabled = false;
-                lblDuration.Text = string.Empty;
-                lblTarget.Text = string.Empty;
-                lblFV.Text = string.Empty;
-                lblFV.SetToolTip(string.Empty);
-                lblComplexFormSource.Text = string.Empty;
-                lblComplexFormSource.SetToolTip(string.Empty);
             }
         }
 

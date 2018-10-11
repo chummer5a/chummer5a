@@ -198,6 +198,8 @@ namespace Chummer
 
             cmdRollSpell.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
             cmdRollDrain.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
+            cmdRollComplexForm.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
+            cmdRollFading.Visible = CharacterObjectOptions.AllowSkillDiceRolling;
 
             mnuSpecialAddBiowareSuite.Visible = CharacterObjectOptions.AllowBiowareSuites;
             
@@ -1505,15 +1507,18 @@ namespace Chummer
                     }
                 case nameof(Character.FirstMentorSpiritDisplayName):
                 {
-                    CharacterObject.MentorSpirits.FirstOrDefault()?.SetSourceDetail(lblMentorSpiritSource);
+                    MentorSpirit objMentor = CharacterObject.MentorSpirits.FirstOrDefault();
+                    if (objMentor != null)
+                    {
+                        objMentor.SetSourceDetail(lblMentorSpiritSource);
+                        objMentor.SetSourceDetail(lblParagonSource);
+                    }
                     break;
                 }
                 case nameof(Character.HasMentorSpirit):
                     {
                         gpbMagicianMentorSpirit.Visible = CharacterObject.HasMentorSpirit;
-                        lblParagon.Visible = CharacterObject.HasMentorSpirit;
-                        lblParagonLabel.Visible = CharacterObject.HasMentorSpirit;
-                        lblParagonInformation.Visible = CharacterObject.HasMentorSpirit;
+                        gpbTechnomancerParagon.Visible = CharacterObject.HasMentorSpirit;
                         break;
                     }
                 case nameof(Character.UseMysticAdeptPPs):
@@ -5851,6 +5856,12 @@ namespace Chummer
         private void cmdRollDrain_Click(object sender, EventArgs e)
         {
             int.TryParse(lblDrainAttributesValue.Text, out int intDice);
+            DiceRollerOpenedInt(CharacterObject, intDice);
+        }
+
+        private void cmdRollComplexForm_Click(object sender, EventArgs e)
+        {
+            int.TryParse(lblComplexFormDicePool.Text, out int intDice);
             DiceRollerOpenedInt(CharacterObject, intDice);
         }
 
@@ -15728,6 +15739,7 @@ namespace Chummer
             cmdRollSpell.SetToolTip(LanguageManager.GetString("Tip_DiceRoller", GlobalOptions.Language));
             cmdRollDrain.SetToolTip(LanguageManager.GetString("Tip_DiceRoller", GlobalOptions.Language));
             // Complex Forms Tab.
+            cmdRollComplexForm.SetToolTip(LanguageManager.GetString("Tip_DiceRoller", GlobalOptions.Language));
             cmdRollFading.SetToolTip(LanguageManager.GetString("Tip_DiceRoller", GlobalOptions.Language));
             // Armor Tab.
             chkArmorEquipped.SetToolTip(LanguageManager.GetString("Tip_ArmorEquipped", GlobalOptions.Language));
@@ -15938,22 +15950,24 @@ namespace Chummer
             // Locate the Program that is selected in the tree.
             if (treComplexForms.SelectedNode?.Tag is ComplexForm objComplexForm)
             {
+                gpbTechnomancerComplexForm.Visible = true;
                 cmdDeleteComplexForm.Enabled = objComplexForm.Grade == 0;
+
                 lblDuration.Text = objComplexForm.DisplayDuration(GlobalOptions.Language);
                 lblTarget.Text = objComplexForm.DisplayTarget(GlobalOptions.Language);
                 lblFV.Text = objComplexForm.DisplayFV(GlobalOptions.Language);
                 lblFV.SetToolTip(objComplexForm.FVTooltip);
+
+                // Determine the size of the Threading Dice Pool.
+                lblComplexFormDicePool.Text = objComplexForm.DicePool.ToString(GlobalOptions.CultureInfo);
+                lblComplexFormDicePool.SetToolTip(objComplexForm.DicePoolTooltip);
+
                 objComplexForm.SetSourceDetail(lblComplexFormSource);
             }
             else
             {
+                gpbTechnomancerComplexForm.Visible = false;
                 cmdDeleteComplexForm.Enabled = false;
-                lblDuration.Text = string.Empty;
-                lblTarget.Text = string.Empty;
-                lblFV.Text = string.Empty;
-                lblFV.SetToolTip(string.Empty);
-                lblComplexFormSource.Text = string.Empty;
-                lblComplexFormSource.SetToolTip(string.Empty);
             }
         }
 

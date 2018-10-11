@@ -992,6 +992,14 @@
       <text>Matrix</text>
     </string>
     <string>
+      <key>String_Paragon</key>
+      <text>Paragon</text>
+    </string>
+    <string>
+      <key>String_Stream</key>
+      <text>Stream</text>
+    </string>
+    <string>
       <key>String_Vehicle</key>
       <text>Vehicle</text>
     </string>

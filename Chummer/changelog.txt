@@ -100,6 +100,8 @@ Application Changes:
 - Initiation Groups and Submersion Networks can now have their details edited at character creation.
 - Fixed behaviour of the Cyberadept Daemon to properly provide restored Essence. Due to legacy issues with the way Base attribute bonuses are calculated, this will not show up as a tooltip. This will be amended in a future patch.
 - The Restricted Gear bonus can now be set to apply to any availability limit at character generation instead of being hardcoded to 24.
+- Mentor Spirit and Paragon source references are now displayed next to their names within the Spells and Spirits tab (for Mentor Spirits) and the Sprites and Complex Forms tab (for Paragons).
+- Complex Forms will now display their dicepool as well as a button to roll it in career mode if the appropriate options have been set.
 
 Data Changes:
 
@@ -205,6 +207,8 @@ New Strings:
 - String_InitiationType
 - String_SubmersionNetwork
 - String_SubmersionType
+- String_Paragon
+- String_Stream
 
 Changed Strings:
 
