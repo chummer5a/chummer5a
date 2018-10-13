@@ -3175,7 +3175,7 @@ namespace Chummer
                 XmlNode objXmlSpell = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickSpell.SelectedSpell + "\"]");
 
                 Spell objSpell = new Spell(CharacterObject);
-                objSpell.Create(objXmlSpell, "", frmPickSpell.Limited, frmPickSpell.Extended, frmPickSpell.Alchemical);
+                objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.Limited, frmPickSpell.Extended, frmPickSpell.Alchemical);
                 if (objSpell.InternalId.IsEmptyGuid())
                 {
                     frmPickSpell.Dispose();
@@ -10975,7 +10975,7 @@ namespace Chummer
             if (CharacterObject.Karma > 0)
             {
                 ExpenseLogEntry objKarma = new ExpenseLogEntry(CharacterObject);
-                objKarma.Create(CharacterObject.Karma, "Starting Karma", ExpenseType.Karma, DateTime.Now);
+                objKarma.Create(CharacterObject.Karma, LanguageManager.GetString("Label_SelectBP_StartingKarma", GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.AddWithSort(objKarma);
 
                 // Create an Undo entry so that the starting Karma amount can be modified if needed.
@@ -11003,7 +11003,7 @@ namespace Chummer
 
             // Create an Expense Entry for Starting Nuyen.
             ExpenseLogEntry objNuyen = new ExpenseLogEntry(CharacterObject);
-            objNuyen.Create(CharacterObject.Nuyen, "Starting Nuyen", ExpenseType.Nuyen, DateTime.Now);
+            objNuyen.Create(CharacterObject.Nuyen, LanguageManager.GetString("Title_LifestyleNuyen", GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
             CharacterObject.ExpenseEntries.AddWithSort(objNuyen);
 
             // Create an Undo entry so that the Starting Nuyen amount can be modified if needed.
@@ -11491,10 +11491,11 @@ namespace Chummer
 
             flpLifestyleDetails.Visible = true;
             cmdDeleteLifestyle.Enabled = true;
-            
+
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             lblLifestyleCost.Text = objLifestyle.TotalMonthlyCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             nudLifestyleMonths.Value = Convert.ToDecimal(objLifestyle.Increments, GlobalOptions.InvariantCultureInfo);
-            lblLifestyleStartingNuyen.Text = objLifestyle.Dice + LanguageManager.GetString("String_D6", GlobalOptions.Language) + " × " + objLifestyle.Multiplier.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+            lblLifestyleStartingNuyen.Text = objLifestyle.Dice + LanguageManager.GetString("String_D6", GlobalOptions.Language) + strSpace + '×' + strSpace + objLifestyle.Multiplier.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             objLifestyle.SetSourceDetail(lblLifestyleSource);
             lblLifestyleTotalCost.Text = objLifestyle.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
@@ -11527,8 +11528,8 @@ namespace Chummer
                         strQualities += ",\n";
 
                     strQualities += objImprovement.Value > 0
-                        ? objImprovement.ImproveSource + " [+" + objImprovement.Value + "%]"
-                        : objImprovement.ImproveSource + " [" + objImprovement.Value + "%]";
+                        ? objImprovement.ImproveSource + LanguageManager.GetString("String_Space", GlobalOptions.Language) + "[+" + objImprovement.Value + "%]"
+                        : objImprovement.ImproveSource + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '[' + objImprovement.Value + "%]";
                 }
 
                 if (objLifestyle.FreeGrids.Count > 0)
@@ -12390,7 +12391,7 @@ namespace Chummer
                 strMessage += Environment.NewLine + '\t' +
                               LanguageManager.GetString("Message_InvalidPointExcess", GlobalOptions.Language)
                                   .Replace("{0}",
-                                      ((1 - intMartialArts) * -1).ToString() + LanguageManager.GetString("String_Space", GlobalOptions.Language) +
+                                      ((1 - intMartialArts) * -1).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) +
                                       LanguageManager.GetString("String_MartialArtsCount", GlobalOptions.Language));
             }
 
@@ -12406,7 +12407,7 @@ namespace Chummer
                     strMessage += Environment.NewLine + '\t' +
                                   LanguageManager.GetString("Message_InvalidPointExcess", GlobalOptions.Language)
                                       .Replace("{0}",
-                                          ((5 - intTechniques) * -1).ToString() + LanguageManager.GetString("String_Space", GlobalOptions.Language) +
+                                          ((5 - intTechniques) * -1).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space", GlobalOptions.Language) +
                                           LanguageManager.GetString("String_TechniquesCount", GlobalOptions.Language));
                 }
             }
