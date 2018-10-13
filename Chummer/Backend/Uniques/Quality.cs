@@ -958,7 +958,7 @@ namespace Chummer
                 }
             }
 
-            return conflictingQualities.Count <= 0 & reason == QualityFailureReason.Allowed;
+            return conflictingQualities.Count <= 0 && reason == QualityFailureReason.Allowed;
         }
 
         /// <summary>
