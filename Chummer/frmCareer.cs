@@ -13413,7 +13413,8 @@ namespace Chummer
                 if (objWeapon.WeaponType == "Ranged" || (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0"))
                 {
                     tlpWeaponsCareer.Visible = true;
-                    lblWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
+                    lblWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString(GlobalOptions.CultureInfo);
+                    cmdFireWeapon.Enabled = objWeapon.AmmoRemaining != 0;
 
                     cmsAmmoSingleShot.Enabled =
                         objWeapon.AllowMode(LanguageManager.GetString("String_ModeSingleShot", GlobalOptions.Language)) ||
@@ -15158,8 +15159,8 @@ namespace Chummer
                 if (objWeapon.WeaponType == "Ranged" || (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0"))
                 {
                     tlpVehiclesWeaponCareer.Visible = true;
-                    lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
-                    cmdReloadVehicleWeapon.Visible = true;
+                    lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString(GlobalOptions.CultureInfo);
+                    cmdFireVehicleWeapon.Enabled = objWeapon.AmmoRemaining != 0;
 
                     cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
                     cmsVehicleAmmoSingleShot.Enabled =

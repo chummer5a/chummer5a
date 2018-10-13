@@ -507,9 +507,9 @@ namespace Chummer
             this.cmdRollFading = new System.Windows.Forms.Button();
             this.gpbTechnomancerParagon = new System.Windows.Forms.GroupBox();
             this.tlpTechnomancerParagon = new System.Windows.Forms.TableLayoutPanel();
-            this.lblParagonInformation = new System.Windows.Forms.Label();
             this.lblParagonLabel = new System.Windows.Forms.Label();
             this.lblParagon = new System.Windows.Forms.Label();
+            this.lblParagonInformation = new System.Windows.Forms.Label();
             this.lblParagonSourceLabel = new System.Windows.Forms.Label();
             this.lblParagonSource = new System.Windows.Forms.Label();
             this.tabAdvancedPrograms = new System.Windows.Forms.TabPage();
@@ -7053,18 +7053,6 @@ namespace Chummer
             this.tlpTechnomancerParagon.Size = new System.Drawing.Size(494, 50);
             this.tlpTechnomancerParagon.TabIndex = 0;
             // 
-            // lblParagonInformation
-            // 
-            this.lblParagonInformation.AutoSize = true;
-            this.tlpTechnomancerParagon.SetColumnSpan(this.lblParagonInformation, 4);
-            this.lblParagonInformation.Location = new System.Drawing.Point(3, 31);
-            this.lblParagonInformation.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblParagonInformation.MaximumSize = new System.Drawing.Size(488, 10000);
-            this.lblParagonInformation.Name = "lblParagonInformation";
-            this.lblParagonInformation.Size = new System.Drawing.Size(108, 13);
-            this.lblParagonInformation.TabIndex = 183;
-            this.lblParagonInformation.Text = "[Paragon Information]";
-            // 
             // lblParagonLabel
             // 
             this.lblParagonLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -7086,6 +7074,18 @@ namespace Chummer
             this.lblParagon.Size = new System.Drawing.Size(53, 13);
             this.lblParagon.TabIndex = 182;
             this.lblParagon.Text = "[Paragon]";
+            // 
+            // lblParagonInformation
+            // 
+            this.lblParagonInformation.AutoSize = true;
+            this.tlpTechnomancerParagon.SetColumnSpan(this.lblParagonInformation, 4);
+            this.lblParagonInformation.Location = new System.Drawing.Point(3, 31);
+            this.lblParagonInformation.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblParagonInformation.MaximumSize = new System.Drawing.Size(488, 10000);
+            this.lblParagonInformation.Name = "lblParagonInformation";
+            this.lblParagonInformation.Size = new System.Drawing.Size(108, 13);
+            this.lblParagonInformation.TabIndex = 183;
+            this.lblParagonInformation.Text = "[Paragon Information]";
             // 
             // lblParagonSourceLabel
             // 
@@ -11363,7 +11363,6 @@ namespace Chummer
             // 
             this.cmdWeaponMoveToVehicle.AutoSize = true;
             this.cmdWeaponMoveToVehicle.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdWeaponMoveToVehicle.Enabled = false;
             this.cmdWeaponMoveToVehicle.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdWeaponMoveToVehicle.Image = global::Chummer.Properties.Resources.car_go;
             this.cmdWeaponMoveToVehicle.Location = new System.Drawing.Point(3, 3);
@@ -11377,7 +11376,6 @@ namespace Chummer
             // chkWeaponAccessoryInstalled
             // 
             this.chkWeaponAccessoryInstalled.AutoSize = true;
-            this.chkWeaponAccessoryInstalled.Enabled = false;
             this.chkWeaponAccessoryInstalled.Location = new System.Drawing.Point(31, 4);
             this.chkWeaponAccessoryInstalled.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkWeaponAccessoryInstalled.Name = "chkWeaponAccessoryInstalled";
@@ -12011,7 +12009,6 @@ namespace Chummer
             this.cmdFireWeapon.AutoSize = true;
             this.cmdFireWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdFireWeapon.ContextMenuStrip = this.cmsAmmoExpense;
-            this.cmdFireWeapon.Enabled = false;
             this.cmdFireWeapon.Location = new System.Drawing.Point(3, 3);
             this.cmdFireWeapon.Name = "cmdFireWeapon";
             this.cmdFireWeapon.Size = new System.Drawing.Size(62, 23);
@@ -12028,7 +12025,6 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdReloadWeapon.AutoSize = true;
             this.cmdReloadWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdReloadWeapon.Enabled = false;
             this.cmdReloadWeapon.Location = new System.Drawing.Point(71, 3);
             this.cmdReloadWeapon.Name = "cmdReloadWeapon";
             this.cmdReloadWeapon.Size = new System.Drawing.Size(51, 23);
@@ -12041,7 +12037,6 @@ namespace Chummer
             // cmdWeaponBuyAmmo
             // 
             this.cmdWeaponBuyAmmo.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdWeaponBuyAmmo.Enabled = false;
             this.cmdWeaponBuyAmmo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdWeaponBuyAmmo.Image = global::Chummer.Properties.Resources.basket_add;
             this.cmdWeaponBuyAmmo.Location = new System.Drawing.Point(128, 3);
@@ -12060,7 +12055,7 @@ namespace Chummer
             this.gpbWeaponsMatrix.Location = new System.Drawing.Point(3, 405);
             this.gpbWeaponsMatrix.MinimumSize = new System.Drawing.Size(500, 0);
             this.gpbWeaponsMatrix.Name = "gpbWeaponsMatrix";
-            this.gpbWeaponsMatrix.Size = new System.Drawing.Size(516, 96);
+            this.gpbWeaponsMatrix.Size = new System.Drawing.Size(500, 96);
             this.gpbWeaponsMatrix.TabIndex = 218;
             this.gpbWeaponsMatrix.TabStop = false;
             this.gpbWeaponsMatrix.Tag = "String_Matrix";
@@ -12093,14 +12088,14 @@ namespace Chummer
             this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel10.Size = new System.Drawing.Size(510, 77);
+            this.tableLayoutPanel10.Size = new System.Drawing.Size(494, 77);
             this.tableLayoutPanel10.TabIndex = 0;
             // 
             // lblWeaponFirewallLabel
             // 
             this.lblWeaponFirewallLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblWeaponFirewallLabel.AutoSize = true;
-            this.lblWeaponFirewallLabel.Location = new System.Drawing.Point(411, 31);
+            this.lblWeaponFirewallLabel.Location = new System.Drawing.Point(395, 31);
             this.lblWeaponFirewallLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblWeaponFirewallLabel.Name = "lblWeaponFirewallLabel";
             this.lblWeaponFirewallLabel.Size = new System.Drawing.Size(45, 13);
@@ -12124,19 +12119,18 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboWeaponGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboWeaponGearDataProcessing.FormattingEnabled = true;
-            this.cboWeaponGearDataProcessing.Location = new System.Drawing.Point(309, 53);
+            this.cboWeaponGearDataProcessing.Location = new System.Drawing.Point(297, 53);
             this.cboWeaponGearDataProcessing.Name = "cboWeaponGearDataProcessing";
-            this.cboWeaponGearDataProcessing.Size = new System.Drawing.Size(96, 21);
+            this.cboWeaponGearDataProcessing.Size = new System.Drawing.Size(92, 21);
             this.cboWeaponGearDataProcessing.TabIndex = 210;
             this.cboWeaponGearDataProcessing.TooltipText = "";
-            this.cboWeaponGearDataProcessing.Visible = false;
             this.cboWeaponGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearDataProcessing_SelectedIndexChanged);
             // 
             // lblWeaponAttackLabel
             // 
             this.lblWeaponAttackLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblWeaponAttackLabel.AutoSize = true;
-            this.lblWeaponAttackLabel.Location = new System.Drawing.Point(105, 31);
+            this.lblWeaponAttackLabel.Location = new System.Drawing.Point(101, 31);
             this.lblWeaponAttackLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblWeaponAttackLabel.Name = "lblWeaponAttackLabel";
             this.lblWeaponAttackLabel.Size = new System.Drawing.Size(41, 13);
@@ -12148,7 +12142,7 @@ namespace Chummer
             // 
             this.lblWeaponDataProcessingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblWeaponDataProcessingLabel.AutoSize = true;
-            this.lblWeaponDataProcessingLabel.Location = new System.Drawing.Point(309, 31);
+            this.lblWeaponDataProcessingLabel.Location = new System.Drawing.Point(297, 31);
             this.lblWeaponDataProcessingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblWeaponDataProcessingLabel.Name = "lblWeaponDataProcessingLabel";
             this.lblWeaponDataProcessingLabel.Size = new System.Drawing.Size(88, 13);
@@ -12162,12 +12156,11 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboWeaponGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboWeaponGearAttack.FormattingEnabled = true;
-            this.cboWeaponGearAttack.Location = new System.Drawing.Point(105, 53);
+            this.cboWeaponGearAttack.Location = new System.Drawing.Point(101, 53);
             this.cboWeaponGearAttack.Name = "cboWeaponGearAttack";
-            this.cboWeaponGearAttack.Size = new System.Drawing.Size(96, 21);
+            this.cboWeaponGearAttack.Size = new System.Drawing.Size(92, 21);
             this.cboWeaponGearAttack.TabIndex = 207;
             this.cboWeaponGearAttack.TooltipText = "";
-            this.cboWeaponGearAttack.Visible = false;
             this.cboWeaponGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearAttack_SelectedIndexChanged);
             // 
             // cboWeaponGearSleaze
@@ -12176,19 +12169,18 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboWeaponGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboWeaponGearSleaze.FormattingEnabled = true;
-            this.cboWeaponGearSleaze.Location = new System.Drawing.Point(207, 53);
+            this.cboWeaponGearSleaze.Location = new System.Drawing.Point(199, 53);
             this.cboWeaponGearSleaze.Name = "cboWeaponGearSleaze";
-            this.cboWeaponGearSleaze.Size = new System.Drawing.Size(96, 21);
+            this.cboWeaponGearSleaze.Size = new System.Drawing.Size(92, 21);
             this.cboWeaponGearSleaze.TabIndex = 208;
             this.cboWeaponGearSleaze.TooltipText = "";
-            this.cboWeaponGearSleaze.Visible = false;
             this.cboWeaponGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearSleaze_SelectedIndexChanged);
             // 
             // lblWeaponSleazeLabel
             // 
             this.lblWeaponSleazeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblWeaponSleazeLabel.AutoSize = true;
-            this.lblWeaponSleazeLabel.Location = new System.Drawing.Point(207, 31);
+            this.lblWeaponSleazeLabel.Location = new System.Drawing.Point(199, 31);
             this.lblWeaponSleazeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblWeaponSleazeLabel.Name = "lblWeaponSleazeLabel";
             this.lblWeaponSleazeLabel.Size = new System.Drawing.Size(42, 13);
@@ -12202,12 +12194,11 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboWeaponGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboWeaponGearFirewall.FormattingEnabled = true;
-            this.cboWeaponGearFirewall.Location = new System.Drawing.Point(411, 53);
+            this.cboWeaponGearFirewall.Location = new System.Drawing.Point(395, 53);
             this.cboWeaponGearFirewall.Name = "cboWeaponGearFirewall";
             this.cboWeaponGearFirewall.Size = new System.Drawing.Size(96, 21);
             this.cboWeaponGearFirewall.TabIndex = 209;
             this.cboWeaponGearFirewall.TooltipText = "";
-            this.cboWeaponGearFirewall.Visible = false;
             this.cboWeaponGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearFirewall_SelectedIndexChanged);
             // 
             // lblWeaponDeviceRatingLabel
@@ -14677,7 +14668,6 @@ namespace Chummer
             // 
             this.cmdFireVehicleWeapon.AutoSize = true;
             this.cmdFireVehicleWeapon.ContextMenuStrip = this.cmdVehicleAmmoExpense;
-            this.cmdFireVehicleWeapon.Enabled = false;
             this.cmdFireVehicleWeapon.Location = new System.Drawing.Point(3, 3);
             this.cmdFireVehicleWeapon.Name = "cmdFireVehicleWeapon";
             this.cmdFireVehicleWeapon.Size = new System.Drawing.Size(62, 23);
@@ -14692,7 +14682,6 @@ namespace Chummer
             // 
             this.cmdReloadVehicleWeapon.AutoSize = true;
             this.cmdReloadVehicleWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdReloadVehicleWeapon.Enabled = false;
             this.cmdReloadVehicleWeapon.Location = new System.Drawing.Point(71, 3);
             this.cmdReloadVehicleWeapon.Name = "cmdReloadVehicleWeapon";
             this.cmdReloadVehicleWeapon.Size = new System.Drawing.Size(51, 23);
