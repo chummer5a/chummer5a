@@ -475,7 +475,7 @@ namespace Chummer
             set => _objEditImprovement = value;
         }
 
-        public Improvement NewImprovement;
+        public Improvement NewImprovement { get; set; }
 
         #endregion
     }
