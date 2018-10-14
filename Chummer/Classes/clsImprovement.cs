@@ -2795,7 +2795,7 @@ namespace Chummer
                 frmSelectSkill frmPickSkill = new frmSelectSkill(objCharacter, strFriendlyName)
                 {
                     Description = !string.IsNullOrEmpty(strFriendlyName)
-                        ? LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language).Replace("{0}", strFriendlyName)
+                        ? string.Format(LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), strFriendlyName)
                         : LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Language)
                 };
                 string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
@@ -2933,7 +2933,7 @@ namespace Chummer
                         // Display the Select Text window and record the value that was entered.
                         frmSelectText frmPickText = new frmSelectText
                         {
-                            Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", strFriendlyName)
+                            Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), strFriendlyName)
                         };
                         frmPickText.ShowDialog();
 

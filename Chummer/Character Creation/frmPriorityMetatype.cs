@@ -552,7 +552,7 @@ namespace Chummer
                 int intSumToTen = SumtoTen(false);
                 if (intSumToTen != _objCharacter.SumtoTen)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_SumtoTen", GlobalOptions.Language).Replace("{0}", _objCharacter.SumtoTen.ToString()).Replace("{1}", intSumToTen.ToString()));
+                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_SumtoTen", GlobalOptions.Language), _objCharacter.SumtoTen.ToString(GlobalOptions.CultureInfo), intSumToTen.ToString(GlobalOptions.CultureInfo)));
                     return;
                 }
             }

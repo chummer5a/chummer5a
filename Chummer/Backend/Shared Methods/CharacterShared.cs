@@ -5856,7 +5856,8 @@ namespace Chummer
 
             if (intBPUsed < (intEnemyMax * -1) && !CharacterObject.IgnoreRules)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_EnemyLimit", GlobalOptions.Language).Replace("{0}", strEnemyPoints), LanguageManager.GetString("MessageTitle_EnemyLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(string.Format(LanguageManager.GetString("Message_EnemyLimit", GlobalOptions.Language), strEnemyPoints),
+                    LanguageManager.GetString("MessageTitle_EnemyLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Contact objSenderContact = objSenderControl?.ContactObject;
                 if (objSenderContact != null)
                 {
@@ -5879,7 +5880,8 @@ namespace Chummer
             {
                 if (intBPUsed + intNegativeQualityBP < (intQualityMax * -1) && !CharacterObject.IgnoreRules)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language).Replace("{0}", strQualityPoints), LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language), strQualityPoints),
+                        LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     Contact objSenderContact = objSenderControl?.ContactObject;
                     if (objSenderContact != null)
                     {

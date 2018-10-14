@@ -1804,11 +1804,8 @@ namespace Chummer
                 }
                 catch (XmlException ex)
                 {
-                    MessageBox.Show(
-                        LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language)
-                            .Replace("{0}", ex.Message),
-                        LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language), ex.Message),
+                        LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
             }
@@ -1861,10 +1858,8 @@ namespace Chummer
                 int intResult = verCurrentversion.CompareTo(_verSavedVersion);
                 if (intResult == -1)
                 {
-                    string strMessage =
- LanguageManager.GetString("Message_OutdatedChummerSave", GlobalOptions.Language).Replace("{0}", _verSavedVersion.ToString()).Replace("{1}", verCurrentversion.ToString());
-                    DialogResult result =
- MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_IncorrectGameVersion", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                    DialogResult result = MessageBox.Show(string.Format(LanguageManager.GetString("Message_OutdatedChummerSave", GlobalOptions.Language), _verSavedVersion.ToString(), verCurrentversion.ToString()),
+                        LanguageManager.GetString("MessageTitle_IncorrectGameVersion", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 
                     if (result != DialogResult.Yes)
                     {
@@ -1897,9 +1892,7 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strMissingBooks))
             {
-                string strMessage = LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language)
-                    .Replace("{0}", TranslatedBookList(strMissingBooks, GlobalOptions.Language));
-                if (MessageBox.Show(strMessage,
+                if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language), TranslatedBookList(strMissingBooks, GlobalOptions.Language)),
                         LanguageManager.GetString("Message_MissingSourceBooks_Title", GlobalOptions.Language),
                         MessageBoxButtons.YesNo) == DialogResult.No)
                 {
@@ -1923,10 +1916,7 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strMissingSourceNames))
             {
-                string strMessage = LanguageManager
-                    .GetString("Message_MissingCustomDataDirectories", GlobalOptions.Language)
-                    .Replace("{0}", strMissingSourceNames);
-                if (MessageBox.Show(strMessage,
+                if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_MissingCustomDataDirectories", GlobalOptions.Language), strMissingSourceNames),
                         LanguageManager.GetString("Message_MissingCustomDataDirectories_Title", GlobalOptions.Language),
                         MessageBoxButtons.YesNo) == DialogResult.No)
                 {
@@ -2018,9 +2008,7 @@ namespace Chummer
                     "/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
             if (xmlGameplayOption == null)
             {
-                string strMessage = LanguageManager.GetString("Message_MissingGameplayOption", GlobalOptions.Language)
-                    .Replace("{0}", GameplayOption);
-                if (MessageBox.Show(strMessage,
+                if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_MissingGameplayOption", GlobalOptions.Language), GameplayOption),
                         LanguageManager.GetString("Message_MissingGameplayOption_Title", GlobalOptions.Language),
                         MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
                 {
@@ -8436,10 +8424,10 @@ namespace Chummer
                     }
                 }
 
-                objToolTip.Append(Environment.NewLine + LanguageManager
-                                      .GetString("Tip_LiftAndCarry", GlobalOptions.Language)
-                                      .Replace("{0}", (STR.TotalValue * 15).ToString())
-                                      .Replace("{1}", (STR.TotalValue * 10).ToString()));
+                objToolTip.Append(Environment.NewLine +
+                                  string.Format(LanguageManager.GetString("Tip_LiftAndCarry", GlobalOptions.Language)
+                                      , (STR.TotalValue * 15).ToString(GlobalOptions.CultureInfo)
+                                      , (STR.TotalValue * 10).ToString(GlobalOptions.CultureInfo)));
                 return objToolTip.ToString();
             }
         }

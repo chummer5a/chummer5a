@@ -402,7 +402,7 @@ namespace Chummer.Classes
             frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? LanguageManager.GetString("String_Improvement_SelectSkillGroupName", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                    ? string.Format(LanguageManager.GetString("String_Improvement_SelectSkillGroupName", GlobalOptions.Language), _strFriendlyName)
                     : LanguageManager.GetString("String_Improvement_SelectSkillGroup", GlobalOptions.Language)
             };
 
@@ -624,7 +624,7 @@ namespace Chummer.Classes
             frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? LanguageManager.GetString("String_Improvement_SelectSkillGroupName", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                    ? string.Format(LanguageManager.GetString("String_Improvement_SelectSkillGroupName", GlobalOptions.Language), _strFriendlyName)
                     : LanguageManager.GetString("String_Improvement_SelectSkillGroup", GlobalOptions.Language)
             };
 
@@ -730,7 +730,7 @@ namespace Chummer.Classes
                         frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
                         {
                             Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                ? LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                                ? string.Format(LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language), _strFriendlyName)
                                 : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language)
                         };
 
@@ -834,7 +834,7 @@ namespace Chummer.Classes
             frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                    ? string.Format(LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language), _strFriendlyName)
                     : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language)
             };
 
@@ -932,7 +932,7 @@ namespace Chummer.Classes
             frmSelectLimit frmPickLimit = new frmSelectLimit(strLimits.ToArray())
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? LanguageManager.GetString("String_Improvement_SelectLimitNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                    ? string.Format(LanguageManager.GetString("String_Improvement_SelectLimitNamed", GlobalOptions.Language), _strFriendlyName)
                     : LanguageManager.GetString("String_Improvement_SelectLimit", GlobalOptions.Language)
             };
 
@@ -1066,7 +1066,7 @@ namespace Chummer.Classes
                 frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
                 {
                     Description = !string.IsNullOrEmpty(_strFriendlyName)
-                        ? LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                        ? string.Format(LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language), _strFriendlyName)
                         : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language)
                 };
 
@@ -1094,8 +1094,7 @@ namespace Chummer.Classes
                 // Display the Select Attribute window and record which Skill was selected.
                 frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
                 if (!string.IsNullOrEmpty(_strFriendlyName))
-                    frmPickSkill.Description = LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language)
-                        .Replace("{0}", _strFriendlyName);
+                    frmPickSkill.Description = string.Format(LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), _strFriendlyName);
                 else
                     frmPickSkill.Description = LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Language);
 
@@ -1208,7 +1207,7 @@ namespace Chummer.Classes
                 frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
                 {
                     Description = !string.IsNullOrEmpty(_strFriendlyName)
-                        ? LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                        ? string.Format(LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language), _strFriendlyName)
                         : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language)
                 };
 
@@ -1236,8 +1235,7 @@ namespace Chummer.Classes
                 // Display the Select Attribute window and record which Skill was selected.
                 frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
                 if (!string.IsNullOrEmpty(_strFriendlyName))
-                    frmPickSkill.Description = LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language)
-                        .Replace("{0}", _strFriendlyName);
+                    frmPickSkill.Description = string.Format(LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), _strFriendlyName);
                 else
                     frmPickSkill.Description = LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Language);
 
@@ -1342,9 +1340,7 @@ namespace Chummer.Classes
             {
                 frmSelectText frmPickText = new frmSelectText
                 {
-                    Description =
-                        LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
-                            .Replace("{0}", node["translate"]?.InnerText ?? node["name"]?.InnerText)
+                    Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), node["translate"]?.InnerText ?? node["name"]?.InnerText)
                 };
                 frmPickText.ShowDialog();
                 // Make sure the dialogue window was not canceled.
@@ -1394,9 +1390,7 @@ namespace Chummer.Classes
             {
                 frmSelectText frmPickText = new frmSelectText
                 {
-                    Description =
-                    LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
-                        .Replace("{0}", node["translate"]?.InnerText ?? node["name"]?.InnerText)
+                    Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), node["translate"]?.InnerText ?? node["name"]?.InnerText)
                 };
                 frmPickText.ShowDialog();
                 // Make sure the dialogue window was not canceled.
@@ -1464,9 +1458,7 @@ namespace Chummer.Classes
             {
                 frmSelectText frmPickText = new frmSelectText
                 {
-                    Description =
-                        LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
-                            .Replace("{0}", node["translate"]?.InnerText ?? node["name"]?.InnerText)
+                    Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), node["translate"]?.InnerText ?? node["name"]?.InnerText)
                 };
                 frmPickText.ShowDialog();
                 // Make sure the dialogue window was not canceled.
@@ -1517,9 +1509,7 @@ namespace Chummer.Classes
             {
                 frmSelectText frmPickText = new frmSelectText
                 {
-                    Description =
-                    LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
-                        .Replace("{0}", node["translate"]?.InnerText ?? node["name"]?.InnerText)
+                    Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), node["translate"]?.InnerText ?? node["name"]?.InnerText)
                 };
                 frmPickText.ShowDialog();
                 // Make sure the dialogue window was not canceled.
@@ -1742,9 +1732,7 @@ namespace Chummer.Classes
                 {
                     frmSelectText frmPickText = new frmSelectText
                     {
-                        Description =
-                            LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
-                                .Replace("{0}", xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
+                        Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
                     };
                     frmPickText.ShowDialog();
                     // Make sure the dialogue window was not canceled.
@@ -1819,9 +1807,7 @@ namespace Chummer.Classes
                 {
                     frmSelectText frmPickText = new frmSelectText
                     {
-                        Description =
-                            LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
-                                .Replace("{0}", xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
+                        Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
                     };
                     frmPickText.ShowDialog();
                     // Make sure the dialogue window was not canceled.
@@ -2060,7 +2046,7 @@ namespace Chummer.Classes
                 frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
                 {
                     Description = !string.IsNullOrEmpty(_strFriendlyName)
-                        ? LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                        ? string.Format(LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language), _strFriendlyName)
                         : LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language)
                 };
 
@@ -3361,7 +3347,7 @@ namespace Chummer.Classes
                         {
                             GeneralItems = lstGeneralItems,
                             Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                ? LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                                ? string.Format(LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), _strFriendlyName)
                                 : LanguageManager.GetString("Title_SelectWeaponCategory", GlobalOptions.Language)
                         };
 
@@ -3649,7 +3635,7 @@ namespace Chummer.Classes
             Log.Info("selectside = " + bonusNode.OuterXml);
             frmSelectSide frmPickSide = new frmSelectSide
             {
-                Description = LanguageManager.GetString("Label_SelectSide", GlobalOptions.Language).Replace("{0}", _strFriendlyName)
+                Description = string.Format(LanguageManager.GetString("Label_SelectSide", GlobalOptions.Language), _strFriendlyName)
             };
             if (!string.IsNullOrEmpty(ForcedValue))
                 frmPickSide.ForceValue(ForcedValue);
@@ -3885,7 +3871,7 @@ namespace Chummer.Classes
                 }
                 if (lstArts.Count == 0)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language).Replace("{0}", SourceName));
+                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
                     throw new AbortedException();
                 }
                 frmPickItem.GeneralItems = lstArts;
@@ -3969,7 +3955,7 @@ namespace Chummer.Classes
                 }
                 if (lstMetamagics.Count == 0)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language).Replace("{0}", SourceName));
+                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
                     throw new AbortedException();
                 }
                 frmPickItem.GeneralItems = lstMetamagics;
@@ -4062,7 +4048,7 @@ namespace Chummer.Classes
                 }
                 if (lstEchoes.Count == 0)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language).Replace("{0}", SourceName));
+                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
                     throw new AbortedException();
                 }
                 frmPickItem.GeneralItems = lstEchoes;
@@ -4835,8 +4821,7 @@ namespace Chummer.Classes
 
                 frmSelectItem frmPickItem = new frmSelectItem
                 {
-                    Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
-                        .Replace("{0}", _strFriendlyName),
+                    Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), _strFriendlyName),
                     GeneralItems = itemList
                 };
 
@@ -4909,8 +4894,7 @@ namespace Chummer.Classes
 
                 frmSelectItem frmPickItem = new frmSelectItem
                 {
-                    Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
-                    .Replace("{0}", _strFriendlyName),
+                    Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), _strFriendlyName),
                     GeneralItems = lstArmors
                 };
 
@@ -4969,8 +4953,7 @@ namespace Chummer.Classes
                 throw new AbortedException();
             frmSelectItem frmPickItem = new frmSelectItem
             {
-                Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
-                .Replace("{0}", _strFriendlyName),
+                Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), _strFriendlyName),
                 GeneralItems = list
             };
 
@@ -5014,8 +4997,7 @@ namespace Chummer.Classes
                 // Display the Select Item window and record the value that was entered.
                 frmSelectText frmPickText = new frmSelectText
                 {
-                    Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
-                    .Replace("{0}", _strFriendlyName)
+                    Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), _strFriendlyName)
                 };
 
                 Log.Info("_strLimitSelection = " + LimitSelection);
@@ -5057,8 +5039,7 @@ namespace Chummer.Classes
 
                 frmSelectItem frmPickItem = new frmSelectItem
                 {
-                    Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
-                    .Replace("{0}", _strFriendlyName),
+                    Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), _strFriendlyName),
                     GeneralItems = lstWeapons
                 };
 
@@ -5206,7 +5187,7 @@ namespace Chummer.Classes
                     }
             if (lstItems.Count == 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language).Replace("{0}", SourceName));
+                MessageBox.Show(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
                 throw new AbortedException();
             }
             frmSelectItem frmPickItem = new frmSelectItem
@@ -5347,7 +5328,7 @@ namespace Chummer.Classes
                     }
             if (lstQualities.Count == 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language).Replace("{0}", SourceName));
+                MessageBox.Show(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
                 throw new AbortedException();
             }
 
@@ -5391,7 +5372,7 @@ namespace Chummer.Classes
                         }
                 if (lstQualities.Count == 0)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language).Replace("{0}", SourceName));
+                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), SourceName));
                     throw new AbortedException();
                 }
 

@@ -55,8 +55,8 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction", GlobalOptions.Language).Replace("{0}", strLocalName),
-                            LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName),
+                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction", GlobalOptions.Language), strLocalName),
+                            string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
@@ -69,8 +69,8 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", GlobalOptions.Language).Replace("{0}", strLocalName),
-                            LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName),
+                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", GlobalOptions.Language), strLocalName),
+                            string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
@@ -81,8 +81,8 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            MessageBox.Show(LanguageManager.GetString("MessageTitle_SelectGeneric_PriorityRestriction", GlobalOptions.Language).Replace("{0}", strLocalName),
-                                LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName),
+                            MessageBox.Show(string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_PriorityRestriction", GlobalOptions.Language), strLocalName),
+                                string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         return false;
@@ -241,9 +241,8 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            string limitTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", GlobalOptions.Language).Replace("{0}", strLocalName);
-                            string limitMessage = LanguageManager.GetString("Message_SelectGeneric_Limit", GlobalOptions.Language).Replace("{0}", strLocalName).Replace("{1}", intLimit == 0 ? "1" : intLimit.ToString());
-                            MessageBox.Show(limitMessage, limitTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Limit", GlobalOptions.Language), strLocalName, intLimit == 0 ? "1" : intLimit.ToString(GlobalOptions.CultureInfo)),
+                                string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         return false;
                     }
@@ -263,9 +262,8 @@ namespace Chummer
                         {
                             if (blnShowMessage)
                             {
-                                string forbiddenTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName);
-                                string forbiddenMessage = LanguageManager.GetString("Message_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName) + strName;
-                                MessageBox.Show(forbiddenMessage, forbiddenTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName) + strName,
+                                    string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             return false;
                         }
@@ -341,9 +339,8 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        string requiredTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Requirement", GlobalOptions.Language).Replace("{0}", strLocalName);
-                        string requiredMessage = LanguageManager.GetString("Message_SelectGeneric_Requirement", GlobalOptions.Language).Replace("{0}", strLocalName) + objRequirement;
-                        MessageBox.Show(requiredMessage, requiredTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Requirement", GlobalOptions.Language), strLocalName) + objRequirement.ToString(),
+                            string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Requirement", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
                 }
@@ -408,7 +405,7 @@ namespace Chummer
                     {
                         // Check Career Karma requirement.
                         if (blnShowMessage)
-                            strName = Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language).Replace("{0}", strNodeInnerText);
+                            strName = Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language), strNodeInnerText);
                         return objCharacter.CareerKarma >= Convert.ToInt32(strNodeInnerText);
                     }
                 case "critterpower":
@@ -516,19 +513,19 @@ namespace Chummer
                                 // Essence must be less than the value.
                                 if (blnShowMessage)
                                     strName = Environment.NewLine + '\t' +
-                                       LanguageManager.GetString("Message_SelectQuality_RequireESSGradeBelow", GlobalOptions.Language)
-                                           .Replace("{0}", strNodeInnerText)
-                                           .Replace("{1}", strEssNodeGradeAttributeText)
-                                           .Replace("{2}", decGrade.ToString(GlobalOptions.InvariantCultureInfo));
+                                              string.Format(LanguageManager.GetString("Message_SelectQuality_RequireESSGradeBelow", GlobalOptions.Language)
+                                                  , strNodeInnerText
+                                                  , strEssNodeGradeAttributeText
+                                                  , decGrade.ToString(GlobalOptions.CultureInfo));
                                 return decGrade < Convert.ToDecimal(strNodeInnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo);
                             }
                             // Essence must be equal to or greater than the value.
                             if (blnShowMessage)
                                 strName = Environment.NewLine + '\t' +
-                                   LanguageManager.GetString("Message_SelectQuality_RequireESSGradeAbove", GlobalOptions.Language)
-                                       .Replace("{0}", strNodeInnerText)
-                                       .Replace("{1}", strEssNodeGradeAttributeText)
-                                       .Replace("{2}", decGrade.ToString(GlobalOptions.InvariantCultureInfo));
+                                          string.Format(LanguageManager.GetString("Message_SelectQuality_RequireESSAbove", GlobalOptions.Language)
+                                              , strNodeInnerText
+                                              , strEssNodeGradeAttributeText
+                                              , decGrade.ToString(GlobalOptions.CultureInfo));
                             return decGrade >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
                         }
                         // Check Essence requirement.
@@ -537,17 +534,17 @@ namespace Chummer
                             // Essence must be less than the value.
                             if (blnShowMessage)
                                 strName = Environment.NewLine + '\t' +
-                                   LanguageManager.GetString("Message_SelectQuality_RequireESSBelow", GlobalOptions.Language)
-                                       .Replace("{0}", strNodeInnerText)
-                                       .Replace("{1}", objCharacter.Essence().ToString(GlobalOptions.InvariantCultureInfo));
+                                          string.Format(LanguageManager.GetString("Message_SelectQuality_RequireESSBelow", GlobalOptions.Language)
+                                              , strNodeInnerText
+                                              , objCharacter.Essence().ToString(GlobalOptions.CultureInfo));
                             return objCharacter.Essence() < Convert.ToDecimal(strNodeInnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo);
                         }
                         // Essence must be equal to or greater than the value.
                         if (blnShowMessage)
                             strName = Environment.NewLine + '\t' +
-                               LanguageManager.GetString("Message_SelectQuality_RequireESSAbove", GlobalOptions.Language)
-                                   .Replace("{0}", strNodeInnerText)
-                                   .Replace("{1}", objCharacter.Essence().ToString(GlobalOptions.InvariantCultureInfo));
+                                      string.Format(LanguageManager.GetString("Message_SelectQuality_RequireESSAbove", GlobalOptions.Language)
+                                          , strNodeInnerText
+                                          , objCharacter.Essence().ToString(GlobalOptions.CultureInfo));
                         return objCharacter.Essence() >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
                     }
                 case "echo":
@@ -563,8 +560,8 @@ namespace Chummer
                         {
                             string strTranslate = XmlManager.Load("echoes.xml").SelectSingleNode($"/chummer/echoes/echo[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
                             strName = !string.IsNullOrEmpty(strTranslate)
-                                ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Echo", GlobalOptions.Language)})"
-                                : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Echo", GlobalOptions.Language)})";
+                                ? $"{Environment.NewLine}\t{strTranslate}{LanguageManager.GetString("String_Space", GlobalOptions.Language)}({LanguageManager.GetString("String_Echo", GlobalOptions.Language)})"
+                                : $"{Environment.NewLine}\t{strNodeInnerText}{LanguageManager.GetString("String_Space", GlobalOptions.Language)}({LanguageManager.GetString("String_Echo", GlobalOptions.Language)})";
                         }
                         return false;
                     }
@@ -1122,8 +1119,8 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction", GlobalOptions.Language).Replace("{0}", strLocalName),
-                            LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName),
+                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction", GlobalOptions.Language), strLocalName),
+                            string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
@@ -1136,8 +1133,8 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", GlobalOptions.Language).Replace("{0}", strLocalName),
-                            LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName),
+                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", GlobalOptions.Language), strLocalName),
+                            string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
@@ -1148,8 +1145,8 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            MessageBox.Show(LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction", GlobalOptions.Language).Replace("{0}", strLocalName),
-                                LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName),
+                            MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction", GlobalOptions.Language), strLocalName),
+                                string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         return false;
@@ -1317,9 +1314,8 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            string limitTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", GlobalOptions.Language).Replace("{0}", strLocalName);
-                            string limitMessage = LanguageManager.GetString("Message_SelectGeneric_Limit", GlobalOptions.Language).Replace("{0}", strLocalName).Replace("{1}", intLimit == 0 ? "1" : intLimit.ToString());
-                            MessageBox.Show(limitMessage, limitTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Limit", GlobalOptions.Language), strLocalName, intLimit == 0 ? "1" : intLimit.ToString()),
+                                string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         return false;
                     }
@@ -1339,9 +1335,8 @@ namespace Chummer
                         {
                             if (blnShowMessage)
                             {
-                                string forbiddenTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName);
-                                string forbiddenMessage = LanguageManager.GetString("Message_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName) + strName;
-                                MessageBox.Show(forbiddenMessage, forbiddenTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName) + strName,
+                                    string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             return false;
                         }
@@ -1415,9 +1410,8 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        string requiredTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Requirement", GlobalOptions.Language).Replace("{0}", strLocalName);
-                        string requiredMessage = LanguageManager.GetString("Message_SelectGeneric_Requirement", GlobalOptions.Language).Replace("{0}", strLocalName) + objRequirement;
-                        MessageBox.Show(requiredMessage, requiredTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_SelectGeneric_Requirement", GlobalOptions.Language), strLocalName) + objRequirement.ToString(),
+                            string.Format(LanguageManager.GetString("MessageTitle_SelectGeneric_Requirement", GlobalOptions.Language), strLocalName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
                 }
@@ -1482,7 +1476,7 @@ namespace Chummer
                     {
                         // Check Career Karma requirement.
                         if (blnShowMessage)
-                            strName = Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language).Replace("{0}", strNodeInnerText);
+                            strName = Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language), strNodeInnerText);
                         return objCharacter.CareerKarma >= Convert.ToInt32(strNodeInnerText);
                     }
                 case "critterpower":
@@ -1590,19 +1584,19 @@ namespace Chummer
                                 // Essence must be less than the value.
                                 if (blnShowMessage)
                                     strName = Environment.NewLine + '\t' +
-                                       LanguageManager.GetString("Message_SelectQuality_RequireESSGradeBelow", GlobalOptions.Language)
-                                           .Replace("{0}", strNodeInnerText)
-                                           .Replace("{1}", strEssNodeGradeAttributeText)
-                                           .Replace("{2}", decGrade.ToString(GlobalOptions.InvariantCultureInfo));
+                                              string.Format(LanguageManager.GetString("Message_SelectQuality_RequireESSGradeBelow", GlobalOptions.Language)
+                                                  , strNodeInnerText
+                                                  , strEssNodeGradeAttributeText
+                                                  , decGrade.ToString(GlobalOptions.CultureInfo));
                                 return decGrade < Convert.ToDecimal(strNodeInnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo);
                             }
                             // Essence must be equal to or greater than the value.
                             if (blnShowMessage)
                                 strName = Environment.NewLine + '\t' +
-                                   LanguageManager.GetString("Message_SelectQuality_RequireESSGradeAbove", GlobalOptions.Language)
-                                       .Replace("{0}", strNodeInnerText)
-                                       .Replace("{1}", strEssNodeGradeAttributeText)
-                                       .Replace("{2}", decGrade.ToString(GlobalOptions.InvariantCultureInfo));
+                                          string.Format(LanguageManager.GetString("Message_SelectQuality_RequireESSAbove", GlobalOptions.Language)
+                                              , strNodeInnerText
+                                              , strEssNodeGradeAttributeText
+                                              , decGrade.ToString(GlobalOptions.CultureInfo));
                             return decGrade >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
                         }
                         // Check Essence requirement.
@@ -1611,17 +1605,17 @@ namespace Chummer
                             // Essence must be less than the value.
                             if (blnShowMessage)
                                 strName = Environment.NewLine + '\t' +
-                                   LanguageManager.GetString("Message_SelectQuality_RequireESSBelow", GlobalOptions.Language)
-                                       .Replace("{0}", strNodeInnerText)
-                                       .Replace("{1}", objCharacter.Essence().ToString(GlobalOptions.InvariantCultureInfo));
+                                          string.Format(LanguageManager.GetString("Message_SelectQuality_RequireESSBelow", GlobalOptions.Language)
+                                              , strNodeInnerText
+                                              , objCharacter.Essence().ToString(GlobalOptions.CultureInfo));
                             return objCharacter.Essence() < Convert.ToDecimal(strNodeInnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo);
                         }
                         // Essence must be equal to or greater than the value.
                         if (blnShowMessage)
                             strName = Environment.NewLine + '\t' +
-                               LanguageManager.GetString("Message_SelectQuality_RequireESSAbove", GlobalOptions.Language)
-                                   .Replace("{0}", strNodeInnerText)
-                                   .Replace("{1}", objCharacter.Essence().ToString(GlobalOptions.InvariantCultureInfo));
+                                      string.Format(LanguageManager.GetString("Message_SelectQuality_RequireESSAbove", GlobalOptions.Language)
+                                          , strNodeInnerText
+                                          , objCharacter.Essence().ToString(GlobalOptions.CultureInfo));
                         return objCharacter.Essence() >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
                     }
                 case "echo":

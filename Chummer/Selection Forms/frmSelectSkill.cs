@@ -207,7 +207,7 @@ namespace Chummer
 
             if (lstSkills.Count <= 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language).Replace("{0}", _strSourceName));
+                MessageBox.Show(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), _strSourceName));
                 DialogResult = DialogResult.Cancel;
                 return;
             }
