@@ -59,7 +59,6 @@ namespace Chummer.Backend.Equipment
         private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
         private bool _blnDiscountCost;
-        private Armor _objParent;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public ArmorMod(Character objCharacter)
@@ -684,11 +683,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Parent Armor.
         /// </summary>
-        public Armor Parent
-        {
-            get => _objParent;
-            set => _objParent = value;
-        }
+        public Armor Parent { get; set; }
 
         /// <summary>
         /// The Gear currently applied to the Armor.

@@ -1176,13 +1176,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Category of Ammo the Weapon uses.
         /// </summary>
-        public string AmmoName
-        {
-            get
-            {
-                return _strAmmoName;
-            }
-        }
+        public string AmmoName => _strAmmoName;
 
         /// <summary>
         /// What names can gear begin with to count as ammunition for this weapon

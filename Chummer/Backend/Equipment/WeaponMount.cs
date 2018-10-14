@@ -60,8 +60,7 @@ namespace Chummer.Backend.Equipment
         private string _strCachedXmlNodeLanguage = string.Empty;
         private readonly TaggedObservableCollection<VehicleMod> _lstMods = new TaggedObservableCollection<VehicleMod>();
 
-        private readonly Vehicle _vehicle;
-	    private readonly Character _objCharacter;
+        private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
 		public WeaponMount(Character character, Vehicle vehicle)
@@ -69,7 +68,7 @@ namespace Chummer.Backend.Equipment
 			// Create the GUID for the new VehicleMod.
 			_guiID = Guid.NewGuid();
 		    _objCharacter = character;
-			_vehicle = vehicle;
+			Parent = vehicle;
         }
 
         /// Create a Vehicle Modification from an XmlNode and return the TreeNodes for it.
@@ -555,7 +554,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Vehicle that the Mod is attached to.
         /// </summary>
-        public Vehicle Parent => _vehicle;
+        public Vehicle Parent { get; }
 
         /// <summary>
         /// 

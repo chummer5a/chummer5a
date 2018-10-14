@@ -9773,15 +9773,16 @@ namespace Chummer
                 lblInitiationBP.Text = intInitiationPoints.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
                 // ------------------------------------------------------------------------------
                 // Update the number of BP remaining in the StatusBar.
-                tssBP.Text = CharacterObject.BuildKarma.ToString(GlobalOptions.CultureInfo);
                 tssBPRemain.Text = intKarmaPointsRemain.ToString(GlobalOptions.CultureInfo);
                 if (_blnFreestyle)
                 {
                     tssBP.Text = Math.Max(intFreestyleBP, intFreestyleBPMin).ToString(GlobalOptions.CultureInfo);
-                    if (intFreestyleBP < intFreestyleBPMin)
-                        tssBP.ForeColor = Color.OrangeRed;
-                    else
-                        tssBP.ForeColor = SystemColors.ControlText;
+                    tssBP.ForeColor = intFreestyleBP < intFreestyleBPMin ? Color.OrangeRed : SystemColors.ControlText;
+                }
+                else
+                {
+                    tssBP.Text = CharacterObject.BuildKarma.ToString(GlobalOptions.CultureInfo);
+                    tssBP.ForeColor = SystemColors.ControlText;
                 }
             }
 

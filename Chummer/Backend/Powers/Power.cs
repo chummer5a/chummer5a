@@ -165,7 +165,9 @@ namespace Chummer
             if (nodEnhancements != null)
             {
                 using (XmlNodeList xmlEnhancementList = nodEnhancements.SelectNodes("enhancement"))
+                {
                     if (xmlEnhancementList != null)
+                    {
                         foreach (XmlNode nodEnhancement in xmlEnhancementList)
                         {
                             Enhancement objEnhancement = new Enhancement(CharacterObject);
@@ -173,6 +175,8 @@ namespace Chummer
                             objEnhancement.Parent = this;
                             Enhancements.Add(objEnhancement);
                         }
+                    }
+                }
             }
             if (blnCreateImprovements && Bonus != null && Bonus.HasChildNodes)
             {

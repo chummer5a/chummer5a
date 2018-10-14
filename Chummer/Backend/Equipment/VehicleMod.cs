@@ -62,7 +62,6 @@ namespace Chummer.Backend.Equipment
         private bool _blnDiscountCost;
         private bool _blnDowngrade;
         private string _strCapacity = string.Empty;
-        private WeaponMount _objWeaponMountParent;
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
@@ -433,11 +432,7 @@ namespace Chummer.Backend.Equipment
 
         public TaggedObservableCollection<Cyberware> Cyberware => _lstCyberware;
 
-        public WeaponMount WeaponMountParent
-        {
-            get => _objWeaponMountParent;
-            set => _objWeaponMountParent = value;
-        }
+        public WeaponMount WeaponMountParent { get; set; }
 
         /// <summary>
         /// Internal identifier which will be used to identify this piece of Gear in the Character.

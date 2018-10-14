@@ -38,7 +38,6 @@ namespace Chummer
         private int _intGrade;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Enhancement;
         private string _strNotes = string.Empty;
-        private Power _objParent;
 
         private readonly Character _objCharacter;
 
@@ -274,11 +273,7 @@ namespace Chummer
         /// <summary>
         /// Parent Power.
         /// </summary>
-        public Power Parent
-        {
-            get => _objParent;
-            set => _objParent = value;
-        }
+        public Power Parent { get; set; }
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;

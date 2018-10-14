@@ -39,12 +39,7 @@ namespace Chummer
 
         public static bool IsDesignerMode => LicenseManager.UsageMode == LicenseUsageMode.Designtime;
 
-        private static Version s_VersionCachedGitVersion;
-        public static Version CachedGitVersion
-        {
-            get => s_VersionCachedGitVersion;
-            set => s_VersionCachedGitVersion = value;
-        }
+        public static Version CachedGitVersion { get; set; }
 
         public static int GitUpdateAvailable()
         {
