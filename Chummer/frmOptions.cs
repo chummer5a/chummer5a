@@ -1529,32 +1529,34 @@ namespace Chummer
             Data["api_dev_key"] = "7845fd372a1050899f522f2d6bab9666";
             Data["api_option"] = "paste";
 
-            WebClient wb = new WebClient();
-            byte[] bytes;
-            try
+            using (WebClient wb = new WebClient())
             {
-                bytes = wb.UploadValues("http://pastebin.com/api/api_post.php", Data);
-            }
-            catch (WebException)
-            {
-                return;
-            }
-
-            string response;
-            MemoryStream ms = null;
-            try
-            {
-                ms = new MemoryStream(bytes);
-                using (StreamReader reader = new StreamReader(ms, Encoding.UTF8, true))
+                byte[] bytes;
+                try
                 {
-                    response = reader.ReadToEnd();
+                    bytes = wb.UploadValues("http://pastebin.com/api/api_post.php", Data);
                 }
+                catch (WebException)
+                {
+                    return;
+                }
+
+                string response;
+                MemoryStream ms = null;
+                try
+                {
+                    ms = new MemoryStream(bytes);
+                    using (StreamReader reader = new StreamReader(ms, Encoding.UTF8, true))
+                    {
+                        response = reader.ReadToEnd();
+                    }
+                }
+                finally
+                {
+                    ms?.Dispose();
+                }
+                Clipboard.SetText(response);
             }
-            finally
-            {
-                ms?.Dispose();
-            }
-            Clipboard.SetText(response);
             #endif
         }
         #endregion
