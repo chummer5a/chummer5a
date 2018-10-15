@@ -529,14 +529,14 @@ namespace Chummer
             // flpRating
             // 
             this.flpRating.AutoSize = true;
+            this.flpRating.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.SetColumnSpan(this.flpRating, 3);
             this.flpRating.Controls.Add(this.nudRating);
             this.flpRating.Controls.Add(this.lblRatingNALabel);
-            this.flpRating.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpRating.Location = new System.Drawing.Point(358, 75);
             this.flpRating.Margin = new System.Windows.Forms.Padding(0);
             this.flpRating.Name = "flpRating";
-            this.flpRating.Size = new System.Drawing.Size(234, 26);
+            this.flpRating.Size = new System.Drawing.Size(139, 26);
             this.flpRating.TabIndex = 65;
             this.flpRating.WrapContents = false;
             // 
@@ -612,15 +612,12 @@ namespace Chummer
             // 
             // chkHideOverAvailLimit
             // 
-            this.chkHideOverAvailLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.chkHideOverAvailLimit.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.chkHideOverAvailLimit, 4);
             this.chkHideOverAvailLimit.Location = new System.Drawing.Point(304, 205);
             this.chkHideOverAvailLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkHideOverAvailLimit.Name = "chkHideOverAvailLimit";
-            this.chkHideOverAvailLimit.Size = new System.Drawing.Size(285, 17);
+            this.chkHideOverAvailLimit.Size = new System.Drawing.Size(175, 17);
             this.chkHideOverAvailLimit.TabIndex = 64;
             this.chkHideOverAvailLimit.Tag = "Checkbox_HideOverAvailLimit";
             this.chkHideOverAvailLimit.Text = "Hide Items Over Avail Limit ({0})";
@@ -629,16 +626,13 @@ namespace Chummer
             // 
             // chkShowOnlyAffordItems
             // 
-            this.chkShowOnlyAffordItems.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.chkShowOnlyAffordItems.AutoSize = true;
             this.chkShowOnlyAffordItems.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.tableLayoutPanel1.SetColumnSpan(this.chkShowOnlyAffordItems, 4);
             this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(304, 230);
             this.chkShowOnlyAffordItems.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkShowOnlyAffordItems.Name = "chkShowOnlyAffordItems";
-            this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(285, 100);
+            this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(164, 17);
             this.chkShowOnlyAffordItems.TabIndex = 67;
             this.chkShowOnlyAffordItems.Tag = "Checkbox_ShowOnlyAffordItems";
             this.chkShowOnlyAffordItems.Text = "Show Only Items I Can Afford";
@@ -653,11 +647,10 @@ namespace Chummer
             this.tableLayoutPanel1.SetColumnSpan(this.flpCheckBoxes, 4);
             this.flpCheckBoxes.Controls.Add(this.chkFreeItem);
             this.flpCheckBoxes.Controls.Add(this.chkBlackMarketDiscount);
-            this.flpCheckBoxes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpCheckBoxes.Location = new System.Drawing.Point(301, 126);
             this.flpCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
             this.flpCheckBoxes.Name = "flpCheckBoxes";
-            this.flpCheckBoxes.Size = new System.Drawing.Size(291, 25);
+            this.flpCheckBoxes.Size = new System.Drawing.Size(225, 25);
             this.flpCheckBoxes.TabIndex = 68;
             // 
             // chkFreeItem
@@ -700,11 +693,10 @@ namespace Chummer
             this.tableLayoutPanel1.SetColumnSpan(this.flpMarkup, 3);
             this.flpMarkup.Controls.Add(this.nudMarkup);
             this.flpMarkup.Controls.Add(this.lblMarkupPercentLabel);
-            this.flpMarkup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpMarkup.Location = new System.Drawing.Point(358, 151);
             this.flpMarkup.Margin = new System.Windows.Forms.Padding(0);
             this.flpMarkup.Name = "flpMarkup";
-            this.flpMarkup.Size = new System.Drawing.Size(234, 25);
+            this.flpMarkup.Size = new System.Drawing.Size(127, 25);
             this.flpMarkup.TabIndex = 69;
             // 
             // nudMarkup
