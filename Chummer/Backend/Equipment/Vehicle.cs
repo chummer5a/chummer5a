@@ -525,7 +525,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("modfirewall", _strModFirewall);
             objWriter.WriteElementString("modattributearray", _strModAttributeArray);
             objWriter.WriteElementString("canswapattributes", _blnCanSwapAttributes.ToString());
-            _objCharacter.SourceProcess(_strSource);
+
+            if (string.IsNullOrEmpty(ParentID))
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>

@@ -102,6 +102,7 @@ namespace Chummer
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strSource);
             objWriter.WriteEndElement();
+
             _objCharacter.SourceProcess(_strSource);
         }
 

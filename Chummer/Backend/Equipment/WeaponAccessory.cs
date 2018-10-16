@@ -300,7 +300,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("ammobonus", _intAmmoBonus.ToString());
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (!IncludedInWeapon)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>

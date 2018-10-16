@@ -103,6 +103,9 @@ Application Changes:
 - Mentor Spirit and Paragon source references are now displayed next to their names within the Spells and Spirits tab (for Mentor Spirits) and the Sprites and Complex Forms tab (for Paragons).
 - Complex Forms will now display their dicepool as well as a button to roll it in career mode if the appropriate options have been set.
 - Fixed the calculation of Drain Value Tooltips improperly showing the Extended and Limited drain calculation.
+- Fixed an issue where certain items that came with an existing item would sometimes have their availabilities incorrectly checked for the availability limit, and fixed a similar issue where items that would be added onto such items by the player would not get their availabilities checked. Fixes #3117.
+- Fixed an issue where items that came built into items originating from different sourcebooks (e.g. a lifestyle quality from Run Faster coming by default with a lifestyle from the Core Rulebook) would process necessary sourcebooks for the character incorrectly. Existing saved characters with this issue will still have it, but no newly saved characters going forward will have this issue. Fixes #3109.
+- Fixed a bug where characters without Run Faster enabled could still add Advanced Lifestyles despite them being part of Run Faster.
 
 Data Changes:
 

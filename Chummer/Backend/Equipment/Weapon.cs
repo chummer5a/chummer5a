@@ -542,7 +542,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("canswapattributes", _blnCanSwapAttributes.ToString());
             objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (!IncludedInWeapon)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
