@@ -4375,7 +4375,7 @@ namespace Chummer
                     {
                         string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                         if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
-                            strGearReturn += " (" + parent.DisplayNameShort(strLanguage) + ')';
+                            strGearReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + parent.DisplayNameShort(strLanguage) + ')';
                         return strGearReturn;
                     }
 
@@ -4781,6 +4781,7 @@ namespace Chummer
         public string CalculateFreeSpiritPowerPoints()
         {
             string strReturn;
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
             if (Metatype == "Free Spirit" && !IsCritter)
             {
@@ -4793,9 +4794,7 @@ namespace Chummer
                         decPowerPoints += objPower.PowerPoints;
                 }
 
-                int intPowerPoints = EDG.TotalValue +
-                                     ImprovementManager.ValueOf(this,
-                                         Improvement.ImprovementType.FreeSpiritPowerPoints);
+                int intPowerPoints = EDG.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpiritPowerPoints);
 
                 // If the house rule to base Power Points on the character's MAG value instead, use the character's MAG.
                 if (Options.FreeSpiritPowerPointsMAG)
@@ -4803,9 +4802,8 @@ namespace Chummer
                                      ImprovementManager.ValueOf(this,
                                          Improvement.ImprovementType.FreeSpiritPowerPoints);
 
-                strReturn = string.Format(
-                    "{1} ({0} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')',
-                    intPowerPoints - decPowerPoints, intPowerPoints);
+                strReturn = intPowerPoints.ToString(GlobalOptions.CultureInfo) + strSpace + '(' + (intPowerPoints - decPowerPoints).ToString(GlobalOptions.CultureInfo)
+                            + strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
             }
             else
             {
@@ -4814,8 +4812,7 @@ namespace Chummer
                 if (Metatype == "Free Spirit")
                 {
                     // Critter Free Spirits have a number of Power Points equal to their EDG plus any Free Spirit Power Points Improvements.
-                    intPowerPoints =
-                        EDG.Value + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpiritPowerPoints);
+                    intPowerPoints = EDG.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpiritPowerPoints);
                 }
                 else if (Metatype == "Ally Spirit")
                 {
@@ -4835,9 +4832,8 @@ namespace Chummer
                         intUsed += 1;
                 }
 
-                strReturn = string.Format(
-                    "{1} ({0} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')',
-                    intPowerPoints - intUsed, intPowerPoints);
+                strReturn = intPowerPoints.ToString(GlobalOptions.CultureInfo) + strSpace + '(' + (intPowerPoints - intUsed).ToString(GlobalOptions.CultureInfo)
+                            + strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
             }
 
             return strReturn;
@@ -4857,12 +4853,12 @@ namespace Chummer
                     intUsedPowerPoints += 1;
             }
 
-            int intPowerPoints = EDG.TotalValue +
-                                 ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpiritPowerPoints);
+            int intPowerPoints = EDG.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpiritPowerPoints);
 
-            return string.Format(
-                "{1} ({0} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')',
-                intPowerPoints - intUsedPowerPoints, intPowerPoints);
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+
+            return intPowerPoints.ToString(GlobalOptions.CultureInfo) + strSpace + '(' + (intPowerPoints - intUsedPowerPoints).ToString(GlobalOptions.CultureInfo)
+                        + strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
         }
 
         /// <summary>

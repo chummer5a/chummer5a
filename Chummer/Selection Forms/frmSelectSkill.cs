@@ -200,7 +200,7 @@ namespace Chummer
                         // Use the translated Exotic Skill name if available.
                         XmlNode objXmlSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[exotic = \"True\" and name = \"" + objExoticSkill.Name + "\"]");
                         lstSkills.Add(new ListItem(objExoticSkill.Name + " (" + objExoticSkill.Specific + ')',
-                            (objXmlSkill["translate"]?.InnerText ?? objExoticSkill.Name) + " (" + objExoticSkill.DisplaySpecializationMethod(GlobalOptions.Language) + ')'));
+                            (objXmlSkill["translate"]?.InnerText ?? objExoticSkill.Name) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + objExoticSkill.DisplaySpecializationMethod(GlobalOptions.Language) + ')'));
                     }
                 }
             }

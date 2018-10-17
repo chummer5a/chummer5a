@@ -153,7 +153,7 @@ namespace Chummer
                     }
                     else
                     {
-                        objCharacterNode.Text = Path.GetFileNameWithoutExtension(strFile) + " (" + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ')';
+                        objCharacterNode.Text = Path.GetFileNameWithoutExtension(strFile) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ')';
                         objCharacterNode.ToolTipText = strFile.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>') + Environment.NewLine + Environment.NewLine +
                                                        LanguageManager.GetString("String_Error", GlobalOptions.Language) + ":" + Environment.NewLine +
                                                        LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language);
@@ -493,7 +493,7 @@ namespace Chummer
             string strReturn;
             if (!string.IsNullOrEmpty(objCache.ErrorText))
             {
-                strReturn = Path.GetFileNameWithoutExtension(objCache.FileName) + " (" + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ')';
+                strReturn = Path.GetFileNameWithoutExtension(objCache.FileName) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ')';
             }
             else
             {
@@ -570,7 +570,7 @@ namespace Chummer
                 {
                     objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + "]");
 
-                    strMetatype += " (" + (objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant) + ')';
+                    strMetatype += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant) + ')';
                 }
                 lblMetatype.Text = strMetatype;
                 tabCharacterText.Visible = true;

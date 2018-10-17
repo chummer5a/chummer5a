@@ -837,7 +837,7 @@ namespace Chummer
                                 Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(strNodeName);
                                 // Exotic Skill
                                 if (objSkill == null && !string.IsNullOrEmpty(strSpec))
-                                    objSkill = objCharacter.SkillsSection.GetActiveSkill(strNodeName + " (" + strSpec + ")");
+                                    objSkill = objCharacter.SkillsSection.GetActiveSkill(strNodeName + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + strSpec + ')');
                                 if (objSkill != null && (xmlNode["spec"] == null || objSkill.Specializations.Any(objSpec => objSpec.Name == strSpec)) && objSkill.TotalBaseRating >= intValue)
                                 {
                                     if (blnShowMessage)
@@ -1949,7 +1949,7 @@ namespace Chummer
                                 Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(strNodeName);
                                 // Exotic Skill
                                 if (objSkill == null && !string.IsNullOrEmpty(strSpec))
-                                    objSkill = objCharacter.SkillsSection.GetActiveSkill(strNodeName + " (" + strSpec + ")");
+                                    objSkill = objCharacter.SkillsSection.GetActiveSkill(strNodeName + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + strSpec + ')');
                                 if (objSkill != null && (xmlNode.SelectSingleNode("spec") == null || objSkill.Specializations.Any(objSpec => objSpec.Name == strSpec)) && objSkill.TotalBaseRating >= intValue)
                                 {
                                     if (blnShowMessage)
