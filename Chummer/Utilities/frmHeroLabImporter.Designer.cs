@@ -88,9 +88,10 @@ namespace Chummer
             this.cmdSelectFile.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSelectFile.Location = new System.Drawing.Point(3, 3);
             this.cmdSelectFile.Name = "cmdSelectFile";
-            this.cmdSelectFile.Size = new System.Drawing.Size(66, 23);
+            this.cmdSelectFile.Size = new System.Drawing.Size(92, 23);
             this.cmdSelectFile.TabIndex = 1;
-            this.cmdSelectFile.Text = "Select File";
+            this.cmdSelectFile.Tag = "String_SelectFile";
+            this.cmdSelectFile.Text = "Select POR File";
             this.cmdSelectFile.UseVisualStyleBackColor = true;
             this.cmdSelectFile.Click += new System.EventHandler(this.cmdSelectFile_Click);
             // 
@@ -99,10 +100,11 @@ namespace Chummer
             this.cmdImport.AutoSize = true;
             this.cmdImport.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdImport.Enabled = false;
-            this.cmdImport.Location = new System.Drawing.Point(75, 3);
+            this.cmdImport.Location = new System.Drawing.Point(101, 3);
             this.cmdImport.Name = "cmdImport";
             this.cmdImport.Size = new System.Drawing.Size(95, 23);
             this.cmdImport.TabIndex = 2;
+            this.cmdImport.Tag = "String_ImportCharacter";
             this.cmdImport.Text = "Import Character";
             this.cmdImport.UseVisualStyleBackColor = true;
             this.cmdImport.Click += new System.EventHandler(this.cmdImport_Click);
@@ -128,6 +130,7 @@ namespace Chummer
             this.lblEssenceLabel.TabIndex = 50;
             this.lblEssenceLabel.Tag = "Label_Essence";
             this.lblEssenceLabel.Text = "Essence:";
+            this.lblEssenceLabel.Visible = false;
             // 
             // lblCharacterAlias
             // 
@@ -150,6 +153,7 @@ namespace Chummer
             this.lblCharacterAliasLabel.TabIndex = 48;
             this.lblCharacterAliasLabel.Tag = "Label_Alias";
             this.lblCharacterAliasLabel.Text = "Alias:";
+            this.lblCharacterAliasLabel.Visible = false;
             // 
             // lblPlayerName
             // 
@@ -172,6 +176,7 @@ namespace Chummer
             this.lblPlayerNameLabel.TabIndex = 46;
             this.lblPlayerNameLabel.Tag = "Label_Player";
             this.lblPlayerNameLabel.Text = "Player:";
+            this.lblPlayerNameLabel.Visible = false;
             // 
             // lblCareerKarma
             // 
@@ -194,6 +199,7 @@ namespace Chummer
             this.lblCareerKarmaLabel.TabIndex = 44;
             this.lblCareerKarmaLabel.Tag = "String_CareerKarma";
             this.lblCareerKarmaLabel.Text = "Career Karma:";
+            this.lblCareerKarmaLabel.Visible = false;
             // 
             // lblMetatype
             // 
@@ -216,6 +222,7 @@ namespace Chummer
             this.lblMetatypeLabel.TabIndex = 42;
             this.lblMetatypeLabel.Tag = "Label_Metatype";
             this.lblMetatypeLabel.Text = "Metatype:";
+            this.lblMetatypeLabel.Visible = false;
             // 
             // lblCharacterName
             // 
@@ -229,8 +236,7 @@ namespace Chummer
             // 
             // lblCharacterNameLabel
             // 
-            this.lblCharacterNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCharacterNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCharacterNameLabel.AutoSize = true;
             this.lblCharacterNameLabel.Location = new System.Drawing.Point(304, 6);
             this.lblCharacterNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -239,6 +245,7 @@ namespace Chummer
             this.lblCharacterNameLabel.TabIndex = 40;
             this.lblCharacterNameLabel.Tag = "Label_CharacterName";
             this.lblCharacterNameLabel.Text = "Character Name:";
+            this.lblCharacterNameLabel.Visible = false;
             // 
             // picMugshot
             // 
@@ -258,13 +265,13 @@ namespace Chummer
             this.lblHeroLabTrademark.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblHeroLabTrademark.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.lblHeroLabTrademark, 3);
-            this.lblHeroLabTrademark.Location = new System.Drawing.Point(346, 524);
+            this.lblHeroLabTrademark.Location = new System.Drawing.Point(349, 524);
             this.lblHeroLabTrademark.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblHeroLabTrademark.Name = "lblHeroLabTrademark";
-            this.lblHeroLabTrademark.Size = new System.Drawing.Size(417, 13);
+            this.lblHeroLabTrademark.Size = new System.Drawing.Size(414, 13);
             this.lblHeroLabTrademark.TabIndex = 52;
-            this.lblHeroLabTrademark.Text = "Hero Lab and the Hero Lab logo are Registered Trademarks of LWD Technology, Inc. " +
-    "";
+            this.lblHeroLabTrademark.Tag = "Label_HeroLabTrademarks";
+            this.lblHeroLabTrademark.Text = "Hero Lab and the Hero Lab logo are Registered Trademarks of LWD Technology, Inc.";
             // 
             // tabCharacterText
             // 
@@ -312,7 +319,7 @@ namespace Chummer
             this.panCharacterConcept.Location = new System.Drawing.Point(4, 22);
             this.panCharacterConcept.Name = "panCharacterConcept";
             this.panCharacterConcept.Padding = new System.Windows.Forms.Padding(3);
-            this.panCharacterConcept.Size = new System.Drawing.Size(541, 159);
+            this.panCharacterConcept.Size = new System.Drawing.Size(451, 176);
             this.panCharacterConcept.TabIndex = 1;
             this.panCharacterConcept.Tag = "Tab_Roster_Concept";
             this.panCharacterConcept.Text = "Concept";
@@ -328,7 +335,7 @@ namespace Chummer
             this.txtCharacterConcept.Name = "txtCharacterConcept";
             this.txtCharacterConcept.ReadOnly = true;
             this.txtCharacterConcept.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtCharacterConcept.Size = new System.Drawing.Size(535, 153);
+            this.txtCharacterConcept.Size = new System.Drawing.Size(445, 170);
             this.txtCharacterConcept.TabIndex = 2;
             this.txtCharacterConcept.Tag = "";
             // 
@@ -338,7 +345,7 @@ namespace Chummer
             this.panCharacterBackground.Location = new System.Drawing.Point(4, 22);
             this.panCharacterBackground.Name = "panCharacterBackground";
             this.panCharacterBackground.Padding = new System.Windows.Forms.Padding(3);
-            this.panCharacterBackground.Size = new System.Drawing.Size(541, 159);
+            this.panCharacterBackground.Size = new System.Drawing.Size(451, 176);
             this.panCharacterBackground.TabIndex = 2;
             this.panCharacterBackground.Tag = "Tab_Roster_Background";
             this.panCharacterBackground.Text = "Background";
@@ -354,7 +361,7 @@ namespace Chummer
             this.txtCharacterBackground.Name = "txtCharacterBackground";
             this.txtCharacterBackground.ReadOnly = true;
             this.txtCharacterBackground.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtCharacterBackground.Size = new System.Drawing.Size(535, 153);
+            this.txtCharacterBackground.Size = new System.Drawing.Size(445, 170);
             this.txtCharacterBackground.TabIndex = 0;
             this.txtCharacterBackground.Tag = "";
             // 
@@ -364,7 +371,7 @@ namespace Chummer
             this.panCharacterNotes.Location = new System.Drawing.Point(4, 22);
             this.panCharacterNotes.Name = "panCharacterNotes";
             this.panCharacterNotes.Padding = new System.Windows.Forms.Padding(3);
-            this.panCharacterNotes.Size = new System.Drawing.Size(541, 159);
+            this.panCharacterNotes.Size = new System.Drawing.Size(451, 176);
             this.panCharacterNotes.TabIndex = 3;
             this.panCharacterNotes.Tag = "Tab_Roster_CharacterNotes";
             this.panCharacterNotes.Text = "Character Notes";
@@ -380,7 +387,7 @@ namespace Chummer
             this.txtCharacterNotes.Name = "txtCharacterNotes";
             this.txtCharacterNotes.ReadOnly = true;
             this.txtCharacterNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtCharacterNotes.Size = new System.Drawing.Size(535, 153);
+            this.txtCharacterNotes.Size = new System.Drawing.Size(445, 170);
             this.txtCharacterNotes.TabIndex = 2;
             this.txtCharacterNotes.Tag = "";
             // 
@@ -390,7 +397,7 @@ namespace Chummer
             this.panGameNotes.Location = new System.Drawing.Point(4, 22);
             this.panGameNotes.Name = "panGameNotes";
             this.panGameNotes.Padding = new System.Windows.Forms.Padding(3);
-            this.panGameNotes.Size = new System.Drawing.Size(541, 159);
+            this.panGameNotes.Size = new System.Drawing.Size(451, 176);
             this.panGameNotes.TabIndex = 4;
             this.panGameNotes.Tag = "Tab_Roster_GameNotes";
             this.panGameNotes.Text = "Game Notes";
@@ -406,7 +413,7 @@ namespace Chummer
             this.txtGameNotes.Name = "txtGameNotes";
             this.txtGameNotes.ReadOnly = true;
             this.txtGameNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtGameNotes.Size = new System.Drawing.Size(535, 153);
+            this.txtGameNotes.Size = new System.Drawing.Size(445, 170);
             this.txtGameNotes.TabIndex = 3;
             this.txtGameNotes.Tag = "";
             // 
@@ -461,7 +468,7 @@ namespace Chummer
             this.flpButtons.Location = new System.Drawing.Point(0, 514);
             this.flpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.flpButtons.Name = "flpButtons";
-            this.flpButtons.Size = new System.Drawing.Size(173, 29);
+            this.flpButtons.Size = new System.Drawing.Size(199, 29);
             this.flpButtons.TabIndex = 53;
             // 
             // frmHeroLabImporter
@@ -473,6 +480,7 @@ namespace Chummer
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmHeroLabImporter";
             this.Padding = new System.Windows.Forms.Padding(9);
+            this.Tag = "Title_HeroLabImporter";
             this.Text = "Hero Lab Importer";
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).EndInit();
             this.tabCharacterText.ResumeLayout(false);

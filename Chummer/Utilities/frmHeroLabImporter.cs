@@ -480,10 +480,12 @@ namespace Chummer
                         {
                             Program.MainForm.OpenCharacters.Remove(objCharacter);
                             objCharacter.DeleteCharacter();
+                            Cursor = objOldCursor;
                             return;
                         }
 
                         Program.MainForm.OpenCharacter(objCharacter);
+                        Close();
                     }
                 }
             }

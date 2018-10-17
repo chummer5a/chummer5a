@@ -263,7 +263,7 @@ namespace Chummer.Backend.Attributes
                 // Then load in attribute karma levels (we'll adjust these later if the character is in Create mode)
                 if (strAttribute == "ESS") // Not Essence though, this will get modified automatically instead of having its value set to the one HeroLab displays
                     continue;
-                XmlNode xmlHeroLabAttributeNode = xmlStatBlockBaseNode.SelectSingleNode("attributes/attribute[name = \"" + GetAttributeEnglishName(strAttribute) + "\"]");
+                XmlNode xmlHeroLabAttributeNode = xmlStatBlockBaseNode.SelectSingleNode("attributes/attribute[@name = \"" + GetAttributeEnglishName(strAttribute) + "\"]");
                 XmlNode xmlAttributeBaseNode = xmlHeroLabAttributeNode?.SelectSingleNode("@base");
                 if (xmlAttributeBaseNode != null &&
                     int.TryParse(xmlAttributeBaseNode.InnerText, out int intHeroLabAttributeBaseValue))

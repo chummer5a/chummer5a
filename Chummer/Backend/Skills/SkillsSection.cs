@@ -404,6 +404,7 @@ namespace Chummer.Backend.Skills
                             lstTempSkillList.Add(objSkill);
                     }
 
+            /*
             List<Skill> lstUnsortedSkills = new List<Skill>();
 
             //Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
@@ -441,6 +442,7 @@ namespace Chummer.Backend.Skills
                 _lstSkills.Add(objSkill);
                 _dicSkills.Add(objSkill.IsExoticSkill ? objSkill.Name + " (" + objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')' : objSkill.Name, objSkill);
             }
+            */
 
             UpdateUndoList(xmlSkillNode);
 

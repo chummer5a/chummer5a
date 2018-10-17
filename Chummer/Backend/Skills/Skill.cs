@@ -308,7 +308,7 @@ namespace Chummer.Backend.Skills
 
         public static Skill LoadFromHeroLab(Character objCharacter, XmlNode xmlSkillNode, bool blnIsKnowledgeSkill, string strSkillType = "")
         {
-            string strName = xmlSkillNode["name"]?.InnerText ?? string.Empty;
+            string strName = xmlSkillNode.Attributes?["name"]?.InnerText ?? string.Empty;
 
             XmlNode xmlSkillDataNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/" + (blnIsKnowledgeSkill ? "knowledgeskills" : "skills") + "/skill[name = \"" + strName + "\"]");
             Guid suid = Guid.NewGuid();
@@ -316,8 +316,8 @@ namespace Chummer.Backend.Skills
                 suid = Guid.NewGuid();
 
             int intKarmaRating = 0;
-            if (xmlSkillNode["@text"]?.InnerText != "N")      // Native Languages will have a base + karma rating of 0
-                int.TryParse(xmlSkillNode["@base"]?.InnerText, out intKarmaRating); // Only reading karma rating out for now, any base rating will need modification within SkillsSection
+            if (xmlSkillNode.Attributes?["text"]?.InnerText != "N")      // Native Languages will have a base + karma rating of 0
+                int.TryParse(xmlSkillNode.Attributes?["base"]?.InnerText, out intKarmaRating); // Only reading karma rating out for now, any base rating will need modification within SkillsSection
             
             Skill objSkill;
             if (blnIsKnowledgeSkill)
@@ -334,7 +334,7 @@ namespace Chummer.Backend.Skills
             else
             {
                 objSkill = FromData(xmlSkillDataNode, objCharacter);
-                if (xmlSkillNode["@fromgroup"]?.InnerText == "yes")
+                if (xmlSkillNode.Attributes?["fromgroup"]?.InnerText == "yes")
                 {
                     intKarmaRating -= objSkill.SkillGroupObject.Karma;
                 }

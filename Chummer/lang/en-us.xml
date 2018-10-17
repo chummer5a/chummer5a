@@ -9548,6 +9548,32 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>UI</text>
     </string>
     <!-- End Region -->
+    <!-- Region HeroLab Importer -->
+    <string>
+      <key>Title_HeroLabImporter</key>
+      <text>Hero Lab Importer</text>
+    </string>
+    <string>
+      <key>Message_HeroLabImporterWarning_Title</key>
+      <text>Hero Lab Importer Issues</text>
+    </string>
+    <string>
+      <key>Message_HeroLabImporterWarning</key>
+      <text>Due to the differences between how Hero Lab and Chummer5a handle save files, certain items may import incorrectly into Chummer5a.\n\nIn addition, the following items will not be properly imported:\n - Complex Forms\n - Martial Arts\n - Anything related to Initiations and Submersions\n - Mystic Adept PPs\n - Spirits and Sprites\n - Vehicles\n - AI Advanced Programs\n\nAre you sure you wish to use this tool?</text>
+    </string>
+    <string>
+      <key>Label_HeroLabTrademarks</key>
+      <text>Hero Lab and the Hero Lab logo are Registered Trademarks of LWD Technology, Inc.</text>
+    </string>
+    <string>
+      <key>String_SelectFile</key>
+      <text>Select POR File</text>
+    </string>
+    <string>
+      <key>String_ImportCharacter</key>
+      <text>Import Character</text>
+    </string>
+    <!-- End Region -->
     <!-- End Region -->
     <string>
       <key>Message_DroneIllegalDowngrade</key>

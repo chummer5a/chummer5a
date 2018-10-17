@@ -14167,12 +14167,12 @@ namespace Chummer
                                     xmlSourceDoc.Load(sr);
                                     if (strEntryFullName.StartsWith("statblocks_xml"))
                                     {
-                                        if (xmlSourceDoc.SelectSingleNode("/document/public/character[@name = \"" + strCharacterId + "\"]") != null)
+                                        if (xmlSourceDoc.SelectSingleNode("/document/public/character[@name = " + strCharacterId.CleanXPath() + "]") != null)
                                             xmlStatBlockDocument = xmlSourceDoc;
                                     }
                                     else
                                     {
-                                        strLeadsName = xmlSourceDoc.SelectSingleNode("/document/portfolio/hero[@heroname = \"" + strCharacterId + "\"]/@leadfile")?.InnerText;
+                                        strLeadsName = xmlSourceDoc.SelectSingleNode("/document/portfolio/hero[@heroname = " + strCharacterId.CleanXPath() + "]/@leadfile")?.InnerText;
                                     }
                                 }
                             }
@@ -14254,10 +14254,10 @@ namespace Chummer
             Timekeeper.Start("load_char_misc");
             IsLoading = true;
 
-            _dateFileLastWriteTime = File.GetLastWriteTimeUtc(_strFileName);
+            _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strPorFile);
 
-            XmlNode xmlStatBlockBaseNode = xmlStatBlockDocument.SelectSingleNode("/document/public/character[@name = \"" + strCharacterId + "\"]");
-            XmlNode xmlLeadsBaseNode = xmlLeadsDocument.SelectSingleNode("/document/hero[@heroname = \"" + strCharacterId + "\"]");
+            XmlNode xmlStatBlockBaseNode = xmlStatBlockDocument.SelectSingleNode("/document/public/character[@name = " + strCharacterId.CleanXPath() + "]");
+            XmlNode xmlLeadsBaseNode = xmlLeadsDocument.SelectSingleNode("/document/hero[@heroname = " + strCharacterId.CleanXPath() + "]");
 
             _blnCreated = (xmlStatBlockBaseNode.SelectSingleNode("karma/@total")?.InnerText ?? "0") != "0";
             if (!_blnCreated)
@@ -14414,15 +14414,15 @@ namespace Chummer
                 {
                     switch (strInput)
                     {
-                        case "5.":
+                        case "1.":
                             return "A,4";
-                        case "4.":
+                        case "2.":
                             return "B,3";
                         case "3.":
                             return "C,2";
-                        case "2.":
+                        case "4.":
                             return "D,1";
-                        case "1.":
+                        case "5.":
                             return "E,0";
                     }
                     return string.Empty;
@@ -14503,7 +14503,7 @@ namespace Chummer
                         case "quMysticAdept":
                             _strPriorityTalent = "Mystic Adept";
                             break;
-                        case "quTechnomancer":
+                        case "quTechnoma":
                             _strPriorityTalent = "Technomancer";
                             break;
                     }
@@ -14542,9 +14542,9 @@ namespace Chummer
             XmlNode xmlReputationsNode = xmlStatBlockBaseNode.SelectSingleNode("reputations");
             if (xmlReputationsNode != null)
             {
-                int.TryParse(xmlReputationsNode.SelectSingleNode("reputation[name = \"Street Cred\"]/@value").InnerText, out _intStreetCred);
-                int.TryParse(xmlReputationsNode.SelectSingleNode("reputation[name = \"Notoriety\"]/@value").InnerText, out _intNotoriety);
-                int.TryParse(xmlReputationsNode.SelectSingleNode("reputation[name = \"Public Awareness\"]/@value").InnerText, out _intPublicAwareness);
+                int.TryParse(xmlReputationsNode.SelectSingleNode("reputation[@name = \"Street Cred\"]/@value").InnerText, out _intStreetCred);
+                int.TryParse(xmlReputationsNode.SelectSingleNode("reputation[@name = \"Notoriety\"]/@value").InnerText, out _intNotoriety);
+                int.TryParse(xmlReputationsNode.SelectSingleNode("reputation[@name = \"Public Awareness\"]/@value").InnerText, out _intPublicAwareness);
             }
 
             if (Created)
@@ -15601,7 +15601,7 @@ namespace Chummer
             }
 
             // Armor.
-            XmlDocument xmlArmorDocument = XmlManager.Load("armors.xml");
+            XmlDocument xmlArmorDocument = XmlManager.Load("armor.xml");
             foreach (XmlNode xmlArmorToImport in xmlStatBlockBaseNode.SelectNodes("gear/armor/item[@useradded != \"no\"]"))
             {
                 string strArmorName = xmlArmorToImport.Attributes["name"]?.InnerText;
