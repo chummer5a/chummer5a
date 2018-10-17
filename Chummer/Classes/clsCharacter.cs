@@ -16251,6 +16251,7 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_car");
+            /* TODO: Process HeroLab Initiation/Submersion and related entries
             Timekeeper.Start("load_char_mmagic");
             // Metamagics/Echoes.
             xmlNodeList = objXmlCharacter.SelectNodes("metamagics/metamagic");
@@ -16322,6 +16323,8 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_init");
+            */
+            /* TODO: Import HeroLab Expense Logs, which are different from Journal entries
             Timekeeper.Start("load_char_elog");
 
             // Expense Log Entries.
@@ -16334,7 +16337,7 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_elog");
-
+            */
             _lstWeapons.AddRange(lstWeapons);
 
             Timekeeper.Start("load_char_unarmed");
