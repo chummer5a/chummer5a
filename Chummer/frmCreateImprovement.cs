@@ -33,15 +33,16 @@ namespace Chummer
         private readonly Character _objCharacter;
         private readonly XmlDocument _objDocument;
         private string _strSelect = string.Empty;
+        private readonly string _strCustomGroup;
         private Improvement _objEditImprovement;
 
         #region Control Events
-        public frmCreateImprovement(Character objCharacter)
+        public frmCreateImprovement(Character objCharacter, string strCustomGroup = "")
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            MoveControls();
+            _strCustomGroup = strCustomGroup;
             _objDocument = XmlManager.Load("improvements.xml");
         }
 
@@ -54,7 +55,7 @@ namespace Chummer
             if (objXmlImprovementList != null)
                 lstTypes.AddRange(from XmlNode objXmlImprovement in objXmlImprovementList
                     select new ListItem(objXmlImprovement["id"]?.InnerText, Name = objXmlImprovement["translate"]?.InnerText ?? objXmlImprovement["name"]?.InnerText));
-            
+
             lstTypes.Sort(CompareListItems.CompareNames);
             cboImprovemetType.BeginUpdate();
             cboImprovemetType.ValueMember = "Value";
@@ -218,33 +219,34 @@ namespace Chummer
                     }
                     break;
                 case "SelectSpecialAttribute":
+                {
+                    List<string> lstAbbrevs = new List<string>(Backend.Attributes.AttributeSection.AttributeStrings);
+                    lstAbbrevs.RemoveAll(x => Backend.Attributes.AttributeSection.PhysicalAttributes.Contains(x) || Backend.Attributes.AttributeSection.MentalAttributes.Contains(x));
+                    lstAbbrevs.Remove("ESS");
+                    /*
+                    if (!_objCharacter.MAGEnabled)
                     {
-                        List<string> lstAbbrevs = new List<string>(Backend.Attributes.AttributeSection.AttributeStrings);
-                        lstAbbrevs.RemoveAll(x => Backend.Attributes.AttributeSection.PhysicalAttributes.Contains(x) || Backend.Attributes.AttributeSection.MentalAttributes.Contains(x));
-                        lstAbbrevs.Remove("ESS");
-                        if (!_objCharacter.MAGEnabled)
-                        {
-                            lstAbbrevs.Remove("MAG");
-                            lstAbbrevs.Remove("MAGAdept");
-                        }
-                        else if (!_objCharacter.IsMysticAdept || !_objCharacter.Options.MysAdeptSecondMAGAttribute)
-                            lstAbbrevs.Remove("MAGAdept");
-
-                        if (!_objCharacter.RESEnabled)
-                            lstAbbrevs.Remove("RES");
-                        if (!_objCharacter.DEPEnabled)
-                            lstAbbrevs.Remove("DEP");
-
-                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
-                        {
-                            Description = LanguageManager.GetString("Title_SelectAttribute", GlobalOptions.Language)
-                        };
-
-                        frmPickAttribute.ShowDialog(this);
-
-                        if (frmPickAttribute.DialogResult == DialogResult.OK)
-                            txtSelect.Text = frmPickAttribute.SelectedAttribute;
+                        lstAbbrevs.Remove("MAG");
+                        lstAbbrevs.Remove("MAGAdept");
                     }
+                    else if (!_objCharacter.IsMysticAdept || !_objCharacter.Options.MysAdeptSecondMAGAttribute)
+                        lstAbbrevs.Remove("MAGAdept");
+
+                    if (!_objCharacter.RESEnabled)
+                        lstAbbrevs.Remove("RES");
+                    if (!_objCharacter.DEPEnabled)
+                        lstAbbrevs.Remove("DEP");
+                        */
+                    frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
+                    {
+                        Description = LanguageManager.GetString("Title_SelectAttribute", GlobalOptions.Language)
+                    };
+
+                    frmPickAttribute.ShowDialog(this);
+
+                    if (frmPickAttribute.DialogResult == DialogResult.OK)
+                        txtSelect.Text = frmPickAttribute.SelectedAttribute;
+                }
                     break;
                 case "SelectSkill":
                     {
@@ -301,7 +303,7 @@ namespace Chummer
                             DropdownItems = lstDropdownItems,
                             Description = LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Language)
                         };
-                        
+
                         frmPickSkill.ShowDialog(this);
 
                         if (frmPickSkill.DialogResult == DialogResult.OK)
@@ -447,39 +449,20 @@ namespace Chummer
             }
 
             // Find the newly-created Improvement and attach its custom name.
-            foreach (Improvement objImprovement in _objCharacter.Improvements)
+            Improvement objImprovement = _objCharacter.Improvements.FirstOrDefault(imp => imp.SourceName == strGuid);
+            if (objImprovement != null)
             {
-                if (objImprovement.SourceName == strGuid)
-                {
-                    objImprovement.CustomName = txtName.Text;
-                    objImprovement.CustomId = cboImprovemetType.SelectedValue.ToString();
-                    objImprovement.Custom = true;
-                    objImprovement.Notes = strNotes;
-                    objImprovement.SortOrder = intOrder;
-                }
+                objImprovement.CustomName = txtName.Text;
+                objImprovement.CustomId = cboImprovemetType.SelectedValue.ToString();
+                objImprovement.Custom = true;
+                objImprovement.Notes = strNotes;
+                objImprovement.SortOrder = intOrder;
+                objImprovement.CustomGroup = _strCustomGroup;
+                NewImprovement = objImprovement;
             }
+            else {Utils.BreakIfDebug();}
 
             DialogResult = DialogResult.OK;
-        }
-
-        private void MoveControls()
-        {
-            int intWidth = Math.Max(lblImprovementType.Width, lblName.Width);
-            intWidth = Math.Max(intWidth, lblSelect.Width);
-            intWidth = Math.Max(intWidth, lblVal.Width);
-            intWidth = Math.Max(intWidth, lblMin.Width);
-            intWidth = Math.Max(intWidth, lblMax.Width);
-            intWidth = Math.Max(intWidth, lblAug.Width);
-
-            cboImprovemetType.Left = lblImprovementType.Left + intWidth + 6;
-            txtName.Left = cboImprovemetType.Left;
-            txtSelect.Left = cboImprovemetType.Left;
-            cmdChangeSelection.Left = txtSelect.Left + txtSelect.Width + 6;
-            nudVal.Left = cboImprovemetType.Left;
-            nudMin.Left = cboImprovemetType.Left;
-            nudMax.Left = cboImprovemetType.Left;
-            nudAug.Left = cboImprovemetType.Left;
-            chkApplyToRating.Left = nudVal.Left + nudVal.Width + 6;
         }
         #endregion
 
@@ -491,6 +474,9 @@ namespace Chummer
         {
             set => _objEditImprovement = value;
         }
+
+        public Improvement NewImprovement { get; set; }
+
         #endregion
     }
 }

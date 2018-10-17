@@ -29,7 +29,7 @@ namespace Chummer
     /// A Martial Art.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class MartialArt : IHasChildren<MartialArtTechnique>, IHasName, IHasInternalId, IHasXmlNode, IHasNotes
+    public class MartialArt : IHasChildren<MartialArtTechnique>, IHasName, IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
         private string _strName = string.Empty;
         private string _strSource = string.Empty;
@@ -79,6 +79,29 @@ namespace Chummer
             }*/
         }
 
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == null)
+                {
+                    string strSource = Source;
+                    string strPage = Page(GlobalOptions.Language);
+                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                    {
+                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                    }
+                }
+
+                return _objCachedSourceDetail;
+            }
+        }
+
         /// <summary>
         /// Save the object's XML to the XmlWriter.
         /// </summary>
@@ -101,7 +124,9 @@ namespace Chummer
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (!IsQuality)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -151,6 +176,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("martialart");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
@@ -299,7 +325,7 @@ namespace Chummer
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsMartialArt,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -319,6 +345,76 @@ namespace Chummer
             return objNode;
         }
 
+        public static bool Purchase(Character objCharacter)
+        {
+            bool blnAddAgain;
+            do
+            {
+                frmSelectMartialArt frmPickMartialArt = new frmSelectMartialArt(objCharacter);
+                frmPickMartialArt.ShowDialog();
+
+                if (frmPickMartialArt.DialogResult == DialogResult.Cancel)
+                    return false;
+
+                blnAddAgain = frmPickMartialArt.AddAgain;
+                // Open the Martial Arts XML file and locate the selected piece.
+                XmlDocument objXmlDocument = XmlManager.Load("martialarts.xml");
+
+                XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[id = \"" + frmPickMartialArt.SelectedMartialArt + "\"]");
+
+                MartialArt objMartialArt = new MartialArt(objCharacter);
+                objMartialArt.Create(objXmlArt);
+                
+                if (objCharacter.Created)
+                {
+                    int intKarmaCost = objMartialArt.Rating * objMartialArt.Cost * objCharacter.Options.KarmaQuality;
+                    if (intKarmaCost > objCharacter.Karma)
+                    {
+                        MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                        ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
+                        return false;
+                    }
+
+                    // Create the Expense Log Entry.
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
+                    objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnMartialArt", GlobalOptions.Language) + ' ' + objMartialArt.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                    objCharacter.ExpenseEntries.AddWithSort(objExpense);
+                    objCharacter.Karma -= intKarmaCost;
+
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateKarma(KarmaExpenseType.AddMartialArt, objMartialArt.Name);
+                    objExpense.Undo = objUndo;
+                }
+                objCharacter.MartialArts.Add(objMartialArt);
+            } while (blnAddAgain);
+
+            return true;
+        }
+
+        public bool Remove(Character objCharacter, bool blnConfirmDelete = true)
+        {
+            // Delete the selected Martial Art.
+            if (IsQuality) return false;
+            if (blnConfirmDelete)
+            {
+                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt",
+                    GlobalOptions.Language)))
+                    return false;
+            }
+
+            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.MartialArt,
+                InternalId);
+            // Remove the Improvements for any Advantages for the Martial Art that is being removed.
+            foreach (MartialArtTechnique objAdvantage in Techniques)
+            {
+                ImprovementManager.RemoveImprovements(_objCharacter,
+                    Improvement.ImprovementSource.MartialArtTechnique, objAdvantage.InternalId);
+            }
+
+            _objCharacter.MartialArts.Remove(this);
+            return true;
+        }
         public Color PreferredColor
         {
             get
@@ -335,5 +431,12 @@ namespace Chummer
             }
         }
         #endregion
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
+        }
     }
 }

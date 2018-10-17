@@ -30,7 +30,7 @@ using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Skills
 {
-    public class SkillsSection : INotifyPropertyChanged
+    public class SkillsSection : INotifyMultiplePropertyChanged
     {
         private readonly Character _objCharacter;
         private readonly Dictionary<Guid, Skill> _dicSkillBackups = new Dictionary<Guid, Skill>();
@@ -51,11 +51,32 @@ namespace Chummer.Backend.Skills
         }
 
         [NotifyPropertyChangedInvocator]
-        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            if (propertyName == nameof(KnowledgeSkillPointsRemain) || propertyName == nameof(HasKnowledgePoints))
-                OnPropertyChanged(nameof(KnowledgeSkillPoints));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            OnMultiplePropertyChanged(strPropertyName);
+        }
+
+        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        {
+            ICollection<string> lstNamesOfChangedProperties = null;
+            foreach (string strPropertyName in lstPropertyNames)
+            {
+                if (lstNamesOfChangedProperties == null)
+                    lstNamesOfChangedProperties = SkillSectionDependancyGraph.GetWithAllDependants(strPropertyName);
+                else
+                {
+                    foreach (string strLoopChangedProperty in SkillSectionDependancyGraph.GetWithAllDependants(strPropertyName))
+                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                }
+            }
+
+            if ((lstNamesOfChangedProperties?.Count > 0) != true)
+                return;
+
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+            }
         }
 
         internal void AddSkills(FilterOptions skills, string strName = "")
@@ -126,7 +147,7 @@ namespace Chummer.Backend.Skills
                     _dicSkillBackups.Add(skill.SkillId, skill);
                     Skills.RemoveAt(i);
                     SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')' : skill.Name);
-                    
+
                     if (_objCharacter.Created && skill.TotalBaseRating > 0 && createKnowledge)
                     {
                         KnowledgeSkill kno = new KnowledgeSkill(_objCharacter)
@@ -221,7 +242,7 @@ namespace Chummer.Backend.Skills
                 // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total basse rating will be zero. Call this here to force a refresh.
                 foreach (SkillGroup g in SkillGroups)
                 {
-                    g.DoRefreshCareerIncrease();
+                    g.OnPropertyChanged(nameof(SkillGroup.SkillList));
                 }
                 Timekeeper.Finish("load_char_skills_normal");
 
@@ -303,12 +324,12 @@ namespace Chummer.Backend.Skills
                 }
             }
 
-            //This might give subtle bugs in the future, 
-            //but right now it needs to be run once when upgrading or it might crash. 
-            //As some didn't they crashed on loading skills. 
+            //This might give subtle bugs in the future,
+            //but right now it needs to be run once when upgrading or it might crash.
+            //As some didn't they crashed on loading skills.
             //After this have run, it won't (for the crash i'm aware)
             //TODO: Move it to the other side of the if someday?
-            
+
             if (!_objCharacter.Created)
             {
                 // zero out any skillgroups whose skills did not make the final cut
@@ -530,7 +551,7 @@ namespace Chummer.Backend.Skills
                 return fromAttributes + val;
             }
         }
-        
+
         /// <summary>
         /// Number of free Knowledge skill points the character have remaining
         /// </summary>
@@ -546,7 +567,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public int KnowledgeSkillRanksSum
         {
-            get { return KnowledgeSkills.Sum(x => x.CurrentSpCost()); }
+            get { return KnowledgeSkills.AsParallel().Sum(x => x.CurrentSpCost); }
         }
 
         /// <summary>
@@ -603,8 +624,8 @@ namespace Chummer.Backend.Skills
 
         public static int CompareSkills(Skill rhs, Skill lhs)
         {
-            ExoticSkill lhsExoticSkill = (lhs.IsExoticSkill ? lhs : null) as ExoticSkill;
-            if ((rhs.IsExoticSkill ? rhs : null) is ExoticSkill rhsExoticSkill)
+            ExoticSkill lhsExoticSkill = lhs as ExoticSkill;
+            if (rhs is ExoticSkill rhsExoticSkill)
             {
                 if (lhsExoticSkill != null)
                 {
@@ -714,6 +735,23 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        private static readonly DependancyGraph<string> SkillSectionDependancyGraph =
+            new DependancyGraph<string>(
+                new DependancyGraphNode<string>(nameof(HasKnowledgePoints),
+                    new DependancyGraphNode<string>(nameof(KnowledgeSkillPoints))
+                ),
+                new DependancyGraphNode<string>(nameof(KnowledgeSkillPointsRemain),
+                    new DependancyGraphNode<string>(nameof(KnowledgeSkillPoints)),
+                    new DependancyGraphNode<string>(nameof(KnowledgeSkillPointsUsed),
+                        new DependancyGraphNode<string>(nameof(KnowledgeSkillRanksSum)),
+                        new DependancyGraphNode<string>(nameof(SkillPointsSpentOnKnoskills),
+                            new DependancyGraphNode<string>(nameof(KnowledgeSkillPoints)),
+                            new DependancyGraphNode<string>(nameof(KnowledgeSkillRanksSum))
+                        )
+                    )
+                )
+            );
+
         public enum FilterOptions
         {
             All = 0,
@@ -751,7 +789,7 @@ namespace Chummer.Backend.Skills
             if ((_objCharacter.Options.UseTotalValueForFreeKnowledge && e.PropertyName == nameof(CharacterAttrib.TotalValue)) ||
                  (!_objCharacter.Options.UseTotalValueForFreeKnowledge && e.PropertyName == nameof(CharacterAttrib.Value)))
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasKnowledgePoints)));
+                OnPropertyChanged(nameof(KnowledgeSkillPoints));
             }
         }
 

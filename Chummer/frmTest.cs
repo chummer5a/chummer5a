@@ -883,12 +883,12 @@ namespace Chummer
                             }*/
 
                             // Add any Critter Powers the Metatype/Critter should have.
-                            XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objCharacter.Metatype + "\"]");
+                            XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCharacter.Metatype.CleanXPath() + "]");
 
                             objXmlDocument = XmlManager.Load("critterpowers.xml");
                             foreach (XmlNode objXmlPower in objXmlCritter.SelectNodes("powers/power"))
                             {
-                                XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
+                                XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = " + objXmlPower.InnerText.CleanXPath() + "]");
                                 CritterPower objPower = new CritterPower(objCharacter);
                                 string strForcedValue = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
                                 int intRating = 0;
@@ -999,7 +999,7 @@ namespace Chummer
                             foreach (XmlNode objXmlComplexForm in objXmlCritter.SelectNodes("complexforms/complexform"))
                             {
                                 string strForceValue = objXmlComplexForm.Attributes?["select"]?.InnerText ?? string.Empty;
-                                XmlNode objXmlComplexFormData = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objXmlComplexForm.InnerText + "\"]");
+                                XmlNode objXmlComplexFormData = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[name = " + objXmlComplexForm.InnerText.CleanXPath() + "]");
                                 ComplexForm objComplexForm = new ComplexForm(objCharacter);
                                 objComplexForm.Create(objXmlComplexFormData, strForceValue);
                                 objCharacter.ComplexForms.Add(objComplexForm);
@@ -1013,7 +1013,7 @@ namespace Chummer
                                 if (objXmlGear.Attributes["rating"] != null)
                                     intRating = ExpressionToInt(objXmlGear.Attributes["rating"].InnerText, intForce, 0);
                                 string strForceValue = objXmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
-                                XmlNode objXmlGearItem = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlGear.InnerText + "\"]");
+                                XmlNode objXmlGearItem = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlGear.InnerText.CleanXPath() + "]");
                                 Gear objGear = new Gear(objCharacter);
                                 List<Weapon> lstWeapons = new List<Weapon>();
                                 objGear.Create(objXmlGearItem, intRating, lstWeapons, strForceValue);

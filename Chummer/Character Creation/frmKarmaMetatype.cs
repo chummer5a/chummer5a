@@ -35,7 +35,7 @@ namespace Chummer
 
         private readonly Character _objCharacter;
         private string _strCurrentPossessionMethod;
-        
+
         private readonly XPathNavigator _xmlBaseMetatypeDataNode;
         private readonly XPathNavigator _xmlBaseQualityDataNode;
         private readonly XmlNode _xmlSkillsDocumentKnowledgeSkillsNode;
@@ -96,14 +96,11 @@ namespace Chummer
                 cboCategory.SelectedIndex = 0;
 
             cboCategory.EndUpdate();
-
-            Height = cmdOK.Bottom + 40;
-            lstMetatypes.Height = cmdOK.Bottom - lstMetatypes.Top;
-
-            // Add Possession and Inhabitation to the list of Critter Tradition variations.
-            GlobalOptions.ToolTipProcessor.SetToolTip(chkPossessionBased, LanguageManager.GetString("Tip_Metatype_PossessionTradition", GlobalOptions.Language));
-            GlobalOptions.ToolTipProcessor.SetToolTip(chkBloodSpirit, LanguageManager.GetString("Tip_Metatype_BloodSpirit", GlobalOptions.Language));
             
+            // Add Possession and Inhabitation to the list of Critter Tradition variations.
+            chkPossessionBased.SetToolTip(LanguageManager.GetString("Tip_Metatype_PossessionTradition", GlobalOptions.Language));
+            chkBloodSpirit.SetToolTip(LanguageManager.GetString("Tip_Metatype_BloodSpirit", GlobalOptions.Language));
+
             List<ListItem> lstMethods = new List<ListItem>
             {
                 new ListItem("Possession", _xmlCritterPowerDocumentPowersNode?.SelectSingleNode("power[name = \"Possession\"]/translate")?.InnerText ?? "Possession"),
@@ -194,7 +191,7 @@ namespace Chummer
             {
                 string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
                 string strSelectedMetavariant = cboMetavariant.SelectedValue.ToString();
-                
+
                 // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
                 if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == "None")
                     strSelectedMetavariant = "Human";
@@ -230,7 +227,7 @@ namespace Chummer
                 }*/
 
                 XmlNode charNode = strSelectedMetatypeCategory == "Shapeshifter" ? objXmlMetatype : objXmlMetavariant ?? objXmlMetatype;
-                
+
                 // Set Metatype information.
                 _objCharacter.BOD.AssignLimits( CommonFunctions.ExpressionToString(charNode["bodmin"]?.InnerText, intForce, intMinModifier),  CommonFunctions.ExpressionToString(charNode["bodmax"]?.InnerText, intForce, intMaxModifier),  CommonFunctions.ExpressionToString(charNode["bodaug"]?.InnerText, intForce, intMaxModifier));
                 _objCharacter.AGI.AssignLimits( CommonFunctions.ExpressionToString(charNode["agimin"]?.InnerText, intForce, intMinModifier),  CommonFunctions.ExpressionToString(charNode["agimax"]?.InnerText, intForce, intMaxModifier),  CommonFunctions.ExpressionToString(charNode["agiaug"]?.InnerText, intForce, intMaxModifier));
@@ -249,7 +246,7 @@ namespace Chummer
 
                 _objCharacter.Metatype = strSelectedMetatype;
                 _objCharacter.MetatypeCategory = strSelectedMetatypeCategory;
-                _objCharacter.MetatypeBP = Convert.ToInt32(lblBP.Text);
+                _objCharacter.MetatypeBP = Convert.ToInt32(lblKarma.Text);
                 _objCharacter.Metavariant = strSelectedMetavariant == "None" ? string.Empty : strSelectedMetavariant;
 
                 // We only reverted to the base metatype to get the attributes.
@@ -282,7 +279,7 @@ namespace Chummer
                             _objCharacter.Qualities.Add(objQuality);
                         }
 
-                //Load any critter powers the character has. 
+                //Load any critter powers the character has.
                 foreach (XmlNode objXmlPower in charNode.SelectNodes("powers/power"))
                 {
                     XmlNode objXmlCritterPower = _xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"" + objXmlPower.InnerText + "\"]");
@@ -297,7 +294,7 @@ namespace Chummer
                     ImprovementManager.Commit(_objCharacter);
                 }
 
-                //Load any natural weapons the character has. 
+                //Load any natural weapons the character has.
                 foreach (XmlNode objXmlNaturalWeapon in charNode.SelectNodes("nautralweapons/naturalweapon"))
                 {
                     Weapon objWeapon = new Weapon(_objCharacter)
@@ -434,7 +431,7 @@ namespace Chummer
                         }
                     }
                 }
-                
+
                 //Set the Active Skill Ratings for the Critter.
                 foreach (XmlNode xmlSkill in charNode.SelectNodes("skills/skill"))
                 {
@@ -500,7 +497,7 @@ namespace Chummer
                     {
                         frmSelectText frmPickText = new frmSelectText
                         {
-                            Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", xmlComplexFormData["translate"]?.InnerText ?? xmlComplexFormData["name"].InnerText)
+                            Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), xmlComplexFormData["translate"]?.InnerText ?? xmlComplexFormData["name"].InnerText)
                         };
                         frmPickText.ShowDialog();
                         // Make sure the dialogue window was not canceled.
@@ -516,7 +513,7 @@ namespace Chummer
                     objComplexform.Grade = -1;
 
                     _objCharacter.ComplexForms.Add(objComplexform);
-                    
+
                     ImprovementManager.CreateImprovement(_objCharacter, objComplexform.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.ComplexForm, string.Empty);
                     ImprovementManager.Commit(_objCharacter);
                 }
@@ -536,7 +533,7 @@ namespace Chummer
                     {
                         frmSelectText frmPickText = new frmSelectText
                         {
-                            Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", xmlAIProgramData["translate"]?.InnerText ?? xmlAIProgramData["name"].InnerText)
+                            Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), xmlAIProgramData["translate"]?.InnerText ?? xmlAIProgramData["name"].InnerText)
                         };
                         frmPickText.ShowDialog();
                         // Make sure the dialogue window was not canceled.
@@ -560,10 +557,10 @@ namespace Chummer
                 XmlDocument xmlGearDocument = XmlManager.Load("gear.xml");
                 foreach (XmlNode xmlGear in charNode.SelectNodes("gears/gear"))
                 {
-                    XmlNode xmlGearData = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + xmlGear["name"].InnerText + "\" and category = \"" + xmlGear["category"].InnerText + "\"]");
+                    XmlNode xmlGearData = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + xmlGear["name"].InnerText.CleanXPath() + " and category = " + xmlGear["category"].InnerText.CleanXPath() + "]");
                     if (xmlGearData == null)
                         continue;
-                    
+
                     int intRating = 1;
                     if (xmlGear["rating"] != null)
                         intRating = Convert.ToInt32(xmlGear["rating"].InnerText);
@@ -705,7 +702,7 @@ namespace Chummer
 
                 lblQualities.Text = strbldQualities.Length == 0 ? LanguageManager.GetString("String_None", GlobalOptions.Language) : strbldQualities.ToString();
 
-                lblBP.Text = objXmlMetavariant.SelectSingleNode("karma")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+                lblKarma.Text = objXmlMetavariant.SelectSingleNode("karma")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
             }
             else if (objXmlMetatype != null)
             {
@@ -767,7 +764,7 @@ namespace Chummer
 
                 lblQualities.Text = strbldQualities.Length == 0 ? LanguageManager.GetString("String_None", GlobalOptions.Language) : strbldQualities.ToString();
 
-                lblBP.Text = objXmlMetatype.SelectSingleNode("karma")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+                lblKarma.Text = objXmlMetatype.SelectSingleNode("karma")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
             }
             else
             {
@@ -783,10 +780,21 @@ namespace Chummer
 
                 lblQualities.Text = string.Empty;
 
-                lblBP.Text = string.Empty;
+                lblKarma.Text = string.Empty;
 
                 cmdOK.Enabled = false;
             }
+            lblBODLabel.Visible = !string.IsNullOrEmpty(lblBOD.Text);
+            lblAGILabel.Visible = !string.IsNullOrEmpty(lblAGI.Text);
+            lblREALabel.Visible = !string.IsNullOrEmpty(lblREA.Text);
+            lblSTRLabel.Visible = !string.IsNullOrEmpty(lblSTR.Text);
+            lblCHALabel.Visible = !string.IsNullOrEmpty(lblCHA.Text);
+            lblINTLabel.Visible = !string.IsNullOrEmpty(lblINT.Text);
+            lblLOGLabel.Visible = !string.IsNullOrEmpty(lblLOG.Text);
+            lblWILLabel.Visible = !string.IsNullOrEmpty(lblWIL.Text);
+            lblINILabel.Visible = !string.IsNullOrEmpty(lblINI.Text);
+            lblQualitiesLabel.Visible = !string.IsNullOrEmpty(lblQualities.Text);
+            lblKarma.Visible = !string.IsNullOrEmpty(lblKarma.Text);
         }
 
         private void PopulateMetavariants()
@@ -869,9 +877,13 @@ namespace Chummer
                     lblForceLabel.Visible = false;
                     nudForce.Visible = false;
                 }
+                lblMetavariantLabel.Visible = true;
+                cboMetavariant.Visible = true;
             }
             else
             {
+                lblMetavariantLabel.Visible = false;
+                cboMetavariant.Visible = false;
                 // Clear the Metavariant list if nothing is currently selected.
                 List<ListItem> lstMetavariants = new List<ListItem>
                 {
@@ -925,7 +937,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strOldSelected))
                 {
                     if (lstMetatypes.SelectedValue?.ToString() == strOldSelected)
-                        lstMetatypes_SelectedIndexChanged(this, EventArgs.Empty);   
+                        lstMetatypes_SelectedIndexChanged(this, EventArgs.Empty);
                     else
                         lstMetatypes.SelectedValue = strOldSelected;
                 }

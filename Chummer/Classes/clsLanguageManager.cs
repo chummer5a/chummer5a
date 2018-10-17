@@ -32,6 +32,7 @@ namespace Chummer
     {
         public class LanguageData
         {
+            public bool IsRightToLeftScript { get; }
             public IDictionary<string, string> TranslatedStrings { get; } = new Dictionary<string, string>();
             public XmlDocument DataDocument { get; } = new XmlDocument();
             public string ErrorMessage { get; } = string.Empty;
@@ -66,8 +67,10 @@ namespace Chummer
 
                         if (objLanguageDocument != null)
                         {
+                            IsRightToLeftScript = objLanguageDocument.SelectSingleNode("/chummer/righttoleft")?.InnerText == bool.TrueString;
                             using (XmlNodeList xmlStringList = objLanguageDocument.SelectNodes("/chummer/strings/string"))
-                                if (xmlStringList != null)
+                            {
+                                if (xmlStringList?.Count > 0)
                                 {
                                     foreach (XmlNode objNode in xmlStringList)
                                     {
@@ -88,6 +91,7 @@ namespace Chummer
                                 {
                                     ErrorMessage += "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: " + strExtraMessage + "." + Environment.NewLine;
                                 }
+                            }
                         }
                         else
                         {
@@ -140,7 +144,7 @@ namespace Chummer
                 }
             }
         }
-        
+
         private static readonly Dictionary<string, LanguageData> s_DictionaryLanguages = new Dictionary<string, LanguageData>();
         public static IReadOnlyDictionary<string, LanguageData> DictionaryLanguages => s_DictionaryLanguages;
         private static readonly Dictionary<string, string> s_DictionaryEnglishStrings = new Dictionary<string, string>();
@@ -149,7 +153,7 @@ namespace Chummer
         #region Constructor
         static LanguageManager()
         {
-            if (!Utils.IsRunningInVisualStudio)
+            if (!Utils.IsDesignerMode)
             {
                 XmlDocument objEnglishDocument = new XmlDocument();
                 string strFilePath = Path.Combine(Application.StartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
@@ -211,10 +215,21 @@ namespace Chummer
         /// <param name="objObject">Object to translate.</param>
         public static void TranslateWinForm(string strIntoLanguage, Control objObject)
         {
-            if (LoadLanguage(strIntoLanguage))
-                UpdateControls(objObject, strIntoLanguage);
-            else if (strIntoLanguage != GlobalOptions.DefaultLanguage)
-                UpdateControls(objObject, GlobalOptions.DefaultLanguage);
+            if (!Utils.IsDesignerMode)
+            {
+                if (LoadLanguage(strIntoLanguage))
+                {
+                    RightToLeft eIntoRightToLeft = RightToLeft.No;
+                    if (DictionaryLanguages.TryGetValue(strIntoLanguage, out LanguageData objLanguageData))
+                    {
+                        eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
+                    }
+
+                    UpdateControls(objObject, strIntoLanguage, eIntoRightToLeft);
+                }
+                else if (strIntoLanguage != GlobalOptions.DefaultLanguage)
+                    UpdateControls(objObject, GlobalOptions.DefaultLanguage, RightToLeft.No);
+            }
         }
 
         private static bool LoadLanguage(string strLanguage)
@@ -245,10 +260,12 @@ namespace Chummer
         /// </summary>
         /// <param name="strIntoLanguage">Language into which the control should be translated</param>
         /// <param name="objParent">Control container to translate.</param>
-        private static void UpdateControls(Control objParent, string strIntoLanguage)
+        private static void UpdateControls(Control objParent, string strIntoLanguage, RightToLeft eIntoRightToLeft)
         {
             if (objParent == null)
                 return;
+            
+            objParent.RightToLeft = eIntoRightToLeft;
 
             if (objParent is Form frmForm)
             {
@@ -263,12 +280,21 @@ namespace Chummer
                 // update any menu strip items that have tags
                 if (frmForm.MainMenuStrip != null)
                     foreach (ToolStripMenuItem tssItem in frmForm.MainMenuStrip.Items)
-                        TranslateToolStripItemsRecursively(tssItem, strIntoLanguage);
+                        TranslateToolStripItemsRecursively(tssItem, strIntoLanguage, eIntoRightToLeft);
             }
 
             // Translatable items are identified by having a value in their Tag attribute. The contents of Tag is the string to lookup in the language list.
             foreach (Control objChild in objParent.Controls)
             {
+                try
+                {
+                    objChild.RightToLeft = eIntoRightToLeft;
+                }
+                catch (NotSupportedException)
+                {
+                    Utils.BreakIfDebug();
+                }
+
                 if (objChild is Label || objChild is Button || objChild is CheckBox)
                 {
                     string strControlTag = objChild.Tag?.ToString();
@@ -281,7 +307,7 @@ namespace Chummer
                 {
                     foreach (ToolStripItem tssItem in tssStrip.Items)
                     {
-                        TranslateToolStripItemsRecursively(tssItem, strIntoLanguage);
+                        TranslateToolStripItemsRecursively(tssItem, strIntoLanguage, eIntoRightToLeft);
                     }
                 }
                 else if (objChild is ListView lstList)
@@ -305,17 +331,26 @@ namespace Chummer
                         else if (tabPage.Text.StartsWith('['))
                             tabPage.Text = string.Empty;
 
-                        UpdateControls(tabPage, strIntoLanguage);
+                        UpdateControls(tabPage, strIntoLanguage, eIntoRightToLeft);
                     }
                 }
                 else if (objChild is SplitContainer objSplitControl)
                 {
-                    UpdateControls(objSplitControl.Panel1, strIntoLanguage);
-                    UpdateControls(objSplitControl.Panel2, strIntoLanguage);
+                    UpdateControls(objSplitControl.Panel1, strIntoLanguage, eIntoRightToLeft);
+                    UpdateControls(objSplitControl.Panel2, strIntoLanguage, eIntoRightToLeft);
+                }
+                else if (objChild is GroupBox)
+                {
+                    string strControlTag = objChild.Tag?.ToString();
+                    if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
+                        objChild.Text = GetString(strControlTag, strIntoLanguage);
+                    else if (objChild.Text.StartsWith('['))
+                        objChild.Text = string.Empty;
+                    UpdateControls(objChild, strIntoLanguage, eIntoRightToLeft);
                 }
                 else if (objChild is Panel)
                 {
-                    UpdateControls(objChild, strIntoLanguage);
+                    UpdateControls(objChild, strIntoLanguage, eIntoRightToLeft);
                 }
                 else if (objChild is TreeView treTree)
                 {
@@ -335,15 +370,20 @@ namespace Chummer
                             objNode.Text = string.Empty;
                     }
                 }
-                else if (objChild is DataGridView)
+                else if (objChild is DataGridView objDataGridView)
                 {
-                    foreach (DataGridViewTextBoxColumn objColumn in ((DataGridView) objChild).Columns)
+                    foreach (DataGridViewTextBoxColumn objColumn in objDataGridView.Columns)
                     {
                         if (objColumn is DataGridViewTextBoxColumnTranslated objTranslatedColumn && !string.IsNullOrWhiteSpace(objTranslatedColumn.TranslationTag))
                         {
                             objColumn.HeaderText = GetString(objTranslatedColumn.TranslationTag, strIntoLanguage);
                         }
                     }
+                }
+                else if (objChild is ITranslatable translatable)
+                {
+                    // let custom nodes determine how they want to be translated
+                    translatable.Translate();
                 }
             }
         }
@@ -353,8 +393,18 @@ namespace Chummer
         /// </summary>
         /// <param name="tssItem">Given ToolStripItem to translate.</param>
         /// <param name="strIntoLanguage">Language into which the ToolStripItem and all dropdown items should be translated.</param>
-        public static void TranslateToolStripItemsRecursively(ToolStripItem tssItem, string strIntoLanguage)
+        /// <param name="eIntoRightToLeft">Whether <paramref name="strIntoLanguage"/> uses right-to-left script or left-to-right. If left at Inherit, then a loading function will be used to set the value.</param>
+        public static void TranslateToolStripItemsRecursively(ToolStripItem tssItem, string strIntoLanguage, RightToLeft eIntoRightToLeft = RightToLeft.Inherit)
         {
+            if (eIntoRightToLeft == RightToLeft.Inherit)
+            {
+                if (LoadLanguage(strIntoLanguage) && DictionaryLanguages.TryGetValue(strIntoLanguage, out LanguageData objLanguageData))
+                {
+                    eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
+                }
+            }
+            tssItem.RightToLeft = eIntoRightToLeft;
+
             string strControlTag = tssItem.Tag?.ToString();
             if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
                 tssItem.Text = GetString(strControlTag, strIntoLanguage);
@@ -363,9 +413,19 @@ namespace Chummer
 
             if (tssItem is ToolStripDropDownItem tssDropDownItem)
                 foreach (ToolStripItem tssDropDownChild in tssDropDownItem.DropDownItems)
-                    TranslateToolStripItemsRecursively(tssDropDownChild, strIntoLanguage);
+                    TranslateToolStripItemsRecursively(tssDropDownChild, strIntoLanguage, eIntoRightToLeft);
         }
 
+        /// <summary>
+        /// Overload for standard GetString method, using GlobalOptions.Language as default string.
+        /// </summary>
+        /// <param name="strKey">Key to retrieve.</param>
+        /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
+        /// <returns></returns>
+        public static string GetString(string strKey, bool blnReturnError = true)
+        {
+            return GetString(strKey, GlobalOptions.Language, blnReturnError);
+        }
         /// <summary>
         /// Retrieve a string from the language file.
         /// </summary>
@@ -374,6 +434,8 @@ namespace Chummer
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
         public static string GetString(string strKey, string strLanguage, bool blnReturnError = true)
         {
+            if (Utils.IsDesignerMode)
+                return strKey;
             string strReturn;
             if (LoadLanguage(strLanguage))
             {
@@ -406,7 +468,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Check the Keys in the selected language file against the English version. 
+        /// Check the Keys in the selected language file against the English version.
         /// </summary>
         /// <param name="strLanguage">Language to check.</param>
         public static void VerifyStrings(string strLanguage)
@@ -654,6 +716,12 @@ namespace Chummer
                     case "Right":
                         strReturn = GetString("String_Improvement_SideRight", strIntoLanguage);
                         break;
+                    case "All":
+                        strReturn = GetString("String_All", strIntoLanguage);
+                        break;
+                    case "None":
+                        strReturn = GetString("String_None", strIntoLanguage);
+                        break;
                     default:
                         string strExtraNoQuotes = strExtra.FastEscape('\"');
 
@@ -791,6 +859,16 @@ namespace Chummer
                 if (strExtra == GetString("String_Improvement_SideRight", strFromLanguage))
                 {
                     return "Right";
+                }
+
+                if (strExtra == GetString("String_All", strFromLanguage))
+                {
+                    return "All";
+                }
+
+                if (strExtra == GetString("String_None", strFromLanguage))
+                {
+                    return "None";
                 }
 
                 string strExtraNoQuotes = strExtra.FastEscape('\"');

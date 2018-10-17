@@ -42,7 +42,7 @@ namespace Chummer
         {
             _objRandom = objRandom;
         }
-        
+
         public override int Next()
         {
             int intReturn;

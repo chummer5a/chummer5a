@@ -85,6 +85,7 @@
         <required>
           <oneof>
             <quality>The Beast's Way</quality>
+            <quality>The Invisible Way</quality>
             <quality>The Spiritual Way</quality>
             <quality>The Warrior's Way</quality>
           </oneof>
@@ -1656,7 +1657,7 @@
       <source>HT</source>
       <page>190</page>
       <bonus>
-        <throwrange>Rating*2</throwrange>
+        <throwrangestr>Rating*2</throwrangestr>
       </bonus>
       <maxlevels>3</maxlevels>
     </power>
@@ -1676,6 +1677,12 @@
           <power>Facial Sculpt</power>
         </oneof>
       </required>
+      <bonus>
+        <specificskill>
+          <name>Disguise</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </bonus>
     </power>
     <!-- Region Cutting Aces -->
     <power>

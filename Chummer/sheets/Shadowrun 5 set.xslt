@@ -412,7 +412,7 @@
                     </xsl:choose>
                   </p>
                 </td>
-                <td width="25%" class="attributecell">
+                <td width="25%" rowspan="2" class="attributecell">
                   <p> <xsl:value-of select="$lang.MatrixAR"/>:
                     <xsl:value-of select="matrixarinit"/><br />
                     <xsl:value-of select="$lang.MatrixCold"/>:
@@ -2661,7 +2661,7 @@
         </table>
       </td>
     </tr>
-    <tr>
+	<tr>
       <td>
         <table class="tablestyle" style="margin-top:0.2em;">
           <tr>

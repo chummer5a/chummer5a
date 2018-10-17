@@ -150,7 +150,7 @@ namespace Chummer
             {
                 foreach (XmlNode objXmlSkill in objXmlSkillList)
                 {
-                    string strXmlSkillName = objXmlSkill["name"].InnerText;
+                    string strXmlSkillName = objXmlSkill["name"]?.InnerText;
                     Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(strXmlSkillName);
                     if (objExistingSkill == null)
                     {
@@ -207,11 +207,11 @@ namespace Chummer
 
             if (lstSkills.Count <= 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language).Replace("{0}", _strSourceName));
+                MessageBox.Show(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), _strSourceName));
                 DialogResult = DialogResult.Cancel;
                 return;
             }
-            
+
             lstSkills.Sort(CompareListItems.CompareNames);
             cboSkill.BeginUpdate();
             cboSkill.ValueMember = "Value";

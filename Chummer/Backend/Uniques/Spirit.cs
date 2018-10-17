@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Annotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,6 +25,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -57,7 +59,6 @@ namespace Chummer
         private string _strFileName = string.Empty;
         private string _strRelativeName = string.Empty;
         private string _strNotes = string.Empty;
-        private readonly Character _objCharacter;
         private Character _objLinkedCharacter;
 
         private readonly List<Image> _lstMugshots = new List<Image>();
@@ -86,7 +87,7 @@ namespace Chummer
         public Spirit(Character objCharacter)
         {
             // Create the GUID for the new Spirit.
-            _objCharacter = objCharacter;
+            CharacterObject = objCharacter;
         }
 
         /// <summary>
@@ -127,14 +128,15 @@ namespace Chummer
             objNode.TryGetField("guid", Guid.TryParse, out _guiId);
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
-            objNode.TryGetStringFieldQuickly("crittername", ref _strCritterName);
-            objNode.TryGetInt32FieldQuickly("services", ref _intServicesOwed);
-            objNode.TryGetInt32FieldQuickly("force", ref _intForce);
-            objNode.TryGetBoolFieldQuickly("bound", ref _blnBound);
-            objNode.TryGetBoolFieldQuickly("fettered", ref _blnFettered);
             string strTemp = string.Empty;
             if (objNode.TryGetStringFieldQuickly("type", ref strTemp))
                 _eEntityType = ConvertToSpiritType(strTemp);
+            objNode.TryGetStringFieldQuickly("crittername", ref _strCritterName);
+            objNode.TryGetInt32FieldQuickly("services", ref _intServicesOwed);
+            objNode.TryGetInt32FieldQuickly("force", ref _intForce);
+            Force = _intForce;
+            objNode.TryGetBoolFieldQuickly("bound", ref _blnBound);
+            objNode.TryGetBoolFieldQuickly("fettered", ref _blnFettered);
             objNode.TryGetStringFieldQuickly("file", ref _strFileName);
             objNode.TryGetStringFieldQuickly("relative", ref _strRelativeName);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -264,7 +266,7 @@ namespace Chummer
             objWriter.WriteElementString("bound", Bound.ToString());
             objWriter.WriteElementString("type", EntityType.ToString());
 
-            if (_objCharacter.Options.PrintNotes)
+            if (CharacterObject.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             PrintMugshots(objWriter);
             objWriter.WriteEndElement();
@@ -394,7 +396,7 @@ namespace Chummer
         /// <summary>
         /// The Character object being used by the Spirit.
         /// </summary>
-        public Character CharacterObject => _objCharacter;
+        public Character CharacterObject { get; }
 
         /// <summary>
         /// Name of the Spirit's Metatype.
@@ -408,7 +410,7 @@ namespace Chummer
                 {
                     _objCachedMyXmlNode = null;
                     _strName = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -429,7 +431,7 @@ namespace Chummer
                 if (_strCritterName != value)
                 {
                     _strCritterName = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CritterName)));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -442,22 +444,22 @@ namespace Chummer
             get => _intServicesOwed;
             set
             {
+                if (!CharacterObject.Created && !CharacterObject.IgnoreRules)
+                {
+                    // Retrieve the character's Summoning Skill Rating.
+                    int intSkillValue = CharacterObject.SkillsSection.GetActiveSkill(EntityType == SpiritType.Spirit ? "Summoning" : "Compiling")?.Rating ?? 0;
+
+                    if (value > intSkillValue)
+                    {
+                        MessageBox.Show(LanguageManager.GetString(EntityType == SpiritType.Spirit ? "Message_SpiritServices" : "Message_SpriteServices", GlobalOptions.Language),
+                            LanguageManager.GetString(EntityType == SpiritType.Spirit ? "MessageTitle_SpiritServices" : "MessageTitle_SpriteServices", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        value = intSkillValue;
+                    }
+                }
                 if (_intServicesOwed != value)
                 {
                     _intServicesOwed = value;
-                    if (!CharacterObject.Created)
-                    {
-                        // Retrieve the character's Summoning Skill Rating.
-                        int intSkillValue = CharacterObject.SkillsSection.GetActiveSkill(EntityType == SpiritType.Spirit ? "Summoning" : "Compiling")?.Rating ?? 0;
-
-                        if (_intServicesOwed > intSkillValue && !CharacterObject.IgnoreRules)
-                        {
-                            MessageBox.Show(LanguageManager.GetString(EntityType == SpiritType.Spirit ? "Message_SpiritServices" : "Message_SpriteServices", GlobalOptions.Language),
-                                LanguageManager.GetString(EntityType == SpiritType.Spirit ? "MessageTitle_SpiritServices" : "MessageTitle_SpriteServices", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            _intServicesOwed = intSkillValue;
-                        }
-                    }
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ServicesOwed)));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -470,11 +472,19 @@ namespace Chummer
             get => _intForce;
             set
             {
-                if (_intForce != value)
+                switch (EntityType)
                 {
-                    _intForce = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Force)));
+                    case SpiritType.Spirit when value > CharacterObject.MaxSpiritForce:
+                        value = CharacterObject.MaxSpiritForce;
+                        break;
+                    case SpiritType.Sprite when value > CharacterObject.MaxSpriteLevel:
+                        value = CharacterObject.MaxSpriteLevel;
+                        break;
                 }
+
+                if (_intForce == value) return;
+                _intForce = value;
+                OnPropertyChanged();
             }
         }
 
@@ -489,7 +499,7 @@ namespace Chummer
                 if (_blnBound != value)
                 {
                     _blnBound = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Bound)));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -506,7 +516,7 @@ namespace Chummer
                 {
                     _objCachedMyXmlNode = null;
                     _eEntityType = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EntityType)));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -523,7 +533,7 @@ namespace Chummer
                 {
                     _strFileName = value;
                     RefreshLinkedCharacter(!string.IsNullOrEmpty(value));
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileName)));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -540,7 +550,7 @@ namespace Chummer
                 {
                     _strRelativeName = value;
                     RefreshLinkedCharacter(!string.IsNullOrEmpty(value));
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RelativeFileName)));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -551,7 +561,14 @@ namespace Chummer
         public string Notes
         {
             get => _strNotes;
-            set => _strNotes = value;
+            set
+            {
+                if (_strNotes != value)
+                {
+                    _strNotes = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private bool _blnFettered;
@@ -564,7 +581,7 @@ namespace Chummer
                 {
                     if (value)
                     {
-                        //Only one Fettered spirit is permitted. 
+                        //Only one Fettered spirit is permitted.
                         if (CharacterObject.Spirits.Any(objSpirit => objSpirit.Fettered))
                         {
                             return;
@@ -572,9 +589,9 @@ namespace Chummer
                         if (CharacterObject.Created)
                         {
                             int FetteringCost = Force * 3;
-                            if (!CharacterObject.ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language)
-                                        .Replace("{0}", Name)
-                                        .Replace("{1}", FetteringCost.ToString())))
+                            if (!CharacterObject.ConfirmKarmaExpense(string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language)
+                                , Name
+                                , FetteringCost.ToString(GlobalOptions.CultureInfo))))
                             {
                                 return;
                             }
@@ -599,7 +616,7 @@ namespace Chummer
                         ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.SpiritFettering);
                     }
                     _blnFettered = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Fettered)));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -616,7 +633,7 @@ namespace Chummer
                 if (_objColour != value)
                 {
                     _objColour = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PreferredColor)));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -624,6 +641,52 @@ namespace Chummer
         public string InternalId => _guiId.ToString("D");
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
+        {
+            OnMultiplePropertyChanged(strPropertyName);
+        }
+
+        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        {
+            ICollection<string> lstNamesOfChangedProperties = null;
+            foreach (string strPropertyName in lstPropertyNames)
+            {
+                if (lstNamesOfChangedProperties == null)
+                    lstNamesOfChangedProperties = SpiritDependencyGraph.GetWithAllDependants(strPropertyName);
+                else
+                {
+                    foreach (string strLoopChangedProperty in SpiritDependencyGraph.GetWithAllDependants(strPropertyName))
+                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                }
+            }
+
+            if ((lstNamesOfChangedProperties?.Count > 0) != true)
+                return;
+
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+            }
+        }
+
+        private static readonly DependancyGraph<string> SpiritDependencyGraph =
+            new DependancyGraph<string>(
+                new DependancyGraphNode<string>(nameof(NoLinkedCharacter),
+                    new DependancyGraphNode<string>(nameof(LinkedCharacter))
+                ),
+                new DependancyGraphNode<string>(nameof(CritterName),
+                    new DependancyGraphNode<string>(nameof(LinkedCharacter))
+                ),
+                new DependancyGraphNode<string>(nameof(MainMugshot),
+                    new DependancyGraphNode<string>(nameof(LinkedCharacter)),
+                    new DependancyGraphNode<string>(nameof(Mugshots),
+                        new DependancyGraphNode<string>(nameof(LinkedCharacter))
+                    ),
+                    new DependancyGraphNode<string>(nameof(MainMugshotIndex))
+                )
+            );
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
@@ -650,8 +713,8 @@ namespace Chummer
 
         public void RefreshLinkedCharacter(bool blnShowError)
         {
-            Character _objOldLinkedCharacter = _objLinkedCharacter;
-            _objCharacter.LinkedCharacters.Remove(_objLinkedCharacter);
+            Character objOldLinkedCharacter = _objLinkedCharacter;
+            CharacterObject.LinkedCharacters.Remove(_objLinkedCharacter);
             bool blnError = false;
             bool blnUseRelative = false;
 
@@ -668,7 +731,8 @@ namespace Chummer
 
                 if (blnError && blnShowError)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language).Replace("{0}", FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), FileName),
+                        LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             if (!blnError)
@@ -679,30 +743,41 @@ namespace Chummer
                     Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
                     _objLinkedCharacter = objOpenCharacter ?? Program.MainForm.LoadCharacter(strFile, string.Empty, false, false);
                     if (_objLinkedCharacter != null)
-                        _objCharacter.LinkedCharacters.Add(_objLinkedCharacter);
+                        CharacterObject.LinkedCharacters.Add(_objLinkedCharacter);
                 }
             }
-            if (_objLinkedCharacter != _objOldLinkedCharacter)
+            if (_objLinkedCharacter != objOldLinkedCharacter)
             {
-                if (_objOldLinkedCharacter != null)
+                if (objOldLinkedCharacter != null)
                 {
-                    if (!Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(_objOldLinkedCharacter) && x != _objOldLinkedCharacter))
+                    objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
+                    if (!Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(objOldLinkedCharacter) && x != objOldLinkedCharacter))
                     {
-                        Program.MainForm.OpenCharacters.Remove(_objOldLinkedCharacter);
-                        _objOldLinkedCharacter.DeleteCharacter();
+                        Program.MainForm.OpenCharacters.Remove(objOldLinkedCharacter);
+                        objOldLinkedCharacter.DeleteCharacter();
                     }
                 }
                 if (_objLinkedCharacter != null)
                 {
                     if (string.IsNullOrEmpty(_strCritterName) && CritterName != LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language))
                         _strCritterName = CritterName;
+
+                    _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
                 }
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(CritterName)));
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(NoLinkedCharacter)));
-                }
+                OnPropertyChanged(nameof(LinkedCharacter));
             }
+        }
+
+        private void LinkedCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Character.Name))
+                OnPropertyChanged(nameof(CritterName));
+            else if (e.PropertyName == nameof(Character.Mugshots))
+                OnPropertyChanged(nameof(Mugshots));
+            else if (e.PropertyName == nameof(Character.MainMugshot))
+                OnPropertyChanged(nameof(MainMugshot));
+            else if (e.PropertyName == nameof(Character.MainMugshotIndex))
+                OnPropertyChanged(nameof(MainMugshotIndex));
         }
         #endregion
 
@@ -716,8 +791,7 @@ namespace Chummer
             {
                 if (LinkedCharacter != null)
                     return LinkedCharacter.Mugshots;
-                else
-                    return _lstMugshots;
+                return _lstMugshots;
             }
         }
 
@@ -774,10 +848,16 @@ namespace Chummer
             {
                 if (LinkedCharacter != null)
                     LinkedCharacter.MainMugshotIndex = value;
-                else if (value >= _lstMugshots.Count || value < -1)
-                    _intMainMugshotIndex = -1;
                 else
-                    _intMainMugshotIndex = value;
+                {
+                    if (value >= _lstMugshots.Count || value < -1)
+                        value = -1;
+                    if (_intMainMugshotIndex != value)
+                    {
+                        _intMainMugshotIndex = value;
+                        OnPropertyChanged();
+                    }
+                }
             }
         }
 

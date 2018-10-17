@@ -52,7 +52,7 @@ namespace Chummer
             lblRound.Text = lblRound.Text.Split(' ')[0] + " 1";
             _intRound = 1;
 
-            // setup the list of chummers to show 
+            // setup the list of chummers to show
             chkBoxChummer.DisplayMember = "DisplayInit";
         }
 
@@ -271,7 +271,7 @@ namespace Chummer
                 ResetListBoxChummers();
             }
         }
-        
+
         /*
          * Reset button pressed
          */

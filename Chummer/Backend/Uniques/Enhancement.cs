@@ -28,7 +28,7 @@ namespace Chummer
     /// An Enhancement.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Enhancement : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class Enhancement : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -38,7 +38,6 @@ namespace Chummer
         private int _intGrade;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Enhancement;
         private string _strNotes = string.Empty;
-        private Power _objParent;
 
         private readonly Character _objCharacter;
 
@@ -88,6 +87,29 @@ namespace Chummer
             }*/
         }
 
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == null)
+                {
+                    string strSource = Source;
+                    string strPage = Page(GlobalOptions.Language);
+                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                    {
+                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                    }
+                }
+
+                return _objCachedSourceDetail;
+            }
+        }
+
         /// <summary>
         /// Save the object's XML to the XmlWriter.
         /// </summary>
@@ -107,7 +129,9 @@ namespace Chummer
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (Grade >= 0)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -138,6 +162,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("enhancement");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
@@ -250,11 +275,7 @@ namespace Chummer
         /// <summary>
         /// Parent Power.
         /// </summary>
-        public Power Parent
-        {
-            get => _objParent;
-            set => _objParent = value;
-        }
+        public Power Parent { get; set; }
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
@@ -288,7 +309,7 @@ namespace Chummer
             {
                 Name = InternalId,
                 Text = strText,
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsEnhancement,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -313,5 +334,35 @@ namespace Chummer
             }
         }
         #endregion
+
+        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
+        {
+            if (Grade <= 0)
+                return false;
+            if (blnConfirmDelete)
+            {
+                if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnhancement",
+                    GlobalOptions.Language)))
+                    return false;
+            }
+
+            characterObject.Enhancements.Remove(this);
+            foreach (Power objPower in characterObject.Powers)
+            {
+                if (objPower.Enhancements.Contains(this))
+                    objPower.Enhancements.Remove(this);
+            }
+
+            ImprovementManager.RemoveImprovements(characterObject, _objImprovementSource, InternalId);
+
+            return true;
+        }
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
+        }
     }
 }

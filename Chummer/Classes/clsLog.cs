@@ -196,7 +196,7 @@ namespace Chummer
 
             writeLog(
                 new object[]{exception, exception.StackTrace},
-                exception.Source, 
+                exception.Source,
                 exception.TargetSite.Name, 
                 (new StackTrace(exception, true)).GetFrame(0).GetFileLineNumber(), 
                 "Exception ");

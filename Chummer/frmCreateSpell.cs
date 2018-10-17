@@ -38,7 +38,6 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objXmlDocument = XmlManager.Load("spells.xml");
-            MoveControls();
         }
 
         private void frmCreateSpell_Load(object sender, EventArgs e)
@@ -420,13 +419,24 @@ namespace Chummer
         /// </summary>
         private void ChangeModifiers()
         {
-            foreach (CheckBox chkCheckbox in panModifiers.Controls.OfType<CheckBox>())
+            foreach (CheckBox chkCheckbox in flpModifiers.Controls.OfType<CheckBox>())
             {
                 chkCheckbox.Enabled = true;
                 chkCheckbox.Checked = false;
                 chkCheckbox.Text = string.Empty;
                 chkCheckbox.Tag = string.Empty;
                 chkCheckbox.Visible = false;
+            }
+            foreach (Panel panChild in flpModifiers.Controls.OfType<Panel>())
+            {
+                foreach (CheckBox chkCheckbox in panChild.Controls.OfType<CheckBox>())
+                {
+                    chkCheckbox.Enabled = true;
+                    chkCheckbox.Checked = false;
+                    chkCheckbox.Text = string.Empty;
+                    chkCheckbox.Tag = string.Empty;
+                    chkCheckbox.Visible = false;
+                }
             }
             nudNumberOfEffects.Visible = false;
             nudNumberOfEffects.Enabled = true;
@@ -520,12 +530,23 @@ namespace Chummer
                     break;
             }
 
-            foreach (CheckBox chkCheckbox in panModifiers.Controls.OfType<CheckBox>())
+            foreach (CheckBox chkCheckbox in flpModifiers.Controls.OfType<CheckBox>())
             {
                 if (!string.IsNullOrEmpty(chkCheckbox.Text))
                 {
                     chkCheckbox.Visible = true;
                     chkCheckbox.Text += " (" + chkCheckbox.Tag + ')';
+                }
+            }
+            foreach (Panel panChild in flpModifiers.Controls.OfType<Panel>())
+            {
+                foreach (CheckBox chkCheckbox in panChild.Controls.OfType<CheckBox>())
+                {
+                    if (!string.IsNullOrEmpty(chkCheckbox.Text))
+                    {
+                        chkCheckbox.Visible = true;
+                        chkCheckbox.Text += " (" + chkCheckbox.Tag + ')';
+                    }
                 }
             }
 
@@ -587,7 +608,7 @@ namespace Chummer
                 intDV += 0;
 
             // Include any checked modifiers.
-            foreach (CheckBox chkModifier in panModifiers.Controls.OfType<CheckBox>())
+            foreach (CheckBox chkModifier in flpModifiers.Controls.OfType<CheckBox>())
             {
                 if (chkModifier.Visible && chkModifier.Checked)
                 {
@@ -597,6 +618,21 @@ namespace Chummer
                         intDV += (Convert.ToInt32(chkModifier.Tag.ToString()) * decimal.ToInt32(nudNumberOfEffects.Value));
                     else
                         intDV += Convert.ToInt32(chkModifier.Tag.ToString());
+                }
+            }
+            foreach (Panel panChild in flpModifiers.Controls.OfType<Panel>())
+            {
+                foreach (CheckBox chkModifier in panChild.Controls.OfType<CheckBox>())
+                {
+                    if (chkModifier.Visible && chkModifier.Checked)
+                    {
+                        if (chkModifier == chkModifier3 && cboCategory.SelectedValue.ToString() == "Combat")
+                            intDV += (Convert.ToInt32(chkModifier.Tag.ToString()) * decimal.ToInt32(nudNumberOfEffects.Value));
+                        else if (chkModifier == chkModifier6 && cboCategory.SelectedValue.ToString() == "Manipulation")
+                            intDV += (Convert.ToInt32(chkModifier.Tag.ToString()) * decimal.ToInt32(nudNumberOfEffects.Value));
+                        else
+                            intDV += Convert.ToInt32(chkModifier.Tag.ToString());
+                    }
                 }
             }
 
@@ -819,26 +855,6 @@ namespace Chummer
             _objSpell.Duration = cboDuration.SelectedValue.ToString();
 
             DialogResult = DialogResult.OK;
-        }
-
-        private void MoveControls()
-        {
-            int intWidth = Math.Max(lblCategory.Width, lblType.Width);
-            intWidth = Math.Max(intWidth, lblRange.Width);
-            intWidth = Math.Max(intWidth, lblDuration.Width);
-            intWidth = Math.Max(intWidth, lblSpellOptions.Width);
-            intWidth = Math.Max(intWidth, lblName.Width);
-            txtName.Left = lblName.Left + intWidth + 6;
-            cboCategory.Left = lblCategory.Left + intWidth + 6;
-            cboType.Left = lblType.Left + intWidth + 6;
-            cboRange.Left = lblRange.Left + intWidth + 6;
-            cboDuration.Left = lblDuration.Left + intWidth + 6;
-            panModifiers.Left = lblSpellOptions.Left + intWidth + 6;
-
-            chkVeryRestricted.Left = chkRestricted.Left + chkRestricted.Width + 6;
-            txtRestriction.Left = chkVeryRestricted.Left + chkVeryRestricted.Width + 6;
-
-            chkArea.Left = cboRange.Left + cboRange.Width + 6;
         }
         #endregion
 

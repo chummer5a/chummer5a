@@ -25,8 +25,8 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Backend.Powers;
-using Chummer.UI.Shared;
+using Chummer.Backend.Equipment;
+using Chummer.UI.Table;
 
 // ReSharper disable StringCompareToIsCultureSpecific
 
@@ -34,27 +34,25 @@ namespace Chummer.UI.Powers
 {
     public partial class PowersTabUserControl : UserControl
     {
-        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate; 
+        // TODO: check, if this can be removed???
+        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
+        
+        private TableView<Power> _table;
 
-        private BindingListDisplay<Power> _powers;
         public PowersTabUserControl()
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             _dropDownList = GenerateDropdownFilter();
-            _sortList = GenerateSortList();
-        }
 
-        public void MissingDatabindingsWorkaround()
-        {
-            //TODO: Databind this
-            CalculatePowerPoints();
+            SuspendLayout();
+            InitializeTable();
+            ResumeLayout();
         }
         
         private Character _objCharacter;
         private readonly IList<Tuple<string, Predicate<Power>>> _dropDownList;
-        private readonly IList<Tuple<string, IComparer<Power>>>  _sortList;
         private bool _blnSearchMode;
         
         private void PowersTabUserControl_Load(object sender, EventArgs e)
@@ -79,9 +77,21 @@ namespace Chummer.UI.Powers
                 _objCharacter = new Character();
             }
 
-            Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release 
+            _objCharacter.Powers.ListChanged += (sender, e) => {
+                if (e.ListChangedType == ListChangedType.ItemChanged)
+                {
+                    string propertyName = e.PropertyDescriptor?.Name;
+                    if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
+                    {
+                        // recalculation of power points on rating/free levels change
+                        CalculatePowerPoints();
+                    }
+                }
+            };
+
+            Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release
             Stopwatch parts = Stopwatch.StartNew();
-            //Keep everything visible until ready to display everything. This 
+            //Keep everything visible until ready to display everything. This
             //seems to prevent redrawing everything each time anything is added
             //Not benched, but should be faster
 
@@ -91,13 +101,7 @@ namespace Chummer.UI.Powers
             SuspendLayout();
             DoubleBuffered = true;
 
-            CalculatePowerPoints();
-
-            _powers = new BindingListDisplay<Power>(_objCharacter.Powers, power => new PowerControl(power))
-            {
-                Location = new Point(3, 3),
-            };
-            pnlPowers.Controls.Add(_powers);
+            lblPowerPoints.DataBindings.Add("Text", _objCharacter, nameof(Character.DisplayPowerPointsRemaining), false, DataSourceUpdateMode.OnPropertyChanged);
 
             parts.TaskEnd("MakePowerDisplay()");
 
@@ -109,24 +113,14 @@ namespace Chummer.UI.Powers
 
             parts.TaskEnd("_ddl databind");
 
-            cboSort.DataSource = _sortList;
-            cboSort.ValueMember = "Item2";
-            cboSort.DisplayMember = "Item1";
-            cboSort.SelectedIndex = 0;
-            cboSort.MaxDropDownItems = _sortList.Count;
-
-            parts.TaskEnd("_sort databind");
-
-            _powers.ChildPropertyChanged += RefreshPowerInfo;
-            _powers.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
-
             //Visible = true;
             //this.ResumeLayout(false);
             //this.PerformLayout();
             parts.TaskEnd("visible");
 
-            _powers.Height = pnlPowers.Height - _powers.Top;
-            _powers.Width = pnlPowers.Width - _powers.Left;
+            _table.Height = pnlPowers.Height - _table.Top;
+            _table.Width = pnlPowers.Width - _table.Left;
+            _table.Items = _objCharacter.Powers;
 
             parts.TaskEnd("resize");
             //this.Update();
@@ -134,23 +128,6 @@ namespace Chummer.UI.Powers
             //this.PerformLayout();
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
-        }
-
-        private static IList<Tuple<string, IComparer<Power>>> GenerateSortList()
-        {
-            List<Tuple<string, IComparer<Power>>> ret = new List<Tuple<string, IComparer<Power>>>()
-            {
-                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Skill_SortAlphabetical", GlobalOptions.Language),
-                    new PowerSorter((x, y) => x.DisplayName.CompareTo(y.DisplayName))),
-                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Skill_SortRating", GlobalOptions.Language),
-                    new PowerSorter((x, y) => y.TotalRating.CompareTo(x.TotalRating))),
-                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Power_SortAction", GlobalOptions.Language),
-                    new PowerSorter((x, y) => y.DisplayAction.CompareTo(x.DisplayAction))),
-                //new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Skill_SortCategory"),
-                //    new PowerSorter((x, y) => x.SkillCategory.CompareTo(y.SkillCategory))),
-            };
-
-            return ret;
         }
         
         private static IList<Tuple<string, Predicate<Power>>> GenerateDropdownFilter()
@@ -192,22 +169,16 @@ namespace Chummer.UI.Powers
                 {
                     cboDisplayFilter.DropDownStyle = ComboBoxStyle.DropDownList;
                     _blnSearchMode = false;
-                    _powers.Filter(selectedItem.Item2);
+                    _table.Filter = selectedItem.Item2;
                 }
             }
-        }
-
-        private void cboSort_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cboSort.SelectedItem is Tuple<string, IComparer<Power>> selectedItem)
-                _powers.Sort(selectedItem.Item2);
         }
 
         private void cboDisplayFilter_TextUpdate(object sender, EventArgs e)
         {
             if (_blnSearchMode)
             {
-                _powers.Filter(skill => GlobalOptions.InvariantCultureInfo.CompareInfo.IndexOf(skill.DisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0, true);
+                _table.Filter = (power => GlobalOptions.InvariantCultureInfo.CompareInfo.IndexOf(power.DisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0);
             }
         }
 
@@ -237,7 +208,8 @@ namespace Chummer.UI.Powers
                 if (objPower.Create(objXmlPower))
                 {
                     _objCharacter.Powers.Add(objPower);
-                    MissingDatabindingsWorkaround();
+
+                    MakeDirtyWithCharacterUpdate?.Invoke(null, null);
                 }
             }
             while (blnAddAgain);
@@ -256,7 +228,6 @@ namespace Chummer.UI.Powers
             int intPowerPointsTotal = PowerPointsTotal;
             decimal decPowerPointsRemaining = intPowerPointsTotal - _objCharacter.Powers.AsParallel().Sum(objPower => objPower.PowerPoints);
             lblPowerPoints.Text = string.Format("{0} ({1} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')', intPowerPointsTotal, decPowerPointsRemaining);
-            lblDiscountLabel.Visible = _objCharacter.Powers.Any(objPower => objPower.AdeptWayDiscountEnabled);
         }
 
         private int PowerPointsTotal
@@ -280,6 +251,192 @@ namespace Chummer.UI.Powers
 
                 return Math.Max(intMAG, 0);
             }
+        }
+
+        private void InitializeTable()
+        {
+            _table = new TableView<Power>
+            {
+                Location = new Point(3, 3),
+                ToolTip = _tipTooltip
+            };
+            // create columns
+            TableColumn<Power> nameColumn = new TableColumn<Power>(() => new TextTableCell())
+            {
+                Text = "Power",
+                Extractor = (power => power.DisplayName),
+                Tag = "String_Power",
+                Sorter = (name1, name2) => string.Compare((string)name1, (string)name2, GlobalOptions.CultureInfo, CompareOptions.Ordinal)
+            };
+            nameColumn.AddDependency(nameof(Power.DisplayName));
+
+            TableColumn<Power> actionColumn = new TableColumn<Power>(() => new TextTableCell())
+            {
+                Text = "Action",
+                Extractor = (power => power.DisplayAction),
+                Tag = "ColumnHeader_Action",
+                Sorter = (action1, action2) => string.Compare((string)action1, (string)action2, GlobalOptions.CultureInfo, CompareOptions.Ordinal)
+            };
+            actionColumn.AddDependency(nameof(Power.DisplayAction));
+
+            TableColumn<Power> ratingColumn = new TableColumn<Power>(() => new SpinnerTableCell<Power>(_table)
+            {
+                EnabledExtractor = (p => p.LevelsEnabled),
+                MaxExtractor = (p => Math.Max(p.TotalMaximumLevels - p.FreeLevels, 0)),
+                ValueUpdater = (p, newRating) =>
+                {
+                    int delta = ((int)newRating) - p.Rating;
+                    if (delta != 0)
+                    {
+                        p.Rating += delta;
+                    }
+
+                },
+                MinExtractor = (p => 0),
+                ValueGetter = (p => p.Rating),
+            })
+            {
+                Text = "Rating",
+                Tag = "String_Rating",
+                Sorter = (o1, o2) => ((Power)o1).Rating - ((Power)o2).Rating
+            };
+
+
+            ratingColumn.AddDependency(nameof(Power.LevelsEnabled));
+            ratingColumn.AddDependency(nameof(Power.FreeLevels));
+            ratingColumn.AddDependency(nameof(Power.TotalMaximumLevels));
+            ratingColumn.AddDependency(nameof(Power.TotalRating));
+            TableColumn<Power> totalRatingColumn = new TableColumn<Power>(() => new TextTableCell())
+            {
+                Text = "Total Rating",
+                Extractor = (power => power.TotalRating),
+                Tag = "String_TotalRating",
+                Sorter = (o1, o2) => ((Power)o1).TotalRating - ((Power)o2).TotalRating
+            };
+            totalRatingColumn.AddDependency(nameof(Power.TotalRating));
+
+            TableColumn<Power> powerPointsColumn = new TableColumn<Power>(() => new TextTableCell())
+            {
+                Text = "Power Points",
+                Extractor = (power => power.DisplayPoints),
+                Tag = "ColumnHeader_Power_Points",
+                ToolTipExtractor = (item => item.ToolTip)
+            };
+            powerPointsColumn.AddDependency(nameof(Power.DisplayPoints));
+            powerPointsColumn.AddDependency(nameof(Power.ToolTip));
+
+            TableColumn<Power> sourceColumn = new TableColumn<Power>(() => new TextTableCell())
+            {
+                Text = "Source",
+                Extractor = (power => power.SourceDetail),
+                Tag = "Label_Source",
+                ToolTipExtractor = (item => item.SourceDetail.LanguageBookTooltip)
+            };
+            powerPointsColumn.AddDependency(nameof(Power.Source));
+
+            TableColumn<Power> adeptWayColumn = new TableColumn<Power>(() => new CheckBoxTableCell<Power>()
+            {
+                ValueGetter = (p => p.DiscountedAdeptWay),
+                ValueUpdater = (p, check) => p.DiscountedAdeptWay = check,
+                VisibleExtractor = (p => p.AdeptWayDiscountEnabled),
+                Alignment = Alignment.Center
+            })
+            {
+                Text = "Adept Way",
+                Tag = "Checkbox_Power_AdeptWay"
+            };
+            adeptWayColumn.AddDependency(nameof(Power.DiscountedAdeptWay));
+            adeptWayColumn.AddDependency(nameof(Power.AdeptWayDiscountEnabled));
+            adeptWayColumn.AddDependency(nameof(Power.Rating));
+
+            /*
+             TableColumn<Power> geasColumn = new TableColumn<Power>(() => new CheckBoxTableCell<Power>()
+            {
+                ValueGetter = (p => p.DiscountedGeas),
+                ValueUpdater = (p, check) => p.DiscountedGeas = check,
+                Alignment = Alignment.Center
+            })
+            {
+                Text = "Geas",
+                Tag = "Checkbox_Power_Geas"
+            };
+            geasColumn.AddDependency(nameof(Power.DiscountedGeas));
+            */
+
+            TableColumn<Power> noteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new PictureBox()
+            {
+                Image = Properties.Resources.note_edit,
+                Size = GetImageSize(Properties.Resources.note_edit),
+            })
+            {
+                ClickHandler = p => {
+                    frmNotes frmPowerNotes = new frmNotes
+                    {
+                        Notes = p.Notes
+                    };
+                    frmPowerNotes.ShowDialog(this);
+
+                    if (frmPowerNotes.DialogResult == DialogResult.OK)
+                        p.Notes = frmPowerNotes.Notes;
+                },
+                Alignment = Alignment.Center
+            })
+            {
+                Text = "Notes",
+                Tag = "ColumnHeader_Notes",
+                ToolTipExtractor = (p => {
+                    string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes", GlobalOptions.Language);
+                    if (!string.IsNullOrEmpty(p.Notes))
+                        strTooltip += Environment.NewLine + Environment.NewLine + p.Notes;
+                    return strTooltip.WordWrap(100);
+                })
+            };
+            noteColumn.AddDependency(nameof(Power.Notes));
+
+            TableColumn<Power> deleteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new Button() { Text = "Delete", Tag = "String_Delete", BackColor = SystemColors.Control })
+            {
+                ClickHandler = p =>
+                {
+                    //Cache the parentform prior to deletion, otherwise the relationship is broken.
+                    Form frmParent = ParentForm;
+                    if (p.FreeLevels > 0)
+                    {
+                        string strImprovementSourceName = p.CharacterObject.Improvements.FirstOrDefault(x => x.ImproveType == Improvement.ImprovementType.AdeptPowerFreePoints && x.ImprovedName == p.Name && x.UniqueName == p.Extra)?.SourceName;
+                        Gear objGear = p.CharacterObject.Gear.FirstOrDefault(x => x.Bonded && x.InternalId == strImprovementSourceName);
+                        if (objGear != null)
+                        {
+                            objGear.Equipped = false;
+                            objGear.Extra = string.Empty;
+                        }
+                    }
+                    p.DeletePower();
+                    p.UnbindPower();
+
+                    if (frmParent is CharacterShared objParent)
+                        objParent.IsCharacterUpdateRequested = true;
+                },
+                EnabledExtractor = (p => p.FreeLevels == 0)
+            });
+            deleteColumn.AddDependency(nameof(Power.FreeLevels));
+
+            _table.Columns.Add(nameColumn);
+            _table.Columns.Add(actionColumn);
+            _table.Columns.Add(ratingColumn);
+            _table.Columns.Add(totalRatingColumn);
+            _table.Columns.Add(powerPointsColumn);
+            _table.Columns.Add(adeptWayColumn);
+            //_table.Columns.Add(geasColumn);
+            _table.Columns.Add(noteColumn);
+            _table.Columns.Add(sourceColumn);
+            _table.Columns.Add(deleteColumn);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, _table);
+
+            pnlPowers.Controls.Add(_table);
+        }
+
+        private static Size GetImageSize(Image image)
+        {
+            return new Size(image.Width, image.Height);
         }
     }
 }

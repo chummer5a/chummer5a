@@ -52,7 +52,6 @@ namespace Chummer
         private bool _blnCalculateCommlinkResponse = true;
         private bool _blnConfirmDelete = true;
         private bool _blnConfirmKarmaExpense = true;
-        private bool _blnCreateBackupOnCareer;
         private bool _blnCyberlegMovement;
         private bool _blnDontDoubleQualityPurchaseCost;
         private bool _blnDontDoubleQualityRefundCost;
@@ -112,7 +111,7 @@ namespace Chummer
         private bool _blnSearchInCategoryOnly = true;
         private string _strNuyenFormat = "#,0.##";
         private bool _blnCompensateSkillGroupKarmaDifference;
-        
+
         private string _strBookXPath = string.Empty;
         private string _strExcludeLimbSlot = string.Empty;
         
@@ -377,8 +376,6 @@ namespace Chummer
             objWriter.WriteElementString("alternatemetatypeattributekarma", _blnAlternateMetatypeAttributeKarma.ToString());
             // <reversekarmapriorityorder />
             objWriter.WriteElementString("reverseattributepriorityorder", ReverseAttributePriorityOrder.ToString());
-            // <createbackuponcareer />
-            objWriter.WriteElementString("createbackuponcareer", _blnCreateBackupOnCareer.ToString());
             // <printnotes />
             objWriter.WriteElementString("printnotes", _blnPrintNotes.ToString());
             // <allowobsolescentupgrade />
@@ -565,7 +562,7 @@ namespace Chummer
             }
             else
             {
-                if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting", GlobalOptions.Language).Replace("{0}", _strFileName), LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting", GlobalOptions.Language), _strFileName), LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
@@ -593,7 +590,7 @@ namespace Chummer
                     }
                 }
             }
-            
+
             XmlNode objXmlNode = objXmlDocument.SelectSingleNode("//settings");
             // Setting name.
             _strName = objXmlDocument.SelectSingleNode("/settings/name")?.InnerText;
@@ -742,8 +739,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("dontusecyberlimbcalculation", ref _blnDontUseCyberlimbCalculation);
             // House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
             objXmlNode.TryGetBoolFieldQuickly("alternatemetatypeattributekarma", ref _blnAlternateMetatypeAttributeKarma);
-            // Whether or not a backup copy of the character should be created before they are placed into Career Mode.
-            objXmlNode.TryGetBoolFieldQuickly("createbackuponcareer", ref _blnCreateBackupOnCareer);
             // Whether or not Notes should be printed.
             objXmlNode.TryGetBoolFieldQuickly("printnotes", ref _blnPrintNotes);
             // Whether or not Obsolescent can be removed/upgrade in the same manner as Obsolete.
@@ -770,7 +765,7 @@ namespace Chummer
                 objXmlNode.TryGetInt32FieldQuickly("karmaattribute", ref _intKarmaAttribute);
                 objXmlNode.TryGetInt32FieldQuickly("karmaquality", ref _intKarmaQuality);
                 objXmlNode.TryGetInt32FieldQuickly("karmaspecialization", ref _intKarmaSpecialization);
-                objXmlNode.TryGetInt32FieldQuickly("karmaknowspecialization", ref _intKarmaKnoSpecialization);
+                objXmlNode.TryGetInt32FieldQuickly("karmaknospecialization", ref _intKarmaKnoSpecialization);
                 objXmlNode.TryGetInt32FieldQuickly("karmanewknowledgeskill", ref _intKarmaNewKnowledgeSkill);
                 objXmlNode.TryGetInt32FieldQuickly("karmanewactiveskill", ref _intKarmaNewActiveSkill);
                 objXmlNode.TryGetInt32FieldQuickly("karmanewskillgroup", ref _intKarmaNewSkillGroup);
@@ -952,7 +947,7 @@ namespace Chummer
 
             foreach (string strBookName in strBooks)
             {
-                string strCode = objXmlDocument.SelectSingleNode("/chummer/books/book[name = \"" + strBookName + "\" and not(hide)]/code")?.InnerText;
+                string strCode = objXmlDocument.SelectSingleNode("/chummer/books/book[name = " + strBookName.CleanXPath() + " and not(hide)]/code")?.InnerText;
                 if (!string.IsNullOrEmpty(strCode))
                 {
                     _lstBooks.Add(strCode);
@@ -1204,8 +1199,8 @@ namespace Chummer
             }
             set
             {
-                //As this is a hack, not quite sure how this is glued together. 
-                //If i understand it right (COMUNICATING TROUGHT FUCKING FILES?) this should never happen. 
+                //As this is a hack, not quite sure how this is glued together.
+                //If i understand it right (COMUNICATING TROUGHT FUCKING FILES?) this should never happen.
                 //Keyword should
                 if (_character == null)
                 {
@@ -1261,15 +1256,6 @@ namespace Chummer
         {
             get => _intFreeKnowledgeMultiplier;
             set => _intFreeKnowledgeMultiplier = value;
-        }
-
-        /// <summary>
-        /// Optional Rule: Whether or not Armor Encumbrance is ignored if only a single piece of Armor is worn.
-        /// </summary>
-        public bool NoSingleArmorEncumbrance
-        {
-            get => _blnNoSingleArmorEncumbrance;
-            set => _blnNoSingleArmorEncumbrance = value;
         }
 
         /// <summary>
@@ -1381,15 +1367,6 @@ namespace Chummer
             set => _blnAllowCyberwareESSDiscounts = value;
         }
         
-        /// <summary>
-        /// Whether or not Maximum Armor Modifications is in use.
-        /// </summary>
-        public bool MaximumArmorModifications
-        {
-            get => _blnMaximumArmorModifications;
-            set => _blnMaximumArmorModifications = value;
-        }
-
         /// <summary>
         /// Whether or not Armor Degredation is allowed.
         /// </summary>
@@ -1698,15 +1675,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not a Commlink's Response should be calculated based on the number of programs running on it.
-        /// </summary>
-        public bool CalculateCommlinkResponse
-        {
-            get => _blnCalculateCommlinkResponse;
-            set => _blnCalculateCommlinkResponse = value;
-        }
-
-        /// <summary>
         /// Whether or not Stacked Foci can have a combined Force higher than 6.
         /// </summary>
         public bool AllowHigherStackedFoci
@@ -1785,15 +1753,6 @@ namespace Chummer
         {
             get => _blnCompensateSkillGroupKarmaDifference;
             set => _blnCompensateSkillGroupKarmaDifference = value;
-        }
-
-        /// <summary>
-        /// Whether or not a backup copy of the character should be created before they are placed into Career Mode.
-        /// </summary>
-        public bool CreateBackupOnCareer
-        {
-            get => _blnCreateBackupOnCareer;
-            set => _blnCreateBackupOnCareer = value;
         }
 
         /// <summary>
@@ -2240,7 +2199,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// How much Karma a single Power Point costs for a Mystic Adept. 
+        /// How much Karma a single Power Point costs for a Mystic Adept.
         /// </summary>
         public int KarmaMysticAdeptPowerPoint
         {
@@ -2258,33 +2217,6 @@ namespace Chummer
         #endregion
 
         #region Default Build
-        /// <summary>
-        /// Default build method.
-        /// </summary>
-        public string BuildMethod
-        {
-            get => _strBuildMethod;
-            set => _strBuildMethod = value;
-        }
-
-        /// <summary>
-        /// Default number of build points.
-        /// </summary>
-        public int BuildPoints
-        {
-            get => _intBuildPoints;
-            set => _intBuildPoints = value;
-        }
-
-        /// <summary>
-        /// Default Availability.
-        /// </summary>
-        public int Availability
-        {
-            get => _intAvailability;
-            set => _intAvailability = value;
-        }
-
         /// <summary>
         /// Whether Life Modules should automatically generate a character background.
         /// </summary>
@@ -2329,7 +2261,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether Martial Arts grant a free specialisation in a skill. 
+        /// Whether Martial Arts grant a free specialisation in a skill.
         /// </summary>
         public bool FreeMartialArtSpecialization
         {
@@ -2338,7 +2270,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether Spells from Magic Priority can also be spent on power points. 
+        /// Whether Spells from Magic Priority can also be spent on power points.
         /// </summary>
         public bool PrioritySpellsAsAdeptPowers
         {
@@ -2365,7 +2297,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether items that exceed the Availability Limit should be shown in Create Mode. 
+        /// Whether items that exceed the Availability Limit should be shown in Create Mode.
         /// </summary>
         public bool HideItemsOverAvailLimit
         {

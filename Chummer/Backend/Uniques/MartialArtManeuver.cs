@@ -28,7 +28,7 @@ namespace Chummer
     /// A Martial Art Maneuver.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class MartialArtManeuver : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class MartialArtManeuver : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -55,6 +55,29 @@ namespace Chummer
             objXmlManeuverNode.TryGetStringFieldQuickly("page", ref _strPage);
             if (!objXmlManeuverNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlManeuverNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+        }
+
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == null)
+                {
+                    string strSource = Source;
+                    string strPage = Page(GlobalOptions.Language);
+                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                    {
+                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                    }
+                }
+
+                return _objCachedSourceDetail;
+            }
         }
 
         /// <summary>
@@ -97,6 +120,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("martialartmaneuver");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
@@ -207,7 +231,7 @@ namespace Chummer
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsMartialArtTechnique,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -229,5 +253,12 @@ namespace Chummer
             }
         }
         #endregion
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
+        }
     }
 }

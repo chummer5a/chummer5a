@@ -86,7 +86,7 @@
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(386, 112);
+            this.ClientSize = new System.Drawing.Size(384, 121);
             this.Controls.Add(this.nudDiceResult);
             this.Controls.Add(this.lblResult);
             this.Controls.Add(this.lblDice);

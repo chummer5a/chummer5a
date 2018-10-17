@@ -463,8 +463,7 @@
                     <br/>
           == <xsl:value-of select="$lang.ComplexForms"/> ==
           <br/>(<xsl:value-of select="$lang.Tradition"/>: <xsl:value-of select="tradition/name"/>,
-                    <xsl:value-of select="$lang.ResistFading"/>&#160;<xsl:value-of select="tradition/drainattributes"/> = <xsl:value-of select="tradition/drainvalue"/>) <xsl:call-template
-                        name="complexforms"/>
+                    <xsl:value-of select="$lang.ResistFading"/>&#160;<xsl:value-of select="tradition/drainattributes"/> = <xsl:value-of select="tradition/drainvalue"/>) <xsl:call-template name="complexforms"/>
                 </xsl:if>
 
         <xsl:if test="aiprograms/aiprogram">

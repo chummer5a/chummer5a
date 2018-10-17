@@ -75,6 +75,7 @@
       <DesignTimeSharedInput>false</DesignTimeSharedInput>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="StringExtensions.cs" />
     <Compile Include="XmlExtensions.cs" />
     <EmbeddedResource Include="frmTranslate.resx">
       <DependentUpon>frmTranslate.cs</DependentUpon>

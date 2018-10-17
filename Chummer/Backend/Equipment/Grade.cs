@@ -36,7 +36,8 @@ namespace Chummer.Backend.Equipment
         private int _intAvail;
         private string _strSource = "SR5";
         private int _intDeviceRating = 2;
-        private readonly Improvement.ImprovementSource _eSource;
+	    private int _intAddictionThreshold;
+		private readonly Improvement.ImprovementSource _eSource;
 
         #region Constructor and Load Methods
         public Grade(Improvement.ImprovementSource eSource)
@@ -54,7 +55,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             if (!objNode.TryGetField("id", Guid.TryParse, out _guidSourceId))
             {
-                XmlNode xmlDataNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml", GlobalOptions.Language).SelectSingleNode("/chummer/grades/grade[name = \"" + Name + "\"]");
+                XmlNode xmlDataNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml", GlobalOptions.Language).SelectSingleNode("/chummer/grades/grade[name = " + Name.CleanXPath() + "]");
                 if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guidSourceId) != true)
                     _guidSourceId = Guid.NewGuid();
             }
@@ -62,7 +63,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetDecFieldQuickly("cost", ref _decCost);
             objNode.TryGetInt32FieldQuickly("avail", ref _intAvail);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
-            if (!objNode.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating))
+            objNode.TryGetField("addictionthreshold", out _intAddictionThreshold);
+			if (!objNode.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating))
             {
                 if (Name.Contains("Alphaware"))
                     _intDeviceRating = 3;
@@ -167,6 +169,14 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool SecondHand => _strName.Contains("Used");
 
-        #endregion
-    }
+        /// <summary>
+        /// The Grade's Addiction Threshold Modifier. Used for Drugs.
+        /// </summary>
+        public int AddictionThreshold
+        {
+            get => _intAddictionThreshold;
+            set => _intAddictionThreshold = value;
+        }
+		#endregion
+	}
 }

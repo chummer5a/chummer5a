@@ -61,7 +61,7 @@ namespace Chummer
         {
             return Value.ToString();
         }
-        
+
         public static bool operator ==(ListItem x, object y)
         {
             return x.Equals(y);
@@ -111,7 +111,7 @@ namespace Chummer
             }
         }
     }
-    
+
     public static class CompareListViewItems
     {
         /// <summary>
@@ -152,7 +152,7 @@ namespace Chummer
     {
         private int _intColumnToSort;
         private SortOrder _objOrderOfSort;
-        
+
         public int Compare(object x, object y)
         {
             if (_objOrderOfSort == SortOrder.None)
@@ -179,7 +179,7 @@ namespace Chummer
                 else
                     intCompareResult = string.Compare(strX, strY, true, GlobalOptions.CultureInfo);
             }
-            
+
             // Calculate correct return value based on object comparison
             if (_objOrderOfSort == SortOrder.Ascending)
                 return intCompareResult;

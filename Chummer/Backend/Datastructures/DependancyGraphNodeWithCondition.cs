@@ -31,6 +31,16 @@ namespace Chummer
         public DependancyGraphNode<T> Node { get; }
         public Func<bool> DependancyCondition { get; }
 
+        public static bool operator ==(DependancyGraphNodeWithCondition<T> objFirstEdge, DependancyGraphNodeWithCondition<T> objSecondEdge)
+        {
+            return ((objFirstEdge.Node == null && objSecondEdge.Node == null) || objFirstEdge.Node?.Equals(objSecondEdge.Node) == true);
+        }
+
+        public static bool operator !=(DependancyGraphNodeWithCondition<T> objFirstEdge, DependancyGraphNodeWithCondition<T> objSecondEdge)
+        {
+            return !((objFirstEdge.Node == null && objSecondEdge.Node == null) || objFirstEdge.Node?.Equals(objSecondEdge.Node) == true);
+        }
+
         public override bool Equals(object obj)
         {
             return obj is DependancyGraphNodeWithCondition<T> objOtherEdge && ((Node == null && objOtherEdge.Node == null) || Node?.Equals(objOtherEdge.Node) == true);

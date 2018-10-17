@@ -134,7 +134,7 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language).Replace("{0}", _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -159,7 +159,7 @@ namespace Chummer
             {
                 Cursor = Cursors.WaitCursor;
                 _objContact.FileName = openFileDialog.FileName;
-                GlobalOptions.ToolTipProcessor.SetToolTip(imgLink, LanguageManager.GetString("Tip_Contact_OpenFile", GlobalOptions.Language));
+                imgLink.SetToolTip(LanguageManager.GetString("Tip_Contact_OpenFile", GlobalOptions.Language));
 
                 // Set the relative path.
                 Uri uriApplication = new Uri(Application.StartupPath);
@@ -179,7 +179,7 @@ namespace Chummer
             {
                 _objContact.FileName = string.Empty;
                 _objContact.RelativeFileName = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(imgLink, LanguageManager.GetString("Tip_Contact_LinkFile", GlobalOptions.Language));
+                imgLink.SetToolTip(LanguageManager.GetString("Tip_Contact_LinkFile", GlobalOptions.Language));
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
             }
         }
@@ -199,7 +199,7 @@ namespace Chummer
                 string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes", GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(_objContact.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
-                GlobalOptions.ToolTipProcessor.SetToolTip(imgNotes, strTooltip.WordWrap(100));
+                imgNotes.SetToolTip(strTooltip.WordWrap(100));
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
             }
         }

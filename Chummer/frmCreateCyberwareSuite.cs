@@ -68,7 +68,8 @@ namespace Chummer
             // Make sure the file name starts with custom and ends with _cyberware.xml.
             if (!txtFileName.Text.StartsWith("custom") || !txtFileName.Text.EndsWith('_' + _strType + ".xml"))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_CyberwareSuite_InvalidFileName", GlobalOptions.Language).Replace("{0}", _strType), LanguageManager.GetString("MessageTitle_CyberwareSuite_InvalidFileName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(string.Format(LanguageManager.GetString("Message_CyberwareSuite_InvalidFileName", GlobalOptions.Language), _strType),
+                    LanguageManager.GetString("MessageTitle_CyberwareSuite_InvalidFileName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -77,8 +78,7 @@ namespace Chummer
             string strName = txtName.Text;
             if (XmlManager.Load(_strType + ".xml", GlobalOptions.Language).SelectSingleNode("/chummer/suites/suite[name = \"" + strName + "\"]") != null)
             {
-                MessageBox.Show(
-                    LanguageManager.GetString("Message_CyberwareSuite_DuplicateName", GlobalOptions.Language).Replace("{0}", strName),
+                MessageBox.Show(string.Format(LanguageManager.GetString("Message_CyberwareSuite_DuplicateName", GlobalOptions.Language), strName),
                     LanguageManager.GetString("MessageTitle_CyberwareSuite_DuplicateName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -159,6 +159,8 @@ namespace Chummer
             // <suite>
             objWriter.WriteStartElement("suite");
             // <name />
+            objWriter.WriteElementString("id", Guid.NewGuid().ToString());
+            // <name />
             objWriter.WriteElementString("name", txtName.Text);
             // <grade />
             objWriter.WriteElementString("grade", strGrade);
@@ -211,7 +213,8 @@ namespace Chummer
             objWriter.WriteEndDocument();
             objWriter.Close();
 
-            MessageBox.Show(LanguageManager.GetString("Message_CyberwareSuite_SuiteCreated", GlobalOptions.Language).Replace("{0}", txtName.Text), LanguageManager.GetString("MessageTitle_CyberwareSuite_SuiteCreated", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(string.Format(LanguageManager.GetString("Message_CyberwareSuite_SuiteCreated", GlobalOptions.Language), txtName.Text),
+                LanguageManager.GetString("MessageTitle_CyberwareSuite_SuiteCreated", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
             DialogResult = DialogResult.OK;
         }
 

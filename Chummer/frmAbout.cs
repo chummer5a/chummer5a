@@ -130,7 +130,7 @@ namespace Chummer
             textBoxContributors.Text += Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, Properties.Contributors.Usernames) + Environment.NewLine + "/u/Iridios";
             txtDisclaimer.Text = LanguageManager.GetString("About_Label_Disclaimer_Text", GlobalOptions.Language);
         }
-        
+
         private void txt_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)

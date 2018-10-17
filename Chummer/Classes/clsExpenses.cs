@@ -179,7 +179,7 @@ namespace Chummer
             objNode.TryGetDecFieldQuickly("qty", ref _decQty);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
         }
-        
+
         #endregion
 
         #region Properties

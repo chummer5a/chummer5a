@@ -52,7 +52,7 @@ namespace Chummer
                 report.AddData("chummerlog.txt", ex.ToString());
             }
 
-            //Considering doing some magic with 
+            //Considering doing some magic with
             //Application.OpenForms
             //And reflection to all savefiles
             //here
@@ -73,7 +73,7 @@ namespace Chummer
             MessageBox.Show("Crash report sent." + Environment.NewLine + "Please refer to the crash id " + report.Id);
         }
 
-        private readonly List<KeyValuePair<string, Stream>> values; 
+        private readonly List<KeyValuePair<string, Stream>> values;
 
         /// <summary>
         /// Unique ID for the crash report, makes a user able to refer to a specific report
@@ -197,7 +197,7 @@ namespace Chummer
                 };
 
                 MailMessage message = new MailMessage(address, address);
-                
+
                 //Forwarding rule used instead?
                 message.CC.Add("chummer5isalive+chummerdump@gmail.com");
 

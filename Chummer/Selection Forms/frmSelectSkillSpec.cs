@@ -38,7 +38,6 @@ namespace Chummer
             _objCharacter = skill.CharacterObject;
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            MoveControls();
             _objXmlDocument = XmlManager.Load("skills.xml");
         }
 
@@ -126,7 +125,7 @@ namespace Chummer
         {
             AcceptForm();
         }
-        
+
         private void cboSpec_SelectedIndexChanged(object sender, EventArgs e)
         {
             cboSpec.DropDownStyle = cboSpec.SelectedValue?.ToString() == "Custom" ? ComboBoxStyle.DropDown : ComboBoxStyle.DropDownList;
@@ -182,12 +181,6 @@ namespace Chummer
         {
             if (!string.IsNullOrEmpty(SelectedItem))
                 DialogResult = DialogResult.OK;
-        }
-
-        private void MoveControls()
-        {
-            cboSpec.Left = lblAmmoLabel.Left + lblAmmoLabel.Width + 6;
-            cboSpec.Width = Width - cboSpec.Left - 19;
         }
         #endregion
     }

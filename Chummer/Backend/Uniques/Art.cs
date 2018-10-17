@@ -28,7 +28,7 @@ namespace Chummer
     /// An Art.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Art : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class Art : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -84,6 +84,29 @@ namespace Chummer
             }*/
         }
 
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == null)
+                {
+                    string strSource = Source;
+                    string strPage = Page(GlobalOptions.Language);
+                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                    {
+                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                    }
+                }
+
+                return _objCachedSourceDetail;
+            }
+        }
+
         /// <summary>
         /// Save the object's XML to the XmlWriter.
         /// </summary>
@@ -103,7 +126,9 @@ namespace Chummer
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (Grade >= 0)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -134,6 +159,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("art");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
@@ -275,7 +301,7 @@ namespace Chummer
             {
                 Name = InternalId,
                 Text = strText,
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsArt,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -301,5 +327,26 @@ namespace Chummer
             }
         }
         #endregion
+
+        public bool Remove(Character character, bool blnConfirmDelete = true)
+        {
+            if (Grade <= 0)
+                return false;
+            if (blnConfirmDelete)
+            {
+                if (!character.ConfirmDelete(LanguageManager.GetString("Message_DeleteArt", GlobalOptions.Language)))
+                    return false;
+            }
+
+            ImprovementManager.RemoveImprovements(character, _objImprovementSource, InternalId);
+            return character.Arts.Remove(this);
+        }
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
+        }
     }
 }

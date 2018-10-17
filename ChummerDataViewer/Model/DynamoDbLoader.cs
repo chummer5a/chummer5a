@@ -44,7 +44,7 @@ namespace ChummerDataViewer.Model
 							PersistentState.Database.GetKey("crashdumps_last_timestamp"),
 							PersistentState.Database.GetKey("crashdumps_last_key")); //Start scanning based on last key in db
 
-						//Into anon type with a little extra info. DB lookup to see if known, parse guid 
+						//Into anon type with a little extra info. DB lookup to see if known, parse guid
 						var newItems = response.Items
 							.Select(x => new { item = x, guid = Guid.Parse(x["crash_id"].S)})
 							.Select(old => new { old.item,  old.guid, known = PersistentState.Database.GetCrash(old.guid) != null })
@@ -68,7 +68,7 @@ namespace ChummerDataViewer.Model
 						//Otherwise, add _NEW_ items to db
 						using (SQLiteTransaction transaction = PersistentState.Database.GetTransaction())
 						{
-							
+
 							if (response.LastEvaluatedKey.Count == 0)
 							{
 								//If we reached the last (oldest), reset progress meter
@@ -92,13 +92,13 @@ namespace ChummerDataViewer.Model
 								//Don't take so long waiting for the next if we found anything.
 								//Theoretically this should keep it checking roughly same frequency as new items gets added
 								//in reality it is probably bull
-								_backoff.Sucess(); 
+								_backoff.Sucess();
 							}
 							transaction.Commit();
 						}
 
 						//Tell the good news that we have new items. Also tell guids so it can be found
-						OnStatusChanged(new StatusChangedEventArgs("Working", 
+						OnStatusChanged(new StatusChangedEventArgs("Working",
 							newItems
 							.Where(x => !x.known)
 							.Select(x => x.guid)
@@ -171,7 +171,7 @@ namespace ChummerDataViewer.Model
 					{"crash_id", new AttributeValue {S = lastKey}},
 					{"upload_timestamp", new AttributeValue {N = lastTimeStamp}}
 				};
-			} 
+			}
 
 			return _client.Scan(request);
 		}
@@ -199,7 +199,7 @@ namespace ChummerDataViewer.Model
                 disposedValue = true;
             }
         }
-        
+
         public void Dispose()
         {
             Dispose(true);

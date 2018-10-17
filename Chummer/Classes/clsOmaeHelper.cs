@@ -53,21 +53,24 @@ namespace Chummer
                 MessageEncoding = WSMessageEncoding.Text,
                 TextEncoding = Encoding.UTF8,
                 TransferMode = TransferMode.Buffered,
-                UseDefaultWebProxy = true
+                UseDefaultWebProxy = true,
+                ReaderQuotas =
+                {
+                    MaxDepth = 32,
+                    MaxStringContentLength = 8388608,
+                    MaxArrayLength = 5242880,
+                    MaxBytesPerRead = 4096,
+                    MaxNameTableCharCount = 32565
+                },
+                Security =
+                {
+                    Mode = BasicHttpSecurityMode.None,
+                    Transport = {ClientCredentialType = HttpClientCredentialType.None, ProxyCredentialType = HttpProxyCredentialType.None, Realm = string.Empty},
+                    Message = {ClientCredentialType = BasicHttpMessageCredentialType.UserName, AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.Default}
+                }
             };
 
-            objBinding.ReaderQuotas.MaxDepth = 32;
-            objBinding.ReaderQuotas.MaxStringContentLength = 8388608;
-            objBinding.ReaderQuotas.MaxArrayLength = 5242880;
-            objBinding.ReaderQuotas.MaxBytesPerRead = 4096;
-            objBinding.ReaderQuotas.MaxNameTableCharCount = 32565;
 
-            objBinding.Security.Mode = BasicHttpSecurityMode.None;
-            objBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
-            objBinding.Security.Transport.ProxyCredentialType = HttpProxyCredentialType.None;
-            objBinding.Security.Transport.Realm = string.Empty;
-            objBinding.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
-            objBinding.Security.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.Default;
 
             const string strEndPoint = "http://www.chummergen.com/dev/chummer/omae/omae.asmx";
             EndpointAddress objEndPointAddress = new EndpointAddress(strEndPoint);
@@ -98,21 +101,24 @@ namespace Chummer
                 MessageEncoding = WSMessageEncoding.Text,
                 TextEncoding = Encoding.UTF8,
                 TransferMode = TransferMode.Buffered,
-                UseDefaultWebProxy = true
+                UseDefaultWebProxy = true,
+                ReaderQuotas =
+                {
+                    MaxDepth = 32,
+                    MaxStringContentLength = 8388608,
+                    MaxArrayLength = 5242880,
+                    MaxBytesPerRead = 4096,
+                    MaxNameTableCharCount = 32565
+                },
+                Security =
+                {
+                    Mode = BasicHttpSecurityMode.None,
+                    Transport = {ClientCredentialType = HttpClientCredentialType.None, ProxyCredentialType = HttpProxyCredentialType.None, Realm = string.Empty},
+                    Message = {ClientCredentialType = BasicHttpMessageCredentialType.UserName, AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.Default}
+                }
             };
 
-            objBinding.ReaderQuotas.MaxDepth = 32;
-            objBinding.ReaderQuotas.MaxStringContentLength = 8388608;
-            objBinding.ReaderQuotas.MaxArrayLength = 5242880;
-            objBinding.ReaderQuotas.MaxBytesPerRead = 4096;
-            objBinding.ReaderQuotas.MaxNameTableCharCount = 32565;
 
-            objBinding.Security.Mode = BasicHttpSecurityMode.None;
-            objBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
-            objBinding.Security.Transport.ProxyCredentialType = HttpProxyCredentialType.None;
-            objBinding.Security.Transport.Realm = string.Empty;
-            objBinding.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
-            objBinding.Security.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.Default;
 
             const string strEndPoint = "http://www.chummergen.com/dev/chummer/omae/translation.asmx";
             EndpointAddress objEndPointAddress = new EndpointAddress(strEndPoint);
@@ -282,8 +288,7 @@ namespace Chummer
                 Stream objSource = objPart.GetStream(FileMode.Open, FileAccess.Read);
                 Stream objDestination = File.OpenWrite(strTarget);
                 byte[] bytFileBuffer = new byte[100000];
-                int intRead;
-                intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
+                int intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
                 while (intRead > 0)
                 {
                     objDestination.Write(bytFileBuffer, 0, intRead);
@@ -312,8 +317,7 @@ namespace Chummer
                 Stream objSource = objPart.GetStream(FileMode.Open, FileAccess.Read);
                 Stream objDestination = File.OpenWrite(strTarget);
                 byte[] bytFileBuffer = new byte[100000];
-                int intRead;
-                intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
+                int intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
                 while (intRead > 0)
                 {
                     objDestination.Write(bytFileBuffer, 0, intRead);
@@ -360,8 +364,7 @@ namespace Chummer
 
                 Stream objDestination = File.OpenWrite(strFilePath + strTarget.Replace('/', Path.DirectorySeparatorChar));
                 byte[] bytFileBuffer = new byte[100000];
-                int intRead;
-                intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
+                int intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
                 while (intRead > 0)
                 {
                     objDestination.Write(bytFileBuffer, 0, intRead);
@@ -406,8 +409,7 @@ namespace Chummer
 
                 Stream objDestination = File.OpenWrite(strFilePath + strTarget.Replace('/', Path.DirectorySeparatorChar));
                 byte[] bytFileBuffer = new byte[100000];
-                int intRead;
-                intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
+                int intRead = objSource.Read(bytFileBuffer, 0, bytFileBuffer.Length);
                 while (intRead > 0)
                 {
                     objDestination.Write(bytFileBuffer, 0, intRead);

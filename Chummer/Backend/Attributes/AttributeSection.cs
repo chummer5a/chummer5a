@@ -22,17 +22,52 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Annotations;
 
 namespace Chummer.Backend.Attributes
 {
-	public class AttributeSection : INotifyPropertyChanged
+	public class AttributeSection : INotifyMultiplePropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		private static readonly string[] s_LstAttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP" };
+        [NotifyPropertyChangedInvocator]
+        public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
+        {
+            OnMultiplePropertyChanged(strPropertyName);
+        }
+
+        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        {
+            ICollection<string> lstNamesOfChangedProperties = null;
+            foreach (string strPropertyName in lstPropertyNames)
+            {
+                if (lstNamesOfChangedProperties == null)
+                    lstNamesOfChangedProperties = AttributeSectionDependencyGraph.GetWithAllDependants(strPropertyName);
+                else
+                {
+                    foreach (string strLoopChangedProperty in AttributeSectionDependencyGraph.GetWithAllDependants(strPropertyName))
+                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                }
+            }
+
+            if ((lstNamesOfChangedProperties?.Count > 0) != true)
+                return;
+
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+            }
+        }
+
+        private static readonly DependancyGraph<string> AttributeSectionDependencyGraph =
+            new DependancyGraph<string>(
+            );
+
+        private static readonly string[] s_LstAttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP" };
         public static ReadOnlyCollection<string> AttributeStrings => Array.AsReadOnly(s_LstAttributeStrings);
 
 	    private static readonly string[] s_LstPhysicalAttributes = { "BOD", "AGI", "REA", "STR" };
@@ -96,8 +131,8 @@ namespace Chummer.Backend.Attributes
             foreach (string strAttribute in AttributeStrings)
             {
                 XmlNodeList lstAttributeNodes = xmlSavedCharacterNode.SelectNodes("attributes/attribute[name = \"" + strAttribute + "\"]");
-                // Couldn't find the appopriate attribute in the loaded file, so regenerate it from scratch. 
-                if (lstAttributeNodes == null || lstAttributeNodes.Count == 0)
+                // Couldn't find the appopriate attribute in the loaded file, so regenerate it from scratch.
+                if (lstAttributeNodes == null || lstAttributeNodes.Count == 0 || xmlCharNodeAnimalForm != null && _objCharacter.LastSavedVersion < new Version("5.200.25"))
                 {
                     CharacterAttrib objAttribute = new CharacterAttrib(_objCharacter, strAttribute);
                     objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
@@ -188,13 +223,33 @@ namespace Chummer.Backend.Attributes
             catch (OverflowException) { intAugValue = 1; }
             catch (InvalidCastException) { intAugValue = 1; }
 
+            objNewAttribute.Base = Convert.ToInt32(objCharacterNode["base"]?.InnerText);
+            objNewAttribute.Karma = Convert.ToInt32(objCharacterNode["base"]?.InnerText);
             objNewAttribute.AssignLimits(intMinValue.ToString(), intMaxValue.ToString(), intAugValue.ToString());
             return objNewAttribute;
         }
 
 		internal void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
 		{
-			foreach (CharacterAttrib att in AttributeList)
+		    if (_objCharacter.MetatypeCategory == "Shapeshifter")
+		    {
+		        XmlDocument xmlMetatypesDoc = XmlManager.Load("metatypes.xml", strLanguageToPrint);
+		        XmlNode xmlNode = xmlMetatypesDoc.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{_objCharacter.Metatype}\"]");
+
+		        xmlNode = xmlNode?.SelectSingleNode($"metavariants/metavariant[name = \"{_objCharacter.Metavariant}\"]/name/@translate");
+
+		        if (AttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
+		        {
+		            objWriter.WriteElementString("attributecategory", xmlNode?.SelectSingleNode("name/@translate")?.InnerText ?? _objCharacter.Metatype);
+                }
+		        else
+		        {
+		            xmlNode = xmlNode?.SelectSingleNode($"metavariants/metavariant[name = \"{_objCharacter.Metavariant}\"]/name/@translate");
+                    objWriter.WriteElementString("attributecategory", xmlNode?.InnerText ?? _objCharacter.Metavariant);
+                }
+		    }
+		    objWriter.WriteElementString("attributecategory_english", AttributeCategory.ToString());
+            foreach (CharacterAttrib att in AttributeList)
 			{
 				att.Print(objWriter, objCulture, strLanguageToPrint);
 			}
@@ -220,29 +275,29 @@ namespace Chummer.Backend.Attributes
             return null;
 		}
 
-		internal void ForceAttributePropertyChangedNotificationAll(string name)
+		internal void ForceAttributePropertyChangedNotificationAll(params string[] lstNames)
 		{
 			foreach (CharacterAttrib att in AttributeList)
 			{
-				att.OnPropertyChanged(name);
+				att.OnMultiplePropertyChanged(lstNames);
 			}
 		}
 
-		public static void CopyAttribute(CharacterAttrib source, CharacterAttrib target, string mv, XmlDocument xmlDoc)
+		public static void CopyAttribute(CharacterAttrib objSource, CharacterAttrib objTarget, string strMetavariantXPath, XmlDocument xmlDoc)
 		{
-            string strSourceAbbrev = source.Abbrev.ToLower();
+            string strSourceAbbrev = objSource.Abbrev.ToLower();
             if (strSourceAbbrev == "magadept")
                 strSourceAbbrev = "mag";
-            XmlNode node = xmlDoc.SelectSingleNode($"{mv}");
+            XmlNode node = !string.IsNullOrEmpty(strMetavariantXPath) ? xmlDoc.SelectSingleNode(strMetavariantXPath) : null;
 		    if (node != null)
 		    {
-		        target.MetatypeMinimum = Convert.ToInt32(node[$"{strSourceAbbrev}min"]?.InnerText);
-		        target.MetatypeMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}max"]?.InnerText);
-		        target.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}aug"]?.InnerText);
+		        objTarget.MetatypeMinimum = Convert.ToInt32(node[$"{strSourceAbbrev}min"]?.InnerText);
+		        objTarget.MetatypeMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}max"]?.InnerText);
+		        objTarget.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}aug"]?.InnerText);
 		    }
 
-		    target.Base = source.Base;
-			target.Karma = source.Karma;
+		    objTarget.Base = objSource.Base;
+		    objTarget.Karma = objSource.Karma;
         }
 
 		internal void Reset()
@@ -283,7 +338,7 @@ namespace Chummer.Backend.Attributes
 		}
 
 		/// <summary>
-		/// Reset the databindings for all character attributes. 
+		/// Reset the databindings for all character attributes.
 		/// This method is used to support hot-swapping attributes for shapeshifters.
 		/// </summary>
 		public void ResetBindings()
@@ -311,9 +366,12 @@ namespace Chummer.Backend.Attributes
 	        get => _eAttributeCategory;
 	        set
 	        {
-	            _eAttributeCategory = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AttributeCategory)));
-            }
+	            if (_eAttributeCategory != value)
+	            {
+	                _eAttributeCategory = value;
+	                OnPropertyChanged();
+	            }
+	        }
 	    }
         #endregion
     }

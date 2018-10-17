@@ -19,6 +19,7 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -37,7 +38,7 @@ namespace Chummer
     /// A Skill Limit Modifier.
     /// </summary>
     [DebuggerDisplay("{" + nameof(DisplayName) + "}")]
-    public class LimitModifier : IHasInternalId, IHasName
+    public class LimitModifier : IHasInternalId, IHasName, ICanRemove
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -108,7 +109,7 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            if (objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 _guiID = Guid.NewGuid();
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("limit", ref _strLimit);
@@ -235,7 +236,7 @@ namespace Chummer
                 Name = InternalId,
                 ContextMenuStrip = cmsLimitModifier,
                 Text = DisplayName,
-                Tag = InternalId,
+                Tag = this,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
             };
@@ -255,5 +256,22 @@ namespace Chummer
             }
         }
         #endregion
+
+        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
+        {
+            if (characterObject.LimitModifiers.Any(limitMod => limitMod == this))
+            {
+                if (blnConfirmDelete)
+                {
+                    return characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier",
+                               GlobalOptions.Language)) && characterObject.LimitModifiers.Remove(this);
+                }
+            }
+
+            // No character-created limits found, which means it comes from an improvement.
+            // TODO: ImprovementSource exists for a reason.
+            MessageBox.Show(LanguageManager.GetString("Message_CannotDeleteLimitModifier", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return false;
+        }
     }
 }
