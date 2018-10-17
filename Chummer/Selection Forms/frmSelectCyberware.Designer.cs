@@ -70,22 +70,22 @@ namespace Chummer
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.flpRating = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblRatingNALabel = new System.Windows.Forms.Label();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
-            this.flpDiscount = new System.Windows.Forms.FlowLayoutPanel();
             this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpRating = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblRatingNALabel = new System.Windows.Forms.Label();
+            this.flpDiscount = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudESSDiscount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
-            this.flpRating.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.flpMarkup.SuspendLayout();
-            this.flpDiscount.SuspendLayout();
             this.flpCheckBoxes.SuspendLayout();
+            this.flpRating.SuspendLayout();
+            this.flpDiscount.SuspendLayout();
             this.SuspendLayout();
             // 
             // cboCategory
@@ -253,9 +253,6 @@ namespace Chummer
             // 
             // nudRating
             // 
-            this.nudRating.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.nudRating.Location = new System.Drawing.Point(3, 3);
             this.nudRating.Name = "nudRating";
             this.nudRating.Size = new System.Drawing.Size(100, 20);
@@ -442,8 +439,6 @@ namespace Chummer
             // 
             // nudMarkup
             // 
-            this.nudMarkup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.nudMarkup.DecimalPlaces = 2;
             this.nudMarkup.Location = new System.Drawing.Point(3, 3);
             this.nudMarkup.Maximum = new decimal(new int[] {
@@ -674,31 +669,6 @@ namespace Chummer
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
-            // flpRating
-            // 
-            this.flpRating.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.flpRating, 2);
-            this.flpRating.Controls.Add(this.nudRating);
-            this.flpRating.Controls.Add(this.lblRatingNALabel);
-            this.flpRating.Location = new System.Drawing.Point(366, 114);
-            this.flpRating.Margin = new System.Windows.Forms.Padding(0);
-            this.flpRating.Name = "flpRating";
-            this.flpRating.Size = new System.Drawing.Size(137, 26);
-            this.flpRating.TabIndex = 73;
-            this.flpRating.WrapContents = false;
-            // 
-            // lblRatingNALabel
-            // 
-            this.lblRatingNALabel.AutoSize = true;
-            this.lblRatingNALabel.Location = new System.Drawing.Point(109, 6);
-            this.lblRatingNALabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 7);
-            this.lblRatingNALabel.Name = "lblRatingNALabel";
-            this.lblRatingNALabel.Size = new System.Drawing.Size(27, 13);
-            this.lblRatingNALabel.TabIndex = 15;
-            this.lblRatingNALabel.Tag = "String_NotApplicable";
-            this.lblRatingNALabel.Text = "N/A";
-            this.lblRatingNALabel.Visible = false;
-            // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.ColumnCount = 2;
@@ -724,6 +694,7 @@ namespace Chummer
             // flpMarkup
             // 
             this.flpMarkup.AutoSize = true;
+            this.flpMarkup.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.SetColumnSpan(this.flpMarkup, 3);
             this.flpMarkup.Controls.Add(this.nudMarkup);
             this.flpMarkup.Controls.Add(this.lblMarkupPercentLabel);
@@ -733,24 +704,10 @@ namespace Chummer
             this.flpMarkup.Size = new System.Drawing.Size(127, 26);
             this.flpMarkup.TabIndex = 16;
             // 
-            // flpDiscount
-            // 
-            this.flpDiscount.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.flpDiscount, 2);
-            this.flpDiscount.Controls.Add(this.nudESSDiscount);
-            this.flpDiscount.Controls.Add(this.lblESSDiscountPercentLabel);
-            this.flpDiscount.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpDiscount.Location = new System.Drawing.Point(366, 76);
-            this.flpDiscount.Margin = new System.Windows.Forms.Padding(0);
-            this.flpDiscount.Name = "flpDiscount";
-            this.tableLayoutPanel1.SetRowSpan(this.flpDiscount, 2);
-            this.flpDiscount.Size = new System.Drawing.Size(137, 38);
-            this.flpDiscount.TabIndex = 76;
-            this.flpDiscount.WrapContents = false;
-            // 
             // flpCheckBoxes
             // 
             this.flpCheckBoxes.AutoSize = true;
+            this.flpCheckBoxes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.SetColumnSpan(this.flpCheckBoxes, 4);
             this.flpCheckBoxes.Controls.Add(this.chkFree);
             this.flpCheckBoxes.Controls.Add(this.chkBlackMarketDiscount);
@@ -760,6 +717,46 @@ namespace Chummer
             this.flpCheckBoxes.Name = "flpCheckBoxes";
             this.flpCheckBoxes.Size = new System.Drawing.Size(225, 48);
             this.flpCheckBoxes.TabIndex = 77;
+            // 
+            // flpRating
+            // 
+            this.flpRating.AutoSize = true;
+            this.flpRating.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tableLayoutPanel1.SetColumnSpan(this.flpRating, 3);
+            this.flpRating.Controls.Add(this.nudRating);
+            this.flpRating.Controls.Add(this.lblRatingNALabel);
+            this.flpRating.Location = new System.Drawing.Point(366, 114);
+            this.flpRating.Margin = new System.Windows.Forms.Padding(0);
+            this.flpRating.Name = "flpRating";
+            this.flpRating.Size = new System.Drawing.Size(139, 26);
+            this.flpRating.TabIndex = 73;
+            this.flpRating.WrapContents = false;
+            // 
+            // lblRatingNALabel
+            // 
+            this.lblRatingNALabel.AutoSize = true;
+            this.lblRatingNALabel.Location = new System.Drawing.Point(109, 6);
+            this.lblRatingNALabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 7);
+            this.lblRatingNALabel.Name = "lblRatingNALabel";
+            this.lblRatingNALabel.Size = new System.Drawing.Size(27, 13);
+            this.lblRatingNALabel.TabIndex = 15;
+            this.lblRatingNALabel.Tag = "String_NotApplicable";
+            this.lblRatingNALabel.Text = "N/A";
+            this.lblRatingNALabel.Visible = false;
+            // 
+            // flpDiscount
+            // 
+            this.flpDiscount.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.flpDiscount, 3);
+            this.flpDiscount.Controls.Add(this.nudESSDiscount);
+            this.flpDiscount.Controls.Add(this.lblESSDiscountPercentLabel);
+            this.flpDiscount.Location = new System.Drawing.Point(366, 76);
+            this.flpDiscount.Margin = new System.Windows.Forms.Padding(0);
+            this.flpDiscount.Name = "flpDiscount";
+            this.tableLayoutPanel1.SetRowSpan(this.flpDiscount, 2);
+            this.flpDiscount.Size = new System.Drawing.Size(127, 26);
+            this.flpDiscount.TabIndex = 76;
+            this.flpDiscount.WrapContents = false;
             // 
             // frmSelectCyberware
             // 
@@ -786,16 +783,16 @@ namespace Chummer
             this.tableLayoutPanel1.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel2.PerformLayout();
-            this.flpRating.ResumeLayout(false);
-            this.flpRating.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
             this.flpMarkup.ResumeLayout(false);
             this.flpMarkup.PerformLayout();
-            this.flpDiscount.ResumeLayout(false);
-            this.flpDiscount.PerformLayout();
             this.flpCheckBoxes.ResumeLayout(false);
             this.flpCheckBoxes.PerformLayout();
+            this.flpRating.ResumeLayout(false);
+            this.flpRating.PerformLayout();
+            this.flpDiscount.ResumeLayout(false);
+            this.flpDiscount.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

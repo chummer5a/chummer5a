@@ -769,7 +769,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString());
 
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (!IncludedInParent)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>

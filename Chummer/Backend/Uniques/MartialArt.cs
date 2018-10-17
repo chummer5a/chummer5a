@@ -124,7 +124,9 @@ namespace Chummer
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (!IsQuality)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>

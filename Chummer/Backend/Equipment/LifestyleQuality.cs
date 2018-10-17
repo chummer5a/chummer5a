@@ -218,7 +218,9 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("bonus", string.Empty);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (OriginSource != QualitySource.BuiltIn)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
