@@ -15801,9 +15801,9 @@ namespace Chummer
             Timekeeper.Start("load_char_spells");
 
             // Spells.
-            XmlNodeList xmlSpellList = xmlStatBlockBaseNode.SelectNodes("magic/spells/spell");
+            XmlNodeList xmlNodeList = xmlStatBlockBaseNode.SelectNodes("magic/spells/spell");
             XmlDocument xmlSpellDocument = XmlManager.Load("spells.xml");
-            foreach (XmlNode xmlHeroLabSpell in xmlSpellList)
+            foreach (XmlNode xmlHeroLabSpell in xmlNodeList)
             {
                 string strSpellName = xmlHeroLabSpell.Attributes["name"]?.InnerText;
                 if (!string.IsNullOrEmpty(strSpellName))
@@ -16058,24 +16058,47 @@ namespace Chummer
                 string strPowerName = xmlHeroLabPower.Attributes["name"]?.InnerText;
                 if (!string.IsNullOrEmpty(strPowerName))
                 {
+                    int intRating = 1;
                     string strForcedValue = string.Empty;
-                    XmlNode xmlPowerData = xmlArmorDocument.SelectSingleNode("chummer/powers/power[name = \"" + strPowerName + "\"]");
+                    XmlNode xmlPowerData = xmlPowersDocument.SelectSingleNode("chummer/powers/power[contains(name, \"" + strPowerName + "\")]");
                     if (xmlPowerData == null)
                     {
                         string[] astrOriginalNameSplit = strPowerName.Split(':');
                         if (astrOriginalNameSplit.Length > 1)
                         {
                             string strName = astrOriginalNameSplit[0].Trim();
-                            xmlPowerData = xmlWeaponDocument.SelectSingleNode("/chummer/powers/power[name = \"" + strPowerName + "\"]");
+                            xmlPowerData = xmlPowersDocument.SelectSingleNode("/chummer/powers/power[contains(name, \"" + strName + "\")]");
+
+                            strForcedValue = astrOriginalNameSplit[1].Trim();
+                            int intForcedValueParenthesesStart = strForcedValue.IndexOf('(');
+                            if (intForcedValueParenthesesStart != -1)
+                                strForcedValue = strForcedValue.Substring(0, intForcedValueParenthesesStart);
                         }
 
                         if (xmlPowerData == null)
                         {
-                            astrOriginalNameSplit = strPowerName.Split(',');
+                            astrOriginalNameSplit = strPowerName.Split('(');
                             if (astrOriginalNameSplit.Length > 1)
                             {
                                 string strName = astrOriginalNameSplit[0].Trim();
-                                xmlPowerData = xmlWeaponDocument.SelectSingleNode("/chummer/powers/power[name = \"" + strPowerName + "\"]");
+                                xmlPowerData = xmlPowersDocument.SelectSingleNode("/chummer/powers/power[contains(name, \"" + strName + "\")]");
+
+                                string strSecondPart = astrOriginalNameSplit[1].Trim();
+                                int intSecondPartParenthesesEnd = strSecondPart.IndexOf(')');
+                                if (intSecondPartParenthesesEnd != -1)
+                                {
+                                    if (!int.TryParse(strSecondPart.Substring(0, intSecondPartParenthesesEnd), out intRating))
+                                        intRating = 1;
+                                }
+
+                                astrOriginalNameSplit = strSecondPart.Split(':');
+                                if (astrOriginalNameSplit.Length >= 2)
+                                {
+                                    strForcedValue = astrOriginalNameSplit[1].Trim();
+                                    int intForcedValueParenthesesStart = strForcedValue.IndexOf('(');
+                                    if (intForcedValueParenthesesStart != -1)
+                                        strForcedValue = strForcedValue.Substring(0, intForcedValueParenthesesStart);
+                                }
                             }
                         }
                     }
@@ -16083,7 +16106,8 @@ namespace Chummer
                     if (xmlPowerData != null)
                     {
                         Power objPower = new Power(this);
-                        objPower.Create(xmlPowerData, strForcedValue, blnIsLimited);
+                        objPower.Extra = strForcedValue;
+                        objPower.Create(xmlPowerData, intRating);
                         objPower.Notes = xmlHeroLabPower["description"]?.InnerText;
                         _lstPowers.Add(objPower);
                     }
@@ -16159,7 +16183,7 @@ namespace Chummer
             Timekeeper.Start("load_char_lifestyle");
 
             // Lifestyles.
-            objXmlNodeList = objXmlCharacter.SelectNodes("lifestyles/lifestyle");
+            xmlNodeList = objXmlCharacter.SelectNodes("lifestyles/lifestyle");
             foreach (XmlNode xmlHeroLabLifestyle in xmlNodeList)
             {
                 Lifestyle objLifestyle = new Lifestyle(this);
