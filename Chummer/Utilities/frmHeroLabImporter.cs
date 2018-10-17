@@ -451,6 +451,8 @@ namespace Chummer
                             }
                         }
                         Cursor = Cursors.WaitCursor;
+                        cmdImport.Enabled = false;
+                        cmdSelectFile.Enabled = false;
                         Character objCharacter = new Character();
                         string settingsPath = Path.Combine(Application.StartupPath, "settings");
                         string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
@@ -470,8 +472,7 @@ namespace Chummer
                             string strSettingsFile = settingsFiles[0];
                             objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
                         }
-
-
+                        
                         Program.MainForm.OpenCharacters.Add(objCharacter);
                         Timekeeper.Start("load_file");
                         bool blnLoaded = objCharacter.LoadFromHeroLabFile(strFile, strCharacterId, objCharacter.SettingsFile);
@@ -481,6 +482,8 @@ namespace Chummer
                             Program.MainForm.OpenCharacters.Remove(objCharacter);
                             objCharacter.DeleteCharacter();
                             Cursor = objOldCursor;
+                            cmdImport.Enabled = true;
+                            cmdSelectFile.Enabled = true;
                             return;
                         }
 
