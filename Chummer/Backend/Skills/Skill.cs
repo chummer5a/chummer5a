@@ -362,7 +362,7 @@ namespace Chummer.Backend.Skills
                 if (xmlSpecList?.Count > 0)
                     foreach (XmlNode xmlSpecializationNode in xmlSpecList)
                     {
-                        string strSpecializationName = xmlSpecializationNode["bonustext"]?.InnerText;
+                        string strSpecializationName = xmlSpecializationNode.Attributes?["bonustext"]?.InnerText;
                         if (!string.IsNullOrEmpty(strSpecializationName))
                         {
                             int intLastPlus = strSpecializationName.LastIndexOf('+');

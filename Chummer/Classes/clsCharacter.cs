@@ -16242,9 +16242,13 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_gear");
-            /* TODO: Process HeroLab Vehicles entries, which are present in HTML and TXT statblocks but not in XML
             Timekeeper.Start("load_char_car");
 
+            foreach (Vehicle objVehicle in lstVehicles)
+            {
+                _lstVehicles.Add(objVehicle);
+            }
+            /* TODO: Process HeroLab Vehicles entries, which are present in HTML and TXT statblocks but not in XML
             // Vehicles.
             xmlNodeList = objXmlCharacter.SelectNodes("vehicles/vehicle");
             foreach (XmlNode xmlHeroLabVehicle in xmlNodeList)
@@ -16253,9 +16257,8 @@ namespace Chummer
                 objVehicle.Load(xmlHeroLabVehicle);
                 _lstVehicles.Add(objVehicle);
             }
-
-            Timekeeper.Finish("load_char_car");
             */
+            Timekeeper.Finish("load_char_car");
             /* TODO: Process HeroLab Initiation/Submersion and related entries
             Timekeeper.Start("load_char_mmagic");
             // Metamagics/Echoes.

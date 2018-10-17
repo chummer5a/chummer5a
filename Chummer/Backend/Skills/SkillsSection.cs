@@ -403,8 +403,7 @@ namespace Chummer.Backend.Skills
                         if (objSkill != null)
                             lstTempSkillList.Add(objSkill);
                     }
-
-            /*
+            
             List<Skill> lstUnsortedSkills = new List<Skill>();
 
             //Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
@@ -439,10 +438,22 @@ namespace Chummer.Backend.Skills
 
             foreach (Skill objSkill in lstUnsortedSkills)
             {
-                _lstSkills.Add(objSkill);
-                _dicSkills.Add(objSkill.IsExoticSkill ? objSkill.Name + " (" + objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')' : objSkill.Name, objSkill);
+                string strName = objSkill.IsExoticSkill
+                    ? $"{objSkill.Name} ({objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage)})"
+                    : objSkill.Name;
+                bool blnDoAddToDictionary = true;
+                _lstSkills.MergeInto(objSkill, CompareSkills, (objExistSkill, objNewSkill) =>
+                {
+                    blnDoAddToDictionary = false;
+                    if (objNewSkill.Base > objExistSkill.Base)
+                        objExistSkill.Base = objNewSkill.Base;
+                    if (objNewSkill.Karma > objExistSkill.Karma)
+                        objExistSkill.Karma = objNewSkill.Karma;
+                    objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.DisplayName(GlobalOptions.Language), y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
+                });
+                if (blnDoAddToDictionary)
+                    _dicSkills.Add(strName, objSkill);
             }
-            */
 
             UpdateUndoList(xmlSkillNode);
 
@@ -461,6 +472,129 @@ namespace Chummer.Backend.Skills
                     {
                         objSkillGroup.Base = 0;
                         objSkillGroup.Karma = 0;
+                    }
+                }
+
+                if (_objCharacter.BuildMethodHasSkillPoints)
+                {
+                    // Allocate Skill Points
+                    int intSkillPointCount = SkillPointsMaximum;
+                    Skill objSkillToPutPointsInto;
+
+                    // First loop through skills where costs can be 100% covered with points
+                    do
+                    {
+                        objSkillToPutPointsInto = null;
+                        int intSkillToPutPointsIntoTotalKarmaCost = 0;
+                        foreach (Skill objLoopSkill in Skills)
+                        {
+                            if (objLoopSkill.Karma == 0)
+                                continue;
+                            // Put points into the attribute with the highest total karma cost.
+                            // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+                            int intLoopTotalKarmaCost = objLoopSkill.CurrentKarmaCost;
+                            if (objSkillToPutPointsInto == null || (objLoopSkill.Karma <= intSkillPointCount &&
+                                                                        (intLoopTotalKarmaCost > intSkillToPutPointsIntoTotalKarmaCost ||
+                                                                         (intLoopTotalKarmaCost == intSkillToPutPointsIntoTotalKarmaCost && objLoopSkill.Karma > objSkillToPutPointsInto.Karma))))
+                            {
+                                objSkillToPutPointsInto = objLoopSkill;
+                                intSkillToPutPointsIntoTotalKarmaCost = intLoopTotalKarmaCost;
+                            }
+                        }
+
+                        if (objSkillToPutPointsInto != null)
+                        {
+                            objSkillToPutPointsInto.Base = objSkillToPutPointsInto.Karma;
+                            intSkillPointCount -= objSkillToPutPointsInto.Karma;
+                            objSkillToPutPointsInto.Karma = 0;
+                        }
+                    } while (objSkillToPutPointsInto != null && intSkillPointCount > 0);
+
+                    // If any points left over, then put them all into the attribute with the highest karma cost
+                    if (intSkillPointCount > 0 && Skills.Any(x => x.Karma != 0))
+                    {
+                        int intHighestTotalKarmaCost = 0;
+                        foreach (Skill objLoopSkill in Skills)
+                        {
+                            if (objLoopSkill.Karma == 0)
+                                continue;
+                            // Put points into the attribute with the highest total karma cost.
+                            // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+                            int intLoopTotalKarmaCost = objLoopSkill.CurrentKarmaCost;
+                            if (objSkillToPutPointsInto == null ||
+                                intLoopTotalKarmaCost > intHighestTotalKarmaCost ||
+                                (intLoopTotalKarmaCost == intHighestTotalKarmaCost && objLoopSkill.Karma > objSkillToPutPointsInto.Karma))
+                            {
+                                objSkillToPutPointsInto = objLoopSkill;
+                                intHighestTotalKarmaCost = intLoopTotalKarmaCost;
+                            }
+                        }
+
+                        if (objSkillToPutPointsInto != null)
+                        {
+                            objSkillToPutPointsInto.Base = intSkillPointCount;
+                            objSkillToPutPointsInto.Karma -= intSkillPointCount;
+                        }
+                    }
+                }
+
+                // Allocate Knowledge Skill Points
+                int intKnowledgeSkillPointCount = KnowledgeSkillPoints;
+                Skill objKnowledgeSkillToPutPointsInto;
+
+                // First loop through skills where costs can be 100% covered with points
+                do
+                {
+                    objKnowledgeSkillToPutPointsInto = null;
+                    int intKnowledgeSkillToPutPointsIntoTotalKarmaCost = 0;
+                    foreach (KnowledgeSkill objLoopKnowledgeSkill in KnowledgeSkills)
+                    {
+                        if (objLoopKnowledgeSkill.Karma == 0)
+                            continue;
+                        // Put points into the attribute with the highest total karma cost.
+                        // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+                        int intLoopTotalKarmaCost = objLoopKnowledgeSkill.CurrentKarmaCost;
+                        if (objKnowledgeSkillToPutPointsInto == null || (objLoopKnowledgeSkill.Karma <= intKnowledgeSkillPointCount &&
+                                                                    (intLoopTotalKarmaCost > intKnowledgeSkillToPutPointsIntoTotalKarmaCost ||
+                                                                     (intLoopTotalKarmaCost == intKnowledgeSkillToPutPointsIntoTotalKarmaCost && objLoopKnowledgeSkill.Karma > objKnowledgeSkillToPutPointsInto.Karma))))
+                        {
+                            objKnowledgeSkillToPutPointsInto = objLoopKnowledgeSkill;
+                            intKnowledgeSkillToPutPointsIntoTotalKarmaCost = intLoopTotalKarmaCost;
+                        }
+                    }
+
+                    if (objKnowledgeSkillToPutPointsInto != null)
+                    {
+                        objKnowledgeSkillToPutPointsInto.Base = objKnowledgeSkillToPutPointsInto.Karma;
+                        intKnowledgeSkillPointCount -= objKnowledgeSkillToPutPointsInto.Karma;
+                        objKnowledgeSkillToPutPointsInto.Karma = 0;
+                    }
+                } while (objKnowledgeSkillToPutPointsInto != null && intKnowledgeSkillPointCount > 0);
+
+                // If any points left over, then put them all into the attribute with the highest karma cost
+                if (intKnowledgeSkillPointCount > 0 && KnowledgeSkills.Any(x => x.Karma != 0))
+                {
+                    int intHighestTotalKarmaCost = 0;
+                    foreach (KnowledgeSkill objLoopKnowledgeSkill in KnowledgeSkills)
+                    {
+                        if (objLoopKnowledgeSkill.Karma == 0)
+                            continue;
+                        // Put points into the attribute with the highest total karma cost.
+                        // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+                        int intLoopTotalKarmaCost = objLoopKnowledgeSkill.CurrentKarmaCost;
+                        if (objKnowledgeSkillToPutPointsInto == null ||
+                            intLoopTotalKarmaCost > intHighestTotalKarmaCost ||
+                            (intLoopTotalKarmaCost == intHighestTotalKarmaCost && objLoopKnowledgeSkill.Karma > objKnowledgeSkillToPutPointsInto.Karma))
+                        {
+                            objKnowledgeSkillToPutPointsInto = objLoopKnowledgeSkill;
+                            intHighestTotalKarmaCost = intLoopTotalKarmaCost;
+                        }
+                    }
+
+                    if (objKnowledgeSkillToPutPointsInto != null)
+                    {
+                        objKnowledgeSkillToPutPointsInto.Base = intKnowledgeSkillPointCount;
+                        objKnowledgeSkillToPutPointsInto.Karma -= intKnowledgeSkillPointCount;
                     }
                 }
             }

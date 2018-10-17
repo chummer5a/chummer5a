@@ -308,7 +308,7 @@ namespace Chummer.Backend.Attributes
                         intAttributePointCount -= objAttributeToPutPointsInto.Karma;
                         objAttributeToPutPointsInto.Karma = 0;
 	                }
-	            } while (objAttributeToPutPointsInto != null);
+	            } while (objAttributeToPutPointsInto != null && intAttributePointCount > 0);
 
                 // If any points left over, then put them all into the attribute with the highest karma cost
 	            if (intAttributePointCount > 0 && AttributeList.Any(x => x.Karma != 0))
