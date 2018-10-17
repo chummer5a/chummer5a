@@ -14397,7 +14397,6 @@ namespace Chummer
             }
 
             _intBuildKarma = Convert.ToInt32(xmlStatBlockBaseNode.SelectSingleNode("creation/bp/@total")?.InnerText);
-            _intMaxAvail = _objOptions.Availability;
 
             if (_intBuildKarma >= 100)
             {
@@ -14467,6 +14466,7 @@ namespace Chummer
                         _intContactMultiplier = Convert.ToInt32(xmlGameplayOption["contactmultiplier"].InnerText);
                     _intGameplayOptionQualityLimit = _intMaxKarma = Convert.ToInt32(xmlGameplayOption["karma"].InnerText);
                     _decNuyenMaximumBP = _decMaxNuyen = Convert.ToDecimal(xmlGameplayOption["maxnuyen"].InnerText, GlobalOptions.InvariantCultureInfo);
+                    _intMaxAvail = Convert.ToInt32(xmlGameplayOption["maxavailability"].InnerText);
                 }
             }
 
@@ -14559,6 +14559,7 @@ namespace Chummer
             Timekeeper.Finish("load_char_misc");
 
             List<Weapon> lstWeapons = new List<Weapon>();
+            List<Vehicle> lstVehicles = new List<Vehicle>();
 
             Timekeeper.Start("load_char_quality");
 
@@ -15085,6 +15086,297 @@ namespace Chummer
                 objGear.RefreshMatrixAttributeArray();
             }
 
+            XmlDocument xmlCyberwareDocument = XmlManager.Load("cyberware.xml");
+            XmlDocument xmlBiowareDocument = XmlManager.Load("bioware.xml");
+            IList<Grade> objCyberwareGradeList = GetGradeList(Improvement.ImprovementSource.Cyberware);
+            IList<Grade> objBiowareGradeList = GetGradeList(Improvement.ImprovementSource.Bioware);
+            Cyberware ImportHeroLabCyberware(XmlNode xmlCyberwareImportNode, XmlNode xmlParentCyberwareNode, Grade objSelectedGrade = null)
+            {
+                bool blnCyberware = true;
+                Cyberware objReturn = null;
+                string strGradeName = objSelectedGrade?.Name ?? "Standard";
+                string strOriginalName = xmlCyberwareImportNode.Attributes["name"]?.InnerText;
+                if (!string.IsNullOrEmpty(strOriginalName))
+                {
+                    if (objSelectedGrade == null)
+                    {
+                        foreach (Grade objCyberwareGrade in objCyberwareGradeList)
+                        {
+                            if (strOriginalName.EndsWith(" (" + objCyberwareGrade.Name + ')'))
+                            {
+                                strGradeName = objCyberwareGrade.Name;
+                                strOriginalName = strOriginalName.TrimEndOnce(" (" + objCyberwareGrade.Name + ')');
+                                goto EndGradeCheck;
+                            }
+                        }
+                        foreach (Grade objCyberwareGrade in objBiowareGradeList)
+                        {
+                            if (strOriginalName.EndsWith(" (" + objCyberwareGrade.Name + ')'))
+                            {
+                                strGradeName = objCyberwareGrade.Name;
+                                strOriginalName = strOriginalName.TrimEndOnce(" (" + objCyberwareGrade.Name + ')');
+                                goto EndGradeCheck;
+                            }
+                        }
+                        EndGradeCheck:;
+                    }
+                    string strForceValue = string.Empty;
+                    XmlNode xmlCyberwareDataNode = null;
+                    XmlNodeList xmlCyberwareNodeList = xmlCyberwareDocument.SelectNodes("/chummer/cyberwares/cyberware[contains(name, \"" + strOriginalName + "\")]");
+                    foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
+                    {
+                        XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                        if (xmlTestNode != null)
+                        {
+                            // Assumes topmost parent is an AND node
+                            if (xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            {
+                                continue;
+                            }
+                        }
+                        xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                        if (xmlTestNode != null)
+                        {
+                            // Assumes topmost parent is an AND node
+                            if (!xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            {
+                                continue;
+                            }
+                        }
+
+                        xmlCyberwareDataNode = xmlLoopNode;
+                        break;
+                    }
+
+                    if (xmlCyberwareDataNode == null)
+                    {
+                        blnCyberware = false;
+                        xmlCyberwareNodeList = xmlBiowareDocument.SelectNodes("/chummer/biowares/bioware[contains(name, \"" + strOriginalName + "\")]");
+                        foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
+                        {
+                            XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                            if (xmlTestNode != null)
+                            {
+                                // Assumes topmost parent is an AND node
+                                if (xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                {
+                                    continue;
+                                }
+                            }
+                            xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                            if (xmlTestNode != null)
+                            {
+                                // Assumes topmost parent is an AND node
+                                if (!xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                {
+                                    continue;
+                                }
+                            }
+
+                            xmlCyberwareDataNode = xmlLoopNode;
+                            break;
+                        }
+                    }
+
+                    if (xmlCyberwareDataNode == null)
+                    {
+                        string[] astrOriginalNameSplit = strOriginalName.Split(':');
+                        if (astrOriginalNameSplit.Length > 1)
+                        {
+                            string strName = astrOriginalNameSplit[0].Trim();
+                            blnCyberware = true;
+                            xmlCyberwareNodeList = xmlCyberwareDocument.SelectNodes("/chummer/cyberwares/cyberware[contains(name, \"" + strName + "\")]");
+                            foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
+                            {
+                                XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                if (xmlTestNode != null)
+                                {
+                                    // Assumes topmost parent is an AND node
+                                    if (xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                    {
+                                        continue;
+                                    }
+                                }
+                                xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                if (xmlTestNode != null)
+                                {
+                                    // Assumes topmost parent is an AND node
+                                    if (!xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                    {
+                                        continue;
+                                    }
+                                }
+
+                                xmlCyberwareDataNode = xmlLoopNode;
+                                break;
+                            }
+                            if (xmlCyberwareDataNode != null)
+                                strForceValue = astrOriginalNameSplit[1].Trim();
+                            else
+                            {
+                                blnCyberware = false;
+                                xmlCyberwareNodeList = xmlBiowareDocument.SelectNodes("/chummer/biowares/bioware[contains(name, \"" + strName + "\")]");
+                                foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
+                                {
+                                    XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                    if (xmlTestNode != null)
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        if (xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                    xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                    if (xmlTestNode != null)
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        if (!xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            continue;
+                                        }
+                                    }
+
+                                    xmlCyberwareDataNode = xmlLoopNode;
+                                    break;
+                                }
+                                if (xmlCyberwareDataNode != null)
+                                    strForceValue = astrOriginalNameSplit[1].Trim();
+                            }
+                        }
+                        if (xmlCyberwareDataNode == null)
+                        {
+                            astrOriginalNameSplit = strOriginalName.Split(',');
+                            if (astrOriginalNameSplit.Length > 1)
+                            {
+                                string strName = astrOriginalNameSplit[0].Trim();
+                                blnCyberware = true;
+                                xmlCyberwareNodeList = xmlCyberwareDocument.SelectNodes("/chummer/cyberwares/cyberware[contains(name, \"" + strName + "\")]");
+                                foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
+                                {
+                                    XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                    if (xmlTestNode != null)
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        if (xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                    xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                    if (xmlTestNode != null)
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        if (!xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            continue;
+                                        }
+                                    }
+
+                                    xmlCyberwareDataNode = xmlLoopNode;
+                                    break;
+                                }
+                                if (xmlCyberwareDataNode != null)
+                                    strForceValue = astrOriginalNameSplit[1].Trim();
+                                else
+                                {
+                                    blnCyberware = false;
+                                    xmlCyberwareNodeList = xmlBiowareDocument.SelectNodes("/chummer/biowares/bioware[contains(name, \"" + strName + "\")]");
+                                    foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
+                                    {
+                                        XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                        if (xmlTestNode != null)
+                                        {
+                                            // Assumes topmost parent is an AND node
+                                            if (xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            {
+                                                continue;
+                                            }
+                                        }
+                                        xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                        if (xmlTestNode != null)
+                                        {
+                                            // Assumes topmost parent is an AND node
+                                            if (!xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            {
+                                                continue;
+                                            }
+                                        }
+
+                                        xmlCyberwareDataNode = xmlLoopNode;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    objReturn = new Cyberware(this);
+                    if (xmlCyberwareDataNode != null)
+                    {
+                        if (objSelectedGrade == null)
+                        {
+                            objSelectedGrade = (blnCyberware ? objCyberwareGradeList : objBiowareGradeList).FirstOrDefault(x => x.Name == strGradeName);
+                        }
+
+                        objReturn.Create(xmlCyberwareDataNode, objSelectedGrade, blnCyberware ? Improvement.ImprovementSource.Cyberware : Improvement.ImprovementSource.Bioware,
+                            Convert.ToInt32(xmlCyberwareImportNode.Attributes["rating"]?.InnerText), lstWeapons, lstVehicles, true, true, strForceValue);
+                        objReturn.Notes = xmlCyberwareImportNode["description"]?.InnerText;
+
+                        ProcessHeroLabCyberwarePlugins(objReturn, xmlCyberwareImportNode, objSelectedGrade);
+                    }
+                }
+                return objReturn;
+            }
+
+            void ProcessHeroLabCyberwarePlugins(Cyberware objCyberware, XmlNode xmlGearImportNode, Grade objParentGrade)
+            {
+                foreach (string strPluginNodeName in astrPluginNodeNames)
+                {
+                    foreach (XmlNode xmlPluginToAdd in xmlGearImportNode.SelectNodes(strPluginNodeName + "/item[@useradded != \"no\"]"))
+                    {
+                        Cyberware objPlugin = ImportHeroLabCyberware(xmlPluginToAdd, objCyberware.GetNode(), objParentGrade);
+                        if (objPlugin != null)
+                        {
+                            objPlugin.Parent = objCyberware;
+                            objCyberware.Children.Add(objPlugin);
+                        }
+                        else
+                        {
+                            Gear objPluginGear = ImportHeroLabGear(xmlPluginToAdd, objCyberware.GetNode());
+                            if (objPluginGear != null)
+                            {
+                                objPluginGear.Parent = objCyberware;
+                                objCyberware.Gear.Add(objPluginGear);
+                            }
+                        }
+                    }
+                    foreach (XmlNode xmlPluginToAdd in xmlGearImportNode.SelectNodes(strPluginNodeName + "/item[@useradded = \"no\"]"))
+                    {
+                        string strName = xmlPluginToAdd.Attributes["name"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strName))
+                        {
+                            Cyberware objPlugin = objCyberware.Children.FirstOrDefault(x => x.ParentID == objCyberware.InternalId && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                            if (objPlugin != null)
+                            {
+                                objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
+                                ProcessHeroLabCyberwarePlugins(objPlugin, xmlPluginToAdd, objParentGrade);
+                            }
+                            else
+                            {
+                                Gear objPluginGear = objCyberware.Gear.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                                if (objPluginGear != null)
+                                {
+                                    objPluginGear.Quantity = Convert.ToDecimal(xmlPluginToAdd.Attributes["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                                    objPluginGear.Notes = xmlPluginToAdd["description"]?.InnerText;
+                                    ProcessHeroLabGearPlugins(objPluginGear, xmlPluginToAdd);
+                                }
+                            }
+                        }
+                    }
+                }
+                objCyberware.RefreshMatrixAttributeArray();
+            }
+
             XmlDocument xmlWeaponDocument = XmlManager.Load("weapons.xml");
             Weapon ImportHeroLabWeapon(XmlNode xmlWeaponImportNode)
             {
@@ -15466,21 +15758,52 @@ namespace Chummer
             Timekeeper.Start("load_char_ware");
 
             // Cyberware/Bioware.
-            XmlNodeList xmlNodeList = objXmlCharacter.SelectNodes("cyberwares/cyberware");
-            foreach (XmlNode xmlCyberware in xmlNodeList)
+            foreach (XmlNode xmlCyberwareToImport in xmlStatBlockBaseNode.SelectNodes("gear/augmentations/cyberware/item[@useradded != \"no\"]"))
             {
-                Cyberware objCyberware = new Cyberware(this);
-                objCyberware.Load(objXmlCyberware);
-                _lstCyberware.Add(objCyberware);
+                Cyberware objCyberware = ImportHeroLabCyberware(xmlCyberwareToImport, null);
+                if (objCyberware != null)
+                    _lstCyberware.Add(objCyberware);
             }
-
+            foreach (XmlNode xmlPluginToAdd in xmlStatBlockBaseNode.SelectNodes("gear/augmentations/cyberware/item[@useradded = \"no\"]"))
+            {
+                string strName = xmlPluginToAdd.Attributes["name"]?.InnerText;
+                if (!string.IsNullOrEmpty(strName))
+                {
+                    Cyberware objPlugin = _lstCyberware.FirstOrDefault(x => !string.IsNullOrEmpty(x.ParentID) && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                    if (objPlugin != null)
+                    {
+                        objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
+                        ProcessHeroLabCyberwarePlugins(objPlugin, xmlPluginToAdd, objPlugin.Grade);
+                    }
+                }
+            }
+            foreach (XmlNode xmlCyberwareToImport in xmlStatBlockBaseNode.SelectNodes("gear/augmentations/bioware/item[@useradded != \"no\"]"))
+            {
+                Cyberware objCyberware = ImportHeroLabCyberware(xmlCyberwareToImport, null);
+                if (objCyberware != null)
+                    _lstCyberware.Add(objCyberware);
+            }
+            foreach (XmlNode xmlPluginToAdd in xmlStatBlockBaseNode.SelectNodes("gear/augmentations/bioware/item[@useradded = \"no\"]"))
+            {
+                string strName = xmlPluginToAdd.Attributes["name"]?.InnerText;
+                if (!string.IsNullOrEmpty(strName))
+                {
+                    Cyberware objPlugin = _lstCyberware.FirstOrDefault(x => !string.IsNullOrEmpty(x.ParentID) && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                    if (objPlugin != null)
+                    {
+                        objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
+                        ProcessHeroLabCyberwarePlugins(objPlugin, xmlPluginToAdd, objPlugin.Grade);
+                    }
+                }
+            }
+            
             Timekeeper.Finish("load_char_ware");
             Timekeeper.Start("load_char_spells");
 
             // Spells.
-            xmlNodeList = xmlStatBlockBaseNode.SelectNodes("magic/spells/spell");
+            XmlNodeList xmlSpellList = xmlStatBlockBaseNode.SelectNodes("magic/spells/spell");
             XmlDocument xmlSpellDocument = XmlManager.Load("spells.xml");
-            foreach (XmlNode xmlHeroLabSpell in xmlNodeList)
+            foreach (XmlNode xmlHeroLabSpell in xmlSpellList)
             {
                 string strSpellName = xmlHeroLabSpell.Attributes["name"]?.InnerText;
                 if (!string.IsNullOrEmpty(strSpellName))
@@ -15768,6 +16091,7 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_powers");
+            /* TODO: Spirit/Sprite Importing
             Timekeeper.Start("load_char_spirits");
 
             // Spirits/Sprites.
@@ -15779,6 +16103,7 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_spirits");
+            */
             Timekeeper.Start("load_char_complex");
 
             // Compex Forms/Technomancer Programs.
@@ -15791,6 +16116,7 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_complex");
+            /* TODO: AI Advanced Program Importing
             Timekeeper.Start("load_char_aiprogram");
 
             // AI Advanced Programs.
@@ -15803,6 +16129,7 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_aiprogram");
+            */
             Timekeeper.Start("load_char_marts");
 
             // Martial Arts.

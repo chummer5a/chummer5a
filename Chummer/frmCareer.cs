@@ -3121,7 +3121,7 @@ namespace Chummer
                 objHole = new Cyberware(CharacterObject);
                 List<Weapon> lstWeapons = new List<Weapon>();
                 List<Vehicle> lstVehicles = new List<Vehicle>();
-                objHole.Create(xmlEssHole, CharacterObject, CharacterObject.GetGradeList(Improvement.ImprovementSource.Cyberware, true).FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Cyberware, intCentiessence, lstWeapons, lstVehicles);
+                objHole.Create(xmlEssHole, CharacterObject.GetGradeList(Improvement.ImprovementSource.Cyberware, true).FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Cyberware, intCentiessence, lstWeapons, lstVehicles);
 
                 CharacterObject.Cyberware.Add(objHole);
 
@@ -9017,7 +9017,7 @@ namespace Chummer
 
                 XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + frmPickCyberware.SelectedCyberware + "\"]");
                 Cyberware objCyberware = new Cyberware(CharacterObject);
-                if (objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware, frmPickCyberware.SelectedGrade,frmPickCyberware.SelectedRating,CharacterObject,objVehicle,objMod.Cyberware,CharacterObject.Vehicles,objMod.Weapons,frmPickCyberware.Markup,frmPickCyberware.FreeCost, "String_ExpensePurchaseVehicleCyberware"))
+                if (objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware, frmPickCyberware.SelectedGrade,frmPickCyberware.SelectedRating,objVehicle,objMod.Cyberware,CharacterObject.Vehicles,objMod.Weapons,frmPickCyberware.Markup,frmPickCyberware.FreeCost, "String_ExpensePurchaseVehicleCyberware"))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
@@ -14299,7 +14299,7 @@ namespace Chummer
             XmlNode objXmlCyberware = objSource == Improvement.ImprovementSource.Bioware ? XmlManager.Load("bioware.xml").SelectSingleNode("/chummer/biowares/bioware[id = \"" + frmPickCyberware.SelectedCyberware + "\"]") : XmlManager.Load("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + frmPickCyberware.SelectedCyberware + "\"]");
 
             Cyberware objCyberware = new Cyberware(CharacterObject);
-            if (objCyberware.Purchase(objXmlCyberware, objSource, frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating, CharacterObject, null, objSelectedCyberware?.Children ?? CharacterObject.Cyberware, CharacterObject.Vehicles, CharacterObject.Weapons, frmPickCyberware.Markup, frmPickCyberware.FreeCost))
+            if (objCyberware.Purchase(objXmlCyberware, objSource, frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating, null, objSelectedCyberware?.Children ?? CharacterObject.Cyberware, CharacterObject.Vehicles, CharacterObject.Weapons, frmPickCyberware.Markup, frmPickCyberware.FreeCost))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -16035,7 +16035,7 @@ namespace Chummer
             Cyberware objCyberware = new Cyberware(CharacterObject);
             string strForced = xmlSuiteNode.SelectSingleNode("name/@select")?.InnerText ?? string.Empty;
 
-            objCyberware.Create(xmlCyberwareNode, CharacterObject, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true, strForced);
+            objCyberware.Create(xmlCyberwareNode, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true, strForced);
             objCyberware.Suite = true;
 
             foreach (Weapon objWeapon in lstWeapons)

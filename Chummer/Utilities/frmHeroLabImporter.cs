@@ -58,10 +58,7 @@ namespace Chummer
                 {
                     treCharacterList.Nodes.Clear();
                     treCharacterList.Nodes.Add(objNode);
-                    if (objNode.Nodes.Count > 0)
-                        treCharacterList.SelectedNode = objNode.Nodes[0];
-                    else
-                        treCharacterList.SelectedNode = objNode;
+                    treCharacterList.SelectedNode = objNode.Nodes.Count > 0 ? objNode.Nodes[0] : objNode;
                 }
                 Cursor = Cursors.Default;
             }
@@ -438,9 +435,55 @@ namespace Chummer
                 if (intIndex >= 0 && intIndex < _lstCharacterCache.Count)
                 {
                     string strFile = _lstCharacterCache[intIndex]?.FilePath;
-                    if (!string.IsNullOrEmpty(strFile))
+                    string strCharacterId = _lstCharacterCache[intIndex]?.CharacterId;
+                    if (!string.IsNullOrEmpty(strFile) && !string.IsNullOrEmpty(strCharacterId))
                     {
-                        ;
+                        string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
+                        Cursor objOldCursor = Cursor;
+                        if (!File.Exists(strFilePath))
+                        {
+                            if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                            {
+                                Cursor = Cursors.WaitCursor;
+                                frmOptions frmOptions = new frmOptions();
+                                frmOptions.ShowDialog();
+                                Cursor = objOldCursor;
+                            }
+                        }
+                        Cursor = Cursors.WaitCursor;
+                        Character objCharacter = new Character();
+                        string settingsPath = Path.Combine(Application.StartupPath, "settings");
+                        string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
+
+                        if (settingsFiles.Length > 1)
+                        {
+                            frmSelectSetting frmPickSetting = new frmSelectSetting();
+                            frmPickSetting.ShowDialog(this);
+
+                            if (frmPickSetting.DialogResult == DialogResult.Cancel)
+                                return;
+
+                            objCharacter.SettingsFile = frmPickSetting.SettingsFile;
+                        }
+                        else
+                        {
+                            string strSettingsFile = settingsFiles[0];
+                            objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
+                        }
+
+
+                        Program.MainForm.OpenCharacters.Add(objCharacter);
+                        Timekeeper.Start("load_file");
+                        bool blnLoaded = objCharacter.LoadFromHeroLabFile(strFile, strCharacterId, objCharacter.SettingsFile);
+                        Timekeeper.Finish("load_file");
+                        if (!blnLoaded)
+                        {
+                            Program.MainForm.OpenCharacters.Remove(objCharacter);
+                            objCharacter.DeleteCharacter();
+                            return;
+                        }
+
+                        Program.MainForm.OpenCharacter(objCharacter);
                     }
                 }
             }

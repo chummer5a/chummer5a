@@ -6093,7 +6093,7 @@ namespace Chummer.Classes
             List<Vehicle> lstVehicles = new List<Vehicle>();
 
             Grade objGrade = Cyberware.ConvertToCyberwareGrade(bonusNode["grade"]?.InnerText, _objImprovementSource, _objCharacter);
-            objCyberware.Create(node, _objCharacter, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true, ForcedValue);
+            objCyberware.Create(node, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true, ForcedValue);
 
             if (objCyberware.InternalId.IsEmptyGuid())
                 throw new AbortedException();
