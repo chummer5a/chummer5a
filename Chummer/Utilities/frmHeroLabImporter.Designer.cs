@@ -90,7 +90,7 @@ namespace Chummer
             this.cmdSelectFile.Name = "cmdSelectFile";
             this.cmdSelectFile.Size = new System.Drawing.Size(92, 23);
             this.cmdSelectFile.TabIndex = 1;
-            this.cmdSelectFile.Tag = "String_SelectFile";
+            this.cmdSelectFile.Tag = "String_SelectPORFile";
             this.cmdSelectFile.Text = "Select POR File";
             this.cmdSelectFile.UseVisualStyleBackColor = true;
             this.cmdSelectFile.Click += new System.EventHandler(this.cmdSelectFile_Click);

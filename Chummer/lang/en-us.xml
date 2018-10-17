@@ -9566,7 +9566,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Hero Lab and the Hero Lab logo are Registered Trademarks of LWD Technology, Inc.</text>
     </string>
     <string>
-      <key>String_SelectFile</key>
+      <key>String_SelectPORFile</key>
       <text>Select POR File</text>
     </string>
     <string>

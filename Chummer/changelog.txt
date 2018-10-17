@@ -108,6 +108,7 @@ Application Changes:
 - Fixed a bug where characters without Run Faster enabled could still add Advanced Lifestyles despite them being part of Run Faster.
 - Fixed an issue where limit modifiers added by improvements could get edited and/or deleted independent from their improvement.
 - Fixed an issue where some limit modifiers added by gear would not get properly removed when the gear was removed. Technical fix for #3115, though existing characters with these issues will need their existing, orphaned limit modifiers removed manually.
+- Added a limited-functionality Hero Lab importer tool. This tool can convert .por files into Chummer5a characters to a certain extent, as certain character elements aren't saved in ways that can be (easily) converted into Chummer5a information.
 
 Data Changes:
 
@@ -219,6 +220,12 @@ New Strings:
 - Label_InitRoller_ResultOf
 - String_KarmaRemaining
 - String_NuyenRemaining
+- Title_HeroLabImporter
+- Message_HeroLabImporterWarning_Title
+- Message_HeroLabImporterWarning
+- Label_HeroLabTrademarks
+- String_SelectPORFile
+- String_ImportCharacter
 
 Changed Strings:
 
