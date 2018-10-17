@@ -171,22 +171,17 @@ namespace Chummer
                 {
                     cboSkill1.SelectedValue = strSkill;
                 }
-                else
-                    cboSkill1.Visible = false;
                 strSkill = _lstPrioritySkills.ElementAtOrDefault(1);
                 if (!string.IsNullOrEmpty(strSkill))
                 {
                     cboSkill2.SelectedValue = strSkill;
                 }
-                else
-                    cboSkill2.Visible = false;
                 strSkill = _lstPrioritySkills.ElementAtOrDefault(2);
                 if (!string.IsNullOrEmpty(strSkill))
                 {
                     cboSkill3.SelectedValue = strSkill;
                 }
-                else
-                    cboSkill3.Visible = false;
+                cboTalents_SelectedIndexChanged(null, EventArgs.Empty);
             }
             else
             {

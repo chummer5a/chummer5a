@@ -333,7 +333,6 @@ namespace Chummer.Backend.Equipment
 
         /// Create a Cyberware from an XmlNode.
         /// <param name="objXmlCyberware">XmlNode to create the object from.</param>
-        /// <param name="objCharacter">Character object the Cyberware will be added to.</param>
         /// <param name="objGrade">Grade of the selected piece.</param>
         /// <param name="objSource">Source of the piece.</param>
         /// <param name="intRating">Selected Rating of the piece of Cyberware.</param>
@@ -344,7 +343,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="strForced">Force a particular value to be selected by an Improvement prompts.</param>
         /// <param name="objParent">Cyberware to which this new cyberware should be added (needed in creation method for selecting a side).</param>
         /// <param name="objParentVehicle">Vehicle to which this new cyberware will be added (needed in creation method for selecting a side and improvements).</param>
-        public void Create(XmlNode objXmlCyberware, Character objCharacter, Grade objGrade, Improvement.ImprovementSource objSource, int intRating, List<Weapon> lstWeapons, List<Vehicle> lstVehicles, bool blnCreateImprovements = true, bool blnCreateChildren = true, string strForced = "", Cyberware objParent = null, Vehicle objParentVehicle = null)
+        public void Create(XmlNode objXmlCyberware, Grade objGrade, Improvement.ImprovementSource objSource, int intRating, List<Weapon> lstWeapons, List<Vehicle> lstVehicles, bool blnCreateImprovements = true, bool blnCreateChildren = true, string strForced = "", Cyberware objParent = null, Vehicle objParentVehicle = null)
         {
             Parent = objParent;
             _strForced = strForced;
@@ -474,7 +473,7 @@ namespace Chummer.Backend.Equipment
 
                 if (objXmlWeapon != null)
                 {
-                    Weapon objGearWeapon = new Weapon(objCharacter)
+                    Weapon objGearWeapon = new Weapon(_objCharacter)
                     {
                         ParentVehicle = ParentVehicle
                     };
@@ -570,7 +569,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
                         ImprovementManager.ForcedValue = _strForced;
 
-                    if (Bonus != null && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString("D"), Bonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
+                    if (Bonus != null && !ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString("D"), Bonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
                     {
                         _guiID = Guid.Empty;
                         return;
@@ -578,7 +577,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
                         _strExtra = ImprovementManager.SelectedValue;
 
-                    if (WirelessBonus != null && WirelessOn && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString("D"), WirelessBonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
+                    if (WirelessBonus != null && WirelessOn && !ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString("D"), WirelessBonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
                     {
                         _guiID = Guid.Empty;
                         return;
@@ -608,7 +607,7 @@ namespace Chummer.Backend.Equipment
                             // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
                             intCount = intCount > 0 ? 1 : 0;
                         }
-                        if ((intCount & 1) == 1 && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString("D") + "Pair", PairBonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
+                        if ((intCount & 1) == 1 && !ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString("D") + "Pair", PairBonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
                         {
                             _guiID = Guid.Empty;
                             return;
@@ -687,7 +686,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 Cyberware objSubsystem = new Cyberware(_objCharacter);
                                 int intSubSystemRating = Convert.ToInt32(objXmlSubsystemNode["rating"]?.InnerText);
-                                objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, Improvement.ImprovementSource.Cyberware, intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
+                                objSubsystem.Create(objXmlSubsystem, objGrade, Improvement.ImprovementSource.Cyberware, intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
                                     objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
                                 objSubsystem.ParentID = InternalId;
                                 objSubsystem.Cost = "0";
@@ -712,7 +711,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 Cyberware objSubsystem = new Cyberware(_objCharacter);
                                 int intSubSystemRating = Convert.ToInt32(objXmlSubsystemNode["rating"]?.InnerText);
-                                objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, Improvement.ImprovementSource.Bioware, intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
+                                objSubsystem.Create(objXmlSubsystem, objGrade, Improvement.ImprovementSource.Bioware, intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
                                     objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
                                 objSubsystem.ParentID = InternalId;
                                 objSubsystem.Cost = "0";
@@ -3627,12 +3626,12 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnFree"></param>
         /// <param name="strExpenseString"></param>
         /// <returns></returns>
-        public bool Purchase(XmlNode objNode, Improvement.ImprovementSource objImprovementSource, Grade objGrade, int intRating, Character objCharacter, Vehicle objVehicle, TaggedObservableCollection<Cyberware> lstCyberwareCollection, ObservableCollection<Vehicle> lstVehicleCollection, TaggedObservableCollection<Weapon> lstWeaponCollection, decimal decMarkup = 0, bool blnFree = false, string strExpenseString = "String_ExpensePurchaseCyberware")
+        public bool Purchase(XmlNode objNode, Improvement.ImprovementSource objImprovementSource, Grade objGrade, int intRating, Vehicle objVehicle, TaggedObservableCollection<Cyberware> lstCyberwareCollection, ObservableCollection<Vehicle> lstVehicleCollection, TaggedObservableCollection<Weapon> lstWeaponCollection, decimal decMarkup = 0, bool blnFree = false, string strExpenseString = "String_ExpensePurchaseCyberware")
         {
             // Create the Cyberware object.
             List<Weapon> lstWeapons = new List<Weapon>();
             List<Vehicle> lstVehicles = new List<Vehicle>();
-            Create(objNode, objCharacter, objGrade, objImprovementSource, intRating, lstWeapons, lstVehicles, true, true, string.Empty, null, objVehicle);
+            Create(objNode, objGrade, objImprovementSource, intRating, lstWeapons, lstVehicles, true, true, string.Empty, null, objVehicle);
             if (InternalId.IsEmptyGuid())
             {
                 return false;
@@ -3645,10 +3644,10 @@ namespace Chummer.Backend.Equipment
 
             // Multiply the cost if applicable.
             char chrAvail = TotalAvailTuple().Suffix;
-            if (chrAvail == 'R' && objCharacter.Options.MultiplyRestrictedCost)
-                decCost *= objCharacter.Options.RestrictedCostMultiplier;
-            if (chrAvail == 'F' && objCharacter.Options.MultiplyForbiddenCost)
-                decCost *= objCharacter.Options.ForbiddenCostMultiplier;
+            if (chrAvail == 'R' && _objCharacter.Options.MultiplyRestrictedCost)
+                decCost *= _objCharacter.Options.RestrictedCostMultiplier;
+            if (chrAvail == 'F' && _objCharacter.Options.MultiplyForbiddenCost)
+                decCost *= _objCharacter.Options.ForbiddenCostMultiplier;
 
             // Apply a markup if applicable.
             if (decMarkup != 0 && !blnFree)
@@ -3659,22 +3658,22 @@ namespace Chummer.Backend.Equipment
             // Check the item's Cost and make sure the character can afford it.
             if (!blnFree)
             {
-                if (decCost > objCharacter.Nuyen)
+                if (decCost > _objCharacter.Nuyen)
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return false;
                 }
 
-                if (objCharacter.Created)
+                if (_objCharacter.Created)
                 {
                     // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     string strEntry = LanguageManager.GetString(strExpenseString, GlobalOptions.Language);
                     objExpense.Create(decCost * -1,
                         strEntry + LanguageManager.GetString("String_Space", GlobalOptions.Language) +
                         DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    objCharacter.ExpenseEntries.AddWithSort(objExpense);
-                    objCharacter.Nuyen -= decCost;
+                    _objCharacter.ExpenseEntries.AddWithSort(objExpense);
+                    _objCharacter.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateNuyen(NuyenExpenseType.AddVehicleModCyberware, InternalId);

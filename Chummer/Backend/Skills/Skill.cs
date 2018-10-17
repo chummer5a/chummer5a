@@ -306,6 +306,79 @@ namespace Chummer.Backend.Skills
             return objSkill;
         }
 
+        public static Skill LoadFromHeroLab(Character objCharacter, XmlNode xmlSkillNode, bool blnIsKnowledgeSkill, string strSkillType = "")
+        {
+            string strName = xmlSkillNode.Attributes?["name"]?.InnerText ?? string.Empty;
+
+            XmlNode xmlSkillDataNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/" + (blnIsKnowledgeSkill ? "knowledgeskills" : "skills") + "/skill[name = \"" + strName + "\"]");
+            Guid suid = Guid.NewGuid();
+            if (xmlSkillDataNode?.TryGetField("id", Guid.TryParse, out suid) != true)
+                suid = Guid.NewGuid();
+
+            int intKarmaRating = 0;
+            if (xmlSkillNode.Attributes?["text"]?.InnerText != "N")      // Native Languages will have a base + karma rating of 0
+                int.TryParse(xmlSkillNode.Attributes?["base"]?.InnerText, out intKarmaRating); // Only reading karma rating out for now, any base rating will need modification within SkillsSection
+            
+            Skill objSkill;
+            if (blnIsKnowledgeSkill)
+            {
+                KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(objCharacter)
+                {
+                    WriteableName = strName,
+                    Karma = intKarmaRating,
+                    Type = !string.IsNullOrEmpty(strSkillType) ? strSkillType : (xmlSkillDataNode?["category"]?.InnerText ?? "Academic")
+                };
+
+                objSkill = objKnowledgeSkill;
+            }
+            else
+            {
+                objSkill = FromData(xmlSkillDataNode, objCharacter);
+                if (xmlSkillNode.Attributes?["fromgroup"]?.InnerText == "yes")
+                {
+                    intKarmaRating -= objSkill.SkillGroupObject.Karma;
+                }
+                objSkill._intKarma = intKarmaRating;
+
+                if (objSkill is ExoticSkill objExoticSkill)
+                {
+                    string strSpecializationName = xmlSkillNode.SelectSingleNode("specialization/@bonustext")?.InnerText ?? string.Empty;
+                    if (!string.IsNullOrEmpty(strSpecializationName))
+                    {
+                        int intLastPlus = strSpecializationName.LastIndexOf('+');
+                        if (intLastPlus > strSpecializationName.Length)
+                            strSpecializationName = strSpecializationName.Substring(0, intLastPlus - 1);
+                    }
+                    //don't need to do more load then.
+                    objExoticSkill.Specific = strSpecializationName;
+                    return objSkill;
+                }
+            }
+
+            objSkill.SkillId = suid;
+
+            List<SkillSpecialization> lstSpecializations = new List<SkillSpecialization>();
+            using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("specialization"))
+                if (xmlSpecList?.Count > 0)
+                    foreach (XmlNode xmlSpecializationNode in xmlSpecList)
+                    {
+                        string strSpecializationName = xmlSpecializationNode.Attributes?["bonustext"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strSpecializationName))
+                        {
+                            int intLastPlus = strSpecializationName.LastIndexOf('+');
+                            if (intLastPlus > strSpecializationName.Length)
+                                strSpecializationName = strSpecializationName.Substring(0, intLastPlus - 1);
+                            lstSpecializations.Add(new SkillSpecialization(strSpecializationName, false, objSkill));
+                        }
+                    }
+            if (lstSpecializations.Count != 0)
+            {
+                objSkill.Specializations.AddRange(lstSpecializations);
+            }
+
+            return objSkill;
+        }
+
         protected static readonly Dictionary<string, bool> SkillTypeCache = new Dictionary<string, bool>();
         //TODO CACHE INVALIDATE
 

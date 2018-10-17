@@ -562,6 +562,12 @@
     <Compile Include="frmHistory.Designer.cs">
       <DependentUpon>frmHistory.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\frmHeroLabImporter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Utilities\frmHeroLabImporter.Designer.cs">
+      <DependentUpon>frmHeroLabImporter.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\frmInitiative.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1104,6 +1110,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmHistory.resx">
       <DependentUpon>frmHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Utilities\frmHeroLabImporter.resx">
+      <DependentUpon>frmHeroLabImporter.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Utilities\frmInitiative.resx">
       <DependentUpon>frmInitiative.cs</DependentUpon>
@@ -2725,6 +2734,7 @@
     <Content Include="icons\heart_add.png" />
     <Content Include="icons\heart_delete.png" />
     <Content Include="icons\help.png" />
+    <Content Include="icons\HeroLab_16.png" />
     <Content Include="icons\hourglass.png" />
     <Content Include="icons\hourglass_add.png" />
     <Content Include="icons\hourglass_delete.png" />
