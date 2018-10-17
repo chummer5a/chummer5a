@@ -16166,29 +16166,51 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_marts");
-#if LEGACY
-            Timekeeper.Start("load_char_mam");
-
-            // Martial Art Maneuvers.
-            objXmlNodeList = objXmlCharacter.SelectNodes("martialartmaneuvers/martialartmaneuver");
-            foreach (XmlNode objXmlManeuver in objXmlNodeList)
-            {
-                MartialArtManeuver objManeuver = new MartialArtManeuver(this);
-                objManeuver.Load(objXmlManeuver);
-                _lstMartialArtManeuvers.Add(objManeuver);
-            }
-
-            Timekeeper.Finish("load_char_mam");
-#endif
             Timekeeper.Start("load_char_lifestyle");
 
             // Lifestyles.
-            xmlNodeList = objXmlCharacter.SelectNodes("lifestyles/lifestyle");
-            foreach (XmlNode xmlHeroLabLifestyle in xmlNodeList)
+            XmlNode xmlFakeSINDataNode = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Fake SIN']");
+            XmlNode xmlFakeLicenseDataNode = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Fake License']");
+            xmlNodeList = xmlStatBlockBaseNode.SelectNodes("identities/identity");
+            foreach (XmlNode xmlHeroLabIdentity in xmlNodeList)
             {
-                Lifestyle objLifestyle = new Lifestyle(this);
-                objLifestyle.Load(xmlHeroLabLifestyle);
-                _lstLifestyles.Add(objLifestyle);
+                string strIdentityName = xmlHeroLabIdentity.Attributes["name"]?.InnerText;
+                int intIdentityNameParenthesesStart = strIdentityName.IndexOf('(');
+                if (intIdentityNameParenthesesStart != -1)
+                    strIdentityName = strIdentityName.Substring(0, intIdentityNameParenthesesStart);
+                XmlNode xmlHeroLabFakeSINNode = xmlHeroLabIdentity.SelectSingleNode("license[@name = \"Fake SIN\"]");
+                if (xmlHeroLabFakeSINNode != null)
+                {
+                    Gear objFakeSIN = new Gear(this);
+                    objFakeSIN.Create(xmlFakeSINDataNode, Convert.ToInt32(xmlHeroLabFakeSINNode.Attributes["rating"]?.InnerText), lstWeapons, strIdentityName);
+                    foreach (XmlNode xmlHeroLabFakeLicenseNode in xmlHeroLabIdentity.SelectNodes("license[@name = \"Fake License\"]"))
+                    {
+                        Gear objFakeLicense = new Gear(this);
+                        objFakeLicense.Create(xmlFakeLicenseDataNode, Convert.ToInt32(xmlHeroLabFakeLicenseNode.Attributes["rating"]?.InnerText), lstWeapons, xmlHeroLabFakeLicenseNode.Attributes["for"]?.InnerText);
+                        objFakeLicense.Parent = objFakeSIN;
+                        objFakeSIN.Children.Add(objFakeLicense);
+                    }
+
+                    _lstGear.Add(objFakeSIN);
+                }
+                XmlNode xmlHeroLabLifestyleNode = xmlHeroLabIdentity.SelectSingleNode("lifestyle");
+                if (xmlHeroLabLifestyleNode != null)
+                {
+                    string strLifestyleType = xmlHeroLabLifestyleNode.Attributes["name"]?.InnerText.TrimEndOnce(" Lifestyle");
+                    
+                    XmlNode xmlLifestyleDataNode = XmlManager.Load("lifestyles.xml").SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + strLifestyleType + "\"]");
+
+                    if (xmlLifestyleDataNode != null)
+                    {
+                        Lifestyle objLifestyle = new Lifestyle(this);
+                        objLifestyle.Create(xmlLifestyleDataNode);
+                        if (int.TryParse(xmlHeroLabLifestyleNode.Attributes["months"]?.InnerText, out int intMonths))
+                        {
+                            objLifestyle.Increments = intMonths;
+                        }
+                        _lstLifestyles.Add(objLifestyle);
+                    }
+                }
             }
 
             Timekeeper.Finish("load_char_lifestyle");
