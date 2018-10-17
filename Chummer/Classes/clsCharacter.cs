@@ -12983,14 +12983,12 @@ namespace Chummer
                 XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[code = \"" + strBook + "\"]");
                 if (objXmlBook != null)
                 {
-                    strReturn.Append(objXmlBook["translate"]?.InnerText ?? objXmlBook["name"]?.InnerText ??
-                                     LanguageManager.GetString("String_Unknown", GlobalOptions.Language));
-                    strReturn.Append($" ({objXmlBook["altcode"]?.InnerText ?? strBook})");
+                    strReturn.AppendLine((objXmlBook["translate"]?.InnerText ?? objXmlBook["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)) +
+                                         LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + (objXmlBook["altcode"]?.InnerText ?? strBook) + ')');
                 }
                 else
                 {
-                    strReturn.Append(
-                        LanguageManager.GetString("String_Unknown", GlobalOptions.Language) + ' ' + strBook);
+                    strReturn.AppendLine(LanguageManager.GetString("String_Unknown", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strBook);
                 }
             }
 

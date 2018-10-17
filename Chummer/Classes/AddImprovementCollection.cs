@@ -2557,20 +2557,18 @@ namespace Chummer.Classes
         {
             Log.Info("limitmodifier");
             Log.Info("limitmodifier = " + bonusNode.OuterXml);
+
             string strLimit = bonusNode["limit"]?.InnerText;
-            string strBonus = bonusNode["value"]?.InnerText;
-            if (strBonus == "Rating")
-            {
-                strBonus = _intRating.ToString();
-            }
+            int intBonus = ImprovementManager.ValueToInt(_objCharacter, bonusNode["value"]?.InnerXml, _intRating);
             string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
-            int intBonus = strBonus == "Rating" ? _intRating : Convert.ToInt32(strBonus);
+            
+            LimitModifier objLimitModifier = new LimitModifier(_objCharacter);
+            objLimitModifier.Create(_strFriendlyName, intBonus, strLimit, strCondition, false);
+            _objCharacter.LimitModifiers.Add(objLimitModifier);
+
             Log.Info("Calling CreateImprovement");
-            LimitModifier lm = new LimitModifier(_objCharacter);
-            lm.Create(_strFriendlyName,intBonus,strLimit,strCondition);
-            _objCharacter.LimitModifiers.Add(lm);
-            CreateImprovement(lm.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitModifier,
-                _strFriendlyName, intBonus, 0, 0, 0, 0, 0, string.Empty, false, string.Empty, strCondition);
+            CreateImprovement(objLimitModifier.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitModifier,
+                _strUnique, intBonus, 0, 0, 0, 0, 0, string.Empty, false, string.Empty, strCondition);
         }
 
         // The Improvement adjusts a Skill Category.

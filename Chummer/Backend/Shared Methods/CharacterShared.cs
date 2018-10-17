@@ -206,9 +206,8 @@ namespace Chummer
                     //Remove the old LimitModifier to ensure we don't double up.
                     _objCharacter.LimitModifiers.Remove(objLimitModifier);
                     // Create the new limit modifier.
-                    objLimitModifier = new LimitModifier(_objCharacter);
-                    objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition);
-                    objLimitModifier.Guid = new Guid(strGuid);
+                    objLimitModifier = new LimitModifier(_objCharacter, strGuid);
+                    objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition, true);
 
                     _objCharacter.LimitModifiers.Add(objLimitModifier);
 
