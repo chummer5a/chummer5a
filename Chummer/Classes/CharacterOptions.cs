@@ -863,7 +863,7 @@ namespace Chummer
             // Spirit Force Based on Total MAG.
             GlobalOptions.LoadBoolFromRegistry(ref _blnSpiritForceBasedOnTotalMAG, "spiritforcebasedontotalmag", string.Empty, true);
 
-            // Skill Defaulting Includes Modifers.
+            // Skill Defaulting Includes modifiers.
             bool blnTemp = false;
             GlobalOptions.LoadBoolFromRegistry(ref blnTemp, "skilldefaultingincludesmodifiers", string.Empty, true);
 

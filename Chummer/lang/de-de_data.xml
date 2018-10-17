@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
 	Chummer5a is free software: you can redistribute it and/or modify
@@ -20911,11 +20911,11 @@
 				<translate>Eichelhäher</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Illusion spells, preparations, and rituals</name>
+						<name>Magician: +2 dice pool modifier when casting Illusion spells, preparations, and rituals</name>
 						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Illusion</translate>
 					</choice>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+						<name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
 						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Manipulation</translate>
 					</choice>
 					<choice>
@@ -20937,7 +20937,7 @@
 				<translate>Eichhörnchen</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Detection spells, preparations, and rituals</name>
+						<name>Magician: +2 dice pool modifier when casting Detection spells, preparations, and rituals</name>
 						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Wahrnehmung</translate>
 					</choice>
 					<choice>
@@ -20955,7 +20955,7 @@
 				<translate>Fuchs</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Illusion spells, preparations, and rituals</name>
+						<name>Magician: +2 dice pool modifier when casting Illusion spells, preparations, and rituals</name>
 						<translate>+2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Illusion</translate>
 					</choice>
 					<choice>
@@ -20991,7 +20991,7 @@
 				<translate>Heinzelmännchen</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+						<name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
 						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Manipulation</translate>
 					</choice>
 					<choice>
@@ -21009,7 +21009,7 @@
 				<translate>Murmeltier</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Detection spells, preparations, and rituals</name>
+						<name>Magician: +2 dice pool modifier when casting Detection spells, preparations, and rituals</name>
 						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Wahrnehmung</translate>
 					</choice>
 					<choice>
@@ -21035,7 +21035,7 @@
 						<translate>Zauberer: +2 Würfel für das Herbeirufen von Wassergeistern</translate>
 					</choice>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Illusion spells, preparations, and rituals</name>
+						<name>Magician: +2 dice pool modifier when casting Illusion spells, preparations, and rituals</name>
 						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Illusion</translate>
 					</choice>
 					<choice>
@@ -21053,7 +21053,7 @@
 				<translate>Schwein</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+						<name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
 						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Manipulation</translate>
 					</choice>
 					<choice>
@@ -21301,7 +21301,7 @@
 						<translate>Adept: 1 free level of Authoritative Tone</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifer for Instruction Tests.</altadvantage>
+				<altadvantage>All: +2 dice pool modifier for Instruction Tests.</altadvantage>
 				<altdisadvantage>The Goddess refuses to take a backseat to any male counterparts. Unless you succeed in a Charisma + Willpower Test (3), you will not take orders from a male, or if a male disrespects you, you must respond with equal measure</altdisadvantage>
 				<altpage>129</altpage>
 			</mentor>
@@ -21319,7 +21319,7 @@
 						<translate>Adept: 2 free levels of Attribute Boost (Strength)</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifer for Survival Tests, Running Tests, or Tracking Tests (Choose One)</altadvantage>
+				<altadvantage>All: +2 dice pool modifier for Survival Tests, Running Tests, or Tracking Tests (Choose One)</altadvantage>
 				<altdisadvantage>In combat situations, a Lion will never leave a comrade behind, and will fght to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot ﬂee combat before your team members are safe. Further, whenever taking actions that don’t beneft the team somehow, your physical and mental limits are reduced by 2.</altdisadvantage>
 				<altpage>129</altpage>
 			</mentor>
@@ -21341,7 +21341,7 @@
 						<translate>Adept: 2 free levels of Enhanced Perception.</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifer for knowledge skill tests.</altadvantage>
+				<altadvantage>All: +2 dice pool modifier for knowledge skill tests.</altadvantage>
 				<altdisadvantage>Followers of Raven share their mentor’s love of collecting. When presented with data, knowledge, or other gear that would be valuable (gamemaster’s discretion), you must pass a Charisma + Willpower Test (3), or be unable to resist trying to acquiring it.</altdisadvantage>
 				<altpage>121</altpage>
 			</mentor>
@@ -21351,16 +21351,16 @@
 				<translate>Taube</translate>
 				<choices>
 					<choice>
-						<name>Magician: +1 dice pool modifer for casting Health spells, +1 dice pool modifer to summon air spirits</name>
-						<translate>Magician: +1 dice pool modifer for casting Health spells, +1 dice pool modifer to summon air spirits</translate>
+						<name>Magician: +1 dice pool modifier for casting Health spells, +1 dice pool modifier to summon air spirits</name>
+						<translate>Magician: +1 dice pool modifier for casting Health spells, +1 dice pool modifier to summon air spirits</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 1 free level of Enhanced Perception.</name>
 						<translate>Adept: Gain 1 free level of Enhanced Perception.</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifer for Negotiation tests.</altadvantage>
-				<altdisadvantage>Dove discourages combat whenever possible. As such, those who follow Dove are at –2 dice pool modifer to cast Combat spells or when using lethal force.</altdisadvantage>
+				<altadvantage>All: +2 dice pool modifier for Negotiation tests.</altadvantage>
+				<altdisadvantage>Dove discourages combat whenever possible. As such, those who follow Dove are at –2 dice pool modifier to cast Combat spells or when using lethal force.</altdisadvantage>
 				<altpage>97</altpage>
 			</mentor>
 			<mentor>
@@ -21387,8 +21387,8 @@
 				<translate>Die Arkana</translate>
 				<choices>
 					<choice>
-						<name>Magician: +1 dice pool modifer for casting Detection spells, an additional +2 dice pool modifer to cast Clairvoyance spells.</name>
-						<translate>Magician: +1 dice pool modifer for casting Detection spells, an additional +2 dice pool modifer to cast Clairvoyance spells.</translate>
+						<name>Magician: +1 dice pool modifier for casting Detection spells, an additional +2 dice pool modifier to cast Clairvoyance spells.</name>
+						<translate>Magician: +1 dice pool modifier for casting Detection spells, an additional +2 dice pool modifier to cast Clairvoyance spells.</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 2 free levels of Danger Sense</name>
@@ -21405,12 +21405,12 @@
 				<translate>Heilige Schrift</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when using the Banishing skill.</name>
-						<translate>Magician: +2 dice pool modifer when using the Banishing skill.</translate>
+						<name>Magician: +2 dice pool modifier when using the Banishing skill.</name>
+						<translate>Magician: +2 dice pool modifier when using the Banishing skill.</translate>
 					</choice>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Health spells.</name>
-						<translate>Magician: +2 dice pool modifer when casting Health spells.</translate>
+						<name>Magician: +2 dice pool modifier when casting Health spells.</name>
+						<translate>Magician: +2 dice pool modifier when casting Health spells.</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 1 free level of Mystic Armor or Empathic Healing (choose one).</name>
@@ -21427,8 +21427,8 @@
 				<translate>Tod</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</name>
-						<translate>Magician: +2 dice pool modifer when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</translate>
+						<name>Magician: +2 dice pool modifier when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</name>
+						<translate>Magician: +2 dice pool modifier when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 1 free level of Killing Hands or Plague Cloud (choose one).</name>
@@ -21445,8 +21445,8 @@
 				<translate>Krieg</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Combat spells, preparations, and rituals.</name>
-						<translate>Magician: +2 dice pool modifer when casting Combat spells, preparations, and rituals.</translate>
+						<name>Magician: +2 dice pool modifier when casting Combat spells, preparations, and rituals.</name>
+						<translate>Magician: +2 dice pool modifier when casting Combat spells, preparations, and rituals.</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 1 free level of Critical Strike.</name>
@@ -21471,7 +21471,7 @@
 						<translate>Adept: Gain the Adept Accident power for free.</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifer for Intimidation or Demolitions tests (choose one)</altadvantage>
+				<altadvantage>All: +2 dice pool modifier for Intimidation or Demolitions tests (choose one)</altadvantage>
 				<altdisadvantage>Followers gain the Driven quality, in which the focus is the opportunity to destroy something meaningful. Further, they fnd it hard to work in groups given their destructive nature. They can never beneft from teamwork or leadership bonuses.</altdisadvantage>
 				<altpage>98</altpage>
 			</mentor>
@@ -21481,15 +21481,15 @@
 				<translate>Der Grüne Mann</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer to summon Plant Spirits.</name>
-						<translate>Magician: +2 dice pool modifer to summon Plant Spirits.</translate>
+						<name>Magician: +2 dice pool modifier to summon Plant Spirits.</name>
+						<translate>Magician: +2 dice pool modifier to summon Plant Spirits.</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 2 free levels of Rooting.</name>
 						<translate>Adept: Gain 2 free levels of Rooting.</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifer for Negotiation Tests.</altadvantage>
+				<altadvantage>All: +2 dice pool modifier for Negotiation Tests.</altadvantage>
 				<altdisadvantage>When signifcant damage is being done to vegetation, they must pass a Charisma + Willpower (3) Test or use all means possible to stop the destruction.</altdisadvantage>
 				<altpage>94</altpage>
 			</mentor>
@@ -21499,15 +21499,15 @@
 				<translate>Sonne</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Sun- or Fire-based spells.</name>
-						<translate>Magician: +2 dice pool modifer when casting Sun- or Fire-based spells.</translate>
+						<name>Magician: +2 dice pool modifier when casting Sun- or Fire-based spells.</name>
+						<translate>Magician: +2 dice pool modifier when casting Sun- or Fire-based spells.</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 3 free levels of Temperature Tolerance</name>
 						<translate>Adept: Gain 3 free levels of Temperature Tolerance</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifer for Perception tests when outside during the day.</altadvantage>
+				<altadvantage>All: +2 dice pool modifier for Perception tests when outside during the day.</altadvantage>
 				<altdisadvantage>Followers of Sun must pass a Charisma + Willpower (4) Test in order to purposefully deceive others.</altdisadvantage>
 				<altpage>97</altpage>
 			</mentor>
@@ -21589,15 +21589,15 @@
 				<translate>Spinne (alternativ)</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
-						<translate>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</translate>
+						<name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
+						<translate>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 2 free levels of Spirit Claw (although in this case, it manifests as a fang).</name>
 						<translate>Adept: Gain 2 free levels of Spirit Claw (although in this case, it manifests as a fang).</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifer for tests using the Stealth skill group.</altadvantage>
+				<altadvantage>All: +2 dice pool modifier for tests using the Stealth skill group.</altadvantage>
 				<altdisadvantage>When not following a plan or a plan doesn’t go according to plan, followers of Spider must pass a Charisma + Willpower (4) Test or suffer –2 to all rolls until a new plan is established.</altdisadvantage>
 				<altpage>99</altpage>
 			</mentor>
@@ -21607,15 +21607,15 @@
 				<translate>Wolf (alternativ)</translate>
 				<choices>
 					<choice>
-						<name>Magician: +1 dice pool modifer when casting Combat spells, preparations, and rituals.</name>
-						<translate>Magician: +1 dice pool modifer when casting Combat spells, preparations, and rituals.</translate>
+						<name>Magician: +1 dice pool modifier when casting Combat spells, preparations, and rituals.</name>
+						<translate>Magician: +1 dice pool modifier when casting Combat spells, preparations, and rituals.</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 2 free levels of Danger Sense.</name>
 						<translate>Adept: Gain 2 free levels of Danger Sense.</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +1 dice pool modifer for tests using the Sneaking, Perception, Survival, and Tracking skills.</altadvantage>
+				<altadvantage>All: +1 dice pool modifier for tests using the Sneaking, Perception, Survival, and Tracking skills.</altadvantage>
 				<altdisadvantage>Whenever a follower of Wolf sees an opportunity to survive by attacking or sacrifcing the weak, they must pass a Charisma + Willpower (4) Test or attempt to seize the opportunity. This does not apply to those the Wolf considers friends or family.</altdisadvantage>
 				<altpage>99</altpage>
 			</mentor>
@@ -21625,15 +21625,15 @@
 				<translate>Ratte (alternativ)</translate>
 				<choices>
 					<choice>
-						<name>Magician: +1 dice pool modifer when casting Health spells, preparations, and rituals</name>
-						<translate>Magician: +1 dice pool modifer when casting Health spells, preparations, and rituals</translate>
+						<name>Magician: +1 dice pool modifier when casting Health spells, preparations, and rituals</name>
+						<translate>Magician: +1 dice pool modifier when casting Health spells, preparations, and rituals</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 1 free level of Analytics.</name>
 						<translate>Adept: Gain 1 free level of Analytics.</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +1 dice pool modifer for tests using the Perception and Sneaking skills.</altadvantage>
+				<altadvantage>All: +1 dice pool modifier for tests using the Perception and Sneaking skills.</altadvantage>
 				<altdisadvantage> Followers of Rat cannot receive aid or aid others with a Teamwork test unless they trust the individuals they are teaming with. Further, if they do trust the individuals, but that trust is broken through incompetence or betrayal, they must pass a Charisma + Willpower (4) Test to be able to use teamwork with that individual each time in the future.</altdisadvantage>
 				<altpage>99</altpage>
 			</mentor>

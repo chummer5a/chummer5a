@@ -152,6 +152,7 @@ Data Changes:
 - Fixed incorrect RC and page reference for the Cavalier Thunderstruck. Fixes #3083.
 - Fixed a rare crash that would happen on startup if/when different loading theads would collide with one another while performing initial loading.
 - Fixed an issue where Combat Sense could not get discounted from The Invisible Way. Fixes #3098.
+- Fixed incorrect spell type for the Powerblade spell.
 
 New Strings:
 
