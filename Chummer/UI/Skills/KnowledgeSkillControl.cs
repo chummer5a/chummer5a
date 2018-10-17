@@ -35,8 +35,8 @@ namespace Chummer.UI.Skills
             InitializeComponent();
 
             //Display
-            lblModifiedRating.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.DisplayPool), false, DataSourceUpdateMode.OnPropertyChanged);
-            lblModifiedRating.DataBindings.Add("ToolTipText", skill, nameof(Skill.PoolToolTip));
+            lblModifiedRating.DoDatabinding("Text", skill, nameof(KnowledgeSkill.DisplayPool));
+            lblModifiedRating.DoDatabinding("ToolTipText", skill, nameof(KnowledgeSkill.PoolToolTip));
 
             List<ListItem> lstTypes = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language).ToList();
             lstTypes.Sort(CompareListItems.CompareNames);
@@ -44,9 +44,9 @@ namespace Chummer.UI.Skills
             cboType.BeginUpdate();
             cboSkill.BeginUpdate();
             cboSpec.BeginUpdate();
+            cboType.DataSource = lstTypes;
             cboType.DisplayMember = nameof(ListItem.Name);
             cboType.ValueMember = nameof(ListItem.Value);
-            cboType.DataSource = lstTypes;
             cboType.DataBindings.Add("SelectedValue", skill, nameof(KnowledgeSkill.Type), false, DataSourceUpdateMode.OnPropertyChanged);
 
             nudSkill.Visible = !skill.CharacterObject.Created && skill.CharacterObject.SkillsSection.HasKnowledgePoints;
@@ -103,18 +103,18 @@ namespace Chummer.UI.Skills
 
                 chkKarma.DataBindings.Add("Checked", skill, nameof(Skill.BuyWithKarma), false,
                         DataSourceUpdateMode.OnPropertyChanged);
-                cboSkill.DisplayMember = nameof(ListItem.Name);
-                cboSkill.ValueMember = nameof(ListItem.Value);
                 List<ListItem> lstDefaultKnowledgeSkills = KnowledgeSkill.DefaultKnowledgeSkills(GlobalOptions.Language).ToList();
                 lstDefaultKnowledgeSkills.Sort(CompareListItems.CompareNames);
                 cboSkill.DataSource = lstDefaultKnowledgeSkills;
+                cboSkill.DisplayMember = nameof(ListItem.Name);
+                cboSkill.ValueMember = nameof(ListItem.Value);
                 cboSkill.SelectedIndex = -1;
                 cboSkill.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
 
                 //dropdown/spec
+                cboSpec.DataSource = skill.CGLSpecializations;
                 cboSpec.DisplayMember = nameof(ListItem.Name);
                 cboSpec.ValueMember = nameof(ListItem.Value);
-                cboSpec.DataSource = skill.CGLSpecializations;
                 cboSpec.SelectedIndex = -1;
 
                 if (skill.ForcedName)
@@ -168,22 +168,27 @@ namespace Chummer.UI.Skills
                     all = true;
                     goto case nameof(Skill.CGLSpecializations);
                 case nameof(Skill.CGLSpecializations):
-                    string strOldSpec = _skill.CGLSpecializations.Count != 0 ? cboSpec.SelectedItem?.ToString() : cboSpec.Text;
-                    cboSpec.SuspendLayout();
-                    cboSpec.DataSource = null;
-                    cboSpec.DisplayMember = nameof(ListItem.Name);
-                    cboSpec.ValueMember = nameof(ListItem.Value);
-                    cboSpec.DataSource = _skill.CGLSpecializations;
-                    cboSpec.MaxDropDownItems = Math.Max(1, _skill.CGLSpecializations.Count);
-                    if (string.IsNullOrEmpty(strOldSpec))
-                        cboSpec.SelectedIndex = -1;
-                    else
+                    if (!_skill.CharacterObject.Created)
                     {
-                        cboSpec.SelectedValue = strOldSpec;
-                        if (cboSpec.SelectedIndex == -1)
-                            cboSpec.Text = strOldSpec;
+                        string strOldSpec = _skill.CGLSpecializations.Count != 0 ? cboSpec.SelectedItem?.ToString() : cboSpec.Text;
+                        cboSpec.SuspendLayout();
+                        cboSpec.DataSource = null;
+                        cboSpec.DataSource = _skill.CGLSpecializations;
+                        cboSpec.DisplayMember = nameof(ListItem.Name);
+                        cboSpec.ValueMember = nameof(ListItem.Value);
+                        cboSpec.MaxDropDownItems = Math.Max(1, _skill.CGLSpecializations.Count);
+                        if (string.IsNullOrEmpty(strOldSpec))
+                            cboSpec.SelectedIndex = -1;
+                        else
+                        {
+                            cboSpec.SelectedValue = strOldSpec;
+                            if (cboSpec.SelectedIndex == -1)
+                                cboSpec.Text = strOldSpec;
+                        }
+
+                        cboSpec.ResumeLayout();
                     }
-                    cboSpec.ResumeLayout();
+
                     if (all)
                         goto case nameof(KnowledgeSkill.Type);
                     break;

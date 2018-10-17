@@ -43,6 +43,8 @@
     <category>Critter Gear</category>
     <category>Currency</category>
     <category>Custom</category>
+    <category blackmarket="Electronics">Custom Cyberdeck Attributes</category>
+    <category blackmarket="Drugs">Custom Drug</category>
     <category blackmarket="Electronics">Cyberdeck Modules</category>
     <category blackmarket="Electronics">Cyberdecks</category>
     <category blackmarket="Electronics">Cyberterminals</category>
@@ -1365,6 +1367,17 @@
       <addweapon>Missile: High Explosive</addweapon>
       <cost>2100</cost>
     </gear>
+    <gear>
+      <id>9ff4b57d-4aaf-482f-ab67-66e10ed58e13</id>
+      <name>Ammo: Renraku/Ingram Supermach</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>132</page>
+      <avail>16F</avail>
+      <cost>20</cost>
+      <costfor>10</costfor>
+    </gear>
     <!-- Region Kill Code-->
 
       <gear>
@@ -2007,6 +2020,16 @@
       <bonus>
         <selecttext />
       </bonus>
+    </gear>
+    <gear>
+      <id>4d36bc74-d75e-46ce-9739-9b58ca72b518</id>
+      <name>Faceless - Blurred Face</name>
+      <category>Disguises</category>
+      <rating>10</rating>
+      <source>KC</source>
+      <page>57</page>
+      <avail>(Rating*2)F</avail>
+      <cost>Rating*500</cost>
     </gear>
     <!-- End Region -->
     <!-- Region Commlinks and Cyberdecks -->
@@ -2703,9 +2726,12 @@
       <avail>Rating*2R</avail>
       <capacity>0</capacity>
       <cost>Rating*10000</cost>
-      <devicerating>Rating</devicerating>
+      <devicerating>{Rating}</devicerating>
 	  <!-- TODO: This should have a more robust method to lock the attribute array. -->
-      <attributearray>0,0,0,0</attributearray>
+      <attack>0</attack>
+      <sleaze>0</sleaze>
+      <dataprocessing>0</dataprocessing>
+      <firewall>0</firewall>
       <programs>1</programs>
       <canformpersona>Self</canformpersona>
       <gears>
@@ -2721,24 +2747,7 @@
           <name>Commlink Functionality</name>
           <category>Electronics Accessories</category>
         </usegear>
-        <usegear>
-          <name>Attack</name>
-          <category>Fuchi Cyber-N Attributes</category>
-        </usegear>
-        <usegear>
-          <name>Sleaze</name>
-          <category>Fuchi Cyber-N Attributes</category>
-        </usegear>
-        <usegear>
-          <name>Data Processing</name>
-          <category>Fuchi Cyber-N Attributes</category>
-        </usegear>
-        <usegear>
-          <name>Firewall</name>
-          <category>Fuchi Cyber-N Attributes</category>
-        </usegear>
       </gears>
-      <addoncategory>Fuchi Cyber-N Attributes</addoncategory>
     </gear>
     <gear>
       <id>00ccda48-98a0-42b1-a997-1e1cf1f5269a</id>
@@ -2750,10 +2759,13 @@
       <avail>Rating*2R</avail>
       <capacity>0</capacity>
       <cost>Rating*10000</cost>
-      <devicerating>Rating</devicerating>
+      <devicerating>{Rating}</devicerating>
       <!-- TODO: This should have a more robust method to lock the attribute array. -->
-      <attributearray>0,0,0,0</attributearray>
-      <programs>Rating+2</programs>
+      <attack>0</attack>
+      <sleaze>0</sleaze>
+      <dataprocessing>0</dataprocessing>
+      <firewall>0</firewall>
+      <programs>{Rating}+2</programs>
       <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
@@ -2768,94 +2780,85 @@
           <name>Commlink Functionality</name>
           <category>Electronics Accessories</category>
         </usegear>
-        <usegear>
-          <name>Attack</name>
-          <category>Fuchi Cyber-N Attributes</category>
-        </usegear>
-        <usegear>
-          <name>Sleaze</name>
-          <category>Fuchi Cyber-N Attributes</category>
-        </usegear>
-        <usegear>
-          <name>Data Processing</name>
-          <category>Fuchi Cyber-N Attributes</category>
-        </usegear>
-        <usegear>
-          <name>Firewall</name>
-          <category>Fuchi Cyber-N Attributes</category>
-        </usegear>
       </gears>
-      <addoncategory>Fuchi Cyber-N Attributes</addoncategory>
     </gear>
     <gear>
       <id>101acb97-2528-4812-a852-a8591b68145f</id>
-      <name>Attack</name>
-      <category>Fuchi Cyber-N Attributes</category>
-      <rating>100000</rating>
+      <name>[Custom Cyberdeck] Attack</name>
+      <category>Custom Cyberdeck Attributes</category>
+      <rating>{Parent Rating}</rating>
       <source>KC</source>
       <page>60</page>
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>(Rating*Rating*Rating)*500</cost>
-	  <hide />
-      <modattack>Rating</modattack>
+      <modattack>{Rating}</modattack>
       <required>
         <geardetails>
-            <name>Fuchi Cyber-N</name>
+            <OR>
+              <name>Fuchi Cyber-N</name>
+              <name>Fuchi Cyber-Ex</name>
+            </OR>
         </geardetails>
       </required>
     </gear>
     <gear>
       <id>cc6cb58a-a6a1-441d-84f6-a0ea3091317e</id>
-      <name>Sleaze</name>
-      <category>Fuchi Cyber-N Attributes</category>
-      <rating>100000</rating>
+      <name>[Custom Cyberdeck] Sleaze</name>
+      <category>Custom Cyberdeck Attributes</category>
+      <rating>{Parent Rating}</rating>
       <source>KC</source>
       <page>60</page>
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>(Rating*Rating)*500</cost>
-	  <hide />
-      <modsleaze>Rating</modsleaze>
+      <modsleaze>{Rating}</modsleaze>
       <required>
         <geardetails>
-            <name>Fuchi Cyber-N</name>
+            <OR>
+              <name>Fuchi Cyber-N</name>
+              <name>Fuchi Cyber-Ex</name>
+            </OR>
         </geardetails>
       </required>
     </gear>
     <gear>
       <id>c4760ef1-5fe0-477b-8579-a457aaf16bf9</id>
-      <name>Data Processing</name>
-      <category>Fuchi Cyber-N Attributes</category>
-      <rating>100000</rating>
+      <name>[Custom Cyberdeck] Data Processing</name>
+      <category>Custom Cyberdeck Attributes</category>
+      <rating>{Parent Rating}</rating>
       <source>KC</source>
       <page>60</page>
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>(Rating*Rating)*500</cost>
-      <moddataprocessing>Rating</moddataprocessing>
-	  <hide />
+      <moddataprocessing>{Rating}</moddataprocessing>
       <required>
         <geardetails>
-            <name>Fuchi Cyber-N</name>
+            <OR>
+              <name>Fuchi Cyber-N</name>
+              <name>Fuchi Cyber-Ex</name>
+            </OR>
         </geardetails>
       </required>
     </gear>
     <gear>
       <id>37c5f8bc-025a-4eca-93a8-1e93e0cabcd9</id>
-      <name>Firewall</name>
-      <category>Fuchi Cyber-N Attributes</category>
-      <rating>100000</rating>
+      <name>[Custom Cyberdeck] Firewall</name>
+      <category>Custom Cyberdeck Attributes</category>
+      <rating>{Parent Rating}</rating>
       <source>KC</source>
       <page>60</page>
       <avail>(Rating*4)R</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>(Rating*Rating*Rating)*500</cost>
-      <modfirewall>Rating</modfirewall>
-	  <hide />
+      <modfirewall>{Rating}</modfirewall>
       <required>
         <geardetails>
-            <name>Fuchi Cyber-N</name>
+            <OR>
+              <name>Fuchi Cyber-N</name>
+              <name>Fuchi Cyber-Ex</name>
+            </OR>
         </geardetails>
       </required>
     </gear>
@@ -3328,7 +3331,7 @@
       <category>Cyberdecks</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>62</page>
+      <page>63</page>
       <avail>14R</avail>
       <capacity>0</capacity>
       <cost>560000</cost>
@@ -3357,7 +3360,7 @@
       <category>Cyberdecks</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>62</page>
+      <page>63</page>
       <avail>14F</avail>
       <capacity>0</capacity>
       <cost>375000</cost>
@@ -3895,8 +3898,7 @@
       <cost>5000</cost>
       <devicerating>3</devicerating>
       <dataprocessing>3</dataprocessing>
-      <firewall>4</firewall>
-      <programs>3</programs>
+      <firewall>3</firewall>
       <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
@@ -3912,13 +3914,12 @@
       <rating>0</rating>
       <source>KC</source>
       <page>68</page>
-      <avail></avail>
+      <avail>12</avail>
       <capacity>0</capacity>
-      <cost></cost>
-      <devicerating>2</devicerating>
-      <dataprocessing>3</dataprocessing>
-      <firewall>3</firewall>
-      <programs>2</programs>
+      <cost>4000</cost>
+      <devicerating>5</devicerating>
+      <dataprocessing>5</dataprocessing>
+      <firewall>5</firewall>
       <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
@@ -3934,13 +3935,13 @@
       <rating>0</rating>
       <source>KC</source>
       <page>68</page>
-      <avail></avail>
+      <avail>10</avail>
       <capacity>0</capacity>
-      <cost></cost>
-      <devicerating>2</devicerating>
-      <dataprocessing>3</dataprocessing>
-      <firewall>3</firewall>
-      <programs>2</programs>
+      <cost>3500</cost>
+      <devicerating>4</devicerating>
+      <dataprocessing>4</dataprocessing>
+      <firewall>4</firewall>
+      <programs>4</programs>
       <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
@@ -5083,10 +5084,10 @@
       <avail>8R</avail>
       <capacity>0</capacity>
       <cost>50000</cost>
-      <devicerating>2</devicerating>
-      <dataprocessing>3</dataprocessing>
-      <firewall>3</firewall>
-      <programs>2</programs>
+      <devicerating>4</devicerating>
+      <dataprocessing>5</dataprocessing>
+      <firewall>5</firewall>
+      <programs>4</programs>
       <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
@@ -5656,7 +5657,7 @@
       <source>SR5</source>
       <page>246</page>
       <avail>Rating * 3</avail>
-      <cost>FixedValues([1000],[2000],[3000],[8000],[10000],[12000])</cost>
+      <cost>FixedValues(1000,2000,3000,8000,10000,12000)</cost>
     </gear>
     <gear>
       <id>c4da5448-0069-447c-b3e4-4147e6bf4ca7</id>
@@ -5961,7 +5962,7 @@
       <page>59</page>
       <avail>Rating*4R</avail>
       <cost>Rating*250</cost>
-	  <minrating>3</minrating>
+      <minrating>3</minrating>
     </gear>
     <gear>
       <id>8dfceac4-1c5a-4b30-bcd2-81b16553c6ce</id>
@@ -5972,7 +5973,7 @@
       <page>59</page>
       <avail>Rating*4R</avail>
       <cost>Rating*250</cost>
-	  <minrating>3</minrating>
+      <minrating>3</minrating>
     </gear>
     <gear>
       <id>0ee14c43-e334-4ca5-a87c-c99d94bfe31a</id>
@@ -5983,7 +5984,7 @@
       <page>59</page>
       <avail>Rating*4R</avail>
       <cost>Rating*250</cost>
-	  <minrating>3</minrating>
+      <minrating>3</minrating>
     </gear>
     <gear>
       <id>7b8e0c95-375d-4982-b523-576952aced75</id>
@@ -5994,7 +5995,7 @@
       <page>59</page>
       <avail>Rating*4R</avail>
       <cost>Rating*250</cost>
-	  <minrating>3</minrating>
+      <minrating>3</minrating>
     </gear>
     <!-- End Region -->
     <!-- Region Software Tweaks -->
@@ -6253,6 +6254,31 @@
       <armorcapacity>[2]</armorcapacity>
       <cost>70</cost>
       <devicerating>3</devicerating>
+    </gear>
+    <gear>
+      <id>d1d0bbce-a2a2-4d92-b54c-b1152befb96f</id>
+      <name>Trode Patch</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>60</page>
+      <avail>4</avail>
+      <cost>1250</cost>
+      <devicerating>4</devicerating>
+    </gear>
+    <gear>
+      <id>2d9b2e2d-5460-4e1a-b4dc-82c7092b6a7e</id>
+      <name>Trode Patch Cover</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>60</page>
+      <avail>4</avail>
+      <cost>250</cost>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <devicerating>4</devicerating>
     </gear>
     <gear>
       <id>a14a00c5-439f-45d1-9703-55bf5525e7f8</id>
@@ -7247,7 +7273,7 @@
       <id>fd1aac8c-3b55-4577-b2d6-20ec886eae0c</id>
       <name>Fab Sensor</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>HT</source>
       <page>195</page>
       <avail>+8R</avail>
@@ -7267,7 +7293,7 @@
       <id>ce63e6c6-409a-49dd-bdcc-f8efb2f9dadf</id>
       <name>X-Ray</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>R5</source>
       <page>138</page>
       <avail>0</avail>
@@ -7345,7 +7371,7 @@
       <id>5c3b9966-ad7e-42e3-b0e0-f656021784cf</id>
       <name>Atmosphere Sensor</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7365,7 +7391,7 @@
       <id>ffc069af-d3ec-4201-887c-0178dcdfeef9</id>
       <name>Camera</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7385,7 +7411,7 @@
       <id>c6f60201-524f-4e3f-adc7-727eace4c7bd</id>
       <name>Cyberware Scanner</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7405,7 +7431,7 @@
       <id>1345a189-50d2-44e0-aeea-73ce0f28390b</id>
       <name>Directional Microphone</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7425,7 +7451,7 @@
       <id>d98f419f-7625-4228-9723-0217950d8155</id>
       <name>Geiger Counter</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7445,7 +7471,7 @@
       <id>f25e4819-209c-4cbf-b24f-668359a7a2ad</id>
       <name>Laser Microphone</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7465,7 +7491,7 @@
       <id>3a79e046-8106-4089-a1ab-895eee956b86</id>
       <name>Laser Range Finder</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7485,7 +7511,7 @@
       <id>ff0f7ab6-ee55-47aa-bdec-0646acca4bff</id>
       <name>MAD Scanner</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7505,7 +7531,7 @@
       <id>e853967a-a2b8-4d89-9a97-773034489a16</id>
       <name>Motion Sensor</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7525,7 +7551,7 @@
       <id>c763fac2-8b08-4c61-8dc2-6291d905a2df</id>
       <name>Olfactory Scanner</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7545,7 +7571,7 @@
       <id>0f13599a-2a4e-4b75-80e2-fab4405a7a87</id>
       <name>Omni-directional Microphone</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7565,7 +7591,7 @@
       <id>4d12e4a1-edd3-4abf-830f-aa95874b7531</id>
       <name>Radio Signal Scanner</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7585,7 +7611,7 @@
       <id>e140b671-dc22-429d-b12a-dfbf46951049</id>
       <name>Ultrasound</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>SR5</source>
       <page>446</page>
       <avail>0</avail>
@@ -7625,7 +7651,7 @@
       <id>0b5e77ce-7fa8-4458-89de-ee9bb61eafd7</id>
       <name>Nanoscanner</name>
       <category>Sensor Functions</category>
-      <rating>8</rating>
+      <rating>{Parent Rating}</rating>
       <source>CF</source>
       <page>153</page>
       <avail>8</avail>
@@ -8861,7 +8887,7 @@
       <source>BB</source>
       <page>17</page>
       <avail>6</avail>
-      <cost>FixedValues([100],[400],[900],[1600],[2500],[3600])</cost>
+      <cost>FixedValues(100,400,900,1600,2500,3600)</cost>
     </gear>
     <gear>
       <id>47e12d78-cb99-4e20-aff5-11cbed1e715e</id>
@@ -8945,6 +8971,39 @@
     </gear>
     <!-- End Region -->
     <!-- Region Contracts and Upkeep -->
+    <gear>
+      <id>f13d9739-aa52-4260-ad2f-0eacde7b9e13</id>
+      <name>Public Grid</name>
+      <category>Contracts/Upkeep</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>233</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <hide />
+    </gear>
+    <gear>
+      <id>9bb90566-c924-477e-b6ee-71d350548e9b</id>
+      <name>Local Grid</name>
+      <category>Contracts/Upkeep</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>234</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <hide />
+    </gear>
+    <gear>
+      <id>42d552fd-d939-42db-a88a-7cde7451dded</id>
+      <name>Global Grid</name>
+      <category>Contracts/Upkeep</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>234</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <hide />
+    </gear>
     <gear>
       <id>20543d97-0eb6-4eda-b0d0-d18000a094ab</id>
       <name>Fab Sensor Upkeep (1 Month Advance Payment)</name>
@@ -10618,7 +10677,7 @@
     </gear>
     <gear>
       <id>875bf273-1a0d-4a42-80ab-6547d7a1235a</id>
-      <name>Narcoject</name>
+      <name>Narcojet</name>
       <category>Toxins</category>
       <rating>0</rating>
       <source>SR5</source>
@@ -11901,9 +11960,9 @@
       <rating>4</rating>
       <source>KC</source>
       <page>58</page>
-      <avail>3</avail>
+      <avail>6</avail>
       <armorcapacity>[0]</armorcapacity>
-      <cost>400</cost>
+      <cost>Rating * 4000</cost>
       <addoncategory>Common Programs</addoncategory>
       <addoncategory>Hacking Programs</addoncategory>
       <devicerating>0</devicerating>
@@ -11917,6 +11976,8 @@
       <required>
         <geardetails>
           <OR>
+            <NONE />
+            <category>Commlink</category>
             <category>Cyberdecks</category>
             <category>Cyberterminals</category>
             <category>Custom</category>
@@ -12258,6 +12319,14 @@
           </OR>
         </geardetails>
       </required>
+      <forbidden>
+        <geardetails>
+          <OR>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
+        </geardetails>
+      </forbidden>
       <addoncategory>Electronic Modification</addoncategory>
     </gear>
     <gear>
@@ -12280,6 +12349,14 @@
           </OR>
         </geardetails>
       </required>
+      <forbidden>
+        <geardetails>
+          <OR>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
+        </geardetails>
+      </forbidden>
       <addoncategory>Electronic Modification</addoncategory>
     </gear>
     <gear>
@@ -12314,6 +12391,8 @@
             <attributearray operation="exists" />
             <sleaze operation="greaterthan">0</sleaze>
             <name>Add Sleaze Modification</name>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -12336,6 +12415,8 @@
             <attributearray operation="exists" />
             <attack operation="greaterthan">0</attack>
             <name>Add Attack Modification</name>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -12357,6 +12438,8 @@
           <OR>
             <attributearray operation="exists" />
             <dataprocessing operation="greaterthan">0</dataprocessing>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -12378,6 +12461,8 @@
           <OR>
             <attributearray operation="exists" />
             <firewall operation="greaterthan">0</firewall>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -12400,6 +12485,8 @@
           <OR>
             <attributearray operation="exists" />
             <sleaze operation="greaterthan">0</sleaze>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -12422,6 +12509,8 @@
           <OR>
             <attributearray operation="exists" />
             <attack operation="greaterthan">0</attack>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -12444,6 +12533,8 @@
           <OR>
             <attributearray operation="exists" />
             <dataprocessing operation="greaterthan">0</dataprocessing>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -12466,6 +12557,8 @@
           <OR>
             <attributearray operation="exists" />
             <firewall operation="greaterthan">0</firewall>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
           </OR>
         </geardetails>
       </required>
@@ -12484,8 +12577,14 @@
       <modsleaze>-1</modsleaze>
       <required>
         <geardetails>
-          <attack operation="greaterthan">0</attack>
-          <sleaze operation="greaterthan">0</sleaze>
+          <OR>
+            <AND>
+              <attack operation="greaterthan">0</attack>
+              <sleaze operation="greaterthan">0</sleaze>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12503,8 +12602,14 @@
       <moddataprocessing>-1</moddataprocessing>
       <required>
         <geardetails>
-          <attack operation="greaterthan">0</attack>
-          <dataprocessing operation="greaterthan">0</dataprocessing>
+          <OR>
+            <AND>
+              <attack operation="greaterthan">0</attack>
+              <dataprocessing operation="greaterthan">0</dataprocessing>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12522,8 +12627,14 @@
       <modfirewall>-1</modfirewall>
       <required>
         <geardetails>
-          <attack operation="greaterthan">0</attack>
-          <firewall operation="greaterthan">0</firewall>
+          <OR>
+            <AND>
+              <attack operation="greaterthan">0</attack>
+              <firewall operation="greaterthan">0</firewall>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12541,8 +12652,14 @@
       <modsleaze>1</modsleaze>
       <required>
         <geardetails>
-          <attack operation="greaterthan">0</attack>
-          <sleaze operation="greaterthan">0</sleaze>
+          <OR>
+            <AND>
+              <attack operation="greaterthan">0</attack>
+              <sleaze operation="greaterthan">0</sleaze>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12560,8 +12677,14 @@
       <moddataprocessing>-1</moddataprocessing>
       <required>
         <geardetails>
-          <sleaze operation="greaterthan">0</sleaze>
-          <dataprocessing operation="greaterthan">0</dataprocessing>
+          <OR>
+            <AND>
+              <sleaze operation="greaterthan">0</sleaze>
+              <dataprocessing operation="greaterthan">0</dataprocessing>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12579,8 +12702,14 @@
       <modfirewall>-1</modfirewall>
       <required>
         <geardetails>
-          <sleaze operation="greaterthan">0</sleaze>
-          <firewall operation="greaterthan">0</firewall>
+          <OR>
+            <AND>
+              <sleaze operation="greaterthan">0</sleaze>
+              <firewall operation="greaterthan">0</firewall>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12598,8 +12727,14 @@
       <moddataprocessing>1</moddataprocessing>
       <required>
         <geardetails>
-          <attack operation="greaterthan">0</attack>
-          <dataprocessing operation="greaterthan">0</dataprocessing>
+          <OR>
+            <AND>
+              <attack operation="greaterthan">0</attack>
+              <dataprocessing operation="greaterthan">0</dataprocessing>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12617,8 +12752,14 @@
       <moddataprocessing>1</moddataprocessing>
       <required>
         <geardetails>
-          <sleaze operation="greaterthan">0</sleaze>
-          <dataprocessing operation="greaterthan">0</dataprocessing>
+          <OR>
+            <AND>
+              <sleaze operation="greaterthan">0</sleaze>
+              <dataprocessing operation="greaterthan">0</dataprocessing>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12636,8 +12777,14 @@
       <modfirewall>-1</modfirewall>
       <required>
         <geardetails>
-          <dataprocessing operation="greaterthan">0</dataprocessing>
-          <firewall operation="greaterthan">0</firewall>
+          <OR>
+            <AND>
+              <dataprocessing operation="greaterthan">0</dataprocessing>
+              <firewall operation="greaterthan">0</firewall>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12655,8 +12802,14 @@
       <modfirewall>1</modfirewall>
       <required>
         <geardetails>
-          <attack operation="greaterthan">0</attack>
-          <firewall operation="greaterthan">0</firewall>
+          <OR>
+            <AND>
+              <attack operation="greaterthan">0</attack>
+              <firewall operation="greaterthan">0</firewall>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12674,8 +12827,14 @@
       <modfirewall>1</modfirewall>
       <required>
         <geardetails>
-          <sleaze operation="greaterthan">0</sleaze>
-          <firewall operation="greaterthan">0</firewall>
+          <OR>
+            <AND>
+              <sleaze operation="greaterthan">0</sleaze>
+              <firewall operation="greaterthan">0</firewall>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -12693,8 +12852,14 @@
       <modfirewall>1</modfirewall>
       <required>
         <geardetails>
-          <dataprocessing operation="greaterthan">0</dataprocessing>
-          <firewall operation="greaterthan">0</firewall>
+          <OR>
+            <AND>
+              <dataprocessing operation="greaterthan">0</dataprocessing>
+              <firewall operation="greaterthan">0</firewall>
+            </AND>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -15387,7 +15552,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15401,7 +15566,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15415,7 +15580,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15429,7 +15594,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15443,7 +15608,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15457,7 +15622,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15471,7 +15636,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15485,7 +15650,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15499,7 +15664,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>149</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15513,7 +15678,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>149</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15527,7 +15692,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>149</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15541,7 +15706,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>149</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15555,7 +15720,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>149</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15569,7 +15734,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>149</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -15583,7 +15748,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>148</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <bonus>
         <selecttext />
       </bonus>
@@ -17751,8 +17916,18 @@
       <rating>0</rating>
       <source>SL</source>
       <page>48</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <cost>750</cost>
+    </gear>
+    <gear>
+      <id>d2a1cc9b-72e3-49df-957c-8ed6fb47a813</id>
+      <name>Narcojet Dazzler</name>
+      <category>Survival Gear</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>46</page>
+      <avail>15R</avail>
+      <cost>1000</cost>
     </gear>
     <!-- End Region -->
     <!-- Region Kill Code -->

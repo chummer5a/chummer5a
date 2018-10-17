@@ -42,7 +42,6 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _objLifestyle = new Lifestyle(objCharacter);
-            MoveControls();
             // Load the Lifestyles information.
             _objXmlDocument = XmlManager.Load("lifestyles.xml");
         }
@@ -198,6 +197,8 @@ namespace Chummer
                 lblSource.Text = string.Empty;
                 lblSource.SetToolTip(string.Empty);
             }
+
+            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
         #endregion
@@ -260,7 +261,7 @@ namespace Chummer
                     {
                         XmlNode objXmlLifestyleQuality = _objXmlDocument.SelectSingleNode($"/chummer/qualities/quality[id = \"{objNode.Tag}\"]");
                         LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                        objQuality.Create(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected, objNode.Text);
+                        objQuality.Create(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
                         _objLifestyle.LifestyleQualities.Add(objQuality);
                     }
                 }
@@ -301,6 +302,8 @@ namespace Chummer
                         lblSource.Text = LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                         lblSource.SetToolTip(LanguageManager.GetString("String_Unknown", GlobalOptions.Language));
                     }
+
+                    lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
                     // Add the flat costs from qualities
                     foreach (TreeNode objNode in treQualities.Nodes)
@@ -352,8 +355,10 @@ namespace Chummer
             {
                 decimal decDiscount = decNuyen;
                 decDiscount = decDiscount * (nudPercentage.Value / 100);
-                lblCost.Text += " (" + decDiscount.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥)";
+                lblCost.Text += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + decDiscount.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥)";
             }
+
+            lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
         }
 
         /// <summary>
@@ -387,12 +392,9 @@ namespace Chummer
                 treTree.Nodes.Add(objNode);
         }
 
-        private void MoveControls()
+        private void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            int intLeft = Math.Max(lblLifestyleNameLabel.Left + lblLifestyleNameLabel.Width, lblLifestyles.Left + lblLifestyles.Width);
-
-            txtLifestyleName.Left = intLeft + 6;
-            cboLifestyle.Left = intLeft + 6;
+            CommonFunctions.OpenPDFFromControl(sender, e);
         }
         #endregion
     }

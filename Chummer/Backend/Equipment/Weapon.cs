@@ -77,7 +77,7 @@ namespace Chummer.Backend.Equipment
         private WeaponMount _objWeaponMount;
         private string _strNotes = string.Empty;
         private string _strUseSkill = string.Empty;
-        private Location _objLocation = null;
+        private Location _objLocation;
         private string _strSpec = string.Empty;
         private string _strSpec2 = string.Empty;
         private bool _blnIncludedInWeapon;
@@ -232,7 +232,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
+                        frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language));
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
@@ -255,8 +255,9 @@ namespace Chummer.Backend.Equipment
             if (objRangeNode != null)
             {
                 _strRange = objRangeNode.InnerText;
-                if (objRangeNode.Attributes["multiply"] != null)
-                    _decRangeMultiplier = Convert.ToDecimal(objRangeNode.Attributes["multiply"].InnerText, GlobalOptions.InvariantCultureInfo);
+                string strMultiply = objRangeNode.Attributes?["multiply"]?.InnerText;
+                if (!string.IsNullOrEmpty(strMultiply))
+                    _decRangeMultiplier = Convert.ToDecimal(strMultiply, GlobalOptions.InvariantCultureInfo);
             }
             objXmlWeapon.TryGetStringFieldQuickly("alternaterange", ref _strAlternateRange);
 
@@ -270,19 +271,23 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetBoolFieldQuickly("allowaccessory", ref _blnAllowAccessory);
 
             // If the Weapon comes with an Underbarrel Weapon, add it.
-            if (objXmlWeapon.InnerXml.Contains("<underbarrels>") && blnCreateChildren)
+            if (blnCreateChildren)
             {
-                foreach (XmlNode objXmlUnderbarrel in objXmlWeapon["underbarrels"].ChildNodes)
+                XmlNodeList xmlUnderbarrelsList = objXmlWeapon["underbarrels"]?.ChildNodes;
+                if (xmlUnderbarrelsList?.Count > 0)
                 {
-                    Weapon objUnderbarrelWeapon = new Weapon(_objCharacter);
-                    XmlNode objXmlWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlUnderbarrel.InnerText + "\"]");
-                    objUnderbarrelWeapon.Create(objXmlWeaponNode, lstWeapons, true, blnCreateImprovements, blnSkipCost);
-                    if (!AllowAccessory)
-                        objUnderbarrelWeapon.AllowAccessory = false;
-                    objUnderbarrelWeapon.ParentID = InternalId;
-                    objUnderbarrelWeapon.Cost = "0";
-                    objUnderbarrelWeapon.IncludedInWeapon = true;
-                    _lstUnderbarrel.Add(objUnderbarrelWeapon);
+                    foreach (XmlNode objXmlUnderbarrel in xmlUnderbarrelsList)
+                    {
+                        Weapon objUnderbarrelWeapon = new Weapon(_objCharacter);
+                        XmlNode objXmlWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlUnderbarrel.InnerText + "\"]");
+                        objUnderbarrelWeapon.Create(objXmlWeaponNode, lstWeapons, true, blnCreateImprovements, blnSkipCost);
+                        if (!AllowAccessory)
+                            objUnderbarrelWeapon.AllowAccessory = false;
+                        objUnderbarrelWeapon.ParentID = InternalId;
+                        objUnderbarrelWeapon.Cost = "0";
+                        objUnderbarrelWeapon.IncludedInWeapon = true;
+                        _lstUnderbarrel.Add(objUnderbarrelWeapon);
+                    }
                 }
             }
 
@@ -319,77 +324,80 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
 
             // If there are any Accessories that come with the Weapon, add them.
-            XmlNode xmlAccessoriesNode = objXmlWeapon["accessories"];
-            if (xmlAccessoriesNode != null && blnCreateChildren)
+            if (blnCreateChildren)
             {
-                XmlNodeList objXmlAccessoryList = xmlAccessoriesNode.SelectNodes("accessory");
-                foreach (XmlNode objXmlWeaponAccessory in objXmlAccessoryList)
+                XmlNodeList objXmlAccessoryList = objXmlWeapon.SelectNodes("accessories/accessory");
+                if (objXmlAccessoryList?.Count > 0)
                 {
-                    XmlNode objXmlAccessory = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlWeaponAccessory["name"].InnerText + "\"]");
-                    WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-                    int intAccessoryRating = 0;
-                    if (objXmlWeaponAccessory["rating"] != null)
+                    foreach (XmlNode objXmlWeaponAccessory in objXmlAccessoryList)
                     {
-                        intAccessoryRating = Convert.ToInt32(objXmlWeaponAccessory["rating"].InnerText);
-                    }
-                    if (objXmlWeaponAccessory.InnerXml.Contains("mount"))
-                    {
-                        objAccessory.Create(objXmlAccessory,
-                            objXmlWeaponAccessory.InnerXml.Contains("<extramount>")
-                                ? new Tuple<string, string>(objXmlAccessory["mount"].InnerText, objXmlAccessory["extramount"].InnerText)
-                                : new Tuple<string, string>(objXmlAccessory["mount"].InnerText, "None"), intAccessoryRating, false, blnCreateChildren, blnCreateImprovements);
-                    }
-                    else
-                    {
-                        objAccessory.Create(objXmlAccessory, new Tuple<string, string>("Internal", "None"), intAccessoryRating, false, blnCreateChildren, blnCreateImprovements);
-                    }
-                    // Add any extra Gear that comes with the Weapon Accessory.
-                    XmlNode xmlGearsNode = objXmlWeaponAccessory["gears"];
-                    if (xmlGearsNode != null)
-                    {
-                        XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
-                        foreach (XmlNode objXmlAccessoryGear in xmlGearsNode.SelectNodes("usegear"))
+                        XmlNode objXmlAccessory = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlWeaponAccessory["name"].InnerText + "\"]");
+                        WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
+                        int intAccessoryRating = 0;
+                        if (objXmlWeaponAccessory["rating"] != null)
                         {
-                            XmlNode objXmlAccessoryGearName = objXmlAccessoryGear["name"];
-                            XmlAttributeCollection objXmlAccessoryGearNameAttributes = objXmlAccessoryGearName.Attributes;
-                            int intGearRating = 0;
-                            decimal decGearQty = 1;
-                            string strChildForceSource = objXmlAccessoryGear["source"]?.InnerText ?? string.Empty;
-                            string strChildForcePage = objXmlAccessoryGear["page"]?.InnerText ?? string.Empty;
-                            string strChildForceValue = objXmlAccessoryGearNameAttributes?["select"]?.InnerText ??string.Empty;
-                            bool blnChildCreateChildren = objXmlAccessoryGearNameAttributes?["createchildren"]?.InnerText != bool.FalseString;
-                            bool blnAddChildImprovements = objXmlAccessoryGearNameAttributes?["addimprovements"]?.InnerText != bool.FalseString;
-                            if (objXmlAccessoryGear["rating"] != null)
-                                intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText);
-                            if (objXmlAccessoryGearNameAttributes?["qty"] != null)
-                                decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
-
-                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGearName.InnerText + "\" and category = \"" + objXmlAccessoryGear["category"].InnerText + "\"]");
-                            Gear objGear = new Gear(_objCharacter);
-
-                            objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue, blnAddChildImprovements, blnChildCreateChildren);
-
-                            objGear.Quantity = decGearQty;
-                            objGear.Cost = "0";
-                            objGear.MinRating = intGearRating;
-                            objGear.MaxRating = intGearRating;
-                            objGear.ParentID = InternalId;
-
-                            if (!string.IsNullOrEmpty(strChildForceSource))
-                                objGear.Source = strChildForceSource;
-                            if (!string.IsNullOrEmpty(strChildForcePage))
-                                objGear.Page = strChildForcePage;
-                            objAccessory.Gear.Add(objGear);
-
-                            // Change the Capacity of the child if necessary.
-                            if (objXmlAccessoryGear["capacity"] != null)
-                                objGear.Capacity = '[' + objXmlAccessoryGear["capacity"].InnerText + ']';
+                            intAccessoryRating = Convert.ToInt32(objXmlWeaponAccessory["rating"].InnerText);
                         }
-                    }
 
-                    objAccessory.IncludedInWeapon = true;
-                    objAccessory.Parent = this;
-                    _lstAccessories.Add(objAccessory);
+                        if (objXmlWeaponAccessory.InnerXml.Contains("mount"))
+                        {
+                            objAccessory.Create(objXmlAccessory,
+                                objXmlWeaponAccessory.InnerXml.Contains("<extramount>")
+                                    ? new Tuple<string, string>(objXmlAccessory["mount"].InnerText, objXmlAccessory["extramount"].InnerText)
+                                    : new Tuple<string, string>(objXmlAccessory["mount"].InnerText, "None"), intAccessoryRating, false, blnCreateChildren, blnCreateImprovements);
+                        }
+                        else
+                        {
+                            objAccessory.Create(objXmlAccessory, new Tuple<string, string>("Internal", "None"), intAccessoryRating, false, blnCreateChildren, blnCreateImprovements);
+                        }
+
+                        // Add any extra Gear that comes with the Weapon Accessory.
+                        XmlNode xmlGearsNode = objXmlWeaponAccessory["gears"];
+                        if (xmlGearsNode != null)
+                        {
+                            XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
+                            foreach (XmlNode objXmlAccessoryGear in xmlGearsNode.SelectNodes("usegear"))
+                            {
+                                XmlNode objXmlAccessoryGearName = objXmlAccessoryGear["name"];
+                                XmlAttributeCollection objXmlAccessoryGearNameAttributes = objXmlAccessoryGearName.Attributes;
+                                int intGearRating = 0;
+                                decimal decGearQty = 1;
+                                string strChildForceSource = objXmlAccessoryGear["source"]?.InnerText ?? string.Empty;
+                                string strChildForcePage = objXmlAccessoryGear["page"]?.InnerText ?? string.Empty;
+                                string strChildForceValue = objXmlAccessoryGearNameAttributes?["select"]?.InnerText ?? string.Empty;
+                                bool blnChildCreateChildren = objXmlAccessoryGearNameAttributes?["createchildren"]?.InnerText != bool.FalseString;
+                                bool blnAddChildImprovements = objXmlAccessoryGearNameAttributes?["addimprovements"]?.InnerText != bool.FalseString;
+                                if (objXmlAccessoryGear["rating"] != null)
+                                    intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText);
+                                if (objXmlAccessoryGearNameAttributes?["qty"] != null)
+                                    decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
+
+                                XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlAccessoryGearName.InnerText.CleanXPath() + " and category = " +
+                                                                                         objXmlAccessoryGear["category"].InnerText.CleanXPath() + "]");
+                                Gear objGear = new Gear(_objCharacter);
+
+                                objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue, blnAddChildImprovements, blnChildCreateChildren);
+
+                                objGear.Quantity = decGearQty;
+                                objGear.Cost = "0";
+                                objGear.ParentID = InternalId;
+
+                                if (!string.IsNullOrEmpty(strChildForceSource))
+                                    objGear.Source = strChildForceSource;
+                                if (!string.IsNullOrEmpty(strChildForcePage))
+                                    objGear.Page = strChildForcePage;
+                                objAccessory.Gear.Add(objGear);
+
+                                // Change the Capacity of the child if necessary.
+                                if (objXmlAccessoryGear["capacity"] != null)
+                                    objGear.Capacity = '[' + objXmlAccessoryGear["capacity"].InnerText + ']';
+                            }
+                        }
+
+                        objAccessory.IncludedInWeapon = true;
+                        objAccessory.Parent = this;
+                        _lstAccessories.Add(objAccessory);
+                    }
                 }
             }
 
@@ -415,11 +423,30 @@ namespace Chummer.Backend.Equipment
             }
             foreach (Weapon objLoopWeapon in lstWeapons)
                 objLoopWeapon.ParentVehicle = ParentVehicle;
-
-            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
-        public SourceString SourceDetail { get; set; }
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == null)
+                {
+                    string strSource = Source;
+                    string strPage = DisplayPage(GlobalOptions.Language);
+                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                    {
+                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                    }
+                }
+
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -515,7 +542,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("canswapattributes", _blnCanSwapAttributes.ToString());
             objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (!IncludedInWeapon)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -687,9 +716,10 @@ namespace Chummer.Backend.Equipment
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
-            if (objNode["location"] != null)
+            string strLocation = objNode["location"]?.InnerText;
+            if (!string.IsNullOrEmpty(strLocation))
             {
-                if (Guid.TryParse(objNode["location"].InnerText, out Guid temp))
+                if (Guid.TryParse(strLocation, out Guid temp))
                 {
                     // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
                     _objLocation =
@@ -701,7 +731,7 @@ namespace Chummer.Backend.Equipment
                     //Legacy. Location is a string. 
                     _objLocation =
                         _objCharacter.WeaponLocations.FirstOrDefault(location =>
-                            location.Name == objNode["location"].InnerText);
+                            location.Name == strLocation);
                 }
             }
             _objLocation?.Children.Add(this);
@@ -749,8 +779,6 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
                 GetNode()?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
-
-            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -1039,7 +1067,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return AmmoName;
 
-            return XmlManager.Load("gear.xml", strLanguage).SelectSingleNode("/chummer/gears/gear[name = \"" + AmmoName + "\"]/@translate")?.InnerText ?? AmmoName;
+            return XmlManager.Load("gear.xml", strLanguage).SelectSingleNode("/chummer/gears/gear[name = " + AmmoName.CleanXPath() + "]/@translate")?.InnerText ?? AmmoName;
         }
 
         /// <summary>
@@ -1150,13 +1178,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Category of Ammo the Weapon uses.
         /// </summary>
-        public string AmmoName
-        {
-            get
-            {
-                return _strAmmoName;
-            }
-        }
+        public string AmmoName => _strAmmoName;
 
         /// <summary>
         /// What names can gear begin with to count as ammunition for this weapon
@@ -1339,12 +1361,18 @@ namespace Chummer.Backend.Equipment
             set => _strPage = value;
         }
 
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty. 
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Page;
-
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         public Weapon Parent
@@ -1730,9 +1758,6 @@ namespace Chummer.Backend.Equipment
                 strDamage = strDamage.FastEscape(strSplash).Trim();
             }
 
-            // Replace the division sign with "div" since we're using XPath.
-            strDamage = strDamage.Replace("/", " div ");
-
             // Include WeaponCategoryDV Improvements.
             int intImprove = 0;
             if (_objCharacter != null)
@@ -1742,14 +1767,17 @@ namespace Chummer.Backend.Equipment
                 {
                     strCategory = "Unarmed Combat";
                 }
+
+                string strUseSkill = Skill?.Name;
+
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV && objImprovement.Enabled && (objImprovement.ImprovedName == strCategory || "Cyberware " + objImprovement.ImprovedName == strCategory))
-                        intImprove += objImprovement.Value;
-                    if (!string.IsNullOrEmpty(_strUseSkill))
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV && objImprovement.Enabled &&
+                        (objImprovement.ImprovedName == strCategory ||
+                         objImprovement.ImprovedName == strUseSkill ||
+                         "Cyberware " + objImprovement.ImprovedName == strCategory))
                     {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV && objImprovement.Enabled && (objImprovement.ImprovedName == _strUseSkill || "Cyberware " + objImprovement.ImprovedName == strCategory))
-                            intImprove += objImprovement.Value;
+                        intImprove += objImprovement.Value;
                     }
                 }
             }
@@ -1798,11 +1826,8 @@ namespace Chummer.Backend.Equipment
             }
             if (intImprove != 0)
                 strDamage += " + " + intImprove.ToString();
-
-            CharacterOptions objOptions = _objCharacter.Options;
-            int intBonus = 0;
-            if (objOptions.MoreLethalGameplay)
-                intBonus = 2;
+            
+            int intBonus = _objCharacter.Options.MoreLethalGameplay ? 2 : 0;
 
             // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
             if (!string.IsNullOrEmpty(AmmoLoaded))
@@ -1867,6 +1892,8 @@ namespace Chummer.Backend.Equipment
                     strReturn = strDamageType + strDamageExtra;
                 else
                 {
+                    // Replace the division sign with "div" since we're using XPath.
+                    strDamage = strDamage.Replace("/", " div ");
                     try
                     {
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strDamage, out bool blnIsSuccess);
@@ -1877,20 +1904,26 @@ namespace Chummer.Backend.Equipment
                             if (Name == "Unarmed Attack (Smashing Blow)")
                                 intDamage *= 2;
                             strDamage = intDamage.ToString(objCulture);
+                            strReturn = strDamage + strDamageType + strDamageExtra;
+                        }
+                        else
+                        {
+                            strReturn = "NaN";
                         }
                     }
                     catch (OverflowException)
                     {
+                        strReturn = "NaN";
                     } // Result is text and not a double
                     catch (InvalidCastException)
                     {
+                        strReturn = "NaN";
                     } // Result is text and not a double
-
-                    strReturn = strDamage + strDamageType + strDamageExtra;
                 }
             }
             else
             {
+                string strOriginalDamage = strDamage;
                 // Place the Damage Type (P or S) into a string and remove it from the expression.
                 if (strDamage.Contains("P or S"))
                 {
@@ -1930,27 +1963,31 @@ namespace Chummer.Backend.Equipment
                 {
                     // Replace the division sign with "div" since we're using XPath.
                     strDamage = strDamage.Replace("/", " div ");
-
                     try
                     {
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strDamage, out bool blnIsSuccess);
                         if (blnIsSuccess)
                         {
-                            int intDamage = Convert.ToInt32(Math.Ceiling((double) objProcess));
+                            int intDamage = Convert.ToInt32(Math.Ceiling((double)objProcess));
                             intDamage += intBonus;
                             if (Name == "Unarmed Attack (Smashing Blow)")
                                 intDamage *= 2;
                             strDamage = intDamage.ToString(objCulture);
+                            strReturn = strDamage + strDamageType + strDamageExtra;
+                        }
+                        else
+                        {
+                            strReturn = strOriginalDamage;
                         }
                     }
                     catch (OverflowException)
                     {
+                        strReturn = strOriginalDamage;
                     } // Result is text and not a double
                     catch (InvalidCastException)
                     {
+                        strReturn = strOriginalDamage;
                     } // Result is text and not a double
-
-                    strReturn = strDamage + strDamageType + strDamageExtra;
                 }
             }
 
@@ -1961,13 +1998,11 @@ namespace Chummer.Backend.Equipment
             // Translate the Damage Code.
             if (strLanguage != GlobalOptions.DefaultLanguage)
             {
-                strReturn = strReturn.CheapReplace("S", () => LanguageManager.GetString("String_DamageStun", strLanguage))
-                    .CheapReplace("P", () => LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                strReturn = strReturn.CheapReplace("Special", () => LanguageManager.GetString("String_DamageSpecial", strLanguage))
+                    .CheapReplace("P or S", () => LanguageManager.GetString("String_DamagePOrS", strLanguage))
                     .CheapReplace("Chemical", () => LanguageManager.GetString("String_DamageChemical", strLanguage))
-                    .CheapReplace("Special", () => LanguageManager.GetString("String_DamageSpecial", strLanguage))
                     .CheapReplace("(e)", () => LanguageManager.GetString("String_DamageElectric", strLanguage))
                     .CheapReplace("(f)", () => LanguageManager.GetString("String_DamageFlechette", strLanguage))
-                    .CheapReplace("P or S", () => LanguageManager.GetString("String_DamagePOrS", strLanguage))
                     .CheapReplace("Grenade", () => LanguageManager.GetString("String_DamageGrenade", strLanguage))
                     .CheapReplace("Missile", () => LanguageManager.GetString("String_DamageMissile", strLanguage))
                     .CheapReplace("Mortar", () => LanguageManager.GetString("String_DamageMortar", strLanguage))
@@ -1977,6 +2012,27 @@ namespace Chummer.Backend.Equipment
                     .CheapReplace("as round", () => LanguageManager.GetString("String_DamageAsRound", strLanguage))
                     .CheapReplace("/m", () => '/' + LanguageManager.GetString("String_DamageMeter", strLanguage))
                     .CheapReplace("(M)", () => LanguageManager.GetString("String_DamageMatrix", strLanguage));
+                strReturn = strReturn
+                    .CheapReplace("0S", () => '0' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("1S", () => '1' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("2S", () => '2' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("3S", () => '3' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("4S", () => '4' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("5S", () => '5' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("6S", () => '6' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("7S", () => '7' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("8S", () => '8' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("9S", () => '9' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                    .CheapReplace("0P", () => '0' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("1P", () => '1' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("2P", () => '2' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("3P", () => '3' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("4P", () => '4' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("5P", () => '5' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("6P", () => '6' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("7P", () => '7' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("8P", () => '8' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("9P", () => '9' + LanguageManager.GetString("String_DamagePhysical", strLanguage));
             }
 
             return strReturn;
@@ -2038,7 +2094,28 @@ namespace Chummer.Backend.Equipment
                         strPrepend = strThisAmmo.Substring(0, intPos + 1);
                         strThisAmmo = strThisAmmo.Substring(intPos + 1, strThisAmmo.Length - (intPos + 1));
                     }
+                    if (WeaponAccessories.Count != 0)
+                    {
+                        foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                        {
+                            if (objAccessory.Equipped)
+                            {
+                                string strModifyAmmoCapacity = objAccessory.ModifyAmmoCapacity;
+                                if (!string.IsNullOrEmpty(strModifyAmmoCapacity))
+                                {
+                                    strThisAmmo = '(' + strThisAmmo + strModifyAmmoCapacity + ')';
+                                    int AddParenthesesCount = strModifyAmmoCapacity.Count(x => x == ')') - strModifyAmmoCapacity.Count(x => x == '(');
+                                    for (int i = 0; i < AddParenthesesCount; ++i)
+                                        strThisAmmo = '(' + strThisAmmo;
+                                    for (int i = 0; i < -AddParenthesesCount; ++i)
+                                        strThisAmmo += ')';
+                                }
+                            }
+                        }
+                    }
                     strThisAmmo = strThisAmmo.CheapReplace("Weapon", () => Ammo);
+                    // Replace the division sign with "div" since we're using XPath.
+                    strThisAmmo = strThisAmmo.Replace("/", " div ");
                     // If this is an Underbarrel Weapons that has been added, cut the Ammo capacity in half.
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strThisAmmo, out bool blnIsSuccess);
                     if (blnIsSuccess)
@@ -2348,6 +2425,8 @@ namespace Chummer.Backend.Equipment
                         objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                     }
 
+                    // Replace the division sign with "div" since we're using XPath.
+                    objCost.Replace("/", " div ");
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
                     decimal decReturn = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
 
@@ -2560,7 +2639,8 @@ namespace Chummer.Backend.Equipment
             int intAP;
             try
             {
-
+                // Replace the division sign with "div" since we're using XPath.
+                objAP.Replace("/", " div ");
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAP.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intAP = Convert.ToInt32(objProcess);
@@ -2701,7 +2781,7 @@ namespace Chummer.Backend.Equipment
                     intRCBase += objRCGroup.Item2;
                     intRCFull += objRCGroup.Item2;
                     if (blnRefreshRCToolTip)
-                        strRCTip += strSpaceCharacter + '+' + strSpaceCharacter + objRCGroup.Item1 + strSpaceCharacter + '(' + objRCGroup.Item2.ToString() + ')';
+                        strRCTip += strSpaceCharacter + '+' + strSpaceCharacter + objRCGroup.Item1 + strSpaceCharacter + '(' + objRCGroup.Item2.ToString(GlobalOptions.CultureInfo) + ')';
                 }
             }
 
@@ -2712,7 +2792,8 @@ namespace Chummer.Backend.Equipment
                     // Add in the Recoil Group bonuses.
                     intRCFull += objRCGroup.Item2;
                     if (blnRefreshRCToolTip)
-                        strRCTip += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("Tip_RecoilAccessories", GlobalOptions.Language).Replace("{0}", objRCGroup.Item1).Replace("{1}", objRCGroup.Item2.ToString());
+                        strRCTip += strSpaceCharacter + '+' + strSpaceCharacter
+                                    + string.Format(LanguageManager.GetString("Tip_RecoilAccessories", GlobalOptions.Language), objRCGroup.Item1, objRCGroup.Item2.ToString(GlobalOptions.CultureInfo));
                 }
             }
 
@@ -2977,6 +3058,8 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
+                // Replace the division sign with "div" since we're using XPath.
+                objAccuracy.Replace("/", " div ");
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAccuracy.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intAccuracy = Convert.ToInt32(objProcess);
@@ -3533,7 +3616,7 @@ namespace Chummer.Backend.Equipment
                         break;
                     }
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(FireMode));
             }
 
             return (intDicePool + intDicePoolModifier).ToString(objCulture) + strExtra;
@@ -3554,12 +3637,12 @@ namespace Chummer.Backend.Equipment
                 string strSkill = GetSkillName(strCategory, ref strSpec);
 
                 // Use the Skill defined by the Weapon if one is present.
-                if (!string.IsNullOrEmpty(_strUseSkill))
+                if (!string.IsNullOrEmpty(UseSkill))
                 {
-                    strSkill = _strUseSkill;
+                    strSkill = UseSkill;
                     strSpec = string.Empty;
 
-                    if (_strUseSkill.Contains("Exotic"))
+                    if (UseSkill.Contains("Exotic"))
                         strSpec = Name;
                 }
 
@@ -3810,6 +3893,8 @@ namespace Chummer.Backend.Equipment
                     objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
                 }
 
+                // Replace the division sign with "div" since we're using XPath.
+                objAvail.Replace("/", " div ");
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intAvail += Convert.ToInt32(objProcess);
@@ -4432,6 +4517,192 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
+        public void Reload(IList<Gear> lstGears, TreeView treGearView)
+        {
+            List<Gear> lstAmmo = new List<Gear>();
+            List<string> lstCount = new List<string>();
+            bool blnExternalSource = false;
+            Gear objExternalSource = new Gear(_objCharacter)
+            {
+                Name = "External Source"
+            };
+
+            string ammoString = CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
+            // Determine which loading methods are available to the Weapon.
+            if (ammoString.IndexOfAny('x', '+') != -1 || ammoString.Contains(" or ") || ammoString.Contains("Special"))
+            {
+                string strWeaponAmmo = ammoString.ToLower();
+                if (strWeaponAmmo.Contains("external source"))
+                    blnExternalSource = true;
+                // Get rid of external source, special, or belt, and + energy.
+                strWeaponAmmo = strWeaponAmmo.Replace("external source", "100")
+                    .Replace("special", "100")
+                    .FastEscapeOnceFromEnd(" + energy")
+                    .Replace(" or belt", " or 250(belt)");
+
+                string[] strAmmos = strWeaponAmmo.Split(new[] { " or " }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (string strAmmo in strAmmos)
+                {
+                    string strThisAmmo = strAmmo.TrimStartOnce("2x", "3x", "4x").TrimEndOnce("x2", "x3", "x4");
+
+                    int intPos = strThisAmmo.IndexOf('(');
+                    if (intPos != -1)
+                        strThisAmmo = strThisAmmo.Substring(0, intPos);
+
+                    lstCount.Add(strThisAmmo);
+                }
+            }
+            else
+            {
+                // Nothing weird in the ammo string, so just use the number given.
+                string strAmmo = ammoString;
+                int intPos = strAmmo.IndexOf('(');
+                if (intPos != -1)
+                    strAmmo = strAmmo.Substring(0, intPos);
+                lstCount.Add(strAmmo);
+            }
+
+            if (!RequireAmmo)
+            {
+                // If the Weapon does not require Ammo, just use External Source.
+                lstAmmo.Add(objExternalSource);
+            }
+            else
+            {
+                // Find all of the Ammo for the current Weapon that the character is carrying.
+                HashSet<string> setAmmoPrefixStringSet = new HashSet<string>(AmmoPrefixStrings);
+                // This is a standard Weapon, so consume traditional Ammunition.
+                lstAmmo.AddRange(lstGears.DeepWhere(x => x.Children, x =>
+                    x.Quantity > 0 && (x.Category == "Ammunition" && x.Extra == AmmoCategory ||
+                                       !string.IsNullOrWhiteSpace(AmmoName) && x.Name == AmmoName ||
+                                       string.IsNullOrEmpty(x.Extra) && setAmmoPrefixStringSet.Any(y => x.Name.StartsWith(y)) ||
+                                       UseSkill == "Throwing Weapons" && Name == x.Name)));
+
+                // If the Weapon is allowed to use an External Source, put in an External Source item.
+                if (blnExternalSource)
+                {
+                    lstAmmo.Add(objExternalSource);
+                }
+
+                // Make sure the character has some form of Ammunition for this Weapon.
+                if (lstAmmo.Count == 0)
+                {
+                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_OutOfAmmoType", GlobalOptions.Language), DisplayAmmoCategory(GlobalOptions.Language)),
+                        LanguageManager.GetString("MessageTitle_OutOfAmmo", GlobalOptions.Language), MessageBoxButtons.OK,
+                        MessageBoxIcon.Exclamation);
+                    return;
+                }
+            }
+
+            // Show the Ammunition Selection window.
+            frmReload frmReloadWeapon = new frmReload
+            {
+                Ammo = lstAmmo,
+                Count = lstCount
+            };
+            frmReloadWeapon.ShowDialog();
+
+            if (frmReloadWeapon.DialogResult == DialogResult.Cancel)
+                return;
+
+            // Return any unspent rounds to the Ammo.
+            if (AmmoRemaining > 0)
+            {
+                foreach (Gear objAmmo in lstGears)
+                {
+                    if (objAmmo.InternalId == AmmoLoaded)
+                    {
+                        objAmmo.Quantity += AmmoRemaining;
+
+                        // Refresh the Gear tree.
+                        TreeNode objNode = treGearView.FindNode(objAmmo.InternalId);
+                        if (objNode != null)
+                        {
+                            objNode.Text = objAmmo.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                        }
+
+                        break;
+                    }
+
+                    foreach (Gear objChild in objAmmo.Children.GetAllDescendants(x => x.Children))
+                    {
+                        if (objChild.InternalId == AmmoLoaded)
+                        {
+                            // If this is a plugin for a Spare Clip, move any extra rounds to the character instead of messing with the Clip amount.
+                            if (objChild.Parent is Gear parent &&
+                                (parent.Name.StartsWith("Spare Clip") || parent.Name.StartsWith("Speed Loader")))
+                            {
+                                Gear objNewGear = new Gear(_objCharacter);
+                                objNewGear.Copy(objChild);
+                                objNewGear.Quantity = AmmoRemaining;
+                                lstGears.Add(objNewGear);
+
+                                goto EndLoop;
+                            }
+
+                            objChild.Quantity += AmmoRemaining;
+
+                            // Refresh the Gear tree.
+                            TreeNode objNode = treGearView.FindNode(objChild.InternalId);
+                            if (objNode != null)
+                            {
+                                objNode.Text = objAmmo.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                            }
+
+                            break;
+                        }
+                    }
+                }
+
+                EndLoop:;
+            }
+
+            Gear objSelectedAmmo;
+            decimal decQty = frmReloadWeapon.SelectedCount;
+            // If an External Source is not being used, consume ammo.
+            if (frmReloadWeapon.SelectedAmmo != objExternalSource.InternalId)
+            {
+                objSelectedAmmo = lstGears.DeepFindById(frmReloadWeapon.SelectedAmmo);
+
+                if (objSelectedAmmo.Quantity == decQty && objSelectedAmmo.Parent != null)
+                {
+                    // If the Ammo is coming from a Spare Clip, reduce the container quantity instead of the plugin quantity.
+                    if (objSelectedAmmo.Parent is Gear objParent &&
+                        (objParent.Name.StartsWith("Spare Clip") || objParent.Name.StartsWith("Speed Loader")))
+                    {
+                        if (objParent.Quantity > 0)
+                            objParent.Quantity -= 1;
+                        TreeNode objNode = treGearView.FindNode(objParent.InternalId);
+                        objNode.Text = objParent.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    }
+                }
+                else
+                {
+                    // Deduct the ammo qty from the ammo. If there isn't enough remaining, use whatever is left.
+                    if (objSelectedAmmo.Quantity > decQty)
+                        objSelectedAmmo.Quantity -= decQty;
+                    else
+                    {
+                        decQty = objSelectedAmmo.Quantity;
+                        objSelectedAmmo.Quantity = 0;
+                    }
+                }
+
+                // Refresh the Gear tree.
+                TreeNode objSelectedNode = treGearView.FindNode(objSelectedAmmo.InternalId);
+                if (objSelectedNode != null)
+                    objSelectedNode.Text = objSelectedAmmo.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+            }
+            else
+            {
+                objSelectedAmmo = objExternalSource;
+            }
+
+            AmmoRemaining = decimal.ToInt32(decQty);
+            AmmoLoaded = objSelectedAmmo.InternalId;
+        }
+
         #region UI Methods
         /// <summary>
         /// Add a Weapon to the TreeView.
@@ -4490,6 +4761,39 @@ namespace Chummer.Backend.Equipment
                 }
 
                 return SystemColors.WindowText;
+            }
+        }
+
+        public void SetupChildrenWeaponsCollectionChanged(bool blnAdd, TreeView treWeapons, ContextMenuStrip cmsWeapon = null, ContextMenuStrip cmsWeaponAccessory = null, ContextMenuStrip cmsWeaponAccessoryGear = null)
+        {
+            if (blnAdd)
+            {
+                UnderbarrelWeapons.AddTaggedCollectionChanged(treWeapons, (x, y) => this.RefreshChildrenWeapons(treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, null, y));
+                WeaponAccessories.AddTaggedCollectionChanged(treWeapons, (x, y) => this.RefreshWeaponAccessories(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear, () => UnderbarrelWeapons.Count, y));
+                foreach (Weapon objChild in UnderbarrelWeapons)
+                {
+                    objChild.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                }
+
+                foreach (WeaponAccessory objChild in WeaponAccessories)
+                {
+                    foreach (Gear objGear in objChild.Gear)
+                        objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear);
+                }
+            }
+            else
+            {
+                UnderbarrelWeapons.RemoveTaggedCollectionChanged(treWeapons);
+                WeaponAccessories.RemoveTaggedCollectionChanged(treWeapons);
+                foreach (Weapon objChild in UnderbarrelWeapons)
+                {
+                    objChild.SetupChildrenWeaponsCollectionChanged(false, treWeapons);
+                }
+                foreach (WeaponAccessory objChild in WeaponAccessories)
+                {
+                    foreach (Gear objGear in objChild.Gear)
+                        objGear.SetupChildrenGearsCollectionChanged(false, treWeapons);
+                }
             }
         }
         #endregion
@@ -4590,6 +4894,8 @@ namespace Chummer.Backend.Equipment
                     objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "}", () => _objCharacter.GetAttribute(strCharAttributeName).TotalValue.ToString());
                     objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "Base}", () => _objCharacter.GetAttribute(strCharAttributeName).TotalBase.ToString());
                 }
+                // Replace the division sign with "div" since we're using XPath.
+                objValue.Replace("/", " div ");
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
                 return blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
@@ -4663,10 +4969,10 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public bool Remove(Character characterObject, bool confirmDelete = true)
+        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
             if (!CanBeRemoved()) return false;
-            if (confirmDelete)
+            if (blnConfirmDelete)
             {
                 if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon",
                     GlobalOptions.Language)))
@@ -4741,19 +5047,9 @@ namespace Chummer.Backend.Equipment
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (SourceDetail != null)
-            {
-                SourceDetail.SetControl(sourceControl);
-            }
-            else if (!string.IsNullOrWhiteSpace(_strPage) && !string.IsNullOrWhiteSpace(_strSource))
-            {
-                SourceDetail = new SourceString(_strSource, _strPage);
-                SourceDetail.SetControl(sourceControl);
-            }
-            else
-            {
-                Utils.BreakIfDebug();
-            }
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
         }
     }
 }

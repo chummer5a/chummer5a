@@ -1076,6 +1076,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Cyber Implants</spec>
       <avail>7R</avail>
       <cost>200</cost>
       <source>SR5</source>
@@ -8856,6 +8857,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Swords</spec>
       <avail>8</avail>
       <cost>450</cost>
       <source>CA</source>
@@ -8985,7 +8987,7 @@
       <spec>Injector Pen</spec>
       <accuracy>4</accuracy>
       <reach>0</reach>
-      <damage>As drug/toxin</damage>
+      <damage>As Drug/Toxin</damage>
       <ap>-2</ap>
       <mode>-</mode>
       <rc>0</rc>
@@ -9027,7 +9029,7 @@
       <spec>Modified Spray Pen</spec>
       <accuracy>3</accuracy>
       <reach>0</reach>
-      <damage>As drug/toxin</damage>
+      <damage>As Drug/Toxin</damage>
       <ap>0</ap>
       <mode>SS</mode>
       <rc>0</rc>
@@ -9118,6 +9120,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Cyber Implants</spec>
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>True</cyberware>
@@ -9140,6 +9143,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Cyber Implants</spec>
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>True</cyberware>
@@ -9162,6 +9166,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Cyber Implants</spec>
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>True</cyberware>
@@ -9184,6 +9189,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Cyber Implants</spec>
       <avail>0</avail>
       <cost>0</cost>
       <cyberware>True</cyberware>
@@ -11979,6 +11985,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Hammers</spec>
       <avail>14R</avail>
       <cost>5500</cost>
       <source>TCT</source>
@@ -12096,6 +12103,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Axes</spec>
       <avail>0</avail>
       <cost>300</cost>
       <source>SL</source>
@@ -12172,6 +12180,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Swords</spec>
       <avail>7R</avail>
       <cost>3000</cost>
       <source>SL</source>
@@ -12190,6 +12199,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Swords</spec>
       <avail>5R</avail>
       <cost>200</cost>
       <source>SL</source>
@@ -12208,6 +12218,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Swords</spec>
       <avail>12R</avail>
       <cost>2500</cost>
       <source>SL</source>
@@ -12226,6 +12237,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
+      <spec>Hammers</spec>
       <avail>9</avail>
       <cost>1500</cost>
       <source>SL</source>
@@ -12838,12 +12850,12 @@
       <damage>8P</damage>
       <ap>-1</ap>
       <mode>BF</mode>
-      <rc>3</rc>
+      <rc>1</rc>
       <ammo>12(c)</ammo>
       <avail>12F</avail>
       <cost>1150</cost>
       <source>SL</source>
-      <page>29</page>
+      <page>30</page>
       <accessories>
         <accessory>
           <name>Gas-Vent 2 System</name>
@@ -13448,7 +13460,7 @@
       <page>39</page>
       <accessories>
         <accessory>
-          <name>Additional Clip/Magazine (Non-Pistol)</name>
+          <name>Additional Clip/Magazine</name>
           <mount>Side</mount>
         </accessory>
         <accessory>
@@ -13484,7 +13496,7 @@
       <page>39</page>
       <accessories>
         <accessory>
-          <name>Additional Clip/Magazine (Non-Pistol)</name>
+          <name>Additional Clip/Magazine</name>
           <mount>Side</mount>
         </accessory>
         <accessory>
@@ -13858,8 +13870,8 @@
       <ammo>6</ammo>
       <avail>15R</avail>
       <cost>950</cost>
-      <source>SR5</source>
-      <page>429</page>
+      <source>SL</source>
+      <page>44</page>
       <accessorymounts>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -14058,6 +14070,40 @@
         <spec>Grenade Launcher</spec>
         <useskill>Heavy Weapons</useskill>
       </weapon>
+    <weapon>
+      <id>93190477-d1f9-45d0-bee9-9f9bc9a29638</id>
+      <name>Renraku/Ingram Supermach 200</name>
+      <category>Submachine Guns</category>
+      <type>Ranged</type>
+      <conceal>2</conceal>
+      <accuracy>6</accuracy>
+      <reach>0</reach>
+      <damage>5P</damage>
+      <ap>-6</ap>
+      <mode>BF/FA</mode>
+      <rc>-2</rc>
+      <ammo>40(c)</ammo>
+      <avail>18F</avail>
+      <cost>5000</cost>
+      <source>SL</source>
+      <page>132</page>
+      <accessories>
+        <accessory>
+          <name>Shock Pad</name>
+        </accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
+      </accessories>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+      </accessorymounts>
+      <ammoname>Ammo: Renraku/Ingram Supermach</ammoname>
+    </weapon>
     <!-- End Region -->
   </weapons>
   <accessories>
@@ -16096,22 +16142,59 @@
       <page>45</page>
     </accessory>
     <accessory>
-      <id>abe43262-a891-455b-849b-df2bb05a7ef8</id>
-      <name>Additional Clip/Magazine (Non-Pistol)</name>
-      <ammoslots>2</ammoslots>
-      <mount />
+      <id>d2a1cc9b-72e3-49df-957c-8ed6fb47a813</id>
+      <name>Additional Clip/Magazine</name>
+      <ammoslots>1</ammoslots>
+      <mount>Side</mount>
       <rating>0</rating>
       <conceal>+2</conceal>
-      <avail>14R</avail>
-      <cost>Weapon</cost>
+      <avail>10R</avail>
+      <cost>Weapon Cost</cost>
+      <required>
+        <weapondetails>
+          <OR>
+            <ammo operation="contains">(c)</ammo>
+            <ammo operation="contains">(m)</ammo>
+          </OR>
+        </weapondetails>
+      </required>
       <forbidden>
-        <OR>
-          <category>Holdouts</category>
-          <category>Light Pistols</category>
-          <category>Heavy Pistols</category>
-          <category>Machine Pistols</category>
-        </OR>
+        <weapondetails>
+          <OR>
+            <category>Holdouts</category>
+            <category>Light Pistols</category>
+            <category>Heavy Pistols</category>
+            <category>Machine Pistols</category>
+          </OR>
+        </weapondetails>
       </forbidden>
+      <source>SL</source>
+      <page>45</page>
+    </accessory>
+    <accessory>
+      <id>20d18222-448c-47f8-bb4e-be307a0cd995</id>
+      <name>Additional Clip/Magazine (Pistol)</name>
+      <ammoslots>1</ammoslots>
+      <modifyammocapacity>* 3 div 4</modifyammocapacity>
+      <mount>Side</mount>
+      <rating>0</rating>
+      <conceal>+2</conceal>
+      <avail>10R</avail>
+      <cost>Weapon Cost</cost>
+      <required>
+        <weapondetails>
+          <OR>
+            <ammo operation="contains">(c)</ammo>
+            <ammo operation="contains">(m)</ammo>
+          </OR>
+          <OR>
+            <category>Holdouts</category>
+            <category>Light Pistols</category>
+            <category>Heavy Pistols</category>
+            <category>Machine Pistols</category>
+          </OR>
+        </weapondetails>
+      </required>
       <source>SL</source>
       <page>45</page>
     </accessory>
@@ -16131,32 +16214,33 @@
       <id>f52db08a-a2f5-482b-8cd0-4cf3045e0d60</id>
       <name>Krime Stun-O-Net</name>
       <mount>Under</mount>
-      <hide />
       <rating>0</rating>
       <avail>10R</avail>
       <cost>800</cost>
       <required>
-        <OR>
-          <category>Assault Rifles</category>
-          <category>Sniper Rifles</category>
-          <category>Sporting Rifles</category>
-          <useskill>Longarms</useskill>
-          <useskill>Heavy Weapons</useskill>
-          <AND>
-            <useskill NOT="" operation="exists" />
-            <OR>
-              <category>Shotguns</category>
-              <category>Sporting Rifles</category>
-              <category>Sniper Rifles</category>
-              <category>Light Machine Guns</category>
-              <category>Medium Machine Guns</category>
-              <category>Heavy Machine Guns</category>
-              <category>Assault Cannons</category>
-              <category>Grenade Launchers</category>
-              <category>Missile Launchers</category>
-            </OR>
-          </AND>
-        </OR>
+        <weapondetails>
+          <OR>
+            <category>Assault Rifles</category>
+            <category>Sniper Rifles</category>
+            <category>Sporting Rifles</category>
+            <useskill>Longarms</useskill>
+            <useskill>Heavy Weapons</useskill>
+            <AND>
+              <useskill NOT="" operation="exists" />
+              <OR>
+                <category>Shotguns</category>
+                <category>Sporting Rifles</category>
+                <category>Sniper Rifles</category>
+                <category>Light Machine Guns</category>
+                <category>Medium Machine Guns</category>
+                <category>Heavy Machine Guns</category>
+                <category>Assault Cannons</category>
+                <category>Grenade Launchers</category>
+                <category>Missile Launchers</category>
+              </OR>
+            </AND>
+          </OR>
+        </weapondetails>
       </required>
       <addunderbarrels>
         <weapon>Krime Stun-O-Net</weapon>
@@ -16168,7 +16252,6 @@
       <id>7629baa4-2240-45f3-b3d5-066dfc536877</id>
       <name>Narcoject Dazzler</name>
       <mount>Top</mount>
-      <hide />
       <rating>0</rating>
       <avail>15R</avail>
       <cost>1000</cost>
@@ -16184,7 +16267,6 @@
       <id>a16a52a9-3b57-4e3c-96f6-564616bcd576</id>
       <name>Red Dot Sight</name>
       <mount>Top</mount>
-      <hide />
       <rating>0</rating>
       <avail>4</avail>
       <cost>75</cost>

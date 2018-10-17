@@ -18,6 +18,11 @@
   https://github.com/chummer5a/chummer5a
 -->
 <chummer>
+  <categories>
+    <category>Foundation</category>
+    <category>Block</category>
+    <category>Enhancer</category>
+  </categories>
   <grades>
     <grade>
       <id>b00a075a-2c2c-4816-bb4a-0d0a33d06370</id>
@@ -854,7 +859,7 @@
       <category>Enhancer</category>
       <effects>
         <effect>
-          <info>Ingestion Vector</info>
+          <info>Ingestion</info>
         </effect>
       </effects>
       <availability>+1</availability>
@@ -870,7 +875,7 @@
       <category>Enhancer</category>
       <effects>
         <effect>
-          <info>Inhalation Vector</info>
+          <info>Inhalation</info>
         </effect>
       </effects>
       <availability>+1</availability>

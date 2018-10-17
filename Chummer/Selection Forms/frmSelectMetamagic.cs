@@ -28,6 +28,7 @@ namespace Chummer
     // ReSharper disable once InconsistentNaming
     public partial class frmSelectMetamagic : Form
     {
+        private bool _blnLoading = true;
         private string _strSelectedMetamagic = string.Empty;
 
         private readonly string _strType = string.Empty;
@@ -68,14 +69,18 @@ namespace Chummer
 
         private void frmSelectMetamagic_Load(object sender, EventArgs e)
         {
-            Text = LanguageManager.GetString("Title_SelectGeneric", GlobalOptions.Language).Replace("{0}", _strType);
-            chkLimitList.Text = LanguageManager.GetString("Checkbox_SelectGeneric_LimitList", GlobalOptions.Language).Replace("{0}", _strType);
+            Text = string.Format(LanguageManager.GetString("Title_SelectGeneric", GlobalOptions.Language), _strType);
+            chkLimitList.Text = string.Format(LanguageManager.GetString("Checkbox_SelectGeneric_LimitList", GlobalOptions.Language), _strType);
 
+            _blnLoading = false;
             BuildMetamagicList();
         }
 
         private void lstMetamagic_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_blnLoading)
+                return;
+            
             string strSelectedId = lstMetamagic.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
@@ -101,6 +106,8 @@ namespace Chummer
                 lblSource.Text = string.Empty;
                 lblSource.SetToolTip(string.Empty);
             }
+
+            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -119,6 +126,11 @@ namespace Chummer
         }
 
         private void chkLimitList_CheckedChanged(object sender, EventArgs e)
+        {
+            BuildMetamagicList();
+        }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             BuildMetamagicList();
         }
@@ -151,6 +163,8 @@ namespace Chummer
                         strFilter = "adept = 'True' and (" + strFilter + ')';
                 }
             }
+
+            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
             List<ListItem> lstMetamagics = new List<ListItem>();
             using (XmlNodeList objXmlMetamagicList = _objXmlDocument.SelectNodes(_strRootXPath + '[' + strFilter + ']'))
                 if (objXmlMetamagicList?.Count > 0)
@@ -166,10 +180,17 @@ namespace Chummer
                         }
                     }
             lstMetamagics.Sort(CompareListItems.CompareNames);
+            string strOldSelected = lstMetamagic.SelectedValue?.ToString();
+            _blnLoading = true;
             lstMetamagic.BeginUpdate();
             lstMetamagic.ValueMember = "Value";
             lstMetamagic.DisplayMember = "Name";
             lstMetamagic.DataSource = lstMetamagics;
+            _blnLoading = false;
+            if (!string.IsNullOrEmpty(strOldSelected))
+                lstMetamagic.SelectedValue = strOldSelected;
+            else
+                lstMetamagic.SelectedIndex = -1;
             lstMetamagic.EndUpdate();
         }
 
@@ -193,6 +214,10 @@ namespace Chummer
             }
         }
 
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
+        }
         #endregion
     }
 }

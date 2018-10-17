@@ -43,7 +43,7 @@ namespace Chummer.UI.Skills
             this.nudKarma = new Chummer.NumericUpDownEx();
             this.nudSkill = new Chummer.NumericUpDownEx();
             this.lblModifiedRating = new Chummer.LabelWithToolTip();
-            this.cboSpec = new System.Windows.Forms.ComboBox();
+            this.cboSpec = new ElasticComboBox();
             this.chkKarma = new System.Windows.Forms.CheckBox();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.lblCareerRating = new System.Windows.Forms.Label();
@@ -51,7 +51,7 @@ namespace Chummer.UI.Skills
             this.lblCareerSpec = new System.Windows.Forms.Label();
             this.btnAddSpec = new Chummer.ButtonWithToolTip();
             this.btnAttribute = new System.Windows.Forms.Button();
-            this.cboSelectAttribute = new System.Windows.Forms.ComboBox();
+            this.cboSelectAttribute = new ElasticComboBox();
             this.cmsSkillLabel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSkill)).BeginInit();
@@ -263,7 +263,7 @@ namespace Chummer.UI.Skills
         private NumericUpDownEx nudKarma;
         private NumericUpDownEx nudSkill;
         private LabelWithToolTip lblModifiedRating;
-        private System.Windows.Forms.ComboBox cboSpec;
+        private ElasticComboBox cboSpec;
         private System.Windows.Forms.CheckBox chkKarma;
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.Label lblCareerRating;
@@ -271,7 +271,7 @@ namespace Chummer.UI.Skills
         private System.Windows.Forms.Label lblCareerSpec;
         private ButtonWithToolTip btnAddSpec;
         private System.Windows.Forms.Button btnAttribute;
-        private System.Windows.Forms.ComboBox cboSelectAttribute;
+        private ElasticComboBox cboSelectAttribute;
         private ContextMenuStrip cmsSkillLabel;
         private ToolStripMenuItem tsSkillLabelNotes;
     }

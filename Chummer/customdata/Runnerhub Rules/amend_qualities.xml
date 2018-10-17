@@ -24,7 +24,7 @@
     -->
     <quality>
       <name>Alibi</name>
-      <bonus>
+      <bonus amendoperation="replace" addifnotfound="True">
         <specificskill>
           <name>Con</name>
           <bonus>2</bonus>
@@ -39,32 +39,39 @@
       <name>Biocompatability (Bioware)</name>
       <chargenonly />
     </quality>
+    <quality xpathfilter="name = 'Fractal Punch' or name = 'Hold the Door' or name = 'Lone Wolf' or name = 'Team Player' or name = 'Trust Data, Not Lore' or name = 'Trust Lore, Not Data' or name = 'Unique Avatar'">
+      <required>
+        <oneof xpathfilter="quality = 'Technomancer'" amendoperation="remove" />
+      </required>
+    </quality>
+    <quality>
+      <name>Null Wizard</name>
+      <bonus>
+        <skilldisable amendoperation="addnode">Summoning</skilldisable>
+      </bonus>
+    </quality>
     <quality>
       <name>Home Ground</name>
       <notes>
         - The selected benefit applies to an entire district of Seattle (Renton, Bellevue, Snohomish, etc.)
-
       </notes>
     </quality>
     <quality>
       <name>I C U</name>
       <notes>
         - Note that you need to have visual sight on the target in the physical world to get the bonus. 
-
       </notes>
     </quality>
     <quality>
       <name>Master Debater</name>
       <notes>
-        - This allows you to substitute logic for charisma in your negotiation rolls. 
-
+        - This allows you to substitute logic for charisma in your negotiation rolls.
       </notes>
     </quality>
     <quality>
       <name>Nasty Trog</name>
       <notes>
         - Keep in mind you're going to look pretty persona non grata in "polite" society as a result of making yourself look extra trog. 
-
       </notes>
     </quality>
     <quality>
@@ -76,7 +83,6 @@
       <chargenonly />
       <notes>
         - To have the full flavor of a former Otaku it's also recommended to have a datajack and a character age roughly between 20 to 35 years old. However, this is not mandatory.
-
       </notes>
     </quality>
     <quality>
@@ -88,21 +94,22 @@
       <notes>
         - Any Hub contacts with the Aptitude quality can provide this quality for any of their skills
         - This quality only applies to Mental, Physical, and Social limits. 
-
       </notes>
     </quality>
     <quality>
       <name>Privileged Family Name</name>
       <notes>
         - Remember: Mind magic is stringently discouraged on the 'Hub for thematic reasons, so note that the reactions of runners may be severe if discovered and attempting to use your name to get the cops to ignore mind magic usage is a no-go. Other types of magic usage without a license are fine under the text of the quality. 
-
       </notes> 
+    </quality>
+    <quality>
+      <name>Prototype Transhuman</name>      
+      <chargenonly />
     </quality>
     <quality>
       <name>Redliner</name>
       <notes>
         - The strength and agility bonus applies to all of the character's cyberlimbs. 
-
       </notes>
     </quality>
     <quality>
@@ -111,7 +118,6 @@
         - This quality requires explicit CCD approval and may be denied without further comment.
         - In general it is more likely to be approved when used for flavorful gear that ties well into a character's background, whereas attempts to simply use it to maximize a character's power are very likely to be denied.
         - Either way, CCD always has final say whether the quality may be used or not. 
-
       </notes>
     </quality>
     <quality>
@@ -120,12 +126,12 @@
         - This quality applies to any weapon, including unarmed attacks.
         - The advantage halves the penalty for any called shot. When combined with other ways to reduce the penalty, the penalty is halved after the other reductions have been applied.
         - Keep in mind the drawback: You must make called shots unless you are using some other form of special attack (such as suppressing fire, multiple attacks, or nerve strike). This is not optional. 
-
       </notes>
     </quality>
+    
     <quality>
       <name>Corporate Loyalist</name>
-      <required>
+      <required amendoperation="replace" addifnotfound="True">
         <oneof>
           <quality>SINner (Corporate)</quality>
           <quality>SINner (Corporate Limited)</quality>
@@ -152,6 +158,10 @@
       <hide />
     </quality>
     <quality>
+      <name>Groveler</name>
+      <hide />
+    </quality>
+    <quality>
       <name>Revels in Murder</name>
       <hide />
     </quality>
@@ -171,10 +181,6 @@
       <name>Trust Fund IV</name>
       <hide />
     </quality>
-    <quality>
-      <name>Prototype Transhuman</name>      
-      <chargenonly />
-    </quality>
 
     <!--
       Changed Negative
@@ -186,15 +192,24 @@
     </quality>
     <quality>
       <name>Thousand-Yard Stare</name>
-      <notes>Due to concerns over potentially distasteful application, this quality may be denied by CCD without further comment.
+      <notes>Due to concerns over potentially distasteful application, this quality may be denied by CCD without further comment.</notes>
     </quality>
-    <quality>
-      <name>Corporate Pariah I</name>
-      <required>
+    <quality xpathfilter="starts-with(name,'Corporate Pariah')">
+      <required amendoperation="replace" addifnotfound="True">
         <oneof>          
           <quality>SINner (Corporate)</quality>
           <quality>SINner (Corporate Limited)</quality>
         </oneof>
+      </required>
+    </quality>
+    <quality xpathfilter="name = 'On the Wagon'">
+      <required>
+        <oneof xpathfilter="quality = 'Technomancer'" amendoperation="remove" />
+      </required>
+    </quality>
+    <quality xpathfilter="name = 'Wired User'">
+      <required>
+        <allof xpathfilter="quality = 'Technomancer'" amendoperation="remove" />
       </required>
     </quality>
     <quality>
@@ -203,7 +218,6 @@
         - Addictions must be to a statted, 'Hub-legal drug. Addiction to activities and unrestricted items - gambling, alcohol, smoking, etc. - provides no mechanical benefit in the form of additional Karma.
         - Characters may, if desired by the player, have 0 Karma Addiction qualities to activities or unrestricted items for the sake of roleplaying. 
         - Addictions to simsense (cold- and hot-sim) as well as skillwires are not enforced on Runnerhub, and therefore aren't allowed as subjects for the addiction quality. 
-
       </notes>
     </quality>
 
@@ -213,7 +227,6 @@
         - Addictions must be to a statted, 'Hub-legal drug. Addiction to activities and unrestricted items - gambling, alcohol, smoking, etc. - provides no mechanical benefit in the form of additional Karma.
         - Characters may, if desired by the player, have 0 Karma Addiction qualities to activities or unrestricted items for the sake of roleplaying. 
         - Addictions to simsense (cold- and hot-sim) as well as skillwires are not enforced on Runnerhub, and therefore aren't allowed as subjects for the addiction quality. 
-
       </notes>
     </quality>
 
@@ -223,7 +236,6 @@
         - Addictions must be to a statted, 'Hub-legal drug. Addiction to activities and unrestricted items - gambling, alcohol, smoking, etc. - provides no mechanical benefit in the form of additional Karma.
         - Characters may, if desired by the player, have 0 Karma Addiction qualities to activities or unrestricted items for the sake of roleplaying. 
         - Addictions to simsense (cold- and hot-sim) as well as skillwires are not enforced on Runnerhub, and therefore aren't allowed as subjects for the addiction quality. 
-
       </notes>
     </quality>
 
@@ -233,16 +245,14 @@
         - Addictions must be to a statted, 'Hub-legal drug. Addiction to activities and unrestricted items - gambling, alcohol, smoking, etc. - provides no mechanical benefit in the form of additional Karma.
         - Characters may, if desired by the player, have 0 Karma Addiction qualities to activities or unrestricted items for the sake of roleplaying. 
         - Addictions to simsense (cold- and hot-sim) as well as skillwires are not enforced on Runnerhub, and therefore aren't allowed as subjects for the addiction quality. 
-
       </notes>
     </quality>
     <quality>
       <name>Aged</name>
       <notes>
         - Elves and Dwarves live for hundreds of years, while Orks and Trolls live a fraction of the human lifespan. A character's age must be adjusted accordingly, and Elves and Dwarves may not be pre-Spike Baby ages. This means you cannot play an aged Dwarf or Elf. 
-
       </notes>
-      <forbidden>
+      <forbidden amendoperation="replace" addifnotfound="True">
         <oneof>
           <metatype>Elf</metatype>
           <metatype>Dwarf</metatype>
@@ -254,7 +264,6 @@
       <name>Albinism I</name>
       <notes>
         - Albinism is not compatible with Distinctive Style. You may take a distinctive style for something other than being an Albino though. 
-
       </notes>
     </quality>
 
@@ -262,7 +271,6 @@
       <name>Albinism II</name>
       <notes>
         - Albinism is not compatible with Distinctive Style. You may take a distinctive style for something other than being an Albino though. 
-
       </notes>
     </quality>
 
@@ -270,9 +278,16 @@
       <name>Asthma</name>
       <notes>
         - Asthma is not compatible with Allergy: Pollutants, or similar cases. This is subject to sheet team approval. 
-
       </notes>
     </quality>
+    
+    <quality>
+      <name>Big Baby</name>
+      <notes>
+        - Subject to CCD approval per sheet.
+      </notes>
+    </quality>
+    
     <quality>
       <name>Code of Honor</name>
       <notes>
@@ -282,8 +297,7 @@
       - CCD may deny characters with this quality submitted to r/hubchargen without comment.
       - It is strongly advised that characters with this quality also have the National SINner: UCAS quality. 
       Thug Life:
-      - The expenses (half your income) are treated the same way as a SIN tax: they apply to your direct run rewards, and do not affect Working for the Man/People. 
-
+      - The expenses (half your income) are treated the same way as a SIN tax: they apply to your direct run rewards, and do not affect Working for the Man/People.
       </notes>
     </quality>
 
@@ -291,16 +305,14 @@
       <name>Code of Honor: Like a Boss</name>
       <notes>
       - The Code of Honor is also violated if a sprite or agent under the player’s control causes matrix damage to a target.
-      - It doesn’t extend to physical actions that cause matrix damage (e.g. using electric attacks against drones). 
-
+      - It doesn’t extend to physical actions that cause matrix damage (e.g. using electric attacks against drones).
       </notes>
     </quality>
     <quality>
       <name>Dead Emotion</name>
       <notes>
         - The chosen emotion requires explicit sheet team approval, and the player should work with the sheet team to figure out how it affects the character and then note it on the character’s sheet.
-        - This quality doesn’t make a character immune to artificially induced emotions (e.g. through a critter’s Fear power) - it’s still a negative quality, after all. 
-
+        - This quality doesn’t make a character immune to artificially induced emotions (e.g. through a critter’s Fear power) - it’s still a negative quality, after all.
       </notes>
     </quality>
 
@@ -309,7 +321,6 @@
       <notes>
         - Whatever a character's driving force is, it has to have a specific end goal that must be realistically possible to work towards and achieve in play on the 'hub. Once this goal has been achieved, the quality has to be bought off immediately.
         - Whether any given goal fulfills these criteria is subject to the sheet team's discretion. 
-
       </notes>
     </quality>
 
@@ -319,15 +330,20 @@
         - The character has 2 Public Awareness that can only be removed when buying off the quality.
         - If the character covers, removes, or otherwise hides what makes their style distinctive, they take a -1 penalty to all actions until they uncover/wear/show their style.
         - Characters who have this quality as a consequence of a metagenetic quality or from being a metavariant do not suffer the penalty when hiding their style and do not have the additional Public Awareness, and suffer only the RAW ramifications of this quality. 
-
       </notes>
+    </quality>
+    
+    <quality>
+      <name>Frostbite</name>
+      <bonus amendoperation="replace">
+        <selectskill limittoskill="Computer, Cybercombat, Decompiling, Electronic Warfare, Hacking, Software"></selectskill>
+      </bonus>
     </quality>
       
     <quality>
       <name>Incomplete Deprogramming</name>
       <notes>
         - On character submission the player needs to provide a description of the alternate identity. This is subject to sheet team approval. 
-
       </notes>
     </quality>
 
@@ -335,15 +351,18 @@
       <name>Infirm</name>
       <notes>
         - Buying off Infirm does not restore attributes that it lowered when the quality was acquired. 
-
       </notes>
+    </quality>
+    
+    <quality>
+      <name>Lazy Fingers</name>
+      <karma>-6</karma>
     </quality>
 
     <quality>
       <name>Pacifist II</name>
       <notes>
         - At the 15 karma level, you are unable to directly facilitate violence at all - including paying for violence to happen or helping someone else procure the means of committing violence.
-
       </notes>
     </quality>
 
@@ -351,7 +370,6 @@
       <name>Poor Self Control (Sadistic)</name>
       <notes>
         - This quality requires explicit sheet team approval and may be denied without further comment. 
-
       </notes>
     </quality>
 
@@ -361,7 +379,6 @@
         - On character submission the player needs to provide a list of the corporations that have the files, along with what specific information the corporation holds on the character and why they have those records.
         - This list should be adequately explained in the character's background section on their character sheet, and must be thematically appropriate to the background of the character. 
         - This quality is limited to 3 ranks (or 3 corporations) at character creation. 
-
       </notes>
       <limit>3</limit>
     </quality>
@@ -370,7 +387,6 @@
       <name>Reduced Sense (Hearing)</name>
       <notes>
         - This quality requires explicit sheet team approval and may be denied if deemed not appropriate, as per sheet team discretion. 
-
       </notes>
     </quality>
 
@@ -378,7 +394,6 @@
       <name>Reduced Sense (Sight)</name>
       <notes>
         - This quality requires explicit sheet team approval and may be denied if deemed not appropriate, as per sheet team discretion. 
-        
       </notes>
     </quality>
 
@@ -386,7 +401,6 @@
       <name>Reduced Sense (Smell)</name>
       <notes>
         - This quality requires explicit sheet team approval and may be denied if deemed not appropriate, as per sheet team discretion. 
-        
       </notes>
     </quality>
 
@@ -394,7 +408,6 @@
       <name>Reduced Sense (Taste)</name>
       <notes>
         - This quality requires explicit sheet team approval and may be denied if deemed not appropriate, as per sheet team discretion. 
-        
       </notes>
     </quality>
 
@@ -402,7 +415,13 @@
       <name>Reduced Sense (Touch)</name>
       <notes>
         - This quality requires explicit sheet team approval and may be denied if deemed not appropriate, as per sheet team discretion. 
-        
+      </notes>
+    </quality>
+    
+    <quality>
+      <name>Sloppy Code</name>
+      <notes>
+        - Applies to LOG+Sleaze tests and the Hide action.
       </notes>
     </quality>
 
@@ -411,7 +430,6 @@
       <notes>
         - This quality requires explicit sheet team approval and may be denied without further comment.
         - Characters with this quality won’t accept help or directions from anyone they consider inferior to themselves (i.e. everyone, even other people with the same affliction), and therefore cannot receive bonuses from leadership or teamwork tests.
-
       </notes>
     </quality>
 
@@ -419,7 +437,6 @@
       <name>Signature</name>
       <notes>
         - On character submission the player needs to provide a description of the signature. The signature must be uniquely used as a signature and cannot be an item or action that would be regularly used for another purpose (in combat, as a tool, etc). This quality is subject to sheet team approval. 
-
       </notes>
     </quality>
     
@@ -427,7 +444,6 @@
       <name>Wanted</name>
       <notes>
         - Not allowed to pick, but can be gotten as a run "reward"
-
       </notes>
     </quality>
 
@@ -435,7 +451,6 @@
       <name>Spirit Bane</name>
       <notes>
         - This quality must be taken for a spirit within the character's magical tradition. 
-
       </notes>
     </quality>
 
@@ -444,7 +459,6 @@
       <notes>
         - Keep in mind that, per the Codified Missions Errata, characters with this quality take a negative modifier to their social limit equal to their notoriety.
         - Expect that what constitutes an ork- or troll-majority area to vary by GM.
-
       </notes>
     </quality>
 
@@ -452,7 +466,6 @@
       <name>Unsteady Hands</name>
       <notes>
         - It is up to GM discretion whether it triggers at the beginning or end of combat. 
-
       </notes>
     </quality>
 
@@ -460,7 +473,6 @@
       <name>Weak Immune System</name>
       <notes>
         - This quality applies its effect to Toxins as well as Diseases, increasing their effect by +2. 
-
       </notes>
     </quality>
 
@@ -498,6 +510,11 @@
       <name>Code of Honor: Avenging Angel</name>
       <hide />
     </quality>
+    
+    <quality>
+      <name>Code of Honor: Black Hat</name>
+      <hide />
+    </quality>
 
     <quality>
       <name>Consummate Professional</name>
@@ -531,6 +548,11 @@
 
     <quality>
       <name>Earther</name>
+      <hide />
+    </quality>
+    
+    <quality>
+      <name>Echo Chamber</name>
       <hide />
     </quality>
 
@@ -578,6 +600,11 @@
       <name>In Debt</name>
       <hide />
     </quality>
+    
+    <quality>
+      <name>Information Auctioneer</name>
+      <hide />
+    </quality>
 
     <quality>
       <name>Latest and Greatest</name>
@@ -611,6 +638,11 @@
 
     <quality>
       <name>Tough and Targeted</name>
+      <hide />
+    </quality>
+    
+    <quality>
+      <name>'Ware Intolerance</name>
       <hide />
     </quality>
 
@@ -725,21 +757,21 @@
       <hide />
     </quality>  
 
-    <quality xpathfilter="starts-with(name, 'Carrier')" amendoperation="append">
+    <quality xpathfilter="starts-with(name, 'Carrier')">
       <hide />
     </quality>
 
     <!--
       Banned Crystals
     -->
-    <quality xpathfilter="starts-with(name, 'Crystal')" amendoperation="append">
+    <quality xpathfilter="starts-with(name, 'Crystal')">
       <hide />
     </quality>
 
     <!--
       Banned Dracoforms
     -->
-    <quality xpathfilter="starts-with(name, 'Draco')" amendoperation="append">
+    <quality xpathfilter="starts-with(name, 'Draco')">
       <hide />
     </quality>
 
@@ -761,48 +793,41 @@
       </quality>
 
     <!--
+      Banned Dissonant Streams
+    -->
+      <quality>
+        <name>Dissonant Stream: Apophenian</name>
+        <hide />
+      </quality>
+      
+      <quality>
+        <name>Dissonant Stream: Erisian</name>
+        <hide />
+      </quality>
+      
+      <quality>
+        <name>Dissonant Stream: Morphinae</name>
+        <hide />
+      </quality>
+      
+    <!--
       Overrides
     -->
 
-    <quality amendoperation="replace">
+    <quality>
       <id>9d53e1e4-3f31-40cb-bfbe-4b94f5ba757e</id>
       <name>Mystic Adept</name>
-      <karma>35</karma>
-      <category>Positive</category>
-      <contributetolimit>False</contributetolimit>
-      <onlyprioritygiven />
       <bonus>
-        <enableattribute>
-          <name>MAG</name>
-        </enableattribute>
-        <enabletab>
-          <name>magician</name>
-          <name>adept</name>
-        </enabletab>
-        <unlockskills>Sorcery</unlockskills>
-        <unlockskills>Conjuring</unlockskills>
+        <unlockskills amendoperation="remove" />
+        <unlockskills amendoperation="addnode">Sorcery</unlockskills>
+        <unlockskills amendoperation="addnode">Conjuring</unlockskills>
       </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Aware</quality>
-          <quality>Magician</quality>
-          <quality>Adept</quality>
-          <quality>Aspected Magician</quality>
-          <quality>Enchanter</quality>
-          <quality>Explorer</quality>
-          <quality>Apprentice</quality>
-          <quality>Technomancer</quality>
-        </oneof>
-      </forbidden>
-      <source>SR5</source>
-      <page>69</page>
-      <nameonpage>Mystic Adepts</nameonpage>
     </quality>
 
     <quality>
       <id>45be40cc-a21a-4771-b47d-a532ea60b205</id>
       <name>Made Man</name>
-      <bonus amendoperation="replace">
+      <bonus amendoperation="replace" addifnotfound="True">
         <mademan />
         <addcontact>
           <connection>4</connection>
@@ -815,7 +840,7 @@
     <quality>
       <id>7297d8b0-8bb8-4d7a-ab10-2d4e4381e5d0</id>
       <name>Prime Datahaven Membership</name>
-      <bonus amendoperation="replace">
+      <bonus amendoperation="replace" addifnotfound="True">
         <addcontact>
           <connection>5</connection>
           <loyalty>3</loyalty>
@@ -828,23 +853,13 @@
       <id>aaac8dfd-dee6-4277-b967-9ec9089260a7</id>
       <name>Cyber-snob</name>
       <karma>-6</karma>
-      <bonus amendoperation="replace">
-        <disablebiowaregrade>Standard</disablebiowaregrade>
-        <disablebiowaregrade>Standard (Burnout's Way)</disablebiowaregrade>
-        <disablebiowaregrade>Used</disablebiowaregrade>
-        <disablebiowaregrade>Omegaware</disablebiowaregrade>
-        <disablecyberwaregrade>Standard</disablecyberwaregrade>
-        <disablecyberwaregrade>Standard (Burnout's Way)</disablecyberwaregrade>
-        <disablecyberwaregrade>Used</disablecyberwaregrade>
-        <disablecyberwaregrade>Omegaware</disablecyberwaregrade>
-        <disablecyberwaregrade>Standard (Adapsin)</disablecyberwaregrade>
-        <disablecyberwaregrade>Standard (Burnout's Way) (Adapsin)</disablecyberwaregrade>
-        <disablecyberwaregrade>Used (Adapsin)</disablecyberwaregrade>
-        <disablecyberwaregrade>Omegaware (Adapsin)</disablecyberwaregrade>
+      <bonus>
+        <disablebiowaregrade xpathfilter="contains(text(),'Alphaware')" amendoperation="remove" />
+        <disablecyberwaregrade xpathfilter="contains(text(),'Alphaware')" amendoperation="remove" />
       </bonus>
-      <required amendoperation="replace">
+      <required>
         <oneof>
-          <ess grade="Alphaware">1</ess>
+          <ess xpathfilter="@grade = 'Betaware'" amendoperation="replace" grade="Alphaware">1</ess>
         </oneof>
       </required>
     </quality>
@@ -852,8 +867,6 @@
     <quality>
       <id>a030d7e2-755b-4f71-b848-ad9772fba242</id>
       <name>Distinctive Style</name>
-      <karma>-5</karma>
-      <category>Negative</category>
       <bonus>
         <publicawareness>2</publicawareness>
       </bonus>
@@ -863,11 +876,11 @@
       <id>727e5ca7-0b64-462f-a3dc-254c451db3a1</id>
       <name>Pacifist Adept</name>
       <required>
-        <oneof amendoperation="replace">
-          <quality>Pacifist I</quality>
+        <oneof>
+          <quality xpathfilter="text() = 'Pacifist II'" amendoperation="remove" />
         </oneof>
       </required>
-      <forbidden amendoperation="replace">
+      <forbidden amendoperation="replace" addifnotfound="True">
         <oneof>
           <quality>Pacifist II</quality>
         </oneof>

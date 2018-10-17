@@ -2787,6 +2787,23 @@
       </specs>
     </skill>
     <skill>
+      <id>0e5b89c5-1143-4e73-ab71-0700910fcaaa</id>
+      <name>Mixed Unit Tactics</name>
+      <attribute>INT</attribute>
+      <category>Interest</category>
+      <default>False</default>
+      <skillgroup />
+      <specs>
+        <spec>Aerial/Aircraft</spec>
+        <spec>Armored Infantry</spec>
+        <spec>Artillery</spec>
+        <spec>Naval</spec>
+        <spec>Mechanized Infantry</spec>
+        <spec>Standard Infantry</spec>
+        <spec>[Single Unit Type]</spec>
+      </specs>
+    </skill>
+    <skill>
       <id>8feeb71f-8864-4ece-88b2-52f77eb1851f</id>
       <name>NAN Military</name>
       <attribute>LOG</attribute>

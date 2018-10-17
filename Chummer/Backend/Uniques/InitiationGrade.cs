@@ -17,10 +17,8 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
@@ -89,7 +87,7 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            if (objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 _guiID = Guid.NewGuid();
             objNode.TryGetBoolFieldQuickly("res", ref _blnTechnomancer);
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
@@ -280,7 +278,7 @@ namespace Chummer
         }
         #endregion
 
-        public bool Remove(Character characterObject, bool confirmDelete = true)
+        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
             // Stop if this isn't the highest grade
             if (characterObject.MAGEnabled)
@@ -291,7 +289,7 @@ namespace Chummer
                     return false;
                 }
 
-                if (confirmDelete)
+                if (blnConfirmDelete)
                 {
                     if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade",
                         GlobalOptions.Language)))
@@ -308,7 +306,7 @@ namespace Chummer
                     return false;
                 }
 
-                if (confirmDelete)
+                if (blnConfirmDelete)
                 {
                     if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade",
                         GlobalOptions.Language)))

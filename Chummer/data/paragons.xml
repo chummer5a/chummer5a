@@ -82,7 +82,7 @@
       <name>Delphi (The Oracle)</name>
       <category>Resonance</category>
       <advantage>+1 bonus to dice pool and limit when threading complex forms.</advantage>
-      <disadvantage>–2 modifer to the technomancer’s Initiative Score.</disadvantage>
+      <disadvantage>–2 modifier to the technomancer’s Initiative Score.</disadvantage>
       <bonus>
           <initiative>-2</initiative>
           <matrixinitiative>-2</matrixinitiative>
@@ -92,7 +92,7 @@
           </specificskill>
       </bonus>
       <source>KC</source>
-      <page>151</page>
+      <page>104</page>
     </mentor>
     <mentor>
       <id>df42911f-0542-4fae-80d1-39573547ff68</id>
@@ -108,7 +108,7 @@
           </specificskill>
         </bonus>
       <source>KC</source>
-      <page>177</page>
+      <page>104</page>
     </mentor>
     <mentor>
       <id>da2f3bad-d934-461a-aa92-60fc6e5c3ef7</id>
@@ -117,7 +117,7 @@
       <advantage>+2 dice pool bonus and +1 limit on all actions when directly connected to an isolated system.</advantage>
       <disadvantage>–1 limit penalty when logged into more than one grid.</disadvantage>
       <source>KC</source>
-      <page>151</page>
+      <page>104</page>
     </mentor>
     <mentor>
       <id>de755412-5cae-4859-880f-75a7bd68d5a4</id>
@@ -132,7 +132,7 @@
         </specificskill>
       </bonus>
       <source>KC</source>
-      <page>151</page>
+      <page>104</page>
     </mentor>
   </mentors>
 </chummer>

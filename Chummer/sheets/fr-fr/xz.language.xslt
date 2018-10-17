@@ -266,6 +266,7 @@
   <xsl:variable name="lang.CoreTrack"  select="'Core Damage Track'"/>
   <xsl:variable name="lang.CritterPowers"    select="'Pouvoirs de Créature'"/>
   <xsl:variable name="lang.CurrentEdge"    select="'Points de chance courants'"/>
+  <xsl:variable name="lang.CurrentForm"    select="'Forme courante'"/>
   <xsl:variable name="lang.DamageType"  select="'Type de dommage'"/>
   <xsl:variable name="lang.DataProc"      select="'Trait. Données'"/>
   <xsl:variable name="lang.DataProcessing"  select="'Traitement de Données'"/>

@@ -106,7 +106,6 @@ namespace Chummer
                     }
                 }
             }
-            MoveControls();
         }
 
         private void frmViewer_Load(object sender, EventArgs e)
@@ -454,18 +453,7 @@ namespace Chummer
 
             Cursor = Cursors.Default;
         }
-
-        private void MoveControls()
-        {
-            int intWidth = cmdPrint.Width;
-            cmdPrint.AutoSize = false;
-            cmdPrint.Width = intWidth + 20;
-            cmdSaveAsPdf.Left = cmdPrint.Right + 6;
-
-            lblCharacterSheet.Left = cboLanguage.Left - lblCharacterSheet.Width - 6;
-            MinimumSize = new System.Drawing.Size(2 * cmdPrint.Left + cmdPrint.Width + cmdSaveAsPdf.Width + lblCharacterSheet.Width + cboLanguage.Width + cboXSLT.Width + 24, 73);
-        }
-
+        
         private void cmdSaveAsPdf_Click(object sender, EventArgs e)
         {
             // Save the generated output as PDF.
@@ -574,7 +562,7 @@ namespace Chummer
             // (hidden because they are partial templates that cannot be used on their own).
             foreach (string fileName in ReadXslFileNamesWithoutExtensionFromDirectory(omaeDirectoryPath))
             {
-                lstItems.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + ": " + fileName));
+                lstItems.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + fileName));
             }
 
             return lstItems;
@@ -702,6 +690,7 @@ namespace Chummer
         private void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
             _strPrintLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.Language;
+            imgSheetLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(_strPrintLanguage.Substring(3, 2));
             try
             {
                 _objPrintCulture = CultureInfo.GetCultureInfo(_strPrintLanguage);

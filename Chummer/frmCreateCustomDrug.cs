@@ -17,12 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -33,8 +28,8 @@ namespace Chummer
 {
     public partial class frmCreateCustomDrug : Form
 	{
-		private Dictionary<String, DrugComponent> dictDrugComponents;
-        private readonly List<clsNodeData> lstSelectedDrugComponents;
+		private readonly Dictionary<string, DrugComponent> _dicDrugComponents = new Dictionary<string, DrugComponent>();
+        private readonly List<clsNodeData> _lstSelectedDrugComponents;
 		private readonly List<ListItem> _lstGrade = new List<ListItem>();
 		private readonly Character _objCharacter;
 	    private Drug _objDrug;
@@ -46,44 +41,44 @@ namespace Chummer
         {
 	        if (objDrug == null)
 	        {
-	            objDrug = new Drug(objCharacter)
-	            {
-	                GUID = new Guid()
-	            };
+	            objDrug = new Drug(objCharacter);
 	        }
 	        _objCharacter = objCharacter;
             InitializeComponent();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             LoadData();
 
-            lstSelectedDrugComponents = new List<clsNodeData>();
+            _lstSelectedDrugComponents = new List<clsNodeData>();
 
-            foreach (var item in dictDrugComponents)
+            string strLevelString = LanguageManager.GetString("String_Level");
+            string strSpaceString = LanguageManager.GetString("String_Space");
+            foreach (KeyValuePair<string, DrugComponent> objItem in _dicDrugComponents)
             {
-                string category = item.Value.Category;
-                int categoryIndex = FindRootNodeIndexForCategory(category);
-                if (categoryIndex == -1)
+                string strCategory = objItem.Value.Category;
+                TreeNode nodCategoryNode = treAvailableComponents.FindNode("Node_" + strCategory);
+                if (nodCategoryNode == null)
                 {
-                    Log.Warning(string.Format("Uknown category %s in component %s", category, item.Key));
+                    Log.Warning($"Unknown category {strCategory} in component {objItem.Key}");
                     return;
                 }
-                var node = treAvailableComponents.Nodes[categoryIndex].Nodes.Add(item.Key);
-                int levelCount = item.Value.DrugEffects.Count;
-                if (levelCount == 1)
+                TreeNode objNode = nodCategoryNode.Nodes.Add(objItem.Value.DisplayNameShort(GlobalOptions.Language));
+                int intLevelCount = objItem.Value.DrugEffects.Count;
+                if (intLevelCount == 1)
                 {
-                    node.Tag = new clsNodeData(item.Value, 0);
+                    objNode.Tag = new clsNodeData(objItem.Value, 0);
                 }
                 else
                 {
-                    node.Tag = new clsNodeData(item.Value);
-                    for (int i = 0; i < levelCount; i++)
+                    objNode.Tag = new clsNodeData(objItem.Value);
+                    for (int i = 0; i < intLevelCount; i++)
                     {
-                        var subNode = node.Nodes.Add("Level " + (i + 1).ToString());
-                        subNode.Tag = new clsNodeData(item.Value, i);
+                        TreeNode objSubNode = objNode.Nodes.Add(strLevelString + strSpaceString + (i + 1).ToString());
+                        objSubNode.Tag = new clsNodeData(objItem.Value, i);
                     }
                 }
             }
             treAvailableComponents.ExpandAll();
-            treChoosenComponents.ExpandAll();
+            treChosenComponents.ExpandAll();
 	        PopulateGrades();
 			UpdateCustomDrugStats();
             lblDrugDescription.Text = objDrug.Description;
@@ -91,14 +86,17 @@ namespace Chummer
 
         private void LoadData()
         {
-            dictDrugComponents = new Dictionary<string, DrugComponent>();
-            foreach (XmlNode objXmlComponent in _objXmlDocument.SelectNodes("chummer/drugcomponents/drugcomponent"))
+            XmlNodeList xmlComponentsNodeList = _objXmlDocument.SelectNodes("chummer/drugcomponents/drugcomponent");
+            if (xmlComponentsNodeList?.Count > 0)
             {
-                DrugComponent objDrugComponent = new DrugComponent(_objCharacter);
-                objDrugComponent.Load(objXmlComponent);
-                dictDrugComponents[objDrugComponent.Name] = objDrugComponent;
-			}
-		}
+                foreach (XmlNode objXmlComponent in xmlComponentsNodeList)
+                {
+                    DrugComponent objDrugComponent = new DrugComponent(_objCharacter);
+                    objDrugComponent.Load(objXmlComponent);
+                    _dicDrugComponents[objDrugComponent.Name] = objDrugComponent;
+                }
+            }
+        }
 		
 		/// <summary>
 		/// Populate the list of Drug Grades.
@@ -112,10 +110,12 @@ namespace Chummer
 			{
 			    _lstGrade.Add(new ListItem(objGrade.Name, objGrade.DisplayName(GlobalOptions.Language)));
 			}
+            cboGrade.BeginUpdate();
 			cboGrade.DataSource = null;
 			cboGrade.ValueMember = "Value";
 			cboGrade.DisplayMember = "Name";
 			cboGrade.DataSource = _lstGrade;
+            cboGrade.EndUpdate();
 		}
 
 		private void UpdateCustomDrugStats()
@@ -127,89 +127,74 @@ namespace Chummer
                 Grade = cboGrade.SelectedValue.ToString()
             };
 
-            foreach (clsNodeData objNodeData in lstSelectedDrugComponents)
+            foreach (clsNodeData objNodeData in _lstSelectedDrugComponents)
             {
-                DrugComponent objDrugComponent = objNodeData.objDrugComponent;
-                objDrugComponent.Level = objNodeData.level;
+                DrugComponent objDrugComponent = objNodeData.DrugComponent;
+                objDrugComponent.Level = objNodeData.Level;
                 _objDrug.Components.Add(objDrugComponent);
             }
         }
 
-        private int FindRootNodeIndexForCategory(string category)
-        {
-            switch (category)
-            {
-                case "Foundation":
-                    return 0;
-                case "Block":
-                    return 1;
-                case "Enhancer":
-                    return 2;
-                default:
-                    return -1;
-            }
-		}
-
 		private void AcceptForm()
 		{
-			_objDrug.Name = txtDrugName.Text;
 			_objDrug.Quantity = 1;
 		}
 
 		private void AddSelectedComponent()
         {
-            clsNodeData objNodeData;
-            if (treAvailableComponents.SelectedNode?.Tag != null)
-                objNodeData = (clsNodeData)treAvailableComponents.SelectedNode.Tag;
-            else
-                return;
-
-            if (objNodeData.level == -1)
-                return;
-
-            int categoryIndex = FindRootNodeIndexForCategory(objNodeData.objDrugComponent.Category);
-            if (categoryIndex == -1)
+            if (!(treAvailableComponents.SelectedNode?.Tag is clsNodeData objNodeData) || objNodeData.Level == -1)
             {
-                Log.Warning(string.Format("Uknown category %s in component %s", objNodeData.objDrugComponent.Category, objNodeData.objDrugComponent.Name));
                 return;
             }
 
+            string strCategory = objNodeData.DrugComponent.Category;
+            TreeNode nodCategoryNode = treChosenComponents.FindNode("Node_" + strCategory);
+            if (nodCategoryNode == null)
+            {
+                Log.Warning($"Unknown category {strCategory} in component {objNodeData.DrugComponent.Name}");
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(txtDrugName.Text))
+
             //prevent adding same component twice
-            if (lstSelectedDrugComponents.Any(c => c.objDrugComponent.Name == objNodeData.objDrugComponent.Name))
+            if (_lstSelectedDrugComponents.Any(c => c.DrugComponent.Name == objNodeData.DrugComponent.Name))
             {
                 MessageBox.Show(this, LanguageManager.GetString("Message_DuplicateDrugComponentWarning"));
                 return;
             }
 
             //drug can have only one foundation
-            if (objNodeData.objDrugComponent.Category == "Foundation")
+            if (objNodeData.DrugComponent.Category == "Foundation")
             {
-                if (lstSelectedDrugComponents.Any(c => c.objDrugComponent.Category == "Foundation"))
+                if (_lstSelectedDrugComponents.Any(c => c.DrugComponent.Category == "Foundation"))
                 {
                     MessageBox.Show(this, LanguageManager.GetString("Message_DuplicateDrugFoundationWarning"));
                     return;
                 }
             }
 
+            string strSpaceString = LanguageManager.GetString("String_Space");
+            string strColonString = LanguageManager.GetString("String_Colon");
             //restriction for maximum level of block (CF 191)
-            if (objNodeData.level + 1 > 2)
+            if (objNodeData.Level + 1 > 2)
             {
-                foreach (clsNodeData objFoundationNodeData in lstSelectedDrugComponents)
+                foreach (clsNodeData objFoundationNodeData in _lstSelectedDrugComponents)
                 {
-                    if (objFoundationNodeData.objDrugComponent.Category != "Foundation")
+                    if (objFoundationNodeData.DrugComponent.Category != "Foundation")
                         continue;
-                    var dctFoundationAttributes = objFoundationNodeData.objDrugComponent.DrugEffects[0].Attributes;
-                    var dctBlockAttributes = objNodeData.objDrugComponent.DrugEffects[objNodeData.level].Attributes;
-                    foreach (var item in dctFoundationAttributes)
+                    Dictionary<string, int> dctFoundationAttributes = objFoundationNodeData.DrugComponent.DrugEffects[0].Attributes;
+                    Dictionary<string, int> dctBlockAttributes = objNodeData.DrugComponent.DrugEffects[objNodeData.Level].Attributes;
+                    foreach (KeyValuePair<string, int> objItem in dctFoundationAttributes)
                     {
-                        if (item.Value < 0 &&
-                            dctBlockAttributes.TryGetValue(item.Key, out var blockAttrValue) &&
-                            blockAttrValue > 0)
+                        if (objItem.Value < 0 &&
+                            dctBlockAttributes.TryGetValue(objItem.Key, out int intBlockAttrValue) &&
+                            intBlockAttrValue > 0)
                         {
-                            string message = new StringBuilder("The maximum level of a block that positively modifies an Attribute that the chosen foundation negatively modifies is Level 2. (CF 191)").
+                            string message = new StringBuilder(LanguageManager.GetString("String_MaximumDrugBlockLevel")).
                                 AppendLine().
-                                Append(objFoundationNodeData.objDrugComponent.Name).Append(": ").Append(item.Key).Append(item.Value.ToString("+#;-#;")).AppendLine().
-                                Append(objNodeData.objDrugComponent.Name).Append(": ").Append(item.Key).Append(blockAttrValue.ToString("+#;-#;")).
+                                Append(objFoundationNodeData.DrugComponent.CurrentDisplayName).Append(strColonString).Append(strSpaceString).Append(objItem.Key).Append(objItem.Value.ToString("+#;-#;")).AppendLine().
+                                Append(objNodeData.DrugComponent.CurrentDisplayName).Append(strColonString).Append(strSpaceString).Append(objItem.Key).Append(intBlockAttrValue.ToString("+#;-#;")).
                                 ToString();
                             MessageBox.Show(this, message);
                             return;
@@ -219,46 +204,34 @@ namespace Chummer
             }
 
 
-            string nodeText = objNodeData.objDrugComponent.Name;
-            if (objNodeData.objDrugComponent.DrugEffects.Count > 1)
-                nodeText += " (level " + (objNodeData.level + 1).ToString() + ")";
-            TreeNode node = treChoosenComponents.Nodes[categoryIndex].Nodes.Add(nodeText);
-            node.Tag = objNodeData;
-            node.EnsureVisible();
+            string strNodeText = objNodeData.DrugComponent.CurrentDisplayName;
+            if (objNodeData.DrugComponent.Level <= 0 && objNodeData.DrugComponent.DrugEffects.Count > 1)
+                strNodeText += strSpaceString + '(' + LanguageManager.GetString("String_Level") + strSpaceString + (objNodeData.Level + 1).ToString(GlobalOptions.CultureInfo) + ")";
+            TreeNode objNewNode = nodCategoryNode.Nodes.Add(strNodeText);
+            objNewNode.Tag = objNodeData;
+            objNewNode.EnsureVisible();
 
-            lstSelectedDrugComponents.Add(objNodeData);
+            _lstSelectedDrugComponents.Add(objNodeData);
             UpdateCustomDrugStats();
             lblDrugDescription.Text = _objDrug.GenerateDescription(0);
         }
 
-        public Drug CustomDrug
+        public Drug CustomDrug => _objDrug;
+
+	    private void treAvailableComponents_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            get
+            if (treAvailableComponents.SelectedNode?.Tag is clsNodeData objNodeData)
             {
-                return _objDrug;
+                lblBlockDescription.Text = objNodeData.DrugComponent.GenerateDescription(objNodeData.Level);
             }
-        }
-
-        private void treAvailableComponents_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            clsNodeData objNodeData;
-            if (treAvailableComponents.SelectedNode != null && treAvailableComponents.SelectedNode.Tag != null)
-                objNodeData = (clsNodeData)treAvailableComponents.SelectedNode.Tag;
-            else
-                return;
-
-            lblBlockDescription.Text = objNodeData.objDrugComponent.GenerateDescription(objNodeData.level);
         }
 
         private void treChoosenComponents_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            clsNodeData objNodeData;
-            if (treChoosenComponents.SelectedNode != null && treChoosenComponents.SelectedNode.Tag != null)
-                objNodeData = (clsNodeData)treChoosenComponents.SelectedNode.Tag;
-            else
-                return;
-
-            lblBlockDescription.Text = objNodeData.objDrugComponent.GenerateDescription(objNodeData.level);
+            if (treChosenComponents.SelectedNode?.Tag is clsNodeData objNodeData)
+            {
+                lblBlockDescription.Text = objNodeData.DrugComponent.GenerateDescription(objNodeData.Level);
+            }
         }
 
         private void btnAddComponent_Click(object sender, EventArgs e)
@@ -273,22 +246,20 @@ namespace Chummer
 
         private void btnRemoveComponent_Click(object sender, EventArgs e)
         {
-            clsNodeData objNodeData;
-            if (treChoosenComponents.SelectedNode != null && treChoosenComponents.SelectedNode.Tag != null)
-                objNodeData = (clsNodeData)treChoosenComponents.SelectedNode.Tag;
-            else
-                return;
+            if (treChosenComponents.SelectedNode?.Tag is clsNodeData objNodeData)
+            {
+                treChosenComponents.Nodes.Remove(treChosenComponents.SelectedNode);
 
-            treChoosenComponents.Nodes.Remove(treChoosenComponents.SelectedNode);
+                _lstSelectedDrugComponents.Remove(objNodeData);
 
-            lstSelectedDrugComponents.Remove(objNodeData);
-
-            UpdateCustomDrugStats();
-            lblDrugDescription.Text = _objDrug.GenerateDescription(0);
+                UpdateCustomDrugStats();
+                lblDrugDescription.Text = _objDrug.GenerateDescription(0);
+            }
         }
 
         private void txtDrugName_TextChanged(object sender, EventArgs e)
         {
+            _objDrug.Name = txtDrugName.Text;
             lblDrugDescription.Text = _objDrug.GenerateDescription(0);
         }
 
@@ -314,21 +285,23 @@ namespace Chummer
 			// Update the Essence and Cost multipliers based on the Grade that has been selected.
 			// Retrieve the information for the selected Grade.
 			XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = \"" + cboGrade.SelectedValue + "\"]");
-			_dblCostMultiplier = Convert.ToDouble(objXmlGrade["cost"].InnerText, GlobalOptions.CultureInfo);
-			objXmlGrade.TryGetField("addictionthreshold", out _intAddictionThreshold, 0);
-			UpdateCustomDrugStats();
+		    if (!objXmlGrade.TryGetDoubleFieldQuickly("cost", ref _dblCostMultiplier))
+		        _dblCostMultiplier = 1.0;
+            if (!objXmlGrade.TryGetInt32FieldQuickly("addictionthreshold", ref _intAddictionThreshold))
+		        _intAddictionThreshold = 0;
+            UpdateCustomDrugStats();
 			lblDrugDescription.Text = _objDrug.GenerateDescription(0);
 		}
 	}
 
 	class clsNodeData : Object
     {
-        public DrugComponent objDrugComponent;
-        public int level;
+        public DrugComponent DrugComponent { get; }
+        public int Level { get; }
         public clsNodeData(DrugComponent objDrugComponent, int level = -1)
         {
-            this.objDrugComponent = objDrugComponent;
-            this.level = level;
+            DrugComponent = objDrugComponent;
+            Level = level;
         }
     }
 }

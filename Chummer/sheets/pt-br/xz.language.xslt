@@ -266,6 +266,7 @@
   <xsl:variable name="lang.CoreTrack"  select="'Faixa de Dano do Núcleo'"/>
   <xsl:variable name="lang.CritterPowers"    select="'Poderes de Criatura'"/>
   <xsl:variable name="lang.CurrentEdge"    select="'Pontos de Trunfo Atual'"/>
+  <xsl:variable name="lang.CurrentForm"    select="'Forma Atual'"/>
   <xsl:variable name="lang.DamageType"  select="'Tipo de Dano'"/>
   <xsl:variable name="lang.DataProc"      select="'Datagrama'"/>
   <xsl:variable name="lang.DataProcessing"  select="'Datagrama'"/>

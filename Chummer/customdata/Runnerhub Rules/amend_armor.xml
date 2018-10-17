@@ -19,20 +19,11 @@
 -->
 <chummer>
   <armors>
-    <armor>
-      <name>Hardened Mil-Spec Battle Armor: Light</name>
+    <armor xpathfilter='starts-with(name, "Hardened Mil-Spec Battle Armor")'>
       <hide />
     </armor>
     <armor>
-      <name>Hardened Mil-Spec Battle Armor: Medium</name>
-      <hide />
-    </armor>
-    <armor>
-      <name>Hardened Mil-Spec Battle Armor: Heavy</name>
-      <hide />
-    </armor>
-    <armor>
-      <name>Hardened Mil-Spec Battle Armor: Helmet</name>
+      <name>Ares Arms Bug Stomper Custom Armor</name>
       <hide />
     </armor>
     <armor>
@@ -47,10 +38,9 @@
       <name>Ares Arms Bug Stomper Custom Armor</name>
       <hide/>
     </armor>
-    <armor xpathfilter='not(starts-with(armor, "+"))' amendoperation="append">      
-      <addmodcategory>Full Armor Piece</addmodcategory>
+    <armor xpathfilter='not(starts-with(armor, "+"))'>      
+      <addmodcategory amendoperation="addnode">Full Armor Piece</addmodcategory>
     </armor>
-    
   </armors>
   <mods>
     <mod>
@@ -61,7 +51,7 @@
       <name>YNT Softweave Armor</name>
       <category>Full Armor Piece</category>
     </mod>
-    <mod>
+    <mod amendoperation="addnode">
       <id>f2862a7c-dc59-46cc-8e58-910c59c878f2</id>
       <name>Chemical Protection (Cloak)</name>
       <category>Cloaks</category>
@@ -77,7 +67,7 @@
       <source>SR5</source>
       <page>437</page>
     </mod>
-    <mod>
+    <mod amendoperation="addnode">
       <id>3112fddf-a427-44d9-94b8-e7971e353bd4</id>
       <name>Fire Resistance (Cloak)</name>
       <category>Cloaks</category>
@@ -92,7 +82,7 @@
       <source>SR5</source>
       <page>437</page>
     </mod>
-    <mod>
+    <mod amendoperation="addnode">
       <id>23897bae-5b38-4ff6-900b-89008e055af7</id>
       <name>Insulation (Cloak)</name>
       <category>Cloaks</category>
@@ -107,7 +97,7 @@
       <source>SR5</source>
       <page>437</page>
     </mod>
-    <mod>
+    <mod amendoperation="addnode">
       <id>0b45ed28-bf43-4380-b131-97bf2368c0ad</id>
       <name>Nonconductivity (Cloak)</name>
       <category>Cloaks</category>
@@ -122,7 +112,7 @@
       <source>SR5</source>
       <page>438</page>
     </mod>
-    <mod>
+    <mod amendoperation="addnode">
       <id>e22f6d94-b686-4642-aefd-c6f32c3f943d</id>
       <name>Thermal Damping (Cloak)</name>
       <category>Cloaks</category>
@@ -141,7 +131,7 @@
       <source>SR5</source>
       <page>438</page>
     </mod>
-    <mod>
+    <mod amendoperation="addnode">
       <id>df220b7c-10c6-4b15-87b3-45848d761bc5</id>
       <name>Radiation Shielding (Cloak)</name>
       <category>Cloaks</category>

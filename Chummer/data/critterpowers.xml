@@ -2320,7 +2320,6 @@
       <source>HS</source>
       <page>186</page>
     </power>
-
     <!-- Region Drake Optional Powers -->
     <power>
       <id>31ad1e6d-3e95-42cc-af61-5b59c8e745e6</id>
@@ -2342,6 +2341,12 @@
       <action>Auto</action>
       <range>Self</range>
       <duration>Always</duration>
+      <required>
+        <oneof>
+          <quality>Dracoform (Sea Drake)</quality>
+        </oneof>
+      </required>
+      <karma>6</karma>
       <source>HS</source>
       <page>164</page>
     </power>
@@ -2370,6 +2375,7 @@
       <bonus>
         <selecttext />
       </bonus>
+      <karma>9</karma>
       <source>HS</source>
       <page>164</page>
     </power>
@@ -2381,6 +2387,7 @@
       <action>Complex</action>
       <range>LOS</range>
       <duration>Sustained</duration>
+      <karma>9</karma>
       <source>HS</source>
       <page>164</page>
     </power>
@@ -2392,6 +2399,7 @@
       <action>Complex</action>
       <range>LOS</range>
       <duration>Special</duration>
+      <karma>9</karma>
       <source>HS</source>
       <page>164</page>
     </power>
@@ -2403,6 +2411,7 @@
       <action>Auto</action>
       <range>LOS</range>
       <duration>Instant</duration>
+      <karma>9</karma>
       <source>HS</source>
       <page>164</page>
     </power>
@@ -2514,6 +2523,7 @@
       <range>Touch</range>
       <duration>Instant</duration>
       <bonus />
+      <karma>5</karma>
       <source>HS</source>
       <page>164</page>
     </power>
@@ -2526,6 +2536,7 @@
       <range>Touch</range>
       <duration>Instant</duration>
       <bonus />
+      <karma>5</karma>
       <source>HS</source>
       <page>164</page>
     </power>
@@ -2538,6 +2549,7 @@
       <range>Touch</range>
       <duration>Instant</duration>
       <bonus />
+      <karma>5</karma>
       <source>HS</source>
       <page>164</page>
     </power>
@@ -2550,6 +2562,7 @@
       <range>Touch</range>
       <duration>Instant</duration>
       <bonus />
+      <karma>5</karma>
       <source>HS</source>
       <page>164</page>
     </power>
@@ -2560,7 +2573,7 @@
       <type>M</type>
       <action>Auto</action>
       <range>Self</range>
-      <karma>14</karma>
+      <karma>6</karma>
       <bonus>
         <critterpowerlevels>
           <power>
@@ -2722,6 +2735,19 @@
       <karma>9</karma>
       <source>HS</source>
       <page>165</page>
+    </power>
+    <!-- End Region -->
+    <!-- Region Kill Code -->
+    <power>
+      <id>7a2d7ea2-7460-4d76-be08-dfbf5653ec7d</id>
+      <name>Resonance Hosting</name>
+      <category>Emergent</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>KC</source>
+      <page>168</page>
     </power>
     <!-- End Region -->
   </powers>

@@ -29,11 +29,13 @@ namespace Chummer
     {
         private string _strSelectedTechnique = string.Empty;
 
+        private bool _blnLoading = true;
         private bool _blnAddAgain;
 
         private readonly MartialArt _objMartialArt;
         private readonly XPathNavigator _xmlBaseChummerNode;
         private readonly Character _objCharacter;
+        private readonly HashSet<string> _setAllowedTechniques = new HashSet<string>();
 
         #region Control Events
         public frmSelectMartialArtTechnique(Character objCharacter, MartialArt objMartialArt)
@@ -44,49 +46,25 @@ namespace Chummer
             _objMartialArt = objMartialArt;
             // Load the Martial Art information.
             _xmlBaseChummerNode = XmlManager.Load("martialarts.xml").GetFastNavigator().SelectSingleNode("/chummer");
-        }
-
-        private void frmSelectMartialArtTechnique_Load(object sender, EventArgs e)
-        {
-            HashSet<string> setAllowedTechniques = null;
             // Populate the Martial Art Tecnnique list.
-            XPathNavigator xmlMartialArtNode = _xmlBaseChummerNode.SelectSingleNode("martialarts/martialart[name = \"" + _objMartialArt.Name + "\"]");
+            XPathNavigator xmlMartialArtNode = _xmlBaseChummerNode?.SelectSingleNode("martialarts/martialart[name = \"" + _objMartialArt.Name + "\"]");
             if (xmlMartialArtNode != null && !xmlMartialArtNode.NodeExists("alltechniques"))
             {
-                setAllowedTechniques = new HashSet<string>();
                 foreach (XPathNavigator xmlTechnique in xmlMartialArtNode.Select("techniques/technique"))
                 {
                     string strTechniqueName = xmlTechnique.Value;
                     if (_objMartialArt.Techniques.All(x => x.Name != strTechniqueName))
                     {
-                        setAllowedTechniques.Add(strTechniqueName);
+                        _setAllowedTechniques.Add(strTechniqueName);
                     }
                 }
             }
+        }
 
-            List<ListItem> lstTechniqueItems = new List<ListItem>();
-            foreach (XPathNavigator xmlTechnique in _xmlBaseChummerNode.Select("techniques/technique"))
-            {
-                string strId = xmlTechnique.SelectSingleNode("id")?.Value;
-                if (!string.IsNullOrEmpty(strId))
-                {
-                    string strTechniqueName = xmlTechnique.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-
-                    if (setAllowedTechniques?.Contains(strTechniqueName) == false)
-                        continue;
-
-                    if (xmlTechnique.RequirementsMet(_objCharacter, _objMartialArt))
-                    {
-                        lstTechniqueItems.Add(new ListItem(strId, xmlTechnique.SelectSingleNode("translate")?.Value ?? strTechniqueName));
-                    }
-                }
-            }
-            lstTechniqueItems.Sort(CompareListItems.CompareNames);
-            lstTechniques.BeginUpdate();
-            lstTechniques.ValueMember = "Value";
-            lstTechniques.DisplayMember = "Name";
-            lstTechniques.DataSource = lstTechniqueItems;
-            lstTechniques.EndUpdate();
+        private void frmSelectMartialArtTechnique_Load(object sender, EventArgs e)
+        {
+            _blnLoading = false;
+            RefreshTechniquesList();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -114,6 +92,9 @@ namespace Chummer
 
         private void lstTechniques_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_blnLoading)
+                return;
+
             string strSelectedId = lstTechniques.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
@@ -126,20 +107,26 @@ namespace Chummer
                     string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                     lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
                     lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+                    lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 }
                 else
                 {
                     lblSource.Text = string.Empty;
-
                     lblSource.SetToolTip(string.Empty);
+                    lblSourceLabel.Visible = false;
                 }
             }
             else
             {
                 lblSource.Text = string.Empty;
-
                 lblSource.SetToolTip(string.Empty);
+                lblSourceLabel.Visible = false;
             }
+        }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            RefreshTechniquesList();
         }
         #endregion
 
@@ -168,6 +155,52 @@ namespace Chummer
                 _strSelectedTechnique = strSelectedId;
                 DialogResult = DialogResult.OK;
             }
+        }
+
+        /// <summary>
+        /// Populate the Martial Arts Techniques list.
+        /// </summary>
+        private void RefreshTechniquesList()
+        {
+            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')' + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+
+            XPathNodeIterator objTechniquesList = _xmlBaseChummerNode.Select("techniques/technique[" + strFilter + "]");
+
+            List<ListItem> lstTechniqueItems = new List<ListItem>();
+            foreach (XPathNavigator xmlTechnique in objTechniquesList)
+            {
+                string strId = xmlTechnique.SelectSingleNode("id")?.Value;
+                if (!string.IsNullOrEmpty(strId))
+                {
+                    string strTechniqueName = xmlTechnique.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+
+                    if (_setAllowedTechniques?.Contains(strTechniqueName) == false)
+                        continue;
+
+                    if (xmlTechnique.RequirementsMet(_objCharacter, _objMartialArt))
+                    {
+                        lstTechniqueItems.Add(new ListItem(strId, xmlTechnique.SelectSingleNode("translate")?.Value ?? strTechniqueName));
+                    }
+                }
+            }
+            lstTechniqueItems.Sort(CompareListItems.CompareNames);
+            string strOldSelected = lstTechniques.SelectedValue?.ToString();
+            _blnLoading = true;
+            lstTechniques.BeginUpdate();
+            lstTechniques.ValueMember = "Value";
+            lstTechniques.DisplayMember = "Name";
+            lstTechniques.DataSource = lstTechniqueItems;
+            _blnLoading = false;
+            if (!string.IsNullOrEmpty(strOldSelected))
+                lstTechniques.SelectedValue = strOldSelected;
+            else
+                lstTechniques.SelectedIndex = -1;
+            lstTechniques.EndUpdate();
+        }
+
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
         }
         #endregion
     }

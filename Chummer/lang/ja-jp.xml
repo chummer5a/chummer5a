@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
-    Chummer5a is free software: you can redistribute it and/or modify
+    Chummer5a is free software： you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
@@ -12,16 +12,17 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+    along with Chummer5a.  If not, see <http：//www.gnu.org/licenses/>.
 
     You can obtain the full source code for Chummer5a at
-    https://github.com/chummer5a/chummer5a
+    https：//github.com/chummer5a/chummer5a
 -->
 <!-- この言語ファイルは AhonokoP が作成しました。連絡を取りたいときは"Dumpshock Forum"でAhonokoPにメッセージを送ってください -->
 <!-- Translated by AhonokoP. Contact me at "Dumpshock Forum" -->
 <chummer>
   <version>-497</version>
   <name>日本語 (ja-JP)</name>
+  <righttoleft>False</righttoleft>
   <strings>
 	<!-- Meta Strings -->
 	<string>
@@ -119,215 +120,219 @@
     </string>
     <string>
       <key>Label_BP</key>
-      <text>BP:</text>
+      <text>BP：</text>
     </string>
     <string>
       <key>Label_BPRemaining</key>
-      <text>残りBP:</text>
+      <text>残りBP：</text>
     </string>
     <string>
       <key>Label_Karma</key>
-      <text>カルマ:</text>
+      <text>カルマ：</text>
     </string>
   <string>
     <key>Label_LP</key>
-    <text>カルマ:</text>
+    <text>カルマ：</text>
   </string>
     <string>
+      <key>String_KarmaRemaining</key>
+      <text>残りカルマ</text>
+    </string>
+    <string>
       <key>Label_KarmaRemaining</key>
-      <text>残りカルマ:</text>
+      <text>残りカルマ：</text>
     </string>
     <string>
       <key>Label_Source</key>
-      <text>ソース:</text>
+      <text>ソース：</text>
     </string>
     <string>
       <key>Label_Name</key>
-      <text>名前:</text>
+      <text>名前：</text>
     </string>
     <string>
       <key>Label_Category</key>
-      <text>分類:</text>
+      <text>分類：</text>
     </string>
     <string>
       <key>Label_Handling</key>
-      <text>操縦値:</text>
+      <text>操縦値：</text>
     </string>
     <string>
       <key>Label_Accel</key>
-      <text>加速値:</text>
+      <text>加速値：</text>
     </string>
     <string>
       <key>Label_Speed</key>
-      <text>最高速度:</text>
+      <text>最高速度：</text>
     </string>
     <string>
       <key>Label_Device</key>
-      <text>デバイス:</text>
+      <text>デバイス：</text>
     </string>
     <string>
       <key>Label_Pilot</key>
-      <text>パイロット:</text>
+      <text>パイロット：</text>
     </string>
     <string>
       <key>Label_Body</key>
-      <text>強靭力:</text>
+      <text>強靭力：</text>
     </string>
     <string>
       <key>Label_Armor</key>
-      <text>装甲値:</text>
+      <text>装甲値：</text>
     </string>
   <string>
       <key>Label_Seats</key>
-      <text>席値:</text>
+      <text>席値：</text>
     </string>
     <string>
       <key>Label_Sensor</key>
-      <text>センサー:</text>
+      <text>センサー：</text>
     </string>
     <string>
       <key>Label_Avail</key>
-      <text>入手値:</text>
+      <text>入手値：</text>
     </string>
     <string>
       <key>Label_Cost</key>
-      <text>価格:</text>
+      <text>価格：</text>
     </string>
     <string>
       <key>Label_Slots</key>
-      <text>スロット:</text>
+      <text>スロット：</text>
     </string>
     <string>
       <key>Label_Rating</key>
-      <text>レーティング:</text>
+      <text>レーティング：</text>
     </string>
     <string>
       <key>Label_Qty</key>
-      <text>数量:</text>
+      <text>数量：</text>
     </string>
     <string>
       <key>Label_Grade</key>
-      <text>等級:</text>
+      <text>等級：</text>
     </string>
     <string>
       <key>Label_Essence</key>
-      <text>エッセンス:</text>
+      <text>エッセンス：</text>
     </string>
     <string>
       <key>Label_Type</key>
-      <text>種類:</text>
+      <text>種類：</text>
     </string>
     <string>
       <key>Label_Action</key>
-      <text>行動:</text>
+      <text>行動：</text>
     </string>
     <string>
       <key>Label_Range</key>
-      <text>射程:</text>
+      <text>射程：</text>
     </string>
     <string>
       <key>Label_Duration</key>
-      <text>効果時間:</text>
+      <text>効果時間：</text>
     </string>
     <string>
       <key>Label_Points</key>
-      <text>ポイント:</text>
+      <text>ポイント：</text>
     </string>
     <string>
       <key>Label_Descriptors</key>
-      <text>説明:</text>
+      <text>説明：</text>
     </string>
     <string>
       <key>Label_Damage</key>
-      <text>ダメージ:</text>
+      <text>ダメージ：</text>
     </string>
     <string>
       <key>Label_DV</key>
-      <text>DV:</text>
+      <text>DV：</text>
     </string>
     <string>
       <key>Label_RC</key>
-      <text>RC:</text>
+      <text>RC：</text>
     </string>
     <string>
       <key>Label_AP</key>
-      <text>AP:</text>
+      <text>AP：</text>
     </string>
     <string>
       <key>Label_Ammo</key>
-      <text>弾薬:</text>
+      <text>弾薬：</text>
     </string>
     <string>
       <key>Label_Reach</key>
-      <text>リーチ:</text>
+      <text>リーチ：</text>
     </string>
     <string>
       <key>Label_Mode</key>
-      <text>モード:</text>
+      <text>モード：</text>
     </string>
     <string>
       <key>Label_Mount</key>
-      <text>Mount:</text>
+      <text>Mount：</text>
     </string>
   <string>
     <key>Label_ExtraMount</key>
-    <text>Extra Mount:</text>
+    <text>Extra Mount：</text>
   </string>
     <string>
       <key>Label_DataFile</key>
-      <text>データファイル:</text>
+      <text>データファイル：</text>
     </string>
     <string>
       <key>Label_Search</key>
-      <text>検索 (&amp;S):</text>
+      <text>検索 (&amp;S)：</text>
     </string>
     <string>
       <key>Label_Capacity</key>
-      <text>容量:</text>
+      <text>容量：</text>
     </string>
     <string>
       <key>Label_Response</key>
-      <text>レスポンス:</text>
+      <text>レスポンス：</text>
     </string>
     <string>
       <key>Label_Signal</key>
-      <text>シグナル:</text>
+      <text>シグナル：</text>
     </string>
     <string>
       <key>Label_System</key>
-      <text>システム:</text>
+      <text>システム：</text>
     </string>
     <string>
       <key>Label_Firewall</key>
-      <text>ファイアウォール:</text>
+      <text>ファイアウォール：</text>
     </string>
     <string>
       <key>Label_BiofeedbackFilter</key>
-      <text>生体信号フィルター:</text>
+      <text>生体信号フィルター：</text>
     </string>
     <string>
       <key>Label_MaximumCapacityAllowed</key>
-      <text>最大容量:</text>
+      <text>最大容量：</text>
     </string>
     <string>
       <key>Label_BallisticArmorShort</key>
-      <text>対弾:</text>
+      <text>対弾：</text>
     </string>
     <string>
       <key>Label_BallisticArmorLong</key>
-      <text>対弾装甲:</text>
+      <text>対弾装甲：</text>
     </string>
     <string>
       <key>Label_ImpactArmorShort</key>
-      <text>対衝撃:</text>
+      <text>対衝撃：</text>
     </string>
     <string>
       <key>Label_ImpactArmorLong</key>
-      <text>対衝撃装甲:</text>
+      <text>対衝撃装甲：</text>
     </string>
     <string>
       <key>Label_Test</key>
-      <text>テスト:</text>
+      <text>テスト：</text>
     </string>
     <string>
       <key>String_None</key>
@@ -342,12 +347,16 @@
       <text>資質</text>
     </string>
     <string>
+      <key>Label_Qualities</key>
+      <text>資質：</text>
+    </string>
+    <string>
       <key>Label_Metavariant</key>
-      <text>メタバリアント:</text>
+      <text>メタバリアント：</text>
     </string>
     <string>
       <key>Label_ActiveSkill</key>
-      <text>能動技能:</text>
+      <text>能動技能：</text>
     </string>
     <string>
       <key>String_Force</key>
@@ -1012,7 +1021,7 @@
     </string>
     <string>
       <key>Message_CyberzombieRequirements</key>
-      <text>このキャラクターはサイバーゾンビになるための以下の条件を満たしていません:</text>
+      <text>このキャラクターはサイバーゾンビになるための以下の条件を満たしていません：</text>
     </string>
     <string>
       <key>Message_CyberzombieRequirementsEssence</key>
@@ -1600,7 +1609,7 @@
     </string>
     <string>
       <key>Message_InvalidBeginning</key>
-      <text>このキャラクターは以下のルールに違反しているため無効です:</text>
+      <text>このキャラクターは以下のルールに違反しているため無効です：</text>
     </string>
     <string>
       <key>Message_InvalidPointExcess</key>
@@ -2661,15 +2670,15 @@
     <!-- Common Tab -->
     <string>
       <key>Label_CharacterName</key>
-      <text>名前:</text>
+      <text>名前：</text>
     </string>
     <string>
       <key>Label_Metatype</key>
-      <text>メタタイプ:</text>
+      <text>メタタイプ：</text>
     </string>
     <string>
       <key>Label_Nuyen</key>
-      <text>新円:</text>
+      <text>新円：</text>
     </string>
     <string>
       <key>Label_Contacts</key>
@@ -2818,7 +2827,7 @@
     </string>
     <string>
       <key>Label_FreeKnowledgeSkills</key>
-      <text>初期知識技能点の残り:</text>
+      <text>初期知識技能点の残り：</text>
     </string>
   <string>
     <key>Label_CustomKnowledgeSkillsReminder</key>
@@ -2876,11 +2885,11 @@
     </string>
     <string>
       <key>Label_ResistDrain</key>
-      <text>ドレイン能力値:</text>
+      <text>ドレイン能力値：</text>
     </string>
     <string>
       <key>Label_MentorSpirit</key>
-      <text>導師精霊:</text>
+      <text>導師精霊：</text>
     </string>
     <string>
       <key>Button_AddSpell</key>
@@ -2929,7 +2938,7 @@
     <!-- Adept Tab -->
     <string>
       <key>Label_PowerPoints</key>
-      <text>パワーポイント:</text>
+      <text>パワーポイント：</text>
     </string>
     <string>
       <key>Button_AddPower</key>
@@ -2954,19 +2963,19 @@
     </string>
     <string>
       <key>Label_CommonSkill</key>
-      <text>よく使われる技能:</text>
+      <text>よく使われる技能：</text>
     </string>
     <string>
       <key>Label_Stream</key>
-      <text>流派:</text>
+      <text>流派：</text>
     </string>
     <string>
       <key>Label_ResistFading</key>
-      <text>フェイディング能力値:</text>
+      <text>フェイディング能力値：</text>
     </string>
     <string>
       <key>Label_Paragon</key>
-      <text>Paragon:</text>
+      <text>Paragon：</text>
     </string>
     <string>
       <key>Button_AddComplexForm</key>
@@ -3060,23 +3069,23 @@
     <!-- Initiation Tab -->
     <string>
       <key>Label_InitiationGrade</key>
-      <text>イニシエイト階梯:</text>
+      <text>イニシエイト階梯：</text>
     </string>
     <string>
       <key>Label_SubmersionGrade</key>
-      <text>サブマージョン階梯:</text>
+      <text>サブマージョン階梯：</text>
     </string>
     <string>
       <key>Label_History</key>
-      <text>経歴:</text>
+      <text>経歴：</text>
     </string>
     <string>
       <key>Label_Group</key>
-      <text>魔法結社:</text>
+      <text>魔法結社：</text>
     </string>
     <string>
       <key>Label_Network</key>
-      <text>ネットワーク:</text>
+      <text>ネットワーク：</text>
     </string>
     <string>
       <key>Checkbox_GroupInitiation</key>
@@ -3133,15 +3142,15 @@
     </string>
     <string>
       <key>Label_Cyberware</key>
-      <text>サイバーウェア:</text>
+      <text>サイバーウェア：</text>
     </string>
     <string>
       <key>Label_Bioware</key>
-      <text>バイオウェア:</text>
+      <text>バイオウェア：</text>
     </string>
     <string>
       <key>Label_EssenceHole</key>
-      <text>エッセンスの穴:</text>
+      <text>エッセンスの穴：</text>
     </string>
     <!-- Street Gear/Lifestyle Tab -->
     <string>
@@ -3150,7 +3159,7 @@
     </string>
     <string>
       <key>Label_LifestyleQualities</key>
-      <text>資質:</text>
+      <text>資質：</text>
     </string>
     <string>
       <key>Button_AddLifestyle</key>
@@ -3228,19 +3237,19 @@
     <!-- Street Gear/Weapon Tab -->
     <string>
       <key>Label_Conceal</key>
-      <text>隠蔽修正:</text>
+      <text>隠蔽修正：</text>
     </string>
     <string>
       <key>Label_ModSlots</key>
-      <text>改造スロット:</text>
+      <text>改造スロット：</text>
     </string>
     <string>
       <key>Label_AmmoRemaining</key>
-      <text>残り弾数:</text>
+      <text>残り弾数：</text>
     </string>
     <string>
       <key>Label_CurrentAmmo</key>
-      <text>装填中の弾薬:</text>
+      <text>装填中の弾薬：</text>
     </string>
     <string>
       <key>Label_RangeHeading</key>
@@ -3264,7 +3273,7 @@
     </string>
     <string>
       <key>Label_DicePool</key>
-      <text>ダイスプール:</text>
+      <text>ダイスプール：</text>
     </string>
     <string>
       <key>Checkbox_BaseWeapon</key>
@@ -3386,11 +3395,11 @@
     <!-- Vehicles Tab -->
     <string>
       <key>Label_GearRating</key>
-      <text>装備のレーティング:</text>
+      <text>装備のレーティング：</text>
     </string>
     <string>
       <key>Label_GearQty</key>
-      <text>装備の個数:</text>
+      <text>装備の個数：</text>
     </string>
     <string>
       <key>Label_ConditionMonitor</key>
@@ -3427,71 +3436,71 @@
     <!-- Character Info Tab -->
     <string>
       <key>Label_Sex</key>
-      <text>性別:</text>
+      <text>性別：</text>
     </string>
     <string>
       <key>Label_Age</key>
-      <text>年齢:</text>
+      <text>年齢：</text>
     </string>
     <string>
       <key>Label_Eyes</key>
-      <text>瞳の色:</text>
+      <text>瞳の色：</text>
     </string>
     <string>
       <key>Label_Hair</key>
-      <text>髪の色:</text>
+      <text>髪の色：</text>
     </string>
     <string>
       <key>Label_Height</key>
-      <text>身長:</text>
+      <text>身長：</text>
     </string>
     <string>
       <key>Label_Weight</key>
-      <text>体重:</text>
+      <text>体重：</text>
     </string>
     <string>
       <key>Label_Skin</key>
-      <text>肌の色:</text>
+      <text>肌の色：</text>
     </string>
     <string>
       <key>Label_Alias</key>
-      <text>ストリート・ネーム:</text>
+      <text>ストリート・ネーム：</text>
     </string>
     <string>
       <key>Label_Player</key>
-      <text>プレイヤー:</text>
+      <text>プレイヤー：</text>
     </string>
     <string>
       <key>Label_Description</key>
-      <text>概要:</text>
+      <text>概要：</text>
     </string>
     <string>
       <key>Label_Background</key>
-      <text>背景:</text>
+      <text>背景：</text>
     </string>
     <string>
       <key>Label_Concept</key>
-      <text>コンセプト:</text>
+      <text>コンセプト：</text>
     </string>
     <string>
       <key>Label_Notes</key>
-      <text>ノート:</text>
+      <text>ノート：</text>
     </string>
     <string>
       <key>Label_StreetCred</key>
-      <text>ストリートの評判:</text>
+      <text>ストリートの評判：</text>
     </string>
     <string>
       <key>Label_Notoriety</key>
-      <text>悪名:</text>
+      <text>悪名：</text>
     </string>
     <string>
       <key>Label_PublicAwareness</key>
-      <text>公的認知度:</text>
+      <text>公的認知度：</text>
     </string>
     <string>
       <key>Label_Mugshot</key>
-      <text>顔写真:</text>
+      <text>顔写真：</text>
     </string>
   <string>
       <key>Label_MugshotDimensions</key>
@@ -3709,79 +3718,83 @@
     </string>
     <string>
       <key>Label_OtherInit</key>
-      <text>イニシアティブ:</text>
+      <text>イニシアティブ：</text>
     </string>
     <string>
       <key>Label_OtherIP</key>
-      <text>イニシアティブ・パス:</text>
+      <text>イニシアティブ・パス：</text>
     </string>
     <string>
       <key>Label_OtherMatrixInit</key>
-      <text>マトリックス・イニシアティブ:</text>
+      <text>マトリックス・イニシアティブ：</text>
     </string>
     <string>
       <key>Label_OtherMatrixIP</key>
-      <text>マトリックス・イニシアティブ・パス:</text>
+      <text>マトリックス・イニシアティブ・パス：</text>
     </string>
     <string>
       <key>Label_OtherAstralInit</key>
-      <text>アストラル・イニシアティブ:</text>
+      <text>アストラル・イニシアティブ：</text>
     </string>
     <string>
       <key>Label_OtherAstralIP</key>
-      <text>アストラル・イニシアティブ・パス:</text>
+      <text>アストラル・イニシアティブ・パス：</text>
     </string>
     <string>
       <key>Label_OtherBallistic</key>
-      <text>対弾装甲:</text>
+      <text>対弾装甲：</text>
     </string>
     <string>
       <key>Label_OtherImpact</key>
-      <text>対衝撃装甲:</text>
+      <text>対衝撃装甲：</text>
     </string>
     <string>
       <key>Label_OtherEssence</key>
-      <text>エッセンス:</text>
+      <text>エッセンス：</text>
+    </string>
+    <string>
+      <key>String_NuyenRemaining</key>
+      <text>残り新円</text>
     </string>
     <string>
       <key>Label_OtherNuyenRemain</key>
-      <text>残り新円:</text>
+      <text>残り新円：</text>
     </string>
     <string>
       <key>Label_OtherCareerKarma</key>
-      <text>累計カルマ:</text>
+      <text>累計カルマ：</text>
     </string>
     <string>
       <key>Label_OtherCareerNuyen</key>
-      <text>獲得新円:</text>
+      <text>獲得新円：</text>
     </string>
     <string>
       <key>Label_OtherMovement</key>
-      <text>移動速度:</text>
+      <text>移動速度：</text>
     </string>
     <string>
       <key>Label_OtherSwim</key>
-      <text>水泳:</text>
+      <text>水泳：</text>
     </string>
     <string>
       <key>Label_OtherFly</key>
-      <text>飛行:</text>
+      <text>飛行：</text>
     </string>
     <string>
       <key>Label_OtherCmposure</key>
-      <text>冷静テスト:</text>
+      <text>冷静テスト：</text>
     </string>
     <string>
       <key>Label_OtherJudgeIntention</key>
-      <text>意図をはかる:</text>
+      <text>意図をはかる：</text>
     </string>
     <string>
       <key>Label_OtherLiftAndCarry</key>
-      <text>持ち上げと運搬:</text>
+      <text>持ち上げと運搬：</text>
     </string>
     <string>
       <key>Label_OtherMemory</key>
-      <text>記憶テスト:</text>
+      <text>記憶テスト：</text>
     </string>
     <string>
       <key>Tip_OtherCMPhysical</key>
@@ -3866,19 +3879,19 @@
     <!-- Condition Monitor Tab -->
     <string>
       <key>Label_CMCMPenalty</key>
-      <text>負傷修正:</text>
+      <text>負傷修正：</text>
     </string>
     <string>
       <key>Label_CMBallistic</key>
-      <text>対弾装甲:</text>
+      <text>対弾装甲：</text>
     </string>
     <string>
       <key>Label_CMImpact</key>
-      <text>対衝撃装甲:</text>
+      <text>対衝撃装甲：</text>
     </string>
     <string>
       <key>Label_CMResistancePool</key>
-      <text>ダメージ抵抗プール:</text>
+      <text>ダメージ抵抗プール：</text>
     </string>
     <string>
       <key>Label_CMPhysical</key>
@@ -3911,7 +3924,7 @@
     <!-- ToolTips -->
     <string>
       <key>Tip_SpellDrainBase</key>
-      <text>ドレイン値:</text>
+      <text>ドレイン値：</text>
     </string>
     <string>
       <key>Tip_SpellDrainSeeDescription</key>
@@ -3943,7 +3956,7 @@
     </string>
     <string>
       <key>Tip_LiftAndCarry</key>
-      <text>持ち上げ: {0} kg, 運搬: {1} kg</text>
+      <text>持ち上げ： {0} kg, 運搬： {1} kg</text>
     </string>
     <string>
       <key>Tip_DiceRoller</key>
@@ -3953,11 +3966,11 @@
     <!-- Contacts/Enemies -->
     <string>
       <key>Label_Contact_Connection</key>
-      <text>コネ値:</text>
+      <text>コネ値：</text>
     </string>
     <string>
       <key>Label_Contact_Loyalty</key>
-      <text>忠誠値:</text>
+      <text>忠誠値：</text>
     </string>
     <string>
       <key>Checkbox_Contact_Group</key>
@@ -3969,7 +3982,7 @@
     </string>
     <string>
       <key>Label_Enemy_Incidence</key>
-      <text>遭遇値:</text>
+      <text>遭遇値：</text>
     </string>
     <string>
       <key>Tip_Contact_OpenLinkedContact</key>
@@ -4051,7 +4064,7 @@
     <!-- Adept Powers -->
     <string>
       <key>Label_Power_PowerRating</key>
-      <text>パワーレベル:</text>
+      <text>パワーレベル：</text>
     </string>
     <string>
       <key>Label_Power_DiscountedBy</key>
@@ -4121,11 +4134,11 @@
     <!-- Spirits/Sprites -->
     <string>
       <key>Label_Spirit_Force</key>
-      <text>フォース:</text>
+      <text>フォース：</text>
     </string>
     <string>
       <key>Label_Spirit_ServicesOwed</key>
-      <text>行使できる助力:</text>
+      <text>行使できる助力：</text>
     </string>
     <string>
       <key>Checkbox_Spirit_Bound</key>
@@ -4133,7 +4146,7 @@
     </string>
     <string>
       <key>Label_Sprite_Rating</key>
-      <text>レーティング:</text>
+      <text>レーティング：</text>
     </string>
     <string>
       <key>Label_Sprite_Registered</key>
@@ -4186,7 +4199,7 @@
     </string>
     <string>
       <key>Label_CyberwareSuite_SuiteName</key>
-      <text>スイート名:</text>
+      <text>スイート名：</text>
     </string>
     <string>
       <key>Message_CyberwareSuite_SuiteName</key>
@@ -4235,7 +4248,7 @@
     </string>
     <string>
       <key>Label_CreatePACKSKit_KitName</key>
-      <text>Kit 名:</text>
+      <text>Kit 名：</text>
     </string>
     <string>
       <key>Checkbox_CreatePACKSKit_Attributes</key>
@@ -4373,15 +4386,15 @@
     </string>
     <string>
       <key>Label_DiceRoller_Result</key>
-      <text>結果:</text>
+      <text>結果：</text>
     </string>
     <string>
       <key>Label_DiceRoller_Gremlins</key>
-      <text>グレムリン:</text>
+      <text>グレムリン：</text>
     </string>
     <string>
       <key>Label_DiceRoller_Threshold</key>
-      <text>目標値:</text>
+      <text>目標値：</text>
     </string>
     <string>
       <key>String_DiceRoller_Glitch</key>
@@ -4426,11 +4439,11 @@
     </string>
     <string>
       <key>Label_Expense_KarmaAmount</key>
-      <text>カルマの値:</text>
+      <text>カルマの値：</text>
     </string>
     <string>
       <key>Label_Expense_NuyenAmount</key>
-      <text>新円の金額:</text>
+      <text>新円の金額：</text>
     </string>
     <string>
       <key>String_Expense_Refund</key>
@@ -4438,11 +4451,11 @@
     </string>
     <string>
       <key>Label_Expense_Date</key>
-      <text>日付:</text>
+      <text>日付：</text>
     </string>
     <string>
       <key>Label_Expense_Description</key>
-      <text>概要:</text>
+      <text>概要：</text>
     </string>
     <string>
       <key>Checkbox_Expense_Refund</key>
@@ -4507,7 +4520,7 @@
     <!-- Omae Window -->
     <string>
       <key>Title_Omae</key>
-      <text>Chummer: Omae キャラクター交換</text>
+      <text>Chummer： Omae キャラクター交換</text>
     </string>
     <string>
       <key>Message_Omae_CannotConnection</key>
@@ -4747,11 +4760,11 @@
     </string>
     <string>
       <key>Label_Omae_Username</key>
-      <text>ユーザー名:</text>
+      <text>ユーザー名：</text>
     </string>
     <string>
       <key>Label_Omae_Password</key>
-      <text>パスワード:</text>
+      <text>パスワード：</text>
     </string>
     <string>
       <key>Label_Omae_SearchFor</key>
@@ -4759,15 +4772,15 @@
     </string>
     <string>
       <key>Label_Omae_Filtering</key>
-      <text>フィルタ:</text>
+      <text>フィルタ：</text>
     </string>
     <string>
       <key>Label_Omae_CurrentMode</key>
-      <text>現在のモード:</text>
+      <text>現在のモード：</text>
     </string>
     <string>
       <key>Label_Omae_Quality</key>
-      <text>資質:</text>
+      <text>資質：</text>
     </string>
     <string>
       <key>Label_Omae_OrQuality</key>
@@ -4775,7 +4788,7 @@
     </string>
     <string>
       <key>Label_Omae_Creator</key>
-      <text>作者:</text>
+      <text>作者：</text>
     </string>
     <string>
       <key>Label_Omae_LoggedInAs</key>
@@ -4809,19 +4822,19 @@
     </string>
     <string>
       <key>Label_OmaeUpload_FileName</key>
-      <text>アップロードするファイル:</text>
+      <text>アップロードするファイル：</text>
     </string>
     <string>
       <key>Label_OmaeUpload_CharacterName</key>
-      <text>キャラクター名:</text>
+      <text>キャラクター名：</text>
     </string>
     <string>
       <key>Label_OmaeUpload_CharacterType</key>
-      <text>キャラクターの種類:</text>
+      <text>キャラクターの種類：</text>
     </string>
     <string>
       <key>Label_OmaeUpload_Description</key>
-      <text>概要:</text>
+      <text>概要：</text>
     </string>
     <string>
       <key>Button_OmaeUpload_Upload</key>
@@ -4934,19 +4947,19 @@
     </string>
     <string>
       <key>Label_Options_SettingsFile</key>
-      <text>設定ファイル:</text>
+      <text>設定ファイル：</text>
     </string>
     <string>
       <key>Label_Options_SettingName</key>
-      <text>設定名:</text>
+      <text>設定名：</text>
     </string>
     <string>
       <key>Label_Options_Language</key>
-      <text>言語:</text>
+      <text>言語：</text>
     </string>
     <string>
       <key>Label_Options_DefaultCharacterSheet</key>
-      <text>デフォルトのキャラクターシート:</text>
+      <text>デフォルトのキャラクターシート：</text>
     </string>
     <string>
       <key>Tab_Options_General</key>
@@ -4974,7 +4987,7 @@
     </string>
     <string>
       <key>Tab_Options_Character</key>
-      <text>キャラクターと印刷</text>
+      <text>キャラクター</text>
     </string>
     <string>
       <key>Tab_Options_Miscellaneous</key>
@@ -4990,11 +5003,11 @@
     </string>
     <string>
       <key>Label_Options_CyberlimbCount</key>
-      <text>通常のキャラクターの四肢:</text>
+      <text>通常のキャラクターの四肢：</text>
     </string>
     <string>
       <key>Label_Options_NuyenPerBP</key>
-      <text>1BPあたりの新円:</text>
+      <text>1BPあたりの新円：</text>
     </string>
     <string>
       <key>Checkbox_Options_AutomaticUpdates</key>
@@ -5306,15 +5319,15 @@
     </string>
     <string>
       <key>Checkbox_Options_FreeContactPointsKarma</key>
-      <text>自由に使えるコンタクト・ポイント: 【魅力】 ×</text>
+      <text>自由に使えるコンタクト・ポイント： 【魅力】 ×</text>
     </string>
     <string>
       <key>Checkbox_Options_FreeContactPointsBP</key>
-      <text>自由に使えるコンタクト・ポイント BP:</text>
+      <text>自由に使えるコンタクト・ポイント BP：</text>
     </string>
     <string>
       <key>Checkbox_Options_FreeKnowledgeSkills</key>
-      <text>カルマ作成時: BP作成時と同様の初期知識技能点</text>
+      <text>カルマ作成時： BP作成時と同様の初期知識技能点</text>
     </string>
     <string>
       <key>Checkbox_Options_MaxSpiritForce</key>
@@ -5494,7 +5507,7 @@
     </string>
     <string>
       <key>Label_Options_EssenceDecimals</key>
-      <text>エッセンスの端数処理を行う桁数:</text>
+      <text>エッセンスの端数処理を行う桁数：</text>
     </string>
     <string>
       <key>Checkbox_Option_FreeSpiritPowerPointsMAG</key>
@@ -5518,15 +5531,15 @@
     </string>
     <string>
       <key>Label_Options_PDFApplicationPath</key>
-      <text>PDF アプリケーションの場所:</text>
+      <text>PDF アプリケーションの場所：</text>
     </string>
     <string>
       <key>Label_Options_PDFLocation</key>
-      <text>PDF ファイルの場所:</text>
+      <text>PDF ファイルの場所：</text>
     </string>
     <string>
       <key>Label_Options_PDFOffset</key>
-      <text>ページ・オフセット:</text>
+      <text>ページ・オフセット：</text>
     </string>
     <string>
       <key>Button_Options_PDFTest</key>
@@ -5569,27 +5582,27 @@
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Comforts</key>
-      <text>快適さ:</text>
+      <text>快適さ：</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Entertainment</key>
-      <text>娯楽:</text>
+      <text>娯楽：</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Necessities</key>
-      <text>生活必需品:</text>
+      <text>生活必需品：</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Neighborhood</key>
-      <text>近隣環境:</text>
+      <text>近隣環境：</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Security</key>
-      <text>セキュリティ:</text>
+      <text>セキュリティ：</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_TotalLP</key>
-      <text>合計LP:</text>
+      <text>合計LP：</text>
     </string>
     <string>
       <key>Message_SelectAdvancedLifestyle_LifestyleName</key>
@@ -5625,7 +5638,7 @@
     </string>
     <string>
       <key>Label_SelectBP_MaxAvail</key>
-      <text>最大入手値:</text>
+      <text>最大入手値：</text>
     </string>
     <string>
       <key>Checkbox_SelectBP_IgnoreRules</key>
@@ -5633,11 +5646,11 @@
     </string>
     <string>
       <key>String_SelectBP_BPSummary</key>
-      <text>キャラクターの作成に使うBPの値を入力してください (標準:{0}).</text>
+      <text>キャラクターの作成に使うBPの値を入力してください (標準：{0}).</text>
     </string>
     <string>
       <key>String_SelectBP_KarmaSummary</key>
-      <text>キャラクターの作成に使うカルマの値を入力してください (標準:{0}).</text>
+      <text>キャラクターの作成に使うカルマの値を入力してください (標準：{0}).</text>
     </string>
     <string>
       <key>Tip_SelectBP_IgnoreRules</key>
@@ -5650,27 +5663,27 @@
     </string>
     <string>
       <key>Label_SelectContactConnection_GroupName</key>
-      <text>グループ名/職業:</text>
+      <text>グループ名/職業：</text>
     </string>
     <string>
       <key>Label_SelectContactConnection_Membership</key>
-      <text>人数:</text>
+      <text>人数：</text>
     </string>
     <string>
       <key>Label_SelectContactConnection_AreaOfInfluence</key>
-      <text>影響範囲:</text>
+      <text>影響範囲：</text>
     </string>
     <string>
       <key>Label_SelectContactConnection_MagicalResources</key>
-      <text>魔法的資源:</text>
+      <text>魔法的資源：</text>
     </string>
     <string>
       <key>Label_SelectContactConnection_MatrixResources</key>
-      <text>マトリックス資源:</text>
+      <text>マトリックス資源：</text>
     </string>
     <string>
       <key>Label_SelectContactConnection_TotalModifier</key>
-      <text>合計コネ値修正:</text>
+      <text>合計コネ値修正：</text>
     </string>
     <string>
       <key>Checkbox_SelectContactConnection_FreeContact</key>
@@ -5740,7 +5753,7 @@
     </string>
     <string>
       <key>Label_SelectCyberware_ESSDiscount</key>
-      <text>追加割引:</text>
+      <text>追加割引：</text>
     </string>
     <string>
       <key>Checkbox_Transgenic</key>
@@ -5757,11 +5770,11 @@
     </string>
     <string>
       <key>Label_SelectCyberwareSuite_PartsInSuite</key>
-      <text>このサイバーウェア・スイートの内容:</text>
+      <text>このサイバーウェア・スイートの内容：</text>
     </string>
     <string>
       <key>Label_SelectBiowareSuite_PartsInSuite</key>
-      <text>このバイオウェア・スイートの内容:</text>
+      <text>このバイオウェア・スイートの内容：</text>
     </string>
     <!-- Select Exotic Skill Window -->
     <string>
@@ -5795,7 +5808,7 @@
     </string>
     <string>
       <key>Label_SelectGear_Markup</key>
-      <text>マークアップ:</text>
+      <text>マークアップ：</text>
     </string>
     <string>
       <key>Checkbox_Aerodynamic</key>
@@ -5817,23 +5830,23 @@
     </string>
     <string>
       <key>Label_SelectLifestyle_CostPerMonth</key>
-      <text>コスト/月:</text>
+      <text>コスト/月：</text>
     </string>
     <string>
       <key>Label_SelectLifestyle_CostPerWeek</key>
-      <text>コスト/週:</text>
+      <text>コスト/週：</text>
     </string>
     <string>
       <key>Label_SelectLifestyle_StartingNuyen</key>
-      <text>初期新円:</text>
+      <text>初期新円：</text>
     </string>
     <string>
       <key>Label_SelectLifestyle_PercentToPay</key>
-      <text>支払い割合 %:</text>
+      <text>支払い割合 %：</text>
     </string>
     <string>
       <key>Label_SelectLifestyle_Roommates</key>
-      <text>ルームメイト:</text>
+      <text>ルームメイト：</text>
     </string>
     <!-- Select Martial Art Window -->
     <string>
@@ -5861,15 +5874,15 @@
     </string>
     <string>
       <key>Label_SelectMentorSpirit_Advantage</key>
-      <text>利点:</text>
+      <text>利点：</text>
     </string>
     <string>
       <key>Label_SelectMetamagic_Disadvantage</key>
-      <text>欠点:</text>
+      <text>欠点：</text>
     </string>
     <string>
       <key>Label_SelectMentor_ChooseOne</key>
-      <text>どちらかを選択:</text>
+      <text>どちらかを選択：</text>
     </string>
     <!-- Select Metamagic Window -->
     <string>
@@ -5882,7 +5895,7 @@
     </string>
     <string>
       <key>Message_SelectMetamagic_MetamagicRequirement</key>
-      <text>このメタマジックの前提を満たしていません. 以下の条件をすべて満たす必要があります:</text>
+      <text>このメタマジックの前提を満たしていません. 以下の条件をすべて満たす必要があります：</text>
     </string>
     <string>
       <key>MessageTitle_SelectMetamagic_MetamagicRequirement</key>
@@ -5890,7 +5903,7 @@
     </string>
     <string>
       <key>Message_SelectMetamagic_EchoRequirement</key>
-      <text>このエコーの前提を満たしていません. 以下の条件をすべて満たす必要があります:</text>
+      <text>このエコーの前提を満たしていません. 以下の条件をすべて満たす必要があります：</text>
     </string>
     <string>
       <key>MessageTitle_SelectMetamagic_EchoRequirement</key>
@@ -5915,7 +5928,7 @@
     </string>
     <string>
       <key>Label_SelectNexus_Processor</key>
-      <text>プロセッサ:</text>
+      <text>プロセッサ：</text>
     </string>
     <string>
       <key>String_SelectNexus_Processor</key>
@@ -5923,7 +5936,7 @@
     </string>
     <string>
       <key>Label_SelectNexus_PersonaLimit</key>
-      <text>ペルソナ上限:</text>
+      <text>ペルソナ上限：</text>
     </string>
     <string>
       <key>String_SelectNexus_PersonaLimit</key>
@@ -5941,7 +5954,7 @@
     </string>
     <string>
       <key>Label_SelectPACKSKit_Contents</key>
-      <text>内容:</text>
+      <text>内容：</text>
     </string>
     <string>
       <key>String_SelectPACKSKit_Attributes</key>
@@ -6021,7 +6034,7 @@
     </string>
     <string>
       <key>String_SelectPACKSKit_StartingNuyenBP</key>
-      <text>初期新円 BP:</text>
+      <text>初期新円 BP：</text>
     </string>
     <string>
       <key>String_SelectPACKSKit_Group</key>
@@ -6038,11 +6051,11 @@
     </string>
     <string>
       <key>Label_SelectPower_PowerPoints</key>
-      <text>パワーポイント:</text>
+      <text>パワーポイント：</text>
     </string>
     <string>
       <key>Message_SelectPower_PowerRequirement</key>
-      <text>このパワーの前提を満たしていません. 以下の条件をすべて満たす必要があります:</text>
+      <text>このパワーの前提を満たしていません. 以下の条件をすべて満たす必要があります：</text>
     </string>
     <string>
       <key>MessageTitle_SelectPower_PowerRequirement</key>
@@ -6055,7 +6068,7 @@
     </string>
     <string>
       <key>Label_SelectProgram_CommonlyUsedSkill</key>
-      <text>よく使われる技能:</text>
+      <text>よく使われる技能：</text>
     </string>
     <!-- Select Program Option Window -->
     <string>
@@ -6105,15 +6118,15 @@
     </string>
     <string>
       <key>Message_SelectQuality_AllOf</key>
-      <text>以下をすべて:</text>
+      <text>以下をすべて：</text>
     </string>
     <string>
       <key>Message_SelectQuality_OneOf</key>
-      <text>以下のうちいずれか:</text>
+      <text>以下のうちいずれか：</text>
     </string>
     <string>
       <key>Message_SelectQuality_QualityRequirement</key>
-      <text>この資質の前提を満たしていません. 以下の条件のうちいずれかを満たす必要があります:</text>
+      <text>この資質の前提を満たしていません. 以下の条件のうちいずれかを満たす必要があります：</text>
     </string>
     <string>
       <key>MessageTitle_SelectQuality_QualityRequirement</key>
@@ -6184,7 +6197,7 @@
     </string>
     <string>
       <key>Label_SelectVehicle_Discount</key>
-      <text>割引:</text>
+      <text>割引：</text>
     </string>
     <!-- Select Vehicle Mod Window -->
     <string>
@@ -6202,7 +6215,7 @@
     </string>
     <string>
       <key>Label_SelectWeapon_IncludedItems</key>
-      <text>この武器に含まれるアクセサリと改造:</text>
+      <text>この武器に含まれるアクセサリと改造：</text>
     </string>
     <!-- Select Weapon Accessory Window -->
     <string>
@@ -6244,15 +6257,15 @@
     </string>
     <string>
       <key>Label_Year</key>
-      <text>年:</text>
+      <text>年：</text>
     </string>
     <string>
       <key>Label_Month</key>
-      <text>月:</text>
+      <text>月：</text>
     </string>
     <string>
       <key>Label_Week</key>
-      <text>週:</text>
+      <text>週：</text>
     </string>
     <!-- Update Window -->
     <string>
@@ -6273,11 +6286,11 @@
     </string>
     <string>
       <key>Label_Update_OverallProgress</key>
-      <text>全体の進行度:</text>
+      <text>全体の進行度：</text>
     </string>
     <string>
       <key>Label_Update_FileProgress</key>
-      <text>ファイルの進行度:</text>
+      <text>ファイルの進行度：</text>
     </string>
     <string>
       <key>Label_Update_DownloadComplete</key>
@@ -6318,7 +6331,7 @@
     </string>
     <string>
       <key>Label_Viewer_CharacterSheet</key>
-      <text>キャラクターシート:</text>
+      <text>キャラクターシート：</text>
     </string>
     <!-- Create Improvement Window -->
     <string>
@@ -6327,27 +6340,27 @@
     </string>
     <string>
       <key>Label_ImprovementType</key>
-      <text>Improvement の種類:</text>
+      <text>Improvement の種類：</text>
     </string>
     <string>
       <key>Label_CreateImprovementValue</key>
-      <text>値:</text>
+      <text>値：</text>
     </string>
     <string>
       <key>Label_CreateImprovementMinimum</key>
-      <text>最大:</text>
+      <text>最大：</text>
     </string>
     <string>
       <key>Label_CreateImprovementMaximum</key>
-      <text>最小:</text>
+      <text>最小：</text>
     </string>
     <string>
       <key>Label_CreateImprovementAugmented</key>
-      <text>強化:</text>
+      <text>強化：</text>
     </string>
     <string>
       <key>Label_CreateImprovementSelectedValue</key>
-      <text>選択した値:</text>
+      <text>選択した値：</text>
     </string>
     <string>
       <key>Checkbox_CreateImprovementApplyToRating</key>
@@ -6385,7 +6398,7 @@
     </string>
     <string>
       <key>Label_ExportTo</key>
-      <text>エクスポート先:</text>
+      <text>エクスポート先：</text>
     </string>
     <!-- Create Spell Window -->
     <string>
@@ -6394,7 +6407,7 @@
     </string>
     <string>
       <key>Label_SpellOptions</key>
-      <text>呪文のオプション:</text>
+      <text>呪文のオプション：</text>
     </string>
     <string>
       <key>Checkbox_RestrictedTarget</key>
@@ -6446,23 +6459,23 @@
     </string>
     <string>
       <key>Checkbox_DetectionSpell6</key>
-      <text>基本的探知 (例: 生命探知)</text>
+      <text>基本的探知 (例： 生命探知)</text>
     </string>
     <string>
       <key>Checkbox_DetectionSpell7</key>
-      <text>複雑な探知 (例: 敵探知)</text>
+      <text>複雑な探知 (例： 敵探知)</text>
     </string>
     <string>
       <key>Checkbox_DetectionSpell8</key>
-      <text>基本的分析 (例: 機器分析)</text>
+      <text>基本的分析 (例： 機器分析)</text>
     </string>
     <string>
       <key>Checkbox_DetectionSpell9</key>
-      <text>複雑な分析 (例: 真実分析)</text>
+      <text>複雑な分析 (例： 真実分析)</text>
     </string>
     <string>
       <key>Checkbox_DetectionSpell10</key>
-      <text>侵襲性分析 (例: 精神探査)</text>
+      <text>侵襲性分析 (例： 精神探査)</text>
     </string>
     <string>
       <key>Checkbox_DetectionSpell11</key>
@@ -6474,7 +6487,7 @@
     </string>
     <string>
       <key>Checkbox_DetectionSpell13</key>
-      <text>超能力 (例: テレパシー, 予知)</text>
+      <text>超能力 (例： テレパシー, 予知)</text>
     </string>
     <string>
       <key>Checkbox_DetectionSpell14</key>
@@ -6498,7 +6511,7 @@
     </string>
     <string>
       <key>Checkbox_HealthSpell5</key>
-      <text>限定された効果 (例: 症状のみ)</text>
+      <text>限定された効果 (例： 症状のみ)</text>
     </string>
     <string>
       <key>Checkbox_IllusionSpell1</key>
@@ -6674,7 +6687,15 @@
     </string>
     <string>
       <key>String_Special</key>
+      <text>Special</text>
+    </string>
+    <string>
+      <key>String_SpecialAttributes</key>
       <text>Special Attributes</text>
+    </string>
+    <string>
+      <key>Label_SpecialAttributes</key>
+      <text>Special Attributes:</text>
     </string>
     <string>
       <key>String_SpecialAttributePoints</key>
@@ -6710,27 +6731,27 @@
     </string>
     <string>
       <key>Label_Metamagic</key>
-      <text>Metamagic:</text>
+      <text>Metamagic：</text>
     </string>
     <string>
       <key>Label_Echo</key>
-      <text>Echo:</text>
+      <text>Echo：</text>
     </string>
     <string>
       <key>Label_Art</key>
-      <text>Art:</text>
+      <text>Art：</text>
     </string>
     <string>
       <key>Label_Ritual</key>
-      <text>Ritual:</text>
+      <text>Ritual：</text>
     </string>
     <string>
       <key>Label_Enchantment</key>
-      <text>Enchantment:</text>
+      <text>Enchantment：</text>
     </string>
     <string>
       <key>Label_Enhancement</key>
-      <text>Enhancement:</text>
+      <text>Enhancement：</text>
     </string>
     <string>
       <key>String_MartialArtsCount</key>
@@ -6758,67 +6779,67 @@
     </string>
     <string>
       <key>Label_Bonus</key>
-      <text>Bonus:</text>
+      <text>Bonus：</text>
     </string>
     <string>
       <key>Label_Accuracy</key>
-      <text>Accuracy:</text>
+      <text>Accuracy：</text>
     </string>
     <string>
       <key>Label_DeviceRating</key>
-      <text>DeviceRating:</text>
+      <text>DeviceRating：</text>
     </string>
     <string>
       <key>Label_Attack</key>
-      <text>Attack:</text>
+      <text>Attack：</text>
     </string>
     <string>
       <key>Label_Sleaze</key>
-      <text>Sleaze:</text>
+      <text>Sleaze：</text>
     </string>
     <string>
       <key>Label_DataProcessing</key>
-      <text>Data Proc:</text>
+      <text>Data Proc：</text>
     </string>
     <string>
       <key>Label_ArmorShort</key>
-      <text>Name:</text>
+      <text>Name：</text>
     </string>
     <string>
       <key>Label_ArmorValueShort</key>
-      <text>Armor:</text>
+      <text>Armor：</text>
     </string>
     <string>
       <key>Label_ArmorLong</key>
-      <text>Armor:</text>
+      <text>Armor：</text>
     </string>
     <string>
       <key>Label_PriorityHeritage</key>
-      <text>Metatype:</text>
+      <text>Metatype：</text>
     </string>
     <string>
       <key>Label_PriorityTalent</key>
-      <text>Magic or Resonance:</text>
+      <text>Magic or Resonance：</text>
     </string>
     <string>
       <key>Label_PriorityAttributes</key>
-      <text>Attributes:</text>
+      <text>Attributes：</text>
     </string>
     <string>
       <key>Label_PrioritySkills</key>
-      <text>Skills:</text>
+      <text>Skills：</text>
     </string>
     <string>
       <key>Label_PriorityResources</key>
-      <text>Resources:</text>
+      <text>Resources：</text>
     </string>
     <string>
       <key>Label_Location</key>
-      <text>Location:</text>
+      <text>Location：</text>
     </string>
     <string>
       <key>Label_Archtype</key>
-      <text>Archetype:</text>
+      <text>Archetype：</text>
     </string>
     <string>
       <key>String_Contacts</key>
@@ -7034,35 +7055,35 @@
     </string>
     <string>
       <key>Label_FreeSkills</key>
-      <text>Free Skill Points Remaining:</text>
+      <text>Free Skill Points Remaining：</text>
     </string>
     <string>
       <key>Label_FreeSkillGroups</key>
-      <text>Free Skill Groups Remaining:</text>
+      <text>Free Skill Groups Remaining：</text>
     </string>
     <string>
       <key>Label_TraditionName</key>
-      <text>Name:</text>
+      <text>Name：</text>
     </string>
     <string>
       <key>Label_SpiritCombat</key>
-      <text>Combat:</text>
+      <text>Combat：</text>
     </string>
     <string>
       <key>Label_SpiritDetection</key>
-      <text>Detection:</text>
+      <text>Detection：</text>
     </string>
     <string>
       <key>Label_SpiritHealth</key>
-      <text>Health:</text>
+      <text>Health：</text>
     </string>
     <string>
       <key>Label_SpiritIllusion</key>
-      <text>Illusion:</text>
+      <text>Illusion：</text>
     </string>
     <string>
       <key>Label_SpiritManipulation</key>
-      <text>Manipulation:</text>
+      <text>Manipulation：</text>
     </string>
     <string>
       <key>Node_SelectedEnchantments</key>
@@ -7130,7 +7151,7 @@
     </string>
     <string>
       <key>Label_AdeptWayDiscount</key>
-      <text>Bonded Foci Qualifying for Adept Way Discount:</text>
+      <text>Bonded Foci Qualifying for Adept Way Discount：</text>
     </string>
     <string>
       <key>Label_SummaryEssence</key>
@@ -7138,19 +7159,19 @@
     </string>
     <string>
       <key>Label_OtherMatrixInitVRCold</key>
-      <text>Matrix Initiative (Cold):</text>
+      <text>Matrix Initiative (Cold)：</text>
     </string>
     <string>
       <key>Label_OtherMatrixInitVRHot</key>
-      <text>Matrix Initiative (Hot):</text>
+      <text>Matrix Initiative (Hot)：</text>
     </string>
     <string>
       <key>Label_OtherRiggingInit</key>
-      <text>Rigging Initiative (AR):</text>
+      <text>Rigging Initiative (AR)：</text>
     </string>
     <string>
       <key>Label_OtherArmor</key>
-      <text>Armor:</text>
+      <text>Armor：</text>
     </string>
     <string>
       <key>Tip_OtherArmor</key>
@@ -7158,7 +7179,7 @@
     </string>
     <string>
       <key>Label_CMArmor</key>
-      <text>Armor:</text>
+      <text>Armor：</text>
     </string>
     <string>
       <key>Message_Metatype_SelectTalent</key>
@@ -7234,7 +7255,7 @@
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Lifestyle</key>
-      <text>Lifestyle:</text>
+      <text>Lifestyle：</text>
     </string>
     <string>
       <key>String_SelectBP_PrioritySummary</key>
@@ -7258,7 +7279,7 @@
     </string>
     <string>
       <key>Message_SelectArt_ArtRequirement</key>
-      <text>You do not meet the requirements for this Art. You must meet all of the following criteria:</text>
+      <text>You do not meet the requirements for this Art. You must meet all of the following criteria：</text>
     </string>
     <string>
       <key>MessageTitle_SelectArt_ArtRequirement</key>
@@ -7266,7 +7287,7 @@
     </string>
     <string>
       <key>Message_SelectArt_EnchantmentRequirement</key>
-      <text>You do not meet the requirements for this Enchantment. You must meet all of the following criteria:</text>
+      <text>You do not meet the requirements for this Enchantment. You must meet all of the following criteria：</text>
     </string>
     <string>
       <key>MessageTitle_SelectArt_EnchantmentRequirement</key>
@@ -7274,7 +7295,7 @@
     </string>
     <string>
       <key>Message_SelectArt_EnhancementRequirement</key>
-      <text>You do not meet the requirements for this Enhancement. You must meet all of the following criteria:</text>
+      <text>You do not meet the requirements for this Enhancement. You must meet all of the following criteria：</text>
     </string>
     <string>
       <key>MessageTitle_SelectArt_EnhancementRequirement</key>
@@ -7282,7 +7303,7 @@
     </string>
     <string>
       <key>Message_SelectArt_RitualRequirement</key>
-      <text>You do not meet the requirements for this Ritual. You must meet all of the following criteria:</text>
+      <text>You do not meet the requirements for this Ritual. You must meet all of the following criteria：</text>
     </string>
     <string>
       <key>MessageTitle_SelectArt_RitualRequirement</key>
@@ -7310,15 +7331,15 @@
     </string>
     <string>
       <key>Label_SelectComplexForm_Target</key>
-      <text>Target:</text>
+      <text>Target：</text>
     </string>
     <string>
       <key>Label_SelectComplexForm_Duration</key>
-      <text>Duration:</text>
+      <text>Duration：</text>
     </string>
     <string>
       <key>Label_SelectComplexForm_FV</key>
-      <text>FV:</text>
+      <text>FV：</text>
     </string>
     <string>
       <key>Checkbox_SelectSpell_Alchemical</key>
@@ -7394,7 +7415,7 @@
     </string>
     <string>
       <key>Label_Condition</key>
-      <text>Condition:</text>
+      <text>Condition：</text>
     </string>
     <string>
       <key>Message_ConfirmKarmaExpenseSkillSpecialization</key>
@@ -7440,7 +7461,7 @@
     </string>
     <string>
       <key>String_Requires</key>
-      <text>Requires:</text>
+      <text>Requires：</text>
     </string>
     <string>
       <key>Node_SelectedAIPrograms</key>
@@ -7454,7 +7475,7 @@
     </string>
     <string>
       <key>Message_SelectAIProgram_AdvancedProgramRequirement</key>
-      <text>You do not meet the requirements for this Advanced Program. You must know the following Program: </text>
+      <text>You do not meet the requirements for this Advanced Program. You must know the following Program： </text>
     </string>
     <string>
       <key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>
@@ -7475,7 +7496,7 @@
     </string>
     <string>
       <key>Message_DroneIllegalDowngrade</key>
-      <text>The following {0} drones have downgrades which decrease their attributes too far:</text>
+      <text>The following {0} drones have downgrades which decrease their attributes too far：</text>
     </string>
   <!-- End Region -->
   </strings>

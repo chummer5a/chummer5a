@@ -26,8 +26,6 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
-using Chummer.Backend.Powers;
-using Chummer.UI.Shared;
 using Chummer.UI.Table;
 
 // ReSharper disable StringCompareToIsCultureSpecific
@@ -37,7 +35,7 @@ namespace Chummer.UI.Powers
     public partial class PowersTabUserControl : UserControl
     {
         // TODO: check, if this can be removed???
-        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate; 
+        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
         
         private TableView<Power> _table;
 
@@ -210,6 +208,8 @@ namespace Chummer.UI.Powers
                 if (objPower.Create(objXmlPower))
                 {
                     _objCharacter.Powers.Add(objPower);
+
+                    MakeDirtyWithCharacterUpdate?.Invoke(null, null);
                 }
             }
             while (blnAddAgain);
@@ -255,18 +255,18 @@ namespace Chummer.UI.Powers
 
         private void InitializeTable()
         {
-            _table = new TableView<Power>()
+            _table = new TableView<Power>
             {
-                Location = new Point(3, 3)
+                Location = new Point(3, 3),
+                ToolTip = _tipTooltip
             };
-            _table.ToolTip = _tipTooltip;
             // create columns
             TableColumn<Power> nameColumn = new TableColumn<Power>(() => new TextTableCell())
             {
                 Text = "Power",
                 Extractor = (power => power.DisplayName),
                 Tag = "String_Power",
-                Sorter = (name1, name2) => string.Compare((string)name1, (string)name2)
+                Sorter = (name1, name2) => string.Compare((string)name1, (string)name2, GlobalOptions.CultureInfo, CompareOptions.Ordinal)
             };
             nameColumn.AddDependency(nameof(Power.DisplayName));
 
@@ -275,7 +275,7 @@ namespace Chummer.UI.Powers
                 Text = "Action",
                 Extractor = (power => power.DisplayAction),
                 Tag = "ColumnHeader_Action",
-                Sorter = (action1, action2) => string.Compare((string)action1, (string)action2)
+                Sorter = (action1, action2) => string.Compare((string)action1, (string)action2, GlobalOptions.CultureInfo, CompareOptions.Ordinal)
             };
             actionColumn.AddDependency(nameof(Power.DisplayAction));
 
@@ -365,8 +365,8 @@ namespace Chummer.UI.Powers
 
             TableColumn<Power> noteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new PictureBox()
             {
-                Image = Chummer.Properties.Resources.note_edit,
-                Size = GetImageSize(Chummer.Properties.Resources.note_edit),
+                Image = Properties.Resources.note_edit,
+                Size = GetImageSize(Properties.Resources.note_edit),
             })
             {
                 ClickHandler = p => {

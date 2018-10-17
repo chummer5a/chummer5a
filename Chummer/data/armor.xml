@@ -2986,7 +2986,7 @@
       <category>Specialty Armor</category>
       <armor>+2</armor>
       <armorcapacity>6</armorcapacity>
-      <avail>-</avail>
+      <avail>0</avail>
       <cost>100</cost>
       <source>SL</source>
       <page>48</page>

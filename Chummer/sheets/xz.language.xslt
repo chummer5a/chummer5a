@@ -266,6 +266,7 @@
   <xsl:variable name="lang.CoreTrack"  select="'Core Damage Track'"/>
   <xsl:variable name="lang.CritterPowers"    select="'Critter Powers'"/>
   <xsl:variable name="lang.CurrentEdge"    select="'Current Edge Points'"/>
+  <xsl:variable name="lang.CurrentForm"    select="'Current Form'"/>
   <xsl:variable name="lang.DamageType"  select="'Damage Type'"/>
   <xsl:variable name="lang.DataProc"      select="'Data Proc.'"/>
   <xsl:variable name="lang.DataProcessing"  select="'Data Processing'"/>

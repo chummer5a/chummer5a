@@ -216,7 +216,7 @@
           <duration>S</duration>
           <fv>L+1</fv>
           <source>KC</source>
-          <page>0</page>
+          <page>90</page>
           <required>
               <oneof>
                   <quality>Resonant Stream: Cyberadept</quality>
@@ -230,7 +230,7 @@
           <duration>I</duration>
           <fv>L-1</fv>
           <source>KC</source>
-          <page>0</page>
+          <page>90</page>
           <required>
               <oneof>
                   <quality>Resonant Stream: Machinist</quality>
@@ -244,7 +244,7 @@
           <duration>Special</duration>
           <fv>Special</fv>
           <source>KC</source>
-          <page>0</page>
+          <page>91</page>
           <required>
               <oneof>
                   <quality>Resonant Stream: Sourceror</quality>
@@ -258,7 +258,7 @@
           <duration>P</duration>
           <fv>L-2</fv>
           <source>KC</source>
-          <page>0</page>
+          <page>91</page>
           <required>
               <oneof>
                   <quality>Resonant Stream: Technoshaman</quality>
@@ -272,7 +272,7 @@
           <duration>P</duration>
           <fv>L+0</fv>
           <source>KC</source>
-          <page>0</page>
+          <page>133</page>
           <required>
               <oneof>
                   <quality>Dissonant Stream: Apophenians</quality>
@@ -282,11 +282,11 @@
       <complexform>
           <id>4856cfa1-89c8-484a-9127-ddc4a2327c63</id>
           <name>Dissonance Spike</name>
-          <target>Persona</target>
-          <duration>P</duration>
-          <fv>L-2</fv>
+          <target>Device</target>
+          <duration>I</duration>
+          <fv>L+6</fv>
           <source>KC</source>
-          <page>0</page>
+          <page>134</page>
           <required>
               <oneof>
                   <quality>Dissonant Stream: Erisians</quality>
@@ -296,11 +296,11 @@
       <complexform>
           <id>cadf7e01-c75d-4a49-8676-87ddcb0eaa74</id>
           <name>Forced Heuristics</name>
-          <target>Persona</target>
-          <duration>P</duration>
-          <fv>L-2</fv>
+          <target>Host</target>
+          <duration>S</duration>
+          <fv>L+1</fv>
           <source>KC</source>
-          <page>0</page>
+          <page>133</page>
           <required>
               <oneof>
                   <quality>Dissonant Stream: Morphinae</quality>
@@ -314,7 +314,7 @@
           <duration>S</duration>
           <fv>L-2</fv>
           <source>KC</source>
-          <page>0</page>
+          <page>94</page>
       </complexform>
       <complexform>
           <id>42a11004-5379-4b79-90fa-a30f7ddf4f14</id>
@@ -323,7 +323,7 @@
           <duration>I</duration>
           <fv>L-2</fv>
           <source>KC</source>
-          <page>0</page>
+          <page>94</page>
       </complexform>
       <complexform>
           <id>72630724-8d43-4a28-837c-160c735a0d0d</id>
@@ -332,7 +332,7 @@
           <duration>P</duration>
           <fv>L</fv>
           <source>KC</source>
-          <page>0</page>
+          <page>94</page>
       </complexform>
       <complexform>
           <id>080013b7-deb3-4a2e-822f-400ecf8293b2</id>
@@ -341,7 +341,7 @@
           <duration>I</duration>
           <fv>L-2</fv>
           <source>KC</source>
-          <page>0</page>
+          <page>95</page>
       </complexform>
       <complexform>
           <id>7d98d12d-5b02-4bc8-bf1f-b0b3507ebdaf</id>
@@ -350,7 +350,7 @@
           <duration>S</duration>
           <fv>L+2</fv>
           <source>KC</source>
-          <page>0</page>
+          <page>95</page>
       </complexform>
       <complexform>
           <id>1a4a6137-53d6-4ada-a788-49e56f73bb86</id>
@@ -359,7 +359,7 @@
           <duration>I</duration>
           <fv>L</fv>
           <source>KC</source>
-          <page>0</page>
+          <page>95</page>
       </complexform>
       <complexform>
           <id>b3e7f9e4-aec4-4114-bd49-e04a43be502f</id>
@@ -368,7 +368,7 @@
           <duration>S</duration>
           <fv>L-2</fv>
           <source>KC</source>
-          <page>0</page>
+          <page>95</page>
       </complexform>
       <complexform>
           <id>c5185f4d-32b4-4239-91a9-f0095ccf8572</id>
@@ -377,7 +377,7 @@
           <duration>I</duration>
           <fv>L-2</fv>
           <source>KC</source>
-          <page>0</page>
+          <page>95</page>
       </complexform>
       <complexform>
           <id>f89957e0-9c70-4503-b47d-0511b7bca5b6</id>
@@ -386,7 +386,7 @@
           <duration>I</duration>
           <fv>L-2</fv>
           <source>KC</source>
-          <page>0</page>
+          <page>95</page>
       </complexform>
       <complexform>
           <id>819a111f-b49d-498b-ac63-54f770cf7cd7</id>
@@ -395,7 +395,7 @@
           <duration>I</duration>
           <fv>L-2</fv>
           <source>KC</source>
-          <page>0</page>
+          <page>96</page>
       </complexform>
       <complexform>
           <id>9e849f66-6ad4-49fb-9ccd-e0b250b0625b</id>
@@ -404,7 +404,7 @@
           <duration>I</duration>
           <fv>L-3</fv>
           <source>KC</source>
-          <page>0</page>
+          <page>96</page>
       </complexform>
     <!-- End Region -->
   </complexforms>

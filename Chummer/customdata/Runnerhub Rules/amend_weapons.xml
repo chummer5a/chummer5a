@@ -46,7 +46,7 @@
     <weapon xpathfilter="contains(name, 'Horizon-Flynn Defense-Com Commlink')">
       <avail>10R</avail>
     </weapon>
-    <weapon>
+    <weapon amendoperation="addnode">
   	  <id>6456a878-737a-41db-b8a4-118122476b3c</id>
   	  <name>One-shot Dartgun</name>
   	  <category>Exotic Ranged Weapons</category>
@@ -79,7 +79,7 @@
   		<name>Stinger Pen Gun</name>
   		<rc>-</rc>
   	</weapon>
-    <weapon>
+    <weapon amendoperation="addnode">
       <id>fc6199bd-26cb-4de8-98ff-98d3d3fe7445</id>
       <name>Grenade: Painade</name>
       <category>Gear</category>

@@ -4108,7 +4108,7 @@
     </vehicle>
     <vehicle>
       <id>0ff86ef9-e35d-4f8f-bc64-0303f81f11c7</id>
-      <name>Neonet Prarie Dog (Small)</name>
+      <name>NeoNET Prarie Dog (Small)</name>
       <page>134</page>
       <source>R5</source>
       <accel>1</accel>
@@ -4874,7 +4874,7 @@
     </vehicle>
     <vehicle>
       <id>a88f58ad-f4e0-448a-ba5c-00cbdd0076f6</id>
-      <name>NeoNet Avenging Angel (Huge)</name>
+      <name>NeoNET Avenging Angel (Huge)</name>
       <page>145</page>
       <source>R5</source>
       <accel>2</accel>
@@ -4995,7 +4995,7 @@
     </vehicle>
     <vehicle>
       <id>b448855b-57e7-435a-b523-174adb276674</id>
-      <name>NeoNet Juggernaut</name>
+      <name>NeoNET Juggernaut</name>
       <page>147</page>
       <source>R5</source>
       <accel>1</accel>
@@ -6552,7 +6552,7 @@
     </vehicle>
     <vehicle>
       <id>50e6572c-ea59-4756-83e4-7c51f8f614c9</id>
-      <name>Modified Dassault Janatorial Drone (Large)</name>
+      <name>Modified Dassault Janitorial Drone (Large)</name>
       <page>179</page>
       <source>SS</source>
       <accel>2</accel>
@@ -10718,7 +10718,7 @@
       <category>Body</category>
       <cost>5000</cost>
       <rating>0</rating>
-      <slots>1</slots>
+      <slots>6</slots>
       <bonus>
         <selectskill />
       </bonus>
@@ -12671,8 +12671,7 @@
       <cost>500</cost>
       <rating>0</rating>
       <slots>2</slots>
-      <ammobonus>100</ammobonus>
-      <ammoreplace>0(belt)</ammoreplace>
+      <ammoreplace>100(belt)</ammoreplace>
       <optionaldrone />
       <required>
         <vehicledetails>

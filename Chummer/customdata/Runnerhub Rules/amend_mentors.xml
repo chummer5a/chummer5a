@@ -62,12 +62,16 @@
 
 		<mentor>
 			<name>Death</name>
-			<bonus>
-			    <selectskill amendoperation="replace" knowledgeskills="True" limittoskill="Anatomy,Disease,Infected,Undead">
-			    	<val>4</val>
-			    	<applytorating>True</applytorating>
-				</selectskill>
-			</bonus>
+			<choices>
+				<choice xpathfilter="starts-with(name,'Adept:') and contains(name,'Plague Cloud')" amendoperation="replace">
+					<name>Adept: Free Killing Hands</name>
+					<bonus>
+						<specificpower>
+							<name>Killing Hands</name>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
 		</mentor>
 
 		<mentor>
@@ -93,7 +97,7 @@
 		  <name>Spider (Alt)</name>
 		  <choices amendoperation="replace">
 		    <choice>
-		      <name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+		      <name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
 		      <bonus>
 		        <spellcategory>
 		          <name>Manipulation</name>
@@ -111,37 +115,6 @@
 		      </bonus>
 		    </choice>
 		  </choices>
-		</mentor>
-
-		<mentor amendoperation="replace">
-		  <id>833ce699-081b-454d-ac93-5c2bd2c61862</id>
-		  <name>Death</name>
-		  <advantage>All: +4 ranks of the Knowledge Skill Anatomy, Disease, Infected, or Undead (choose one).</advantage>
-		  <disadvantage> In order for a follower of Death to attempt to help someone who is dying or injured, they must first pass a Charisma + Willpower (3) Test.</disadvantage>
-		  <bonus>
-		    <selectskill knowledgeskills="True" limittoskill="Anatomy,Disease,Infected,Undead">
-		      <val>4</val>
-		      <applytorating>True</applytorating>
-		    </selectskill>
-		  </bonus>
-		  <choices>
-		    <choice>
-		      <name>Magician: +2 dice pool modifer when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</name>
-		      <bonus>
-		        <!-- TODO: Dicepool modifiers for individual spells -->
-		      </bonus>
-		    </choice>
-		    <choice>
-		      <name>Adept: Free Killing Hands</name>
-		      <bonus>
-		        <specificpower>
-		          <name>Killing Hands</name>
-		        </specificpower>
-		      </bonus>
-		    </choice>
-		  </choices>
-		  <source>FA</source>
-		  <page>96</page>
 		</mentor>
 	</mentors>
 </chummer>

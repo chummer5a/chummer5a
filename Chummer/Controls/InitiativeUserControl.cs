@@ -301,8 +301,6 @@ namespace Chummer
                     Character objLoopCharacter = characters[j];
                     frmInitRoller frmHits = new frmInitRoller
                     {
-                        Text = "Initiative: " + objLoopCharacter.Name,
-                        Description = "initiative result",
                         Dice = objLoopCharacter.InitPasses
                     };
                     frmHits.ShowDialog(this);

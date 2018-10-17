@@ -16,6 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -24,12 +26,16 @@ namespace Chummer.UI.Table
     public partial class TableRow : UserControl
     {
         private int _intIndex;
-        private bool _blnSelected = false;
+        private bool _blnSelected;
 
         public TableRow()
         {
             InitializeComponent();
             Layout += (sender, evt) => DoLayout();
+        }
+
+        private void OnLoad(object sender, EventArgs eventArgs)
+        {
             Update(Index, Selected);
         }
 
@@ -44,7 +50,7 @@ namespace Chummer.UI.Table
             }
             else
             {
-                BackColor = (intIndex % 2 == 0) ? Color.White : Color.LightGray;
+                BackColor = (intIndex & 1 ) == 0 ? Color.White : Color.LightGray;
             }
         }
 

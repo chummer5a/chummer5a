@@ -39,7 +39,7 @@ namespace Chummer
                 string strName = LanguageManager.TranslateExtra(lstObject.Item1, GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(lstObject.Item2))
                 {
-                    strName += " (" + LanguageManager.TranslateExtra(lstObject.Item2, GlobalOptions.Language) + ')';
+                    strName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.TranslateExtra(lstObject.Item2, GlobalOptions.Language) + ')';
                 }
                 _lstPowerItems.Add(new ListItem(lstObject, strName));
             }

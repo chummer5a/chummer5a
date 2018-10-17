@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
 	Chummer5a is free software: you can redistribute it and/or modify
@@ -1180,16 +1180,16 @@
 				<translate>EVO/Yamatetsu Naval Technologies Rampart</translate>
 				<altpage>137</altpage>
 			</armor>
-			<armor>
+			<armor translated="True">
 				<id>5ad79730-ee4b-4191-822d-205af7320281</id>
 				<name>Pantheon Industries Hard Case CCOB</name>
-				<translate>Pantheon Industries Hard Case CCOB</translate>
+				<translate>Pantheon Industries Hartschalenrucksack</translate>
 				<altpage>70</altpage>
 			</armor>
-			<armor>
+			<armor translated="True">
 				<id>62ad0f12-c603-4c88-b778-e456ca2355f6</id>
 				<name>Generic CCOB</name>
-				<translate>Generic CCOB</translate>
+				<translate>Standard-Hartschalenrucksack</translate>
 				<altpage>70</altpage>
 			</armor>
 		</armors>
@@ -1548,29 +1548,29 @@
 				<translate>Fallschirm (Urban Explorer Daedalus)</translate>
 				<altpage>48</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>f4c1163d-bf9e-42c5-8504-37b21c01531e</id>
 				<name>Pantheon Armored Shell</name>
-				<translate>Pantheon Armored Shell</translate>
-				<altpage>73</altpage>
+				<translate>Pantheon Gepanzerte Hülle</translate>
+				<altpage>70</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>52b315a3-cf10-4534-a0d9-86b4ac346136</id>
 				<name>Pantheon Quick-Charge Battery Pack</name>
-				<translate>Pantheon Quick-Charge Battery Pack</translate>
-				<altpage>73</altpage>
+				<translate>Pantheon Schnellladebatterie</translate>
+				<altpage>70</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>c2fdc729-bc1d-4d3a-a0da-1d5dfa3b897d</id>
 				<name>Micro-Hardpoint</name>
-				<translate>Micro-Hardpoint</translate>
-				<altpage>73</altpage>
+				<translate>Mikro-Halterungen</translate>
+				<altpage>70</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>a1c9f8ee-d58d-4583-8ff3-12517dbf76f5</id>
 				<name>Personal Drone Rack</name>
-				<translate>Personal Drone Rack</translate>
-				<altpage>73</altpage>
+				<translate>Tragbare Drohnenhalterung</translate>
+				<altpage>70</altpage>
 			</mod>
 		</mods>
 	</chummer>
@@ -1835,11 +1835,11 @@
 				<translate>Nierensieb (2050)</translate>
 				<altpage>205</altpage>
 			</bioware>
-			<bioware>
+			<bioware translated="True">
 				<id>d52e5797-416f-414a-ba7f-8ba3c6aef35a</id>
 				<name>Orthoskin (2050)</name>
 				<translate>Orthoskin (2050)</translate>
-				<altpage>205</altpage>
+				<altpage>206</altpage>
 			</bioware>
 			<bioware>
 				<id>0dcfb784-e30b-4d29-b8a9-46786770c5d0</id>
@@ -1877,11 +1877,11 @@
 				<translate>Synapsenbeschleuniger (2050)</translate>
 				<altpage>205</altpage>
 			</bioware>
-			<bioware>
+			<bioware translated="True">
 				<id>7ec6348a-2edd-4629-a984-e88f258e8599</id>
 				<name>Synthacardium (2050)</name>
 				<translate>Synthacardium (2050)</translate>
-				<altpage>205</altpage>
+				<altpage>206</altpage>
 			</bioware>
 			<bioware>
 				<id>8cf8dfaa-64b1-4b46-90a1-7fe01a43ad74</id>
@@ -2903,11 +2903,11 @@
 				<translate>Transgene Veränderung</translate>
 				<altpage>165</altpage>
 			</bioware>
-			<bioware>
+			<bioware translated="True">
 				<id>b5af679d-e70d-43f3-9aa4-f3638796e948</id>
 				<name>MCT Biolink</name>
-				<translate>MCT Biolink</translate>
-				<altpage>67</altpage>
+				<translate>Biolink</translate>
+				<altpage>65</altpage>
 			</bioware>
 		</biowares>
 	</chummer>
@@ -3147,16 +3147,16 @@
 				<translate>Mit Hauern und Hörnern</translate>
 				<altcode>TCT</altcode>
 			</book>
-			<book>
+			<book translated="True">
 				<id>e894804c-2e11-489e-acc8-f9691a79b261</id>
 				<name>Shadows In Focus: Sioux Nation: Counting Coup</name>
-				<translate>Shadows In Focus: Sioux Nation: Counting Coup</translate>
+				<translate>Shadowrun: Mission Sioux-Nation</translate>
 				<altcode>SFCC</altcode>
 			</book>
-			<book>
+			<book translated="True">
 				<id>c74e950e-3554-4a44-9060-5a2840302538</id>
 				<name>Dark Terrors</name>
-				<translate>Dark Terrors</translate>
+				<translate>Im Herz der Dunkelheit</translate>
 				<altcode>DTR</altcode>
 			</book>
 			<book>
@@ -4512,6 +4512,12 @@
 				<name>Shift (Dracoform)</name>
 				<translate>Gestaltwandel (Dracoform)</translate>
 				<altpage>192</altpage>
+			</power>
+			<power translated="True">
+				<id>7a2d7ea2-7460-4d76-be08-dfbf5653ec7d</id>
+				<name>Resonance Hosting</name>
+				<translate>Resonanzhost</translate>
+				<altpage>174</altpage>
 			</power>
 		</powers>
 	</chummer>
@@ -7992,6 +7998,7 @@
 			<category translate="Weiche Nanowaresysteme">Soft Nanoware</category>
 			<category translate="Spezielle Biodronen-Cyberware">Special Biodrone Cyberware</category>
 			<category translate="Cybersuite" translated="True">Cybersuite</category>
+			<category translate="Cyberimplantatwaffen-Zubehör">Cyber Implant Weapon Accessory</category>
 		</categories>
 		<cyberwares>
 			<cyberware>
@@ -8464,14 +8471,8 @@
 			</cyberware>
 			<cyberware>
 				<id>8b9541a9-e10a-488d-a076-4e5b1c469839</id>
-				<name>Silencer</name>
+				<name>Silencer/Suppressor</name>
 				<translate>Schalldämpfer</translate>
-				<altpage>463</altpage>
-			</cyberware>
-			<cyberware>
-				<id>e8fad85e-01c7-4fda-a5e0-73af457f4cf7</id>
-				<name>Sound Suppressor</name>
-				<translate>Schallunterdrücker</translate>
 				<altpage>463</altpage>
 			</cyberware>
 			<cyberware>
@@ -9868,29 +9869,29 @@
 				<translate>Zentaur Hinterbein</translate>
 				<altpage>92</altpage>
 			</cyberware>
-			<cyberware>
+			<cyberware translated="True">
 				<id>85bd6c32-d0c3-4d1b-99ad-833aad376a54</id>
 				<name>Bulk Modification (Hand/Foot/Half-Skull)</name>
-				<translate>Bulk Modification (Hand/Foot/Half-Skull)</translate>
-				<altpage>86</altpage>
+				<translate>Größenanpassung (Hand/Fuß/partieller Schädel)</translate>
+				<altpage>91</altpage>
 			</cyberware>
-			<cyberware>
+			<cyberware translated="True">
 				<id>89733e57-d1e3-4b26-ae40-02ee2c2be733</id>
 				<name>Bulk Modification (Lower Arm/Lower Leg/Skull)</name>
-				<translate>Bulk Modification (Lower Arm/Lower Leg/Skull)</translate>
-				<altpage>86</altpage>
+				<translate>Größenanpassung (Unterarm/Unterschenkel/Schädel)</translate>
+				<altpage>91</altpage>
 			</cyberware>
-			<cyberware>
+			<cyberware translated="True">
 				<id>b1421a8e-6579-44d9-854c-dd15c477032a</id>
 				<name>Bulk Modification (Full Arm/Full Leg)</name>
-				<translate>Bulk Modification (Full Arm/Full Leg)</translate>
-				<altpage>86</altpage>
+				<translate>Größenanpassung (Ganzer Arm/Ganzes Bein)</translate>
+				<altpage>91</altpage>
 			</cyberware>
-			<cyberware>
+			<cyberware translated="True">
 				<id>08b7a781-4631-4a94-bbf2-505bd173d2c5</id>
 				<name>Bulk Modification (Torso/Liminal Chassis)</name>
-				<translate>Bulk Modification (Torso/Liminal Chassis)</translate>
-				<altpage>86</altpage>
+				<translate>Größenanpassung (Torso/Hybriduntersatz)</translate>
+				<altpage>91</altpage>
 			</cyberware>
 			<cyberware translated="True">
 				<id>92a3677e-cd4c-4ce1-9295-612281946709</id>
@@ -10126,23 +10127,29 @@
 				<translate>Nanotatoos</translate>
 				<altpage>149</altpage>
 			</cyberware>
-			<cyberware>
+			<cyberware translated="True">
 				<id>8496afd6-ad34-4e73-b3f4-191ef11e121c</id>
 				<name>Datajack Plus</name>
-				<translate>Datajack Plus</translate>
-				<altpage>65</altpage>
+				<translate>Datenbuchse Plus</translate>
+				<altpage>64</altpage>
 			</cyberware>
-			<cyberware>
+			<cyberware translated="True">
 				<id>d9a05e96-3913-4d40-ae1a-397da8a6f344</id>
 				<name>Enhanced Augmented Reality Reflex System</name>
-				<translate>Enhanced Augmented Reality Reflex System</translate>
+				<translate>Simultan-Reflexsystem</translate>
 				<altpage>65</altpage>
 			</cyberware>
-			<cyberware>
+			<cyberware translated="True">
 				<id>ba91b21a-2c8d-466f-a353-64293e09a9a8</id>
 				<name>Cranial Shield</name>
-				<translate>Cranial Shield</translate>
-				<altpage>65</altpage>
+				<translate>Gehirnabschirmung</translate>
+				<altpage>64</altpage>
+			</cyberware>
+			<cyberware translated="True">
+				<id>b933e9e1-3ec3-45fd-8918-f88cc14d3ea0</id>
+				<name>STATscan</name>
+				<translate>STATscan</translate>
+				<altpage>24</altpage>
 			</cyberware>
 		</cyberwares>
 	</chummer>
@@ -10271,56 +10278,56 @@
 			<echo>
 				<id>2c5953bf-3680-4ce5-9087-2e1e419937b2</id>
 				<name>Defrag</name>
-				<translate>Defrag</translate>
-				<altpage>85</altpage>
+				<translate>Defragmentieren</translate>
+				<altpage>84</altpage>
 			</echo>
-			<echo>
+			<echo translated="True">
 				<id>64710f70-897a-4505-829d-7d0ade750b24</id>
 				<name>Aegis</name>
-				<translate>Aegis</translate>
-				<altpage>0</altpage>
+				<translate>Schutzhülle</translate>
+				<altpage>102</altpage>
 			</echo>
-			<echo>
+			<echo translated="True">
 				<id>8aa97815-eacb-412d-99ac-1acda562fb52</id>
 				<name>Draining Spike</name>
-				<translate>Draining Spike</translate>
-				<altpage>0</altpage>
+				<translate>Entzugs-Spike</translate>
+				<altpage>102</altpage>
 			</echo>
-			<echo>
+			<echo translated="True">
 				<id>a6f9a6cd-4727-4de6-a774-bb93ab67940a</id>
 				<name>Neural Synergy</name>
-				<translate>Neural Synergy</translate>
-				<altpage>0</altpage>
+				<translate>Wille der Resonanz</translate>
+				<altpage>102</altpage>
 			</echo>
-			<echo>
+			<echo translated="True">
 				<id>96f534c0-b53b-43af-bdac-54de468f0d70</id>
 				<name>Predictive Analytics</name>
-				<translate>Predictive Analytics</translate>
-				<altpage>0</altpage>
+				<translate>Voraussagende Analyse</translate>
+				<altpage>102</altpage>
 			</echo>
-			<echo>
+			<echo translated="True">
 				<id>37e8342f-9aad-4ee0-8e68-7a5c00f2678b</id>
 				<name>Resonance Resistance</name>
-				<translate>Resonance Resistance</translate>
-				<altpage>0</altpage>
+				<translate>Resonanzresistenz</translate>
+				<altpage>102</altpage>
 			</echo>
-			<echo>
+			<echo translated="True">
 				<id>1e0405f3-3872-4a53-afd7-bd643899e7d9</id>
 				<name>The Van der Waals Effect</name>
-				<translate>The Van der Waals Effect</translate>
-				<altpage>0</altpage>
+				<translate>Van-der-Waals-Effekt</translate>
+				<altpage>102</altpage>
 			</echo>
-			<echo>
+			<echo translated="True">
 				<id>6cb9bc65-7b64-44dd-ba9a-f96f3c09c741</id>
 				<name>Will of the Resonance</name>
-				<translate>Will of the Resonance</translate>
-				<altpage>0</altpage>
+				<translate>Wille der Resonanz</translate>
+				<altpage>102</altpage>
 			</echo>
-			<echo>
+			<echo translated="True">
 				<id>f7bd6993-efa4-494c-8c58-e9f0950af7b9</id>
 				<name>Daemon: Cyberadept</name>
-				<translate>Daemon: Cyberadept</translate>
-				<altpage>0</altpage>
+				<translate>Systemdienst: Cyberadept</translate>
+				<altpage>90</altpage>
 			</echo>
 		</echoes>
 	</chummer>
@@ -10387,8 +10394,10 @@
 			<category translate="Cyberterminals">Cyberterminals</category>
 			<category translate="Metatyp-spezifisch">Metatype-Specific</category>
 			<category translate="Maßgeschneidertes Parfum/Rasierwasser">Tailored Perfume/Cologne</category>
-			<category translate="Matrix Accessories">Matrix Accessories</category>
+			<category translate="Matrix-Zubehör">Matrix Accessories</category>
 			<category translate="Booster Chips">Booster Chips</category>
+			<category translate="Custom Cyberdeck Attributes">Custom Cyberdeck Attributes</category>
+			<category translate="Maßgeschneiderte Drogen">Custom Drug</category>
 		</categories>
 		<gears>
 			<gear translated="True">
@@ -14935,8 +14944,8 @@
 			</gear>
 			<gear translated="True">
 				<id>875bf273-1a0d-4a42-80ab-6547d7a1235a</id>
-				<name>Narcoject</name>
-				<translate>Narcoject</translate>
+				<name>Narcojet</name>
+				<translate>Narcojet</translate>
 				<altpage>412</altpage>
 			</gear>
 			<gear>
@@ -17232,13 +17241,13 @@
 			<gear>
 				<id>76e908e1-9f0b-4846-bf9e-d9a3b7fe0e7c</id>
 				<name>Refined Reagents</name>
-				<translate>Refined Reagents</translate>
+				<translate>Geläuterte Reagenzien</translate>
 				<altpage>24</altpage>
 			</gear>
 			<gear>
 				<id>377cfe85-9280-46f9-a0c6-570b862fea70</id>
 				<name>Radical Reagents</name>
-				<translate>Radical Reagents</translate>
+				<translate>Radikale Reagenzien</translate>
 				<altpage>24</altpage>
 			</gear>
 			<gear>
@@ -17709,17 +17718,17 @@
 				<translate>Ewiger Tresor</translate>
 				<altpage>186</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>466b1d86-e088-4973-b914-a405ba0829f7</id>
 				<name>NanoScrub</name>
 				<translate>NanoScrub</translate>
-				<altpage>83</altpage>
+				<altpage>82</altpage>
 			</gear>
 			<gear>
 				<id>a9b847fd-d3ec-46e1-a7b0-e339b4221453</id>
 				<name>Overwriter Nanites</name>
-				<translate>Overwriter Nanites</translate>
-				<altpage>83</altpage>
+				<translate>Überschreiber-Naniten</translate>
+				<altpage>82</altpage>
 			</gear>
 			<gear>
 				<id>9bb893c0-2cab-4f7f-a0cf-bdacc940254b</id>
@@ -17733,47 +17742,47 @@
 				<translate>Broken Sony CIY-720</translate>
 				<altpage>249</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>de50bb02-7f90-4c76-9984-e7d2b3248726</id>
 				<name>GPS Monitor</name>
 				<translate>GPS Monitor</translate>
-				<altpage>422</altpage>
+				<altpage>424</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>3fc588dc-ec8b-4483-8796-f8a068698ea4</id>
 				<name>Mini-Multitool</name>
 				<translate>Mini-Multitool</translate>
-				<altpage>422</altpage>
+				<altpage>424</altpage>
 			</gear>
 			<gear>
 				<id>a75fb825-dc62-46ff-8e8a-454b7a9442ba</id>
 				<name>Micro-Lighter</name>
-				<translate>Micro-Lighter</translate>
-				<altpage>422</altpage>
+				<translate>Mikro-Feuerzeug</translate>
+				<altpage>424</altpage>
 			</gear>
 			<gear>
 				<id>4d08fb85-0756-4f99-9dfe-6e2592ee22b4</id>
 				<name>Hidden Compartment</name>
-				<translate>Hidden Compartment</translate>
-				<altpage>422</altpage>
+				<translate>Verborgenes Fach</translate>
+				<altpage>424</altpage>
 			</gear>
 			<gear>
 				<id>63a4180e-97bc-4954-b5c2-a1029d834638</id>
 				<name>Phosphorescent Blade Coating</name>
-				<translate>Phosphorescent Blade Coating</translate>
-				<altpage>422</altpage>
+				<translate>Phosphoreszierende Klinge (beschichtet)</translate>
+				<altpage>424</altpage>
 			</gear>
 			<gear>
 				<id>09ed9d86-59a2-4ac9-ac3f-70816f3485fb</id>
 				<name>ARO of Local Maps</name>
-				<translate>ARO of Local Maps</translate>
-				<altpage>422</altpage>
+				<translate>ARO örtlicher Karten</translate>
+				<altpage>424</altpage>
 			</gear>
 			<gear>
 				<id>3772ad51-c689-4e38-8c93-b285e78670b5</id>
 				<name>Can Make Commcalls</name>
-				<translate>Can Make Commcalls</translate>
-				<altpage>422</altpage>
+				<translate>Kann Telefonanrufe tätigen</translate>
+				<altpage>424</altpage>
 			</gear>
 			<gear>
 				<id>8e4e5c33-63f4-437a-ae64-1e54276bd13d</id>
@@ -17811,473 +17820,521 @@
 				<translate>Urban Explorer Daedalus Ersatzfallschirm</translate>
 				<altpage>48</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>7e104b61-69b3-4a7e-8221-a6190314c411</id>
 				<name>Ammo: Zapper</name>
-				<translate>Ammo: Zapper</translate>
-				<altpage>48</altpage>
+				<translate>Munition: Überlastungsmunition</translate>
+				<altpage>51</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>b8ad4fef-4092-42ac-87ad-518dd8b60fb7</id>
 				<name>Ammo: Looper</name>
-				<translate>Ammo: Looper</translate>
-				<altpage>48</altpage>
+				<translate>Munition: Schleifenmunition</translate>
+				<altpage>49</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>c40a91b0-7896-4ad1-b1e6-f39c9c93bf1b</id>
 				<name>Ammo: Fuzzy</name>
-				<translate>Ammo: Fuzzy</translate>
-				<altpage>48</altpage>
+				<translate>Munition: Störmunition</translate>
+				<altpage>50</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>efa87c80-d712-41d8-813e-768a2f4ffcf7</id>
 				<name>Ammo: E0-E0 (Public Grid)</name>
-				<translate>Ammo: E0-E0 (Public Grid)</translate>
+				<translate>Munition: E0-E0 (Öffentliches Gitter)</translate>
 				<altpage>48</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>f4be287a-2ed8-4e7b-8244-32243905fe84</id>
 				<name>Ammo: E0-E0 (Local Grid)</name>
-				<translate>Ammo: E0-E0 (Local Grid)</translate>
+				<translate>Munition: E0-E0 (Lokales Gitter)</translate>
 				<altpage>48</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>8ddf2080-2444-4d9a-a601-5be4147b183d</id>
 				<name>Ammo: E0-E0 (Megacorporate Grid)</name>
-				<translate>Ammo: E0-E0 (Megacorporate Grid)</translate>
+				<translate>Munition: E0-E0 (Megakonzern-Gitter)</translate>
 				<altpage>48</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>bf9001db-6484-47ab-9449-5f068f5fe04b</id>
 				<name>Ammo: E0-E0 Rifle (Public Grid)</name>
-				<translate>Ammo: E0-E0 Rifle (Public Grid)</translate>
+				<translate>Munition: E0-E0 für Gewehre (Öffentliches Gitter Grid)</translate>
 				<altpage>48</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>d1e0807b-6c6e-44bb-a230-c6f328ee26a5</id>
 				<name>Ammo: E0-E0 Rifle (Local Grid)</name>
-				<translate>Ammo: E0-E0 Rifle (Local Grid)</translate>
+				<translate>Munition: E0-E0 für Gewehre (Lokales Gitter Grid)</translate>
 				<altpage>48</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>b580d8fc-9987-403a-9be5-760b1d88f926</id>
 				<name>Ammo: E0-E0 Rifle (Megacorporate Grid)</name>
-				<translate>Ammo: E0-E0 Rifle (Megacorporate Grid)</translate>
+				<translate>Munition: E0-E0 für Gewehre (Megakonzern-Gitter)</translate>
 				<altpage>48</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>05a9f4e2-b7c0-4bf8-8614-33b1ee0f406d</id>
 				<name>Arrow: Arrowlink (50m)</name>
-				<translate>Arrow: Arrowlink (50m)</translate>
-				<altpage>48</altpage>
+				<translate>Pfeil: ArrowLink (50m)</translate>
+				<altpage>52</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>2d3b26aa-a2c1-4514-915e-62aa08203456</id>
 				<name>Arrow: Arrowlink (100m)</name>
-				<translate>Arrow: Arrowlink (100m)</translate>
-				<altpage>48</altpage>
+				<translate>Pfeil: ArrowLink (100m)</translate>
+				<altpage>52</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>74906d00-018e-4d1a-8a9c-4b77918de761</id>
 				<name>Arrow: Arrowlink (200m)</name>
-				<translate>Arrow: Arrowlink (200m)</translate>
-				<altpage>48</altpage>
+				<translate>Pfeil: ArrowLink (200m)</translate>
+				<altpage>52</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>65a853d4-52d6-44c7-a867-10ea1beaece3</id>
 				<name>Arrow: Arrowlink (500m)</name>
-				<translate>Arrow: Arrowlink (500m)</translate>
-				<altpage>48</altpage>
+				<translate>Pfeil: ArrowLink (500m)</translate>
+				<altpage>52</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>051ceea6-65c2-4058-95bd-f63d86a45984</id>
 				<name>Grenade: Fuzzy Boom Boom Bunnies</name>
-				<translate>Grenade: Fuzzy Boom Boom Bunnies</translate>
-				<altpage>48</altpage>
+				<translate>Granate: Störgranate "Fuzzy Boom Boom Bunnies"</translate>
+				<altpage>55</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>7470ed31-0d81-4992-bae6-38f9de198020</id>
 				<name>Grenade: COS</name>
-				<translate>Grenade: COS</translate>
-				<altpage>48</altpage>
+				<translate>Granate: COS-Granate (Cancellation Ofservice)</translate>
+				<altpage>53</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>0c98750a-4286-4ec5-9035-b76f36c03ce4</id>
 				<name>Grenade: Douser</name>
-				<translate>Grenade: Douser</translate>
-				<altpage>48</altpage>
+				<translate>Granate: Löschgranate</translate>
+				<altpage>54</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>965ccb60-f9e2-4a44-8a11-05e6c5bd4457</id>
 				<name>Grenade: DumDum</name>
-				<translate>Grenade: DumDum</translate>
-				<altpage>48</altpage>
+				<translate>Granate: Overflow-Granate</translate>
+				<altpage>55</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>d05a6375-7c82-4d32-952e-cc356b5b079d</id>
 				<name>Faceless - Specific Face</name>
-				<translate>Faceless - Specific Face</translate>
+				<translate>Gesichtsverfälscher: Bestimmtes Gesicht</translate>
 				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>3cc7b3d8-0f5f-4598-b9a0-96083966e6f9</id>
 				<name>Faceless - Generic</name>
-				<translate>Faceless - Generic</translate>
+				<translate>Gesichtsverfälscher: Standardgesicht</translate>
 				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>d2c64947-9d23-4ec8-916a-e5345b94b96b</id>
 				<name>Fuchi Cyber-N</name>
 				<translate>Fuchi Cyber-N</translate>
 				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>00ccda48-98a0-42b1-a997-1e1cf1f5269a</id>
 				<name>Fuchi Cyber-Ex</name>
 				<translate>Fuchi Cyber-Ex</translate>
 				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>101acb97-2528-4812-a852-a8591b68145f</id>
-				<name>Attack</name>
-				<translate>Attack</translate>
+				<name>[Custom Cyberdeck] Attack</name>
+				<translate>[Eigenes Cyberdeck] Angriff</translate>
 				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>cc6cb58a-a6a1-441d-84f6-a0ea3091317e</id>
-				<name>Sleaze</name>
-				<translate>Sleaze</translate>
+				<name>[Custom Cyberdeck] Sleaze</name>
+				<translate>[Eigenes Cyberdeck] Schleicher</translate>
 				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>c4760ef1-5fe0-477b-8579-a457aaf16bf9</id>
-				<name>Data Processing</name>
-				<translate>Data Processing</translate>
+				<name>[Custom Cyberdeck] Data Processing</name>
+				<translate>[Eigenes Cyberdeck] Datenverarbeitung</translate>
 				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>37c5f8bc-025a-4eca-93a8-1e93e0cabcd9</id>
-				<name>Firewall</name>
-				<translate>Firewall</translate>
+				<name>[Custom Cyberdeck] Firewall</name>
+				<translate>[Eigenes Cyberdeck] Firewall</translate>
 				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>51ca2b4d-fdbb-48cc-89b3-9d56757d1682</id>
 				<name>Security Deck: Guard</name>
-				<translate>Security Deck: Guard</translate>
-				<altpage>61</altpage>
+				<translate>Sicherheitsdeck: Wache</translate>
+				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>81206ac6-631a-4ec7-8013-96050510726f</id>
 				<name>Security Deck: Shield</name>
-				<translate>Security Deck: Shield</translate>
-				<altpage>61</altpage>
+				<translate>Sicherheitsdeck: Schild</translate>
+				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>737f6986-d565-4f65-9f83-8142d1f72b56</id>
 				<name>Security Deck: Fortress</name>
-				<translate>Security Deck: Fortress</translate>
-				<altpage>61</altpage>
+				<translate>Sicherheitsdeck: Festung</translate>
+				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>49482a90-ffc4-449a-b6b5-21ab0bcd3879</id>
 				<name>Security Deck: Great Wall</name>
-				<translate>Security Deck: Great Wall</translate>
-				<altpage>61</altpage>
+				<translate>Sicherheitsdeck: Große Mauer</translate>
+				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>17003ab0-8e96-4661-898d-8d57963a6e8d</id>
 				<name>Hunter Deck: Fox</name>
-				<translate>Hunter Deck: Fox</translate>
-				<altpage>62</altpage>
+				<translate>Jägerdeck: Fuchs</translate>
+				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>26171ce4-fadc-4dae-85e0-5d165d312f56</id>
 				<name>Hunter Deck: Wolf</name>
-				<translate>Hunter Deck: Wolf</translate>
-				<altpage>61</altpage>
+				<translate>Jägerdeck: Wolf</translate>
+				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>b705d027-1ba6-4322-9710-b951278c6b3f</id>
 				<name>Hunter Deck: Tiger</name>
-				<translate>Hunter Deck: Tiger</translate>
-				<altpage>61</altpage>
+				<translate>Jägerdeck: Tiger</translate>
+				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>7bd2d975-c4c7-41f4-ba28-be8431e22c36</id>
 				<name>Hunter Deck: Shark</name>
-				<translate>Hunter Deck: Shark</translate>
-				<altpage>61</altpage>
+				<translate>Jägerdeck: Hai</translate>
+				<altpage>60</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>96ce16be-8fca-4b3a-af65-0e3c38280b1d</id>
 				<name>Aztechnology Shadow Warrior</name>
 				<translate>Aztechnology Shadow Warrior</translate>
-				<altpage>62</altpage>
+				<altpage>61</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>3927e552-374f-4f41-a304-9be621b2dac8</id>
 				<name>Evo Sublime</name>
 				<translate>Evo Sublime</translate>
-				<altpage>62</altpage>
+				<altpage>61</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>b00002dd-2aed-47d7-9ecf-88c7fafb4746</id>
 				<name>Fairlight Destiny Blade</name>
 				<translate>Fairlight Destiny Blade</translate>
-				<altpage>62</altpage>
+				<altpage>61</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>dcfe2e17-fe33-4bb2-876d-64ee419b9ff6</id>
 				<name>Aztechnology Defender</name>
 				<translate>Aztechnology Defender</translate>
-				<altpage>62</altpage>
+				<altpage>61</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>7cd53ac3-c79f-4854-9bda-e1d75cf276f8</id>
 				<name>Kitbashed Sleeper</name>
-				<translate>Kitbashed Sleeper</translate>
+				<translate>Resonanz-Deck</translate>
 				<altpage>62</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>a6c0cc9d-d63c-44b3-a668-5c9eb2c9e457</id>
 				<name>Saeder-Krupp Last Chance Link</name>
-				<translate>Saeder-Krupp Last Chance Link</translate>
-				<altpage>68</altpage>
+				<translate>Saeder-Krupp Last Chance</translate>
+				<altpage>67</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>22a38a8a-7298-416c-bf92-5f572e3f09b2</id>
 				<name>Horizon Flow</name>
 				<translate>Horizon Flow</translate>
-				<altpage>68</altpage>
+				<altpage>67</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>d4b0d4b5-291f-435e-9b61-cd4324c5b1c0</id>
 				<name>Wuxing Frequency</name>
 				<translate>Wuxing Frequency</translate>
-				<altpage>68</altpage>
+				<altpage>67</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>e265d7a1-8046-406d-b92b-7c9eea8682bd</id>
 				<name>Shiawase Cyber-6</name>
 				<translate>Shiawase Cyber-6</translate>
 				<altpage>68</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>42414f23-7a0e-4e4f-87f8-29a90b0c72d0</id>
 				<name>Spinrad Global Skirmisher</name>
 				<translate>Spinrad Global Skirmisher</translate>
 				<altpage>68</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>d900aa9c-5914-4e5b-baa4-b4e0c0625123</id>
 				<name>Pantheon Industries "Co-Pilot" Mk I</name>
 				<translate>Pantheon Industries "Co-Pilot" Mk I</translate>
-				<altpage>70</altpage>
+				<altpage>69</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>5294813b-3421-46b6-b30a-de8cab38f89f</id>
 				<name>Pantheon Industries "Co-Pilot" Mk II</name>
 				<translate>Pantheon Industries "Co-Pilot" Mk II</translate>
-				<altpage>70</altpage>
+				<altpage>69</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>3727d9a2-c556-4133-8083-d1c61f239034</id>
 				<name>Pantheon Industries "Co-Pilot" Mk III</name>
 				<translate>Pantheon Industries "Co-Pilot" Mk III</translate>
-				<altpage>70</altpage>
+				<altpage>69</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>cf954b05-0c06-4fdd-8af6-15b03770bccc</id>
 				<name>Pantheon Industries "Door Gunner"</name>
-				<translate>Pantheon Industries "Door Gunner"</translate>
-				<altpage>70</altpage>
+				<translate>Pantheon Industries "Bordschütze"</translate>
+				<altpage>69</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>52adb8cf-22a4-4581-a354-0f7b9bcf6999</id>
 				<name>Pantheon Industries "ECM-Warrior"</name>
-				<translate>Pantheon Industries "ECM-Warrior"</translate>
+				<translate>Pantheon Industries "ECM-Krieger"</translate>
 				<altpage>70</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>4b7ec6a4-243b-490c-92f5-d337e5cc36de</id>
 				<name>Pantheon Industries Mobile CNC</name>
-				<translate>Pantheon Industries Mobile CNC</translate>
+				<translate>Pantheon Industries Mobile Einsatzzentrale</translate>
 				<altpage>70</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>a9edf32b-dea2-4939-9fa1-016ed3693a23</id>
 				<name>Pantheon Industries Shield Wall</name>
-				<translate>Pantheon Industries Shield Wall</translate>
+				<translate>Pantheon Industries Schildwall</translate>
 				<altpage>70</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>b8ad45b8-35f7-4c2c-b9cd-29fbeb59b8e9</id>
 				<name>Attack Booster</name>
-				<translate>Attack Booster</translate>
-				<altpage>59</altpage>
+				<translate>Angriffsbooster</translate>
+				<altpage>56</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>666dbb45-2898-4262-aab6-94e80954b480</id>
 				<name>Sleaze Booster</name>
-				<translate>Sleaze Booster</translate>
-				<altpage>59</altpage>
+				<translate>Schleicherbooster</translate>
+				<altpage>56</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>f5b287cc-98c1-479e-8e54-e5155fa6917a</id>
 				<name>Data Processing Booster</name>
-				<translate>Data Processing Booster</translate>
-				<altpage>59</altpage>
+				<translate>Datenverarbeitungsbooster</translate>
+				<altpage>56</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>c29db797-db4b-4f14-b662-622935c3204e</id>
 				<name>Firewall Booster</name>
-				<translate>Firewall Booster</translate>
-				<altpage>59</altpage>
+				<translate>Firewallbooster</translate>
+				<altpage>56</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>3d107000-9bfc-46f6-9a1e-99e6cecc3897</id>
 				<name>Armor Defeating</name>
-				<translate>Armor Defeating</translate>
-				<altpage>59</altpage>
+				<translate>Panzerbrecher</translate>
+				<altpage>56</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>8dfceac4-1c5a-4b30-bcd2-81b16553c6ce</id>
 				<name>Slick Willy</name>
-				<translate>Slick Willy</translate>
-				<altpage>59</altpage>
+				<translate>Aalhaut</translate>
+				<altpage>56</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>0ee14c43-e334-4ca5-a87c-c99d94bfe31a</id>
 				<name>Data Dynamo</name>
-				<translate>Data Dynamo</translate>
-				<altpage>59</altpage>
+				<translate>Datendynamo</translate>
+				<altpage>56</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>7b8e0c95-375d-4982-b523-576952aced75</id>
 				<name>Fortified</name>
-				<translate>Fortified</translate>
-				<altpage>59</altpage>
+				<translate>Festung</translate>
+				<altpage>56</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>77f02897-28c1-4d53-86b4-eae1dbd85f35</id>
 				<name>Pantheon Industries Tactical Program Dongle</name>
-				<translate>Pantheon Industries Tactical Program Dongle</translate>
-				<altpage>70</altpage>
+				<translate>Pantheon Industries Taktischer Programm-Dongle</translate>
+				<altpage>71</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>55e05d6a-bc67-469f-b16c-648b4688eb37</id>
 				<name>Multiprogram Operating System</name>
-				<translate>Multiprogram Operating System</translate>
-				<altpage>58</altpage>
+				<translate>Zusatzprogrammsystem (ZPS)</translate>
+				<altpage>59</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>ae96a184-0615-463a-b10d-bf994ac75cab</id>
 				<name>Booster Cloud [Brute Force]</name>
-				<translate>Booster Cloud [Brute Force]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Brute Force]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>2ba507c4-5f5c-4675-96fd-890d52df27e1</id>
 				<name>Booster Cloud [Control Device]</name>
-				<translate>Booster Cloud [Control Device]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Gerät steuern]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>182d3050-c14c-4d47-b02a-ea6d9828e3e7</id>
 				<name>Booster Cloud [Crack File]</name>
-				<translate>Booster Cloud [Crack File]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Datei cracken]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>59795250-558e-47f5-b5d7-db410b36a23a</id>
 				<name>Booster Cloud [Crash Program]</name>
-				<translate>Booster Cloud [Crash Program]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Programm abstürzen lassen]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>1797a4a7-c59e-4264-a360-2aa00adadd65</id>
 				<name>Booster Cloud [Data Spike]</name>
-				<translate>Booster Cloud [Data Spike]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwollke [Datenspike]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>44726953-66fa-4619-8168-85794bfca8f0</id>
 				<name>Booster Cloud [Edit File]</name>
-				<translate>Booster Cloud [Edit File]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Datei editieren]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>2d6d3555-3f3d-4f6d-9b48-897d3f5be68b</id>
 				<name>Booster Cloud [Erase Mark]</name>
-				<translate>Booster Cloud [Erase Mark]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Marke löschen]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>9bd48bd3-ad36-4f34-96bc-37afd97dc520</id>
 				<name>Booster Cloud [Hack on the Fly]</name>
-				<translate>Booster Cloud [Hack on the Fly]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Eiliges Hacken]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>93ce7855-436d-47db-b8bc-ae7ba35efc2d</id>
 				<name>Booster Cloud [Hide]</name>
-				<translate>Booster Cloud [Hide]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Verstecken]</translate>
+				<altpage>57</altpage>
 			</gear>
 			<gear>
 				<id>5e801a2b-03b1-4f2f-bacd-cf7951c770c3</id>
 				<name>Booster Cloud [Jam Signals]</name>
-				<translate>Booster Cloud [Jam Signals]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Signal stören]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>bfcfe6d3-b341-427c-be65-1fa21e043b0a</id>
 				<name>Booster Cloud [Matrix Perception]</name>
-				<translate>Booster Cloud [Matrix Perception]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Matrixwahrnehmung]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>d7dc17cc-7e55-4cbc-89e7-7e8468687e75</id>
 				<name>Booster Cloud [Reboot Device]</name>
-				<translate>Booster Cloud [Reboot Device]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Gerät neu starten]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>ad9307c3-3dc0-4733-bfb2-11c9af467fd8</id>
 				<name>Booster Cloud [Snoop]</name>
-				<translate>Booster Cloud [Snoop]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Übertragung abfangen]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>04aaca9c-42e6-4cb8-a73e-1b36ffab2104</id>
 				<name>Booster Cloud [Spoof Command]</name>
-				<translate>Booster Cloud [Spoof Command]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Befehl vortäuschen]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>4a7731f9-3534-4d5c-92e4-02025ac5c4da</id>
 				<name>Booster Cloud [Trace Icon]</name>
-				<translate>Booster Cloud [Trace Icon]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Icon aufspüren]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>8646d733-4017-4efb-8c89-ff9b72217e54</id>
 				<name>Booster Cloud [Custom Case]</name>
-				<translate>Booster Cloud [Custom Case]</translate>
-				<altpage>56</altpage>
+				<translate>Boosterwolke [Tarnbehälter]</translate>
+				<altpage>57</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>06d57f7d-c372-433b-8a81-c33229a19f9b</id>
 				<name>Pantheon Industries "Mercury-Alpha" Battlefield Signal Booster</name>
-				<translate>Pantheon Industries "Mercury-Alpha" Battlefield Signal Booster</translate>
-				<altpage>73</altpage>
+				<translate>Pantheon Industries Signalverstärker Mecury-Alpha</translate>
+				<altpage>71</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>60f11ea5-297d-4898-9fec-a0f67b4d517e</id>
 				<name>Pantheon Industries Micro-Dish Transmitter</name>
-				<translate>Pantheon Industries Micro-Dish Transmitter</translate>
-				<altpage>73</altpage>
+				<translate>Pantheon Industries Mikro-Sendeschüssel</translate>
+				<altpage>71</altpage>
+			</gear>
+			<gear>
+				<id>9ff4b57d-4aaf-482f-ab67-66e10ed58e13</id>
+				<name>Ammo: Renraku/Ingram Supermach</name>
+				<translate>Munnition: Renraku/Ingram Supermach</translate>
+				<altpage>140</altpage>
+			</gear>
+			<gear translated="True">
+				<id>4d36bc74-d75e-46ce-9739-9b58ca72b518</id>
+				<name>Faceless - Blurred Face</name>
+				<translate>Gesichtsverfälscher: verschwommenes Gesicht</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear translated="True">
+				<id>d1d0bbce-a2a2-4d92-b54c-b1152befb96f</id>
+				<name>Trode Patch</name>
+				<translate>Troden-Patch</translate>
+				<altpage>59</altpage>
+			</gear>
+			<gear translated="True">
+				<id>2d9b2e2d-5460-4e1a-b4dc-82c7092b6a7e</id>
+				<name>Trode Patch Cover</name>
+				<translate>Troden-Patch Abdeckung</translate>
+				<altpage>59</altpage>
+			</gear>
+			<gear translated="True">
+				<id>d2a1cc9b-72e3-49df-957c-8ed6fb47a813</id>
+				<name>Narcojet Dazzler</name>
+				<translate>Narcojet Dazzler</translate>
+				<altpage>46</altpage>
+			</gear>
+			<gear>
+				<id>f13d9739-aa52-4260-ad2f-0eacde7b9e13</id>
+				<name>Public Grid</name>
+				<translate>Öffentliches Gitter</translate>
+				<altpage>231</altpage>
+			</gear>
+			<gear>
+				<id>9bb90566-c924-477e-b6ee-71d350548e9b</id>
+				<name>Local Grid</name>
+				<translate>Lokales Gitter</translate>
+				<altpage>231</altpage>
+			</gear>
+			<gear>
+				<id>42d552fd-d939-42db-a88a-7cde7451dded</id>
+				<name>Global Grid</name>
+				<translate>Globales Gitter</translate>
+				<altpage>231</altpage>
 			</gear>
 		</gears>
 	</chummer>
@@ -20009,8 +20066,8 @@
 			</mentor>
 			<mentor translated="True">
 				<id>7a837193-2b58-49be-9dbb-c1c0c108ca6e</id>
-				<name>Great Mother</name>
-				<translate>Große Mutter</translate>
+				<name>Great Mother (SASS)</name>
+				<translate>Große Mutter (SASS)</translate>
 				<choices>
 					<choice>
 						<name>+2 to First Aid</name>
@@ -20854,11 +20911,11 @@
 				<translate>Eichelhäher</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Illusion spells, preparations, and rituals</name>
+						<name>Magician: +2 dice pool modifier when casting Illusion spells, preparations, and rituals</name>
 						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Illusion</translate>
 					</choice>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+						<name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
 						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Manipulation</translate>
 					</choice>
 					<choice>
@@ -20880,7 +20937,7 @@
 				<translate>Eichhörnchen</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Detection spells, preparations, and rituals</name>
+						<name>Magician: +2 dice pool modifier when casting Detection spells, preparations, and rituals</name>
 						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Wahrnehmung</translate>
 					</choice>
 					<choice>
@@ -20898,7 +20955,7 @@
 				<translate>Fuchs</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Illusion spells, preparations, and rituals</name>
+						<name>Magician: +2 dice pool modifier when casting Illusion spells, preparations, and rituals</name>
 						<translate>+2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Illusion</translate>
 					</choice>
 					<choice>
@@ -20934,7 +20991,7 @@
 				<translate>Heinzelmännchen</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+						<name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
 						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Manipulation</translate>
 					</choice>
 					<choice>
@@ -20952,7 +21009,7 @@
 				<translate>Murmeltier</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Detection spells, preparations, and rituals</name>
+						<name>Magician: +2 dice pool modifier when casting Detection spells, preparations, and rituals</name>
 						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Wahrnehmung</translate>
 					</choice>
 					<choice>
@@ -20978,7 +21035,7 @@
 						<translate>Zauberer: +2 Würfel für das Herbeirufen von Wassergeistern</translate>
 					</choice>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Illusion spells, preparations, and rituals</name>
+						<name>Magician: +2 dice pool modifier when casting Illusion spells, preparations, and rituals</name>
 						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Illusion</translate>
 					</choice>
 					<choice>
@@ -20996,7 +21053,7 @@
 				<translate>Schwein</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+						<name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
 						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Manipulation</translate>
 					</choice>
 					<choice>
@@ -21244,7 +21301,7 @@
 						<translate>Adept: 1 free level of Authoritative Tone</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifer for Instruction Tests.</altadvantage>
+				<altadvantage>All: +2 dice pool modifier for Instruction Tests.</altadvantage>
 				<altdisadvantage>The Goddess refuses to take a backseat to any male counterparts. Unless you succeed in a Charisma + Willpower Test (3), you will not take orders from a male, or if a male disrespects you, you must respond with equal measure</altdisadvantage>
 				<altpage>129</altpage>
 			</mentor>
@@ -21262,7 +21319,7 @@
 						<translate>Adept: 2 free levels of Attribute Boost (Strength)</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifer for Survival Tests, Running Tests, or Tracking Tests (Choose One)</altadvantage>
+				<altadvantage>All: +2 dice pool modifier for Survival Tests, Running Tests, or Tracking Tests (Choose One)</altadvantage>
 				<altdisadvantage>In combat situations, a Lion will never leave a comrade behind, and will fght to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot ﬂee combat before your team members are safe. Further, whenever taking actions that don’t beneft the team somehow, your physical and mental limits are reduced by 2.</altdisadvantage>
 				<altpage>129</altpage>
 			</mentor>
@@ -21284,7 +21341,7 @@
 						<translate>Adept: 2 free levels of Enhanced Perception.</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifer for knowledge skill tests.</altadvantage>
+				<altadvantage>All: +2 dice pool modifier for knowledge skill tests.</altadvantage>
 				<altdisadvantage>Followers of Raven share their mentor’s love of collecting. When presented with data, knowledge, or other gear that would be valuable (gamemaster’s discretion), you must pass a Charisma + Willpower Test (3), or be unable to resist trying to acquiring it.</altdisadvantage>
 				<altpage>121</altpage>
 			</mentor>
@@ -21294,16 +21351,16 @@
 				<translate>Taube</translate>
 				<choices>
 					<choice>
-						<name>Magician: +1 dice pool modifer for casting Health spells, +1 dice pool modifer to summon air spirits</name>
-						<translate>Magician: +1 dice pool modifer for casting Health spells, +1 dice pool modifer to summon air spirits</translate>
+						<name>Magician: +1 dice pool modifier for casting Health spells, +1 dice pool modifier to summon air spirits</name>
+						<translate>Magician: +1 dice pool modifier for casting Health spells, +1 dice pool modifier to summon air spirits</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 1 free level of Enhanced Perception.</name>
 						<translate>Adept: Gain 1 free level of Enhanced Perception.</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifer for Negotiation tests.</altadvantage>
-				<altdisadvantage>Dove discourages combat whenever possible. As such, those who follow Dove are at –2 dice pool modifer to cast Combat spells or when using lethal force.</altdisadvantage>
+				<altadvantage>All: +2 dice pool modifier for Negotiation tests.</altadvantage>
+				<altdisadvantage>Dove discourages combat whenever possible. As such, those who follow Dove are at –2 dice pool modifier to cast Combat spells or when using lethal force.</altdisadvantage>
 				<altpage>97</altpage>
 			</mentor>
 			<mentor>
@@ -21330,8 +21387,8 @@
 				<translate>Die Arkana</translate>
 				<choices>
 					<choice>
-						<name>Magician: +1 dice pool modifer for casting Detection spells, an additional +2 dice pool modifer to cast Clairvoyance spells.</name>
-						<translate>Magician: +1 dice pool modifer for casting Detection spells, an additional +2 dice pool modifer to cast Clairvoyance spells.</translate>
+						<name>Magician: +1 dice pool modifier for casting Detection spells, an additional +2 dice pool modifier to cast Clairvoyance spells.</name>
+						<translate>Magician: +1 dice pool modifier for casting Detection spells, an additional +2 dice pool modifier to cast Clairvoyance spells.</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 2 free levels of Danger Sense</name>
@@ -21348,12 +21405,12 @@
 				<translate>Heilige Schrift</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when using the Banishing skill.</name>
-						<translate>Magician: +2 dice pool modifer when using the Banishing skill.</translate>
+						<name>Magician: +2 dice pool modifier when using the Banishing skill.</name>
+						<translate>Magician: +2 dice pool modifier when using the Banishing skill.</translate>
 					</choice>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Health spells.</name>
-						<translate>Magician: +2 dice pool modifer when casting Health spells.</translate>
+						<name>Magician: +2 dice pool modifier when casting Health spells.</name>
+						<translate>Magician: +2 dice pool modifier when casting Health spells.</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 1 free level of Mystic Armor or Empathic Healing (choose one).</name>
@@ -21370,8 +21427,8 @@
 				<translate>Tod</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</name>
-						<translate>Magician: +2 dice pool modifer when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</translate>
+						<name>Magician: +2 dice pool modifier when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</name>
+						<translate>Magician: +2 dice pool modifier when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 1 free level of Killing Hands or Plague Cloud (choose one).</name>
@@ -21388,8 +21445,8 @@
 				<translate>Krieg</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Combat spells, preparations, and rituals.</name>
-						<translate>Magician: +2 dice pool modifer when casting Combat spells, preparations, and rituals.</translate>
+						<name>Magician: +2 dice pool modifier when casting Combat spells, preparations, and rituals.</name>
+						<translate>Magician: +2 dice pool modifier when casting Combat spells, preparations, and rituals.</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 1 free level of Critical Strike.</name>
@@ -21414,7 +21471,7 @@
 						<translate>Adept: Gain the Adept Accident power for free.</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifer for Intimidation or Demolitions tests (choose one)</altadvantage>
+				<altadvantage>All: +2 dice pool modifier for Intimidation or Demolitions tests (choose one)</altadvantage>
 				<altdisadvantage>Followers gain the Driven quality, in which the focus is the opportunity to destroy something meaningful. Further, they fnd it hard to work in groups given their destructive nature. They can never beneft from teamwork or leadership bonuses.</altdisadvantage>
 				<altpage>98</altpage>
 			</mentor>
@@ -21424,15 +21481,15 @@
 				<translate>Der Grüne Mann</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer to summon Plant Spirits.</name>
-						<translate>Magician: +2 dice pool modifer to summon Plant Spirits.</translate>
+						<name>Magician: +2 dice pool modifier to summon Plant Spirits.</name>
+						<translate>Magician: +2 dice pool modifier to summon Plant Spirits.</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 2 free levels of Rooting.</name>
 						<translate>Adept: Gain 2 free levels of Rooting.</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifer for Negotiation Tests.</altadvantage>
+				<altadvantage>All: +2 dice pool modifier for Negotiation Tests.</altadvantage>
 				<altdisadvantage>When signifcant damage is being done to vegetation, they must pass a Charisma + Willpower (3) Test or use all means possible to stop the destruction.</altdisadvantage>
 				<altpage>94</altpage>
 			</mentor>
@@ -21442,15 +21499,15 @@
 				<translate>Sonne</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Sun- or Fire-based spells.</name>
-						<translate>Magician: +2 dice pool modifer when casting Sun- or Fire-based spells.</translate>
+						<name>Magician: +2 dice pool modifier when casting Sun- or Fire-based spells.</name>
+						<translate>Magician: +2 dice pool modifier when casting Sun- or Fire-based spells.</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 3 free levels of Temperature Tolerance</name>
 						<translate>Adept: Gain 3 free levels of Temperature Tolerance</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifer for Perception tests when outside during the day.</altadvantage>
+				<altadvantage>All: +2 dice pool modifier for Perception tests when outside during the day.</altadvantage>
 				<altdisadvantage>Followers of Sun must pass a Charisma + Willpower (4) Test in order to purposefully deceive others.</altdisadvantage>
 				<altpage>97</altpage>
 			</mentor>
@@ -21532,15 +21589,15 @@
 				<translate>Spinne (alternativ)</translate>
 				<choices>
 					<choice>
-						<name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
-						<translate>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</translate>
+						<name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
+						<translate>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 2 free levels of Spirit Claw (although in this case, it manifests as a fang).</name>
 						<translate>Adept: Gain 2 free levels of Spirit Claw (although in this case, it manifests as a fang).</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifer for tests using the Stealth skill group.</altadvantage>
+				<altadvantage>All: +2 dice pool modifier for tests using the Stealth skill group.</altadvantage>
 				<altdisadvantage>When not following a plan or a plan doesn’t go according to plan, followers of Spider must pass a Charisma + Willpower (4) Test or suffer –2 to all rolls until a new plan is established.</altdisadvantage>
 				<altpage>99</altpage>
 			</mentor>
@@ -21550,15 +21607,15 @@
 				<translate>Wolf (alternativ)</translate>
 				<choices>
 					<choice>
-						<name>Magician: +1 dice pool modifer when casting Combat spells, preparations, and rituals.</name>
-						<translate>Magician: +1 dice pool modifer when casting Combat spells, preparations, and rituals.</translate>
+						<name>Magician: +1 dice pool modifier when casting Combat spells, preparations, and rituals.</name>
+						<translate>Magician: +1 dice pool modifier when casting Combat spells, preparations, and rituals.</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 2 free levels of Danger Sense.</name>
 						<translate>Adept: Gain 2 free levels of Danger Sense.</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +1 dice pool modifer for tests using the Sneaking, Perception, Survival, and Tracking skills.</altadvantage>
+				<altadvantage>All: +1 dice pool modifier for tests using the Sneaking, Perception, Survival, and Tracking skills.</altadvantage>
 				<altdisadvantage>Whenever a follower of Wolf sees an opportunity to survive by attacking or sacrifcing the weak, they must pass a Charisma + Willpower (4) Test or attempt to seize the opportunity. This does not apply to those the Wolf considers friends or family.</altdisadvantage>
 				<altpage>99</altpage>
 			</mentor>
@@ -21568,15 +21625,15 @@
 				<translate>Ratte (alternativ)</translate>
 				<choices>
 					<choice>
-						<name>Magician: +1 dice pool modifer when casting Health spells, preparations, and rituals</name>
-						<translate>Magician: +1 dice pool modifer when casting Health spells, preparations, and rituals</translate>
+						<name>Magician: +1 dice pool modifier when casting Health spells, preparations, and rituals</name>
+						<translate>Magician: +1 dice pool modifier when casting Health spells, preparations, and rituals</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 1 free level of Analytics.</name>
 						<translate>Adept: Gain 1 free level of Analytics.</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +1 dice pool modifer for tests using the Perception and Sneaking skills.</altadvantage>
+				<altadvantage>All: +1 dice pool modifier for tests using the Perception and Sneaking skills.</altadvantage>
 				<altdisadvantage> Followers of Rat cannot receive aid or aid others with a Teamwork test unless they trust the individuals they are teaming with. Further, if they do trust the individuals, but that trust is broken through incompetence or betrayal, they must pass a Charisma + Willpower (4) Test to be able to use teamwork with that individual each time in the future.</altdisadvantage>
 				<altpage>99</altpage>
 			</mentor>
@@ -21935,20 +21992,20 @@
 			<metamagic>
 				<id>0ab2d588-34f5-4204-aee2-b944e5db411a</id>
 				<name>Essence Expansion</name>
-				<translate>Essence Expansion</translate>
-				<altpage>165</altpage>
+				<translate>Essenzerweiterung</translate>
+				<altpage>166</altpage>
 			</metamagic>
 			<metamagic>
 				<id>2bd5228e-6698-4905-aecb-45fa5653456c</id>
 				<name>Enhanced Mist Form</name>
-				<translate>Enhanced Mist Form</translate>
-				<altpage>165</altpage>
+				<translate>Verbesserte Nebelgestalt</translate>
+				<altpage>166</altpage>
 			</metamagic>
 			<metamagic>
 				<id>42f5af49-ade3-43a7-b501-25ae975a574b</id>
 				<name>Spiritual Sacrifice</name>
-				<translate>Spiritual Sacrifice</translate>
-				<altpage>165</altpage>
+				<translate>Echoverbindung</translate>
+				<altpage>166</altpage>
 			</metamagic>
 		</metamagics>
 		<arts>
@@ -23563,32 +23620,32 @@
 			</limb>
 		</limbcounts>
 		<blackmarketpipelinecategories>
-			<category translate="Armor">Armor</category>
-			<category translate="Bioware">Bioware</category>
-			<category translate="Cyberware">Cyberware</category>
-			<category translate="Drugs">Drugs</category>
-			<category translate="Electronics">Electronics</category>
-			<category translate="Vehicles">Vehicles</category>
-			<category translate="Weapons">Weapons</category>
+			<category translate="Panzerung">Armor</category>
+			<category translate="Bioware" translated="True">Bioware</category>
+			<category translate="Cyberware" translated="True">Cyberware</category>
+			<category translate="Drogen">Drugs</category>
+			<category translate="Elektronik">Electronics</category>
+			<category translate="Fahrzeuge und Drohnen">Vehicles</category>
+			<category translate="Waffen">Weapons</category>
 		</blackmarketpipelinecategories>
 		<pdfarguments>
 			<pdfargument>
 				<name>Web Browser</name>
-				<translate>Web Browser</translate>
+				<translate>Webbrowser</translate>
 			</pdfargument>
 			<pdfargument>
 				<name>Acrobat-style</name>
-				<translate>Acrobat-style</translate>
+				<translate>Acrobat-Stil</translate>
 			</pdfargument>
 			<pdfargument>
 				<name>Unix-style</name>
-				<translate>Unix-style</translate>
+				<translate>Unix-Stil</translate>
 			</pdfargument>
 			<pdfargument>
 				<name>Sumatra - Re-use instance</name>
-				<translate>Sumatra - Re-use instance</translate>
+				<translate>Sumatra - Instanz wiederverwenden</translate>
 			</pdfargument>
-			<pdfargument>
+			<pdfargument translated="True">
 				<name>Sumatra</name>
 				<translate>Sumatra</translate>
 			</pdfargument>
@@ -23599,13 +23656,13 @@
 			<category translate="Resonanz">Resonance</category>
 		</categories>
 		<mentors>
-			<mentor>
+			<mentor translated="True">
 				<id>acadd628-ebb5-4c79-a3c2-953ce7fa1885</id>
 				<name>01</name>
 				<translate>01</translate>
 				<altadvantage>+1 Würfel für das Kompilieren und Registrieren von Sprites jeder Art.</altadvantage>
 				<altdisadvantage>Null-Eins ist die Perfektion des Codes und verlangt seinen Anhängern das Gleiche ab oder erteilt ihnen zumindest eine harte Lektion, wenn sie fehlschlagen. Null-Eins-Technomancer müssen 2 Punkte Edge ausgeben, um einen Patzer zu negieren oder einen kritischen Patzer abzuschwächen.</altdisadvantage>
-				<altpage>162</altpage>
+				<altpage>103</altpage>
 			</mentor>
 			<mentor>
 				<id>46f88748-8c6c-4230-ad59-2eccb463cc35</id>
@@ -23679,13 +23736,13 @@
 					</choice>
 				</choices>
 			</mentor>
-			<mentor>
+			<mentor translated="True">
 				<id>c45c123c-06c7-42b3-a2ee-01e37f2f7bf8</id>
 				<name>Delphi</name>
 				<translate>Delphi</translate>
 				<altadvantage>+2 Würfel auf Analyse-Proben</altadvantage>
 				<altdisadvantage>Delphi-Technomancer können sich nicht gut auf unerwartete Situationen einstellen. Ihnen muss eine Willenskraft + Logik (3)-Probe gelingen, um in Situationen, die sie nicht eingeplant haben, eine schnelle Entscheidung zu treffen.</altdisadvantage>
-				<altpage>162</altpage>
+				<altpage>104</altpage>
 				<choices>
 					<choice>
 						<name>+1 die for Code sprites</name>
@@ -28457,26 +28514,28 @@
 			<quality>
 				<id>b0321887-df33-49d9-9d2e-e718eca9c7a0</id>
 				<name>Wildcard Chimera</name>
-				<translate>Wildcard Chimera</translate>
-				<altpage>163</altpage>
+				<translate>Unberechenbare Mutation</translate>
+				<altpage>165</altpage>
 			</quality>
 			<quality>
 				<id>b3373640-35cc-4a29-b2b0-6ded9acd8d4b</id>
 				<name>It Works If You Work It</name>
-				<translate>It Works If You Work It</translate>
-				<altpage>164</altpage>
+				<translate>Wo ein Wille ist, ist auch ein Weg</translate>
+				<altpage>165</altpage>
 			</quality>
 			<quality>
 				<id>254c19fc-0a5b-4f75-a6d9-614f885e3d19</id>
 				<name>Soul Swallower</name>
-				<translate>Soul Swallower</translate>
-				<altpage>164</altpage>
+				<translate>Seelenreißer</translate>
+				<altpage>165</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>94702bfe-ec3e-4b57-ba3e-8c45f214e9f1</id>
 				<name>Metaviral Attunement</name>
-				<translate>Metaviral Attunement</translate>
+				<translate>Metavirale Einstimmung</translate>
 				<altpage>164</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>3109f474-0d10-4c75-bc07-ef22afdd92ab</id>
@@ -29428,329 +29487,423 @@
 				<translate>Leerer Blick</translate>
 				<altpage>189</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>d85c6437-7611-47d3-b4c7-4e581e5349a4</id>
 				<name>Deck Builder</name>
-				<translate>Deck Builder</translate>
-				<altpage>0</altpage>
+				<translate>Deckbastler</translate>
+				<altpage>76</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>7ac54323-a913-4a8e-803e-c6ac2d4ba359</id>
 				<name>Impenetrable Logic</name>
-				<translate>Impenetrable Logic</translate>
-				<altpage>0</altpage>
+				<translate>Unerschütterlliche Logik</translate>
+				<altpage>76</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>fb8bce41-05ea-48af-a45b-dc80dc392f23</id>
 				<name>Rootkit</name>
-				<translate>Rootkit</translate>
-				<altpage>0</altpage>
+				<translate>Systemlücke</translate>
+				<altpage>76</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>eefe6c28-5d7b-403d-8c24-5bc26536b52b</id>
 				<name>Silence is Golden</name>
-				<translate>Silence is Golden</translate>
-				<altpage>0</altpage>
+				<translate>Schweigen ist Gold</translate>
+				<altpage>76</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>8e16f569-a1b1-499c-8046-85d25fb00041</id>
 				<name>AVRse</name>
-				<translate>AVRse</translate>
-				<altpage>0</altpage>
+				<translate>VR-Angst</translate>
+				<altpage>79</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>19042705-1c57-4973-bf2e-45186ea2b8d5</id>
 				<name>Basement Dweller</name>
-				<translate>Basement Dweller</translate>
-				<altpage>0</altpage>
+				<translate>Kellerbewohner</translate>
+				<altpage>78</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>2c3a3f51-53c5-4d47-b991-0c64f31472d3</id>
 				<name>Big Baby</name>
-				<translate>Big Baby</translate>
-				<altpage>0</altpage>
+				<translate>Großes Baby</translate>
+				<altpage>78</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>6bbeb733-a7cc-4427-924b-8c6174399051</id>
 				<name>Buddy System</name>
-				<translate>Buddy System</translate>
-				<altpage>0</altpage>
+				<translate>Nicht ohne Kumpel</translate>
+				<altpage>79</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>a3d131f2-5ed9-42d0-86c2-396e50a9117d</id>
 				<name>Discombobulated</name>
-				<translate>Discombobulated</translate>
-				<altpage>0</altpage>
+				<translate>Verwirrt</translate>
+				<altpage>79</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>282c446f-8156-4268-8baa-5d7e732fcd53</id>
 				<name>Down the Rabbit Hole</name>
-				<translate>Down the Rabbit Hole</translate>
-				<altpage>0</altpage>
+				<translate>Alternative Fakten</translate>
+				<altpage>77</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>1638946e-7e2e-4e57-a7cb-d20f2e4eead1</id>
 				<name>Echo Chamber</name>
-				<translate>Echo Chamber</translate>
-				<altpage>0</altpage>
+				<translate>Echokammer</translate>
+				<altpage>77</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>356eabd2-7d97-46bb-81a1-ac913a670364</id>
 				<name>Frostbite</name>
-				<translate>Frostbite</translate>
-				<altpage>0</altpage>
+				<translate>Frostbeulen</translate>
+				<altpage>77</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>96322f26-94cf-4d2c-9282-6525f9008fec</id>
 				<name>Information Auctioneer</name>
-				<translate>Information Auctioneer</translate>
-				<altpage>0</altpage>
+				<translate>Informationsauktionator</translate>
+				<altpage>78</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>c4dab0b4-32c4-4840-9713-aa46c2412835</id>
 				<name>Lazy Fingers</name>
-				<translate>Lazy Fingers</translate>
-				<altpage>0</altpage>
+				<translate>Nichts überstürzen</translate>
+				<altpage>79</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>f4a052dc-17ca-4bec-a9bf-30e6da80285e</id>
 				<name>Malware Infection</name>
-				<translate>Malware Infection</translate>
-				<altpage>0</altpage>
+				<translate>Malware-Infektion</translate>
+				<altpage>79</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>ba1644ab-2191-4366-8f5f-13c21eca1cc4</id>
 				<name>Matrix Troll</name>
-				<translate>Matrix Troll</translate>
-				<altpage>0</altpage>
+				<translate>Matrix-Troll</translate>
+				<altpage>79</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>5e75a946-b14e-488d-93ea-cd82e648286d</id>
 				<name>Sloppy Code</name>
-				<translate>Sloppy Code</translate>
-				<altpage>0</altpage>
+				<translate>Schlampiger Code</translate>
+				<altpage>79</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>b45b2d09-80d4-4e24-b96c-1e1f3665dee3</id>
 				<name>Well, Actually...</name>
-				<translate>Well, Actually...</translate>
-				<altpage>0</altpage>
+				<translate>Also, eigentlich ...</translate>
+				<altpage>77</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>522dbfb5-5ea0-4707-a7e8-1ac777b3aff7</id>
 				<name>Better on the Net [Attack]</name>
-				<translate>Better on the Net [Attack]</translate>
-				<altpage>0</altpage>
+				<translate>Besser im Netz [Angriff]</translate>
+				<altpage>96</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>39139f84-b8ab-4523-ac02-851350e3f2b6</id>
 				<name>Better on the Net [Data Processing]</name>
-				<translate>Better on the Net [Data Processing]</translate>
-				<altpage>0</altpage>
+				<translate>Besser im Netz [Datenverarbeitung]</translate>
+				<altpage>96</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>25d34c52-6927-44dd-85bd-684e9add1f89</id>
 				<name>Better on the Net [Firewall]</name>
-				<translate>Better on the Net [Firewall]</translate>
-				<altpage>0</altpage>
+				<translate>Besser im Netz [Firewall]</translate>
+				<altpage>96</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>59436ccc-5e4b-481d-8d63-d3ba912f2d8a</id>
 				<name>Better on the Net [Sleaze]</name>
-				<translate>Better on the Net [Sleaze]</translate>
-				<altpage>0</altpage>
+				<translate>Besser im Netz [Schleicher]</translate>
+				<altpage>96</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>63fd5450-5f3d-4090-933e-ad0cf39ef0e2</id>
 				<name>Brilliant Heuristics</name>
-				<translate>Brilliant Heuristics</translate>
-				<altpage>0</altpage>
+				<translate>Brilliante Heuristik</translate>
+				<altpage>96</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>cc967d0f-6b7a-4c62-b202-37f94242169c</id>
 				<name>Groveler</name>
-				<translate>Groveler</translate>
-				<altpage>0</altpage>
+				<translate>Datenparasit</translate>
+				<altpage>96</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>ad8d9751-d82f-4d80-b351-c102cd60c2b1</id>
 				<name>Hold the Door</name>
-				<translate>Hold the Door</translate>
-				<altpage>0</altpage>
+				<translate>Durchhalten</translate>
+				<altpage>97</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>530062d2-6dbe-4e19-b16a-82953c72745d</id>
 				<name>Fractal Punch</name>
-				<translate>Fractal Punch</translate>
-				<altpage>0</altpage>
+				<translate>Fraktalschlag</translate>
+				<altpage>97</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>ca9b24ba-3a2e-41cd-8434-b33f91d691aa</id>
 				<name>Lone Wolf</name>
-				<translate>Lone Wolf</translate>
-				<altpage>0</altpage>
+				<translate>Einsamer Wolf</translate>
+				<altpage>97</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>be396e6b-55f8-46ac-b6d8-866985b3cffd</id>
 				<name>Natural Hacker</name>
-				<translate>Natural Hacker</translate>
-				<altpage>0</altpage>
+				<translate>Geborener Hacker</translate>
+				<altpage>98</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>c80d0f3d-5be7-4d63-8891-ae3bccbfe48f</id>
 				<name>Reverberant</name>
-				<translate>Reverberant</translate>
-				<altpage>0</altpage>
+				<translate>Nachhall</translate>
+				<altpage>98</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>adf86253-baaf-4c03-87fe-aba3a453b3b5</id>
 				<name>Team Player</name>
-				<translate>Team Player</translate>
-				<altpage>0</altpage>
+				<translate>Teamspieler</translate>
+				<altpage>99</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>0b8c9e67-6767-48d3-b14d-8a9b2024447a</id>
 				<name>Trust Data, Not Lore</name>
-				<translate>Trust Data, Not Lore</translate>
-				<altpage>0</altpage>
+				<translate>Daten statt Instinkt</translate>
+				<altpage>96</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>223bad23-027c-4ea3-ac0b-1ccccace61fe</id>
 				<name>Trust Lore, Not Data</name>
-				<translate>Trust Lore, Not Data</translate>
-				<altpage>0</altpage>
+				<translate>Instinkt statt Daten</translate>
+				<altpage>98</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>ad35c6ec-664c-46a3-8dc5-ac48dfddd0cf</id>
 				<name>Unique Avatar</name>
-				<translate>Unique Avatar</translate>
-				<altpage>0</altpage>
+				<translate>Einzigartiger Avatar</translate>
+				<altpage>97</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>d40aee6b-80b7-43f5-b335-dabf8f1ad14d</id>
 				<name>Brittle [Attack]</name>
-				<translate>Brittle [Attack]</translate>
-				<altpage>0</altpage>
+				<translate>[Angriff]-Schwäche</translate>
+				<altpage>99</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>cb5bd1e5-b9ef-434f-af17-0e7b4decaa46</id>
 				<name>Brittle [Sleaze]</name>
-				<translate>Brittle [Sleaze]</translate>
-				<altpage>0</altpage>
+				<translate>[Schleicher]-Schwäche</translate>
+				<altpage>99</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>64d430b1-6d6a-4abc-9ef8-3ddaee2352ce</id>
 				<name>Brittle [Data Processing]</name>
-				<translate>Brittle [Data Processing]</translate>
-				<altpage>0</altpage>
+				<translate>[Datenverarbeitung]-Schwäche</translate>
+				<altpage>99</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>a1530804-a35b-4d2f-ae3e-50d647016903</id>
 				<name>Brittle [Firewall]</name>
-				<translate>Brittle [Firewall]</translate>
-				<altpage>0</altpage>
+				<translate>[Firewall]-Schwäche</translate>
+				<altpage>99</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>d3ed1f43-ffd8-4c96-8faf-de8bbf4c3c83</id>
 				<name>Code of Honor: Black Hat</name>
-				<translate>Code of Honor: Black Hat</translate>
-				<altpage>0</altpage>
+				<translate>Ehrenkodex: Black Hat</translate>
+				<altpage>99</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>7e172644-9b48-4822-8636-b45827ff6938</id>
 				<name>Data Hog</name>
-				<translate>Data Hog</translate>
-				<altpage>0</altpage>
+				<translate>Axt im Datenwald</translate>
+				<altpage>99</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>2cafaee0-fb4b-4b56-90e2-8eb864c5a033</id>
 				<name>Escaped Custody</name>
-				<translate>Escaped Custody</translate>
-				<altpage>0</altpage>
+				<translate>Entflohen</translate>
+				<altpage>100</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>57e260d7-7e08-4dae-a3e3-0d174bf61689</id>
 				<name>Know Your Limit</name>
-				<translate>Know Your Limit</translate>
-				<altpage>0</altpage>
+				<translate>Geschwunden</translate>
+				<altpage>100</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>ff939676-0195-4885-ba91-5ee536719b2f</id>
 				<name>On the Wagon</name>
-				<translate>On the Wagon</translate>
-				<altpage>0</altpage>
+				<translate>Abstinent</translate>
+				<altpage>99</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>f6a8d504-db7a-47eb-ace5-604de21c80fd</id>
 				<name>Resonant Burnout</name>
-				<translate>Resonant Burnout</translate>
-				<altpage>0</altpage>
+				<translate>Resonanzverschleiss</translate>
+				<altpage>100</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>4116d691-86f0-4fb5-bf78-f2059514956a</id>
 				<name>Sprite Combustion</name>
-				<translate>Sprite Combustion</translate>
-				<altpage>0</altpage>
+				<translate>Sprite-Instabilität</translate>
+				<altpage>100</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>153dc4b0-199d-4fc7-9b94-b8cf05afdf56</id>
 				<name>Taint of Dissonance</name>
-				<translate>Taint of Dissonance</translate>
-				<altpage>0</altpage>
+				<translate>Dissonanzbefleckt</translate>
+				<altpage>99</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>2509cf19-002f-4f24-a52f-f1441dd4d614</id>
 				<name>'Ware Intolerance</name>
-				<translate>'Ware Intolerance</translate>
-				<altpage>0</altpage>
+				<translate>Bodytechintoleranz</translate>
+				<altpage>99</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>102c4f07-f82c-4976-89bd-bcd3b906fb68</id>
 				<name>Wired User</name>
-				<translate>Wired User</translate>
-				<altpage>0</altpage>
+				<translate>Voll drauf</translate>
+				<altpage>100</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>d2873478-d265-45bb-8a9f-320b8d0d33d3</id>
 				<name>Resonant Stream: Cyberadept</name>
-				<translate>Resonant Stream: Cyberadept</translate>
-				<altpage>0</altpage>
+				<translate>Resonante Strömung: Cyberadept</translate>
+				<altpage>90</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>e3d04705-b90a-4d94-90d0-4ad2c7adfa79</id>
 				<name>Resonant Stream: Machinist</name>
-				<translate>Resonant Stream: Machinist</translate>
-				<altpage>0</altpage>
+				<translate>Resonante Strömung: Maschinist</translate>
+				<altpage>90</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>11d6c3b6-47c4-4765-a625-7a5907ba1b4a</id>
 				<name>Resonant Stream: Sourceror</name>
-				<translate>Resonant Stream: Sourceror</translate>
-				<altpage>0</altpage>
+				<translate>Resonante Strömung: Sourcerer</translate>
+				<altpage>91</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>71511c8f-85f1-4e35-aeaa-be8fa3a45331</id>
 				<name>Resonant Stream: Technoshaman</name>
-				<translate>Resonant Stream: Technoshaman</translate>
-				<altpage>0</altpage>
+				<translate>Resonante Strömung: Technoschamanen</translate>
+				<altpage>92</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>e40e318d-ecde-4a20-bfc5-36d341a644b5</id>
 				<name>Dissonant Stream: Apophenian</name>
-				<translate>Dissonant Stream: Apophenian</translate>
-				<altpage>0</altpage>
+				<translate>Dissonante Strömung: Apophänianer</translate>
+				<altpage>138</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>ee5d131f-5606-4a40-8035-9970aa3b5b29</id>
 				<name>Dissonant Stream: Erisian</name>
-				<translate>Dissonant Stream: Erisian</translate>
-				<altpage>0</altpage>
+				<translate>Dissonante Strömung: Erisianer</translate>
+				<altpage>139</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>580c8ae5-899b-4fa9-8f2d-600c9ac758f9</id>
 				<name>Dissonant Stream: Morphinae</name>
-				<translate>Dissonant Stream: Morphinae</translate>
-				<altpage>0</altpage>
+				<translate>Dissonante Strömung: Morphinae</translate>
+				<altpage>137</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>90691f29-5b81-4a81-9ebc-21f2f5da1d55</id>
+				<name>Seer</name>
+				<translate>Seher</translate>
+				<altpage>48</altpage>
+			</quality>
+			<quality>
+				<id>ecb5ab50-68c9-45ee-9fb4-c2f0b3051096</id>
+				<name>Null Wizard</name>
+				<translate>Nullzauberer</translate>
+				<altpage>48</altpage>
+			</quality>
+			<quality translated="True">
+				<id>8bdd4868-191c-4c28-800b-526cb39f7786</id>
+				<name>One With the Matrix I</name>
+				<translate>Eins mit der Matrix I</translate>
+				<altpage>97</altpage>
+			</quality>
+			<quality translated="True">
+				<id>3c83d73e-7aa7-4fe5-8f03-6e983648e2eb</id>
+				<name>One With the Matrix II</name>
+				<translate>Eins mit der Matrix II</translate>
+				<altpage>97</altpage>
+			</quality>
+			<quality translated="True">
+				<id>b705a89c-219c-432c-ab47-98ff6c975b4a</id>
+				<name>One With the Matrix III</name>
+				<translate>Eins mit der Matrix III</translate>
+				<altpage>97</altpage>
+			</quality>
+			<quality translated="True">
+				<id>c5311ee0-8a9b-41b9-857f-28541090968a</id>
+				<name>Paragon</name>
+				<translate>Paragon</translate>
+				<altpage>102</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>eeb4db5b-f5b7-4ab5-b310-1d7107cd722f</id>
+				<name>Sprite Affinity</name>
+				<translate>Freundliche Sprites</translate>
+				<altpage>97</altpage>
 			</quality>
 		</qualities>
 	</chummer>
@@ -33647,9 +33800,9 @@
 				<name>Spanish: Aztlaner</name>
 				<translate>Spanisch: Aztlaner</translate>
 				<specs>
-					<spec translate="Read/Write">Read/Write</spec>
-					<spec translate="Speak">Speak</spec>
-					<spec translate="Dialect">Dialect</spec>
+					<spec translate="Lesen/Schreiben">Read/Write</spec>
+					<spec translate="Sprechen">Speak</spec>
+					<spec translate="Dialekt">Dialect</spec>
 					<spec translate="Lingo">Lingo</spec>
 				</specs>
 			</skill>
@@ -33658,6 +33811,20 @@
 				<name>Area Knowledge: Neo-Tokyo</name>
 				<translate>Ortskenntnis: Neo-Tokyo</translate>
 				<specs />
+			</skill>
+			<skill>
+				<id>0e5b89c5-1143-4e73-ab71-0700910fcaaa</id>
+				<name>Mixed Unit Tactics</name>
+				<translate>Taktik gemischter Einheiten</translate>
+				<specs>
+					<spec translate="Luftwaffe">Aerial/Aircraft</spec>
+					<spec translate="Gepanzerte Infanterie">Armored Infantry</spec>
+					<spec translate="Artillerie">Artillery</spec>
+					<spec translate="Marine">Naval</spec>
+					<spec translate="Mechanisierte Infanterie">Mechanized Infantry</spec>
+					<spec translate="Gewöhnliche Infanterie">Standard Infantry</spec>
+					<spec translate="[Einheitentyp]">[Single Unit Type]</spec>
+				</specs>
 			</skill>
 		</knowledgeskills>
 	</chummer>
@@ -34345,11 +34512,11 @@
 				<translate>Schallbarriere</translate>
 				<altpage>115</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>370e0dfb-550e-4330-92eb-9ef3b8a044b5</id>
 				<name>Stealth</name>
-				<translate>Heimlichkeit</translate>
-				<altpage>240</altpage>
+				<translate>Leiser Schritt</translate>
+				<altpage>283</altpage>
 			</spell>
 			<spell>
 				<id>ecd4d99e-7e5c-43be-bfb7-7af989879236</id>
@@ -35852,6 +36019,18 @@
 				<translate>Maschinen-Sprite</translate>
 				<altpage>256</altpage>
 			</spirit>
+			<spirit translated="True">
+				<id>74db183e-2fef-4e6d-84a3-63e641d93bf0</id>
+				<name>Companion Sprite</name>
+				<translate>Begleiter-Sprite</translate>
+				<altpage>100</altpage>
+			</spirit>
+			<spirit translated="True">
+				<id>80788abc-4b14-40b0-8ffd-e36fe60653cb</id>
+				<name>Generalist Sprite</name>
+				<translate>Generalisten-Sprite</translate>
+				<altpage>100</altpage>
+			</spirit>
 		</spirits>
 	</chummer>
 	<chummer file="traditions.xml">
@@ -36165,7 +36344,7 @@
 			<tradition>
 				<id>66826a89-61fb-4f4d-99d9-d96c0956b83f</id>
 				<name>Dark Magic</name>
-				<translate>Dark Magic</translate>
+				<translate>Dunkle Magie</translate>
 				<altpage>165</altpage>
 			</tradition>
 			<tradition>
@@ -36822,7 +37001,7 @@
 			</vehicle>
 			<vehicle>
 				<id>50e6572c-ea59-4756-83e4-7c51f8f614c9</id>
-				<name>Modified Dassault Janatorial Drone (Large)</name>
+				<name>Modified Dassault Janitorial Drone (Large)</name>
 				<translate>Modifizierte Dassault Hausmeisterdrohne</translate>
 				<altpage>193</altpage>
 			</vehicle>
@@ -37861,7 +38040,7 @@
 			</vehicle>
 			<vehicle>
 				<id>0ff86ef9-e35d-4f8f-bc64-0303f81f11c7</id>
-				<name>Neonet Prarie Dog (Small)</name>
+				<name>NeoNET Prarie Dog (Small)</name>
 				<translate>NeoNET Prarie Dog</translate>
 				<altpage>141</altpage>
 			</vehicle>
@@ -38017,7 +38196,7 @@
 			</vehicle>
 			<vehicle>
 				<id>a88f58ad-f4e0-448a-ba5c-00cbdd0076f6</id>
-				<name>NeoNet Avenging Angel (Huge)</name>
+				<name>NeoNET Avenging Angel (Huge)</name>
 				<translate>NeoNET Avenging Angel</translate>
 				<altpage>153</altpage>
 			</vehicle>
@@ -38137,7 +38316,7 @@
 			</vehicle>
 			<vehicle>
 				<id>b448855b-57e7-435a-b523-174adb276674</id>
-				<name>NeoNet Juggernaut</name>
+				<name>NeoNET Juggernaut</name>
 				<translate>NeoNET Juggernaught</translate>
 				<altpage>154</altpage>
 			</vehicle>
@@ -38149,7 +38328,7 @@
 			</vehicle>
 			<vehicle translated="True">
 				<id>17d1e41b-6650-45e2-b898-d047c3b8702a</id>
-				<name>Shiawase I-Doll</name>
+				<name>Shiawase i-Doll</name>
 				<translate>Shiawase i-Doll</translate>
 				<altpage>156</altpage>
 			</vehicle>
@@ -40648,7 +40827,7 @@
 				<id>63dcfdb6-bbd9-4a58-bbf4-cd35f7614fdc</id>
 				<name>Unarmed Attack</name>
 				<translate>Waffenlos</translate>
-				<altpage></altpage>
+				<altpage>132</altpage>
 			</weapon>
 			<weapon>
 				<id>9c267b03-103e-43f4-bfe8-986c69dc17d2</id>
@@ -42948,7 +43127,7 @@
 				<translate>Narcoject PEP</translate>
 				<altpage>45</altpage>
 			</weapon>
-			<weapon>
+			<weapon translated="True">
 				<id>823ffbe6-b8a9-43f6-91e1-ba3e312ce577</id>
 				<name>Narcoject Trackstopper</name>
 				<translate>Narcoject Trackstopper</translate>
@@ -43092,6 +43271,12 @@
 				<translate>Minigranate: MCT/Winchester-Howe Hornet</translate>
 				<altpage>139</altpage>
 			</weapon>
+			<weapon translated="True">
+				<id>93190477-d1f9-45d0-bee9-9f9bc9a29638</id>
+				<name>Renraku/Ingram Supermach 200</name>
+				<translate>Renraku/Ingram Supermach 200</translate>
+				<altpage>139</altpage>
+			</weapon>
 		</weapons>
 		<accessories>
 			<accessory>
@@ -43198,7 +43383,7 @@
 			</accessory>
 			<accessory>
 				<id>0da6149e-982f-4051-825b-52c1b79c7e52</id>
-				<name>Silencer</name>
+				<name>Silencer/Suppressor</name>
 				<translate>Schalldämpfer</translate>
 				<altpage>435</altpage>
 			</accessory>
@@ -43784,12 +43969,6 @@
 				<translate>HK Urban Fighter Ersatzladestreifen</translate>
 				<altpage>32</altpage>
 			</accessory>
-			<accessory>
-				<id>abe43262-a891-455b-849b-df2bb05a7ef8</id>
-				<name>Additional Clip/Magazine (Non-Pistol)</name>
-				<translate>Zusätzlicher Ladestreifen/Zusätzliches internes Magazin</translate>
-				<altpage>47</altpage>
-			</accessory>
 			<accessory translated="True">
 				<id>37d3ffa9-b33e-4280-845c-bee0d063f193</id>
 				<name>Krime Pack</name>
@@ -43813,6 +43992,18 @@
 				<name>Krime Stun-O-Net</name>
 				<translate>Krime Betäubungsbajonett</translate>
 				<altpage>46</altpage>
+			</accessory>
+			<accessory>
+				<id>d2a1cc9b-72e3-49df-957c-8ed6fb47a813</id>
+				<name>Additional Clip/Magazine</name>
+				<translate>Zusätzlicher Ladestreifen/Magazin</translate>
+				<altpage>47</altpage>
+			</accessory>
+			<accessory>
+				<id>20d18222-448c-47f8-bb4e-be307a0cd995</id>
+				<name>Additional Clip/Magazine (Pistol)</name>
+				<translate>Zusätzlicher Ladestreifen/Magazin (Pistole)</translate>
+				<altpage>47</altpage>
 			</accessory>
 		</accessories>
 	</chummer>
@@ -43938,113 +44129,113 @@
 				<translate>Coriolis</translate>
 				<altpage>27</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>60b3f99f-f903-426a-ae13-ea604e77a956</id>
 				<name>Overdrive</name>
-				<translate>Overdrive</translate>
-				<altpage>0</altpage>
+				<translate>Übersteuern</translate>
+				<altpage>90</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>3bed693e-d9dd-4873-8d54-2cbe97202174</id>
 				<name>LOTO</name>
-				<translate>LOTO</translate>
-				<altpage>0</altpage>
+				<translate>Wartungssicherung</translate>
+				<altpage>91</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>174f61be-5dad-41ad-8d6b-641bc514b9bb</id>
 				<name>Hyperthreading</name>
-				<translate>Hyperthreading</translate>
-				<altpage>0</altpage>
+				<translate>Parallelweben</translate>
+				<altpage>91</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>c9eb7fba-b5dd-40b1-907a-a6683dc9977d</id>
 				<name>Sprite Pet</name>
-				<translate>Sprite Pet</translate>
-				<altpage>0</altpage>
+				<translate>Sprite-Haustier</translate>
+				<altpage>92</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>92b4cf59-62ca-443b-aeb8-f5044967c835</id>
 				<name>Causal Nexus</name>
-				<translate>Causal Nexus</translate>
-				<altpage>0</altpage>
+				<translate>Kausalnexus</translate>
+				<altpage>138</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>4856cfa1-89c8-484a-9127-ddc4a2327c63</id>
 				<name>Dissonance Spike</name>
-				<translate>Dissonance Spike</translate>
-				<altpage>0</altpage>
+				<translate>Dissonanzspike</translate>
+				<altpage>139</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>cadf7e01-c75d-4a49-8676-87ddcb0eaa74</id>
 				<name>Forced Heuristics</name>
-				<translate>Forced Heuristics</translate>
-				<altpage>0</altpage>
+				<translate>Erzwungene Heuristiken</translate>
+				<altpage>138</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>07b461db-3982-4fa2-8e24-cc5007c377a4</id>
 				<name>Arc Feedback</name>
-				<translate>Arc Feedback</translate>
-				<altpage>0</altpage>
+				<translate>Rückschlagbogen</translate>
+				<altpage>95</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>42a11004-5379-4b79-90fa-a30f7ddf4f14</id>
 				<name>Bootleg Program</name>
-				<translate>Bootleg Program</translate>
-				<altpage>0</altpage>
+				<translate>Raubkopie</translate>
+				<altpage>95</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>72630724-8d43-4a28-837c-160c735a0d0d</id>
 				<name>Host Emulator</name>
-				<translate>Host Emulator</translate>
-				<altpage>0</altpage>
+				<translate>Host-Emulator</translate>
+				<altpage>94</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>080013b7-deb3-4a2e-822f-400ecf8293b2</id>
 				<name>Mirrored Persona</name>
-				<translate>Mirrored Persona</translate>
-				<altpage>0</altpage>
+				<translate>Spiegelpersona</translate>
+				<altpage>96</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>7d98d12d-5b02-4bc8-bf1f-b0b3507ebdaf</id>
 				<name>Pinch</name>
-				<translate>Pinch</translate>
-				<altpage>0</altpage>
+				<translate>Abschiedsschmerz</translate>
+				<altpage>94</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>1a4a6137-53d6-4ada-a788-49e56f73bb86</id>
 				<name>Primed Charge</name>
-				<translate>Primed Charge</translate>
-				<altpage>0</altpage>
+				<translate>Resonanzladung</translate>
+				<altpage>95</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>b3e7f9e4-aec4-4114-bd49-e04a43be502f</id>
 				<name>Resonance Bind</name>
-				<translate>Resonance Bind</translate>
-				<altpage>0</altpage>
+				<translate>Resonanzfessel</translate>
+				<altpage>95</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>c5185f4d-32b4-4239-91a9-f0095ccf8572</id>
 				<name>Resonance Cache</name>
-				<translate>Resonance Cache</translate>
-				<altpage>0</altpage>
+				<translate>Resonanzgefängnis</translate>
+				<altpage>95</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>f89957e0-9c70-4503-b47d-0511b7bca5b6</id>
 				<name>Search History</name>
-				<translate>Search History</translate>
-				<altpage>0</altpage>
+				<translate>Chronik</translate>
+				<altpage>94</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>819a111f-b49d-498b-ac63-54f770cf7cd7</id>
 				<name>Weaken Data Bomb</name>
-				<translate>Weaken Data Bomb</translate>
-				<altpage>0</altpage>
+				<translate>Datenbombe schwächen</translate>
+				<altpage>94</altpage>
 			</complexform>
-			<complexform>
+			<complexform translated="True">
 				<id>9e849f66-6ad4-49fb-9ccd-e0b250b0625b</id>
 				<name>Weaken Encryption</name>
-				<translate>Weaken Encryption</translate>
-				<altpage>0</altpage>
+				<translate>Verschlüsselung schwächen</translate>
+				<altpage>96</altpage>
 			</complexform>
 		</complexforms>
 	</chummer>
@@ -44457,6 +44648,12 @@
 				<name>Armor</name>
 				<translate>Panzerung</translate>
 				<altpage>Adjusts the character's Armor Rating by the value entered. Positive numbers improve Armor. Negative numbers reduce Armor.</altpage>
+			</improvement>
+			<improvement>
+				<id>dodge</id>
+				<name>Dodge</name>
+				<translate>Dodge</translate>
+				<altpage>Increases the character's Dodge pool by the listed value.</altpage>
 			</improvement>
 		</improvements>
 	</chummer>
@@ -45510,6 +45707,51 @@
 				<translate>Wasserzeichen</translate>
 				<altpage>254</altpage>
 			</power>
+			<power translated="True">
+				<name>Bodyguard</name>
+				<translate>Bodyguard</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<name>Shield</name>
+				<translate>Schild</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<name>Active Analytics</name>
+				<translate>Aktive Analyse</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<name>Borrowed IP</name>
+				<translate>Geborgtes Icon</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<name>Decompiling Resistance</name>
+				<translate>Dekompilierungsresistenz</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<name>Enhance</name>
+				<translate>Verstärkung</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<name>Navi</name>
+				<translate>Navi</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<name>Resilient Code</name>
+				<translate>Widerstandsfähiger Code</translate>
+				<altpage>101</altpage>
+			</power>
+			<power translated="True">
+				<name>Resonance Spooling</name>
+				<translate>Resonanzwicklungen</translate>
+				<altpage>101</altpage>
+			</power>
 		</powers>
 	</chummer>
 	<chummer file="gameplayoptions.xml">
@@ -45722,5 +45964,10 @@
 				<altpage>191</altpage>
 			</drugcomponent>
 		</drugcomponents>
+		<categories>
+			<category translate="Basis">Foundation</category>
+			<category translate="Baustein">Block</category>
+			<category translate="Verstärker">Enhancer</category>
+		</categories>
 	</chummer>
 </chummer>

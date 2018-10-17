@@ -20,6 +20,7 @@
 <chummer>
   <version>-350</version>
   <name>English (en-US)</name>
+  <righttoleft>False</righttoleft>
   <strings>
 	  <!-- Region Meta Strings -->
 	<string>
@@ -66,6 +67,10 @@
     </string>
   <!-- End Region -->
     <!-- Region Common Strings -->
+    <string>
+      <key>String_NotApplicable</key>
+      <text>N/A</text>
+    </string>
     <string>
       <key>String_Version</key>
       <text>Version</text>
@@ -239,6 +244,10 @@
       <text>Please input the total of the results of the d6.</text>
     </string>
     <string>
+      <key>Label_InitRoller_ResultOf</key>
+      <text>Result of {0}D6:</text>
+    </string>
+    <string>
       <key>String_BP</key>
       <text>BP</text>
     </string>
@@ -316,7 +325,15 @@
     </string>
     <string>
       <key>String_Special</key>
+      <text>Special</text>
+    </string>
+    <string>
+      <key>String_SpecialAttributes</key>
       <text>Special Attributes</text>
+    </string>
+    <string>
+      <key>Label_SpecialAttributes</key>
+      <text>Special Attributes:</text>
     </string>
     <string>
       <key>String_SpecialAttributePoints</key>
@@ -413,6 +430,10 @@
     <string>
       <key>String_Space</key>
       <text xml:space="preserve"> </text>
+    </string>
+    <string>
+      <key>String_Colon</key>
+      <text>:</text>
     </string>
     <string>
       <key>String_Remaining</key>
@@ -521,6 +542,10 @@
     <string>
       <key>Checkbox_Randomize1D6</key>
       <text>Randomize 1D6</text>
+    </string>
+    <string>
+      <key>String_KarmaRemaining</key>
+      <text>Karma Remaining</text>
     </string>
     <string>
       <key>Label_KarmaRemaining</key>
@@ -728,7 +753,7 @@
     </string>
     <string>
       <key>Label_DeviceRating</key>
-      <text>DeviceRating:</text>
+      <text>Device Rating:</text>
     </string>
     <string>
       <key>Label_Signal</key>
@@ -789,6 +814,10 @@
     <string>
       <key>String_Qualities</key>
       <text>Qualities</text>
+    </string>
+    <string>
+      <key>Label_Qualities</key>
+      <text>Qualities:</text>
     </string>
     <string>
       <key>String_Quality</key>
@@ -863,6 +892,34 @@
       <text>Pet</text>
     </string>
     <string>
+      <key>String_Immediate</key>
+      <text>Immediate</text>
+    </string>
+    <string>
+      <key>String_Second</key>
+      <text>second</text>
+    </string>
+    <string>
+      <key>String_Seconds</key>
+      <text>seconds</text>
+    </string>
+    <string>
+      <key>String_CombatTurn</key>
+      <text>combat turn</text>
+    </string>
+    <string>
+      <key>String_CombatTurns</key>
+      <text>combat turns</text>
+    </string>
+    <string>
+      <key>String_Minute</key>
+      <text>minute</text>
+    </string>
+    <string>
+      <key>String_Minutes</key>
+      <text>minutes</text>
+    </string>
+    <string>
       <key>String_Day</key>
       <text>day</text>
     </string>
@@ -929,6 +986,34 @@
     <string>
       <key>String_LifeModules</key>
       <text>Life Modules</text>
+    </string>
+    <string>
+      <key>String_Armor</key>
+      <text>Armor</text>
+    </string>
+    <string>
+      <key>String_Info</key>
+      <text>Info</text>
+    </string>
+    <string>
+      <key>String_Matrix</key>
+      <text>Matrix</text>
+    </string>
+    <string>
+      <key>String_Paragon</key>
+      <text>Paragon</text>
+    </string>
+    <string>
+      <key>String_Stream</key>
+      <text>Stream</text>
+    </string>
+    <string>
+      <key>String_Vehicle</key>
+      <text>Vehicle</text>
+    </string>
+    <string>
+      <key>String_Weapon</key>
+      <text>Weapon</text>
     </string>
     <!-- End Region -->
     <!-- Region Printout Strings -->
@@ -1401,8 +1486,12 @@
       <text>Create PACKS Kit</text>
     </string>
     <string>
+      <key>Menu_SpecialChangePriorities</key>
+      <text>Change &amp;Priority Selection</text>
+    </string>
+    <string>
       <key>Menu_SpecialChangeMetatype</key>
-      <text>Change Priority Selection</text>
+      <text>Change &amp;Metatype</text>
     </string>
     <string>
       <key>Menu_SpecialChangeOptions</key>
@@ -1514,7 +1603,7 @@
     </string>
     <string>
       <key>Menu_Notes</key>
-      <text>Notes</text>
+      <text>&amp;Notes</text>
     </string>
     <string>
       <key>Menu_Gear</key>
@@ -4188,6 +4277,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Node_SelectedManeuvers</key>
       <text>Selected Maneuvers</text>
     </string>
+    <string>
+      <key>Label_SelectMartialArt_IncludedTechniques</key>
+      <text>Enables Learning the Following Techniques:</text>
+    </string>
     <!-- End Region -->
     <!-- Region Spells Tab -->
     <string>
@@ -4485,8 +4578,24 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Group:</text>
     </string>
     <string>
+      <key>String_InitiationGroup</key>
+      <text>Group for New Initiation</text>
+    </string>
+    <string>
+      <key>String_InitiationType</key>
+      <text>New Initiation Type</text>
+    </string>
+    <string>
       <key>Label_Network</key>
       <text>Network:</text>
+    </string>
+    <string>
+      <key>String_SubmersionNetwork</key>
+      <text>Network for New Submersion</text>
+    </string>
+    <string>
+      <key>String_SubmersionType</key>
+      <text>New Submersion Type</text>
     </string>
     <string>
       <key>Checkbox_GroupInitiation</key>
@@ -4787,8 +4896,24 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Drugs</text>
     </string>
     <string>
+      <key>Node_Foundation</key>
+      <text>Foundations</text>
+    </string>
+    <string>
+      <key>Node_Block</key>
+      <text>Blocks</text>
+    </string>
+    <string>
+      <key>Node_Enhancer</key>
+      <text>Enhancers</text>
+    </string>
+    <string>
+      <key>Label_AddictionRating</key>
+      <text>Addiction Rating:</text>
+    </string>
+    <string>
       <key>Label_AddictionThreshold</key>
-      <text>Threshold:</text>
+      <text>Addiction Threshold:</text>
     </string>
     <string>
       <key>Label_DrugEffects</key>
@@ -4817,6 +4942,18 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>String_MaximumDrugBlockLevel</key>
       <text>The maximum level of a block that positively modifies an Attribute that the chosen foundation negatively modifies is Level 2. (CF 191)</text>
+    </string>
+    <string>
+      <key>Label_CrashEffect</key>
+      <text>Crash Effect:</text>
+    </string>
+    <string>
+      <key>String_DamageUnresisted</key>
+      <text>Damage, Unresisted</text>
+    </string>
+    <string>
+      <key>String_PerLevel</key>
+      <text>Per Level</text>
     </string>
       <!-- End Region -->
     <!-- Region Street Gear/Gear Tab -->
@@ -5310,7 +5447,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_Options_UseCyberlimbCalculation</key>
-      <text>Don't use Cyberlimbs for calculating augmented Attributes</text>
+      <text>Do not use Cyberlimbs when calculating augmented Attributes</text>
     </string>
     <string>
       <key>Checkbox_Options_PreferNightlyBuilds</key>
@@ -5425,6 +5562,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Label_OtherEssence</key>
       <text>Essence:</text>
+    </string>
+    <string>
+      <key>String_NuyenRemaining</key>
+      <text>Nuyen Remaining</text>
     </string>
     <string>
       <key>Label_OtherNuyenRemain</key>
@@ -6881,31 +7022,51 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Tab_Options_Global</key>
-      <text>Global</text>
+      <text>Global Options</text>
     </string>
     <string>
       <key>Tab_Options_Character</key>
-      <text>Character and Printing</text>
+      <text>Character Options</text>
+    </string>
+    <string>
+      <key>Tab_Options_GitHubIssues</key>
+      <text>GitHub Issues</text>
     </string>
     <string>
       <key>Tab_Options_Miscellaneous</key>
       <text>Miscellaneous</text>
     </string>
     <string>
-      <key>Label_Options_AdditionalBooks</key>
-      <text>Additional Sourcebooks to Use</text>
+      <key>Label_Options_EditSourcebookInfo</key>
+      <text>Edit Sourcebook Info</text>
+    </string>
+    <string>
+      <key>Label_Options_SourcebooksToUse</key>
+      <text>Sourcebooks to Use</text>
+    </string>
+    <string>
+      <key>Label_Options_SelectedSourcebook</key>
+      <text>Selected Sourcebook:</text>
+    </string>
+    <string>
+      <key>Label_Options_CustomDataDirectories</key>
+      <text>Custom Data Directories to Use (Changes Are Only Applied After a Restart)</text>
+    </string>
+    <string>
+      <key>Button_Options_UploadPastebin</key>
+      <text>Upload file to Pastebin</text>
     </string>
     <string>
       <key>Label_Options_Defaults</key>
-      <text>Defaults for New Characters</text>
+      <text>Defaults for New Characters:</text>
     </string>
     <string>
       <key>Label_Options_CyberlimbCount</key>
-      <text>Limbs for Standard Characters:</text>
+      <text>Limb Count for Cyberlimbs:</text>
     </string>
     <string>
       <key>Label_Options_NuyenPerBP</key>
-      <text>Nuyen per Build Point:</text>
+      <text>Nuyen per Karma</text>
     </string>
     <string>
       <key>Checkbox_Options_MayBuyQualities</key>
@@ -7256,6 +7417,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>New Advanced Program (AI)</text>
     </string>
     <string>
+      <key>Label_Options_MetatypesCostKarma</key>
+      <text>Metatype Karma Cost Multiplier</text>
+    </string>
+    <string>
       <key>Button_Options_RestoreDefaults</key>
       <text>Restore Defaults</text>
     </string>
@@ -7301,7 +7466,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_Options_MoreLethalGameplace</key>
-      <text>More Lethal Gameplay (SR4 75)</text>
+      <text>Use 4th Edition Rules for More Lethal Gameplay (SR4 75)</text>
     </string>
     <string>
       <key>Checkbox_Options_LimitSkills</key>
@@ -7310,10 +7475,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Checkbox_Options_SkillRegroup</key>
       <text>Allow Skills to be re-Grouped if all Ratings are the same</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_MetatypesCostKarma</key>
-      <text>Metatypes cost Karma equal to their Karma</text>
     </string>
     <string>
       <key>Checkbox_Options_FreeContactPointsKarma</key>
@@ -7421,7 +7582,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_Options_ExceedPositiveQualitiesCostDoubled</key>
-      <text>Double all Positive Quality karma costs in excess of the limit</text>
+      <text>Use Career costs for all Positive Quality karma costs in excess of the limit</text>
     </string>
     <string>
       <key>Checkbox_Options_ExceedNegativeQualities</key>
@@ -7485,7 +7646,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_Option_CreateBackupOnCareer</key>
-      <text>Create backup of character before moving them to Career Mode</text>
+      <text>Create backup of characters before moving them to Career Mode</text>
     </string>
     <string>
       <key>Checkbox_Option_AllowExceedAttributeBP</key>
@@ -7637,7 +7798,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Label_Options_CharacterRoster</key>
-      <text>Character Roster Watch Folder</text>
+      <text>Character Roster Watch Folder:</text>
     </string>
     <string>
       <key>Label_Options_NuyenDecimalsMinimum</key>
@@ -7687,7 +7848,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>        
     <string>
       <key>Label_SelectAdvancedLifestyle_Base_Lifestyle</key>
-      <text>Lifestyle:</text>
+      <text>[{0}/{1}]</text>
     </string>
     <string>
       <key>Node_SelectAdvancedLifestyle_PositiveQualities</key>
@@ -7699,7 +7860,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Base_Comforts</key>
-      <text>Comforts: [{0}/{1}]</text>
+      <text>[{0}/{1}]</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Comforts</key>
@@ -7726,12 +7887,16 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Necessities:</text>
     </string>
     <string>
-      <key>Label_SelectAdvancedLifestyle_Base_Area</key>
-      <text>Area: [{0}/{1}]</text>
+      <key>Label_SelectAdvancedLifestyle_Base_Neighborhood</key>
+      <text>[{0}/{1}]</text>
+    </string>
+    <string>
+      <key>Label_SelectAdvancedLifestyle_Neighborhood</key>
+      <text>Neighborhood:</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Base_Security</key>
-      <text>Security: [{0}/{1}]</text>
+      <text>[{0}/{1}]</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Security</key>
@@ -7803,11 +7968,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Label_SelectBP_MaxAvail</key>
-      <text>Maximum\nAvailability</text>
+      <text>Maximum Availability</text>
     </string>
     <string>
       <key>Label_SelectBP_StartingKarma</key>
-      <text>Starting\nKarma</text>
+      <text>Starting Karma</text>
     </string>
     <string>
       <key>Label_SelectBP_SumToX</key>
@@ -7823,15 +7988,15 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>String_SelectBP_BPSummary</key>
-      <text>Enter the amount of Build Points you are allowed to create your character with (Default {0}).</text>
+      <text>Enter the amount of Build Points with which you are allowed to create your character (Default {0}).</text>
     </string>
     <string>
       <key>String_SelectBP_KarmaSummary</key>
-      <text>Enter the amount of Karma you are allowed to create your character with (Default {0}).</text>
+      <text>Enter the amount of Karma with which you are allowed to create your character (Default {0}).</text>
     </string>
     <string>
       <key>String_SelectBP_PrioritySummary</key>
-      <text>Enter the maxiumum availability you are allowed to create your character with.</text>
+      <text>Enter the maximum availability with which you are allowed to create your character.</text>
     </string>
     <string>
       <key>Tip_SelectKarma_IgnoreRules</key>
@@ -9328,6 +9493,60 @@ Only one attribute may be at its Maximum value during character creation.</text>
 	  <key>Message_ImprovementLoadError</key>
 	  <text>Chummer5a encountered an error when loading one or more improvements for this character. This is likely because a certain improvement present in an older version of Chummer has been significantly altered in a later version.\n\nThe issue can be fixed by re-applying only the improvements that caused issues.\n\nDo you wish to re-apply the problematic issues right now? If you do not, the issues can still be fixed by re-applying all improvements via Special > Re-apply Improvements.</text>
 	</string>
+    <!-- End Region -->
+    <!-- Region Loading Form -->
+    <string>
+      <key>String_Loading</key>
+      <text>Loading...</text>
+    </string>
+    <string>
+      <key>String_Loading_Pattern</key>
+      <text>Loading {0}...</text>
+    </string>
+    <string>
+      <key>String_Initializing</key>
+      <text>Initializing...</text>
+    </string>
+    <string>
+      <key>String_Settings</key>
+      <text>Settings</text>
+    </string>
+    <string>
+      <key>String_MentorSpirit</key>
+      <text>Mentor Spirit</text>
+    </string>
+    <string>
+      <key>String_Locations</key>
+      <text>Locations</text>
+    </string>
+    <string>
+      <key>String_Metamagics</key>
+      <text>Metamagics</text>
+    </string>
+    <string>
+      <key>String_Arts</key>
+      <text>Arts</text>
+    </string>
+    <string>
+      <key>String_Enhancements</key>
+      <text>Enhancements</text>
+    </string>
+    <string>
+      <key>String_Expenses</key>
+      <text>Expenses</text>
+    </string>
+    <string>
+      <key>String_LegacyFixes</key>
+      <text>Legacy Fixes</text>
+    </string>
+    <string>
+      <key>String_GeneratedImprovements</key>
+      <text>Generated Improvements</text>
+    </string>
+    <string>
+      <key>String_UI</key>
+      <text>UI</text>
+    </string>
     <!-- End Region -->
     <!-- End Region -->
     <string>

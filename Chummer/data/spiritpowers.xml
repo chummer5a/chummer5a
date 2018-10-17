@@ -416,5 +416,52 @@
       <source>SR5</source>
       <page>257</page>
     </power>
+    <!-- Region Kill Code -->
+    <power>
+      <name>Bodyguard</name>
+      <source>KC</source>
+      <page>100</page>
+    </power>
+    <power>
+      <name>Shield</name>
+      <source>KC</source>
+      <page>100</page>
+    </power>
+    <power>
+      <name>Active Analytics</name>
+      <source>KC</source>
+      <page>101</page>
+    </power>
+    <power>
+      <name>Borrowed IP</name>
+      <source>KC</source>
+      <page>101</page>
+    </power>
+    <power>
+      <name>Decompiling Resistance</name>
+      <source>KC</source>
+      <page>101</page>
+    </power>
+    <power>
+      <name>Enhance</name>
+      <source>KC</source>
+      <page>101</page>
+    </power>
+    <power>
+      <name>Navi</name>
+      <source>KC</source>
+      <page>101</page>
+    </power>
+    <power>
+      <name>Resilient Code</name>
+      <source>KC</source>
+      <page>101</page>
+    </power>
+    <power>
+      <name>Resonance Spooling</name>
+      <source>KC</source>
+      <page>101</page>
+    </power>
+    <!-- End Region -->
   </powers>
 </chummer>

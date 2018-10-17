@@ -23,6 +23,7 @@
 <chummer>
 	<version>-350</version>
 	<name>汉语 (zh-CN)</name>
+  <righttoleft>False</righttoleft>
 	<strings>
 		<!-- Meta Strings -->
 		<string>
@@ -53,6 +54,14 @@
 		<string>
 			<key>String_Of</key>
 			<text>/</text>
+		</string>
+		<string>
+			<key>String_Space</key>
+			<text xml:space="preserve"></text>
+		</string>
+		<string>
+			<key>String_Colon</key>
+			<text>：</text>
 		</string>
 		<string>
 			<key>String_Remaining</key>
@@ -145,6 +154,10 @@
 		<string>
 			<key>Label_LP</key>
 			<text>生活方式点数：</text>
+		</string>
+    <string>
+			<key>String_KarmaRemaining</key>
+			<text>剩余业力</text>
 		</string>
 		<string>
 			<key>Label_KarmaRemaining</key>
@@ -337,6 +350,10 @@
 		<string>
 			<key>String_Qualities</key>
 			<text>特质</text>
+		</string>
+		<string>
+			<key>Label_Qualities</key>
+			<text>特质：</text>
 		</string>
 		<string>
 			<key>Label_Metavariant</key>
@@ -3582,6 +3599,10 @@
 			<key>Label_OtherEssence</key>
 			<text>精华：</text>
 		</string>
+    <string>
+      <key>String_NuyenRemaining</key>
+      <text>剩余新円</text>
+    </string>
 		<string>
 			<key>Label_OtherNuyenRemain</key>
 			<text>剩余新円：</text>
@@ -4362,7 +4383,7 @@
 		</string>
 		<string>
 			<key>Tab_Options_Character</key>
-			<text>角色与打印</text>
+			<text>角色</text>
 		</string>
 		<string>
 			<key>Tab_Options_Miscellaneous</key>
@@ -5005,7 +5026,7 @@
 		</string>
 		<string>
 			<key>Label_SelectBP_MaxAvail</key>
-			<text>最大\n可获得性</text>
+			<text>最大可获得性</text>
 		</string>
 		<string>
 			<key>Checkbox_SelectBP_IgnoreRules</key>
@@ -6062,7 +6083,15 @@
 		</string>
 		<string>
 			<key>String_Special</key>
+			<text>特</text>
+		</string>
+		<string>
+			<key>String_SpecialAttributes</key>
 			<text>特殊属性</text>
+		</string>
+		<string>
+			<key>Label_SpecialAttributes</key>
+			<text>特殊属性：</text>
 		</string>
 		<string>
 			<key>String_SpecialAttributePoints</key>
@@ -7296,7 +7325,7 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Lifestyle</key>
-			<text>生活方式：</text>
+			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>Label_SkillGroup_Broken</key>
@@ -7548,7 +7577,7 @@
 		</string>
 		<string>
 			<key>Label_SelectBP_StartingKarma</key>
-			<text>起始\n业力</text>
+			<text>起始业力</text>
 		</string>
 		<string>
 			<key>Label_SelectBP_SumToX</key>
@@ -7676,7 +7705,7 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Comforts</key>
-			<text>舒适度：[{0}/{1}]</text>
+			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Rating</key>
@@ -7684,7 +7713,7 @@
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Security</key>
-			<text>安全：[{0}/{1}]</text>
+			<text>[{0}/{1}]</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_UnusedLP</key>
@@ -8209,8 +8238,12 @@
 			<text>总计：</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Area</key>
-			<text>街区：[{0}/{1}]</text>
+			<key>Label_SelectAdvancedLifestyle_Base_Neighborhood</key>
+			<text>[{0}/{1}]</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_Neighborhood</key>
+			<text>邻里：</text>
 		</string>
 		<string>
 			<key>Button_Download</key>

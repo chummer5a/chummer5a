@@ -21,7 +21,7 @@
 	<grades>
 		<grade>
 			<name>Used (Adapsin)</name>
-      		<ess>1.1</ess>
+			<ess>1.1</ess>
 		</grade>
 		<grade>
 			<name>Omegaware</name>
@@ -73,19 +73,19 @@
 			</notes>
 		</cyberware>
 
-		<cyberware>
-		  <id>e23ea4d0-a02c-4691-a045-708b3018aae2</id>
-		  <name>One-shot Dartgun</name>
-		  <limit>False</limit>
-		  <category>Cyber Implant Weapon</category>
-		  <ess>0.2</ess>
-		  <capacity>[2]</capacity>
-		  <avail>8R</avail>
-		  <cost>2000</cost>
-		  <source>CF</source>
-		  <page>91</page>
-		  <addweapon>One-shot Dartgun</addweapon>
-		</cyberware>
+		<cyberware amendoperation="addnode">
+      <id>e23ea4d0-a02c-4691-a045-708b3018aae2</id>
+      <name>One-shot Dartgun</name>
+      <limit>False</limit>
+      <category>Cyber Implant Weapon</category>
+      <ess>0.2</ess>
+      <capacity>[2]</capacity>
+      <avail>8R</avail>
+      <cost>2000</cost>
+      <source>CF</source>
+      <page>91</page>
+      <addweapon>One-shot Dartgun</addweapon>
+    </cyberware>
 
 		<cyberware>
 			<name>Cyberlimb Optimization</name>
@@ -107,39 +107,39 @@
 		</cyberware>
 		<cyberware>
 			<name>Armor</name>
-			<required>
-			  <parentdetails>
-			    <OR>
-			      <name operation="contains">Full Leg</name>
-			      <name operation="contains">Full Arm</name>
-			    </OR>
-			  </parentdetails>
-			</required>
+			<required amendoperation="addnode">
+        <parentdetails>
+          <OR>
+            <name operation="contains">Full Leg</name>
+            <name operation="contains">Full Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
 		</cyberware>
-		<cyberware>
-		  <id>85b926f6-16ee-4d57-83c5-94e41351bcc1</id>
-		  <name>Armor (Lower arms/legs)</name>
-		  <limit>False</limit>
-		  <category>Cyberlimb Enhancement</category>
-		  <ess>0</ess>
-		  <capacity>[Rating]</capacity>
-		  <avail>Rating * 5</avail>
-		  <cost>Rating * 3000</cost>
-		  <source>SR5</source>
-		  <page>456</page>
-		  <bonus>
-		    <armor>Rating</armor>
-		  </bonus>
-		  <rating>1</rating>
-		  <requireparent />
-		  <required>
-		    <parentdetails>
-		      <OR>
-		        <name operation="contains">Lower Arm</name>
-		        <name operation="contains">Lower Leg</name>
-		      </OR>
-		    </parentdetails>
-		  </required>
-		</cyberware>
+		<cyberware amendoperation="addnode">
+      <id>85b926f6-16ee-4d57-83c5-94e41351bcc1</id>
+      <name>Armor (Lower arms/legs)</name>
+      <limit>False</limit>
+      <category>Cyberlimb Enhancement</category>
+      <ess>0</ess>
+      <capacity>[Rating]</capacity>
+      <avail>Rating * 5</avail>
+      <cost>Rating * 3000</cost>
+      <source>SR5</source>
+      <page>456</page>
+      <bonus>
+        <armor>Rating</armor>
+      </bonus>
+      <rating>1</rating>
+      <requireparent />
+      <required>
+        <parentdetails>
+          <OR>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Lower Leg</name>
+          </OR>
+        </parentdetails>
+      </required>
+    </cyberware>
 	</cyberwares>
 </chummer>

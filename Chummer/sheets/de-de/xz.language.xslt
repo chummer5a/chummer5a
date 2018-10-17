@@ -266,6 +266,7 @@
   <xsl:variable name="lang.CoreTrack"  select="'Kern Zustandsmonitor'"/>
   <xsl:variable name="lang.CritterPowers"    select="'Critterkräfte'"/>
   <xsl:variable name="lang.CurrentEdge"    select="'Aktuelles Edge'"/>
+  <xsl:variable name="lang.CurrentForm"    select="'Aktuelle Form'"/>
   <xsl:variable name="lang.DamageType"  select="'Schadensart'"/>
   <xsl:variable name="lang.DataProc"      select="'Datenverarb.'"/>
   <xsl:variable name="lang.DataProcessing"  select="'Datenverarbeitung'"/>

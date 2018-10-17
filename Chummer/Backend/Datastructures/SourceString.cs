@@ -18,88 +18,78 @@
  */
 using System;
 using System.Windows.Forms;
-using System.Xml;
 
 namespace Chummer
 {
     public class SourceString : IComparable
     {
-        private readonly string _strCode;
         private readonly int _intPage;
-        #region Cached values for LanguageBookTooltip
-        private static string _cachedLanguage = GlobalOptions.Language;
-        private static string _cachedSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-        private static string _cachedPage = LanguageManager.GetString("String_Page", GlobalOptions.Language);
-        private string _cachedTooltip = string.Empty;
-        #endregion
+        private readonly string _strCachedSpace;
 
-        public string Code => _strCode;
-        public int Page => _intPage;
-
-        public SourceString(string strSourceString)
+        public SourceString(string strSourceString, string strLanguage)
         {
+            Language = strLanguage;
+            string strCode = strSourceString;
             int intWhitespaceIndex = strSourceString.IndexOf(' ');
             if (intWhitespaceIndex != -1)
             {
-                _strCode = strSourceString.Substring(0, intWhitespaceIndex);
+                strCode = strSourceString.Substring(0, intWhitespaceIndex);
                 if (intWhitespaceIndex + 1 < strSourceString.Length)
                     int.TryParse(strSourceString.Substring(intWhitespaceIndex + 1), out _intPage);
             }
-            else
-                _strCode = strSourceString;
+
+            Code = CommonFunctions.LanguageBookShort(strCode, Language);
+            _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strCode, Language) +
+                                _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage;
         }
 
-        public SourceString(string strSource, string strPage)
+        public SourceString(string strSource, string strPage, string strLanguage)
         {
-            _strCode = strSource;
+            Language = strLanguage;
             int.TryParse(strPage, out _intPage);
+
+            Code = CommonFunctions.LanguageBookShort(strSource, Language);
+            _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language) +
+                                _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage;
         }
 
-        public SourceString(string strSource, int intPage)
+        public SourceString(string strSource, int intPage, string strLanguage)
         {
-            _strCode = strSource;
+            Language = strLanguage;
             _intPage = intPage;
-        }
 
+            Code = CommonFunctions.LanguageBookShort(strSource, Language);
+            _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language) +
+                                _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage;
+        }
+        
         public override string ToString()
         {
-            return ToString(GlobalOptions.Language);
+            return Code + _strCachedSpace + Page;
         }
 
-        public string ToString(string strLanguage)
-        {
-            return DisplayCode(strLanguage) + LanguageManager.GetString("String_Space", strLanguage) + Page;
-        }
+        /// <summary>
+        /// Language code originally used to construct the source info (alters book code, possibly alters page numbers)
+        /// </summary>
+        public string Language { get; }
+
+        /// <summary>
+        /// Book code of the source info, possibly modified from English by the language of the source info
+        /// </summary>
+        public string Code { get; }
+
+        /// <summary>
+        /// Page of the source info, possibly modified from English by the language of the source info
+        /// </summary>
+        public int Page => _intPage;
 
         /// <summary>
         /// Provides the long-form name of the object's sourcebook and page reference. 
         /// </summary>
-        public string LanguageBookTooltip
-        {
-            get
-            {
-                //Nothing's changed, so return the cached string. 
-                if (_cachedLanguage == GlobalOptions.Language && !string.IsNullOrWhiteSpace(_cachedTooltip))
-                    return _cachedTooltip;
-                //Cached language change, so refresh the properties
-                if (_cachedLanguage != GlobalOptions.Language)
-                {
-                    _cachedLanguage = GlobalOptions.Language;
-                    _cachedSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                    _cachedPage = LanguageManager.GetString("String_Page", GlobalOptions.Language);
-                }
-                _cachedTooltip = CommonFunctions.LanguageBookLong(_strCode, GlobalOptions.Language) +
-                                 _cachedSpace + _cachedPage + _cachedSpace + _intPage;
-                return _cachedTooltip;
-            }
-        }
-
-        public string DisplayCode(string strLanguage)
-        {
-            if (string.IsNullOrWhiteSpace(Code)) return Code;
-            XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + Code + "\"]/altcode");
-            return objXmlBook?.InnerText ?? Code;
-        }
+        public string LanguageBookTooltip { get; }
 
         public int CompareTo(object obj)
         {
@@ -108,10 +98,14 @@ namespace Chummer
 
         public int CompareTo(SourceString strOther)
         {
-            int intCompareResult = string.Compare(DisplayCode(GlobalOptions.Language), strOther.DisplayCode(GlobalOptions.Language), false, GlobalOptions.CultureInfo);
+            int intCompareResult = string.Compare(Language, strOther.Language, false, GlobalOptions.CultureInfo);
             if (intCompareResult == 0)
             {
-                intCompareResult = _intPage.CompareTo(strOther.Page);
+                intCompareResult = string.Compare(Code, strOther.Code, false, GlobalOptions.CultureInfo);
+                if (intCompareResult == 0)
+                {
+                    intCompareResult = _intPage.CompareTo(strOther.Page);
+                }
             }
             return intCompareResult;
         }
