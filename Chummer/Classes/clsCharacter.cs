@@ -16105,8 +16105,7 @@ namespace Chummer
 
                     if (xmlPowerData != null)
                     {
-                        Power objPower = new Power(this);
-                        objPower.Extra = strForcedValue;
+                        Power objPower = new Power(this) {Extra = strForcedValue};
                         objPower.Create(xmlPowerData, intRating);
                         objPower.Notes = xmlHeroLabPower["description"]?.InnerText;
                         _lstPowers.Add(objPower);
@@ -16128,6 +16127,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_spirits");
             */
+            /* TODO: Complex Forms import, which are saved in TXT and HTML statblocks but not in XML statblock
             Timekeeper.Start("load_char_complex");
 
             // Compex Forms/Technomancer Programs.
@@ -16140,6 +16140,7 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_complex");
+            */
             /* TODO: AI Advanced Program Importing
             Timekeeper.Start("load_char_aiprogram");
 
@@ -16154,6 +16155,7 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_aiprogram");
             */
+            /* TODO: Martial Arts import, which are saved in TXT and HTML statblocks but not in XML statblock
             Timekeeper.Start("load_char_marts");
 
             // Martial Arts.
@@ -16166,6 +16168,7 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_marts");
+            */
             Timekeeper.Start("load_char_lifestyle");
 
             // Lifestyles.
@@ -16239,6 +16242,7 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_gear");
+            /* TODO: Process HeroLab Vehicles entries, which are present in HTML and TXT statblocks but not in XML
             Timekeeper.Start("load_char_car");
 
             // Vehicles.
@@ -16251,6 +16255,7 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_car");
+            */
             /* TODO: Process HeroLab Initiation/Submersion and related entries
             Timekeeper.Start("load_char_mmagic");
             // Metamagics/Echoes.
