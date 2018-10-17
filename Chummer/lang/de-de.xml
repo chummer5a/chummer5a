@@ -138,7 +138,7 @@
 			<key>Checkbox_Randomize1D6</key>
 			<text>Zufällig 1W6</text>
 		</string>
-    <string>
+		<string>
 			<key>String_KarmaRemaining</key>
 			<text>Verbleibendes Karma</text>
 		</string>
@@ -3236,10 +3236,10 @@
 			<key>Label_OtherEssence</key>
 			<text>Essenz:</text>
 		</string>
-    <string>
-      <key>String_NuyenRemaining</key>
-      <text>Verbleibende Nuyen</text>
-    </string>
+		<string>
+			<key>String_NuyenRemaining</key>
+			<text>Verbleibende Nuyen</text>
+		</string>
 		<string>
 			<key>Label_OtherNuyenRemain</key>
 			<text>Verbleibende Nuyen:</text>
@@ -6883,7 +6883,7 @@
 		</string>
 		<string>
 			<key>String_Schooling</key>
-			<text>Schooling</text>
+			<text>Ausbildung</text>
 		</string>
 		<string>
 			<key>String_DescAlchemicalPreparation</key>
@@ -9382,6 +9382,10 @@
 		<string>
 			<key>String_Stream</key>
 			<text>Strömung</text>
+		</string>
+		<string>
+			<key>Label_InitRoller_ResultOf</key>
+			<text>Ergebnis von {0}W6:</text>
 		</string>
 	</strings>
 </chummer>
