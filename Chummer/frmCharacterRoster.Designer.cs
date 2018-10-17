@@ -88,10 +88,10 @@ namespace Chummer
             this.tabCharacterText.Controls.Add(this.panCharacterBackground);
             this.tabCharacterText.Controls.Add(this.panCharacterNotes);
             this.tabCharacterText.Controls.Add(this.panGameNotes);
-            this.tabCharacterText.Location = new System.Drawing.Point(304, 303);
+            this.tabCharacterText.Location = new System.Drawing.Point(304, 309);
             this.tabCharacterText.Name = "tabCharacterText";
             this.tabCharacterText.SelectedIndex = 0;
-            this.tabCharacterText.Size = new System.Drawing.Size(459, 245);
+            this.tabCharacterText.Size = new System.Drawing.Size(459, 231);
             this.tabCharacterText.TabIndex = 22;
             // 
             // panCharacterBio
@@ -100,7 +100,7 @@ namespace Chummer
             this.panCharacterBio.Location = new System.Drawing.Point(4, 22);
             this.panCharacterBio.Name = "panCharacterBio";
             this.panCharacterBio.Padding = new System.Windows.Forms.Padding(3);
-            this.panCharacterBio.Size = new System.Drawing.Size(451, 219);
+            this.panCharacterBio.Size = new System.Drawing.Size(451, 205);
             this.panCharacterBio.TabIndex = 0;
             this.panCharacterBio.Tag = "Tab_Roster_Description";
             this.panCharacterBio.Text = "Description";
@@ -116,7 +116,7 @@ namespace Chummer
             this.txtCharacterBio.Name = "txtCharacterBio";
             this.txtCharacterBio.ReadOnly = true;
             this.txtCharacterBio.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtCharacterBio.Size = new System.Drawing.Size(445, 213);
+            this.txtCharacterBio.Size = new System.Drawing.Size(445, 199);
             this.txtCharacterBio.TabIndex = 1;
             // 
             // panCharacterConcept
@@ -386,7 +386,7 @@ namespace Chummer
             this.treCharacterList.Name = "treCharacterList";
             this.tlpCharacterRoster.SetRowSpan(this.treCharacterList, 9);
             this.treCharacterList.ShowNodeToolTips = true;
-            this.treCharacterList.Size = new System.Drawing.Size(295, 545);
+            this.treCharacterList.Size = new System.Drawing.Size(295, 537);
             this.treCharacterList.TabIndex = 0;
             this.treCharacterList.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCharacterList_AfterSelect);
             this.treCharacterList.DoubleClick += new System.EventHandler(this.treCharacterList_DoubleClick);
@@ -501,14 +501,13 @@ namespace Chummer
             this.tlpCharacterRoster.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCharacterRoster.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCharacterRoster.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpCharacterRoster.Size = new System.Drawing.Size(766, 551);
+            this.tlpCharacterRoster.Size = new System.Drawing.Size(766, 543);
             this.tlpCharacterRoster.TabIndex = 41;
             // 
             // picMugshot
             // 
             this.picMugshot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.picMugshot.Location = new System.Drawing.Point(466, 0);
-            this.picMugshot.Margin = new System.Windows.Forms.Padding(0);
+            this.picMugshot.Location = new System.Drawing.Point(463, 3);
             this.picMugshot.Name = "picMugshot";
             this.tlpCharacterRoster.SetRowSpan(this.picMugshot, 8);
             this.picMugshot.Size = new System.Drawing.Size(300, 300);
@@ -521,7 +520,7 @@ namespace Chummer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 569);
+            this.ClientSize = new System.Drawing.Size(784, 561);
             this.ControlBox = false;
             this.Controls.Add(this.tlpCharacterRoster);
             this.MaximizeBox = false;

@@ -1,14 +1,28 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -16,14 +30,14 @@ namespace Chummer
 {
     public partial class frmHeroLabImporter : Form
     {
-        List<HeroLabCharacterCache> _lstCharacterCache = new List<HeroLabCharacterCache>();
-        private object _lstCharacterCacheLock = new object();
-        Dictionary<string, Bitmap> _dicImages = new Dictionary<string, Bitmap>();
+        private readonly List<HeroLabCharacterCache> _lstCharacterCache = new List<HeroLabCharacterCache>();
+        private readonly object _lstCharacterCacheLock = new object();
+        private readonly Dictionary<string, Bitmap> _dicImages = new Dictionary<string, Bitmap>();
 
         public frmHeroLabImporter()
         {
             InitializeComponent();
-            MoveControls();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         private void cmdSelectFile_Click(object sender, EventArgs e)
@@ -89,11 +103,11 @@ namespace Chummer
                             // If we run into any problems loading the character cache, fail out early.
                             catch (IOException)
                             {
-                                continue;
+                                Utils.BreakIfDebug();
                             }
                             catch (XmlException)
                             {
-                                continue;
+                                Utils.BreakIfDebug();
                             }
                         }
                         else if (strEntryFullName.StartsWith("images") && strEntryFullName.Contains('.'))
@@ -139,13 +153,13 @@ namespace Chummer
                 {
                     HeroLabCharacterCache objCache = new HeroLabCharacterCache
                     {
-                        PlayerName = xmlBaseCharacterNode.Attributes["playername"]?.InnerText
+                        PlayerName = xmlBaseCharacterNode.Attributes?["playername"]?.InnerText
                     };
-                    string strNameString = xmlBaseCharacterNode.Attributes["name"]?.InnerText;
+                    string strNameString = xmlBaseCharacterNode.Attributes?["name"]?.InnerText ?? string.Empty;
                     objCache.CharacterId = strNameString;
                     if (!string.IsNullOrEmpty(strNameString))
                     {
-                        int intAsIndex = strNameString.IndexOf(" as ");
+                        int intAsIndex = strNameString.IndexOf(" as ", StringComparison.Ordinal);
                         if (intAsIndex != -1)
                         {
                             objCache.CharacterName = strNameString.Substring(0, intAsIndex);
@@ -162,23 +176,36 @@ namespace Chummer
                         strRaceString = "A.I.";
                     if (!string.IsNullOrEmpty(strRaceString))
                     {
-                        foreach (XmlNode xmlMetatype in xmlMetatypesDocument.SelectNodes("/chummer/metatypes/metatype"))
+                        using (XmlNodeList xmlMetatypeList = xmlMetatypesDocument.SelectNodes("/chummer/metatypes/metatype"))
                         {
-                            string strMetatypeName = xmlMetatype["name"].InnerText;
-                            if (strMetatypeName == strRaceString)
+                            if (xmlMetatypeList?.Count > 0)
                             {
-                                objCache.Metatype = strMetatypeName;
-                                objCache.Metavariant = "None";
-                                break;
-                            }
-                            foreach (XmlNode xmlMetavariant in xmlMetatype.SelectNodes("metavariants/metavariant"))
-                            {
-                                string strMetavariantName = xmlMetavariant["name"].InnerText;
-                                if (strMetavariantName == strRaceString)
+                                foreach (XmlNode xmlMetatype in xmlMetatypeList)
                                 {
-                                    objCache.Metatype = strMetatypeName;
-                                    objCache.Metavariant = strMetavariantName;
-                                    break;
+                                    string strMetatypeName = xmlMetatype["name"]?.InnerText ?? string.Empty;
+                                    if (strMetatypeName == strRaceString)
+                                    {
+                                        objCache.Metatype = strMetatypeName;
+                                        objCache.Metavariant = "None";
+                                        break;
+                                    }
+
+                                    using (XmlNodeList xmlMetavariantList = xmlMetatype.SelectNodes("metavariants/metavariant"))
+                                    {
+                                        if (xmlMetavariantList?.Count > 0)
+                                        {
+                                            foreach (XmlNode xmlMetavariant in xmlMetavariantList)
+                                            {
+                                                string strMetavariantName = xmlMetavariant["name"]?.InnerText ?? string.Empty;
+                                                if (strMetavariantName == strRaceString)
+                                                {
+                                                    objCache.Metatype = strMetatypeName;
+                                                    objCache.Metavariant = strMetavariantName;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -195,11 +222,11 @@ namespace Chummer
                     if (!objCache.Created)
                     {
                         XmlNodeList xmlJournalEntries = xmlBaseCharacterNode.SelectNodes("journals/journal");
-                        if (xmlJournalEntries.Count > 1)
+                        if (xmlJournalEntries?.Count > 1)
                         {
                             objCache.Created = true;
                         }
-                        else if (xmlJournalEntries.Count == 1 && xmlJournalEntries[0].Attributes["name"]?.InnerText != "Title")
+                        else if (xmlJournalEntries?.Count == 1 && xmlJournalEntries[0]?.Attributes?["name"]?.InnerText != "Title")
                         {
                             objCache.Created = true;
                         }
@@ -282,11 +309,40 @@ namespace Chummer
             if (objCache != null)
             {
                 txtCharacterBio.Text = objCache.Description;
-                lblCareerKarma.Text = objCache.Karma;
-                lblPlayerName.Text = objCache.PlayerName;
+
+                string strUnknown = LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strNone = LanguageManager.GetString("String_None", GlobalOptions.Language);
+                
                 lblCharacterName.Text = objCache.CharacterName;
+                if (string.IsNullOrEmpty(lblCharacterName.Text))
+                    lblCharacterName.Text = strUnknown;
+                lblCharacterNameLabel.Visible = !string.IsNullOrEmpty(lblCharacterName.Text);
+                lblCharacterName.Visible = !string.IsNullOrEmpty(lblCharacterName.Text);
+
                 lblCharacterAlias.Text = objCache.CharacterAlias;
+                if (string.IsNullOrEmpty(lblCharacterAlias.Text))
+                    lblCharacterAlias.Text = strUnknown;
+                lblCharacterAliasLabel.Visible = !string.IsNullOrEmpty(lblCharacterAlias.Text);
+                lblCharacterAlias.Visible = !string.IsNullOrEmpty(lblCharacterAlias.Text);
+
+                lblPlayerName.Text = objCache.PlayerName;
+                if (string.IsNullOrEmpty(lblPlayerName.Text))
+                    lblPlayerName.Text = strUnknown;
+                lblPlayerNameLabel.Visible = !string.IsNullOrEmpty(lblPlayerName.Text);
+                lblPlayerName.Visible = !string.IsNullOrEmpty(lblPlayerName.Text);
+                
+                lblCareerKarma.Text = objCache.Karma;
+                if (string.IsNullOrEmpty(lblCareerKarma.Text) || lblCareerKarma.Text == "0")
+                    lblCareerKarma.Text = strNone;
+                lblCareerKarmaLabel.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text);
+                lblCareerKarma.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text);
+
                 lblEssence.Text = objCache.Essence;
+                if (string.IsNullOrEmpty(lblEssence.Text))
+                    lblEssence.Text = strUnknown;
+                lblEssenceLabel.Visible = !string.IsNullOrEmpty(lblEssence.Text);
+                lblEssence.Visible = !string.IsNullOrEmpty(lblEssence.Text);
+                
                 picMugshot.Image = objCache.Mugshot;
 
                 // Populate character information fields.
@@ -307,17 +363,31 @@ namespace Chummer
                     strMetatype += " (" + (objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant) + ')';
                 }
                 lblMetatype.Text = strMetatype;
+                if (string.IsNullOrEmpty(lblMetatype.Text))
+                    lblMetatype.Text = strUnknown;
+
+                lblMetatypeLabel.Visible = !string.IsNullOrEmpty(lblMetatype.Text);
+                lblMetatype.Visible = !string.IsNullOrEmpty(lblMetatype.Text);
+
                 cmdImport.Enabled = true;
             }
             else
             {
                 txtCharacterBio.Text = string.Empty;
-                lblCareerKarma.Text = string.Empty;
-                lblMetatype.Text = string.Empty;
-                lblPlayerName.Text = string.Empty;
-                lblCharacterName.Text = string.Empty;
-                lblCharacterAlias.Text = string.Empty;
-                lblEssence.Text = string.Empty;
+
+                lblCharacterNameLabel.Visible = false;
+                lblCharacterName.Visible = false;
+                lblCharacterAliasLabel.Visible = false;
+                lblCharacterAlias.Visible = false;
+                lblPlayerNameLabel.Visible = false;
+                lblPlayerName.Visible = false;
+                lblMetatypeLabel.Visible = false;
+                lblMetatype.Visible = false;
+                lblCareerKarmaLabel.Visible = false;
+                lblCareerKarma.Visible = false;
+                lblEssenceLabel.Visible = false;
+                lblEssence.Visible = false;
+
                 picMugshot.Image = null;
                 cmdImport.Enabled = false;
             }
@@ -325,46 +395,6 @@ namespace Chummer
         }
 
         #region Form Methods
-
-        private void MoveControls()
-        {
-            lblPlayerNameLabel.Left = tabCharacterText.Left;
-            lblCharacterNameLabel.Left = tabCharacterText.Left;
-            lblCareerKarmaLabel.Left = tabCharacterText.Left;
-            lblMetatypeLabel.Left = tabCharacterText.Left;
-            lblCharacterAliasLabel.Left = tabCharacterText.Left;
-            lblEssenceLabel.Left = tabCharacterText.Left;
-
-            int intWidth = lblPlayerNameLabel.Right;
-            if (lblCareerKarmaLabel.Right > intWidth)
-            {
-                intWidth = lblCareerKarmaLabel.Right;
-            }
-            if (lblCareerKarmaLabel.Right > intWidth)
-            {
-                intWidth = lblCareerKarmaLabel.Right;
-            }
-            if (lblMetatypeLabel.Right > intWidth)
-            {
-                intWidth = lblMetatypeLabel.Right;
-            }
-            if (lblCharacterAliasLabel.Right > intWidth)
-            {
-                intWidth = lblCharacterAliasLabel.Right;
-            }
-            if (lblEssenceLabel.Right > intWidth)
-            {
-                intWidth = lblEssenceLabel.Right;
-            }
-            intWidth += 12;
-
-            lblEssence.Left = intWidth;
-            lblPlayerName.Left = intWidth;
-            lblCareerKarma.Left = intWidth;
-            lblCharacterAlias.Left = intWidth;
-            lblMetatype.Left = intWidth;
-            lblCharacterName.Left = intWidth;
-        }
 
         private void treCharacterList_AfterSelect(object sender, TreeViewEventArgs e)
         {
