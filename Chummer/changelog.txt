@@ -214,6 +214,9 @@ New Strings:
 - String_SubmersionType
 - String_Paragon
 - String_Stream
+- Label_InitRoller_ResultOf
+- String_KarmaRemaining
+- String_NuyenRemaining
 
 Changed Strings:
 

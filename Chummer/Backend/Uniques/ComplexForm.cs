@@ -301,7 +301,8 @@ namespace Chummer
                         // Fading cannot be lower than 2.
                         if (intFV < 2)
                             intFV = 2;
-                        strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Level", GlobalOptions.Language) + strSpaceCharacter + i.ToString() + ':' + strSpaceCharacter + intFV.ToString());
+                        strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Level", GlobalOptions.Language) + strSpaceCharacter + i.ToString(GlobalOptions.CultureInfo) +
+                                      LanguageManager.GetString("String_Colon", GlobalOptions.Language) + strSpaceCharacter + intFV.ToString(GlobalOptions.CultureInfo));
                     }
                     else
                     {

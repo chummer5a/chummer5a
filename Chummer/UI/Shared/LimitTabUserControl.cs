@@ -208,12 +208,12 @@ namespace Chummer.UI.Shared
                     if (intTargetLimit != -1)
                     {
                         TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
-                        string strName = objImprovement.UniqueName + ": ";
+                        string strName = objImprovement.UniqueName + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language);
                         if (objImprovement.Value > 0)
                             strName += '+';
                         strName += objImprovement.Value.ToString();
                         if (!string.IsNullOrEmpty(objImprovement.Condition))
-                            strName += ", " + objImprovement.Condition;
+                            strName += ',' + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objImprovement.Condition;
                         if (!objParentNode.Nodes.ContainsKey(strName))
                         {
                             TreeNode objNode = new TreeNode

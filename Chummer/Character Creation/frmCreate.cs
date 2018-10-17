@@ -1430,11 +1430,9 @@ namespace Chummer
             frmDiceHits frmWILHits = new frmDiceHits
             {
                 Text = LanguageManager.GetString("String_CyberzombieWILText", GlobalOptions.Language),
-                Description = LanguageManager.GetString("String_CyberzombieWILDescription", GlobalOptions.Language)
+                Description = LanguageManager.GetString("String_CyberzombieWILDescription", GlobalOptions.Language),
+                Dice = CharacterObject.WIL.TotalValue
             };
-            int intDice = CharacterObject.WIL.TotalValue;
-            int intThreshold = 3 + decimal.ToInt32(decimal.Floor(CharacterObject.Essence() - CharacterObject.ESS.MetatypeMaximum));
-            frmWILHits.Dice = intDice;
             frmWILHits.ShowDialog(this);
 
             if (frmWILHits.DialogResult != DialogResult.OK)
@@ -1443,6 +1441,7 @@ namespace Chummer
             int intWILResult = frmWILHits.Result;
 
             // The character gains 10 + ((Threshold - Hits) * 10)BP worth of Negative Qualities.
+            int intThreshold = 3 + decimal.ToInt32(decimal.Floor(CharacterObject.Essence() - CharacterObject.ESS.MetatypeMaximum));
             int intResult = 10;
             if (intWILResult < intThreshold)
             {
@@ -9767,7 +9766,7 @@ namespace Chummer
                     strComplexFormsBP = $"{intFormsPointsUsed.ToString(GlobalOptions.CultureInfo)}{LanguageManager.GetString("String_Of", GlobalOptions.Language)}{CharacterObject.CFPLimit.ToString(GlobalOptions.CultureInfo)}";
                     if (intFormsPointsUsed > CharacterObject.CFPLimit)
                     {
-                        strComplexFormsBP += ':' + strSpaceCharacter + ((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
+                        strComplexFormsBP += LanguageManager.GetString("String_Colon", GlobalOptions.Language) + strSpaceCharacter + ((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost).ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strPoints;
                     }
                 }
                 else

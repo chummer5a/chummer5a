@@ -3795,13 +3795,13 @@ namespace Chummer
                 string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if (strName == objImprovement.SourceName)
                     strName = objImprovement.UniqueName;
-                strName += ": ";
+                strName += LanguageManager.GetString("String_Colon", strLanguageToPrint) + LanguageManager.GetString("String_Space", strLanguageToPrint);
                 if (objImprovement.Value > 0)
                     strName += '+';
                 strName += objImprovement.Value.ToString(objCulture);
 
                 if (!string.IsNullOrEmpty(objImprovement.Condition))
-                    strName += ", " + objImprovement.Condition;
+                    strName += ',' + LanguageManager.GetString("String_Space", strLanguageToPrint) + objImprovement.Condition;
 
                 objWriter.WriteStartElement("limitmodifier");
                 objWriter.WriteElementString("name", strName);
@@ -3829,13 +3829,13 @@ namespace Chummer
                 string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if (strName == objImprovement.SourceName)
                     strName = objImprovement.UniqueName;
-                strName += ": ";
+                strName += LanguageManager.GetString("String_Colon", strLanguageToPrint) + LanguageManager.GetString("String_Space", strLanguageToPrint);
                 if (objImprovement.Value > 0)
                     strName += '+';
                 strName += objImprovement.Value.ToString(objCulture);
 
                 if (!string.IsNullOrEmpty(objImprovement.Condition))
-                    strName += ", " + objImprovement.Condition;
+                    strName += ',' + LanguageManager.GetString("String_Space", strLanguageToPrint) + objImprovement.Condition;
 
                 objWriter.WriteStartElement("limitmodifier");
                 objWriter.WriteElementString("name", strName);
@@ -3863,13 +3863,13 @@ namespace Chummer
                 string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if (strName == objImprovement.SourceName)
                     strName = objImprovement.UniqueName;
-                strName += ": ";
+                strName += LanguageManager.GetString("String_Colon", strLanguageToPrint) + LanguageManager.GetString("String_Space", strLanguageToPrint);
                 if (objImprovement.Value > 0)
                     strName += '+';
                 strName += objImprovement.Value.ToString(objCulture);
 
                 if (!string.IsNullOrEmpty(objImprovement.Condition))
-                    strName += ", " + objImprovement.Condition;
+                    strName += ',' + LanguageManager.GetString("String_Space", strLanguageToPrint) + objImprovement.Condition;
 
                 objWriter.WriteStartElement("limitmodifier");
                 objWriter.WriteElementString("name", strName);
@@ -4954,6 +4954,7 @@ namespace Chummer
 
         public string CalculateKarmaValue(string strLanguage, out int intReturn)
         {
+            string strColonCharacter = LanguageManager.GetString("String_Colon", GlobalOptions.Language);
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             string strMessage = LanguageManager.GetString("Message_KarmaValue", strLanguage) + Environment.NewLine;
             string strKarmaString = LanguageManager.GetString("String_Karma", strLanguage);
@@ -4965,7 +4966,7 @@ namespace Chummer
                 intReturn -= MetatypeBP;
             }
 
-            strMessage += Environment.NewLine + LanguageManager.GetString("Label_Base", strLanguage) + ':' +
+            strMessage += Environment.NewLine + LanguageManager.GetString("Label_Base", strLanguage) + strColonCharacter +
                           strSpaceCharacter + intReturn.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter +
                           strKarmaString;
 
@@ -5055,7 +5056,7 @@ namespace Chummer
                 if (intTemp != 0)
                 {
                     strMessage += Environment.NewLine + LanguageManager.GetString("String_Qualities", strLanguage) +
-                                  ':' + strSpaceCharacter + intTemp.ToString(GlobalOptions.CultureInfo) +
+                                  strColonCharacter + strSpaceCharacter + intTemp.ToString(GlobalOptions.CultureInfo) +
                                   strSpaceCharacter + strKarmaString;
                     intReturn += intTemp;
                 }
@@ -5065,7 +5066,7 @@ namespace Chummer
                 if (intTemp != 0)
                 {
                     strMessage += Environment.NewLine + LanguageManager.GetString("String_FreeSpells", strLanguage) +
-                                  ':' + strSpaceCharacter + intTemp.ToString(GlobalOptions.CultureInfo) +
+                                  strColonCharacter + strSpaceCharacter + intTemp.ToString(GlobalOptions.CultureInfo) +
                                   strSpaceCharacter + strKarmaString;
                     intReturn += intTemp;
                 }
@@ -5074,7 +5075,7 @@ namespace Chummer
                 intTemp = CFPLimit * ComplexFormKarmaCost;
                 if (intTemp != 0)
                 {
-                    strMessage += Environment.NewLine + LanguageManager.GetString("String_FreeCFs", strLanguage) + ':' +
+                    strMessage += Environment.NewLine + LanguageManager.GetString("String_FreeCFs", strLanguage) + strColonCharacter +
                                   strSpaceCharacter + intTemp.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter +
                                   strKarmaString;
                     intReturn += intTemp;
@@ -5103,7 +5104,7 @@ namespace Chummer
                 if (intTemp != 0)
                 {
                     strMessage += Environment.NewLine + LanguageManager.GetString("String_SkillPoints", strLanguage) +
-                                  ':' + strSpaceCharacter + intTemp.ToString(GlobalOptions.CultureInfo) +
+                                  strColonCharacter + strSpaceCharacter + intTemp.ToString(GlobalOptions.CultureInfo) +
                                   strSpaceCharacter + strKarmaString;
                     intReturn += intTemp;
                 }
@@ -5123,7 +5124,7 @@ namespace Chummer
                 if (intTemp != 0)
                 {
                     strMessage += Environment.NewLine +
-                                  LanguageManager.GetString("String_SkillGroupPoints", strLanguage) + ':' +
+                                  LanguageManager.GetString("String_SkillGroupPoints", strLanguage) + strColonCharacter +
                                   strSpaceCharacter + intTemp.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter +
                                   strKarmaString;
                     intReturn += intTemp;
@@ -5135,7 +5136,7 @@ namespace Chummer
                 {
                     strMessage += Environment.NewLine +
                                   LanguageManager.GetString("Checkbox_CreatePACKSKit_StartingNuyen", strLanguage) +
-                                  ':' + strSpaceCharacter + intTemp.ToString(GlobalOptions.CultureInfo) +
+                                  strColonCharacter + strSpaceCharacter + intTemp.ToString(GlobalOptions.CultureInfo) +
                                   strSpaceCharacter + strKarmaString;
                     intReturn += intTemp;
                 }
@@ -5144,7 +5145,7 @@ namespace Chummer
             int intContactPointsValue = ContactPoints * Options.KarmaContact;
             if (intContactPointsValue != 0)
             {
-                strMessage += Environment.NewLine + LanguageManager.GetString("String_Contacts", strLanguage) + ':' +
+                strMessage += Environment.NewLine + LanguageManager.GetString("String_Contacts", strLanguage) + strColonCharacter +
                               strSpaceCharacter + intContactPointsValue.ToString(GlobalOptions.CultureInfo) +
                               strSpaceCharacter + strKarmaString;
                 intReturn += intContactPointsValue;
@@ -5172,17 +5173,17 @@ namespace Chummer
             if (intKnowledgePointsValue != 0)
             {
                 strMessage += Environment.NewLine + LanguageManager.GetString("Label_KnowledgeSkills", strLanguage) +
-                              ':' + strSpaceCharacter + intKnowledgePointsValue.ToString(GlobalOptions.CultureInfo) +
+                              strColonCharacter + strSpaceCharacter + intKnowledgePointsValue.ToString(GlobalOptions.CultureInfo) +
                               strSpaceCharacter + strKarmaString;
                 intReturn += intKnowledgePointsValue;
                 intExtraKarmaToRemoveForPointBuyComparison += intKnowledgePointsValue;
             }
 
             strMessage += Environment.NewLine + Environment.NewLine +
-                          LanguageManager.GetString("String_Total", strLanguage) + ':' + strSpaceCharacter +
+                          LanguageManager.GetString("String_Total", strLanguage) + strColonCharacter + strSpaceCharacter +
                           intReturn.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + strKarmaString;
             strMessage += Environment.NewLine + Environment.NewLine +
-                          LanguageManager.GetString("String_TotalComparisonWithPointBuy", strLanguage) + ':' +
+                          LanguageManager.GetString("String_TotalComparisonWithPointBuy", strLanguage) + strColonCharacter +
                           strSpaceCharacter +
                           (intReturn - intExtraKarmaToRemoveForPointBuyComparison).ToString(GlobalOptions.CultureInfo) +
                           strSpaceCharacter + strKarmaString;
@@ -9300,7 +9301,7 @@ namespace Chummer
                             if (blnFirstModifier)
                             {
                                 blnFirstModifier = false;
-                                objToolTip.Append(':');
+                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
                                 objToolTip.Append(',');
@@ -9371,7 +9372,7 @@ namespace Chummer
                             if (blnFirstModifier)
                             {
                                 blnFirstModifier = false;
-                                objToolTip.Append(':');
+                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
                                 objToolTip.Append(',');
@@ -9425,7 +9426,7 @@ namespace Chummer
                             if (blnFirstModifier)
                             {
                                 blnFirstModifier = false;
-                                objToolTip.Append(':');
+                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
                                 objToolTip.Append(',');
@@ -9491,7 +9492,7 @@ namespace Chummer
                             if (blnFirstModifier)
                             {
                                 blnFirstModifier = false;
-                                objToolTip.Append(':');
+                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
                                 objToolTip.Append(',');
@@ -9552,7 +9553,7 @@ namespace Chummer
                             if (blnFirstModifier)
                             {
                                 blnFirstModifier = false;
-                                objToolTip.Append(':');
+                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
                                 objToolTip.Append(',');
@@ -9609,7 +9610,7 @@ namespace Chummer
                             if (blnFirstModifier)
                             {
                                 blnFirstModifier = false;
-                                objToolTip.Append(':');
+                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
                                 objToolTip.Append(',');
@@ -9666,7 +9667,7 @@ namespace Chummer
                             if (blnFirstModifier)
                             {
                                 blnFirstModifier = false;
-                                objToolTip.Append(':');
+                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
                                 objToolTip.Append(',');
@@ -9723,7 +9724,7 @@ namespace Chummer
                             if (blnFirstModifier)
                             {
                                 blnFirstModifier = false;
-                                objToolTip.Append(':');
+                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
                                 objToolTip.Append(',');
@@ -9780,7 +9781,7 @@ namespace Chummer
                             if (blnFirstModifier)
                             {
                                 blnFirstModifier = false;
-                                objToolTip.Append(':');
+                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
                                 objToolTip.Append(',');
@@ -9837,7 +9838,7 @@ namespace Chummer
                             if (blnFirstModifier)
                             {
                                 blnFirstModifier = false;
-                                objToolTip.Append(':');
+                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
                                 objToolTip.Append(',');
@@ -9894,7 +9895,7 @@ namespace Chummer
                             if (blnFirstModifier)
                             {
                                 blnFirstModifier = false;
-                                objToolTip.Append(':');
+                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
                                 objToolTip.Append(',');
@@ -9951,7 +9952,7 @@ namespace Chummer
                             if (blnFirstModifier)
                             {
                                 blnFirstModifier = false;
-                                objToolTip.Append(':');
+                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
                                 objToolTip.Append(',');
@@ -10008,7 +10009,7 @@ namespace Chummer
                             if (blnFirstModifier)
                             {
                                 blnFirstModifier = false;
-                                objToolTip.Append(':');
+                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
                                 objToolTip.Append(',');
@@ -10076,7 +10077,7 @@ namespace Chummer
                             if (blnFirstModifier)
                             {
                                 blnFirstModifier = false;
-                                objToolTip.Append(':');
+                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
                                 objToolTip.Append(',');
@@ -10137,7 +10138,7 @@ namespace Chummer
                             if (blnFirstModifier)
                             {
                                 blnFirstModifier = false;
-                                objToolTip.Append(':');
+                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
                                 objToolTip.Append(',');
@@ -10199,7 +10200,7 @@ namespace Chummer
                             if (blnFirstModifier)
                             {
                                 blnFirstModifier = false;
-                                objToolTip.Append(':');
+                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
                                 objToolTip.Append(',');
@@ -10279,7 +10280,7 @@ namespace Chummer
                             if (blnFirstModifier)
                             {
                                 blnFirstModifier = false;
-                                objToolTip.Append(':');
+                                objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
                                 objToolTip.Append(',');

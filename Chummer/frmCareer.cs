@@ -15619,14 +15619,14 @@ namespace Chummer
             // Configure the Karma chart.
             ChartArea objKarmaChartArea = chtKarma.ChartAreas[0];
             objKarmaChartArea.AxisX.LabelStyle.Enabled = false;
-            objKarmaChartArea.AxisY.Title = LanguageManager.GetString("Label_KarmaRemaining", GlobalOptions.Language).TrimEndOnce(':');
+            objKarmaChartArea.AxisY.Title = LanguageManager.GetString("String_KarmaRemaining", GlobalOptions.Language);
             objKarmaChartArea.AxisX.Minimum = 0;
             objKarmaChartArea.AxisX.Maximum = (KarmaLast - KarmaFirst).TotalDays;
 
             // Configure the Nuyen chart.
             ChartArea objNuyenChartArea = chtNuyen.ChartAreas[0];
             objNuyenChartArea.AxisX.LabelStyle.Enabled = false;
-            objNuyenChartArea.AxisY.Title = LanguageManager.GetString("Label_OtherNuyenRemain", GlobalOptions.Language).TrimEndOnce(':');
+            objNuyenChartArea.AxisY.Title = LanguageManager.GetString("String_NuyenRemaining", GlobalOptions.Language);
             objNuyenChartArea.AxisX.Minimum = 0;
             objNuyenChartArea.AxisX.Maximum = (NuyenLast - NuyenFirst).TotalDays;
 

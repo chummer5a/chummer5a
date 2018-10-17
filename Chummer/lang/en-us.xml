@@ -244,6 +244,10 @@
       <text>Please input the total of the results of the d6.</text>
     </string>
     <string>
+      <key>Label_InitRoller_ResultOf</key>
+      <text>Result of {0}D6:</text>
+    </string>
+    <string>
       <key>String_BP</key>
       <text>BP</text>
     </string>
@@ -538,6 +542,10 @@
     <string>
       <key>Checkbox_Randomize1D6</key>
       <text>Randomize 1D6</text>
+    </string>
+    <string>
+      <key>String_KarmaRemaining</key>
+      <text>Karma Remaining</text>
     </string>
     <string>
       <key>Label_KarmaRemaining</key>
@@ -5550,6 +5558,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Label_OtherEssence</key>
       <text>Essence:</text>
+    </string>
+    <string>
+      <key>String_NuyenRemaining</key>
+      <text>Nuyen Remaining</text>
     </string>
     <string>
       <key>Label_OtherNuyenRemain</key>
