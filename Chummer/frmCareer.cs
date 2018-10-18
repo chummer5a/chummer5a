@@ -4221,6 +4221,7 @@ namespace Chummer
                 objUndo.CreateKarma(KarmaExpenseType.AddCritterPower, objPower.InternalId);
                 objExpense.Undo = objUndo;
 
+                CharacterObject.Karma -= objPower.Karma;
                 CharacterObject.CritterPowers.Add(objPower);
                 IsCharacterUpdateRequested = true;
 
