@@ -4458,11 +4458,11 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedNegativeQualities</key>
-			<text>Charakteren gestatten, mehr als 35 GP für Nachteile zu erhalten</text>
+			<text>Charakteren gestatten, das Limit für negative Gaben zu überschreiten</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedNegativeQualitiesLimit</key>
-			<text>Charaktere können maximal 35 GP für Nachteile erhalten</text>
+			<text>Charaktere erhalten kein Karma, wenn das Limit für negative Gaben erreicht ist</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_StartupFullscreen</key>
@@ -9386,6 +9386,30 @@
 		<string>
 			<key>Label_InitRoller_ResultOf</key>
 			<text>Ergebnis von {0}W6:</text>
+		</string>
+		<string>
+			<key>Title_HeroLabImporter</key>
+			<text>Hero Lab Importierer</text>
+		</string>
+		<string>
+			<key>Message_HeroLabImporterWarning</key>
+			<text>Aufgrund der unterschiedlichen Art und Weise, wie Hero Lab und Chummer5a mit den Daten der gespeicherten Charaktere umgehen, werden einige Elemente falsch in Chummer5a importiert, insbesondere in Bezug auf die Karmazuteilung für Charaktere bei der Erstellung.\n\nZusätzlich werden die folgenden Elemente nicht richtig importiert:\n - Komplexe Formen\n - Kampfkünste\n - Alles, was mit Initiationen und Wandlungen zu tun hat\n - Mystischen Adepten PPs\n - Geister und Sprites\n - Fahrzeuge\n - Erweiterte KI-Programme\n\n\nNicht-mundanen Charakteren, die im Erstellungsmodus mit der Prioritäts- oder Zehn-Punkte-Option erstellt wurden, müssen zudem ihre Prioritäten nach dem Import erneut anwenden (Spezial &gt; Ändere Prioritätenauswahl &gt; mit OK bestätigen).\n\nSind Sie sicher, dass Sie dieses Werkzeug benutzen wollen?</text>
+		</string>
+		<string>
+			<key>Message_HeroLabImporterWarning_Title</key>
+			<text>Hero Lab Importierprobleme</text>
+		</string>
+		<string>
+			<key>Label_HeroLabTrademarks</key>
+			<text>Hero Lab und das Hero Lab-Logo sind eingetragene Warenzeichen von LWD Technology, Inc.</text>
+		</string>
+		<string>
+			<key>String_SelectPORFile</key>
+			<text>POR-Datei wählen</text>
+		</string>
+		<string>
+			<key>String_ImportCharacter</key>
+			<text>Charakter importieren</text>
 		</string>
 	</strings>
 </chummer>
