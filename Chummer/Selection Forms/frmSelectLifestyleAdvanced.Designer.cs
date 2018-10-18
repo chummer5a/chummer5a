@@ -82,6 +82,7 @@ namespace Chummer
             this.Label_SelectAdvancedLifestyle_Base_Neighborhood = new System.Windows.Forms.Label();
             this.Label_SelectAdvancedLifestyle_Base_Security = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSecurity)).BeginInit();
@@ -90,6 +91,7 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudBonusLP)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
+            this.flowLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // Label_SelectAdvancedLifestyle_Upgrade_Comforts
@@ -108,8 +110,7 @@ namespace Chummer
             // 
             this.cmdOKAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdOKAdd.AutoSize = true;
-            this.cmdOKAdd.Location = new System.Drawing.Point(81, 0);
-            this.cmdOKAdd.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.cmdOKAdd.Location = new System.Drawing.Point(84, 3);
             this.cmdOKAdd.Name = "cmdOKAdd";
             this.cmdOKAdd.Size = new System.Drawing.Size(75, 23);
             this.cmdOKAdd.TabIndex = 27;
@@ -123,8 +124,7 @@ namespace Chummer
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.AutoSize = true;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(0, 0);
-            this.cmdCancel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.cmdCancel.Location = new System.Drawing.Point(3, 3);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 28;
@@ -137,8 +137,7 @@ namespace Chummer
             // 
             this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdOK.AutoSize = true;
-            this.cmdOK.Location = new System.Drawing.Point(162, 0);
-            this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.cmdOK.Location = new System.Drawing.Point(165, 3);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 26;
@@ -400,12 +399,10 @@ namespace Chummer
             // 
             // cmdAddQuality
             // 
-            this.cmdAddQuality.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdAddQuality.AutoSize = true;
             this.cmdAddQuality.Location = new System.Drawing.Point(3, 3);
             this.cmdAddQuality.Name = "cmdAddQuality";
-            this.cmdAddQuality.Size = new System.Drawing.Size(144, 23);
+            this.cmdAddQuality.Size = new System.Drawing.Size(90, 23);
             this.cmdAddQuality.TabIndex = 51;
             this.cmdAddQuality.Tag = "Button_AddQuality";
             this.cmdAddQuality.Text = "Add Quality";
@@ -414,13 +411,11 @@ namespace Chummer
             // 
             // cmdDeleteQuality
             // 
-            this.cmdDeleteQuality.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdDeleteQuality.AutoSize = true;
             this.cmdDeleteQuality.Enabled = false;
-            this.cmdDeleteQuality.Location = new System.Drawing.Point(153, 3);
+            this.cmdDeleteQuality.Location = new System.Drawing.Point(99, 3);
             this.cmdDeleteQuality.Name = "cmdDeleteQuality";
-            this.cmdDeleteQuality.Size = new System.Drawing.Size(145, 23);
+            this.cmdDeleteQuality.Size = new System.Drawing.Size(90, 23);
             this.cmdDeleteQuality.TabIndex = 52;
             this.cmdDeleteQuality.Tag = "Button_DeleteQuality";
             this.cmdDeleteQuality.Text = "Delete Quality";
@@ -432,7 +427,6 @@ namespace Chummer
             this.treLifestyleQualities.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.SetColumnSpan(this.treLifestyleQualities, 2);
             this.treLifestyleQualities.HideSelection = false;
             this.treLifestyleQualities.Location = new System.Drawing.Point(3, 32);
             this.treLifestyleQualities.Name = "treLifestyleQualities";
@@ -677,56 +671,55 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.ColumnCount = 6;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 151F));
+            this.tableLayoutPanel1.ColumnCount = 5;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Controls.Add(this.treLifestyleQualities, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblQualitySource, 3, 14);
-            this.tableLayoutPanel1.Controls.Add(this.cmdDeleteQuality, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblQualityCost, 3, 13);
-            this.tableLayoutPanel1.Controls.Add(this.cmdAddQuality, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblQualitySourceLabel, 2, 14);
-            this.tableLayoutPanel1.Controls.Add(this.nudBonusLP, 3, 2);
-            this.tableLayoutPanel1.Controls.Add(this.lblQualityCostLabel, 2, 13);
-            this.tableLayoutPanel1.Controls.Add(this.chkPrimaryTenant, 4, 8);
-            this.tableLayoutPanel1.Controls.Add(this.chkBonusLPRandomize, 4, 2);
-            this.tableLayoutPanel1.Controls.Add(this.lblQualityLp, 3, 12);
-            this.tableLayoutPanel1.Controls.Add(this.lblLifestyleNameLabel, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblQualityLPLabel, 2, 12);
-            this.tableLayoutPanel1.Controls.Add(this.txtLifestyleName, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblBonusLP, 2, 2);
-            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Lifestyle, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.chkTrustFund, 4, 9);
-            this.tableLayoutPanel1.Controls.Add(this.cboBaseLifestyle, 3, 1);
-            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Comforts, 2, 4);
-            this.tableLayoutPanel1.Controls.Add(this.lblSource, 3, 11);
-            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Neighborhood, 2, 5);
-            this.tableLayoutPanel1.Controls.Add(this.lblSourceLabel, 2, 11);
-            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Securities, 2, 6);
-            this.tableLayoutPanel1.Controls.Add(this.lblCost, 3, 10);
-            this.tableLayoutPanel1.Controls.Add(this.lblComfortTotal, 5, 4);
-            this.tableLayoutPanel1.Controls.Add(this.lblCostLabel, 2, 10);
-            this.tableLayoutPanel1.Controls.Add(this.lblAreaTotal, 5, 5);
-            this.tableLayoutPanel1.Controls.Add(this.nudPercentage, 3, 9);
-            this.tableLayoutPanel1.Controls.Add(this.nudRoommates, 3, 8);
-            this.tableLayoutPanel1.Controls.Add(this.lblPercentage, 2, 9);
-            this.tableLayoutPanel1.Controls.Add(this.lblSecurityTotal, 5, 6);
-            this.tableLayoutPanel1.Controls.Add(this.lblRoommates, 2, 8);
-            this.tableLayoutPanel1.Controls.Add(this.nudComforts, 4, 4);
-            this.tableLayoutPanel1.Controls.Add(this.nudArea, 4, 5);
-            this.tableLayoutPanel1.Controls.Add(this.nudSecurity, 4, 6);
-            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Upgrade_Comforts, 4, 3);
-            this.tableLayoutPanel1.Controls.Add(this.lblTotalLPLabel, 2, 7);
-            this.tableLayoutPanel1.Controls.Add(this.lblTotalLP, 3, 7);
-            this.tableLayoutPanel1.Controls.Add(this.chkQualityContributesLP, 4, 12);
-            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Base_Comforts, 3, 4);
-            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Base_Neighborhood, 3, 5);
-            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Base_Security, 3, 6);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 2, 15);
+            this.tableLayoutPanel1.Controls.Add(this.lblQualitySource, 2, 14);
+            this.tableLayoutPanel1.Controls.Add(this.lblQualityCost, 2, 13);
+            this.tableLayoutPanel1.Controls.Add(this.lblQualitySourceLabel, 1, 14);
+            this.tableLayoutPanel1.Controls.Add(this.nudBonusLP, 2, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lblQualityCostLabel, 1, 13);
+            this.tableLayoutPanel1.Controls.Add(this.chkPrimaryTenant, 3, 8);
+            this.tableLayoutPanel1.Controls.Add(this.chkBonusLPRandomize, 3, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lblQualityLp, 2, 12);
+            this.tableLayoutPanel1.Controls.Add(this.lblLifestyleNameLabel, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblQualityLPLabel, 1, 12);
+            this.tableLayoutPanel1.Controls.Add(this.txtLifestyleName, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblBonusLP, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Lifestyle, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.chkTrustFund, 3, 9);
+            this.tableLayoutPanel1.Controls.Add(this.cboBaseLifestyle, 2, 1);
+            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Comforts, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.lblSource, 2, 11);
+            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Neighborhood, 1, 5);
+            this.tableLayoutPanel1.Controls.Add(this.lblSourceLabel, 1, 11);
+            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Securities, 1, 6);
+            this.tableLayoutPanel1.Controls.Add(this.lblCost, 2, 10);
+            this.tableLayoutPanel1.Controls.Add(this.lblComfortTotal, 4, 4);
+            this.tableLayoutPanel1.Controls.Add(this.lblCostLabel, 1, 10);
+            this.tableLayoutPanel1.Controls.Add(this.lblAreaTotal, 4, 5);
+            this.tableLayoutPanel1.Controls.Add(this.nudPercentage, 2, 9);
+            this.tableLayoutPanel1.Controls.Add(this.nudRoommates, 2, 8);
+            this.tableLayoutPanel1.Controls.Add(this.lblPercentage, 1, 9);
+            this.tableLayoutPanel1.Controls.Add(this.lblSecurityTotal, 4, 6);
+            this.tableLayoutPanel1.Controls.Add(this.lblRoommates, 1, 8);
+            this.tableLayoutPanel1.Controls.Add(this.nudComforts, 3, 4);
+            this.tableLayoutPanel1.Controls.Add(this.nudArea, 3, 5);
+            this.tableLayoutPanel1.Controls.Add(this.nudSecurity, 3, 6);
+            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Upgrade_Comforts, 3, 3);
+            this.tableLayoutPanel1.Controls.Add(this.lblTotalLPLabel, 1, 7);
+            this.tableLayoutPanel1.Controls.Add(this.lblTotalLP, 2, 7);
+            this.tableLayoutPanel1.Controls.Add(this.chkQualityContributesLP, 3, 12);
+            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Base_Comforts, 2, 4);
+            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Base_Neighborhood, 2, 5);
+            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Base_Security, 2, 6);
+            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 1, 15);
+            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel2, 0, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 16;
@@ -794,10 +787,23 @@ namespace Chummer
             this.flowLayoutPanel1.Controls.Add(this.cmdOKAdd);
             this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(366, 397);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(363, 394);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(237, 23);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(243, 29);
             this.flowLayoutPanel1.TabIndex = 87;
+            // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.AutoSize = true;
+            this.flowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowLayoutPanel2.Controls.Add(this.cmdAddQuality);
+            this.flowLayoutPanel2.Controls.Add(this.cmdDeleteQuality);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(192, 29);
+            this.flowLayoutPanel2.TabIndex = 88;
             // 
             // frmSelectLifestyleAdvanced
             // 
@@ -828,6 +834,8 @@ namespace Chummer
             this.tableLayoutPanel1.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
+            this.flowLayoutPanel2.ResumeLayout(false);
+            this.flowLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -912,5 +920,6 @@ namespace Chummer
         private Label Label_SelectAdvancedLifestyle_Base_Security;
         private FlowLayoutPanel flowLayoutPanel1;
         private BufferedTableLayoutPanel tableLayoutPanel1;
+        private FlowLayoutPanel flowLayoutPanel2;
     }
 }

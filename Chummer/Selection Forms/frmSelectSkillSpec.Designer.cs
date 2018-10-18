@@ -45,8 +45,7 @@ namespace Chummer
             // 
             this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdOK.AutoSize = true;
-            this.cmdOK.Location = new System.Drawing.Point(81, 0);
-            this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.cmdOK.Location = new System.Drawing.Point(84, 3);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 3;
@@ -60,8 +59,7 @@ namespace Chummer
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.AutoSize = true;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(0, 0);
-            this.cmdCancel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.cmdCancel.Location = new System.Drawing.Point(3, 3);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 4;
@@ -78,7 +76,7 @@ namespace Chummer
             this.cboSpec.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSpec.DropDownWidth = 252;
             this.cboSpec.FormattingEnabled = true;
-            this.cboSpec.Location = new System.Drawing.Point(47, 28);
+            this.cboSpec.Location = new System.Drawing.Point(47, 30);
             this.cboSpec.Name = "cboSpec";
             this.cboSpec.Size = new System.Drawing.Size(276, 21);
             this.cboSpec.TabIndex = 2;
@@ -89,7 +87,7 @@ namespace Chummer
             // 
             this.lblAmmoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblAmmoLabel.AutoSize = true;
-            this.lblAmmoLabel.Location = new System.Drawing.Point(3, 31);
+            this.lblAmmoLabel.Location = new System.Drawing.Point(3, 33);
             this.lblAmmoLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAmmoLabel.Name = "lblAmmoLabel";
             this.lblAmmoLabel.Size = new System.Drawing.Size(38, 13);
@@ -117,10 +115,10 @@ namespace Chummer
             this.chkKarma.AutoSize = true;
             this.chkKarma.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.tableLayoutPanel1.SetColumnSpan(this.chkKarma, 2);
-            this.chkKarma.Location = new System.Drawing.Point(3, 55);
+            this.chkKarma.Location = new System.Drawing.Point(3, 57);
             this.chkKarma.Name = "chkKarma";
             this.chkKarma.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.chkKarma.Size = new System.Drawing.Size(132, 25);
+            this.chkKarma.Size = new System.Drawing.Size(131, 23);
             this.chkKarma.TabIndex = 15;
             this.chkKarma.Tag = "String_BuyWithKarma";
             this.chkKarma.Text = "Buy with Karma";
@@ -145,7 +143,7 @@ namespace Chummer
             this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.Size = new System.Drawing.Size(326, 83);
@@ -158,9 +156,10 @@ namespace Chummer
             this.flowLayoutPanel1.Controls.Add(this.cmdOK);
             this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(167, 57);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(164, 54);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(156, 23);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(162, 29);
             this.flowLayoutPanel1.TabIndex = 16;
             // 
             // frmSelectSpec

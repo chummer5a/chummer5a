@@ -13,7 +13,7 @@
   <xsl:variable name="lang.Acid"      select="'Säure'"/>
   <xsl:variable name="lang.Action"      select="'Aktion'"/>
   <xsl:variable name="lang.Addiction"  select="'Abhängigkeit'"/>
-  <xsl:variable name="lang.Adept"      select="'Geschickt'"/>
+  <xsl:variable name="lang.Adept"      select="'Adept'"/>
   <xsl:variable name="lang.Age"      select="'Alter'"/>
   <xsl:variable name="lang.AGI"      select="'GES'"/>
   <xsl:variable name="lang.Agility"    select="'Geschicklichkeit'"/>
@@ -37,7 +37,7 @@
   <xsl:variable name="lang.Attribute"    select="'Attribut'"/>
   <xsl:variable name="lang.Attributes"  select="'Attribute'"/>
   <xsl:variable name="lang.Available"    select="'Verfügbar'"/>
-  <xsl:variable name="lang.Awakened"    select="'Erwachen'"/>
+  <xsl:variable name="lang.Awakened"    select="'Erwacht'"/>
   <xsl:variable name="lang.Aware"    select="'Bewusst'"/>
   <xsl:variable name="lang.Background"  select="'Hintergrund'"/>
   <xsl:variable name="lang.Base"      select="'Basis'"/>
@@ -151,18 +151,18 @@
   <xsl:variable name="lang.Mana"    select="'Mana'"/>
   <xsl:variable name="lang.Maneuvers"    select="'Manöver'"/>
   <xsl:variable name="lang.Manipulation"  select="'Manipulation'"/>
-  <xsl:variable name="lang.Manual"    select="'Manual'"/>
+  <xsl:variable name="lang.Manual"    select="'Manuell'"/>
   <xsl:variable name="lang.Memory"    select="'Erinnern'"/>
   <xsl:variable name="lang.Mental"    select="'Geistig'"/>
   <xsl:variable name="lang.Metamagics"  select="'Metamagie'"/>
   <xsl:variable name="lang.Metatype"    select="'Metatyp'"/>
   <xsl:variable name="lang.Mod"      select="'Mod'"/>
   <xsl:variable name="lang.Mode"      select="'Modus'"/>
-  <xsl:variable name="lang.Model"      select="'Model'"/>
+  <xsl:variable name="lang.Model"      select="'Modell'"/>
   <xsl:variable name="lang.Modifications"  select="'Modifikationen'"/>
   <xsl:variable name="lang.Month"      select="'Monat'"/>
   <xsl:variable name="lang.Months"    select="'Monate'"/>
-  <xsl:variable name="lang.Mount"    select="'Montieren'"/>
+  <xsl:variable name="lang.Mount"    select="'Halterung'"/>
   <xsl:variable name="lang.Movement"    select="'Bewegung'"/>
   <xsl:variable name="lang.Mugshot"    select="'Portrait'"/>
   <xsl:variable name="lang.Name"      select="'Name'"/>
@@ -174,7 +174,7 @@
   <xsl:variable name="lang.Notoriety"    select="'Schlechter Ruf'"/>
   <xsl:variable name="lang.Nuyen"      select="'Nuyen'"/>
   <xsl:variable name="lang.Other"      select="'Andere'"/>
-  <xsl:variable name="lang.Overflow"      select="'Überlaufen'"/>
+  <xsl:variable name="lang.Overflow"      select="'Überzählig'"/>
   <xsl:variable name="lang.OVR"      select="'ÜbS&#160;'"/>
   <xsl:variable name="lang.Pathogen"    select="'Pathogen'"/>
   <xsl:variable name="lang.Permanent"    select="'Permanent'"/>
@@ -301,7 +301,7 @@
   <xsl:variable name="lang.HobbiesVice"    select="'Hobbys/Untugend'"/>
   <xsl:variable name="lang.IDcredsticks"    select="'ID/Credsticks'"/>
   <xsl:variable name="lang.InitiateGrade"    select="'Initiationsgrad'"/>
-  <xsl:variable name="lang.InitiationNotes"  select="'Initiationsnoten'"/>
+  <xsl:variable name="lang.InitiationNotes"  select="'Initiationsnotizen'"/>
   <xsl:variable name="lang.JudgeIntentions"  select="'Menschenkenntnis'"/>
   <xsl:variable name="lang.KnowledgeSkills"  select="'Wissensfertigkeiten'"/>
   <xsl:variable name="lang.LiftCarry"      select="'Heben/Tragen'"/>
@@ -339,7 +339,7 @@
   <xsl:variable name="lang.ResistDrain"    select="'Entzugswiderstand mit'"/>
   <xsl:variable name="lang.ResistFading"    select="'Schwundwiderstand mit'"/>
   <xsl:variable name="lang.RiggerInitiative"  select="'Rigger AR Initiative'"/>
-  <xsl:variable name="lang.SelectedGear"    select="'Ausgewähltes Zahnrad'"/>
+  <xsl:variable name="lang.SelectedGear"    select="'Gewählte Ausrüstung'"/>
   <xsl:variable name="lang.SkillGroup"    select="'Fertigkeitsgruppe'"/>
   <xsl:variable name="lang.SkillGroups"    select="'Fertigkeitsgruppen'"/>
   <xsl:variable name="lang.SpecialAttributes"  select="'Spezialattribute'"/>

@@ -6086,7 +6086,7 @@ namespace Chummer
                 objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[id = \"" + frmPickWeaponAccessory.SelectedAccessory + "\"]");
 
                 WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
-                objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.SelectedMount, Convert.ToInt32(frmPickWeaponAccessory.SelectedRating));
+                objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.SelectedMount, frmPickWeaponAccessory.SelectedRating);
                 objAccessory.Parent = objWeapon;
 
                 if (objAccessory.Cost.StartsWith("Variable("))
@@ -6785,7 +6785,7 @@ namespace Chummer
                 objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[id = \"" + frmPickWeaponAccessory.SelectedAccessory + "\"]");
 
                 WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
-                objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.SelectedMount, Convert.ToInt32(frmPickWeaponAccessory.SelectedRating));
+                objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.SelectedMount, frmPickWeaponAccessory.SelectedRating);
                 objAccessory.Parent = objWeapon;
 
                 // Check the item's Cost and make sure the character can afford it.
@@ -9117,7 +9117,9 @@ namespace Chummer
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
+
             objLocation.Name = frmPickText.SelectedValue;
+            treGear.SelectedNode.Text = objLocation.DisplayName(GlobalOptions.Language);
 
             IsDirty = true;
         }
@@ -9134,7 +9136,9 @@ namespace Chummer
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
+
             objLocation.Name = frmPickText.SelectedValue;
+            treWeapons.SelectedNode.Text = objLocation.DisplayName(GlobalOptions.Language);
 
             IsDirty = true;
         }
@@ -9212,7 +9216,9 @@ namespace Chummer
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
+
             objLocation.Name = frmPickText.SelectedValue;
+            treArmor.SelectedNode.Text = objLocation.DisplayName(GlobalOptions.Language);
 
             IsDirty = true;
         }
@@ -9929,7 +9935,9 @@ namespace Chummer
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
+
             objLocation.Name = frmPickText.SelectedValue;
+            treVehicles.SelectedNode.Text = objLocation.DisplayName(GlobalOptions.Language);
 
             IsDirty = true;
         }
@@ -13537,9 +13545,17 @@ namespace Chummer
                 // gpbWeaponsCommon
                 lblWeaponName.Text = objSelectedAccessory.DisplayNameShort(GlobalOptions.Language);
                 lblWeaponCategory.Text = LanguageManager.GetString("String_WeaponAccessory", GlobalOptions.Language);
-                lblWeaponRatingLabel.Visible = true;
-                lblWeaponRating.Visible = true;
-                lblWeaponRating.Text = objSelectedAccessory.Rating.ToString();
+                if (objSelectedAccessory.MaxRating > 0)
+                {
+                    lblWeaponRatingLabel.Visible = true;
+                    lblWeaponRating.Visible = true;
+                    lblWeaponRating.Text = objSelectedAccessory.Rating.ToString(GlobalOptions.CultureInfo);
+                }
+                else
+                {
+                    lblWeaponRatingLabel.Visible = false;
+                    lblWeaponRating.Visible = false;
+                }
                 lblWeaponCapacityLabel.Visible = false;
                 lblWeaponCapacity.Visible = false;
                 lblWeaponAvail.Text = objSelectedAccessory.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
