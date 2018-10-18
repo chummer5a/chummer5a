@@ -9116,7 +9116,9 @@ namespace Chummer
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
+
             objLocation.Name = frmPickText.SelectedValue;
+            treGear.SelectedNode.Text = objLocation.DisplayName(GlobalOptions.Language);
 
             IsDirty = true;
         }
@@ -9133,7 +9135,9 @@ namespace Chummer
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
+
             objLocation.Name = frmPickText.SelectedValue;
+            treWeapons.SelectedNode.Text = objLocation.DisplayName(GlobalOptions.Language);
 
             IsDirty = true;
         }
@@ -9211,7 +9215,9 @@ namespace Chummer
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
+
             objLocation.Name = frmPickText.SelectedValue;
+            treArmor.SelectedNode.Text = objLocation.DisplayName(GlobalOptions.Language);
 
             IsDirty = true;
         }
@@ -9928,7 +9934,9 @@ namespace Chummer
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
+
             objLocation.Name = frmPickText.SelectedValue;
+            treVehicles.SelectedNode.Text = objLocation.DisplayName(GlobalOptions.Language);
 
             IsDirty = true;
         }
