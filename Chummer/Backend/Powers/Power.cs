@@ -939,6 +939,9 @@ namespace Chummer
                 ),
                 new DependancyGraphNode<string>(nameof(DoesNotHaveFreeLevels),
                     new DependancyGraphNode<string>(nameof(FreeLevels))
+                ),
+                new DependancyGraphNode<string>(nameof(AdeptWayDiscountEnabled),
+                    new DependancyGraphNode<string>(nameof(AdeptWayDiscount))
                 )
             );
 
@@ -987,6 +990,11 @@ namespace Chummer
                         ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, false, intTotalRating, DisplayNameShort(GlobalOptions.Language));
                     }
                 }
+            }
+
+            if (lstNamesOfChangedProperties.Contains(nameof(AdeptWayDiscountEnabled)))
+            {
+                RefreshDiscountedAdeptWay(AdeptWayDiscountEnabled);
             }
 
             foreach (string strPropertyToChange in lstNamesOfChangedProperties)

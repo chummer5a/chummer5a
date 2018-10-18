@@ -264,6 +264,7 @@ namespace Chummer
             _lstMentorSpirits.CollectionChanged += MentorSpiritsOnCollectionChanged;
             _lstPowers.ListChanged += PowersOnListChanged;
             _lstPowers.BeforeRemove += PowersOnBeforeRemove;
+            _lstQualities.CollectionChanged += QualitiesCollectionChanged;
 
             RefreshAttributeBindings();
 
@@ -904,6 +905,19 @@ namespace Chummer
         private void MentorSpiritsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged(nameof(MentorSpirits));
+        }
+
+        // TODO: Make AdeptWayDiscountEnabled check less hacky
+        // Right now, this is OK-ish because adept way discount requirement nodes only check for qualities, but users might mix things up with custom content
+        private void QualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action != NotifyCollectionChangedAction.Move)
+            {
+                foreach (Power objPower in Powers)
+                {
+                    objPower.OnPropertyChanged(nameof(Power.AdeptWayDiscountEnabled));
+                }
+            }
         }
 
         private void ExpenseLogOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
