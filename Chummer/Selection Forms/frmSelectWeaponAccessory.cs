@@ -32,6 +32,7 @@ namespace Chummer
     {
         private string _strSelectedAccessory;
         private decimal _decMarkup;
+        private int _intSelectedRating;
 
         private bool _blnLoading = true;
         private readonly List<string> _lstAllowedMounts = new List<string>();
@@ -296,21 +297,7 @@ namespace Chummer
         /// <summary>
         /// Rating of the Accessory.
         /// </summary>
-        public decimal SelectedRating
-        {
-            get
-            {
-                if (nudRating.Enabled)
-                {
-                    return nudRating.Value;
-                }
-                else
-                {
-                    // Display Rating for items without one as 0
-                    return 0;
-                }
-            }
-        }
+        public int SelectedRating => _intSelectedRating;
 
         /// <summary>
         /// GUID of the current weapon for which the accessory is being selected
@@ -621,6 +608,7 @@ namespace Chummer
             {
                 _strSelectedAccessory = strSelectedId;
                 _decMarkup = nudMarkup.Value;
+                _intSelectedRating = nudRating.Visible ? decimal.ToInt32(nudRating.Value) : 0;
                 _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
                 DialogResult = DialogResult.OK;
             }
