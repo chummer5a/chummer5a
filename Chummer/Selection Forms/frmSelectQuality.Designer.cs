@@ -132,8 +132,7 @@ namespace Chummer
             // 
             this.cmdOKAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdOKAdd.AutoSize = true;
-            this.cmdOKAdd.Location = new System.Drawing.Point(81, 0);
-            this.cmdOKAdd.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.cmdOKAdd.Location = new System.Drawing.Point(84, 3);
             this.cmdOKAdd.Name = "cmdOKAdd";
             this.cmdOKAdd.Size = new System.Drawing.Size(75, 23);
             this.cmdOKAdd.TabIndex = 13;
@@ -147,8 +146,7 @@ namespace Chummer
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.AutoSize = true;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(0, 0);
-            this.cmdCancel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.cmdCancel.Location = new System.Drawing.Point(3, 3);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 14;
@@ -161,8 +159,7 @@ namespace Chummer
             // 
             this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdOK.AutoSize = true;
-            this.cmdOK.Location = new System.Drawing.Point(162, 0);
-            this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.cmdOK.Location = new System.Drawing.Point(165, 3);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 12;
@@ -373,9 +370,10 @@ namespace Chummer
             this.flowLayoutPanel1.Controls.Add(this.cmdOKAdd);
             this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(366, 397);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(363, 394);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(237, 23);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(243, 29);
             this.flowLayoutPanel1.TabIndex = 23;
             // 
             // tableLayoutPanel2
