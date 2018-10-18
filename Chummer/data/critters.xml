@@ -29171,7 +29171,6 @@
 	  <source>HS</source>
 	  <page>92</page>
 	</metatype>
-
 	<metatype>
 	  <id>bd4b7d12-0b18-437d-aa5a-b63ee5616533</id>
 	  <name>Angel Squirrel</name>
@@ -40466,59 +40465,6 @@
       <source>HS</source>
       <page>91</page>
     </metatype>
-	<metatype>
-	  <id>ba5e2809-186c-4d11-a5a9-c8b1cb060f2c</id>
-	  <name>Amphora Mite</name>
-	  <bodmin>0</bodmin>
-	  <bodmax>0</bodmax>
-	  <bodaug>4</bodaug>
-	  <agimin>2</agimin>
-	  <agimax>2</agimax>
-	  <agiaug>6</agiaug>
-	  <reamin>2</reamin>
-	  <reamax>2</reamax>
-	  <reaaug>6</reaaug>
-	  <strmin>0</strmin>
-	  <strmax>0</strmax>
-	  <straug>4</straug>
-	  <chamin>1</chamin>
-	  <chamax>1</chamax>
-	  <chaaug>5</chaaug>
-	  <intmin>1</intmin>
-	  <intmax>1</intmax>
-	  <intaug>5</intaug>
-	  <logmin>2</logmin>
-	  <logmax>2</logmax>
-	  <logaug>6</logaug>
-	  <wilmin>1</wilmin>
-	  <wilmax>1</wilmax>
-	  <wilaug>5</wilaug>
-	  <edgmin>3</edgmin>
-	  <edgmax>3</edgmax>
-	  <edgaug>7</edgaug>
-	  <essmin>6</essmin>
-	  <essmax>6</essmax>
-	  <essaug>10</essaug>
-	  <walk>1/1/0</walk>
-	  <run>2/0/0</run>
-	  <sprint>1/1/0</sprint>
-	  <armor>0</armor>
-	  <skills>
-		<skill>Climbing 6</skill>
-		<skill>Sneaking 8</skill>
-	  </skills>
-	  <powers>
-		<power select="Thermal">Enhanced Sense</power>
-		<power select="Injection">Venom</power>
-	  </powers>
-	  <bonus>
-		<enabletab>
-		  <name>critter</name>
-		</enabletab>
-	  </bonus>
-	  <source>HS</source>
-	  <page>92</page>
-	</metatype>
     <!-- End Region -->
     <!-- Region Mutant Critters -->
     <metatype>
