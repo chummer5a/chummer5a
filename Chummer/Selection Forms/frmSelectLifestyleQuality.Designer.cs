@@ -119,8 +119,7 @@ namespace Chummer
             // 
             this.cmdOKAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdOKAdd.AutoSize = true;
-            this.cmdOKAdd.Location = new System.Drawing.Point(81, 0);
-            this.cmdOKAdd.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.cmdOKAdd.Location = new System.Drawing.Point(84, 3);
             this.cmdOKAdd.Name = "cmdOKAdd";
             this.cmdOKAdd.Size = new System.Drawing.Size(75, 23);
             this.cmdOKAdd.TabIndex = 13;
@@ -134,8 +133,7 @@ namespace Chummer
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.AutoSize = true;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(0, 0);
-            this.cmdCancel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.cmdCancel.Location = new System.Drawing.Point(3, 3);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 14;
@@ -148,8 +146,7 @@ namespace Chummer
             // 
             this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdOK.AutoSize = true;
-            this.cmdOK.Location = new System.Drawing.Point(162, 0);
-            this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.cmdOK.Location = new System.Drawing.Point(165, 3);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 12;
@@ -160,9 +157,6 @@ namespace Chummer
             // 
             // chkLimitList
             // 
-            this.chkLimitList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.chkLimitList.AutoSize = true;
             this.chkLimitList.Checked = true;
             this.chkLimitList.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -170,7 +164,7 @@ namespace Chummer
             this.chkLimitList.Location = new System.Drawing.Point(304, 155);
             this.chkLimitList.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkLimitList.Name = "chkLimitList";
-            this.chkLimitList.Size = new System.Drawing.Size(299, 17);
+            this.chkLimitList.Size = new System.Drawing.Size(169, 17);
             this.chkLimitList.TabIndex = 6;
             this.chkLimitList.Tag = "Checkbox_SelectQuality_LimitList";
             this.chkLimitList.Text = "Show only Qualities I can take";
@@ -201,15 +195,12 @@ namespace Chummer
             // 
             // chkFree
             // 
-            this.chkFree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.chkFree.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.chkFree, 2);
             this.chkFree.Location = new System.Drawing.Point(304, 130);
             this.chkFree.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkFree.Name = "chkFree";
-            this.chkFree.Size = new System.Drawing.Size(299, 17);
+            this.chkFree.Size = new System.Drawing.Size(50, 17);
             this.chkFree.TabIndex = 8;
             this.chkFree.Tag = "Checkbox_Free";
             this.chkFree.Text = "Free!";
@@ -292,8 +283,7 @@ namespace Chummer
             this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.txtSearch, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblCostLabel, 1, 4);
             this.tableLayoutPanel1.Controls.Add(this.lblSearchLabel, 1, 0);
@@ -318,7 +308,7 @@ namespace Chummer
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 423);
             this.tableLayoutPanel1.TabIndex = 19;
             // 
@@ -331,16 +321,17 @@ namespace Chummer
             this.flowLayoutPanel1.Controls.Add(this.cmdOKAdd);
             this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(366, 397);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(363, 394);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(237, 23);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(243, 29);
             this.flowLayoutPanel1.TabIndex = 19;
             // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.ColumnCount = 2;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.Controls.Add(this.lblCategory, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.cboCategory, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.lstLifestyleQualities, 0, 1);
@@ -351,7 +342,7 @@ namespace Chummer
             this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel1.SetRowSpan(this.tableLayoutPanel2, 8);
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(301, 423);
             this.tableLayoutPanel2.TabIndex = 20;
             // 

@@ -57,7 +57,6 @@ namespace Chummer
             // 
             this.cboLifestyle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.SetColumnSpan(this.cboLifestyle, 2);
             this.cboLifestyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboLifestyle.FormattingEnabled = true;
             this.cboLifestyle.Location = new System.Drawing.Point(376, 29);
@@ -83,8 +82,7 @@ namespace Chummer
             // 
             this.cmdOKAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdOKAdd.AutoSize = true;
-            this.cmdOKAdd.Location = new System.Drawing.Point(81, 0);
-            this.cmdOKAdd.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.cmdOKAdd.Location = new System.Drawing.Point(84, 3);
             this.cmdOKAdd.Name = "cmdOKAdd";
             this.cmdOKAdd.Size = new System.Drawing.Size(75, 23);
             this.cmdOKAdd.TabIndex = 27;
@@ -98,8 +96,7 @@ namespace Chummer
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.AutoSize = true;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(0, 0);
-            this.cmdCancel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.cmdCancel.Location = new System.Drawing.Point(3, 3);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 28;
@@ -112,8 +109,7 @@ namespace Chummer
             // 
             this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdOK.AutoSize = true;
-            this.cmdOK.Location = new System.Drawing.Point(162, 0);
-            this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.cmdOK.Location = new System.Drawing.Point(165, 3);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 26;
@@ -178,7 +174,6 @@ namespace Chummer
             // 
             this.txtLifestyleName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.SetColumnSpan(this.txtLifestyleName, 2);
             this.txtLifestyleName.Location = new System.Drawing.Point(376, 3);
             this.txtLifestyleName.Name = "txtLifestyleName";
             this.txtLifestyleName.Size = new System.Drawing.Size(227, 20);
@@ -186,8 +181,6 @@ namespace Chummer
             // 
             // nudPercentage
             // 
-            this.nudPercentage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.nudPercentage.DecimalPlaces = 2;
             this.nudPercentage.Location = new System.Drawing.Point(376, 82);
             this.nudPercentage.Maximum = new decimal(new int[] {
@@ -196,7 +189,7 @@ namespace Chummer
             0,
             131072});
             this.nudPercentage.Name = "nudPercentage";
-            this.nudPercentage.Size = new System.Drawing.Size(110, 20);
+            this.nudPercentage.Size = new System.Drawing.Size(100, 20);
             this.nudPercentage.TabIndex = 17;
             this.nudPercentage.Value = new decimal(new int[] {
             100,
@@ -242,11 +235,9 @@ namespace Chummer
             // 
             // nudRoommates
             // 
-            this.nudRoommates.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.nudRoommates.Location = new System.Drawing.Point(376, 56);
             this.nudRoommates.Name = "nudRoommates";
-            this.nudRoommates.Size = new System.Drawing.Size(110, 20);
+            this.nudRoommates.Size = new System.Drawing.Size(100, 20);
             this.nudRoommates.TabIndex = 15;
             this.nudRoommates.ValueChanged += new System.EventHandler(this.nudRoommates_ValueChanged);
             // 
@@ -268,11 +259,11 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.ColumnCount = 4;
+            this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Controls.Add(this.treQualities, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblSourceLabel, 1, 5);
             this.tableLayoutPanel1.Controls.Add(this.lblSource, 2, 5);
@@ -296,7 +287,7 @@ namespace Chummer
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 423);
             this.tableLayoutPanel1.TabIndex = 29;
             // 
@@ -304,14 +295,15 @@ namespace Chummer
             // 
             this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 3);
+            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 2);
             this.flowLayoutPanel1.Controls.Add(this.cmdOK);
             this.flowLayoutPanel1.Controls.Add(this.cmdOKAdd);
             this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(366, 397);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(363, 394);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(237, 23);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(243, 29);
             this.flowLayoutPanel1.TabIndex = 22;
             // 
             // frmSelectLifestyle

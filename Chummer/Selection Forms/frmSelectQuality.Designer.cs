@@ -37,7 +37,6 @@ namespace Chummer
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.chkLimitList = new System.Windows.Forms.CheckBox();
             this.lblBP = new System.Windows.Forms.Label();
             this.lblBPLabel = new System.Windows.Forms.Label();
             this.chkFree = new System.Windows.Forms.CheckBox();
@@ -51,16 +50,22 @@ namespace Chummer
             this.lblMinimumBP = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.gpbKarmaFilter = new System.Windows.Forms.GroupBox();
+            this.tlpKarmaFilter = new System.Windows.Forms.TableLayoutPanel();
+            this.chkLimitList = new System.Windows.Forms.CheckBox();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudMinimumBP)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudValueBP)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaximumBP)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
+            this.gpbKarmaFilter.SuspendLayout();
+            this.tlpKarmaFilter.SuspendLayout();
+            this.flowLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // lstQualities
@@ -103,7 +108,6 @@ namespace Chummer
             // lblSource
             // 
             this.lblSource.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.lblSource, 3);
             this.lblSource.Location = new System.Drawing.Point(354, 57);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
@@ -167,29 +171,9 @@ namespace Chummer
             this.cmdOK.UseVisualStyleBackColor = true;
             this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
             // 
-            // chkLimitList
-            // 
-            this.chkLimitList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkLimitList.AutoSize = true;
-            this.chkLimitList.Checked = true;
-            this.chkLimitList.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.tableLayoutPanel1.SetColumnSpan(this.chkLimitList, 4);
-            this.chkLimitList.Location = new System.Drawing.Point(304, 156);
-            this.chkLimitList.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkLimitList.Name = "chkLimitList";
-            this.chkLimitList.Size = new System.Drawing.Size(299, 17);
-            this.chkLimitList.TabIndex = 6;
-            this.chkLimitList.Tag = "Checkbox_SelectQuality_LimitList";
-            this.chkLimitList.Text = "Show only Qualities I can take";
-            this.chkLimitList.UseVisualStyleBackColor = true;
-            this.chkLimitList.CheckedChanged += new System.EventHandler(this.chkLimitList_CheckedChanged);
-            // 
             // lblBP
             // 
             this.lblBP.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.lblBP, 3);
             this.lblBP.Location = new System.Drawing.Point(354, 32);
             this.lblBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBP.Name = "lblBP";
@@ -211,15 +195,11 @@ namespace Chummer
             // 
             // chkFree
             // 
-            this.chkFree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.chkFree.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.chkFree, 4);
-            this.chkFree.Location = new System.Drawing.Point(304, 181);
+            this.chkFree.Location = new System.Drawing.Point(3, 132);
             this.chkFree.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkFree.Name = "chkFree";
-            this.chkFree.Size = new System.Drawing.Size(299, 17);
+            this.chkFree.Size = new System.Drawing.Size(50, 17);
             this.chkFree.TabIndex = 8;
             this.chkFree.Tag = "Checkbox_Free";
             this.chkFree.Text = "Free!";
@@ -228,15 +208,11 @@ namespace Chummer
             // 
             // chkMetagenetic
             // 
-            this.chkMetagenetic.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.chkMetagenetic.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.chkMetagenetic, 4);
-            this.chkMetagenetic.Location = new System.Drawing.Point(304, 206);
+            this.chkMetagenetic.Location = new System.Drawing.Point(3, 157);
             this.chkMetagenetic.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkMetagenetic.Name = "chkMetagenetic";
-            this.chkMetagenetic.Size = new System.Drawing.Size(299, 17);
+            this.chkMetagenetic.Size = new System.Drawing.Size(180, 17);
             this.chkMetagenetic.TabIndex = 7;
             this.chkMetagenetic.Tag = "Checkbox_SelectQuality_Metagenetic";
             this.chkMetagenetic.Text = "Show only Metagenetic Qualities";
@@ -247,7 +223,6 @@ namespace Chummer
             // 
             this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.SetColumnSpan(this.txtSearch, 3);
             this.txtSearch.Location = new System.Drawing.Point(354, 3);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(249, 20);
@@ -270,15 +245,11 @@ namespace Chummer
             // 
             // chkNotMetagenetic
             // 
-            this.chkNotMetagenetic.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.chkNotMetagenetic.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.chkNotMetagenetic, 4);
-            this.chkNotMetagenetic.Location = new System.Drawing.Point(304, 231);
+            this.chkNotMetagenetic.Location = new System.Drawing.Point(3, 182);
             this.chkNotMetagenetic.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkNotMetagenetic.Name = "chkNotMetagenetic";
-            this.chkNotMetagenetic.Size = new System.Drawing.Size(299, 17);
+            this.chkNotMetagenetic.Size = new System.Drawing.Size(184, 17);
             this.chkNotMetagenetic.TabIndex = 15;
             this.chkNotMetagenetic.Tag = "Checkbox_SelectQuality_Not_Metagenetic";
             this.chkNotMetagenetic.Text = "Don\'t show Metagenetic Qualities";
@@ -287,57 +258,51 @@ namespace Chummer
             // 
             // nudMinimumBP
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.nudMinimumBP, 2);
-            this.nudMinimumBP.Location = new System.Drawing.Point(304, 129);
+            this.nudMinimumBP.Location = new System.Drawing.Point(63, 3);
             this.nudMinimumBP.Minimum = new decimal(new int[] {
             100,
             0,
             0,
             -2147483648});
             this.nudMinimumBP.Name = "nudMinimumBP";
-            this.nudMinimumBP.Size = new System.Drawing.Size(95, 20);
+            this.nudMinimumBP.Size = new System.Drawing.Size(100, 20);
             this.nudMinimumBP.TabIndex = 16;
             this.nudMinimumBP.TextChanged += new System.EventHandler(this.KarmaFilter);
             this.nudMinimumBP.ValueChanged += new System.EventHandler(this.KarmaFilter);
             // 
             // nudValueBP
             // 
-            this.nudValueBP.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudValueBP.Location = new System.Drawing.Point(405, 129);
+            this.nudValueBP.Location = new System.Drawing.Point(63, 29);
             this.nudValueBP.Minimum = new decimal(new int[] {
             100,
             0,
             0,
             -2147483648});
             this.nudValueBP.Name = "nudValueBP";
-            this.nudValueBP.Size = new System.Drawing.Size(96, 20);
+            this.nudValueBP.Size = new System.Drawing.Size(100, 20);
             this.nudValueBP.TabIndex = 17;
             this.nudValueBP.TextChanged += new System.EventHandler(this.KarmaFilter);
             this.nudValueBP.ValueChanged += new System.EventHandler(this.KarmaFilter);
             // 
             // nudMaximumBP
             // 
-            this.nudMaximumBP.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudMaximumBP.Location = new System.Drawing.Point(507, 129);
+            this.nudMaximumBP.Location = new System.Drawing.Point(63, 55);
             this.nudMaximumBP.Minimum = new decimal(new int[] {
             100,
             0,
             0,
             -2147483648});
             this.nudMaximumBP.Name = "nudMaximumBP";
-            this.nudMaximumBP.Size = new System.Drawing.Size(96, 20);
+            this.nudMaximumBP.Size = new System.Drawing.Size(100, 20);
             this.nudMaximumBP.TabIndex = 18;
             this.nudMaximumBP.TextChanged += new System.EventHandler(this.KarmaFilter);
             this.nudMaximumBP.ValueChanged += new System.EventHandler(this.KarmaFilter);
             // 
             // lblMinimumBP
             // 
-            this.lblMinimumBP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblMinimumBP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMinimumBP.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.lblMinimumBP, 2);
-            this.lblMinimumBP.Location = new System.Drawing.Point(304, 107);
+            this.lblMinimumBP.Location = new System.Drawing.Point(6, 6);
             this.lblMinimumBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMinimumBP.Name = "lblMinimumBP";
             this.lblMinimumBP.Size = new System.Drawing.Size(51, 13);
@@ -347,9 +312,9 @@ namespace Chummer
             // 
             // label2
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(405, 107);
+            this.label2.Location = new System.Drawing.Point(13, 32);
             this.label2.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(44, 13);
@@ -359,9 +324,9 @@ namespace Chummer
             // 
             // label3
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(507, 107);
+            this.label3.Location = new System.Drawing.Point(3, 58);
             this.label3.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(54, 13);
@@ -369,63 +334,32 @@ namespace Chummer
             this.label3.Tag = "Label_CreateImprovementMaximum";
             this.label3.Text = "Maximum:";
             // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.label1, 2);
-            this.label1.Location = new System.Drawing.Point(320, 82);
-            this.label1.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(79, 13);
-            this.label1.TabIndex = 22;
-            this.label1.Tag = "Label_FilterByKarma";
-            this.label1.Text = "Filter by Karma:";
-            // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.ColumnCount = 5;
+            this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.txtSearch, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.chkNotMetagenetic, 1, 9);
             this.tableLayoutPanel1.Controls.Add(this.lblSearchLabel, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.nudMaximumBP, 4, 5);
-            this.tableLayoutPanel1.Controls.Add(this.label3, 4, 4);
-            this.tableLayoutPanel1.Controls.Add(this.nudValueBP, 3, 5);
-            this.tableLayoutPanel1.Controls.Add(this.chkMetagenetic, 1, 8);
-            this.tableLayoutPanel1.Controls.Add(this.label1, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.chkFree, 1, 7);
-            this.tableLayoutPanel1.Controls.Add(this.nudMinimumBP, 1, 5);
-            this.tableLayoutPanel1.Controls.Add(this.chkLimitList, 1, 6);
-            this.tableLayoutPanel1.Controls.Add(this.label2, 3, 4);
             this.tableLayoutPanel1.Controls.Add(this.lblBPLabel, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblMinimumBP, 1, 4);
             this.tableLayoutPanel1.Controls.Add(this.lblSourceLabel, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.lblBP, 2, 1);
             this.tableLayoutPanel1.Controls.Add(this.lblSource, 2, 2);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 1, 10);
+            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 1, 4);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel2, 1, 3);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 11;
+            this.tableLayoutPanel1.RowCount = 5;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 423);
             this.tableLayoutPanel1.TabIndex = 23;
@@ -434,7 +368,7 @@ namespace Chummer
             // 
             this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 4);
+            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 2);
             this.flowLayoutPanel1.Controls.Add(this.cmdOK);
             this.flowLayoutPanel1.Controls.Add(this.cmdOKAdd);
             this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
@@ -457,11 +391,81 @@ namespace Chummer
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 2;
-            this.tableLayoutPanel1.SetRowSpan(this.tableLayoutPanel2, 11);
+            this.tableLayoutPanel1.SetRowSpan(this.tableLayoutPanel2, 5);
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.Size = new System.Drawing.Size(301, 423);
             this.tableLayoutPanel2.TabIndex = 24;
+            // 
+            // gpbKarmaFilter
+            // 
+            this.gpbKarmaFilter.AutoSize = true;
+            this.gpbKarmaFilter.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbKarmaFilter.Controls.Add(this.tlpKarmaFilter);
+            this.gpbKarmaFilter.Location = new System.Drawing.Point(3, 3);
+            this.gpbKarmaFilter.Name = "gpbKarmaFilter";
+            this.gpbKarmaFilter.Size = new System.Drawing.Size(172, 97);
+            this.gpbKarmaFilter.TabIndex = 25;
+            this.gpbKarmaFilter.TabStop = false;
+            this.gpbKarmaFilter.Tag = "Label_FilterByKarma";
+            this.gpbKarmaFilter.Text = "Filter by Karma:";
+            // 
+            // tlpKarmaFilter
+            // 
+            this.tlpKarmaFilter.AutoSize = true;
+            this.tlpKarmaFilter.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpKarmaFilter.ColumnCount = 2;
+            this.tlpKarmaFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpKarmaFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpKarmaFilter.Controls.Add(this.lblMinimumBP, 0, 0);
+            this.tlpKarmaFilter.Controls.Add(this.label2, 0, 1);
+            this.tlpKarmaFilter.Controls.Add(this.label3, 0, 2);
+            this.tlpKarmaFilter.Controls.Add(this.nudMinimumBP, 1, 0);
+            this.tlpKarmaFilter.Controls.Add(this.nudValueBP, 1, 1);
+            this.tlpKarmaFilter.Controls.Add(this.nudMaximumBP, 1, 2);
+            this.tlpKarmaFilter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpKarmaFilter.Location = new System.Drawing.Point(3, 16);
+            this.tlpKarmaFilter.Name = "tlpKarmaFilter";
+            this.tlpKarmaFilter.RowCount = 3;
+            this.tlpKarmaFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpKarmaFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpKarmaFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpKarmaFilter.Size = new System.Drawing.Size(166, 78);
+            this.tlpKarmaFilter.TabIndex = 0;
+            // 
+            // chkLimitList
+            // 
+            this.chkLimitList.AutoSize = true;
+            this.chkLimitList.Checked = true;
+            this.chkLimitList.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkLimitList.Location = new System.Drawing.Point(3, 107);
+            this.chkLimitList.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkLimitList.Name = "chkLimitList";
+            this.chkLimitList.Size = new System.Drawing.Size(169, 17);
+            this.chkLimitList.TabIndex = 6;
+            this.chkLimitList.Tag = "Checkbox_SelectQuality_LimitList";
+            this.chkLimitList.Text = "Show only Qualities I can take";
+            this.chkLimitList.UseVisualStyleBackColor = true;
+            this.chkLimitList.CheckedChanged += new System.EventHandler(this.chkLimitList_CheckedChanged);
+            // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.AutoScroll = true;
+            this.flowLayoutPanel2.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel2, 2);
+            this.flowLayoutPanel2.Controls.Add(this.gpbKarmaFilter);
+            this.flowLayoutPanel2.Controls.Add(this.chkLimitList);
+            this.flowLayoutPanel2.Controls.Add(this.chkFree);
+            this.flowLayoutPanel2.Controls.Add(this.chkMetagenetic);
+            this.flowLayoutPanel2.Controls.Add(this.chkNotMetagenetic);
+            this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(301, 76);
+            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(305, 318);
+            this.flowLayoutPanel2.TabIndex = 26;
+            this.flowLayoutPanel2.WrapContents = false;
             // 
             // frmSelectQuality
             // 
@@ -490,6 +494,12 @@ namespace Chummer
             this.flowLayoutPanel1.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
+            this.gpbKarmaFilter.ResumeLayout(false);
+            this.gpbKarmaFilter.PerformLayout();
+            this.tlpKarmaFilter.ResumeLayout(false);
+            this.tlpKarmaFilter.PerformLayout();
+            this.flowLayoutPanel2.ResumeLayout(false);
+            this.flowLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -505,7 +515,6 @@ namespace Chummer
         private System.Windows.Forms.Button cmdOKAdd;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
-        private System.Windows.Forms.CheckBox chkLimitList;
         private System.Windows.Forms.Label lblBP;
         private System.Windows.Forms.Label lblBPLabel;
         private System.Windows.Forms.CheckBox chkFree;
@@ -519,9 +528,12 @@ namespace Chummer
         private System.Windows.Forms.Label lblMinimumBP;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label1;
         private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.CheckBox chkLimitList;
+        private System.Windows.Forms.GroupBox gpbKarmaFilter;
+        private System.Windows.Forms.TableLayoutPanel tlpKarmaFilter;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
     }
 }
