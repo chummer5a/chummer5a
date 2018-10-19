@@ -74,7 +74,7 @@ namespace Chummer
                 return;
             }
 
-            string strPath = Path.Combine(Application.StartupPath, "data", txtFileName.Text);
+            string strPath = Path.Combine(Utils.GetStartupPath, "data", txtFileName.Text);
 
             // If this is not a new file, read in the existing contents.
             XmlDocument objXmlCurrentDocument = null;

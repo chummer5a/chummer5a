@@ -19,7 +19,8 @@
  using System;
  using System.Diagnostics;
 ﻿using System.IO;
- using System.Reflection;
+using System.Linq;
+using System.Reflection;
  using System.Windows.Forms;
 
 namespace Chummer
@@ -29,7 +30,7 @@ namespace Chummer
         public static void BreakIfDebug()
         {
 #if DEBUG
-            if (Debugger.IsAttached)
+            if (Debugger.IsAttached && !IsInUnitTest)
                 Debugger.Break();
 #endif
         }
@@ -41,6 +42,24 @@ namespace Chummer
         {
             get => s_VersionCachedGitVersion;
             set => s_VersionCachedGitVersion = value;
+        }
+
+        static Utils()
+        {
+            string testAssemblyName = "Microsoft.TestPlatform.PlatformAbstractions";//"Microsoft.VisualStudio.QualityTools.UnitTestFramework";
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            Utils.IsInUnitTest = assemblies.Any(a => a.FullName.StartsWith(testAssemblyName));
+        }
+        public static bool IsInUnitTest { get; private set; }
+
+        public static string GetStartupPath
+        {
+            get
+            {
+                if (!Utils.IsInUnitTest)
+                    return Application.StartupPath;
+                return AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+            }
         }
 
         public static int GitUpdateAvailable()
@@ -107,7 +126,7 @@ namespace Chummer
             }
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                FileName = Application.StartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName,
+                FileName = Utils.GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName,
                 Arguments = arguments
             };
             Application.Exit();

@@ -40,7 +40,7 @@ namespace Chummer
 
             public LanguageData(string strLanguage)
             {
-                string strFilePath = Path.Combine(Application.StartupPath, "lang", strLanguage + ".xml");
+                string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
                 if (File.Exists(strFilePath))
                 {
                     XmlDocument objLanguageDocument = new XmlDocument();
@@ -109,7 +109,7 @@ namespace Chummer
                 }
 
                 // Check to see if the data translation file for the selected language exists.
-                string strDataPath = Path.Combine(Application.StartupPath, "lang", strLanguage + "_data.xml");
+                string strDataPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + "_data.xml");
                 if (File.Exists(strDataPath))
                 {
                     try
@@ -156,7 +156,7 @@ namespace Chummer
             if (!Utils.IsRunningInVisualStudio)
             {
                 XmlDocument objEnglishDocument = new XmlDocument();
-                string strFilePath = Path.Combine(Application.StartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
+                string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
                 if (File.Exists(strFilePath))
                 {
                     try
@@ -474,7 +474,7 @@ namespace Chummer
                 {
                     // Load the English version.
                     XmlDocument objEnglishDocument = new XmlDocument();
-                    string strFilePath = Path.Combine(Application.StartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
+                    string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
 
                     try
                     {
@@ -508,7 +508,7 @@ namespace Chummer
                 {
                     // Load the selected language version.
                     XmlDocument objLanguageDocument = new XmlDocument();
-                    string strLangPath = Path.Combine(Application.StartupPath, "lang", strLanguage + ".xml");
+                    string strLangPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
 
                     try
                     {

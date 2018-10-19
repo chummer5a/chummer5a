@@ -40,7 +40,7 @@ namespace Chummer
         {
             // Build the list of XML files found in the settings directory.
             List<ListItem> lstSettings = new List<ListItem>();
-            string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
+            string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
             foreach (string strFileName in Directory.GetFiles(settingsDirectoryPath, "*.xml"))
             {
                 // Load the file so we can get the Setting name.

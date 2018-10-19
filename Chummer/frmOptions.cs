@@ -63,7 +63,7 @@ namespace Chummer
                 };
                 _lstCustomDataDirectoryInfos.Add(objCustomDataDirectory);
             }
-            string strCustomDataRootPath = Path.Combine(Application.StartupPath, "customdata");
+            string strCustomDataRootPath = Path.Combine(Utils.GetStartupPath, "customdata");
             if (Directory.Exists(strCustomDataRootPath))
             {
                 foreach (string strLoopDirectoryPath in Directory.GetDirectories(strCustomDataRootPath))
@@ -345,7 +345,7 @@ namespace Chummer
             string strSelectedLanguage = _strSelectedLanguage;
             XmlManager.Verify(strSelectedLanguage, lstBooks);
 
-            string strFilePath = Path.Combine(Application.StartupPath, "lang", "results_" + strSelectedLanguage + ".xml");
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", "results_" + strSelectedLanguage + ".xml");
             MessageBox.Show(string.Format(LanguageManager.GetString("Message_Options_ValidationResults", _strSelectedLanguage), strFilePath),
                 LanguageManager.GetString("MessageTitle_Options_ValidationResults", _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
             Cursor = Cursors.Default;
@@ -619,7 +619,7 @@ namespace Chummer
                 {
                     TreeNode objNode = new TreeNode
                     {
-                        Text = objCustomDataDirectory.Name + " (" + objCustomDataDirectory.Path.Replace(Application.StartupPath, '<' + Application.ProductName + '>') + ')',
+                        Text = objCustomDataDirectory.Name + " (" + objCustomDataDirectory.Path.Replace(Utils.GetStartupPath, '<' + Application.ProductName + '>') + ')',
                         Tag = objCustomDataDirectory.Name,
                         Checked = objCustomDataDirectory.Enabled
                     };
@@ -632,7 +632,7 @@ namespace Chummer
                 {
                     TreeNode objLoopNode = treCustomDataDirectories.Nodes[i];
                     CustomDataDirectoryInfo objLoopInfo = _lstCustomDataDirectoryInfos[i];
-                    objLoopNode.Text = objLoopInfo.Name + " (" + objLoopInfo.Path.Replace(Application.StartupPath, '<' + Application.ProductName + '>') + ')';
+                    objLoopNode.Text = objLoopInfo.Name + " (" + objLoopInfo.Path.Replace(Utils.GetStartupPath, '<' + Application.ProductName + '>') + ')';
                     objLoopNode.Tag = objLoopInfo.Name;
                     objLoopNode.Checked = objLoopInfo.Enabled;
                 }
@@ -884,7 +884,7 @@ namespace Chummer
                             RegistryKey objLoopKey = objCustomDataDirectoryRegistry.CreateSubKey(objCustomDataDirectory.Name);
                             if (objLoopKey != null)
                             {
-                                objLoopKey.SetValue("Path", objCustomDataDirectory.Path.Replace(Application.StartupPath, "$CHUMMER"));
+                                objLoopKey.SetValue("Path", objCustomDataDirectory.Path.Replace(Utils.GetStartupPath, "$CHUMMER"));
                                 objLoopKey.SetValue("Enabled", objCustomDataDirectory.Enabled);
                                 objLoopKey.SetValue("LoadOrder", i);
                                 objLoopKey.Close();
@@ -1154,7 +1154,7 @@ namespace Chummer
         private void PopulateSettingsList()
         {
             List<ListItem> lstSettings = new List<ListItem>();
-            string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
+            string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
             string[] settingsFilePaths = Directory.GetFiles(settingsDirectoryPath, "*.xml");
 
             foreach (string filePath in settingsFilePaths)
@@ -1228,7 +1228,7 @@ namespace Chummer
         private void PopulateLanguageList()
         {
             List<ListItem> lstLanguages = new List<ListItem>();
-            string languageDirectoryPath = Path.Combine(Application.StartupPath, "lang");
+            string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
             string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
 
             foreach (string filePath in languageFilePaths)
@@ -1281,7 +1281,7 @@ namespace Chummer
 
             List<ListItem> lstSheetLanguages = new List<ListItem>();
 
-            string languageDirectoryPath = Path.Combine(Application.StartupPath, "lang");
+            string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
             string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
 
             foreach (string filePath in languageFilePaths)
@@ -1381,7 +1381,7 @@ namespace Chummer
             List<ListItem> lstItems = new List<ListItem>();
 
             // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
-            string omaeDirectoryPath = Path.Combine(Application.StartupPath, "sheets", "omae");
+            string omaeDirectoryPath = Path.Combine(Utils.GetStartupPath, "sheets", "omae");
             string menuMainOmae = LanguageManager.GetString("Menu_Main_Omae", strLanguage);
 
             // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets
@@ -1619,7 +1619,7 @@ namespace Chummer
             // Prompt the user to select a save file to associate with this Contact.
             using (FolderBrowserDialog dlgSelectFolder = new FolderBrowserDialog())
             {
-                dlgSelectFolder.SelectedPath = Application.StartupPath;
+                dlgSelectFolder.SelectedPath = Utils.GetStartupPath;
 
                 if (dlgSelectFolder.ShowDialog(this) == DialogResult.OK)
                 {

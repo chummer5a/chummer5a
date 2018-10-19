@@ -220,7 +220,7 @@ namespace Chummer
                     strFileName = FileSafe(strFileName);
 
                     // If the Omae save directory does not yet exist, create it.
-                    string strSavePath = Path.Combine(Application.StartupPath, "saves");
+                    string strSavePath = Path.Combine(Utils.GetStartupPath, "saves");
                     if (!Directory.Exists(strSavePath))
                         Directory.CreateDirectory(strSavePath);
                     string omaeDirectoryPath = Path.Combine(strSavePath, "omae");
@@ -270,7 +270,7 @@ namespace Chummer
                     strFileName = FileSafe(strFileName);
 
                     // If the Omae save directory does not yet exist, create it.
-                    string strSavePath = Path.Combine(Application.StartupPath, "saves");
+                    string strSavePath = Path.Combine(Utils.GetStartupPath, "saves");
                     if (!Directory.Exists(strSavePath))
                         Directory.CreateDirectory(strSavePath);
 
@@ -323,7 +323,7 @@ namespace Chummer
             else if (_objMode == OmaeMode.Sheets)
             {
                 // If the Omae sheets directory does not yet exist, create it.
-                string strSheetsPath = Path.Combine(Application.StartupPath, "sheets", "omae");
+                string strSheetsPath = Path.Combine(Utils.GetStartupPath, "sheets", "omae");
                 if (!Directory.Exists(strSheetsPath))
                     Directory.CreateDirectory(strSheetsPath);
 
@@ -896,7 +896,7 @@ namespace Chummer
 
         private void cmdCompressData_Click(object sender, EventArgs e)
         {
-            foreach (string strFile in Directory.GetFiles(Path.Combine(Application.StartupPath, "data"), "*.xml"))
+            foreach (string strFile in Directory.GetFiles(Path.Combine(Utils.GetStartupPath, "data"), "*.xml"))
             {
                 byte[] bytFile = File.ReadAllBytes(strFile);
                 bytFile = OmaeHelper.Compress(bytFile);
