@@ -1,0 +1,122 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Chummer;
+using ChummerHub.Client.Model;
+using System.Net.Http;
+using Microsoft.Rest;
+using SINners;
+using System.Net;
+using SINners.Models;
+using ChummerHub.Client.Backend;
+
+namespace ChummerHub.Client.UI
+{
+    public partial class SINnersBasic : UserControl
+    {
+        public SINnersUsercontrol myUC { get; private set; }
+
+        public SINnersBasic()
+        {
+            SINnersBasicConstructor(null);
+        }
+
+        public SINnersBasic(SINnersUsercontrol parent)
+        {
+            SINnersBasicConstructor(parent);
+        }
+
+        private void SINnersBasicConstructor(SINnersUsercontrol parent)
+        {
+            InitializeComponent();
+            myUC = parent;
+            CheckSINnerStatus();
+        }
+
+        private void CheckSINnerStatus()
+        {
+            try
+            {
+                if (myUC.client.ApiV1SINnerHelperByIdGet(myUC.MyCharacterExtended.MySINnerFile.SiNnerId.Value) == true)
+                {
+                    this.bUpload.Text = "Remove from SINners";
+                }
+                else
+                {
+                    this.bUpload.Text = "Upload to SINners";
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError(ex.ToString());
+            }
+        }
+
+        private void cbSRMReady_Click(object sender, EventArgs e)
+        {
+            
+            var tagseq = from a in myUC.MyCharacterExtended.MySINnerFile.SiNnerMetaData.Tags
+                         where a.TagName == "SRM_ready"
+                         select a;
+            if (cbSRMReady.Checked == true)
+            {
+                
+                if (!tagseq.Any())
+                {
+                    Tag tag = new Tag(true);
+                    tag.TagName = "SRM_ready";
+                    tag.TagValue = "True";
+                    tag.TagType = "bool";
+                    myUC.MyCharacterExtended.MySINnerFile.SiNnerMetaData.Tags.Add(tag);
+                }
+            }
+            else
+            {
+                if (tagseq.Any())
+                {
+                    foreach(var tag in tagseq)
+                    {
+                        myUC.MyCharacterExtended.MySINnerFile.SiNnerMetaData.Tags.Remove(tag);
+                    }
+                }
+            }
+            
+        }
+
+        private void tbGroupname_TextChanged(object sender, EventArgs e)
+        {
+            var tagseq = from a in myUC.MyCharacterExtended.MySINnerFile.SiNnerMetaData.Tags
+                         where a.TagName == "GM_Groupname"
+                         select a;
+            if (!tagseq.Any())
+            {
+                Tag tag = new Tag(true);
+                tag.TagName = "GM_Groupname";
+                tag.TagType = "string";
+                myUC.MyCharacterExtended.MySINnerFile.SiNnerMetaData.Tags.Add(tag);
+            }
+            tagseq = from a in myUC.MyCharacterExtended.MySINnerFile.SiNnerMetaData.Tags
+                     where a.TagName == "GM_Groupname"
+                     select a;
+            foreach (var tag in tagseq)
+            {
+                tag.TagValue = tbGroupname.Text;
+            }
+        }
+
+        private void bUpload_Click(object sender, EventArgs e)
+        {
+            if (bUpload.Text.Contains("Upload"))
+                myUC.UploadSINnerAsync();
+            else
+                myUC.RemoveSINnerAsync();
+            CheckSINnerStatus();
+        }
+    }
+}

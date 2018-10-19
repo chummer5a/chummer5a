@@ -284,6 +284,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="helpers\FlagImageGetter.cs" />
+    <Compile Include="helpers\HubTagAttribute.cs" />
     <Compile Include="helpers\LabelWithToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
