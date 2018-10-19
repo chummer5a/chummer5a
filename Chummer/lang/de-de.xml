@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 <chummer>
 	<version>-495</version>
 	<name>Deutsch (de-DE)</name>
-  <righttoleft>False</righttoleft>
+	<righttoleft>False</righttoleft>
 	<strings>
 		<string>
 			<key>Message_Insufficient_Permissions_Warning</key>
@@ -139,8 +139,12 @@
 			<text>Zufällig 1W6</text>
 		</string>
 		<string>
+			<key>String_KarmaRemaining</key>
+			<text>Verbleibendes Karma</text>
+		</string>
+		<string>
 			<key>Label_KarmaRemaining</key>
-			<text>verbleibendes Karma:</text>
+			<text>Verbleibendes Karma:</text>
 		</string>
 		<string>
 			<key>Label_Source</key>
@@ -2104,7 +2108,7 @@
 		</string>
 		<string>
 			<key>String_DamageAsDrugToxin</key>
-			<text>wie Droge/Gift</text>
+			<text>wie Droge/Toxin</text>
 		</string>
 		<string>
 			<key>String_DamageAsRound</key>
@@ -3233,6 +3237,10 @@
 			<text>Essenz:</text>
 		</string>
 		<string>
+			<key>String_NuyenRemaining</key>
+			<text>Verbleibende Nuyen</text>
+		</string>
+		<string>
 			<key>Label_OtherNuyenRemain</key>
 			<text>Verbleibende Nuyen:</text>
 		</string>
@@ -4189,10 +4197,6 @@
 			<text>Hausregeln</text>
 		</string>
 		<string>
-			<key>Label_Options_AdditionalBooks</key>
-			<text>Weitere nutzbare Quellenbücher</text>
-		</string>
-		<string>
 			<key>Label_Options_CyberlimbCount</key>
 			<text>Gliedmaßen für Standard-Charaktere:</text>
 		</string>
@@ -4369,10 +4373,6 @@
 			<text>Erlaube das Regruppieren von Fertigkeiten, wenn alle den selben Wert haben.</text>
 		</string>
 		<string>
-			<key>Checkbox_Options_MetatypesCostKarma</key>
-			<text>Karma-Kosten für Metatypen sind gleich der GP-Kosten</text>
-		</string>
-		<string>
 			<key>Checkbox_Options_Dronemods</key>
 			<text>Drohnenmodifikationsregeln benutzen (R5 128)</text>
 		</string>
@@ -4458,11 +4458,11 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedNegativeQualities</key>
-			<text>Charakteren gestatten, mehr als 35 GP für Nachteile zu erhalten</text>
+			<text>Charakteren gestatten, das Limit für negative Gaben zu überschreiten</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedNegativeQualitiesLimit</key>
-			<text>Charaktere können maximal 35 GP für Nachteile erhalten</text>
+			<text>Charaktere erhalten kein Karma, wenn das Limit für negative Gaben erreicht ist</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_StartupFullscreen</key>
@@ -6883,7 +6883,7 @@
 		</string>
 		<string>
 			<key>String_Schooling</key>
-			<text>Schooling</text>
+			<text>Ausbildung</text>
 		</string>
 		<string>
 			<key>String_DescAlchemicalPreparation</key>
@@ -7143,7 +7143,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_ExtendAnyDetectionSpell</key>
-			<text>Allow any Detection Spell to be taken as Extended range version (SM 165)</text>
+			<text>Wahrnehmungszauber als Variante mit erweiterter Reichweite zulassen (SM 165)</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_DroneArmorMultiplier</key>
@@ -8141,7 +8141,7 @@
 		</string>
 		<string>
 			<key>Title_CreateWeaponMount</key>
-			<text>Waffenhalterung erstellung</text>
+			<text>Waffenhalterung erstellen</text>
 		</string>
 		<string>
 			<key>Title_SelectGeneric</key>
@@ -8321,7 +8321,7 @@
 		</string>
 		<string>
 			<key>Label_Options_CharacterRoster</key>
-			<text>Charakterverzeichnis Überwachter Ordner</text>
+			<text>Ordner zur Charakterüberwachung:</text>
 		</string>
 		<string>
 			<key>Label_Options_URLApplicationPath</key>
@@ -8409,7 +8409,7 @@
 		</string>
 		<string>
 			<key>Message_Options_CloseForms</key>
-			<text>Einstellungen werden nur beim Laden des Charakters angewendet. Sollten die Anwendung neu gestarten werden?</text>
+			<text>Einstellungen werden nur beim Laden des Charakters angewendet. Soll die Anwendung neu gestartet werden?</text>
 		</string>
 		<string>
 			<key>Message_Options_Restart</key>
@@ -9218,22 +9218,22 @@
 		<string>
 			<key>Label_Options_CustomDataDirectories</key>
 			<text>Anzuwendende Sonderregeln (Änderungen werden erst nach einem Programmneustart aktiv)</text>
-    </string>
-    <string>
+		</string>
+		<string>
 			<key>About_Description_Text</key>
 			<text>Charaktergenerator für Shadowrun 5. Edition\n\r\n\rDanke an Keith für die wundervolle Arbeit, die er in die Erstellung und Pflege von Chummer für die 4. Edition gesteck hat. Ohne ihn wäre das alles nicht möglich.\n\r\n\rHerzlichen Dank an alle der 'Dumpshock community', dass sie dieses Projekt mit all ihren wertvollen Rückmeldungen, tollen Ideen, Verbesserungsvorschlägen und Hinweise auf enthaltene Fehler unterstützt haben. Ein großen Dankeschön auch an alle, die sich freiwillig gemeldet haben um Chummer in andere Sprachen zu übersetzen!</text>
 		</string>
 		<string>
 			<key>String_WorkingForTheMan</key>
-			<text>Für die Gemeinschaft erbracht</text>
+			<text>Für den Mann arbeiten</text>
 		</string>
 		<string>
 			<key>String_WorkingForThePeople</key>
-			<text>Für die Gemeinschaft erbracht</text>
+			<text>Für die Leute arbeiten</text>
 		</string>
 		<string>
 			<key>String_WorkingForTheManPeople</key>
-			<text>Für die Gemeinschaft erbracht</text>
+			<text>Für den Mann/die Leute arbeiten</text>
 		</string>
 		<string>
 			<key>Tip_LifeModule_Warning</key>
@@ -9257,7 +9257,7 @@
 		</string>
 		<string>
 			<key>About_Label_Contributors</key>
-			<text>Vielen Dank an alle GitHub-Mitarbeiter!</text>
+			<text>Vielen Dank an alle GitHub Mitwirkenden!</text>
 		</string>
 		<string>
 			<key>About_Label_Disclaimer</key>
@@ -9278,6 +9278,138 @@
 		<string>
 			<key>Tip_Omae_Warning</key>
 			<text>Omae liegt außerhalb der Kontrolle der aktuellen Entwickler und enthält alte Charaktere, die möglicherweise nicht funktionieren oder die aktuelle Version von Chummer zum Absturz bringen. Die Benutzung erfolgt auf eigene Gefahr. Wollen Sie fortfahren?</text>
+		</string>
+		<string>
+			<key>Message_KarmaValue</key>
+			<text>Neben Punkten für Wissensfertigkeiten aus Lebensmodulen und dem Ignorieren von Metatypeffekten, für die der Karmawert nicht objektiv beurteilt werden kann, hat dieser Charakter folgenden Karmawert:</text>
+		</string>
+		<string>
+			<key>String_Nightly_Changelog_Warning</key>
+			<text>Versionen im nightly Changelog sind temporär.</text>
+		</string>
+		<string>
+			<key>Button_Options_UploadPastebin</key>
+			<text>Datei zu Pastebin hochladen</text>
+		</string>
+		<string>
+			<key>Tab_Options_GitHubIssues</key>
+			<text>GitHub Issues</text>
+		</string>
+		<string>
+			<key>Message_MetagenicQualitiesInsufficientKarma</key>
+			<text>Es ist 1 Karma notwendig um metagenetische Nachteile und Vorteile auszugleichen. Aktuell verfügbar: {0}</text>
+		</string>
+		<string>
+			<key>Message_MetagenicQualitiesSubtractingKarma</key>
+			<text>Es ist 1 Karma notwendig um metagenetische Nachteile und Vorteile auszugleichen. Aktuell verfügbar: {0}.\nIst es in Ordnung, dieses Karma auszugeben?</text>
+		</string>
+		<string>
+			<key>Message_MetagenicQualitiesUnbalanced</key>
+			<text>Die metagenetischen Vor-/Nachteile sind nicht ausgeglichen. Aktuell: {0} Erwartet: {1} oder {2}</text>
+		</string>
+		<string>
+			<key>String_MaximumDrugBlockLevel</key>
+			<text>Ein Baustein, der ein Attribut erhöht, das durch die gewählte Basis gesenkt wird, darf maximal die Stufe 2 haben. (CF 191)</text>
+		</string>
+		<string>
+			<key>Message_InvalidExConWare</key>
+			<text>Die folgende limitierte Cyber-/Bioware ist auf einer ExCon nicht erlaubt:</text>
+		</string>
+		<string>
+			<key>Menu_SpecialChangePriorities</key>
+			<text>Ändere &amp;Prioritätenauswahl</text>
+		</string>
+		<string>
+			<key>String_Dashboard</key>
+			<text>Dashboard</text>
+		</string>
+		<string>
+			<key>Label_Stage</key>
+			<text>Phase:</text>
+		</string>
+		<string>
+			<key>Message_MissingGameplayOption</key>
+			<text>Dieser Charakter wurde mit der folgenden Spieloption angelegt:\n\n{0}\n\nDiese Option konnte in den aktuellen Daten nicht gefunden werden. Um das Laden des Charakters fortzusetzen, muss eine neue Spieloption dafür gewählt werden.</text>
+		</string>
+		<string>
+			<key>Message_MissingGameplayOption_Title</key>
+			<text>Fehlende Spieloption</text>
+		</string>
+		<string>
+			<key>Button_ChangeMountedLocation</key>
+			<text>Verwendeten Ort ändern</text>
+		</string>
+		<string>
+			<key>String_Weapon</key>
+			<text>Waffe</text>
+		</string>
+		<string>
+			<key>String_Vehicle</key>
+			<text>Fahrzeug</text>
+		</string>
+		<string>
+			<key>String_Matrix</key>
+			<text>Matrix</text>
+		</string>
+		<string>
+			<key>String_Info</key>
+			<text>Info</text>
+		</string>
+		<string>
+			<key>String_Armor</key>
+			<text>Panzerung</text>
+		</string>
+		<string>
+			<key>String_SubmersionType</key>
+			<text>Neue Wandlungsart</text>
+		</string>
+		<string>
+			<key>String_SubmersionNetwork</key>
+			<text>Netzwerk für neue Wandlung</text>
+		</string>
+		<string>
+			<key>String_InitiationGroup</key>
+			<text>Gruppe für neue Initiation</text>
+		</string>
+		<string>
+			<key>String_InitiationType</key>
+			<text>Neue Initiationsart</text>
+		</string>
+		<string>
+			<key>String_Paragon</key>
+			<text>Paragon</text>
+		</string>
+		<string>
+			<key>String_Stream</key>
+			<text>Strömung</text>
+		</string>
+		<string>
+			<key>Label_InitRoller_ResultOf</key>
+			<text>Ergebnis von {0}W6:</text>
+		</string>
+		<string>
+			<key>Title_HeroLabImporter</key>
+			<text>Hero Lab Importierer</text>
+		</string>
+		<string>
+			<key>Message_HeroLabImporterWarning</key>
+			<text>Aufgrund der unterschiedlichen Art und Weise, wie Hero Lab und Chummer5a mit den Daten der gespeicherten Charaktere umgehen, werden einige Elemente falsch in Chummer5a importiert, insbesondere in Bezug auf die Karmazuteilung für Charaktere bei der Erstellung.\n\nZusätzlich werden die folgenden Elemente nicht richtig importiert:\n - Komplexe Formen\n - Kampfkünste\n - Alles, was mit Initiationen und Wandlungen zu tun hat\n - Mystischen Adepten PPs\n - Geister und Sprites\n - Fahrzeuge\n - Erweiterte KI-Programme\n\n\nNicht-mundanen Charakteren, die im Erstellungsmodus mit der Prioritäts- oder Zehn-Punkte-Option erstellt wurden, müssen zudem ihre Prioritäten nach dem Import erneut anwenden (Spezial &gt; Ändere Prioritätenauswahl &gt; mit OK bestätigen).\n\nSind Sie sicher, dass Sie dieses Werkzeug benutzen wollen?</text>
+		</string>
+		<string>
+			<key>Message_HeroLabImporterWarning_Title</key>
+			<text>Hero Lab Importierprobleme</text>
+		</string>
+		<string>
+			<key>Label_HeroLabTrademarks</key>
+			<text>Hero Lab und das Hero Lab-Logo sind eingetragene Warenzeichen von LWD Technology, Inc.</text>
+		</string>
+		<string>
+			<key>String_SelectPORFile</key>
+			<text>POR-Datei wählen</text>
+		</string>
+		<string>
+			<key>String_ImportCharacter</key>
+			<text>Charakter importieren</text>
 		</string>
 	</strings>
 </chummer>

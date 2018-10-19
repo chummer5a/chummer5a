@@ -71,6 +71,7 @@ namespace Chummer
             this.mnuToolsOmae = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuToolsTranslator = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuHeroLabImporter = new System.Windows.Forms.ToolStripMenuItem();
             this.windowsMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.newWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -451,7 +452,8 @@ namespace Chummer
             this.mnuRestart,
             this.mnuToolsOmae,
             this.toolStripSeparator6,
-            this.mnuToolsTranslator});
+            this.mnuToolsTranslator,
+            this.mnuHeroLabImporter});
             this.toolsMenu.Name = "toolsMenu";
             this.toolsMenu.Size = new System.Drawing.Size(47, 20);
             this.toolsMenu.Tag = "Menu_Main_Tools";
@@ -519,6 +521,15 @@ namespace Chummer
             this.mnuToolsTranslator.Tag = "Menu_Main_Translator";
             this.mnuToolsTranslator.Text = "Translator";
             this.mnuToolsTranslator.Click += new System.EventHandler(this.mnuToolsTranslator_Click);
+            // 
+            // mnuHeroLabImporter
+            // 
+            this.mnuHeroLabImporter.Image = global::Chummer.Properties.Resources.HeroLab_16;
+            this.mnuHeroLabImporter.Name = "mnuHeroLabImporter";
+            this.mnuHeroLabImporter.Size = new System.Drawing.Size(171, 22);
+            this.mnuHeroLabImporter.Tag = "Menu_Main_HeroLabImporter";
+            this.mnuHeroLabImporter.Text = "Hero Lab Importer";
+            this.mnuHeroLabImporter.Click += new System.EventHandler(this.mnuHeroLabImporter_Click);
             // 
             // windowsMenu
             // 
@@ -723,7 +734,7 @@ namespace Chummer
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1264, 729);
+            this.ClientSize = new System.Drawing.Size(1264, 681);
             this.Controls.Add(this.tabForms);
             this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.menuStrip);
@@ -813,6 +824,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripMenuItem mnuToolsTranslator;
         private System.Windows.Forms.ToolStripMenuItem mnuChummerDiscord;
+        private System.Windows.Forms.ToolStripMenuItem mnuHeroLabImporter;
     }
 }
 

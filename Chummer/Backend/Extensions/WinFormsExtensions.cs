@@ -105,7 +105,6 @@ namespace Chummer
         {
             if (objNode != null && objTag != null)
             {
-                TreeNode objFound;
                 foreach (TreeNode objChild in objNode.Nodes)
                 {
                     if (objChild.Tag == objTag)
@@ -113,7 +112,7 @@ namespace Chummer
 
                     if (blnDeep)
                     {
-                        objFound = objChild.FindNodeByTag(objTag);
+                        TreeNode objFound = objChild.FindNodeByTag(objTag);
                         if (objFound != null)
                             return objFound;
                     }
@@ -255,7 +254,6 @@ namespace Chummer
         {
             if (treTree != null && objTag != null)
             {
-                TreeNode objFound;
                 foreach (TreeNode objNode in treTree.Nodes)
                 {
                     if (objNode.Tag == objTag)
@@ -263,7 +261,7 @@ namespace Chummer
 
                     if (blnDeep)
                     {
-                        objFound = objNode.FindNodeByTag(objTag);
+                        TreeNode objFound = objNode.FindNodeByTag(objTag);
                         if (objFound != null)
                             return objFound;
                     }

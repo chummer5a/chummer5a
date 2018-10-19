@@ -41,6 +41,7 @@ namespace Chummer
     public class LimitModifier : IHasInternalId, IHasName, ICanRemove
     {
         private Guid _guiID;
+        private bool _blnCanDelete = true;
         private string _strName = string.Empty;
         private string _strNotes = string.Empty;
         private string _strLimit = string.Empty;
@@ -49,29 +50,11 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
-        public LimitModifier(Character objCharacter)
+        public LimitModifier(Character objCharacter, string strGuid = "")
         {
             // Create the GUID for the new Skill Limit Modifier.
-            _guiID = Guid.NewGuid();
+            _guiID = strGuid.IsGuid() ? new Guid(strGuid) : Guid.NewGuid();
             _objCharacter = objCharacter;
-        }
-
-        /// Create a Skill Limit Modifier from an XmlNode.
-        /// <param name="objXmlLimitModifierNode">XmlNode to create the object from.</param>
-        public void Create(XmlNode objXmlLimitModifierNode)
-        {
-            _strName = objXmlLimitModifierNode["name"]?.InnerText ?? string.Empty;
-
-            if (objXmlLimitModifierNode["bonus"] != null)
-            {
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtTechnique, _guiID.ToString("D"), objXmlLimitModifierNode["bonus"], false, 1, DisplayNameShort))
-                {
-                    _guiID = Guid.Empty;
-                    return;
-                }
-            }
-            if (!objXmlLimitModifierNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlLimitModifierNode.TryGetStringFieldQuickly("notes", ref _strNotes);
         }
 
         /// Create a Skill Limit Modifier from properties.
@@ -79,12 +62,13 @@ namespace Chummer
         /// <param name="intBonus">The bonus amount.</param>
         /// <param name="strLimit">The limit this modifies.</param>
         /// <param name="strCondition">Condition when the limit modifier is to be activated.</param>
-        public void Create(string strName, int intBonus, string strLimit, string strCondition)
+        public void Create(string strName, int intBonus, string strLimit, string strCondition, bool blnCanDelete)
         {
             _strName = strName;
             _strLimit = strLimit;
             _intBonus = intBonus;
             _strCondition = strCondition;
+            _blnCanDelete = blnCanDelete;
         }
 
         /// <summary>
@@ -97,8 +81,9 @@ namespace Chummer
             objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("limit", _strLimit);
-            objWriter.WriteElementString("condition", _strCondition);
             objWriter.WriteElementString("bonus", _intBonus.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("condition", _strCondition);
+            objWriter.WriteElementString("candelete", _blnCanDelete.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
         }
@@ -115,6 +100,10 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("limit", ref _strLimit);
             objNode.TryGetInt32FieldQuickly("bonus", ref _intBonus);
             objNode.TryGetStringFieldQuickly("condition", ref _strCondition);
+            if (!objNode.TryGetBoolFieldQuickly("candelete", ref _blnCanDelete))
+            {
+                _blnCanDelete = _objCharacter.Improvements.All(x => x.ImproveType != Improvement.ImprovementType.LimitModifier || x.ImprovedName != InternalId);
+            }
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
         }
 
@@ -140,15 +129,6 @@ namespace Chummer
         /// Internal identifier which will be used to identify this Skill Limit Modifier in the Improvement system.
         /// </summary>
         public string InternalId => _guiID.ToString("D");
-
-        /// <summary>
-        /// Internal identifier which will be used to identify this Skill Limit Modifier in the Improvement system.
-        /// </summary>
-        public Guid Guid
-        {
-            get => _guiID;
-            set => _guiID = value;
-        }
 
         /// <summary>
         /// Name.
@@ -194,6 +174,11 @@ namespace Chummer
             get => _intBonus;
             set => _intBonus = value;
         }
+
+        /// <summary>
+        /// Whether or not this limit can be modified and/or deleted
+        /// </summary>
+        public bool CanDelete => _blnCanDelete;
 
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
@@ -250,6 +235,10 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(Notes))
                 {
                     return Color.SaddleBrown;
+                }
+                if (!CanDelete)
+                {
+                    return SystemColors.GrayText;
                 }
 
                 return SystemColors.WindowText;

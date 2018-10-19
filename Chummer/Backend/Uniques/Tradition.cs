@@ -87,6 +87,7 @@ namespace Chummer.Backend.Uniques
             SpiritForm = "Materialization";
             AvailableSpirits.Clear();
             Type = TraditionType.None;
+            _objCachedSourceDetail = null;
         }
 
         /// Create a Tradition from an XmlNode.
@@ -290,6 +291,27 @@ namespace Chummer.Backend.Uniques
                 else
                     xpathCharacterNode.TryGetStringFieldQuickly("tradition", ref _strName);
                 xpathCharacterNode.TryGetStringFieldQuickly("traditiondrain", ref _strDrainExpression);
+            }
+        }
+
+        public void LoadFromHeroLab(XmlNode xmlHeroLabNode)
+        {
+            _eTraditionType = TraditionType.MAG;
+            _strName = xmlHeroLabNode.SelectSingleNode("@name")?.InnerText;
+            XmlNode xmlTraditionDataNode = !string.IsNullOrEmpty(_strName) ? XmlManager.Load("traditions.xml").SelectSingleNode("/chummer/traditions/tradition[name = \"" + _strName + "\"]") : null;
+            if (xmlTraditionDataNode?.TryGetStringFieldQuickly("id", ref _strSourceGuid) != true)
+            {
+                _strSourceGuid = CustomMagicalTraditionGuid;
+                xmlTraditionDataNode = GetNode();
+            }
+            Create(xmlTraditionDataNode);
+            if (IsCustomTradition)
+            {
+                _strSpiritCombat = xmlHeroLabNode.SelectSingleNode("@combatspirits")?.InnerText;
+                _strSpiritDetection = xmlHeroLabNode.SelectSingleNode("@detectionspirits")?.InnerText;
+                _strSpiritHealth = xmlHeroLabNode.SelectSingleNode("@healthspirits")?.InnerText;
+                _strSpiritIllusion = xmlHeroLabNode.SelectSingleNode("@illusionspirits")?.InnerText;
+                _strSpiritManipulation = xmlHeroLabNode.SelectSingleNode("@manipulationspirits")?.InnerText;
             }
         }
 

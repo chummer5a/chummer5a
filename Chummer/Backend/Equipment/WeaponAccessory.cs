@@ -60,6 +60,7 @@ namespace Chummer.Backend.Equipment
         private string _strNotes = string.Empty;
         private string _strDicePool = string.Empty;
         private int _intAccuracy;
+        private int _intMaxRating;
         private int _intRating;
         private int _intRCGroup;
         private int _intAmmoSlots;
@@ -112,6 +113,7 @@ namespace Chummer.Backend.Equipment
             _strMount = strMount.Item1;
             _strExtraMount = strMount.Item2;
             _intRating = intRating;
+            objXmlAccessory.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
             objXmlAccessory.TryGetStringFieldQuickly("avail", ref _strAvail);
             // Check for a Variable Cost.
             if (blnSkipCost)
@@ -140,7 +142,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
+                        frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language));
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
@@ -255,6 +257,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("mount", _strMount);
             objWriter.WriteElementString("extramount", _strExtraMount);
             objWriter.WriteElementString("rc", _strRC);
+            objWriter.WriteElementString("maxrating", _intMaxRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rcgroup", _intRCGroup.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rcdeployable", _blnDeployable.ToString());
@@ -297,7 +300,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("ammobonus", _intAmmoBonus.ToString());
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (!IncludedInWeapon)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -319,7 +324,11 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetInt32FieldQuickly("rcgroup", ref _intRCGroup);
             objNode.TryGetInt32FieldQuickly("accuracy", ref _intAccuracy);
-            objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
+            if (!objNode.TryGetInt32FieldQuickly("maxrating", ref _intMaxRating))
+            {
+                // Loading older save before maxrating was tracked for Weapon Accessories
+                GetNode()?.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
+            }
             objNode.TryGetStringFieldQuickly("conceal", ref _strConceal);
             objNode.TryGetBoolFieldQuickly("rcdeployable", ref _blnDeployable);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
@@ -632,6 +641,22 @@ namespace Chummer.Backend.Equipment
                         // This will update a child's rating if it would become out of bounds due to its parent's rating changing
                         objChild.Rating = objChild.Rating;
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum Rating of the Weapon Accessory
+        /// </summary>
+        public int MaxRating
+        {
+            get => _intMaxRating;
+            set
+            {
+                _intMaxRating = value;
+                if (Rating > value)
+                {
+                    Rating = value;
                 }
             }
         }

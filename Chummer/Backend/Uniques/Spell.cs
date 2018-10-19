@@ -164,7 +164,9 @@ namespace Chummer
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (Grade >= 0)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -479,19 +481,20 @@ namespace Chummer
                     {
                         int intDV = Convert.ToInt32(Math.Floor(Convert.ToDouble(xprResult.ToString(), GlobalOptions.InvariantCultureInfo)));
 
-                        if (Limited)
-                        {
-                            intDV -= 2;
-                        }
-                        if (Extended && !Name.EndsWith("Extended"))
-                        {
-                            intDV += 2;
-                        }
-
                         // Drain cannot be lower than 2.
                         if (intDV < 2)
                             intDV = 2;
-                        strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Force", GlobalOptions.Language) + strSpaceCharacter + i.ToString() + ':' + strSpaceCharacter + intDV.ToString());
+                        strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Force", GlobalOptions.Language) + strSpaceCharacter + i.ToString(GlobalOptions.CultureInfo)
+                                      + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + strSpaceCharacter + intDV);
+
+                        if (Limited)
+                        {
+                            strTip.Append($"{strSpaceCharacter}({LanguageManager.GetString("String_SpellLimited", GlobalOptions.Language)}{strSpaceCharacter}:{strSpaceCharacter}-2");
+                        }
+                        if (Extended && !Name.EndsWith("Extended"))
+                        {
+                            strTip.Append($"{strSpaceCharacter}({LanguageManager.GetString("String_SpellExtended", GlobalOptions.Language)}{strSpaceCharacter}:{strSpaceCharacter}+2");
+                        }
                     }
                     else
                     {
@@ -858,14 +861,19 @@ namespace Chummer
                     strReturn = objSkill.DisplayNameMethod(GlobalOptions.Language) + strSpaceCharacter + '(' + intPool.ToString(GlobalOptions.CultureInfo) + ')';
                     // Add any Specialization bonus if applicable.
                     if (objSkill.HasSpecialization(Category))
-                        strReturn += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language) + ':' + strSpaceCharacter + DisplayCategory(GlobalOptions.Language) + strSpaceCharacter + '(' + 2.ToString(GlobalOptions.CultureInfo) + ')';
+                        strReturn += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language)
+                                     + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + strSpaceCharacter + DisplayCategory(GlobalOptions.Language)
+                                     + strSpaceCharacter + '(' + 2.ToString(GlobalOptions.CultureInfo) + ')';
                 }
 
                 // Include any Improvements to the Spell Category.
-                int intSpellImprovements = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellCategory, false, Category);
-                if (intSpellImprovements != 0)
-                    strReturn += strSpaceCharacter + '+' + strSpaceCharacter + DisplayCategory(GlobalOptions.Language) + strSpaceCharacter + '(' + intSpellImprovements.ToString(GlobalOptions.CultureInfo) + ')';
-
+                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                {
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.SpellCategory && objImprovement.Enabled && objImprovement.ImprovedName == Category)
+                    {
+                        strReturn += strSpaceCharacter + '+' + strSpaceCharacter + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')';
+                    }
+                }
                 return strReturn;
             }
         }

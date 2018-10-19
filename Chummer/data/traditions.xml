@@ -535,7 +535,7 @@
       <bonus>
         <drainresist>-2</drainresist>
         <spellcategory>
-          <category>Illusion</category>
+          <name>Illusion</name>
           <val>3</val>
         </spellcategory>
       </bonus>
@@ -586,11 +586,11 @@
       <drain>WIL + CHA</drain>
       <bonus>
         <spellcategory>
-          <category>Health</category>
+          <name>Health</name>
           <val>2</val>
         </spellcategory>
         <spellcategory>
-          <category>Combat</category>
+          <name>Combat</name>
           <val>-2</val>
         </spellcategory>
       </bonus>

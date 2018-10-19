@@ -60,8 +60,7 @@ namespace Chummer.Backend.Equipment
         private string _strCachedXmlNodeLanguage = string.Empty;
         private readonly TaggedObservableCollection<VehicleMod> _lstMods = new TaggedObservableCollection<VehicleMod>();
 
-        private readonly Vehicle _vehicle;
-	    private readonly Character _objCharacter;
+        private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
 		public WeaponMount(Character character, Vehicle vehicle)
@@ -69,7 +68,7 @@ namespace Chummer.Backend.Equipment
 			// Create the GUID for the new VehicleMod.
 			_guiID = Guid.NewGuid();
 		    _objCharacter = character;
-			_vehicle = vehicle;
+			Parent = vehicle;
         }
 
         /// Create a Vehicle Modification from an XmlNode and return the TreeNodes for it.
@@ -112,7 +111,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
+                        frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language));
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
@@ -191,7 +190,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
 			objWriter.WriteEndElement();
-			_objCharacter.SourceProcess(_strSource);
+
+            if (!IncludedInVehicle)
+			    _objCharacter.SourceProcess(_strSource);
 		}
 
 		/// <summary>
@@ -555,7 +556,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Vehicle that the Mod is attached to.
         /// </summary>
-        public Vehicle Parent => _vehicle;
+        public Vehicle Parent { get; }
 
         /// <summary>
         /// 
@@ -568,7 +569,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The number of Slots the Mount consumes, including all child items.
         /// </summary>
-        public int CalculatedSlots => Slots + WeaponMountOptions.Sum(w => w.Slots) + Mods.Sum(m => m.CalculatedSlots);
+        public int CalculatedSlots => Slots + WeaponMountOptions.Sum(w => w.Slots) + Mods.AsParallel().Sum(m => m.CalculatedSlots);
 
         /// <summary>
         /// Total Availability.
@@ -634,10 +635,10 @@ namespace Chummer.Backend.Equipment
                 // Run through the Vehicle Mods and add in their availability.
                 foreach (VehicleMod objVehicleMod in Mods)
                 {
-                    if (!objVehicleMod.IncludedInVehicle)
+                    if (!objVehicleMod.IncludedInVehicle && objVehicleMod.Equipped)
                     {
                         AvailabilityValue objLoopAvailTuple = objVehicleMod.TotalAvailTuple();
-                        //if (objLoopAvailTuple.Item3)
+                        if (objLoopAvailTuple.AddToParent)
                             intAvail += objLoopAvailTuple.Value;
                         if (objLoopAvailTuple.Suffix == 'F')
                             chrLastAvailChar = 'F';
@@ -946,7 +947,7 @@ namespace Chummer.Backend.Equipment
                         intMax = 1000000;
                     frmPickNumber.Minimum = intMin;
                     frmPickNumber.Maximum = intMax;
-                    frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayName(GlobalOptions.Language));
+                    frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), DisplayName(GlobalOptions.Language));
                     frmPickNumber.AllowCancel = false;
                     frmPickNumber.ShowDialog();
                     _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);

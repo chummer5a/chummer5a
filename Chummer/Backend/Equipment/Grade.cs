@@ -174,8 +174,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int AddictionThreshold
         {
-            get { return _intAddictionThreshold; }
-            set { _intAddictionThreshold = value; }
+            get => _intAddictionThreshold;
+            set => _intAddictionThreshold = value;
         }
 		#endregion
 	}

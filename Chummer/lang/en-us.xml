@@ -244,6 +244,10 @@
       <text>Please input the total of the results of the d6.</text>
     </string>
     <string>
+      <key>Label_InitRoller_ResultOf</key>
+      <text>Result of {0}D6:</text>
+    </string>
+    <string>
       <key>String_BP</key>
       <text>BP</text>
     </string>
@@ -538,6 +542,10 @@
     <string>
       <key>Checkbox_Randomize1D6</key>
       <text>Randomize 1D6</text>
+    </string>
+    <string>
+      <key>String_KarmaRemaining</key>
+      <text>Karma Remaining</text>
     </string>
     <string>
       <key>Label_KarmaRemaining</key>
@@ -979,6 +987,34 @@
       <key>String_LifeModules</key>
       <text>Life Modules</text>
     </string>
+    <string>
+      <key>String_Armor</key>
+      <text>Armor</text>
+    </string>
+    <string>
+      <key>String_Info</key>
+      <text>Info</text>
+    </string>
+    <string>
+      <key>String_Matrix</key>
+      <text>Matrix</text>
+    </string>
+    <string>
+      <key>String_Paragon</key>
+      <text>Paragon</text>
+    </string>
+    <string>
+      <key>String_Stream</key>
+      <text>Stream</text>
+    </string>
+    <string>
+      <key>String_Vehicle</key>
+      <text>Vehicle</text>
+    </string>
+    <string>
+      <key>String_Weapon</key>
+      <text>Weapon</text>
+    </string>
     <!-- End Region -->
     <!-- Region Printout Strings -->
     <string>
@@ -1306,6 +1342,10 @@
     <string>
       <key>Menu_Main_Translator</key>
       <text>Translator</text>
+    </string>
+    <string>
+      <key>Menu_Main_HeroLabImporter</key>
+      <text>Hero Lab Importer</text>
     </string>
     <!-- End Region -->
     <!-- Region About -->
@@ -4538,8 +4578,24 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Group:</text>
     </string>
     <string>
+      <key>String_InitiationGroup</key>
+      <text>Group for New Initiation</text>
+    </string>
+    <string>
+      <key>String_InitiationType</key>
+      <text>New Initiation Type</text>
+    </string>
+    <string>
       <key>Label_Network</key>
       <text>Network:</text>
+    </string>
+    <string>
+      <key>String_SubmersionNetwork</key>
+      <text>Network for New Submersion</text>
+    </string>
+    <string>
+      <key>String_SubmersionType</key>
+      <text>New Submersion Type</text>
     </string>
     <string>
       <key>Checkbox_GroupInitiation</key>
@@ -5506,6 +5562,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Label_OtherEssence</key>
       <text>Essence:</text>
+    </string>
+    <string>
+      <key>String_NuyenRemaining</key>
+      <text>Nuyen Remaining</text>
     </string>
     <string>
       <key>Label_OtherNuyenRemain</key>
@@ -7928,15 +7988,15 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>String_SelectBP_BPSummary</key>
-      <text>Enter the amount of Build Points you are allowed to create your character with (Default {0}).</text>
+      <text>Enter the amount of Build Points with which you are allowed to create your character (Default {0}).</text>
     </string>
     <string>
       <key>String_SelectBP_KarmaSummary</key>
-      <text>Enter the amount of Karma you are allowed to create your character with (Default {0}).</text>
+      <text>Enter the amount of Karma with which you are allowed to create your character (Default {0}).</text>
     </string>
     <string>
       <key>String_SelectBP_PrioritySummary</key>
-      <text>Enter the maxiumum availability you are allowed to create your character with.</text>
+      <text>Enter the maximum availability with which you are allowed to create your character.</text>
     </string>
     <string>
       <key>Tip_SelectKarma_IgnoreRules</key>
@@ -9486,6 +9546,32 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>String_UI</key>
       <text>UI</text>
+    </string>
+    <!-- End Region -->
+    <!-- Region HeroLab Importer -->
+    <string>
+      <key>Title_HeroLabImporter</key>
+      <text>Hero Lab Importer</text>
+    </string>
+    <string>
+      <key>Message_HeroLabImporterWarning_Title</key>
+      <text>Hero Lab Importer Issues</text>
+    </string>
+    <string>
+      <key>Message_HeroLabImporterWarning</key>
+      <text>Due to the differences between how Hero Lab and Chummer5a handle save files, certain items will import incorrectly into Chummer5a, especially concerning karma allocation for characters at character creation.\n\nIn addition, the following items will not be properly imported:\n - Complex Forms\n - Martial Arts\n - Anything related to Initiations and Submersions\n - Mystic Adept PPs\n - Spirits and Sprites\n - Vehicles\n - AI Advanced Programs\n\nNon-mundane characters in Priority or Sum-to-Ten character creation mode will also need to re-apply their priorities after importing is complete (Special &gt; Change Priority Selection &gt; Press OK).\n\nAre you sure you wish to use this tool?</text>
+    </string>
+    <string>
+      <key>Label_HeroLabTrademarks</key>
+      <text>Hero Lab and the Hero Lab logo are Registered Trademarks of LWD Technology, Inc.</text>
+    </string>
+    <string>
+      <key>String_SelectPORFile</key>
+      <text>Select POR File</text>
+    </string>
+    <string>
+      <key>String_ImportCharacter</key>
+      <text>Import Character</text>
     </string>
     <!-- End Region -->
     <!-- End Region -->

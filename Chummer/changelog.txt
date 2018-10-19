@@ -91,6 +91,26 @@ Application Changes:
 - Added preliminary support for right-to-left scripts to Chummer5a's translation system and the Translator tool. It's currently relatively untested, but bugs will be ironed out if/when translations that use right-to-left scripts get included with the program.
 - Fixed a bug where improvements that grant extra damage resistance dice would also get added to armor when printing character information. Fixes #3058.
 - Fixed behaviour of DisplayPage property to not return an empty string if that's in the data file. Fixes #3064
+- Ugly workaround fix for characters that managed to get a power rating higher than total maximum magic to prevent them from crashing. Fixes #3062.
+- Base augmented attribute maxima are now properly fetched from a character's metatype/metavariant data instead of being fixed to 4 for regular attributes and 0 for special attributes.
+- Fixed an issue where an advanced lifestyle could not be edited during character creation if the final cost of the lifestyle was more than the character's current nuyen.
+- Fixed an issue where armor degradation could cause a piece of armor to have negative value.
+- Fixed an issue with attribute controls causing a crash if the character has multiple attributes at max-1 and takes an improvement that reduces that attribute maximum. Fixes #3086
+- Fixed an issue where the title of the character roster form was not getting translated. Fixes #3092.
+- Initiation Groups and Submersion Networks can now have their details edited at character creation.
+- Fixed behaviour of the Cyberadept Daemon to properly provide restored Essence. Due to legacy issues with the way Base attribute bonuses are calculated, this will not show up as a tooltip. This will be amended in a future patch.
+- The Restricted Gear bonus can now be set to apply to any availability limit at character generation instead of being hardcoded to 24.
+- Mentor Spirit and Paragon source references are now displayed next to their names within the Spells and Spirits tab (for Mentor Spirits) and the Sprites and Complex Forms tab (for Paragons).
+- Complex Forms will now display their dicepool as well as a button to roll it in career mode if the appropriate options have been set.
+- Fixed the calculation of Drain Value Tooltips improperly showing the Extended and Limited drain calculation.
+- Fixed an issue where certain items that came with an existing item would sometimes have their availabilities incorrectly checked for the availability limit, and fixed a similar issue where items that would be added onto such items by the player would not get their availabilities checked. Fixes #3117.
+- Fixed an issue where items that came built into items originating from different sourcebooks (e.g. a lifestyle quality from Run Faster coming by default with a lifestyle from the Core Rulebook) would process necessary sourcebooks for the character incorrectly. Existing saved characters with this issue will still have it, but no newly saved characters going forward will have this issue. Fixes #3109.
+- Fixed a bug where characters without Run Faster enabled could still add Advanced Lifestyles despite them being part of Run Faster.
+- Fixed an issue where limit modifiers added by improvements could get edited and/or deleted independent from their improvement.
+- Fixed an issue where some limit modifiers added by gear would not get properly removed when the gear was removed. Technical fix for #3115, though existing characters with these issues will need their existing, orphaned limit modifiers removed manually.
+- Added a limited-functionality Hero Lab importer tool. This tool can convert .por files into Chummer5a characters to a certain extent, as certain character elements aren't saved in ways that can be (easily) converted into Chummer5a information.
+- Fixed an issue where weapon accessories often would not get their proper ratings set. Fixes #3123.
+- Fixed an issue where renaming various locations would not cause the corresponding node in the appropriate TreeView to update. Fixes #3078.
 
 Data Changes:
 
@@ -137,6 +157,11 @@ Data Changes:
 - All instances of "NeoNET" are now capitalized as such (some items previously said "NeoNet" or "Neonet"). Fixes #3033.
 - Added (hidden) Gear items for Public Grid, Local Grid, and Global Grid so that these phrases can be handled by TranslateExtra. Part of #3002.
 - Fixed an issue with the Text-Only sheet that caused it to fail to load the LOG attribute.
+- Fixed incorrect RC and page reference for the Cavalier Thunderstruck. Fixes #3083.
+- Fixed a rare crash that would happen on startup if/when different loading theads would collide with one another while performing initial loading.
+- Fixed an issue where Combat Sense could not get discounted from The Invisible Way. Fixes #3098.
+- Fixed incorrect spell type for the Powerblade spell.
+- Fixed incorrect weapon mount entries for the EMC 2073 Catcher.
 
 New Strings:
 
@@ -184,6 +209,26 @@ New Strings:
 - Label_Options_CustomDataDirectories
 - Button_Options_UploadPastebin
 - Menu_SpecialChangePriorities
+- String_Matrix
+- String_Info
+- String_Vehicle
+- String_Weapon
+- String_Armor
+- String_InitiationGroup
+- String_InitiationType
+- String_SubmersionNetwork
+- String_SubmersionType
+- String_Paragon
+- String_Stream
+- Label_InitRoller_ResultOf
+- String_KarmaRemaining
+- String_NuyenRemaining
+- Title_HeroLabImporter
+- Message_HeroLabImporterWarning_Title
+- Message_HeroLabImporterWarning
+- Label_HeroLabTrademarks
+- String_SelectPORFile
+- String_ImportCharacter
 
 Changed Strings:
 

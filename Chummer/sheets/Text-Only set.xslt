@@ -169,37 +169,37 @@
           <br/>== <xsl:value-of select="$lang.DerivedAttributes"/> ==
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.Essence,': ')"/>
-              <xsl:with-param name="length" select="27"/>
+              <xsl:with-param name="length" select="40"/>
             </xsl:call-template>
             <xsl:value-of select="totaless"/>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.Initiative,': ')"/>
-              <xsl:with-param name="length" select="27"/>
+              <xsl:with-param name="length" select="40"/>
             </xsl:call-template>
             <xsl:value-of select="init"/>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.RiggerInitiative,': ')"/>
-              <xsl:with-param name="length" select="27"/>
+              <xsl:with-param name="length" select="40"/>
             </xsl:call-template>
             <xsl:value-of select="riggerinit"/>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.AstralInitiative,': ')"/>
-              <xsl:with-param name="length" select="27"/>
+              <xsl:with-param name="length" select="40"/>
             </xsl:call-template>
             <xsl:value-of select="astralinit"/>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.MatrixAR,': ')"/>
-              <xsl:with-param name="length" select="27"/>
+              <xsl:with-param name="length" select="40"/>
             </xsl:call-template>
           <xsl:value-of select="matrixarinit"/>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.MatrixCold,': ')"/>
-              <xsl:with-param name="length" select="27"/>
+              <xsl:with-param name="length" select="40"/>
             </xsl:call-template>
           <xsl:value-of select="matrixcoldinit"/>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.MatrixHot,': ')"/>
-              <xsl:with-param name="length" select="27"/>
+              <xsl:with-param name="length" select="40"/>
             </xsl:call-template>
           <xsl:value-of select="matrixhotinit"/>
           <xsl:variable name="PhysicalTrackTitle">
@@ -214,7 +214,7 @@
           </xsl:variable>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($PhysicalTrackTitle,': ')"/>
-              <xsl:with-param name="length" select="27"/>
+              <xsl:with-param name="length" select="40"/>
             </xsl:call-template>
             <xsl:value-of select="physicalcm"/>
           <br/>
@@ -232,14 +232,14 @@
               </xsl:variable>
               <xsl:call-template name="fnx-pad-r">
                 <xsl:with-param name="string" select="concat($StunTrackTitle,': ')"/>
-                <xsl:with-param name="length" select="27"/>
+                <xsl:with-param name="length" select="40"/>
               </xsl:call-template>
               <xsl:value-of select="stuncm"/>
             </xsl:when>
             <xsl:otherwise>
               <xsl:call-template name="fnx-pad-r">
                 <xsl:with-param name="string" select="' '"/>
-                <xsl:with-param name="length" select="27"/>
+                <xsl:with-param name="length" select="40"/>
               </xsl:call-template>
               <xsl:value-of select="stuncm"/>
             </xsl:otherwise>
@@ -249,25 +249,25 @@
           <xsl:call-template name="limitmodifiersphys"/>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.Physical,':')"/>
-              <xsl:with-param name="length" select="27"/>
+              <xsl:with-param name="length" select="40"/>
             </xsl:call-template>
             <xsl:value-of select="limitphysical"/>
             <xsl:call-template name="limitmodifiersphys"/>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.Mental,':')"/>
-              <xsl:with-param name="length" select="27"/>
+              <xsl:with-param name="length" select="40"/>
             </xsl:call-template>
             <xsl:value-of select="limitmental"/>
             <xsl:call-template name="limitmodifiersment"/>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.Social,':')"/>
-              <xsl:with-param name="length" select="27"/>
+              <xsl:with-param name="length" select="40"/>
             </xsl:call-template>
             <xsl:value-of select="limitsocial"/>
             <xsl:call-template name="limitmodifierssoc"/>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.Astral,':')"/>
-              <xsl:with-param name="length" select="27"/>
+              <xsl:with-param name="length" select="40"/>
             </xsl:call-template>
             <xsl:value-of select="limitastral"/>
             <xsl:call-template name="limitmodifiersast"/>
@@ -316,7 +316,7 @@
           <xsl:if test="complexforms/complexform">
             <br/>
             <br/>== <xsl:value-of select="$lang.ComplexForms"/> ==
-            <br/>(<xsl:value-of select="$lang.Tradition"/>: <xsl:value-of select="tradition/name"/>, <xsl:value-of select="$lang.ResistFading"/> <xsl:value-of select="tradition/drainattributes"/> = <xsl:value-of select="tradition/drainvalue"/>)
+            <br/>(<xsl:value-of select="$lang.Tradition"/>: <xsl:value-of select="tradition/name"/>, <xsl:value-of select="$lang.ResistFading"/>&#160;<xsl:value-of select="tradition/drainattributes"/> = <xsl:value-of select="tradition/drainvalue"/>)
             <xsl:call-template name="complexforms"/>
           </xsl:if>
 
@@ -493,7 +493,7 @@
       </xsl:variable>
       <xsl:call-template name="fnx-pad-r">
         <xsl:with-param name="string" select="$snme"/>
-        <xsl:with-param name="length" select="25"/>
+        <xsl:with-param name="length" select="40"/>
       </xsl:call-template>
       <xsl:choose>
         <xsl:when test="islanguage = 'True' and rating = 0">
@@ -546,7 +546,7 @@
     <xsl:for-each select="qualities/quality">
       <xsl:sort select="name"/>
       <br/><xsl:value-of select="name"/>
-      <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
+      <xsl:if test="extra != ''"> (<xsl:value-of select="normalize-space(extra)"/>)</xsl:if>
     </xsl:for-each>
   </xsl:template>
 
@@ -559,7 +559,7 @@
       </xsl:variable>
       <br/><xsl:call-template name="fnx-pad-r">
         <xsl:with-param name="string" select="$t.name"/>
-        <xsl:with-param name="length" select="25"/>
+        <xsl:with-param name="length" select="30"/>
       </xsl:call-template>
       <xsl:value-of select="$lang.DV"/>: <xsl:value-of select="dv"/>
     </xsl:for-each>
@@ -992,9 +992,12 @@
       </xsl:variable>
       <br/><xsl:call-template name="fnx-pad-r">
         <xsl:with-param name="string" select="$anme"/>
-        <xsl:with-param name="length" select="35"/>
+        <xsl:with-param name="length" select="40"/>
       </xsl:call-template>
-      <xsl:value-of select="armor"/>
+      <xsl:call-template name="fnx-pad-l">
+        <xsl:with-param name="string" select="armor"/>
+        <xsl:with-param name="length" select="2"/>
+      </xsl:call-template>
       <xsl:if test="armormods/armormod">
         <xsl:for-each select="armormods/armormod">
           <xsl:sort select="name"/>
@@ -1126,32 +1129,39 @@
   </xsl:template>
 
   <xsl:template name="karmaexpenses">
-        <xsl:for-each select="expenses/expense[type = 'Karma']">
-            <br/>
+    <xsl:for-each select="expenses/expense[type = 'Karma']">
+      <br/>
       <xsl:call-template name="fnx-pad-r">
         <xsl:with-param name="string" select="date"/>
-        <xsl:with-param name="length" select="25"/>
+        <xsl:with-param name="length" select="20"/>
       </xsl:call-template>
-      <xsl:value-of select="amount"/>
+      <xsl:call-template name="fnx-pad-l">
+        <xsl:with-param name="string" select="amount"/>
+        <xsl:with-param name="length" select="8"/>
+      </xsl:call-template>
       <xsl:call-template name="fnx-repeat">
-        <xsl:with-param name="count" select="6"/>
+        <xsl:with-param name="count" select="3"/>
       </xsl:call-template>
-            <xsl:value-of select="reason"/>
-        </xsl:for-each>
+      <xsl:value-of select="reason"/>
+    </xsl:for-each>
   </xsl:template>
 
   <xsl:template name="nuyenexpenses">
     <xsl:for-each select="expenses/expense[type = 'Nuyen']">
-            <br/>
+      <br/>
       <xsl:call-template name="fnx-pad-r">
         <xsl:with-param name="string" select="date"/>
-        <xsl:with-param name="length" select="25"/>
+        <xsl:with-param name="length" select="20"/>
       </xsl:call-template>
-      <xsl:value-of select="amount"/><xsl:value-of select="$lang.NuyenSymbol"/>
-      <xsl:call-template name="fnx-repeat">
-        <xsl:with-param name="count" select="4"/>
+      <xsl:call-template name="fnx-pad-l">
+        <xsl:with-param name="string" select="amount"/>
+        <xsl:with-param name="length" select="8"/>
       </xsl:call-template>
-            <xsl:value-of select="reason"/>
+      <xsl:call-template name="fnx-pad-r">
+        <xsl:with-param name="string" select="$lang.NuyenSymbol"/>
+        <xsl:with-param name="length" select="3"/>
+      </xsl:call-template>
+      <xsl:value-of select="reason"/>
     </xsl:for-each>
   </xsl:template>
 

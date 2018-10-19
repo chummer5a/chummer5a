@@ -56,19 +56,13 @@ namespace Chummer
 
     public class RemovingOldEventArgs : EventArgs
     {
-        public RemovingOldEventArgs()
-        {
-            OldObject = null;
-            OldIndex = 0;
-        }
-
-        public RemovingOldEventArgs(object objOldObject, int intOldIndex)
+        public RemovingOldEventArgs(object objOldObject = null, int intOldIndex = 0)
         {
             OldObject = objOldObject;
             OldIndex = intOldIndex;
         }
 
-        public object OldObject { get; set; }
-        public int OldIndex { get; set; }
+        public object OldObject { get; }
+        public int OldIndex { get; }
     }
 }

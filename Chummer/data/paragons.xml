@@ -82,7 +82,7 @@
       <name>Delphi (The Oracle)</name>
       <category>Resonance</category>
       <advantage>+1 bonus to dice pool and limit when threading complex forms.</advantage>
-      <disadvantage>–2 modifer to the technomancer’s Initiative Score.</disadvantage>
+      <disadvantage>–2 modifier to the technomancer’s Initiative Score.</disadvantage>
       <bonus>
           <initiative>-2</initiative>
           <matrixinitiative>-2</matrixinitiative>

@@ -43,7 +43,6 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _strCustomGroup = strCustomGroup;
-            MoveControls();
             _objDocument = XmlManager.Load("improvements.xml");
         }
 
@@ -465,26 +464,6 @@ namespace Chummer
 
             DialogResult = DialogResult.OK;
         }
-
-        private void MoveControls()
-        {
-            int intWidth = Math.Max(lblImprovementType.Width, lblName.Width);
-            intWidth = Math.Max(intWidth, lblSelect.Width);
-            intWidth = Math.Max(intWidth, lblVal.Width);
-            intWidth = Math.Max(intWidth, lblMin.Width);
-            intWidth = Math.Max(intWidth, lblMax.Width);
-            intWidth = Math.Max(intWidth, lblAug.Width);
-
-            cboImprovemetType.Left = lblImprovementType.Left + intWidth + 6;
-            txtName.Left = cboImprovemetType.Left;
-            txtSelect.Left = cboImprovemetType.Left;
-            cmdChangeSelection.Left = txtSelect.Left + txtSelect.Width + 6;
-            nudVal.Left = cboImprovemetType.Left;
-            nudMin.Left = cboImprovemetType.Left;
-            nudMax.Left = cboImprovemetType.Left;
-            nudAug.Left = cboImprovemetType.Left;
-            chkApplyToRating.Left = nudVal.Left + nudVal.Width + 6;
-        }
         #endregion
 
         #region Properties
@@ -496,7 +475,7 @@ namespace Chummer
             set => _objEditImprovement = value;
         }
 
-        public Improvement NewImprovement;
+        public Improvement NewImprovement { get; set; }
 
         #endregion
     }

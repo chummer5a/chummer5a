@@ -562,7 +562,7 @@ namespace Chummer
             }
             else
             {
-                if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting", GlobalOptions.Language).Replace("{0}", _strFileName), LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting", GlobalOptions.Language), _strFileName), LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
@@ -863,7 +863,7 @@ namespace Chummer
             // Spirit Force Based on Total MAG.
             GlobalOptions.LoadBoolFromRegistry(ref _blnSpiritForceBasedOnTotalMAG, "spiritforcebasedontotalmag", string.Empty, true);
 
-            // Skill Defaulting Includes Modifers.
+            // Skill Defaulting Includes modifiers.
             bool blnTemp = false;
             GlobalOptions.LoadBoolFromRegistry(ref blnTemp, "skilldefaultingincludesmodifiers", string.Empty, true);
 

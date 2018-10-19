@@ -4637,6 +4637,20 @@
       </specs>
     </skill>
     <skill>
+      <id>1708eff8-a7fe-491f-b349-a6130c83e8d0</id>
+      <name>Serbo-Croatian</name>
+      <attribute>INT</attribute>
+      <category>Language</category>
+      <default>False</default>
+      <skillgroup />
+      <specs>
+        <spec>Read/Write</spec>
+        <spec>Speak</spec>
+        <spec>Dialect</spec>
+        <spec>Lingo</spec>
+      </specs>
+    </skill>
+    <skill>
       <id>fe3ccfd5-9e14-4e0a-962d-f9601fc24950</id>
       <name>Shadow Community</name>
       <attribute>INT</attribute>

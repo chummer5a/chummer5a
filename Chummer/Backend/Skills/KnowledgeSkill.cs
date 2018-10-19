@@ -72,14 +72,14 @@ namespace Chummer.Backend.Skills
         private string _strType = string.Empty;
         public bool ForcedName { get; }
 
-        public KnowledgeSkill(Character character) : base(character)
+        public KnowledgeSkill(Character objCharacter) : base(objCharacter)
         {
-            AttributeObject = character.LOG;
+            AttributeObject = objCharacter.LOG;
         }
 
-        public KnowledgeSkill(Character character, string forcedName) : this(character)
+        public KnowledgeSkill(Character objCharacter, string strForcedName) : this(objCharacter)
         {
-            WriteableName = forcedName;
+            WriteableName = strForcedName;
             ForcedName = true;
         }
 
@@ -89,45 +89,66 @@ namespace Chummer.Backend.Skills
             set
             {
                 if (ForcedName)
+                {
                     return;
-                string strNewName = value;
-                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                {
-                    XmlDocument xmlSkillDoc = XmlManager.Load("skills.xml", GlobalOptions.Language);
-                    XmlNode xmlNewNode = xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[translate = \"" + value + "\" and category = \"" + Type + "\"]") ??
-                                         xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[translate = \"" + value + "\"]");
-                    if (xmlNewNode != null)
-                        strNewName = xmlNewNode["name"]?.InnerText ?? value;
-                    else
-                        strNewName = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
                 }
-                if (Name != strNewName)
+
+                if (string.Equals(DisplayName, value))
                 {
-                    Name = strNewName;
-                    LoadDefaultType();
-                    OnPropertyChanged();
+                    return;
                 }
+                
+                LoadSkillFromData(value);
+                Name = value;
+                OnPropertyChanged();
+            }
+        }
+        
+        private void LoadSkillFromData(string strInputSkillName)
+        {
+            string strSkillName = GetSkillNameFromData(strInputSkillName);
+            XmlNode xmlSkillNode = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{ strSkillName }\"]");
+
+            if (xmlSkillNode == null)
+            {
+                SkillId = Guid.Empty;
+                return;
+            }
+
+            SkillId = xmlSkillNode.TryGetField("id", Guid.TryParse, out Guid guidTemp)
+                ? guidTemp
+                : Guid.Empty;
+
+            string strCategory = xmlSkillNode["category"]?.InnerText;
+
+            if (!string.IsNullOrEmpty(strCategory))
+            {
+                Type = strCategory;
+            }
+
+            string strAttribute = xmlSkillNode["attribute"]?.InnerText;
+
+            if (!string.IsNullOrEmpty(strAttribute))
+            {
+                AttributeObject = CharacterObject.GetAttribute(strAttribute) ?? CharacterObject.LOG;
             }
         }
 
-        public bool LoadDefaultType()
+        private static string GetSkillNameFromData(string strInputSkillName)
         {
-            XmlDocument xmlSkillDoc = XmlManager.Load("skills.xml", GlobalOptions.Language);
-            XmlNode xmlNewNode = xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\" and category = \"" + Type + "\"]") ??
-                                 xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\"]");
-            if (xmlNewNode != null)
+            if (GlobalOptions.Language == GlobalOptions.DefaultLanguage)
             {
-                SkillId = xmlNewNode.TryGetField("id", Guid.TryParse, out Guid guidTemp) ? guidTemp : Guid.Empty;
-                string strCategory = xmlNewNode["category"]?.InnerText;
-                if (!string.IsNullOrEmpty(strCategory))
-                    Type = strCategory;
-                string strAttribute = xmlNewNode["attribute"]?.InnerText;
-                if (!string.IsNullOrEmpty(strAttribute))
-                    AttributeObject = CharacterObject.GetAttribute(strAttribute) ?? CharacterObject.LOG;
-                return true;
+                return strInputSkillName;
             }
-            SkillId = Guid.Empty;
-            return false;
+            
+            XmlNode xmlSkillTranslationNode = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectSingleNode($"/chummer/knowledgeskills/skill[translate = \"{ strInputSkillName }\"]");
+
+            if (xmlSkillTranslationNode == null)
+            {
+                return LanguageManager.ReverseTranslateExtra(strInputSkillName, GlobalOptions.Language);
+            }
+
+            return xmlSkillTranslationNode["name"]?.InnerText ?? strInputSkillName;
         }
 
         public override string SkillCategory => Type;
@@ -203,7 +224,7 @@ namespace Chummer.Backend.Skills
                 //2018-22-03: Causes any attempt to alter the Type for skills with names that match
                 //default skills to reset to the default Type for that skill. If we want to disable
                 //that behaviour, better to disable it via the control.
-                /*if (!LoadDefaultType())
+                /*if (!LoadSkill())
                     {
                         if (s_CategoriesSkillMap.TryGetValue(value, out string strNewAttributeValue))
                         {

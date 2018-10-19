@@ -10633,7 +10633,7 @@
         <altdisadvantage>鸽子在尽可能的情况下反对战斗。因此，那些遵从鸽子的人在施放战斗法术或使用致命手段时受到-2骰池调整。</altdisadvantage>
         <choices>
           <choice>
-            <name>Magician: +1 dice pool modifer for casting Health spells, +1 dice pool modifer to summon air spirits</name>
+            <name>Magician: +1 dice pool modifier for casting Health spells, +1 dice pool modifier to summon air spirits</name>
             <translate>法师：施放生命系法术获得+1骰池调整，召唤气精魂获得+1骰池调整</translate>
           </choice>
           <choice>
@@ -10667,7 +10667,7 @@
         <altdisadvantage>奥秘的追随者必须使用塔罗牌卡组或单张卡牌作为法器或崇拜物，否则在尝试使用它们时受到-2骰池调整。\n塔罗奥秘在它的拥护者的生活中扮演着如此重要的角色，以至于当奥秘的追随者进阶1级启蒙时，他们必须选择专注（Centering）或修士专注（Adept Centering）作为他们的首要益处，同时选择塔罗牌作为他们使用专注的器具。</altdisadvantage>
         <choices>
           <choice>
-            <name>Magician: +1 dice pool modifer for casting Detection spells, an additional +2 dice pool modifer to cast Clairvoyance spells.</name>
+            <name>Magician: +1 dice pool modifier for casting Detection spells, an additional +2 dice pool modifier to cast Clairvoyance spells.</name>
             <translate>法师：施放侦测系法术受+1骰池调整，施放『千里眼』时额外受到+2骰池调整</translate>
           </choice>
           <choice>
@@ -10684,11 +10684,11 @@
         <altdisadvantage>拥有一本神圣经文意味着某些行为将被视作不正当的或违反经文教义的。当神圣经文的追随者想要进行一个与经文教义相违背的行为时（无论是哪种经文），他们必须通过一个魅力+意志（4）检定来进行该行为。</altdisadvantage>
         <choices>
           <choice>
-            <name>Magician: +2 dice pool modifer when using the Banishing skill.</name>
+            <name>Magician: +2 dice pool modifier when using the Banishing skill.</name>
             <translate>法师：〈驱逐〉检定获得+2骰池调整</translate>
           </choice>
           <choice>
-            <name>Magician: +2 dice pool modifer when casting Health spells.</name>
+            <name>Magician: +2 dice pool modifier when casting Health spells.</name>
             <translate>法师：施放生命系法术时获得+2骰池调整</translate>
           </choice>
           <choice>
@@ -10705,7 +10705,7 @@
         <altdisadvantage>由于死亡的追随者相当了解身体如何工作，他们厌恶治疗它，因为他们将死亡与濒死过程视作最神圣的事情。当一个死亡的追随者尝试帮助濒死或受伤的某人时，他们必须先通过一个魅力+意志（3）检定。</altdisadvantage>
         <choices>
           <choice>
-            <name>Magician: +2 dice pool modifer when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</name>
+            <name>Magician: +2 dice pool modifier when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</name>
             <translate>法师：在施放『死亡之触』、『法力球』、『法力箭』、『触杀术』、『屠戮术』、『诛灭术』时骰池获得+2调整</translate>
           </choice>
           <choice>
@@ -10722,7 +10722,7 @@
         <altdisadvantage>贵族之战斗、不得不为之的战斗与不计后果的战斗，彼此间是截然不同的。结果是，那些遵从战争的人比任何人或任何事都更害怕的是失败。在看起来要输掉战斗时，那些遵从战争导师的人必须通过一个魅力+意志（4）检定，否则会使用任何有必要的手段——包括生命，新元，以及他们的同伴的荣誉——来击败他们的敌手。</altdisadvantage>
         <choices>
           <choice>
-            <name>Magician: +2 dice pool modifer when casting Combat spells, preparations, and rituals.</name>
+            <name>Magician: +2 dice pool modifier when casting Combat spells, preparations, and rituals.</name>
             <translate>法师：涉及战斗系的法术、制剂以及法术仪式的检定受到+2骰池调整</translate>
           </choice>
           <choice>
@@ -10756,7 +10756,7 @@
         <altdisadvantage>绿之人的追随者认为植物的价值高于几乎其它一切。于是，他们在植物被大肆毁灭时不会袖手旁观。这并不是说每个追随者都必须为每根折断的枝条复仇，但当植物正在受到明显的伤害，他们必须通过一个魅力+意志（3）检定，否则会使用一切可能的手段来阻止破坏。</altdisadvantage>
         <choices>
           <choice>
-            <name>Magician: +2 dice pool modifer to summon Plant Spirits.</name>
+            <name>Magician: +2 dice pool modifier to summon Plant Spirits.</name>
             <translate> 法师：〈召唤〉植物精魂获得+2骰池调整</translate>
           </choice>
           <choice>
@@ -10773,7 +10773,7 @@
         <altdisadvantage>太阳的追随者必须通过一个魅力+意志（4）检定才能有目的地误导他人。</altdisadvantage>
         <choices>
           <choice>
-            <name>Magician: +2 dice pool modifer when casting Sun- or Fire-based spells.</name>
+            <name>Magician: +2 dice pool modifier when casting Sun- or Fire-based spells.</name>
             <translate>法师：施放太阳或火焰相关的法术时获得+2骰池调整</translate>
           </choice>
           <choice>
@@ -10875,7 +10875,7 @@
         <altdisadvantage>蜘蛛的追随者，如同他们的导师，在事情的发展超出其控制时变得焦虑。因此，他们不遗余力地控制他们的遭遇的随机性。当没有在遵从一个计划或事情并没有照计划发展时，蜘蛛的追随者必须通过一个魅力+意志（4）检定，否则在一个新计划被建立起来前一切检定受到-2骰池调整。</altdisadvantage>
         <choices>
           <choice>
-            <name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+            <name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
             <translate>法师：涉及操纵系的法术、制剂以及法术仪式的检定受到+2骰池调整</translate>
           </choice>
           <choice>
@@ -10892,7 +10892,7 @@
         <altdisadvantage>狼不是光荣的。狼是捕食弱者的存活者。每当狼的追随者看到通过攻击或牺牲弱者来存活的机会，他们必须通过一个魅力+意志（4）检定，否则就会尝试抓住机会。这对于狼视为朋友与家人的那些人不生效。</altdisadvantage>
         <choices>
           <choice>
-            <name>Magician: +1 dice pool modifer when casting Combat spells, preparations, and rituals.</name>
+            <name>Magician: +1 dice pool modifier when casting Combat spells, preparations, and rituals.</name>
             <translate>法师：涉及战斗系的法术、制剂以及法术仪式的检定受到+2骰池调整</translate>
           </choice>
           <choice>
@@ -10909,7 +10909,7 @@
         <altdisadvantage>鼠天生就是独行者。因此，有时它很难相信别人。与鼠对于不称职的无法忍受相结合，这可能在团队环境中引发问题。鼠之追随者无法通过团队合作检定受到帮助或帮助他人，除非他们相信他们正在组队的对象。此外，如果他们确实相信一个人，但这份信任因不相称或背叛而破裂，将来每次他们都必须通过一个魅力+意志（4）检定，才能够与此人进行团队合作检定。</altdisadvantage>
         <choices>
           <choice>
-            <name>Magician: +1 dice pool modifer when casting Health spells, preparations, and rituals</name>
+            <name>Magician: +1 dice pool modifier when casting Health spells, preparations, and rituals</name>
             <translate>法师：涉及战斗系的法术、制剂以及法术仪式的检定受到+1骰池调整</translate>
           </choice>
           <choice>

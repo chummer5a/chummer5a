@@ -562,7 +562,7 @@ namespace Chummer
             // (hidden because they are partial templates that cannot be used on their own).
             foreach (string fileName in ReadXslFileNamesWithoutExtensionFromDirectory(omaeDirectoryPath))
             {
-                lstItems.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + ": " + fileName));
+                lstItems.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + fileName));
             }
 
             return lstItems;

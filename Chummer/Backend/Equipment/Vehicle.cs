@@ -105,6 +105,13 @@ namespace Chummer.Backend.Equipment
 
             _lstGear.CollectionChanged += MatrixAttributeChildrenOnCollectionChanged;
             _lstWeapons.CollectionChanged += MatrixAttributeChildrenOnCollectionChanged;
+            _lstVehicleMods.CollectionChanged += LstVehicleModsOnCollectionChanged;
+        }
+
+        private void LstVehicleModsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (_objCharacter.IsAI && this == _objCharacter.HomeNode && e.Action != NotifyCollectionChangedAction.Move)
+                _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCM));
         }
 
         private void MatrixAttributeChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -209,7 +216,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
+                        frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language));
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
@@ -518,7 +525,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("modfirewall", _strModFirewall);
             objWriter.WriteElementString("modattributearray", _strModAttributeArray);
             objWriter.WriteElementString("canswapattributes", _blnCanSwapAttributes.ToString());
-            _objCharacter.SourceProcess(_strSource);
+
+            if (string.IsNullOrEmpty(ParentID))
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>

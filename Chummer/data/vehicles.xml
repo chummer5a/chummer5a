@@ -8159,16 +8159,22 @@
       <mods>
         <name rating="2">Anti-Theft System</name>
         <name rating="2">Passenger Protection System</name>
-        <name>Weapon Mount Type (Standard)</name>
-        <name>Weapon Mount Visibility (Internal)</name>
-        <name>Weapon Mount Flexibility (Flexible)</name>
-        <name>Weapon Mount Control (Remote)</name>
-        <name>Weapon Mount Type (Standard)</name>
-        <name>Weapon Mount Visibility (Internal)</name>
-        <name>Weapon Mount Flexibility (Flexible)</name>
-        <name>Weapon Mount Control (Remote)</name>
       </mods>
       <seats>4</seats>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
+          <size>Standard</size>
+          <visibility>Internal</visibility>
+        </weaponmount>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
+          <size>Standard</size>
+          <visibility>Internal</visibility>
+        </weaponmount>
+      </weaponmounts>
     </vehicle>
     <vehicle>
       <id>99322016-baba-470d-b6c4-c78b70228156</id>

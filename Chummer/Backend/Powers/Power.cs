@@ -134,6 +134,7 @@ namespace Chummer
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
+            
             CharacterObject.SourceProcess(_strSource);
         }
 
@@ -165,7 +166,9 @@ namespace Chummer
             if (nodEnhancements != null)
             {
                 using (XmlNodeList xmlEnhancementList = nodEnhancements.SelectNodes("enhancement"))
+                {
                     if (xmlEnhancementList != null)
+                    {
                         foreach (XmlNode nodEnhancement in xmlEnhancementList)
                         {
                             Enhancement objEnhancement = new Enhancement(CharacterObject);
@@ -173,6 +176,8 @@ namespace Chummer
                             objEnhancement.Parent = this;
                             Enhancements.Add(objEnhancement);
                         }
+                    }
+                }
             }
             if (blnCreateImprovements && Bonus != null && Bonus.HasChildNodes)
             {
@@ -545,11 +550,17 @@ namespace Chummer
         private decimal Discount => DiscountedAdeptWay ? AdeptWayDiscount : 0;
 
         /// <summary>
-        /// The current Rating of the Power.
+        /// The current 'paid' Rating of the Power.
         /// </summary>
         public int Rating
         {
-            get => _intRating;
+            get
+            {
+                //TODO: This isn't super safe, but it's more reliable than checking it at load as improvement effects like Essence Loss take effect after powers are loaded. Might need another solution. 
+                if (_intRating <= TotalMaximumLevels) return _intRating;
+                _intRating = TotalMaximumLevels;
+                return _intRating;
+            }
             set
             {
                 if (_intRating != value)
@@ -928,6 +939,9 @@ namespace Chummer
                 ),
                 new DependancyGraphNode<string>(nameof(DoesNotHaveFreeLevels),
                     new DependancyGraphNode<string>(nameof(FreeLevels))
+                ),
+                new DependancyGraphNode<string>(nameof(AdeptWayDiscountEnabled),
+                    new DependancyGraphNode<string>(nameof(AdeptWayDiscount))
                 )
             );
 
@@ -976,6 +990,11 @@ namespace Chummer
                         ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, false, intTotalRating, DisplayNameShort(GlobalOptions.Language));
                     }
                 }
+            }
+
+            if (lstNamesOfChangedProperties.Contains(nameof(AdeptWayDiscountEnabled)))
+            {
+                RefreshDiscountedAdeptWay(AdeptWayDiscountEnabled);
             }
 
             foreach (string strPropertyToChange in lstNamesOfChangedProperties)

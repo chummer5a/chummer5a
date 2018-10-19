@@ -540,6 +540,7 @@ namespace Chummer
             }
 
             PopulatePDFParameters();
+            PopulateCustomDataDirectoryTreeView();
         }
 
         private void RefreshGlobalSourcebookInfosListView()
@@ -619,7 +620,7 @@ namespace Chummer
                 {
                     TreeNode objNode = new TreeNode
                     {
-                        Text = objCustomDataDirectory.Name + " (" + objCustomDataDirectory.Path.Replace(Application.StartupPath, '<' + Application.ProductName + '>') + ')',
+                        Text = objCustomDataDirectory.Name + LanguageManager.GetString("String_Space", _strSelectedLanguage) + '(' + objCustomDataDirectory.Path.Replace(Application.StartupPath, '<' + Application.ProductName + '>') + ')',
                         Tag = objCustomDataDirectory.Name,
                         Checked = objCustomDataDirectory.Enabled
                     };
@@ -632,7 +633,7 @@ namespace Chummer
                 {
                     TreeNode objLoopNode = treCustomDataDirectories.Nodes[i];
                     CustomDataDirectoryInfo objLoopInfo = _lstCustomDataDirectoryInfos[i];
-                    objLoopNode.Text = objLoopInfo.Name + " (" + objLoopInfo.Path.Replace(Application.StartupPath, '<' + Application.ProductName + '>') + ')';
+                    objLoopNode.Text = objLoopInfo.Name + LanguageManager.GetString("String_Space", _strSelectedLanguage) + '(' + objLoopInfo.Path.Replace(Application.StartupPath, '<' + Application.ProductName + '>') + ')';
                     objLoopNode.Tag = objLoopInfo.Name;
                     objLoopNode.Checked = objLoopInfo.Enabled;
                 }
@@ -835,6 +836,7 @@ namespace Chummer
                 objRegistry.SetValue("startupfullscreen", chkStartupFullscreen.Checked.ToString());
                 objRegistry.SetValue("singlediceroller", chkSingleDiceRoller.Checked.ToString());
                 objRegistry.SetValue("defaultsheet", cboXSLT.SelectedValue?.ToString() ?? GlobalOptions.DefaultCharacterSheetDefaultValue);
+                objRegistry.SetValue("defaultbuildmethod", cboBuildMethod.SelectedValue?.ToString() ?? GlobalOptions.DefaultBuildMethodDefaultValue);
                 objRegistry.SetValue("datesincludetime", chkDatesIncludeTime.Checked.ToString());
                 objRegistry.SetValue("printtofilefirst", chkPrintToFileFirst.Checked.ToString());
                 objRegistry.SetValue("pdfapppath", txtPDFAppPath.Text);
@@ -1011,7 +1013,7 @@ namespace Chummer
                 lstBuildMethod.Add(new ListItem("LifeModule", LanguageManager.GetString("String_LifeModule", _strSelectedLanguage)));
             }
 
-            string strOldSelected = cboLimbCount.SelectedValue?.ToString() ?? GlobalOptions.DefaultBuildMethod;
+            string strOldSelected = cboBuildMethod.SelectedValue?.ToString() ?? GlobalOptions.DefaultBuildMethod;
 
             cboBuildMethod.BeginUpdate();
             cboBuildMethod.DataSource = null;
@@ -1388,7 +1390,7 @@ namespace Chummer
             // (hidden because they are partial templates that cannot be used on their own).
             foreach (string fileName in ReadXslFileNamesWithoutExtensionFromDirectory(omaeDirectoryPath))
             {
-                lstItems.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + ": " + fileName));
+                lstItems.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + LanguageManager.GetString("String_Colon", strLanguage) + LanguageManager.GetString("String_Space", strLanguage) + fileName));
             }
 
             return lstItems;
@@ -1528,32 +1530,34 @@ namespace Chummer
             Data["api_dev_key"] = "7845fd372a1050899f522f2d6bab9666";
             Data["api_option"] = "paste";
 
-            WebClient wb = new WebClient();
-            byte[] bytes;
-            try
+            using (WebClient wb = new WebClient())
             {
-                bytes = wb.UploadValues("http://pastebin.com/api/api_post.php", Data);
-            }
-            catch (WebException)
-            {
-                return;
-            }
-
-            string response;
-            MemoryStream ms = null;
-            try
-            {
-                ms = new MemoryStream(bytes);
-                using (StreamReader reader = new StreamReader(ms, Encoding.UTF8, true))
+                byte[] bytes;
+                try
                 {
-                    response = reader.ReadToEnd();
+                    bytes = wb.UploadValues("http://pastebin.com/api/api_post.php", Data);
                 }
+                catch (WebException)
+                {
+                    return;
+                }
+
+                string response;
+                MemoryStream ms = null;
+                try
+                {
+                    ms = new MemoryStream(bytes);
+                    using (StreamReader reader = new StreamReader(ms, Encoding.UTF8, true))
+                    {
+                        response = reader.ReadToEnd();
+                    }
+                }
+                finally
+                {
+                    ms?.Dispose();
+                }
+                Clipboard.SetText(response);
             }
-            finally
-            {
-                ms?.Dispose();
-            }
-            Clipboard.SetText(response);
             #endif
         }
         #endregion

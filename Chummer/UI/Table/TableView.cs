@@ -658,18 +658,8 @@ namespace Chummer.UI.Table
 
         public TableColumnCollection<T> Columns => _columns;
 
-        public override LayoutEngine LayoutEngine
-        {
-            get
-            {
-                if (_layoutEngine == null)
-                {
-                    _layoutEngine = new TableLayoutEngine(this);
-                }
-                return _layoutEngine;
-            }
-        }
-        
+        public override LayoutEngine LayoutEngine => _layoutEngine ?? (_layoutEngine = new TableLayoutEngine(this));
+
         public SortOrder SortOrder
         {
             get => _eSortType;

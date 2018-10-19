@@ -28,13 +28,14 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.lblAmmoLabel = new System.Windows.Forms.Label();
             this.cboAmmo = new Chummer.ElasticComboBox();
             this.lblTypeLabel = new System.Windows.Forms.Label();
             this.cboType = new Chummer.ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -44,7 +45,7 @@ namespace Chummer
             // 
             this.lblAmmoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblAmmoLabel.AutoSize = true;
-            this.lblAmmoLabel.Location = new System.Drawing.Point(6, 6);
+            this.lblAmmoLabel.Location = new System.Drawing.Point(3, 6);
             this.lblAmmoLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAmmoLabel.Name = "lblAmmoLabel";
             this.lblAmmoLabel.Size = new System.Drawing.Size(39, 13);
@@ -59,9 +60,9 @@ namespace Chummer
             this.cboAmmo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboAmmo.DropDownWidth = 252;
             this.cboAmmo.FormattingEnabled = true;
-            this.cboAmmo.Location = new System.Drawing.Point(51, 3);
+            this.cboAmmo.Location = new System.Drawing.Point(48, 3);
             this.cboAmmo.Name = "cboAmmo";
-            this.cboAmmo.Size = new System.Drawing.Size(266, 21);
+            this.cboAmmo.Size = new System.Drawing.Size(275, 21);
             this.cboAmmo.TabIndex = 1;
             this.cboAmmo.TooltipText = "";
             // 
@@ -69,7 +70,7 @@ namespace Chummer
             // 
             this.lblTypeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTypeLabel.AutoSize = true;
-            this.lblTypeLabel.Location = new System.Drawing.Point(19, 33);
+            this.lblTypeLabel.Location = new System.Drawing.Point(16, 33);
             this.lblTypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblTypeLabel.Name = "lblTypeLabel";
             this.lblTypeLabel.Size = new System.Drawing.Size(26, 13);
@@ -83,10 +84,11 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboType.FormattingEnabled = true;
-            this.cboType.Location = new System.Drawing.Point(51, 30);
+            this.cboType.Location = new System.Drawing.Point(48, 30);
             this.cboType.Name = "cboType";
-            this.cboType.Size = new System.Drawing.Size(266, 21);
+            this.cboType.Size = new System.Drawing.Size(275, 21);
             this.cboType.TabIndex = 3;
+            this.cboType.TooltipText = "";
             // 
             // cmdCancel
             // 
@@ -119,25 +121,23 @@ namespace Chummer
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.AutoSize = true;
             this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 85F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.lblAmmoLabel, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblTypeLabel, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.cboAmmo, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.cboType, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 2);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 12);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(320, 87);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(326, 93);
             this.tableLayoutPanel1.TabIndex = 6;
             // 
             // flowLayoutPanel1
@@ -148,8 +148,7 @@ namespace Chummer
             this.flowLayoutPanel1.Controls.Add(this.cmdOK);
             this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(164, 64);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(167, 67);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(156, 23);
             this.flowLayoutPanel1.TabIndex = 4;
@@ -159,6 +158,7 @@ namespace Chummer
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(344, 111);
             this.Controls.Add(this.tableLayoutPanel1);
@@ -166,6 +166,7 @@ namespace Chummer
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmReload";
+            this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_Reload";

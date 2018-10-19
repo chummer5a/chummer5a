@@ -497,7 +497,7 @@ namespace Chummer
                     {
                         frmSelectText frmPickText = new frmSelectText
                         {
-                            Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", xmlComplexFormData["translate"]?.InnerText ?? xmlComplexFormData["name"].InnerText)
+                            Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), xmlComplexFormData["translate"]?.InnerText ?? xmlComplexFormData["name"].InnerText)
                         };
                         frmPickText.ShowDialog();
                         // Make sure the dialogue window was not canceled.
@@ -533,7 +533,7 @@ namespace Chummer
                     {
                         frmSelectText frmPickText = new frmSelectText
                         {
-                            Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", xmlAIProgramData["translate"]?.InnerText ?? xmlAIProgramData["name"].InnerText)
+                            Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), xmlAIProgramData["translate"]?.InnerText ?? xmlAIProgramData["name"].InnerText)
                         };
                         frmPickText.ShowDialog();
                         // Make sure the dialogue window was not canceled.

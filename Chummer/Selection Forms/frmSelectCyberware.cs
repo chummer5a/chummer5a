@@ -114,7 +114,7 @@ namespace Chummer
                 nudMarkup.Visible = false;
                 lblMarkupPercentLabel.Visible = false;
                 chkHideBannedGrades.Visible = !_objCharacter.IgnoreRules;
-                chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
+                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
 
@@ -1184,12 +1184,10 @@ namespace Chummer
 
                     if (decMaximumCapacityUsed - decCapacity < 0)
                     {
-                        MessageBox.Show(
-                            LanguageManager.GetString("Message_OverCapacityLimit", GlobalOptions.Language)
-                                .Replace("{0}", decMaximumCapacityUsed.ToString("#,0.##", GlobalOptions.CultureInfo))
-                                .Replace("{1}", decCapacity.ToString("#,0.##", GlobalOptions.CultureInfo)),
-                            LanguageManager.GetString("MessageTitle_OverCapacityLimit", GlobalOptions.Language),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_OverCapacityLimit", GlobalOptions.Language)
+                                , decMaximumCapacityUsed.ToString("#,0.##", GlobalOptions.CultureInfo)
+                                , decCapacity.ToString("#,0.##", GlobalOptions.CultureInfo)),
+                            LanguageManager.GetString("MessageTitle_OverCapacityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
                 }
