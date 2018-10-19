@@ -689,7 +689,7 @@ namespace Chummer
                 ActiveMdiChild.WindowState = FormWindowState.Maximized;
 
                 // If this is a new child form and does not have a tab page, create one.
-                if (ActiveMdiChild.Tag == null)
+                if (!(ActiveMdiChild.Tag is TabPage))
                 {
                     TabPage tp = new TabPage
                     {
@@ -702,11 +702,13 @@ namespace Chummer
                     {
                         tp.Text = frmCharacterShared.CharacterObject.CharacterName;
                     }
-                    else if (ActiveMdiChild.GetType() == typeof(frmCharacterRoster))
+                    else
                     {
-                        tp.Text = LanguageManager.GetString("String_CharacterRoster", GlobalOptions.Language);
+                        string strTagText = LanguageManager.GetString(ActiveMdiChild.Tag?.ToString(), GlobalOptions.Language, false);
+                        if (!string.IsNullOrEmpty(strTagText))
+                            tp.Text = strTagText;
                     }
-
+                    
                     tabForms.SelectedTab = tp;
 
                     ActiveMdiChild.Tag = tp;
@@ -1146,7 +1148,8 @@ namespace Chummer
                     catch (XmlException ex)
                     {
                         if (blnShowErrors)
-                            MessageBox.Show(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language).Replace("{0}", ex.Message), LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(string.Format(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language), ex.Message),
+                                LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         frmLoadingForm.Close();
                         return null;
                     }
@@ -1194,7 +1197,8 @@ namespace Chummer
             }
             else if (blnShowErrors)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language).Replace("{0}", strFileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), strFileName),
+                    LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return objCharacter;
         }
@@ -1423,6 +1427,16 @@ namespace Chummer
             }
 
             Properties.Settings.Default.Save();
+        }
+
+        private void mnuHeroLabImporter_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show(LanguageManager.GetString("Message_HeroLabImporterWarning", GlobalOptions.Language),
+                    LanguageManager.GetString("Message_HeroLabImporterWarning_Title", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                return;
+
+            frmHeroLabImporter frmHeroLabImporter = new frmHeroLabImporter();
+            frmHeroLabImporter.Show();
         }
     }
 }

@@ -874,7 +874,8 @@ namespace Chummer
         {
             get
             {
-                if (_blnFree) return _blnFree;
+                if (_blnFree)
+                    return _blnFree;
 
                 if (_intCachedFreeFromImprovement < 0)
                 {
@@ -883,10 +884,7 @@ namespace Chummer
 
                 return _intCachedFreeFromImprovement > 0;
             }
-            set
-            {
-                _blnFree = value;
-            }
+            set => _blnFree = value;
         }
 
         public bool FreeEnabled => _intCachedFreeFromImprovement < 1;
@@ -988,7 +986,8 @@ namespace Chummer
 
                 if (blnError && blnShowError)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language).Replace("{0}", FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), FileName),
+                        LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             if (!blnError)

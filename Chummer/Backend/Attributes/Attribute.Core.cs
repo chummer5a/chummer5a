@@ -235,7 +235,17 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public int MetatypeAugmentedMaximum
         {
-            get => _intMetatypeAugMax;
+            get
+            {
+                int intReturn = _intMetatypeAugMax;
+                Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled);
+                if (objImprovement != null)
+                {
+                    intReturn = objImprovement.AugmentedMaximum;
+                }
+
+                return intReturn;
+            }
             set
             {
                 if (value != _intMetatypeAugMax)
@@ -611,7 +621,8 @@ namespace Chummer.Backend.Attributes
         public string GetDisplayNameFormatted(string strLanguage)
         {
             if (Abbrev == "MAGAdept")
-                return LanguageManager.GetString("String_AttributeMAGLong", strLanguage) + LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.GetString("String_AttributeMAGShort", strLanguage) + ") (" + LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
+                return LanguageManager.GetString("String_AttributeMAGLong", strLanguage) + LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.GetString("String_AttributeMAGShort", strLanguage) + ')'
+                       + LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
 
             return DisplayNameLong(strLanguage) + LanguageManager.GetString("String_Space", strLanguage) + '(' + DisplayNameShort(strLanguage) + ')';
         }
@@ -665,27 +676,26 @@ namespace Chummer.Backend.Attributes
                 HashSet<string> lstUniqueName = new HashSet<string>();
                 List<Tuple<string, int, string>> lstUniquePair = new List<Tuple<string, int, string>>();
                 int intBaseValue = 0;
-                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                foreach (Improvement objImprovement in _objCharacter.Improvements
+                    .Where(objImprovement => objImprovement.Enabled && !objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
+                                             objImprovement.ImprovedName == Abbrev && string.IsNullOrEmpty(objImprovement.Condition)))
                 {
-                    if (objImprovement.Enabled && !objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == Abbrev && string.IsNullOrEmpty(objImprovement.Condition))
+                    string strUniqueName = objImprovement.UniqueName;
+                    if (!string.IsNullOrEmpty(strUniqueName) && strUniqueName != "enableattribute" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == Abbrev)
                     {
-                        string strUniqueName = objImprovement.UniqueName;
-                        if (!string.IsNullOrEmpty(strUniqueName) && strUniqueName != "enableattribute" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == Abbrev)
-                        {
-                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            if (!lstUniqueName.Contains(strUniqueName))
-                                lstUniqueName.Add(strUniqueName);
+                        // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                        if (!lstUniqueName.Contains(strUniqueName))
+                            lstUniqueName.Add(strUniqueName);
 
-                            // Add the values to the UniquePair List so we can check them later.
-                            lstUniquePair.Add(new Tuple<string, int, string>(strUniqueName, objImprovement.Augmented * objImprovement.Rating, _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)));
-                        }
-                        else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
-                        {
-                            int intValue = objImprovement.Augmented * objImprovement.Rating;
-                            strModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' +
+                        // Add the values to the UniquePair List so we can check them later.
+                        lstUniquePair.Add(new Tuple<string, int, string>(strUniqueName, objImprovement.Augmented * objImprovement.Rating, _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)));
+                    }
+                    else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
+                    {
+                        int intValue = objImprovement.Augmented * objImprovement.Rating;
+                        strModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' +
                                            (intValue).ToString(GlobalOptions.CultureInfo) + ')');
-                            intBaseValue += intValue;
-                        }
+                        intBaseValue += intValue;
                     }
                 }
 
@@ -761,25 +771,24 @@ namespace Chummer.Backend.Attributes
                 // Factor in Custom Improvements.
                 lstUniqueName.Clear();
                 lstUniquePair.Clear();
-                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                foreach (Improvement objImprovement in _objCharacter.Improvements
+                    .Where(objImprovement => objImprovement.Enabled && objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
+                                             objImprovement.ImprovedName == Abbrev && string.IsNullOrEmpty(objImprovement.Condition)))
                 {
-                    if (objImprovement.Enabled && objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == Abbrev && string.IsNullOrEmpty(objImprovement.Condition))
+                    string strUniqueName = objImprovement.UniqueName;
+                    if (!string.IsNullOrEmpty(strUniqueName))
                     {
-                        string strUniqueName = objImprovement.UniqueName;
-                        if (!string.IsNullOrEmpty(strUniqueName))
-                        {
-                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            if (!lstUniqueName.Contains(strUniqueName))
-                                lstUniqueName.Add(strUniqueName);
+                        // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                        if (!lstUniqueName.Contains(strUniqueName))
+                            lstUniqueName.Add(strUniqueName);
 
-                            // Add the values to the UniquePair List so we can check them later.
-                            lstUniquePair.Add(new Tuple<string, int, string>(strUniqueName, objImprovement.Augmented * objImprovement.Rating, _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)));
-                        }
-                        else
-                        {
-                            strModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' +
-                                               (objImprovement.Augmented * objImprovement.Rating).ToString(GlobalOptions.CultureInfo) + ')');
-                        }
+                        // Add the values to the UniquePair List so we can check them later.
+                        lstUniquePair.Add(new Tuple<string, int, string>(strUniqueName, objImprovement.Augmented * objImprovement.Rating, _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)));
+                    }
+                    else
+                    {
+                        strModifier.Append(strSpaceCharacter + '+' + strSpaceCharacter + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' +
+                                           (objImprovement.Augmented * objImprovement.Rating).ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
 
@@ -850,8 +859,8 @@ namespace Chummer.Backend.Attributes
 
         public bool AtMetatypeMaximum => Value == TotalMaximum && TotalMinimum > 0;
 
-        public int KarmaMaximum => TotalMaximum - TotalBase;
-        public int PriorityMaximum => TotalMaximum - Karma - FreeBase - RawMinimum;
+        public int KarmaMaximum => Math.Max(TotalMaximum - TotalBase, 0);
+        public int PriorityMaximum => Math.Max(TotalMaximum - Karma - FreeBase - RawMinimum, 0);
 
         private int _intCachedUpgradeKarmaCost = int.MinValue;
         /// <summary>

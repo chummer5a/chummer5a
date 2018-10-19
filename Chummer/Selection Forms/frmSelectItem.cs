@@ -48,7 +48,7 @@ namespace Chummer
 
             if (_strMode == "Gear")
             {
-                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 cboAmmo.DropDownStyle = ComboBoxStyle.DropDownList;
                 // Add each of the items to a new List since we need to also grab their plugin information.
                 foreach (Gear objGear in _lstGear)
@@ -60,16 +60,16 @@ namespace Chummer
                         string strPlugins = string.Empty;
                         foreach (Gear objChild in objGear.Children)
                         {
-                            strPlugins += objChild.DisplayNameShort(GlobalOptions.Language) + ',' + strSpaceCharacter;
+                            strPlugins += objChild.DisplayNameShort(GlobalOptions.Language) + ',' + strSpace;
                         }
                         // Remove the trailing comma.
-                        strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);
+                        strPlugins = strPlugins.Substring(0, strPlugins.Length - 1 - strSpace.Length);
                         // Append the plugin information to the name.
-                        strAmmoName += strSpaceCharacter + '[' + strPlugins + ']';
+                        strAmmoName += strSpace + '[' + strPlugins + ']';
                     }
                     if (objGear.Rating > 0)
-                        strAmmoName += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + strSpaceCharacter + objGear.Rating.ToString() + ')';
-                    strAmmoName += strSpaceCharacter + 'x' + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
+                        strAmmoName += strSpace + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + strSpace + objGear.Rating.ToString(GlobalOptions.CultureInfo) + ')';
+                    strAmmoName += strSpace + 'x' + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
                     lstItems.Add(new ListItem(objGear.InternalId, strAmmoName));
                 }
             }

@@ -380,6 +380,16 @@ namespace Chummer.Backend.Skills
             xmlNode.TryGetInt32FieldQuickly("base", ref _intSkillFromSp);
         }
 
+        public void LoadFromHeroLab(XmlNode xmlNode)
+        {
+            string strTemp = xmlNode.SelectSingleNode("@name")?.InnerText;
+            if (!string.IsNullOrEmpty(strTemp))
+                _strGroupName = strTemp.TrimEndOnce("Group").Trim();
+            strTemp = xmlNode.SelectSingleNode("@base")?.InnerText;
+            if (!string.IsNullOrEmpty(strTemp) && int.TryParse(strTemp, out int intTemp))
+                _intSkillFromKarma = intTemp;
+        }
+
         private static readonly DependancyGraph<string> SkillGroupDependencyGraph =
             new DependancyGraph<string>(
                 new DependancyGraphNode<string>(nameof(DisplayRating),

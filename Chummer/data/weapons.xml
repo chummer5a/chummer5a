@@ -12850,12 +12850,12 @@
       <damage>8P</damage>
       <ap>-1</ap>
       <mode>BF</mode>
-      <rc>3</rc>
+      <rc>1</rc>
       <ammo>12(c)</ammo>
       <avail>12F</avail>
       <cost>1150</cost>
       <source>SL</source>
-      <page>29</page>
+      <page>30</page>
       <accessories>
         <accessory>
           <name>Gas-Vent 2 System</name>

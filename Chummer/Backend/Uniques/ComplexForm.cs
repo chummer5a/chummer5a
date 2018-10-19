@@ -24,6 +24,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -121,7 +122,9 @@ namespace Chummer
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (Grade >= 0)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -298,7 +301,8 @@ namespace Chummer
                         // Fading cannot be lower than 2.
                         if (intFV < 2)
                             intFV = 2;
-                        strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Level", GlobalOptions.Language) + strSpaceCharacter + i.ToString() + ':' + strSpaceCharacter + intFV.ToString());
+                        strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Level", GlobalOptions.Language) + strSpaceCharacter + i.ToString(GlobalOptions.CultureInfo) +
+                                      LanguageManager.GetString("String_Colon", GlobalOptions.Language) + strSpaceCharacter + intFV.ToString(GlobalOptions.CultureInfo));
                     }
                     else
                     {
@@ -440,6 +444,50 @@ namespace Chummer
         {
             get => _strNotes;
             set => _strNotes = value;
+        }
+
+        /// <summary>
+        /// The Dice Pool size for the Active Skill required to cast the Spell.
+        /// </summary>
+        public int DicePool
+        {
+            get
+            {
+                int intReturn = 0;
+                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Software");
+                if (objSkill != null)
+                {
+                    intReturn = objSkill.Pool;
+                    // Add any Specialization bonus if applicable.
+                    if (objSkill.HasSpecialization(DisplayName))
+                        intReturn += 2;
+                }
+                
+                return intReturn;
+            }
+        }
+
+        /// <summary>
+        /// Tooltip information for the Dice Pool.
+        /// </summary>
+        public string DicePoolTooltip
+        {
+            get
+            {
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                string strReturn = string.Empty;
+                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Software");
+                if (objSkill != null)
+                {
+                    int intPool = objSkill.Pool;
+                    strReturn = objSkill.DisplayNameMethod(GlobalOptions.Language) + strSpaceCharacter + '(' + intPool.ToString(GlobalOptions.CultureInfo) + ')';
+                    // Add any Specialization bonus if applicable.
+                    if (objSkill.HasSpecialization(DisplayName))
+                        strReturn += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language) + strSpaceCharacter + '(' + 2.ToString(GlobalOptions.CultureInfo) + ')';
+                }
+                
+                return strReturn;
+            }
         }
 
         private XmlNode _objCachedMyXmlNode;

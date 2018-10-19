@@ -355,7 +355,7 @@ namespace Chummer
             {
                 decimal decDiscount = decNuyen;
                 decDiscount = decDiscount * (nudPercentage.Value / 100);
-                lblCost.Text += " (" + decDiscount.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥)";
+                lblCost.Text += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + decDiscount.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥)";
             }
 
             lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);

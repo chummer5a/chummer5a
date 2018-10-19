@@ -164,7 +164,6 @@ namespace Chummer
                 if (xmlGameplayOption.TryGetDecFieldQuickly("maxnuyen", ref decTemp))
                     _objCharacter.MaxNuyen = decTemp;
             }
-
             _objCharacter.BuildKarma = decimal.ToInt32(nudKarma.Value);
             _objCharacter.GameplayOption = cboGamePlay.SelectedValue.ToString();
             _objCharacter.GameplayOptionQualityLimit = _intQualityLimits;

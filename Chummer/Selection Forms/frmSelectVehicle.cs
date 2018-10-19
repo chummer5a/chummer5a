@@ -75,7 +75,7 @@ namespace Chummer
             }
             else
             {
-                chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
+                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
 

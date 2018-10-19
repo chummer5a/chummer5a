@@ -57,14 +57,14 @@ namespace Chummer
             // 
             this.nudKarma.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarma.Location = new System.Drawing.Point(223, 68);
+            this.nudKarma.Location = new System.Drawing.Point(225, 53);
             this.nudKarma.Maximum = new decimal(new int[] {
             5000,
             0,
             0,
             0});
             this.nudKarma.Name = "nudKarma";
-            this.nudKarma.Size = new System.Drawing.Size(104, 20);
+            this.nudKarma.Size = new System.Drawing.Size(105, 20);
             this.nudKarma.TabIndex = 2;
             this.nudKarma.Tag = "";
             this.nudKarma.Value = new decimal(new int[] {
@@ -93,7 +93,7 @@ namespace Chummer
             this.chkIgnoreRules.AutoSize = true;
             this.chkIgnoreRules.CheckAlign = System.Drawing.ContentAlignment.BottomLeft;
             this.tableLayoutPanel1.SetColumnSpan(this.chkIgnoreRules, 2);
-            this.chkIgnoreRules.Location = new System.Drawing.Point(3, 176);
+            this.chkIgnoreRules.Location = new System.Drawing.Point(3, 162);
             this.chkIgnoreRules.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkIgnoreRules.Name = "chkIgnoreRules";
             this.chkIgnoreRules.Size = new System.Drawing.Size(177, 17);
@@ -127,7 +127,7 @@ namespace Chummer
             this.cboBuildMethod.FormattingEnabled = true;
             this.cboBuildMethod.Location = new System.Drawing.Point(3, 3);
             this.cboBuildMethod.Name = "cboBuildMethod";
-            this.cboBuildMethod.Size = new System.Drawing.Size(214, 21);
+            this.cboBuildMethod.Size = new System.Drawing.Size(216, 21);
             this.cboBuildMethod.TabIndex = 1;
             this.cboBuildMethod.TooltipText = "";
             this.cboBuildMethod.SelectedIndexChanged += new System.EventHandler(this.cboBuildMethod_SelectedIndexChanged);
@@ -137,7 +137,7 @@ namespace Chummer
             this.lblMaxAvail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMaxAvail.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.lblMaxAvail, 2);
-            this.lblMaxAvail.Location = new System.Drawing.Point(114, 97);
+            this.lblMaxAvail.Location = new System.Drawing.Point(116, 82);
             this.lblMaxAvail.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMaxAvail.Name = "lblMaxAvail";
             this.lblMaxAvail.Size = new System.Drawing.Size(103, 13);
@@ -150,9 +150,9 @@ namespace Chummer
             // 
             this.nudMaxAvail.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudMaxAvail.Location = new System.Drawing.Point(223, 94);
+            this.nudMaxAvail.Location = new System.Drawing.Point(225, 79);
             this.nudMaxAvail.Name = "nudMaxAvail";
-            this.nudMaxAvail.Size = new System.Drawing.Size(104, 20);
+            this.nudMaxAvail.Size = new System.Drawing.Size(105, 20);
             this.nudMaxAvail.TabIndex = 4;
             this.nudMaxAvail.Value = new decimal(new int[] {
             12,
@@ -167,9 +167,9 @@ namespace Chummer
             this.tableLayoutPanel1.SetColumnSpan(this.cboGamePlay, 2);
             this.cboGamePlay.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGamePlay.FormattingEnabled = true;
-            this.cboGamePlay.Location = new System.Drawing.Point(223, 3);
+            this.cboGamePlay.Location = new System.Drawing.Point(225, 3);
             this.cboGamePlay.Name = "cboGamePlay";
-            this.cboGamePlay.Size = new System.Drawing.Size(214, 21);
+            this.cboGamePlay.Size = new System.Drawing.Size(218, 21);
             this.cboGamePlay.TabIndex = 8;
             this.cboGamePlay.TooltipText = "";
             this.cboGamePlay.SelectedIndexChanged += new System.EventHandler(this.cboGamePlay_SelectedIndexChanged);
@@ -179,7 +179,7 @@ namespace Chummer
             this.lblStartingKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblStartingKarma.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.lblStartingKarma, 2);
-            this.lblStartingKarma.Location = new System.Drawing.Point(141, 71);
+            this.lblStartingKarma.Location = new System.Drawing.Point(143, 56);
             this.lblStartingKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblStartingKarma.Name = "lblStartingKarma";
             this.lblStartingKarma.Size = new System.Drawing.Size(76, 13);
@@ -195,7 +195,7 @@ namespace Chummer
             this.lblDescription.Location = new System.Drawing.Point(3, 33);
             this.lblDescription.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(416, 26);
+            this.lblDescription.Size = new System.Drawing.Size(440, 11);
             this.lblDescription.TabIndex = 0;
             this.lblDescription.Tag = "String_SelectBP_KarmaSummary";
             this.lblDescription.Text = "Enter the amount of Build Points you are allowed to create your character with (D" +
@@ -205,14 +205,14 @@ namespace Chummer
             // 
             this.nudMaxNuyen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudMaxNuyen.Location = new System.Drawing.Point(223, 120);
+            this.nudMaxNuyen.Location = new System.Drawing.Point(225, 105);
             this.nudMaxNuyen.Maximum = new decimal(new int[] {
             10000,
             0,
             0,
             0});
             this.nudMaxNuyen.Name = "nudMaxNuyen";
-            this.nudMaxNuyen.Size = new System.Drawing.Size(104, 20);
+            this.nudMaxNuyen.Size = new System.Drawing.Size(105, 20);
             this.nudMaxNuyen.TabIndex = 13;
             this.nudMaxNuyen.Value = new decimal(new int[] {
             235,
@@ -225,7 +225,7 @@ namespace Chummer
             this.lblMaxNuyen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMaxNuyen.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.lblMaxNuyen, 2);
-            this.lblMaxNuyen.Location = new System.Drawing.Point(123, 123);
+            this.lblMaxNuyen.Location = new System.Drawing.Point(125, 108);
             this.lblMaxNuyen.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMaxNuyen.Name = "lblMaxNuyen";
             this.lblMaxNuyen.Size = new System.Drawing.Size(94, 13);
@@ -257,26 +257,26 @@ namespace Chummer
             this.tableLayoutPanel1.Controls.Add(this.lblSumToX, 0, 5);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 2, 6);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 12);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 7;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(440, 197);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(446, 183);
             this.tableLayoutPanel1.TabIndex = 16;
             // 
             // nudSumtoTen
             // 
             this.nudSumtoTen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudSumtoTen.Location = new System.Drawing.Point(223, 146);
+            this.nudSumtoTen.Location = new System.Drawing.Point(225, 131);
             this.nudSumtoTen.Name = "nudSumtoTen";
-            this.nudSumtoTen.Size = new System.Drawing.Size(104, 20);
+            this.nudSumtoTen.Size = new System.Drawing.Size(105, 20);
             this.nudSumtoTen.TabIndex = 9;
             this.nudSumtoTen.Value = new decimal(new int[] {
             10,
@@ -289,7 +289,7 @@ namespace Chummer
             this.lblSumToX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSumToX.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.lblSumToX, 2);
-            this.lblSumToX.Location = new System.Drawing.Point(155, 149);
+            this.lblSumToX.Location = new System.Drawing.Point(157, 134);
             this.lblSumToX.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSumToX.Name = "lblSumToX";
             this.lblSumToX.Size = new System.Drawing.Size(62, 13);
@@ -306,8 +306,7 @@ namespace Chummer
             this.flowLayoutPanel1.Controls.Add(this.cmdOK);
             this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(284, 174);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(287, 157);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(156, 23);
             this.flowLayoutPanel1.TabIndex = 16;
@@ -319,15 +318,15 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(464, 221);
+            this.ClientSize = new System.Drawing.Size(464, 201);
             this.ControlBox = false;
             this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(480, 1200);
+            this.MaximumSize = new System.Drawing.Size(480, 10000);
             this.MinimizeBox = false;
             this.Name = "frmSelectBuildMethod";
-            this.Padding = new System.Windows.Forms.Padding(12);
+            this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectBP";

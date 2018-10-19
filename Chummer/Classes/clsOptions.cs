@@ -150,8 +150,6 @@ namespace Chummer
     /// </summary>
     public static class GlobalOptions
     {
-        private static readonly CultureInfo s_ObjSystemCultureInfo = CultureInfo.CurrentCulture;
-        private static readonly CultureInfo s_ObjInvariantCultureInfo = CultureInfo.InvariantCulture;
         private static CultureInfo s_ObjLanguageCultureInfo = CultureInfo.CurrentCulture;
 
         public static string ErrorMessage { get; } = string.Empty;
@@ -661,12 +659,12 @@ namespace Chummer
         /// <summary>
         /// Invariant CultureInfo for saving and loading of numbers.
         /// </summary>
-        public static CultureInfo InvariantCultureInfo => s_ObjInvariantCultureInfo;
+        public static CultureInfo InvariantCultureInfo { get; } = CultureInfo.InvariantCulture;
 
         /// <summary>
         /// CultureInfo of the user's current system.
         /// </summary>
-        public static CultureInfo SystemCultureInfo => s_ObjSystemCultureInfo;
+        public static CultureInfo SystemCultureInfo { get; } = CultureInfo.CurrentCulture;
 
         private static XmlDocument _xmlClipboard = new XmlDocument();
 

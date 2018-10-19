@@ -383,6 +383,12 @@ namespace Chummer
             }
 
             objWriter.WriteEndElement();
+
+            if (OriginSource != QualitySource.BuiltIn &&
+                OriginSource != QualitySource.Improvement &&
+                OriginSource != QualitySource.LifeModule &&
+                OriginSource != QualitySource.Metatype &&
+                OriginSource != QualitySource.MetatypeRemovable)
             _objCharacter.SourceProcess(_strSource);
         }
 
@@ -958,7 +964,7 @@ namespace Chummer
                 }
             }
 
-            return conflictingQualities.Count <= 0 & reason == QualityFailureReason.Allowed;
+            return conflictingQualities.Count <= 0 && reason == QualityFailureReason.Allowed;
         }
 
         /// <summary>
@@ -1037,7 +1043,9 @@ namespace Chummer
 
                 if (blnAddItem)
                 {
-                    if (!objCharacter.ConfirmKarmaExpense(LanguageManager.GetString("Message_QualitySwap", GlobalOptions.Language).Replace("{0}", objOldQuality.DisplayNameShort(GlobalOptions.Language)).Replace("{1}", DisplayNameShort(GlobalOptions.Language))))
+                    if (!objCharacter.ConfirmKarmaExpense(string.Format(LanguageManager.GetString("Message_QualitySwap", GlobalOptions.Language)
+                        , objOldQuality.DisplayNameShort(GlobalOptions.Language)
+                        , DisplayNameShort(GlobalOptions.Language))))
                         blnAddItem = false;
                 }
 
@@ -1047,9 +1055,9 @@ namespace Chummer
                     // Create the Karma expense.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
                     objExpense.Create(intKarmaCost * -1,
-                        LanguageManager.GetString("String_ExpenseSwapPositiveQuality", GlobalOptions.Language)
-                            .Replace("{0}", DisplayNameShort(GlobalOptions.Language))
-                            .Replace("{1}", DisplayNameShort(GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now);
+                        string.Format(LanguageManager.GetString("String_ExpenseSwapPositiveQuality", GlobalOptions.Language)
+                            , DisplayNameShort(GlobalOptions.Language)
+                            , DisplayNameShort(GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now);
                     objCharacter.ExpenseEntries.AddWithSort(objExpense);
                     objCharacter.Karma -= intKarmaCost;
                 }
@@ -1071,7 +1079,7 @@ namespace Chummer
 
                     if (blnAddItem)
                     {
-                        if (!objCharacter.ConfirmKarmaExpense(LanguageManager.GetString("Message_QualitySwap", GlobalOptions.Language).Replace("{0}", objOldQuality.DisplayNameShort(GlobalOptions.Language)).Replace("{1}", DisplayNameShort(GlobalOptions.Language))))
+                        if (!objCharacter.ConfirmKarmaExpense(string.Format(LanguageManager.GetString("Message_QualitySwap", GlobalOptions.Language), objOldQuality.DisplayNameShort(GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language))))
                             blnAddItem = false;
                     }
                 }
@@ -1082,9 +1090,9 @@ namespace Chummer
                     // Create the Karma expense.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
                     objExpense.Create(intKarmaCost * -1,
-                        LanguageManager.GetString("String_ExpenseSwapNegativeQuality", GlobalOptions.Language)
-                            .Replace("{0}", DisplayNameShort(GlobalOptions.Language))
-                            .Replace("{1}", DisplayNameShort(GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now);
+                        string.Format(LanguageManager.GetString("String_ExpenseSwapNegativeQuality", GlobalOptions.Language)
+                            , DisplayNameShort(GlobalOptions.Language)
+                            , DisplayNameShort(GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now);
                     objCharacter.ExpenseEntries.AddWithSort(objExpense);
                     objCharacter.Karma -= intKarmaCost;
                 }

@@ -59,7 +59,6 @@ namespace Chummer
         private string _strFileName = string.Empty;
         private string _strRelativeName = string.Empty;
         private string _strNotes = string.Empty;
-        private readonly Character _objCharacter;
         private Character _objLinkedCharacter;
 
         private readonly List<Image> _lstMugshots = new List<Image>();
@@ -88,7 +87,7 @@ namespace Chummer
         public Spirit(Character objCharacter)
         {
             // Create the GUID for the new Spirit.
-            _objCharacter = objCharacter;
+            CharacterObject = objCharacter;
         }
 
         /// <summary>
@@ -397,7 +396,7 @@ namespace Chummer
         /// <summary>
         /// The Character object being used by the Spirit.
         /// </summary>
-        public Character CharacterObject => _objCharacter;
+        public Character CharacterObject { get; }
 
         /// <summary>
         /// Name of the Spirit's Metatype.
@@ -590,9 +589,9 @@ namespace Chummer
                         if (CharacterObject.Created)
                         {
                             int FetteringCost = Force * 3;
-                            if (!CharacterObject.ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language)
-                                        .Replace("{0}", Name)
-                                        .Replace("{1}", FetteringCost.ToString())))
+                            if (!CharacterObject.ConfirmKarmaExpense(string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language)
+                                , Name
+                                , FetteringCost.ToString(GlobalOptions.CultureInfo))))
                             {
                                 return;
                             }
@@ -732,7 +731,8 @@ namespace Chummer
 
                 if (blnError && blnShowError)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language).Replace("{0}", FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), FileName),
+                        LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             if (!blnError)

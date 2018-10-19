@@ -85,10 +85,10 @@ namespace Chummer
             // Populate the fields with their data.
             // Membership.
             cboMembership.Items.Add("+0: " + LanguageManager.GetString("String_None", GlobalOptions.Language));
-            cboMembership.Items.Add("+1: " + LanguageManager.GetString("String_SelectContactConnection_Members", GlobalOptions.Language).Replace("{0}", "2-19"));
-            cboMembership.Items.Add("+2: " + LanguageManager.GetString("String_SelectContactConnection_Members", GlobalOptions.Language).Replace("{0}", "20-99"));
-            cboMembership.Items.Add("+4: " + LanguageManager.GetString("String_SelectContactConnection_Members", GlobalOptions.Language).Replace("{0}", "100-1000"));
-            cboMembership.Items.Add("+6: " + LanguageManager.GetString("String_SelectContactConnection_Members", GlobalOptions.Language).Replace("{0}", "1000+"));
+            cboMembership.Items.Add("+1: " + string.Format(LanguageManager.GetString("String_SelectContactConnection_Members", GlobalOptions.Language), "2-19"));
+            cboMembership.Items.Add("+2: " + string.Format(LanguageManager.GetString("String_SelectContactConnection_Members", GlobalOptions.Language), "20-99"));
+            cboMembership.Items.Add("+4: " + string.Format(LanguageManager.GetString("String_SelectContactConnection_Members", GlobalOptions.Language), "100-1000"));
+            cboMembership.Items.Add("+6: " + string.Format(LanguageManager.GetString("String_SelectContactConnection_Members", GlobalOptions.Language), "1000+"));
 
             // Area of Influence.
             cboAreaOfInfluence.Items.Add("+0: " + LanguageManager.GetString("String_None", GlobalOptions.Language));

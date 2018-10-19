@@ -155,35 +155,35 @@ namespace Chummer.Backend.Skills
             {
                 return null;
             }
-            XmlDocument skills = XmlManager.Load("skills.xml");
-            Skill skill = null;
+            XmlDocument xmlSkills = XmlManager.Load("skills.xml");
+            Skill objLoadingSkill = null;
             bool blnIsKnowledgeSkill = false;
             if (xmlSkillNode.TryGetBoolFieldQuickly("isknowledge", ref blnIsKnowledgeSkill) && blnIsKnowledgeSkill)
             {
                 if (xmlSkillNode["forced"] != null)
-                    skill = new KnowledgeSkill(objCharacter, xmlSkillNode["name"]?.InnerText ?? string.Empty);
+                    objLoadingSkill = new KnowledgeSkill(objCharacter, xmlSkillNode["name"]?.InnerText ?? string.Empty);
                 else
                 {
                     KnowledgeSkill knoSkill = new KnowledgeSkill(objCharacter);
                     knoSkill.Load(xmlSkillNode);
-                    skill = knoSkill;
+                    objLoadingSkill = knoSkill;
                 }
             }
             else if (suid != Guid.Empty)
             {
-                XmlNode node = skills.SelectSingleNode($"/chummer/skills/skill[id = '{xmlSkillNode["suid"]?.InnerText}']");
+                XmlNode xmlSkillDataNode = xmlSkills.SelectSingleNode($"/chummer/skills/skill[id = '{xmlSkillNode["suid"]?.InnerText}']");
 
-                if (node == null) return null;
+                if (xmlSkillDataNode == null) return null;
 
-                if (node["exotic"]?.InnerText == bool.TrueString)
+                if (xmlSkillDataNode["exotic"]?.InnerText == bool.TrueString)
                 {
-                    ExoticSkill exotic = new ExoticSkill(objCharacter, node);
+                    ExoticSkill exotic = new ExoticSkill(objCharacter, xmlSkillDataNode);
                     exotic.Load(xmlSkillNode);
-                    skill = exotic;
+                    objLoadingSkill = exotic;
                 }
                 else
                 {
-                    skill = new Skill(objCharacter, node);
+                    objLoadingSkill = new Skill(objCharacter, xmlSkillDataNode);
                 }
             }
             /*
@@ -202,34 +202,38 @@ namespace Chummer.Backend.Skills
             }
             */
             // Legacy shim
-            if (skill == null)
+            if (objLoadingSkill == null)
             {
                 if (xmlSkillNode["forced"] != null)
-                    skill = new KnowledgeSkill(objCharacter, xmlSkillNode["name"]?.InnerText ?? string.Empty);
+                    objLoadingSkill = new KnowledgeSkill(objCharacter, xmlSkillNode["name"]?.InnerText ?? string.Empty);
                 else
                 {
                     KnowledgeSkill knoSkill = new KnowledgeSkill(objCharacter);
                     knoSkill.Load(xmlSkillNode);
-                    skill = knoSkill;
+                    objLoadingSkill = knoSkill;
                 }
             }
             if (xmlSkillNode.TryGetField("guid", Guid.TryParse, out Guid guiTemp))
-                skill.Id = guiTemp;
+                objLoadingSkill.Id = guiTemp;
 
-            xmlSkillNode.TryGetInt32FieldQuickly("karma", ref skill._intKarma);
-            xmlSkillNode.TryGetInt32FieldQuickly("base", ref skill._intBase);
-            xmlSkillNode.TryGetBoolFieldQuickly("buywithkarma", ref skill._blnBuyWithKarma);
-            if (!xmlSkillNode.TryGetStringFieldQuickly("altnotes", ref skill._strNotes))
-                xmlSkillNode.TryGetStringFieldQuickly("notes", ref skill._strNotes);
+            xmlSkillNode.TryGetInt32FieldQuickly("karma", ref objLoadingSkill._intKarma);
+            xmlSkillNode.TryGetInt32FieldQuickly("base", ref objLoadingSkill._intBase);
+            xmlSkillNode.TryGetBoolFieldQuickly("buywithkarma", ref objLoadingSkill._blnBuyWithKarma);
+            if (!xmlSkillNode.TryGetStringFieldQuickly("altnotes", ref objLoadingSkill._strNotes))
+                xmlSkillNode.TryGetStringFieldQuickly("notes", ref objLoadingSkill._strNotes);
 
             using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("specs/spec"))
+            {
                 if (xmlSpecList != null)
+                {
                     foreach (XmlNode xmlSpec in xmlSpecList)
                     {
-                        skill.Specializations.Add(SkillSpecialization.Load(xmlSpec, skill));
+                        objLoadingSkill.Specializations.Add(SkillSpecialization.Load(xmlSpec, objLoadingSkill));
                     }
+                }
+            }
 
-            return skill;
+            return objLoadingSkill;
         }
 
         /// <summary>
@@ -293,6 +297,79 @@ namespace Chummer.Backend.Skills
                     foreach (XmlNode xmlSpecializationNode in xmlSpecList)
                     {
                         lstSpecializations.Add(SkillSpecialization.Load(xmlSpecializationNode, objSkill));
+                    }
+            if (lstSpecializations.Count != 0)
+            {
+                objSkill.Specializations.AddRange(lstSpecializations);
+            }
+
+            return objSkill;
+        }
+
+        public static Skill LoadFromHeroLab(Character objCharacter, XmlNode xmlSkillNode, bool blnIsKnowledgeSkill, string strSkillType = "")
+        {
+            string strName = xmlSkillNode.Attributes?["name"]?.InnerText ?? string.Empty;
+
+            XmlNode xmlSkillDataNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/" + (blnIsKnowledgeSkill ? "knowledgeskills" : "skills") + "/skill[name = \"" + strName + "\"]");
+            Guid suid = Guid.NewGuid();
+            if (xmlSkillDataNode?.TryGetField("id", Guid.TryParse, out suid) != true)
+                suid = Guid.NewGuid();
+
+            int intKarmaRating = 0;
+            if (xmlSkillNode.Attributes?["text"]?.InnerText != "N")      // Native Languages will have a base + karma rating of 0
+                int.TryParse(xmlSkillNode.Attributes?["base"]?.InnerText, out intKarmaRating); // Only reading karma rating out for now, any base rating will need modification within SkillsSection
+            
+            Skill objSkill;
+            if (blnIsKnowledgeSkill)
+            {
+                KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(objCharacter)
+                {
+                    WriteableName = strName,
+                    Karma = intKarmaRating,
+                    Type = !string.IsNullOrEmpty(strSkillType) ? strSkillType : (xmlSkillDataNode?["category"]?.InnerText ?? "Academic")
+                };
+
+                objSkill = objKnowledgeSkill;
+            }
+            else
+            {
+                objSkill = FromData(xmlSkillDataNode, objCharacter);
+                if (xmlSkillNode.Attributes?["fromgroup"]?.InnerText == "yes")
+                {
+                    intKarmaRating -= objSkill.SkillGroupObject.Karma;
+                }
+                objSkill._intKarma = intKarmaRating;
+
+                if (objSkill is ExoticSkill objExoticSkill)
+                {
+                    string strSpecializationName = xmlSkillNode.SelectSingleNode("specialization/@bonustext")?.InnerText ?? string.Empty;
+                    if (!string.IsNullOrEmpty(strSpecializationName))
+                    {
+                        int intLastPlus = strSpecializationName.LastIndexOf('+');
+                        if (intLastPlus > strSpecializationName.Length)
+                            strSpecializationName = strSpecializationName.Substring(0, intLastPlus - 1);
+                    }
+                    //don't need to do more load then.
+                    objExoticSkill.Specific = strSpecializationName;
+                    return objSkill;
+                }
+            }
+
+            objSkill.SkillId = suid;
+
+            List<SkillSpecialization> lstSpecializations = new List<SkillSpecialization>();
+            using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("specialization"))
+                if (xmlSpecList?.Count > 0)
+                    foreach (XmlNode xmlSpecializationNode in xmlSpecList)
+                    {
+                        string strSpecializationName = xmlSpecializationNode.Attributes?["bonustext"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strSpecializationName))
+                        {
+                            int intLastPlus = strSpecializationName.LastIndexOf('+');
+                            if (intLastPlus > strSpecializationName.Length)
+                                strSpecializationName = strSpecializationName.Substring(0, intLastPlus - 1);
+                            lstSpecializations.Add(new SkillSpecialization(strSpecializationName, false, objSkill));
+                        }
                     }
             if (lstSpecializations.Count != 0)
             {

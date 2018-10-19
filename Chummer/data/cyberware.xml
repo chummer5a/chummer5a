@@ -8138,6 +8138,10 @@
           <category>Tools</category>
         </usegear>
       </gears>
+      <allowgear>
+        <gearcategory>Common Programs</gearcategory>
+        <gearcategory>Hacking Programs</gearcategory>
+      </allowgear>
       <source>KC</source>
       <page>65</page>
     </cyberware>

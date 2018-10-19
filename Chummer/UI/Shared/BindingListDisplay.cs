@@ -83,7 +83,7 @@ namespace Chummer.UI.Shared
             min = Math.Max(0, min);
             max = Math.Min(_displayIndex.Count, max);
             if (_rendered.FirstMatching(false, min) > max) return;
-
+            SuspendLayout();
             for (int i = min; i < max; i++)
             {
                 if (_rendered[i]) continue;
@@ -94,6 +94,7 @@ namespace Chummer.UI.Shared
                 item.Control.Visible = true;
                 _rendered[i] = true;
             }
+            ResumeLayout();
         }
 
         private void ComptuteDisplayIndex()

@@ -141,7 +141,9 @@ namespace Chummer
             objWriter.WriteElementString("improvementsource", _eImprovementSource.ToString());
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (Grade >= 0)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
