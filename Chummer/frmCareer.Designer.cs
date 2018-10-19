@@ -624,7 +624,7 @@ namespace Chummer
             this.chkCyberwareHomeNode = new System.Windows.Forms.CheckBox();
             this.chkCyberwareActiveCommlink = new System.Windows.Forms.CheckBox();
             this.cboCyberwareOverclocker = new Chummer.ElasticComboBox();
-            this.lblCyberwareGearOverclocker = new System.Windows.Forms.Label();
+            this.lblCyberwareOverclockerLabel = new System.Windows.Forms.Label();
             this.tabCyberwareCM = new System.Windows.Forms.TabControl();
             this.tabCyberwareMatrixCM = new System.Windows.Forms.TabPage();
             this.chkCyberwareMatrixCM1 = new System.Windows.Forms.CheckBox();
@@ -8487,7 +8487,7 @@ namespace Chummer
             this.tlpCyberwareMatrix.Controls.Add(this.chkCyberwareHomeNode, 2, 0);
             this.tlpCyberwareMatrix.Controls.Add(this.chkCyberwareActiveCommlink, 3, 0);
             this.tlpCyberwareMatrix.Controls.Add(this.cboCyberwareOverclocker, 1, 0);
-            this.tlpCyberwareMatrix.Controls.Add(this.lblCyberwareGearOverclocker, 0, 0);
+            this.tlpCyberwareMatrix.Controls.Add(this.lblCyberwareOverclockerLabel, 0, 0);
             this.tlpCyberwareMatrix.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpCyberwareMatrix.Location = new System.Drawing.Point(3, 16);
             this.tlpCyberwareMatrix.Margin = new System.Windows.Forms.Padding(0);
@@ -8666,19 +8666,19 @@ namespace Chummer
             this.cboCyberwareOverclocker.Size = new System.Drawing.Size(96, 21);
             this.cboCyberwareOverclocker.TabIndex = 216;
             this.cboCyberwareOverclocker.TooltipText = "";
-            this.cboCyberwareOverclocker.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearOverclocker_SelectedIndexChanged);
+            this.cboCyberwareOverclocker.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareOverclocker_SelectedIndexChanged);
             // 
-            // lblCyberwareGearOverclocker
+            // lblCyberwareOverclockerLabel
             // 
-            this.lblCyberwareGearOverclocker.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblCyberwareGearOverclocker.AutoSize = true;
-            this.lblCyberwareGearOverclocker.Location = new System.Drawing.Point(31, 6);
-            this.lblCyberwareGearOverclocker.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblCyberwareGearOverclocker.Name = "lblCyberwareGearOverclocker";
-            this.lblCyberwareGearOverclocker.Size = new System.Drawing.Size(68, 13);
-            this.lblCyberwareGearOverclocker.TabIndex = 246;
-            this.lblCyberwareGearOverclocker.Tag = "Label_Overclocker";
-            this.lblCyberwareGearOverclocker.Text = "Overclocker:";
+            this.lblCyberwareOverclockerLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCyberwareOverclockerLabel.AutoSize = true;
+            this.lblCyberwareOverclockerLabel.Location = new System.Drawing.Point(31, 6);
+            this.lblCyberwareOverclockerLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblCyberwareOverclockerLabel.Name = "lblCyberwareOverclockerLabel";
+            this.lblCyberwareOverclockerLabel.Size = new System.Drawing.Size(68, 13);
+            this.lblCyberwareOverclockerLabel.TabIndex = 246;
+            this.lblCyberwareOverclockerLabel.Tag = "Label_Overclocker";
+            this.lblCyberwareOverclockerLabel.Text = "Overclocker:";
             // 
             // tabCyberwareCM
             // 
@@ -10991,7 +10991,7 @@ namespace Chummer
             this.tabWeapons.Location = new System.Drawing.Point(4, 22);
             this.tabWeapons.Name = "tabWeapons";
             this.tabWeapons.Padding = new System.Windows.Forms.Padding(3);
-            this.tabWeapons.Size = new System.Drawing.Size(833, 605);
+            this.tabWeapons.Size = new System.Drawing.Size(184, 48);
             this.tabWeapons.TabIndex = 2;
             this.tabWeapons.Tag = "Tab_Weapons";
             this.tabWeapons.Text = "Weapons";
@@ -11024,7 +11024,7 @@ namespace Chummer
             this.tlpWeapons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpWeapons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpWeapons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpWeapons.Size = new System.Drawing.Size(827, 599);
+            this.tlpWeapons.Size = new System.Drawing.Size(178, 42);
             this.tlpWeapons.TabIndex = 227;
             // 
             // treWeapons
@@ -11040,7 +11040,7 @@ namespace Chummer
             this.treWeapons.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode21});
             this.treWeapons.ShowNodeToolTips = true;
-            this.treWeapons.Size = new System.Drawing.Size(295, 564);
+            this.treWeapons.Size = new System.Drawing.Size(295, 7);
             this.treWeapons.TabIndex = 29;
             this.treWeapons.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treWeapons_AfterSelect);
             this.treWeapons.DragOver += new System.Windows.Forms.DragEventHandler(this.treWeapons_DragOver);
@@ -11111,7 +11111,7 @@ namespace Chummer
             this.flpWeapons.Location = new System.Drawing.Point(301, 29);
             this.flpWeapons.Margin = new System.Windows.Forms.Padding(0);
             this.flpWeapons.Name = "flpWeapons";
-            this.flpWeapons.Size = new System.Drawing.Size(526, 570);
+            this.flpWeapons.Size = new System.Drawing.Size(1, 13);
             this.flpWeapons.TabIndex = 229;
             this.flpWeapons.WrapContents = false;
             // 
@@ -12055,7 +12055,7 @@ namespace Chummer
             this.gpbWeaponsMatrix.Location = new System.Drawing.Point(3, 405);
             this.gpbWeaponsMatrix.MinimumSize = new System.Drawing.Size(500, 0);
             this.gpbWeaponsMatrix.Name = "gpbWeaponsMatrix";
-            this.gpbWeaponsMatrix.Size = new System.Drawing.Size(500, 96);
+            this.gpbWeaponsMatrix.Size = new System.Drawing.Size(516, 96);
             this.gpbWeaponsMatrix.TabIndex = 218;
             this.gpbWeaponsMatrix.TabStop = false;
             this.gpbWeaponsMatrix.Tag = "String_Matrix";
@@ -12088,14 +12088,14 @@ namespace Chummer
             this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel10.Size = new System.Drawing.Size(494, 77);
+            this.tableLayoutPanel10.Size = new System.Drawing.Size(510, 77);
             this.tableLayoutPanel10.TabIndex = 0;
             // 
             // lblWeaponFirewallLabel
             // 
             this.lblWeaponFirewallLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblWeaponFirewallLabel.AutoSize = true;
-            this.lblWeaponFirewallLabel.Location = new System.Drawing.Point(395, 31);
+            this.lblWeaponFirewallLabel.Location = new System.Drawing.Point(411, 31);
             this.lblWeaponFirewallLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblWeaponFirewallLabel.Name = "lblWeaponFirewallLabel";
             this.lblWeaponFirewallLabel.Size = new System.Drawing.Size(45, 13);
@@ -12119,9 +12119,9 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboWeaponGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboWeaponGearDataProcessing.FormattingEnabled = true;
-            this.cboWeaponGearDataProcessing.Location = new System.Drawing.Point(297, 53);
+            this.cboWeaponGearDataProcessing.Location = new System.Drawing.Point(309, 53);
             this.cboWeaponGearDataProcessing.Name = "cboWeaponGearDataProcessing";
-            this.cboWeaponGearDataProcessing.Size = new System.Drawing.Size(92, 21);
+            this.cboWeaponGearDataProcessing.Size = new System.Drawing.Size(96, 21);
             this.cboWeaponGearDataProcessing.TabIndex = 210;
             this.cboWeaponGearDataProcessing.TooltipText = "";
             this.cboWeaponGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearDataProcessing_SelectedIndexChanged);
@@ -12130,7 +12130,7 @@ namespace Chummer
             // 
             this.lblWeaponAttackLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblWeaponAttackLabel.AutoSize = true;
-            this.lblWeaponAttackLabel.Location = new System.Drawing.Point(101, 31);
+            this.lblWeaponAttackLabel.Location = new System.Drawing.Point(105, 31);
             this.lblWeaponAttackLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblWeaponAttackLabel.Name = "lblWeaponAttackLabel";
             this.lblWeaponAttackLabel.Size = new System.Drawing.Size(41, 13);
@@ -12142,7 +12142,7 @@ namespace Chummer
             // 
             this.lblWeaponDataProcessingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblWeaponDataProcessingLabel.AutoSize = true;
-            this.lblWeaponDataProcessingLabel.Location = new System.Drawing.Point(297, 31);
+            this.lblWeaponDataProcessingLabel.Location = new System.Drawing.Point(309, 31);
             this.lblWeaponDataProcessingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblWeaponDataProcessingLabel.Name = "lblWeaponDataProcessingLabel";
             this.lblWeaponDataProcessingLabel.Size = new System.Drawing.Size(88, 13);
@@ -12156,9 +12156,9 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboWeaponGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboWeaponGearAttack.FormattingEnabled = true;
-            this.cboWeaponGearAttack.Location = new System.Drawing.Point(101, 53);
+            this.cboWeaponGearAttack.Location = new System.Drawing.Point(105, 53);
             this.cboWeaponGearAttack.Name = "cboWeaponGearAttack";
-            this.cboWeaponGearAttack.Size = new System.Drawing.Size(92, 21);
+            this.cboWeaponGearAttack.Size = new System.Drawing.Size(96, 21);
             this.cboWeaponGearAttack.TabIndex = 207;
             this.cboWeaponGearAttack.TooltipText = "";
             this.cboWeaponGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearAttack_SelectedIndexChanged);
@@ -12169,9 +12169,9 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboWeaponGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboWeaponGearSleaze.FormattingEnabled = true;
-            this.cboWeaponGearSleaze.Location = new System.Drawing.Point(199, 53);
+            this.cboWeaponGearSleaze.Location = new System.Drawing.Point(207, 53);
             this.cboWeaponGearSleaze.Name = "cboWeaponGearSleaze";
-            this.cboWeaponGearSleaze.Size = new System.Drawing.Size(92, 21);
+            this.cboWeaponGearSleaze.Size = new System.Drawing.Size(96, 21);
             this.cboWeaponGearSleaze.TabIndex = 208;
             this.cboWeaponGearSleaze.TooltipText = "";
             this.cboWeaponGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearSleaze_SelectedIndexChanged);
@@ -12180,7 +12180,7 @@ namespace Chummer
             // 
             this.lblWeaponSleazeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblWeaponSleazeLabel.AutoSize = true;
-            this.lblWeaponSleazeLabel.Location = new System.Drawing.Point(199, 31);
+            this.lblWeaponSleazeLabel.Location = new System.Drawing.Point(207, 31);
             this.lblWeaponSleazeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblWeaponSleazeLabel.Name = "lblWeaponSleazeLabel";
             this.lblWeaponSleazeLabel.Size = new System.Drawing.Size(42, 13);
@@ -12194,7 +12194,7 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboWeaponGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboWeaponGearFirewall.FormattingEnabled = true;
-            this.cboWeaponGearFirewall.Location = new System.Drawing.Point(395, 53);
+            this.cboWeaponGearFirewall.Location = new System.Drawing.Point(411, 53);
             this.cboWeaponGearFirewall.Name = "cboWeaponGearFirewall";
             this.cboWeaponGearFirewall.Size = new System.Drawing.Size(96, 21);
             this.cboWeaponGearFirewall.TabIndex = 209;
@@ -19655,7 +19655,7 @@ namespace Chummer
         private TableLayoutPanel tlpCyberwareEssenceConsumption;
         private TableLayoutPanel tlpCyberwareCommon;
         private GroupBox gpbEssenceConsumption;
-        private Label lblCyberwareGearOverclocker;
+        private Label lblCyberwareOverclockerLabel;
         private FlowLayoutPanel flpMysticAdeptMAGAdept;
         private FlowLayoutPanel flpStreetCredTotal;
         private GroupBox gpbCyberwareCommon;

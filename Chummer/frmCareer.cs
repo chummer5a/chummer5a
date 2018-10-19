@@ -13210,7 +13210,7 @@ namespace Chummer
                     else
                         chkCyberwareHomeNode.Visible = false;
 
-                    lblCyberwareGearOverclocker.Visible = false;
+                    lblCyberwareOverclockerLabel.Visible = false;
                     cboCyberwareOverclocker.Visible = false;
                 }
             }
@@ -13259,8 +13259,6 @@ namespace Chummer
 
                 if (CharacterObject.Overclocker && objGear.Category == "Cyberdecks")
                 {
-                    cboCyberwareOverclocker.Visible = true;
-                    lblCyberwareGearOverclocker.Visible = true;
                     List<ListItem> lstOverclocker = new List<ListItem>
                         {
                             new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language)),
@@ -13270,6 +13268,7 @@ namespace Chummer
                             new ListItem("Firewall", LanguageManager.GetString("String_Firewall", GlobalOptions.Language))
                         };
 
+                    cboCyberwareOverclocker.BeginUpdate();
                     cboCyberwareOverclocker.DataSource = null;
                     cboCyberwareOverclocker.DisplayMember = nameof(ListItem.Name);
                     cboCyberwareOverclocker.ValueMember = nameof(ListItem.Value);
@@ -13277,12 +13276,14 @@ namespace Chummer
                     cboCyberwareOverclocker.SelectedValue = objGear.Overclocked;
                     if (cboCyberwareOverclocker.SelectedIndex == -1)
                         cboCyberwareOverclocker.SelectedIndex = 0;
+                    cboCyberwareOverclocker.Visible = true;
                     cboCyberwareOverclocker.EndUpdate();
+                    lblCyberwareOverclockerLabel.Visible = true;
                 }
                 else
                 {
                     cboCyberwareOverclocker.Visible = false;
-                    lblCyberwareGearOverclocker.Visible = false;
+                    lblCyberwareOverclockerLabel.Visible = false;
                 }
             }
 
@@ -14067,8 +14068,6 @@ namespace Chummer
                 cboGearOverclocker.BeginUpdate();
                 if (CharacterObject.Overclocker && objGear.Category == "Cyberdecks")
                 {
-                    cboGearOverclocker.Visible = true;
-                    lblGearOverclockerLabel.Visible = true;
                     List<ListItem> lstOverclocker = new List<ListItem>
                         {
                             new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language)),
@@ -14080,14 +14079,17 @@ namespace Chummer
                                 LanguageManager.GetString("String_Firewall", GlobalOptions.Language))
                         };
 
-                    cboGearOverclocker.BindingContext = new BindingContext();
-                    cboGearOverclocker.DisplayMember = "Name";
-                    cboGearOverclocker.ValueMember = "Value";
+                    cboGearOverclocker.BeginUpdate();
+                    cboGearOverclocker.DataSource = null;
+                    cboGearOverclocker.DisplayMember = nameof(ListItem.Name);
+                    cboGearOverclocker.ValueMember = nameof(ListItem.Value);
                     cboGearOverclocker.DataSource = lstOverclocker;
                     cboGearOverclocker.SelectedValue = objGear.Overclocked;
                     if (cboGearOverclocker.SelectedIndex == -1)
                         cboGearOverclocker.SelectedIndex = 0;
+                    cboGearOverclocker.Visible = true;
                     cboGearOverclocker.EndUpdate();
+                    lblGearOverclockerLabel.Visible = true;
                 }
                 else
                 {
@@ -16615,7 +16617,7 @@ namespace Chummer
             objCommlink.RefreshMatrixAttributeCBOs(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
         }
 
-        private void cboCyberwareGearOverclocker_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboCyberwareOverclocker_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsLoading || IsRefreshing || !CharacterObject.Overclocker)
                 return;
