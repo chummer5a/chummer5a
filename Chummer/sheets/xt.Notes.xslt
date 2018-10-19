@@ -11,7 +11,7 @@
           <xsl:with-param name="name" select="$lang.Notes"/>
         </xsl:call-template>
         <table class="tablestyle">
-          <tr><td colspan="100%" style="text-align: justify">
+          <tr><td colspan="100%" class="notesrow">
             <xsl:call-template name="PreserveLineBreaks">
               <xsl:with-param name="text" select="notes"/>
             </xsl:call-template>
@@ -33,7 +33,7 @@
               "/>
             </td></tr>
           </xsl:if>
-          <tr><td colspan="100%" style="text-align: justify">
+          <tr><td colspan="100%" class="notesrow">
             <xsl:call-template name="PreserveLineBreaks">
               <xsl:with-param name="text" select="gamenotes"/>
             </xsl:call-template>
@@ -53,7 +53,7 @@
           <xsl:with-param name="name" select="$lang.Concept"/>
         </xsl:call-template>
         <table class="tablestyle">
-          <tr><td colspan="100%" style="text-align: justify">
+          <tr><td colspan="100%" class="notesrow">
             <xsl:call-template name="PreserveLineBreaks">
               <xsl:with-param name="text" select="concept"/>
             </xsl:call-template>
@@ -73,7 +73,7 @@
           <xsl:with-param name="name" select="$lang.Description"/>
         </xsl:call-template>
         <table class="tablestyle">
-          <tr><td colspan="100%" style="text-align: justify">
+          <tr><td colspan="100%" class="notesrow">
             <xsl:call-template name="PreserveLineBreaks">
               <xsl:with-param name="text" select="description"/>
             </xsl:call-template>
@@ -93,7 +93,7 @@
           <xsl:with-param name="name" select="$lang.Background"/>
         </xsl:call-template>
         <table class="tablestyle">
-          <tr><td colspan="100%" style="text-align: justify">
+          <tr><td colspan="100%" class="notesrow">
             <xsl:call-template name="PreserveLineBreaks">
               <xsl:with-param name="text" select="background"/>
             </xsl:call-template>

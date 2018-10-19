@@ -33,16 +33,14 @@
             // 
             // txtRevisionHistory
             // 
-            this.txtRevisionHistory.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtRevisionHistory.BackColor = System.Drawing.Color.White;
-            this.txtRevisionHistory.Location = new System.Drawing.Point(12, 12);
+            this.txtRevisionHistory.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtRevisionHistory.Location = new System.Drawing.Point(9, 9);
             this.txtRevisionHistory.Multiline = true;
             this.txtRevisionHistory.Name = "txtRevisionHistory";
             this.txtRevisionHistory.ReadOnly = true;
             this.txtRevisionHistory.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtRevisionHistory.Size = new System.Drawing.Size(760, 537);
+            this.txtRevisionHistory.Size = new System.Drawing.Size(766, 543);
             this.txtRevisionHistory.TabIndex = 0;
             // 
             // frmHistory
@@ -55,6 +53,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmHistory";
+            this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_History";

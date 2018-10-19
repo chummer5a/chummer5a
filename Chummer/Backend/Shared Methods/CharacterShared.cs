@@ -48,6 +48,8 @@ namespace Chummer
         private readonly ObservableCollection<CharacterAttrib> _lstSpecialAttributes;
         private readonly CharacterOptions _objOptions;
         private bool _blnIsDirty;
+        private bool _blnIsRefreshing;
+        private bool _blnLoading = true;
         private frmViewer _frmPrintView;
 
         protected CharacterShared(Character objCharacter)
@@ -204,9 +206,8 @@ namespace Chummer
                     //Remove the old LimitModifier to ensure we don't double up.
                     _objCharacter.LimitModifiers.Remove(objLimitModifier);
                     // Create the new limit modifier.
-                    objLimitModifier = new LimitModifier(_objCharacter);
-                    objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition);
-                    objLimitModifier.Guid = new Guid(strGuid);
+                    objLimitModifier = new LimitModifier(_objCharacter, strGuid);
+                    objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition, true);
 
                     _objCharacter.LimitModifiers.Add(objLimitModifier);
 
@@ -247,6 +248,7 @@ namespace Chummer
         {
             if (notifyCollectionChangedEventArgs == null)
             {
+                pnlAttributes.SuspendLayout();
                 pnlAttributes.Controls.Clear();
 
                 foreach (CharacterAttrib objAttrib in _lstPrimaryAttributes.Concat(_lstSpecialAttributes))
@@ -257,6 +259,7 @@ namespace Chummer
                     objControl.Width = pnlAttributes.Width;
                     objControl.Anchor |= AnchorStyles.Right;
                 }
+                pnlAttributes.ResumeLayout();
             }
             else
             {
@@ -4682,12 +4685,12 @@ namespace Chummer
                             objParentNode?.Expand();
                         }
 
-                        string strName = objImprovement.UniqueName + ": ";
+                        string strName = objImprovement.UniqueName + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language);
                         if (objImprovement.Value > 0)
                             strName += '+';
                         strName += objImprovement.Value.ToString();
                         if (!string.IsNullOrEmpty(objImprovement.Condition))
-                            strName += ", " + objImprovement.Condition;
+                            strName += ',' + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objImprovement.Condition;
                         if (objParentNode?.Nodes.ContainsKey(strName) == false)
                         {
                             TreeNode objNode = new TreeNode
@@ -5852,7 +5855,8 @@ namespace Chummer
 
             if (intBPUsed < (intEnemyMax * -1) && !CharacterObject.IgnoreRules)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_EnemyLimit", GlobalOptions.Language).Replace("{0}", strEnemyPoints), LanguageManager.GetString("MessageTitle_EnemyLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(string.Format(LanguageManager.GetString("Message_EnemyLimit", GlobalOptions.Language), strEnemyPoints),
+                    LanguageManager.GetString("MessageTitle_EnemyLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Contact objSenderContact = objSenderControl?.ContactObject;
                 if (objSenderContact != null)
                 {
@@ -5875,7 +5879,8 @@ namespace Chummer
             {
                 if (intBPUsed + intNegativeQualityBP < (intQualityMax * -1) && !CharacterObject.IgnoreRules)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language).Replace("{0}", strQualityPoints), LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language), strQualityPoints),
+                        LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     Contact objSenderContact = objSenderControl?.ContactObject;
                     if (objSenderContact != null)
                     {
@@ -6301,6 +6306,9 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Whether or not the character has changes that can be saved
+        /// </summary>
         public bool IsDirty
         {
             get => _blnIsDirty;
@@ -6310,6 +6318,45 @@ namespace Chummer
                 {
                     _blnIsDirty = value;
                     UpdateWindowTitle(true);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the form is currently in the middle of refreshing some UI elements
+        /// </summary>
+        public bool IsRefreshing
+        {
+            get => _blnIsRefreshing;
+            set
+            {
+                //if (_blnIsRefreshing != value)
+                {
+                    _blnIsRefreshing = value;
+                    /*
+                    if (value)
+                        SuspendLayout();
+                    else if (!IsLoading)
+                        ResumeLayout();
+                        */
+                }
+            }
+        }
+
+        public bool IsLoading
+        {
+            get => _blnLoading;
+            set
+            {
+                //if (_blnLoading != value)
+                {
+                    _blnLoading = value;
+                    /*
+                    if (value)
+                        SuspendLayout();
+                    else if (!IsRefreshing)
+                        ResumeLayout();
+                        */
                 }
             }
         }

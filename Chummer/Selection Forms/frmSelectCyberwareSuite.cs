@@ -239,7 +239,7 @@ namespace Chummer
                         List<Weapon> lstWeapons = new List<Weapon>();
                         List<Vehicle> lstVehicles = new List<Vehicle>();
                         Cyberware objCyberware = new Cyberware(_objCharacter);
-                        objCyberware.Create(objXmlCyberware, _objCharacter, objGrade, _eSource, intRating, lstWeapons, lstVehicles, false, false);
+                        objCyberware.Create(objXmlCyberware, objGrade, _eSource, intRating, lstWeapons, lstVehicles, false, false);
                         objCyberware.Suite = true;
 
                         lstChildren.Add(objCyberware);

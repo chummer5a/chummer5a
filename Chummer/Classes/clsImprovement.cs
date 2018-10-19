@@ -479,6 +479,10 @@ namespace Chummer
                 _strCondition = _strExclude;
                 _strExclude = string.Empty;
             }
+            if (_objImprovementType == ImprovementType.RestrictedGear && _intVal == 0)
+            {
+                _intVal = 24;
+            }
             objNode.TryGetBoolFieldQuickly("custom", ref _blnCustom);
             objNode.TryGetStringFieldQuickly("customname", ref _strCustomName);
             objNode.TryGetStringFieldQuickly("customid", ref _strCustomId);
@@ -1768,6 +1772,12 @@ namespace Chummer
                 case ImprovementType.FocusBindingKarmaMultiplier:
                     break;
                 case ImprovementType.MagiciansWayDiscount:
+                {
+                    foreach (Power objLoopPower in _objCharacter.Powers.Where(x => x.AdeptWayDiscount != 0))
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objLoopPower, nameof(Power.AdeptWayDiscountEnabled));
+                    }
+                }
                     break;
                 case ImprovementType.BurnoutsWay:
                     break;
@@ -2791,7 +2801,7 @@ namespace Chummer
                 frmSelectSkill frmPickSkill = new frmSelectSkill(objCharacter, strFriendlyName)
                 {
                     Description = !string.IsNullOrEmpty(strFriendlyName)
-                        ? LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language).Replace("{0}", strFriendlyName)
+                        ? string.Format(LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language), strFriendlyName)
                         : LanguageManager.GetString("String_Improvement_SelectSkill", GlobalOptions.Language)
                 };
                 string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
@@ -2929,7 +2939,7 @@ namespace Chummer
                         // Display the Select Text window and record the value that was entered.
                         frmSelectText frmPickText = new frmSelectText
                         {
-                            Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", strFriendlyName)
+                            Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), strFriendlyName)
                         };
                         frmPickText.ShowDialog();
 
@@ -2946,7 +2956,7 @@ namespace Chummer
                         s_StrSelectedValue = frmPickText.SelectedValue;
                     }
                     if (blnConcatSelectedValue)
-                        strSourceName += " (" + SelectedValue + ')';
+                        strSourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
                     Log.Info("_strSelectedValue = " + SelectedValue);
                     Log.Info("strSourceName = " + strSourceName);
 
@@ -3295,12 +3305,6 @@ namespace Chummer
                             DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.AIProgram && x.SourceName == objProgram.InternalId && x.Enabled).ToList());
                         }
                         break;
-                    case Improvement.ImprovementType.MagiciansWayDiscount:
-                        foreach (Power objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
-                        {
-                            objLoopPower.RefreshDiscountedAdeptWay(objLoopPower.AdeptWayDiscountEnabled);
-                        }
-                        break;
                     case Improvement.ImprovementType.FreeWare:
                         {
                             Cyberware objCyberware = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == objImprovement.ImprovedName);
@@ -3590,12 +3594,6 @@ namespace Chummer
                         if (objProgram != null)
                         {
                             DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.AIProgram && x.SourceName == objProgram.InternalId && x.Enabled).ToList());
-                        }
-                        break;
-                    case Improvement.ImprovementType.MagiciansWayDiscount:
-                        foreach (Power objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
-                        {
-                            objLoopPower.RefreshDiscountedAdeptWay(objLoopPower.AdeptWayDiscountEnabled);
                         }
                         break;
                     case Improvement.ImprovementType.FreeWare:
@@ -3972,12 +3970,6 @@ namespace Chummer
                             objImprovedPower.OnPropertyChanged(nameof(objImprovedPower.TotalRating));
                             objImprovedPower.OnPropertyChanged(objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels
                                 ? nameof(Power.FreeLevels) : nameof(Power.FreePoints));
-                        }
-                        break;
-                    case Improvement.ImprovementType.MagiciansWayDiscount:
-                        foreach (Power objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
-                        {
-                            objLoopPower.RefreshDiscountedAdeptWay(objLoopPower.AdeptWayDiscountEnabled);
                         }
                         break;
                     case Improvement.ImprovementType.FreeWare:

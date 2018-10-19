@@ -64,6 +64,7 @@ namespace Chummer
         private static readonly HashSet<XmlReference> s_LstXmlDocuments = new HashSet<XmlReference>();
         private static readonly object s_LstXmlDocumentsLock = new object();
         private static readonly List<string> s_LstDataDirectories = new List<string>();
+        private static readonly object s_SetFilesWithCachedDocsLock = new object();
         private static readonly HashSet<string> s_SetFilesWithCachedDocs = new HashSet<string>();
 
         #region Constructor
@@ -80,7 +81,8 @@ namespace Chummer
         #region Methods
         public static void RebuildDataDirectoryInfo()
         {
-            s_SetFilesWithCachedDocs.Clear();
+            lock (s_SetFilesWithCachedDocsLock)
+                s_SetFilesWithCachedDocs.Clear();
             s_LstDataDirectories.Clear();
             s_LstDataDirectories.Add(Path.Combine(Utils.GetStartupPath, "data"));
             foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo.Where(x => x.Enabled))
@@ -115,8 +117,9 @@ namespace Chummer
                 return new XmlDocument();
             }
 
-            if (!s_SetFilesWithCachedDocs.Contains(strFileName))
-                blnLoadFile = true;
+            lock (s_SetFilesWithCachedDocsLock)
+                if (!s_SetFilesWithCachedDocs.Contains(strFileName))
+                    blnLoadFile = true;
 
             DateTime datDate = File.GetLastWriteTime(strPath);
             if (string.IsNullOrEmpty(strLanguage))
@@ -219,7 +222,8 @@ namespace Chummer
                 else
                     objReference.XmlContent = objDoc;
 
-                s_SetFilesWithCachedDocs.Add(strFileName);
+                lock (s_SetFilesWithCachedDocsLock)
+                    s_SetFilesWithCachedDocs.Add(strFileName);
             }
             else
             {
@@ -330,21 +334,19 @@ namespace Chummer
                         strDuplicatesNames += Environment.NewLine;
                     strDuplicatesNames += string.Join(Environment.NewLine, lstDuplicateNames);
                 }
-                MessageBox.Show(
-                    LanguageManager.GetString("Message_DuplicateGuidWarning", GlobalOptions.Language)
-                        .Replace("{0}", setDuplicateIDs.Count.ToString())
-                        .Replace("{1}", strFileName)
-                        .Replace("{2}", strDuplicatesNames));
+                MessageBox.Show(string.Format(LanguageManager.GetString("Message_DuplicateGuidWarning", GlobalOptions.Language)
+                        , setDuplicateIDs.Count.ToString(GlobalOptions.CultureInfo)
+                        , strFileName
+                        , strDuplicatesNames));
             }
 
             if (lstItemsWithMalformedIDs.Count > 0)
             {
                 string strMalformedIdNames = string.Join(Environment.NewLine, lstItemsWithMalformedIDs);
-                MessageBox.Show(
-                    LanguageManager.GetString("Message_NonGuidIdWarning", GlobalOptions.Language)
-                        .Replace("{0}", lstItemsWithMalformedIDs.Count.ToString())
-                        .Replace("{1}", strFileName)
-                        .Replace("{2}", strMalformedIdNames));
+                MessageBox.Show(string.Format(LanguageManager.GetString("Message_NonGuidIdWarning", GlobalOptions.Language)
+                    , lstItemsWithMalformedIDs.Count.ToString(GlobalOptions.CultureInfo)
+                    , strFileName
+                    , strMalformedIdNames));
             }
         }
         

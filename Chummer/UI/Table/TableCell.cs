@@ -91,7 +91,6 @@ namespace Chummer.UI.Table
             //Invalidate();
         }
 
-        internal Control Content { get => contentField; }
-
+        internal Control Content => contentField;
     }
 }

@@ -153,7 +153,7 @@ namespace Chummer
         #region Constructor
         static LanguageManager()
         {
-            if (!Utils.IsRunningInVisualStudio)
+            if (!Utils.IsDesignerMode)
             {
                 XmlDocument objEnglishDocument = new XmlDocument();
                 string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
@@ -215,17 +215,21 @@ namespace Chummer
         /// <param name="objObject">Object to translate.</param>
         public static void TranslateWinForm(string strIntoLanguage, Control objObject)
         {
-            if (LoadLanguage(strIntoLanguage))
+            if (!Utils.IsDesignerMode)
             {
-                RightToLeft eIntoRightToLeft = RightToLeft.No;
-                if (DictionaryLanguages.TryGetValue(strIntoLanguage, out LanguageData objLanguageData))
+                if (LoadLanguage(strIntoLanguage))
                 {
-                    eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
+                    RightToLeft eIntoRightToLeft = RightToLeft.No;
+                    if (DictionaryLanguages.TryGetValue(strIntoLanguage, out LanguageData objLanguageData))
+                    {
+                        eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
+                    }
+
+                    UpdateControls(objObject, strIntoLanguage, eIntoRightToLeft);
                 }
-                UpdateControls(objObject, strIntoLanguage, eIntoRightToLeft);
+                else if (strIntoLanguage != GlobalOptions.DefaultLanguage)
+                    UpdateControls(objObject, GlobalOptions.DefaultLanguage, RightToLeft.No);
             }
-            else if (strIntoLanguage != GlobalOptions.DefaultLanguage)
-                UpdateControls(objObject, GlobalOptions.DefaultLanguage, RightToLeft.No);
         }
 
         private static bool LoadLanguage(string strLanguage)
@@ -426,10 +430,12 @@ namespace Chummer
         /// Retrieve a string from the language file.
         /// </summary>
         /// <param name="strKey">Key to retrieve.</param>
-        /// <param name="strLanguage">Language in from which the string should be retrieved.</param>
+        /// <param name="strLanguage">Language from which the string should be retrieved.</param>
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
         public static string GetString(string strKey, string strLanguage, bool blnReturnError = true)
         {
+            if (Utils.IsDesignerMode)
+                return strKey;
             string strReturn;
             if (LoadLanguage(strLanguage))
             {
@@ -446,6 +452,109 @@ namespace Chummer
                 return strReturn;
             }
             return !blnReturnError ? string.Empty : $"{strKey} not found; check language file for string";
+        }
+
+        /// <summary>
+        /// Processes a compound string that contains both plaintext and references to localized strings
+        /// </summary>
+        /// <param name="strInput">Input string to process.</param>
+        /// <param name="strLanguage">Language into which to translate the compound string.</param>
+        /// <param name="blnUseTranslateExtra">Whether to use TranslateExtra() or GetString() for translating localized strings.</param>
+        /// <returns></returns>
+        public static string ProcessCompoundString(string strInput, string strLanguage, bool blnUseTranslateExtra = false)
+        {
+            if (Utils.IsDesignerMode)
+                return strInput;
+            // Exit out early if we don't have a pair of curly brackets, which is what would signify localized strings
+            int intStartPosition = strInput.IndexOf('{');
+            if (intStartPosition < 0)
+                return strInput;
+            int intEndPosition = strInput.LastIndexOf('}');
+            if (intEndPosition < 0)
+                return strInput;
+
+            // strInput will get split up based on curly brackets and put into this list as a string-bool Tuple.
+            // String value in Tuple will be a section of strInput either enclosed in curly brackets or between sets of enclosed curly brackets
+            // Bool value in Tuple is a flag for whether the item was enclosed in curly brackets (True) or between sets of enclosed curly brackets (False)
+            List<Tuple<string, bool>> lstStringWithCompoundsSplit = new List<Tuple<string, bool>>
+            {
+                // Start out with part between start of string and the first set of enclosed curly brackets already added to the list
+                new Tuple<string, bool>(strInput.Substring(0, intStartPosition), false)
+            };
+
+            char[] achrCurlyBrackets = {'{', '}'};
+            // Current bracket level. This needs to be tracked so that this method can be performed recursively on curly bracket sets inside of curly bracket sets
+            int intBracketLevel = 1;
+            // Loop will be jumping to instances of '{' or '}' within strInput until it reaches the last closing curly bracket (at intEndPosition)
+            for (int i = strInput.IndexOfAny(achrCurlyBrackets, intStartPosition + 1); i <= intEndPosition; i = strInput.IndexOfAny(achrCurlyBrackets, i + 1))
+            {
+                char chrLoop = strInput[i];
+                switch (chrLoop)
+                {
+                    case '{':
+                    {
+                        if (intBracketLevel == 0)
+                        {
+                            // End of area between sets of curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to False
+                            lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), false));
+                            // Tracks the start of the top-level curly bracket opening to know where to start the substring when this item will be closed by a closing curly bracket
+                            intStartPosition = i;
+                        }
+                        intBracketLevel += 1;
+                        break;
+                    }
+                    case '}':
+                    {
+                        // Makes sure the function doesn't mess up when there's a closing curly bracket without a matching opening curly bracket
+                        if (intBracketLevel > 0)
+                        {
+                            intBracketLevel -= 1;
+                            if (intBracketLevel == 0)
+                            {
+                                // End of area enclosed by curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to True
+                                lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), true));
+                                // Tracks the start of the area between curly bracket sets to know where to start the substring when the next set of curly brackets is encountered
+                                intStartPosition = i;
+                            }
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            // End with part between the last set of enclosed curly brackets and the end of the string. This will also catch cases where there are opening curly brackets without matching closing brackets
+            lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intEndPosition + 1), false));
+
+            // Start building the return value.
+            StringBuilder objReturn = new StringBuilder(strInput.Length);
+            foreach (Tuple<string, bool> objLoop in lstStringWithCompoundsSplit)
+            {
+                string strLoop = objLoop.Item1;
+                if (!string.IsNullOrEmpty(strLoop))
+                {
+                    // Items inside curly brackets need of processing, so do processing on them and append the result to the return value
+                    if (objLoop.Item2)
+                    {
+                        // Inner string is a compound string in and of itself, so recurse this method
+                        if (strLoop.IndexOfAny('{', '}') != -1)
+                        {
+                            strLoop = ProcessCompoundString(strLoop, strLanguage, blnUseTranslateExtra);
+                        }
+                        // Use more expensive TranslateExtra if flag is set to use that
+                        objReturn.Append(blnUseTranslateExtra
+                            ? TranslateExtra(strLoop, strLanguage)
+                            : GetString(strLoop, strLanguage, false));
+                    }
+                    // Items between curly bracket sets do not need processing, so just append them to the return value wholesale
+                    else
+                    {
+                        objReturn.Append(strLoop);
+                    }
+                }
+            }
+
+            return objReturn.ToString();
         }
 
         /// <summary>
@@ -687,7 +796,7 @@ namespace Chummer
                         strReturn = GetString("String_AttributeMAGShort", strIntoLanguage);
                         break;
                     case "MAGAdept":
-                        strReturn = GetString("String_AttributeMAGShort", strIntoLanguage) + " (" + GetString("String_DescAdept", strIntoLanguage) + ')';
+                        strReturn = GetString("String_AttributeMAGShort", strIntoLanguage) + GetString("String_Space", strIntoLanguage) + '(' + GetString("String_DescAdept", strIntoLanguage) + ')';
                         break;
                     case "RES":
                         strReturn = GetString("String_AttributeRESShort", strIntoLanguage);
@@ -815,7 +924,7 @@ namespace Chummer
                     return "MAG";
                 }
 
-                if (strExtra == GetString("String_AttributeMAGShort", strFromLanguage) + " (" + GetString("String_DescAdept", strFromLanguage) + ')')
+                if (strExtra == GetString("String_AttributeMAGShort", strFromLanguage) + GetString("String_Space", strFromLanguage) + '(' + GetString("String_DescAdept", strFromLanguage) + ')')
                 {
                     return "MAGAdept";
                 }

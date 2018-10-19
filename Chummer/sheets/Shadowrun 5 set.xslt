@@ -5,6 +5,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
         xmlns:msxsl="urn:schemas-microsoft-com:xslt">
   <xsl:include href="xs.fnx.xslt"/>
+  <xsl:include href="xs.fnxTests.xslt"/>
   <xsl:include href="xs.TitleName.xslt"/>
 
   <xsl:include href="xt.Calendar.xslt"/>
@@ -757,11 +758,11 @@
         </xsl:call-template>
 
 <!--
-        *                      *
-        ***                      ***
+        *                                 *
+        ***                             ***
         *****       gear details      *****
-        ***                      ***
-        *                        *
+        ***                             ***
+        *                                 *
 -->
         <xsl:if test="cyberwares/cyberware">
           <div class="block" id="CyberwareBlock">
@@ -1033,11 +1034,11 @@
 <!-- ** ** ** end of gear ** ** ** -->
 
 <!--
-        *                      *
-        ***                      ***
+        *                                     *
+        ***                                 ***
         *****     magic user details      *****
-        ***                      ***
-        *                      *
+        ***                                 ***
+        *                                     *
 -->
       <xsl:if test="magenabled = 'True'">
         <xsl:if test="tradition and tradition/istechnomancertradition = 'False'">
@@ -1097,11 +1098,10 @@
                 <th width="10%"/>
                 <th width="10%"/>
               </tr>
+              <xsl:call-template name="gradenotes"/>
               <xsl:if test="arts != ''">
                 <tr>
-                  <td width="80%">
-                    <strong><xsl:value-of select="$lang.Arts"/></strong>
-                  </td>
+                  <td><strong><xsl:value-of select="$lang.Arts"/></strong></td>
                   <td/>
                   <td/>
                 </tr>
@@ -1132,9 +1132,7 @@
               </xsl:if>
               <xsl:if test="metamagics/metamagic">
                 <tr>
-                  <td width="80%">
-                    <strong><xsl:value-of select="$lang.Metamagics"/></strong>
-                  </td>
+                  <td><strong><xsl:value-of select="$lang.Metamagics"/></strong></td>
                   <td/>
                   <td/>
                 </tr>
@@ -1241,6 +1239,18 @@
           </xsl:call-template>
         </xsl:if>
       </xsl:if>
+
+        <xsl:if test="critterpowers/critterpower">
+          <div class="block" id="CritterBlock">
+            <table class="tablestyle">
+              <xsl:call-template name="CritterPowers"/>
+            </table>
+          </div>
+          <xsl:call-template name="RowSummary">
+            <xsl:with-param name="text" select="$lang.CritterPowers"/>
+            <xsl:with-param name="blockname" select="'CritterBlock'"/>
+          </xsl:call-template>
+        </xsl:if>
 <!-- ** ** ** end of magic user details ** ** ** -->
 
 <!--
@@ -1283,7 +1293,7 @@
         </xsl:call-template>
 
         <xsl:if test="submersiongrade > 0">
-          <div class="block" id="EchoesBlock">
+          <div class="block" id="SubmersionBlock">
             <table class="tablestyle">
               <tr>
                 <th style="text-align: left">
@@ -1293,10 +1303,11 @@
                 <th width="10%"/>
                 <th width="10%"/>
               </tr>
+              <xsl:call-template name="gradenotes"/>
               <xsl:if test="metamagics/metamagic">
                 <tr>
                   <td width="80%" style="text-align: left">
-                    <strong><xsl:value-of select="$lang.Echoes"/></strong>
+                    <strong><xsl:value-of select="$lang.Echo"/></strong>
                   </td>
                   <td width="10%"/>
                   <td width="10%"/>
@@ -1327,8 +1338,8 @@
             </table>
           </div>
           <xsl:call-template name="RowSummary">
-            <xsl:with-param name="text" select="$lang.Echoes"/>
-            <xsl:with-param name="blockname" select="'EchoesBlock'"/>
+            <xsl:with-param name="text" select="$lang.Submersion"/>
+            <xsl:with-param name="blockname" select="'SubmersionBlock'"/>
           </xsl:call-template>
         </xsl:if>
 
@@ -1439,18 +1450,6 @@
           <xsl:call-template name="RowSummary">
             <xsl:with-param name="text" select="$lang.Contacts"/>
             <xsl:with-param name="blockname" select="'ContactsBlock'"/>
-          </xsl:call-template>
-        </xsl:if>
-
-        <xsl:if test="critterpowers/critterpower">
-          <div class="block" id="CritterBlock">
-            <table class="tablestyle">
-              <xsl:call-template name="CritterPowers"/>
-            </table>
-          </div>
-          <xsl:call-template name="RowSummary">
-            <xsl:with-param name="text" select="$lang.Critters"/>
-            <xsl:with-param name="blockname" select="'CritterBlock'"/>
           </xsl:call-template>
         </xsl:if>
 
@@ -2334,6 +2333,25 @@
     </xsl:call-template>
   </xsl:template>
 
+  <xsl:template name="gradenotes">
+    <xsl:if test="initiationgrades/initiationgrade/notes != '' and $ProduceNotes">
+      <tr><td colspan="100%"><strong><xsl:value-of select="$lang.Notes"/></strong></td></tr>
+      <xsl:for-each select="initiationgrades/initiationgrade">
+        <xsl:if test="notes != ''">
+          <tr><td colspan="100%" class="notesrow2">
+            <u><xsl:value-of select="$lang.Grade"/>
+            <xsl:text> </xsl:text>
+            <xsl:value-of select="grade"/></u>
+            <xsl:text> </xsl:text>
+            <xsl:call-template name="PreserveLineBreaks">
+               <xsl:with-param name="text" select="notes"/>
+            </xsl:call-template>
+          </td></tr>
+        </xsl:if>
+      </xsl:for-each>
+    </xsl:if>
+  </xsl:template>
+
   <xsl:template name="powers">
     <xsl:for-each select="powers/power">
       <xsl:sort select="name"/>
@@ -3149,8 +3167,7 @@
           <xsl:if test="extra != '' and $xtra = 'A'">
             (<xsl:value-of select="extra"/>)
           </xsl:if>
-          <xsl:if test="qty != 1"> ×<xsl:value-of select="qty"/>
-          </xsl:if>
+          <xsl:if test="qty != 1"> ×<xsl:value-of select="qty"/></xsl:if>
           <xsl:choose>
             <xsl:when test="children/gear">
               <xsl:text> </xsl:text>

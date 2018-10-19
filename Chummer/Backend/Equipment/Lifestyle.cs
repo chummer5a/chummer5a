@@ -250,6 +250,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
+            
             _objCharacter.SourceProcess(_strSource);
         }
 
@@ -316,7 +317,7 @@ namespace Chummer.Backend.Equipment
                         frmSelectItem frmSelect = new frmSelectItem
                         {
                             GeneralItems = lstQualities,
-                            Description = LanguageManager.GetString("String_CannotFindLifestyle", GlobalOptions.Language).Replace("{0}", _strName)
+                            Description = string.Format(LanguageManager.GetString("String_CannotFindLifestyle", GlobalOptions.Language), _strName)
                         };
                         frmSelect.ShowDialog();
                         if (frmSelect.DialogResult == DialogResult.Cancel)

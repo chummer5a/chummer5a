@@ -29118,6 +29118,179 @@
     <!-- End Region -->
     <!-- Region Toxic Critters -->
     <metatype>
+	  <id>ba5e2809-186c-4d11-a5a9-c8b1cb060f2c</id>
+	  <name>Amphora Mite</name>
+      <category>Mutant Critters</category>
+	  <bodmin>0</bodmin>
+	  <bodmax>0</bodmax>
+	  <bodaug>4</bodaug>
+	  <agimin>2</agimin>
+	  <agimax>2</agimax>
+	  <agiaug>6</agiaug>
+	  <reamin>2</reamin>
+	  <reamax>2</reamax>
+	  <reaaug>6</reaaug>
+	  <strmin>0</strmin>
+	  <strmax>0</strmax>
+	  <straug>4</straug>
+	  <chamin>1</chamin>
+	  <chamax>1</chamax>
+	  <chaaug>5</chaaug>
+	  <intmin>1</intmin>
+	  <intmax>1</intmax>
+	  <intaug>5</intaug>
+	  <logmin>2</logmin>
+	  <logmax>2</logmax>
+	  <logaug>6</logaug>
+	  <wilmin>1</wilmin>
+	  <wilmax>1</wilmax>
+	  <wilaug>5</wilaug>
+	  <edgmin>3</edgmin>
+	  <edgmax>3</edgmax>
+	  <edgaug>7</edgaug>
+	  <essmin>6</essmin>
+	  <essmax>6</essmax>
+	  <essaug>10</essaug>
+	  <walk>1/1/0</walk>
+	  <run>2/0/0</run>
+	  <sprint>1/1/0</sprint>
+	  <armor>0</armor>
+	  <skills>
+		<skill rating="6">Climbing</skill>
+		<skill rating="8">Sneaking</skill>
+	  </skills>
+	  <powers>
+		<power select="Thermal">Enhanced Sense</power>
+		<power select="Injection">Venom</power>
+	  </powers>
+	  <bonus>
+		<enabletab>
+		  <name>critter</name>
+		</enabletab>
+	  </bonus>
+	  <source>HS</source>
+	  <page>92</page>
+	</metatype>
+	<metatype>
+	  <id>bd4b7d12-0b18-437d-aa5a-b63ee5616533</id>
+	  <name>Angel Squirrel</name>
+      <category>Mutant Critters</category>
+	  <bodmin>1</bodmin>
+	  <bodmax>1</bodmax>
+	  <bodaug>5</bodaug>
+	  <agimin>5</agimin>
+	  <agimax>5</agimax>
+	  <agiaug>9</agiaug>
+	  <reamin>4</reamin>
+	  <reamax>4</reamax>
+	  <reaaug>8</reaaug>
+	  <strmin>1</strmin>
+	  <strmax>1</strmax>
+	  <straug>5</straug>
+	  <chamin>1</chamin>
+	  <chamax>1</chamax>
+	  <chaaug>5</chaaug>
+	  <intmin>4</intmin>
+	  <intmax>4</intmax>
+	  <intaug>8</intaug>
+	  <logmin>2</logmin>
+	  <logmax>2</logmax>
+	  <logaug>6</logaug>
+	  <wilmin>2</wilmin>
+	  <wilmax>2</wilmax>
+	  <wilaug>6</wilaug>
+	  <edgmin>1</edgmin>
+	  <edgmax>1</edgmax>
+	  <edgaug>5</edgaug>
+	  <magmin>6</magmin>
+	  <magmax>6</magmax>
+	  <magaug>10</magaug>
+	  <essmin>6</essmin>
+	  <essmax>6</essmax>
+	  <essaug>10</essaug>
+	  <walk>1/1/2</walk>
+	  <run>3/0/5</run>
+	  <sprint>1/1/1</sprint>
+	  <armor>1</armor>
+	  <skills>
+		<skill rating="3">Flight</skill>
+		<skill rating="8">Gymnastics</skill>
+		<skill rating="6">Perception</skill>
+		<skill rating="3">Running</skill>
+	  </skills>
+	  <powers>
+		<power select="1">Armor</power>
+		<power>Binding</power>
+		<power select="Hearing, Smell">Enhanced Senses</power>
+	  </powers>
+	  <bonus>
+		<enabletab>
+		  <name>critter</name>
+		</enabletab>
+	  </bonus>
+	  <source>HS</source>
+	  <page>93</page>
+	</metatype>
+
+	<metatype>
+	  <id>34df2bf4-07e3-4576-b8b5-3638fde15c54</id>
+	  <name>Blink Sloth</name>
+      <category>Mutant Critters</category>
+	  <bodmin>6</bodmin>
+	  <bodmax>6</bodmax>
+	  <bodaug>10</bodaug>
+	  <agimin>8</agimin>
+	  <agimax>8</agimax>
+	  <agiaug>12</agiaug>
+	  <reamin>11</reamin>
+	  <reamax>11</reamax>
+	  <reaaug>15</reaaug>
+	  <strmin>5</strmin>
+	  <strmax>5</strmax>
+	  <straug>9</straug>
+	  <chamin>4</chamin>
+	  <chamax>4</chamax>
+	  <chaaug>8</chaaug>
+	  <intmin>5</intmin>
+	  <intmax>5</intmax>
+	  <intaug>9</intaug>
+	  <logmin>1</logmin>
+	  <logmax>1</logmax>
+	  <logaug>5</logaug>
+	  <wilmin>4</wilmin>
+	  <wilmax>4</wilmax>
+	  <wilaug>8</wilaug>
+	  <edgmin>2</edgmin>
+	  <edgmax>2</edgmax>
+	  <edgaug>6</edgaug>
+	  <essmin>6</essmin>
+	  <essmax>6</essmax>
+	  <essaug>10</essaug>
+	  <walk>2/1/0</walk>
+	  <run>6/0/0</run>
+	  <sprint>5*/1/0</sprint>
+	  <armor>4</armor>
+	  <skills>
+		<skill rating="5">Gymnastics</skill>
+		<skill rating="6">Perception</skill>
+		<skill rating="8">Running</skill>
+		<skill rating="4">Sneaking</skill>
+	  </skills>
+	  <powers>
+		<power select="4">Armor</power>
+		<power>Brachiation</power>
+		<power select="Hearing, Smell">Enhanced Senses</power>
+	  </powers>
+	  <bonus>
+		<enabletab>
+		  <name>critter</name>
+		</enabletab>
+	  </bonus>
+	  <source>HS</source>
+	  <page>93</page>
+	</metatype>	
+	
+	<metatype>
       <id>bce587d2-812e-43d6-855d-3b93cd0b4b4a</id>
       <name>Blood Dog</name>
       <category>Mutant Critters</category>
@@ -29264,9 +29437,182 @@
       <source>RW</source>
       <page>163</page>
     </metatype>
+	<metatype>
+	  <id>13ad55bb-acf3-4615-857a-1e9f80c9c0a0</id>
+	  <name>Conway's Cheetah</name>
+	  <category>Mutant Critters</category>
+	  <bodmin>7</bodmin>
+	  <bodmax>7</bodmax>
+	  <bodaug>11</bodaug>
+	  <agimin>8</agimin>
+	  <agimax>8</agimax>
+	  <agiaug>12</agiaug>
+	  <reamin>6</reamin>
+	  <reamax>6</reamax>
+	  <reaaug>10</reaaug>
+	  <strmin>6</strmin>
+	  <strmax>6</strmax>
+	  <straug>10</straug>
+	  <chamin>4</chamin>
+	  <chamax>4</chamax>
+	  <chaaug>8</chaaug>
+	  <intmin>6</intmin>
+	  <intmax>6</intmax>
+	  <intaug>10</intaug>
+	  <logmin>2</logmin>
+	  <logmax>2</logmax>
+	  <logaug>6</logaug>
+	  <wilmin>5</wilmin>
+	  <wilmax>5</wilmax>
+	  <wilaug>9</wilaug>
+	  <edgmin>3</edgmin>
+	  <edgmax>3</edgmax>
+	  <edgaug>7</edgaug>
+	  <magmin>6</magmin>
+	  <magmax>6</magmax>
+	  <magaug>10</magaug>
+	  <essmin>6</essmin>
+	  <essmax>6</essmax>
+	  <essaug>10</essaug>
+	  <walk>2/1/0</walk>
+	  <run>6/0/0</run>
+	  <sprint>5/1/0</sprint>
+	  <armor>6</armor>
+	  <skills>
+		<skill rating="7">Perception</skill>
+		<skill rating="8">Running</skill>
+		<skill rating="5">Sneaking</skill>
+		<skill rating="4">Tracking</skill>
+	  </skills>
+	  <powers>
+		<power select="6">Armor</power>
+		<power select="Hearing, Smell, Motion Detection">Enhanced Senses</power>
+	  </powers>
+	  <bonus>
+		<enabletab>
+		  <name>critter</name>
+		</enabletab>
+	  </bonus>
+	  <source>HS</source>
+	  <page>94</page>
+	</metatype>
+	<metatype>
+	  <id>d3a8a563-9f8c-4c56-89cc-09e0565c108d</id>
+	  <name>Flatworm Viper</name>
+	  <category>Mutant Critters</category>
+	  <bodmin>1</bodmin>
+	  <bodmax>1</bodmax>
+	  <bodaug>5</bodaug>
+	  <agimin>2</agimin>
+	  <agimax>2</agimax>
+	  <agiaug>6</agiaug>
+	  <reamin>2</reamin>
+	  <reamax>2</reamax>
+	  <reaaug>6</reaaug>
+	  <strmin>1</strmin>
+	  <strmax>1</strmax>
+	  <straug>5</straug>
+	  <chamin>1</chamin>
+	  <chamax>1</chamax>
+	  <chaaug>5</chaaug>
+	  <intmin>1</intmin>
+	  <intmax>1</intmax>
+	  <intaug>5</intaug>
+	  <logmin>2</logmin>
+	  <logmax>2</logmax>
+	  <logaug>6</logaug>
+	  <wilmin>1</wilmin>
+	  <wilmax>1</wilmax>
+	  <wilaug>5</wilaug>
+	  <edgmin>3</edgmin>
+	  <edgmax>3</edgmax>
+	  <edgaug>7</edgaug>
+	  <essmin>6</essmin>
+	  <essmax>6</essmax>
+	  <essaug>10</essaug>
+	  <walk>2/1/0</walk>
+	  <run>3/0/0</run>
+	  <sprint>1/1/0</sprint>
+	  <armor>0</armor>
+	  <skills>
+		<skill rating="2">Perception</skill>
+		<skill rating="4">Sneaking</skill>
+		<skill rating="3">Unarmed Combat</skill>
+	  </skills>
+	  <powers>
+		<power select="DV 2P, AP -3">Natural Weapon (Fang)</power>
+		<power select="Contact">Venom</power>
+	  </powers>
+	  <bonus>
+		<enabletab>
+		  <name>critter</name>
+		</enabletab>
+	  </bonus>
+	  <source>HS</source>
+	  <page>95</page>
+	</metatype>
+	<metatype>
+	  <id>b2bae7c6-3570-4bd8-9cb3-277c97dcfb60</id>
+	  <name>Glow Rat</name>
+	  <bodmin>2</bodmin>
+	  <bodmax>2</bodmax>
+	  <bodaug>6</bodaug>
+	  <agimin>5</agimin>
+	  <agimax>5</agimax>
+	  <agiaug>9</agiaug>
+	  <reamin>5</reamin>
+	  <reamax>5</reamax>
+	  <reaaug>9</reaaug>
+	  <strmin>1</strmin>
+	  <strmax>1</strmax>
+	  <straug>5</straug>
+	  <chamin>5</chamin>
+	  <chamax>5</chamax>
+	  <chaaug>9</chaaug>
+	  <intmin>5</intmin>
+	  <intmax>5</intmax>
+	  <intaug>9</intaug>
+	  <logmin>2</logmin>
+	  <logmax>2</logmax>
+	  <logaug>6</logaug>
+	  <wilmin>3</wilmin>
+	  <wilmax>3</wilmax>
+	  <wilaug>7</wilaug>
+	  <edgmin>2</edgmin>
+	  <edgmax>2</edgmax>
+	  <edgaug>6</edgaug>
+	  <magmin>4</magmin>
+	  <magmax>4</magmax>
+	  <magaug>8</magaug>
+	  <essmin>6</essmin>
+	  <essmax>6</essmax>
+	  <essaug>10</essaug>
+	  <walk>1/1/0</walk>
+	  <run>2/0/0</run>
+	  <sprint>1/1/0</sprint>
+	  <armor>2</armor>
+	  <skills>
+		<skill rating="6">Exotic Ranged Weapon (Spit)</skill>
+		<skill rating="5">Gymnastics</skill>
+	  </skills>
+	  <powers>
+		<power select="Mundane Rodents">Animal Control</power>
+		<power select="2">Armor</power>
+		<power>Corrosive Spit</power>
+		<power>Concealment</power>
+	  </powers>
+	  <bonus>
+		<enabletab>
+		  <name>critter</name>
+		</enabletab>
+	  </bonus>
+	  <source>HS</source>
+	  <page>95</page>
+	</metatype>
+	
     <metatype>
       <id>9beb359e-f6c9-41a1-8bd9-cb283133b5ef</id>
-      <name>Hellcow</name>
+      <name>Hellcow (Running Wild)</name>
       <category>Mutant Critters</category>
       <karma>0</karma>
       <bodmin>10</bodmin>
@@ -29337,6 +29683,116 @@
       <source>RW</source>
       <page>163</page>
     </metatype>
+	<metatype>
+	  <id>3429f34a-507f-449d-90d5-c017f03ea57b</id>
+	  <name>Hellcow (Howling Shadows)</name>
+      <category>Mutant Critters</category>
+	  <bodmin>10</bodmin>
+	  <bodmax>10</bodmax>
+	  <bodaug>14</bodaug>
+	  <agimin>3</agimin>
+	  <agimax>3</agimax>
+	  <agiaug>7</agiaug>
+	  <reamin>3</reamin>
+	  <reamax>3</reamax>
+	  <reaaug>7</reaaug>
+	  <strmin>8</strmin>
+	  <strmax>8</strmax>
+	  <straug>12</straug>
+	  <chamin>1</chamin>
+	  <chamax>1</chamax>
+	  <chaaug>5</chaaug>
+	  <intmin>1</intmin>
+	  <intmax>1</intmax>
+	  <intaug>5</intaug>
+	  <logmin>1</logmin>
+	  <logmax>1</logmax>
+	  <logaug>5</logaug>
+	  <wilmin>1</wilmin>
+	  <wilmax>1</wilmax>
+	  <wilaug>5</wilaug>
+	  <edgmin>2</edgmin>
+	  <edgmax>2</edgmax>
+	  <edgaug>6</edgaug>
+	  <essmin>6</essmin>
+	  <essmax>6</essmax>
+	  <essaug>10</essaug>
+	  <walk>2/1/0</walk>
+	  <run>5/0/0</run>
+	  <sprint>4/1/0</sprint>
+	  <armor>10</armor>
+	  <skills>
+		<skill rating="4">Exotic Ranged Weapon (Spit)</skill>
+		<skill rating="4">Perception</skill>
+		<skill rating="4">Running</skill>
+		<skill rating="7">Unarmed Combat</skill>
+	  </skills>
+	  <powers>
+		<power select="10">Armor</power>
+		<power>Corrosive Spit</power>
+		<power select="Pathogens">Immunity</power>
+	  </powers>
+	  <bonus>
+		<enabletab>
+		  <name>critter</name>
+		</enabletab>
+	  </bonus>
+	  <source>HS</source>
+	  <page>96</page>
+	</metatype>
+<metatype>
+  <id>1ea62c11-a60f-40af-971c-0a421ce8337a</id>
+  <name>Iridescent Owl</name>
+  <category>Mutant Critters</category>
+  <bodmin>4</bodmin>
+  <bodmax>4</bodmax>
+  <bodaug>8</bodaug>
+  <agimin>6</agimin>
+  <agimax>6</agimax>
+  <agiaug>10</agiaug>
+  <reamin>5</reamin>
+  <reamax>5</reamax>
+  <reaaug>9</reaaug>
+  <strmin>3</strmin>
+  <strmax>3</strmax>
+  <straug>7</straug>
+  <chamin>5</chamin>
+  <chamax>5</chamax>
+  <chaaug>9</chaaug>
+  <intmin>4</intmin>
+  <intmax>4</intmax>
+  <intaug>8</intaug>
+  <logmin>2</logmin>
+  <logmax>2</logmax>
+  <logaug>6</logaug>
+  <wilmin>6</wilmin>
+  <wilmax>6</wilmax>
+  <wilaug>10</wilaug>
+  <edgmin>3</edgmin>
+  <edgmax>3</edgmax>
+  <edgaug>7</edgaug>
+  <essmin>6</essmin>
+  <essmax>6</essmax>
+  <essaug>10</essaug>
+  <walk>3/1/0</walk>
+  <run>5/0/0</run>
+  <sprint>5/1/0</sprint>
+  <armor>6H</armor>
+  <skills>
+    <skill rating="5">Exotic Ranged Weapon (Feathers)</skill>
+    <skill rating="6">Flight</skill>
+  </skills>
+  <powers>
+    <power select="Hearing">Enhanced Senses</power>
+  </powers>
+  <bonus>
+    <enabletab>
+      <name>critter</name>
+    </enabletab>
+  </bonus>
+  <source>HS</source>
+  <page>97</page>
+</metatype>
     <metatype>
       <id>48051ad0-a30d-4182-9d4b-32d5ee52c384</id>
       <name>Lab Rat</name>

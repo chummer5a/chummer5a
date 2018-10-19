@@ -38,7 +38,6 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            MoveControls();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -68,8 +67,7 @@ namespace Chummer
             string strName = txtName.Text;
             if (XmlManager.Load("packs.xml", GlobalOptions.Language).SelectSingleNode("/chummer/packs/pack[name = " + strName.CleanXPath() + " and category = \"Custom\"]") != null)
             {
-                MessageBox.Show(
-                    LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName", GlobalOptions.Language).Replace("{0}", strName),
+                MessageBox.Show(string.Format(LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName", GlobalOptions.Language), strName),
                     LanguageManager.GetString("MessageTitle_CreatePACKSKit_DuplicateName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -714,7 +712,8 @@ namespace Chummer
             objWriter.WriteEndDocument();
             objWriter.Close();
 
-            MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_SuiteCreated", GlobalOptions.Language).Replace("{0}", txtName.Text), LanguageManager.GetString("MessageTitle_CreatePACKSKit_SuiteCreated", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(string.Format(LanguageManager.GetString("Message_CreatePACKSKit_SuiteCreated", GlobalOptions.Language), txtName.Text),
+                LanguageManager.GetString("MessageTitle_CreatePACKSKit_SuiteCreated", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
             DialogResult = DialogResult.OK;
         }
 
@@ -759,15 +758,6 @@ namespace Chummer
             }
             // </gears>
             objWriter.WriteEndElement();
-        }
-
-        private void MoveControls()
-        {
-            int intWidth = Math.Max(lblNameLabel.Width, lblFileNameLabel.Width);
-            txtName.Left = lblNameLabel.Left + intWidth + 6;
-            txtName.Width = Width - txtName.Left - 19;
-            txtFileName.Left = lblFileNameLabel.Left + intWidth + 6;
-            txtFileName.Width = Width - txtFileName.Left - 19;
         }
 #endregion
     }

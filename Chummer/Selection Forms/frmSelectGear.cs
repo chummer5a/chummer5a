@@ -45,7 +45,6 @@ namespace Chummer
         private static string s_StrSelectCategory = string.Empty;
         private bool _blnShowPositiveCapacityOnly;
         private bool _blnShowNegativeCapacityOnly;
-        private bool _blnShowArmorCapacityOnly;
         private bool _blnBlackMarketDiscount;
         private CapacityStyle _eCapacityStyle = CapacityStyle.Standard;
 
@@ -96,7 +95,7 @@ namespace Chummer
             }
             else
             {
-                chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
+                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
 
@@ -411,11 +410,7 @@ namespace Chummer
         /// <summary>
         /// Only items that consume Armor Capacity should be shown.
         /// </summary>
-        public bool ShowArmorCapacityOnly
-        {
-            get => _blnShowArmorCapacityOnly;
-            set => _blnShowArmorCapacityOnly = value;
-        }
+        public bool ShowArmorCapacityOnly { get; set; }
 
         /// <summary>
         /// Guid of Gear that was selected in the dialogue.

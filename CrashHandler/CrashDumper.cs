@@ -234,7 +234,6 @@ namespace CrashHandler
 
 				if (extraInfo)
 				{
-					dtype |= 0;
 					ret = !(NativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle?.DangerousGetHandle() ?? IntPtr.Zero,
 						dtype, ref info, IntPtr.Zero, IntPtr.Zero));
 

@@ -222,6 +222,7 @@ namespace Chummer
             }
 
             objWriter.WriteEndElement();
+
             _objCharacter.SourceProcess(_strSource);
         }
 
