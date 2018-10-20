@@ -57,7 +57,7 @@ namespace Chummer
                     }
                 }
                 else if (objGear.Location != null)
-                    strName += " (" + objGear.Location.DisplayName(GlobalOptions.Language) + ')';
+                    strName += strSpace + '(' + objGear.Location.DisplayName(GlobalOptions.Language) + ')';
                 
                 // Retrieve the plugin information if it has any.
                 if (objGear.Children.Count > 0)

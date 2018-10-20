@@ -284,7 +284,7 @@ namespace Chummer.Backend.Skills
             if (!string.IsNullOrWhiteSpace(strNameToUse))
             {
                 if (this is ExoticSkill objThisAsExoticSkill)
-                    strNameToUse += " (" + objThisAsExoticSkill.Specific + ')';
+                    strNameToUse += LanguageManager.GetString("String_Space", GlobalOptions.Language) + " (" + objThisAsExoticSkill.Specific + ')';
                 if (string.IsNullOrEmpty(strUseAttribute))
                     strUseAttribute = Attribute;
                 foreach (Improvement objImprovement in CharacterObject.Improvements)

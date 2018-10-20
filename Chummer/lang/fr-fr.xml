@@ -140,6 +140,10 @@
 			<key>Label_LP</key>
 			<text>LP:</text>
 		</string>
+    <string>
+			<key>String_KarmaRemaining</key>
+			<text>Karma restant</text>
+		</string>
 		<string>
 			<key>Label_KarmaRemaining</key>
 			<text>Karma restant :</text>
@@ -3743,6 +3747,10 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<key>Label_OtherEssence</key>
 			<text>Essence :</text>
 		</string>
+    <string>
+      <key>String_NuyenRemaining</key>
+      <text>Nuyens restants</text>
+    </string>
 		<string>
 			<key>Label_OtherNuyenRemain</key>
 			<text>Nuyens restants :</text>

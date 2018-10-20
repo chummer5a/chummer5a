@@ -1772,6 +1772,12 @@ namespace Chummer
                 case ImprovementType.FocusBindingKarmaMultiplier:
                     break;
                 case ImprovementType.MagiciansWayDiscount:
+                {
+                    foreach (Power objLoopPower in _objCharacter.Powers.Where(x => x.AdeptWayDiscount != 0))
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objLoopPower, nameof(Power.AdeptWayDiscountEnabled));
+                    }
+                }
                     break;
                 case ImprovementType.BurnoutsWay:
                     break;
@@ -2950,7 +2956,7 @@ namespace Chummer
                         s_StrSelectedValue = frmPickText.SelectedValue;
                     }
                     if (blnConcatSelectedValue)
-                        strSourceName += " (" + SelectedValue + ')';
+                        strSourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
                     Log.Info("_strSelectedValue = " + SelectedValue);
                     Log.Info("strSourceName = " + strSourceName);
 
@@ -3299,12 +3305,6 @@ namespace Chummer
                             DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.AIProgram && x.SourceName == objProgram.InternalId && x.Enabled).ToList());
                         }
                         break;
-                    case Improvement.ImprovementType.MagiciansWayDiscount:
-                        foreach (Power objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
-                        {
-                            objLoopPower.RefreshDiscountedAdeptWay(objLoopPower.AdeptWayDiscountEnabled);
-                        }
-                        break;
                     case Improvement.ImprovementType.FreeWare:
                         {
                             Cyberware objCyberware = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == objImprovement.ImprovedName);
@@ -3594,12 +3594,6 @@ namespace Chummer
                         if (objProgram != null)
                         {
                             DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.AIProgram && x.SourceName == objProgram.InternalId && x.Enabled).ToList());
-                        }
-                        break;
-                    case Improvement.ImprovementType.MagiciansWayDiscount:
-                        foreach (Power objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
-                        {
-                            objLoopPower.RefreshDiscountedAdeptWay(objLoopPower.AdeptWayDiscountEnabled);
                         }
                         break;
                     case Improvement.ImprovementType.FreeWare:
@@ -3976,12 +3970,6 @@ namespace Chummer
                             objImprovedPower.OnPropertyChanged(nameof(objImprovedPower.TotalRating));
                             objImprovedPower.OnPropertyChanged(objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels
                                 ? nameof(Power.FreeLevels) : nameof(Power.FreePoints));
-                        }
-                        break;
-                    case Improvement.ImprovementType.MagiciansWayDiscount:
-                        foreach (Power objLoopPower in objCharacter.Powers.Where(x => x.DiscountedAdeptWay))
-                        {
-                            objLoopPower.RefreshDiscountedAdeptWay(objLoopPower.AdeptWayDiscountEnabled);
                         }
                         break;
                     case Improvement.ImprovementType.FreeWare:

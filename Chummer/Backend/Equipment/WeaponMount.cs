@@ -635,10 +635,10 @@ namespace Chummer.Backend.Equipment
                 // Run through the Vehicle Mods and add in their availability.
                 foreach (VehicleMod objVehicleMod in Mods)
                 {
-                    if (!objVehicleMod.IncludedInVehicle)
+                    if (!objVehicleMod.IncludedInVehicle && objVehicleMod.Equipped)
                     {
                         AvailabilityValue objLoopAvailTuple = objVehicleMod.TotalAvailTuple();
-                        //if (objLoopAvailTuple.Item3)
+                        if (objLoopAvailTuple.AddToParent)
                             intAvail += objLoopAvailTuple.Value;
                         if (objLoopAvailTuple.Suffix == 'F')
                             chrLastAvailChar = 'F';

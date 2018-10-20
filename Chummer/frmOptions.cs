@@ -540,6 +540,7 @@ namespace Chummer
             }
 
             PopulatePDFParameters();
+            PopulateCustomDataDirectoryTreeView();
         }
 
         private void RefreshGlobalSourcebookInfosListView()
@@ -619,7 +620,7 @@ namespace Chummer
                 {
                     TreeNode objNode = new TreeNode
                     {
-                        Text = objCustomDataDirectory.Name + " (" + objCustomDataDirectory.Path.Replace(Application.StartupPath, '<' + Application.ProductName + '>') + ')',
+                        Text = objCustomDataDirectory.Name + LanguageManager.GetString("String_Space", _strSelectedLanguage) + '(' + objCustomDataDirectory.Path.Replace(Application.StartupPath, '<' + Application.ProductName + '>') + ')',
                         Tag = objCustomDataDirectory.Name,
                         Checked = objCustomDataDirectory.Enabled
                     };
@@ -632,7 +633,7 @@ namespace Chummer
                 {
                     TreeNode objLoopNode = treCustomDataDirectories.Nodes[i];
                     CustomDataDirectoryInfo objLoopInfo = _lstCustomDataDirectoryInfos[i];
-                    objLoopNode.Text = objLoopInfo.Name + " (" + objLoopInfo.Path.Replace(Application.StartupPath, '<' + Application.ProductName + '>') + ')';
+                    objLoopNode.Text = objLoopInfo.Name + LanguageManager.GetString("String_Space", _strSelectedLanguage) + '(' + objLoopInfo.Path.Replace(Application.StartupPath, '<' + Application.ProductName + '>') + ')';
                     objLoopNode.Tag = objLoopInfo.Name;
                     objLoopNode.Checked = objLoopInfo.Enabled;
                 }
@@ -1389,7 +1390,7 @@ namespace Chummer
             // (hidden because they are partial templates that cannot be used on their own).
             foreach (string fileName in ReadXslFileNamesWithoutExtensionFromDirectory(omaeDirectoryPath))
             {
-                lstItems.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + ": " + fileName));
+                lstItems.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + LanguageManager.GetString("String_Colon", strLanguage) + LanguageManager.GetString("String_Space", strLanguage) + fileName));
             }
 
             return lstItems;

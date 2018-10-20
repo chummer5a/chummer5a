@@ -46,10 +46,13 @@ namespace Chummer.UI.Shared
             this.cmsLimitModifier = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tssLimitModifierEdit = new System.Windows.Forms.ToolStripMenuItem();
             this.tssLimitModifierNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsLimitModifierNotesOnly = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tssLimitModifierNotesOnlyNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.flowButtons.SuspendLayout();
             this.tlpParent.SuspendLayout();
             this.tableDetails.SuspendLayout();
             this.cmsLimitModifier.SuspendLayout();
+            this.cmsLimitModifierNotesOnly.SuspendLayout();
             this.SuspendLayout();
             // 
             // treLimit
@@ -63,6 +66,7 @@ namespace Chummer.UI.Shared
             this.treLimit.ShowRootLines = false;
             this.treLimit.Size = new System.Drawing.Size(295, 391);
             this.treLimit.TabIndex = 91;
+            this.treLimit.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treLimit_AfterSelect);
             this.treLimit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treLimit_KeyDown);
             // 
             // flowButtons
@@ -93,6 +97,7 @@ namespace Chummer.UI.Shared
             // cmdDeleteLimitModifier
             // 
             this.cmdDeleteLimitModifier.AutoSize = true;
+            this.cmdDeleteLimitModifier.Enabled = false;
             this.cmdDeleteLimitModifier.Location = new System.Drawing.Point(114, 3);
             this.cmdDeleteLimitModifier.Name = "cmdDeleteLimitModifier";
             this.cmdDeleteLimitModifier.Size = new System.Drawing.Size(80, 23);
@@ -263,6 +268,22 @@ namespace Chummer.UI.Shared
             this.tssLimitModifierNotes.Text = "&Notes";
             this.tssLimitModifierNotes.Click += new System.EventHandler(this.tssLimitModifierNotes_Click);
             // 
+            // cmsLimitModifierNotesOnly
+            // 
+            this.cmsLimitModifierNotesOnly.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tssLimitModifierNotesOnlyNotes});
+            this.cmsLimitModifierNotesOnly.Name = "cmsLimitModifier";
+            this.cmsLimitModifierNotesOnly.Size = new System.Drawing.Size(181, 48);
+            // 
+            // tssLimitModifierNotesOnlyNotes
+            // 
+            this.tssLimitModifierNotesOnlyNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tssLimitModifierNotesOnlyNotes.Name = "tssLimitModifierNotesOnlyNotes";
+            this.tssLimitModifierNotesOnlyNotes.Size = new System.Drawing.Size(180, 22);
+            this.tssLimitModifierNotesOnlyNotes.Tag = "Menu_Notes";
+            this.tssLimitModifierNotesOnlyNotes.Text = "&Notes";
+            this.tssLimitModifierNotesOnlyNotes.Click += new System.EventHandler(this.tssLimitModifierNotes_Click);
+            // 
             // LimitTabUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -278,6 +299,7 @@ namespace Chummer.UI.Shared
             this.tableDetails.ResumeLayout(false);
             this.tableDetails.PerformLayout();
             this.cmsLimitModifier.ResumeLayout(false);
+            this.cmsLimitModifierNotesOnly.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -301,5 +323,7 @@ namespace Chummer.UI.Shared
         private System.Windows.Forms.ContextMenuStrip cmsLimitModifier;
         private System.Windows.Forms.ToolStripMenuItem tssLimitModifierEdit;
         private System.Windows.Forms.ToolStripMenuItem tssLimitModifierNotes;
+        private System.Windows.Forms.ContextMenuStrip cmsLimitModifierNotesOnly;
+        private System.Windows.Forms.ToolStripMenuItem tssLimitModifierNotesOnlyNotes;
     }
 }

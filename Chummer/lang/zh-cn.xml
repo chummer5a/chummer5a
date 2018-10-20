@@ -155,6 +155,10 @@
 			<key>Label_LP</key>
 			<text>生活方式点数：</text>
 		</string>
+    <string>
+			<key>String_KarmaRemaining</key>
+			<text>剩余业力</text>
+		</string>
 		<string>
 			<key>Label_KarmaRemaining</key>
 			<text>剩余业力：</text>
@@ -3595,6 +3599,10 @@
 			<key>Label_OtherEssence</key>
 			<text>精华：</text>
 		</string>
+    <string>
+      <key>String_NuyenRemaining</key>
+      <text>剩余新円</text>
+    </string>
 		<string>
 			<key>Label_OtherNuyenRemain</key>
 			<text>剩余新円：</text>

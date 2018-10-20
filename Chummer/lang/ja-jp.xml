@@ -135,6 +135,10 @@
     <text>カルマ：</text>
   </string>
     <string>
+      <key>String_KarmaRemaining</key>
+      <text>残りカルマ</text>
+    </string>
+    <string>
       <key>Label_KarmaRemaining</key>
       <text>残りカルマ：</text>
     </string>
@@ -3747,6 +3751,10 @@
     <string>
       <key>Label_OtherEssence</key>
       <text>エッセンス：</text>
+    </string>
+    <string>
+      <key>String_NuyenRemaining</key>
+      <text>残り新円</text>
     </string>
     <string>
       <key>Label_OtherNuyenRemain</key>

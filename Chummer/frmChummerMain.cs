@@ -1428,5 +1428,15 @@ namespace Chummer
 
             Properties.Settings.Default.Save();
         }
+
+        private void mnuHeroLabImporter_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show(LanguageManager.GetString("Message_HeroLabImporterWarning", GlobalOptions.Language),
+                    LanguageManager.GetString("Message_HeroLabImporterWarning_Title", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                return;
+
+            frmHeroLabImporter frmHeroLabImporter = new frmHeroLabImporter();
+            frmHeroLabImporter.Show();
+        }
     }
 }
