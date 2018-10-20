@@ -8353,6 +8353,7 @@
       <source>HT</source>
       <page>178</page>
       <allowaccessory>False</allowaccessory>
+      <ammocategory>Shotguns</ammocategory>
       <hide />
       <spec>Revolvers</spec>
     </weapon>

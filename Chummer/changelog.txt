@@ -156,6 +156,7 @@ Data Changes:
 - Fixed a rare crash that would happen on startup if/when different loading theads would collide with one another while performing initial loading.
 - Fixed an issue where Combat Sense could not get discounted from The Invisible Way. Fixes #3098.
 - Fixed incorrect spell type for the Powerblade spell.
+- Fixed incorrect incorrect ammo category for the Lemat 2072's shotgun barrel.
 
 New Strings:
 
