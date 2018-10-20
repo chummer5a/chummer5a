@@ -8622,8 +8622,9 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
+      <ammocategory>Assault Rifles</ammocategory>
       <range>Submachine Guns</range>
-	  <spec>Submachine Guns</spec>
+      <spec>Submachine Guns</spec>
       <useskill>Automatics</useskill>
     </weapon>
     <weapon>
@@ -11291,6 +11292,7 @@
       </accessories>
       <source>SAG</source>
       <page>26</page>
+      <ammocategory>Assault Rifles</ammocategory>
     </weapon>
     <weapon>
       <id>d7af2bf4-28f3-4b7d-96d3-90017145d0d0</id>
