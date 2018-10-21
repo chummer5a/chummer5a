@@ -3569,6 +3569,17 @@ namespace Chummer.Backend.Equipment
                             intDicePool = objAutosoft.Rating + ParentVehicle.Pilot;
                         }
 
+                        if (WeaponAccessories.FirstOrDefault(accessory => accessory.Name.StartsWith("Smartgun") && accessory.WirelessOn) != null)
+                        {
+                            Gear objSmartlink =
+                                ParentVehicle.Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "Smartsoft");
+
+                            if (objSmartlink != null)
+                            {
+                                intDicePoolModifier++;
+                            }
+                        }
+
                         string strWeaponBonusPool = ParentVehicle.Gear.DeepFindById(AmmoLoaded)?.WeaponBonus?["pool"]?.InnerText;
                         if (!string.IsNullOrEmpty(strWeaponBonusPool))
                             intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
@@ -3580,6 +3591,13 @@ namespace Chummer.Backend.Equipment
                         string strWeaponBonusPool = ParentVehicle.Gear.DeepFindById(AmmoLoaded)?.WeaponBonus?["pool"]?.InnerText;
                         if (!string.IsNullOrEmpty(strWeaponBonusPool))
                             intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
+
+                        if (WeaponAccessories.FirstOrDefault(accessory => accessory.Name.StartsWith("Smartgun") && accessory.WirelessOn) != null)
+                        {
+                            intDicePoolModifier +=
+                                ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
+                        }
+
                         intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
                         break;
                     }
@@ -3589,6 +3607,13 @@ namespace Chummer.Backend.Equipment
                         string strWeaponBonusPool = ParentVehicle.Gear.DeepFindById(AmmoLoaded)?.WeaponBonus?["pool"]?.InnerText;
                         if (!string.IsNullOrEmpty(strWeaponBonusPool))
                             intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
+
+                        if (WeaponAccessories.FirstOrDefault(accessory => accessory.Name.StartsWith("Smartgun") && accessory.WirelessOn) != null)
+                        {
+                            intDicePoolModifier +=
+                                ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
+                        }
+
                         intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
                         break;
                     }
@@ -3598,6 +3623,13 @@ namespace Chummer.Backend.Equipment
                         string strWeaponBonusPool = ParentVehicle.Gear.DeepFindById(AmmoLoaded)?.WeaponBonus?["pool"]?.InnerText;
                         if (!string.IsNullOrEmpty(strWeaponBonusPool))
                             intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
+
+                        if (WeaponAccessories.FirstOrDefault(accessory => accessory.Name.StartsWith("Smartgun") && accessory.WirelessOn) != null)
+                        {
+                            intDicePoolModifier +=
+                                ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
+                        }
+
                         intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
                         break;
                     }
@@ -3618,6 +3650,13 @@ namespace Chummer.Backend.Equipment
                         string strWeaponBonusPool = _objCharacter.Gear.DeepFindById(AmmoLoaded)?.WeaponBonus?["pool"]?.InnerText;
                         if (!string.IsNullOrEmpty(strWeaponBonusPool))
                             intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
+
+                        if (WeaponAccessories.FirstOrDefault(accessory => accessory.Name.StartsWith("Smartgun") && accessory.WirelessOn) != null)
+                        {
+                            intDicePoolModifier +=
+                                ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
+                        }
+
                         intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
                         break;
                     }

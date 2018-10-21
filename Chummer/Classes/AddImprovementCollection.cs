@@ -3490,7 +3490,8 @@ namespace Chummer.Classes
             Log.Info("smartlink");
             Log.Info("smartlink = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Smartlink, "smartlink");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Smartlink,
+                "smartlink", ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
         // Check for Adapsin bonus.

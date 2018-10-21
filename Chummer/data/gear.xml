@@ -7053,7 +7053,7 @@
       <avail>+4R</avail>
       <armorcapacity>[1]</armorcapacity>
       <bonus>
-        <smartlink />
+        <smartlink>1</smartlink>
       </bonus>
       <capacity>[1]</capacity>
       <requireparent />
@@ -16345,7 +16345,7 @@
       <page>189</page>
       <avail>3R</avail>
       <bonus>
-        <smartlink />
+        <smartlink>1</smartlink>
       </bonus>
       <capacity>2</capacity>
       <cost>3000</cost>
