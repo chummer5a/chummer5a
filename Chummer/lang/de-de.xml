@@ -9421,7 +9421,7 @@
 		</string>
 		<string>
 			<key>Checkbox_DiceRoller_BubbleDie</key>
-			<text>Scheinwürfel (egalisiert Patzerwahrscheinlichkeit bei geradzahligen Würfeln)</text>
+			<text>Scheinwürfel (egalisiert Patzerwahrscheinlichkeit bei gerader Anzahl von Würfeln)</text>
 		</string>
 	</strings>
 </chummer>
