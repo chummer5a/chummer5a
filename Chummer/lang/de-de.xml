@@ -5667,7 +5667,7 @@
 		</string>
 		<string>
 			<key>Checkbox_IllusionSpell5</key>
-			<text>Illusion Hides or Conceals</text>
+			<text>Illusion verstecken oder verbergen</text>
 		</string>
 		<string>
 			<key>Checkbox_ManipulationSpell1</key>
@@ -7055,7 +7055,7 @@
 		</string>
 		<string>
 			<key>Label_AdeptWayDiscount</key>
-			<text>Bonded Foci Qualifying for Adept Way Discount:</text>
+			<text>Zur Kostensenkung vorgesehene gebundene Foki des beschrittenen Adeptenweges:</text>
 		</string>
 		<string>
 			<key>Label_SummaryEssence</key>
@@ -9093,7 +9093,7 @@
 		</string>
 		<string>
 			<key>String_UI</key>
-			<text>UI</text>
+			<text>Oberfläche</text>
 		</string>
 		<string>
 			<key>Button_ApplyManeuver</key>
@@ -9410,6 +9410,18 @@
 		<string>
 			<key>String_ImportCharacter</key>
 			<text>Charakter importieren</text>
+		</string>
+		<string>
+			<key>String_AttributeDEPShort</key>
+			<text>MCH</text>
+		</string>
+		<string>
+			<key>Menu_Main_HeroLabImporter</key>
+			<text>Hero Lab Importierer</text>
+		</string>
+		<string>
+			<key>Checkbox_DiceRoller_BubbleDie</key>
+			<text>Scheinwürfel (egalisiert Patzerwahrscheinlichkeit bei gerader Anzahl von Würfeln)</text>
 		</string>
 	</strings>
 </chummer>
