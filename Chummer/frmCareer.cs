@@ -13276,8 +13276,8 @@ namespace Chummer
                     cboCyberwareOverclocker.SelectedValue = objGear.Overclocked;
                     if (cboCyberwareOverclocker.SelectedIndex == -1)
                         cboCyberwareOverclocker.SelectedIndex = 0;
-                    cboCyberwareOverclocker.Visible = true;
                     cboCyberwareOverclocker.EndUpdate();
+                    cboCyberwareOverclocker.Visible = true;
                     lblCyberwareOverclockerLabel.Visible = true;
                 }
                 else
@@ -14065,38 +14065,6 @@ namespace Chummer
 
 
                 // gpbGearMatrix
-                cboGearOverclocker.BeginUpdate();
-                if (CharacterObject.Overclocker && objGear.Category == "Cyberdecks")
-                {
-                    List<ListItem> lstOverclocker = new List<ListItem>
-                        {
-                            new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language)),
-                            new ListItem("Attack", LanguageManager.GetString("String_Attack", GlobalOptions.Language)),
-                            new ListItem("Sleaze", LanguageManager.GetString("String_Sleaze", GlobalOptions.Language)),
-                            new ListItem("Data Processing",
-                                LanguageManager.GetString("String_DataProcessing", GlobalOptions.Language)),
-                            new ListItem("Firewall",
-                                LanguageManager.GetString("String_Firewall", GlobalOptions.Language))
-                        };
-
-                    cboGearOverclocker.BeginUpdate();
-                    cboGearOverclocker.DataSource = null;
-                    cboGearOverclocker.DisplayMember = nameof(ListItem.Name);
-                    cboGearOverclocker.ValueMember = nameof(ListItem.Value);
-                    cboGearOverclocker.DataSource = lstOverclocker;
-                    cboGearOverclocker.SelectedValue = objGear.Overclocked;
-                    if (cboGearOverclocker.SelectedIndex == -1)
-                        cboGearOverclocker.SelectedIndex = 0;
-                    cboGearOverclocker.Visible = true;
-                    cboGearOverclocker.EndUpdate();
-                    lblGearOverclockerLabel.Visible = true;
-                }
-                else
-                {
-                    cboGearOverclocker.Visible = false;
-                    lblGearOverclockerLabel.Visible = false;
-                }
-                
                 int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
                 lblGearDeviceRating.Text = intDeviceRating.ToString();
                 objGear.RefreshMatrixAttributeCBOs(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
@@ -14112,6 +14080,37 @@ namespace Chummer
                     chkGearHomeNode.Visible = false;
                 chkGearActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
                 chkGearActiveCommlink.Visible = objGear.IsCommlink;
+                cboGearOverclocker.BeginUpdate();
+                if (CharacterObject.Overclocker && objGear.Category == "Cyberdecks")
+                {
+                    List<ListItem> lstOverclocker = new List<ListItem>
+                    {
+                        new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language)),
+                        new ListItem("Attack", LanguageManager.GetString("String_Attack", GlobalOptions.Language)),
+                        new ListItem("Sleaze", LanguageManager.GetString("String_Sleaze", GlobalOptions.Language)),
+                        new ListItem("Data Processing",
+                            LanguageManager.GetString("String_DataProcessing", GlobalOptions.Language)),
+                        new ListItem("Firewall",
+                            LanguageManager.GetString("String_Firewall", GlobalOptions.Language))
+                    };
+
+                    cboGearOverclocker.BeginUpdate();
+                    cboGearOverclocker.DataSource = null;
+                    cboGearOverclocker.DisplayMember = nameof(ListItem.Name);
+                    cboGearOverclocker.ValueMember = nameof(ListItem.Value);
+                    cboGearOverclocker.DataSource = lstOverclocker;
+                    cboGearOverclocker.SelectedValue = objGear.Overclocked;
+                    if (cboGearOverclocker.SelectedIndex == -1)
+                        cboGearOverclocker.SelectedIndex = 0;
+                    cboGearOverclocker.EndUpdate();
+                    cboGearOverclocker.Visible = true;
+                    lblGearOverclockerLabel.Visible = true;
+                }
+                else
+                {
+                    cboGearOverclocker.Visible = false;
+                    lblGearOverclockerLabel.Visible = false;
+                }
 
                 treGear.SelectedNode.Text = objGear.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
@@ -17100,6 +17099,11 @@ namespace Chummer
                 objAttributeControl.Width = pnlAttributes.ClientSize.Width;
             }
             pnlAttributes.ResumeLayout();
+        }
+
+        private void cboGearOverclocker_SizeChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
