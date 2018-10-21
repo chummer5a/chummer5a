@@ -8127,7 +8127,6 @@
       <limit>False</limit>
       <category>Headware</category>
       <ess>0.15</ess>
-      <capacity>0</capacity>
       <avail>4</avail>
       <cost>Rating*3500</cost>
       <rating>3</rating>

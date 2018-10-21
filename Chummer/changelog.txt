@@ -164,6 +164,7 @@ Data Changes:
 - Fixed incorrect weapon mount entries for the EMC 2073 Catcher.
 - Fixed incorrect incorrect ammo category for the Lemat 2072's shotgun barrel.
 - Fixed incorrect ammo categories for the MP75 and HK 223C.
+- Fixed a crash when attempting to add programs to the Datajack Plus.
 
 New Strings:
 
