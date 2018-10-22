@@ -481,8 +481,6 @@ namespace Chummer
                     {
                         int intDV = Convert.ToInt32(Math.Floor(Convert.ToDouble(xprResult.ToString(), GlobalOptions.InvariantCultureInfo)));
 
-<<<<<<< HEAD
-=======
                         // Drain cannot be lower than 2.
                         if (intDV < 2)
                             intDV = 2;
@@ -493,7 +491,6 @@ namespace Chummer
                         {
                             strTip.Append($"{strSpaceCharacter}({LanguageManager.GetString("String_SpellLimited", GlobalOptions.Language)}{strSpaceCharacter}:{strSpaceCharacter}-2");
                         }
->>>>>>> master
                         if (Extended && !Name.EndsWith("Extended"))
                         {
                             strTip.Append($"{strSpaceCharacter}({LanguageManager.GetString("String_SpellExtended", GlobalOptions.Language)}{strSpaceCharacter}:{strSpaceCharacter}+2");

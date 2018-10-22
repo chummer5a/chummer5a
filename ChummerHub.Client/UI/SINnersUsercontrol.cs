@@ -14,10 +14,16 @@ using Microsoft.Rest;
 using System.Net.Http;
 using SINners;
 using ChummerHub.Client.Backend;
+using System.Composition;
 
 namespace ChummerHub.Client.UI
 {
-    public partial class SINnersUsercontrol : UserControl
+    [Export(typeof(IControl))]
+    [ExportMetadata("Name", "SINnersUsercontrol")]
+    [ExportMetadata("frmCareer", "true")]
+    [ExportMetadata("frmCreate", "false")]
+    [ExportMetadata("Menu", "false")]
+    public partial class SINnersUsercontrol : UserControl, ISINnersUsercontrol
     {
         
         private CharacterShared _mySINner = null;
