@@ -42,18 +42,14 @@ namespace Chummer
 
         public static Version CachedGitVersion { get; set; }
 
-        //static Utils()
-        //{
-        //    string testAssemblyName = "Microsoft.TestPlatform.PlatformAbstractions";//"Microsoft.VisualStudio.QualityTools.UnitTestFramework";
-        //    var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-        //    var proc = Process.GetCurrentProcess().ProcessName;
-        //    Utils.IsUnitTest = assemblies.Any(a => a.FullName.StartsWith(testAssemblyName));
-        //    if (Utils.IsUnitTest == false)
-        //    {
-        //        Debugger.Break();
-        //    }
-        //}
+        /// <summary>
+        /// This property is set in the Constructor of frmChummerMain (and NO where else!)
+        /// </summary>
         public static bool IsUnitTest { get; set; }
+
+        /// <summary>
+        /// Returns the actuall path of the Chummer-Directory regardless of running as Unit test or not.
+        /// </summary>
 
         public static string GetStartupPath
         {
