@@ -162,7 +162,7 @@ namespace Chummer
                 imgLink.SetToolTip(LanguageManager.GetString("Tip_Contact_OpenFile", GlobalOptions.Language));
 
                 // Set the relative path.
-                Uri uriApplication = new Uri(Application.StartupPath);
+                Uri uriApplication = new Uri(Utils.GetStartupPath);
                 Uri uriFile = new Uri(_objContact.FileName);
                 Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
                 _objContact.RelativeFileName = "../" + uriRelative.ToString();

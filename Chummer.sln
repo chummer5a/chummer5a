@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Textblock-Converter", "Text
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Translator", "Translator\Translator.csproj", "{B65D0252-6BCB-4901-9CA6-856EF785DF8D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chummer.Tests", "Chummer.Tests\Chummer.Tests.csproj", "{8C20E7FA-9C93-42A9-A969-C3F5BDF093EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +76,14 @@ Global
 		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Release|Any CPU.Build.0 = Release|x86
 		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Release|x86.ActiveCfg = Release|x86
 		{B65D0252-6BCB-4901-9CA6-856EF785DF8D}.Release|x86.Build.0 = Release|x86
+		{8C20E7FA-9C93-42A9-A969-C3F5BDF093EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C20E7FA-9C93-42A9-A969-C3F5BDF093EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C20E7FA-9C93-42A9-A969-C3F5BDF093EA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8C20E7FA-9C93-42A9-A969-C3F5BDF093EA}.Debug|x86.Build.0 = Debug|Any CPU
+		{8C20E7FA-9C93-42A9-A969-C3F5BDF093EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C20E7FA-9C93-42A9-A969-C3F5BDF093EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C20E7FA-9C93-42A9-A969-C3F5BDF093EA}.Release|x86.ActiveCfg = Release|Any CPU
+		{8C20E7FA-9C93-42A9-A969-C3F5BDF093EA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

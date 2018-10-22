@@ -339,7 +339,7 @@ namespace Chummer
             if (Utils.IsDesignerMode)
                 return;
 
-            string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
+            string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
             if (!Directory.Exists(settingsDirectoryPath))
             {
                 try
@@ -806,7 +806,7 @@ namespace Chummer
                         string strPath = string.Empty;
                         object objRegistryResult = objLoopKey.GetValue("Path");
                         if (objRegistryResult != null)
-                            strPath = objRegistryResult.ToString().Replace("$CHUMMER", Application.StartupPath);
+                            strPath = objRegistryResult.ToString().Replace("$CHUMMER", Utils.GetStartupPath);
                         if (!string.IsNullOrEmpty(strPath) && Directory.Exists(strPath))
                         {
                             CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo
