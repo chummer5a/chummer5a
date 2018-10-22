@@ -1908,7 +1908,7 @@ namespace Chummer
                 }
             }
 
-            if (!string.IsNullOrEmpty(strMissingBooks) && !Utils.IsInUnitTest)
+            if (!string.IsNullOrEmpty(strMissingBooks) && !Utils.IsUnitTest)
             {
                 if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language), TranslatedBookList(strMissingBooks, GlobalOptions.Language)),
                         LanguageManager.GetString("Message_MissingSourceBooks_Title", GlobalOptions.Language),
@@ -1932,7 +1932,7 @@ namespace Chummer
                 }
             }
 
-            if (!string.IsNullOrEmpty(strMissingSourceNames) && !Utils.IsInUnitTest)
+            if (!string.IsNullOrEmpty(strMissingSourceNames) && !Utils.IsUnitTest)
             {
                 if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_MissingCustomDataDirectories", GlobalOptions.Language), strMissingSourceNames),
                         LanguageManager.GetString("Message_MissingCustomDataDirectories_Title", GlobalOptions.Language),

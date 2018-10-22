@@ -56,8 +56,9 @@ namespace Chummer
         private readonly string _strCurrentVersion;
 
 #region Control Events
-        public frmChummerMain()
+        public frmChummerMain(bool isUnitTest = false)
         {
+            Utils.IsUnitTest = isUnitTest;
             InitializeComponent();
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             _strCurrentVersion = $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
@@ -166,7 +167,7 @@ namespace Chummer
             object lstCharactersToLoadLock = new object();
             bool blnShowTest = false;
             object blnShowTestLock = new object();
-            if (!Utils.IsInUnitTest)
+            if (!Utils.IsUnitTest)
             {
                 Parallel.For(1, strArgs.Length, i =>
               {
@@ -178,6 +179,10 @@ namespace Chummer
                   }
                   else if (!strLoop.StartsWith('/'))
                   {
+                      if (!File.Exists(strLoop))
+                      {
+                          throw new ArgumentException("Chummer startet with unknown command line arguments: " + strArgs.Aggregate((j, k) => j + " " + k));
+                      }
                       Character objLoopCharacter = LoadCharacter(strLoop);
                       lock (lstCharactersToLoadLock)
                           lstCharactersToLoad.Add(objLoopCharacter);

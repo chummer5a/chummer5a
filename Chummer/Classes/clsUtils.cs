@@ -31,7 +31,7 @@ namespace Chummer
         public static void BreakIfDebug()
         {
 #if DEBUG
-            if (Debugger.IsAttached && !IsInUnitTest)
+            if (Debugger.IsAttached && !IsUnitTest)
                 Debugger.Break();
 #endif
         }
@@ -42,19 +42,24 @@ namespace Chummer
 
         public static Version CachedGitVersion { get; set; }
 
-        static Utils()
-        {
-            string testAssemblyName = "Microsoft.TestPlatform.PlatformAbstractions";//"Microsoft.VisualStudio.QualityTools.UnitTestFramework";
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            Utils.IsInUnitTest = assemblies.Any(a => a.FullName.StartsWith(testAssemblyName));
-        }
-        public static bool IsInUnitTest { get; private set; }
+        //static Utils()
+        //{
+        //    string testAssemblyName = "Microsoft.TestPlatform.PlatformAbstractions";//"Microsoft.VisualStudio.QualityTools.UnitTestFramework";
+        //    var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        //    var proc = Process.GetCurrentProcess().ProcessName;
+        //    Utils.IsUnitTest = assemblies.Any(a => a.FullName.StartsWith(testAssemblyName));
+        //    if (Utils.IsUnitTest == false)
+        //    {
+        //        Debugger.Break();
+        //    }
+        //}
+        public static bool IsUnitTest { get; set; }
 
         public static string GetStartupPath
         {
             get
             {
-                if (!Utils.IsInUnitTest)
+                if (!Utils.IsUnitTest)
                     return Application.StartupPath;
                 return AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
             }

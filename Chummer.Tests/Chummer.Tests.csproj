@@ -52,114 +52,124 @@
   <ItemGroup>
     <Compile Include="ChummerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="data\Apex Predator.chum5">
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="TestFiles\Apex Predator.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Barrett.chum5">
+    <None Include="TestFiles\Barrett.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Bastion.chum5">
+    <None Include="TestFiles\Bastion.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Blindfire.chum5">
+    <None Include="TestFiles\Blindfire.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\BLUE.chum5">
+    <None Include="TestFiles\BLUE.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Davis Jones.chum5">
+    <None Include="TestFiles\Davis Jones.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Draught.chum5">
+    <None Include="TestFiles\Draught.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Fuzzy-chargen.chum5">
+    <None Include="TestFiles\Fuzzy-chargen.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Gangerbean.chum5">
+    <None Include="TestFiles\Gangerbean.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Gentle Earthquake.chum5">
+    <None Include="TestFiles\Gentle Earthquake.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Ghile Mear.chum5">
+    <None Include="TestFiles\Ghile Mear.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Glessner.chum5">
+    <None Include="TestFiles\Glessner.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Harmony.chum5">
+    <None Include="TestFiles\Harmony.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Miko.chum5">
+    <None Include="TestFiles\Miko.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Mittens Chargen.chum5">
+    <None Include="TestFiles\Mittens Chargen.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Monomax %28approved%29 3.chum5">
+    <None Include="TestFiles\Monomax %28approved%29 3.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Munin.chum5">
+    <None Include="TestFiles\Munin.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Munin_Career%281%29.chum5">
+    <None Include="TestFiles\Munin_Career%281%29.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Munin_Career.chum5">
+    <None Include="TestFiles\Munin_Career.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Ocelot2.0.chum5">
+    <None Include="TestFiles\Ocelot2.0.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Pañcama.chum5">
+    <None Include="TestFiles\Pañcama.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Popstar.chum5">
+    <None Include="TestFiles\Popstar.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\prime.chum5">
+    <None Include="TestFiles\prime.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\resub.chum5">
+    <None Include="TestFiles\resub.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Rez0luti0n2.0.chum5">
+    <None Include="TestFiles\Rez0luti0n2.0.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\SCSi.chum5">
+    <None Include="TestFiles\SCSi.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Serpent.chum5">
+    <None Include="TestFiles\Serpent.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Skink%281%29.chum5">
+    <None Include="TestFiles\Skink%281%29.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Skink.chum5">
+    <None Include="TestFiles\Skink.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Soma %28Career%29.chum5">
+    <None Include="TestFiles\Soma %28Career%29.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Soma.chum5">
+    <None Include="TestFiles\Soma.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Spirit_Warden.chum5">
+    <None Include="TestFiles\Spirit_Warden.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Tenshi.chum5">
+    <None Include="TestFiles\Tenshi.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Ushi Resub.chum5">
+    <None Include="TestFiles\Ushi Resub.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Wesson.chum5">
+    <None Include="TestFiles\Wesson.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\Yeti-#ffffff2.chum5">
+    <None Include="TestFiles\Yeti-#ffffff2.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
