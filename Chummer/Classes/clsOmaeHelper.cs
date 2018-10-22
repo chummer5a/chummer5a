@@ -274,7 +274,7 @@ namespace Chummer
         /// <param name="strPrefix">Prefix to attach to the decompressed files.</param>
         public static void DecompressDataFile(byte[] bytBuffer, string strPrefix)
         {
-            string strFilePath = Path.Combine(Application.StartupPath, "data");
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "data");
             MemoryStream objStream = new MemoryStream();
             objStream.Write(bytBuffer, 0, bytBuffer.Length);
             Package objPackage = Package.Open(objStream, FileMode.Open, FileAccess.Read);
@@ -305,7 +305,7 @@ namespace Chummer
         /// /// <param name="bytBuffer">Byte array that contains the zip file.</param>
         public static void DecompressCharacterSheet(byte[] bytBuffer)
         {
-            string strFilePath = Path.Combine(Application.StartupPath, "sheets", "omae");
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "sheets", "omae");
             MemoryStream objStream = new MemoryStream();
             objStream.Write(bytBuffer, 0, bytBuffer.Length);
             Package objPackage = Package.Open(objStream, FileMode.Open, FileAccess.Read);
@@ -334,7 +334,7 @@ namespace Chummer
         /// <param name="bytBuffer">Byte array that contains the zip file.</param>
         public static void DecompressNPCs(byte[] bytBuffer)
         {
-            string strFilePath = Path.Combine(Application.StartupPath, "saves");
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "saves");
 
             // If the directory does not exist, create it.
             if (!Directory.Exists(strFilePath))
@@ -381,7 +381,7 @@ namespace Chummer
         /// <param name="strExtract">Zip file to extract from.</param>
         public static void DecompressNPCs(string strExtract)
         {
-            string strFilePath = Path.Combine(Application.StartupPath, "saves");
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "saves");
 
             // If the directory does not exist, create it.
             if (!Directory.Exists(strFilePath))
