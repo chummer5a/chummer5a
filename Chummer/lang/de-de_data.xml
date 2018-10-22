@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
 	Chummer5a is free software: you can redistribute it and/or modify
@@ -6576,8 +6576,8 @@
 			</metatype>
 			<metatype>
 				<id>9beb359e-f6c9-41a1-8bd9-cb283133b5ef</id>
-				<name>Hellcow</name>
-				<translate>Höllenkuh</translate>
+				<name>Hellcow (Running Wild)</name>
+				<translate>Höllenkuh (Running Wild)</translate>
 				<altpage>173</altpage>
 			</metatype>
 			<metatype>
@@ -7875,6 +7875,54 @@
 				<name>SOX-Termite</name>
 				<translate>SOX-Termite</translate>
 				<altpage>208</altpage>
+			</metatype>
+			<metatype>
+				<id>ba5e2809-186c-4d11-a5a9-c8b1cb060f2c</id>
+				<name>Amphora Mite</name>
+				<translate>Amphorenwanze</translate>
+				<altpage>90</altpage>
+			</metatype>
+			<metatype>
+				<id>bd4b7d12-0b18-437d-aa5a-b63ee5616533</id>
+				<name>Angel Squirrel</name>
+				<translate>Engelshörnchen</translate>
+				<altpage>92</altpage>
+			</metatype>
+			<metatype>
+				<id>34df2bf4-07e3-4576-b8b5-3638fde15c54</id>
+				<name>Blink Sloth</name>
+				<translate>Blitzfaultier</translate>
+				<altpage>91</altpage>
+			</metatype>
+			<metatype>
+				<id>13ad55bb-acf3-4615-857a-1e9f80c9c0a0</id>
+				<name>Conway's Cheetah</name>
+				<translate>Conways Gepard</translate>
+				<altpage>92</altpage>
+			</metatype>
+			<metatype>
+				<id>d3a8a563-9f8c-4c56-89cc-09e0565c108d</id>
+				<name>Flatworm Viper</name>
+				<translate>Giftplattwurm</translate>
+				<altpage>93</altpage>
+			</metatype>
+			<metatype>
+				<id>b2bae7c6-3570-4bd8-9cb3-277c97dcfb60</id>
+				<name>Glow Rat</name>
+				<translate>Glühratte</translate>
+				<altpage>93</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>3429f34a-507f-449d-90d5-c017f03ea57b</id>
+				<name>Hellcow (Howling Shadows)</name>
+				<translate>Höllenkuh (Critterkompendium)</translate>
+				<altpage>94</altpage>
+			</metatype>
+			<metatype>
+				<id>1ea62c11-a60f-40af-971c-0a421ce8337a</id>
+				<name>Iridescent Owl</name>
+				<translate>Schilleruhu</translate>
+				<altpage>99</altpage>
 			</metatype>
 		</metatypes>
 	</chummer>
@@ -16812,7 +16860,7 @@
 				<translate>Eigenes Kommlink</translate>
 				<altpage>438</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>1dd68a37-4606-4a44-b314-6b885f405ca4</id>
 				<name>Spinrad Industries Trompe L'Oeil</name>
 				<translate>Spinrad Industries Trompe L'Oeil</translate>
@@ -21290,7 +21338,7 @@
 			<mentor>
 				<id>a83f0580-9783-401b-8249-bb39843fe0c7</id>
 				<name>Goddess</name>
-				<translate>Goddess</translate>
+				<translate>Göttin</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Ritual Spellcasting Tests</name>
@@ -21303,12 +21351,12 @@
 				</choices>
 				<altadvantage>All: +2 dice pool modifier for Instruction Tests.</altadvantage>
 				<altdisadvantage>The Goddess refuses to take a backseat to any male counterparts. Unless you succeed in a Charisma + Willpower Test (3), you will not take orders from a male, or if a male disrespects you, you must respond with equal measure</altdisadvantage>
-				<altpage>129</altpage>
+				<altpage>132</altpage>
 			</mentor>
 			<mentor>
 				<id>c9b8f607-43f7-4707-aaac-60da183f22ac</id>
 				<name>Lion</name>
-				<translate>Lion</translate>
+				<translate>Löwe</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice to Combat spells, preparations, and rituals</name>
@@ -21321,12 +21369,12 @@
 				</choices>
 				<altadvantage>All: +2 dice pool modifier for Survival Tests, Running Tests, or Tracking Tests (Choose One)</altadvantage>
 				<altdisadvantage>In combat situations, a Lion will never leave a comrade behind, and will fght to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot ﬂee combat before your team members are safe. Further, whenever taking actions that don’t beneft the team somehow, your physical and mental limits are reduced by 2.</altdisadvantage>
-				<altpage>129</altpage>
+				<altpage>135</altpage>
 			</mentor>
 			<mentor>
 				<id>d1089dd2-68b8-4e2a-977e-718e720f44d3</id>
 				<name>Raven (Alt)</name>
-				<translate>Raven (Alt)</translate>
+				<translate>Rabe (Alternativ)</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice to Detection spells, preparations, and rituals.</name>
@@ -21343,7 +21391,7 @@
 				</choices>
 				<altadvantage>All: +2 dice pool modifier for knowledge skill tests.</altadvantage>
 				<altdisadvantage>Followers of Raven share their mentor’s love of collecting. When presented with data, knowledge, or other gear that would be valuable (gamemaster’s discretion), you must pass a Charisma + Willpower Test (3), or be unable to resist trying to acquiring it.</altdisadvantage>
-				<altpage>121</altpage>
+				<altpage>125</altpage>
 			</mentor>
 			<mentor>
 				<id>bd56ecdf-ebba-4b66-8e39-445831744496</id>
@@ -33824,6 +33872,17 @@
 					<spec translate="Mechanisierte Infanterie">Mechanized Infantry</spec>
 					<spec translate="Gewöhnliche Infanterie">Standard Infantry</spec>
 					<spec translate="[Einheitentyp]">[Single Unit Type]</spec>
+				</specs>
+			</skill>
+			<skill>
+				<id>1708eff8-a7fe-491f-b349-a6130c83e8d0</id>
+				<name>Serbo-Croatian</name>
+				<translate>Serbokroatisch</translate>
+				<specs>
+					<spec translate="Lesen/Schreiben">Read/Write</spec>
+					<spec translate="Sprechen">Speak</spec>
+					<spec translate="Dialekt">Dialect</spec>
+					<spec translate="Lingo">Lingo</spec>
 				</specs>
 			</skill>
 		</knowledgeskills>
