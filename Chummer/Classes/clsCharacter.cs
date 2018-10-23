@@ -14359,7 +14359,7 @@ namespace Chummer
             }
 
             // General character information.
-            int intAsIndex = strCharacterId.IndexOf(" as ");
+            int intAsIndex = strCharacterId.IndexOf(" as ", StringComparison.Ordinal);
             if (intAsIndex != -1)
             {
                 _strName = strCharacterId.Substring(0, intAsIndex);
@@ -14400,7 +14400,7 @@ namespace Chummer
             string strSettingsSummary = xmlStatBlockBaseNode.SelectSingleNode("settings/@summary")?.InnerText;
             if (!string.IsNullOrEmpty(strSettingsSummary))
             {
-                int intCharCreationSystemsIndex = strSettingsSummary.IndexOf("Character Creation Systems:");
+                int intCharCreationSystemsIndex = strSettingsSummary.IndexOf("Character Creation Systems:", StringComparison.Ordinal);
                 int intSemicolonIndex = strSettingsSummary.IndexOf(';');
                 if (intCharCreationSystemsIndex + 28 <= intSemicolonIndex && intCharCreationSystemsIndex != -1)
                 {
@@ -14584,7 +14584,7 @@ namespace Chummer
                 string strQualityName = xmlQualityToImport.Attributes["name"]?.InnerText;
                 if (!string.IsNullOrEmpty(strQualityName))
                 {
-                    int intDicepoolLabelIndex = strQualityName.LastIndexOf("dicepool");
+                    int intDicepoolLabelIndex = strQualityName.LastIndexOf("dicepool", StringComparison.Ordinal);
                     if (intDicepoolLabelIndex != -1)
                     {
                         int intCullIndex = strQualityName.LastIndexOf('(', intDicepoolLabelIndex);
@@ -14645,7 +14645,7 @@ namespace Chummer
                 string strQualityName = xmlQualityToImport.Attributes["name"]?.InnerText;
                 if (!string.IsNullOrEmpty(strQualityName))
                 {
-                    int intDicepoolLabelIndex = strQualityName.LastIndexOf("dicepool");
+                    int intDicepoolLabelIndex = strQualityName.LastIndexOf("dicepool", StringComparison.Ordinal);
                     if (intDicepoolLabelIndex != -1)
                     {
                         int intCullIndex = strQualityName.LastIndexOf('(', intDicepoolLabelIndex);
@@ -14899,6 +14899,8 @@ namespace Chummer
             XmlNode xmlCustomGearDataNode = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Custom Item']");
             Gear ImportHeroLabGear(XmlNode xmlGearImportNode, XmlNode xmlParentGearNode)
             {
+                if (xmlGearImportNode == null)
+                    return null;
                 Gear objReturn = null;
                 string strOriginalName = xmlGearImportNode.Attributes["name"]?.InnerText;
                 if (!string.IsNullOrEmpty(strOriginalName))
@@ -15584,9 +15586,9 @@ namespace Chummer
                                         foreach (XmlNode xmlSubPluginToAdd in xmlPluginToAdd.SelectNodes(strPluginNodeName + "/item[@useradded = \"no\"]"))
                                         {
                                             string strGearName = xmlSubPluginToAdd.Attributes["name"]?.InnerText;
-                                            if (!string.IsNullOrEmpty(strName))
+                                            if (!string.IsNullOrEmpty(strGearName))
                                             {
-                                                Gear objPlugin = objWeaponAccessory.Gear.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                                                Gear objPlugin = objWeaponAccessory.Gear.FirstOrDefault(x => x.IncludedInParent && !string.IsNullOrEmpty(x.Name) && (x.Name.Contains(strGearName) || strGearName.Contains(x.Name)));
                                                 if (objPlugin != null)
                                                 {
                                                     objPlugin.Quantity = Convert.ToDecimal(xmlSubPluginToAdd.Attributes["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
@@ -15597,9 +15599,9 @@ namespace Chummer
                                         }
                                     }
                                 }
-                                else
+                                else if (!string.IsNullOrEmpty(strName))
                                 {
-                                    Gear objPlugin = objWeaponAccessory.Gear.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                                    Gear objPlugin = objWeaponAccessory.Gear.FirstOrDefault(x => x.IncludedInParent && !string.IsNullOrEmpty(x.Name) && (x.Name.Contains(strName) || strName.Contains(x.Name)));
                                     if (objPlugin != null)
                                     {
                                         objPlugin.Quantity = Convert.ToDecimal(xmlPluginToAdd.Attributes["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
@@ -15934,10 +15936,9 @@ namespace Chummer
                     else if (strSpellName.StartsWith("Destroy "))
                     {
                         strForcedValue = strSpellName.TrimStartOnce("Destroy ");
-                        if (xmlHeroLabSpell.Attributes["type"]?.InnerText == "Physical")
-                            strSpellName = "Destroy [Vehicle]";
-                        else
-                            strSpellName = "Destroy [Free Spirit]";
+                        strSpellName = xmlHeroLabSpell.Attributes["type"]?.InnerText == "Physical"
+                            ? "Destroy [Vehicle]"
+                            : "Destroy [Free Spirit]";
                     }
                     else if (strSpellName.StartsWith("Insecticide "))
                     {
