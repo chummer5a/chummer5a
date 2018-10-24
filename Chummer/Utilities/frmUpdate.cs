@@ -38,7 +38,7 @@ namespace Chummer
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private string _strTempPath = string.Empty;
         private readonly string _strTempUpdatePath;
-        private readonly string _strAppPath = Application.StartupPath;
+        private readonly string _strAppPath = Utils.GetStartupPath;
         private readonly bool _blnPreferNightly;
         private bool _blnIsConnected = true;
         private readonly bool _blnChangelogDownloaded = false;

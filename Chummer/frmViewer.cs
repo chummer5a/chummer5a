@@ -232,7 +232,7 @@ namespace Chummer
                 _workerOutputGenerator.CancelAsync();
 
             // Remove the mugshots directory when the form closes.
-            string mugshotsDirectoryPath = Path.Combine(Application.StartupPath, "mugshots");
+            string mugshotsDirectoryPath = Path.Combine(Utils.GetStartupPath, "mugshots");
             if (Directory.Exists(mugshotsDirectoryPath))
             {
                 try
@@ -373,7 +373,7 @@ namespace Chummer
         private void AsyncGenerateOutput(object sender, DoWorkEventArgs e)
         {
             _blnQueueOutputGeneratorRun = false;
-            string strXslPath = Path.Combine(Application.StartupPath, "sheets", _strSelectedSheet + ".xsl");
+            string strXslPath = Path.Combine(Utils.GetStartupPath, "sheets", _strSelectedSheet + ".xsl");
             if (!File.Exists(strXslPath))
             {
                 string strReturn = $"File not found when attempting to load {_strSelectedSheet}{Environment.NewLine}";
@@ -505,7 +505,7 @@ namespace Chummer
             {
                 PdfConvert.ConvertHtmlToPdf(objPdfDocument, new PdfConvertEnvironment
                 {
-                    WkHtmlToPdfPath = Path.Combine(Application.StartupPath, "wkhtmltopdf.exe"),
+                    WkHtmlToPdfPath = Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe"),
                     Timeout = 60000,
                     TempFolderPath = Path.GetTempPath()
                 }, new PdfOutput
@@ -555,7 +555,7 @@ namespace Chummer
             List<ListItem> lstItems = new List<ListItem>();
 
             // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
-            string omaeDirectoryPath = Path.Combine(Application.StartupPath, "sheets", "omae");
+            string omaeDirectoryPath = Path.Combine(Utils.GetStartupPath, "sheets", "omae");
             string menuMainOmae = LanguageManager.GetString("Menu_Main_Omae", GlobalOptions.Language);
 
             // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets
@@ -596,7 +596,7 @@ namespace Chummer
         private void PopulateLanguageList()
         {
             List<ListItem> lstLanguages = new List<ListItem>();
-            string languageDirectoryPath = Path.Combine(Application.StartupPath, "lang");
+            string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
             string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
 
             foreach (string filePath in languageFilePaths)

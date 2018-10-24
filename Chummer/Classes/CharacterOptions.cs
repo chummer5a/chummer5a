@@ -194,7 +194,7 @@ namespace Chummer
                 return;
 
             // Create the settings directory if it does not exist.
-            string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
+            string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
             if (!Directory.Exists(settingsDirectoryPath))
             {
                 try
@@ -222,7 +222,7 @@ namespace Chummer
         /// </summary>
         public void Save()
         {
-            string strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
             FileStream objStream = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
             XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
             {
@@ -537,7 +537,7 @@ namespace Chummer
         public bool Load(string strFileName)
         {
             _strFileName = strFileName;
-            string strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
             XmlDocument objXmlDocument = new XmlDocument();
             // Make sure the settings file exists. If not, ask the user if they would like to use the default settings file instead. A character cannot be loaded without a settings file.
             if (File.Exists(strFilePath))
@@ -570,7 +570,7 @@ namespace Chummer
                 else
                 {
                     _strFileName = "default.xml";
-                    strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
+                    strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))

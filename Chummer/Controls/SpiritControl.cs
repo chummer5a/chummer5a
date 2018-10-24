@@ -215,7 +215,7 @@ namespace Chummer
                 imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_LinkSpirit" : "Tip_Sprite_LinkSprite", GlobalOptions.Language));
 
                 // Set the relative path.
-                Uri uriApplication = new Uri(Application.StartupPath);
+                Uri uriApplication = new Uri(Utils.GetStartupPath);
                 Uri uriFile = new Uri(_objSpirit.FileName);
                 Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
                 _objSpirit.RelativeFileName = "../" + uriRelative.ToString();
