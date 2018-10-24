@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.helpers;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -29,6 +30,7 @@ namespace Chummer
     /// A Metamagic or Echo.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    [HubClassTag("Name")]
     public class Metamagic : IHasInternalId, IHasName, IHasXmlNode, IHasNotes,ICanRemove, IHasSource
     {
         private Guid _guiID;

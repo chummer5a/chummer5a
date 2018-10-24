@@ -88,7 +88,7 @@ namespace ChummerHub.Client.Model
             else
                 MySINnerFile.ChummerUploadClient.ChummerVersion = System.Reflection.Assembly.GetCallingAssembly().GetName().Version.ToString();
             Guid singuid;
-            if (MySINnerIds.TryGetValue(MyCharacter.Name, out singuid))
+            if (MySINnerIds.TryGetValue(MyCharacter.Alias, out singuid))
                 MySINnerFile.SiNnerId = singuid;
             else
             {

@@ -28,7 +28,8 @@ namespace ChummerHub.Client.Backend
         public static Dictionary<int, object> MyReflectionCollection { get; set; }
 
         /// <summary>
-        /// This function searches recursivly through the Object "obj" and generates Tags for each property found with an HubTag-Attribute.
+        /// This function searches recursivly through the Object "obj" and generates Tags for each
+        /// property found with an HubTag-Attribute.
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="parenttag"></param>
@@ -69,7 +70,7 @@ namespace ChummerHub.Client.Backend
                             parenttag.Tags.Add(tag);
                             resulttags.Add(tag);
                             tag.MyRuntimeHubClassTag = classprop.Item1;
-                            tag.TagName = classprop.Item1.ListName;
+                            //tag.TagName = classprop.Item1.ListName;
                             tag.TagType = "list";
                             if (!String.IsNullOrEmpty(classprop.Item1.ListInstanceNameFromProperty))
                             {
@@ -80,7 +81,10 @@ namespace ChummerHub.Client.Backend
                                     throw new ArgumentOutOfRangeException("Could not find property " + classprop.Item1.ListInstanceNameFromProperty + " on instance of type " + item.GetType().ToString() + ".");
                                 tag.TagName += childprop.FirstOrDefault().GetValue(item);
                             }
-                        //Add complex Object
+                            if (String.IsNullOrEmpty(tag.TagName))
+                                tag.TagName = item.ToString();
+                            
+                            //Add complex Object
                             var childtags = ExtractTagsFromAttributes(item, tag);
                             if (classprop.Item1.DeleteEmptyTags)
                             {

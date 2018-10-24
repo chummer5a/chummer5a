@@ -15,15 +15,11 @@ using System.Net.Http;
 using SINners;
 using ChummerHub.Client.Backend;
 using System.Composition;
+using Chummer.Plugins;
 
 namespace ChummerHub.Client.UI
 {
-    [Export(typeof(IControl))]
-    [ExportMetadata("Name", "SINnersUsercontrol")]
-    [ExportMetadata("frmCareer", "true")]
-    [ExportMetadata("frmCreate", "false")]
-    [ExportMetadata("Menu", "false")]
-    public partial class SINnersUsercontrol : UserControl, ISINnersUsercontrol
+    public partial class SINnersUserControl : UserControl
     {
         
         private CharacterShared _mySINner = null;
@@ -67,14 +63,8 @@ namespace ChummerHub.Client.UI
             }
         }
 
-        public SINnersUsercontrol(CharacterShared mySINner)
+        public SINnersUserControl SetCharacterFrom(CharacterShared mySINner)
         {
-            SINnersUsercontrolConstructor(mySINner);
-        }
-
-        private void SINnersUsercontrolConstructor(CharacterShared mySINner)
-        {
-            
             _mySINner = mySINner;
             MyCharacterExtended = new CharacterExtended(CharacterObject);
             MyCharacterExtended.PopulateTags();
@@ -83,13 +73,10 @@ namespace ChummerHub.Client.UI
             TabSINnersBasic.Visible = true;
             TabSINnersAdvanced = new SINnersAdvanced(this);
             TabSINnersAdvanced.Visible = true;
-           
             InitializeComponent();
-
             this.tabPageBasic.Controls.Add(TabSINnersBasic);
             this.tabPageAdvanced.Controls.Add(TabSINnersAdvanced);
-            
-
+            return this;
         }
 
         public async void UploadSINnerAsync()
@@ -127,6 +114,7 @@ namespace ChummerHub.Client.UI
                 throw;
             }
         }
-        
+
+
     }
 }

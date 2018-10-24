@@ -38,6 +38,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Uniques;
+using Chummer.helpers;
 
 namespace Chummer
 {
@@ -1138,6 +1139,7 @@ namespace Chummer
             }
         }
 
+        [HubTag]
         public AttributeSection AttributeSection { get; }
 
         public bool IsSaving { get; set; }
@@ -5924,6 +5926,7 @@ namespace Chummer
         /// <summary>
         /// Whether or not the character has been saved as Created and can no longer be modified using the Build system.
         /// </summary>
+        [HubTag]
         public bool Created
         {
             get => _blnCreated;
@@ -5940,6 +5943,7 @@ namespace Chummer
         /// <summary>
         /// Character's name.
         /// </summary>
+        [HubTag]
         public string Name
         {
             get => _strName;
@@ -6132,6 +6136,7 @@ namespace Chummer
         /// <summary>
         /// Character's Gameplay Option.
         /// </summary>
+        [HubTag]
         public string GameplayOption
         {
             get => _strGameplayOption;
@@ -6164,6 +6169,7 @@ namespace Chummer
         /// <summary>
         /// Character's maximum karma at character creation.
         /// </summary>
+        [HubTag]
         public int MaxKarma
         {
             get => _intMaxKarma;
@@ -6180,6 +6186,7 @@ namespace Chummer
         /// <summary>
         /// Character's maximum nuyen at character creation.
         /// </summary>
+        [HubTag]
         public decimal MaxNuyen
         {
             get => _decMaxNuyen;
@@ -6212,6 +6219,7 @@ namespace Chummer
         /// <summary>
         /// Character's Metatype Priority.
         /// </summary>
+        [HubTag]
         public string MetatypePriority
         {
             get => _strPriorityMetatype;
@@ -6228,6 +6236,7 @@ namespace Chummer
         /// <summary>
         /// Character's Attributes Priority.
         /// </summary>
+        [HubTag]
         public string AttributesPriority
         {
             get => _strPriorityAttributes;
@@ -6244,6 +6253,7 @@ namespace Chummer
         /// <summary>
         /// Character's Special Priority.
         /// </summary>
+        [HubTag]
         public string SpecialPriority
         {
             get => _strPrioritySpecial;
@@ -6260,6 +6270,7 @@ namespace Chummer
         /// <summary>
         /// Character's Skills Priority.
         /// </summary>
+        [HubTag]
         public string SkillsPriority
         {
             get => _strPrioritySkills;
@@ -6276,6 +6287,7 @@ namespace Chummer
         /// <summary>
         /// Character's Resources Priority.
         /// </summary>
+        [HubTag]
         public string ResourcesPriority
         {
             get => _strPriorityResources;
@@ -6292,6 +6304,7 @@ namespace Chummer
         /// <summary>
         /// Character's Resources Priority.
         /// </summary>
+        [HubTag]
         public string TalentPriority
         {
             get => _strPriorityTalent;
@@ -6552,6 +6565,7 @@ namespace Chummer
         /// <summary>
         /// Player name.
         /// </summary>
+        [HubTag]
         public string PlayerName
         {
             get => _strPlayerName;
@@ -6568,6 +6582,7 @@ namespace Chummer
         /// <summary>
         /// Character's alias.
         /// </summary>
+        [HubTag]
         public string Alias
         {
             get => _strAlias;
@@ -6599,6 +6614,7 @@ namespace Chummer
         /// <summary>
         /// Street Cred.
         /// </summary>
+        [HubTag]
         public int StreetCred
         {
             get => _intStreetCred;
@@ -6631,6 +6647,7 @@ namespace Chummer
         /// <summary>
         /// Notoriety.
         /// </summary>
+        [HubTag]
         public int Notoriety
         {
             get => _intNotoriety;
@@ -6729,6 +6746,7 @@ namespace Chummer
         /// <summary>
         /// Whether or not character creation rules should be ignored.
         /// </summary>
+        [HubTag]
         public bool IgnoreRules
         {
             get => _blnIgnoreRules;
@@ -6926,6 +6944,7 @@ namespace Chummer
         /// <summary>
         /// Total amount of Karma the character has earned over the career.
         /// </summary>
+        [HubTag]
         public int CareerKarma
         {
             get
@@ -6979,6 +6998,7 @@ namespace Chummer
         /// <summary>
         /// Whether or not the character is a Critter.
         /// </summary>
+        [HubTag]
         public bool IsCritter
         {
             get => _blnIsCritter;
@@ -7255,6 +7275,7 @@ namespace Chummer
         /// <summary>
         /// Is the MAG CharacterAttribute enabled?
         /// </summary>
+        [HubTag]
         public bool MAGEnabled
         {
             get => _blnMAGEnabled;
@@ -7388,6 +7409,7 @@ namespace Chummer
         /// <summary>
         /// Total Amount of Power Points this character has.
         /// </summary>
+        [HubTag]
         public int PowerPointsTotal
         {
             get
@@ -7429,11 +7451,13 @@ namespace Chummer
         /// <summary>
         /// Magician's Tradition.
         /// </summary>
+        [HubTag]
         public Tradition MagicTradition => _objTradition;
-        
+
         /// <summary>
         /// Initiate Grade.
         /// </summary>
+        [HubTag]
         public int InitiateGrade
         {
             get => _intInitiateGrade;
@@ -7450,6 +7474,7 @@ namespace Chummer
         /// <summary>
         /// Is the RES CharacterAttribute enabled?
         /// </summary>
+        [HubTag]
         public bool RESEnabled
         {
             get => _blnRESEnabled;
@@ -7574,6 +7599,7 @@ namespace Chummer
         /// <summary>
         /// Is the DEP CharacterAttribute enabled?
         /// </summary>
+        [HubTag]
         public bool DEPEnabled
         {
             get => _blnDEPEnabled;
@@ -7649,11 +7675,13 @@ namespace Chummer
             }
         }
 
+        [HubTag]
         public bool IsAI => DEPEnabled && BOD.MetatypeMaximum == 0;
 
         /// <summary>
         /// Submersion Grade.
         /// </summary>
+        [HubTag]
         public int SubmersionGrade
         {
             get => _intSubmersionGrade;
@@ -7686,6 +7714,7 @@ namespace Chummer
         /// <summary>
         /// The name of the Group the Initiate has joined.
         /// </summary>
+        [HubTag]
         public string GroupName
         {
             get => _strGroupName;
@@ -7903,6 +7932,7 @@ namespace Chummer
         /// <summary>
         /// Initiative Dice.
         /// </summary>
+        [HubTag]
         public int InitiativeDice
         {
             get
@@ -7914,6 +7944,7 @@ namespace Chummer
             }
         }
 
+        [HubTag]
         public int InitiativeValue
         {
             get
@@ -8957,6 +8988,7 @@ namespace Chummer
         /// <summary>
         /// Mentor spirits.
         /// </summary>
+        [HubTag]
         public ObservableCollection<MentorSpirit> MentorSpirits => _lstMentorSpirits;
 
         /// <summary>
@@ -8972,6 +9004,7 @@ namespace Chummer
         /// <summary>
         /// Magician Spells.
         /// </summary>
+        [HubTag]
         public ObservableCollection<Spell> Spells => _lstSpells;
 
         /// <summary>
@@ -8987,16 +9020,19 @@ namespace Chummer
         /// <summary>
         /// Adept Powers.
         /// </summary>
+        [HubTag]
         public CachedBindingList<Power> Powers => _lstPowers;
 
         /// <summary>
         /// Technomancer Complex Forms.
         /// </summary>
+        [HubTag]
         public ObservableCollection<ComplexForm> ComplexForms => _lstComplexForms;
 
         /// <summary>
         /// AI Programs and Advanced Programs
         /// </summary>
+        [HubTag]
         public ObservableCollection<AIProgram> AIPrograms => _lstAIPrograms;
 
         /// <summary>
@@ -9025,16 +9061,19 @@ namespace Chummer
         /// <summary>
         /// Armor.
         /// </summary>
+        [HubTag]
         public ObservableCollection<Armor> Armor => _lstArmor;
 
         /// <summary>
         /// Cyberware and Bioware.
         /// </summary>
+        [HubTag]
         public TaggedObservableCollection<Cyberware> Cyberware => _lstCyberware;
 
         /// <summary>
         /// Weapons.
         /// </summary>
+        [HubTag]
         public TaggedObservableCollection<Weapon> Weapons => _lstWeapons;
 
         /// <summary>
@@ -9045,16 +9084,19 @@ namespace Chummer
         /// <summary>
         /// Gear.
         /// </summary>
+        [HubTag]
         public ObservableCollection<Gear> Gear => _lstGear;
 
         /// <summary>
         /// Vehicles.
         /// </summary>
+        [HubTag]
         public TaggedObservableCollection<Vehicle> Vehicles => _lstVehicles;
 
         /// <summary>
         /// Metamagics and Echoes.
         /// </summary>
+        [HubTag]
         public ObservableCollection<Metamagic> Metamagics => _lstMetamagics;
 
         /// <summary>
@@ -9070,6 +9112,7 @@ namespace Chummer
         /// <summary>
         /// Critter Powers.
         /// </summary>
+        [HubTag]
         public ObservableCollection<CritterPower> CritterPowers => _lstCritterPowers;
 
         /// <summary>
@@ -9085,6 +9128,7 @@ namespace Chummer
         /// <summary>
         /// Qualities (Positive and Negative).
         /// </summary>
+        [HubTag]
         public ObservableCollection<Quality> Qualities => _lstQualities;
 
         /// <summary>

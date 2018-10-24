@@ -18,6 +18,7 @@
  */
 
 using Chummer.Backend.Equipment;
+using Chummer.helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -72,6 +73,7 @@ namespace Chummer
     /// A Quality.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    [HubClassTag("Name")]
     public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
         private Guid _guiID;
@@ -522,6 +524,7 @@ namespace Chummer
         /// <summary>
         /// Extra information that should be applied to the name, like a linked CharacterAttribute.
         /// </summary>
+        [HubTag(true)]
         public string Extra
         {
             get => _strExtra;
@@ -677,6 +680,7 @@ namespace Chummer
         /// Returns how many instances of this quality there are in the character's quality list
         /// TODO: Actually implement a proper rating system for qualities that plays nice with the Improvements Manager.
         /// </summary>
+        [HubTag]
         public int Levels
         {
             get

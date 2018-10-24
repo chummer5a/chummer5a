@@ -30,6 +30,7 @@ using System.Xml;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Skills;
+using Chummer.helpers;
 // ReSharper disable SpecifyACultureInStringConversionExplicitly
 
 // ReSharper disable once CheckNamespace
@@ -39,6 +40,7 @@ namespace Chummer
     /// An Adept Power.
     /// </summary>
     [DebuggerDisplay("{DisplayNameMethod(GlobalOptions.DefaultLanguage)}")]
+    [HubClassTag("Name")]
     public class Power : INotifyMultiplePropertyChanged, IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
         private Guid _guiID;
@@ -423,6 +425,7 @@ namespace Chummer
         /// <summary>
         /// Extra information that should be applied to the name, like a linked CharacterAttribute.
         /// </summary>
+        [HubTag]
         public string Extra
         {
             get => _strExtra;
@@ -574,6 +577,7 @@ namespace Chummer
         /// <summary>
         /// The current Rating of the Power, including any Free Levels.
         /// </summary>
+        [HubTag]
         public int TotalRating
         {
             get => Math.Min(Rating + FreeLevels, TotalMaximumLevels);

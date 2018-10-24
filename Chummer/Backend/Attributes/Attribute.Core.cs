@@ -18,6 +18,7 @@
  */
 using Chummer.Annotations;
 using Chummer.Backend.Equipment;
+using Chummer.helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -35,6 +36,7 @@ namespace Chummer.Backend.Attributes
     /// If using databinding, you should generally be using AttributeSection.{ATT}Binding
     /// </summary>
     [DebuggerDisplay("{" + nameof(_strAbbrev) + "}")]
+    [HubClassTag("Abbrev")]
     public class CharacterAttrib : INotifyMultiplePropertyChanged
     {
         private int _intMetatypeMin = 1;
@@ -527,6 +529,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The CharacterAttribute's total value (Value + Modifiers).
         /// </summary>
+        [HubTag]
         public int TotalValue
         {
             get

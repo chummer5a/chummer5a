@@ -9,24 +9,21 @@ namespace Chummer.helpers
     [AttributeUsage(AttributeTargets.Class)]
     public class HubClassTagAttribute : System.Attribute
     {
-        private string _ListName;
+        //private string _ListName;
         private string _ListInstanceNameFromProperty;
         private bool _DeleteEmptyTags = false;
 
-        public HubClassTagAttribute()
-        {
+        
 
-        }
-
-        public HubClassTagAttribute(string listName, string listInstanceNameFromProperty, bool deleteEmptyTags)
+        public HubClassTagAttribute(string listInstanceNameFromProperty, bool deleteEmptyTags = false)
         {
-            _ListName = ListName;
+            //_ListName = ListName;
             _ListInstanceNameFromProperty = listInstanceNameFromProperty;
             _DeleteEmptyTags = deleteEmptyTags;
         }
 
-        public string ListName
-        { get { return _ListName; } }
+        //public string ListName
+        //{ get { return _ListName; } }
 
         public string ListInstanceNameFromProperty
         { get { return _ListInstanceNameFromProperty; } }

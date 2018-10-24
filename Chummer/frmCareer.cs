@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -35,6 +36,8 @@ using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Uniques;
+using Chummer.Classes;
+using Chummer.Plugins;
 
 namespace Chummer
 {
@@ -56,6 +59,8 @@ namespace Chummer
 
         public Action<object> DiceRollerOpened { get; set; }
         public Action<Character, int> DiceRollerOpenedInt { get; set; }
+
+        public TabControl TabCharacterTabs { get { return this.tabCharacterTabs; } }
 
         #region Form Events
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -694,7 +699,13 @@ namespace Chummer
             picMugshot_SizeChanged(sender, e);
             // Stupid hack to get the MDI icon to show up properly.
             Icon = Icon.Clone() as Icon;
+
+            
+
             Timekeeper.Finish("load_frm_career");
+            Timekeeper.Start("load_plugins_frmcareer");
+            Program.MainForm.PluginLoader.CallPlugins(this);
+            Timekeeper.Finish("load_plugins_frmcareer");
             Timekeeper.Finish("loading");
 
             if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0)

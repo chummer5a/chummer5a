@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using Chummer.Backend.Skills;
+using Chummer.helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -33,6 +34,7 @@ namespace Chummer
     /// A Magician Spell.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    [HubClassTag("Name")]
     public class Spell : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
         private Guid _guiID;
@@ -265,6 +267,7 @@ namespace Chummer
         /// <summary>
         /// Spell's grade.
         /// </summary>
+        [HubTag(true)]
         public int Grade
         {
             get => _intGrade;
@@ -702,6 +705,7 @@ namespace Chummer
         /// <summary>
         /// Extra information from Improvement dialogues.
         /// </summary>
+        [HubTag(true)]
         public string Extra
         {
             get => _strExtra;

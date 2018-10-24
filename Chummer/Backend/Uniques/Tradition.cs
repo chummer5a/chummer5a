@@ -27,6 +27,7 @@ using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
+using Chummer.helpers;
 
 namespace Chummer.Backend.Uniques
 {
@@ -39,6 +40,7 @@ namespace Chummer.Backend.Uniques
     /// <summary>
     /// A Tradition
     /// </summary>
+    [HubClassTag("Name")]
     public class Tradition : IHasInternalId, IHasName, IHasXmlNode, IHasSource, INotifyMultiplePropertyChanged
     {
         private Guid _guiID;

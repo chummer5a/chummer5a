@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.helpers;
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -24,6 +25,7 @@ using System.Xml;
 namespace Chummer
 {
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
+    [HubClassTag("Name")]
     public class MentorSpirit : IHasInternalId, IHasName, IHasXmlNode, IHasSource
     {
         private Guid _guiID;
@@ -303,6 +305,7 @@ namespace Chummer
         /// <summary>
         /// Extra string related to improvements selected for the Mentor Spirit or Paragon.
         /// </summary>
+        [HubTag(true)]
         public string Extra
         {
             get => _strExtra;

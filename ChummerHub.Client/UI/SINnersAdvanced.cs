@@ -20,19 +20,19 @@ namespace ChummerHub.Client.UI
 {
     public partial class SINnersAdvanced : UserControl
     {
-        public SINnersUsercontrol MySINnersUsercontrol { get; private set; }
+        public SINnersUserControl MySINnersUsercontrol { get; private set; }
 
         public SINnersAdvanced()
         {
             SINnersAdvancedConstructor(null);
         }
 
-        public SINnersAdvanced(SINnersUsercontrol parent)
+        public SINnersAdvanced(SINnersUserControl parent)
         {
             SINnersAdvancedConstructor(parent);
         }
 
-        private void SINnersAdvancedConstructor(SINnersUsercontrol parent)
+        private void SINnersAdvancedConstructor(SINnersUserControl parent)
         {
             InitializeComponent();
             MySINnersUsercontrol = parent;

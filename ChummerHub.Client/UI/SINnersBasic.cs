@@ -20,19 +20,19 @@ namespace ChummerHub.Client.UI
 {
     public partial class SINnersBasic : UserControl
     {
-        public SINnersUsercontrol myUC { get; private set; }
+        public SINnersUserControl myUC { get; private set; }
 
         public SINnersBasic()
         {
             SINnersBasicConstructor(null);
         }
 
-        public SINnersBasic(SINnersUsercontrol parent)
+        public SINnersBasic(SINnersUserControl parent)
         {
             SINnersBasicConstructor(parent);
         }
 
-        private void SINnersBasicConstructor(SINnersUsercontrol parent)
+        private void SINnersBasicConstructor(SINnersUserControl parent)
         {
             InitializeComponent();
             myUC = parent;

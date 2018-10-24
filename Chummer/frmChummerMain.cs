@@ -39,6 +39,7 @@ using System.Diagnostics;
 using System.ComponentModel;
 using System.Net;
 using System.Text;
+using Chummer.Plugins;
 
 namespace Chummer
 {
@@ -55,10 +56,16 @@ namespace Chummer
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private readonly string _strCurrentVersion;
 
-#region Control Events
+        public readonly PluginControl PluginLoader = new PluginControl();
+
+        #region Control Events
         public frmChummerMain()
         {
             InitializeComponent();
+
+            PluginLoader.LoadPlugins();
+            
+
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             _strCurrentVersion = $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
             Text = Application.ProductName + strSpaceCharacter + '-' + strSpaceCharacter + LanguageManager.GetString("String_Version", GlobalOptions.Language) + strSpaceCharacter + _strCurrentVersion;

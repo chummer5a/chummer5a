@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Annotations;
+using Chummer.helpers;
 
 namespace Chummer.Backend.Equipment
 {
@@ -38,6 +39,7 @@ namespace Chummer.Backend.Equipment
     /// Standard Character Gear.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
+    [HubClassTag("Name")]
     public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertyChanged
     {
         private Guid _guiID;
@@ -1421,6 +1423,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Rating.
         /// </summary>
+        [HubTag(true)]
         public int Rating
         {
             get => _intRating;
@@ -1488,6 +1491,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Value that was selected during an ImprovementManager dialogue.
         /// </summary>
+        [HubTag(true)]
         public string Extra
         {
             get => _strExtra;
@@ -1603,6 +1607,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Device Rating string.
         /// </summary>
+        [HubTag]
         public string DeviceRating
         {
             get => _strDeviceRating;
