@@ -66,7 +66,7 @@ namespace Chummer
             // 
             this.txtValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtValue.Location = new System.Drawing.Point(3, 28);
+            this.txtValue.Location = new System.Drawing.Point(3, 31);
             this.txtValue.Name = "txtValue";
             this.txtValue.Size = new System.Drawing.Size(320, 20);
             this.txtValue.TabIndex = 1;
@@ -87,9 +87,6 @@ namespace Chummer
             // 
             // tlpMain
             // 
-            this.tlpMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 1;
@@ -97,13 +94,14 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.lblDescription, 0, 0);
             this.tlpMain.Controls.Add(this.txtValue, 0, 1);
             this.tlpMain.Controls.Add(this.flowLayoutPanel1, 0, 2);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 3;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(326, 80);
+            this.tlpMain.Size = new System.Drawing.Size(326, 83);
             this.tlpMain.TabIndex = 4;
             // 
             // flowLayoutPanel1
@@ -113,7 +111,7 @@ namespace Chummer
             this.flowLayoutPanel1.Controls.Add(this.cmdOK);
             this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(164, 51);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(164, 54);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(162, 29);
