@@ -8185,7 +8185,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_Missions</key>
-			<text>Gaben verbergen, die für Missions verboten sind</text>
+			<text>Gaben verbergen, die für Missionen verboten sind</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_PreferNightlyBuilds</key>
@@ -8993,7 +8993,7 @@
 		</string>
 		<string>
 			<key>String_NotApplicable</key>
-			<text>N/A</text>
+			<text>k.A.</text>
 		</string>
 		<string>
 			<key>String_Version</key>
@@ -9277,7 +9277,7 @@
 		</string>
 		<string>
 			<key>Tip_Omae_Warning</key>
-			<text>Omae liegt außerhalb der Kontrolle der aktuellen Entwickler und enthält alte Charaktere, die möglicherweise nicht funktionieren oder die aktuelle Version von Chummer zum Absturz bringen. Die Benutzung erfolgt auf eigene Gefahr. Wollen Sie fortfahren?</text>
+			<text>Omae liegt außerhalb der Kontrolle der aktuellen Entwickler und enthält alte Charaktere, die möglicherweise nicht funktionieren oder die aktuelle Version von Chummer zum Absturz bringen. Die Benutzung erfolgt auf eigene Gefahr.\nWollen Sie fortfahren?</text>
 		</string>
 		<string>
 			<key>Message_KarmaValue</key>
