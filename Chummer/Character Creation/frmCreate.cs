@@ -1356,7 +1356,7 @@ namespace Chummer
 
         private void mnuSpecialChangeOptions_Click(object sender, EventArgs e)
         {
-            string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", "default.xml");
             if (!File.Exists(strFilePath))
             {
                 if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
@@ -1368,7 +1368,7 @@ namespace Chummer
                 }
             }
             Cursor = Cursors.WaitCursor;
-            string settingsPath = Path.Combine(Application.StartupPath, "settings");
+            string settingsPath = Path.Combine(Utils.GetStartupPath, "settings");
             string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
 
             if (settingsFiles.Length > 1)
@@ -13517,11 +13517,11 @@ namespace Chummer
                 {
                     // Create a pre-Career Mode backup of the character.
                     // Make sure the backup directory exists.
-                    if (!Directory.Exists(Path.Combine(Application.StartupPath, "saves", "backup")))
+                    if (!Directory.Exists(Path.Combine(Utils.GetStartupPath, "saves", "backup")))
                     {
                         try
                         {
-                            Directory.CreateDirectory(Path.Combine(Application.StartupPath, "saves", "backup"));
+                            Directory.CreateDirectory(Path.Combine(Utils.GetStartupPath, "saves", "backup"));
                         }
                         catch (UnauthorizedAccessException)
                         {
@@ -13543,7 +13543,7 @@ namespace Chummer
                     }
                     strNewName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("Title_CreateMode", GlobalOptions.Language) + ").chum5";
 
-                    strNewName = Path.Combine(Application.StartupPath, "saves", "backup", strNewName);
+                    strNewName = Path.Combine(Utils.GetStartupPath, "saves", "backup", strNewName);
 
                     Cursor = Cursors.WaitCursor;
                     if (!CharacterObject.Save(strNewName))

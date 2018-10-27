@@ -150,7 +150,7 @@ namespace Chummer
         {
             Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
-            string strAutosavePath = Path.Combine(Application.StartupPath, "saves", "autosave");
+            string strAutosavePath = Path.Combine(Utils.GetStartupPath, "saves", "autosave");
             if (!Directory.Exists(strAutosavePath))
             {
                 try

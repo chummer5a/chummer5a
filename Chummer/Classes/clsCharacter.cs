@@ -1908,7 +1908,7 @@ namespace Chummer
                 }
             }
 
-            if (!string.IsNullOrEmpty(strMissingBooks))
+            if (!string.IsNullOrEmpty(strMissingBooks) && !Utils.IsUnitTest)
             {
                 if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language), TranslatedBookList(strMissingBooks, GlobalOptions.Language)),
                         LanguageManager.GetString("Message_MissingSourceBooks_Title", GlobalOptions.Language),
@@ -1932,7 +1932,7 @@ namespace Chummer
                 }
             }
 
-            if (!string.IsNullOrEmpty(strMissingSourceNames))
+            if (!string.IsNullOrEmpty(strMissingSourceNames) && !Utils.IsUnitTest)
             {
                 if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_MissingCustomDataDirectories", GlobalOptions.Language), strMissingSourceNames),
                         LanguageManager.GetString("Message_MissingCustomDataDirectories_Title", GlobalOptions.Language),
@@ -6075,7 +6075,7 @@ namespace Chummer
                 // Since IE is retarded and can't handle base64 images before IE9, the image needs to be dumped to a temporary directory and its information rewritten.
                 // If you give it an extension of jpg, gif, or png, it expects the file to be in that format and won't render the image unless it was originally that type.
                 // But if you give it the extension img, it will render whatever you give it (which doesn't make any damn sense, but that's IE for you).
-                string strMugshotsDirectoryPath = Path.Combine(Application.StartupPath, "mugshots");
+                string strMugshotsDirectoryPath = Path.Combine(Utils.GetStartupPath, "mugshots");
                 if (!Directory.Exists(strMugshotsDirectoryPath))
                 {
                     try
@@ -14169,10 +14169,10 @@ namespace Chummer
                     foreach (ZipArchiveEntry entry in zipArchive.Entries)
                     {
                         string strEntryFullName = entry.FullName;
+                        string strKey = Path.GetFileName(strEntryFullName);
                         if ((xmlStatBlockDocument == null && strEntryFullName.StartsWith("statblocks_xml")) ||
                             (string.IsNullOrEmpty(strLeadsName) && strEntryFullName.EndsWith("portfolio.xml")))
                         {
-                            string strKey = Path.GetFileName(strEntryFullName);
                             XmlDocument xmlSourceDoc = new XmlDocument();
                             try
                             {
@@ -14202,7 +14202,6 @@ namespace Chummer
                         }
                         else if (strEntryFullName.StartsWith("images") && strEntryFullName.Contains('.'))
                         {
-                            string strKey = Path.GetFileName(strEntryFullName);
                             Bitmap imgMugshot = (new Bitmap(entry.Open(), true)).ConvertPixelFormat(System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
                             if (dicImages.ContainsKey(strKey))
                                 dicImages[strKey] = imgMugshot;
@@ -14359,7 +14358,7 @@ namespace Chummer
             }
 
             // General character information.
-            int intAsIndex = strCharacterId.IndexOf(" as ");
+            int intAsIndex = strCharacterId.IndexOf(" as ", StringComparison.Ordinal);
             if (intAsIndex != -1)
             {
                 _strName = strCharacterId.Substring(0, intAsIndex);
@@ -14400,7 +14399,7 @@ namespace Chummer
             string strSettingsSummary = xmlStatBlockBaseNode.SelectSingleNode("settings/@summary")?.InnerText;
             if (!string.IsNullOrEmpty(strSettingsSummary))
             {
-                int intCharCreationSystemsIndex = strSettingsSummary.IndexOf("Character Creation Systems:");
+                int intCharCreationSystemsIndex = strSettingsSummary.IndexOf("Character Creation Systems:", StringComparison.Ordinal);
                 int intSemicolonIndex = strSettingsSummary.IndexOf(';');
                 if (intCharCreationSystemsIndex + 28 <= intSemicolonIndex && intCharCreationSystemsIndex != -1)
                 {
@@ -14584,7 +14583,7 @@ namespace Chummer
                 string strQualityName = xmlQualityToImport.Attributes["name"]?.InnerText;
                 if (!string.IsNullOrEmpty(strQualityName))
                 {
-                    int intDicepoolLabelIndex = strQualityName.LastIndexOf("dicepool");
+                    int intDicepoolLabelIndex = strQualityName.LastIndexOf("dicepool", StringComparison.Ordinal);
                     if (intDicepoolLabelIndex != -1)
                     {
                         int intCullIndex = strQualityName.LastIndexOf('(', intDicepoolLabelIndex);
@@ -14645,7 +14644,7 @@ namespace Chummer
                 string strQualityName = xmlQualityToImport.Attributes["name"]?.InnerText;
                 if (!string.IsNullOrEmpty(strQualityName))
                 {
-                    int intDicepoolLabelIndex = strQualityName.LastIndexOf("dicepool");
+                    int intDicepoolLabelIndex = strQualityName.LastIndexOf("dicepool", StringComparison.Ordinal);
                     if (intDicepoolLabelIndex != -1)
                     {
                         int intCullIndex = strQualityName.LastIndexOf('(', intDicepoolLabelIndex);
@@ -14899,8 +14898,10 @@ namespace Chummer
             XmlNode xmlCustomGearDataNode = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Custom Item']");
             Gear ImportHeroLabGear(XmlNode xmlGearImportNode, XmlNode xmlParentGearNode)
             {
+                if (xmlGearImportNode == null)
+                    return null;
                 Gear objReturn = null;
-                string strOriginalName = xmlGearImportNode.Attributes["name"]?.InnerText;
+                string strOriginalName = xmlGearImportNode.Attributes?["name"]?.InnerText ?? string.Empty;
                 if (!string.IsNullOrEmpty(strOriginalName))
                 {
                     string strForceValue = string.Empty;
@@ -15061,7 +15062,7 @@ namespace Chummer
                         objReturn.Create(xmlCustomGearDataNode, Convert.ToInt32(xmlGearImportNode.Attributes["rating"]?.InnerText), lstWeapons, strOriginalName);
                         objReturn.Cost = xmlGearImportNode.SelectSingleNode("gearcost/@value")?.InnerText;
                     }
-                    objReturn.Quantity = Convert.ToDecimal(xmlGearImportNode.Attributes["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                    objReturn.Quantity = Convert.ToDecimal(xmlGearImportNode.Attributes?["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
                     objReturn.Notes = xmlGearImportNode["description"]?.InnerText;
 
                     ProcessHeroLabGearPlugins(objReturn, xmlGearImportNode);
@@ -15071,6 +15072,8 @@ namespace Chummer
 
             void ProcessHeroLabGearPlugins(Gear objGear, XmlNode xmlGearImportNode)
             {
+                if (xmlGearImportNode == null || objGear == null)
+                    return;
                 foreach (string strPluginNodeName in astrPluginNodeNames)
                 {
                     foreach (XmlNode xmlPluginToAdd in xmlGearImportNode.SelectNodes(strPluginNodeName + "/item[@useradded != \"no\"]"))
@@ -15084,13 +15087,13 @@ namespace Chummer
                     }
                     foreach (XmlNode xmlPluginToAdd in xmlGearImportNode.SelectNodes(strPluginNodeName + "/item[@useradded = \"no\"]"))
                     {
-                        string strName = xmlPluginToAdd.Attributes["name"]?.InnerText;
+                        string strName = xmlPluginToAdd.Attributes?["name"]?.InnerText ?? string.Empty;
                         if (!string.IsNullOrEmpty(strName))
                         {
                             Gear objPlugin = objGear.Children.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
                             if (objPlugin != null)
                             {
-                                objPlugin.Quantity = Convert.ToDecimal(xmlPluginToAdd.Attributes["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                                objPlugin.Quantity = Convert.ToDecimal(xmlPluginToAdd.Attributes?["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
                                 objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
                                 ProcessHeroLabGearPlugins(objPlugin, xmlPluginToAdd);
                             }
@@ -15106,10 +15109,12 @@ namespace Chummer
             IList<Grade> objBiowareGradeList = GetGradeList(Improvement.ImprovementSource.Bioware);
             Cyberware ImportHeroLabCyberware(XmlNode xmlCyberwareImportNode, XmlNode xmlParentCyberwareNode, Grade objSelectedGrade = null)
             {
+                if (xmlCyberwareImportNode == null)
+                    return null;
                 bool blnCyberware = true;
                 Cyberware objReturn = null;
                 string strGradeName = objSelectedGrade?.Name ?? "Standard";
-                string strOriginalName = xmlCyberwareImportNode.Attributes["name"]?.InnerText;
+                string strOriginalName = xmlCyberwareImportNode.Attributes?["name"]?.InnerText ?? string.Empty;
                 if (!string.IsNullOrEmpty(strOriginalName))
                 {
                     if (objSelectedGrade == null)
@@ -15333,7 +15338,7 @@ namespace Chummer
                         }
 
                         objReturn.Create(xmlCyberwareDataNode, objSelectedGrade, blnCyberware ? Improvement.ImprovementSource.Cyberware : Improvement.ImprovementSource.Bioware,
-                            Convert.ToInt32(xmlCyberwareImportNode.Attributes["rating"]?.InnerText), lstWeapons, lstVehicles, true, true, strForceValue);
+                            Convert.ToInt32(xmlCyberwareImportNode.Attributes?["rating"]?.InnerText), lstWeapons, lstVehicles, true, true, strForceValue);
                         objReturn.Notes = xmlCyberwareImportNode["description"]?.InnerText;
 
                         ProcessHeroLabCyberwarePlugins(objReturn, xmlCyberwareImportNode, objSelectedGrade);
@@ -15344,6 +15349,8 @@ namespace Chummer
 
             void ProcessHeroLabCyberwarePlugins(Cyberware objCyberware, XmlNode xmlGearImportNode, Grade objParentGrade)
             {
+                if (xmlGearImportNode == null || objCyberware == null)
+                    return;
                 foreach (string strPluginNodeName in astrPluginNodeNames)
                 {
                     foreach (XmlNode xmlPluginToAdd in xmlGearImportNode.SelectNodes(strPluginNodeName + "/item[@useradded != \"no\"]"))
@@ -15366,7 +15373,7 @@ namespace Chummer
                     }
                     foreach (XmlNode xmlPluginToAdd in xmlGearImportNode.SelectNodes(strPluginNodeName + "/item[@useradded = \"no\"]"))
                     {
-                        string strName = xmlPluginToAdd.Attributes["name"]?.InnerText;
+                        string strName = xmlPluginToAdd.Attributes?["name"]?.InnerText ?? string.Empty;
                         if (!string.IsNullOrEmpty(strName))
                         {
                             Cyberware objPlugin = objCyberware.Children.FirstOrDefault(x => x.ParentID == objCyberware.InternalId && (x.Name.Contains(strName) || strName.Contains(x.Name)));
@@ -15380,7 +15387,7 @@ namespace Chummer
                                 Gear objPluginGear = objCyberware.Gear.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
                                 if (objPluginGear != null)
                                 {
-                                    objPluginGear.Quantity = Convert.ToDecimal(xmlPluginToAdd.Attributes["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                                    objPluginGear.Quantity = Convert.ToDecimal(xmlPluginToAdd.Attributes?["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
                                     objPluginGear.Notes = xmlPluginToAdd["description"]?.InnerText;
                                     ProcessHeroLabGearPlugins(objPluginGear, xmlPluginToAdd);
                                 }
@@ -15394,8 +15401,10 @@ namespace Chummer
             XmlDocument xmlWeaponDocument = XmlManager.Load("weapons.xml");
             Weapon ImportHeroLabWeapon(XmlNode xmlWeaponImportNode)
             {
+                if (xmlWeaponImportNode == null)
+                    return null;
                 Weapon objReturn = null;
-                string strOriginalName = xmlWeaponImportNode.Attributes["name"]?.InnerText;
+                string strOriginalName = xmlWeaponImportNode.Attributes?["name"]?.InnerText ?? string.Empty;
                 if (!string.IsNullOrEmpty(strOriginalName))
                 {
                     XmlNode xmlWeaponDataNode = xmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strOriginalName + "\"]");
@@ -15533,9 +15542,9 @@ namespace Chummer
                                         foreach (XmlNode xmlPluginToAdd in xmlWeaponAccessoryToImport.SelectNodes(strPluginName + "/item[@useradded = \"no\"]"))
                                         {
                                             string strGearName = xmlPluginToAdd.Attributes["name"]?.InnerText;
-                                            if (!string.IsNullOrEmpty(strName))
+                                            if (!string.IsNullOrEmpty(strGearName))
                                             {
-                                                Gear objPlugin = objWeaponAccessory.Gear.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                                                Gear objPlugin = objWeaponAccessory.Gear.FirstOrDefault(x => x.IncludedInParent && !string.IsNullOrEmpty(x.Name) && (x.Name.Contains(strGearName) || strGearName.Contains(x.Name)));
                                                 if (objPlugin != null)
                                                 {
                                                     objPlugin.Quantity = Convert.ToDecimal(xmlPluginToAdd.Attributes["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
@@ -15584,9 +15593,9 @@ namespace Chummer
                                         foreach (XmlNode xmlSubPluginToAdd in xmlPluginToAdd.SelectNodes(strPluginNodeName + "/item[@useradded = \"no\"]"))
                                         {
                                             string strGearName = xmlSubPluginToAdd.Attributes["name"]?.InnerText;
-                                            if (!string.IsNullOrEmpty(strName))
+                                            if (!string.IsNullOrEmpty(strGearName))
                                             {
-                                                Gear objPlugin = objWeaponAccessory.Gear.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                                                Gear objPlugin = objWeaponAccessory.Gear.FirstOrDefault(x => x.IncludedInParent && !string.IsNullOrEmpty(x.Name) && (x.Name.Contains(strGearName) || strGearName.Contains(x.Name)));
                                                 if (objPlugin != null)
                                                 {
                                                     objPlugin.Quantity = Convert.ToDecimal(xmlSubPluginToAdd.Attributes["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
@@ -15597,9 +15606,9 @@ namespace Chummer
                                         }
                                     }
                                 }
-                                else
+                                else if (!string.IsNullOrEmpty(strName))
                                 {
-                                    Gear objPlugin = objWeaponAccessory.Gear.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                                    Gear objPlugin = objWeaponAccessory.Gear.FirstOrDefault(x => x.IncludedInParent && !string.IsNullOrEmpty(x.Name) && (x.Name.Contains(strName) || strName.Contains(x.Name)));
                                     if (objPlugin != null)
                                     {
                                         objPlugin.Quantity = Convert.ToDecimal(xmlPluginToAdd.Attributes["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
@@ -15934,10 +15943,9 @@ namespace Chummer
                     else if (strSpellName.StartsWith("Destroy "))
                     {
                         strForcedValue = strSpellName.TrimStartOnce("Destroy ");
-                        if (xmlHeroLabSpell.Attributes["type"]?.InnerText == "Physical")
-                            strSpellName = "Destroy [Vehicle]";
-                        else
-                            strSpellName = "Destroy [Free Spirit]";
+                        strSpellName = xmlHeroLabSpell.Attributes["type"]?.InnerText == "Physical"
+                            ? "Destroy [Vehicle]"
+                            : "Destroy [Free Spirit]";
                     }
                     else if (strSpellName.StartsWith("Insecticide "))
                     {

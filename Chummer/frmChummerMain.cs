@@ -56,8 +56,9 @@ namespace Chummer
         private readonly string _strCurrentVersion;
 
 #region Control Events
-        public frmChummerMain()
+        public frmChummerMain(bool isUnitTest = false)
         {
+            Utils.IsUnitTest = isUnitTest;
             InitializeComponent();
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             _strCurrentVersion = $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
@@ -86,7 +87,7 @@ namespace Chummer
             GlobalOptions.MRUChanged += PopulateMRUToolstripMenu;
 
             // Delete the old executable if it exists (created by the update process).
-            foreach (string strLoopOldFilePath in Directory.GetFiles(Application.StartupPath, "*.old", SearchOption.AllDirectories))
+            foreach (string strLoopOldFilePath in Directory.GetFiles(Utils.GetStartupPath, "*.old", SearchOption.AllDirectories))
             {
                 if (File.Exists(strLoopOldFilePath))
                     File.Delete(strLoopOldFilePath);
@@ -166,22 +167,28 @@ namespace Chummer
             object lstCharactersToLoadLock = new object();
             bool blnShowTest = false;
             object blnShowTestLock = new object();
-            Parallel.For(1, strArgs.Length, i =>
+            if (!Utils.IsUnitTest)
             {
-                strLoop = strArgs[i];
-                if (strLoop == "/test")
-                {
-                    lock (blnShowTestLock)
-                        blnShowTest = true;
-                }
-                else if (!strLoop.StartsWith('/'))
-                {
-                    Character objLoopCharacter = LoadCharacter(strLoop);
-                    lock (lstCharactersToLoadLock)
-                        lstCharactersToLoad.Add(objLoopCharacter);
-                }
-            });
-
+                Parallel.For(1, strArgs.Length, i =>
+              {
+                  strLoop = strArgs[i];
+                  if (strLoop == "/test")
+                  {
+                      lock (blnShowTestLock)
+                          blnShowTest = true;
+                  }
+                  else if (!strLoop.StartsWith('/'))
+                  {
+                      if (!File.Exists(strLoop))
+                      {
+                          throw new ArgumentException("Chummer startet with unknown command line arguments: " + strArgs.Aggregate((j, k) => j + " " + k));
+                      }
+                      Character objLoopCharacter = LoadCharacter(strLoop);
+                      lock (lstCharactersToLoadLock)
+                          lstCharactersToLoad.Add(objLoopCharacter);
+                  }
+              });
+            }
             frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
             if (blnShowTest)
             {
@@ -575,7 +582,7 @@ namespace Chummer
         private void mnuNewCritter_Click(object sender, EventArgs e)
         {
             Character objCharacter = new Character();
-            string settingsPath = Path.Combine(Application.StartupPath, "settings");
+            string settingsPath = Path.Combine(Utils.GetStartupPath, "settings");
             string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
 
             Cursor objOldCursor = Cursor;
@@ -910,7 +917,7 @@ namespace Chummer
 
         private void mnuToolsTranslator_Click(object sender, EventArgs e)
         {
-            string strTranslator = Path.Combine(Application.StartupPath, "Translator.exe");
+            string strTranslator = Path.Combine(Utils.GetStartupPath, "Translator.exe");
             if (File.Exists(strTranslator))
                 Process.Start(strTranslator);
         }
@@ -922,7 +929,7 @@ namespace Chummer
         /// </summary>
         private void ShowNewForm(object sender, EventArgs e)
         {
-            string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", "default.xml");
             Cursor objOldCursor = Cursor;
             if (!File.Exists(strFilePath))
             {
@@ -936,7 +943,7 @@ namespace Chummer
             }
             Cursor = Cursors.WaitCursor;
             Character objCharacter = new Character();
-            string settingsPath = Path.Combine(Application.StartupPath, "settings");
+            string settingsPath = Path.Combine(Utils.GetStartupPath, "settings");
             string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
 
             if (settingsFiles.Length > 1)

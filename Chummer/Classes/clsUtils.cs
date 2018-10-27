@@ -20,7 +20,8 @@
  using System.ComponentModel;
  using System.Diagnostics;
 ﻿using System.IO;
- using System.Reflection;
+using System.Linq;
+using System.Reflection;
  using System.Windows.Forms;
 
 namespace Chummer
@@ -30,7 +31,7 @@ namespace Chummer
         public static void BreakIfDebug()
         {
 #if DEBUG
-            if (Debugger.IsAttached)
+            if (Debugger.IsAttached && !IsUnitTest)
                 Debugger.Break();
 #endif
         }
@@ -40,6 +41,25 @@ namespace Chummer
         public static bool IsDesignerMode => LicenseManager.UsageMode == LicenseUsageMode.Designtime;
 
         public static Version CachedGitVersion { get; set; }
+
+        /// <summary>
+        /// This property is set in the Constructor of frmChummerMain (and NO where else!)
+        /// </summary>
+        public static bool IsUnitTest { get; set; }
+
+        /// <summary>
+        /// Returns the actuall path of the Chummer-Directory regardless of running as Unit test or not.
+        /// </summary>
+
+        public static string GetStartupPath
+        {
+            get
+            {
+                if (!Utils.IsUnitTest)
+                    return Application.StartupPath;
+                return AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+            }
+        }
 
         public static int GitUpdateAvailable()
         {
@@ -105,7 +125,7 @@ namespace Chummer
             }
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                FileName = Application.StartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName,
+                FileName = Utils.GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName,
                 Arguments = arguments
             };
             Application.Exit();
