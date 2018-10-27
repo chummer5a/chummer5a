@@ -560,7 +560,8 @@
           <oneof>
             <quality>The Athlete's Way</quality>
             <quality>The Spiritual Way</quality>
-          </oneof>
+            <quality>The Invisible Way</quality>
+			</oneof>
         </required>
       </adeptwayrequires>
     </power>
