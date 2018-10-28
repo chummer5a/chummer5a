@@ -140,7 +140,7 @@
 			<key>Label_LP</key>
 			<text>LP:</text>
 		</string>
-    <string>
+		<string>
 			<key>String_KarmaRemaining</key>
 			<text>Karma restant</text>
 		</string>
@@ -1583,7 +1583,7 @@
 		</string>
 		<string>
 			<key>Message_UnbindFocus</key>
-			<text>ÊTES-vous sûr de vouloir délier ce Focus ?</text>
+			<text>Êtes-vous sûr de vouloir délier ce Focus ?</text>
 		</string>
 		<string>
 			<key>MessageTitle_UnbindFocus</key>
@@ -3137,11 +3137,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_Cyberware</key>
-			<text>Cyberware:</text>
+			<text>Cyberware :</text>
 		</string>
 		<string>
 			<key>Label_Bioware</key>
-			<text>Bioware:</text>
+			<text>Bioware :</text>
 		</string>
 		<string>
 			<key>Label_EssenceHole</key>
@@ -3747,10 +3747,10 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<key>Label_OtherEssence</key>
 			<text>Essence :</text>
 		</string>
-    <string>
-      <key>String_NuyenRemaining</key>
-      <text>Nuyens restants</text>
-    </string>
+		<string>
+			<key>String_NuyenRemaining</key>
+			<text>Nuyens restants</text>
+		</string>
 		<string>
 			<key>Label_OtherNuyenRemain</key>
 			<text>Nuyens restants :</text>
@@ -6822,7 +6822,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_DeleteLimitModifier</key>
-			<text>Etes-vous sûr de vouloir supprimer cette limite Modifiée?</text>
+			<text>Êtes-vous sûr de vouloir supprimer cette limite Modifiée ?</text>
 		</string>
 		<string>
 			<key>Message_CannotDeleteLimitModifier</key>
@@ -7226,7 +7226,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_ConfirmKarmaandNuyenExpense</key>
-			<text>Etes-vous sûr de vouloir dépenser {2} Karma et {3} Nuyens pour améliorer de {0} à {1} ?</text>
+			<text>Êtes-vous sûr de vouloir dépenser {2} Karma et {3} Nuyens pour améliorer de {0} à {1} ?</text>
 		</string>
 		<string>
 			<key>MessageTitle_NotHighestGrade</key>
@@ -7330,7 +7330,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_Archtype</key>
-			<text>Archetype:</text>
+			<text>Archétype :</text>
 		</string>
 		<string>
 			<key>MessageTitle_DeleteGrade</key>
@@ -7342,19 +7342,19 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_DeleteInitiateGrade</key>
-			<text>Est-ce que vous sûr de vouloir effacer ce niveau d'initiation et tous les bonus associés?</text>
+			<text>Êtes-vous sûr de vouloir effacer ce niveau d'initiation et tous les bonus associés ?</text>
 		</string>
 		<string>
 			<key>Message_DeleteSubmersionGrade</key>
-			<text>Est-ce que vous sûr de vouloir effacer ce niveau de conversion et tous les bonus associés?</text>
+			<text>Êtes-vous sûr de vouloir effacer ce niveau de conversion et tous les bonus associés ?</text>
 		</string>
 		<string>
 			<key>Message_DeleteArt</key>
-			<text>Est-ce que vous sûr de vouloir effacer cet art?</text>
+			<text>Êtes-vous sûr de vouloir effacer cet art ?</text>
 		</string>
 		<string>
 			<key>Message_DeleteEnhancement</key>
-			<text>Est-ce que vous sûr de vouloir effacer cette amélioration?</text>
+			<text>Êtes-vous sûr de vouloir effacer cette amélioration ?</text>
 		</string>
 		<string>
 			<key>Message_InvalidAttributeExcess</key>
@@ -7386,7 +7386,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_Schooling</key>
-			<text>Schooling</text>
+			<text>Scolarité</text>
 		</string>
 		<string>
 			<key>Label_ValAugmented</key>
@@ -7394,15 +7394,15 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Tip_OptionsUnarmedSkillImprovements</key>
-			<text>Enabling this house rule allows Knucks to benefit from bonuses that apply to unarmed attacks including DV bonuses.</text>
+			<text>Les armes qui utilisent la compétence combat non armé bénéficient des bonus qui s'appliquent aux attaques non armées, y compris les bonus VD.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsIgnoreArt</key>
-			<text>Enabling this house rule allows all metamagics, enhancements, enchantments, and rituals to ignore the Art requirement detailed in Street Grimoire.</text>
+			<text>Permet à toutes les métamagiques, améliorations, enchantements et rituels d'ignorer l'exigence artistique détaillée dans 'Street Grimoire'.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsCyberlegMovement</key>
-			<text>Enabling this house rule allows characters with two Cyberlegs to use the Cyberlegs Agility to calculate movement rates.</text>
+			<text>Permet aux caractères avec deux jambes de cyber d'utiliser l'agilité de jambes de cyber pour calculer des taux de mouvement.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsDontDoubleQualities</key>
@@ -7414,15 +7414,15 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Tip_OptionsExceptionalNotMaxed</key>
-			<text>Enabling this house rule will allow two attributes to be at the metatype maximum rather than one if one of those attributes is improved by Exceptional Attribute.</text>
+			<text>Permet à deux attributs d'être au maximum du métatype plutôt qu'à un si l'un de ces attributs est amélioré par un attribut exceptionnel.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsUsePointsOnBrokenGroups</key>
-			<text>Enabling this house rule will allow Skill Points to be spent on skills belonging to a broken skill group.</text>
+			<text>Permet de dépenser des points de compétence sur des compétences appartenant à un groupe de compétences cassées.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsAllowInitiation</key>
-			<text>Enabling this house rule will allow Initiation/Submersion in Create mode.</text>
+			<text>Allows Initiation/Submersion using Karma in Create mode.</text>
 		</string>
 		<string>
 			<key>Label_TraditionName</key>
@@ -7498,7 +7498,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_ConfirmKarmaExpenseSkillSpecialization</key>
-			<text>Est-ce que vous êtes sûr de dépenser {0} Karma pour une spécialisation de compétence ?</text>
+			<text>Êtes-vous sûr de dépenser {0} Karma pour une spécialisation de compétence ?</text>
 		</string>
 		<string>
 			<key>String_ExpenseLearnSpecialization</key>
@@ -7760,31 +7760,31 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_DeleteWeaponMount</key>
-			<text>Est-ce que vous sûr de vouloir effacer cette monture d'arme?</text>
+			<text>Êtes-vous sûr de vouloir effacer cette monture d'arme ?</text>
 		</string>
 		<string>
 			<key>Message_DeleteVehicleLocationBase</key>
-			<text>Est-ce que vous sûr de vouloir effacer cet emplacement ? Tous les céhicules de cet emplacement seront déplacés dans le conteneur du céhicule sélectionné.</text>
+			<text>Êtes-vous sûr de vouloir effacer cet emplacement ? Tous les céhicules de cet emplacement seront déplacés dans le conteneur du céhicule sélectionné.</text>
 		</string>
 		<string>
 			<key>Message_LowerQualityLevel</key>
-			<text>Est-ce que vous sûr de vouloir effacer un niveau de cette qualité?</text>
+			<text>Êtes-vous sûr de vouloir effacer un niveau de cette qualité?</text>
 		</string>
 		<string>
 			<key>Message_DeleteExoticSkill</key>
-			<text>Est-ce que vous sûr de vouloir effacer cette compétence exotique?</text>
+			<text>Êtes-vous sûr de vouloir effacer cette compétence exotique?</text>
 		</string>
 		<string>
 			<key>Message_LowerMetatypeQualityLevel</key>
-			<text>Est-ce que vous sûr de vouloir effacer un niveau de cette qualité metatype pour {0}?</text>
+			<text>Êtes-vous sûr de vouloir effacer un niveau de cette qualité metatype pour {0}?</text>
 		</string>
 		<string>
 			<key>Message_LowerPositiveQualityLevelCareer</key>
-			<text>Est-ce que vous sûr de vouloir effacer un niveau de cette qualité positive ? Vous ne recevrez pas de Karma pour l'avoir enlevé.</text>
+			<text>Êtes-vous sûr de vouloir effacer un niveau de cette qualité positive ? Vous ne recevrez pas de Karma pour l'avoir enlevé.</text>
 		</string>
 		<string>
 			<key>Message_DeleteCalendarWeek</key>
-			<text>Est-ce que vous sûr de vouloir effacer cette entrée du calendrier?</text>
+			<text>Êtes-vous sûr de vouloir effacer cette entrée du calendrier ?</text>
 		</string>
 		<string>
 			<key>Message_RestrictedGearUsed</key>
@@ -8233,6 +8233,484 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>String_Search</key>
 			<text>Chercher:</text>
+		</string>
+		<string>
+			<key>String_NotApplicable</key>
+			<text>s.o.</text>
+		</string>
+		<string>
+			<key>String_Error</key>
+			<text>Erreur</text>
+		</string>
+		<string>
+			<key>String_Limit</key>
+			<text>Limite:</text>
+		</string>
+		<string>
+			<key>String_All</key>
+			<text>Toutes</text>
+		</string>
+		<string>
+			<key>String_Name</key>
+			<text>Nom</text>
+		</string>
+		<string>
+			<key>Label_Open</key>
+			<text>Ouvrir</text>
+		</string>
+		<string>
+			<key>Button_Reset</key>
+			<text>Réinitialiser</text>
+		</string>
+		<string>
+			<key>Button_ApplyManeuver</key>
+			<text>Appliquer la manœuvre</text>
+		</string>
+		<string>
+			<key>Label_InitiativeManeuvers</key>
+			<text>Manœuvres d'initiative</text>
+		</string>
+		<string>
+			<key>Label_Round</key>
+			<text>Rondes</text>
+		</string>
+		<string>
+			<key>Label_Vehicles</key>
+			<text>Véhicules</text>
+		</string>
+		<string>
+			<key>Label_SumtoTenHeritage</key>
+			<text>Métatype:</text>
+		</string>
+		<string>
+			<key>Label_SumtoTenResources</key>
+			<text>Ressources :</text>
+		</string>
+		<string>
+			<key>Message_SumtoTenSpellLimit</key>
+			<text>Vous ne pouvez pas avoir plus de magie que ce qui est autorisé par votre priorité de talent sélectionnée.</text>
+		</string>
+		<string>
+			<key>Message_FailedSave</key>
+			<text>Ce fichier n'a pas pu être sauvé en raison de l'erreur XML suivante :\n{0}</text>
+		</string>
+		<string>
+			<key>String_OverPriorityPoints</key>
+			<text>{0} de {1}: {2} Karma</text>
+		</string>
+		<string>
+			<key>Menu_Main_HeroLabImporter</key>
+			<text>Hero Lab Importateur</text>
+		</string>
+		<string>
+			<key>About_Label_Contributors</key>
+			<text>Merci à tous les participants de GitHub !</text>
+		</string>
+		<string>
+			<key>Treenode_Roster_WatchFolder</key>
+			<text>Dossier monitoré</text>
+		</string>
+		<string>
+			<key>Menu_AddFromFile</key>
+			<text>&amp;Ajouter à un fichier</text>
+		</string>
+		<string>
+			<key>Button_AddMod</key>
+			<text>Ajouter modification</text>
+		</string>
+		<string>
+			<key>Button_DeleteMod</key>
+			<text>Enlever modification</text>
+		</string>
+		<string>
+			<key>Node_AdditionalMods</key>
+			<text>Modification supplémentaires</text>
+		</string>
+		<string>
+			<key>Message_InvalidExConWare</key>
+			<text>Les éléments suivants de Cyberware / Bioware limités ne sont pas permis sur un ExCon :</text>
+		</string>
+		<string>
+			<key>Message_ExtraPoints</key>
+			<text>Vous avez {0} points à dépenser pour {1}.\nVous êtes sûr de vouloir perdre ces points supplémentaires ?</text>
+		</string>
+		<string>
+			<key>Message_ConfirmKarmaExpenseLowerLevel</key>
+			<text>Êtes-vous sûr de dépenser {1} Karma pour enlever un level de {0} ?</text>
+		</string>
+		<string>
+			<key>Label_DroneModSlots</key>
+			<text>Fentes de modification :</text>
+		</string>
+		<string>
+			<key>Menu_Main_ClearUnpinnedItems</key>
+			<text>&amp;Effacer éléments non épinglés</text>
+		</string>
+		<string>
+			<key>Message_NegativeQualityAndMetatypeLimit</key>
+			<text>Vous ne pouvez pas gagner plus de {0} à la qualité négative et au métatype.</text>
+		</string>
+		<string>
+			<key>Message_ReapplyImprovementsFoundOutdatedItems_Top</key>
+			<text>En réappliquant les mesures d'amélioration, on a découvert que les éléments suivants n'avaient pas des entrées dans les fichiers de données :\n\n</text>
+		</string>
+		<string>
+			<key>String_KnowledgeSkillFilterTotalRatingAboveZero</key>
+			<text>Montrer les compétences de connaissance total des points &gt; 0</text>
+		</string>
+		<string>
+			<key>String_KnowledgeSkillFilterRatingZero</key>
+			<text>Montrer de compétences de connaissances = 0</text>
+		</string>
+		<string>
+			<key>String_ExpenseModifiedLifestyle</key>
+			<text>Modification du niveau de vie</text>
+		</string>
+		<string>
+			<key>String_DamageResistance</key>
+			<text>Résistance aux dommages</text>
+		</string>
+		<string>
+			<key>Label_QualityLevel</key>
+			<text>Niveau de qualité :</text>
+		</string>
+		<string>
+			<key>Label_StartingInit</key>
+			<text>Initiative de démarrage</text>
+		</string>
+		<string>
+			<key>InitRoller_Description</key>
+			<text>Entrer le total des résultats des d6.</text>
+		</string>
+		<string>
+			<key>Label_InitRoller_ResultOf</key>
+			<text>Résultat de {0}D6 :</text>
+		</string>
+		<string>
+			<key>Tip_OptionsDontDoubleQualityRefunds</key>
+			<text>Permet aux caractères en mode carrière de supprimer les qualités négatives à leur coût normal au lieu de les doubler.</text>
+		</string>
+		<string>
+			<key>Tip_OptionsDontDoubleQualityPurchases</key>
+			<text>Permet aux caractères en mode carrière d'acheter des qualités positives à leur prix normal au lieu de les doubler.</text>
+		</string>
+		<string>
+			<key>Skill_SortAttributeValue</key>
+			<text>Valeur d'attribut</text>
+		</string>
+		<string>
+			<key>Skill_SortAttributeName</key>
+			<text>Nom de l'attribut</text>
+		</string>
+		<string>
+			<key>Skill_SortGroupName</key>
+			<text>Nom de groupe</text>
+		</string>
+		<string>
+			<key>Skill_SortCategory</key>
+			<text>Catégorie</text>
+		</string>
+		<string>
+			<key>Skill_NativeLanguageShort</key>
+			<text>M</text>
+		</string>
+		<string>
+			<key>Tip_OptionStrictSkillGroups</key>
+			<text>Interdit de briser des groupes de compétences avec le karma pendant le mode création</text>
+		</string>
+		<string>
+			<key>Label_SelectMartialArt_IncludedTechniques</key>
+			<text>Permet d'apprendre les techniques suivantes :</text>
+		</string>
+		<string>
+			<key>Label_DrugEffects</key>
+			<text>Effets :</text>
+		</string>
+		<string>
+			<key>Menu_AddWeaponMount</key>
+			<text>Ajouter un porte-arme</text>
+		</string>
+		<string>
+			<key>Menu_EditWeaponMount</key>
+			<text>&amp;Modifier le porte-arme</text>
+		</string>
+		<string>
+			<key>String_WeaponMounts</key>
+			<text>Porte-arme</text>
+		</string>
+		<string>
+			<key>Label_FiringMode</key>
+			<text>Mode de tir :</text>
+		</string>
+		<string>
+			<key>Label_Biography</key>
+			<text>Biographie :</text>
+		</string>
+		<string>
+			<key>Message_KarmaNuyenExchange</key>
+			<text>Nuyen ne peut être échangé qu'en multiples de 2.000 ¥.</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_UseLifeModule</key>
+			<text>Modules de vie disponibles</text>
+		</string>
+		<string>
+			<key>Tip_Omae_Warning</key>
+			<text>Omae est indépendant de la volonté des développeurs actuels et contient de vieux caractères qui peuvent ne pas fonctionner ou planter la version actuelle de Chummer. L'utilisation se fait à vos propres risques.\nVoulez-vous continuer ?</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_Missions</key>
+			<text>Cacher les qualités interdites par les missions</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_Dronemods_Pilot</key>
+			<text>Utiliser l'attribut maximum pour l'attribut pilote</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_Dronemods</key>
+			<text>Utiliser les règles de modification des drones (R5 122)</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_StrictSkillGroups</key>
+			<text>Interprétation stricte des groupes de compétences de bris en mode création</text>
+		</string>
+		<string>
+			<key>Checkbox_SelectLifeModule_LimitList</key>
+			<text>Afficher uniquement les modules de vie qui peuvent être pris</text>
+		</string>
+		<string>
+			<key>String_WorkingForTheMan</key>
+			<text>Au service de l'homme</text>
+		</string>
+		<string>
+			<key>String_WorkingForThePeople</key>
+			<text>Au service du peuple</text>
+		</string>
+		<string>
+			<key>String_WorkingForTheManPeople</key>
+			<text>Au service de l'homme / du peuple</text>
+		</string>
+		<string>
+			<key>Button_Options_UploadPastebin</key>
+			<text>Transférer le fichier à Pastebin</text>
+		</string>
+		<string>
+			<key>Message_SelectAdvancedLifestyle_OverLPLimit</key>
+			<text>Trop de points de style de vie ont été dépensés pour permettre ce style de vie.</text>
+		</string>
+		<string>
+			<key>Message_SelectGeneric_ChargenRestriction</key>
+			<text>Vous ne pouvez pas sélectionner cette {0} parce que votre caractère a déjà été créé.</text>
+		</string>
+		<string>
+			<key>Message_SelectGeneric_PriorityRestriction</key>
+			<text>Vous ne pouvez pas sélectionner cette {0} parce que la méthode de création de votre caractère ne vous permet pas d'acheter cette {0}.</text>
+		</string>
+		<string>
+			<key>Message_SelectGeneric_CareerOnlyRestriction</key>
+			<text>Vous ne pouvez pas sélectionner cette {0} parce que votre caractère n'a pas encore été créé.</text>
+		</string>
+		<string>
+			<key>Label_FilterByKarma</key>
+			<text>Filtrer par Karma :</text>
+		</string>
+		<string>
+			<key>Message_SelectQuality_RequireESSBelow</key>
+			<text>Essence en dessous de {0} : vous avez {1}</text>
+		</string>
+		<string>
+			<key>Message_SelectQuality_RequireESSAbove</key>
+			<text>Essence au-dessus de {0} : vous avez {1}</text>
+		</string>
+		<string>
+			<key>Message_SelectQuality_RequireESSGradeBelow</key>
+			<text>Moins de {0} essence consommée par grade {1} : vous avez {2}</text>
+		</string>
+		<string>
+			<key>Message_SelectQuality_RequireESSGradeAbove</key>
+			<text>Au moins {0} essence consommée par grade {1} : vous avez {2}</text>
+		</string>
+		<string>
+			<key>Title_Browse</key>
+			<text>Parcourir</text>
+		</string>
+		<string>
+			<key>Title_ListView</key>
+			<text>Vue en liste</text>
+		</string>
+		<string>
+			<key>Button_Up_To_Date</key>
+			<text>Déjà à jour</text>
+		</string>
+		<string>
+			<key>Button_Install_Restart</key>
+			<text>Installation et redémarrage</text>
+		</string>
+		<string>
+			<key>Label_Updater_Status</key>
+			<text>Statut de mise à jour :</text>
+		</string>
+		<string>
+			<key>String_Update_Available</key>
+			<text>Mise à jour disponible en version {0} !</text>
+		</string>
+		<string>
+			<key>String_Currently_Installed_Version</key>
+			<text>La version actuellement installée est {0}.</text>
+		</string>
+		<string>
+			<key>String_Latest_Version</key>
+			<text>La plus récente version {0} de Chummer5 est {1}.</text>
+		</string>
+		<string>
+			<key>Message_Update_CloseForms</key>
+			<text>Une nouvelle version de Chummer5a a été téléchargée automatiquement. Doit-il être installé et l'application redémarrée ?</text>
+		</string>
+		<string>
+			<key>Button_Export_SaveJsonAs</key>
+			<text>Sauvegarder JSON sous</text>
+		</string>
+		<string>
+			<key>Message_CharacterOptions_OpenOptions</key>
+			<text>Ceci semble être le premier démarrage de Chummer, parce qu'il n'y a pas de fichier de configuration disponible. Voulez-vous ouvrir la dialogue des options maintenant ?</text>
+		</string>
+		<string>
+			<key>MessageTitle_CharacterOptions_OpenOptions</key>
+			<text>Aucun fichier de configuration trouvé</text>
+		</string>
+		<string>
+			<key>MessageTitle_KarmaValue</key>
+			<text>Caractère valeur du karma</text>
+		</string>
+		<string>
+			<key>Menu_KarmaValue</key>
+			<text>Calculer la valeur du karma</text>
+		</string>
+		<string>
+			<key>Title_HeroLabImporter</key>
+			<text>Hero Lab Importateur</text>
+		</string>
+		<string>
+			<key>Message_HeroLabImporterWarning_Title</key>
+			<text>Problèmes avec Hero Lab' Importateur</text>
+		</string>
+		<string>
+			<key>String_SelectPORFile</key>
+			<text>Sélectionner le fichier POR</text>
+		</string>
+		<string>
+			<key>String_ImportCharacter</key>
+			<text>Importer caractère</text>
+		</string>
+		<string>
+			<key>Label_HeroLabTrademarks</key>
+			<text>Hero Lab et le logo Hero Lab sont des marques déposées de LWD Technology, Inc.</text>
+		</string>
+		<string>
+			<key>MessageTitle_ImprovementLoadError</key>
+			<text>Erreur survenue lors du chargement des améliorations</text>
+		</string>
+		<string>
+			<key>Message_Duplicate_CustomDataDirectoryName</key>
+			<text>Un répertoire de données personnalisé de ce nom existe déjà.</text>
+		</string>
+		<string>
+			<key>Label_CustomDataDirectories</key>
+			<text>Répertoires de données personnalisés à utiliser (les modifications ne sont appliquées qu'après un redémarrage)</text>
+		</string>
+		<string>
+			<key>Message_Duplicate_CustomDataDirectoryName_Title</key>
+			<text>Dupliquer le nom d'un répertoire de données personnalisé</text>
+		</string>
+		<string>
+			<key>Message_MissingSourceBooks_Title</key>
+			<text>Livres manquants</text>
+		</string>
+		<string>
+			<key>Message_MissingCustomDataDirectories_Title</key>
+			<text>Répertoires de données personnalisées manquants</text>
+		</string>
+		<string>
+			<key>Message_InvalidCharacters</key>
+			<text>Ce texte contient des caractères non valides. Caractère(s) non valide(s) : "\n Supprimez tous les caractères non valides et réessayez.</text>
+		</string>
+		<string>
+			<key>Label_CreateImprovementExactly</key>
+			<text>Exactement :</text>
+		</string>
+		<string>
+			<key>Message_Updater_CleanReinstallPrompt</key>
+			<text>Effectuer une réinstallation complète supprimera tous les fichiers du répertoire Chummer5a qui ne sont pas dans le téléchargement principal. Cela inclut les fichiers de données personnalisés, les sauvegardes automatiques, les fichiers de feuilles personnalisés, les localisations personnalisées et tous les paramètres différents de ceux par défaut.\n\nÊtes-vous sûr de souhaiter une réinstallation propre ?
+
+</text>
+		</string>
+		<string>
+			<key>Button_Clean_Reinstall</key>
+			<text>Propre Réinstaller</text>
+		</string>
+		<string>
+			<key>MessageTitle_Updater_CleanReinstallPrompt</key>
+			<text>Propre Réinstaller ?</text>
+		</string>
+		<string>
+			<key>Button_Redownload</key>
+			<text>Retélécharger</text>
+		</string>
+		<string>
+			<key>Button_Download</key>
+			<text>Télécharger</text>
+		</string>
+		<string>
+			<key>Checkbox_SelectGeneric_LimitList</key>
+			<text>Montrer seulement {0} vous pouvez prendre</text>
+		</string>
+		<string>
+			<key>Message_SelectGeneric_Limit</key>
+			<text>Cette {0} ne peut pas être prise plus de {1} fois.</text>
+		</string>
+		<string>
+			<key>Label_SelectLifestyle_CostPerDay</key>
+			<text>Coût par jour :</text>
+		</string>
+		<string>
+			<key>Label_SelectSkillSpecialization_Description</key>
+			<text>Sélectionnez une spécialisation de compétence à ajouter à votre caractère.</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_UnusedLP</key>
+			<text>Points de vie non utilisés :</text>
+		</string>
+		<string>
+			<key>Checkbox_Option_FreeMartialArtSpecialization</key>
+			<text>Permettre aux arts martiaux d'accorder une spécialisation libre dans une compétence</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_UnarmedSkillImprovements</key>
+			<text>Les armes utilisées avec des techniques de combat non armées reçoivent le bonus pour cette technique</text>
+		</string>
+		<string>
+			<key>Message_DuplicateDrugComponentWarning</key>
+			<text>Il est impossible d'ajouter deux fois le même composant.</text>
+		</string>
+		<string>
+			<key>Button_RemoveEcho</key>
+			<text>Enlever l'Écho</text>
+		</string>
+		<string>
+			<key>Button_RemoveMetamagic</key>
+			<text>Enlever Métamagique</text>
+		</string>
+		<string>
+			<key>Skill_SortDicepool</key>
+			<text>Poule aux dés</text>
+		</string>
+		<string>
+			<key>Skill_SortLowerDicepool</key>
+			<text>Petit poule aux dés</text>
+		</string>
+		<string>
+			<key>Warning_NoLimitFound</key>
+			<text>Impossible de trouver la limite appropriée à modifier. Assurez-vous d'avoir sélectionné un modificateur de limite personnalisé.</text>
 		</string>
 	</strings>
 </chummer>
