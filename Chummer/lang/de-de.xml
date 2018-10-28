@@ -328,7 +328,7 @@
 		</string>
 		<string>
 			<key>String_Varies</key>
-			<text>Variert</text>
+			<text>Variiert</text>
 		</string>
 		<string>
 			<key>String_Qualities</key>
@@ -912,7 +912,7 @@
 		</string>
 		<string>
 			<key>String_CyberzombieWILDescription</key>
-			<text>Werfen Sie die angegebene Anzahl an Würfeln und tragen Sie die Anzahl der Erfolge im dafür vorgesehenen Feld ein. Das bestimmt den Wert der negativen Eigenschaften die Sie wählen müssen um ein Cyberzombie zu werden.</text>
+			<text>Werfen Sie die angegebene Anzahl an Würfeln und tragen Sie die Anzahl der Erfolge im dafür vorgesehenen Feld ein. Das bestimmt den Wert der negativen Eigenschaften, die Sie wählen müssen um ein Cyberzombie zu werden.</text>
 		</string>
 		<string>
 			<key>Message_EnemyLimit</key>
@@ -1060,7 +1060,7 @@
 		</string>
 		<string>
 			<key>Message_SelectMartialArtTechnique</key>
-			<text>Sie müssen eine Kampfsportart wählen für die Sie eine Gabe hinzufügen wollen</text>
+			<text>Sie müssen eine Kampfsportart wählen, für die Sie eine Gabe hinzufügen wollen</text>
 		</string>
 		<string>
 			<key>MessageTitle_SelectMartialArtTechnique</key>
@@ -1112,11 +1112,11 @@
 		</string>
 		<string>
 			<key>MessageTitle_RegisteredSpriteLimit</key>
-			<text>Maximale registrierte Sprites</text>
+			<text>Maximal registrierte Sprites</text>
 		</string>
 		<string>
 			<key>Message_CannotRemoveCyberware</key>
-			<text>Dieser Gegenstand kann nicht entfernt werden weil er Grundausstattung der Cyberware ist.</text>
+			<text>Dieser Gegenstand kann nicht entfernt werden, weil er Grundausstattung der Cyberware ist.</text>
 		</string>
 		<string>
 			<key>MessageTitle_CannotRemoveCyberware</key>
@@ -1544,19 +1544,19 @@
 		</string>
 		<string>
 			<key>Message_ConfirmKarmaExpenseJoinGroup</key>
-			<text>Möchten Sie wirklich Karma ausgeben um dieser Gruppe beizutreten?</text>
+			<text>Möchten Sie wirklich Karma ausgeben, um dieser Gruppe beizutreten?</text>
 		</string>
 		<string>
 			<key>Message_ConfirmKarmaExpenseLeaveGroup</key>
-			<text>Möchten Sie wirklich Karma ausgeben um diese Gruppe zu verlassen?</text>
+			<text>Möchten Sie wirklich Karma ausgeben, um diese Gruppe zu verlassen?</text>
 		</string>
 		<string>
 			<key>Message_ConfirmKarmaExpenseJoinNetwork</key>
-			<text>Möchten Sie wirklich Karma ausgeben um diesem Netzwerk beizutreten?</text>
+			<text>Möchten Sie wirklich Karma ausgeben, um diesem Netzwerk beizutreten?</text>
 		</string>
 		<string>
 			<key>Message_ConfirmKarmaExpenseLeaveNetwork</key>
-			<text>Möchten Sie wirklich Karma ausgeben um das Netzwerk zu verlassen?</text>
+			<text>Möchten Sie wirklich Karma ausgeben, um das Netzwerk zu verlassen?</text>
 		</string>
 		<string>
 			<key>MessageTitle_ConfirmKarmaExpense</key>
@@ -1564,7 +1564,7 @@
 		</string>
 		<string>
 			<key>Message_NotEnoughNuyen</key>
-			<text>Sie haben nicht genügend Nuyen für diese Ausgabe.</text>
+			<text>Für diese Ausgabe haben Sie nicht genügend Nuyen.</text>
 		</string>
 		<string>
 			<key>MessageTitle_NotEnoughNuyen</key>
@@ -1732,7 +1732,7 @@
 		</string>
 		<string>
 			<key>String_SkillFilterAll</key>
-			<text>Zeige alle aktive Fertigkeiten</text>
+			<text>Zeige alle aktiven Fertigkeiten</text>
 		</string>
 		<string>
 			<key>String_SkillFilterRatingAboveZero</key>
@@ -2004,7 +2004,7 @@
 		</string>
 		<string>
 			<key>String_CloningMachineNumber</key>
-			<text>Wieviele Klone möchten Sie erstellen?</text>
+			<text>Wie viele Klone möchten Sie erstellen?</text>
 		</string>
 		<string>
 			<key>String_Grade</key>
@@ -2512,7 +2512,7 @@
 		</string>
 		<string>
 			<key>Tip_SkillsKnowledgeSkills</key>
-			<text>Charaktere erhalten (INT + LOG) × {0} freie Punkte, um Sie für allgemeine Wissenfertigkeiten und Sprachen auszugeben. Zusätzliche Stufen in Wissensfertigkeiten kosten {1} Karma pro neue Stufe. Eine Sprache mit der Stufe 0 wird als Ihre Muttersprache angesehen.</text>
+			<text>Charaktere erhalten (INT + LOG) × {0} freie Punkte, um Sie für allgemeine Wissensfertigkeiten und Sprachen auszugeben. Zusätzliche Stufen in Wissensfertigkeiten kosten {1} Karma pro neue Stufe. Eine Sprache mit der Stufe 0 wird als Ihre Muttersprache angesehen.</text>
 		</string>
 		<string>
 			<key>Skill_SortAlphabetical</key>
@@ -3994,11 +3994,11 @@
 		</string>
 		<string>
 			<key>Message_Omae_PasswordNoEmail</key>
-			<text>Ihr Passwort kann nicht zurück gesetzt werden, weil in ihrem Account keine E-Mailadresse hinterlegt ist.</text>
+			<text>Ihr Passwort kann nicht zurückgesetzt werden, weil in ihrem Account keine E-Mailadresse hinterlegt ist.</text>
 		</string>
 		<string>
 			<key>Message_Omae_PasswordReset</key>
-			<text>Ihr Passwort wurden zurück gesetzt. Ihnen wurde eine E-Mail mit dem neuen Passwort zugeschickt.</text>
+			<text>Ihr Passwort wurde zurückgesetzt. Ihnen wurde eine E-Mail mit dem neuen Passwort zugeschickt.</text>
 		</string>
 		<string>
 			<key>Message_Omae_InfoRequiresLogin</key>
@@ -4370,7 +4370,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_SkillRegroup</key>
-			<text>Erlaube das Regruppieren von Fertigkeiten, wenn alle den selben Wert haben.</text>
+			<text>Erlaube das Regruppieren von Fertigkeiten, wenn alle denselben Wert haben.</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_Dronemods</key>
@@ -4690,7 +4690,7 @@
 		</string>
 		<string>
 			<key>Label_SelectGear_DoItYourself</key>
-			<text>Selber generieren</text>
+			<text>Selbst generieren</text>
 		</string>
 		<string>
 			<key>Label_SelectGear_Hacked</key>
@@ -5078,7 +5078,7 @@
 		</string>
 		<string>
 			<key>Message_Update_NoNewUpdates</key>
-			<text>Zur Zeit sind keine neuen Updates verfügbar.</text>
+			<text>Zurzeit sind keine neuen Updates verfügbar.</text>
 		</string>
 		<string>
 			<key>Title_CharacterViewer</key>
@@ -5142,7 +5142,7 @@
 		</string>
 		<string>
 			<key>MessageTitle_CharacterOptions_CannotLoadSetting</key>
-			<text>Konfiguationsdatei nicht gefunden</text>
+			<text>Konfigurationsdatei nicht gefunden</text>
 		</string>
 		<string>
 			<key>Message_CharacterOptions_CannotLoadCharacter</key>
@@ -5796,7 +5796,7 @@
 		</string>
 		<string>
 			<key>Message_ConfirmReapplyImprovements</key>
-			<text>Chummer wird versuchen alle verbesserbaren Gegenstände zu finden um die erlaubten Verbesserungen wieder anzuwenden.Dieses bedeutet, dass sich Attribute, Fertigkeiten oder andere Werte verändern können, wenn die Gegenstände so etwas mit bringen. Es wird empfohlen den Charakter vorher zu speichern, bevor sie diese Operation durchführen. Wollen Sie wirklich die Verbesserungen erneut anwenden?</text>
+			<text>Chummer wird versuchen alle verbesserbaren Gegenstände zu finden um die erlaubten Verbesserungen wieder anzuwenden. Dieses bedeutet, dass sich Attribute, Fertigkeiten oder andere Werte verändern können, wenn die Gegenstände so etwas mit bringen. Es wird empfohlen den Charakter vorher zu speichern, bevor sie diese Operation durchführen. Wollen Sie wirklich die Verbesserungen erneut anwenden?</text>
 		</string>
 		<string>
 			<key>MessageTitle_ConfirmReapplyImprovements</key>
@@ -5863,7 +5863,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Option_AllowEditPartOfBaseWeapon</key>
-			<text>Waffenzubehör darf auch an nicht dafür vorgesehenen Stellen an der Waffen angebracht werden</text>
+			<text>Waffenzubehör darf auch an nicht dafür vorgesehenen Stellen an den Waffen angebracht werden</text>
 		</string>
 		<string>
 			<key>Checkbox_Option_AlternateMetatypeAttributeKarma</key>
@@ -5960,7 +5960,7 @@
 		</string>
 		<string>
 			<key>Message_OmaeUpload_DataSelectFiles</key>
-			<text>Bitte wählen Sie eine Datei die Sie hochladen möchten.</text>
+			<text>Bitte wählen Sie eine Datei, die Sie hochladen möchten.</text>
 		</string>
 		<string>
 			<key>Message_OmaeUpload_CannotUploadSheet</key>
@@ -6012,7 +6012,7 @@
 		</string>
 		<string>
 			<key>Tip_Power_DoublePoints</key>
-			<text>Die Kraftpunkkosten für diese Kraft wurden erhöht weil das Attribut um {0} über das Metatypmaximum gestiegen ist. Die gesteigerten Kosten beziehen sich nur auf die{0} Punkte, die über dem Maximum liegen.</text>
+			<text>Die Kraftpunktkosten für diese Kraft wurden erhöht, weil das Attribut um {0} über das Metatypmaximum gestiegen ist. Die gesteigerten Kosten beziehen sich nur auf die {0} Punkte, die über dem Maximum liegen.</text>
 		</string>
 		<string>
 			<key>Message_OmaeUpload_UploadFailed</key>
@@ -6079,7 +6079,7 @@
 		</string>
 		<string>
 			<key>Message_PossessionSave</key>
-			<text>Der Geist muss bevor er an ein Gefäss gebunden wird gespeichert werden. Wollen Sie nun speichern?</text>
+			<text>Der Geist muss - bevor er an ein Gefäß gebunden wird - gespeichert werden. Wollen Sie nun speichern?</text>
 		</string>
 		<string>
 			<key>String_Possessed</key>
@@ -6092,7 +6092,7 @@
 		</string>
 		<string>
 			<key>Tip_Metatype_PossessionTradition</key>
-			<text>Geister die durch eine Besessenheit basierenden Tradition beschworen wurden erhalten die mit der Besessenheit verbundenen Critter Kräfte anstelle der Materialisierung</text>
+			<text>Geister, die durch eine Besessenheit basierenden Tradition beschworen wurden, erhalten die mit der Besessenheit verbundenen Critterkräfte anstelle der Materialisierung</text>
 		</string>
 		<!-- Version 347 -->
 		<string>
@@ -6213,11 +6213,11 @@
 		</string>
 		<string>
 			<key>Checkbox_Option_PrintLeadershipAlternates</key>
-			<text>Alternative Führungsskills anzeigen(aus dem "War!" Regelwerk)</text>
+			<text>Alternative Führungsfertigkeiten anzeigen (aus dem "War!"-Regelwerk)</text>
 		</string>
 		<string>
 			<key>Checkbox_Option_PrintArcanaAlternates</key>
-			<text>Alternative Magieskills anzeigen(aus dem "Strassenmagie" Regelwerk)</text>
+			<text>Alternative Magiefertigkeiten anzeigen (aus dem "Straßenmagie"-Regelwerk)</text>
 		</string>
 		<!-- Version 360 -->
 		<string>
@@ -6254,8 +6254,7 @@
 		</string>
 		<string>
 			<key>MessageTitle_CannotRemoveQualityWeapon</key>
-			<text>Kann durch Gabe erhaltene Waffe nicht entfernen</text>
-			<text>Wollen Sie die Waffe, die durch eine Gabe hinzugefügt wurde, entfernen ?</text>
+			<text>Durch eine Gabe erhaltene Waffe kann nicht entfernt werden.</text>
 		</string>
 		<string>
 			<key>Label_ActiveSkill</key>
@@ -6302,7 +6301,7 @@
 		</string>
 		<string>
 			<key>Tip_Metatype_BloodSpirit</key>
-			<text>Alle Blutgeister werden mit mit aktiver Blutgeist-Metamagie beschworen und erhalten zusätzliche Critter-Kräfte</text>
+			<text>Alle Blutgeister werden mit aktiver Blutgeist-Metamagie beschworen und erhalten zusätzliche Critter-Kräfte</text>
 		</string>
 		<string>
 			<key>Checkbox_Metatype_BloodSpirit</key>
@@ -6323,7 +6322,7 @@
 		</string>
 		<string>
 			<key>String_Retrofit</key>
-			<text>Ein Fahrzeug auf Retro-Look umzubauen kostet einen Anteil der Basis-Kosten des Fahrzeuges. Bitte geben sie den Prozent-Anteil an.</text>
+			<text>Ein Fahrzeug auf Retrolook umzubauen kostet einen Anteil der Basiskosten des Fahrzeuges. Bitte geben Sie den Prozentanteil an.</text>
 		</string>
 		<!-- Version 401 -->
 		<string>
@@ -6373,7 +6372,7 @@
 		</string>
 		<string>
 			<key>Message_DeleteWeaponLocation</key>
-			<text>Möchten Sie diesen Ort wirklich löschen? Die gesamte Ausrüstung wird in den Hauptkontainer verschoben.</text>
+			<text>Möchten Sie diesen Ort wirklich löschen? Die gesamte Ausrüstung wird in den Hauptcontainer verschoben.</text>
 		</string>
 		<!-- Version 405 -->
 		<string>
@@ -6382,11 +6381,11 @@
 		</string>
 		<string>
 			<key>Message_SelectGearName</key>
-			<text>Ausrüstung die benannt werden soll muss vorher ausgewählt werden.</text>
+			<text>Ausrüstung, die benannt werden soll, muss vorher ausgewählt werden.</text>
 		</string>
 		<string>
 			<key>String_GearName</key>
-			<text>Geben Sie den Namen für die Ausrüstung ein(oder Feld leer lassen um eine Benennung zu löschen).</text>
+			<text>Geben Sie den Namen für die Ausrüstung ein (oder Feld leer lassen um eine Benennung zu löschen).</text>
 		</string>
 		<!-- Version 408 -->
 		<string>
@@ -6409,7 +6408,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Option_SpecialAttributeKarmaLimit</key>
-			<text>Spezialattribute(EDG,MAG,RES) werden während der Charaktererschaffung nicht dem 50% Limit für Attribute angerechnet</text>
+			<text>Spezialattribute (EDG,MAG,RES) werden während der Charaktererschaffung nicht dem 50% Limit für Attribute angerechnet</text>
 		</string>
 		<!-- Version 418 -->
 		<string>
@@ -6484,11 +6483,11 @@
 		</string>
 		<string>
 			<key>Label_Options_DefaultCharacterSheet</key>
-			<text>Standard Charakaterbogen:</text>
+			<text>Standard Charakterbogen:</text>
 		</string>
 		<string>
 			<key>Menu_Main_DumpshockThread</key>
-			<text>&amp;Zum offiziellem Forum</text>
+			<text>&amp;Zum offiziellen Forum</text>
 		</string>
 		<!-- Version 449 -->
 		<string>
@@ -6497,7 +6496,7 @@
 		</string>
 		<string>
 			<key>Message_Options_RestoreDefaults</key>
-			<text>Wollen Sie den Inhalt dieses Reiters wirklich auf die Standardwerte zurück setzen?</text>
+			<text>Wollen Sie den Inhalt dieses Reiters wirklich auf die Standardwerte zurücksetzen?</text>
 		</string>
 		<string>
 			<key>MessageTitle_Options_RestoreDefaults</key>
@@ -6505,7 +6504,7 @@
 		</string>
 		<string>
 			<key>Message_Update_MultipleInstances</key>
-			<text>Chummer kann ein vorhandenes Update nicht einspielen während mehrere Instanzen des Programmes laufen. Bitte schließen sie die anderen Instanzen und führen sie das Update noch einmal aus.</text>
+			<text>Chummer kann ein vorhandenes Update nicht einspielen während mehrere Instanzen des Programmes laufen. Bitte schließen Sie die anderen Instanzen und führen Sie das Update noch einmal aus.</text>
 		</string>
 		<!-- Version 453 -->
 		<string>
@@ -6531,7 +6530,7 @@
 		<!-- Version 455 -->
 		<string>
 			<key>Checkbox_Options_BreakSkillGroupsInCreateMode</key>
-			<text>Erlauben, während der Charakter-Erstellung Skillgruppen aufzutrennen</text>
+			<text>Erlauben, während der Charaktererstellung Fertigkeitsgruppen aufzutrennen</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseCyberwareSuite</key>
@@ -6583,7 +6582,7 @@
 		</string>
 		<string>
 			<key>Tip_SelectSpell_ExtendedSpell</key>
-			<text>Sprüche mit ausgedehnter Reichweite haben eine Reichweite von (Kraft × MAG × 10) Metern aber einen um +2 erhöten Entzugswert.</text>
+			<text>Sprüche mit ausgedehnter Reichweite haben eine Reichweite von (Kraft × MAG × 10) Metern aber einen um +2 erhöhten Entzugswert.</text>
 		</string>
 		<string>
 			<key>String_BuyWithKarma</key>
@@ -6611,11 +6610,11 @@
 		</string>
 		<string>
 			<key>String_SpecialAttributePoints</key>
-			<text>Spezialattributspunkte</text>
+			<text>Spezialattributpunkte</text>
 		</string>
 		<string>
 			<key>String_AttributePoints</key>
-			<text>Attributspunkte</text>
+			<text>Attributpunkte</text>
 		</string>
 		<string>
 			<key>String_Metamagic</key>
@@ -6823,15 +6822,15 @@
 		</string>
 		<string>
 			<key>Message_PriorityComplexFormLimit</key>
-			<text>Die Anzahl an Komplexen Formen darf die durch die ausgewählte Talentpriorität definierte Anzahl nicht überschreiten.</text>
+			<text>Die Anzahl an komplexen Formen darf die durch die ausgewählte Talentpriorität definierte Anzahl nicht überschreiten.</text>
 		</string>
 		<string>
 			<key>Message_InvalidAttributeExcess</key>
-			<text>{0} über erlaubten Attributspunktem</text>
+			<text>{0} über erlaubten Attributpunkten</text>
 		</string>
 		<string>
 			<key>Message_InvalidSpecialExcess</key>
-			<text>{0} über erlaubten Spezialattributspunkten</text>
+			<text>{0} über erlaubten Spezialattributpunkten</text>
 		</string>
 		<string>
 			<key>Message_InvalidSkillGroupExcess</key>
@@ -6935,11 +6934,11 @@
 		</string>
 		<string>
 			<key>Tip_OptionsUnarmedSkillImprovements</key>
-			<text>Aktivierung dieser Hausregel erlaubt es Schlagringen, von Boni zu profitieren, die Waffenlosen Kampf beeinflussen, inklusive DK Boni.</text>
+			<text>Aktivierung dieser Hausregel erlaubt es Schlagringen, von Boni zu profitieren, die waffenlosen Kampf beeinflussen, inklusive DK Boni.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsIgnoreArt</key>
-			<text>Enabling this house rule allows all metamagics, enhancements, enchantments, and rituals to ignore the Art requirement detailed in Street Grimoire.</text>
+			<text>Aktivierung dieser Hausregel erlaubt es, alle Anforderungen an Metamagie, Verbesserungen, Verzauberungen und Ritualen zu ignorieren, die in Straßengrimoire beschrieben sind.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsCyberlegMovement</key>
@@ -7051,7 +7050,7 @@
 		</string>
 		<string>
 			<key>Tip_ArmorDegradationMinus</key>
-			<text>Panzrungswert beschädigen</text>
+			<text>Panzerungswert beschädigen</text>
 		</string>
 		<string>
 			<key>Label_AdeptWayDiscount</key>
@@ -7087,7 +7086,7 @@
 		</string>
 		<string>
 			<key>Message_Metatype_SelectTalent</key>
-			<text>Sie müssen ein Talent auswählen, um fortfahren zu können..</text>
+			<text>Sie müssen ein Talent auswählen, um fortfahren zu können.</text>
 		</string>
 		<string>
 			<key>MessageTitle_Metatype_SelectTalent</key>
@@ -7119,7 +7118,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_IgnoreArt</key>
-			<text>Ignoriere Anforderungen für Künste aus dem Strasengrimoire</text>
+			<text>Ignoriere Anforderungen für Künste aus dem Straßengrimoire</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_CyberlegMovement</key>
@@ -7127,7 +7126,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceptionalAttributes</key>
-			<text>Attributspunkte können für Aussergewöhnliche Attribute ausgegeben werden</text>
+			<text>Attributpunkte können für außergewöhnliche Attribute ausgegeben werden</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceptionalNotMaxed</key>
@@ -7151,7 +7150,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_SpecialKarmaCost</key>
-			<text>Karmakosten zum erhöhen von Spezialattributen wird bei Essenzverlust nicht reduziert</text>
+			<text>Karmakosten zum Erhöhen von Spezialattributen werden bei Essenzverlust nicht reduziert</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Qualities</key>
@@ -7320,7 +7319,7 @@
 		</string>
 		<string>
 			<key>Label_Options_NewAIAdvancedProgram</key>
-			<text>Neues fortgeschrittene Programm (KI)</text>
+			<text>Neues fortgeschrittenes Programm (KI)</text>
 		</string>
 		<!-- Advanced Programs Tab -->
 		<string>
@@ -7355,7 +7354,7 @@
 		</string>
 		<string>
 			<key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>
-			<text>Anforderung des fortgeschrittenen Programm</text>
+			<text>Anforderung des fortgeschrittenen Programms</text>
 		</string>
 		<string>
 			<key>Checkbox_SelectAIProgram_LimitList</key>
@@ -7561,7 +7560,7 @@
 		</string>
 		<string>
 			<key>Label_SumtoTenResources</key>
-			<text>Resourcen:</text>
+			<text>Ressourcen:</text>
 		</string>
 		<string>
 			<key>Button_Viewer_SaveAsPdf</key>
@@ -7625,7 +7624,7 @@
 		</string>
 		<string>
 			<key>Message_DeleteExoticSkill</key>
-			<text>Möchten Sie diese exotische Fertigkeitn wirklich löschen?</text>
+			<text>Möchten Sie diese exotische Fertigkeiten wirklich löschen?</text>
 		</string>
 		<string>
 			<key>Message_SelectQuality_RequireESSAbove</key>
@@ -7753,11 +7752,11 @@
 		</string>
 		<string>
 			<key>Label_Roster_Settings_File</key>
-			<text>Konfiguationsdatei:</text>
+			<text>Konfigurationsdatei:</text>
 		</string>
 		<string>
 			<key>Menu_ValidCharacter</key>
-			<text>Prüfe Charakter Gültigkeit</text>
+			<text>Prüfe Charaktergültigkeit</text>
 		</string>
 		<string>
 			<key>Menu_AddWeaponMount</key>
@@ -7909,11 +7908,11 @@
 		</string>
 		<string>
 			<key>Enum_RemoteOperated</key>
-			<text>Fernsteuerung - Geschütze[LOG]</text>
+			<text>Fernsteuerung - Geschütze [LOG]</text>
 		</string>
 		<string>
 			<key>Enum_GunneryCommandDevice</key>
-			<text>Fernsteuerung - Geschütze[GES]</text>
+			<text>Fernsteuerung - Geschütze [GES]</text>
 		</string>
 		<string>
 			<key>Label_Options_AlchemicalFocus</key>
@@ -7993,7 +7992,7 @@
 		</string>
 		<string>
 			<key>Message_OutdatedChummerSave</key>
-			<text>Diese Datei wurde in einer späteren Version von Chummer ({0}) als ihrer aktuellen Version von Chummer ({1}) erstellt.\nDiese Datei wird möglicherweise nicht richtig geladen, und es wird dringend empfohlen, dass Sie auf die neueste Version von Chummer aktualisieren.\nSind Sie sicher, dass Sie dieses Charakter weiter laden möchten?</text>
+			<text>Diese Datei wurde in einer späteren Version von Chummer ({0}) als Ihrer aktuellen Version von Chummer ({1}) erstellt.\nDiese Datei wird möglicherweise nicht richtig geladen und es wird dringend empfohlen, dass Sie auf die neueste Version von Chummer aktualisieren.\nSind Sie sicher, dass Sie diesen Charakter weiter laden möchten?</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_UseLifeModule</key>
@@ -8165,11 +8164,11 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_DontDoubleQualityPurchases</key>
-			<text>Kosten zum kaufen von Vorteile im Karrieremodus nicht verdoppeln</text>
+			<text>Kosten zum Kaufen von Vorteile im Karrieremodus nicht verdoppeln</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_DontDoubleNegativeQualityRefunds</key>
-			<text>Kosten zum entfernen von Nachteilen im Karrieremodus nicht verdoppeln</text>
+			<text>Kosten zum Entfernen von Nachteilen im Karrieremodus nicht verdoppeln</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_EnemyKarmaQualityLimit</key>
@@ -8201,7 +8200,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_UseTotalValueForFreeKnowledge</key>
-			<text>Freie Wissensfertigkeitenpunkte werden mit verbesserten LOG+INT Werten berechnet.</text>
+			<text>Freie Wissensfertigkeitspunkte werden mit verbesserten LOG+INT Werten berechnet.</text>
 		</string>
 		<string>
 			<key>Checkbox_SelectGeneric_LimitList</key>
@@ -8389,7 +8388,7 @@
 		</string>
 		<string>
 			<key>Message_InvalidCyberwareGrades</key>
-			<text>Limit für Cyber/Bioware Grad wurde für folgenden Elemente überschritten:</text>
+			<text>Limit für Cyber-/Biowaregrad wurde für folgenden Elemente überschritten:</text>
 		</string>
 		<string>
 			<key>Message_KarmaNuyenExchange</key>
@@ -8465,7 +8464,7 @@
 		</string>
 		<string>
 			<key>Message_SumtoTenComplexFormLimit</key>
-			<text>Die Anzahl an Komplexen Formen darf die durch die ausgewählte Talentpriorität definierte Anzahl nicht überschreiten.</text>
+			<text>Die Anzahl an komplexen Formen darf die durch die ausgewählte Talentpriorität definierte Anzahl nicht überschreiten.</text>
 		</string>
 		<string>
 			<key>Message_SumtoTenSpellLimit</key>
@@ -8557,7 +8556,7 @@
 		</string>
 		<string>
 			<key>String_MetamagicSkillType_active</key>
-			<text>Aktionsfertigkei(en)</text>
+			<text>Aktionsfertigkeit(en)</text>
 		</string>
 		<string>
 			<key>String_MetamagicSkillType_magic</key>
@@ -8581,7 +8580,7 @@
 		</string>
 		<string>
 			<key>String_ReduceGear</key>
-			<text>Gebe die Anzahl zu entfernender Gegenstände an.</text>
+			<text>Geben Sie die Anzahl der zu entfernenden Gegenstände an.</text>
 		</string>
 		<string>
 			<key>String_SelectBP_LifeModuleSummary</key>
@@ -8761,7 +8760,7 @@
 		</string>
 		<string>
 			<key>Message_DeleteWeaponMount</key>
-			<text>Möchsten Sie diese Waffenhalterung wirklich löschen?</text>
+			<text>Möchten Sie diese Waffenhalterung wirklich löschen?</text>
 		</string>
 		<string>
 			<key>Message_DuplicateDrugComponentWarning</key>
@@ -8809,7 +8808,7 @@
 		</string>
 		<string>
 			<key>Message_NoExtraKarma</key>
-			<text>Sie haben {0} Karma übrig, düfen es aber nicht in den Karrieremodus übernehmen.\nSind Sie sicher, dass Sie dieses zusätzliche Karma verlieren möchten?</text>
+			<text>Sie haben {0} Karma übrig, dürfen es aber nicht in den Karrieremodus übernehmen.\nSind Sie sicher, dass Sie dieses zusätzliche Karma verlieren möchten?</text>
 		</string>
 		<string>
 			<key>String_EdgeUse</key>
@@ -8837,7 +8836,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_OmaeEnabled</key>
-			<text>Omae Characteraustausch aktivieren</text>
+			<text>Omae Charakteraustausch aktivieren</text>
 		</string>
 		<string>
 			<key>Checkbox_Option_FreeMartialArtSpecialization</key>
@@ -8885,7 +8884,7 @@
 		</string>
 		<string>
 			<key>Message_Update_CloseForms</key>
-			<text>Eine neuere Version von Chummer5a wurde automatisch heruntergeladen. Soll sie installiert und die Anwendung neu gestarten werden?</text>
+			<text>Eine neuere Version von Chummer5a wurde automatisch heruntergeladen. Soll sie installiert und die Anwendung neu gestartet werden?</text>
 		</string>
 		<string>
 			<key>String_Loading</key>
@@ -8917,7 +8916,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_CompensateSkillGroupKarmaDifference</key>
-			<text>Höhere Karma-Kosten beim Erhöhen der letzte Fertigkeit einer Fertigkeitsgruppe angleichen</text>
+			<text>Höhere Karmakosten beim Erhöhen der letzten Fertigkeit einer Fertigkeitsgruppe angleichen</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_UnarmedSkillImprovements</key>
@@ -9165,7 +9164,7 @@
 		</string>
 		<string>
 			<key>Label_CustomDataDirectories</key>
-			<text>Zu verwendende benutzerdefinierte Datenverzeichnisse (Änderungen werden nur nach einemNeustart angewendet)</text>
+			<text>Zu verwendende benutzerdefinierte Datenverzeichnisse (Änderungen werden nur nach einem Neustart angewendet)</text>
 		</string>
 		<string>
 			<key>Message_Duplicate_CustomDataDirectoryName</key>
@@ -9197,7 +9196,7 @@
 		</string>
 		<string>
 			<key>String_NotSupported</key>
-			<text>"Diese Kombiantion von Rasse/Metavariante ist aktuell noch unvollständig und wird in künftige Versionen vervollständigt. Versuche, einen Charakter mit dieser Kombination zu erstellen, können zu unerwarteten Ergebnissen führen."</text>
+			<text>"Diese Kombination von Rasse/Metavariante ist aktuell noch unvollständig und wird in künftige Versionen vervollständigt. Versuche, einen Charakter mit dieser Kombination zu erstellen, können zu unerwarteten Ergebnissen führen."</text>
 		</string>
 		<string>
 			<key>Warning_NoLimitFound</key>
@@ -9221,7 +9220,7 @@
 		</string>
 		<string>
 			<key>About_Description_Text</key>
-			<text>Charaktergenerator für Shadowrun 5. Edition\n\r\n\rDanke an Keith für die wundervolle Arbeit, die er in die Erstellung und Pflege von Chummer für die 4. Edition gesteck hat. Ohne ihn wäre das alles nicht möglich.\n\r\n\rHerzlichen Dank an alle der 'Dumpshock community', dass sie dieses Projekt mit all ihren wertvollen Rückmeldungen, tollen Ideen, Verbesserungsvorschlägen und Hinweise auf enthaltene Fehler unterstützt haben. Ein großen Dankeschön auch an alle, die sich freiwillig gemeldet haben um Chummer in andere Sprachen zu übersetzen!</text>
+			<text>Charaktergenerator für Shadowrun 5. Edition\n\r\n\rDanke an Keith für die wundervolle Arbeit, die er in die Erstellung und Pflege von Chummer für die 4. Edition gesteckt hat. Ohne ihn wäre das alles nicht möglich.\n\r\n\rHerzlichen Dank an alle der 'Dumpshock community', dass sie dieses Projekt mit all ihren wertvollen Rückmeldungen, tollen Ideen, Verbesserungsvorschlägen und Hinweise auf enthaltene Fehler unterstützt haben. Ein großen Dankeschön auch an alle, die sich freiwillig gemeldet haben um Chummer in andere Sprachen zu übersetzen!</text>
 		</string>
 		<string>
 			<key>String_WorkingForTheMan</key>
@@ -9265,7 +9264,7 @@
 		</string>
 		<string>
 			<key>About_Label_Disclaimer_Text</key>
-			<text>Chummer ist völlig unabhängig und wird in keiner Weise von 'The Topps Company, Inc.' oder 'Catalyst Game Labs' unterstützt. The Topps Company, Inc. ist alleiniger Eigentümer der Namen, Logos, Kunstwerke, Marken, Fotos, Sounds, Audio, Video und/oder aller proprietären Materialien, die in Verbindung mit dem Spiel Shadowrun verwendet werden.Ohne schriftliche Zustimmung stellt der Ersteller (und jeder Mitwirkende seine Beiträge) zur Verfügung "Wie ist es" OHNE GEWÄHRLEISTUNGEN ODER BEDINGUNGEN JEGLICHER ART, weder ausdrücklich noch stillschweigend, einschließlich, aber nicht beschränkt auf Garantien oder Bedingungen von TITEL, NICHTVERLETZUNG, MARKTFÄHIGKEIT oder Eignung für einen bestimmten Zweck. Durch die Verwendung von Chummer erklären Sie sich damit einverstanden, dass Sie rechtlich Eigentümer einer Kopie der Shadowrun-Regeln und jedes Quellbuchs sind, dessen Informationen Sie zur Verwendung auswählen. Sie sind allein für die Feststellung der Angemessenheit der Nutzung oder Weiterverbreitung der von Ihnen erstellten Inhalte verantwortlich und übernehmen alle Risiken, die mit Ihrer Ausübung von Berechtigungen unter dieser Lizenz verbunden sind.\n\r\n\n\n\r\rChummer verwendet Symbole aus dem von Mark James erstellten 'Silk icon set', welches unter www.famfamfam.com. verfügbar ist.</text>
+			<text>Chummer ist völlig unabhängig und wird in keiner Weise von 'The Topps Company, Inc.' oder 'Catalyst Game Labs' unterstützt. The Topps Company, Inc. ist alleiniger Eigentümer der Namen, Logos, Kunstwerke, Marken, Fotos, Sounds, Audio, Video und/oder aller proprietären Materialien, die in Verbindung mit dem Spiel Shadowrun verwendet werden. Ohne schriftliche Zustimmung stellt der Ersteller (und jeder Mitwirkende seine Beiträge) zur Verfügung "Wie ist es" OHNE GEWÄHRLEISTUNGEN ODER BEDINGUNGEN JEGLICHER ART, weder ausdrücklich noch stillschweigend, einschließlich, aber nicht beschränkt auf Garantien oder Bedingungen von TITEL, NICHTVERLETZUNG, MARKTFÄHIGKEIT oder Eignung für einen bestimmten Zweck. Durch die Verwendung von Chummer erklären Sie sich damit einverstanden, dass Sie rechtlich Eigentümer einer Kopie der Shadowrun-Regeln und jedes Quellbuchs sind, dessen Informationen Sie zur Verwendung auswählen. Sie sind allein für die Feststellung der Angemessenheit der Nutzung oder Weiterverbreitung der von Ihnen erstellten Inhalte verantwortlich und übernehmen alle Risiken, die mit Ihrer Ausübung von Berechtigungen unter dieser Lizenz verbunden sind.\n\r\n\n\n\r\rChummer verwendet Symbole aus dem von Mark James erstellten 'Silk icon set', welches unter www.famfamfam.com. verfügbar ist.</text>
 		</string>
 		<string>
 			<key>String_Nightly</key>
