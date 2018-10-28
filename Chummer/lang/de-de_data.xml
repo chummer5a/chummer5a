@@ -8044,7 +8044,7 @@
 			<category translate="Harte Nanowaresysteme">Hard Nanoware</category>
 			<category translate="Nano-Cyberware">Nanocybernetics</category>
 			<category translate="Weiche Nanowaresysteme">Soft Nanoware</category>
-			<category translate="Spezielle Biodronen-Cyberware">Special Biodrone Cyberware</category>
+			<category translate="Spezielle Biodrohnen-Cyberware">Special Biodrone Cyberware</category>
 			<category translate="Cybersuite" translated="True">Cybersuite</category>
 			<category translate="Cyberimplantatwaffen-Zubehör">Cyber Implant Weapon Accessory</category>
 		</categories>
@@ -10441,10 +10441,10 @@
 			<category translate="Währung">Currency</category>
 			<category translate="Cyberterminals">Cyberterminals</category>
 			<category translate="Metatyp-spezifisch">Metatype-Specific</category>
-			<category translate="Maßgeschneidertes Parfum/Rasierwasser">Tailored Perfume/Cologne</category>
+			<category translate="Maßgeschneidertes Parfüm/Rasierwasser">Tailored Perfume/Cologne</category>
 			<category translate="Matrix-Zubehör">Matrix Accessories</category>
 			<category translate="Booster Chips">Booster Chips</category>
-			<category translate="Custom Cyberdeck Attributes">Custom Cyberdeck Attributes</category>
+			<category translate="Attribute des angepassten Cyberdecks">Custom Cyberdeck Attributes</category>
 			<category translate="Maßgeschneiderte Drogen">Custom Drug</category>
 		</categories>
 		<gears>
@@ -35324,7 +35324,7 @@
 			<spell translated="True">
 				<id>c7db0147-a077-423a-b617-a5cc8c0d4982</id>
 				<name>Inanimate Vessel Preparation</name>
-				<translate>Vorbereitung eines Unbelebten Geistergefäßes</translate>
+				<translate>Vorbereitung eines unbelebten Geistergefäßes</translate>
 				<altpage>225</altpage>
 			</spell>
 			<spell translated="True">
@@ -45839,25 +45839,25 @@
 	</chummer>
 	<chummer file="vessels.xml">
 		<categories>
-			<category translate="Inanimate Vessels">Inanimate Vessels</category>
+			<category translate="Unbelebtes Geistergefäß">Inanimate Vessels</category>
 		</categories>
 		<metatypes>
 			<metatype>
 				<id>523fff8a-2875-4830-b390-5a965a3ca468</id>
 				<name>Plasteel Homunculus</name>
-				<translate>Plasteel Homunculus</translate>
+				<translate>Plasstahlhomunkulus</translate>
 				<altpage>87</altpage>
 			</metatype>
 			<metatype>
 				<id>81ff437c-9482-41f1-bb05-991561962234</id>
 				<name>Stone Homunculus</name>
-				<translate>Stone Homunculus</translate>
+				<translate>Steinhomunkulus</translate>
 				<altpage>87</altpage>
 			</metatype>
 			<metatype>
 				<id>aa573527-2e55-4ef7-8351-de0d10b32ce2</id>
 				<name>Wicker Man</name>
-				<translate>Wicker Man</translate>
+				<translate>Weidenmann</translate>
 				<altpage>87</altpage>
 			</metatype>
 		</metatypes>
