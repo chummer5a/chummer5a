@@ -768,6 +768,10 @@ namespace Chummer
                 case "zw":
                     objReturn = Properties.Resources.zw;
                     break;
+                default:
+                    Utils.BreakIfDebug();
+                    objReturn = Properties.Resources.defaulted;
+                    break;
             }
             return objReturn;
         }
