@@ -242,5 +242,10 @@
       <name>Kill Code</name>
       <code>KC</code>
     </book>
+      <book>
+      <id>6c97c3e8-8f13-43aa-b692-6218983c9396</id>
+      <name>Hamburg (German-exclusive)</name>
+      <code>Hamburg</code>
+    </book>
   </books>
 </chummer>

@@ -9586,6 +9586,32 @@
       </mods>
       <seats>8</seats>
     </vehicle>
+    <!-- End Region -->
+    <!-- Region Hamburg -->
+    <vehicle>
+      <id>18f41586-7f0f-4ca1-8881-eccdabc3351d</id>
+      <name>Messerschmitt-Kawasaki R/evolution</name>
+      <page>174</page>
+      <source>Hamburg</source>
+      <accel>3/2</accel>
+      <armor>6</armor>
+      <avail>0</avail>
+      <body>5</body>
+      <category>Bikes</category>
+      <cost>18500</cost>
+      <handling>4(2)/4</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>5/3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <seats>1</seats>
+    </vehicle>
     <!-- Missing: EMC Kommodore (Would require adjustments in code,
          since it uses building block where each part receives part of the slots) -->
     <!-- End Region -->

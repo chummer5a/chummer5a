@@ -1572,6 +1572,12 @@
 				<translate>Tragbare Drohnenhalterung</translate>
 				<altpage>70</altpage>
 			</mod>
+			<mod translated="True">
+				<id>80effbdd-047d-4b1f-8159-f13f86bba4e6</id>
+				<name>Internal Air Tank (5 Minutes)</name>
+				<translate>Interner Lufttank (5 Minuten)</translate>
+				<altpage>173</altpage>
+			</mod>
 		</mods>
 	</chummer>
 	<chummer file="bioware.xml">
