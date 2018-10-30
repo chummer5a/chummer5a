@@ -3907,7 +3907,9 @@
       <category>General</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
-      <gearcapacity>[14]</gearcapacity>
+      <addoncategory>Cyberdecks</addoncategory>
+      <addoncategory>Commlinks</addoncategory>
+      <addoncategory>Rigger Command Consoles</addoncategory>
       <avail>4</avail>
       <cost>150</cost>
       <source>KC</source>
@@ -3919,7 +3921,6 @@
       <category>General</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
-      <gearcapacity>[14]</gearcapacity>
       <avail>4</avail>
       <cost>150</cost>
       <source>KC</source>
@@ -3931,7 +3932,6 @@
       <category>General</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
-      <gearcapacity>[0]</gearcapacity>
       <avail>0</avail>
       <cost>0</cost>
       <source>KC</source>
