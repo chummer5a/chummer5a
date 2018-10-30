@@ -3037,6 +3037,7 @@
       <cost>1700</cost>
       <mods>
         <name>Drag Handle</name>
+        <name>Pantheon Armored Shell</name>
         <name>Micro-Hardpoint</name>
         <name>Micro-Hardpoint</name>
         <name>Micro-Hardpoint</name>
@@ -3058,8 +3059,6 @@
       <cost>1000</cost>
       <mods>
         <name>Drag Handle</name>
-        <name>Micro-Hardpoint</name>
-        <name>Micro-Hardpoint</name>
         <name>Micro-Hardpoint</name>
       </mods>
       <gears>
@@ -3907,13 +3906,15 @@
       <category>General</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
+      <armorcapacity>[0]</armorcapacity>
       <addoncategory>Cyberdecks</addoncategory>
       <addoncategory>Commlinks</addoncategory>
       <addoncategory>Rigger Command Consoles</addoncategory>
       <avail>4</avail>
-      <cost>150</cost>
+      <cost>0</cost>
       <source>KC</source>
       <page>73</page>
+      <hide />
     </mod>
     <mod>
       <id>52b315a3-cf10-4534-a0d9-86b4ac346136</id>
@@ -3922,9 +3923,10 @@
       <armor>0</armor>
       <maxrating>1</maxrating>
       <avail>4</avail>
-      <cost>150</cost>
+      <cost>0</cost>
       <source>KC</source>
       <page>73</page>
+      <hide />
     </mod>
     <mod>
       <id>c2fdc729-bc1d-4d3a-a0da-1d5dfa3b897d</id>
@@ -3932,10 +3934,12 @@
       <category>General</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
+      <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
       <source>KC</source>
       <page>73</page>
+      <hide />
     </mod>
     <mod>
       <id>a1c9f8ee-d58d-4583-8ff3-12517dbf76f5</id>

@@ -462,7 +462,7 @@ namespace Chummer
 
             for (int i = 1; i <= MaxMruSize; i++)
             {
-                object objLoopValue = _objBaseChummerKey.GetValue("stickymru" + i.ToString());
+                object objLoopValue = _objBaseChummerKey.GetValue("stickymru" + i.ToString(InvariantCultureInfo));
                 if (objLoopValue != null)
                 {
                     string strFileName = objLoopValue.ToString();
@@ -474,7 +474,7 @@ namespace Chummer
 
             for (int i = 1; i <= MaxMruSize; i++)
             {
-                object objLoopValue = _objBaseChummerKey.GetValue("mru" + i.ToString());
+                object objLoopValue = _objBaseChummerKey.GetValue("mru" + i.ToString(InvariantCultureInfo));
                 if (objLoopValue != null)
                 {
                     string strFileName = objLoopValue.ToString();
@@ -890,9 +890,9 @@ namespace Chummer
                     for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
                     {
                         if (i <= _lstFavoritedCharacters.Count)
-                            _objBaseChummerKey.SetValue("stickymru" + i.ToString(), _lstFavoritedCharacters[i - 1]);
+                            _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
                         else
-                            _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(), false);
+                            _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                     }
 
                     MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
@@ -903,9 +903,9 @@ namespace Chummer
                     for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                     {
                         if (i <= _lstFavoritedCharacters.Count)
-                            _objBaseChummerKey.SetValue("stickymru" + i.ToString(), _lstFavoritedCharacters[i - 1]);
+                            _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
                         else
-                            _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(), false);
+                            _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                     }
                     MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
                     break;
@@ -914,15 +914,15 @@ namespace Chummer
                 {
                     string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
                     if (!string.IsNullOrEmpty(strNewFile))
-                        _objBaseChummerKey.SetValue("stickymru" + (e.OldStartingIndex + 1).ToString(), strNewFile);
+                        _objBaseChummerKey.SetValue("stickymru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
                     else
                     {
                         for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
                             if (i <= _lstFavoritedCharacters.Count)
-                                _objBaseChummerKey.SetValue("stickymru" + i.ToString(), _lstFavoritedCharacters[i - 1]);
+                                _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
                             else
-                                _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(), false);
+                                _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                         }
                     }
 
@@ -951,7 +951,7 @@ namespace Chummer
 
                     for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
                     {
-                        _objBaseChummerKey.SetValue("stickymru" + (i + 1).ToString(), _lstFavoritedCharacters[i]);
+                        _objBaseChummerKey.SetValue("stickymru" + (i + 1).ToString(InvariantCultureInfo), _lstFavoritedCharacters[i]);
                     }
                     MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
                     break;
@@ -961,9 +961,9 @@ namespace Chummer
                     for (int i = 1; i <= MaxMruSize; ++i)
                     {
                         if (i <= _lstFavoritedCharacters.Count)
-                            _objBaseChummerKey.SetValue("stickymru" + i.ToString(), _lstFavoritedCharacters[i - 1]);
+                            _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
                         else
-                            _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(), false);
+                            _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                     }
                     MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
                     break;
