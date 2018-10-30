@@ -14258,6 +14258,7 @@ namespace Chummer
             Dictionary<string, Bitmap> dicImages = new Dictionary<string, Bitmap>();
             XmlDocument xmlStatBlockDocument = null;
             XmlDocument xmlLeadsDocument = null;
+            List<string> lstTextStatBlockLines = null;
             Timekeeper.Start("load_xml");
             try
             {
@@ -14269,33 +14270,51 @@ namespace Chummer
                         string strEntryFullName = entry.FullName;
                         string strKey = Path.GetFileName(strEntryFullName);
                         if ((xmlStatBlockDocument == null && strEntryFullName.StartsWith("statblocks_xml")) ||
-                            (string.IsNullOrEmpty(strLeadsName) && strEntryFullName.EndsWith("portfolio.xml")))
+                            (string.IsNullOrEmpty(strLeadsName) && strEntryFullName.EndsWith("portfolio.xml")) ||
+                            lstTextStatBlockLines == null && strEntryFullName.StartsWith("statblocks_txt"))
                         {
-                            XmlDocument xmlSourceDoc = new XmlDocument();
-                            try
+                            if (strEntryFullName.EndsWith(".xml"))
                             {
-                                using (StreamReader sr = new StreamReader(entry.Open(), true))
+                                XmlDocument xmlSourceDoc = new XmlDocument();
+                                try
                                 {
-                                    xmlSourceDoc.Load(sr);
-                                    if (strEntryFullName.StartsWith("statblocks_xml"))
+                                    using (StreamReader sr = new StreamReader(entry.Open(), true))
                                     {
-                                        if (xmlSourceDoc.SelectSingleNode("/document/public/character[@name = " + strCharacterId.CleanXPath() + "]") != null)
-                                            xmlStatBlockDocument = xmlSourceDoc;
-                                    }
-                                    else
-                                    {
-                                        strLeadsName = xmlSourceDoc.SelectSingleNode("/document/portfolio/hero[@heroname = " + strCharacterId.CleanXPath() + "]/@leadfile")?.InnerText;
+                                        xmlSourceDoc.Load(sr);
+                                        if (strEntryFullName.StartsWith("statblocks_xml"))
+                                        {
+                                            if (xmlSourceDoc.SelectSingleNode("/document/public/character[@name = " + strCharacterId.CleanXPath() + "]") != null)
+                                                xmlStatBlockDocument = xmlSourceDoc;
+                                        }
+                                        else
+                                        {
+                                            strLeadsName = xmlSourceDoc.SelectSingleNode("/document/portfolio/hero[@heroname = " + strCharacterId.CleanXPath() + "]/@leadfile")?.InnerText;
+                                        }
                                     }
                                 }
+                                // If we run into any problems loading the character xml files, fail out early.
+                                catch (IOException)
+                                {
+                                    continue;
+                                }
+                                catch (XmlException)
+                                {
+                                    continue;
+                                }
                             }
-                            // If we run into any problems loading the character xml files, fail out early.
-                            catch (IOException)
+                            else if (strEntryFullName.EndsWith(".txt") && !strKey.Contains('.'))
                             {
-                                continue;
-                            }
-                            catch (XmlException)
-                            {
-                                continue;
+                                lstTextStatBlockLines = new List<string>();
+
+                                StreamReader objReader = File.OpenText(strEntryFullName);
+                                string strLine;
+                                while ((strLine = objReader.ReadLine()) != null)
+                                {
+                                    // Trim away the newlines and empty spaces at the beginning and end of lines
+                                    strLine = strLine.Trim('\n').Trim('\r').Trim();
+
+                                    lstTextStatBlockLines.Add(strLine);
+                                }
                             }
                         }
                         else if (strEntryFullName.StartsWith("images") && strEntryFullName.Contains('.'))
@@ -14691,7 +14710,7 @@ namespace Chummer
                     int intQuantity = 1;
                     for (int i = 1; i <= 15; ++i)
                     {
-                        string strLoopString = " (" + i.ToString() + ')';
+                        string strLoopString = " (" + i.ToString(GlobalOptions.InvariantCultureInfo) + ')';
                         if (strQualityName.EndsWith(strLoopString))
                         {
                             strQualityName = strQualityName.TrimEndOnce(strLoopString, true);
@@ -14770,7 +14789,7 @@ namespace Chummer
                     int intQuantity = 1;
                     for (int i = 1; i <= 15; ++i)
                     {
-                        string strLoopString = " (" + i.ToString() + ')';
+                        string strLoopString = " (" + i.ToString(GlobalOptions.InvariantCultureInfo) + ')';
                         if (strQualityName.EndsWith(strLoopString))
                         {
                             strQualityName = strQualityName.TrimEndOnce(strLoopString, true);
@@ -14989,12 +15008,9 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_contacts");
             Timekeeper.Start("load_char_armor");
-            
-            XmlDocument xmlGearDocument = XmlManager.Load("gear.xml");
-            XmlDocument xmlCyberwareDocument = XmlManager.Load("cyberware.xml");
-            XmlDocument xmlBiowareDocument = XmlManager.Load("bioware.xml");
-            
+
             // Armor.
+            XmlDocument xmlGearDocument = XmlManager.Load("gear.xml");
             XmlDocument xmlArmorDocument = XmlManager.Load("armor.xml");
             foreach (XmlNode xmlArmorToImport in xmlStatBlockBaseNode.SelectNodes("gear/armor/item[@useradded != \"no\"]"))
             {
@@ -15520,20 +15536,86 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_spirits");
             */
-            /* TODO: Complex Forms import, which are saved in TXT and HTML statblocks but not in XML statblock
             Timekeeper.Start("load_char_complex");
 
             // Compex Forms/Technomancer Programs.
-            xmlNodeList = objXmlCharacter.SelectNodes("complexforms/complexform");
-            foreach (XmlNode xmlHeroLabComplexForm in xmlNodeList)
+            string strComplexFormsLine = lstTextStatBlockLines.FirstOrDefault(x => x.StartsWith("Complex Forms:"));
+            if (!string.IsNullOrEmpty(strComplexFormsLine))
             {
-                ComplexForm objComplexForm = new ComplexForm(this);
-                objComplexForm.Load(xmlHeroLabComplexForm);
-                _lstComplexForms.Add(objComplexForm);
+                XmlDocument xmlComplexFormsDocument = XmlManager.Load("complexforms.xml");
+
+                string[] astrComplexForms = strComplexFormsLine.TrimStartOnce("Complex Forms:").Trim().Split(',');
+                foreach (string strComplexFormEntry in astrComplexForms)
+                {
+                    string strComplexFormName = strComplexFormEntry.Trim();
+                    string strForcedValue = string.Empty;
+                    switch (strComplexFormName)
+                    {
+                        case "Diffusion of Attack":
+                            strComplexFormName = "Diffusion of [Matrix Attribute]";
+                            strForcedValue = "Attack";
+                            break;
+                        case "Diffusion of Sleaze":
+                            strComplexFormName = "Diffusion of [Matrix Attribute]";
+                            strForcedValue = "Sleaze";
+                            break;
+                        case "Diffusion of Data Processing":
+                            strComplexFormName = "Diffusion of [Matrix Attribute]";
+                            strForcedValue = "Data Processing";
+                            break;
+                        case "Diffusion of Firewall":
+                            strComplexFormName = "Diffusion of [Matrix Attribute]";
+                            strForcedValue = "Firewall";
+                            break;
+                        case "Infusion of Attack":
+                            strComplexFormName = "Infusion of [Matrix Attribute]";
+                            strForcedValue = "Attack";
+                            break;
+                        case "Infusion of Sleaze":
+                            strComplexFormName = "Infusion of [Matrix Attribute]";
+                            strForcedValue = "Sleaze";
+                            break;
+                        case "Infusion of Data Processing":
+                            strComplexFormName = "Infusion of [Matrix Attribute]";
+                            strForcedValue = "Data Processing";
+                            break;
+                        case "Infusion of Firewall":
+                            strComplexFormName = "Infusion of [Matrix Attribute]";
+                            strForcedValue = "Firewall";
+                            break;
+                    }
+
+                    XmlNode xmlComplexFormData = xmlComplexFormsDocument.SelectSingleNode("chummer/complexforms/complexform[name = \"" + strComplexFormName + "\"]");
+                    if (xmlComplexFormData == null)
+                    {
+                        string[] astrOriginalNameSplit = strComplexFormName.Split(':');
+                        if (astrOriginalNameSplit.Length > 1)
+                        {
+                            string strName = astrOriginalNameSplit[0].Trim();
+                            xmlComplexFormData = xmlComplexFormsDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + strName + "\"]");
+                        }
+
+                        if (xmlComplexFormData == null)
+                        {
+                            astrOriginalNameSplit = strComplexFormName.Split(',');
+                            if (astrOriginalNameSplit.Length > 1)
+                            {
+                                string strName = astrOriginalNameSplit[0].Trim();
+                                xmlComplexFormData = xmlComplexFormsDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + strName + "\"]");
+                            }
+                        }
+                    }
+
+                    if (xmlComplexFormData != null)
+                    {
+                        ComplexForm objComplexForm = new ComplexForm(this);
+                        objComplexForm.Create(xmlComplexFormData, strForcedValue);
+                        _lstComplexForms.Add(objComplexForm);
+                    }
+                }
             }
 
             Timekeeper.Finish("load_char_complex");
-            */
             /* TODO: AI Advanced Program Importing
             Timekeeper.Start("load_char_aiprogram");
 
@@ -15799,42 +15881,6 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_maxkarmafix");
-            Timekeeper.Start("load_char_mentorspiritfix");
-            Quality objMentorQuality = Qualities.FirstOrDefault(q => q.Name == "Mentor Spirit");
-            if (objMentorQuality != null)
-            {
-                // This character doesn't have any improvements tied to a cached Mentor Spirit value, so re-apply the improvement that adds the Mentor spirit
-                if (!Improvements.Any(imp =>
-                    imp.ImproveType == Improvement.ImprovementType.MentorSpirit && imp.ImprovedName != string.Empty))
-                {
-                    /* This gets confusing when selecting a mentor spirit mid-load, so just show the error and let the player manually re-apply
-                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, objMentorQuality.InternalId);
-                    string strSelected = objMentorQuality.Extra;
-
-                    XmlNode objNode = objMentorQuality.MyXmlNode;
-                    if (objNode != null)
-                    {
-                        if (objNode["bonus"] != null)
-                        {
-                            objMentorQuality.Bonus = objNode["bonus"];
-                            ImprovementManager.ForcedValue = strSelected;
-                            ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality, objMentorQuality.InternalId, objNode["bonus"], false, 1, objMentorQuality.DisplayNameShort);
-                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                            {
-                                objMentorQuality.Extra = ImprovementManager.SelectedValue;
-                            }
-                        }
-                    }
-                    else
-                    */
-                    {
-                        // Failed to re-apply the improvements immediately, so let's just add it for processing when the character is opened
-                        _lstInternalIdsNeedingReapplyImprovements.Add(objMentorQuality.InternalId);
-                    }
-                }
-            }
-
-            Timekeeper.Finish("load_char_mentorspiritfix");
 
             // Refresh certain improvements
             Timekeeper.Start("load_char_improvementrefreshers");
