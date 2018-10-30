@@ -113,6 +113,7 @@ Application Changes:
 - Fixed an issue where renaming various locations would not cause the corresponding node in the appropriate TreeView to update. Fixes #3078.
 - Fixed a crash when changing between selected spells if going from a spell that can be Extended to a spell in the Detection category. Fixes #3153.
 - Fixed an issue where Magic-enabled characters without access to the Spells & Spirits tab could not be exported into Career mode because the program would prompt them for a Tradition that they are unable to select without access to the Spells & Spirits tab. Fixes #3148.
+- Fixed an issue where opening multiple characters from the command line would cause the program to open multiple instances of the last character in the list. Fixes #3151.
 
 Data Changes:
 
