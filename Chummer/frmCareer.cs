@@ -13837,9 +13837,17 @@ namespace Chummer
                 cmdDeleteArmor.Enabled = !objArmorMod.IncludedInArmor;
 
                 // gpbArmorCommon
-                lblArmorValueLabel.Visible = true;
-                flpArmorValue.Visible = true;
-                lblArmorValue.Text = objArmorMod.Armor.ToString("+0;-0;0");
+                if (objArmorMod.Armor != 0)
+                {
+                    lblArmorValueLabel.Visible = true;
+                    flpArmorValue.Visible = true;
+                    lblArmorValue.Text = objArmorMod.Armor.ToString("+0;-0;0");
+                }
+                else
+                {
+                    lblArmorValueLabel.Visible = false;
+                    flpArmorValue.Visible = false;
+                }
                 cmdArmorIncrease.Visible = false;
                 cmdArmorDecrease.Visible = false;
                 lblArmorAvail.Text = objArmorMod.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
