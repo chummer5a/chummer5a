@@ -1072,23 +1072,32 @@ namespace Chummer
                         // Change to the status of Adept being enabled.
                         if (CharacterObject.AdeptEnabled)
                         {
+                            if (!tabCharacterTabs.TabPages.Contains(tabMagician))
+                                tabCharacterTabs.TabPages.Insert(3, tabMagician);
                             cmdAddSpell.Enabled = true;
-                            if (!tabCharacterTabs.TabPages.Contains(tabAdept))
-                                tabCharacterTabs.TabPages.Insert(3, tabAdept);
                             if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && !SpecialAttributes.Contains(CharacterObject.MAGAdept))
                             {
                                 SpecialAttributes.Add(CharacterObject.MAGAdept);
                             }
+
+                            if (!tabCharacterTabs.TabPages.Contains(tabAdept))
+                                tabCharacterTabs.TabPages.Insert(3, tabAdept);
                         }
                         else
                         {
-                            cmdAddSpell.Enabled = CharacterObject.MagicianEnabled;
-                            tabCharacterTabs.TabPages.Remove(tabAdept);
-
-                            if (CharacterObject.Options.MysAdeptSecondMAGAttribute && SpecialAttributes.Contains(CharacterObject.MAGAdept))
+                            if (!CharacterObject.MagicianEnabled)
                             {
-                                SpecialAttributes.Remove(CharacterObject.MAGAdept);
+                                tabCharacterTabs.TabPages.Remove(tabMagician);
+                                cmdAddSpell.Enabled = false;
+                                if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && SpecialAttributes.Contains(CharacterObject.MAGAdept))
+                                {
+                                    SpecialAttributes.Remove(CharacterObject.MAGAdept);
+                                }
                             }
+                            else
+                                cmdAddSpell.Enabled = true;
+
+                            tabCharacterTabs.TabPages.Remove(tabAdept);
                         }
                     }
                     break;
@@ -12679,15 +12688,15 @@ namespace Chummer
                 strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidEssenceExcess", GlobalOptions.Language), (dblMinEss - dblEss).ToString(GlobalOptions.CultureInfo));
             }
 
-            // If the character has MAG enabled, make sure a Tradition has been selected.
-            if (CharacterObject.MAGEnabled && (CharacterObject.MagicTradition.Type != TraditionType.MAG))
+            // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.
+            if ((CharacterObject.MagicianEnabled || CharacterObject.AdeptEnabled) && CharacterObject.MagicTradition.Type != TraditionType.MAG)
             {
                 blnValid = false;
                 strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_InvalidNoTradition", GlobalOptions.Language);
             }
 
-            // If the character has RES enabled, make sure a Stream has been selected.
-            if (CharacterObject.RESEnabled && (CharacterObject.MagicTradition.Type != TraditionType.RES))
+            // If the character has the Technomencer Tab enabled, make sure a Stream has been selected.
+            if (CharacterObject.TechnomancerEnabled && CharacterObject.MagicTradition.Type != TraditionType.RES)
             {
                 blnValid = false;
                 strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_InvalidNoStream", GlobalOptions.Language);

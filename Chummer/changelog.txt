@@ -111,7 +111,8 @@ Application Changes:
 - Added a limited-functionality Hero Lab importer tool. This tool can convert .por files into Chummer5a characters to a certain extent, as certain character elements aren't saved in ways that can be (easily) converted into Chummer5a information.
 - Fixed an issue where weapon accessories often would not get their proper ratings set. Fixes #3123.
 - Fixed an issue where renaming various locations would not cause the corresponding node in the appropriate TreeView to update. Fixes #3078.
-- Fioxed a crash when changing between selected spells if going from a spell that can be Extended to a spell in the Detection category. Fixes #3153
+- Fixed a crash when changing between selected spells if going from a spell that can be Extended to a spell in the Detection category. Fixes #3153.
+- Fixed an issue where Magic-enabled characters without access to the Spells & Spirits tab could not be exported into Career mode because the program would prompt them for a Tradition that they are unable to select without access to the Spells & Spirits tab. Fixes #3148.
 
 Data Changes:
 

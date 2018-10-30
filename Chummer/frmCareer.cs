@@ -1243,23 +1243,33 @@ namespace Chummer
                         // Change to the status of Adept being enabled.
                         if (CharacterObject.AdeptEnabled)
                         {
+                            if (!tabCharacterTabs.TabPages.Contains(tabMagician))
+                                tabCharacterTabs.TabPages.Insert(3, tabMagician);
+
                             cmdAddSpell.Enabled = true;
-                            if (!tabCharacterTabs.TabPages.Contains(tabAdept))
-                                tabCharacterTabs.TabPages.Insert(3, tabAdept);
                             if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && !SpecialAttributes.Contains(CharacterObject.MAGAdept))
                             {
                                 SpecialAttributes.Add(CharacterObject.MAGAdept);
                             }
+
+                            if (!tabCharacterTabs.TabPages.Contains(tabAdept))
+                                tabCharacterTabs.TabPages.Insert(3, tabAdept);
                         }
                         else
                         {
-                            cmdAddSpell.Enabled = CharacterObject.MagicianEnabled;
-                            tabCharacterTabs.TabPages.Remove(tabAdept);
-
-                            if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && SpecialAttributes.Contains(CharacterObject.MAGAdept))
+                            if (!CharacterObject.MagicianEnabled)
                             {
-                                SpecialAttributes.Remove(CharacterObject.MAGAdept);
+                                tabCharacterTabs.TabPages.Remove(tabMagician);
+                                cmdAddSpell.Enabled = false;
+                                if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && SpecialAttributes.Contains(CharacterObject.MAGAdept))
+                                {
+                                    SpecialAttributes.Remove(CharacterObject.MAGAdept);
+                                }
                             }
+                            else
+                                cmdAddSpell.Enabled = true;
+                            
+                            tabCharacterTabs.TabPages.Remove(tabAdept);
                         }
                     }
                     break;
