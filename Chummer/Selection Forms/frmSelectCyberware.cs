@@ -939,7 +939,7 @@ namespace Chummer
             strFilter += " and " + strCategoryFilter + " or category = \"None\")";
 
             if (ParentVehicle == null && _objCharacter.IsAI)
-                strFilter += " and (name = \"Essence Hole\" or name = \"Essence Antihole\" or mountsto)";
+                strFilter += " and (id = \"" + Cyberware.EssenceHoleGUID + "\" or id = \"" + Cyberware.EssenceAntiHoleGUID + "\" or mountsto)";
             else if (_objParentNode != null)
                 strFilter += " and (requireparent or contains(capacity, \"[\")) and not(mountsto)";
             else

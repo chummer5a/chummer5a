@@ -7788,6 +7788,7 @@ namespace Chummer
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately.
                 return _decCachedCyberwareEssence = Cyberware
                     .Where(objCyberware => !objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID) &&
+                                           !objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceAntiHoleGUID) &&
                                            objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
                     .AsParallel().Sum(objCyberware => objCyberware.CalculatedESS());
             }
@@ -7807,6 +7808,7 @@ namespace Chummer
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately.
                 return _decCachedBiowareEssence = Cyberware
                     .Where(objCyberware => !objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID) &&
+                                           !objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceAntiHoleGUID) &&
                                            objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
                     .AsParallel().Sum(objCyberware => objCyberware.CalculatedESS());
             }
@@ -7825,8 +7827,102 @@ namespace Chummer
                     return _decCachedEssenceHole;
                 // Find the total Essence Cost of all Essence Hole objects.
                 return _decCachedEssenceHole = Cyberware
-                    .Where(objCyberware => objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID))
+                    .Where(objCyberware => objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID) ||
+                                           objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceAntiHoleGUID))
                     .AsParallel().Sum(objCyberware => objCyberware.CalculatedESS());
+            }
+        }
+
+        public void IncreaseEssenceHole(int intCentiessence, bool blnOverflowIntoHole = true)
+        {
+            Cyberware objAntiHole = Cyberware.FirstOrDefault(x => x.SourceID == Backend.Equipment.Cyberware.EssenceAntiHoleGUID);
+            if (objAntiHole != null)
+            {
+                if (objAntiHole.Rating > intCentiessence)
+                {
+                    objAntiHole.Rating -= intCentiessence;
+                    return;
+                }
+
+                intCentiessence -= objAntiHole.Rating;
+                objAntiHole.DeleteCyberware();
+                Cyberware.Remove(objAntiHole);
+            }
+
+            if (blnOverflowIntoHole)
+            {
+                Cyberware objHole = Cyberware.FirstOrDefault(x => x.SourceID == Backend.Equipment.Cyberware.EssenceHoleGUID);
+                if (objHole == null)
+                {
+                    XmlNode xmlEssHole = XmlManager.Load("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + Backend.Equipment.Cyberware.EssenceHoleGUID + "\"]");
+                    objHole = new Cyberware(this);
+                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<Vehicle> lstVehicles = new List<Vehicle>();
+                    objHole.Create(xmlEssHole, GetGradeList(Improvement.ImprovementSource.Cyberware, true).FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Cyberware, intCentiessence, lstWeapons,
+                        lstVehicles);
+
+                    Cyberware.Add(objHole);
+
+                    foreach (Weapon objWeapon in lstWeapons)
+                    {
+                        Weapons.Add(objWeapon);
+                    }
+
+                    foreach (Vehicle objVehicle in lstVehicles)
+                    {
+                        Vehicles.Add(objVehicle);
+                    }
+                }
+                else
+                {
+                    objHole.Rating += intCentiessence;
+                }
+            }
+        }
+
+        public void DecreaseEssenceHole(int intCentiessence, bool blnOverflowIntoAntiHole = true)
+        {
+            Cyberware objHole = Cyberware.FirstOrDefault(x => x.SourceID == Backend.Equipment.Cyberware.EssenceHoleGUID);
+
+            if (objHole != null)
+            {
+                if (objHole.Rating > intCentiessence)
+                {
+                    objHole.Rating -= intCentiessence;
+                    return;
+                }
+
+                intCentiessence -= objHole.Rating;
+                objHole.DeleteCyberware();
+                Cyberware.Remove(objHole);
+            }
+
+            if (blnOverflowIntoAntiHole)
+            {
+                Cyberware objAntiHole = Cyberware.FirstOrDefault(x => x.SourceID == Backend.Equipment.Cyberware.EssenceAntiHoleGUID);
+                if (objAntiHole == null)
+                {
+                    XmlNode xmlEssAntiHole = XmlManager.Load("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + Backend.Equipment.Cyberware.EssenceAntiHoleGUID + "\"]");
+                    objAntiHole = new Cyberware(this);
+                    List<Weapon> lstWeapons = new List<Weapon>();
+                    List<Vehicle> lstVehicles = new List<Vehicle>();
+                    objAntiHole.Create(xmlEssAntiHole, GetGradeList(Improvement.ImprovementSource.Cyberware, true).FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Cyberware, intCentiessence, lstWeapons, lstVehicles);
+
+                    Cyberware.Add(objAntiHole);
+
+                    foreach (Weapon objWeapon in lstWeapons)
+                    {
+                        Weapons.Add(objWeapon);
+                    }
+                    foreach (Vehicle objVehicle in lstVehicles)
+                    {
+                        Vehicles.Add(objVehicle);
+                    }
+                }
+                else
+                {
+                    objAntiHole.Rating += intCentiessence;
+                }
             }
         }
 

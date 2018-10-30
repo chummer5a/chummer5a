@@ -1351,7 +1351,7 @@ namespace Chummer
                                     else
                                         CharacterObject.Cyberware.Remove(objCyberware);
 
-                                    IncreaseEssenceHole((int) (objCyberware.CalculatedESS() * 100));
+                                    CharacterObject.IncreaseEssenceHole((int) (objCyberware.CalculatedESS() * 100));
                                 }
 
                                 blnDoRefresh = true;
@@ -1402,7 +1402,7 @@ namespace Chummer
                                     else
                                         CharacterObject.Cyberware.Remove(objCyberware);
 
-                                    IncreaseEssenceHole((int) (objCyberware.CalculatedESS() * 100));
+                                    CharacterObject.IncreaseEssenceHole((int) (objCyberware.CalculatedESS() * 100));
                                 }
 
                                 blnDoRefresh = true;
@@ -1446,7 +1446,7 @@ namespace Chummer
                                 else
                                     CharacterObject.Cyberware.Remove(objCyberware);
 
-                                IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
+                                CharacterObject.IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
 
                                 blnDoRefresh = true;
                             }
@@ -1491,7 +1491,7 @@ namespace Chummer
                                     else
                                         CharacterObject.Cyberware.Remove(objCyberware);
 
-                                    IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
+                                    CharacterObject.IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
 
                                     blnDoRefresh = true;
                                 }
@@ -2175,7 +2175,9 @@ namespace Chummer
                             else
                                 dicPairableCyberwares.Add(objCyberware, 1);
                         }
-                        TreeNode objWareNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID ? treCyberware.FindNode(Cyberware.EssenceHoleGUID.ToString("D")) : treCyberware.FindNode(objCyberware.InternalId);
+                        TreeNode objWareNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
+                            ? treCyberware.FindNode(objCyberware.SourceID.ToString("D"))
+                            : treCyberware.FindNode(objCyberware.InternalId);
                         if (objWareNode != null)
                             objWareNode.Text = objCyberware.DisplayName(GlobalOptions.Language);
                     }
@@ -2221,7 +2223,9 @@ namespace Chummer
                             ImprovementManager.CreateImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
                                 objCyberware.Extra = ImprovementManager.SelectedValue;
-                            TreeNode objNode = objLoopCyberware.SourceID == Cyberware.EssenceHoleGUID ? treCyberware.FindNode(Cyberware.EssenceHoleGUID.ToString("D")) : treCyberware.FindNode(objLoopCyberware.InternalId);
+                            TreeNode objNode = objLoopCyberware.SourceID == Cyberware.EssenceHoleGUID || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
+                                ? treCyberware.FindNode(objCyberware.SourceID.ToString("D"))
+                                : treCyberware.FindNode(objLoopCyberware.InternalId);
                             if (objNode != null)
                                 objNode.Text = objLoopCyberware.DisplayName(GlobalOptions.Language);
                         }
@@ -3093,7 +3097,7 @@ namespace Chummer
                     {
                         CharacterObject.Cyberware.Remove(objCyberware);
                         //Add essence hole.
-                        IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100m));
+                        CharacterObject.IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
                     }
                 }
             }
@@ -3120,54 +3124,7 @@ namespace Chummer
 
             IsDirty = true;
         }
-
-        private void IncreaseEssenceHole(int intCentiessence)
-        {
-            Cyberware objHole = CharacterObject.Cyberware.FirstOrDefault(x => x.SourceID == Cyberware.EssenceHoleGUID);
-
-            if (objHole == null)
-            {
-                XmlNode xmlEssHole = XmlManager.Load("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[id = \"b57eadaa-7c3b-4b80-8d79-cbbd922c1196\"]");
-                objHole = new Cyberware(CharacterObject);
-                List<Weapon> lstWeapons = new List<Weapon>();
-                List<Vehicle> lstVehicles = new List<Vehicle>();
-                objHole.Create(xmlEssHole, CharacterObject.GetGradeList(Improvement.ImprovementSource.Cyberware, true).FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Cyberware, intCentiessence, lstWeapons, lstVehicles);
-
-                CharacterObject.Cyberware.Add(objHole);
-
-                foreach (Weapon objWeapon in lstWeapons)
-                {
-                    CharacterObject.Weapons.Add(objWeapon);
-                }
-                foreach (Vehicle objVehicle in lstVehicles)
-                {
-                    CharacterObject.Vehicles.Add(objVehicle);
-                }
-            }
-            else
-            {
-                objHole.Rating += intCentiessence;
-            }
-        }
-
-        private void DecreaseEssenceHole(int intCentiessence)
-        {
-            Cyberware objHole = CharacterObject.Cyberware.FirstOrDefault(x => x.SourceID == Cyberware.EssenceHoleGUID);
-
-            if (objHole != null)
-            {
-                if (objHole.Rating > intCentiessence)
-                {
-                    objHole.Rating -= intCentiessence;
-                }
-                else
-                {
-                    objHole.DeleteCyberware();
-                    CharacterObject.Cyberware.Remove(objHole);
-                }
-            }
-        }
-
+        
         private void cmdAddComplexForm_Click(object sender, EventArgs e)
         {
             XmlDocument objXmlDocument = XmlManager.Load("complexforms.xml");
@@ -7564,7 +7521,7 @@ namespace Chummer
                     return;
                 objCyberware.Sell(CharacterObject, frmSell.SellPercent);
 
-                IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
+                CharacterObject.IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
             }
             else if (treCyberware.SelectedNode?.Tag is ICanSell vendorTrash)
             {
@@ -9028,7 +8985,7 @@ namespace Chummer
 
                 XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + frmPickCyberware.SelectedCyberware + "\"]");
                 Cyberware objCyberware = new Cyberware(CharacterObject);
-                if (objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware, frmPickCyberware.SelectedGrade,frmPickCyberware.SelectedRating,objVehicle,objMod.Cyberware,CharacterObject.Vehicles,objMod.Weapons,frmPickCyberware.Markup,frmPickCyberware.FreeCost, "String_ExpensePurchaseVehicleCyberware"))
+                if (objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware, frmPickCyberware.SelectedGrade,frmPickCyberware.SelectedRating,objVehicle,objMod.Cyberware,CharacterObject.Vehicles,objMod.Weapons,frmPickCyberware.Markup,frmPickCyberware.FreeCost, true, "String_ExpensePurchaseVehicleCyberware"))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
@@ -14337,9 +14294,11 @@ namespace Chummer
             Cyberware objCyberware = new Cyberware(CharacterObject);
             if (objCyberware.Purchase(objXmlCyberware, objSource, frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating, null, objSelectedCyberware?.Children ?? CharacterObject.Cyberware, CharacterObject.Vehicles, CharacterObject.Weapons, frmPickCyberware.Markup, frmPickCyberware.FreeCost))
             {
+                if (objCyberware.SourceID != Cyberware.EssenceHoleGUID && objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
+                    CharacterObject.DecreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
+
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
-                DecreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
             }
 
             frmPickCyberware.Dispose();

@@ -114,6 +114,7 @@ Application Changes:
 - Fixed a crash when changing between selected spells if going from a spell that can be Extended to a spell in the Detection category. Fixes #3153.
 - Fixed an issue where Magic-enabled characters without access to the Spells & Spirits tab could not be exported into Career mode because the program would prompt them for a Tradition that they are unable to select without access to the Spells & Spirits tab. Fixes #3148.
 - Fixed an issue where opening multiple characters from the command line would cause the program to open multiple instances of the last character in the list. Fixes #3151.
+- Fixed an issue where Essence Antihole would get treated like regular Cyberware instead of the opposite of an Essence Hole, e.g. in having Biocompatibility reduce the Essence effect of an Essence Antihole. Fixes #3146.
 
 Data Changes:
 
@@ -168,6 +169,7 @@ Data Changes:
 - Fixed incorrect incorrect ammo category for the Lemat 2072's shotgun barrel.
 - Fixed incorrect ammo categories for the MP75 and HK 223C.
 - Fixed a crash when attempting to add programs to the Datajack Plus.
+- Fixed an issue where Essence Hole and Essence Antihole Cyberware could get grades applied to them and could potentially be added to something other than the base character's cyberware collection. Part of fix for #3146.
 
 New Strings:
 
