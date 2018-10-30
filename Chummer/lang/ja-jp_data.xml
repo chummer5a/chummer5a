@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<!-- translated by AhonokoP. If you want to sent me a message, contact me at "Dumpshock Forum" -->
+<!-- この言語ファイルは、AhonokoP氏が作成されたものを元に日本語版5版を参考にai-tsurugiが追加で日本語化作業を行っています -->
 <chummer>
 	<version>-497</version>
 	<chummer file="armor.xml">

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<!-- この言語ファイルは AhonokoP が作成しました。連絡を取りたいときは"Dumpshock Forum"でAhonokoPにメッセージを送ってください -->
-<!-- Translated by AhonokoP. Contact me at "Dumpshock Forum" -->
+<!-- この言語ファイルは、AhonokoP氏が作成されたものを元に日本語版5版を参考にai-tsurugiが追加で日本語化作業を行っています -->
+
 <chummer>
 	<version>-497</version>
 	<name>日本語 (ja-JP)</name>
