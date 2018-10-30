@@ -2182,6 +2182,25 @@ namespace Chummer
                             }
                             else if (objSelectedObject is ArmorMod objSelectedArmorMod)
                             {
+                                XmlNodeList xmlAddonCategoryList = objSelectedArmorMod.GetNode()?.SelectNodes("addoncategory");
+                                if (xmlAddonCategoryList?.Count > 0)
+                                {
+                                    bool blnDoAdd = false;
+                                    foreach (XmlNode xmlCategory in xmlAddonCategoryList)
+                                    {
+                                        if (xmlCategory.InnerText == objGear.Category)
+                                        {
+                                            blnDoAdd = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!blnDoAdd)
+                                    {
+                                        objGear.DeleteGear();
+                                        return;
+                                    }
+                                }
                                 objSelectedArmorMod.Gear.Add(objGear);
                                 if (!objSelectedArmorMod.Equipped || objSelectedArmorMod.Parent?.Equipped != true)
                                     objGear.ChangeEquippedStatus(false);

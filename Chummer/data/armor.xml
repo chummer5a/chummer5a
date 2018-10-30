@@ -3907,6 +3907,9 @@
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
+      <addoncategory>Cyberdecks</addoncategory>
+      <addoncategory>Commlinks</addoncategory>
+      <addoncategory>Rigger Command Consoles</addoncategory>
       <avail>4</avail>
       <cost>0</cost>
       <source>KC</source>
@@ -3919,7 +3922,6 @@
       <category>General</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
-      <armorcapacity>[0]</armorcapacity>
       <avail>4</avail>
       <cost>0</cost>
       <source>KC</source>
