@@ -85,6 +85,7 @@ namespace Chummer.Properties
             "Urs Zeidler<UrsZeidler>",
             "Xenryusho",
             "Zitchas<Zitchas>",
+            "ai-tsurugi",
             "blubderapo",
             "johnwobrien",
             "mikekacz",
