@@ -48,7 +48,7 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            _strSelectedSide = cboSide.Text;
+            _strSelectedSide = cboSide.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
         }
 
