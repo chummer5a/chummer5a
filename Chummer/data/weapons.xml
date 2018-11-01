@@ -14108,6 +14108,45 @@
       <ammoname>Ammo: Renraku/Ingram Supermach</ammoname>
     </weapon>
     <!-- End Region -->
+    <!-- Region Hamburg -->    
+	<weapon>
+      <id>787627c8-a2c4-47c1-9f3e-dd96ebfadf29</id>
+      <name>Elektro-Angel</name>
+      <category>Exotic Melee Weapons</category>
+      <type>Melee</type>
+      <accuracy>4</accuracy>
+      <reach>2</reach>
+      <damage>8S</damage>
+      <ap>-5</ap>
+      <avail>6</avail>
+      <cost>500</cost>
+      <source>HAMG</source>
+      <page>172</page>
+      <useskill>Exotic Melee Weapon</useskill>
+	  <spec>Elektro-Angel</spec>
+    </weapon>
+	<weapon>
+      <id>1a329276-af02-4911-a600-387291465201</id>
+      <name>Elektro-Netz</name>
+      <category>Exotic Ranged Weapons</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical-2</accuracy>
+      <reach>0</reach>
+      <damage>8S</damage>
+      <ap>-5</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>6</avail>
+      <cost>600</cost>
+      <source>HAMG</source>
+      <page>172</page>
+      <range>Thrown Knife</range>
+      <useskill>Exotic Ranged Weapon</useskill>
+      <spec>Elektro-Netz</spec>
+	</weapon>
+    <!-- End Region -->
   </weapons>
   <accessories>
     <!-- Region Shadowrun 5 -->

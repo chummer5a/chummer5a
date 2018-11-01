@@ -9589,6 +9589,173 @@
     <!-- Missing: EMC Kommodore (Would require adjustments in code,
          since it uses building block where each part receives part of the slots) -->
     <!-- End Region -->
+	<!-- Region Hamburg -->
+    <vehicle>
+      <id>18f41586-7f0f-4ca1-8881-eccdabc3351d</id>
+      <name>MK R/evolution</name>
+      <page>174</page>
+      <source>HAMG</source>
+      <accel>3/2</accel>
+      <armor>6</armor>
+      <avail>0</avail>
+      <body>5</body>
+      <category>Bikes</category>
+      <cost>18500</cost>
+      <handling>4(2)/4</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>5/3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <seats>1</seats>
+    </vehicle>
+    <vehicle>
+      <id>79bf8059-3014-48f8-9bb0-ac3f81b732c3</id>
+      <name>MCT Guppy</name>
+      <page>173</page>
+      <source>HAMG</source>
+      <accel>1</accel>
+      <armor>0</armor>
+      <avail>6</avail>
+      <body>1</body>
+      <category>Drones: Micro</category>
+      <cost>450</cost>
+      <handling>2</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>1</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>2</maxrating>
+        </gear>
+      </gears>
+    </vehicle>
+    <vehicle>
+      <id>89251727-a573-4624-96db-697883f3643f</id>
+      <name>Proteus Nachtaal</name>
+      <page>173</page>
+      <source>HAMG</source>
+      <accel>3</accel>
+      <armor>1</armor>
+      <avail>10</avail>
+      <body>1</body>
+      <category>Drones: Mini</category>
+      <cost>4000</cost>
+      <handling>5</handling>
+      <pilot>3</pilot>
+      <sensor>4</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>4</maxrating>
+        </gear>
+      </gears>
+    </vehicle>
+    <vehicle>
+      <id>9a2a8c39-e618-4feb-b779-bc8f30fa76e6</id>
+      <name>Evo Barrakuda</name>
+      <page>173</page>
+      <source>HAMG</source>
+      <accel>3</accel>
+      <armor>3</armor>
+      <avail>8</avail>
+      <body>4</body>
+      <category>Drones: Medium</category>
+      <cost>12000</cost>
+      <handling>5</handling>
+      <pilot>3</pilot>
+      <sensor>3</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>3</maxrating>
+        </gear>
+      </gears>
+    </vehicle>
+    <vehicle>
+      <id>e5108247-0d43-486e-8d6a-2075b02f0681</id>
+      <name>Vulkan Delfin RQ-11</name>
+      <page>175</page>
+      <source>HAMG</source>
+      <accel>1</accel>
+      <armor>10</armor>
+      <avail>12</avail>
+      <body>12</body>
+      <category>Submarines</category>
+      <cost>85000</cost>
+      <handling>2</handling>
+      <pilot>1</pilot>
+      <sensor>1</sensor>
+      <speed>2</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>1</rating>
+          <maxrating>1</maxrating>
+        </gear>
+      </gears>
+      <seats>7</seats>
+    </vehicle>
+    <vehicle>
+      <id>94318a48-9f0d-4c9b-ac3e-9e35d31ffb08</id>
+      <name>MK Harbor Sentry</name>
+      <page>176</page>
+      <source>HAMG</source>
+      <accel>4</accel>
+      <armor>12</armor>
+      <avail>14R</avail>
+      <body>15</body>
+      <category>Boats</category>
+      <cost>152500</cost>
+      <handling>3</handling>
+      <pilot>3</pilot>
+      <sensor>5</sensor>
+      <speed>6</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>5</rating>
+          <maxrating>5</maxrating>
+        </gear>
+      </gears>
+      <seats>6</seats>
+    </vehicle>
+    <vehicle>
+      <id>b6cb1444-1e8b-4285-be64-a5fee0ac3d34</id>
+      <name>Yongkang Water Spirit</name>
+      <page>177</page>
+      <source>HAMG</source>
+      <accel>1</accel>
+      <armor>3</armor>
+      <avail>0</avail>
+      <body>6</body>
+      <category>Boats</category>
+      <cost>8500</cost>
+      <handling>5</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>2</maxrating>
+        </gear>
+      </gears>
+      <seats>1-6</seats>
+    </vehicle>
+    <!-- End Region -->
   </vehicles>
   <mods>
     <!-- Region Vehicle Weapon Mount -->
