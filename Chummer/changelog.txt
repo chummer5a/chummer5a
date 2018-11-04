@@ -4,11 +4,16 @@ Application Changes:
 
 - Fixed an issue where certain controls (e.g. Skills, Knowledge Skills) would not get their children controls translated. Fixes #3171.
 - Fixed an issue where drag-and-dropping weapons in career mode, as well as drag-and-dropping gear under certain circumstances, would not work. Fixes #3172.
+- Added an option to the dice roller tool where a roll glitches if there are more 1's than hits rather than more 1's than half of the character's dicepool.
 
 Data Changes:
 
 - Fixed Autopicker having an incorrect cost. Fixes #3167.
 - Fixed an issue with Japanese translations of certain lifestyle qualities caused by duplicate entries. Fixes #3168.
+
+New Strings:
+
+- Checkbox_DiceRoller_VariableGlitch
 
 Build 203
 

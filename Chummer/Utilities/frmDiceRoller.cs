@@ -66,13 +66,7 @@ namespace Chummer
             int intHitCount = 0;
             int intGlitchCount = 0;
             int intGlitchMin = 1;
-
-            int intGlitchThreshold = decimal.ToInt32(decimal.Ceiling((nudDice.Value + 1.0m) / 2.0m));
-            // Deduct the Gremlins Rating from the Glitch Threshold.
-            intGlitchThreshold -= decimal.ToInt32(nudGremlins.Value);
-            if (intGlitchThreshold < 1)
-                intGlitchThreshold = 1;
-
+            
             // If Rushed Job is checked, the minimum die result for a Glitch becomes 2.
             if (chkRushJob.Checked)
                 intGlitchMin = 2;
@@ -124,20 +118,32 @@ namespace Chummer
                     intHitCount += intResult;
                 }
             }
+
+            int intGlitchThreshold = chkVariableGlitch.Checked
+                ? intHitCount + 1
+                : decimal.ToInt32(decimal.Ceiling((nudDice.Value + 1.0m) / 2.0m));
+            // Deduct the Gremlins Rating from the Glitch Threshold.
+            intGlitchThreshold -= decimal.ToInt32(nudGremlins.Value);
+            if (intGlitchThreshold < 1)
+                intGlitchThreshold = 1;
+
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
-            if (chkBubbleDie.Checked && intGlitchCount == intGlitchThreshold - 1 && (decimal.ToInt32(nudDice.Value) & 1) == 0)
+            if (chkBubbleDie.Checked)
             {
-                int intBubbleDieResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
-                _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo), LanguageManager.GetString("String_BubbleDie", GlobalOptions.Language) +
-                                                                                                              strSpaceCharacter + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')'));
-                if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
+                if (chkVariableGlitch.Checked || (intGlitchCount == intGlitchThreshold - 1 && (decimal.ToInt32(nudDice.Value) & 1) == 0))
                 {
-                    if (intBubbleDieResult <= intGlitchMin)
-                        intGlitchCount++;
+                    int intBubbleDieResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                    _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo), LanguageManager.GetString("String_BubbleDie", GlobalOptions.Language) +
+                                                                                                                  strSpaceCharacter + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')'));
+                    if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
+                    {
+                        if (intBubbleDieResult <= intGlitchMin)
+                            intGlitchCount++;
+                    }
                 }
             }
-            
+
             lblResultsLabel.Visible = true;
             lblResults.Text = string.Empty;
             if (intGlitchCount >= intGlitchThreshold)
@@ -217,11 +223,6 @@ namespace Chummer
             if (cboMethod.SelectedValue.ToString() == "ReallyLarge")
                 intHitCount = intKeepSum;
             int intGlitchCount = 0;
-            int intGlitchThreshold = decimal.ToInt32(decimal.Ceiling((nudDice.Value + 1.0m) / 2.0m));
-            // Deduct the Gremlins Rating from the Glitch Threshold.
-            intGlitchThreshold -= decimal.ToInt32(nudGremlins.Value);
-            if (intGlitchThreshold < 1)
-                intGlitchThreshold = 1;
 
             // If Rushed Job is checked, the minimum die result for a Glitch becomes 2.
             int intGlitchMin = 1;
@@ -268,17 +269,30 @@ namespace Chummer
                     intHitCount += intLoopResult;
                 }
             }
+
+            int intGlitchThreshold = chkVariableGlitch.Checked
+                ? intHitCount + 1
+                : decimal.ToInt32(decimal.Ceiling((nudDice.Value + 1.0m) / 2.0m));
+            // Deduct the Gremlins Rating from the Glitch Threshold.
+            intGlitchThreshold -= decimal.ToInt32(nudGremlins.Value);
+            if (intGlitchThreshold < 1)
+                intGlitchThreshold = 1;
+
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
-            if (chkBubbleDie.Checked && intGlitchCount == intGlitchThreshold - 1 && (decimal.ToInt32(nudDice.Value) & 1) == 0)
+            if (chkBubbleDie.Checked)
             {
-                int intBubbleDieResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
-                _lstResults.Add(new ListItem(intBubbleDieResult.ToString(), LanguageManager.GetString("String_BubbleDie", GlobalOptions.Language)
-                                                                            + strSpaceCharacter + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')'));
-                if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
+                if (chkVariableGlitch.Checked || (intGlitchCount == intGlitchThreshold - 1 && (decimal.ToInt32(nudDice.Value) & 1) == 0))
                 {
-                    if (intBubbleDieResult <= intGlitchMin)
-                        intGlitchCount++;
+                    int intBubbleDieResult = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                    _lstResults.Add(new ListItem(intBubbleDieResult.ToString(), LanguageManager.GetString("String_BubbleDie", GlobalOptions.Language)
+                                                                                + strSpaceCharacter + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')'));
+
+                    if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
+                    {
+                        if (intBubbleDieResult <= intGlitchMin)
+                            intGlitchCount++;
+                    }
                 }
             }
 
@@ -353,6 +367,15 @@ namespace Chummer
             }
         }
         #endregion
-        
+
+        private void chkVariableGlitch_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void chkBubbleDie_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

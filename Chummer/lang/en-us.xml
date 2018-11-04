@@ -6374,6 +6374,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Checkbox_DiceRoller_BubbleDie</key>
       <text>Bubble Die (Fix Even Dicepool Glitch Chances)</text>
     </string>
+    <string>
+      <key>Checkbox_DiceRoller_VariableGlitch</key>
+      <text>Glitch on More 1's than Hits, Not Half Dicepool</text>
+    </string>
 	<string>
 	  <key>String_BubbleDie</key>
 	  <text>Only for Glitching:</text>
