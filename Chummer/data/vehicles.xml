@@ -8336,7 +8336,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>3</maxrating>
+          <maxrating>6</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8366,7 +8366,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>3</maxrating>
+          <maxrating>6</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8395,7 +8395,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>3</maxrating>
+          <maxrating>6</maxrating>
         </gear>
       </gears>
       <mods>
@@ -9601,7 +9601,7 @@
       <body>5</body>
       <category>Bikes</category>
       <cost>18500</cost>
-      <handling>4(2)/4</handling>
+      <handling>4/4</handling>
       <pilot>2</pilot>
       <sensor>2</sensor>
       <speed>5/3</speed>
@@ -9633,7 +9633,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>2</maxrating>
+          <maxrating>6</maxrating>
         </gear>
       </gears>
     </vehicle>
@@ -9656,7 +9656,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>4</rating>
-          <maxrating>4</maxrating>
+          <maxrating>6</maxrating>
         </gear>
       </gears>
     </vehicle>
@@ -9679,7 +9679,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>3</maxrating>
+          <maxrating>6</maxrating>
         </gear>
       </gears>
     </vehicle>
@@ -9702,7 +9702,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>1</rating>
-          <maxrating>1</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <seats>7</seats>
@@ -9726,7 +9726,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>5</rating>
-          <maxrating>5</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <seats>6</seats>
@@ -9750,10 +9750,10 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>2</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
-      <seats>1-6</seats>
+      <seats>6</seats>
     </vehicle>
     <!-- End Region -->
   </vehicles>
