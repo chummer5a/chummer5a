@@ -14295,11 +14295,9 @@ namespace Chummer
                                 // If we run into any problems loading the character xml files, fail out early.
                                 catch (IOException)
                                 {
-                                    continue;
                                 }
                                 catch (XmlException)
                                 {
-                                    continue;
                                 }
                             }
                             else if (strEntryFullName.EndsWith(".txt") && !strKey.Contains('.'))
@@ -14335,7 +14333,6 @@ namespace Chummer
                             string strEntryFullName = entry.FullName;
                             if (strEntryFullName.EndsWith(strLeadsName))
                             {
-                                string strKey = Path.GetFileName(strEntryFullName);
                                 XmlDocument xmlSourceDoc = new XmlDocument();
                                 try
                                 {

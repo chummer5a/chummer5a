@@ -20,7 +20,6 @@
  using System.ComponentModel;
  using System.Diagnostics;
 ﻿using System.IO;
-using System.Linq;
 using System.Reflection;
  using System.Windows.Forms;
 
@@ -55,7 +54,7 @@ namespace Chummer
         {
             get
             {
-                if (!Utils.IsUnitTest)
+                if (!IsUnitTest)
                     return Application.StartupPath;
                 return AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
             }
@@ -125,7 +124,7 @@ namespace Chummer
             }
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                FileName = Utils.GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName,
+                FileName = GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName,
                 Arguments = arguments
             };
             Application.Exit();

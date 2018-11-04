@@ -367,15 +367,5 @@ namespace Chummer
             }
         }
         #endregion
-
-        private void chkVariableGlitch_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void chkBubbleDie_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }
