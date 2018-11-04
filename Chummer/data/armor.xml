@@ -4011,6 +4011,7 @@
       <cost>0</cost>
       <source>HAMG</source>
       <page>173</page>
+      <hide />
     </mod>
 	<!-- End Region -->
   </mods>
