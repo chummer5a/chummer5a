@@ -18462,7 +18462,7 @@
 				<id>ae63d09f-22a1-4c27-bc99-d82887fcef15</id>
 				<name>Dangerous Area</name>
 				<translate>危険な地域</translate>
-				<altpage></altpage>
+				<altpage>374</altpage>
 			</quality>
 			<quality>
 				<id>8cc2d931-becd-40d7-a0bd-705412037f38</id>
@@ -45121,40 +45121,6 @@
 			<license translate="Restricted Armor License">Restricted Armor License</license>
 			<license translate="Shotgun License">Shotgun License</license>
 		</licenses>
-	</chummer>
-	<chummer file="lifestyles.xml">
-		<qualities>
-			<quality>
-				<id>8723c3aa-c9b5-47f7-8b57-3187b9e36cc8</id>
-				<name>Special Work Area</name>
-				<translate>Special Work Area</translate>
-				<page>374</page>
-			</quality>
-			<quality>
-				<id>898a517e-2200-46a1-a1ba-fdd38a6df4af</id>
-				<name>Extra Secure</name>
-				<translate>Extra Secure</translate>
-				<page>374</page>
-			</quality>
-			<quality>
-				<id>0d70cc29-c9c2-43eb-afc5-72c5cae5c529</id>
-				<name>Obscure/Difficult to Find</name>
-				<translate>Obscure/Difficult to Find</translate>
-				<page>374</page>
-			</quality>
-			<quality>
-				<id>8f75506e-3aa9-4906-95c7-8e36f69293ac</id>
-				<name>Cramped</name>
-				<translate>Cramped</translate>
-				<page>374</page>
-			</quality>
-			<quality>
-				<id>ae63d09f-22a1-4c27-bc99-d82887fcef15</id>
-				<name>Dangerous Area</name>
-				<translate>Dangerous Area</translate>
-				<page>374</page>
-			</quality>
-		</qualities>
 	</chummer>
 	<chummer file="priorities.xml">
 		<categories>

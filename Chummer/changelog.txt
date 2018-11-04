@@ -3,6 +3,7 @@ Future Build 204
 Data Changes:
 
 - Fixed Autopicker having an incorrect cost. Fixes #3167.
+- Fixed an issue with Japanese translations of certain lifestyle qualities caused by duplicate entries. Fixes #3168.
 
 Build 203
 
