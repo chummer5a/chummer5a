@@ -1,3 +1,9 @@
+Future Build 204
+
+Data Changes:
+
+- Fixed Autopicker having an incorrect cost. Fixes #3167.
+
 Build 203
 
 Application Changes:

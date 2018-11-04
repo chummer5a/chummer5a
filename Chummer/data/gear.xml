@@ -8023,7 +8023,7 @@
           <condition>Only for picking mechanical locks</condition>
         </limitmodifier>
       </bonus>
-      <cost>Rating * 250</cost>
+      <cost>Rating * 500</cost>
     </gear>
     <gear>
       <id>d90a58cd-f89c-486d-b785-991d2fecf32f</id>
