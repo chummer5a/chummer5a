@@ -10186,11 +10186,13 @@ namespace Chummer
 
         private void treWeapons_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            if (treWeapons.SelectedNode != null && !(treWeapons.SelectedNode?.Tag is IHasInternalId))
+            string strSelectedWeapon = treWeapons.SelectedNode?.Tag.ToString();
+            if (string.IsNullOrEmpty(strSelectedWeapon) || treWeapons.SelectedNode.Level != 1)
+                return;
+
+            // Do not allow the root element to be moved.
+            if (strSelectedWeapon != "Node_SelectedWeapons")
             {
-                if (treWeapons.SelectedNode.Level != 1 && treWeapons.SelectedNode.Level != 0)
-                    return;
-                
                 _intDragLevel = treWeapons.SelectedNode.Level;
                 DoDragDrop(e.Item, DragDropEffects.Move);
             }
@@ -10253,7 +10255,7 @@ namespace Chummer
         private void treArmor_ItemDrag(object sender, ItemDragEventArgs e)
         {
             if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level != 1)
-                    return;
+                return;
 
             _intDragLevel = treArmor.SelectedNode.Level;
             DoDragDrop(e.Item, DragDropEffects.Move);
@@ -10542,10 +10544,12 @@ namespace Chummer
 
         private void treGear_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            if (!(treGear.SelectedNode?.Tag is IHasInternalId)) return;
+            string strSelected = treGear.SelectedNode?.Tag.ToString();
+            if (string.IsNullOrEmpty(strSelected) || strSelected == "Node_SelectedGear")
+                return;
             if (e.Button == MouseButtons.Left)
             {
-                if (treGear.SelectedNode.Level != 1 && treGear.SelectedNode.Level != 0)
+                if (treGear.SelectedNode.Level > 1 || treGear.SelectedNode.Level < 0)
                     return;
                 _eDragButton = MouseButtons.Left;
             }
@@ -11185,12 +11189,16 @@ namespace Chummer
 
         private void treVehicles_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            if ((treVehicles.SelectedNode?.Tag is Gear))
+            if (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Level > 1)
             {
-                _eDragButton = e.Button;
-                _blnDraggingGear = true;
-                _intDragLevel = treVehicles.SelectedNode.Level;
-                DoDragDrop(e.Item, DragDropEffects.Move);
+                // Determine if this is a piece of Gear. If not, don't let the user drag the Node.
+                if (treVehicles.SelectedNode?.Tag is Gear)
+                {
+                    _eDragButton = e.Button;
+                    _blnDraggingGear = true;
+                    _intDragLevel = treVehicles.SelectedNode.Level;
+                    DoDragDrop(e.Item, DragDropEffects.Move);
+                }
             }
         }
 

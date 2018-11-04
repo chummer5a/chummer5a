@@ -7334,7 +7334,7 @@ namespace Chummer
         private void treWeapons_ItemDrag(object sender, ItemDragEventArgs e)
         {
             string strSelectedWeapon = treWeapons.SelectedNode?.Tag.ToString();
-            if (string.IsNullOrEmpty(strSelectedWeapon) || treWeapons.SelectedNode.Level > 1 || treWeapons.SelectedNode.Level < 0)
+            if (string.IsNullOrEmpty(strSelectedWeapon) || treWeapons.SelectedNode.Level != 1)
                 return;
 
             // Do not allow the root element to be moved.
@@ -7752,7 +7752,8 @@ namespace Chummer
 
         private void treGear_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            if (treGear.SelectedNode?.Tag.ToString() == "Node_SelectedGear" || treGear.SelectedNode?.Tag == null)
+            string strSelected = treGear.SelectedNode?.Tag.ToString();
+            if (string.IsNullOrEmpty(strSelected) || strSelected == "Node_SelectedGear")
                 return;
             if (e.Button == MouseButtons.Left)
             {

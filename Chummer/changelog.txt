@@ -3,6 +3,7 @@ Future Build 204
 Application Changes:
 
 - Fixed an issue where certain controls (e.g. Skills, Knowledge Skills) would not get their children controls translated. Fixes #3171.
+- Fixed an issue where drag-and-dropping weapons in career mode, as well as drag-and-dropping gear under certain circumstances, would not work. Fixes #3172.
 
 Data Changes:
 
