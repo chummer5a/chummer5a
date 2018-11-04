@@ -1195,7 +1195,7 @@ namespace Chummer.Backend.Skills
 
         public SkillGroup SkillGroupObject { get; }
 
-        public string Page { get; private set; }
+        public string Page { get; }
         
         /// <summary>
         /// Sourcebook Page Number using a given language file.
@@ -1211,7 +1211,7 @@ namespace Chummer.Backend.Skills
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
-        public string Source { get; private set; }
+        public string Source { get; }
 
         //Stuff that is RO, that is simply calculated from other things
         //Move to extension method?

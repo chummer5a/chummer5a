@@ -30,7 +30,7 @@ namespace Chummer
     public class StoryModule : IHasName, IHasInternalId, IHasXmlNode
     {
         private readonly Dictionary<string, string> _dicEnglishTexts = new Dictionary<string, string>();
-        private Guid _guiInternalId;
+        private readonly Guid _guiInternalId;
         private string _strName;
         private string _strSourceId;
         private readonly Character _objCharacter;

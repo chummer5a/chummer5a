@@ -30,7 +30,7 @@ namespace Chummer.UI.Skills
     [DebuggerDisplay("{_skill.Name} {Visible} {btnAddSpec.Visible}")]
     public sealed partial class SkillControl2 : UserControl
     {
-        private bool _blnLoading = true;
+        private readonly bool _blnLoading = true;
         private readonly Skill _skill;
         private readonly Font _normal;
         private readonly Font _italic;
