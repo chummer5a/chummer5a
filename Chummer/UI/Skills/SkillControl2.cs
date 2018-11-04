@@ -44,6 +44,8 @@ namespace Chummer.UI.Skills
             InitializeComponent();
             SuspendLayout();
 
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+
             foreach (ToolStripItem objItem in cmsSkillLabel.Items)
             {
                 LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);

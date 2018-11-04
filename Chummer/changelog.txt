@@ -1,5 +1,9 @@
 Future Build 204
 
+Application Changes:
+
+- Fixed an issue where certain controls (e.g. Skills, Knowledge Skills) would not get their children controls translated. Fixes #3171.
+
 Data Changes:
 
 - Fixed Autopicker having an incorrect cost. Fixes #3167.
