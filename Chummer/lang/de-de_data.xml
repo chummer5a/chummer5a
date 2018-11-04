@@ -1192,6 +1192,24 @@
 				<translate>Standard-Hartschalenrucksack</translate>
 				<altpage>70</altpage>
 			</armor>
+			<armor translated="True">
+				<id>4b16a172-b328-4717-b632-39a3d07eeb41</id>
+				<name>FleetHead Kappe</name>
+				<translate>FleetHead Kappe</translate>
+				<altpage>173</altpage>
+			</armor>
+			<armor translated="True">
+				<id>fc1c9de6-4600-4c14-8e8a-9fed51389e4a</id>
+				<name>Rheingold Friesennerz</name>
+				<translate>Rheingold Friesennerz</translate>
+				<altpage>173</altpage>
+			</armor>
+			<armor translated="True">
+				<id>e8065f02-68f3-46f6-8cca-298a1806b97b</id>
+				<name>Ares Victory Friesennerz</name>
+				<translate>Ares Victory Friesennerz</translate>
+				<altpage>173</altpage>
+			</armor>
 		</armors>
 		<mods>
 			<mod>
@@ -1571,6 +1589,12 @@
 				<name>Personal Drone Rack</name>
 				<translate>Tragbare Drohnenhalterung</translate>
 				<altpage>70</altpage>
+			</mod>
+			<mod translated="True">
+				<id>80effbdd-047d-4b1f-8159-f13f86bba4e6</id>
+				<name>Internal Air Tank (5 Minutes)</name>
+				<translate>Interner Lufttank (5 Minuten)</translate>
+				<altpage>173</altpage>
 			</mod>
 		</mods>
 	</chummer>
@@ -3176,6 +3200,12 @@
 				<name>Kill Code</name>
 				<translate>Lethaler Code</translate>
 				<altcode>KC</altcode>
+			</book>
+			<book>
+				<id>6c97c3e8-8f13-43aa-b692-6218983c9396</id>
+				<name>Hamburg (German-exclusive)</name>
+				<translate>Hamburg (Deutsch-exklusiv)</translate>
+				<altcode>HAMG</altcode>
 			</book>
 		</books>
 	</chummer>
@@ -38769,6 +38799,48 @@
 				<translate>Eurocopter FC</translate>
 				<altpage>219</altpage>
 			</vehicle>
+			<vehicle translated="True">
+				<id>18f41586-7f0f-4ca1-8881-eccdabc3351d</id>
+				<name>MK R/Evolution</name>
+				<translate>MK R/Evolution</translate>
+				<altpage>174</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>79bf8059-3014-48f8-9bb0-ac3f81b732c3</id>
+				<name>MCT Guppy</name>
+				<translate>MCT Guppy</translate>
+				<altpage>173</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>89251727-a573-4624-96db-697883f3643f</id>
+				<name>Proteus Nachtaal</name>
+				<translate>Proteus Nachtaal</translate>
+				<altpage>173</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>9a2a8c39-e618-4feb-b779-bc8f30fa76e6</id>
+				<name>Evo Barrakuda</name>
+				<translate>Evo Barrakuda</translate>
+				<altpage>173</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>e5108247-0d43-486e-8d6a-2075b02f0681</id>
+				<name>Vulkan Delfin RQ-11</name>
+				<translate>Vulkan Delfin RQ-11</translate>
+				<altpage>175</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>94318a48-9f0d-4c9b-ac3e-9e35d31ffb08</id>
+				<name>MK Harbor Sentry</name>
+				<translate>MK Harbor Sentry</translate>
+				<altpage>176</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>b6cb1444-1e8b-4285-be64-a5fee0ac3d34</id>
+				<name>Yongkang Water Spirit</name>
+				<translate>Yongkang Water Spirit</translate>
+				<altpage>177</altpage>
+			</vehicle>
 		</vehicles>
 		<mods>
 			<mod>
@@ -43335,6 +43407,18 @@
 				<name>Renraku/Ingram Supermach 200</name>
 				<translate>Renraku/Ingram Supermach 200</translate>
 				<altpage>139</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>787627c8-a2c4-47c1-9f3e-dd96ebfadf29</id>
+				<name>Elektro-Angel</name>
+				<translate>Elektro-Angel</translate>
+				<altpage>172</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>1a329276-af02-4911-a600-387291465201</id>
+				<name>Elektro-Netz</name>
+				<translate>Elektro-Netz</translate>
+				<altpage>172</altpage>
 			</weapon>
 		</weapons>
 		<accessories>
