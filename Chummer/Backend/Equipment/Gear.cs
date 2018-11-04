@@ -1494,9 +1494,9 @@ namespace Chummer.Backend.Equipment
             set
             {
                 string strNewValue = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
-                if (_strGearName != strNewValue)
+                if (_strExtra != strNewValue)
                 {
-                    _strGearName = strNewValue;
+                    _strExtra = strNewValue;
                     OnPropertyChanged();
                 }
             }

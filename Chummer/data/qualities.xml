@@ -17079,7 +17079,7 @@
       <category>Positive</category>
       <limit>False</limit>
       <bonus>
-        <selecttext />
+        <selectsprite />
       </bonus>
       <required>
         <oneof>
