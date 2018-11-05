@@ -1498,9 +1498,9 @@ namespace Chummer.Backend.Equipment
             set
             {
                 string strNewValue = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
-                if (_strGearName != strNewValue)
+                if (_strExtra != strNewValue)
                 {
-                    _strGearName = strNewValue;
+                    _strExtra = strNewValue;
                     OnPropertyChanged();
                 }
             }
@@ -2954,6 +2954,269 @@ namespace Chummer.Backend.Equipment
             }
 
             return true;
+        }
+        #endregion
+
+        #region Hero Lab Importing Methods
+        public bool ImportHeroLabGear(XmlNode xmlGearImportNode, XmlNode xmlParentGearNode, IList<Weapon> lstWeapons)
+        {
+            if (xmlGearImportNode == null)
+                return false;
+            string strOriginalName = xmlGearImportNode.Attributes?["name"]?.InnerText ?? string.Empty;
+            if (!string.IsNullOrEmpty(strOriginalName))
+            {
+                XmlDocument xmlGearDocument = XmlManager.Load("gear.xml");
+                string strForceValue = string.Empty;
+                XmlNode xmlGearDataNode = null;
+                using (XmlNodeList xmlGearDataList = xmlGearDocument.SelectNodes("/chummer/gears/gear[contains(name, \"" + strOriginalName + "\")]"))
+                {
+                    if (xmlGearDataList?.Count > 0)
+                    {
+                        foreach (XmlNode xmlLoopNode in xmlGearDataList)
+                        {
+                            XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                            if (xmlTestNode != null)
+                            {
+                                // Assumes topmost parent is an AND node
+                                if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                {
+                                    continue;
+                                }
+                            }
+
+                            xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                            if (xmlTestNode != null)
+                            {
+                                // Assumes topmost parent is an AND node
+                                if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                {
+                                    continue;
+                                }
+                            }
+
+                            xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
+                            if (xmlTestNode != null)
+                            {
+                                // Assumes topmost parent is an AND node
+                                if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                {
+                                    continue;
+                                }
+                            }
+
+                            xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
+                            if (xmlTestNode != null)
+                            {
+                                // Assumes topmost parent is an AND node
+                                if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                {
+                                    continue;
+                                }
+                            }
+
+                            xmlGearDataNode = xmlLoopNode;
+                            break;
+                        }
+                    }
+                }
+
+                if (xmlGearDataNode == null)
+                {
+                    string[] astrOriginalNameSplit = strOriginalName.Split(':');
+                    if (astrOriginalNameSplit.Length > 1)
+                    {
+                        string strName = astrOriginalNameSplit[0].Trim();
+                        using (XmlNodeList xmlGearDataList = xmlGearDocument.SelectNodes("/chummer/gears/gear[contains(name, \"" + strName + "\")]"))
+                        {
+                            if (xmlGearDataList?.Count > 0)
+                            {
+                                foreach (XmlNode xmlLoopNode in xmlGearDataList)
+                                {
+                                    XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                    if (xmlTestNode != null)
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            continue;
+                                        }
+                                    }
+
+                                    xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                    if (xmlTestNode != null)
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            continue;
+                                        }
+                                    }
+
+                                    xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
+                                    if (xmlTestNode != null)
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            continue;
+                                        }
+                                    }
+
+                                    xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
+                                    if (xmlTestNode != null)
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            continue;
+                                        }
+                                    }
+
+                                    xmlGearDataNode = xmlLoopNode;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (xmlGearDataNode != null)
+                            strForceValue = astrOriginalNameSplit[1].Trim();
+                    }
+                    if (xmlGearDataNode == null)
+                    {
+                        astrOriginalNameSplit = strOriginalName.Split(',');
+                        if (astrOriginalNameSplit.Length > 1)
+                        {
+                            string strName = astrOriginalNameSplit[0].Trim();
+                            using (XmlNodeList xmlGearDataList = xmlGearDocument.SelectNodes("/chummer/gears/gear[contains(name, \"" + strName + "\")]"))
+                            {
+                                if (xmlGearDataList?.Count > 0)
+                                {
+                                    foreach (XmlNode xmlLoopNode in xmlGearDataList)
+                                    {
+                                        XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                        if (xmlTestNode != null)
+                                        {
+                                            // Assumes topmost parent is an AND node
+                                            if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            {
+                                                continue;
+                                            }
+                                        }
+
+                                        xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                        if (xmlTestNode != null)
+                                        {
+                                            // Assumes topmost parent is an AND node
+                                            if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            {
+                                                continue;
+                                            }
+                                        }
+
+                                        xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
+                                        if (xmlTestNode != null)
+                                        {
+                                            // Assumes topmost parent is an AND node
+                                            if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            {
+                                                continue;
+                                            }
+                                        }
+
+                                        xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
+                                        if (xmlTestNode != null)
+                                        {
+                                            // Assumes topmost parent is an AND node
+                                            if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            {
+                                                continue;
+                                            }
+                                        }
+
+                                        xmlGearDataNode = xmlLoopNode;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (xmlGearDataNode != null)
+                                strForceValue = astrOriginalNameSplit[1].Trim();
+                        }
+                    }
+                }
+                if (xmlGearDataNode != null)
+                {
+                    Create(xmlGearDataNode, Convert.ToInt32(xmlGearImportNode.Attributes?["rating"]?.InnerText), lstWeapons, strForceValue);
+                }
+                else
+                {
+                    XmlNode xmlCustomGearDataNode = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Custom Item']");
+                    if (xmlCustomGearDataNode != null)
+                    {
+                        Create(xmlCustomGearDataNode, Convert.ToInt32(xmlGearImportNode.Attributes?["rating"]?.InnerText), lstWeapons, strOriginalName);
+                        Cost = xmlGearImportNode.SelectSingleNode("gearcost/@value")?.InnerText;
+                    }
+                    else
+                        return false;
+                }
+
+                if (InternalId.IsEmptyGuid())
+                    return false;
+
+                Quantity = Convert.ToDecimal(xmlGearImportNode.Attributes?["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                Notes = xmlGearImportNode["description"]?.InnerText;
+
+                ProcessHeroLabGearPlugins(xmlGearImportNode, lstWeapons);
+
+                return true;
+            }
+            return false;
+        }
+
+        public void ProcessHeroLabGearPlugins(XmlNode xmlGearImportNode, IList<Weapon> lstWeapons)
+        {
+            if (xmlGearImportNode == null)
+                return;
+            foreach (string strPluginNodeName in Character.HeroLabPluginNodeNames)
+            {
+                using (XmlNodeList xmlPluginsList = xmlGearImportNode.SelectNodes(strPluginNodeName + "/item[@useradded != \"no\"]"))
+                {
+                    if (xmlPluginsList?.Count > 0)
+                    {
+                        foreach (XmlNode xmlPluginToAdd in xmlPluginsList)
+                        {
+                            Gear objPlugin = new Gear(_objCharacter);
+                            if (objPlugin.ImportHeroLabGear(xmlPluginToAdd, GetNode(), lstWeapons))
+                            {
+                                objPlugin.Parent = this;
+                                Children.Add(objPlugin);
+                            }
+                        }
+                    }
+                }
+
+                using (XmlNodeList xmlPluginsList = xmlGearImportNode.SelectNodes(strPluginNodeName + "/item[@useradded = \"no\"]"))
+                {
+                    if (xmlPluginsList?.Count > 0)
+                    {
+                        foreach (XmlNode xmlPluginToAdd in xmlPluginsList)
+                        {
+                            string strName = xmlPluginToAdd.Attributes?["name"]?.InnerText ?? string.Empty;
+                            if (!string.IsNullOrEmpty(strName))
+                            {
+                                Gear objPlugin = Children.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                                if (objPlugin != null)
+                                {
+                                    objPlugin.Quantity = Convert.ToDecimal(xmlPluginToAdd.Attributes?["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                                    objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
+                                    objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            this.RefreshMatrixAttributeArray();
         }
         #endregion
         #endregion

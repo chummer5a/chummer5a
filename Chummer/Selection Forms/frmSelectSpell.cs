@@ -745,20 +745,29 @@ namespace Chummer
             {
                 // Add +2 to the DV value if Extended is selected.
                 int intPos = strDV.IndexOf(')') + 1;
-                string strAfter = strDV.Substring(intPos, strDV.Length - intPos);
-                strDV = strDV.Substring(0, intPos);
-                if (string.IsNullOrEmpty(strAfter))
-                    strAfter = "+2";
+                string strAfter;
+                if (intPos > 0)
+                {
+                    strAfter = strDV.Substring(intPos, strDV.Length - intPos);
+                    strDV = strDV.Substring(0, intPos);
+                    if (string.IsNullOrEmpty(strAfter))
+                        strAfter = "+2";
+                    else
+                    {
+                        int intValue = Convert.ToInt32(strAfter) + 2;
+                        if (intValue == 0)
+                            strAfter = string.Empty;
+                        else if (intValue > 0)
+                            strAfter = '+' + intValue.ToString();
+                        else
+                            strAfter = intValue.ToString();
+                    }
+                }
                 else
                 {
-                    int intValue = Convert.ToInt32(strAfter) + 2;
-                    if (intValue == 0)
-                        strAfter = string.Empty;
-                    else if (intValue > 0)
-                        strAfter = '+' + intValue.ToString();
-                    else
-                        strAfter = intValue.ToString();
+                    strAfter = "+2";
                 }
+                
                 strDV += strAfter;
             }
 

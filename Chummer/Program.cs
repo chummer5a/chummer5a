@@ -43,7 +43,7 @@ namespace Chummer
                 // Mono doesn't always play nice with ProfileOptimization, so it's better to just not bother with it when running under Mono
                 if (!IsMono)
                 {
-                    ProfileOptimization.SetProfileRoot(Application.StartupPath);
+                    ProfileOptimization.SetProfileRoot(Utils.GetStartupPath);
                     ProfileOptimization.StartProfile("chummerprofile");
                 }
 
@@ -142,8 +142,8 @@ namespace Chummer
             //If launched by file assiocation, the cwd is file location.
             //Chummer looks for data in cwd, to be able to move exe (legacy+bootstraper uses this)
 
-            if (Directory.Exists(Path.Combine(Application.StartupPath, "data"))
-                && Directory.Exists(Path.Combine(Application.StartupPath, "lang")))
+            if (Directory.Exists(Path.Combine(Utils.GetStartupPath, "data"))
+                && Directory.Exists(Path.Combine(Utils.GetStartupPath, "lang")))
             {
                 //both normally used data dirs present (add file loading abstraction to the list)
                 //so do nothing
@@ -151,7 +151,7 @@ namespace Chummer
                 return;
             }
 
-            Environment.CurrentDirectory = Application.StartupPath;
+            Environment.CurrentDirectory = Utils.GetStartupPath;
         }
 
         public static Mutex GlobalChummerMutex

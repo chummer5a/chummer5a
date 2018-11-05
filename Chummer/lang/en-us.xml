@@ -6374,6 +6374,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Checkbox_DiceRoller_BubbleDie</key>
       <text>Bubble Die (Fix Even Dicepool Glitch Chances)</text>
     </string>
+    <string>
+      <key>Checkbox_DiceRoller_VariableGlitch</key>
+      <text>Glitch on More 1's than Hits, Not Half Dicepool</text>
+    </string>
 	<string>
 	  <key>String_BubbleDie</key>
 	  <text>Only for Glitching:</text>
@@ -9559,7 +9563,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Message_HeroLabImporterWarning</key>
-      <text>Due to the differences between how Hero Lab and Chummer5a handle save files, certain items will import incorrectly into Chummer5a, especially concerning karma allocation for characters at character creation.\n\nIn addition, the following items will not be properly imported:\n - Complex Forms\n - Martial Arts\n - Anything related to Initiations and Submersions\n - Mystic Adept PPs\n - Spirits and Sprites\n - Vehicles\n - AI Advanced Programs\n\nNon-mundane characters in Priority or Sum-to-Ten character creation mode will also need to re-apply their priorities after importing is complete (Special &gt; Change Priority Selection &gt; Press OK).\n\nAre you sure you wish to use this tool?</text>
+      <text>Due to the differences between how Hero Lab and Chummer5a handle save files, certain items will import incorrectly into Chummer5a, especially concerning karma allocation for characters at character creation.\n\nIn addition, the following items will not be properly imported:\n - Martial Arts\n - Anything related to Initiations and Submersions\n - Mystic Adept PPs\n - Spirits and Sprites\n - Vehicles\n - AI Advanced Programs\n\nNon-mundane characters in Priority or Sum-to-Ten character creation mode will also need to re-apply their priorities after importing is complete (Special &gt; Change Priority Selection &gt; Press OK).\n\nAre you sure you wish to use this tool?</text>
     </string>
     <string>
       <key>Label_HeroLabTrademarks</key>

@@ -2512,6 +2512,7 @@
     <Content Include="icons\flags\cy.png" />
     <Content Include="icons\flags\cz.png" />
     <Content Include="icons\flags\de.png" />
+    <Content Include="icons\flags\defaulted.png" />
     <Content Include="icons\flags\dj.png" />
     <Content Include="icons\flags\dk.png" />
     <Content Include="icons\flags\dm.png" />

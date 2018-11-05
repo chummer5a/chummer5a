@@ -57,7 +57,7 @@ namespace Chummer.Backend
                     {"commandline", Environment.CommandLine},
                     {"visible-version", Application.ProductVersion},
                     {"machine-name", Environment.MachineName},
-                    {"current-dir", Application.StartupPath},
+                    {"current-dir", Utils.GetStartupPath},
                     {"application-dir", Application.ExecutablePath},
                     {"os-type", Environment.OSVersion.VersionString},
                     {"visible-error-friendly", ex?.Message ?? "No description available"}
@@ -183,14 +183,14 @@ namespace Chummer.Backend
             try
             {
                 DumpData dump = new DumpData(ex);
-                dump.AddFile(Path.Combine(Application.StartupPath, "settings", "default.xml"));
-                dump.AddFile(Path.Combine(Application.StartupPath, "chummerlog.txt"));
+                dump.AddFile(Path.Combine(Utils.GetStartupPath, "settings", "default.xml"));
+                dump.AddFile(Path.Combine(Utils.GetStartupPath, "chummerlog.txt"));
 
                 byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
-                File.WriteAllBytes(Path.Combine(Application.StartupPath, "json.txt"), info);
+                File.WriteAllBytes(Path.Combine(Utils.GetStartupPath, "json.txt"), info);
 
-                //Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Application.StartupPath, "json.txt") + " --debug");
-                Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Application.StartupPath, "json.txt"));
+                //Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt") + " --debug");
+                Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt"));
 
                 crashHandler?.WaitForExit();
             }

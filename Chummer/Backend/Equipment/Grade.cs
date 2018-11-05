@@ -29,7 +29,7 @@ namespace Chummer.Backend.Equipment
     public class Grade : IHasName, IHasInternalId, IHasXmlNode
     {
         private Guid _guidSourceId = Guid.Empty;
-        private Guid _guidId;
+        private readonly Guid _guidId;
         private string _strName = "Standard";
         private decimal _decEss = 1.0m;
         private decimal _decCost = 1.0m;

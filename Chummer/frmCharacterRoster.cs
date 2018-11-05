@@ -142,7 +142,7 @@ namespace Chummer
                     if (_lstCharacterCache.TryGetValue(strFile, out CharacterCache objCache) && objCache != null)
                     {
                         objCharacterNode.Text = CalculatedName(objCache);
-                        objCharacterNode.ToolTipText = objCache.FilePath.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>');
+                        objCharacterNode.ToolTipText = objCache.FilePath.CheapReplace(Utils.GetStartupPath, () => '<' + Application.ProductName + '>');
                         if (!string.IsNullOrEmpty(objCache.ErrorText))
                         {
                             objCharacterNode.ForeColor = Color.Red;
@@ -155,8 +155,9 @@ namespace Chummer
                     }
                     else
                     {
+
                         objCharacterNode.Text = Path.GetFileNameWithoutExtension(strFile) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ')';
-                        objCharacterNode.ToolTipText = strFile.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>') + Environment.NewLine + Environment.NewLine
+                        objCharacterNode.ToolTipText = strFile.CheapReplace(Utils.GetStartupPath, () => '<' + Application.ProductName + '>') + Environment.NewLine + Environment.NewLine
                                                        + LanguageManager.GetString("String_Error", GlobalOptions.Language) + LanguageManager.GetString("String_Colon", GlobalOptions.Language)
                                                        + Environment.NewLine + LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language);
                         objCharacterNode.ForeColor = Color.Red;
@@ -428,7 +429,7 @@ namespace Chummer
                 objCache.Created = xmlSourceNode.SelectSingleNode("created")?.Value == bool.TrueString;
                 objCache.Essence = xmlSourceNode.SelectSingleNode("totaless")?.Value;
                 string strSettings = xmlSourceNode.SelectSingleNode("settings")?.Value ?? string.Empty;
-                objCache.SettingsFile = !File.Exists(Path.Combine(Application.StartupPath, "settings", strSettings)) ? LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language) : strSettings;
+                objCache.SettingsFile = !File.Exists(Path.Combine(Utils.GetStartupPath, "settings", strSettings)) ? LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language) : strSettings;
                 string strMugshotBase64 = xmlSourceNode.SelectSingleNode("mugshot")?.Value;
                 if (!string.IsNullOrEmpty(strMugshotBase64))
                 {
@@ -472,7 +473,7 @@ namespace Chummer
             {
                 ContextMenuStrip = cmsRoster,
                 Text = CalculatedName(objCache),
-                ToolTipText = objCache.FilePath.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>'),
+                ToolTipText = objCache.FilePath.CheapReplace(Utils.GetStartupPath, () => '<' + Application.ProductName + '>'),
                 Tag = strFile
             };
             if (!string.IsNullOrEmpty(objCache.ErrorText))
@@ -555,7 +556,7 @@ namespace Chummer
                 lblSettings.Text = objCache.SettingsFile;
                 if (string.IsNullOrEmpty(lblSettings.Text))
                     lblSettings.Text = strUnknown;
-                lblFilePath.SetToolTip(objCache.FilePath.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>'));
+                lblFilePath.SetToolTip(objCache.FilePath.CheapReplace(Utils.GetStartupPath, () => '<' + Application.ProductName + '>'));
                 picMugshot.Image = objCache.Mugshot;
 
                 // Populate character information fields.

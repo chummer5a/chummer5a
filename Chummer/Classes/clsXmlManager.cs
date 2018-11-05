@@ -70,7 +70,7 @@ namespace Chummer
         #region Constructor
         static XmlManager()
         {
-            s_LstDataDirectories.Add(Path.Combine(Application.StartupPath, "data"));
+            s_LstDataDirectories.Add(Path.Combine(Utils.GetStartupPath, "data"));
             foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo.Where(x => x.Enabled))
             {
                 s_LstDataDirectories.Add(objCustomDataDirectory.Path);
@@ -84,7 +84,7 @@ namespace Chummer
             lock (s_SetFilesWithCachedDocsLock)
                 s_SetFilesWithCachedDocs.Clear();
             s_LstDataDirectories.Clear();
-            s_LstDataDirectories.Add(Path.Combine(Application.StartupPath, "data"));
+            s_LstDataDirectories.Add(Path.Combine(Utils.GetStartupPath, "data"));
             foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo.Where(x => x.Enabled))
             {
                 s_LstDataDirectories.Add(objCustomDataDirectory.Path);
@@ -245,7 +245,7 @@ namespace Chummer
             bool blnHasLiveCustomData = false;
             if (GlobalOptions.LiveCustomData)
             {
-                strPath = Path.Combine(Application.StartupPath, "livecustomdata");
+                strPath = Path.Combine(Utils.GetStartupPath, "livecustomdata");
                 if (Directory.Exists(strPath))
                 {
                     blnHasLiveCustomData = DoProcessCustomDataFiles(objXmlFile, objDoc, strPath, strFileName, SearchOption.AllDirectories);
@@ -921,7 +921,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return;
             XmlDocument objLanguageDoc = new XmlDocument();
-            string languageDirectoryPath = Path.Combine(Application.StartupPath, "lang");
+            string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
             string strFilePath = Path.Combine(languageDirectoryPath, strLanguage + "_data.xml");
 
             try
@@ -957,7 +957,7 @@ namespace Chummer
             // <results>
             objWriter.WriteStartElement("results");
 
-            string strPath = Path.Combine(Application.StartupPath, "data");
+            string strPath = Path.Combine(Utils.GetStartupPath, "data");
             foreach (string strFile in Directory.GetFiles(strPath, "*.xml"))
             {
                 string strFileName = Path.GetFileName(strFile);

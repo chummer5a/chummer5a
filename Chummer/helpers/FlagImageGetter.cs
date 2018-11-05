@@ -27,7 +27,7 @@ namespace Chummer
         /// <returns>16px x 11px image of the country/region's flag if available, null otherwise</returns>
         public static System.Drawing.Image GetFlagFromCountryCode(string strCode)
         {
-            System.Drawing.Image objReturn = null;
+            System.Drawing.Image objReturn;
             switch (strCode.ToLowerInvariant())
             {
                 case "ad":
@@ -767,6 +767,10 @@ namespace Chummer
                     break;
                 case "zw":
                     objReturn = Properties.Resources.zw;
+                    break;
+                default:
+                    Utils.BreakIfDebug();
+                    objReturn = Properties.Resources.defaulted;
                     break;
             }
             return objReturn;

@@ -22,7 +22,6 @@ using System.IO;
  using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Text;
-using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -50,7 +49,7 @@ namespace Chummer
                         // Sets up logging information
                         if (value)
                         {
-                            s_LogWriter = new StreamWriter(Path.Combine(Application.StartupPath, "chummerlog.txt"));
+                            s_LogWriter = new StreamWriter(Path.Combine(Utils.GetStartupPath, "chummerlog.txt"));
                         }
                         // This will disabled logging and free any resources used by it
                         else if (s_LogWriter != null)

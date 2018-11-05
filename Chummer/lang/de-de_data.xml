@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
 	Chummer5a is free software: you can redistribute it and/or modify
@@ -1192,6 +1192,24 @@
 				<translate>Standard-Hartschalenrucksack</translate>
 				<altpage>70</altpage>
 			</armor>
+			<armor translated="True">
+				<id>4b16a172-b328-4717-b632-39a3d07eeb41</id>
+				<name>FleetHead Kappe</name>
+				<translate>FleetHead Kappe</translate>
+				<altpage>173</altpage>
+			</armor>
+			<armor translated="True">
+				<id>fc1c9de6-4600-4c14-8e8a-9fed51389e4a</id>
+				<name>Rheingold Friesennerz</name>
+				<translate>Rheingold Friesennerz</translate>
+				<altpage>173</altpage>
+			</armor>
+			<armor translated="True">
+				<id>e8065f02-68f3-46f6-8cca-298a1806b97b</id>
+				<name>Ares Victory Friesennerz</name>
+				<translate>Ares Victory Friesennerz</translate>
+				<altpage>173</altpage>
+			</armor>
 		</armors>
 		<mods>
 			<mod>
@@ -1571,6 +1589,12 @@
 				<name>Personal Drone Rack</name>
 				<translate>Tragbare Drohnenhalterung</translate>
 				<altpage>70</altpage>
+			</mod>
+			<mod translated="True">
+				<id>80effbdd-047d-4b1f-8159-f13f86bba4e6</id>
+				<name>Internal Air Tank (5 Minutes)</name>
+				<translate>Interner Lufttank (5 Minuten)</translate>
+				<altpage>173</altpage>
 			</mod>
 		</mods>
 	</chummer>
@@ -3176,6 +3200,12 @@
 				<name>Kill Code</name>
 				<translate>Lethaler Code</translate>
 				<altcode>KC</altcode>
+			</book>
+			<book>
+				<id>6c97c3e8-8f13-43aa-b692-6218983c9396</id>
+				<name>Hamburg (German-exclusive)</name>
+				<translate>Hamburg (Deutsch-exklusiv)</translate>
+				<altcode>HAMG</altcode>
 			</book>
 		</books>
 	</chummer>
@@ -6576,8 +6606,8 @@
 			</metatype>
 			<metatype>
 				<id>9beb359e-f6c9-41a1-8bd9-cb283133b5ef</id>
-				<name>Hellcow</name>
-				<translate>Höllenkuh</translate>
+				<name>Hellcow (Running Wild)</name>
+				<translate>Höllenkuh (Running Wild)</translate>
 				<altpage>173</altpage>
 			</metatype>
 			<metatype>
@@ -7876,6 +7906,54 @@
 				<translate>SOX-Termite</translate>
 				<altpage>208</altpage>
 			</metatype>
+			<metatype>
+				<id>ba5e2809-186c-4d11-a5a9-c8b1cb060f2c</id>
+				<name>Amphora Mite</name>
+				<translate>Amphorenwanze</translate>
+				<altpage>90</altpage>
+			</metatype>
+			<metatype>
+				<id>bd4b7d12-0b18-437d-aa5a-b63ee5616533</id>
+				<name>Angel Squirrel</name>
+				<translate>Engelshörnchen</translate>
+				<altpage>92</altpage>
+			</metatype>
+			<metatype>
+				<id>34df2bf4-07e3-4576-b8b5-3638fde15c54</id>
+				<name>Blink Sloth</name>
+				<translate>Blitzfaultier</translate>
+				<altpage>91</altpage>
+			</metatype>
+			<metatype>
+				<id>13ad55bb-acf3-4615-857a-1e9f80c9c0a0</id>
+				<name>Conway's Cheetah</name>
+				<translate>Conways Gepard</translate>
+				<altpage>92</altpage>
+			</metatype>
+			<metatype>
+				<id>d3a8a563-9f8c-4c56-89cc-09e0565c108d</id>
+				<name>Flatworm Viper</name>
+				<translate>Giftplattwurm</translate>
+				<altpage>93</altpage>
+			</metatype>
+			<metatype>
+				<id>b2bae7c6-3570-4bd8-9cb3-277c97dcfb60</id>
+				<name>Glow Rat</name>
+				<translate>Glühratte</translate>
+				<altpage>93</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>3429f34a-507f-449d-90d5-c017f03ea57b</id>
+				<name>Hellcow (Howling Shadows)</name>
+				<translate>Höllenkuh (Critterkompendium)</translate>
+				<altpage>94</altpage>
+			</metatype>
+			<metatype>
+				<id>1ea62c11-a60f-40af-971c-0a421ce8337a</id>
+				<name>Iridescent Owl</name>
+				<translate>Schilleruhu</translate>
+				<altpage>99</altpage>
+			</metatype>
 		</metatypes>
 	</chummer>
 	<chummer file="cyberware.xml">
@@ -7996,7 +8074,7 @@
 			<category translate="Harte Nanowaresysteme">Hard Nanoware</category>
 			<category translate="Nano-Cyberware">Nanocybernetics</category>
 			<category translate="Weiche Nanowaresysteme">Soft Nanoware</category>
-			<category translate="Spezielle Biodronen-Cyberware">Special Biodrone Cyberware</category>
+			<category translate="Spezielle Biodrohnen-Cyberware">Special Biodrone Cyberware</category>
 			<category translate="Cybersuite" translated="True">Cybersuite</category>
 			<category translate="Cyberimplantatwaffen-Zubehör">Cyber Implant Weapon Accessory</category>
 		</categories>
@@ -10393,10 +10471,10 @@
 			<category translate="Währung">Currency</category>
 			<category translate="Cyberterminals">Cyberterminals</category>
 			<category translate="Metatyp-spezifisch">Metatype-Specific</category>
-			<category translate="Maßgeschneidertes Parfum/Rasierwasser">Tailored Perfume/Cologne</category>
+			<category translate="Maßgeschneidertes Parfüm/Rasierwasser">Tailored Perfume/Cologne</category>
 			<category translate="Matrix-Zubehör">Matrix Accessories</category>
 			<category translate="Booster Chips">Booster Chips</category>
-			<category translate="Custom Cyberdeck Attributes">Custom Cyberdeck Attributes</category>
+			<category translate="Attribute des angepassten Cyberdecks">Custom Cyberdeck Attributes</category>
 			<category translate="Maßgeschneiderte Drogen">Custom Drug</category>
 		</categories>
 		<gears>
@@ -16812,7 +16890,7 @@
 				<translate>Eigenes Kommlink</translate>
 				<altpage>438</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>1dd68a37-4606-4a44-b314-6b885f405ca4</id>
 				<name>Spinrad Industries Trompe L'Oeil</name>
 				<translate>Spinrad Industries Trompe L'Oeil</translate>
@@ -21290,7 +21368,7 @@
 			<mentor>
 				<id>a83f0580-9783-401b-8249-bb39843fe0c7</id>
 				<name>Goddess</name>
-				<translate>Goddess</translate>
+				<translate>Göttin</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Ritual Spellcasting Tests</name>
@@ -21303,12 +21381,12 @@
 				</choices>
 				<altadvantage>All: +2 dice pool modifier for Instruction Tests.</altadvantage>
 				<altdisadvantage>The Goddess refuses to take a backseat to any male counterparts. Unless you succeed in a Charisma + Willpower Test (3), you will not take orders from a male, or if a male disrespects you, you must respond with equal measure</altdisadvantage>
-				<altpage>129</altpage>
+				<altpage>132</altpage>
 			</mentor>
 			<mentor>
 				<id>c9b8f607-43f7-4707-aaac-60da183f22ac</id>
 				<name>Lion</name>
-				<translate>Lion</translate>
+				<translate>Löwe</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice to Combat spells, preparations, and rituals</name>
@@ -21321,12 +21399,12 @@
 				</choices>
 				<altadvantage>All: +2 dice pool modifier for Survival Tests, Running Tests, or Tracking Tests (Choose One)</altadvantage>
 				<altdisadvantage>In combat situations, a Lion will never leave a comrade behind, and will fght to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot ﬂee combat before your team members are safe. Further, whenever taking actions that don’t beneft the team somehow, your physical and mental limits are reduced by 2.</altdisadvantage>
-				<altpage>129</altpage>
+				<altpage>135</altpage>
 			</mentor>
 			<mentor>
 				<id>d1089dd2-68b8-4e2a-977e-718e720f44d3</id>
 				<name>Raven (Alt)</name>
-				<translate>Raven (Alt)</translate>
+				<translate>Rabe (Alternativ)</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice to Detection spells, preparations, and rituals.</name>
@@ -21343,7 +21421,7 @@
 				</choices>
 				<altadvantage>All: +2 dice pool modifier for knowledge skill tests.</altadvantage>
 				<altdisadvantage>Followers of Raven share their mentor’s love of collecting. When presented with data, knowledge, or other gear that would be valuable (gamemaster’s discretion), you must pass a Charisma + Willpower Test (3), or be unable to resist trying to acquiring it.</altdisadvantage>
-				<altpage>121</altpage>
+				<altpage>125</altpage>
 			</mentor>
 			<mentor>
 				<id>bd56ecdf-ebba-4b66-8e39-445831744496</id>
@@ -33826,6 +33904,17 @@
 					<spec translate="[Einheitentyp]">[Single Unit Type]</spec>
 				</specs>
 			</skill>
+			<skill>
+				<id>1708eff8-a7fe-491f-b349-a6130c83e8d0</id>
+				<name>Serbo-Croatian</name>
+				<translate>Serbokroatisch</translate>
+				<specs>
+					<spec translate="Lesen/Schreiben">Read/Write</spec>
+					<spec translate="Sprechen">Speak</spec>
+					<spec translate="Dialekt">Dialect</spec>
+					<spec translate="Lingo">Lingo</spec>
+				</specs>
+			</skill>
 		</knowledgeskills>
 	</chummer>
 	<chummer file="spells.xml">
@@ -35265,7 +35354,7 @@
 			<spell translated="True">
 				<id>c7db0147-a077-423a-b617-a5cc8c0d4982</id>
 				<name>Inanimate Vessel Preparation</name>
-				<translate>Vorbereitung eines Unbelebten Geistergefäßes</translate>
+				<translate>Vorbereitung eines unbelebten Geistergefäßes</translate>
 				<altpage>225</altpage>
 			</spell>
 			<spell translated="True">
@@ -38709,6 +38798,48 @@
 				<name>Eurocopter FC</name>
 				<translate>Eurocopter FC</translate>
 				<altpage>219</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>18f41586-7f0f-4ca1-8881-eccdabc3351d</id>
+				<name>MK R/Evolution</name>
+				<translate>MK R/Evolution</translate>
+				<altpage>174</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>79bf8059-3014-48f8-9bb0-ac3f81b732c3</id>
+				<name>MCT Guppy</name>
+				<translate>MCT Guppy</translate>
+				<altpage>173</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>89251727-a573-4624-96db-697883f3643f</id>
+				<name>Proteus Nachtaal</name>
+				<translate>Proteus Nachtaal</translate>
+				<altpage>173</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>9a2a8c39-e618-4feb-b779-bc8f30fa76e6</id>
+				<name>Evo Barrakuda</name>
+				<translate>Evo Barrakuda</translate>
+				<altpage>173</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>e5108247-0d43-486e-8d6a-2075b02f0681</id>
+				<name>Vulkan Delfin RQ-11</name>
+				<translate>Vulkan Delfin RQ-11</translate>
+				<altpage>175</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>94318a48-9f0d-4c9b-ac3e-9e35d31ffb08</id>
+				<name>MK Harbor Sentry</name>
+				<translate>MK Harbor Sentry</translate>
+				<altpage>176</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>b6cb1444-1e8b-4285-be64-a5fee0ac3d34</id>
+				<name>Yongkang Water Spirit</name>
+				<translate>Yongkang Water Spirit</translate>
+				<altpage>177</altpage>
 			</vehicle>
 		</vehicles>
 		<mods>
@@ -43277,6 +43408,18 @@
 				<translate>Renraku/Ingram Supermach 200</translate>
 				<altpage>139</altpage>
 			</weapon>
+			<weapon translated="True">
+				<id>787627c8-a2c4-47c1-9f3e-dd96ebfadf29</id>
+				<name>Elektro-Angel</name>
+				<translate>Elektro-Angel</translate>
+				<altpage>172</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>1a329276-af02-4911-a600-387291465201</id>
+				<name>Elektro-Netz</name>
+				<translate>Elektro-Netz</translate>
+				<altpage>172</altpage>
+			</weapon>
 		</weapons>
 		<accessories>
 			<accessory>
@@ -45154,7 +45297,7 @@
 			<type translate="Netzwerken">Networking</type>
 			<type translate="Handel">Swag</type>
 			<type translate="Schwarzarbeit">Shadow Services</type>
-			<type translate="Personliche Gefallen">Personal Favors</type>
+			<type translate="Persönliche Gefallen">Personal Favors</type>
 			<type translate="Unterstützung">Support</type>
 		</types>
 		<preferredpayments>
@@ -45780,25 +45923,25 @@
 	</chummer>
 	<chummer file="vessels.xml">
 		<categories>
-			<category translate="Inanimate Vessels">Inanimate Vessels</category>
+			<category translate="Unbelebtes Geistergefäß">Inanimate Vessels</category>
 		</categories>
 		<metatypes>
 			<metatype>
 				<id>523fff8a-2875-4830-b390-5a965a3ca468</id>
 				<name>Plasteel Homunculus</name>
-				<translate>Plasteel Homunculus</translate>
+				<translate>Plasstahlhomunkulus</translate>
 				<altpage>87</altpage>
 			</metatype>
 			<metatype>
 				<id>81ff437c-9482-41f1-bb05-991561962234</id>
 				<name>Stone Homunculus</name>
-				<translate>Stone Homunculus</translate>
+				<translate>Steinhomunkulus</translate>
 				<altpage>87</altpage>
 			</metatype>
 			<metatype>
 				<id>aa573527-2e55-4ef7-8351-de0d10b32ce2</id>
 				<name>Wicker Man</name>
-				<translate>Wicker Man</translate>
+				<translate>Weidenmann</translate>
 				<altpage>87</altpage>
 			</metatype>
 		</metatypes>
