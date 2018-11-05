@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -10,6 +11,7 @@ using ChummerHub.API;
 using ChummerHub.Models.V1;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
+using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Drive.v3;
 using Google.Apis.Drive.v3.Data;
 using Google.Apis.Http;
@@ -18,6 +20,7 @@ using Google.Apis.Util.Store;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+
 using static Google.Apis.Drive.v3.DriveService;
 
 namespace ChummerHub.Services.GoogleDrive
@@ -37,7 +40,7 @@ namespace ChummerHub.Services.GoogleDrive
         private readonly ILogger _logger;
 
         private static string _contentType = "application/octet-stream";
-        private static string _folderId = "1DfCHQnJbV077VDKNACbLRWP7OvG-NHfM";
+        private static string _folderId = "";
         IConfiguration Configuration;
 
 
@@ -46,36 +49,77 @@ namespace ChummerHub.Services.GoogleDrive
 
 
 
-
-        private static readonly IAuthorizationCodeFlow flow =
-            new ForceOfflineGoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
+        public async Task<UserCredential> GetUserCredential(IConfiguration configuration)
         {
-            ClientSecrets = new ClientSecrets
+            try
             {
-                ClientId = "779360551859-i817g72s0ork3bffvnhtvpl0q2gi8sub.apps.googleusercontent.com",
-                ClientSecret = "Q2yMsXBtdd-zxp6vPXcjkGFz"
-            },
-            Scopes = DriveHandler.Scopes,
-            DataStore = new GoogleIDataStore(),
-        });
+                UserCredential credential;
+                string refreshToken = Configuration["Authentication:Google:RefreshToken"];
+                credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                           new ClientSecrets
+                           {
+                               ClientId = Configuration["Authentication:Google:GoogleChummerSINersId"],
+                               ClientSecret = Configuration["Authentication:Google:GoogleChummerSINersSecret"]
+                           }, Scopes, "user", CancellationToken.None, new GoogleIDataStore("me", refreshToken, _logger));
+
+                return credential;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Could not get UserCredentials: " + e.ToString());
+                return null;
+            }
+        }
+
+        private UserCredential AuthorizeGoogleUser()
+        {
+            try
+            {
+                string refreshToken = Configuration["Authentication:Google:RefreshToken"];
+
+                if (String.IsNullOrEmpty(refreshToken))
+                    throw new ArgumentException("Configuration[\"Authentication:Google:RefreshToken\"] == null! ");
+
+                var token = new TokenResponse
+                {
+                    AccessToken = "",
+                    RefreshToken = refreshToken
+                };
+
+                var flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
+                {
+                    ClientSecrets = new ClientSecrets
+                    {
+                        ClientId = Configuration["Authentication:Google:GoogleChummerSINersId"],
+                        ClientSecret = Configuration["Authentication:Google:GoogleChummerSINersSecret"]
+                    },
+                    Scopes = Scopes,
+                    DataStore = new GoogleIDataStore("me", refreshToken, _logger)
+                });
+
+                
+                UserCredential credential = new UserCredential(flow, "me", token);
+                return credential;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Could Authorize Google User: " + e.ToString());
+                throw;
+            }
+            return null;
+        }
+
+        private static IAuthorizationCodeFlow flow = null;
+       
 
         public DriveHandler(ILogger<Startup> Logger, IConfiguration configuration)
         {
             Configuration = configuration;
             _logger = Logger;
+            string refreshToken = Configuration["Authentication:Google:RefreshToken"];
 
-            //GoogleCredential tempcredential;
-            //var json = EmbeddedResource.GetResource("ChummerHub.Services.GoogleDrive.SINners.json");
-            //tempcredential = GoogleCredential.FromJson(json);
-
-            //if (tempcredential.IsCreateScopedRequired)
-            //    Credential = tempcredential.CreateScoped(Scopes);
-
-            
             if (String.IsNullOrEmpty(_folderId))
                 _folderId = Configuration["Authentication:Google:ChummerFolderId"];
-
-
         }
 
         internal string StoreXmlInCloud(SINner chummerFile, IFormFile uploadedFile)
@@ -85,26 +129,23 @@ namespace ChummerHub.Services.GoogleDrive
             {
                 _logger.LogTrace("Storing " + uploadedFile.FileName + " to GDrive...");
 
+                UserCredential creds = AuthorizeGoogleUser();
+                if (creds == null)
+                    throw new Exception("Invalid Google User");
+
                 // Create Drive API service.
                 BaseClientService.Initializer initializer = new BaseClientService.Initializer()
                 {
-                    HttpClientInitializer = (IConfigurableHttpClientInitializer)Credential,
+                    HttpClientInitializer = (IConfigurableHttpClientInitializer)creds,
                     ApplicationName = "SINners",
                     GZipEnabled = true,
                 };
                 CancellationToken cancellationToken = new CancellationToken();
 
-                
 
-                var result = new AuthorizationCodeInstalledApp(flow).AuthorizeAsync("user", cancellationToken);
+                // Create Drive API service.
+                var service = new DriveService(initializer);
 
-                if (result.Result.Credential != null)
-                {
-                    // Create Drive API service.
-                    var service = new DriveService(initializer);
-                }
-
-                 
 
                 if (String.IsNullOrEmpty(_folderId))
                 { 
@@ -173,36 +214,34 @@ namespace ChummerHub.Services.GoogleDrive
 
             }
 
-            return url;
+            return chummerFile.DownloadUrl;
         }
 
         private string UploadFileToDrive(DriveService service, IFormFile uploadFile, string conentType, SINner chummerFile)
         {
-            var fileMetadata = new Google.Apis.Drive.v3.Data.File()
-            { Permissions = new List<Permission>()
-                { new Permission()
-                {
-                    Kind = "drive#permission",
-                    Role = "reader",
-                    Type = "anyone"
-                }}
-            };
-            fileMetadata.Properties = new Dictionary<string, string>();
-            //foreach(var tag in chummerFile.SINnerMetaData.Tags)
-            //{
-            //    fileMetadata.Properties.Add(tag.Display, tag.TagValue);
-            //}
-            fileMetadata.Name = chummerFile.SINnerId.ToString();
-            fileMetadata.Parents = new List<string> { _folderId };
-            _logger.LogError("Uploading " + uploadFile.FileName + " as " + fileMetadata.Name);// + " to folder: " + _folderId);
-            fileMetadata.MimeType = _contentType;
-            fileMetadata.Shared = true;
-            fileMetadata.OriginalFilename = uploadFile.FileName;
-            
             FilesResource.CreateMediaUpload request;
-
             try
             {
+                var fileMetadata = new Google.Apis.Drive.v3.Data.File();
+                //{ Permissions = new List<Permission>()
+                //    { new Permission()
+                //    {
+                //        Kind = "drive#permission",
+                //        Role = "reader",
+                //        Type = "anyone"
+                //    }}
+                //};
+                fileMetadata.Properties = new Dictionary<string, string>();
+                foreach(var tag in chummerFile.SINnerMetaData.Tags)
+                {
+                    fileMetadata.Properties.Add(tag.Display, tag.TagValue);
+                }
+                fileMetadata.Name = chummerFile.SINnerId.ToString() + ".chum5z";
+                fileMetadata.Parents = new List<string> { _folderId };
+                _logger.LogError("Uploading " + uploadFile.FileName + " as " + fileMetadata.Name);// + " to folder: " + _folderId);
+                //fileMetadata.MimeType = _contentType;
+                fileMetadata.OriginalFilename = uploadFile.FileName;
+            
                 request = service.Files.Create(fileMetadata, uploadFile.OpenReadStream(), conentType);
                 request.Fields = "id, webContentLink";
                 var uploadprogress = request.Upload();
@@ -214,11 +253,21 @@ namespace ChummerHub.Services.GoogleDrive
                         throw uploadprogress.Exception;
                     uploadprogress = request.Resume();
                 }
-                
+                if (uploadprogress.Status == Google.Apis.Upload.UploadStatus.Failed)
+                {
+                    _logger.LogError("Chummer \"" + chummerFile.SINnerId.ToString() + "\" upload failed: " + uploadprogress.Exception?.ToString());
+                    throw uploadprogress.Exception;
+                }
+
             }
             catch(Exception e)
             {
-                _logger.LogError(e.ToString());
+                Exception innere = e;
+                while(innere.InnerException != null)
+                {
+                    innere = innere.InnerException;
+                }
+                _logger.LogError(innere.ToString());
                 throw;
             }
             
@@ -227,9 +276,33 @@ namespace ChummerHub.Services.GoogleDrive
             chummerFile.GoogleDriveFileId = request.ResponseBody?.Id;
             chummerFile.DownloadUrl = request.ResponseBody?.WebContentLink;
 
+            UploadFilePermission(service, chummerFile);
+
             return chummerFile.GoogleDriveFileId;
 
 
+        }
+
+        private void UploadFilePermission(DriveService service, SINner chummerFile)
+        {
+            try
+            {
+                Google.Apis.Drive.v3.Data.Permission permission = new Google.Apis.Drive.v3.Data.Permission();
+                permission.Type = "anyone";
+                permission.Role = "reader";
+                permission.AllowFileDiscovery = true;
+
+                PermissionsResource.CreateRequest request = service.Permissions.Create(permission, chummerFile.GoogleDriveFileId);
+                request.Fields = "id";
+                request.Execute();
+            }
+            catch(Exception e)
+            {
+                string msg = "Error while setting permissions for " + chummerFile.SINnerId + ": " + Environment.NewLine;
+                msg += e.ToString();
+                _logger.LogError(msg);
+                throw;
+            }
         }
     }
 }

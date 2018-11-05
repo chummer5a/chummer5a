@@ -40,15 +40,10 @@ namespace SINners
         ServiceClientCredentials Credentials { get; }
 
 
-            /// <param name='customHeaders'>
-        /// The headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        Task<HttpOperationResponse<IList<SINner>>> ApiV1SINnerGetWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <param name='chummerFile'>
+            /// <summary>
+        /// Returns the Chummer-Save-File
+        /// </summary>
+        /// <param name='id'>
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -56,7 +51,30 @@ namespace SINners
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<SINner>> ApiV1SINnerPostWithHttpMessagesAsync(SINner chummerFile = default(SINner), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse> ApiV1ChummerHelperByIdGetWithHttpMessagesAsync(Guid id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<IList<SINner>>> ApiV1SINnerGetWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Store the MetaData for a Chummerfile (to get a Id).
+        /// This Id can be used to store the actual file with PUT afterwards.
+        /// Alternativly, the DownloadUrl can be set directly from the Client.
+        /// </summary>
+        /// <param name='sinnerData'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse> ApiV1SINnerPostWithHttpMessagesAsync(SINner sinnerData = default(SINner), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <param name='id'>
         /// </param>
@@ -68,9 +86,14 @@ namespace SINners
         /// </param>
         Task<HttpOperationResponse> ApiV1SINnerByIdGetWithHttpMessagesAsync(Guid id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// The Xml or Zip File can be uploaded (knowing the previously stored
+        /// Id)
+        /// </summary>
         /// <param name='id'>
         /// </param>
-        /// <param name='chummerFile'>
+        /// <param name='uploadedFile'>
+        /// Upload File
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -78,7 +101,7 @@ namespace SINners
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse> ApiV1SINnerByIdPutWithHttpMessagesAsync(Guid id, SINner chummerFile = default(SINner), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse> ApiV1SINnerByIdPutWithHttpMessagesAsync(Guid id, System.IO.Stream uploadedFile, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <param name='id'>
         /// </param>
@@ -90,7 +113,7 @@ namespace SINners
         /// </param>
         Task<HttpOperationResponse> ApiV1SINnerByIdDeleteWithHttpMessagesAsync(Guid id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
-        /// <param name='id'>
+        /// <param name='searchTag'>
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -98,7 +121,7 @@ namespace SINners
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<bool?>> ApiV1SINnerHelperByIdGetWithHttpMessagesAsync(Guid id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<IList<SINner>>> ApiV1SINSearchGetWithHttpMessagesAsync(SearchTag searchTag = default(SearchTag), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
     }
 }

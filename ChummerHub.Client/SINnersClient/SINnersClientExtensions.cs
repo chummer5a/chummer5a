@@ -17,6 +17,35 @@ namespace SINners
     /// </summary>
     public static partial class SINnersClientExtensions
     {
+            /// <summary>
+            /// Returns the Chummer-Save-File
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
+            public static void ApiV1ChummerHelperByIdGet(this ISINnersClient operations, Guid id)
+            {
+                Task.Factory.StartNew(s => ((ISINnersClient)s).ApiV1ChummerHelperByIdGetAsync(id), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Returns the Chummer-Save-File
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task ApiV1ChummerHelperByIdGetAsync(this ISINnersClient operations, Guid id, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                await operations.ApiV1ChummerHelperByIdGetWithHttpMessagesAsync(id, null, cancellationToken).ConfigureAwait(false);
+            }
+
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
@@ -39,30 +68,37 @@ namespace SINners
                 }
             }
 
+            /// <summary>
+            /// Store the MetaData for a Chummerfile (to get a Id).
+            /// This Id can be used to store the actual file with PUT afterwards.
+            /// Alternativly, the DownloadUrl can be set directly from the Client.
+            /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='chummerFile'>
+            /// <param name='sinnerData'>
             /// </param>
-            public static SINner ApiV1SINnerPost(this ISINnersClient operations, SINner chummerFile = default(SINner))
+            public static void ApiV1SINnerPost(this ISINnersClient operations, SINner sinnerData = default(SINner))
             {
-                return Task.Factory.StartNew(s => ((ISINnersClient)s).ApiV1SINnerPostAsync(chummerFile), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                Task.Factory.StartNew(s => ((ISINnersClient)s).ApiV1SINnerPostAsync(sinnerData), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
+            /// <summary>
+            /// Store the MetaData for a Chummerfile (to get a Id).
+            /// This Id can be used to store the actual file with PUT afterwards.
+            /// Alternativly, the DownloadUrl can be set directly from the Client.
+            /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='chummerFile'>
+            /// <param name='sinnerData'>
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<SINner> ApiV1SINnerPostAsync(this ISINnersClient operations, SINner chummerFile = default(SINner), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task ApiV1SINnerPostAsync(this ISINnersClient operations, SINner sinnerData = default(SINner), CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.ApiV1SINnerPostWithHttpMessagesAsync(chummerFile, null, cancellationToken).ConfigureAwait(false))
-                {
-                    return _result.Body;
-                }
+                await operations.ApiV1SINnerPostWithHttpMessagesAsync(sinnerData, null, cancellationToken).ConfigureAwait(false);
             }
 
             /// <param name='operations'>
@@ -88,31 +124,39 @@ namespace SINners
                 await operations.ApiV1SINnerByIdGetWithHttpMessagesAsync(id, null, cancellationToken).ConfigureAwait(false);
             }
 
+            /// <summary>
+            /// The Xml or Zip File can be uploaded (knowing the previously stored Id)
+            /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='id'>
             /// </param>
-            /// <param name='chummerFile'>
+            /// <param name='uploadedFile'>
+            /// Upload File
             /// </param>
-            public static void ApiV1SINnerByIdPut(this ISINnersClient operations, Guid id, SINner chummerFile = default(SINner))
+            public static void ApiV1SINnerByIdPut(this ISINnersClient operations, Guid id, System.IO.Stream uploadedFile)
             {
-                Task.Factory.StartNew(s => ((ISINnersClient)s).ApiV1SINnerByIdPutAsync(id, chummerFile), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                Task.Factory.StartNew(s => ((ISINnersClient)s).ApiV1SINnerByIdPutAsync(id, uploadedFile), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
+            /// <summary>
+            /// The Xml or Zip File can be uploaded (knowing the previously stored Id)
+            /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='id'>
             /// </param>
-            /// <param name='chummerFile'>
+            /// <param name='uploadedFile'>
+            /// Upload File
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task ApiV1SINnerByIdPutAsync(this ISINnersClient operations, Guid id, SINner chummerFile = default(SINner), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task ApiV1SINnerByIdPutAsync(this ISINnersClient operations, Guid id, System.IO.Stream uploadedFile, CancellationToken cancellationToken = default(CancellationToken))
             {
-                await operations.ApiV1SINnerByIdPutWithHttpMessagesAsync(id, chummerFile, null, cancellationToken).ConfigureAwait(false);
+                await operations.ApiV1SINnerByIdPutWithHttpMessagesAsync(id, uploadedFile, null, cancellationToken).ConfigureAwait(false);
             }
 
             /// <param name='operations'>
@@ -141,24 +185,24 @@ namespace SINners
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='id'>
+            /// <param name='searchTag'>
             /// </param>
-            public static bool? ApiV1SINnerHelperByIdGet(this ISINnersClient operations, Guid id)
+            public static IList<SINner> ApiV1SINSearchGet(this ISINnersClient operations, SearchTag searchTag = default(SearchTag))
             {
-                return Task.Factory.StartNew(s => ((ISINnersClient)s).ApiV1SINnerHelperByIdGetAsync(id), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                return Task.Factory.StartNew(s => ((ISINnersClient)s).ApiV1SINSearchGetAsync(searchTag), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='id'>
+            /// <param name='searchTag'>
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<bool?> ApiV1SINnerHelperByIdGetAsync(this ISINnersClient operations, Guid id, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<IList<SINner>> ApiV1SINSearchGetAsync(this ISINnersClient operations, SearchTag searchTag = default(SearchTag), CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.ApiV1SINnerHelperByIdGetWithHttpMessagesAsync(id, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.ApiV1SINSearchGetWithHttpMessagesAsync(searchTag, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }

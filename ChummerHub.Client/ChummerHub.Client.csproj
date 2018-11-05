@@ -35,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.17\lib\net452\Microsoft.Rest.ClientRuntime.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.2\lib\net45\Microsoft.Rest.ClientRuntime.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -92,6 +92,8 @@
     </Compile>
     <Compile Include="SINnersClient\ISINnersClient.cs" />
     <Compile Include="SINnersClient\Models\ChummerUploadClient.cs" />
+    <Compile Include="SINnersClient\Models\IFormFile.cs" />
+    <Compile Include="SINnersClient\Models\SearchTag.cs" />
     <Compile Include="SINnersClient\Models\SINner.cs" />
     <Compile Include="SINnersClient\Models\SINnerComment.cs" />
     <Compile Include="SINnersClient\Models\SINnerMetaData.cs" />

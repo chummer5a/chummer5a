@@ -32,7 +32,9 @@ namespace ChummerHub.Client.UI
             this.MyTagTreeView = new System.Windows.Forms.TreeView();
             this.cmdPopulateTags = new System.Windows.Forms.Button();
             this.cmdPrepareModel = new System.Windows.Forms.Button();
-            this.cmdUploadSINner = new System.Windows.Forms.Button();
+            this.cmdPostSINnerMetadata = new System.Windows.Forms.Button();
+            this.cmdUploadChummerFile = new System.Windows.Forms.Button();
+            this.cmdDownloadChummerFile = new System.Windows.Forms.Button();
             this.groupBox_Tags.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -58,7 +60,7 @@ namespace ChummerHub.Client.UI
             // 
             this.cmdPopulateTags.Location = new System.Drawing.Point(322, 16);
             this.cmdPopulateTags.Name = "cmdPopulateTags";
-            this.cmdPopulateTags.Size = new System.Drawing.Size(75, 23);
+            this.cmdPopulateTags.Size = new System.Drawing.Size(93, 23);
             this.cmdPopulateTags.TabIndex = 2;
             this.cmdPopulateTags.Text = "Populate";
             this.cmdPopulateTags.UseVisualStyleBackColor = true;
@@ -68,27 +70,49 @@ namespace ChummerHub.Client.UI
             // 
             this.cmdPrepareModel.Location = new System.Drawing.Point(323, 46);
             this.cmdPrepareModel.Name = "cmdPrepareModel";
-            this.cmdPrepareModel.Size = new System.Drawing.Size(75, 23);
+            this.cmdPrepareModel.Size = new System.Drawing.Size(92, 23);
             this.cmdPrepareModel.TabIndex = 3;
             this.cmdPrepareModel.Text = "Prepare";
             this.cmdPrepareModel.UseVisualStyleBackColor = true;
             this.cmdPrepareModel.Click += new System.EventHandler(this.cmdPrepareModel_Click);
             // 
-            // cmdUploadSINner
+            // cmdPostSINnerMetadata
             // 
-            this.cmdUploadSINner.Location = new System.Drawing.Point(323, 76);
-            this.cmdUploadSINner.Name = "cmdUploadSINner";
-            this.cmdUploadSINner.Size = new System.Drawing.Size(75, 23);
-            this.cmdUploadSINner.TabIndex = 4;
-            this.cmdUploadSINner.Text = "Upload";
-            this.cmdUploadSINner.UseVisualStyleBackColor = true;
-            this.cmdUploadSINner.Click += new System.EventHandler(this.cmdUploadSINner_Click);
+            this.cmdPostSINnerMetadata.Location = new System.Drawing.Point(323, 76);
+            this.cmdPostSINnerMetadata.Name = "cmdPostSINnerMetadata";
+            this.cmdPostSINnerMetadata.Size = new System.Drawing.Size(92, 23);
+            this.cmdPostSINnerMetadata.TabIndex = 4;
+            this.cmdPostSINnerMetadata.Text = "Post MetaData";
+            this.cmdPostSINnerMetadata.UseVisualStyleBackColor = true;
+            this.cmdPostSINnerMetadata.Click += new System.EventHandler(this.cmdPostSINnerMetaData_Click);
+            // 
+            // cmdUploadChummerFile
+            // 
+            this.cmdUploadChummerFile.Location = new System.Drawing.Point(323, 106);
+            this.cmdUploadChummerFile.Name = "cmdUploadChummerFile";
+            this.cmdUploadChummerFile.Size = new System.Drawing.Size(92, 23);
+            this.cmdUploadChummerFile.TabIndex = 5;
+            this.cmdUploadChummerFile.Text = "Upload File";
+            this.cmdUploadChummerFile.UseVisualStyleBackColor = true;
+            this.cmdUploadChummerFile.Click += new System.EventHandler(this.cmdUploadChummerFile_Click);
+            // 
+            // cmdDownloadChummerFile
+            // 
+            this.cmdDownloadChummerFile.Location = new System.Drawing.Point(323, 136);
+            this.cmdDownloadChummerFile.Name = "cmdDownloadChummerFile";
+            this.cmdDownloadChummerFile.Size = new System.Drawing.Size(92, 23);
+            this.cmdDownloadChummerFile.TabIndex = 6;
+            this.cmdDownloadChummerFile.Text = "Download";
+            this.cmdDownloadChummerFile.UseVisualStyleBackColor = true;
+            this.cmdDownloadChummerFile.Click += new System.EventHandler(this.cmdDownloadChummerFile_Click);
             // 
             // SINnersAdvanced
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.cmdUploadSINner);
+            this.Controls.Add(this.cmdDownloadChummerFile);
+            this.Controls.Add(this.cmdUploadChummerFile);
+            this.Controls.Add(this.cmdPostSINnerMetadata);
             this.Controls.Add(this.cmdPrepareModel);
             this.Controls.Add(this.cmdPopulateTags);
             this.Controls.Add(this.groupBox_Tags);
@@ -104,7 +128,9 @@ namespace ChummerHub.Client.UI
         private System.Windows.Forms.GroupBox groupBox_Tags;
         private System.Windows.Forms.Button cmdPopulateTags;
         private System.Windows.Forms.Button cmdPrepareModel;
-        private System.Windows.Forms.Button cmdUploadSINner;
+        private System.Windows.Forms.Button cmdPostSINnerMetadata;
         private System.Windows.Forms.TreeView MyTagTreeView;
+        private System.Windows.Forms.Button cmdUploadChummerFile;
+        private System.Windows.Forms.Button cmdDownloadChummerFile;
     }
 }

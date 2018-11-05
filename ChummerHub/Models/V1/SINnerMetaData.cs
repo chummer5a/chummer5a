@@ -20,7 +20,6 @@ namespace ChummerHub.Models.V1
         {
             this.Tags = new List<Tag>();
         }
-
-        public List<SINnerComment> Comments { get; } 
+        
     }
 }

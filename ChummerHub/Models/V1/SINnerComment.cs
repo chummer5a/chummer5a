@@ -13,6 +13,10 @@ namespace ChummerHub.Models.V1
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
         public Guid? SINnerCommentId { get; set; }
+
+        
+        public Guid? SINnerId { get; set; }
+
         public DateTime MyDateTime { get; }
         public string Comment { get; set; }
         public string Email { get; set; }

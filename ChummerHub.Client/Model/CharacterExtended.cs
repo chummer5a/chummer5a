@@ -50,9 +50,11 @@ namespace ChummerHub.Client.Model
 
             var tags = Backend.TagExtractor.ExtractTagsFromAttributes(MyCharacter, tag);
             //var tags = Backend.TagExtractor.ExtractTags(MyCharacter, 3, tag);
-            var found = from a in MySINnerFile.SiNnerMetaData.Tags where a.TagName == "Reflection" select a;
+            var found = from a in MySINnerFile.SiNnerMetaData.Tags.ToList() where a.TagName == "Reflection" select a;
             foreach (var f in found)
+            {
                 MySINnerFile.SiNnerMetaData.Tags.Remove(f);
+            }
             MySINnerFile.SiNnerMetaData.Tags.Add(tag);
             
         }
@@ -90,7 +92,6 @@ namespace ChummerHub.Client.Model
             var tempfile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), MyCharacter.FileName);
             MyCharacter.Save(tempfile);
             Byte[] bytes = File.ReadAllBytes(tempfile);
-            MySINnerFile.Base64EncodedXmlFile = Convert.ToBase64String(bytes);
             MySINnerFile.ChummerUploadClient = new ChummerUploadClient();
             MySINnerFile.UploadDateTime = DateTime.Now;
            

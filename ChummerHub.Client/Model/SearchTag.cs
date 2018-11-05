@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChummerHub.Client.Model
+namespace SINners.Models
 {
-    public partial class SearchTag : Tag
+    public partial class SearchTag 
     {
-
+        
     }
 }

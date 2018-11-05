@@ -37,11 +37,13 @@ namespace ChummerHub.Controllers.V1
         [AllowAnonymous]
         [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerListExample))]
         [SwaggerRequestExample(typeof(SearchTag), typeof(SINnerSearchExample))]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         public IEnumerable<SINner> SearchSINnerFile(SearchTag searchTag)
         {
             try
             {
-                _logger.LogTrace("Searchin SINnerFile");
+                _logger.LogTrace("Searching SINnerFile");
                 var result = _context.SINners.OrderByDescending(a => a.UploadDateTime).Take(20);
                 result = _context.SINners.Include(sinner => sinner.SINnerMetaData)
                     .ThenInclude(meta => meta.Tags)
@@ -55,7 +57,7 @@ namespace ChummerHub.Controllers.V1
             }
             catch (Exception e)
             {
-                HubException hue = new HubException("Exception in GetSINnerfile: " + e.Message, e);
+                HubException hue = new HubException("Exception in SearchSINnerFile: " + e.Message, e);
                 throw hue;
             }
         }

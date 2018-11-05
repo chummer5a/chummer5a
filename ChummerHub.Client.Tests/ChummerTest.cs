@@ -37,7 +37,7 @@ namespace ChummerHub.Client.Tests
                         frmCareer career = new frmCareer(c);
                         SINnersUserControl sINnersUsercontrol = new SINnersUserControl();
                         sINnersUsercontrol.SetCharacterFrom(career);
-                        sINnersUsercontrol.UploadSINnerAsync();
+                        sINnersUsercontrol.PostSINnerAsync();
                     }
                 }
                 catch(Exception e)

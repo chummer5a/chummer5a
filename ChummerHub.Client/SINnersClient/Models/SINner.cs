@@ -21,13 +21,14 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINner class.
         /// </summary>
-        public SINner(Guid? siNnerId = default(Guid?), string base64EncodedXmlFile = default(string), DateTime? uploadDateTime = default(DateTime?), ChummerUploadClient chummerUploadClient = default(ChummerUploadClient), SINnerMetaData siNnerMetaData = default(SINnerMetaData))
+        public SINner(Guid? siNnerId = default(Guid?), string downloadUrl = default(string), DateTime? uploadDateTime = default(DateTime?), ChummerUploadClient chummerUploadClient = default(ChummerUploadClient), SINnerMetaData siNnerMetaData = default(SINnerMetaData), string googleDriveFileId = default(string))
         {
             SiNnerId = siNnerId;
-            Base64EncodedXmlFile = base64EncodedXmlFile;
+            DownloadUrl = downloadUrl;
             UploadDateTime = uploadDateTime;
             ChummerUploadClient = chummerUploadClient;
             SiNnerMetaData = siNnerMetaData;
+            GoogleDriveFileId = googleDriveFileId;
         }
 
         /// <summary>
@@ -37,8 +38,8 @@ namespace SINners.Models
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "base64EncodedXmlFile")]
-        public string Base64EncodedXmlFile { get; set; }
+        [JsonProperty(PropertyName = "downloadUrl")]
+        public string DownloadUrl { get; set; }
 
         /// <summary>
         /// </summary>
@@ -54,6 +55,11 @@ namespace SINners.Models
         /// </summary>
         [JsonProperty(PropertyName = "siNnerMetaData")]
         public SINnerMetaData SiNnerMetaData { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "googleDriveFileId")]
+        public string GoogleDriveFileId { get; set; }
 
     }
 }

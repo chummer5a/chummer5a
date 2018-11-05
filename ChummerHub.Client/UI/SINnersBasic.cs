@@ -39,11 +39,12 @@ namespace ChummerHub.Client.UI
             CheckSINnerStatus();
         }
 
-        private void CheckSINnerStatus()
+        private async void CheckSINnerStatus()
         {
             try
             {
-                if (myUC.client.ApiV1SINnerHelperByIdGet(myUC.MyCharacterExtended.MySINnerFile.SiNnerId.Value) == true)
+                var response = await myUC.client.ApiV1SINnerByIdGetWithHttpMessagesAsync(myUC.MyCharacterExtended.MySINnerFile.SiNnerId.Value);
+                if (response.Response.StatusCode == HttpStatusCode.OK)
                 {
                     this.bUpload.Text = "Remove from SINners";
                 }
@@ -55,6 +56,7 @@ namespace ChummerHub.Client.UI
             catch (Exception ex)
             {
                 System.Diagnostics.Trace.TraceError(ex.ToString());
+                this.bUpload.Text = "unknown Status";
             }
         }
 
@@ -113,7 +115,7 @@ namespace ChummerHub.Client.UI
         private void bUpload_Click(object sender, EventArgs e)
         {
             if (bUpload.Text.Contains("Upload"))
-                myUC.UploadSINnerAsync();
+                myUC.PostSINnerAsync();
             else
                 myUC.RemoveSINnerAsync();
             CheckSINnerStatus();

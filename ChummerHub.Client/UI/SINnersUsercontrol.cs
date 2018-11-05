@@ -16,6 +16,7 @@ using SINners;
 using ChummerHub.Client.Backend;
 using System.Composition;
 using Chummer.Plugins;
+using System.IO;
 
 namespace ChummerHub.Client.UI
 {
@@ -89,17 +90,16 @@ namespace ChummerHub.Client.UI
             return this;
         }
 
-        public async void UploadSINnerAsync()
+        public async void PostSINnerAsync()
         {
             try
             {
-                if (client.ApiV1SINnerHelperByIdGet(MyCharacterExtended.MySINnerFile.SiNnerId.Value) == true)
+                var response = await client.ApiV1SINnerPostWithHttpMessagesAsync(MyCharacterExtended.MySINnerFile);
+                if (response.Response.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    client.ApiV1SINnerByIdPut(MyCharacterExtended.MySINnerFile.SiNnerId.Value, MyCharacterExtended.MySINnerFile);
-                }
-                else
-                {
-                    client.ApiV1SINnerPost(MyCharacterExtended.MySINnerFile);
+                    var errorMessage = response.Response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    string msg = "Answer from WebService BadRequest: " + Environment.NewLine + Environment.NewLine + errorMessage;
+                    MessageBox.Show(msg);
                 }
             }
             catch (Exception ex)
@@ -109,14 +109,44 @@ namespace ChummerHub.Client.UI
             }
         }
 
+        public async void UploadChummerFileAsync()
+        {
+            try
+            {
+                MyCharacterExtended.MyCharacter.Save();
+                using (FileStream fs = new FileStream(MyCharacterExtended.MyCharacter.FileName, FileMode.Open, FileAccess.Read))
+                {
+                    client.ApiV1SINnerByIdPutAsync(MyCharacterExtended.MySINnerFile.SiNnerId.Value, fs);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError(ex.ToString());
+                throw;
+            }
+        }
+
+        
+        public async void DownloadFileAsync()
+        {
+            try
+            {
+                var response =  await client.ApiV1ChummerHelperByIdGetWithHttpMessagesAsync(MyCharacterExtended.MySINnerFile.SiNnerId.Value);
+                var content = await response.Response.Content.ReadAsStringAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError(ex.ToString());
+                throw;
+            }
+        }
+
+
         public async void RemoveSINnerAsync()
         {
             try
             {
-                if (client.ApiV1SINnerHelperByIdGet(MyCharacterExtended.MySINnerFile.SiNnerId.Value) == true)
-                {
                     await client.ApiV1SINnerByIdDeleteAsync(MyCharacterExtended.MySINnerFile.SiNnerId.Value);
-                }
             }
             catch (Exception ex)
             {
