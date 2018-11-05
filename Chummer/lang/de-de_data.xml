@@ -44388,31 +44388,31 @@
 				<id>specificattribute</id>
 				<name>Attribute</name>
 				<translate>Attribut</translate>
-				<altpage>Adjusts the values for one of the character's Attributes. Positive numbers increase an Attribute. Negative numbers decrease an Attribute. Select an Attribute to affect by clicking the Select Value button. Value adjusts the Attribute's current value. Minimum adjusts the Metatype's minimum value for the Attribute. Maximum adjusts the Metatype's maximum value for the Attribute. Metatype augmented maximum values are automatically adjusted based on the new Metatype maximum. Fields may be left at 0 if you do not want to affect that particular aspect of the Attribute.</altpage>
+				<altpage>Stellt die Werte für eines der Attribute des Charakters ein. Positive Zahlen erhöhen ein Attribut. Negative Zahlen verringern ein Attribut. Wählen Sie ein zu beeinflussendes Attribut aus, indem Sie auf die Schaltfläche "Wert wählen" klicken. "Wert" passt den aktuellen Wert des Attributs an. Minimum passt den Minimalwert des Metatyps für das Attribut an. Maximum passt den Maximalwert des Metatyps für das Attribut an. Die erweiterten Maximalwerte des Metatyps werden automatisch an das neue Metatyp-Maximum angepasst. Felder können bei 0 belassen werden, wenn Sie diesen speziellen Aspekt des Attributs nicht beeinflussen möchten.</altpage>
 			</improvement>
 			<improvement>
 				<id>conditionmonitorphysical</id>
 				<name>Condition Monitor, Physical</name>
 				<translate>Körperlicher Zustandsmonitor</translate>
-				<altpage>Adjusts the number of boxes the character has in their Physical Condition Monitor. Positive numbers increase the number of boxes in the Condition Monitor. Negative numbers reduce the number of boxes in the Condition Monitor.</altpage>
+				<altpage>Stellt die Anzahl der Kästchen für den körperlichen Zustandsmonitor ein. Positive Zahlen erhöhen die Anzahl der Kästchen im Zustandsmonitor. Negative Zahlen reduzieren die Anzahl der Kästchen im Zustandsmonitor.</altpage>
 			</improvement>
 			<improvement>
 				<id>conditionmonitorstun</id>
 				<name>Condition Monitor, Stun</name>
 				<translate>Geistiger Zustandsmonitor</translate>
-				<altpage>Adjusts the number of boxes the character has in their Stun Condition Monitor. Positive numbers increase the number of boxes in the Condition Monitor. Negative numbers reduce the number of boxes in the Condition Monitor.</altpage>
+				<altpage>Stellt die Anzahl der Kästchen ein, die der Charakter in seinem geistigen Zustandsmonitor hat. Positive Zahlen erhöhen die Anzahl der Kästchen im Zustandsmonitor. Negative Zahlen reduzieren die Anzahl der Kästchen im Zustandsmonitor.</altpage>
 			</improvement>
 			<improvement>
 				<id>conditionmonitorthreshold</id>
 				<name>Condition Monitor, Threshold</name>
 				<translate>Zustandsmonitor, Threshold</translate>
-				<altpage>Adjusts the number of boxes between each Condition Monitor Threshold. Positive numbers increase the number of boxes between each Threshold. Negative numbers reduce the number of boxes between each Threshold.</altpage>
+				<altpage>Stellt die Anzahl der Kästchen zwischen den einzelnen Schwellenwerten des Zustandsmonitors ein. Positive Zahlen erhöhen die Anzahl der Felder zwischen den einzelnen Schwellenwerten. Negative Zahlen reduzieren die Anzahl der Felder zwischen den einzelnen Schwellenwerten.</altpage>
 			</improvement>
 			<improvement>
 				<id>conditionmonitoroffset</id>
 				<name>Condition Monitor, Threshold Offset</name>
 				<translate>Zustandsmonitor, Threshold Offset</translate>
-				<altpage>Adjusts the number of boxes between the start of each Condition Monitor and the first Threshold. Positive numbers increase the starting position of the first Threshold. Negative numbers reduce the starting position of each Threshold.</altpage>
+				<altpage>Stellt die Anzahl der Kästchen zwischen dem Start jedes Zustandsmonitors und dem ersten Schwellenwert ein. Positive Zahlen erhöhen die Anfangsposition des ersten Schwellenwerts. Negative Zahlen reduzieren die Anfangsposition des ersten Schwellenwertes.</altpage>
 			</improvement>
 			<improvement>
 				<id>livingpersonadevicerating</id>
@@ -44454,73 +44454,73 @@
 				<id>specificskill</id>
 				<name>Skill</name>
 				<translate>Fertigkeit</translate>
-				<altpage>Adjusts the value for one of the character's Skills by the value entered. Positive numbers increase the Skill. Negative numbers decrease the Skill. Select a Skill to affect by clicking the Select Value button. The modifier can be applied to the Skill's Rating by selecting Apply to Rating, otherwise the modifier is applied as a dice pool modifier.</altpage>
+				<altpage>Stellt den Wert für eine der Fähigkeiten des Charakters um den eingegebenen Wert ein. Positive Zahlen erhöhen die Fertigkeit. Negative Zahlen verringern die Fertigkeit. Wählen Sie eine zu beeinflussende Fertigkeit aus, indem Sie auf die Schaltfläche "Wert wählen" klicken. Der Modifikator kann auf den gewählten Wert der Fertigkeit angewendet werden, indem Sie "auf den Wert anwenden" auswählen, andernfalls wird der Modifikator als Würfelpool-Modifikator verwendet.</altpage>
 			</improvement>
 			<improvement>
 				<id>skillcategory</id>
 				<name>Skills in Category</name>
 				<translate>Fertigkeiten in Kategorie</translate>
-				<altpage>Adjusts the value for all of the Skills in one category by the value entered. Positive numbers increase the Skills. Negative numbers decrease the Skills. Select a Skill category to affect by clicking the Select Value button. The modifier can be applied to the Skills' Ratings by selecting Apply to Rating, otherwise the modifier is applied as a dice pool modifier.</altpage>
+				<altpage>Stellt den Wert für alle Fertigkeiten in einer Kategorie um den eingegebenen Wert ein. Positive Zahlen erhöhen die Fertigkeiten. Negative Zahlen verringern die Fertigkeiten. Wählen Sie eine Fertigkeitskategorie aus, die Sie beeinflussen möchten, indem Sie "Wert wählen" auswählen. Der Modifikator kann auf die Fertigkeitskategorie angewendet werden, indem Sie "auf den Wert anwenden" auswählen, andernfalls wird der Modifikator als Würfelpool-Modifikator verwendet.</altpage>
 			</improvement>
 			<improvement>
 				<id>skillgroup</id>
 				<name>Skills in Group</name>
 				<translate>Fertigkeiten in Gruppe</translate>
-				<altpage>Adjusts the value for all of the Skills in a Skill Group by the value entered. Positive numbers increase the Skills. Negative numbers decrease the Skills. Select a Skill Group to affect by clicking the Select Value button. The modifier can be applied to the Skills' Ratings by selecting Apply to Rating, otherwise the modifier is applied as a dice pool modifier.</altpage>
+				<altpage>Stellt den Wert für eine Fertigkeitengruppe um den eingegebenen Wert ein. Positive Zahlen erhöhen den Gruppenwert. Negative Zahlen verringern den Gruppenwert. Wählen Sie eine zu beeinflussende Fertigkeitengruppe aus, indem Sie auf die Schaltfläche "Wert wählen" klicken. Der Modifikator kann auf die Fertigkeitengruppe angewendet werden, indem Sie "auf den Wert anwenden" auswählen, andernfalls wird der Modifikator als Würfelpool-Modifikator verwendet.</altpage>
 			</improvement>
 			<improvement>
 				<id>skillattribute</id>
 				<name>Skills linked to Attribute</name>
 				<translate>Fertigkeiten verbunden mit Attribut</translate>
-				<altpage>Adjusts the value for all of the Skills linked to an Attribute by the value entered. Positive numbers increase the Skills. Negative numbers decrease the Skills. Select a linked Attribute to affect by clicking the Select Value button. The modifier can be applied to the Skills' Ratings by selecting Apply to Rating, otherwise the modifier is applied as a dice pool modifier.</altpage>
+				<altpage>Stellt den Wert für alle Fertigkeiten ein, die mit einem Attribut durch den eingegebenen Wert verknüpft sind. Positive Zahlen erhöhen die Fertigkeiten. Negative Zahlen verringern die Fertigkeiten. Wählen Sie ein verknüpftes Attribut aus, das Sie beeinflussen möchten, indem Sie auf die Schaltfläche "Wert wählen" klicken. Der Modifikator kann auf die Bewertungen der Fertigkeiten angewendet werden, indem Sie "auf den Wert anwenden" klicken, andernfalls wird der Modifikator als Würfelpool-Modifikator verwendet.</altpage>
 			</improvement>
 			<improvement>
 				<id>reach</id>
 				<name>Reach</name>
 				<translate>Reichweite</translate>
-				<altpage>Adjusts the character's Reach by the value entered. Positive numbers increase Reach. Negative numbers reduce Reach.</altpage>
+				<altpage>Stellt die Reichweite des Charakters um den eingegebenen Wert ein. Positive Zahlen erhöhen die Reichweite. Negative Zahlen reduzieren die Reichweite.</altpage>
 			</improvement>
 			<improvement>
 				<id>unarmeddv</id>
 				<name>Unarmed DV</name>
 				<translate>Waffenloser Schaden</translate>
-				<altpage>Adjusts the Damage Value for a character's Unarmed Attacks by the value entered. Positive numbers increase the Damage Value. Negative numbers decrease the Damage Value.</altpage>
+				<altpage>Stellt den Schadenswert für die waffenlosen Angriffe eines Charakters um den eingegebenen Wert ein. Positive Zahlen erhöhen den Schadenswert. Negative Zahlen verringern den Schadenswert.</altpage>
 			</improvement>
 			<improvement>
 				<id>unarmeddvphysical</id>
 				<name>Unarmed DV Physical</name>
 				<translate>Waffenloser Schaden Körperlich</translate>
-				<altpage>All of the character's Unarmed Attacks will do Physical damage instead of Stun damage.</altpage>
+				<altpage>Alle waffenlosen Angriffe des Charakters verursachen körperlichen Schaden anstelle von geistigem Schaden.</altpage>
 			</improvement>
 			<improvement>
 				<id>unarmedap</id>
 				<name>Unarmed AP</name>
 				<translate>Waffenloser DK</translate>
-				<altpage>Adjusts the Armor Penetration value for a character's Unarmed Attacks by the value entered. Positive numbers reduce Armor Penetration. Negative numbers increase Armor Penetration.</altpage>
+				<altpage>Stellt den Wert für die Durchschlagskraft für die waffenlosen Angriffe eines Charakters um den eingegebenen Wert ein. Positive Zahlen reduzieren die Durchschlagskraft der Rüstung. Negative Zahlen erhöhen die Durchschlagskraft der Rüstung.</altpage>
 			</improvement>
-			<improvement translated="True">
+			<improvement>
 				<id>initiative</id>
 				<name>Initiative</name>
 				<translate>Initiative</translate>
-				<altpage>Adjusts the character's Initiative by the value entered. Positive numbers increase Initiative. Negative numbers reduce Initiative.</altpage>
+				<altpage>Stellt die Initiative des Charakters um den eingegebenen Wert ein. Positive Zahlen erhöhen die Initiative. Negative Zahlen reduzieren die Initiative.</altpage>
 			</improvement>
-			<improvement translated="True">
+			<improvement>
 				<id>matrixinitiative</id>
 				<name>Matrix Initiative</name>
 				<translate>Matrix Initiative</translate>
-				<altpage>Adjusts the character's Matrix Initiative by the value entered. Positive numbers increase Matrix Initiative. Negative numbers reduce Matrix Initiative.</altpage>
+				<altpage>Stellt die Matrix-Initiative des Charakters um den eingegebenen Wert ein. Positive Zahlen erhöhen die Matrix-Initiative. Negative Zahlen reduzieren die Matrix-Initiative.</altpage>
 			</improvement>
 			<improvement>
 				<id>lifestylecost</id>
 				<name>Lifestyle Cost</name>
 				<translate>Lebensstilkosten</translate>
-				<altpage>Adjusts the Nuyen cost of all Lifestyles by the percent value entered. All Lifestyles will now cost an additional X% per month. Positive number increase the Lifestyle's monthly Nuyen cost. Negative numbers reduce the Lifestyle's monthly Nuyen cost.</altpage>
+				<altpage>Passt die Kosten aller Lebensstile um den eingegebenen Prozentwert an. Alle Lebensstile kosten nun zusätzlich x % pro Monat. Positive Zahlen erhöhen die Nuyen für die monatlichen Lebensstilkosten. Negative Zahlen reduzieren die Nuyen für die monatlichen Lebensstilkosten.</altpage>
 			</improvement>
 			<improvement>
 				<id>genetechcostmultiplier</id>
 				<name>Genetech Cost</name>
-				<translate>Genetech Cost</translate>
-				<altpage>Adjusts the Nuyen cost of Bioware in the Genetech categories by the percent value entered. All Genetech Nuyen costs will now be X% of their original value. Numbers lower than 100 reduce the Nuyen cost. Numbers higher than 100 increase the Nuyen cost.</altpage>
+				<translate>Gentechnologiekosten</translate>
+				<altpage>Passt die Kosten von Bioware in den Kategorien Gentechnologie um den eingegebenen Prozentwert an. Alle Kosten von Genetech betragen nun x % des ursprünglichen Wertes. Zahlen unter 100 reduzieren die aufzuwendenden Nuyen. Zahlen über 100 erhöhen die aufzuwendenden Nuyen.</altpage>
 			</improvement>
 			<improvement>
 				<id>basicbiowareessmultiplier</id>
@@ -44532,43 +44532,43 @@
 				<id>biowareessmultiplier</id>
 				<name>Bioware Essence Cost</name>
 				<translate>Bioware Essenzkosten</translate>
-				<altpage>Adjusts the Essence cost of Bioware by the percent value entered. All Bioware Essence costs will now be X% of their original value. Numbers lower than 100 reduce the Essence cost. Numbers higher than 100 increase the Essence cost.</altpage>
+				<altpage>Passt die Essenzkosten von Bioware um den eingegebenen Prozentwert an. Alle Essenzkosten von Bioware betragen nun x % des ursprünglichen Wertes. Zahlen unter 100 reduzieren die Essenzkosten. Zahlen über 100 erhöhen die Essenzkosten.</altpage>
 			</improvement>
 			<improvement>
 				<id>cyberwareessmultiplier</id>
 				<name>Cyberware Essence Cost</name>
 				<translate>Cyberware Essenzkosten</translate>
-				<altpage>Adjusts the Essence cost of Cyberware by the percent value entered. All Cyberware Essence costs will now be X% of their original value. Numbers lower than 100 reduce the Essence cost. Numbers higher than 100 increase the Essence cost.</altpage>
+				<altpage>Passt die Essenzkosten von Cyberware um den eingegebenen Prozentwert an. Alle Essenzkosten für Cyberware betragen nun x % des ursprünglichen Wertes. Zahlen unter 100 reduzieren die Essenzkosten. Zahlen über 100 erhöhen die Essenzkosten.</altpage>
 			</improvement>
 			<improvement>
 				<id>weaponcategorydv</id>
 				<name>Weapon Category DV</name>
 				<translate>Waffenkategorie Schaden</translate>
-				<altpage>Adjusts the Damage Value of all Weapons in the selected category by the value entered. Positive numbers increase Weapon Damage Value. Negative numbers decrease Weapon Damage Value.</altpage>
+				<altpage>Passt den Schadenswert aller Waffen in der ausgewählten Kategorie um den eingegebenen Wert an. Positive Zahlen erhöhen den Wert des Waffenschadens. Negative Zahlen verringern den Wert des Waffenschadens.</altpage>
 			</improvement>
 			<improvement>
 				<id>freespiritpowerpoints</id>
 				<name>Power Points, Free Spirit</name>
 				<translate>Kraftpunkte, Freier Geist</translate>
-				<altpage>Adjusts the number of Power Points a Free Spirit receives to spend on Critter Powers by the value entered. Positive numbers increase the number of Power Points. Negative numbers decrease the number of Power Points. This has no effect on non-Free Spirit characters.</altpage>
+				<altpage>Stellt die Anzahl der Kraftpunkte ein, die ein freier Geist erhält, um den eingegebenen Wert für Critter-Kräfte auszugeben. Positive Zahlen erhöhen die Anzahl der Kraftpunkte. Negative Zahlen verringern die Anzahl der Kraftpunkte. Dies hat keinen Einfluss auf unfreie Geister.</altpage>
 			</improvement>
 			<improvement>
 				<id>adeptpowerpoints</id>
 				<name>Power Points, Adept</name>
 				<translate>Kraftpunkte, Adept</translate>
-				<altpage>Adjusts the number of Power Points an Adept receives to spend on Adept Powers by the value entered. Positive numbers increase the number of Power Points. Negative numbers decrease the number of Power Points. This has no effect on non-Adept characters.</altpage>
+				<altpage>Stellt die Anzahl der Kraftpunkte ein, die ein Adept erhält, um den eingegebenen Wert für Adeptenkräfte auszugeben. Positive Zahlen erhöhen die Anzahl der Kraftpunkte. Negative Zahlen verringern die Anzahl der Kraftpunkte. Dies hat keinen Einfluss auf Nicht-Adepten.</altpage>
 			</improvement>
 			<improvement>
 				<id>armorencumbrancepenalty</id>
 				<name>Armor Encumbrance Penalty</name>
 				<translate>Malus durch Panzerungsbelastung</translate>
-				<altpage>Adjusts the character's Armor Encumbrance penalty by the value entered. Positive numbers increase the Armor Encumbrance penalty (bad). Negative numbers decrease the Armor Encumbrance penalty (good).</altpage>
+				<altpage>Passt die Panzerungsbelastung des Charakters um den eingegebenen Wert an. Positive Zahlen erhöhen die Panzerungsbelastung (schlecht). Negative Zahlen verringern die Panzerungsbelastung (gut).</altpage>
 			</improvement>
 			<improvement>
 				<id>damageresistance</id>
 				<name>Damage Resistance</name>
 				<translate>Schadenswiderstand</translate>
-				<altpage>Adjusts the size of the character's Damage Resistance Test dice pool by the value entered. Positive numbers increase the size of the pool. Negative numbers decrease the size of the pool.</altpage>
+				<altpage>Passt den Würfelpools für Schadenswiderstandsproben des Charakters um den eingegebenen Wert an. Positive Zahlen erhöhen den Würfelpool. Negative Zahlen verringern den Würfelpool.</altpage>
 			</improvement>
 			<improvement>
 				<id>judgeintentions</id>
@@ -44760,37 +44760,37 @@
 				<id>specificpower</id>
 				<name>Adept Power</name>
 				<translate>Adeptenkraft</translate>
-				<altpage>Creates a free Adept Power. If the selected power already exists, the power will either be marked as free, or have free levels added to it.</altpage>
+				<altpage>Erzeugt eine freie Adeptenkraft. Wenn die ausgewählte Leistung bereits vorhanden ist, wird die Leistung entweder als frei markiert oder durch eine freie Stufe ergänzt.</altpage>
 			</improvement>
 			<improvement>
 				<id>initiativediceadd</id>
 				<name>Initiative Dice</name>
 				<translate>Initiativwürfel</translate>
-				<altpage>Adjusts the number of Initiative Dice the character receives by the value entered. Positive numbers increase the number of Initiative Dice. Negative numbers reduce the number of Initiative Dice.</altpage>
+				<altpage>Passt die Anzahl der Initiativewürfel für den Charakter um den eingegebenen Wert an. Positive Zahlen erhöhen die Anzahl der Initiativewürfel. Negative Zahlen reduzieren die Anzahl der Initiativewürfel.</altpage>
 			</improvement>
 			<improvement>
 				<id>matrixinitiativediceadd</id>
 				<name>Matrix Initiative Passes</name>
-				<translate>Matrix Initiative Passes</translate>
-				<altpage>Adjusts the number of Matrix Initiative Passes the character receives by the value entered. Positive numbers increase the number of Matrix Initiative Passes. Negative numbers reduce the number of Matrix Initiative Passes.</altpage>
+				<translate>Matrix-Initiativedurchgänge</translate>
+				<altpage>Stellt die Anzahl der Matrix-Initiativedurchgänge entsprechen dem eingegebenen Wert ein. Positive Zahlen erhöhen die Anzahl der Matrix-Initiativedurchgänge. Negative Zahlen reduzieren die Anzahl der Matrix-Initiativedurchgänge.</altpage>
 			</improvement>
 			<improvement>
 				<id>streetcredmultiplier</id>
 				<name>Street Cred Multiplier</name>
 				<translate>Straßenruf Multiplikator</translate>
-				<altpage>Increases or reduces the multiplier used to calculate Street Cred.</altpage>
+				<altpage>Erhöht oder reduziert den Multiplikator, der zur Berechnung des Straßenrufs verwendet wird.</altpage>
 			</improvement>
 			<improvement>
 				<id>streetcred</id>
 				<name>Bonus Street Cred</name>
 				<translate>Bonus Straßenruf</translate>
-				<altpage>Increases the character's Street Cred by the listed value.</altpage>
+				<altpage>Verbessert die Straßenruf des Charakters um den angegebenen Wert.</altpage>
 			</improvement>
 			<improvement>
 				<id>armor</id>
 				<name>Armor</name>
 				<translate>Panzerung</translate>
-				<altpage>Adjusts the character's Armor Rating by the value entered. Positive numbers improve Armor. Negative numbers reduce Armor.</altpage>
+				<altpage>Passt den Panzerungswert des Charakters um den eingegebenen Wert an. Positive Zahlen verbessern die Panzerung. Negative Zahlen verringern die Panzerung.</altpage>
 			</improvement>
 			<improvement>
 				<id>dodge</id>
