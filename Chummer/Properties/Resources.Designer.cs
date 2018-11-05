@@ -570,6 +570,9 @@ namespace Chummer.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap briefcase_edit {
             get {
                 object obj = ResourceManager.GetObject("briefcase_edit", resourceCulture);
@@ -963,6 +966,16 @@ namespace Chummer.Properties {
         internal static System.Drawing.Bitmap de {
             get {
                 object obj = ResourceManager.GetObject("de", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap defaulted {
+            get {
+                object obj = ResourceManager.GetObject("defaulted", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -850,6 +850,7 @@ namespace Chummer
                 objRegistry.SetValue("dronemodsPilot", chkDronemodsMaximumPilot.Checked.ToString());
                 objRegistry.SetValue("characterrosterpath", txtCharacterRosterPath.Text);
                 objRegistry.SetValue("hidecharacterroster", chkHideCharacterRoster.Checked);
+                objRegistry.SetValue("createbackuponcareer", chkCreateBackupOnCareer.Checked);
 
                 // Save the SourcebookInfo.
                 RegistryKey objSourceRegistry = objRegistry.CreateSubKey("Sourcebook");

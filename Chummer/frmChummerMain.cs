@@ -181,11 +181,15 @@ namespace Chummer
                   {
                       if (!File.Exists(strLoop))
                       {
-                          throw new ArgumentException("Chummer startet with unknown command line arguments: " + strArgs.Aggregate((j, k) => j + " " + k));
+                          throw new ArgumentException("Chummer started with unknown command line arguments: " + strArgs.Aggregate((j, k) => j + " " + k));
                       }
-                      Character objLoopCharacter = LoadCharacter(strLoop);
-                      lock (lstCharactersToLoadLock)
-                          lstCharactersToLoad.Add(objLoopCharacter);
+
+                      if (lstCharactersToLoad.All(x => x.FileName != strLoop))
+                      {
+                          Character objLoopCharacter = LoadCharacter(strLoop);
+                          lock (lstCharactersToLoadLock)
+                              lstCharactersToLoad.Add(objLoopCharacter);
+                      }
                   }
               });
             }
@@ -1140,9 +1144,13 @@ namespace Chummer
                 {
                     FileName = strFileName
                 };
-                frmLoading frmLoadingForm = new frmLoading { CharacterFile = objCharacter.FileName };
-                frmLoadingForm.Reset(35);
-                frmLoadingForm.Show();
+                frmLoading frmLoadingForm = null;
+                if (blnShowErrors)
+                {
+                    frmLoadingForm = new frmLoading {CharacterFile = objCharacter.FileName};
+                    frmLoadingForm.Reset(35);
+                    frmLoadingForm.Show();
+                }
 
                 XmlDocument objXmlDocument = new XmlDocument();
                 //StreamReader is used to prevent encoding errors
@@ -1157,7 +1165,7 @@ namespace Chummer
                         if (blnShowErrors)
                             MessageBox.Show(string.Format(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language), ex.Message),
                                 LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        frmLoadingForm.Close();
+                        frmLoadingForm?.Close();
                         return null;
                     }
                 }
@@ -1190,7 +1198,7 @@ namespace Chummer
                 {
                     OpenCharacters.Remove(objCharacter);
                     objCharacter.DeleteCharacter();
-                    frmLoadingForm.Close();
+                    frmLoadingForm?.Close();
                     return null;
                 }
 
@@ -1200,7 +1208,7 @@ namespace Chummer
                 // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
                 if (blnClearFileName)
                     objCharacter.FileName = string.Empty;
-                frmLoadingForm.Close();
+                frmLoadingForm?.Close();
             }
             else if (blnShowErrors)
             {

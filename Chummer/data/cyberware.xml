@@ -231,6 +231,12 @@
       <source>SR5</source>
       <page>0</page>
       <rating>600</rating>
+      <forcegrade>None</forcegrade>
+      <required>
+        <parentdetails>
+          <NONE />
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>961eac53-0c43-4b19-8741-2872177a3a4c</id>
@@ -244,6 +250,12 @@
       <source>SR5</source>
       <page>0</page>
       <rating>600</rating>
+      <forcegrade>None</forcegrade>
+      <required>
+        <parentdetails>
+          <NONE />
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>6b219dfa-310a-45ab-98af-40a62e2431cf</id>

@@ -1072,23 +1072,32 @@ namespace Chummer
                         // Change to the status of Adept being enabled.
                         if (CharacterObject.AdeptEnabled)
                         {
+                            if (!tabCharacterTabs.TabPages.Contains(tabMagician))
+                                tabCharacterTabs.TabPages.Insert(3, tabMagician);
                             cmdAddSpell.Enabled = true;
-                            if (!tabCharacterTabs.TabPages.Contains(tabAdept))
-                                tabCharacterTabs.TabPages.Insert(3, tabAdept);
                             if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && !SpecialAttributes.Contains(CharacterObject.MAGAdept))
                             {
                                 SpecialAttributes.Add(CharacterObject.MAGAdept);
                             }
+
+                            if (!tabCharacterTabs.TabPages.Contains(tabAdept))
+                                tabCharacterTabs.TabPages.Insert(3, tabAdept);
                         }
                         else
                         {
-                            cmdAddSpell.Enabled = CharacterObject.MagicianEnabled;
-                            tabCharacterTabs.TabPages.Remove(tabAdept);
-
-                            if (CharacterObject.Options.MysAdeptSecondMAGAttribute && SpecialAttributes.Contains(CharacterObject.MAGAdept))
+                            if (!CharacterObject.MagicianEnabled)
                             {
-                                SpecialAttributes.Remove(CharacterObject.MAGAdept);
+                                tabCharacterTabs.TabPages.Remove(tabMagician);
+                                cmdAddSpell.Enabled = false;
+                                if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && SpecialAttributes.Contains(CharacterObject.MAGAdept))
+                                {
+                                    SpecialAttributes.Remove(CharacterObject.MAGAdept);
+                                }
                             }
+                            else
+                                cmdAddSpell.Enabled = true;
+
+                            tabCharacterTabs.TabPages.Remove(tabAdept);
                         }
                     }
                     break;
@@ -1879,7 +1888,9 @@ namespace Chummer
                             else
                                 dicPairableCyberwares.Add(objCyberware, 1);
                         }
-                        TreeNode objWareNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID ? treCyberware.FindNode(Cyberware.EssenceHoleGUID.ToString("D")) : treCyberware.FindNode(objCyberware.InternalId);
+                        TreeNode objWareNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
+                            ? treCyberware.FindNode(objCyberware.SourceID.ToString("D"))
+                            : treCyberware.FindNode(objCyberware.InternalId);
                         if (objWareNode != null)
                             objWareNode.Text = objCyberware.DisplayName(GlobalOptions.Language);
                     }
@@ -1925,7 +1936,9 @@ namespace Chummer
                             ImprovementManager.CreateImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
                                 objCyberware.Extra = ImprovementManager.SelectedValue;
-                            TreeNode objNode = objLoopCyberware.SourceID == Cyberware.EssenceHoleGUID ? treCyberware.FindNode(Cyberware.EssenceHoleGUID.ToString("D")) : treCyberware.FindNode(objLoopCyberware.InternalId);
+                            TreeNode objNode = objLoopCyberware.SourceID == Cyberware.EssenceHoleGUID || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
+                                ? treCyberware.FindNode(objCyberware.SourceID.ToString("D"))
+                                : treCyberware.FindNode(objLoopCyberware.InternalId);
                             if (objNode != null)
                                 objNode.Text = objLoopCyberware.DisplayName(GlobalOptions.Language);
                         }
@@ -2169,6 +2182,25 @@ namespace Chummer
                             }
                             else if (objSelectedObject is ArmorMod objSelectedArmorMod)
                             {
+                                XmlNodeList xmlAddonCategoryList = objSelectedArmorMod.GetNode()?.SelectNodes("addoncategory");
+                                if (xmlAddonCategoryList?.Count > 0)
+                                {
+                                    bool blnDoAdd = false;
+                                    foreach (XmlNode xmlCategory in xmlAddonCategoryList)
+                                    {
+                                        if (xmlCategory.InnerText == objGear.Category)
+                                        {
+                                            blnDoAdd = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!blnDoAdd)
+                                    {
+                                        objGear.DeleteGear();
+                                        return;
+                                    }
+                                }
                                 objSelectedArmorMod.Gear.Add(objGear);
                                 if (!objSelectedArmorMod.Equipped || objSelectedArmorMod.Parent?.Equipped != true)
                                     objGear.ChangeEquippedStatus(false);
@@ -6055,7 +6087,7 @@ namespace Chummer
 
                 XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + frmPickCyberware.SelectedCyberware + "\"]");
                 Cyberware objCyberware = new Cyberware(CharacterObject);
-                if (objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware, frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating, objVehicle, objMod.Cyberware, CharacterObject.Vehicles, objMod.Weapons, frmPickCyberware.Markup, frmPickCyberware.FreeCost, "String_ExpensePurchaseVehicleCyberware"))
+                if (objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware, frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating, objVehicle, objMod.Cyberware, CharacterObject.Vehicles, objMod.Weapons, frmPickCyberware.Markup, frmPickCyberware.FreeCost, true, "String_ExpensePurchaseVehicleCyberware"))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
@@ -7302,7 +7334,7 @@ namespace Chummer
         private void treWeapons_ItemDrag(object sender, ItemDragEventArgs e)
         {
             string strSelectedWeapon = treWeapons.SelectedNode?.Tag.ToString();
-            if (string.IsNullOrEmpty(strSelectedWeapon) || treWeapons.SelectedNode.Level > 1 || treWeapons.SelectedNode.Level < 0)
+            if (string.IsNullOrEmpty(strSelectedWeapon) || treWeapons.SelectedNode.Level != 1)
                 return;
 
             // Do not allow the root element to be moved.
@@ -7720,7 +7752,8 @@ namespace Chummer
 
         private void treGear_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            if (treGear.SelectedNode?.Tag.ToString() == "Node_SelectedGear" || treGear.SelectedNode?.Tag == null)
+            string strSelected = treGear.SelectedNode?.Tag.ToString();
+            if (string.IsNullOrEmpty(strSelected) || strSelected == "Node_SelectedGear")
                 return;
             if (e.Button == MouseButtons.Left)
             {
@@ -10678,9 +10711,18 @@ namespace Chummer
                 cmdDeleteArmor.Enabled = !objArmorMod.IncludedInArmor;
 
                 // gpbArmorCommon
-                lblArmorValueLabel.Visible = true;
-                lblArmorValue.Visible = true;
-                lblArmorValue.Text = objArmorMod.Armor.ToString("+0;-0;0");
+                if (objArmorMod.Armor != 0)
+                {
+                    lblArmorValueLabel.Visible = true;
+                    lblArmorValue.Visible = true;
+                    lblArmorValue.Text = objArmorMod.Armor.ToString("+0;-0;0");
+                }
+                else
+                {
+                    lblArmorValueLabel.Visible = false;
+                    lblArmorValue.Visible = false;
+                }
+
                 lblArmorAvail.Text = objArmorMod.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblArmorCapacity.Text = objArmorMod.Parent.CapacityDisplayStyle == CapacityStyle.Zero
                     ? "[0]"
@@ -11249,24 +11291,36 @@ namespace Chummer
             objCyberware.Create(objXmlCyberware, frmPickCyberware.SelectedGrade, objSource, frmPickCyberware.SelectedRating, lstWeapons, lstVehicles, true, true, string.Empty, objSelectedCyberware);
             if (objCyberware.InternalId.IsEmptyGuid())
                 return false;
-            objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
-            objCyberware.PrototypeTranshuman = frmPickCyberware.PrototypeTranshuman;
-
-            // Apply the ESS discount if applicable.
-            if (CharacterObjectOptions.AllowCyberwareESSDiscounts)
-                objCyberware.ESSDiscount = frmPickCyberware.SelectedESSDiscount;
-
-            if (frmPickCyberware.FreeCost)
-                objCyberware.Cost = "0";
-
-            if (objSelectedCyberware != null)
-                objSelectedCyberware.Children.Add(objCyberware);
-            else
-                CharacterObject.Cyberware.Add(objCyberware);
-
-            CharacterObject.Weapons.AddRange(lstWeapons);
-            CharacterObject.Vehicles.AddRange(lstVehicles);
             
+            if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
+            {
+                CharacterObject.DecreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
+            }
+            else if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
+            {
+                CharacterObject.IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
+            }
+            else
+            {
+                objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
+                objCyberware.PrototypeTranshuman = frmPickCyberware.PrototypeTranshuman;
+
+                // Apply the ESS discount if applicable.
+                if (CharacterObjectOptions.AllowCyberwareESSDiscounts)
+                    objCyberware.ESSDiscount = frmPickCyberware.SelectedESSDiscount;
+
+                if (frmPickCyberware.FreeCost)
+                    objCyberware.Cost = "0";
+
+                if (objSelectedCyberware != null)
+                    objSelectedCyberware.Children.Add(objCyberware);
+                else
+                    CharacterObject.Cyberware.Add(objCyberware);
+
+                CharacterObject.Weapons.AddRange(lstWeapons);
+                CharacterObject.Vehicles.AddRange(lstVehicles);
+            }
+
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
@@ -12679,15 +12733,15 @@ namespace Chummer
                 strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidEssenceExcess", GlobalOptions.Language), (dblMinEss - dblEss).ToString(GlobalOptions.CultureInfo));
             }
 
-            // If the character has MAG enabled, make sure a Tradition has been selected.
-            if (CharacterObject.MAGEnabled && (CharacterObject.MagicTradition.Type != TraditionType.MAG))
+            // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.
+            if ((CharacterObject.MagicianEnabled || CharacterObject.AdeptEnabled) && CharacterObject.MagicTradition.Type != TraditionType.MAG)
             {
                 blnValid = false;
                 strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_InvalidNoTradition", GlobalOptions.Language);
             }
 
-            // If the character has RES enabled, make sure a Stream has been selected.
-            if (CharacterObject.RESEnabled && (CharacterObject.MagicTradition.Type != TraditionType.RES))
+            // If the character has the Technomencer Tab enabled, make sure a Stream has been selected.
+            if (CharacterObject.TechnomancerEnabled && CharacterObject.MagicTradition.Type != TraditionType.RES)
             {
                 blnValid = false;
                 strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_InvalidNoStream", GlobalOptions.Language);

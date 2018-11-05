@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.ServiceModel;
-using System.Windows.Forms;
 using System.Xml;
 using Chummer.OmaeService;
 using Chummer.TranslationService;

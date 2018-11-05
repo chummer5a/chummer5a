@@ -660,7 +660,6 @@ namespace Chummer
         internal System.Windows.Forms.Label lblBOD;
         internal System.Windows.Forms.Label lblBODLabel;
         internal System.Windows.Forms.ListBox lstMetatypes;
-        private TableLayoutPanel tableLayoutPanel1;
         private FlowLayoutPanel flowLayoutPanel1;
         private BufferedTableLayoutPanel tlpMetatypes;
         private BufferedTableLayoutPanel tableLayoutPanel2;

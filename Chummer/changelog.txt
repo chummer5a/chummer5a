@@ -1,4 +1,22 @@
-Future Build 203
+Future Build 204
+
+Application Changes:
+
+- Fixed an issue where certain controls (e.g. Skills, Knowledge Skills) would not get their children controls translated. Fixes #3171.
+- Fixed an issue where drag-and-dropping weapons in career mode, as well as drag-and-dropping gear under certain circumstances, would not work. Fixes #3172.
+- Added an option to the dice roller tool where a roll glitches if there are more 1's than hits rather than more 1's than half of the character's dicepool.
+
+Data Changes:
+
+- Fixed Autopicker having an incorrect cost. Fixes #3167.
+- Fixed an issue with Japanese translations of certain lifestyle qualities caused by duplicate entries. Fixes #3168.
+- Added content from the German-exclusive sourcebook "Hamburg".
+
+New Strings:
+
+- Checkbox_DiceRoller_VariableGlitch
+
+Build 203
 
 Application Changes:
 
@@ -111,6 +129,10 @@ Application Changes:
 - Added a limited-functionality Hero Lab importer tool. This tool can convert .por files into Chummer5a characters to a certain extent, as certain character elements aren't saved in ways that can be (easily) converted into Chummer5a information.
 - Fixed an issue where weapon accessories often would not get their proper ratings set. Fixes #3123.
 - Fixed an issue where renaming various locations would not cause the corresponding node in the appropriate TreeView to update. Fixes #3078.
+- Fixed a crash when changing between selected spells if going from a spell that can be Extended to a spell in the Detection category. Fixes #3153.
+- Fixed an issue where Magic-enabled characters without access to the Spells & Spirits tab could not be exported into Career mode because the program would prompt them for a Tradition that they are unable to select without access to the Spells & Spirits tab. Fixes #3148.
+- Fixed an issue where opening multiple characters from the command line would cause the program to open multiple instances of the last character in the list. Fixes #3151.
+- Fixed an issue where Essence Antihole would get treated like regular Cyberware instead of the opposite of an Essence Hole, e.g. in having Biocompatibility reduce the Essence effect of an Essence Antihole. Fixes #3146.
 
 Data Changes:
 
@@ -165,6 +187,7 @@ Data Changes:
 - Fixed incorrect incorrect ammo category for the Lemat 2072's shotgun barrel.
 - Fixed incorrect ammo categories for the MP75 and HK 223C.
 - Fixed a crash when attempting to add programs to the Datajack Plus.
+- Fixed an issue where Essence Hole and Essence Antihole Cyberware could get grades applied to them and could potentially be added to something other than the base character's cyberware collection. Part of fix for #3146.
 
 New Strings:
 
