@@ -1,0 +1,15 @@
+GoogleChummerSINersId: 
+779360551859-i817g72s0ork3bffvnhtvpl0q2gi8sub.apps.googleusercontent.com
+
+GoogleChummerSINersSecret:
+Q2yMsXBtdd-zxp6vPXcjkGFz
+
+AuthorizationCode:
+4/hQBmTMeauXbVuFvVV7jkd7jUS1N4CfgxT9xvCaiIu8uQfK68UC9cusabW23Oz2DM_MGfVjZTtUObI7coUVNtpz8
+
+RefreshToken:
+1/-zsfciq55d9xfAYQ_-U1tmpsMiwHT7oKf1fEO8bm9hQ
+
+Access token:
+ya29.GltFBoOUYTeRf_Hcv90yWde-kRLa5FGBNZPIEK-aNHFfa40qHShR9xtbrfgv-hAj9S3I7p9aE6XgpvZ70OR87fONP0t8Q23Af5Q_1Hbgc1kL84p2kKAGeNlNeQi3
+

@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace Chummer.Plugins
 {
@@ -17,9 +18,14 @@ namespace Chummer.Plugins
         //UserControl GetUserControl(frmCareer input);
         //UserControl GetUserControl(frmCreate input);
 
-        TabPage GetTabPage(frmCareer input);
-        TabPage GetTabPage(frmCreate input);
+        IEnumerable<TabPage> GetTabPages(frmCareer input);
+        IEnumerable<TabPage> GetTabPages(frmCreate input);
+        IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem menu);
 
+        string GetSaveToFileElement(Character input);
+        void LoadFileElement(Character input, string fileElement);
+
+        Assembly GetPluginAssembly();
     }
 
 
@@ -88,13 +94,32 @@ namespace Chummer.Plugins
         {
             foreach(var plugin in MyPlugins)
             {
-                TabPage page = plugin.GetTabPage(frmCareer);
-                //UserControl ucChild = plugin.GetUserControl(frmCareer);
-                if (page != null)
+                foreach (TabPage page in plugin.GetTabPages(frmCareer))
                 {
-                    frmCareer.TabCharacterTabs.TabPages.Add(page);
+                    if (page != null)
+                    {
+                        if (!frmCareer.TabCharacterTabs.TabPages.Contains(page))
+                            frmCareer.TabCharacterTabs.TabPages.Add(page);
+                    }
                 }
             }
         }
+
+        internal void CallPlugins(ToolStripMenuItem menu)
+        {
+            foreach (var plugin in MyPlugins)
+            {
+                foreach (ToolStripMenuItem plugInMenu in plugin.GetMenuItems(menu))
+                {
+                    if (plugInMenu != null)
+                    {
+                        if (!menu.DropDownItems.Contains(plugInMenu))
+                            menu.DropDownItems.Add(plugInMenu);
+                    }
+                }
+            }
+        }
+
+      
     }
 }

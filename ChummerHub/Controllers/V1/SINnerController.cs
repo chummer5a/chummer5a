@@ -12,6 +12,10 @@ using Swashbuckle.AspNetCore.Filters;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
+using ChummerHub.Models.V1.Examples;
+using ChummerHub.Services.GoogleDrive;
+using Microsoft.AspNetCore.Http.Internal;
+using System.IO;
 //using Swashbuckle.AspNetCore.Filters;
 
 namespace ChummerHub.Controllers.V1
@@ -42,7 +46,7 @@ namespace ChummerHub.Controllers.V1
         {
             try
             {
-                _logger.LogInformation("Getting GetSINnerFile");
+                _logger.LogTrace("Getting GetSINnerFile");
                 var result = _context.SINners.OrderByDescending(a => a.UploadDateTime).Take(20);
                 result = _context.SINners.Include(sinner => sinner.SINnerMetaData)
                     .ThenInclude(meta => meta.Tags)
@@ -91,37 +95,28 @@ namespace ChummerHub.Controllers.V1
         }
 
         // PUT: api/ChummerFiles/5
+        /// <summary>
+        /// The Xml or Zip File can be uploaded (knowing the previously stored Id)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="uploadedFile"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NoContent)]
 
-        public async Task<IActionResult> PutSINnerFile([FromRoute] Guid id, [FromBody] SINner chummerFile)
+        public async Task<IActionResult> PutSINnerFile([FromRoute] Guid id, IFormFile uploadedFile)
         {
             try
             {
-                if (!ModelState.IsValid)
+                var chummerFile = await _context.SINners.FindAsync(id);
+                if (chummerFile == null)
                 {
-                    var errors = ModelState.Select(x => x.Value.Errors)
-                                              .Where(y => y.Count > 0)
-                                              .ToList();
-                    string msg = "ModelState is invalid: ";
-                    foreach (var err in errors)
-                    {
-                        foreach (var singleerr in err)
-                        {
-                            msg += Environment.NewLine + "\t" + singleerr.ToString();
-                        }
-
-                    }
-                    //throw new HubException(msg);
-                    return BadRequest(new HubException(msg));
+                    return NotFound();
                 }
-
-                if (id != chummerFile.SINnerId)
-                {
-                    return BadRequest();
-                }
-
+                
                 _context.Entry(chummerFile).State = EntityState.Modified;
+
+                chummerFile.DownloadUrl = Startup.GDrive.StoreXmlInCloud(chummerFile, uploadedFile);
 
                 try
                 {
@@ -148,22 +143,11 @@ namespace ChummerHub.Controllers.V1
             }
         }
 
-        // POST: api/ChummerFiles
-        [HttpPost()]
-        [AllowAnonymous]
-        [SwaggerRequestExample(typeof(SINner), typeof(SINnerExample))]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created, Type = typeof(SINner))]
-
-        public async Task<IActionResult> PostSINnerFile([FromBody] SINner chummerFile)
-        {
-            
-            return await PostSINnerInternal(chummerFile);
-        }
-
        
+
         private async Task<IActionResult> PostSINnerInternal(SINner chummerFile)
         {
-            _logger.LogInformation("Post SINnerInternalt: " + chummerFile + ".");
+            _logger.LogTrace("Post SINnerInternalt: " + chummerFile + ".");
             try
             {
                 if (!ModelState.IsValid)
@@ -172,13 +156,13 @@ namespace ChummerHub.Controllers.V1
                                                .Where(y => y.Count > 0)
                                                .ToList();
                     string msg = "ModelState is invalid: ";
-                    foreach(var err in errors)
+                    foreach (var err in errors)
                     {
-                        foreach(var singleerr in err)
+                        foreach (var singleerr in err)
                         {
                             msg += Environment.NewLine + "\t" + singleerr.ToString();
                         }
-                        
+
                     }
                     //throw new HubException(msg);
                     return BadRequest(new HubException(msg));
@@ -188,7 +172,7 @@ namespace ChummerHub.Controllers.V1
                     chummerFile.SINnerId = Guid.Empty;
                 if (chummerFile.UploadDateTime == null)
                     chummerFile.UploadDateTime = DateTime.Now;
-               
+
                 _context.SINners.Add(chummerFile);
                 await _context.SaveChangesAsync();
 
@@ -199,6 +183,25 @@ namespace ChummerHub.Controllers.V1
                 HubException hue = new HubException("Exception in PostSINnerFile: " + e.Message, e);
                 return BadRequest(hue);
             }
+        }
+
+        // POST: api/ChummerFiles
+        /// <summary>
+        /// Store the MetaData for a Chummerfile (to get a Id).
+        /// This Id can be used to store the actual file with PUT afterwards.
+        /// Alternativly, the DownloadUrl can be set directly from the Client.
+        /// </summary>
+        /// <param name="chummerFile"></param>
+        /// <returns></returns>
+        [HttpPost()]
+        [AllowAnonymous]
+        [SwaggerRequestExample(typeof(SINner), typeof(SINnerExample))]
+        //[Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created, Type = typeof(SINner))]
+
+        public async Task<IActionResult> PostSINnerFile([FromBody] SINner sinnerData)
+        {
+            
+            return await PostSINnerInternal(sinnerData);
         }
 
         // DELETE: api/ChummerFiles/5

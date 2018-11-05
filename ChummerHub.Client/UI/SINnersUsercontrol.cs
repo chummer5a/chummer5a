@@ -29,7 +29,17 @@ namespace ChummerHub.Client.UI
 
         public SINnersAdvanced TabSINnersAdvanced = null;
 
-        public CharacterExtended MyCharacterExtended { get; set; }
+        public CharacterExtended MyCharacterExtended
+        {
+            get
+            {
+                return PluginHandler.MyCharacterExtended;
+            }
+            set
+            {
+                PluginHandler.MyCharacterExtended = value;
+            }
+        }
 
         public Character CharacterObject => MySINner.CharacterObject;
 
@@ -66,7 +76,7 @@ namespace ChummerHub.Client.UI
         public SINnersUserControl SetCharacterFrom(CharacterShared mySINner)
         {
             _mySINner = mySINner;
-            MyCharacterExtended = new CharacterExtended(CharacterObject);
+            
             MyCharacterExtended.PopulateTags();
             MyCharacterExtended.PrepareModel();
             TabSINnersBasic = new SINnersBasic(this);

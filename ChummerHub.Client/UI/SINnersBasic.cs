@@ -118,5 +118,10 @@ namespace ChummerHub.Client.UI
                 myUC.RemoveSINnerAsync();
             CheckSINnerStatus();
         }
+
+        private void tabLayoutPanel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -5,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace ChummerHub.Models.V1
 {
@@ -18,6 +20,20 @@ namespace ChummerHub.Models.V1
         public string TagValue { get; set; }
         
         public Guid? ParentTagId { get; set; }
+
+        [IgnoreDataMember]
+        [JsonIgnore]
+        [XmlIgnore]
+        [NotMapped]
+        public Tag ParentTag { get; set; }
+
+        [IgnoreDataMember]
+        [JsonIgnore]
+        [XmlIgnore]
+        [NotMapped]
+        public SINner SINner { get; set; }
+
+        public Guid? SINnerId { get; set; }
 
         public List<Tag> Tags { get; set; }
 
@@ -41,12 +57,54 @@ namespace ChummerHub.Models.V1
 
         public Tag()
         {
+            TagConstructor(null, null);
+        }
+
+        public Tag(SINner sinner, Tag parent)
+        {
+            TagConstructor(sinner, parent);
+        }
+
+        private Tag TagConstructor(SINner sinner, Tag parent)
+        {
+            this.SINner = sinner;
+            if (sinner != null)
+                this.SINnerId = sinner.SINnerId;
+            this.ParentTag = parent;
             this.TagName = "";
             this.TagValue = "";
             this.ParentTagId = Guid.Empty;
+            if (parent != null)
+                this.ParentTagId = parent.TagId;
             this.Tags = new List<Tag>();
             this.TagType = TagValueEnum.unknown;
             IsUserGenerated = false;
+            return this;
+        }
+
+        [IgnoreDataMember]
+        [XmlIgnore]
+        [JsonIgnore]
+        [NotMapped]
+        public string Display
+        {
+            get
+            {
+                string str = "";
+                Tag tempParent = this;
+                while (tempParent != null)
+                {
+                    string tempstr = tempParent.TagName;
+                    if (!String.IsNullOrEmpty(tempParent.TagValue))
+                        tempstr += ": " + tempParent.TagValue;
+                    if (!String.IsNullOrEmpty(str))
+                        tempstr += " -> " + str;
+                    str = tempstr;
+                    tempParent = tempParent.ParentTag;
+                }
+                return str;
+            }
+
         }
     }
 }

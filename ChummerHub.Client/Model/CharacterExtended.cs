@@ -1,5 +1,6 @@
 using Chummer;
 using ChummerHub.Client.Backend;
+using Newtonsoft.Json;
 using SINners.Models;
 using System;
 using System.Collections.Generic;
@@ -12,15 +13,22 @@ namespace ChummerHub.Client.Model
 {
     public class CharacterExtended
     {
-        public CharacterExtended(Character character)
+        public CharacterExtended(Character character, string fileElement)
         {
             MyCharacter = character;
             MySINnerFile = new SINner();
-            MySINnerFile.SiNnerMetaData = new SINnerMetaData()
+            if (String.IsNullOrEmpty(fileElement))
             {
-                SiNnerMetaDataId = Guid.NewGuid()
-            };
-            MySINnerFile.SiNnerMetaData.Tags = new List<Tag>();
+                MySINnerFile.SiNnerMetaData = new SINnerMetaData()
+                {
+                    SiNnerMetaDataId = Guid.NewGuid()
+                };
+                MySINnerFile.SiNnerMetaData.Tags = new List<Tag>();
+            }
+            else
+            {
+                MySINnerFile = JsonConvert.DeserializeObject<SINners.Models.SINner>(fileElement);
+            }
         }
 
         public Character MyCharacter { get; }
@@ -42,6 +50,9 @@ namespace ChummerHub.Client.Model
 
             var tags = Backend.TagExtractor.ExtractTagsFromAttributes(MyCharacter, tag);
             //var tags = Backend.TagExtractor.ExtractTags(MyCharacter, 3, tag);
+            var found = from a in MySINnerFile.SiNnerMetaData.Tags where a.TagName == "Reflection" select a;
+            foreach (var f in found)
+                MySINnerFile.SiNnerMetaData.Tags.Remove(f);
             MySINnerFile.SiNnerMetaData.Tags.Add(tag);
             
         }

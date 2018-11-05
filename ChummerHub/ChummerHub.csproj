@@ -8,12 +8,27 @@
     <AssemblyOriginatorKeyFile>ChummerHub.snk</AssemblyOriginatorKeyFile>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20181029112504_03.cs" />
+    <Compile Remove="Migrations\20181029112504_03.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Services\GoogleDrive\SINners.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Services\GoogleDrive\SINners.json" />
+  </ItemGroup>
   <!--<PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>-->
   
   <ItemGroup>
+    <PackageReference Include="Google.Apis.Auth.Mvc" Version="1.36.1" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.36.1.1390" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.6" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="2.1.2" />

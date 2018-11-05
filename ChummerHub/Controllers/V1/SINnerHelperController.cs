@@ -10,6 +10,7 @@ using ChummerHub.Models.V1;
 using Microsoft.AspNetCore.Authorization;
 using Swashbuckle.AspNetCore.Filters;
 using System.Net;
+using System.IO;
 
 namespace ChummerHub.Controllers.V1
 {
@@ -32,5 +33,27 @@ namespace ChummerHub.Controllers.V1
         {
             return _context.SINners.Any(e => e.SINnerId == id);
         }
+
+
+        // POST: api/ChummerFiles
+        [HttpPost()]
+        [AllowAnonymous]
+        [Route("upload")]
+        //[SwaggerRequestExample(typeof(SINner), typeof(SINnerExample))]
+        //[Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created, Type = typeof(SINner))]
+
+        public void PostFile(IFormFile uploadedFile)
+        {
+            using (var fileStream = System.IO.File.Create("temp"))
+            {
+                using (var stream = uploadedFile.OpenReadStream())
+                {
+                    stream.Seek(0, SeekOrigin.Begin);
+                    stream.CopyTo(fileStream);
+                }
+
+            }
+        }
     }
+
 }

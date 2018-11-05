@@ -26,15 +26,33 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using ChummerHub.Services;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Authentication.Facebook;
+using ChummerHub.Services.GoogleDrive;
+using Microsoft.Extensions.Logging;
+using ChummerHub.API;
+using ChummerHub.Controllers.V1;
 //using Swashbuckle.AspNetCore.Filters;
 
 namespace ChummerHub
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly ILogger<Startup> _logger;
+
+        private static DriveHandler _gdrive = null;
+        public static DriveHandler GDrive
         {
+            get
+            {
+                return _gdrive;
+            }
+        }
+
+        public Startup(ILogger<Startup> logger, IConfiguration configuration)
+        {
+            _logger = logger;
             Configuration = configuration;
+            if (_gdrive == null)
+                _gdrive = new DriveHandler(logger, configuration);
         }
 
         public IConfiguration Configuration { get; }
@@ -45,7 +63,7 @@ namespace ChummerHub
         public void ConfigureServices(IServiceCollection services)
         {
             MyServices = services;
-
+            
 
 
             services.Configure<CookiePolicyOptions>(options =>
@@ -85,6 +103,7 @@ namespace ChummerHub
                 })
                 .AddGoogle(options =>
                 {
+                    //1nRL79YCYpBeAp3SH-7ud-SrIqEL75qxH
                     options.ClientId = Configuration["Authentication:Google:ClientId"];
                     options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
                 });
@@ -201,7 +220,9 @@ namespace ChummerHub
                     });
                 }
 
-                
+                options.OperationFilter<FileUploadOperation>();
+
+
 
                 // add a custom operation filter which sets default values
                 //options.OperationFilter<SwaggerDefaultValues>();

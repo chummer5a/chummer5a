@@ -201,6 +201,7 @@ namespace Chummer
                 CharacterRoster.WindowState = FormWindowState.Maximized;
                 CharacterRoster.Show();
             }
+            PluginLoader.CallPlugins(toolsMenu);
             frmLoadingForm.Close();
         }
 

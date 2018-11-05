@@ -1,0 +1,34 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ChummerHub.Models.V1
+{
+    public class SearchTag
+    {
+        public string sTagName { get; set; }
+        public string sTagValue { get; set; }
+
+        public List<SearchTag> sTags { get; set; }
+
+        public TagOperatorEnum sSearchOpterator { get; set; }
+
+        public enum TagOperatorEnum
+        {
+            @bigger,
+            @smaller,
+            @equal,
+            @contains,
+            @notnull
+        }
+
+        public SearchTag()
+        {
+            this.sTagName = "";
+            this.sTagValue = "";
+            this.sTags = new List<SearchTag>();
+        }
+    }
+}

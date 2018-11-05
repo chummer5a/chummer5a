@@ -1767,8 +1767,27 @@ namespace Chummer
             objWriter.WriteEndElement();
             // </sources>
 
+           
+
+            //Plugins
+            if (Program.MainForm?.PluginLoader?.MyPlugins?.Any() == true)
+            {
+                // <plugins>
+                objWriter.WriteStartElement("plugins");
+                foreach (var plugin in Program.MainForm.PluginLoader.MyPlugins)
+                {
+                    System.Reflection.Assembly pluginAssm = plugin.GetPluginAssembly();
+                    objWriter.WriteStartElement(pluginAssm.GetName().Name);
+                    objWriter.WriteAttributeString("version", pluginAssm.GetName().Version.ToString());
+                    objWriter.WriteString(plugin.GetSaveToFileElement(this));
+                    objWriter.WriteEndElement();
+                }
+                //</plugins>
+                objWriter.WriteEndElement();
+            }
             // </character>
             objWriter.WriteEndElement();
+
 
             objWriter.WriteEndDocument();
             objWriter.Flush();
@@ -3268,8 +3287,24 @@ namespace Chummer
                     }
                 }
             }
-
             Timekeeper.Finish("load_char_mentorspiritfix");
+
+            //Plugins
+            Timekeeper.Start("load_plugins");
+            if (Program.MainForm?.PluginLoader?.MyPlugins?.Any() == true)
+            {
+                foreach(var plugin in Program.MainForm.PluginLoader.MyPlugins)
+                {
+                    objXmlNodeList = objXmlCharacter.SelectNodes("plugins/" + plugin.GetPluginAssembly().GetName().Name);
+                    foreach (XmlNode objXmlPlugin in objXmlNodeList)
+                    {
+                        plugin.LoadFileElement(this, objXmlPlugin.InnerText);
+                    }
+                }
+            }
+            Timekeeper.Finish("load_plugins");
+
+            
 
             // Refresh certain improvements
             Timekeeper.Start("load_char_improvementrefreshers");

@@ -35,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.15\lib\net452\Microsoft.Rest.ClientRuntime.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.17\lib\net452\Microsoft.Rest.ClientRuntime.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -78,6 +78,7 @@
     <Compile Include="Backend\MyMessageHandler.cs" />
     <Compile Include="Backend\TagExtractor.cs" />
     <Compile Include="Model\CharacterExtended.cs" />
+    <Compile Include="Model\SearchTag.cs" />
     <Compile Include="Model\Tag.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -97,6 +98,12 @@
     <Compile Include="SINnersClient\Models\Tag.cs" />
     <Compile Include="SINnersClient\SINnersClient.cs" />
     <Compile Include="SINnersClient\SINnersClientExtensions.cs" />
+    <Compile Include="UI\frmSINnerSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\frmSINnerSearch.Designer.cs">
+      <DependentUpon>frmSINnerSearch.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\SINnersAdvanced.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -116,12 +123,21 @@
     <Compile Include="UI\SINnersUserControl.Designer.cs">
       <DependentUpon>SINnersUserControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\ucSearch.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\ucSearch.Designer.cs">
+      <DependentUpon>ucSearch.cs</DependentUpon>
+    </Compile>
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\frmSINnerSearch.resx">
+      <DependentUpon>frmSINnerSearch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SINnersAdvanced.resx">
       <DependentUpon>SINnersAdvanced.cs</DependentUpon>
@@ -131,6 +147,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SINnersUserControl.resx">
       <DependentUpon>SINnersUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ucSearch.resx">
+      <DependentUpon>ucSearch.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -151,7 +170,9 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\group.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetDir)$(TargetName).* $(OutDir)Plugins\</PostBuildEvent>
