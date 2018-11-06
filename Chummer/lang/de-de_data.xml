@@ -44418,37 +44418,37 @@
 				<id>livingpersonadevicerating</id>
 				<name>Living Persona, Device Rating</name>
 				<translate>Lebende Persona, Gerätestufe</translate>
-				<altpage>Adjusts the Living Persona's Device Rating by the value entered. Positive numbers improve the Device Rating. Negative numbers reduce the Device Rating. You may enter XPath operations as well. This has no effect on characters that do not have a Living Persona.</altpage>
+				<altpage>Passt die Gerätestufe der lebenden Persona um den eingegebenen Wert an. Positive Zahlen verbessern die Gerätestufe. Negative Zahlen reduzieren die Gerätestufe. Sie können auch XPfad-Operationen eingeben. Dies hat keinen Einfluss auf Charaktere, die keine lebende Persona haben.</altpage>
 			</improvement>
 			<improvement>
 				<id>livingpersonaprogramlimit</id>
 				<name>Living Persona, Program Limit</name>
 				<translate>Lebende Persona, Programmlimit</translate>
-				<altpage>Adjusts the Living Persona's Program Limit by the value entered. Positive numbers improve the Program Limit. Negative numbers reduce the Program Limit. You may enter XPath operations as well. This has no effect on characters that do not have a Living Persona.</altpage>
+				<altpage>Passt das Programmlimit der lebenden Persona um den eingegebenen Wert an. Positive Zahlen verbessern das Programmlimit. Negative Zahlen reduzieren das Programmlimit. Sie können auch XPfad-Operationen eingeben. Dies hat keinen Einfluss auf Charaktere, die keine lebende Persona haben.</altpage>
 			</improvement>
 			<improvement>
 				<id>livingpersonaattack</id>
 				<name>Living Persona, Attack</name>
 				<translate>Lebende Persona, Angriff</translate>
-				<altpage>Adjusts the Living Persona's Attack by the value entered. Positive numbers improve Attack. Negative numbers reduce Attack. You may enter XPath operations as well. This has no effect on characters that do not have a Living Persona.</altpage>
+				<altpage>Passt den Angriff der lebenden Persona um den eingegebenen Wert an. Positive Zahlen verbessern den Angriff. Negative Zahlen reduzieren den Angriff. Sie können auch XPfad-Operationen eingeben. Dies hat keinen Einfluss auf Charaktere, die keine lebende Persona haben.</altpage>
 			</improvement>
 			<improvement>
 				<id>livingpersonasleaze</id>
 				<name>Living Persona, Sleaze</name>
 				<translate>Lebende Persona, Schleicher</translate>
-				<altpage>Adjusts the Living Persona's Sleaze by the value entered. Positive numbers improve Sleaze. Negative numbers reduce Sleaze. You may enter XPath operations as well. This has no effect on characters that do not have a Living Persona.</altpage>
+				<altpage>Passt das Attribut Schleicher der lebenden Person um den eingegebenen Wert an. Positive Zahlen verbessern das Attribut Schleicher. Negative Zahlen reduzieren das Attribut Schleicher. Sie können auch XPfad-Operationen eingeben. Dies hat keinen Einfluss auf Charaktere, die keine lebende Persona haben.</altpage>
 			</improvement>
 			<improvement>
 				<id>livingpersonadataprocessing</id>
 				<name>Living Persona, Data Processing</name>
 				<translate>Lebende Persona, Datenverarbeitung</translate>
-				<altpage>Adjusts the Living Persona's Data Processing by the value entered. Positive numbers improve Data Processing. Negative numbers reduce Data Processing. You may enter XPath operations as well. This has no effect on characters that do not have a Living Persona.</altpage>
+				<altpage>Passt die Datenverarbeitung der lebenden Person um den eingegebenen Wert an. Positive Zahlen verbessern die Datenverarbeitung. Negative Zahlen reduzieren die Datenverarbeitung. Sie können auch XPfad-Operationen eingeben. Dies hat keinen Einfluss auf Charaktere, die keine lebende Persona haben.</altpage>
 			</improvement>
 			<improvement>
 				<id>livingpersonafirewall</id>
 				<name>Living Persona, Firewall</name>
 				<translate>Lebende Persona, Firewall</translate>
-				<altpage>Adjusts the Living Persona's Firewall by the value entered. Positive numbers improve Firewall. Negative numbers reduce Firewall. You may enter XPath operations as well. This has no effect on characters that do not have a Living Persona.</altpage>
+				<altpage>Passt die Firewall der Lebenden Persona um den eingegebenen Wert an. Positive Zahlen verbessern die Firewall. Negative Zahlen reduzieren die Firewall. Sie können auch XPfad-Operationen eingeben. Dies hat keinen Einfluss auf Charaktere, die keine lebende Persona haben.</altpage>
 			</improvement>
 			<improvement>
 				<id>specificskill</id>
@@ -44520,19 +44520,19 @@
 				<id>genetechcostmultiplier</id>
 				<name>Genetech Cost</name>
 				<translate>Gentechnologiekosten</translate>
-				<altpage>Passt die Kosten von Bioware in den Kategorien Gentechnologie um den eingegebenen Prozentwert an. Alle Kosten von Genetech betragen nun x % des ursprünglichen Wertes. Zahlen unter 100 reduzieren die aufzuwendenden Nuyen. Zahlen über 100 erhöhen die aufzuwendenden Nuyen.</altpage>
+				<altpage>Passt die Kosten von Bioware in den Kategorien Gentechnologie um den eingegebenen Prozentwert an. Alle Kosten für Genetechnologie betragen nun x % des ursprünglichen Wertes. Zahlen unter 100 reduzieren die aufzuwendenden Nuyen. Zahlen über 100 erhöhen die aufzuwendenden Nuyen.</altpage>
 			</improvement>
 			<improvement>
 				<id>basicbiowareessmultiplier</id>
 				<name>Basic Bioware Essence Cost</name>
-				<translate>Basic Bioware Essence Cost</translate>
-				<altpage>Adjusts the Essence cost of Bioware in the Basic category by the percent value entered. All Basic Bioware Essence costs will now be X% of their original value. Numbers lower than 100 reduce the Essence cost. Numbers higher than 100 increase the Essence cost.</altpage>
+				<translate>Basis-Bioware Essenzkosten</translate>
+				<altpage>Passt die Essenzkosten von Basis-Bioware um den eingegebenen Prozentwert an. Alle Essenzkosten für Basis-Bioware betragen nun x % des ursprünglichen Wertes. Zahlen unter 100 reduzieren die Essenzkosten. Zahlen über 100 erhöhen die Essenzkosten.</altpage>
 			</improvement>
 			<improvement>
 				<id>biowareessmultiplier</id>
 				<name>Bioware Essence Cost</name>
 				<translate>Bioware Essenzkosten</translate>
-				<altpage>Passt die Essenzkosten von Bioware um den eingegebenen Prozentwert an. Alle Essenzkosten von Bioware betragen nun x % des ursprünglichen Wertes. Zahlen unter 100 reduzieren die Essenzkosten. Zahlen über 100 erhöhen die Essenzkosten.</altpage>
+				<altpage>Passt die Essenzkosten von Bioware um den eingegebenen Prozentwert an. Alle Essenzkosten für Bioware betragen nun x % des ursprünglichen Wertes. Zahlen unter 100 reduzieren die Essenzkosten. Zahlen über 100 erhöhen die Essenzkosten.</altpage>
 			</improvement>
 			<improvement>
 				<id>cyberwareessmultiplier</id>
@@ -44574,67 +44574,67 @@
 				<id>judgeintentions</id>
 				<name>Judge Intentions</name>
 				<translate>Menschenkenntnis</translate>
-				<altpage>Adjusts the character's Judge Intentions Special Attribute by the value entered. Positive numbers improve Judge Intentions. Negative numbers reduce Judge Intentions.</altpage>
+				<altpage>Passt die Attributsprobe des Charakters für Menschenkenntnis um den eingegebenen Wert an. Positive Zahlen erhöhen den Würfelpool für Menschenkenntnis. Negative Zahlen reduzieren den Pool für Menschenkenntnis.</altpage>
 			</improvement>
 			<improvement>
 				<id>composure</id>
 				<name>Composure</name>
 				<translate>Selbstbeherrschung</translate>
-				<altpage>Adjusts the character's Composure Special Attribute by the value entered. Positive numbers improve Composure. Negative numbers reduce Composure.</altpage>
+				<altpage>Passt die Attributsprobe des Charakters für Selbstbeherrschung um den eingegebenen Wert an. Positive Zahlen erhöhen den Würfelpool für Selbstbeherrschung. Negative Zahlen reduzieren den Pool für Selbstbeherrschung.</altpage>
 			</improvement>
 			<improvement>
 				<id>liftandcarry</id>
 				<name>Lift and Carry</name>
 				<translate>Heben und Tragen</translate>
-				<altpage>Adjusts the character's Lift and Carry Special Attribute by the value entered. Positive numbers improve Lift and Carry. Negative numbers reduce Lift and Carry.</altpage>
+				<altpage>Passt die Attributsprobe des Charakters für 'Heben und Tragen' um den eingegebenen Wert an. Positive Zahlen erhöhen den Würfelpool. Negative Zahlen reduzieren den Würfelpool.</altpage>
 			</improvement>
 			<improvement>
 				<id>memory</id>
 				<name>Memory</name>
 				<translate>Erinnerungsvermögen</translate>
-				<altpage>Adjusts the character's Memory Special Attribute by the value entered. Positive numbers improve Memory. Negative numbers reduce Memory.</altpage>
+				<altpage>Passt die Attributsprobe des Charakters für Erinnerungsvermögen um den eingegebenen Wert an. Positive Zahlen erhöhen den Würfelpool. Negative Zahlen reduzieren den Würfelpool.</altpage>
 			</improvement>
 			<improvement>
 				<id>concealability</id>
 				<name>Concealability</name>
 				<translate>Tarnbarkeit</translate>
-				<altpage>Adjusts the character's ability to conceal Weapons by the value entered. This bonus applies to the Concealability of all Weapons. Positive values improve Concealability. Negative values reduce Concealability.</altpage>
+				<altpage>Passt die Fähigkeit des Charakters an, Waffen zu verbergen. Dieser Bonus gilt für das Verbergen aller Waffen. Positive Werte verbessern die Fähigkeit zum Verbergen. Negative Werte reduzieren die Fähigkeit zum Verbergen.</altpage>
 			</improvement>
 			<improvement>
 				<id>drainresist</id>
 				<name>Drain Resistance</name>
 				<translate>Entzugswiderstand</translate>
-				<altpage>Adjusts the size of the character's Drain Resistance pool by the value entered. Positive values increase the size of the pool. Negative values decrease the size of the pool.</altpage>
+				<altpage>Passt die Fähigkeit des Charakters zum Entzugswiderstand um den eingegebenen Wert an. Positive Werte erhöhen den Würfelpool. Negative Werte verringern den Würfelpool.</altpage>
 			</improvement>
 			<improvement>
 				<id>fadingresist</id>
 				<name>Fading Resistance</name>
 				<translate>Schwundwiderstand</translate>
-				<altpage>Adjusts the size of the character's Fading Resistance pool by the value entered. Positive values increase the size of the pool. Negative values decrease the size of the pool.</altpage>
+				<altpage>Passt die Fähigkeit des Charakters zum Schwundwiderstand um den eingegebenen Wert an. Positive Werte erhöhen den Würfelpool. Negative Werte verringern den Würfelpool.</altpage>
 			</improvement>
 			<improvement>
 				<id>spellcategory</id>
 				<name>Spells in Category</name>
 				<translate>Zauber in Kategorie</translate>
-				<altpage>Adjusts the size of the character's Spellcasting pool when casting Spell in the selected category. Positive values improve Spellcasting. Negative values reduce Spellcasting.</altpage>
+				<altpage>Passt den Zauberpool des Charakters an, wenn er Zauber in der ausgewählten Kategorie wirkt. Positive Werte erhöhen die Fähigkeit für Zauber. Negative Werte reduzieren die Fähigkeit für Zauber.</altpage>
 			</improvement>
 			<improvement>
 				<id>skillsoftaccess</id>
 				<name>Skillsoft Access</name>
 				<translate>Skillsoft Zugriff</translate>
-				<altpage>The character can use Knowsoft and Linguasoft Skillsofts as though they had a direct neural link.</altpage>
+				<altpage>Der Charakter kann Wissenssoft und Linguasoft Talentsofts so verwenden, als hätte er eine direkte neuronale Verbindung.</altpage>
 			</improvement>
 			<improvement>
 				<id>essencemax</id>
 				<name>Essence Maximum</name>
-				<translate>Essenz-Maximum</translate>
-				<altpage>Adjusts the character's Maximum Essence by the value entered. Positive values increase Maximum Essence. Negative values decrease Maximum Essence.</altpage>
+				<translate>Essenzmaximum</translate>
+				<altpage>Passt die maximale Essenz des Charakters um den eingegebenen Wert an. Positive Werte erhöhen das Essenzmaximum. Negative Werte verringern das Essenzmaximum.</altpage>
 			</improvement>
 			<improvement>
 				<id>throwrange</id>
 				<name>Throwing Weapon Range</name>
 				<translate>Wurfwaffen-Reichweite</translate>
-				<altpage>Adjusts a character's STR for the purpose of determining the range of Throwing Weapons. Positive numbers increase the character's effective STR. Negative numbers reduce the character's effective STR.</altpage>
+				<altpage>Passt die Stärke eines Charakters an, um die Reichweite der Wurfwaffen zu bestimmen. Positive Werte erhöhen die effektive Stärke des Charakters. Negative Werte reduzieren die effektive Stärke des Charakters.</altpage>
 			</improvement>
 			<improvement>
 				<id>skillwire</id>
@@ -44760,7 +44760,7 @@
 				<id>specificpower</id>
 				<name>Adept Power</name>
 				<translate>Adeptenkraft</translate>
-				<altpage>Erzeugt eine freie Adeptenkraft. Wenn die ausgewählte Leistung bereits vorhanden ist, wird die Leistung entweder als frei markiert oder durch eine freie Stufe ergänzt.</altpage>
+				<altpage>Creates a free Adept Power. If the selected power already exists, the power will either be marked as free, or have free levels added to it.</altpage>
 			</improvement>
 			<improvement>
 				<id>initiativediceadd</id>

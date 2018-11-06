@@ -9422,5 +9422,9 @@
 			<key>Checkbox_DiceRoller_BubbleDie</key>
 			<text>Scheinwürfel (egalisiert Patzerwahrscheinlichkeit bei gerader Anzahl von Würfeln)</text>
 		</string>
+		<string>
+			<key>Checkbox_DiceRoller_VariableGlitch</key>
+			<text>Patzer bei mehr Einsen als Erfolgen, nicht bei halbem Würfelpool</text>
+		</string>
 	</strings>
 </chummer>
