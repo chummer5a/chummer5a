@@ -44640,55 +44640,55 @@
 				<id>skillwire</id>
 				<name>Skillwire Rating</name>
 				<translate>Talentleitungsstufe</translate>
-				<altpage>Grants the character access to Skillwires at the specified Rating which limits the effective Rating of all Skillsofts the character takes.</altpage>
+				<altpage>Ermöglicht dem Charakter den Zugang zu Talentleitungen mit dem angegebenen Wert, welche die effektive Stufe von allen verwendeten Talentsofts einschränkt.</altpage>
 			</improvement>
 			<improvement>
 				<id>swapskillattribute</id>
 				<name>Swap Skill Attribute (Physical for Mental)</name>
-				<translate>Swap Skill Attribute (Physical for Mental)</translate>
-				<altpage>Swaps the Physical Attribute used by Active Skills with the corresponding Mental Attribute as described in the Astral Attributes table on SR4 192. (AGI/LOG; BOD/WIL; REA/INT; STR/CHA)</altpage>
+				<translate>Tausche Fertigkeitsattribut (körperlich zu geistig)</translate>
+				<altpage>Tauscht das von den Aktionsfertigkeiten verwendete körperliche Attribut gegen das entsprechende geistige Attribut, wie in der Tabelle geistige Attribute auf SR4 192 beschrieben. (GES/LOG; KON/WIL; REA/INT; STR/CHA)</altpage>
 			</improvement>
 			<improvement>
 				<id>quickeningmetamagic</id>
 				<name>Quickening</name>
 				<translate>Intensivierung</translate>
-				<altpage>Grants the character access to Quickening in the same manner as the Quickening Metamagic.</altpage>
+				<altpage>Ermöglicht dem Charakter den Zugang zur Intensivierung in der gleichen Weise wie die Metamagie Intensivierung.</altpage>
 			</improvement>
 			<improvement>
 				<id>basiclifestylecost</id>
 				<name>Basic Lifestyle Cost</name>
 				<translate>Lebensstilkosten</translate>
-				<altpage>Adjusts the Nuyen cost of all basic Lifestyles by the percent value entered. All basic Lifestyles will now cost an additional X% per month. Basic Lifestyles are only those found in the SR4 book and do not include Advanced Lifestyles, Safehouses, or Bolt Holes. Positive number increase the basic Lifestyle's monthly Nuyen cost. Negative numbers reduce the basic Lifestyle's monthly Nuyen cost.</altpage>
+				<altpage>Passt die Kosten aller grundlegenden Lebensstile in Nuyen um den eingegebenen Prozentwert an. Alle grundlegenden Lebensstile kosten nun zusätzlich x% pro Monat. Grundlegende Lebensstile sind nur diejenigen, die im SR4-Buch zu finden sind, und beinhalten keine fortgeschrittenen Lebensstile, Safehouses oder Schlupfwinkel. Positive Werte erhöhen die monatlichen Lebensstilkosten. Negative Werte verringern die monatlichen Lebensstilkosten.</altpage>
 			</improvement>
 			<improvement>
 				<id>throwstr</id>
 				<name>Throwing Weapon STR</name>
 				<translate>Wurfwaffen-Stärke</translate>
-				<altpage>Adjusts a character's STR for the purpose of determining the DV of Throwing Weapons. Positive numbers increase the character's effective STR. Negative numbers reduce the character's effective STR.</altpage>
+				<altpage>Passt die Stärke eines Charakters an, um den Schaden der Wurfwaffen zu bestimmen. Positive Werte erhöhen die effektive Stärke des Charakters. Negative Werte verringern die effektive Stärke des Charakters.</altpage>
 			</improvement>
 			<improvement>
 				<id>specificknowskill</id>
 				<name>Knowledge Skill</name>
 				<translate>Wissensfertigkeit</translate>
-				<altpage>Adjusts the value for one of the character's Knowledge Skills by the value entered. Positive numbers increase the Knowledge Skill. Negative numbers decrease the Knowledge Skill. Select a Knowledge Skill to affect by clicking the Select Value button. The modifier can be applied to the Knowledge Skill's Rating by selecting Apply to Rating, otherwise the modifier is applied as a dice pool modifier.</altpage>
+				<altpage>Passt den Wert für eine der Wissensfertigkeiten des Charakters um den eingegebenen Wert an. Positive Werte erhöhen die Wissensfertigkeit. Negative Werte verringern die Wissensfertigkeit. Wählen Sie eine zu beeinflussende Wissensfertigkeit aus, indem Sie auf die Schaltfläche "Wert wählen" klicken. Der Modifikator kann auf die Wissensfertigkeit angewendet werden, indem Sie "auf den Wert anwenden" wählen, andernfalls wird der Modifikator als Würfelpool-Modifikator verwendet.</altpage>
 			</improvement>
 			<improvement>
 				<id>ignorecmpenaltystun</id>
 				<name>Ignore Condition Monitor Penalty, Stun</name>
 				<translate>Ignoriere Zustandsmonitor-Abzüge, Betäubung</translate>
-				<altpage>Reduces the characters Stun Condition Monitor Penalty to 0 while the Improvement is active.</altpage>
+				<altpage>Verringert die Abzüge für den geistigen Zustandsmonitor des Charakters auf 0, während die Verbesserung aktiv ist.</altpage>
 			</improvement>
 			<improvement>
 				<id>ignorecmpenaltyphysical</id>
 				<name>Ignore Condition Monitor Penalty, Physical</name>
 				<translate>Ignoriere Zustandsmonitor-Abzüge, Körperlich</translate>
-				<altpage>Reduces the characters Physical Condition Monitor Penalty to 0 while the Improvement is active.</altpage>
+				<altpage>Verringert die Abzüge für den körperlichen Zustandsmonitor des Charakters auf 0, während die Verbesserung aktiv ist.</altpage>
 			</improvement>
 			<improvement>
 				<id>enableattribute</id>
 				<name>Enable Special Attribute</name>
-				<translate>Enable Special Attribute</translate>
-				<altpage>Unlocks the controls for an attribute, allowing the values to be increased. Expected values are MAG, RES or DEP for Magic, Resonance and Depth respectively.</altpage>
+				<translate>Aktiviere Spezialattribute</translate>
+				<altpage>Aktiviert die Kontrolle für ein Attribut, so dass dessen Wert erhöht werden kann. Die erwarteten Werte sind MAG, RES oder ESS für Magie, Resonanz und Essenz.</altpage>
 			</improvement>
 			<improvement>
 				<id>replaceattribute</id>
@@ -44735,44 +44735,44 @@
 			<improvement>
 				<id>blockskillgroupdefaulting</id>
 				<name>Block Skillgroup Defaulting</name>
-				<translate>Block Skillgroup Defaulting</translate>
-				<altpage>Prevents the character from seeing dicepool values for skills in the selected skillgroup.</altpage>
+				<translate>Würfelpoolanzeige verbergen</translate>
+				<altpage>Verbirgt die Anzeige von Würfelpoolwerten für den Charakter zuu gewählten Fertigkeitsgruppe.</altpage>
 			</improvement>
 			<improvement>
 				<id>attributelevel</id>
 				<name>Attribute Level</name>
 				<translate>Attributstufe</translate>
-				<altpage>Adds to the selected attribute's base Value, increasing Karma costs for subsequent purchases.</altpage>
+				<altpage>Erhöht den Basiswert des ausgewählten Attributs und erhöht die Karmakosten für Folgekosten.</altpage>
 			</improvement>
 			<improvement>
 				<id>skilllevel</id>
 				<name>Skill Level</name>
 				<translate>Fertigkeitsstufe</translate>
-				<altpage>Adds to the selected attribute's base Value, increasing Karma costs for subsequent purchases.</altpage>
+				<altpage>Erhöht den Basiswert des ausgewählten Attributs und erhöht die Karmakosten für Folgekosten.</altpage>
 			</improvement>
 			<improvement>
 				<id>knowsoft</id>
 				<name>KnowSoft</name>
-				<translate>KnowSoft</translate>
-				<altpage>Creates a Knowledge Skill that requires the skillsoftaccess improvement to be activated.</altpage>
+				<translate>Wissenssoft</translate>
+				<altpage>Legt eine Wissensfertigkeit an, die einen Wissenssoftzugang erfordert.</altpage>
 			</improvement>
 			<improvement>
 				<id>specificpower</id>
 				<name>Adept Power</name>
 				<translate>Adeptenkraft</translate>
-				<altpage>Creates a free Adept Power. If the selected power already exists, the power will either be marked as free, or have free levels added to it.</altpage>
+				<altpage>Erschafft eine kostenlose Adeptenkraft. Wenn die ausgewählte Kraft bereits vorhanden ist, wird sie entweder als kostenlos gekennzeichnet oder durch eine kostenlose Stufe ergänzt.</altpage>
 			</improvement>
 			<improvement>
 				<id>initiativediceadd</id>
 				<name>Initiative Dice</name>
 				<translate>Initiativwürfel</translate>
-				<altpage>Passt die Anzahl der Initiativewürfel für den Charakter um den eingegebenen Wert an. Positive Zahlen erhöhen die Anzahl der Initiativewürfel. Negative Zahlen reduzieren die Anzahl der Initiativewürfel.</altpage>
+				<altpage>Passt die Anzahl der Initiativewürfel für den Charakter um den eingegebenen Wert an. Positive Werte erhöhen die Anzahl der Initiativewürfel. Negative Werte reduzieren die Anzahl der Initiativewürfel.</altpage>
 			</improvement>
 			<improvement>
 				<id>matrixinitiativediceadd</id>
 				<name>Matrix Initiative Passes</name>
 				<translate>Matrix-Initiativedurchgänge</translate>
-				<altpage>Stellt die Anzahl der Matrix-Initiativedurchgänge entsprechen dem eingegebenen Wert ein. Positive Zahlen erhöhen die Anzahl der Matrix-Initiativedurchgänge. Negative Zahlen reduzieren die Anzahl der Matrix-Initiativedurchgänge.</altpage>
+				<altpage>Stellt die Anzahl der Matrix-Initiativedurchgänge entsprechen dem eingegebenen Wert ein. Positive Werte erhöhen die Anzahl der Matrix-Initiativedurchgänge. Negative Werte reduzieren die Anzahl der Matrix-Initiativedurchgänge.</altpage>
 			</improvement>
 			<improvement>
 				<id>streetcredmultiplier</id>
@@ -44790,7 +44790,7 @@
 				<id>armor</id>
 				<name>Armor</name>
 				<translate>Panzerung</translate>
-				<altpage>Passt den Panzerungswert des Charakters um den eingegebenen Wert an. Positive Zahlen verbessern die Panzerung. Negative Zahlen verringern die Panzerung.</altpage>
+				<altpage>Passt den Panzerungswert des Charakters um den eingegebenen Wert an. Positive Werte verbessern die Panzerung. Negative Werte verringern die Panzerung.</altpage>
 			</improvement>
 			<improvement>
 				<id>dodge</id>
