@@ -35,6 +35,8 @@ namespace ChummerHub.Client.UI
         private void SINnersAdvancedConstructor(SINnersUserControl parent)
         {
             InitializeComponent();
+            this.AutoSize = true;
+            this.cbSINnerUrl.SelectedIndex = 0;
             MySINnersUsercontrol = parent;
         }
 
@@ -113,6 +115,17 @@ namespace ChummerHub.Client.UI
         private void cmdDownloadChummerFile_Click(object sender, EventArgs e)
         {
             MySINnersUsercontrol.DownloadFileAsync();
+        }
+
+        private void tbSINnerUrl_TextChanged(object sender, EventArgs e)
+        {
+            this.MySINnersUsercontrol.Client = null;
+        }
+
+        private void cbSINnerUrl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.MySINnersUsercontrol != null)
+                this.MySINnersUsercontrol.Client = null;
         }
     }
 }

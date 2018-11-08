@@ -21,7 +21,7 @@ using System.IO;
 namespace ChummerHub.Controllers.V1
 {
     //[Route("api/v{version:apiVersion}/[controller]")]
-    [Route("api/v{api-version:apiVersion}/[controller]")]
+    [Route("api/v{api-version:apiVersion}/[controller]/[action]")]
     [ApiController]
     [ApiVersion("1.0")]
     [ControllerName("SINner")]
@@ -42,11 +42,11 @@ namespace ChummerHub.Controllers.V1
         [HttpGet]
         [AllowAnonymous]
         [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerListExample))]
-        public IEnumerable<SINner> GetSINnerFile()
+        public IEnumerable<SINner> Get()
         {
             try
             {
-                _logger.LogTrace("Getting GetSINnerFile");
+                _logger.LogTrace("Getting SINner");
                 var result = _context.SINners.OrderByDescending(a => a.UploadDateTime).Take(20);
                 result = _context.SINners.Include(sinner => sinner.SINnerMetaData)
                     .ThenInclude(meta => meta.Tags)
@@ -60,7 +60,7 @@ namespace ChummerHub.Controllers.V1
             }
             catch(Exception e)
             {
-                HubException hue = new HubException("Exception in GetSINnerfile: " + e.Message, e);
+                HubException hue = new HubException("Exception in GetSINner: " + e.Message, e);
                 throw hue;
             }
         }
@@ -70,7 +70,7 @@ namespace ChummerHub.Controllers.V1
         [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerExample))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> GetSINnerFile([FromRoute] Guid id)
+        public async Task<IActionResult> Get([FromRoute] Guid id)
         {
             try
             {
@@ -95,8 +95,6 @@ namespace ChummerHub.Controllers.V1
             }
         }
 
-        
-
         // PUT: api/ChummerFiles/5
         /// <summary>
         /// The Xml or Zip File can be uploaded (knowing the previously stored Id)
@@ -108,7 +106,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NoContent)]
-        public async Task<IActionResult> PutSINnerFile([FromRoute] Guid id, IFormFile uploadedFile)
+        public async Task<IActionResult> Put([FromRoute] Guid id, IFormFile uploadedFile)
         {
             try
             {
@@ -149,9 +147,9 @@ namespace ChummerHub.Controllers.V1
 
        
 
-        private async Task<IActionResult> PostSINnerInternal(SINner chummerFile)
+        private async Task<IActionResult> PostSINnerInternal(UploadInfoObject uploadInfo)
         {
-            _logger.LogTrace("Post SINnerInternalt: " + chummerFile + ".");
+            _logger.LogTrace("Post SINnerInternalt: " + uploadInfo + ".");
             try
             {
                 if (!ModelState.IsValid)
@@ -170,49 +168,87 @@ namespace ChummerHub.Controllers.V1
                     }
                     return new BadRequestObjectResult(new HubException(msg));
                 }
-
-                if (chummerFile.SINnerId.ToString() == "string")
-                    chummerFile.SINnerId = Guid.Empty;
-                if (chummerFile.UploadDateTime == null)
-                    chummerFile.UploadDateTime = DateTime.Now;
-
-                
-                if (SINnerFileExists(chummerFile.SINnerId.Value))
+                if (uploadInfo.UploadDateTime == null)
+                    uploadInfo.UploadDateTime = DateTime.Now;
+                if (uploadInfo.Client != null)
                 {
-                    await DeleteSINnerFile(chummerFile.SINnerId.Value);
+                    if (!UploadClientExists(uploadInfo.Client.UploadClientId))
+                    {
+                        _context.UploadClients.Add(uploadInfo.Client);
+                    }
+                    else
+                    {
+                        _context.Entry(uploadInfo.Client).CurrentValues.SetValues(uploadInfo.Client);
+                    }
                 }
-                _context.SINners.Add(chummerFile);
-                await _context.SaveChangesAsync();
+                foreach (var sinner in uploadInfo.SINners)
+                {
 
-                return CreatedAtAction("GetSINnerFile", new { id = chummerFile.SINnerId }, chummerFile);
+                    if (sinner.SINnerId.ToString() == "string")
+                        sinner.SINnerId = Guid.Empty;
+
+                    sinner.UploadClientId = uploadInfo.Client.UploadClientId;
+
+                    if (SINnerFileExists(sinner.SINnerId.Value))
+                    {
+                        _context.Entry(sinner).CurrentValues.SetValues(sinner);
+                        List<Tag> taglist = sinner.SINnerMetaData.Tags;
+                        UpdateEntityEntries(taglist);
+                    }
+                    else
+                    {
+                        _context.SINners.Add(sinner);
+                    }
+                }
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch(Exception e)
+                {
+                    HubException hue = new HubException("Exception in PostSINnerFile: " + e.Message, e);
+                    return Conflict(hue);
+                }
+                List<Guid> myids = (from a in uploadInfo.SINners select a.SINnerId.Value).ToList();
+                return CreatedAtAction("PutSINnerFile", new  { Ids = myids });
             }
             catch (Exception e)
             {
                 HubException hue = new HubException("Exception in PostSINnerFile: " + e.Message, e);
-                return new BadRequestObjectResult(hue);
+                return BadRequest(hue);
+            }
+        }
+
+        private void UpdateEntityEntries(List<Tag> taglist)
+        {
+            foreach (var item in taglist)
+            {
+                _context.Entry(item).CurrentValues.SetValues(item);
+                UpdateEntityEntries(item.Tags);
             }
         }
 
         // POST: api/ChummerFiles
         /// <summary>
-        /// Store the MetaData for a Chummerfile (to get a Id).
+        /// Store the MetaData for chummerfiles (to get a Id).
         /// This Id can be used to store the actual file with PUT afterwards.
         /// Alternativly, the DownloadUrl can be set directly from the Client.
         /// </summary>
-        /// <param name="chummerFile"></param>
+        /// <param name="uploadInfo"></param>
         /// <returns></returns>
         [HttpPost()]
         [AllowAnonymous]
-        [SwaggerRequestExample(typeof(SINner), typeof(SINnerExample))]
+        [SwaggerRequestExample(typeof(UploadInfoObject), typeof(UploadInfoObjectExample))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
         //[Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created, Type = typeof(SINner))]
 
-        public async Task<IActionResult> PostSINnerFile([FromBody] SINner sinnerData)
+        public async Task<IActionResult> Post([FromBody] UploadInfoObject uploadInfo)
         {
             
-            return await PostSINnerInternal(sinnerData);
+            return await PostSINnerInternal(uploadInfo);
         }
 
         // DELETE: api/ChummerFiles/5
@@ -220,7 +256,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
 
-        public async Task<IActionResult> DeleteSINnerFile([FromRoute] Guid id)
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             try
             {
@@ -256,6 +292,19 @@ namespace ChummerHub.Controllers.V1
             catch (Exception e)
             {
                 HubException hue = new HubException("Exception in SINnerFileExists: " + e.Message, e);
+                throw hue;
+            }
+        }
+
+        private bool UploadClientExists(Guid id)
+        {
+            try
+            {
+                return _context.UploadClients.Any(e => e.UploadClientId == id);
+            }
+            catch (Exception e)
+            {
+                HubException hue = new HubException("Exception in UploadClientExists: " + e.Message, e);
                 throw hue;
             }
         }

@@ -1607,7 +1607,6 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Device Rating string.
         /// </summary>
-        [HubTag]
         public string DeviceRating
         {
             get => _strDeviceRating;

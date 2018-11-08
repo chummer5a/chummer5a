@@ -14,11 +14,14 @@ namespace ChummerHub.Models.V1
 
         public Guid? SINnerCommentId { get; set; }
 
-        
         public Guid? SINnerId { get; set; }
 
         public DateTime MyDateTime { get; }
+
         public string Comment { get; set; }
+
         public string Email { get; set; }
+
+        public int Downloads { get; set; }
     }
 }

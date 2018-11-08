@@ -80,6 +80,7 @@ namespace Chummer
                     }
                 }
             }
+            
         }
 
         private void frmOptions_Load(object sender, EventArgs e)
@@ -98,6 +99,7 @@ namespace Chummer
             PopulateXsltList();
             SetDefaultValueForXsltList();
             PopulatePDFParameters();
+            
             _blnLoading = false;
         }
         #endregion
@@ -716,6 +718,7 @@ namespace Chummer
             nudNuyenPerBP.Value = _characterOptions.NuyenPerBP;
             txtSettingName.Enabled = cboSetting.SelectedValue?.ToString() != "default.xml";
             txtSettingName.Text = _characterOptions.Name;
+            
 
             int intNuyenDecimalPlacesMaximum = 0;
             int intNuyenDecimalPlacesAlways = 0;
@@ -818,6 +821,7 @@ namespace Chummer
             GlobalOptions.CreateBackupOnCareer = chkCreateBackupOnCareer.Checked;
             GlobalOptions.DefaultBuildMethod = cboBuildMethod.SelectedValue?.ToString() ?? GlobalOptions.DefaultBuildMethodDefaultValue;
             GlobalOptions.DefaultGameplayOption = XmlManager.Load("gameplayoptions.xml", _strSelectedLanguage).SelectSingleNode("/chummer/gameplayoptions/gameplayoption[id = \"" + cboDefaultGameplayOption.SelectedValue?.ToString() + "\"]/name")?.InnerText ?? GlobalOptions.DefaultGameplayOptionDefaultValue;
+            GlobalOptions.PluginsEnabled = chkEnablePlugins.Enabled;
         }
 
         /// <summary>
@@ -851,7 +855,12 @@ namespace Chummer
                 objRegistry.SetValue("characterrosterpath", txtCharacterRosterPath.Text);
                 objRegistry.SetValue("hidecharacterroster", chkHideCharacterRoster.Checked);
                 objRegistry.SetValue("createbackuponcareer", chkCreateBackupOnCareer.Checked);
+                objRegistry.SetValue("pluginsenabled", chkEnablePlugins.Checked);
 
+                // Save enabled Plugins
+                string jsonstring = Newtonsoft.Json.JsonConvert.SerializeObject(GlobalOptions.PluginsEnabledDic);
+                objRegistry.SetValue("plugins", jsonstring);
+                
                 // Save the SourcebookInfo.
                 RegistryKey objSourceRegistry = objRegistry.CreateSubKey("Sourcebook");
                 if (objSourceRegistry != null)
@@ -1348,6 +1357,8 @@ namespace Chummer
             txtCharacterRosterPath.Text = GlobalOptions.CharacterRosterPath;
             chkHideCharacterRoster.Checked = GlobalOptions.HideCharacterRoster;
             chkCreateBackupOnCareer.Checked = GlobalOptions.CreateBackupOnCareer;
+            chkEnablePlugins.Checked = GlobalOptions.PluginsEnabled;
+            PluginsShowOrHide(chkEnablePlugins.Checked);
         }
 
         private static IList<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
@@ -1797,6 +1808,66 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+        }
+
+        private void chkEnablePlugins_CheckedChanged(object sender, EventArgs e)
+        {
+            PluginsShowOrHide(chkEnablePlugins.Checked);
+            OptionsChanged(sender, e);
+        }
+
+        private void PluginsShowOrHide(bool show)
+        {
+            if (show)
+            {
+                if (!tabOptions.TabPages.Contains(tabPlugins))
+                    tabOptions.TabPages.Add(tabPlugins);
+            }
+            else
+            {
+                if (tabOptions.TabPages.Contains(tabPlugins))
+                    tabOptions.TabPages.Remove(tabPlugins);
+            }
+        }
+
+        private void clbPlugins_VisibleChanged(object sender, EventArgs e)
+        {
+            clbPlugins.Items.Clear();
+            if (Program.MainForm?.PluginLoader?.MyPlugins?.Any() == true)
+            {
+                foreach(var plugin in Program.MainForm.PluginLoader.MyPlugins)
+                {
+                    bool check = false;
+                    if (GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out check))
+                    {
+                        clbPlugins.Items.Add(plugin, check);
+                    }
+                    else
+                    {
+                        clbPlugins.Items.Add(plugin);
+                    }
+                }
+            }
+        }
+
+        private void clbPlugins_SelectedValueChanged(object sender, EventArgs e)
+        {
+            UserControl pluginControl = (clbPlugins.SelectedItem as Plugins.IPlugin).GetOptionsControl();
+            panelPluginOption.Controls.Clear();
+            panelPluginOption.Controls.Add(pluginControl);
+        }
+
+        private void clbPlugins_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            var plugin = clbPlugins.Items[e.Index];
+            if (GlobalOptions.PluginsEnabledDic.ContainsKey(plugin.ToString()))
+                GlobalOptions.PluginsEnabledDic.Remove(plugin.ToString());
+            if (e.NewValue == CheckState.Checked)
+                GlobalOptions.PluginsEnabledDic.Add(plugin.ToString(), true);
+            else
+                GlobalOptions.PluginsEnabledDic.Add(plugin.ToString(), false);
+            OptionsChanged(sender, e);
+            
         }
     }
 }

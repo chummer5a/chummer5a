@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -5,12 +6,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
-
+using System.Xml.Serialization;
 
 namespace ChummerHub.Models.V1
 {
    
-    public class ChummerUploadClient
+    public class UploadClient
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -21,7 +22,7 @@ namespace ChummerHub.Models.V1
 
         public string ClientSecret { get; set; }
 
-        public ChummerUploadClient()
+        public UploadClient()
         {
             this.UploadClientId = Guid.Empty;
             this.ChummerVersion = new Version().ToString();
@@ -29,5 +30,7 @@ namespace ChummerHub.Models.V1
         }
 
         public string UserEmail { get; set; }
+
+        
     }
 }

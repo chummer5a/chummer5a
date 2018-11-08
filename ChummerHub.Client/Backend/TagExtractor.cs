@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -34,7 +35,6 @@ namespace ChummerHub.Client.Backend
         /// <param name="obj"></param>
         /// <param name="parenttag"></param>
         /// <returns>A list of Tags (that may have a lot of child-Tags as well).</returns>
-
         internal static IList<Tag> ExtractTagsFromAttributes(Object obj, Tag parenttag)
         {
             List<Tag> resulttags = new List<Tag>();
@@ -155,6 +155,7 @@ namespace ChummerHub.Client.Backend
                 tag.TagName = prop.Item1.Name;
             else
                 tag.TagName = prop.Item3.ToString();
+
             Type t = prop.Item3.GetType();
             if (!String.IsNullOrEmpty(attribute.TagNameFromProperty))
             {

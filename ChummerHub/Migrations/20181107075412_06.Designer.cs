@@ -4,14 +4,16 @@ using ChummerHub.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ChummerHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181107075412_06")]
+    partial class _06
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,18 +21,34 @@ namespace ChummerHub.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("ChummerHub.Models.V1.ChummerUploadClient", b =>
+                {
+                    b.Property<Guid>("UploadClientId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ChummerVersion");
+
+                    b.Property<string>("ClientSecret");
+
+                    b.Property<string>("UserEmail");
+
+                    b.HasKey("UploadClientId");
+
+                    b.ToTable("ChummerUploadClients");
+                });
+
             modelBuilder.Entity("ChummerHub.Models.V1.SINner", b =>
                 {
                     b.Property<Guid?>("SINnerId")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<Guid?>("ChummerUploadClientId");
 
                     b.Property<string>("DownloadUrlInternal");
 
                     b.Property<string>("GoogleDriveFileId");
 
                     b.Property<Guid?>("SINnerMetaDataId");
-
-                    b.Property<Guid>("UploadClientId");
 
                     b.Property<DateTime?>("UploadDateTime");
 
@@ -40,8 +58,6 @@ namespace ChummerHub.Migrations
                         .IsUnique();
 
                     b.HasIndex("SINnerMetaDataId");
-
-                    b.HasIndex("UploadClientId");
 
                     b.ToTable("SINners");
                 });
@@ -111,22 +127,6 @@ namespace ChummerHub.Migrations
                     b.HasIndex("TagName", "TagValue");
 
                     b.ToTable("Tag");
-                });
-
-            modelBuilder.Entity("ChummerHub.Models.V1.UploadClient", b =>
-                {
-                    b.Property<Guid>("UploadClientId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("ChummerVersion");
-
-                    b.Property<string>("ClientSecret");
-
-                    b.Property<string>("UserEmail");
-
-                    b.HasKey("UploadClientId");
-
-                    b.ToTable("UploadClients");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

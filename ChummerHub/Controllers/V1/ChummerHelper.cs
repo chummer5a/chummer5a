@@ -12,11 +12,12 @@ using Swashbuckle.AspNetCore.Filters;
 using System.Net;
 using System.IO;
 using ChummerHub.API;
+using ChummerHub.Models.V1.Examples;
 
 namespace ChummerHub.Controllers.V1
 {
     [ApiController]
-    [Route("api/v{api-version:apiVersion}/[controller]")]
+    [Route("api/v{api-version:apiVersion}/[controller]/[action]")]
     [ApiVersion("1.0")]
     [ControllerName("ChummerHelper")]
     [AllowAnonymous]
@@ -34,12 +35,6 @@ namespace ChummerHub.Controllers.V1
             _context = context;
         }
 
-        //[HttpGet("{id}")]
-        //public bool SINnerExists(Guid? id)
-        //{
-        //    return _context.SINners.Any(e => e.SINnerId == id);
-        //}
-
         // GET: api/ChummerFiles/5
         //[Route("download")]
         //[SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerExample))]
@@ -48,8 +43,8 @@ namespace ChummerHub.Controllers.V1
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetChummerFile([FromRoute] Guid id)
+        [HttpGet("{sinnerid}")]
+        public async Task<IActionResult> Get([FromRoute] Guid sinnerid)
         {
             try
             {
@@ -58,7 +53,7 @@ namespace ChummerHub.Controllers.V1
                     return BadRequest(ModelState);
                 }
 
-                var chummerFile = await _context.SINners.FindAsync(id);
+                var chummerFile = await _context.SINners.FindAsync(sinnerid);
 
                 if (chummerFile == null)
                 {
@@ -89,25 +84,8 @@ namespace ChummerHub.Controllers.V1
             }
         }
 
-        //// POST: api/ChummerFiles
-        //[HttpPost()]
-        //[AllowAnonymous]
-        //[Route("upload")]
-        ////[SwaggerRequestExample(typeof(SINner), typeof(SINnerExample))]
-        ////[Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created, Type = typeof(SINner))]
-
-        //public void PostFile(IFormFile uploadedFile)
-        //{
-        //    using (var fileStream = System.IO.File.Create("temp"))
-        //    {
-        //        using (var stream = uploadedFile.OpenReadStream())
-        //        {
-        //            stream.Seek(0, SeekOrigin.Begin);
-        //            stream.CopyTo(fileStream);
-        //        }
-
-        //    }
-        //}
+        
+       
     }
 
 }

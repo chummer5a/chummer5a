@@ -16,7 +16,7 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace ChummerHub.Controllers.V1
 {
-    [Route("api/v{api-version:apiVersion}/[controller]")]
+    [Route("api/v{api-version:apiVersion}/[controller]/[action]")]
     [ApiController]
     [ApiVersion("1.0")]
     [ControllerName("SINSearch")]
@@ -33,13 +33,13 @@ namespace ChummerHub.Controllers.V1
         }
 
         // GET: api/ChummerFiles
-        [HttpGet]
+        [HttpGet()]
         [AllowAnonymous]
         [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerListExample))]
         [SwaggerRequestExample(typeof(SearchTag), typeof(SINnerSearchExample))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
-        public IEnumerable<SINner> SearchSINnerFile(SearchTag searchTag)
+        public IEnumerable<SINner> Search(SearchTag searchTag)
         {
             try
             {

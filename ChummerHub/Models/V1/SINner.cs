@@ -20,21 +20,28 @@ namespace ChummerHub.Models.V1
 
         public Guid? SINnerId { get; set; }
 
+        [NotMapped]
         public string DownloadUrl { get; set; }
+
+        [JsonIgnore]
+        [XmlIgnore]
+        public string DownloadUrlInternal { get; set; }
 
         public DateTime? UploadDateTime { get; set; }
 
-        public ChummerUploadClient ChummerUploadClient { get; set; }
+        [JsonIgnore]
+        [XmlIgnore]
+        public Guid UploadClientId { get; set; }
 
         public SINnerMetaData SINnerMetaData { get; set; }
 
+        [JsonIgnore]
+        [XmlIgnore]
         public string GoogleDriveFileId { get; set; }
 
         public SINner()
         {
             SINnerId = Guid.NewGuid();
-            this.ChummerUploadClient = new ChummerUploadClient();
-            this.UploadDateTime = DateTime.Now;
             this.SINnerMetaData = new SINnerMetaData();
         }
     }

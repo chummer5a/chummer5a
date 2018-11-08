@@ -22,8 +22,12 @@ namespace Chummer.Plugins
         IEnumerable<TabPage> GetTabPages(frmCreate input);
         IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem menu);
 
+        UserControl GetOptionsControl();
+
         string GetSaveToFileElement(Character input);
         void LoadFileElement(Character input, string fileElement);
+
+        void SetIsUnitTest(bool isUnitTest);
 
         Assembly GetPluginAssembly();
     }
@@ -46,6 +50,10 @@ namespace Chummer.Plugins
           
             StartWatch();
             container.ComposeParts(this);
+            foreach (var plugin in MyPlugins)
+            {
+                plugin.SetIsUnitTest(Utils.IsUnitTest);
+            }
         }
 
         [ImportMany(typeof(IPlugin))]

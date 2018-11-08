@@ -17,6 +17,7 @@ using ChummerHub.Client.Backend;
 using System.Composition;
 using Chummer.Plugins;
 using System.IO;
+using SINners.Models;
 
 namespace ChummerHub.Client.UI
 {
@@ -45,7 +46,7 @@ namespace ChummerHub.Client.UI
         public Character CharacterObject => MySINner.CharacterObject;
 
         private SINnersClient _client = null;
-        public SINnersClient client
+        public SINnersClient Client
         {
             get
             {
@@ -55,10 +56,8 @@ namespace ChummerHub.Client.UI
                     {
                         ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
                         ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-
                         ServiceClientCredentials credentials = new TokenCredentials("Bearer");
-                        Uri baseUri = new Uri("https://sinners.azurewebsites.net");
-                        //Uri baseUri = new Uri("https://localhost:5001");
+                        Uri baseUri = new Uri(TabSINnersAdvanced.cbSINnerUrl.SelectedItem.ToString());
                         ServiceClientCredentials creds = new Backend.ApiKeyCredentials();
                         DelegatingHandler delegatingHandler = new MyMessageHandler();
                         _client = new SINnersClient(baseUri, creds, delegatingHandler);
@@ -72,21 +71,28 @@ namespace ChummerHub.Client.UI
                 }
                 return _client;
             }
+            set
+            {
+                _client = value;
+            }
+
         }
 
         public SINnersUserControl SetCharacterFrom(CharacterShared mySINner)
         {
             _mySINner = mySINner;
-            
-            MyCharacterExtended.PopulateTags();
-            MyCharacterExtended.PrepareModel();
             TabSINnersBasic = new SINnersBasic(this);
             TabSINnersBasic.Visible = true;
             TabSINnersAdvanced = new SINnersAdvanced(this);
             TabSINnersAdvanced.Visible = true;
+            MyCharacterExtended.PopulateTags();
+            MyCharacterExtended.ZipFilePath = MyCharacterExtended.PrepareModel();
             InitializeComponent();
             this.tabPageBasic.Controls.Add(TabSINnersBasic);
             this.tabPageAdvanced.Controls.Add(TabSINnersAdvanced);
+           
+            this.AutoSize = true;
+          
             return this;
         }
 
@@ -94,8 +100,13 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                var response = await client.ApiV1SINnerPostWithHttpMessagesAsync(MyCharacterExtended.MySINnerFile);
-                if (response.Response.StatusCode == HttpStatusCode.BadRequest)
+                UploadInfoObject uploadInfoObject = new UploadInfoObject();
+                uploadInfoObject.Client = PluginHandler.MyUploadClient;
+                uploadInfoObject.UploadDateTime = DateTime.Now;
+                uploadInfoObject.SiNners = new List<SINner>() { MyCharacterExtended.MySINnerFile };
+                var response = await Client.ApiV1SINnerPostPostWithHttpMessagesAsync(uploadInfoObject);
+                if (response.Response.StatusCode == HttpStatusCode.BadRequest
+                    || response.Response.StatusCode == HttpStatusCode.Conflict)
                 {
                     var errorMessage = response.Response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                     string msg = "Answer from WebService BadRequest: " + Environment.NewLine + Environment.NewLine + errorMessage;
@@ -113,10 +124,11 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                MyCharacterExtended.MyCharacter.Save();
-                using (FileStream fs = new FileStream(MyCharacterExtended.MyCharacter.FileName, FileMode.Open, FileAccess.Read))
+                if (String.IsNullOrEmpty(MyCharacterExtended.ZipFilePath))
+                    MyCharacterExtended.ZipFilePath = MyCharacterExtended.PrepareModel();
+                using (FileStream fs = new FileStream(MyCharacterExtended.ZipFilePath, FileMode.Open, FileAccess.Read))
                 {
-                    client.ApiV1SINnerByIdPutAsync(MyCharacterExtended.MySINnerFile.SiNnerId.Value, fs);
+                    Client.ApiV1SINnerPutByIdPutAsync(MyCharacterExtended.MySINnerFile.SiNnerId.Value, fs);
                 }
             }
             catch (Exception ex)
@@ -131,7 +143,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                var response =  await client.ApiV1ChummerHelperByIdGetWithHttpMessagesAsync(MyCharacterExtended.MySINnerFile.SiNnerId.Value);
+                var response =  await Client.ApiV1ChummerHelperGetBySinneridGetWithHttpMessagesAsync(MyCharacterExtended.MySINnerFile.SiNnerId.Value);
                 var content = await response.Response.Content.ReadAsStringAsync();
             }
             catch (Exception ex)
@@ -146,7 +158,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                    await client.ApiV1SINnerByIdDeleteAsync(MyCharacterExtended.MySINnerFile.SiNnerId.Value);
+                    await Client.ApiV1SINnerDeleteByIdDeleteAsync(MyCharacterExtended.MySINnerFile.SiNnerId.Value);
             }
             catch (Exception ex)
             {
@@ -155,6 +167,6 @@ namespace ChummerHub.Client.UI
             }
         }
 
-
+  
     }
 }

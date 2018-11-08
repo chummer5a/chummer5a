@@ -8,6 +8,8 @@ using System.Xml;
 
 namespace ChummerHub.Models.V1.Examples
 {
+
+ 
     public class SINnerExample : IExamplesProvider
     {
         public SINnerExample()
@@ -27,13 +29,7 @@ namespace ChummerHub.Models.V1.Examples
             var sin =  new SINner
             {
                 SINnerId = Guid.NewGuid(),
-                ChummerUploadClient = new ChummerUploadClient()
-                {
-                    UploadClientId = Guid.Empty,
-                    ChummerVersion = new Version().ToString(),
-                    ClientSecret = "42"
-                },
-                UploadDateTime = DateTime.Now,                
+                 UploadClientId = Guid.NewGuid()
             };
             sin.SINnerMetaData = new SINnerMetaData()
             {
@@ -63,24 +59,6 @@ namespace ChummerHub.Models.V1.Examples
                 }
             };
             sin.SINnerMetaData.Tags.Add(parenttag);
-
-            //try
-            //{
-            //    var assembly = typeof(SINnerExample).Assembly;
-            //    using (Stream resource = assembly.GetManifestResourceStream("ChummerHub.Models.V1.Examples.B64Barrett.txt"))
-            //    {
-            //        using (StreamReader reader = new StreamReader(resource))
-            //        {
-            //            string b64 = reader.ReadToEnd();
-            //            sin.Base64EncodedXmlFile = b64;
-            //        }
-
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    sin.Base64EncodedXmlFile = e.ToString();
-            //}
 
             return sin;
         }

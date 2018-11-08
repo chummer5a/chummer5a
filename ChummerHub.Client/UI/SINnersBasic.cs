@@ -35,6 +35,7 @@ namespace ChummerHub.Client.UI
         private void SINnersBasicConstructor(SINnersUserControl parent)
         {
             InitializeComponent();
+            this.AutoSize = true;
             myUC = parent;
             CheckSINnerStatus();
         }
@@ -43,7 +44,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                var response = await myUC.client.ApiV1SINnerByIdGetWithHttpMessagesAsync(myUC.MyCharacterExtended.MySINnerFile.SiNnerId.Value);
+                var response = await myUC.Client.ApiV1SINnerGetByIdGetWithHttpMessagesAsync(myUC.MyCharacterExtended.MySINnerFile.SiNnerId.Value);
                 if (response.Response.StatusCode == HttpStatusCode.OK)
                 {
                     this.bUpload.Text = "Remove from SINners";

@@ -22,6 +22,8 @@ namespace ChummerHub.Data
                 .HasIndex(b => b.SINnerId).IsUnique();
             modelBuilder.Entity<ChummerHub.Models.V1.SINnerComment>()
                 .HasIndex(b => b.SINnerId);
+            modelBuilder.Entity<ChummerHub.Models.V1.SINner>()
+                .HasIndex(b => b.UploadClientId);
             modelBuilder.Entity<ChummerHub.Models.V1.Tag>()
                 .HasIndex(b => b.TagId).IsUnique();
             modelBuilder.Entity<ChummerHub.Models.V1.Tag>()
@@ -32,5 +34,10 @@ namespace ChummerHub.Data
         }
 
         public DbSet<ChummerHub.Models.V1.SINner> SINners { get; set; }
+
+        public DbSet<ChummerHub.Models.V1.UploadClient> UploadClients { get; set; }
+
+        public DbSet<ChummerHub.Models.V1.SINnerComment> SINnerComments { get; set; }
+
     }
 }

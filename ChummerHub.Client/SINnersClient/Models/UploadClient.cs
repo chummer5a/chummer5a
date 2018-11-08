@@ -11,17 +11,17 @@ namespace SINners.Models
     using Microsoft.Rest;
     using Microsoft.Rest.Serialization;
 
-    public partial class ChummerUploadClient
+    public partial class UploadClient
     {
         /// <summary>
-        /// Initializes a new instance of the ChummerUploadClient class.
+        /// Initializes a new instance of the UploadClient class.
         /// </summary>
-        public ChummerUploadClient() { }
+        public UploadClient() { }
 
         /// <summary>
-        /// Initializes a new instance of the ChummerUploadClient class.
+        /// Initializes a new instance of the UploadClient class.
         /// </summary>
-        public ChummerUploadClient(Guid? uploadClientId = default(Guid?), string chummerVersion = default(string), string clientSecret = default(string), string userEmail = default(string))
+        public UploadClient(Guid? uploadClientId = default(Guid?), string chummerVersion = default(string), string clientSecret = default(string), string userEmail = default(string))
         {
             UploadClientId = uploadClientId;
             ChummerVersion = chummerVersion;

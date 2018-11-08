@@ -41,6 +41,7 @@
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Composition.AttributedModel, Version=1.0.33.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Composition.AttributedModel.1.2.0\lib\portable-net45+win8+wp8+wpa81\System.Composition.AttributedModel.dll</HintPath>
@@ -58,6 +59,10 @@
       <HintPath>..\packages\System.Composition.TypedParts.1.2.0\lib\portable-net45+win8+wp8+wpa81\System.Composition.TypedParts.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression.ZipFile, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.netcore.app\2.1.0\ref\netcoreapp2.1\System.IO.Compression.ZipFile.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Runtime" />
@@ -91,13 +96,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="SINnersClient\ISINnersClient.cs" />
-    <Compile Include="SINnersClient\Models\ChummerUploadClient.cs" />
     <Compile Include="SINnersClient\Models\IFormFile.cs" />
     <Compile Include="SINnersClient\Models\SearchTag.cs" />
     <Compile Include="SINnersClient\Models\SINner.cs" />
-    <Compile Include="SINnersClient\Models\SINnerComment.cs" />
     <Compile Include="SINnersClient\Models\SINnerMetaData.cs" />
     <Compile Include="SINnersClient\Models\Tag.cs" />
+    <Compile Include="SINnersClient\Models\UploadClient.cs" />
+    <Compile Include="SINnersClient\Models\UploadInfoObject.cs" />
     <Compile Include="SINnersClient\SINnersClient.cs" />
     <Compile Include="SINnersClient\SINnersClientExtensions.cs" />
     <Compile Include="UI\frmSINnerSearch.cs">
@@ -118,6 +123,12 @@
     </Compile>
     <Compile Include="UI\SINnersBasic.Designer.cs">
       <DependentUpon>SINnersBasic.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SINnersOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SINnersOptions.Designer.cs">
+      <DependentUpon>SINnersOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\SINnersUserControl.cs">
       <SubType>UserControl</SubType>
@@ -146,6 +157,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SINnersBasic.resx">
       <DependentUpon>SINnersBasic.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SINnersOptions.resx">
+      <DependentUpon>SINnersOptions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SINnersUserControl.resx">
       <DependentUpon>SINnersUserControl.cs</DependentUpon>

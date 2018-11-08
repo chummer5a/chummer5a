@@ -1,8 +1,10 @@
 using Chummer;
 using Chummer.Plugins;
+using ChummerHub.Client.Backend;
 using ChummerHub.Client.Model;
 using ChummerHub.Client.UI;
 using Newtonsoft.Json;
+using SINners.Models;
 using System;
 using System.Collections.Generic;
 using System.Composition;
@@ -11,6 +13,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
@@ -24,10 +27,25 @@ namespace Chummer.Plugins
     {
         public static CharacterExtended MyCharacterExtended = null;
 
+        public static UploadClient MyUploadClient = null;
+
         [ImportingConstructor]
         public PluginHandler()
         {
             System.Diagnostics.Trace.TraceInformation("Plugin ChummerHub.Client importing (Constructor).");
+            MyUploadClient = new UploadClient();
+            if (Properties.Settings.Default.UploadClientId == Guid.Empty)
+            {
+                Properties.Settings.Default.UploadClientId = Guid.NewGuid();
+                Properties.Settings.Default.Save();
+            }
+
+            MyUploadClient.UploadClientId = Properties.Settings.Default.UploadClientId;
+        }
+
+        public override string ToString()
+        {
+            return "SINners (Cloud)";
         }
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCareer input)
@@ -88,6 +106,21 @@ namespace Chummer.Plugins
         public Assembly GetPluginAssembly()
         {
             return typeof(SINnersUserControl).Assembly;
+        }
+
+        public void SetIsUnitTest(bool isUnitTest)
+        {
+            StaticUtils.MyUtils.IsUnitTest = isUnitTest;
+            if (!StaticUtils.MyUtils.IsUnitTest)
+                MyUploadClient.ChummerVersion = System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString();
+            else
+                MyUploadClient.ChummerVersion = System.Reflection.Assembly.GetCallingAssembly().GetName().Version.ToString();
+
+        }
+
+        public System.Windows.Forms.UserControl GetOptionsControl()
+        {
+            return new SINnersOptions();
         }
     }
 }

@@ -35,6 +35,8 @@ namespace ChummerHub.Client.UI
             this.cmdPostSINnerMetadata = new System.Windows.Forms.Button();
             this.cmdUploadChummerFile = new System.Windows.Forms.Button();
             this.cmdDownloadChummerFile = new System.Windows.Forms.Button();
+            this.labelSINnerUrl = new System.Windows.Forms.Label();
+            this.cbSINnerUrl = new System.Windows.Forms.ComboBox();
             this.groupBox_Tags.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -58,7 +60,7 @@ namespace ChummerHub.Client.UI
             // 
             // cmdPopulateTags
             // 
-            this.cmdPopulateTags.Location = new System.Drawing.Point(322, 16);
+            this.cmdPopulateTags.Location = new System.Drawing.Point(322, 46);
             this.cmdPopulateTags.Name = "cmdPopulateTags";
             this.cmdPopulateTags.Size = new System.Drawing.Size(93, 23);
             this.cmdPopulateTags.TabIndex = 2;
@@ -68,7 +70,7 @@ namespace ChummerHub.Client.UI
             // 
             // cmdPrepareModel
             // 
-            this.cmdPrepareModel.Location = new System.Drawing.Point(323, 46);
+            this.cmdPrepareModel.Location = new System.Drawing.Point(323, 76);
             this.cmdPrepareModel.Name = "cmdPrepareModel";
             this.cmdPrepareModel.Size = new System.Drawing.Size(92, 23);
             this.cmdPrepareModel.TabIndex = 3;
@@ -78,7 +80,7 @@ namespace ChummerHub.Client.UI
             // 
             // cmdPostSINnerMetadata
             // 
-            this.cmdPostSINnerMetadata.Location = new System.Drawing.Point(323, 76);
+            this.cmdPostSINnerMetadata.Location = new System.Drawing.Point(323, 106);
             this.cmdPostSINnerMetadata.Name = "cmdPostSINnerMetadata";
             this.cmdPostSINnerMetadata.Size = new System.Drawing.Size(92, 23);
             this.cmdPostSINnerMetadata.TabIndex = 4;
@@ -88,7 +90,7 @@ namespace ChummerHub.Client.UI
             // 
             // cmdUploadChummerFile
             // 
-            this.cmdUploadChummerFile.Location = new System.Drawing.Point(323, 106);
+            this.cmdUploadChummerFile.Location = new System.Drawing.Point(323, 136);
             this.cmdUploadChummerFile.Name = "cmdUploadChummerFile";
             this.cmdUploadChummerFile.Size = new System.Drawing.Size(92, 23);
             this.cmdUploadChummerFile.TabIndex = 5;
@@ -98,7 +100,7 @@ namespace ChummerHub.Client.UI
             // 
             // cmdDownloadChummerFile
             // 
-            this.cmdDownloadChummerFile.Location = new System.Drawing.Point(323, 136);
+            this.cmdDownloadChummerFile.Location = new System.Drawing.Point(323, 166);
             this.cmdDownloadChummerFile.Name = "cmdDownloadChummerFile";
             this.cmdDownloadChummerFile.Size = new System.Drawing.Size(92, 23);
             this.cmdDownloadChummerFile.TabIndex = 6;
@@ -106,10 +108,37 @@ namespace ChummerHub.Client.UI
             this.cmdDownloadChummerFile.UseVisualStyleBackColor = true;
             this.cmdDownloadChummerFile.Click += new System.EventHandler(this.cmdDownloadChummerFile_Click);
             // 
+            // labelSINnerUrl
+            // 
+            this.labelSINnerUrl.AutoSize = true;
+            this.labelSINnerUrl.Location = new System.Drawing.Point(325, 23);
+            this.labelSINnerUrl.Name = "labelSINnerUrl";
+            this.labelSINnerUrl.Size = new System.Drawing.Size(23, 13);
+            this.labelSINnerUrl.TabIndex = 7;
+            this.labelSINnerUrl.Text = "Url:";
+            this.labelSINnerUrl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // cbSINnerUrl
+            // 
+            this.cbSINnerUrl.FormattingEnabled = true;
+            this.cbSINnerUrl.Items.AddRange(new object[] {
+            "https://sinners.azurewebsites.net/",
+            "https://localhost:5001/"});
+            this.cbSINnerUrl.Location = new System.Drawing.Point(354, 19);
+            this.cbSINnerUrl.Name = "cbSINnerUrl";
+            this.cbSINnerUrl.Size = new System.Drawing.Size(294, 21);
+            this.cbSINnerUrl.TabIndex = 9;
+            this.cbSINnerUrl.SelectedIndexChanged += new System.EventHandler(this.cbSINnerUrl_SelectedIndexChanged);
+            // 
             // SINnersAdvanced
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Controls.Add(this.cbSINnerUrl);
+            this.Controls.Add(this.labelSINnerUrl);
             this.Controls.Add(this.cmdDownloadChummerFile);
             this.Controls.Add(this.cmdUploadChummerFile);
             this.Controls.Add(this.cmdPostSINnerMetadata);
@@ -117,9 +146,10 @@ namespace ChummerHub.Client.UI
             this.Controls.Add(this.cmdPopulateTags);
             this.Controls.Add(this.groupBox_Tags);
             this.Name = "SINnersAdvanced";
-            this.Size = new System.Drawing.Size(658, 549);
+            this.Size = new System.Drawing.Size(651, 449);
             this.groupBox_Tags.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -132,5 +162,7 @@ namespace ChummerHub.Client.UI
         private System.Windows.Forms.TreeView MyTagTreeView;
         private System.Windows.Forms.Button cmdUploadChummerFile;
         private System.Windows.Forms.Button cmdDownloadChummerFile;
+        private System.Windows.Forms.Label labelSINnerUrl;
+        public System.Windows.Forms.ComboBox cbSINnerUrl;
     }
 }

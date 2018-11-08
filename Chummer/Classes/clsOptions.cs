@@ -181,6 +181,7 @@ namespace Chummer
         private static bool _blnLiveUpdateCleanCharacterFiles;
         private static bool _blnHideCharacterRoster;
         private static bool _blnCreateBackupOnCareer;
+        private static bool _blnPluginsEnabled;
         private static string _strDefaultBuildMethod = DefaultBuildMethodDefaultValue;
         private static string _strDefaultGameplayOption = DefaultGameplayOptionDefaultValue;
 
@@ -207,6 +208,10 @@ namespace Chummer
         private static string _strOmaeUserName = string.Empty;
         private static string _strOmaePassword = string.Empty;
         private static bool _blnOmaeAutoLogin;
+
+        // Plugins information
+        private static Dictionary<string, bool> _pluginsEnabledDic = new Dictionary<string, bool>();
+        public static Dictionary<string, bool> PluginsEnabledDic {  get { return _pluginsEnabledDic; } }
 
         // PDF information.
         private static string _strPDFAppPath = string.Empty;
@@ -455,6 +460,14 @@ namespace Chummer
             // Folder path to check for characters.
             LoadStringFromRegistry(ref _strCharacterRosterPath, "characterrosterpath");
 
+            // Which Plugins are enabled.
+            LoadBoolFromRegistry(ref _blnPluginsEnabled, "pluginsenabled");
+            
+            string jsonstring = "";
+            LoadStringFromRegistry(ref jsonstring, "plugins");
+            if (!String.IsNullOrEmpty(jsonstring))
+                _pluginsEnabledDic =  Newtonsoft.Json.JsonConvert.DeserializeObject < Dictionary<string, bool>>(jsonstring);
+
             // Prefer Nightly Updates.
             LoadBoolFromRegistry(ref _blnPreferNightlyUpdates, "prefernightlybuilds");
 
@@ -494,6 +507,16 @@ namespace Chummer
         {
             get => _blnCreateBackupOnCareer;
             set => _blnCreateBackupOnCareer = value;
+        }
+
+        
+        /// <summary>
+        /// Should the Plugins-Directory be loaded and the tabPlugins be shown?
+        /// </summary>
+        public static bool PluginsEnabled
+        {
+            get => _blnPluginsEnabled;
+            set => _blnPluginsEnabled = value;
         }
 
         /// <summary>

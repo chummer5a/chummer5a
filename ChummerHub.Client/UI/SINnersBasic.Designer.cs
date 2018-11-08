@@ -119,9 +119,12 @@ namespace ChummerHub.Client.UI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.tabLayoutPanel);
             this.Name = "SINnersBasic";
-            this.Size = new System.Drawing.Size(420, 303);
+            this.Size = new System.Drawing.Size(423, 306);
             this.tabLayoutPanel.ResumeLayout(false);
             this.tabLayoutPanel.PerformLayout();
             this.ResumeLayout(false);
