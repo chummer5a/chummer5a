@@ -44405,13 +44405,13 @@
 			<improvement>
 				<id>conditionmonitorthreshold</id>
 				<name>Condition Monitor, Threshold</name>
-				<translate>Zustandsmonitor, Threshold</translate>
+				<translate>Zustandsmonitor, Schwellenwert</translate>
 				<altpage>Stellt die Anzahl der Kästchen zwischen den einzelnen Schwellenwerten des Zustandsmonitors ein. Positive Werte erhöhen die Anzahl der Felder zwischen den einzelnen Schwellenwerten. Negative Werte reduzieren die Anzahl der Felder zwischen den einzelnen Schwellenwerten.</altpage>
 			</improvement>
 			<improvement>
 				<id>conditionmonitoroffset</id>
 				<name>Condition Monitor, Threshold Offset</name>
-				<translate>Zustandsmonitor, Threshold Offset</translate>
+				<translate>Zustandsmonitor, Schwellenwertversatz</translate>
 				<altpage>Stellt die Anzahl der Kästchen zwischen dem Start jedes Zustandsmonitors und dem ersten Schwellenwert ein. Positive Werte erhöhen die Anfangsposition des ersten Schwellenwerts. Negative Werte reduzieren die Anfangsposition des ersten Schwellenwertes.</altpage>
 			</improvement>
 			<improvement>
@@ -44489,14 +44489,14 @@
 			<improvement>
 				<id>unarmeddvphysical</id>
 				<name>Unarmed DV Physical</name>
-				<translate>Waffenloser Schaden Körperlich</translate>
+				<translate>Waffenloser Schaden (körperlich)</translate>
 				<altpage>Alle waffenlosen Angriffe des Charakters verursachen körperlichen Schaden anstelle von geistigem Schaden.</altpage>
 			</improvement>
 			<improvement>
 				<id>unarmedap</id>
 				<name>Unarmed AP</name>
-				<translate>Waffenloser DK</translate>
-				<altpage>Stellt den Wert für die Durchschlagskraft für die waffenlosen Angriffe eines Charakters um den eingegebenen Wert ein. Positive Werte reduzieren die Durchschlagskraft der Rüstung. Negative Werte erhöhen die Durchschlagskraft der Rüstung.</altpage>
+				<translate>Waffenloser Kampf (DK)</translate>
+				<altpage>Stellt den Wert für die Durchschlagskraft zu waffenlosen Angriffen eines Charakters um den eingegebenen Wert ein. Positive Werte reduzieren die Durchschlagskraft der Rüstung. Negative Werte erhöhen die Durchschlagskraft der Rüstung.</altpage>
 			</improvement>
 			<improvement>
 				<id>initiative</id>
@@ -44657,7 +44657,7 @@
 			<improvement>
 				<id>basiclifestylecost</id>
 				<name>Basic Lifestyle Cost</name>
-				<translate>Lebensstilkosten</translate>
+				<translate>Basis-Lebensstilkosten</translate>
 				<altpage>Passt die Kosten aller grundlegenden Lebensstile in Nuyen um den eingegebenen Prozentwert an. Alle grundlegenden Lebensstile kosten nun zusätzlich x% pro Monat. Grundlegende Lebensstile sind nur diejenigen, die im SR4-Buch zu finden sind, und beinhalten keine fortgeschrittenen Lebensstile, Safehouses oder Schlupfwinkel. Positive Werte erhöhen die monatlichen Lebensstilkosten. Negative Werte verringern die monatlichen Lebensstilkosten.</altpage>
 			</improvement>
 			<improvement>
@@ -44712,7 +44712,7 @@
 				<id>disableinitiationtab</id>
 				<name>Force Disable Initiation/Submersion Tab</name>
 				<translate>Deaktiviere Register für Initiation/Submersion</translate>
-				<altpage>Erzwingt das Deaktivieren der Registerkarte "Initiation oder Submersion des Charakters und verbietet ihm, Metamagien oder Echos zu erhalten.</altpage>
+				<altpage>Erzwingt das Deaktivieren der Registerkarte für Initiation oder Submersion des Charakters und verbietet ihm, Metamagien oder Echos zu erhalten.</altpage>
 			</improvement>
 			<improvement>
 				<id>enablecrittertab</id>
