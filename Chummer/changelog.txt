@@ -5,6 +5,7 @@ Application Changes:
 - Fixed an issue where certain controls (e.g. Skills, Knowledge Skills) would not get their children controls translated. Fixes #3171.
 - Fixed an issue where drag-and-dropping weapons in career mode, as well as drag-and-dropping gear under certain circumstances, would not work. Fixes #3172.
 - Added an option to the dice roller tool where a roll glitches if there are more 1's than hits rather than more 1's than half of the character's dicepool.
+- Fixed a regression when purchasing Cyberware in Career mode in which it would not properly deduct from Essence Holes first. Fixes #3188
 
 Data Changes:
 
