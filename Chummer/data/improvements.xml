@@ -78,13 +78,6 @@
       <page>Forcibly disables the character's Initiation or Submersion tab, forbidding them from getting metamagics or echoes.</page>
     </improvement>
     <improvement>
-      <name>Enable Spells and Spirits Tab</name>
-      <id>enablemagiciantab</id>
-      <internal>enabletab</internal>
-      <xml><![CDATA[<name>magician</name>]]></xml>
-      <page>Enables the character's Spells and Spirits tab, allowing them to buy spells and bind spirits. The character is flagged as a Magician, but does not receive access to the Initiation tab, unlock their Magic attribute or receive any of the Magical skills.</page>
-    </improvement>
-    <improvement>
       <name>Enable Critter Tab</name>
       <id>enablecrittertab</id>
       <internal>enabletab</internal>

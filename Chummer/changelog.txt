@@ -12,6 +12,7 @@ Data Changes:
 - Fixed Autopicker having an incorrect cost. Fixes #3167.
 - Fixed an issue with Japanese translations of certain lifestyle qualities caused by duplicate entries. Fixes #3168.
 - Added content from the German-exclusive sourcebook "Hamburg".
+- Removed redundant 'Enable Spells and Spirits Tab' improvement. Closes #3189
 
 New Strings:
 
