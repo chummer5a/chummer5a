@@ -44405,13 +44405,13 @@
 			<improvement>
 				<id>conditionmonitorthreshold</id>
 				<name>Condition Monitor, Threshold</name>
-				<translate>Zustandsmonitor, Threshold</translate>
+				<translate>Zustandsmonitor, Schwellenwert</translate>
 				<altpage>Stellt die Anzahl der Kästchen zwischen den einzelnen Schwellenwerten des Zustandsmonitors ein. Positive Werte erhöhen die Anzahl der Felder zwischen den einzelnen Schwellenwerten. Negative Werte reduzieren die Anzahl der Felder zwischen den einzelnen Schwellenwerten.</altpage>
 			</improvement>
 			<improvement>
 				<id>conditionmonitoroffset</id>
 				<name>Condition Monitor, Threshold Offset</name>
-				<translate>Zustandsmonitor, Threshold Offset</translate>
+				<translate>Zustandsmonitor, Schwellenwertversatz</translate>
 				<altpage>Stellt die Anzahl der Kästchen zwischen dem Start jedes Zustandsmonitors und dem ersten Schwellenwert ein. Positive Werte erhöhen die Anfangsposition des ersten Schwellenwerts. Negative Werte reduzieren die Anfangsposition des ersten Schwellenwertes.</altpage>
 			</improvement>
 			<improvement>
@@ -44489,14 +44489,14 @@
 			<improvement>
 				<id>unarmeddvphysical</id>
 				<name>Unarmed DV Physical</name>
-				<translate>Waffenloser Schaden Körperlich</translate>
+				<translate>Waffenloser Schaden (körperlich)</translate>
 				<altpage>Alle waffenlosen Angriffe des Charakters verursachen körperlichen Schaden anstelle von geistigem Schaden.</altpage>
 			</improvement>
 			<improvement>
 				<id>unarmedap</id>
 				<name>Unarmed AP</name>
-				<translate>Waffenloser DK</translate>
-				<altpage>Stellt den Wert für die Durchschlagskraft für die waffenlosen Angriffe eines Charakters um den eingegebenen Wert ein. Positive Werte reduzieren die Durchschlagskraft der Rüstung. Negative Werte erhöhen die Durchschlagskraft der Rüstung.</altpage>
+				<translate>Waffenloser Kampf (DK)</translate>
+				<altpage>Stellt den Wert für die Durchschlagskraft zu waffenlosen Angriffen eines Charakters um den eingegebenen Wert ein. Positive Werte reduzieren die Durchschlagskraft der Rüstung. Negative Werte erhöhen die Durchschlagskraft der Rüstung.</altpage>
 			</improvement>
 			<improvement>
 				<id>initiative</id>
@@ -44657,7 +44657,7 @@
 			<improvement>
 				<id>basiclifestylecost</id>
 				<name>Basic Lifestyle Cost</name>
-				<translate>Lebensstilkosten</translate>
+				<translate>Basis-Lebensstilkosten</translate>
 				<altpage>Passt die Kosten aller grundlegenden Lebensstile in Nuyen um den eingegebenen Prozentwert an. Alle grundlegenden Lebensstile kosten nun zusätzlich x% pro Monat. Grundlegende Lebensstile sind nur diejenigen, die im SR4-Buch zu finden sind, und beinhalten keine fortgeschrittenen Lebensstile, Safehouses oder Schlupfwinkel. Positive Werte erhöhen die monatlichen Lebensstilkosten. Negative Werte verringern die monatlichen Lebensstilkosten.</altpage>
 			</improvement>
 			<improvement>
@@ -44687,50 +44687,50 @@
 			<improvement>
 				<id>enableattribute</id>
 				<name>Enable Special Attribute</name>
-				<translate>Aktiviere Spezialattribute</translate>
+				<translate>Aktiviere Spezialattribut</translate>
 				<altpage>Aktiviert die Kontrolle für ein Attribut, so dass dessen Wert erhöht werden kann. Die erwarteten Werte sind MAG, RES oder ESS für Magie, Resonanz und Essenz.</altpage>
 			</improvement>
 			<improvement>
 				<id>replaceattribute</id>
 				<name>Replace Attribute</name>
-				<translate>Replace Attribute</translate>
-				<altpage>Overrides the Metatype limitations for an attribute. Minimum adjusts the Metatype's minimum value for the Attribute. Maximum adjusts the Metatype's maximum value for the Attribute. Metatype augmented maximum values are automatically adjusted based on the new Metatype maximum.</altpage>
+				<translate>Ersetze Attribut</translate>
+				<altpage>Hebt die Metatyp-Beschränkungen für ein Attribut auf. Minimum passt den Minimalwert des Metatyps für das Attribut an. Maximum passt den Maximalwert des Metatyps für das Attribut an. Die erweiterten Maximalwerte des Metatyps werden automatisch an das neue Metatypmaximum angepasst.</altpage>
 			</improvement>
 			<improvement>
 				<id>enablemagiciantab</id>
 				<name>Enable Spells and Spirits Tab</name>
-				<translate>Enable Spells and Spirits Tab</translate>
-				<altpage>Enables the character's Spells and Spirits tab, allowing them to buy spells and bind spirits. The character is flagged as a Magician for the purposes of quality requirements, but does not receive access to the Initiation tab, unlock their Magic attribute or receive any of the Magical skills. Incompatible with improvements that enable the Complex Forms and Sprites tab.</altpage>
+				<translate>Aktiviere Register für Sprüche und Geister</translate>
+				<altpage>Aktiviert die Registerkarte "Sprüche und Geister" für den Charakter, so dass er Zauber und Geister hinzufügen kann. Der Charakter wird aus Qualitätsgründen als Zauberer markiert, erhält aber keinen Zugriff auf die Registerkarte Initiation, gibt kein magisches Attribut frei oder erhält keine magischen Fertigkeiten. Diese Verbesserung ist nicht mit der Registerkarte 'Komplexe Formen und Sprites' kompatibel.</altpage>
 			</improvement>
 			<improvement>
 				<id>enabletechnomancertab</id>
 				<name>Enable Technomancer Tab</name>
-				<translate>Enable Technomancer Tab</translate>
-				<altpage>Enables the character's 'Complex Forms and Sprites' tab, allowing them to purchase Complex Forms and compile Sprites. The character is flagged as a Technomancer for the purposes of quality requirements, but does not receive access to the Submersion tab, unlock their Resonance attribute or receive any of the Resonance skills. Incompatible with improvements that enable the Spells and Spirits tab.</altpage>
+				<translate>Aktiviere Register für Technomancer</translate>
+				<altpage>Aktiviert die Registerkarte "Komplexe Formen und Sprites" für den Charakter, so dass er komplexe Formen und Sprites hinzufügen kann. Der Charakter ist aus Qualitätsgründen als Technomancer markiert, erhält aber keinen Zugriff auf die Registerkarte Submersion, schaltet kein Resonanzattribut frei oder erhält keine der Resonanzfertigkeiten. Diese Verbesserung ist nicht mit der Registerkarte 'Sprüche und Geister' kompatibel.</altpage>
 			</improvement>
 			<improvement>
 				<id>disableinitiationtab</id>
 				<name>Force Disable Initiation/Submersion Tab</name>
-				<translate>Force Disable Initiation/Submersion Tab</translate>
-				<altpage>Forcibly disables the character's Initiation or Submersion tab, forbidding them from getting metamagics or echoes.</altpage>
+				<translate>Deaktiviere Register für Initiation/Submersion</translate>
+				<altpage>Erzwingt das Deaktivieren der Registerkarte für Initiation oder Submersion des Charakters und verbietet ihm, Metamagien oder Echos zu erhalten.</altpage>
 			</improvement>
 			<improvement>
 				<id>enablecrittertab</id>
 				<name>Enable Critter Tab</name>
-				<translate>Enable Critter Tab</translate>
-				<altpage>Enables the character's Critter Powers tab, allowing them to buy critter powers. The character is flagged as a Critter.</altpage>
+				<translate>Aktiviere Register für Critterkräfte</translate>
+				<altpage>Aktiviert die Registerkarte "Critterkräfte" für den Charakter, so dass er solche Kräfte hinzufügen kann.</altpage>
 			</improvement>
 			<improvement>
 				<id>cyberseeker</id>
 				<name>Cyber-Singularity Seeker/Redliner (Attribute)</name>
-				<translate>Cyber-Singularity Seeker/Redliner (Attribute)</translate>
-				<altpage>Grants bonuses to the specified attribute based on the number of cyberlimbs a character has. Special attributes are invalid</altpage>
+				<translate>Sucher der Cyber-Singularität/Ausgereizt (Attribut)</translate>
+				<altpage>Gewährt zu einem gewählten Attribut des Charakters einen Bonus auf Basis der Anzahl der Cybergliedmaßen des Charakters. Spezialattribute sind unzulässig.</altpage>
 			</improvement>
 			<improvement>
 				<id>cyberseeker</id>
 				<name>Cyber-Singularity Seeker/Redliner (Condition Monitor)</name>
-				<translate>Cyber-Singularity Seeker/Redliner (Condition Monitor)</translate>
-				<altpage>Grants bonuses to the character's physical Condition Monitor based on the number of cyberlimbs a character has. See Redliner in Chrome Flesh for more details.</altpage>
+				<translate>Sucher der Cyber-Singularität/Ausgereizt (Körperlicher Zustandsmonitor)</translate>
+				<altpage>Gewährt zum körperlichen Zustandsmonitor des Charakters einen Bonus auf Basis der Anzahl der Cybergliedmaßen des Charakters. Siehe "Ausgereizt" im Buch "Bodyshop" für Einzelheiten.</altpage>
 			</improvement>
 			<improvement>
 				<id>blockskillgroupdefaulting</id>
@@ -44795,8 +44795,8 @@
 			<improvement>
 				<id>dodge</id>
 				<name>Dodge</name>
-				<translate>Dodge</translate>
-				<altpage>Increases the character's Dodge pool by the listed value.</altpage>
+				<translate>Ausweichen</translate>
+				<altpage>Erhöht den Pool des Charakters zum Ausweichen um den angegebenen Wert.</altpage>
 			</improvement>
 		</improvements>
 	</chummer>
