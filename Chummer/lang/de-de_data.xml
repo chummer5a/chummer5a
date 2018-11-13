@@ -19997,7 +19997,7 @@
 					</choice>
 				</choices>
 				<altadvantage>Allgemein: +2 Würfel auf Akrobatik- oder Schleichenproben</altadvantage>
-				<altdisadvantage>Zauberer, die der Katze folgen, spielen mit ihren Opfern. Wenn der Charakter zu Kampfbeginn eine Probe auf Charisma + Willenskraft (3) nicht schaft, kann er keinen Angriff durchführen, der sein Ziel handlungsunfähig machen würde (z.B. keine Kampfzauber mit einer Kraftstufe wirken, die das Ziel ausschalten würde). Wenn der Charakter Körperlichen Schaden erleidet, hört dieses Herumspielen sofort auf.</altdisadvantage>
+				<altdisadvantage>Zauberer, die der Katze folgen, spielen mit ihren Opfern. Wenn der Charakter zu Kampfbeginn eine Probe auf Charisma + Willenskraft (3) nicht schafft, kann er keinen Angriff durchführen, der sein Ziel handlungsunfähig machen würde (z.B. keine Kampfzauber mit einer Kraftstufe wirken, die das Ziel ausschalten würde). Wenn der Charakter Körperlichen Schaden erleidet, hört dieses Herumspielen sofort auf.</altdisadvantage>
 				<altpage>322</altpage>
 			</mentor>
 			<mentor>
@@ -20015,7 +20015,7 @@
 					</choice>
 				</choices>
 				<altadvantage>Allgemein: +2 Würfel auf Spurenlesen</altadvantage>
-				<altdisadvantage>Ein Zauberer, der dem Hund folgt, ist unverbrüchlich loyal. Er kann niemanden im Stick lassen, seine Freunde verraten oder es zulassen, das jemand sich für ihn opfert, wenn ihm keine Probe auf Charisma + Willenskraft (3) gelingt.</altdisadvantage>
+				<altdisadvantage>Ein Zauberer, der dem Hund folgt, ist unverbrüchlich loyal. Er kann niemanden im Stick lassen, seine Freunde verraten oder es zulassen, dass jemand sich für ihn opfert, wenn ihm keine Probe auf Charisma + Willenskraft (3) gelingt.</altdisadvantage>
 				<altpage>321</altpage>
 			</mentor>
 			<mentor>
@@ -20072,9 +20072,9 @@
 						<translate>Adept: Todeskralle gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>+2 Würfel für toxische Geister des Menschen oder toxische Geister des Tieres(Spieler muss eins auswählen),+2 Würfel auf überreden-Proben.</altadvantage>
+				<altadvantage>+2 Würfel für toxische Geister des Menschen oder toxische Geister des Tieres (Spieler muss eins auswählen),+2 Würfel auf überreden-Proben.</altadvantage>
 				<altdisadvantage>
-					Überzeugt davon, dass das Ende nah ist, sehen die Verkünder des Untergangs keinen Sinn drin, Beziehungen aufrecht zuerhalten, bestimmte Interessen zu verfolgen oder sich an jegliche
+					Überzeugt davon, dass das Ende nah ist, sehen die Verkünder des Untergangs keinen Sinn drin, Beziehungen aufrechtzuerhalten, bestimmte Interessen zu verfolgen oder sich an jegliche
 					Besitztümer zu hängen, die für ihre apokalyptischen Pläne nicht von Bedeutung sind. Solche Zauberer müssen eine Willenskraft + Charisma(3)-Probe bestehen, um eine Handlung zu vollbringen, die
 					solche unnötigen Anhängsel fördert.
 				</altdisadvantage>
@@ -20149,64 +20149,64 @@
 				<choices>
 					<choice>
 						<name>+2 to First Aid</name>
-						<translate>+2 to First Aid</translate>
+						<translate>+2 Würfel für Proben auf Erste Hilfe</translate>
 					</choice>
 					<choice>
 						<name>+2 to Medicine</name>
-						<translate>+2 to Medicine</translate>
+						<translate>+2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
 					</choice>
 					<choice set="2">
 						<name>Magician: +2 dice for Health spells</name>
-						<translate>Zauberer: +2 Würfel für Heilzauber</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
 					</choice>
 					<choice set="2">
 						<name>Adept: 1 free level of Rapid Healing</name>
-						<translate>Adept: 1 freie Stufe für Beschleunigte Heilung</translate>
+						<translate>Adept: Empathische Heilung gratis</translate>
 					</choice>
 					<choice>
 						<name>+2 to First Aid</name>
-						<translate>+2 to First Aid</translate>
+						<translate>+2 Würfel für Proben auf Erste Hilfe</translate>
 					</choice>
 					<choice>
 						<name>+2 to Medicine</name>
-						<translate>+2 to Medicine</translate>
+						<translate>+2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
 					</choice>
 					<choice set="2">
 						<name>Magician: +2 dice for Health spells</name>
-						<translate>Zauberer: +2 Würfel für Heilzauber</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
 					</choice>
 					<choice set="2">
 						<name>Adept: 1 free level of Rapid Healing</name>
-						<translate>Adept: 1 freie Stufe für Beschleunigte Heilung</translate>
+						<translate>Adept: Empathische Heilung gratis</translate>
 					</choice>
 					<choice>
 						<name>+2 to First Aid</name>
-						<translate>+2 to First Aid</translate>
+						<translate>+2 Würfel für Proben auf Erste Hilfe</translate>
 					</choice>
 					<choice>
 						<name>+2 to Medicine</name>
-						<translate>+2 to Medicine</translate>
+						<translate>+2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
 					</choice>
 					<choice set="2">
 						<name>Magician: +2 dice for Health spells</name>
-						<translate>Magician: +2 dice for Health spells</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
 					</choice>
 					<choice set="2">
 						<name>Adept: 1 free level of Rapid Healing</name>
-						<translate>Adept: 1 free level of Rapid Healing</translate>
+						<translate>Adept: Empathische Heilung gratis</translate>
 					</choice>
 					<choice>
 						<name>Magician: +2 for health spells, preparations, and spell rituals.</name>
-						<translate>Magician: +2 for health spells, preparations, and spell rituals.</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain Empathic Healing for free.</name>
-						<translate>Adept: Gain Empathic Healing for free.</translate>
+						<translate>Adept: Empathische Heilung gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>+2 Würfel auf Heilzauber, +2 Würfel für Erd- oder Pflanzengeister(Spieler muss eins auswählen)</altadvantage>
-				<altdisadvantage>-1 Würfel auf Kampfzauber</altdisadvantage>
-				<altpage>94</altpage>
+				<altadvantage>Allgemein: +2 Würfel für Proben auf Erste Hilfe</altadvantage>
+				<altdisadvantage>Immer wenn ein Anhänger der Großen Mutter absichtlich oder unabsichtlich dem lebensspendenden Wesen der Natur (seiner Auslegung) zuwiderhandelt, erleidet er einen Würfelpoolmodifikator von 1- auf alle Handlungen bis er seine Zuwiderhandlung wiedergutgemacht hat.</altdisadvantage>
+				<altpage>232</altpage>
 			</mentor>
 			<mentor>
 				<id>a1faab23-0214-4c83-96ac-d5bb71d4aebb</id>
@@ -20237,7 +20237,7 @@
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Attribute Boost</name>
-						<translate>Adept: 2 freie Stufen auf Attribute Boost</translate>
+						<translate>Adept: 2 freie Stufen auf ein körperliches Attribut nach Wahl</translate>
 					</choice>
 					<choice>
 						<name>Magician: +2 dice for Health Spells</name>
@@ -20245,20 +20245,20 @@
 					</choice>
 					<choice>
 						<name>Adept: 2 freie Stufen auf Attribute Boost</name>
-						<translate>Adept: 2 freie Stufen auf Attribute Boost</translate>
+						<translate>Adept: 2 freie Stufen auf ein körperliches Attribut nach Wahl</translate>
 					</choice>
 					<choice>
 						<name>Magician: +2 dice for Health Spells</name>
-						<translate>Magician: +2 dice for Health Spells</translate>
+						<translate>Zauberer: +2 Würfel für Heilzauber</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Attribute Boost</name>
-						<translate>Adept: 2 free levels of Attribute Boost</translate>
+						<translate>Adept: 2 freie Stufen auf ein körperliches Attribut nach Wahl</translate>
 					</choice>
 				</choices>
-				<altadvantage>+2 Würfel für toxische Geister des Menschen oder toxische Geister des Tieres(Speiler muss eins wählen), +2 Würfel auf Heilzauber</altadvantage>
+				<altadvantage>+2 Würfel für toxische Geister des Menschen oder toxische Geister des Tieres (Speiler muss eins wählen), +2 Würfel auf Heilzauber</altadvantage>
 				<altdisadvantage>
-					Anhänger der Mutation verachten Schwäche. Sollte der Zauberer jemals eine Schwäche zeigen oder sich herrausstellen, dass er einem anderen unterlegen ist, erleidet er einen
+					Anhänger der Mutation verachten Schwäche. Sollte der Zauberer jemals eine Schwäche zeigen oder sich herausstellen, dass er einem anderen unterlegen ist, erleidet er einen
 					Würfelpool-Modifikator von -1 auf alle Handlungen, bis er die Schwäche irgendwie ausgeglichen oder seinen Rivalen besiegt hat(was viele Zauberer dazu veranlasst, sich neue Implantate oder andere
 					Verbesserungen einsetzen zu lassen).
 				</altdisadvantage>
@@ -20271,30 +20271,30 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for summoning or binding toxic spirits</name>
-						<translate>Zauberer: +2 Würfel for summoning or binding toxic spirits</translate>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen und Binden einer Art toxischer Geister (Luft, Erde oder Wasser) nach Wahl des Charakters</translate>
 					</choice>
 					<choice>
 						<name>Adept: Free Toxic Strike</name>
-						<translate>Adept: Free Toxic Strike</translate>
+						<translate>Adept: Toxischer Schlag gratis</translate>
 					</choice>
 					<choice>
 						<name>Magician: +2 dice for summoning or binding toxic spirits</name>
-						<translate>Zauberer: +2 Würfel for summoning or binding toxic spirits</translate>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen und Binden einer Art toxischer Geister (Luft, Erde oder Wasser) nach Wahl des Charakters</translate>
 					</choice>
 					<choice>
 						<name>Adept: Free Toxic Strike</name>
-						<translate>Adept: Free Toxic Strike</translate>
+						<translate>Adept: Toxischer Schlag gratis</translate>
 					</choice>
 					<choice>
 						<name>Magician: +2 dice for summoning or binding toxic spirits</name>
-						<translate>Magician: +2 dice for summoning or binding toxic spirits</translate>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen und Binden einer Art toxischer Geister (Luft, Erde oder Wasser) nach Wahl des Charakters</translate>
 					</choice>
 					<choice>
 						<name>Adept: Free Toxic Strike</name>
-						<translate>Adept: Free Toxic Strike</translate>
+						<translate>Adept: Toxischer Schlag gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>+2 Würfel für toxische Wasser-,Luft- oder Erdgeister(Spieler muss eins auswählen), +2 Würfel beim Widerstand gegen Pathogene und Toxine</altadvantage>
+				<altadvantage>+2 Würfel für toxische Wasser-, Luft- oder Erdgeister (Spieler muss eins auswählen), +2 Würfel beim Widerstand gegen Pathogene und Toxine</altadvantage>
 				<altdisadvantage>
 					Ein Zauberer der Verschmutzung muss eine Willenskraft + Charisma(3)-Probe bestehen, um sich zurückzuhalten, eine natürliche Umgebung nicht auf irgendeine Weise zu verunreinigen oder
 					zu beschmutzen.
@@ -20334,7 +20334,7 @@
 					</choice>
 				</choices>
 				<altadvantage>Allgemein: +2 Würfel für Überredenproben</altadvantage>
-				<altdisadvantage>Ein Anhänger von Rabe muss eine Willenskraft + Charisma(3)-Probe schaffen, um das Unglück eines anderen nicht für seine Zwecke auszunutzen.</altdisadvantage>
+				<altdisadvantage>Ein Anhänger von Rabe muss eine Probe auf Willenskraft + Charisma (3) schaffen, um das Unglück eines anderen nicht für seine Zwecke auszunutzen.</altdisadvantage>
 				<altpage>322</altpage>
 			</mentor>
 			<mentor>
@@ -20370,7 +20370,7 @@
 					</choice>
 				</choices>
 				<altadvantage>Allgemein: +2 Würfel für Proben auf Waffenlosen Kampf</altadvantage>
-				<altdisadvantage>Der Charakter kann zum Berserker werden, wenn er im Kampf Körperlichen Schaden erleidet oder jemand, den er beschützt, schwer verletzt wird. Legen Sie (mit Verletzungsmodifikatoren) eine Probe auf Charisma + Willenskraft ab. Der Charakter verfällt für 3 minus 1 Runde pro Erfolg in einen Berserkerrausch. 3 oder mehr Erfolge können den Berserkerrausch komplett verhindern. Wenn der Charakter bereits im Berserkerrausch ist, erhöht sich die Dauer entsprechend. In diesem Zustand stürzt sich der Charakter auf seine(n) Gegner, ohne auf seine eigeneSicherheit zu achten. Wenn er seine(n) Gegner vor Ablauf des Berserkerrausches kampfunfähig macht, endet dieser vorzeitig.</altdisadvantage>
+				<altdisadvantage>Der Charakter kann zum Berserker werden, wenn er im Kampf Körperlichen Schaden erleidet oder jemand, den er beschützt, schwer verletzt wird. Legen Sie (mit Verletzungsmodifikatoren) eine Probe auf Charisma + Willenskraft ab. Der Charakter verfällt für 3 minus 1 Runde pro Erfolg in einen Berserkerrausch. 3 oder mehr Erfolge können den Berserkerrausch komplett verhindern. Wenn der Charakter bereits im Berserkerrausch ist, erhöht sich die Dauer entsprechend. In diesem Zustand stürzt sich der Charakter auf seine(n) Gegner, ohne auf seine eigene Sicherheit zu achten. Wenn er seine(n) Gegner vor Ablauf des Berserkerrausches kampfunfähig macht, endet dieser vorzeitig.</altdisadvantage>
 				<altpage>321</altpage>
 			</mentor>
 			<mentor>
@@ -20424,7 +20424,7 @@
 					</choice>
 					<choice set="2">
 						<name>Magician:+2 dice for Combat spells</name>
-						<translate>Zauberer:+2 Würfel für Kampfzauber</translate>
+						<translate>Zauberer: +2 Würfel für Kampfzauber</translate>
 					</choice>
 					<choice set="2">
 						<name>Adept: 1 free level of Improved Ability on a Combat skill</name>
@@ -20468,7 +20468,7 @@
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Improved Ability for a skill in the Acting or Inﬂuence skill group</name>
-						<translate>Adept: 1 free level of Improved Ability for a skill in the Acting or Inﬂuence skill group</translate>
+						<translate>Adept: 1 Verbesserte Fertigkeit aus den Gruppen Schauspielerei oder Einfluss</translate>
 					</choice>
 				</choices>
 				<altadvantage>Allgemein: +2 Würfel für Überredenproben</altadvantage>
@@ -20482,55 +20482,55 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Physical-type Combat Spells</name>
-						<translate>Zauberer: +2 Würfel for Physical-type Combat Spells</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Kampf (nur Art: P)</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Mystic Armor</name>
-						<translate>Adept: 2 freie Stufen auf Mystic Armor</translate>
+						<translate>Adept: 2 Stufen Mystische Panzer gratis</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Pain Resistance</name>
-						<translate>Adept: 2 freie Stufen auf Pain Resistance</translate>
+						<translate>Adept: 2 Stufen auf Schmerzresistenz gratis</translate>
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Mystic Armor and Pain Resistance</name>
-						<translate>Adept: 1 freie Stufe für Mystic Armor and Pain Resistance</translate>
+						<translate>Adept: 1 Stufe für Mystische Panzer und Schmerzresistenz gratis</translate>
 					</choice>
 					<choice>
 						<name>Magician: +2 dice for Physical-type Combat Spells</name>
-						<translate>Zauberer: +2 Würfel for Physical-type Combat Spells</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Kampf</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Mystic Armor</name>
-						<translate>Adept: 2 freie Stufen auf Mystic Armor</translate>
+						<translate>Adept: 2 Stufen Mystische Panzer gratis</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Pain Resistance</name>
-						<translate>Adept: 2 freie Stufen auf Pain Resistance</translate>
+						<translate>Adept: 2 Stufen auf Schmerzresistenz gratis</translate>
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Mystic Armor and Pain Resistance</name>
-						<translate>Adept: 1 freie Stufe für Mystic Armor and Pain Resistance</translate>
+						<translate>Adept: 1 Stufe für Mystische Panzer und Schmerzresistenz gratis</translate>
 					</choice>
 					<choice>
 						<name>Magician: +2 dice for Physical-type Combat Spells</name>
-						<translate>Magician: +2 dice for Physical-type Combat Spells</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Kampf</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Mystic Armor</name>
-						<translate>Adept: 2 free levels of Mystic Armor</translate>
+						<translate>Adept: 2 Stufen Mystische Panzer gratis</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Pain Resistance</name>
-						<translate>Adept: 2 free levels of Pain Resistance</translate>
+						<translate>Adept: 2 Stufen auf Schmerzresistenz gratis</translate>
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Mystic Armor and Pain Resistance</name>
-						<translate>Adept: 1 free level of Mystic Armor and Pain Resistance</translate>
+						<translate>Adept: 1 Stufe für Mystische Panzer und Schmerzresistenz gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifier for Composure Tests</altadvantage>
-				<altdisadvantage>Berserker’s followers have very short fuses. Whenever someone strongly disagrees with you (gamemaster’s discretion), you must pass a Charisma + Willpower (3) Test to keep from striking out against the offender. If the test fails, the attack can be in any form you choose (fist, spell, etc.), but it must have the intent to cause damage.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Selbstbeherrschungsproben</altadvantage>
+				<altdisadvantage>Anhängern von Berserker brennt leicht die Sicherung durch. Wenn jemand eine Meinung vertritt, die (nach Maßgabe des Spielleiters) stark von der des Charakters abweicht, muss der Charakter eine erfolgreiche probe auf Charisma + Willenskraft (3) ablegen, um denjenigen nicht anzugreifen. Misslingt die Probe, kann der Charakter die Art des Angriffs auswählen (Fäuste, Zauber usw.), aber der Angriff muss mit der Absicht ausgeführt werden, den anderen zu verletzen.</altdisadvantage>
 				<altpage>231</altpage>
 			</mentor>
 			<mentor translated="True">
@@ -20540,35 +20540,35 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Illusion Spells</name>
-						<translate>Zauberer: +2 Würfel für Illusionszauber</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Illusion</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Improved Potential (limit)</name>
-						<translate>Adept: 2 freie Stufen auf Improved Potential (limit)</translate>
+						<translate>Adept: 2 Stufen auf Erhöhtes Potential (entweder 2 Stufen für dasselbe Limit oder jeweils 1 Stufe für unterschiedliche Limits) gratis</translate>
 					</choice>
 					<choice>
 						<name>Magician: +2 dice for Illusion Spells</name>
-						<translate>Zauberer: +2 Würfel für Illusionszauber</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Illusion</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Improved Potential (limit)</name>
-						<translate>Adept: 2 freie Stufen auf Improved Potential (limit)</translate>
+						<translate>Adept: 2 Stufen auf Erhöhtes Potential (entweder 2 Stufen für dasselbe Limit oder jeweils 1 Stufe für unterschiedliche Limits) gratis</translate>
 					</choice>
 					<choice>
 						<name>Magician: +2 dice for Illusion Spells</name>
-						<translate>Magician: +2 dice for Illusion Spells</translate>
+						<translate>Magician: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Illusion</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Improved Potential (limit)</name>
-						<translate>Adept: 2 free levels of Improved Potential (limit)</translate>
+						<translate>Adept: 2 Stufen auf Erhöhtes Potential (entweder 2 Stufen für dasselbe Limit oder jeweils 1 Stufe für unterschiedliche Limits) gratis</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Improved Potential</name>
-						<translate>Adept: 2 free levels of Improved Potential</translate>
+						<translate>Adept: 2 Stufen auf Erhöhtes Potential (entweder 2 Stufen für dasselbe Limit oder jeweils 1 Stufe für unterschiedliche Limits) gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifier for Con Tests</altadvantage>
-				<altdisadvantage>You are an inveterate gossip trying to stir up trouble, especially between friends, and thus cannot keep damaging secrets to yourself. Also, anytime you encounter a public situation deemed too quiet or stable (gamemaster’s discretion), make a Willpower + Intuition (3) Test. Failure means that you are compelled to stir the pot in any way you desire, be it attacking, telling lies, or throwing a drink on someone nearby.</altdisadvantage>
+				<altadvantage>All: +2 Würfel für Überredenproben</altadvantage>
+				<altdisadvantage>Der Charakter stiftet durch Gerüchte andauernd Unruhe - vor allem unter Freunden - und kann daher Geheimnisse schlecht für sich behalten. Außerdem muss er, wenn ihm eine öffentliche Situation (nach Maßgabe des Spielleiters) zu ruhig und friedlich scheint, eine Probe auf Intuition + Willenskraft (3) ablegen. Misslingt die Probe, muss er versuchen, die Lage auf irgendeine Weise - durch einen Angriff, das Erzählen von Lügen oder das Ausschütten eines Drinks über den Nachbarn - anzuheizen.</altdisadvantage>
 				<altpage>231</altpage>
 			</mentor>
 			<mentor>
@@ -20578,31 +20578,31 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Detection Spells</name>
-						<translate>Zauberer: +2 Würfel auf Wahrnehmungszauber</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alechmische Erzeugnisse der Kategorie Wahrnehmung</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Enhanced Perception</name>
-						<translate>Adept: 2 freie Stufen auf Enhanced Perception</translate>
+						<translate>Adept: 2 Stufen Verbesserte Wahrnehmung gratis</translate>
 					</choice>
 					<choice>
 						<name>Magician: +2 dice for Detection Spells</name>
-						<translate>Zauberer: +2 Würfel auf Wahrnehmungszauber</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alechmische Erzeugnisse der Kategorie Wahrnehmung</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Enhanced Perception</name>
-						<translate>Adept: 2 freie Stufen auf Enhanced Perception</translate>
+						<translate>Adept: 2 Stufen Verbesserte Wahrnehmung gratis</translate>
 					</choice>
 					<choice>
 						<name>Magician: +2 dice for Detection Spells</name>
-						<translate>Magician: +2 dice for Detection Spells</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alechmische Erzeugnisse der Kategorie Wahrnehmung</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Enhanced Perception</name>
-						<translate>Adept: 2 free levels of Enhanced Perception</translate>
+						<translate>Adept: 2 Stufen Verbesserte Wahrnehmung gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifier for Negotiation Tests</altadvantage>
-				<altdisadvantage>You see even enemies as potential friends and go out of your way to keep from hurting anyone unless the situation truly warrants it. At the very beginning of combat, you must pass a Charisma + Intuition (3) Test; failure means you are unable to take actions that cause Physical damage for the duration of combat. At the beginning of a new Combat Turn, you may choose to retake the test if you failed the first time and you or a member of your team suffered damage in the previous Combat Turn.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Verhandlungsproben</altadvantage>
+				<altdisadvantage>Der Charakter betrachtet sogar Feinde als potenzielle Freunde und versucht alles, um niemanden zu verletzen, wenn es nicht absolut nötig ist. Zu Beginn jedes Kampfes muss er eine Probe auf Charisma + Intuition (3) ablegen. Misslingt die Probe, kann er im Verlauf des Kampfes keine Handlungen durchführen, die Körperlichen Schaden verursachen. Zu Beginn einer neuen Kampfrunde kann er die Probe wiederholen, sofern sie beim ersten Mal misslungen ist und er oder ein Teammitglied in der vorherigen Kampfrunde Schaden erlitten hat.</altdisadvantage>
 				<altpage>232</altpage>
 			</mentor>
 			<mentor>
@@ -20612,31 +20612,32 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Detection Spells</name>
-						<translate>Zauberer: +2 Würfel auf Wahrnehmungszauber</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Wahrnehmung</translate>
 					</choice>
 					<choice>
 						<name>Adept: Free Astral Perception</name>
-						<translate>Adept: Free Astral Perception</translate>
+						<translate>Adept: Astrale Wahrnehmung gratis</translate>
 					</choice>
 					<choice>
 						<name>Magician: +2 dice for Detection Spells</name>
-						<translate>Zauberer: +2 Würfel auf Wahrnehmungszauber</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Wahrnehmung</translate>
 					</choice>
 					<choice>
 						<name>Adept: Free Astral Perception</name>
-						<translate>Adept: Free Astral Perception</translate>
+						<translate>Adept: Astrale Wahrnehmung gratis</translate>
 					</choice>
 					<choice>
 						<name>Magician: +2 dice for Detection Spells</name>
-						<translate>Magician: +2 dice for Detection Spells</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Wahrnehmung</translate>
 					</choice>
 					<choice>
 						<name>Adept: Free Astral Perception</name>
-						<translate>Adept: Free Astral Perception</translate>
+						<translate>Adept: Astrale Wahrnehmung gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifier for Arcana Tests</altadvantage>
-				<altdisadvantage>You hate mysteries with a passion and can disappear for days trying to track down the answer. When confronted by a particularly haunting question (gamemaster’s discretion), you must take a Willpower + Intuition (3) Test. Failure means you must undertake an Intuition + Logic [Mental] (5, 1 hour) Extended Test to try researching the answer. Completion of the Extended Test does not necessarily mean you found the answer, but it at least silences the question in your mind for the time being. When a follower of Oracle becomes a Grade 1 initiate, she must choose Divination for her first metamagic rather than a Power Point or any other benefit.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Arkanaproben</altadvantage>
+				<altdisadvantage>Der Charakter hasst Mysterien so leidenschaftlich, dass er tagelang nach Antworten suchen kann. Wenn er mit einer (nach Maßgabe des Spielleiters) für ihn besonders quälenden Frage konfrontiert wird, muss er eine Probe auf Willenskraft + Intuition (3) ablegen. Misslingt die Probe, muss er eine Ausgedehnte Probe auf Intuition + Logik (5, 1 Stunde) ablegen, um nach der Antwort zu suchen. Das Abschließen der Ausgedehnten Probe bedeutet nicht unbedingt, dass er die Antwort gefunden hat, bringt aber zumindest die hartnäckig fragende Stimme im Geist des Charakters eine Zeit lang zum Schweigen.
+				Wenn ein Anhänger von Orakel zu einem Initiat des ersten Grades wird, muss er als erste Metamagie Weissagung lernen, statt Kraftpunkte oder andere Metamagien auszuwählen.</altdisadvantage>
 				<altpage>234</altpage>
 			</mentor>
 			<mentor>
@@ -20692,7 +20693,7 @@
 					</choice>
 				</choices>
 				<altadvantage>Allgemein: +2 Würfel für Überredenproben</altadvantage>
-				<altdisadvantage>Ein Anhänger von Rabe muss eine Probe auf Charisma + Willenskraft (3) schaffen, um das Unglück anderer nicht zu seinem Vorteil zu nutzen, oder um sich einen schlauen Trick oder Scherz zu verkeifen, selbst wenn dieser seinen Freunden zum Nachteil gereichen würde.</altdisadvantage>
+				<altdisadvantage>Ein Anhänger von Rabe muss eine Probe auf Charisma + Willenskraft (3) schaffen, um das Unglück anderer nicht zu seinem Vorteil zu nutzen, oder um sich einen schlauen Trick oder Scherz zu verkneifen, selbst wenn dieser seinen Freunden zum Nachteil gereichen würde.</altdisadvantage>
 				<altpage>322</altpage>
 			</mentor>
 			<mentor>
@@ -20774,15 +20775,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Detection Spells.</name>
-						<translate>Magician: +2 dice for Detection Spells.</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alhecmische Erzeugnisse der Kategorie Wahrnehmung</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free level of Combat Sense.</name>
-						<translate>Adept: 2 free level of Combat Sense.</translate>
+						<translate>Adept: 2 Stufen Kampfsinn gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice to Tracking.</altadvantage>
-				<altdisadvantage>A follower of Dachshund must succeed in a WIL+CHA (3) test, to follow the orders of a leader or a abide to a group decision.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Spurenlesenproben</altadvantage>
+				<altdisadvantage>Ein Anhänger von Dackel muss eine Probe auf Charisma + Willenskraft (3) gelingen, um sich den Anweisungen eines Anführers oder einer Gruppenentscheidung zu beugen.</altdisadvantage>
 				<altpage>231</altpage>
 			</mentor>
 			<mentor>
@@ -20799,8 +20800,8 @@
 						<translate>Adept: 1 free level of Elemental Strike.</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice to Hardware or Electronic Warfare</altadvantage>
-				<altdisadvantage>Electro Marten has problems discerning between different signals. A follower of Electro Marten has to succeed in a CHA + WIL (3) test to not lose himself in the signals or hunt after the wrong one. In stressful situations, he is distracted for 3 combat rounds (minus 1 for each success). If he has no successes, he involuntarily attracts attention in the system.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Proben auf Elektronische Kriegsführung oder Hardware</altadvantage>
+				<altdisadvantage>Elektromarder kann oft nicht zwischen einzelnen Signalen unterscheiden. Einem Anhänger von Elektromarder muss eine Probe auf Charisma + Willenskraft (3) gelingen, um sich nicht in den Signalen zu verlieren oder gar dem falschen Signal hinterherzujagen. In Stresssituationen ist er 3 Kampfrunden (minus 1 Runde pro Erfolg bei obiger Probe) abgelenkt. Gelingt ihm kein Erfolg, erregt er im System ungewollt Aufmerksamkeit.</altdisadvantage>
 				<altpage>232</altpage>
 			</mentor>
 			<mentor>
@@ -20810,19 +20811,19 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Illusion Spells.</name>
-						<translate>Magician: +2 dice for Illusion Spells.</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchmische Erzeugnisse der Kategorie Illusion</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Enhanced Accuracy (skill)</name>
-						<translate>Adept: 2 free levels of Enhanced Accuracy (skill)</translate>
+						<translate>Adept: Zweimal Erhöhte Präzision (Fertigkeit)</translate>
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Spell Resistance</name>
-						<translate>Adept: 1 free level of Spell Resistance</translate>
+						<translate>Adept: 1 Stufe Magieresistenz gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice for Negotiation tests.</altadvantage>
-				<altdisadvantage>Luna is independent and free. A follower of Luna must pass a CHA+WIL(3) test to follow a direct order that does not correlate to her momentary personal wishes - especially if her own logic tells her that it would be better to disregard her own desires for the moment.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Verhandlungsproben</altadvantage>
+				<altdisadvantage>Die Mondin ist unabhängig und frei. Einer Anhängerin der Mondin muss eine Probe auf Charisma + Willenskraft (3) gelingen, wenn sie einer direkten Anweisung folgen will, die nicht ihren momentanen persönlichen und alleinigen Wünschen entspricht - besonders dann, wenn ihr ihre eigene Logik sagt, dass es gerade eigentlich besser wäre, die eigenen Begehrlichkeiten hintanzustellen.</altdisadvantage>
 				<altpage>233</altpage>
 			</mentor>
 			<mentor>
@@ -20928,23 +20929,23 @@
 				<choices>
 					<choice>
 						<name>+2 dice on Running tests</name>
-						<translate>+2 dice on Running tests</translate>
+						<translate>+2 Würfel für Laufen-Proben</translate>
 					</choice>
 					<choice>
 						<name>+2 on Pilot Ground Craft Tests</name>
-						<translate>+2 on Pilot Ground Craft Tests</translate>
+						<translate>+2 Würfel für Bodenfahrzeuge-Proben</translate>
 					</choice>
 					<choice set="2">
 						<name>Magician: Reduce Drain Value from Reckless Summoning by 1</name>
-						<translate>Magician: Reduce Drain Value from Reckless Summoning by 1</translate>
+						<translate>Zauberer: Entzug durch Schnellbeschwörung um 1 gesenkt</translate>
 					</choice>
 					<choice set="2">
 						<name>Adept: May learn to use the Movement critter power as a metamagic (self only, 3 times a day)</name>
-						<translate>Adept: May learn to use the Movement critter power as a metamagic (self only, 3 times a day)</translate>
+						<translate>Adept: Darf die Critterkraft Bewegung als Metamagie lernen (nur Selbst, dreimal täglich)</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice to Running or Pilot Ground Craft tests (choose one)</altadvantage>
-				<altdisadvantage>Followers of the Horse can’t sit still for long nor be confined indoors. They must spend at least four hours a day outside and be able to run or drive around (any method of travel faster than walking). If followers are not able to meet this condition, they suffer –1 die to all action skill tests. This penalty is cumulative, meaning if the follower is stuck at a desk all day (indoors and not moving around) for two days in a a row, they suffer –2 to all actions until they get that free time in.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Laufen- oder Bodenfahrzeug-Proben (nach Wahl des Spielers)</altadvantage>
+				<altdisadvantage>Anhänger von Pferd können nicht lange stillsitzen oder in Innenräumen bleiben. Sie müssen wenigstens vier Stunden pro Tag draußen sein und herumlaufen oder -fahren (jedenfalls eine schnellere Bewegung als Gehen benutzen) können. Wenn sie das nicht können, erhalten sie einen Würfelpoolmalus von -1 auf alle Proben mit Aktionsfertigkeiten. Dieser Malus ist kumulativ. Wenn ein Anhänger von Pferd zwei Tage hintereinander am Schreibtisch verbringen müsste (also drinnen und ohne ausreichende Bewegung), würde er einen Würfelpoolmalus von -2 erhalten, bis er diese Zeit im Freien nachholen kann.</altdisadvantage>
 				<altpage>45</altpage>
 			</mentor>
 			<mentor>
@@ -20954,15 +20955,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for spells, preparations, and spell rituals in the Manipulation category.</name>
-						<translate>Magician: +2 dice for spells, preparations, and spell rituals in the Manipulation category.</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Manipulation</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 Improved Sense powers</name>
-						<translate>Adept: 2 Improved Sense powers</translate>
+						<translate>Adept: 2 Geschärfte Sinne</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 to Palming skill tests</altadvantage>
-				<altdisadvantage>The Raccoon is commonly one of the Thief totems, so the followers can tend to err on the side of greed. A follower of Raccoon must make a Charisma + Willpower (3) Test to resist the urge to open that next locked door to look for something to steal, or to follow that Matrix rabbit trail in the quest for more paydata.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Fingerfertigkeit-Proben</altadvantage>
+				<altdisadvantage>Waschbär ist üblicherweise ein Totem der Diebe, weswegen seine Anhänger recht gierig werden können. Einem Anhänger von Waschbär muss eine Probe auf Charisma + Willenskraft (3) gelingen, um nicht diese nächste verschlossene Tür zu öffnen und nach etwas Stehlenswertem Ausschau zu halten, oder dieser speziellen Matrixspur zu folgen, die vielleicht zu noch mehr Paydata führt.</altdisadvantage>
 				<altpage>47</altpage>
 			</mentor>
 			<mentor>
@@ -20972,15 +20973,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Illusion spells</name>
-						<translate>Magician: +2 dice for Illusion spells</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse deer Kategorie Illusion</translate>
 					</choice>
 					<choice>
 						<name>Adept: Hang time (2)</name>
-						<translate>Adept: Hang time (2)</translate>
+						<translate>Adept: 2 Stufen Fester Halt</translate>
 					</choice>
 				</choices>
-				<altadvantage>All:+2 dice to Computer skill tests</altadvantage>
-				<altdisadvantage>Followers of Spider are already paranoid about people having any misconceptions about them being insect shamans. They will keep such detailsfrom casual conversation. Followers of Spider also have taken advantage of the Matrix more than more traditional shamas in creating connections. This makes followers more agoraphobic as they avoid uncontrolled social situations and unfamiliar environments. They receive a –1 dice pool modifier to Magic tests while out in the open (this includes very large indoor rooms such as auditoriums, theatres, and stadiums). The penalty doubles if there is a large crowd of people to deal with.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Computer-Proben</altadvantage>
+				<altdisadvantage>Anhänger von Spinne haben unterschwellig Angst, dass man sie für Insektenschamanen halten könnte. Deshalb sprechen sie für gewöhnlich nicht über ihren Schutzgeist. Außerdem sind sie der Matrix stärker zugetan als andere Magieanwender, weil sie so viele Kontakte und Verbindungen ermöglicht. Sie entwickeln dadurch eine leichte Agoraphobie, weil sie unkontrollierte gesellschaftliche Situationen und unbekannte Umgebungen eher meiden. Anhänger von Spinne erhalten einen Würfelpoolmalus von -1 auf Proben, die mit dem Magieattribut verbunden sind, wenn sie sich unter freiem Himmel (oder auch in sehr großen Räumen, Theatern oder Konzerthallen) befinden. Dieser Malus wird verdoppelt, wenn sie es dazu noch mit einer großen Menschenmenge zu tun haben.</altdisadvantage>
 				<altpage>46</altpage>
 			</mentor>
 			<mentor>
@@ -21034,7 +21035,7 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice pool modifier when casting Illusion spells, preparations, and rituals</name>
-						<translate>+2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Illusion</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Illusion</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 2 free levels of Combat Sense.</name>
@@ -21052,7 +21053,7 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice summoning spirits of water or earth (The type of spirit for which this bonus applies changes every 6 hours).</name>
-						<translate>+2 Würfel für das Herbeirufen von Wasserund Erdgeistern (die Geisterart, für die der Vorteil gerade gilt, wechselt alle sechs Stunden im Rhythmus der Gezeiten)</translate>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen von Wasser- und Erdgeistern (die Geisterart, für die der Vorteil gerade gilt, wechselt alle sechs Stunden im Rhythmus der Gezeiten)</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 2 free levels of Heightened Concentration.</name>
@@ -21318,15 +21319,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Detection Spells.</name>
-						<translate>Magician: +2 dice for Detection Spells.</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Wahrnehmung</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 Free levels of Danger Sense.</name>
-						<translate>Adept: 2 Free levels of Danger Sense.</translate>
+						<translate>Adept: 2 Stufen Gefahrsinn gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice to Nautical Mechanic</altadvantage>
-				<altdisadvantage>Whenever a follower of Klabautermann is in danger (in reality or only in his imagination) or he has to stay on or in a vehicle for a prolonged time (be it cars, ships, planes or trains), he must make a CHA+WIL(3) test. Should he fail, he is convinced he saw the Klabautermann, resulting in him running scared and trying to flee, as well as trying to convince other characters that their plans will lead to a bad end.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Seefahrtmechanikproben</altadvantage>
+				<altdisadvantage>Wann immer einem Anhänger von Klabautermann Gefahr droht (ob nun tatsächlich oder nur in seiner Vorstellung) oder er sich für längere Zeit in oder auf einem Fortbewegungsmittel (sei es Auto, Schiff, Flugzeug oder Bahn) befindet, muss er eine Probe auf Willenskraft + Charisma (3) ablegen. Misslingt diese Probe, ist der Charakter davon überzeugt, den Klabautermann gesehen zu haben. Er verfällt in Panik und versucht zu fliehen und auch andere Charaktere davon zu überzeugen, dass ihr Vorhaben kein gutes Ende nehmen wird.</altdisadvantage>
 				<altpage>232</altpage>
 			</mentor>
 			<mentor translated="True">
@@ -21336,15 +21337,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for summoning spirits of earth</name>
-						<translate>Magician: +2 dice for summoning spirits of earth</translate>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen von Erdgeistern</translate>
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Critical Strike.</name>
-						<translate>Adept: 1 free level of Critical Strike.</translate>
+						<translate>Adept: Einmal kritischer Schlag (Fertigkeit) gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice to Unarmed Combat.</altadvantage>
-				<altdisadvantage>Combat Junkie quality is gained for free.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Proben auf Waffenlosen Kampf</altadvantage>
+				<altdisadvantage>Anhänger von Tatzelwurm erhalten den Nachteil Kampfsüchtig ohne Karmabonus.</altdisadvantage>
 				<altpage>234</altpage>
 			</mentor>
 			<mentor translated="True">
@@ -21354,15 +21355,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Illusion Spells.</name>
-						<translate>Magician: +2 dice for Illusion Spells.</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Illusion</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Danger Sense.</name>
-						<translate>Adept: 2 free levels of Danger Sense.</translate>
+						<translate>Adept: 2 Stufen Gefahrsinn gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice to dodge tests.</altadvantage>
-				<altdisadvantage>Whenever a follower of Wolpertinger is in danger (in reality or only in his imagination), he has to succeed in a WIL+CHA (3) test to not immediately succumb to his urge to flee.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Ausweichenproben</altadvantage>
+				<altdisadvantage>Wann immer einem Anhänger von Wolpertinger Gefahr droht (ob nun tatsächlich oder nur in seiner Vorstellung), muss ihm eine Probe auf Willenskraft + Charisma (3) gelingen, um nicht sofort seinem Fluchtreflex zu erliegen.</altdisadvantage>
 				<altpage>234</altpage>
 			</mentor>
 			<mentor>
@@ -21430,15 +21431,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +1 dice pool modifier for casting Health spells, +1 dice pool modifier to summon air spirits</name>
-						<translate>Magician: +1 dice pool modifier for casting Health spells, +1 dice pool modifier to summon air spirits</translate>
+						<translate>Zauberer: +1 Würfel für das Wirken von Heilzaubern, +1 Würfel für das Herbeirufen von Luftgeistern</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 1 free level of Enhanced Perception.</name>
-						<translate>Adept: Gain 1 free level of Enhanced Perception.</translate>
+						<translate>Adept: 1 Stufe Verbesserte Wahrnehmung</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifier for Negotiation tests.</altadvantage>
-				<altdisadvantage>Dove discourages combat whenever possible. As such, those who follow Dove are at –2 dice pool modifier to cast Combat spells or when using lethal force.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Verhandlungsproben</altadvantage>
+				<altdisadvantage>Taube vermeidet den Kampf, wann immer das möglich ist. Deshalb erhalten Anhänger von Taube einen Würfelpoolmalus von -2 beim Wirken von Kampfzaubern oder beim Einsatz tödlicher Gewalt.</altdisadvantage>
 				<altpage>97</altpage>
 			</mentor>
 			<mentor>
@@ -21448,15 +21449,15 @@
 				<choices>
 					<choice>
 						<name>Magician: Determined by spirit type and gamemaster approval.</name>
-						<translate>Magician: Determined by spirit type and gamemaster approval.</translate>
+						<translate>Zauberer: Nach Geisterart mit Zustimmung des Spielleiters</translate>
 					</choice>
 					<choice>
 						<name>Adept: Determined by spirit type and gamemaster approval.</name>
-						<translate>Adept: Determined by spirit type and gamemaster approval.</translate>
+						<translate>Adept: Nach Geisterart mit Zustimmung des Spielleiters</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: Determined by spirit type and gamemaster approval.</altadvantage>
-				<altdisadvantage>Taking on an extraplanar entity into one’s soul is not without its drawbacks. Much of their mental ability is taken up keeping themselves from losing their identity as a result of their shared existence. Mages suffer a –2 dice pool penalty when making tests involving Willpower</altdisadvantage>
+				<altadvantage>Allgemein: Nach Geisterart mit Zustimmung des Spielleiters</altadvantage>
+				<altdisadvantage>Wenn man eine extraplanare Wesenheit in die eigene Seele einlässt, sollte das auch Folgen haben. Ein Großteil der geistigen Fähigkeiten eines Anhängers wird davon beansprucht, den Verlust der eigenen Identität durch die geteiligte Existent zu verhindern. Anhänger erhalten einen Würfelpoolmalus von -2 auf Proben, in denen Willenskraft Teil des Würfelpools ist.</altdisadvantage>
 				<altpage>97</altpage>
 			</mentor>
 			<mentor>
@@ -21466,15 +21467,16 @@
 				<choices>
 					<choice>
 						<name>Magician: +1 dice pool modifier for casting Detection spells, an additional +2 dice pool modifier to cast Clairvoyance spells.</name>
-						<translate>Magician: +1 dice pool modifier for casting Detection spells, an additional +2 dice pool modifier to cast Clairvoyance spells.</translate>
+						<translate>Zauberer: +1 Würfel für das Wirken von Wahrnehmungszaubern, zusätzlich +2 Würfel für das Wirken des Zaubers Hellsehen</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 2 free levels of Danger Sense</name>
-						<translate>Adept: Gain 2 free levels of Danger Sense</translate>
+						<translate>Adept: 2 Stufen Gefahrensinn gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: Once per day, when making a decision or test inﬂuenced by a Tarot reading/card, may re-roll misses as if they had used Edge.</altadvantage>
-				<altdisadvantage>Followers of the Arcana must use Tarot decks or individual cards as foci and fetishes, or else take –2 when attempting to use them. The Tarot Arcana plays such a major part in the lives of its adherents that when a follower of Arcana becomes a grade 1 initiate, they must choose centering or adept centering for their frst beneft, with the cards of Tarot being the focus of their centering.</altdisadvantage>
+				<altadvantage>Allgemein: Einmal täglich darf der Charakter, wenn er eine Entscheidung trifft oder eine Probe ablegt, die auf eine Deutung oder Karte des Tarots gründet, eine misslungene Probe wiederholen, als ob er Edge verwenden würde.</altadvantage>
+				<altdisadvantage>Die Anhänger der Arkana müssen Kartensätze oder einzelne Karten des Tarots als Foki oder Fetische benutzen, ansonsten erhalten sie einen entsprechenden Würfelpoolmalus von -2.
+				Die Arkana des Tarots spielen im Leben eines Anhängers eine so große Rolle, dass er, wenn er den ersten Initiationsgrad erreicht, entweder Zentrierung oder Adpetenzentrierung als erste Metamagie wählen muss. Dabei sind die Karten des Tarots der Fokus der Zentrierungstechnik. Das heißt auch, dass ein Anhänger der Tarot-Tradition zuerst initiieren und die Metamagie Weissagung erlernen muss, bevor er den Schutzgeist Arkana wählen kann (und umgekehrt).</altdisadvantage>
 				<altpage>93</altpage>
 			</mentor>
 			<mentor>
@@ -21484,19 +21486,19 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice pool modifier when using the Banishing skill.</name>
-						<translate>Magician: +2 dice pool modifier when using the Banishing skill.</translate>
+						<translate>Zauberer: +2 Würfel für Proben auf Verbannung</translate>
 					</choice>
 					<choice>
 						<name>Magician: +2 dice pool modifier when casting Health spells.</name>
-						<translate>Magician: +2 dice pool modifier when casting Health spells.</translate>
+						<translate>Zauberer: +2 Würfel für das Wirken von Heilzaubern</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 1 free level of Mystic Armor or Empathic Healing (choose one).</name>
-						<translate>Adept: Gain 1 free level of Mystic Armor or Empathic Healing (choose one).</translate>
+						<translate>Adept: 1 Stufe Empathische Heilung oder 1 Stufe Mystischer Panzer (nach Wahl des Spielers) gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>Gain +4 ranks of (Choose Holy Text) Knowledge Skill.</altadvantage>
-				<altdisadvantage>When a follower of a Holy Text wishes to take an action that is contrary to the teaching of the text (whatever that text is), they must pass a Charisma + Willpower (4) Test to take the action.</altdisadvantage>
+				<altadvantage>Allgemein: +4 Stufen in der Wissensfertigkeit: Wissen um (die gewählte Heilige Schrift)</altadvantage>
+				<altdisadvantage>Das Glauben an eine heilige Schrift sorgt dafür, dass es Handlungen gibt, die als verboten oder der Lehre zuwiderlaufend betrachtet werden. Wenn der Anhänger einer Heiligen Schrift eine Handlung durchführen will, die den Lehren der (von ihm als heilig gesehenen) Schrift zuwiderläuft, muss ihm eine Probe auf Charisma + Willenskraft (4) gelingen, um sie durchzuführen.</altdisadvantage>
 				<altpage>95</altpage>
 			</mentor>
 			<mentor>
@@ -21506,15 +21508,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice pool modifier when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</name>
-						<translate>Magician: +2 dice pool modifier when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</translate>
+						<translate>Zauberer: +2 Würfel für das Wirken der Zauber Ein [Metatyp] Weniger, [Metatyp/Spezies] erschlagen, [Metatyp/Spezies] Niedermetzeln, Manaball, Manablitz und Todeshand</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 1 free level of Killing Hands or Plague Cloud (choose one).</name>
-						<translate>Adept: Gain 1 free level of Killing Hands or Plague Cloud (choose one).</translate>
+						<translate>Adept: Todeskralle oder Seuchenwolke (nach Wahl des Spielers) gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +4 ranks of the Knowledge Skill Anatomy, Disease, Infected, or Undead (choose one).</altadvantage>
-				<altdisadvantage> In order for a follower of Death to attempt to help someone who is dying or injured, they must first pass a Charisma + Willpower (3) Test.</altdisadvantage>
+				<altadvantage>Allgemein: +4 Stufen in der Wissensfertigkeit Anatomie, Infizierte, Seuchen oder Untote (nach Wahl des Spielers).</altadvantage>
+				<altdisadvantage> Die Anhänger von Tod verstehen mehr als viele andere davon, wie der Körper funktioniert, verachten es aber, ihn zu heilen, weil der Prozess des Sterbens und des Todes ihrer Ansicht nach der heiligste aller Vorgänge ist. Damit ein Anhänger von Tod versuchen kann, jemandem zu helfen, der verletzt ist oder im Sterben liegt, muss ihm eine Probe auf Charisma + Willenskraft (3) gelingen. Das gilt auch, wenn er sich selbst heilen will.</altdisadvantage>
 				<altpage>97</altpage>
 			</mentor>
 			<mentor>
@@ -21524,15 +21526,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice pool modifier when casting Combat spells, preparations, and rituals.</name>
-						<translate>Magician: +2 dice pool modifier when casting Combat spells, preparations, and rituals.</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Alchemische Erzeugnisse und Rituale der Kategorie Kampf</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 1 free level of Critical Strike.</name>
-						<translate>Adept: Gain 1 free level of Critical Strike.</translate>
+						<translate>Adept: Einmal Kritischer Schlag (Fertigkeit) gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: After character creation, may purchase combat skills at rank 3 or higher for 1 less Karma</altadvantage>
-				<altdisadvantage>If it looks as if they are going to lose a battle, those with the War mentor must pass a Charisma + Willpower (4) Test, or else use all means necessary—including the lives, nuyen, and honor of their teammates—to overcome their adversary.</altdisadvantage>
+				<altadvantage>Allgemein: Nach der Charaktererschaffung dürfen Kampffertigkeiten auf Stufe 3 oder höher für jeweils 1 Karma weniger erworben werden.</altadvantage>
+				<altdisadvantage>Zwischen edlem Kampf, dem Kampf aus Notwendigkeit und dem Sieg um jeden Preis gibt es deutliche Unterschiede. Krieg geht es um die letzte Variante. Daher fürchten die Anhänger von Krieg das Verlieren mehr als alles und jeden anderen. Wenn es aussieht, als würden sie eine Auseinandersetzung verlieren, muss Anhängern von Krieg eine Probe auf Charisma + Willenskraft (4) gelingen, ansonsten müssen sie alle nötigen Mitteln - auch Leben, Geld und Ehre anderer Teammitglieder - einsetzen, um den Gegner doch zu besiegen.</altdisadvantage>
 				<altpage>96</altpage>
 			</mentor>
 			<mentor>
@@ -21542,15 +21544,15 @@
 				<choices>
 					<choice>
 						<name>Magician: Gain the Witness My Hate quality for free.</name>
-						<translate>Magician: Gain the Witness My Hate quality for free.</translate>
+						<translate>Zauberer: Vorteil Spürt meinen Zorn gratis</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain the Adept Accident power for free.</name>
-						<translate>Adept: Gain the Adept Accident power for free.</translate>
+						<translate>Adept: Adeptenunfall gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifier for Intimidation or Demolitions tests (choose one)</altadvantage>
-				<altdisadvantage>Followers gain the Driven quality, in which the focus is the opportunity to destroy something meaningful. Further, they fnd it hard to work in groups given their destructive nature. They can never beneft from teamwork or leadership bonuses.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Einschüchtern- oder Sprengstoffe-Proben (nach Wahl des Spielers)</altadvantage>
+				<altdisadvantage>Mit den Anhängern von Tohuwabohu kann die Zusammenarbeit schwierig sein, weil sie keine Ziele mögen. Die wirken für sie zu sehr wie Aufbau und zu wenig wie Zerstörung. Anhänger von Tohuwabohu erhalten den Nachteil Getriebener, dessen Fokus die Möglichkeit ist, etwas Sinnvolles zu vernichten. Außerdem finden sie es durch ihre zerstörerische Natur schwer, in Gruppen zu arbeiten. Sie können niemals Boni aus Teamwork oder Führung erhalten.</altdisadvantage>
 				<altpage>98</altpage>
 			</mentor>
 			<mentor>
@@ -21560,15 +21562,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice pool modifier to summon Plant Spirits.</name>
-						<translate>Magician: +2 dice pool modifier to summon Plant Spirits.</translate>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen von Pflanzengeistern</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 2 free levels of Rooting.</name>
-						<translate>Adept: Gain 2 free levels of Rooting.</translate>
+						<translate>Adept: 2 Stufen Verwurzeln gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifier for Negotiation Tests.</altadvantage>
-				<altdisadvantage>When signifcant damage is being done to vegetation, they must pass a Charisma + Willpower (3) Test or use all means possible to stop the destruction.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Verhandlungsproben</altadvantage>
+				<altdisadvantage>Anhänger der Werte des Grünen Mannes schätzen die Flora der erde mehr als alles andere. Daher können sie nicht einfach akzeptieren, wenn pflanzliches Leben mutwillig vernichtet wird. Das bedeutet nicht, dass ein Anhänger jeden geknickten Zweig rächen muss, aber wenn der Vegetation schwerer Schaden zugefügt wird, muss ihm eine Probe auf Charisma + Willenskraft (3) gelingen, sonst muss er mit allen Mitteln versuchen, der Zerstörung Einhalt zu gebieten.</altdisadvantage>
 				<altpage>94</altpage>
 			</mentor>
 			<mentor>
@@ -21578,15 +21580,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice pool modifier when casting Sun- or Fire-based spells.</name>
-						<translate>Magician: +2 dice pool modifier when casting Sun- or Fire-based spells.</translate>
+						<translate>Zauberer: +2 Würfel für das Wirken von licht- oder feuerbasierenden Zaubern</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 3 free levels of Temperature Tolerance</name>
-						<translate>Adept: Gain 3 free levels of Temperature Tolerance</translate>
+						<translate>Adept: 3 Stufen Temperaturresistenz gratis (nur gegen Hitze, nicht gegen Kälte)</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifier for Perception tests when outside during the day.</altadvantage>
-				<altdisadvantage>Followers of Sun must pass a Charisma + Willpower (4) Test in order to purposefully deceive others.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Wahrnehmungsproben bei Tag im Freien</altadvantage>
+				<altdisadvantage>Einem Anhänger von Sonne muss eine Probe auf Charisma + Willenskraft (4) gelingen, um andere absichtlich zu täuschen.</altdisadvantage>
 				<altpage>97</altpage>
 			</mentor>
 			<mentor>
@@ -21596,15 +21598,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice to Contractual Rituals.</name>
-						<translate>Magician: +2 dice to Contractual Rituals.</translate>
+						<translate>Zauberer: +2 Würfel für das Besiegeln von Kontaktritualen</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain Spirit Ram for free.</name>
-						<translate>Adept: Gain Spirit Ram for free.</translate>
+						<translate>Adept: Geisterramme gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice to Intimidation tests.</altadvantage>
-				<altdisadvantage>Followers receive a –1 dice pool penalty when resisting physical damage.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Einschüchtern-Proben</altadvantage>
+				<altdisadvantage>Die seltsame Verbindung, die Anhänger des Finsteren Königs zu ihm haben, macht Schmerz und Sterben viel bedeutender. Es ist, als wolle der Finstere König, dass seine Anhänger sich bald an seinem Hof versammeln und von ihren gesammelten Geheimnissen berichten. Anhänger des Finsteren Königs erhalten einen Würfelpoolmalus von -1 beim Widerstand gegen körperlichen Schaden.</altdisadvantage>
 				<altpage>94</altpage>
 			</mentor>
 			<mentor>
@@ -21614,15 +21616,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Illusion and transformation-focused Manipulation spells, preparations, and spell rituals.</name>
-						<translate>Magician: +2 dice for Illusion and transformation-focused Manipulation spells, preparations, and spell rituals.</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Alchemische Erzeugnisse und Rituale der Kategorien Illusion und Transformations-Manipulation</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 3 levels of Stillness for free.</name>
-						<translate>Adept: Gain 3 levels of Stillness for free.</translate>
+						<translate>Adept: 3 Stufen Bewegungslosigkeit gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice to Negotiation tests.</altadvantage>
-				<altdisadvantage>Followers of Moon must make a Charisma + Willpower (4) Test in order to engage in direct confrontation; failure means they cannot make any action considered as such. Negotiation is not considered confrontation (Moon loves discussion), but arguments fall into that category.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Verhandlungsproben</altadvantage>
+				<altdisadvantage>Einem Anhänger von Mond muss eine Probe auf Charisma + Willenskraft (4) gelingen, damit er sich einer direkten Konfrontation stellt. Misslingt ihm die Probe, kann er keine Handlungen durchführen, die als direkte Konfrontation zu betrachten sind. Eine Verhandlung wird nicht als Konfrontation betrachtet (Mond liebt Diskussionen), aber Streit fällt in diese Kategorie.</altdisadvantage>
 				<altpage>96</altpage>
 			</mentor>
 			<mentor>
@@ -21632,15 +21634,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice pool bonus when summoning plant or air spirits (choose 1 when selecting this mentor spirit).</name>
-						<translate>Magician: +2 dice pool bonus when summoning plant or air spirits (choose 1 when selecting this mentor spirit).</translate>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen von Pflanzen- oder Luftgeistern (nach Wahl des Spielers).</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 2 levels of Stillness for free</name>
-						<translate>Adept: Gain 2 levels of Stillness for free</translate>
+						<translate>Adept: 2 Stufen Bewegungslosigkeit gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +1 to Damage Resistance tests.</altadvantage>
-				<altdisadvantage>Must have a natural (meaning unaugmented) Body and Strength of 4 or greater to select this mentor spirit.</altdisadvantage>
+				<altadvantage>Allgemein: +1 Würfel für Schadenswiderstandsproben</altadvantage>
+				<altdisadvantage>Ein Anhänger von Eiche muss eine natürliche (also nicht modifizierte) Konstitution und Stärke von mindestens 4 haben, um diesen Schutzgeist wählen zu können.</altdisadvantage>
 				<altpage>94</altpage>
 			</mentor>
 			<mentor>
@@ -21650,15 +21652,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 to summoning earth spirits.</name>
-						<translate>Magician: +2 to summoning earth spirits.</translate>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen von Erdgeistern</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain +2 levels of Light Body for free.</name>
-						<translate>Adept: Gain +2 levels of Light Body for free.</translate>
+						<translate>Adept: 2 Stufen Leichter Körper gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 to Blades tests.</altadvantage>
-				<altdisadvantage>Followers of the Stag demand respect, especially to those they give it to. Once disrespected, they must succeed in a Charisma + Willpower (3) Test, or they will demand satisfaction against the slight.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Klingenwaffen-Proben</altadvantage>
+				<altdisadvantage>Anhänger von Hirsch verlangen Respekt, vor allem von jenen, die sie selbst respektieren. Wenn ein Anhänger von Hirsch respektlos behandelt wird, muss ihm eine Probe auf Charisma + Willenskraft (3) gelingen, ansonsten fordert er Satisfaktion.</altdisadvantage>
 				<altpage>96</altpage>
 			</mentor>
 			<mentor>
@@ -21668,15 +21670,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
-						<translate>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Alchemische Erzeugnisse und Rituale der Kategorie Manipulation</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 2 free levels of Spirit Claw (although in this case, it manifests as a fang).</name>
-						<translate>Adept: Gain 2 free levels of Spirit Claw (although in this case, it manifests as a fang).</translate>
+						<translate>Adept: Geisterkralle gratis (die sich in diesem Fall aber als Fangzähne ausprägt)</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifier for tests using the Stealth skill group.</altadvantage>
-				<altdisadvantage>When not following a plan or a plan doesn’t go according to plan, followers of Spider must pass a Charisma + Willpower (4) Test or suffer –2 to all rolls until a new plan is established.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Proben mit Fertigkeiten aus der Fertigkeitsgruppe Heimlichkeit</altadvantage>
+				<altdisadvantage>Anhänger von Spinne werden genauso unruhig wie ihr Schutzgeist, wenn etwas passiert, das sie nicht unter Kontrolle haben. Daher tun sie viel dafür, bei Begegnungen den Zufall auszuschalten. Wenn ein Anhänger von Spinne keinem Plan folgt oder ein Plan nicht so abläuft wie gedacht, muss ihm eine Probe auf Charisma + Willenskraft (4) gelingen, ansonsten muss er einen Würfelpoolmalus von -2 auf alle Proben in Kauf nehmen, bis ein neuer Plan geschmiedet ist.</altdisadvantage>
 				<altpage>99</altpage>
 			</mentor>
 			<mentor>
@@ -21686,15 +21688,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +1 dice pool modifier when casting Combat spells, preparations, and rituals.</name>
-						<translate>Magician: +1 dice pool modifier when casting Combat spells, preparations, and rituals.</translate>
+						<translate>Zauberer: +1 Würfel für Zauber, Alchemische Erzeugnisse und Rituale der Kategorie Kampf</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 2 free levels of Danger Sense.</name>
-						<translate>Adept: Gain 2 free levels of Danger Sense.</translate>
+						<translate>Adept: 2 Stufen Gefahrsinn gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +1 dice pool modifier for tests using the Sneaking, Perception, Survival, and Tracking skills.</altadvantage>
-				<altdisadvantage>Whenever a follower of Wolf sees an opportunity to survive by attacking or sacrifcing the weak, they must pass a Charisma + Willpower (4) Test or attempt to seize the opportunity. This does not apply to those the Wolf considers friends or family.</altdisadvantage>
+				<altadvantage>Allgemein: +1 Würfel für Proben auf Schleichen, Spurenlesen, Survival und Wahrnehmung</altadvantage>
+				<altdisadvantage>Wolf ist nicht ehrenhaft. Er ist ein Überlebenskünstler und die Schwachen sind seine Beute. Wenn ein Anhänger von Wolf eine Möglichkeit zum Überleben erkennt, indem er Schwache angreift oder opfert, muss ihm eine Probe auf Charisma + Willenskraft (4) gelingen, sonst packt er die Gelegenheit beim Schopf. Dies gilt nicht für Personen, die Wolf als Freunde oder Familie sieht.</altdisadvantage>
 				<altpage>99</altpage>
 			</mentor>
 			<mentor>
@@ -21704,32 +21706,32 @@
 				<choices>
 					<choice>
 						<name>Magician: +1 dice pool modifier when casting Health spells, preparations, and rituals</name>
-						<translate>Magician: +1 dice pool modifier when casting Health spells, preparations, and rituals</translate>
+						<translate>Zauberer: +1 Würfel für ZAuber, Alchemische Erzeugnisse und Rituale der Kategorie Heilung</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain 1 free level of Analytics.</name>
-						<translate>Adept: Gain 1 free level of Analytics.</translate>
+						<translate>Adept: 1 Stufe Analytik gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +1 dice pool modifier for tests using the Perception and Sneaking skills.</altadvantage>
-				<altdisadvantage> Followers of Rat cannot receive aid or aid others with a Teamwork test unless they trust the individuals they are teaming with. Further, if they do trust the individuals, but that trust is broken through incompetence or betrayal, they must pass a Charisma + Willpower (4) Test to be able to use teamwork with that individual each time in the future.</altdisadvantage>
+				<altadvantage>Allgemein: +1 Würfel für Proben auf Schleichen und Wahrnehmung</altadvantage>
+				<altdisadvantage> Ratte ist von Natur aus ein Einzelgänger. Daher fällt es ihr manchmal schwer, anderen zu vertrauen. In Verbindung mit ihrer Intoleranz gegenüber Inkompetent könnte das in einem Team problematisch werden. Anhänger von Ratte können anderen nur durch Teamworkproben helfen oder von ihnen Hilfe erhalten, wenn sie diesen Personen vertrauen. Wenn sie diesen Personen vertrauen, dieses Vertrauen aber durch Verrat oder Inkompetenz missbraucht wird, muss ihnen zukünftig immer eine Probe auf Charisma + Willenskraft (4) gelingen, um mit dieser Person bei einer Teamworkprobe zusammenzuarbeiten.</altdisadvantage>
 				<altpage>99</altpage>
 			</mentor>
 			<mentor>
 				<id>4d15a346-8f27-42c5-be8c-33a7bd56067d</id>
 				<name>Great Mother</name>
 				<translate>Große Mutter</translate>
-				<altadvantage>All: When not in an urban area, gain +1 to any skill test with skills in the Outdoors skill group.</altadvantage>
-				<altdisadvantage>Treat any background count due to pollution or twisted element as twice the actual rating.</altdisadvantage>
+				<altadvantage>Allgemein: Außerhalb urbaner Bereiche +1 Würfel auf alle Proben mit Fertigkeiten aus der Fertigkeitsgruppe Natur</altadvantage>
+				<altdisadvantage>Sämtliche Hintergrundstrahlung wegen Verschmutzung oder verdorbener Umgebung wirkt mit ihrer doppelten Stufe.</altdisadvantage>
 				<altpage>94</altpage>
 				<choices>
 					<choice>
 						<name>Magician: +2 for health spells, preparations, and spell rituals.</name>
-						<translate>Magician: +2 for health spells, preparations, and spell rituals.</translate>
+						<translate>Zauberer: + Würfel für Zauber, Alchemische Erzeugnisse und Rituale der Kategorie Heilung</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gain Empathic Healing for free.</name>
-						<translate>Adept: Gain Empathic Healing for free.</translate>
+						<translate>Adept: Empathische Heilung gratis</translate>
 					</choice>
 				</choices>
 			</mentor>
