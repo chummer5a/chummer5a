@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -9483,6 +9483,10 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Message_NonGuidIdWarning</key>
 			<text>{0} items were found in the file {1} with IDs that are not parsable as GUIDs. If you are using custom content, please ensure that ID fields are always filled with a unique GUID and only a unique GUID.\n\nItems with non-GUID ID fields:\n{2}</text>
+		</string>
+		<string>
+			<key>Checkbox_DiceRoller_VariableGlitch</key>
+			<text>Complication avec plus d'un que de succès, pas avec la moitié des dés</text>
 		</string>
 	</strings>
 </chummer>
