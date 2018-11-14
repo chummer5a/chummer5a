@@ -9119,7 +9119,7 @@ namespace Chummer
         /// <summary>
         /// Mentor spirits.
         /// </summary>
-        [HubTag]
+        [HubTag(true)]
         public ObservableCollection<MentorSpirit> MentorSpirits => _lstMentorSpirits;
 
         /// <summary>
@@ -9135,7 +9135,7 @@ namespace Chummer
         /// <summary>
         /// Magician Spells.
         /// </summary>
-        [HubTag]
+        [HubTag(true)]
         public ObservableCollection<Spell> Spells => _lstSpells;
 
         /// <summary>
@@ -9151,19 +9151,19 @@ namespace Chummer
         /// <summary>
         /// Adept Powers.
         /// </summary>
-        [HubTag]
+        [HubTag(true)]
         public CachedBindingList<Power> Powers => _lstPowers;
 
         /// <summary>
         /// Technomancer Complex Forms.
         /// </summary>
-        [HubTag]
+        [HubTag(true)]
         public ObservableCollection<ComplexForm> ComplexForms => _lstComplexForms;
 
         /// <summary>
         /// AI Programs and Advanced Programs
         /// </summary>
-        [HubTag]
+        [HubTag(true)]
         public ObservableCollection<AIProgram> AIPrograms => _lstAIPrograms;
 
         /// <summary>
@@ -9192,19 +9192,19 @@ namespace Chummer
         /// <summary>
         /// Armor.
         /// </summary>
-        [HubTag]
+        [HubTag(true)]
         public ObservableCollection<Armor> Armor => _lstArmor;
 
         /// <summary>
         /// Cyberware and Bioware.
         /// </summary>
-        [HubTag]
+        [HubTag(true)]
         public TaggedObservableCollection<Cyberware> Cyberware => _lstCyberware;
 
         /// <summary>
         /// Weapons.
         /// </summary>
-        [HubTag]
+        [HubTag(true)]
         public TaggedObservableCollection<Weapon> Weapons => _lstWeapons;
 
         /// <summary>
@@ -9215,19 +9215,19 @@ namespace Chummer
         /// <summary>
         /// Gear.
         /// </summary>
-        [HubTag]
+        [HubTag(true)]
         public ObservableCollection<Gear> Gear => _lstGear;
 
         /// <summary>
         /// Vehicles.
         /// </summary>
-        [HubTag]
+        [HubTag(true)]
         public TaggedObservableCollection<Vehicle> Vehicles => _lstVehicles;
 
         /// <summary>
         /// Metamagics and Echoes.
         /// </summary>
-        [HubTag]
+        [HubTag(true)]
         public ObservableCollection<Metamagic> Metamagics => _lstMetamagics;
 
         /// <summary>
@@ -9243,7 +9243,7 @@ namespace Chummer
         /// <summary>
         /// Critter Powers.
         /// </summary>
-        [HubTag]
+        [HubTag(true)]
         public ObservableCollection<CritterPower> CritterPowers => _lstCritterPowers;
 
         /// <summary>
@@ -9259,7 +9259,7 @@ namespace Chummer
         /// <summary>
         /// Qualities (Positive and Negative).
         /// </summary>
-        [HubTag]
+        [HubTag(true)]
         public ObservableCollection<Quality> Qualities => _lstQualities;
 
         /// <summary>

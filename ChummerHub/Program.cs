@@ -1,45 +1,57 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using ChummerHub.Services.GoogleDrive;
-using Microsoft.AspNetCore;
+﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+
+
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using System;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
+using Microsoft.AspNetCore;
+using Serilog.Events;
+using System.Linq;
 
 namespace ChummerHub
 {
-//#pragma warning disable CS1591
     public class Program
     {
-        
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            Console.Title = "IdentityServer4.EntityFramework";
+
+            var seed = args.Contains("/seed");
+            if (seed)
+            {
+                args = args.Except(new[] { "/seed" }).ToArray();
+            }
+
+            var host = BuildWebHost(args);
+
+            if (seed)
+            {
+                SeedData.EnsureSeedData(host.Services);
+                return;
+            }
+
+            host.Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                /*.UseKestrel(options =>
-                {
-                    options.Listen(IPAddress.Loopback, 5000);  // http:localhost:5000
-                    options.Listen(IPAddress.Any, 80);         // http:*:80
-                    options.Listen(IPAddress.Loopback, 443, listenOptions =>
+        public static IWebHost BuildWebHost(string[] args)
+        {
+            return WebHost.CreateDefaultBuilder(args)
+                    .UseStartup<Startup>()
+                    .UseSerilog((context, configuration) =>
                     {
-                        listenOptions.UseHttps("certificate.pfx", "password");
-                    });
-                })*/
-                .UseStartup<Startup>()
-                .ConfigureLogging((hostingContext, logging) =>
-                {
-                    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                    logging.AddConsole();
-                    logging.AddDebug();
-                });
-                
+                        configuration
+                            .MinimumLevel.Debug()
+                            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+                            .MinimumLevel.Override("System", LogEventLevel.Warning)
+                            .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
+                            .Enrich.FromLogContext()
+                            .WriteTo.File(@"identityserver4_log.txt")
+                            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate);
+                    })
+                    .Build();
+        }
     }
-//#pragma warning restore CS1591
 }

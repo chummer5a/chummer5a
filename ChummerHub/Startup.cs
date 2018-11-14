@@ -30,7 +30,10 @@ using ChummerHub.Services.GoogleDrive;
 using Microsoft.Extensions.Logging;
 using ChummerHub.API;
 using ChummerHub.Controllers.V1;
-//using Swashbuckle.AspNetCore.Filters;
+using IdentityServer4;
+using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace ChummerHub
 {
@@ -81,17 +84,36 @@ namespace ChummerHub
                 
             });
 
-            //services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
+            
 
-            services.AddDefaultIdentity<IdentityUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddSignInManager();
+            services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
 
-            services.AddSingleton<IEmailSender, EmailSender>();
-            services.Configure<AuthMessageSenderOptions>(Configuration);
+            //services.AddIdentity<IdentityUser, IdentityRole>()
+            //   //services.AddDefaultIdentity<IdentityUser>()
+            //   .AddEntityFrameworkStores<ApplicationDbContext>()
+            //   .AddDefaultTokenProviders();
 
-           
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+              //services.AddDefaultIdentity<IdentityUser>()
+              .AddEntityFrameworkStores<ApplicationDbContext>()
+              .AddDefaultTokenProviders();
 
+            // Add application services.
+            services.AddTransient<IEmailSender, EmailSender>();
+
+            //services.AddSingleton<IEmailSender, EmailSender>();
+            //services.Configure<AuthMessageSenderOptions>(Configuration);
+
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddRazorPagesOptions(options =>
+                {
+                    options.AllowAreas = true;
+                    options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
+                    options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
+                });
+
+            
 
             services.AddAuthentication()
                 .AddFacebook(facebookOptions =>
@@ -99,14 +121,35 @@ namespace ChummerHub
                     facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
                     facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
                     facebookOptions.BackchannelHttpHandler = new FacebookBackChannelHandler();
-                    facebookOptions.UserInformationEndpoint = "https://graph.facebook.com/v2.8/me?fields=id,name,email,first_name,last_name";
+                    //facebookOptions.UserInformationEndpoint = "https://graph.facebook.com/v2.8/me?fields=id,name,email,first_name,last_name";
+                    facebookOptions.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
                 })
                 .AddGoogle(options =>
                 {
-                    //1nRL79YCYpBeAp3SH-7ud-SrIqEL75qxH
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
                     options.ClientId = Configuration["Authentication:Google:ClientId"];
                     options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+                })
+                .AddCookie("Cookies")
+                .AddOpenIdConnect("oidc", options =>
+                {
+                    options.SignInScheme = "Cookies";
+#if DEBUG
+                    options.Authority = "http://localhost:5000";
+#else
+                    options.Authority = "http://sinners.azurewebsites.net";
+#endif
+                    options.RequireHttpsMetadata = false;
+
+                    options.ClientId = "mvc";
+                    options.SaveTokens = true;
                 });
+
+            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            //    .AddCookie(options =>
+            //    {
+            //        options.ExpireTimeSpan = TimeSpan.MaxValue;
+            //    });
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -127,7 +170,7 @@ namespace ChummerHub
                 options.User.AllowedUserNameCharacters =
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = true;
-                options.SignIn.RequireConfirmedEmail = true;
+                options.SignIn.RequireConfirmedEmail = false;
                 options.SignIn.RequireConfirmedPhoneNumber = false;
             });
 
@@ -141,10 +184,11 @@ namespace ChummerHub
                 //options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 //options.SlidingExpiration = true;
 
+                options.LogoutPath = $"/Identity/Account/Logout";
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 options.Cookie.Name = "SINnersCookie";
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                options.ExpireTimeSpan = TimeSpan.MaxValue;
                 options.LoginPath = "/Identity/Account/Login";
                 // ReturnUrlParameter requires 
                 //using Microsoft.AspNetCore.Authentication.Cookies;
@@ -155,15 +199,29 @@ namespace ChummerHub
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
 
-            services.AddMvcCore().AddVersionedApiExplorer(options =>
+            services.AddMvcCore()
+                .AddVersionedApiExplorer(options =>
                 {
                     options.GroupNameFormat = "'v'VVV";
                     
                     // note: this option is only necessary when versioning by url segment. the SubstitutionFormat
                     // can also be used to control the format of the API version in route templates
                     options.SubstituteApiVersionInUrl = true;
-                }
-            );
+                })
+                .AddAuthorization()
+                .AddJsonFormatters();
+
+//            services.AddAuthentication("Bearer")
+//                .AddIdentityServerAuthentication(options =>
+//                {
+//#if DEBUG
+//                    options.Authority = "http://localhost:5000";
+//#else
+//                    options.Authority = "http://sinners.azurewebsites.net";
+//#endif
+//                    options.RequireHttpsMetadata = false;
+//                    options.ApiName = "api1";
+//                });
 
             services.AddApiVersioning(o =>
             {
@@ -173,8 +231,7 @@ namespace ChummerHub
                 //o.ApiVersionReader = new HeaderApiVersionReader("api-version");
                 //o.Conventions.Controller<Controllers.V1.SINnerController>().HasApiVersion(new ApiVersion(1, 0));
                 //o.Conventions.Controller<Controllers.V2.SINnerController>().HasApiVersion(new ApiVersion(2, 0));
-            }
-          );
+            });
 
 
             services.AddSwaggerGen(options =>
@@ -243,12 +300,46 @@ namespace ChummerHub
 
             services.AddSwaggerExamples();
 
-          
 
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.SuppressModelStateInvalidFilter = true;
-            });
+            // configure identity server with in-memory stores, keys, clients and scopes
+            services.AddIdentityServer()
+                .AddDeveloperSigningCredential()
+                .AddTestUsers(Config.GetUsers())
+                .AddAspNetIdentity<ApplicationUser>()
+                .AddConfigurationStore(options =>
+                {
+                    options.ConfigureDbContext = builder =>
+                        builder.UseSqlServer(connectionString,
+                            sql => sql.MigrationsAssembly(migrationsAssembly));
+                })
+                // this adds the operational data from DB (codes, tokens, consents)
+                .AddOperationalStore(options =>
+                {
+                    options.ConfigureDbContext = builder =>
+                        builder.UseSqlServer(connectionString,
+                            sql => sql.MigrationsAssembly(migrationsAssembly));
+
+                    // this enables automatic token cleanup. this is optional.
+                    options.EnableTokenCleanup = true;
+                    options.TokenCleanupInterval = 30;
+                });
+            //.AddDeveloperSigningCredential()
+            //.AddInMemoryPersistedGrants()
+            //.AddInMemoryIdentityResources(Config.GetIdentityResources())
+            //.AddInMemoryApiResources(Config.GetApiResources())
+            //.AddInMemoryClients(Config.GetClients())
+            //.AddAspNetIdentity<ApplicationUser>();
+
+
+            //services.AddHttpsRedirection(options =>
+            //{
+            //    options.HttpsPort = 443;
+            //});
+
+            //services.Configure<ApiBehaviorOptions>(options =>
+            //{
+            //    options.SuppressModelStateInvalidFilter = true;
+            //});
 
 
         }
@@ -261,6 +352,7 @@ namespace ChummerHub
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseBrowserLink();
                 app.UseDatabaseErrorPage();
 
             }
@@ -270,11 +362,12 @@ namespace ChummerHub
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            app.UseAuthentication();
+            // app.UseAuthentication(); // not needed, since UseIdentityServer adds the authentication middleware
+            app.UseIdentityServer();
 
             app.UseMvc(routes =>
             {
@@ -309,15 +402,15 @@ namespace ChummerHub
             using (var serviceScope = serviceScopeFactory.CreateScope())
             {
                 var dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
-                //dbContext.Database.EnsureDeleted();
+                dbContext.Database.EnsureDeleted();
                 dbContext.Database.EnsureCreated();
             }
 
-
-            
-
+          
 
         }
 
+
+        
     }
 }
