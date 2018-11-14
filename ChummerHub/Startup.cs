@@ -80,7 +80,7 @@ namespace ChummerHub
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection"));
+                    Configuration.GetConnectionString("DefaultSINConnection"));
                 
             });
 
@@ -300,6 +300,7 @@ namespace ChummerHub
 
             services.AddSwaggerExamples();
 
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
             // configure identity server with in-memory stores, keys, clients and scopes
             services.AddIdentityServer()
@@ -309,14 +310,14 @@ namespace ChummerHub
                 .AddConfigurationStore(options =>
                 {
                     options.ConfigureDbContext = builder =>
-                        builder.UseSqlServer(connectionString,
+                        builder.UseSqlServer(Configuration.GetConnectionString("DefaultIdentityConnection"),
                             sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
                 // this adds the operational data from DB (codes, tokens, consents)
                 .AddOperationalStore(options =>
                 {
                     options.ConfigureDbContext = builder =>
-                        builder.UseSqlServer(connectionString,
+                        builder.UseSqlServer(Configuration.GetConnectionString("DefaultIdentityConnection"),
                             sql => sql.MigrationsAssembly(migrationsAssembly));
 
                     // this enables automatic token cleanup. this is optional.
@@ -371,9 +372,15 @@ namespace ChummerHub
 
             app.UseMvc(routes =>
             {
+                
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=SINnerHome}/{action=Index}/{id?}"
+                    );
+                //routes.MapRoute(
+                //    name: "Identity",
+                //    template: "Identity/{controller=IdentityHome}/{action=Index}/{id?}"
+                //    );
             });
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.

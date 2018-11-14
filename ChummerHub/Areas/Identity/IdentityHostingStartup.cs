@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ChummerHub.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -15,7 +15,10 @@ namespace ChummerHub.Areas.Identity
         public void Configure(IWebHostBuilder builder)
         {
             builder.ConfigureServices((context, services) => {
+              
             });
+
+            
         }
     }
 }

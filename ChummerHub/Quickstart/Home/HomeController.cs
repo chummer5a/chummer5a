@@ -12,12 +12,12 @@ namespace IdentityServer4.Quickstart.UI
 {
     [SecurityHeaders]
     [AllowAnonymous]
-    public class HomeController : Controller
+    public class IdentityHomeController : Controller
     {
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IHostingEnvironment _environment;
 
-        public HomeController(IIdentityServerInteractionService interaction, IHostingEnvironment environment)
+        public IdentityHomeController(IIdentityServerInteractionService interaction, IHostingEnvironment environment)
         {
             _interaction = interaction;
             _environment = environment;

@@ -15,7 +15,7 @@
                 "ASPNETCORE_ENVIRONMENT": "Development"
             }
         },
-        "Host": {
+        "ChummerHub": {
             "commandName": "Project",
             "launchBrowser": true,
             "environmentVariables": {
