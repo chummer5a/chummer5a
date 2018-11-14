@@ -23738,11 +23738,75 @@
 		<mentors>
 			<mentor translated="True">
 				<id>acadd628-ebb5-4c79-a3c2-953ce7fa1885</id>
-				<name>01</name>
-				<translate>01</translate>
-				<altadvantage>+1 Würfel für das Kompilieren und Registrieren von Sprites jeder Art.</altadvantage>
-				<altdisadvantage>Null-Eins ist die Perfektion des Codes und verlangt seinen Anhängern das Gleiche ab oder erteilt ihnen zumindest eine harte Lektion, wenn sie fehlschlagen. Null-Eins-Technomancer müssen 2 Punkte Edge ausgeben, um einen Patzer zu negieren oder einen kritischen Patzer abzuschwächen.</altdisadvantage>
+				<name>01 (The World Tree)</name>
+				<translate>01 (Der Weltenbaum)</translate>
+				<altadvantage>Bei mindestens einer Marke auf einem Ziel kann gehandelt werden, als wäre eine Marke mehr vorhanden</altadvantage>
+				<altdisadvantage>-1 auf Limit und Würfel bei Handlungen, die nur in der AR stattfinden</altdisadvantage>
 				<altpage>103</altpage>
+			</mentor>
+			<mentor translated="True">
+				<id>46f88748-8c6c-4230-ad59-2eccb463cc35</id>
+				<name>Architect</name>
+				<translate>Architekt (Der Baumeister)</translate>
+				<altadvantage>+1 auf Limit und Würfel bei der Handlung Datei Editieren und der Komplexen Form Editor</altadvantage>
+				<altdisadvantage>-1 auf Limit und Würfel bei der Handlung Übertragung Abfangen</altdisadvantage>
+				<altpage>103</altpage>
+			</mentor>
+			<mentor translated="True">
+				<id>690ccad8-3f42-4d62-a358-e099747fc4e4</id>
+				<name>Archivist (The Record Keeper)</name>
+				<translate>Archivar (Der Geheimniswahrer)</translate>
+				<altadvantage>+1 auf Limit und Würfel bei der Handlung Matrixsuche und sonstiger digitaler Beinarbeit</altadvantage>
+				<altdisadvantage>-1 auf Limit bei der Handlung Datei Editieren und der Komplexen Form Editor, wenn dadurch Daten vernichtet werden</altdisadvantage>
+				<altpage>103</altpage>
+			</mentor>
+			<mentor translated="True">
+				<id>117e7c69-abea-4637-b5e7-3a927ae0ad60</id>
+				<name>Black Hat (The Cracker)</name>
+				<translate>Der Schwarze Hut (Der Cracker)</translate>
+				<altadvantage>+2 auf Limit beim Platzieren von Marken auf einem Ziel</altadvantage>
+				<altdisadvantage>-1 auf Limit und Würfel beim Legen von Datenbomben</altdisadvantage>
+				<altpage>104</altpage>
+			</mentor>
+			<mentor translated="True">
+				<id>b74d032e-5d39-4e4a-b043-0707ffa00b5e</id>
+				<name>Daedalus (The Inventor)</name>
+				<translate>Daedalus (Der Erfinder)</translate>
+				<altadvantage>+1 Würfel bei Hardwareproben, +1 Limit bei Proben mit Fahrzeugfertigkeiten, wenn der Technomancer hineingesprungen ist</altadvantage>
+				<altdisadvantage>-1 auf Limit und Würfel bei allen Handlungen in der Tiefenresonanz</altdisadvantage>
+				<altpage>104</altpage>
+			</mentor>
+			<mentor translated="True">
+				<id>c45c123c-06c7-42b3-a2ee-01e37f2f7bf8</id>
+				<name>Delphi (The Oracle)</name>
+				<translate>Delphi (Das Orakel)</translate>
+				<altadvantage>+1 auf Limit und Würfel beim Weben von Komplexen Formen</altadvantage>
+				<altdisadvantage>Initiativeergebnis -2</altdisadvantage>
+				<altpage>104</altpage>
+			</mentor>
+			<mentor translated="True">
+				<id>df42911f-0542-4fae-80d1-39573547ff68</id>
+				<name>Intrusion Countermeasure (The Guardian)</name>
+				<translate>Daedalus (Der Erfinder)</translate>
+				<altadvantage>+1 Würfel bei Hardwareproben, +1 Limit bei Proben mit Fahrzeugfertigkeiten, wenn der Technomancer hineingesprungen ist</altadvantage>
+				<altdisadvantage>-1 auf Limit und Würfel bei allen Handlungen in der Tiefenresonanz</altdisadvantage>
+				<altpage>104</altpage>
+			</mentor>
+			<mentor translated="True">
+				<id>da2f3bad-d934-461a-aa92-60fc6e5c3ef7</id>
+				<name>Probe (The Scout)</name>
+				<translate>Sonde (Der Aufklärer)</translate>
+				<altadvantage>+ 1 Limit und +2 Würfel bei allen Handlungen mit Direktverbindun zu einem isolierten System</altadvantage>
+				<altdisadvantage>-1 auf Limit, wenn der Technomancer in mehr al ein Gitter eingeloggt ist</altdisadvantage>
+				<altpage>105</altpage>
+			</mentor>
+			<mentor translated="True">
+				<id>de755412-5cae-4859-880f-75a7bd68d5a4</id>
+				<name>Shooter (The Soldier)</name>
+				<translate>Todesschütze (Der Soldat)</translate>
+				<altadvantage>+ 1 auf Limit und Würfel im Matrixkampf; +1 Limit bei allen Angriffshandlungen (physisch und in der Matrix)</altadvantage>
+				<altdisadvantage>-1 auf Limit und -2 Würfel beim Kompilieren von Sprites</altdisadvantage>
+				<altpage>105</altpage>
 			</mentor>
 			<mentor>
 				<id>46f88748-8c6c-4230-ad59-2eccb463cc35</id>
@@ -23781,24 +23845,6 @@
 				</choices>
 			</mentor>
 			<mentor>
-				<id>117e7c69-abea-4637-b5e7-3a927ae0ad60</id>
-				<name>The Black Hat</name>
-				<translate>Der Schwarze Hut</translate>
-				<altadvantage>+2 Würfel auf Ausnutzen-Proben</altadvantage>
-				<altdisadvantage>Technomancer, die dem Schwarzen Hut folgen, können nur schwer der Versuchung widerstehen, in einen Knoten einzudringen, der ihnen irgendwie interessant erscheint. Dem Technomancer muss eine Willenskraft + Charisma (3)-Probe gelingen, um dieser Versuchung zu widerstehen, wenn sich eine entsprechende Gelegenheit ergibt.</altdisadvantage>
-				<altpage>163</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for Crack sprites</name>
-						<translate>+1 Würfel für Infiltrator-Sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for Fault sprites</name>
-						<translate>+1 Würfel für Stör-Sprites</translate>
-					</choice>
-				</choices>
-			</mentor>
-			<mentor>
 				<id>b74d032e-5d39-4e4a-b043-0707ffa00b5e</id>
 				<name>Cryptome</name>
 				<translate>Kryptom</translate>
@@ -23813,24 +23859,6 @@
 					<choice>
 						<name>+1 die for Data sprites</name>
 						<translate>+1 Würfel für Daten-Sprites</translate>
-					</choice>
-				</choices>
-			</mentor>
-			<mentor translated="True">
-				<id>c45c123c-06c7-42b3-a2ee-01e37f2f7bf8</id>
-				<name>Delphi</name>
-				<translate>Delphi</translate>
-				<altadvantage>+2 Würfel auf Analyse-Proben</altadvantage>
-				<altdisadvantage>Delphi-Technomancer können sich nicht gut auf unerwartete Situationen einstellen. Ihnen muss eine Willenskraft + Logik (3)-Probe gelingen, um in Situationen, die sie nicht eingeplant haben, eine schnelle Entscheidung zu treffen.</altdisadvantage>
-				<altpage>104</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for Code sprites</name>
-						<translate>+1 Würfel für Code-Sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for Tutor sprites</name>
-						<translate>+1 Würfel für Lehrer-Sprites</translate>
 					</choice>
 				</choices>
 			</mentor>
