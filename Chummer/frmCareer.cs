@@ -8990,6 +8990,8 @@ namespace Chummer
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
                 }
+                else
+                    objCyberware.DeleteCyberware();
 
                 frmPickCyberware.Dispose();
             }
@@ -14308,6 +14310,8 @@ namespace Chummer
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
             }
+            else
+                objCyberware.DeleteCyberware();
 
             frmPickCyberware.Dispose();
             
