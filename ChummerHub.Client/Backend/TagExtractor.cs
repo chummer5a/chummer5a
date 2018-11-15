@@ -58,8 +58,10 @@ namespace ChummerHub.Client.Backend
                 }
                 if (islist != null)
                 {
+                    int counter = 0;
                     foreach (var item in islist)
                     {
+                        counter++;
                         List<Tuple<Chummer.helpers.HubClassTagAttribute, Object>> classprops = (from p in item.GetType().GetCustomAttributes(typeof(Chummer.helpers.HubClassTagAttribute), true)
                                                                                                 select new Tuple<Chummer.helpers.HubClassTagAttribute, Object>(p as Chummer.helpers.HubClassTagAttribute, obj)).ToList();
                         foreach (var classprop in classprops)
@@ -95,9 +97,12 @@ namespace ChummerHub.Client.Backend
                                 }
                             }
                         }
-                        
-                        
-                        
+                    }
+                    if (counter == 0)
+                    {
+                        //this whole tree is empty - remove it!
+                        parenttag.MyParentTag.Tags.Remove(parenttag);
+                        return null;
                     }
                     return resulttags;
                 }
@@ -206,7 +211,10 @@ namespace ChummerHub.Client.Backend
             if (prop.Item1 != null)
             {
                 var childlist = ExtractTagsFromAttributes(tag.MyRuntimeObject, tag);
-                proptaglist.AddRange(childlist);
+                if (childlist != null)
+                {
+                    proptaglist.AddRange(childlist);
+                }
             }
             if (attribute.DeleteIfEmpty)
             {

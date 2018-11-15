@@ -1,37 +1,82 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
-for details on configuring this project to bundle and minify static web assets. */
-body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+﻿body {
+  margin-top: 65px;
 }
-
-/* Wrapping element */
-/* Set some basic padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+.navbar-header {
+  position: relative;
+  top: -4px;
 }
-
-/* Carousel */
-.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
+.navbar-brand > .icon-banner {
+  position: relative;
+  top: -2px;
+  display: inline;
 }
-
-/* Make .svg files in the carousel display properly in older browsers */
-.carousel-inner .item img[src$=".svg"] {
-    width: 100%;
+.icon {
+  position: relative;
+  top: -10px;
 }
-
-/* QR code generator */
-#qrCode {
-    margin: 15px;
+.logged-out iframe {
+  display: none;
+  width: 0;
+  height: 0;
 }
-
-/* Hide/rearrange for smaller screens */
-@media screen and (max-width: 767px) {
-    /* Hide captions */
-    .carousel-caption {
-        display: none;
-    }
+.page-consent .client-logo {
+  float: left;
+}
+.page-consent .client-logo img {
+  width: 80px;
+  height: 80px;
+}
+.page-consent .consent-buttons {
+  margin-top: 25px;
+}
+.page-consent .consent-form .consent-scopecheck {
+  display: inline-block;
+  margin-right: 5px;
+}
+.page-consent .consent-form .consent-description {
+  margin-left: 25px;
+}
+.page-consent .consent-form .consent-description label {
+  font-weight: normal;
+}
+.page-consent .consent-form .consent-remember {
+  padding-left: 16px;
+}
+.grants .page-header {
+  margin-bottom: 10px;
+}
+.grants .grant {
+  margin-top: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid lightgray;
+}
+.grants .grant img {
+  width: 100px;
+  height: 100px;
+}
+.grants .grant .clientname {
+  font-size: 140%;
+  font-weight: bold;
+}
+.grants .grant .granttype {
+  font-size: 120%;
+  font-weight: bold;
+}
+.grants .grant .created {
+  font-size: 120%;
+  font-weight: bold;
+}
+.grants .grant .expires {
+  font-size: 120%;
+  font-weight: bold;
+}
+.grants .grant li {
+  list-style-type: none;
+  display: inline;
+}
+.grants .grant li:after {
+  content: ', ';
+}
+.grants .grant li:last-child:after {
+  content: '';
 }

@@ -223,14 +223,6 @@ namespace ChummerHub.Services.GoogleDrive
             try
             {
                 var fileMetadata = new Google.Apis.Drive.v3.Data.File();
-                //{ Permissions = new List<Permission>()
-                //    { new Permission()
-                //    {
-                //        Kind = "drive#permission",
-                //        Role = "reader",
-                //        Type = "anyone"
-                //    }}
-                //};
                 fileMetadata.Properties = new Dictionary<string, string>();
                 foreach(var tag in chummerFile.SINnerMetaData.Tags)
                 {

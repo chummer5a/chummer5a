@@ -8,8 +8,12 @@ namespace ChummerHub.Models.V1
 {
     public class SearchTag
     {
+        [Key]
+        public Guid sTagId { get; set; }
         public string sTagName { get; set; }
         public string sTagValue { get; set; }
+
+        public Guid? sParentTagId { get; set; }
 
         public List<SearchTag> sTags { get; set; }
 
@@ -26,6 +30,7 @@ namespace ChummerHub.Models.V1
 
         public SearchTag()
         {
+            sTagId = Guid.NewGuid();
             this.sTagName = "";
             this.sTagValue = "";
             this.sTags = new List<SearchTag>();

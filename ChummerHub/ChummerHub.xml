@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ChummerHub</name>
+    </assembly>
+    <members>
+        <member name="M:ChummerHub.Controllers.V1.ChummerHelper.GetDownloadFile(System.Guid)">
+            <summary>
+            Returns the Chummer-Save-File
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerController.Put(System.Guid,Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            The Xml or Zip File can be uploaded (knowing the previously stored Id)
+            </summary>
+            <param name="id"></param>
+            <param name="uploadedFile"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerController.Post(ChummerHub.Models.V1.UploadInfoObject)">
+            <summary>
+            Store the MetaData for chummerfiles (to get a Id).
+            This Id can be used to store the actual file with PUT afterwards.
+            Alternativly, the DownloadUrl can be set directly from the Client.
+            </summary>
+            <param name="uploadInfo"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ChummerHub.Services.GoogleDrive.GoogleIDataStore">
+            <summary>
+            Handles internal token storage, bypassing filesystem
+            </summary>
+        </member>
+        <member name="M:ChummerHub.Services.GoogleDrive.GoogleIDataStore.ClearAsync">
+            <summary>
+            Remove all items
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Services.GoogleDrive.GoogleIDataStore.GetAsync``1(System.String)">
+            <summary>
+            Obtain object
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Services.GoogleDrive.GoogleIDataStore.StoreAsync``1(System.String,``0)">
+            <summary>
+            Add/update value for key/value
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="key"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Services.GoogleDrive.GoogleIDataStore.AssertCorrectType``1">
+            <summary>
+            Validate we can store this type
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:ChummerHub.Services.GoogleDrive.GoogleIDataStore.DeleteAsync``1(System.String)">
+            <summary>
+            Remove single entry
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Identity.ApplicationUser.Groupname">
+            <summary>
+            A way for a GM to search for all the characters of "his" group
+            </summary>
+        </member>
+        <member name="T:IdentityServer4.Quickstart.UI.AccountController">
+            <summary>
+            This sample controller implements a typical login/logout/provision workflow for local and external accounts.
+            The login service encapsulates the interactions with the user data store. This data store is in-memory only and cannot be used for production!
+            The interaction service provides a way for the UI to communicate with identityserver for validation and context retrieval
+            </summary>
+        </member>
+        <member name="M:IdentityServer4.Quickstart.UI.AccountController.Login(System.String)">
+            <summary>
+            Entry point into the login workflow
+            </summary>
+        </member>
+        <member name="M:IdentityServer4.Quickstart.UI.AccountController.Login(IdentityServer4.Quickstart.UI.LoginInputModel,System.String)">
+            <summary>
+            Handle postback from username/password login
+            </summary>
+        </member>
+        <member name="M:IdentityServer4.Quickstart.UI.AccountController.Logout(System.String)">
+            <summary>
+            Show logout page
+            </summary>
+        </member>
+        <member name="M:IdentityServer4.Quickstart.UI.AccountController.Logout(IdentityServer4.Quickstart.UI.LogoutInputModel)">
+            <summary>
+            Handle logout page postback
+            </summary>
+        </member>
+        <member name="T:IdentityServer4.Quickstart.UI.ConsentController">
+            <summary>
+            This controller processes the consent UI
+            </summary>
+        </member>
+        <member name="M:IdentityServer4.Quickstart.UI.ConsentController.Index(System.String)">
+            <summary>
+            Shows the consent screen
+            </summary>
+            <param name="returnUrl"></param>
+            <returns></returns>
+        </member>
+        <member name="M:IdentityServer4.Quickstart.UI.ConsentController.Index(IdentityServer4.Quickstart.UI.ConsentInputModel)">
+            <summary>
+            Handles the consent screen postback
+            </summary>
+        </member>
+        <member name="M:IdentityServer4.Quickstart.UI.Extensions.IsPkceClientAsync(IdentityServer4.Stores.IClientStore,System.String)">
+            <summary>
+            Determines whether the client is configured to use PKCE.
+            </summary>
+            <param name="store">The store.</param>
+            <param name="client_id">The client identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="T:IdentityServer4.Quickstart.UI.GrantsController">
+            <summary>
+            This sample controller allows a user to revoke grants given to clients
+            </summary>
+        </member>
+        <member name="M:IdentityServer4.Quickstart.UI.GrantsController.Index">
+            <summary>
+            Show list of grants
+            </summary>
+        </member>
+        <member name="M:IdentityServer4.Quickstart.UI.GrantsController.Revoke(System.String)">
+            <summary>
+            Handle postback to revoke a client
+            </summary>
+        </member>
+        <member name="M:IdentityServer4.Quickstart.UI.IdentityHomeController.Error(System.String)">
+            <summary>
+            Shows the error page
+            </summary>
+        </member>
+        <member name="M:Host.Quickstart.Account.ExternalController.Challenge(System.String,System.String)">
+            <summary>
+            initiate roundtrip to external authentication provider
+            </summary>
+        </member>
+        <member name="M:Host.Quickstart.Account.ExternalController.Callback">
+            <summary>
+            Post processing of external authentication
+            </summary>
+        </member>
+    </members>
+</doc>
