@@ -30,7 +30,7 @@ using ChummerHub.Services.GoogleDrive;
 using Microsoft.Extensions.Logging;
 using ChummerHub.API;
 using ChummerHub.Controllers.V1;
-//using Swashbuckle.AspNetCore.Filters;
+
 
 namespace ChummerHub
 {
@@ -63,7 +63,43 @@ namespace ChummerHub
         public void ConfigureServices(IServiceCollection services)
         {
             MyServices = services;
+
+            //var connectionString = Configuration.GetConnectionString("DefaultIdConnection");
+            //var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+
+//            var identityServer = services.AddIdentityServer(options =>
+//                {
+//                    options.Events.RaiseErrorEvents = true;
+//                    options.Events.RaiseInformationEvents = true;
+//                    options.Events.RaiseFailureEvents = true;
+//                    options.Events.RaiseSuccessEvents = true;
+//                })
+//                // this adds the config data from DB (clients, resources, CORS)
+//                .AddConfigurationStore(options =>
+//                {
+//                    options.ConfigureDbContext = builder =>
+//                        builder.UseSqlite(connectionString,
+//                            sql => sql.MigrationsAssembly(migrationsAssembly));
+//                })
+//                // this adds the operational data from DB (codes, tokens, consents)
+//                .AddOperationalStore(options =>
+//                {
+//                    options.ConfigureDbContext = builder =>
+//                        builder.UseSqlite(connectionString,
+//                            sql => sql.MigrationsAssembly(migrationsAssembly));
+
+//                    // this enables automatic token cleanup. this is optional.
+//                    options.EnableTokenCleanup = true;
+//                    // options.TokenCleanupInterval = 15; // interval in seconds. 15 seconds useful for debugging
+//                })
+//#if DEBUG
+//                .AddDeveloperSigningCredential();
+//#else
+//            ;
+//            throw new Exception("need to configure key material");
+//#endif
             
+
 
 
             services.Configure<CookiePolicyOptions>(options =>
@@ -81,9 +117,9 @@ namespace ChummerHub
                 
             });
 
-            //services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
+            services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
 
-            services.AddDefaultIdentity<IdentityUser>()
+            services.AddDefaultIdentity<ApplicationUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddSignInManager();
 
@@ -103,7 +139,7 @@ namespace ChummerHub
                 })
                 .AddGoogle(options =>
                 {
-                    //1nRL79YCYpBeAp3SH-7ud-SrIqEL75qxH
+                    //options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
                     options.ClientId = Configuration["Authentication:Google:ClientId"];
                     options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
                 });
@@ -303,6 +339,7 @@ namespace ChummerHub
                 }
             });
 
+
             
 
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
@@ -311,13 +348,14 @@ namespace ChummerHub
                 var dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
                 //dbContext.Database.EnsureDeleted();
                 dbContext.Database.EnsureCreated();
+            
             }
 
-
-            
-
+          
 
         }
 
+
+        
     }
 }

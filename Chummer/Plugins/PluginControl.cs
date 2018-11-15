@@ -59,6 +59,26 @@ namespace Chummer.Plugins
         [ImportMany(typeof(IPlugin))]
         public IEnumerable<IPlugin> MyPlugins { get; set; }
 
+        public IEnumerable<IPlugin> MyActivePlugins
+        { get
+          {
+                List<IPlugin> result = new List<IPlugin>();
+                if (GlobalOptions.PluginsEnabled == false)
+                    return result;
+                var list = MyPlugins.ToList();
+                foreach(var plugin in list)
+                {
+                    bool enabled = false;
+                    if (GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out enabled))
+                    {
+                        if (enabled)
+                            result.Add(plugin);
+                    }
+                }
+                return result;
+          }
+        }
+
 
         private static void StartWatch()
         {
@@ -100,7 +120,7 @@ namespace Chummer.Plugins
 
         internal void CallPlugins(frmCareer frmCareer)
         {
-            foreach(var plugin in MyPlugins)
+            foreach(var plugin in MyActivePlugins)
             {
                 foreach (TabPage page in plugin.GetTabPages(frmCareer))
                 {
@@ -115,7 +135,7 @@ namespace Chummer.Plugins
 
         internal void CallPlugins(ToolStripMenuItem menu)
         {
-            foreach (var plugin in MyPlugins)
+            foreach (var plugin in MyActivePlugins)
             {
                 foreach (ToolStripMenuItem plugInMenu in plugin.GetMenuItems(menu))
                 {
