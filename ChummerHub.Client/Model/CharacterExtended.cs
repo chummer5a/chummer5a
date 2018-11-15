@@ -116,6 +116,8 @@ namespace ChummerHub.Client.Model
             //Byte[] bytes = File.ReadAllBytes(tempfile);
             
             string zipPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), MySINnerFile.SiNnerId.Value + ".chum5z");
+            if (File.Exists(zipPath))
+                File.Delete(zipPath);
             ZipFile.CreateFromDirectory(tempDir, zipPath);
             return zipPath;
         }
