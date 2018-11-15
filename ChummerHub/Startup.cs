@@ -83,16 +83,27 @@ namespace ChummerHub
 
             //services.AddDefaultIdentity<ApplicationUser>()
             //    .AddEntityFrameworkStores<ApplicationDbContext>()
-            //    .AddSignInManager();
+            //    .AddSignInManager()
+            //    .AddRoleManager<RoleManager<ApplicationRole>>()
+            //    .AddDefaultTokenProviders();
 
-            //services.AddIdentity<ApplicationUser, IdentityRole>()
-              services.AddDefaultIdentity<ApplicationUser>(options =>
-              {
-                  
+            //services.AddIdentityCore<ApplicationUser>(options => { });
+            //new IdentityBuilder(typeof(ApplicationUser), typeof(IdentityRole), services)
+            //    .AddRoleManager<RoleManager<IdentityRole>>()
+            //    .AddSignInManager<SignInManager<ApplicationUser>>()
+            //    .AddEntityFrameworkStores<ApplicationDbContext>()
+            //    .AddDefaultTokenProviders();
+
+
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+            //services.AddDefaultIdentity<ApplicationUser>(options =>
+            {
+
               })
+              .AddRoleManager<RoleManager<ApplicationRole>>()
               .AddEntityFrameworkStores<ApplicationDbContext>()
               .AddDefaultTokenProviders()
-              .AddSignInManager(); 
+              .AddSignInManager();
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
@@ -126,20 +137,22 @@ namespace ChummerHub
                     options.ClientId = Configuration["Authentication:Google:ClientId"];
                     options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
                 })
-                .AddCookie("Cookies")
-                .AddOpenIdConnect("oidc", options =>
-                {
-                    options.SignInScheme = "Cookies";
-#if DEBUG
-                    options.Authority = "http://localhost:5000";
-#else
-                    options.Authority = "http://sinners.azurewebsites.net";
-#endif
-                    options.RequireHttpsMetadata = false;
+                //.AddCookie("Identity.External")
+                //.AddCookie("Identity.Application")
+                    //                .AddOpenIdConnect("oidc", options =>
+                    //                {
+                    //                    options.SignInScheme = "Cookies";
+                    //#if DEBUG
+                    //                    options.Authority = "http://localhost:5000";
+                    //#else
+                    //                    options.Authority = "http://sinners.azurewebsites.net";
+                    //#endif
+                    //                    options.RequireHttpsMetadata = false;
 
-                    options.ClientId = "mvc";
-                    options.SaveTokens = true;
-                });
+                    //                    options.ClientId = "mvc";
+                    //                    options.SaveTokens = true;
+                    //                })
+                    ;
 
             //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             //    .AddCookie(options =>
@@ -166,31 +179,35 @@ namespace ChummerHub
                 options.User.AllowedUserNameCharacters =
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = true;
+#if DEBUG
                 options.SignIn.RequireConfirmedEmail = false;
+#else
+                options.SignIn.RequireConfirmedEmail = true;
+#endif
                 options.SignIn.RequireConfirmedPhoneNumber = false;
             });
 
-            services.ConfigureApplicationCookie(options =>
-            {
-                // Cookie settings
-                //options.Cookie.HttpOnly = false;
-                //options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+            //services.ConfigureApplicationCookie(options =>
+            //{
+            //    // Cookie settings
+            //    //options.Cookie.HttpOnly = false;
+            //    //options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
 
-                //options.LoginPath = "/Identity/Account/Login";
-                //options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-                //options.SlidingExpiration = true;
+            //    //options.LoginPath = "/Identity/Account/Login";
+            //    //options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+            //    //options.SlidingExpiration = true;
 
-                options.LogoutPath = $"/Identity/Account/Logout";
-                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-                options.Cookie.Name = "SINnersCookie";
-                options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.MaxValue;
-                options.LoginPath = "/Identity/Account/Login";
-                // ReturnUrlParameter requires 
-                //using Microsoft.AspNetCore.Authentication.Cookies;
-                options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
-                options.SlidingExpiration = true;
-            });
+            //    options.LogoutPath = $"/Identity/Account/Logout";
+            //    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+            //    options.Cookie.Name = "SINnersCookie";
+            //    options.Cookie.HttpOnly = true;
+            //    options.ExpireTimeSpan = TimeSpan.MaxValue;
+            //    options.LoginPath = "/Identity/Account/Login";
+            //    // ReturnUrlParameter requires 
+            //    //using Microsoft.AspNetCore.Authentication.Cookies;
+            //    options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+            //    options.SlidingExpiration = true;
+            //});
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
@@ -332,7 +349,7 @@ namespace ChummerHub
 
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
+            //app.UseCookiePolicy();
 
             app.UseAuthentication();
             
@@ -376,7 +393,7 @@ namespace ChummerHub
             using (var serviceScope = serviceScopeFactory.CreateScope())
             {
                 var dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
-                dbContext.Database.EnsureDeleted();
+                //dbContext.Database.EnsureDeleted();
                 dbContext.Database.EnsureCreated();
             
             }

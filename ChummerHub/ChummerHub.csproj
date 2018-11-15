@@ -60,6 +60,7 @@
     </ItemGroup>
   
   <ItemGroup>
+    <Folder Include="Areas\Identity\Services\" />
     <Folder Include="Connected Services\" />
     <Folder Include="Controllers\V2\" />
   </ItemGroup>
