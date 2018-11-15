@@ -44,7 +44,7 @@ namespace ChummerHub.Controllers.V1
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{sinnerid}")]
-        public async Task<IActionResult> Get([FromRoute] Guid sinnerid)
+        public async Task<IActionResult> GetDownloadFile([FromRoute] Guid sinnerid)
         {
             try
             {
