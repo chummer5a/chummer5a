@@ -1,11 +1,3 @@
-@using IdentityServer4.Extensions
-@{
-    string name = null;
-    if (!true.Equals(ViewData["signed-out"]))
-    {
-        name = Context.User?.GetDisplayName();
-    }
-}
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,10 +15,6 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>ChummerHub with IdentityServer4</title>
-    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
-    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -38,29 +26,17 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="SINnerHome" asp-action="Index" class="navbar-brand">ChummerHub</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">ChummerHub</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="SINnerHome" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="SINnerHome" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="SINnerHome" asp-action="Contact">Contact</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                     <li><a asp-area="" asp-controller="swagger" asp-action="Index">Swagger</a></li>
-                    <li><a asp-area="Identity" asp-controller="IdentityHome" asp-action="Index">Identity</a></li>
                 </ul>
                 <partial name="_LoginPartial" />
             </div>
-            @if (!string.IsNullOrWhiteSpace(name))
-            {
-                <ul class="nav navbar-nav">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">@name <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a asp-action="Logout" asp-controller="Account">Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            }
         </div>
     </nav>
 

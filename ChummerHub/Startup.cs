@@ -63,44 +63,7 @@ namespace ChummerHub
         {
             MyServices = services;
 
-            //var connectionString = Configuration.GetConnectionString("DefaultIdConnection");
-            //var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-
-//            var identityServer = services.AddIdentityServer(options =>
-//                {
-//                    options.Events.RaiseErrorEvents = true;
-//                    options.Events.RaiseInformationEvents = true;
-//                    options.Events.RaiseFailureEvents = true;
-//                    options.Events.RaiseSuccessEvents = true;
-//                })
-//                // this adds the config data from DB (clients, resources, CORS)
-//                .AddConfigurationStore(options =>
-//                {
-//                    options.ConfigureDbContext = builder =>
-//                        builder.UseSqlite(connectionString,
-//                            sql => sql.MigrationsAssembly(migrationsAssembly));
-//                })
-//                // this adds the operational data from DB (codes, tokens, consents)
-//                .AddOperationalStore(options =>
-//                {
-//                    options.ConfigureDbContext = builder =>
-//                        builder.UseSqlite(connectionString,
-//                            sql => sql.MigrationsAssembly(migrationsAssembly));
-
-//                    // this enables automatic token cleanup. this is optional.
-//                    options.EnableTokenCleanup = true;
-//                    // options.TokenCleanupInterval = 15; // interval in seconds. 15 seconds useful for debugging
-//                })
-//#if DEBUG
-//                .AddDeveloperSigningCredential();
-//#else
-//            ;
-//            throw new Exception("need to configure key material");
-//#endif
-            
-
-
-
+           
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -112,26 +75,30 @@ namespace ChummerHub
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultSINConnection"));
+                    Configuration.GetConnectionString("DefaultConnection"));
                 
             });
 
             services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
 
-            services.AddDefaultIdentity<ApplicationUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddSignInManager();
+            //services.AddDefaultIdentity<ApplicationUser>()
+            //    .AddEntityFrameworkStores<ApplicationDbContext>()
+            //    .AddSignInManager();
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-              //services.AddDefaultIdentity<IdentityUser>()
+            //services.AddIdentity<ApplicationUser, IdentityRole>()
+              services.AddDefaultIdentity<ApplicationUser>(options =>
+              {
+                  
+              })
               .AddEntityFrameworkStores<ApplicationDbContext>()
-              .AddDefaultTokenProviders();
+              .AddDefaultTokenProviders()
+              .AddSignInManager(); 
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
-            //services.AddSingleton<IEmailSender, EmailSender>();
-            //services.Configure<AuthMessageSenderOptions>(Configuration);
+            services.AddSingleton<IEmailSender, EmailSender>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
@@ -150,8 +117,8 @@ namespace ChummerHub
                     facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
                     facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
                     facebookOptions.BackchannelHttpHandler = new FacebookBackChannelHandler();
-                    //facebookOptions.UserInformationEndpoint = "https://graph.facebook.com/v2.8/me?fields=id,name,email,first_name,last_name";
-                    facebookOptions.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                    facebookOptions.UserInformationEndpoint = "https://graph.facebook.com/v2.8/me?fields=id,name,email,first_name,last_name";
+                    //facebookOptions.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
                 })
                 .AddGoogle(options =>
                 {
@@ -265,16 +232,16 @@ namespace ChummerHub
 
             services.AddSwaggerGen(options =>
             {
-                options.AddSecurityDefinition("Bearer",
-                    new ApiKeyScheme {
-                        In = "header",
-                        Description = "Please enter JWT with Bearer into field",
-                        Name = "Authorization",
-                        Type = "apiKey" });
-                options.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>
-                {
-                    { "Bearer", Enumerable.Empty<string>() },
-                });
+                //options.AddSecurityDefinition("Bearer",
+                //    new ApiKeyScheme {
+                //        In = "header",
+                //        Description = "Please enter JWT with Bearer into field",
+                //        Name = "Authorization",
+                //        Type = "apiKey" });
+                //options.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>
+                //{
+                //    { "Bearer", Enumerable.Empty<string>() },
+                //});
                     // resolve the IApiVersionDescriptionProvider service
                     // note: that we have to build a temporary service provider here because one has not been created yet
                     var provider = services.BuildServiceProvider()
@@ -331,36 +298,7 @@ namespace ChummerHub
 
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
-            // configure identity server with in-memory stores, keys, clients and scopes
-            services.AddIdentityServer()
-                .AddDeveloperSigningCredential()
-                .AddTestUsers(Config.GetUsers())
-                .AddAspNetIdentity<ApplicationUser>()
-                .AddConfigurationStore(options =>
-                {
-                    options.ConfigureDbContext = builder =>
-                        builder.UseSqlServer(Configuration.GetConnectionString("DefaultIdentityConnection"),
-                            sql => sql.MigrationsAssembly(migrationsAssembly));
-                })
-                // this adds the operational data from DB (codes, tokens, consents)
-                .AddOperationalStore(options =>
-                {
-                    options.ConfigureDbContext = builder =>
-                        builder.UseSqlServer(Configuration.GetConnectionString("DefaultIdentityConnection"),
-                            sql => sql.MigrationsAssembly(migrationsAssembly));
-
-                    // this enables automatic token cleanup. this is optional.
-                    options.EnableTokenCleanup = true;
-                    options.TokenCleanupInterval = 30;
-                });
-            //.AddDeveloperSigningCredential()
-            //.AddInMemoryPersistedGrants()
-            //.AddInMemoryIdentityResources(Config.GetIdentityResources())
-            //.AddInMemoryApiResources(Config.GetApiResources())
-            //.AddInMemoryClients(Config.GetClients())
-            //.AddAspNetIdentity<ApplicationUser>();
-
-
+            
             //services.AddHttpsRedirection(options =>
             //{
             //    options.HttpsPort = 443;
@@ -396,15 +334,14 @@ namespace ChummerHub
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            // app.UseAuthentication(); // not needed, since UseIdentityServer adds the authentication middleware
-            app.UseIdentityServer();
-
+            app.UseAuthentication();
+            
             app.UseMvc(routes =>
             {
                 
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=SINnerHome}/{action=Index}/{id?}"
+                    template: "{controller=Home}/{action=Index}/{id?}"
                     );
                 //routes.MapRoute(
                 //    name: "Identity",

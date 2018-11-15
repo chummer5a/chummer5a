@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ChummerHub.Models;
 using Microsoft.AspNetCore.Authorization;
-using IdentityServer4.Quickstart.UI;
 
 namespace ChummerHub.Controllers
 {
     
-    public class SINnerHomeController : Controller
+    public class HomeController : Controller
     {
         public IActionResult Index()
         {
