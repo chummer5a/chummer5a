@@ -458,7 +458,8 @@ namespace Chummer
                 bool blnOldLoading = _blnLoading;
                 _blnLoading = true;
                 txtPDFLocation.Text = string.Empty;
-                nudPDFOffset.Value = 0;
+                nudPDFOffset.Enabled = false;
+                nudPDFOffset.Enabled = true;
                 _blnLoading = blnOldLoading;
                 txtPDFLocation.Text = objSource.Path;
                 nudPDFOffset.Value = objSource.Offset;
