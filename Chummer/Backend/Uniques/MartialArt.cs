@@ -383,7 +383,7 @@ namespace Chummer
                     objCharacter.Karma -= intKarmaCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateKarma(KarmaExpenseType.AddMartialArt, objMartialArt.Name);
+                    objUndo.CreateKarma(KarmaExpenseType.AddMartialArt, objMartialArt.InternalId);
                     objExpense.Undo = objUndo;
                 }
                 objCharacter.MartialArts.Add(objMartialArt);
