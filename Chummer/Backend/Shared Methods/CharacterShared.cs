@@ -4826,9 +4826,9 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     {
-                        foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objNode = treImprovements.FindNodeByTag(objLocation, false);
+                            TreeNode objNode = treImprovements.FindNodeByTag(strLocation, false);
                             if (objNode != null)
                             {
                                 objNode.Remove();
@@ -4857,15 +4857,15 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Replace:
                     {
                         int intNewItemsIndex = 0;
-                        foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
+                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objNode = treImprovements.FindNodeByTag(objLocation, false);
+                            TreeNode objNode = treImprovements.FindNodeByTag(strLocation, false);
                             if (objNode != null)
                             {
-                                if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is Location objNewLocation)
+                                if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is string objNewLocation)
                                 {
                                     objNode.Tag = objNewLocation;
-                                    objNode.Text = objNewLocation.DisplayName(GlobalOptions.Language);
+                                    objNode.Text = objNewLocation;
                                 }
                                 intNewItemsIndex += 1;
                             }
