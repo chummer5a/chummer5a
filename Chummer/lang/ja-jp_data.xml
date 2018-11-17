@@ -47481,9 +47481,9 @@
 			</drugcomponent>
 		</drugcomponents>
 		<categories>
-			<category translate="Basis">Foundation</category>
-			<category translate="Baustein">Block</category>
-			<category translate="Verstärker">Enhancer</category>
+			<category translate="Foundation">Foundation</category>
+			<category translate="Block">Block</category>
+			<category translate="Enhancer">Enhancer</category>
 		</categories>
 	</chummer>
 </chummer>
