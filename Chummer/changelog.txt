@@ -8,6 +8,7 @@ Application Changes:
 - Fixed a regression when purchasing Cyberware in Career mode in which it would not properly deduct from Essence Holes first. Fixes #3188
 - Fixes an issue with the calculation of lifestyle multipliers. Should fix #2639, fixes an issue with trolls not stacking correctly.
 - Fixed an issue with martial art techniques not being able to be refunded properly if removed. Fixes #3196
+- Fixed page offset changes not properly being stored.
 
 Data Changes:
 
