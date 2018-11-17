@@ -2920,8 +2920,8 @@
 			</book>
 			<book>
 				<id>b3c5ea18-56dc-42f4-b567-50ead12fab1f</id>
-				<name>Shadowrun 5th Edition (German)</name>
-				<translate>Shadowrun 5th Edition (German)</translate>
+				<name>Shadowrun 5th Edition (German-exclusive Content)</name>
+				<translate>Shadowrun 5th Edition (German-exclusive Content)</translate>
 				<altcode>SR5G</altcode>
 			</book>
 			<book>
@@ -3127,6 +3127,18 @@
 				<name>Street Lethal</name>
 				<translate>Street Lethal</translate>
 				<altcode>SL</altcode>
+			<book>
+				<id>35f513da-865a-45ce-a8f9-eb0336e47427</id>
+				<name>Kill Code</name>
+				<translate>Kill Code</translate>
+				<altcode>KC</altcode>
+			</book>
+			<book>
+				<id>6c97c3e8-8f13-43aa-b692-6218983c9396</id>
+				<name>Hamburg (German-exclusive)</name>
+				<translate>Hamburg (German-exclusive)</translate>
+				<altcode>HAMG</altcode>
+			</book>
 			</book>
 		</books>
 	</chummer>
@@ -3710,7 +3722,7 @@
 			</power>
 			<power>
 				<id>f8ae2d3f-cd93-47d3-bf4c-652464a871ba</id>
-				<name>Gremlins</name>
+				<name>Gremlins (Sprite)</name>
 				<translate>グレムリン</translate>
 				<altpage>217</altpage>
 			</power>
@@ -3908,14 +3920,14 @@
 			</power>
 			<power>
 				<id>a94dba2a-7699-4eb4-80a8-862f07beb6f6</id>
-				<name>Shift (Human)</name>
-				<translate>Shift (Human)</translate>
+				<name>Shift (Metahuman Form)</name>
+				<translate>Shift (Metahuman Form)</translate>
 				<altpage>85</altpage>
 			</power>
 			<power>
 				<id>14d33e71-88c5-4fdb-8456-0b61ab70e8f4</id>
-				<name>Shift (Drake)</name>
-				<translate>Shift (Drake)</translate>
+				<name>Shift (Dracoform)</name>
+				<translate>Shift (Dracoform)</translate>
 				<altpage>76</altpage>
 			</power>
 			<power>
@@ -4458,6 +4470,12 @@
 				<translate>Venom</translate>
 				<altpage>165</altpage>
 			</power>
+			<power>
+				<id>7a2d7ea2-7460-4d76-be08-dfbf5653ec7d</id>
+				<name>Resonance Hosting</name>
+				<translate>Resonance Hosting</translate>
+				<altpage>0</altpage>
+			</power>
 		</powers>
 	</chummer>
 	<chummer file="critters.xml">
@@ -4571,7 +4589,7 @@
 			</metatype>
 			<metatype>
 				<id>a1cfa419-e728-4a3e-ad2b-43d3ce062ef1</id>
-				<name>Wendigo</name>
+				<name>Wendigo (Magician)</name>
 				<translate>ウェンディゴ</translate>
 				<altpage>372</altpage>
 			</metatype>
@@ -4655,8 +4673,8 @@
 			</metatype>
 			<metatype>
 				<id>f870f03a-9953-468f-bc15-c1d9e13a81c5</id>
-				<name>Acid Spirit</name>
-				<translate>酸 (水の汚染精霊)</translate>
+				<name>Barren Spirit</name>
+				<translate>Barren Spirit</translate>
 				<altpage>157</altpage>
 			</metatype>
 			<metatype>
@@ -4691,14 +4709,14 @@
 			</metatype>
 			<metatype>
 				<id>ed2dfa45-8827-4470-8edb-f8203db47e82</id>
-				<name>Contagion Spirit</name>
-				<translate>悪疫 (人の汚染精霊)</translate>
+				<name>Plague Spirit</name>
+				<translate>Plague Spirit</translate>
 				<altpage>159</altpage>
 			</metatype>
 			<metatype>
 				<id>2e2bf724-7303-4be7-8010-1c59ff65811a</id>
-				<name>Smog Spirit</name>
-				<translate>スモッグ (大気の汚染精霊)</translate>
+				<name>Noxious Spirit</name>
+				<translate>Noxious Spirit</translate>
 				<altpage>159</altpage>
 			</metatype>
 			<metatype>
@@ -4895,8 +4913,8 @@
 			</metatype>
 			<metatype>
 				<id>1f7ea859-8fa3-42cc-8252-bab7da65f87f</id>
-				<name>Bottlenose Dolphin</name>
-				<translate>Bottlenose Dolphin</translate>
+				<name>Dolphin</name>
+				<translate>Dolphin</translate>
 				<altpage>89</altpage>
 			</metatype>
 			<metatype>
@@ -5039,8 +5057,8 @@
 			</metatype>
 			<metatype>
 				<id>2cdf4a25-6866-49a2-be90-e508980ad219</id>
-				<name>Whale Shark</name>
-				<translate>Whale Shark</translate>
+				<name>Killer Whale</name>
+				<translate>Killer Whale</translate>
 				<altpage>90</altpage>
 			</metatype>
 			<metatype>
@@ -5225,8 +5243,8 @@
 			</metatype>
 			<metatype>
 				<id>be4c5fce-f717-4f96-92d1-103de839d9a2</id>
-				<name>Norwegian Rat</name>
-				<translate>Norwegian Rat</translate>
+				<name>Rat</name>
+				<translate>Rat</translate>
 				<altpage>93</altpage>
 			</metatype>
 			<metatype>
@@ -5711,8 +5729,8 @@
 			</metatype>
 			<metatype>
 				<id>7fcca21c-729f-414b-95aa-ced043d851cc</id>
-				<name>Grass Snake</name>
-				<translate>Grass Snake</translate>
+				<name>Snake</name>
+				<translate>Snake</translate>
 				<altpage>96</altpage>
 			</metatype>
 			<metatype>
@@ -6599,8 +6617,8 @@
 			</metatype>
 			<metatype>
 				<id>32deb02a-893f-45ae-9f9e-57e1d6e816fc</id>
-				<name>Phoenix</name>
-				<translate>Phoenix</translate>
+				<name>Phoenician Birds</name>
+				<translate>Phoenician Birds</translate>
 				<altpage>147</altpage>
 			</metatype>
 			<metatype>
@@ -6755,8 +6773,8 @@
 			</metatype>
 			<metatype>
 				<id>9beb359e-f6c9-41a1-8bd9-cb283133b5ef</id>
-				<name>Hellcow</name>
-				<translate>Hellcow</translate>
+				<name>Hellcow (Running Wild)</name>
+				<translate>Hellcow (Running Wild)</translate>
 				<altpage>163</altpage>
 			</metatype>
 			<metatype>
@@ -7409,14 +7427,14 @@
 			</metatype>
 			<metatype>
 				<id>634f4b85-5f11-4069-9479-08512772451d</id>
-				<name>Bastet</name>
-				<translate>Bastet</translate>
+				<name>Bastet (Domestic Cat)</name>
+				<translate>Bastet (Domestic Cat)</translate>
 				<altpage>191</altpage>
 			</metatype>
 			<metatype>
 				<id>9903a854-2785-4adb-bf0d-e74292d3ba05</id>
-				<name>Digit</name>
-				<translate>Digit</translate>
+				<name>Digit (Cockroach)</name>
+				<translate>Digit (Cockroach)</translate>
 				<altpage>191</altpage>
 			</metatype>
 			<metatype>
@@ -7433,8 +7451,8 @@
 			</metatype>
 			<metatype>
 				<id>08f2a1f3-23a0-4b31-96cc-c960c8d9a6fd</id>
-				<name>Mongrel</name>
-				<translate>Mongrel</translate>
+				<name>Mongrel (Dog)</name>
+				<translate>Mongrel (Dog)</translate>
 				<altpage>192</altpage>
 			</metatype>
 			<metatype>
@@ -7451,8 +7469,8 @@
 			</metatype>
 			<metatype>
 				<id>a3adf031-3d38-4fc1-91b3-62c6a589cb68</id>
-				<name>Rook</name>
-				<translate>Rook</translate>
+				<name>Rook (Crow)</name>
+				<translate>Rook (Crow)</translate>
 				<altpage>192</altpage>
 			</metatype>
 			<metatype>
@@ -7583,8 +7601,8 @@
 			</metatype>
 			<metatype>
 				<id>522d14b3-9f8f-485d-9796-cd15fc94f044</id>
-				<name>Polar Bear</name>
-				<translate>Polar Bear</translate>
+				<name>Bear</name>
+				<translate>Bear</translate>
 				<altpage>72</altpage>
 			</metatype>
 			<metatype>
@@ -7802,6 +7820,54 @@
 				<name>Rook (Eagle)</name>
 				<translate>Rook (Eagle)</translate>
 				<altpage>148</altpage>
+			</metatype>
+			<metatype>
+				<id>ba5e2809-186c-4d11-a5a9-c8b1cb060f2c</id>
+				<name>Amphora Mite</name>
+				<translate>Amphora Mite</translate>
+				<altpage>90</altpage>
+			</metatype>
+			<metatype>
+				<id>bd4b7d12-0b18-437d-aa5a-b63ee5616533</id>
+				<name>Angel Squirrel</name>
+				<translate>Angel Squirrel</translate>
+				<altpage>92</altpage>
+			</metatype>
+			<metatype>
+				<id>34df2bf4-07e3-4576-b8b5-3638fde15c54</id>
+				<name>Blink Sloth</name>
+				<translate>Blink Sloth</translate>
+				<altpage>91</altpage>
+			</metatype>
+			<metatype>
+				<id>13ad55bb-acf3-4615-857a-1e9f80c9c0a0</id>
+				<name>Conway's Cheetah</name>
+				<translate>Conway's Cheetah</translate>
+				<altpage>92</altpage>
+			</metatype>
+			<metatype>
+				<id>d3a8a563-9f8c-4c56-89cc-09e0565c108d</id>
+				<name>Flatworm Viper</name>
+				<translate>Flatworm Viper</translate>
+				<altpage>93</altpage>
+			</metatype>
+			<metatype>
+				<id>b2bae7c6-3570-4bd8-9cb3-277c97dcfb60</id>
+				<name>Glow Rat</name>
+				<translate>Glow Rat</translate>
+				<altpage>93</altpage>
+			</metatype>
+			<metatype>
+				<id>3429f34a-507f-449d-90d5-c017f03ea57b</id>
+				<name>Hellcow (Howling Shadows)</name>
+				<translate>Hellcow (Howling Shadows)</translate>
+				<altpage>94</altpage>
+			</metatype>
+			<metatype>
+				<id>1ea62c11-a60f-40af-971c-0a421ce8337a</id>
+				<name>Iridescent Owl</name>
+				<translate>Iridescent Owl</translate>
+				<altpage>99</altpage>
 			</metatype>
 		</metatypes>
 	</chummer>
@@ -8399,7 +8465,7 @@
 			</cyberware>
 			<cyberware>
 				<id>8b9541a9-e10a-488d-a076-4e5b1c469839</id>
-				<name>Silencer</name>
+				<name>Silencer/Suppressor</name>
 				<translate>消音器</translate>
 				<altpage>367</altpage>
 			</cyberware>
@@ -10426,7 +10492,7 @@
 			</gear>
 			<gear>
 				<id>5217388a-e2ce-4add-bcc0-b0b1672f156c</id>
-				<name>Decrypt</name>
+				<name>Decryption</name>
 				<translate>暗号解読</translate>
 				<altpage>247</altpage>
 			</gear>
@@ -10738,7 +10804,7 @@
 			</gear>
 			<gear>
 				<id>c763fac2-8b08-4c61-8dc2-6291d905a2df</id>
-				<name>Olfactory Sensor</name>
+				<name>Olfactory Scanner</name>
 				<translate>嗅覚スキャナー</translate>
 				<altpage>355</altpage>
 			</gear>
@@ -11956,7 +12022,7 @@
 			</gear>
 			<gear>
 				<id>9d81218f-ee70-4304-9a09-ac865d84b8e0</id>
-				<name>Autosoft</name>
+				<name>[Model] Maneuvering Autosoft</name>
 				<translate>オートソフト</translate>
 				<altpage>441</altpage>
 			</gear>
@@ -12772,8 +12838,8 @@
 			</gear>
 			<gear>
 				<id>50e68547-da12-4d87-9e05-8fefb9ccf723</id>
-				<name>Paint Grenade</name>
-				<translate>Paint Grenade</translate>
+				<name>Grenade: Paint</name>
+				<translate>Grenade: Paint</translate>
 				<altpage>102</altpage>
 			</gear>
 			<gear>
@@ -14524,8 +14590,8 @@
 			</gear>
 			<gear>
 				<id>875bf273-1a0d-4a42-80ab-6547d7a1235a</id>
-				<name>Narcoject</name>
-				<translate>Narcoject</translate>
+				<name>Narcojet</name>
+				<translate>Narcojet</translate>
 				<altpage>410</altpage>
 			</gear>
 			<gear>
@@ -17666,6 +17732,504 @@
 				<translate>Urban Explorer Daedalus Replacement Parachute</translate>
 				<altpage>48</altpage>
 			</gear>
+			<gear>
+				<id>7e104b61-69b3-4a7e-8221-a6190314c411</id>
+				<name>Ammo: Zapper</name>
+				<translate>Ammo: Zapper</translate>
+				<altpage>51</altpage>
+			</gear>
+			<gear>
+				<id>b8ad4fef-4092-42ac-87ad-518dd8b60fb7</id>
+				<name>Ammo: Looper</name>
+				<translate>Ammo: Looper</translate>
+				<altpage>49</altpage>
+			</gear>
+			<gear>
+				<id>c40a91b0-7896-4ad1-b1e6-f39c9c93bf1b</id>
+				<name>Ammo: Fuzzy</name>
+				<translate>Ammo: Fuzzy</translate>
+				<altpage>50</altpage>
+			</gear>
+			<gear>
+				<id>efa87c80-d712-41d8-813e-768a2f4ffcf7</id>
+				<name>Ammo: E0-E0 (Public Grid)</name>
+				<translate>Ammo: E0-E0 (Public Grid)</translate>
+				<altpage>48</altpage>
+			</gear>
+			<gear>
+				<id>f4be287a-2ed8-4e7b-8244-32243905fe84</id>
+				<name>Ammo: E0-E0 (Local Grid)</name>
+				<translate>Ammo: E0-E0 (Local Grid)</translate>
+				<altpage>48</altpage>
+			</gear>
+			<gear>
+				<id>8ddf2080-2444-4d9a-a601-5be4147b183d</id>
+				<name>Ammo: E0-E0 (Megacorporate Grid)</name>
+				<translate>Ammo: E0-E0 (Megacorporate Grid)</translate>
+				<altpage>48</altpage>
+			</gear>
+			<gear>
+				<id>bf9001db-6484-47ab-9449-5f068f5fe04b</id>
+				<name>Ammo: E0-E0 Rifle (Public Grid)</name>
+				<translate>Ammo: E0-E0 Rifle (Public Grid)</translate>
+				<altpage>48</altpage>
+			</gear>
+			<gear>
+				<id>d1e0807b-6c6e-44bb-a230-c6f328ee26a5</id>
+				<name>Ammo: E0-E0 Rifle (Local Grid)</name>
+				<translate>Ammo: E0-E0 Rifle (Local Grid)</translate>
+				<altpage>48</altpage>
+			</gear>
+			<gear>
+				<id>b580d8fc-9987-403a-9be5-760b1d88f926</id>
+				<name>Ammo: E0-E0 Rifle (Megacorporate Grid)</name>
+				<translate>Ammo: E0-E0 Rifle (Megacorporate Grid)</translate>
+				<altpage>48</altpage>
+			</gear>
+			<gear>
+				<id>05a9f4e2-b7c0-4bf8-8614-33b1ee0f406d</id>
+				<name>Arrow: Arrowlink (50m)</name>
+				<translate>Arrow: Arrowlink (50m)</translate>
+				<altpage>52</altpage>
+			</gear>
+			<gear>
+				<id>2d3b26aa-a2c1-4514-915e-62aa08203456</id>
+				<name>Arrow: Arrowlink (100m)</name>
+				<translate>Arrow: Arrowlink (100m)</translate>
+				<altpage>52</altpage>
+			</gear>
+			<gear>
+				<id>74906d00-018e-4d1a-8a9c-4b77918de761</id>
+				<name>Arrow: Arrowlink (200m)</name>
+				<translate>Arrow: Arrowlink (200m)</translate>
+				<altpage>52</altpage>
+			</gear>
+			<gear>
+				<id>65a853d4-52d6-44c7-a867-10ea1beaece3</id>
+				<name>Arrow: Arrowlink (500m)</name>
+				<translate>Arrow: Arrowlink (500m)</translate>
+				<altpage>52</altpage>
+			</gear>
+			<gear>
+				<id>051ceea6-65c2-4058-95bd-f63d86a45984</id>
+				<name>Grenade: Fuzzy Boom Boom Bunnies</name>
+				<translate>Grenade: Fuzzy Boom Boom Bunnies</translate>
+				<altpage>55</altpage>
+			</gear>
+			<gear>
+				<id>7470ed31-0d81-4992-bae6-38f9de198020</id>
+				<name>Grenade: COS</name>
+				<translate>Grenade: COS</translate>
+				<altpage>53</altpage>
+			</gear>
+			<gear>
+				<id>0c98750a-4286-4ec5-9035-b76f36c03ce4</id>
+				<name>Grenade: Douser</name>
+				<translate>Grenade: Douser</translate>
+				<altpage>54</altpage>
+			</gear>
+			<gear>
+				<id>965ccb60-f9e2-4a44-8a11-05e6c5bd4457</id>
+				<name>Grenade: DumDum</name>
+				<translate>Grenade: DumDum</translate>
+				<altpage>55</altpage>
+			</gear>
+			<gear>
+				<id>d05a6375-7c82-4d32-952e-cc356b5b079d</id>
+				<name>Faceless - Specific Face</name>
+				<translate>Faceless - Specific Face</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear>
+				<id>3cc7b3d8-0f5f-4598-b9a0-96083966e6f9</id>
+				<name>Faceless - Generic</name>
+				<translate>Faceless - Generic</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear>
+				<id>d2c64947-9d23-4ec8-916a-e5345b94b96b</id>
+				<name>Fuchi Cyber-N</name>
+				<translate>Fuchi Cyber-N</translate>
+				<altpage>60</altpage>
+			</gear>
+			<gear>
+				<id>00ccda48-98a0-42b1-a997-1e1cf1f5269a</id>
+				<name>Fuchi Cyber-Ex</name>
+				<translate>Fuchi Cyber-Ex</translate>
+				<altpage>60</altpage>
+			</gear>
+			<gear>
+				<id>101acb97-2528-4812-a852-a8591b68145f</id>
+				<name>[Custom Cyberdeck] Attack</name>
+				<translate>[Custom Cyberdeck] Attack</translate>
+				<altpage>60</altpage>
+			</gear>
+			<gear>
+				<id>cc6cb58a-a6a1-441d-84f6-a0ea3091317e</id>
+				<name>[Custom Cyberdeck] Sleaze</name>
+				<translate>[Custom Cyberdeck] Sleaze</translate>
+				<altpage>60</altpage>
+			</gear>
+			<gear>
+				<id>c4760ef1-5fe0-477b-8579-a457aaf16bf9</id>
+				<name>[Custom Cyberdeck] Data Processing</name>
+				<translate>[Custom Cyberdeck] Data Processing</translate>
+				<altpage>60</altpage>
+			</gear>
+			<gear>
+				<id>37c5f8bc-025a-4eca-93a8-1e93e0cabcd9</id>
+				<name>[Custom Cyberdeck] Firewall</name>
+				<translate>[Custom Cyberdeck] Firewall</translate>
+				<altpage>60</altpage>
+			</gear>
+			<gear>
+				<id>51ca2b4d-fdbb-48cc-89b3-9d56757d1682</id>
+				<name>Security Deck: Guard</name>
+				<translate>Security Deck: Guard</translate>
+				<altpage>60</altpage>
+			</gear>
+			<gear>
+				<id>81206ac6-631a-4ec7-8013-96050510726f</id>
+				<name>Security Deck: Shield</name>
+				<translate>Security Deck: Shield</translate>
+				<altpage>60</altpage>
+			</gear>
+			<gear>
+				<id>737f6986-d565-4f65-9f83-8142d1f72b56</id>
+				<name>Security Deck: Fortress</name>
+				<translate>Security Deck: Fortress</translate>
+				<altpage>60</altpage>
+			</gear>
+			<gear>
+				<id>49482a90-ffc4-449a-b6b5-21ab0bcd3879</id>
+				<name>Security Deck: Great Wall</name>
+				<translate>Security Deck: Great Wall</translate>
+				<altpage>60</altpage>
+			</gear>
+			<gear>
+				<id>17003ab0-8e96-4661-898d-8d57963a6e8d</id>
+				<name>Hunter Deck: Fox</name>
+				<translate>Hunter Deck: Fox</translate>
+				<altpage>60</altpage>
+			</gear>
+			<gear>
+				<id>26171ce4-fadc-4dae-85e0-5d165d312f56</id>
+				<name>Hunter Deck: Wolf</name>
+				<translate>Hunter Deck: Wolf</translate>
+				<altpage>60</altpage>
+			</gear>
+			<gear>
+				<id>b705d027-1ba6-4322-9710-b951278c6b3f</id>
+				<name>Hunter Deck: Tiger</name>
+				<translate>Hunter Deck: Tiger</translate>
+				<altpage>60</altpage>
+			</gear>
+			<gear>
+				<id>7bd2d975-c4c7-41f4-ba28-be8431e22c36</id>
+				<name>Hunter Deck: Shark</name>
+				<translate>Hunter Deck: Shark</translate>
+				<altpage>60</altpage>
+			</gear>
+			<gear>
+				<id>96ce16be-8fca-4b3a-af65-0e3c38280b1d</id>
+				<name>Aztechnology Shadow Warrior</name>
+				<translate>Aztechnology Shadow Warrior</translate>
+				<altpage>61</altpage>
+			</gear>
+			<gear>
+				<id>3927e552-374f-4f41-a304-9be621b2dac8</id>
+				<name>Evo Sublime</name>
+				<translate>Evo Sublime</translate>
+				<altpage>61</altpage>
+			</gear>
+			<gear>
+				<id>b00002dd-2aed-47d7-9ecf-88c7fafb4746</id>
+				<name>Fairlight Destiny Blade</name>
+				<translate>Fairlight Destiny Blade</translate>
+				<altpage>61</altpage>
+			</gear>
+			<gear>
+				<id>dcfe2e17-fe33-4bb2-876d-64ee419b9ff6</id>
+				<name>Aztechnology Defender</name>
+				<translate>Aztechnology Defender</translate>
+				<altpage>61</altpage>
+			</gear>
+			<gear>
+				<id>7cd53ac3-c79f-4854-9bda-e1d75cf276f8</id>
+				<name>Kitbashed Sleeper</name>
+				<translate>Kitbashed Sleeper</translate>
+				<altpage>62</altpage>
+			</gear>
+			<gear>
+				<id>a6c0cc9d-d63c-44b3-a668-5c9eb2c9e457</id>
+				<name>Saeder-Krupp Last Chance Link</name>
+				<translate>Saeder-Krupp Last Chance Link</translate>
+				<altpage>67</altpage>
+			</gear>
+			<gear>
+				<id>22a38a8a-7298-416c-bf92-5f572e3f09b2</id>
+				<name>Horizon Flow</name>
+				<translate>Horizon Flow</translate>
+				<altpage>67</altpage>
+			</gear>
+			<gear>
+				<id>d4b0d4b5-291f-435e-9b61-cd4324c5b1c0</id>
+				<name>Wuxing Frequency</name>
+				<translate>Wuxing Frequency</translate>
+				<altpage>67</altpage>
+			</gear>
+			<gear>
+				<id>e265d7a1-8046-406d-b92b-7c9eea8682bd</id>
+				<name>Shiawase Cyber-6</name>
+				<translate>Shiawase Cyber-6</translate>
+				<altpage>68</altpage>
+			</gear>
+			<gear>
+				<id>42414f23-7a0e-4e4f-87f8-29a90b0c72d0</id>
+				<name>Spinrad Global Skirmisher</name>
+				<translate>Spinrad Global Skirmisher</translate>
+				<altpage>68</altpage>
+			</gear>
+			<gear>
+				<id>d900aa9c-5914-4e5b-baa4-b4e0c0625123</id>
+				<name>Pantheon Industries "Co-Pilot" Mk I</name>
+				<translate>Pantheon Industries "Co-Pilot" Mk I</translate>
+				<altpage>69</altpage>
+			</gear>
+			<gear>
+				<id>5294813b-3421-46b6-b30a-de8cab38f89f</id>
+				<name>Pantheon Industries "Co-Pilot" Mk II</name>
+				<translate>Pantheon Industries "Co-Pilot" Mk II</translate>
+				<altpage>69</altpage>
+			</gear>
+			<gear>
+				<id>3727d9a2-c556-4133-8083-d1c61f239034</id>
+				<name>Pantheon Industries "Co-Pilot" Mk III</name>
+				<translate>Pantheon Industries "Co-Pilot" Mk III</translate>
+				<altpage>69</altpage>
+			</gear>
+			<gear>
+				<id>cf954b05-0c06-4fdd-8af6-15b03770bccc</id>
+				<name>Pantheon Industries "Door Gunner"</name>
+				<translate>Pantheon Industries "Door Gunner"</translate>
+				<altpage>69</altpage>
+			</gear>
+			<gear>
+				<id>52adb8cf-22a4-4581-a354-0f7b9bcf6999</id>
+				<name>Pantheon Industries "ECM-Warrior"</name>
+				<translate>Pantheon Industries "ECM-Warrior"</translate>
+				<altpage>70</altpage>
+			</gear>
+			<gear>
+				<id>4b7ec6a4-243b-490c-92f5-d337e5cc36de</id>
+				<name>Pantheon Industries Mobile CNC</name>
+				<translate>Pantheon Industries Mobile CNC</translate>
+				<altpage>70</altpage>
+			</gear>
+			<gear>
+				<id>a9edf32b-dea2-4939-9fa1-016ed3693a23</id>
+				<name>Pantheon Industries Shield Wall</name>
+				<translate>Pantheon Industries Shield Wall</translate>
+				<altpage>70</altpage>
+			</gear>
+			<gear>
+				<id>b8ad45b8-35f7-4c2c-b9cd-29fbeb59b8e9</id>
+				<name>Attack Booster</name>
+				<translate>Attack Booster</translate>
+				<altpage>56</altpage>
+			</gear>
+			<gear>
+				<id>666dbb45-2898-4262-aab6-94e80954b480</id>
+				<name>Sleaze Booster</name>
+				<translate>Sleaze Booster</translate>
+				<altpage>56</altpage>
+			</gear>
+			<gear>
+				<id>f5b287cc-98c1-479e-8e54-e5155fa6917a</id>
+				<name>Data Processing Booster</name>
+				<translate>Data Processing Booster</translate>
+				<altpage>56</altpage>
+			</gear>
+			<gear>
+				<id>c29db797-db4b-4f14-b662-622935c3204e</id>
+				<name>Firewall Booster</name>
+				<translate>Firewall Booster</translate>
+				<altpage>56</altpage>
+			</gear>
+			<gear>
+				<id>3d107000-9bfc-46f6-9a1e-99e6cecc3897</id>
+				<name>Armor Defeating</name>
+				<translate>Armor Defeating</translate>
+				<altpage>56</altpage>
+			</gear>
+			<gear>
+				<id>8dfceac4-1c5a-4b30-bcd2-81b16553c6ce</id>
+				<name>Slick Willy</name>
+				<translate>Slick Willy</translate>
+				<altpage>56</altpage>
+			</gear>
+			<gear>
+				<id>0ee14c43-e334-4ca5-a87c-c99d94bfe31a</id>
+				<name>Data Dynamo</name>
+				<translate>Data Dynamo</translate>
+				<altpage>56</altpage>
+			</gear>
+			<gear>
+				<id>7b8e0c95-375d-4982-b523-576952aced75</id>
+				<name>Fortified</name>
+				<translate>Fortified</translate>
+				<altpage>56</altpage>
+			</gear>
+			<gear>
+				<id>77f02897-28c1-4d53-86b4-eae1dbd85f35</id>
+				<name>Pantheon Industries Tactical Program Dongle</name>
+				<translate>Pantheon Industries Tactical Program Dongle</translate>
+				<altpage>71</altpage>
+			</gear>
+			<gear>
+				<id>55e05d6a-bc67-469f-b16c-648b4688eb37</id>
+				<name>Multiprogram Operating System</name>
+				<translate>Multiprogram Operating System</translate>
+				<altpage>59</altpage>
+			</gear>
+			<gear>
+				<id>ae96a184-0615-463a-b10d-bf994ac75cab</id>
+				<name>Booster Cloud [Brute Force]</name>
+				<translate>Booster Cloud [Brute Force]</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear>
+				<id>2ba507c4-5f5c-4675-96fd-890d52df27e1</id>
+				<name>Booster Cloud [Control Device]</name>
+				<translate>Booster Cloud [Control Device]</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear>
+				<id>182d3050-c14c-4d47-b02a-ea6d9828e3e7</id>
+				<name>Booster Cloud [Crack File]</name>
+				<translate>Booster Cloud [Crack File]</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear>
+				<id>59795250-558e-47f5-b5d7-db410b36a23a</id>
+				<name>Booster Cloud [Crash Program]</name>
+				<translate>Booster Cloud [Crash Program]</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear>
+				<id>1797a4a7-c59e-4264-a360-2aa00adadd65</id>
+				<name>Booster Cloud [Data Spike]</name>
+				<translate>Booster Cloud [Data Spike]</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear>
+				<id>44726953-66fa-4619-8168-85794bfca8f0</id>
+				<name>Booster Cloud [Edit File]</name>
+				<translate>Booster Cloud [Edit File]</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear>
+				<id>2d6d3555-3f3d-4f6d-9b48-897d3f5be68b</id>
+				<name>Booster Cloud [Erase Mark]</name>
+				<translate>Booster Cloud [Erase Mark]</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear>
+				<id>9bd48bd3-ad36-4f34-96bc-37afd97dc520</id>
+				<name>Booster Cloud [Hack on the Fly]</name>
+				<translate>Booster Cloud [Hack on the Fly]</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear>
+				<id>93ce7855-436d-47db-b8bc-ae7ba35efc2d</id>
+				<name>Booster Cloud [Hide]</name>
+				<translate>Booster Cloud [Hide]</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear>
+				<id>5e801a2b-03b1-4f2f-bacd-cf7951c770c3</id>
+				<name>Booster Cloud [Jam Signals]</name>
+				<translate>Booster Cloud [Jam Signals]</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear>
+				<id>bfcfe6d3-b341-427c-be65-1fa21e043b0a</id>
+				<name>Booster Cloud [Matrix Perception]</name>
+				<translate>Booster Cloud [Matrix Perception]</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear>
+				<id>d7dc17cc-7e55-4cbc-89e7-7e8468687e75</id>
+				<name>Booster Cloud [Reboot Device]</name>
+				<translate>Booster Cloud [Reboot Device]</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear>
+				<id>ad9307c3-3dc0-4733-bfb2-11c9af467fd8</id>
+				<name>Booster Cloud [Snoop]</name>
+				<translate>Booster Cloud [Snoop]</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear>
+				<id>04aaca9c-42e6-4cb8-a73e-1b36ffab2104</id>
+				<name>Booster Cloud [Spoof Command]</name>
+				<translate>Booster Cloud [Spoof Command]</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear>
+				<id>4a7731f9-3534-4d5c-92e4-02025ac5c4da</id>
+				<name>Booster Cloud [Trace Icon]</name>
+				<translate>Booster Cloud [Trace Icon]</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear>
+				<id>8646d733-4017-4efb-8c89-ff9b72217e54</id>
+				<name>Booster Cloud [Custom Case]</name>
+				<translate>Booster Cloud [Custom Case]</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear>
+				<id>06d57f7d-c372-433b-8a81-c33229a19f9b</id>
+				<name>Pantheon Industries "Mercury-Alpha" Battlefield Signal Booster</name>
+				<translate>Pantheon Industries "Mercury-Alpha" Battlefield Signal Booster</translate>
+				<altpage>71</altpage>
+			</gear>
+			<gear>
+				<id>60f11ea5-297d-4898-9fec-a0f67b4d517e</id>
+				<name>Pantheon Industries Micro-Dish Transmitter</name>
+				<translate>Pantheon Industries Micro-Dish Transmitter</translate>
+				<altpage>71</altpage>
+			</gear>
+			<gear>
+				<id>9ff4b57d-4aaf-482f-ab67-66e10ed58e13</id>
+				<name>Ammo: Renraku/Ingram Supermach</name>
+				<translate>Ammo: Renraku/Ingram Supermach</translate>
+				<altpage>140</altpage>
+			</gear>
+			<gear>
+				<id>4d36bc74-d75e-46ce-9739-9b58ca72b518</id>
+				<name>Faceless - Blurred Face</name>
+				<translate>Faceless - Blurred Face</translate>
+				<altpage>57</altpage>
+			</gear>
+			<gear>
+				<id>d1d0bbce-a2a2-4d92-b54c-b1152befb96f</id>
+				<name>Trode Patch</name>
+				<translate>Trode Patch</translate>
+				<altpage>59</altpage>
+			</gear>
+			<gear>
+				<id>2d9b2e2d-5460-4e1a-b4dc-82c7092b6a7e</id>
+				<name>Trode Patch Cover</name>
+				<translate>Trode Patch Cover</translate>
+				<altpage>59</altpage>
+			</gear>
+			<gear>
+				<id>d2a1cc9b-72e3-49df-957c-8ed6fb47a813</id>
+				<name>Narcojet Dazzler</name>
+				<translate>Narcojet Dazzler</translate>
+				<altpage>46</altpage>
+			</gear>
 		</gears>
 	</chummer>
 	<chummer file="improvements.xml">
@@ -17774,7 +18338,7 @@
 			</improvement>
 			<improvement>
 				<id>matrixinitiativediceadd</id>
-				<name>Matrix Initiative Dice</name>
+				<name>Matrix Initiative Passes</name>
 				<translate>マトリックス・イニシアティブ・パス</translate>
 				<altpage>マトリックス・イニシアティブ・パスを調整します.  正の値を入力するとマトリックス・イニシアティブ・パスは増加します. 負の値の場合は減少します.</altpage>
 			</improvement>
@@ -25215,7 +25779,7 @@
 			</power>
 			<power>
 				<id>5f1ebcd8-9571-4716-b7fd-ec674306b833</id>
-				<name>Commanding Voice</name>
+				<name>Authoritative Tone</name>
 				<translate>命令の声</translate>
 				<altpage>190</altpage>
 			</power>
@@ -25479,7 +26043,7 @@
 			</power>
 			<power>
 				<id>1fde7231-e5cc-4fa3-a1fe-b80b00212417</id>
-				<name>Improved Potential (limit)</name>
+				<name>Improved Potential (Social)</name>
 				<translate>潜在力強化：</translate>
 				<altpage>309</altpage>
 			</power>
@@ -25888,7 +26452,7 @@
 			</program>
 			<program translated="True">
 				<id>de82aad2-da77-4478-a621-85ad02d70120</id>
-				<name>Decrypt</name>
+				<name>Decryption</name>
 				<translate>暗号突破</translate>
 				<altpage>247</altpage>
 			</program>
@@ -32371,7 +32935,7 @@
 			</skill>
 			<skill>
 				<id>ee36423c-21c7-4af3-81da-93778da83a45</id>
-				<name>Music</name>
+				<name>Club Music</name>
 				<translate>音楽</translate>
 				<specs>
 					<spec translate="ゴブリン・ロック">Goblin Rock</spec>
@@ -32565,7 +33129,7 @@
 			</skill>
 			<skill>
 				<id>0bbb3078-a940-4003-b4f3-fa23937cf227</id>
-				<name>Magical Theory</name>
+				<name>Magical Theory (Academic)</name>
 				<translate>魔法理論</translate>
 				<specs>
 					<spec translate="呪文">Sorcery</spec>
@@ -37328,223 +37892,223 @@
 				<id>1f011f9a-42bb-401d-938d-592a4759a502</id>
 				<name>Chrysler-Nissan Journey (Car)</name>
 				<translate>Chrysler-Nissan Journey (Car)</translate>
-				<altpage>1f011f9a-42bb-401d-938d-592a4759a502</altpage>
+				<altpage>186</altpage>
 			</vehicle>
 			<vehicle>
 				<id>d7695e8c-1eab-4fe3-8b37-406cc73ca1d6</id>
 				<name>Eurocar Westwind 3000 (Luxury Sports Car)</name>
 				<translate>Eurocar Westwind 3000 (Luxury Sports Car)</translate>
-				<altpage>d7695e8c-1eab-4fe3-8b37-406cc73ca1d6</altpage>
+				<altpage>463</altpage>
 			</vehicle>
 			<vehicle>
 				<id>7eb50773-4291-42af-af27-1ac469f8470c</id>
 				<name>Honda Artemis (Car)</name>
 				<translate>Honda Artemis (Car)</translate>
-				<altpage>7eb50773-4291-42af-af27-1ac469f8470c</altpage>
+				<altpage>186</altpage>
 			</vehicle>
 			<vehicle>
 				<id>62a93c90-fcfe-49bd-85ba-4730f4b6ebd7</id>
 				<name>Saeder-Krupp LT-21 (Delivery Van)</name>
 				<translate>Saeder-Krupp LT-21 (Delivery Van)</translate>
-				<altpage>62a93c90-fcfe-49bd-85ba-4730f4b6ebd7</altpage>
+				<altpage>186</altpage>
 			</vehicle>
 			<vehicle>
 				<id>72a204fc-e4f7-4e00-9d14-7f338fb86817</id>
 				<name>Hyundai Shin-Hyung (Sport Sedan)</name>
 				<translate>Hyundai Shin-Hyung (Sport Sedan)</translate>
-				<altpage>72a204fc-e4f7-4e00-9d14-7f338fb86817</altpage>
+				<altpage>463</altpage>
 			</vehicle>
 			<vehicle>
 				<id>9f6115e6-b52b-40d8-94d5-c4874de4858b</id>
 				<name>Dodge Ram Industrial (Large) (Garbage Truck)</name>
 				<translate>Dodge Ram Industrial (Large) (Garbage Truck)</translate>
-				<altpage>9f6115e6-b52b-40d8-94d5-c4874de4858b</altpage>
+				<altpage>186</altpage>
 			</vehicle>
 			<vehicle>
 				<id>53afa8ff-2903-4167-8ed4-ae6d833d1547</id>
 				<name>Dodge Ram Industrial (Narrow) (Garbage Truck)</name>
 				<translate>Dodge Ram Industrial (Narrow) (Garbage Truck)</translate>
-				<altpage>53afa8ff-2903-4167-8ed4-ae6d833d1547</altpage>
+				<altpage>186</altpage>
 			</vehicle>
 			<vehicle>
 				<id>f43a6579-cc23-4bae-b154-5f9adf6cb7f2</id>
 				<name>Esprit Industries Watcher (SUV)</name>
 				<translate>Esprit Industries Watcher (SUV)</translate>
-				<altpage>f43a6579-cc23-4bae-b154-5f9adf6cb7f2</altpage>
+				<altpage>186</altpage>
 			</vehicle>
 			<vehicle>
 				<id>898906ec-f2b9-43a4-98ad-6f79230b9a0c</id>
 				<name>Ford Americar (Sedan)</name>
 				<translate>Ford Americar (Sedan)</translate>
-				<altpage>898906ec-f2b9-43a4-98ad-6f79230b9a0c</altpage>
+				<altpage>463</altpage>
 			</vehicle>
 			<vehicle>
 				<id>71600577-7cce-4f6b-9854-531460d9400a</id>
 				<name>Saeder-Krupp-Bentley Concordat (Luxury Sedan)</name>
 				<translate>Saeder-Krupp-Bentley Concordat (Luxury Sedan)</translate>
-				<altpage>71600577-7cce-4f6b-9854-531460d9400a</altpage>
+				<altpage>463</altpage>
 			</vehicle>
 			<vehicle>
 				<id>30de4139-368b-4569-94c1-f65c1cd2dc26</id>
 				<name>Rover 2072 (SUV)</name>
 				<translate>Rover 2072 (SUV)</translate>
-				<altpage>30de4139-368b-4569-94c1-f65c1cd2dc26</altpage>
+				<altpage>464</altpage>
 			</vehicle>
 			<vehicle>
 				<id>f73f5dbf-f812-4a04-a441-98a3cc37d23a</id>
 				<name>GMC Endurance (Van)</name>
 				<translate>GMC Endurance (Van)</translate>
-				<altpage>f73f5dbf-f812-4a04-a441-98a3cc37d23a</altpage>
+				<altpage>186</altpage>
 			</vehicle>
 			<vehicle>
 				<id>e04c0dce-b45a-4f0d-8d48-bea1c4a305f1</id>
 				<name>GMC Sidewinder (SUV)</name>
 				<translate>GMC Sidewinder (SUV)</translate>
-				<altpage>e04c0dce-b45a-4f0d-8d48-bea1c4a305f1</altpage>
+				<altpage>186</altpage>
 			</vehicle>
 			<vehicle>
 				<id>0ed17686-7ac3-48de-88d2-bc8738a00afa</id>
 				<name>Ares Roadmaster (Armored Transport)</name>
 				<translate>Ares Roadmaster (Armored Transport)</translate>
-				<altpage>0ed17686-7ac3-48de-88d2-bc8738a00afa</altpage>
+				<altpage>464</altpage>
 			</vehicle>
 			<vehicle>
 				<id>81505035-7043-4841-a952-3763e9e7ddc5</id>
 				<name>Conestoga Trailblazer (Moving Truck)</name>
 				<translate>Conestoga Trailblazer (Moving Truck)</translate>
-				<altpage>81505035-7043-4841-a952-3763e9e7ddc5</altpage>
+				<altpage>186</altpage>
 			</vehicle>
 			<vehicle>
 				<id>f4b1800d-7542-477c-b007-094e6a989ece</id>
 				<name>Conestoga Trailblazer w/Trailer (Moving Truck)</name>
 				<translate>Conestoga Trailblazer w/Trailer (Moving Truck)</translate>
-				<altpage>f4b1800d-7542-477c-b007-094e6a989ece</altpage>
+				<altpage>186</altpage>
 			</vehicle>
 			<vehicle>
 				<id>7e5d30f4-ef09-4a95-8bb5-a9128557e1b0</id>
 				<name>Samuvani Criscraft Otter (Sport Cruiser)</name>
 				<translate>Samuvani Criscraft Otter (Sport Cruiser)</translate>
-				<altpage>7e5d30f4-ef09-4a95-8bb5-a9128557e1b0</altpage>
+				<altpage>464</altpage>
 			</vehicle>
 			<vehicle>
 				<id>6af4e72c-a783-4b61-8f3b-22436b635b57</id>
 				<name>Yongkang Gala Trinity (Speedboat)</name>
 				<translate>Yongkang Gala Trinity (Speedboat)</translate>
-				<altpage>6af4e72c-a783-4b61-8f3b-22436b635b57</altpage>
+				<altpage>464</altpage>
 			</vehicle>
 			<vehicle>
 				<id>590fde44-d58d-4b96-871f-406426dbabf7</id>
 				<name>Artemis Industries Nightwing (Glider)</name>
 				<translate>Artemis Industries Nightwing (Glider)</translate>
-				<altpage>590fde44-d58d-4b96-871f-406426dbabf7</altpage>
+				<altpage>464</altpage>
 			</vehicle>
 			<vehicle>
 				<id>9ce49c91-c231-4784-b88b-feee327fec90</id>
 				<name>Nissan Hound (Transport Helicopter)</name>
 				<translate>Nissan Hound (Transport Helicopter)</translate>
-				<altpage>9ce49c91-c231-4784-b88b-feee327fec90</altpage>
+				<altpage>464</altpage>
 			</vehicle>
 			<vehicle>
 				<id>de4166ba-f6b3-4675-acef-39327c84f57f</id>
 				<name>Ares Venture (LAV)</name>
 				<translate>Ares Venture (LAV)</translate>
-				<altpage>de4166ba-f6b3-4675-acef-39327c84f57f</altpage>
+				<altpage>465</altpage>
 			</vehicle>
 			<vehicle>
 				<id>37eff614-ba8d-422c-af74-5cabcdebe3ce</id>
 				<name>Federated Boeing Commuter (Tilt-Wing Airplane)</name>
 				<translate>Federated Boeing Commuter (Tilt-Wing Airplane)</translate>
-				<altpage>37eff614-ba8d-422c-af74-5cabcdebe3ce</altpage>
+				<altpage>465</altpage>
 			</vehicle>
 			<vehicle>
 				<id>3be36e78-0786-45e6-bc72-6269b75c3f29</id>
 				<name>Sikorsky-Bell Microskimmer (Microdrone)</name>
 				<translate>Sikorsky-Bell Microskimmer (Microdrone)</translate>
-				<altpage>3be36e78-0786-45e6-bc72-6269b75c3f29</altpage>
+				<altpage>465</altpage>
 			</vehicle>
 			<vehicle>
 				<id>9604795c-03f2-46db-a86b-3fd16ea35c51</id>
 				<name>Lockheed Optic-X2 (Small)</name>
 				<translate>Lockheed Optic-X2 (Small)</translate>
-				<altpage>9604795c-03f2-46db-a86b-3fd16ea35c51</altpage>
+				<altpage>466</altpage>
 			</vehicle>
 			<vehicle>
 				<id>10a55a19-7f86-4942-830f-212b9975280e</id>
 				<name>Cyberspace Designs Dragonfly (Small)</name>
 				<translate>Cyberspace Designs Dragonfly (Small)</translate>
-				<altpage>10a55a19-7f86-4942-830f-212b9975280e</altpage>
+				<altpage>179</altpage>
 			</vehicle>
 			<vehicle>
 				<id>c8f7e6c0-85e6-4feb-9ef0-0aeca5fba76b</id>
 				<name>Ares Duelist (Medium)</name>
 				<translate>Ares Duelist (Medium)</translate>
-				<altpage>c8f7e6c0-85e6-4feb-9ef0-0aeca5fba76b</altpage>
+				<altpage>466</altpage>
 			</vehicle>
 			<vehicle>
 				<id>3fc823bd-bff7-4838-8f94-11c1e55c380a</id>
 				<name>Bust-A-Move (2nd Generation) (Medium)</name>
 				<translate>Bust-A-Move (2nd Generation) (Medium)</translate>
-				<altpage>3fc823bd-bff7-4838-8f94-11c1e55c380a</altpage>
+				<altpage>178</altpage>
 			</vehicle>
 			<vehicle>
 				<id>1264a59a-2fdd-4d41-a674-2082db4f199b</id>
 				<name>Transys Office Maid (Medium)</name>
 				<translate>Transys Office Maid (Medium)</translate>
-				<altpage>1264a59a-2fdd-4d41-a674-2082db4f199b</altpage>
+				<altpage>179</altpage>
 			</vehicle>
 			<vehicle>
 				<id>6c6893fd-a69f-4346-885b-c6ae85679d35</id>
 				<name>Cyberspace Designs Dalmatian (Large)</name>
 				<translate>Cyberspace Designs Dalmatian (Large)</translate>
-				<altpage>6c6893fd-a69f-4346-885b-c6ae85679d35</altpage>
+				<altpage>466</altpage>
 			</vehicle>
 			<vehicle>
 				<id>b627c28f-e67e-4a34-9808-af81fad2acf9</id>
 				<name>GMC Snatch'n'Grab (Large)</name>
 				<translate>GMC Snatch'n'Grab (Large)</translate>
-				<altpage>b627c28f-e67e-4a34-9808-af81fad2acf9</altpage>
+				<altpage>179</altpage>
 			</vehicle>
 			<vehicle>
 				<id>50e6572c-ea59-4756-83e4-7c51f8f614c9</id>
-				<name>Modified Dassault Janatorial Drone (Large)</name>
-				<translate>Modified Dassault Janatorial Drone (Large)</translate>
-				<altpage>50e6572c-ea59-4756-83e4-7c51f8f614c9</altpage>
+				<name>Modified Dassault Janitorial Drone (Large)</name>
+				<translate>Modified Dassault Janitorial Drone (Large)</translate>
+				<altpage>179</altpage>
 			</vehicle>
 			<vehicle>
 				<id>0e8d9c3c-83c0-4c1d-96f0-1f2a2e0bf354</id>
 				<name>Modified Renraku Manservant-3 (Large)</name>
 				<translate>Modified Renraku Manservant-3 (Large)</translate>
-				<altpage>0e8d9c3c-83c0-4c1d-96f0-1f2a2e0bf354</altpage>
+				<altpage>180</altpage>
 			</vehicle>
 			<vehicle>
 				<id>a8c39fd9-d219-4772-9f8e-49b1d0975733</id>
 				<name>Steel Lynx Combat Drone (Large)</name>
 				<translate>Steel Lynx Combat Drone (Large)</translate>
-				<altpage>a8c39fd9-d219-4772-9f8e-49b1d0975733</altpage>
+				<altpage>466</altpage>
 			</vehicle>
 			<vehicle>
 				<id>8ac6c14d-22c2-4f5f-be53-774af78179ad</id>
 				<name>Aeroquip M.E.D.-1 'Dustoff' Medical Evacuation Drone (Large)</name>
 				<translate>Aeroquip M.E.D.-1 'Dustoff' Medical Evacuation Drone (Large)</translate>
-				<altpage>8ac6c14d-22c2-4f5f-be53-774af78179ad</altpage>
+				<altpage>23</altpage>
 			</vehicle>
 			<vehicle>
 				<id>d186dbc2-52e6-4804-94ca-7db96c2afdde</id>
 				<name>Shiawase Caduceus 'CAD' 7 (Medium)</name>
 				<translate>Shiawase Caduceus 'CAD' 7 (Medium)</translate>
-				<altpage>d186dbc2-52e6-4804-94ca-7db96c2afdde</altpage>
+				<altpage>23</altpage>
 			</vehicle>
 			<vehicle>
 				<id>4261d97f-2a4f-4ed3-91a4-64a69a549e37</id>
 				<name>Horizon Flying Eye (Minidrone)</name>
 				<translate>Horizon Flying Eye (Minidrone)</translate>
-				<altpage>4261d97f-2a4f-4ed3-91a4-64a69a549e37</altpage>
+				<altpage>465</altpage>
 			</vehicle>
 			<vehicle>
 				<id>fa4686b8-3886-4bd8-bda4-737050245208</id>
 				<name>Horizon Flying Eye w/Flash-Pak and Grenade (Minidrone)</name>
 				<translate>Horizon Flying Eye w/Flash-Pak and Grenade (Minidrone)</translate>
-				<altpage>fa4686b8-3886-4bd8-bda4-737050245208</altpage>
+				<altpage>465</altpage>
 			</vehicle>
 			<vehicle>
 				<id>d43b2b6a-d6e6-460a-ab75-ca445db06dde</id>
@@ -38382,8 +38946,8 @@
 			</vehicle>
 			<vehicle>
 				<id>0ff86ef9-e35d-4f8f-bc64-0303f81f11c7</id>
-				<name>Neonet Prarie Dog (Small)</name>
-				<translate>Neonet Prarie Dog (Small)</translate>
+				<name>NeoNET Prarie Dog (Small)</name>
+				<translate>NeoNET Prarie Dog (Small)</translate>
 				<altpage>134</altpage>
 			</vehicle>
 			<vehicle>
@@ -38538,8 +39102,8 @@
 			</vehicle>
 			<vehicle>
 				<id>a88f58ad-f4e0-448a-ba5c-00cbdd0076f6</id>
-				<name>NeoNet Avenging Angel (Huge)</name>
-				<translate>NeoNet Avenging Angel (Huge)</translate>
+				<name>NeoNET Avenging Angel (Huge)</name>
+				<translate>NeoNET Avenging Angel (Huge)</translate>
 				<altpage>145</altpage>
 			</vehicle>
 			<vehicle>
@@ -38562,8 +39126,8 @@
 			</vehicle>
 			<vehicle>
 				<id>b448855b-57e7-435a-b523-174adb276674</id>
-				<name>NeoNet Juggernaut</name>
-				<translate>NeoNet Juggernaut</translate>
+				<name>NeoNET Juggernaut</name>
+				<translate>NeoNET Juggernaut</translate>
 				<altpage>147</altpage>
 			</vehicle>
 			<vehicle>
@@ -38574,8 +39138,8 @@
 			</vehicle>
 			<vehicle>
 				<id>17d1e41b-6650-45e2-b898-d047c3b8702a</id>
-				<name>Shiawase I-Doll</name>
-				<translate>Shiawase I-Doll</translate>
+				<name>Shiawase i-Doll</name>
+				<translate>Shiawase i-Doll</translate>
 				<altpage>148</altpage>
 			</vehicle>
 			<vehicle>
@@ -39220,49 +39784,49 @@
 				<id>079a5c61-aee6-4383-81b7-32540f7a0a0b</id>
 				<name>Weapon Mount</name>
 				<translate>Weapon Mount</translate>
-				<altpage>079a5c61-aee6-4383-81b7-32540f7a0a0b</altpage>
+				<altpage>461</altpage>
 			</mod>
 			<mod>
 				<id>ef9dcce5-7b1d-4469-9d3c-861dcb25684e</id>
-				<name>Weapon Mount, Manual</name>
-				<translate>Weapon Mount, Manual</translate>
-				<altpage>ef9dcce5-7b1d-4469-9d3c-861dcb25684e</altpage>
+				<name>Manual Operation</name>
+				<translate>Manual Operation</translate>
+				<altpage>461</altpage>
 			</mod>
 			<mod>
 				<id>a567c5d3-38b8-496a-add8-1e176384e935</id>
 				<name>Heavy Weapon Mount</name>
 				<translate>Heavy Weapon Mount</translate>
-				<altpage>a567c5d3-38b8-496a-add8-1e176384e935</altpage>
+				<altpage>461</altpage>
 			</mod>
 			<mod>
 				<id>984d5035-6edd-4b57-9454-d368cb455c2a</id>
 				<name>Dash Light Bar</name>
 				<translate>Dash Light Bar</translate>
-				<altpage>984d5035-6edd-4b57-9454-d368cb455c2a</altpage>
+				<altpage>176</altpage>
 			</mod>
 			<mod>
 				<id>281bedc2-c73b-427b-9dec-c54edf764cdd</id>
 				<name>Emergency Light Bar</name>
 				<translate>Emergency Light Bar</translate>
-				<altpage>281bedc2-c73b-427b-9dec-c54edf764cdd</altpage>
+				<altpage>176</altpage>
 			</mod>
 			<mod>
 				<id>d8eb6a6e-3da1-4e22-96d7-4f634ad77301</id>
 				<name>Siren</name>
 				<translate>Siren</translate>
-				<altpage>d8eb6a6e-3da1-4e22-96d7-4f634ad77301</altpage>
+				<altpage>176</altpage>
 			</mod>
 			<mod>
 				<id>80b43bd8-ce5b-4cd3-a413-7d32b342f43e</id>
 				<name>Smuggling Compartment (Dwarf, Human, Elf, or Ork)</name>
 				<translate>Smuggling Compartment (Dwarf, Human, Elf, or Ork)</translate>
-				<altpage>80b43bd8-ce5b-4cd3-a413-7d32b342f43e</altpage>
+				<altpage>177</altpage>
 			</mod>
 			<mod>
 				<id>f0307b24-6e2e-48c0-a80a-bb35cebb34ea</id>
 				<name>Smuggling Compartment (Troll)</name>
 				<translate>Smuggling Compartment (Troll)</translate>
-				<altpage>f0307b24-6e2e-48c0-a80a-bb35cebb34ea</altpage>
+				<altpage>177</altpage>
 			</mod>
 			<mod>
 				<id>b062f16a-52ab-40d5-8985-d71b8ee1923c</id>
@@ -41269,7 +41833,7 @@
 			</weapon>
 			<weapon>
 				<id>08e04ae5-ee6f-451d-8dc9-7873b6f9d3a5</id>
-				<name>Ultimax MMG</name>
+				<name>Ultamax MMG</name>
 				<translate>アルティマックス MMG</translate>
 				<altpage>30</altpage>
 			</weapon>
@@ -41299,771 +41863,771 @@
 			</weapon>
 			<weapon>
 				<id>e5ac06f4-3755-42a7-9da9-88de4b3b2ad8</id>
-				<name>Ares Thuderstruck Gauss Rifle</name>
-				<translate>Ares Thuderstruck Gauss Rifle</translate>
-				<altpage>e5ac06f4-3755-42a7-9da9-88de4b3b2ad8</altpage>
+				<name>Ares Thunderstruck Gauss Rifle</name>
+				<translate>Ares Thunderstruck Gauss Rifle</translate>
+				<altpage>45</altpage>
 			</weapon>
 			<weapon>
 				<id>4a4810ca-4d11-49ee-8705-0411edc4d523</id>
 				<name>Krime Bomb</name>
 				<translate>Krime Bomb</translate>
-				<altpage>4a4810ca-4d11-49ee-8705-0411edc4d523</altpage>
+				<altpage>35</altpage>
 			</weapon>
 			<weapon>
 				<id>3320c670-23ae-4cce-9c2c-e59d2554ddd7</id>
 				<name>Krime Cannon</name>
 				<translate>Krime Cannon</translate>
-				<altpage>3320c670-23ae-4cce-9c2c-e59d2554ddd7</altpage>
+				<altpage>431</altpage>
 			</weapon>
 			<weapon>
 				<id>b59116dd-eeba-4091-ad87-a1216e7e52fe</id>
 				<name>Ogre Hammer SWS Assault Cannon</name>
 				<translate>Ogre Hammer SWS Assault Cannon</translate>
-				<altpage>b59116dd-eeba-4091-ad87-a1216e7e52fe</altpage>
+				<altpage>46</altpage>
 			</weapon>
 			<weapon>
 				<id>6d99b7b6-7610-4ba0-833b-ecda09d83366</id>
 				<name>Colt Inception</name>
 				<translate>Colt Inception</translate>
-				<altpage>6d99b7b6-7610-4ba0-833b-ecda09d83366</altpage>
+				<altpage>14</altpage>
 			</weapon>
 			<weapon>
 				<id>2abf6c76-fe19-4678-b6a3-f0b8750ee61c</id>
 				<name>Krupp Arms Kriegfaust</name>
 				<translate>Krupp Arms Kriegfaust</translate>
-				<altpage>2abf6c76-fe19-4678-b6a3-f0b8750ee61c</altpage>
+				<altpage>15</altpage>
 			</weapon>
 			<weapon>
 				<id>fd7f400f-c8d5-4e8c-94aa-001109635f19</id>
 				<name>Nissan Optimum II</name>
 				<translate>Nissan Optimum II</translate>
-				<altpage>fd7f400f-c8d5-4e8c-94aa-001109635f19</altpage>
+				<altpage>38</altpage>
 			</weapon>
 			<weapon>
 				<id>89396ad6-c605-4577-ad5b-6a18cf58d167</id>
 				<name>SBd-44</name>
 				<translate>SBd-44</translate>
-				<altpage>89396ad6-c605-4577-ad5b-6a18cf58d167</altpage>
+				<altpage>16</altpage>
 			</weapon>
 			<weapon>
 				<id>23141cfc-e7c9-4af9-b4e0-a7f0443f1170</id>
 				<name>Shiawase Arms Monsoon</name>
 				<translate>Shiawase Arms Monsoon</translate>
-				<altpage>23141cfc-e7c9-4af9-b4e0-a7f0443f1170</altpage>
+				<altpage>13</altpage>
 			</weapon>
 			<weapon>
 				<id>01e0eee7-452b-4fd5-abe1-29145da4a5e6</id>
 				<name>Yamaha Raiden</name>
 				<translate>Yamaha Raiden</translate>
-				<altpage>01e0eee7-452b-4fd5-abe1-29145da4a5e6</altpage>
+				<altpage>428</altpage>
 			</weapon>
 			<weapon>
 				<id>ad4a06e3-7f8e-4f05-a42e-5be2c875bb72</id>
 				<name>Ares 'One' Monosword</name>
 				<translate>Ares 'One' Monosword</translate>
-				<altpage>ad4a06e3-7f8e-4f05-a42e-5be2c875bb72</altpage>
+				<altpage>19</altpage>
 			</weapon>
 			<weapon>
 				<id>656906d8-b6a4-47a2-9554-de365097eba0</id>
 				<name>Combat Knife</name>
 				<translate>Combat Knife</translate>
-				<altpage>656906d8-b6a4-47a2-9554-de365097eba0</altpage>
+				<altpage>422</altpage>
 			</weapon>
 			<weapon>
 				<id>78bcb170-2292-4f90-af26-dd16ff303569</id>
 				<name>Cougar Fineblade: Long</name>
 				<translate>Cougar Fineblade: Long</translate>
-				<altpage>78bcb170-2292-4f90-af26-dd16ff303569</altpage>
+				<altpage>20</altpage>
 			</weapon>
 			<weapon>
 				<id>bb068078-540d-4c98-85fd-e526e381dec9</id>
 				<name>Cougar Fineblade: Short</name>
 				<translate>Cougar Fineblade: Short</translate>
-				<altpage>bb068078-540d-4c98-85fd-e526e381dec9</altpage>
+				<altpage>20</altpage>
 			</weapon>
 			<weapon>
 				<id>cae4ffe9-cf22-4917-92b1-57be89741f07</id>
 				<name>Highland Forge Claymore</name>
 				<translate>Highland Forge Claymore</translate>
-				<altpage>cae4ffe9-cf22-4917-92b1-57be89741f07</altpage>
+				<altpage>18</altpage>
 			</weapon>
 			<weapon>
 				<id>2ac6ad2e-1252-4204-943e-7b65ffbe803f</id>
 				<name>Horizon-Flynn Rapier</name>
 				<translate>Horizon-Flynn Rapier</translate>
-				<altpage>2ac6ad2e-1252-4204-943e-7b65ffbe803f</altpage>
+				<altpage>18</altpage>
 			</weapon>
 			<weapon>
 				<id>fe835c72-a973-4976-bf5f-751aff1371d4</id>
 				<name>Spurs</name>
 				<translate>Spurs</translate>
-				<altpage>fe835c72-a973-4976-bf5f-751aff1371d4</altpage>
+				<altpage>458</altpage>
 			</weapon>
 			<weapon>
 				<id>dd817517-aa02-4035-9a3c-c0274f705822</id>
 				<name>Victorinox Memory Blade: Dagger</name>
 				<translate>Victorinox Memory Blade: Dagger</translate>
-				<altpage>dd817517-aa02-4035-9a3c-c0274f705822</altpage>
+				<altpage>19</altpage>
 			</weapon>
 			<weapon>
 				<id>47cb2812-b8dd-4f6d-8671-0f2736f29124</id>
 				<name>Victorinox Memory Blade: Sword</name>
 				<translate>Victorinox Memory Blade: Sword</translate>
-				<altpage>47cb2812-b8dd-4f6d-8671-0f2736f29124</altpage>
+				<altpage>19</altpage>
 			</weapon>
 			<weapon>
 				<id>01c3880f-d0a7-4cd5-8460-ba69fc36ae63</id>
 				<name>Bow (Rating 10)</name>
 				<translate>Bow (Rating 10)</translate>
-				<altpage>01c3880f-d0a7-4cd5-8460-ba69fc36ae63</altpage>
+				<altpage>423</altpage>
 			</weapon>
 			<weapon>
 				<id>82953b59-7e08-4abb-afe7-7b568d9a07d1</id>
 				<name>Bow (Rating 9)</name>
 				<translate>Bow (Rating 9)</translate>
-				<altpage>82953b59-7e08-4abb-afe7-7b568d9a07d1</altpage>
+				<altpage>423</altpage>
 			</weapon>
 			<weapon>
 				<id>94c29c4b-e4f4-493f-9155-447608e00874</id>
 				<name>Nemesis Arms Maul Stun Staff</name>
 				<translate>Nemesis Arms Maul Stun Staff</translate>
-				<altpage>94c29c4b-e4f4-493f-9155-447608e00874</altpage>
+				<altpage>20</altpage>
 			</weapon>
 			<weapon>
 				<id>b4b3a872-1532-4477-9bf3-76db34dc7bbf</id>
 				<name>Telescoping Staff</name>
 				<translate>Telescoping Staff</translate>
-				<altpage>b4b3a872-1532-4477-9bf3-76db34dc7bbf</altpage>
+				<altpage>422</altpage>
 			</weapon>
 			<weapon>
 				<id>a20f44a1-ced0-4018-9522-8a0e7234c29d</id>
 				<name>Aquadyne Shark-XS Harpoon Gun</name>
 				<translate>Aquadyne Shark-XS Harpoon Gun</translate>
-				<altpage>a20f44a1-ced0-4018-9522-8a0e7234c29d</altpage>
+				<altpage>22</altpage>
 			</weapon>
 			<weapon>
 				<id>437c30e5-580a-401a-8097-e9fab0dc2b57</id>
 				<name>Ares Giantslayer Slingshot</name>
 				<translate>Ares Giantslayer Slingshot</translate>
-				<altpage>437c30e5-580a-401a-8097-e9fab0dc2b57</altpage>
+				<altpage>23</altpage>
 			</weapon>
 			<weapon>
 				<id>28072a3f-5153-444e-83e3-46129b9ff572</id>
-				<name>Ranger Silver Pistol Crossbow</name>
-				<translate>Ranger Silver Pistol Crossbow</translate>
-				<altpage>28072a3f-5153-444e-83e3-46129b9ff572</altpage>
+				<name>Ranger Sliver Pistol Crossbow</name>
+				<translate>Ranger Sliver Pistol Crossbow</translate>
+				<altpage>23</altpage>
 			</weapon>
 			<weapon>
 				<id>d50f0212-490b-44ca-8365-09e62ea69697</id>
 				<name>Standard Harpoon Gun</name>
 				<translate>Standard Harpoon Gun</translate>
-				<altpage>d50f0212-490b-44ca-8365-09e62ea69697</altpage>
+				<altpage>22</altpage>
 			</weapon>
 			<weapon>
 				<id>a47e8191-869a-456e-b376-ed04ba7a59f0</id>
 				<name>Ballistic Shield</name>
 				<translate>Ballistic Shield</translate>
-				<altpage>a47e8191-869a-456e-b376-ed04ba7a59f0</altpage>
+				<altpage>438</altpage>
 			</weapon>
 			<weapon>
 				<id>1752def7-cfed-44d8-a79f-bc95f32c4c13</id>
 				<name>Battering Ram, Fluid-Motion</name>
 				<translate>Battering Ram, Fluid-Motion</translate>
-				<altpage>1752def7-cfed-44d8-a79f-bc95f32c4c13</altpage>
+				<altpage>103</altpage>
 			</weapon>
 			<weapon>
 				<id>375930d0-6a29-480e-a6d8-46fe4eaf2a16</id>
 				<name>Battering Ram, Pneumatic</name>
 				<translate>Battering Ram, Pneumatic</translate>
-				<altpage>375930d0-6a29-480e-a6d8-46fe4eaf2a16</altpage>
+				<altpage>104</altpage>
 			</weapon>
 			<weapon>
 				<id>c0e77aad-3ecb-4136-b39d-00e9db6e6407</id>
 				<name>Battering Ram, Shock</name>
 				<translate>Battering Ram, Shock</translate>
-				<altpage>c0e77aad-3ecb-4136-b39d-00e9db6e6407</altpage>
+				<altpage>104</altpage>
 			</weapon>
 			<weapon>
 				<id>5ed720a1-bfa5-4670-85a2-5867f5caafbf</id>
 				<name>Battering Ram, Standard</name>
 				<translate>Battering Ram, Standard</translate>
-				<altpage>5ed720a1-bfa5-4670-85a2-5867f5caafbf</altpage>
+				<altpage>103</altpage>
 			</weapon>
 			<weapon>
 				<id>ebbdbe5e-17da-4a97-8a65-9839513c91fe</id>
 				<name>Blast Shield</name>
 				<translate>Blast Shield</translate>
-				<altpage>ebbdbe5e-17da-4a97-8a65-9839513c91fe</altpage>
+				<altpage>104</altpage>
 			</weapon>
 			<weapon>
 				<id>e66ab7ea-3408-4a3b-9ab9-7bc26a8e8a6e</id>
 				<name>Riot Shield</name>
 				<translate>Riot Shield</translate>
-				<altpage>e66ab7ea-3408-4a3b-9ab9-7bc26a8e8a6e</altpage>
+				<altpage>438</altpage>
 			</weapon>
 			<weapon>
 				<id>c0f77a8a-6bda-489e-aea6-bd4d6b3efe33</id>
 				<name>Ash Arms Combat Chainsaw</name>
 				<translate>Ash Arms Combat Chainsaw</translate>
-				<altpage>c0f77a8a-6bda-489e-aea6-bd4d6b3efe33</altpage>
+				<altpage>21</altpage>
 			</weapon>
 			<weapon>
 				<id>05313081-d711-4af0-9a11-ebfbcdd4583f</id>
 				<name>Ash Arms Monofilament Chainsaw</name>
 				<translate>Ash Arms Monofilament Chainsaw</translate>
-				<altpage>05313081-d711-4af0-9a11-ebfbcdd4583f</altpage>
+				<altpage>21</altpage>
 			</weapon>
 			<weapon>
 				<id>e3f90df3-a19e-458a-a09f-01ee4cd04502</id>
 				<name>Bullwhip</name>
 				<translate>Bullwhip</translate>
-				<altpage>e3f90df3-a19e-458a-a09f-01ee4cd04502</altpage>
+				<altpage>20</altpage>
 			</weapon>
 			<weapon>
 				<id>87a94632-b229-44b7-a150-9808388cfa20</id>
 				<name>Hold-Fast Sprayer</name>
 				<translate>Hold-Fast Sprayer</translate>
-				<altpage>87a94632-b229-44b7-a150-9808388cfa20</altpage>
+				<altpage>104</altpage>
 			</weapon>
 			<weapon>
 				<id>fac9d052-4f7d-43cd-a649-8703b4c0b9c2</id>
 				<name>Micro Flare Launcher</name>
 				<translate>Micro Flare Launcher</translate>
-				<altpage>fac9d052-4f7d-43cd-a649-8703b4c0b9c2</altpage>
+				<altpage>449</altpage>
 			</weapon>
 			<weapon>
 				<id>dd4a69d9-6861-41de-9557-83617a3fa904</id>
 				<name>Shiawase Arms Incinerator</name>
 				<translate>Shiawase Arms Incinerator</translate>
-				<altpage>dd4a69d9-6861-41de-9557-83617a3fa904</altpage>
+				<altpage>36</altpage>
 			</weapon>
 			<weapon>
 				<id>011493be-12eb-47ba-a445-f0c8cf139d4f</id>
 				<name>Urban Tribe Tomahawk</name>
 				<translate>Urban Tribe Tomahawk</translate>
-				<altpage>011493be-12eb-47ba-a445-f0c8cf139d4f</altpage>
+				<altpage>25</altpage>
 			</weapon>
 			<weapon>
 				<id>cbce4476-7c0b-448c-8e43-0d5c3293d25d</id>
 				<name>Grenade: Paint</name>
 				<translate>Grenade: Paint</translate>
-				<altpage>cbce4476-7c0b-448c-8e43-0d5c3293d25d</altpage>
+				<altpage>102</altpage>
 			</weapon>
 			<weapon>
 				<id>44eca724-0196-407c-820c-7631a6d4c981</id>
 				<name>Harpoon</name>
 				<translate>Harpoon</translate>
-				<altpage>44eca724-0196-407c-820c-7631a6d4c981</altpage>
+				<altpage>24</altpage>
 			</weapon>
 			<weapon>
 				<id>184e07a0-fff1-4102-961c-02c8f53ac335</id>
 				<name>Javelin</name>
 				<translate>Javelin</translate>
-				<altpage>184e07a0-fff1-4102-961c-02c8f53ac335</altpage>
+				<altpage>24</altpage>
 			</weapon>
 			<weapon>
 				<id>5fe3a884-8213-4fe3-a538-750eba3bda27</id>
 				<name>Cyber Microgrenade Launcher</name>
 				<translate>Cyber Microgrenade Launcher</translate>
-				<altpage>5fe3a884-8213-4fe3-a538-750eba3bda27</altpage>
+				<altpage>458</altpage>
 			</weapon>
 			<weapon>
 				<id>d13da888-212b-4eff-9d1d-7d02419250e9</id>
 				<name>Ruhrmetall SF-20</name>
 				<translate>Ruhrmetall SF-20</translate>
-				<altpage>d13da888-212b-4eff-9d1d-7d02419250e9</altpage>
+				<altpage>44</altpage>
 			</weapon>
 			<weapon>
 				<id>c0857027-d3b2-4677-bc97-3f98bcc6f80f</id>
 				<name>Ultamax HMG-2</name>
 				<translate>Ultamax HMG-2</translate>
-				<altpage>c0857027-d3b2-4677-bc97-3f98bcc6f80f</altpage>
+				<altpage>45</altpage>
 			</weapon>
 			<weapon>
 				<id>971c711b-db32-4339-9203-865ef38f350e</id>
 				<name>Ares Predator V</name>
 				<translate>Ares Predator V</translate>
-				<altpage>971c711b-db32-4339-9203-865ef38f350e</altpage>
+				<altpage>426</altpage>
 			</weapon>
 			<weapon>
 				<id>36957626-3c6f-4e15-a3ee-dce8c82e2c94</id>
 				<name>Colt Future Frontier</name>
 				<translate>Colt Future Frontier</translate>
-				<altpage>36957626-3c6f-4e15-a3ee-dce8c82e2c94</altpage>
+				<altpage>6</altpage>
 			</weapon>
 			<weapon>
 				<id>158224db-e409-407f-b2f0-4617886ad80f</id>
 				<name>Heavy Cyber Pistol</name>
 				<translate>Heavy Cyber Pistol</translate>
-				<altpage>158224db-e409-407f-b2f0-4617886ad80f</altpage>
+				<altpage>458</altpage>
 			</weapon>
 			<weapon>
 				<id>0158c348-b0e0-41e1-a171-1a34af39f0e5</id>
 				<name>Onotari Arms Violator</name>
 				<translate>Onotari Arms Violator</translate>
-				<altpage>0158c348-b0e0-41e1-a171-1a34af39f0e5</altpage>
+				<altpage>33</altpage>
 			</weapon>
 			<weapon>
 				<id>43103267-c408-4499-92da-602f70ccb24e</id>
 				<name>PSK-3 Collapsible Heavy Pistol</name>
 				<translate>PSK-3 Collapsible Heavy Pistol</translate>
-				<altpage>43103267-c408-4499-92da-602f70ccb24e</altpage>
+				<altpage>32</altpage>
 			</weapon>
 			<weapon>
 				<id>c87b03f7-403d-4db9-987a-022ab525b4be</id>
 				<name>Cyber Hold-Out</name>
 				<translate>Cyber Hold-Out</translate>
-				<altpage>c87b03f7-403d-4db9-987a-022ab525b4be</altpage>
+				<altpage>458</altpage>
 			</weapon>
 			<weapon>
 				<id>07ce89c6-7c69-45a4-91a9-3375847c878a</id>
 				<name>Bottle (broken, after first hit)</name>
 				<translate>Bottle (broken, after first hit)</translate>
-				<altpage>07ce89c6-7c69-45a4-91a9-3375847c878a</altpage>
+				<altpage>22</altpage>
 			</weapon>
 			<weapon>
 				<id>4c1d521e-bc16-4b6f-9f54-f92e8f957ef4</id>
 				<name>Bottle (unbroken)</name>
 				<translate>Bottle (unbroken)</translate>
-				<altpage>4c1d521e-bc16-4b6f-9f54-f92e8f957ef4</altpage>
+				<altpage>22</altpage>
 			</weapon>
 			<weapon>
 				<id>a9d3f2e3-256b-4557-8c06-3821d9d9b370</id>
 				<name>Fork</name>
 				<translate>Fork</translate>
-				<altpage>a9d3f2e3-256b-4557-8c06-3821d9d9b370</altpage>
+				<altpage>22</altpage>
 			</weapon>
 			<weapon>
 				<id>9442e7c1-01ca-4331-831e-9ad2209fceb1</id>
 				<name>Hammer</name>
 				<translate>Hammer</translate>
-				<altpage>9442e7c1-01ca-4331-831e-9ad2209fceb1</altpage>
+				<altpage>22</altpage>
 			</weapon>
 			<weapon>
 				<id>df5d5c83-ddf8-4ec2-8a6f-28c61ec7325a</id>
 				<name>Ares Archon Heavy MP Laser</name>
 				<translate>Ares Archon Heavy MP Laser</translate>
-				<altpage>df5d5c83-ddf8-4ec2-8a6f-28c61ec7325a</altpage>
+				<altpage>49</altpage>
 			</weapon>
 			<weapon>
 				<id>d6c4ff4a-5fbb-4885-9220-a784e2bff4f4</id>
 				<name>Ares Lancer MP Laser</name>
 				<translate>Ares Lancer MP Laser</translate>
-				<altpage>d6c4ff4a-5fbb-4885-9220-a784e2bff4f4</altpage>
+				<altpage>48</altpage>
 			</weapon>
 			<weapon>
 				<id>df19a07f-cc04-44b6-b9b2-6d4fe73062e4</id>
 				<name>GE Vindicator Mini-Gun</name>
 				<translate>GE Vindicator Mini-Gun</translate>
-				<altpage>df19a07f-cc04-44b6-b9b2-6d4fe73062e4</altpage>
+				<altpage>42</altpage>
 			</weapon>
 			<weapon>
 				<id>cb04b4c1-97ff-4984-9bc8-943e5f3ac557</id>
 				<name>Ingram Valiant</name>
 				<translate>Ingram Valiant</translate>
-				<altpage>cb04b4c1-97ff-4984-9bc8-943e5f3ac557</altpage>
+				<altpage>430</altpage>
 			</weapon>
 			<weapon>
 				<id>ba34be4c-2dff-439a-8b7e-942f71bb4942</id>
 				<name>Krime Wave</name>
 				<translate>Krime Wave</translate>
-				<altpage>ba34be4c-2dff-439a-8b7e-942f71bb4942</altpage>
+				<altpage>34</altpage>
 			</weapon>
 			<weapon>
 				<id>b2b51722-5c37-43ce-9b08-646b8f1a51eb</id>
 				<name>Shiawase Armaments Nemesis</name>
 				<translate>Shiawase Armaments Nemesis</translate>
-				<altpage>b2b51722-5c37-43ce-9b08-646b8f1a51eb</altpage>
+				<altpage>43</altpage>
 			</weapon>
 			<weapon>
 				<id>93722378-dcb6-4988-ba4e-54ce545644fe</id>
 				<name>Ares Light Fire 75</name>
 				<translate>Ares Light Fire 75</translate>
-				<altpage>93722378-dcb6-4988-ba4e-54ce545644fe</altpage>
+				<altpage>425</altpage>
 			</weapon>
 			<weapon>
 				<id>cbff618e-6a12-4bab-aaeb-2453706bf42e</id>
 				<name>Beretta 201T</name>
 				<translate>Beretta 201T</translate>
-				<altpage>cbff618e-6a12-4bab-aaeb-2453706bf42e</altpage>
+				<altpage>425</altpage>
 			</weapon>
 			<weapon>
 				<id>21ddd00b-0e30-4fc0-97c0-14db61af24ad</id>
 				<name>Colt Agent Special</name>
 				<translate>Colt Agent Special</translate>
-				<altpage>21ddd00b-0e30-4fc0-97c0-14db61af24ad</altpage>
+				<altpage>5</altpage>
 			</weapon>
 			<weapon>
 				<id>305a23ec-098f-47c9-898f-ca28016846d1</id>
 				<name>Colt New Model Revolver</name>
 				<translate>Colt New Model Revolver</translate>
-				<altpage>305a23ec-098f-47c9-898f-ca28016846d1</altpage>
+				<altpage>4</altpage>
 			</weapon>
 			<weapon>
 				<id>261165ce-6111-4a51-9519-46c41edac9b0</id>
 				<name>Light Cyber Pistol</name>
 				<translate>Light Cyber Pistol</translate>
-				<altpage>261165ce-6111-4a51-9519-46c41edac9b0</altpage>
+				<altpage>458</altpage>
 			</weapon>
 			<weapon>
 				<id>8a6d3d73-2091-4bc1-9a16-b42aa9b159e6</id>
 				<name>Nitama Sporter</name>
 				<translate>Nitama Sporter</translate>
-				<altpage>8a6d3d73-2091-4bc1-9a16-b42aa9b159e6</altpage>
+				<altpage>31</altpage>
 			</weapon>
 			<weapon>
 				<id>274585e0-7e3c-44fd-88f3-287c12c90173</id>
 				<name>Shiawase Armaments Puzzler</name>
 				<translate>Shiawase Armaments Puzzler</translate>
-				<altpage>274585e0-7e3c-44fd-88f3-287c12c90173</altpage>
+				<altpage>31</altpage>
 			</weapon>
 			<weapon>
 				<id>66955e6e-0b77-4ce0-9e24-6bb637a36541</id>
 				<name>Taurus Omni-6</name>
 				<translate>Taurus Omni-6</translate>
-				<altpage>66955e6e-0b77-4ce0-9e24-6bb637a36541</altpage>
+				<altpage>426</altpage>
 			</weapon>
 			<weapon>
 				<id>cb2afbcc-a1bf-465b-9fc2-c91e1ddfb100</id>
 				<name>Ares Crusader II</name>
 				<translate>Ares Crusader II</translate>
-				<altpage>cb2afbcc-a1bf-465b-9fc2-c91e1ddfb100</altpage>
+				<altpage>427</altpage>
 			</weapon>
 			<weapon>
 				<id>a68fe409-bebb-4c72-941c-0fce94048fec</id>
 				<name>Cavalier Evanator</name>
 				<translate>Cavalier Evanator</translate>
-				<altpage>a68fe409-bebb-4c72-941c-0fce94048fec</altpage>
+				<altpage>8</altpage>
 			</weapon>
 			<weapon>
 				<id>496e4b81-8437-41fb-adf5-2e4709df656e</id>
 				<name>Cyber Machine Pistol</name>
 				<translate>Cyber Machine Pistol</translate>
-				<altpage>496e4b81-8437-41fb-adf5-2e4709df656e</altpage>
+				<altpage>458</altpage>
 			</weapon>
 			<weapon>
 				<id>5563a612-bf02-4fd9-b942-2400bbd1eb70</id>
 				<name>Fianchetti Military 100</name>
 				<translate>Fianchetti Military 100</translate>
-				<altpage>5563a612-bf02-4fd9-b942-2400bbd1eb70</altpage>
+				<altpage>7</altpage>
 			</weapon>
 			<weapon>
 				<id>404c20aa-8c02-4fcd-a37e-ba63b3e3553f</id>
 				<name>Onotari Arms Equalizer</name>
 				<translate>Onotari Arms Equalizer</translate>
-				<altpage>404c20aa-8c02-4fcd-a37e-ba63b3e3553f</altpage>
+				<altpage>34</altpage>
 			</weapon>
 			<weapon>
 				<id>6596b05e-d51b-4388-b57a-950d9b5a96ac</id>
 				<name>Remington Suppressor</name>
 				<translate>Remington Suppressor</translate>
-				<altpage>6596b05e-d51b-4388-b57a-950d9b5a96ac</altpage>
+				<altpage>9</altpage>
 			</weapon>
 			<weapon>
 				<id>060cbbd5-3413-4e57-8c7a-5ee3d2e94945</id>
 				<name>Ultimax 70</name>
 				<translate>Ultimax 70</translate>
-				<altpage>060cbbd5-3413-4e57-8c7a-5ee3d2e94945</altpage>
+				<altpage>35</altpage>
 			</weapon>
 			<weapon>
 				<id>b4e80557-89cc-40ef-ab2d-8970b818fae9</id>
 				<name>Onotari Arms Ballista MML</name>
 				<translate>Onotari Arms Ballista MML</translate>
-				<altpage>b4e80557-89cc-40ef-ab2d-8970b818fae9</altpage>
+				<altpage>46</altpage>
 			</weapon>
 			<weapon>
 				<id>6753f5f1-72c5-41fb-beb6-6c1a37b82f5e</id>
 				<name>Onotari Interceptor</name>
 				<translate>Onotari Interceptor</translate>
-				<altpage>6753f5f1-72c5-41fb-beb6-6c1a37b82f5e</altpage>
+				<altpage>431</altpage>
 			</weapon>
 			<weapon>
 				<id>31269939-24bb-405a-aa5e-a1b77458a1df</id>
 				<name>Cavalier Falchion</name>
 				<translate>Cavalier Falchion</translate>
-				<altpage>31269939-24bb-405a-aa5e-a1b77458a1df</altpage>
+				<altpage>22</altpage>
 			</weapon>
 			<weapon>
 				<id>97cab27f-620b-45d7-8da4-3136c1e69f2b</id>
 				<name>Cyber Shotgun</name>
 				<translate>Cyber Shotgun</translate>
-				<altpage>97cab27f-620b-45d7-8da4-3136c1e69f2b</altpage>
+				<altpage>458</altpage>
 			</weapon>
 			<weapon>
 				<id>76e0ae30-a3cf-4d4f-b278-ad49a10df4d2</id>
 				<name>Franchi SPAS-24</name>
 				<translate>Franchi SPAS-24</translate>
-				<altpage>76e0ae30-a3cf-4d4f-b278-ad49a10df4d2</altpage>
+				<altpage>41</altpage>
 			</weapon>
 			<weapon>
 				<id>8818b584-e084-4fcb-94b8-632728015c6f</id>
 				<name>Krime Boss</name>
 				<translate>Krime Boss</translate>
-				<altpage>8818b584-e084-4fcb-94b8-632728015c6f</altpage>
+				<altpage>17</altpage>
 			</weapon>
 			<weapon>
 				<id>62221199-7958-4a76-a538-0c8e0a516608</id>
 				<name>PJSS Model 55</name>
 				<translate>PJSS Model 55</translate>
-				<altpage>62221199-7958-4a76-a538-0c8e0a516608</altpage>
+				<altpage>429</altpage>
 			</weapon>
 			<weapon>
 				<id>3af9c1f7-8582-4849-8b1e-b49dd14c207f</id>
 				<name>Shiawase Arms Rain</name>
 				<translate>Shiawase Arms Rain</translate>
-				<altpage>3af9c1f7-8582-4849-8b1e-b49dd14c207f</altpage>
+				<altpage>21</altpage>
 			</weapon>
 			<weapon>
 				<id>eaef40ea-c1ff-4f64-a4fe-31720b250860</id>
 				<name>Winchester Model 201</name>
 				<translate>Winchester Model 201</translate>
-				<altpage>eaef40ea-c1ff-4f64-a4fe-31720b250860</altpage>
+				<altpage>18</altpage>
 			</weapon>
 			<weapon>
 				<id>93869598-2945-412f-8b42-90764ddc1e59</id>
 				<name>Winchester Model 2054</name>
 				<translate>Winchester Model 2054</translate>
-				<altpage>93869598-2945-412f-8b42-90764ddc1e59</altpage>
+				<altpage>20</altpage>
 			</weapon>
 			<weapon>
 				<id>afee8d53-f1da-4500-ab6c-8e22b9c57c3e</id>
 				<name>Winchester Model 2066</name>
 				<translate>Winchester Model 2066</translate>
-				<altpage>afee8d53-f1da-4500-ab6c-8e22b9c57c3e</altpage>
+				<altpage>19</altpage>
 			</weapon>
 			<weapon>
 				<id>ffc2ae2b-fbaa-4d65-9456-c6433f3d53e8</id>
 				<name>Barret Model 122</name>
 				<translate>Barret Model 122</translate>
-				<altpage>ffc2ae2b-fbaa-4d65-9456-c6433f3d53e8</altpage>
+				<altpage>40</altpage>
 			</weapon>
 			<weapon>
 				<id>8c22582e-56ff-4a44-9358-487d8a594833</id>
 				<name>Cavalier Arms Crockett EBR</name>
 				<translate>Cavalier Arms Crockett EBR</translate>
-				<altpage>8c22582e-56ff-4a44-9358-487d8a594833</altpage>
+				<altpage>428</altpage>
 			</weapon>
 			<weapon>
 				<id>8524048e-6c2c-414c-91e8-5d4bca711957</id>
 				<name>Onotari Arms JP-K50</name>
 				<translate>Onotari Arms JP-K50</translate>
-				<altpage>8524048e-6c2c-414c-91e8-5d4bca711957</altpage>
+				<altpage>39</altpage>
 			</weapon>
 			<weapon>
 				<id>cf9d0938-73e5-4e40-9a50-003ded439586</id>
 				<name>Pioneer 60</name>
 				<translate>Pioneer 60</translate>
-				<altpage>cf9d0938-73e5-4e40-9a50-003ded439586</altpage>
+				<altpage>39</altpage>
 			</weapon>
 			<weapon>
 				<id>e2649ef2-c9a8-43ac-9f6c-9279e7be2f67</id>
 				<name>Ranger Arms SM-5</name>
 				<translate>Ranger Arms SM-5</translate>
-				<altpage>e2649ef2-c9a8-43ac-9f6c-9279e7be2f67</altpage>
+				<altpage>429</altpage>
 			</weapon>
 			<weapon>
 				<id>6098fea5-3069-42b8-9405-80d07578b660</id>
 				<name>Ruger 101</name>
 				<translate>Ruger 101</translate>
-				<altpage>6098fea5-3069-42b8-9405-80d07578b660</altpage>
+				<altpage>429</altpage>
 			</weapon>
 			<weapon>
 				<id>e238d380-5e5f-499c-9d33-548d02b50076</id>
 				<name>SVD</name>
 				<translate>SVD</translate>
-				<altpage>e238d380-5e5f-499c-9d33-548d02b50076</altpage>
+				<altpage>11</altpage>
 			</weapon>
 			<weapon>
 				<id>8d2c12e7-e08d-4c7a-907a-b5bc178ce9e3</id>
 				<name>Terracotta Arms AM-47</name>
 				<translate>Terracotta Arms AM-47</translate>
-				<altpage>8d2c12e7-e08d-4c7a-907a-b5bc178ce9e3</altpage>
+				<altpage>38</altpage>
 			</weapon>
 			<weapon>
 				<id>07200c8e-d3f3-4ec1-8911-11be322c6d5f</id>
 				<name>Bola</name>
 				<translate>Bola</translate>
-				<altpage>07200c8e-d3f3-4ec1-8911-11be322c6d5f</altpage>
+				<altpage>26</altpage>
 			</weapon>
 			<weapon>
 				<id>da91e16e-df0f-475e-9a41-c342c59540ab</id>
 				<name>Knockoff Gun Cane</name>
 				<translate>Knockoff Gun Cane</translate>
-				<altpage>da91e16e-df0f-475e-9a41-c342c59540ab</altpage>
+				<altpage>27</altpage>
 			</weapon>
 			<weapon>
 				<id>04fd6c88-6d3c-4e5e-8490-4cf422f3e02e</id>
 				<name>Monofilament Bola</name>
 				<translate>Monofilament Bola</translate>
-				<altpage>04fd6c88-6d3c-4e5e-8490-4cf422f3e02e</altpage>
+				<altpage>26</altpage>
 			</weapon>
 			<weapon>
 				<id>eb9c657d-d98d-476e-8a86-40d83d8cb821</id>
 				<name>Mortimer of London 'Trafalger' Gun Cane</name>
 				<translate>Mortimer of London 'Trafalger' Gun Cane</translate>
-				<altpage>eb9c657d-d98d-476e-8a86-40d83d8cb821</altpage>
+				<altpage>27</altpage>
 			</weapon>
 			<weapon>
 				<id>61555ac9-9925-4252-bc25-92c948eb9dfd</id>
 				<name>SA Retarius Net Gun</name>
 				<translate>SA Retarius Net Gun</translate>
-				<altpage>61555ac9-9925-4252-bc25-92c948eb9dfd</altpage>
+				<altpage>28</altpage>
 			</weapon>
 			<weapon>
 				<id>a4dda50f-fec2-4142-bc19-49bcc3a13516</id>
 				<name>SA Retarius Net Gun XL</name>
 				<translate>SA Retarius Net Gun XL</translate>
-				<altpage>a4dda50f-fec2-4142-bc19-49bcc3a13516</altpage>
+				<altpage>28</altpage>
 			</weapon>
 			<weapon>
 				<id>a130db89-380f-49f8-b9f4-6cfd66cbc4fe</id>
 				<name>Tiffani Elegance Shooting Bracers</name>
 				<translate>Tiffani Elegance Shooting Bracers</translate>
-				<altpage>a130db89-380f-49f8-b9f4-6cfd66cbc4fe</altpage>
+				<altpage>28</altpage>
 			</weapon>
 			<weapon>
 				<id>b312c6dd-56db-4569-b96d-32a9e290e78b</id>
 				<name>M1 Garand</name>
 				<translate>M1 Garand</translate>
-				<altpage>b312c6dd-56db-4569-b96d-32a9e290e78b</altpage>
+				<altpage>27</altpage>
 			</weapon>
 			<weapon>
 				<id>1a1a3b5f-064a-4626-8ddb-efc015187236</id>
 				<name>Marlin 3041 BL</name>
 				<translate>Marlin 3041 BL</translate>
-				<altpage>1a1a3b5f-064a-4626-8ddb-efc015187236</altpage>
+				<altpage>29</altpage>
 			</weapon>
 			<weapon>
 				<id>afbb08e1-9362-46c6-b890-9dbd3cd26d2d</id>
 				<name>Marlin 3468SS</name>
 				<translate>Marlin 3468SS</translate>
-				<altpage>afbb08e1-9362-46c6-b890-9dbd3cd26d2d</altpage>
+				<altpage>25</altpage>
 			</weapon>
 			<weapon>
 				<id>c4cb38e3-3748-41ad-82e9-56abc111fafe</id>
 				<name>Marlin 79S</name>
 				<translate>Marlin 79S</translate>
-				<altpage>c4cb38e3-3748-41ad-82e9-56abc111fafe</altpage>
+				<altpage>31</altpage>
 			</weapon>
 			<weapon>
 				<id>2082a58b-e94d-4911-a486-1ad33ac8e3b8</id>
 				<name>Marlin X71</name>
 				<translate>Marlin X71</translate>
-				<altpage>2082a58b-e94d-4911-a486-1ad33ac8e3b8</altpage>
+				<altpage>30</altpage>
 			</weapon>
 			<weapon>
 				<id>c571ea1e-dfd8-4c4e-84d8-9355f24874b0</id>
 				<name>Springfield 2003</name>
 				<translate>Springfield 2003</translate>
-				<altpage>c571ea1e-dfd8-4c4e-84d8-9355f24874b0</altpage>
+				<altpage>23</altpage>
 			</weapon>
 			<weapon>
 				<id>72659b65-56ab-4629-be63-d82549edb0b4</id>
 				<name>Springfield M1A</name>
 				<translate>Springfield M1A</translate>
-				<altpage>72659b65-56ab-4629-be63-d82549edb0b4</altpage>
+				<altpage>26</altpage>
 			</weapon>
 			<weapon>
 				<id>c154d964-599f-41bd-9b20-3b63dcbb213d</id>
 				<name>Springfield Model 1855 Reproduction</name>
 				<translate>Springfield Model 1855 Reproduction</translate>
-				<altpage>c154d964-599f-41bd-9b20-3b63dcbb213d</altpage>
+				<altpage>28</altpage>
 			</weapon>
 			<weapon>
 				<id>a6afb306-df84-4d99-8f62-1b9a988bea07</id>
 				<name>Winchester Model 2024</name>
 				<translate>Winchester Model 2024</translate>
-				<altpage>a6afb306-df84-4d99-8f62-1b9a988bea07</altpage>
+				<altpage>24</altpage>
 			</weapon>
 			<weapon>
 				<id>7aa7ed5d-b094-45c9-9275-974e8aeb4de8</id>
 				<name>Winchester Model 2067</name>
 				<translate>Winchester Model 2067</translate>
-				<altpage>7aa7ed5d-b094-45c9-9275-974e8aeb4de8</altpage>
+				<altpage>33</altpage>
 			</weapon>
 			<weapon>
 				<id>c9ae9813-cf66-4435-82c5-a5f28c441d5d</id>
 				<name>Ares Executioner</name>
 				<translate>Ares Executioner</translate>
-				<altpage>c9ae9813-cf66-4435-82c5-a5f28c441d5d</altpage>
+				<altpage>35</altpage>
 			</weapon>
 			<weapon>
 				<id>53393829-2f6d-445d-b3d4-325aabec7cba</id>
 				<name>Ares SIGMA 3</name>
 				<translate>Ares SIGMA 3</translate>
-				<altpage>53393829-2f6d-445d-b3d4-325aabec7cba</altpage>
+				<altpage>11</altpage>
 			</weapon>
 			<weapon>
 				<id>1603b758-f59c-4288-937a-8d7467b9ed33</id>
 				<name>Cavalier Arms Gladius</name>
 				<translate>Cavalier Arms Gladius</translate>
-				<altpage>1603b758-f59c-4288-937a-8d7467b9ed33</altpage>
+				<altpage>12</altpage>
 			</weapon>
 			<weapon>
 				<id>b2eefb04-0e33-4faa-8e92-5c4bcbfc3f16</id>
 				<name>Colt Cobra TZ-120</name>
 				<translate>Colt Cobra TZ-120</translate>
-				<altpage>b2eefb04-0e33-4faa-8e92-5c4bcbfc3f16</altpage>
+				<altpage>427</altpage>
 			</weapon>
 			<weapon>
 				<id>95295a59-46b3-4cc0-8a1d-ac869cf9912c</id>
 				<name>Cyber Submachine Gun</name>
 				<translate>Cyber Submachine Gun</translate>
-				<altpage>95295a59-46b3-4cc0-8a1d-ac869cf9912c</altpage>
+				<altpage>458</altpage>
 			</weapon>
 			<weapon>
 				<id>f9ff7bf6-3ed4-41bd-b934-34e751ecf266</id>
 				<name>HK 227</name>
 				<translate>HK 227</translate>
-				<altpage>f9ff7bf6-3ed4-41bd-b934-34e751ecf266</altpage>
+				<altpage>427</altpage>
 			</weapon>
 			<weapon>
 				<id>980bc771-06f2-41b5-8879-c609bd80254f</id>
 				<name>Krime Spree</name>
 				<translate>Krime Spree</translate>
-				<altpage>980bc771-06f2-41b5-8879-c609bd80254f</altpage>
+				<altpage>10</altpage>
 			</weapon>
 			<weapon>
 				<id>74475182-fc21-4583-b9b9-84db8af29328</id>
 				<name>Cavalier Safeguard</name>
 				<translate>Cavalier Safeguard</translate>
-				<altpage>74475182-fc21-4583-b9b9-84db8af29328</altpage>
+				<altpage>29</altpage>
 			</weapon>
 			<weapon>
 				<id>3540d227-3288-410f-aa11-5048179ab322</id>
 				<name>Tiffani-Defiance Protector</name>
 				<translate>Tiffani-Defiance Protector</translate>
-				<altpage>3540d227-3288-410f-aa11-5048179ab322</altpage>
+				<altpage>29</altpage>
 			</weapon>
 			<weapon>
 				<id>168c2aa5-c4d9-4fd7-a629-fc70c6720d03</id>
 				<name>Knucks</name>
 				<translate>Knucks</translate>
-				<altpage>168c2aa5-c4d9-4fd7-a629-fc70c6720d03</altpage>
+				<altpage>422</altpage>
 			</weapon>
 			<weapon>
 				<id>e789ce47-f1bf-4c08-88b8-3295dddd03b1</id>
 				<name>Shock Gloves</name>
 				<translate>Shock Gloves</translate>
-				<altpage>e789ce47-f1bf-4c08-88b8-3295dddd03b1</altpage>
+				<altpage>423</altpage>
 			</weapon>
 			<weapon>
 				<id>232dfc49-21ad-4b90-b05f-e5523b3ee142</id>
 				<name>Nissan Optiumum II Shotgun</name>
 				<translate>Nissan Optiumum II Shotgun</translate>
-				<altpage>232dfc49-21ad-4b90-b05f-e5523b3ee142</altpage>
+				<altpage>38</altpage>
 			</weapon>
 			<weapon>
 				<id>3a91672e-0588-45a6-b225-149624e813ac</id>
 				<name>Ares Predator III</name>
 				<translate>Ares Predator III</translate>
-				<altpage>3a91672e-0588-45a6-b225-149624e813ac</altpage>
+				<altpage>31</altpage>
 			</weapon>
 			<weapon>
 				<id>40bf3eed-b239-4521-ac1d-80a4e472451e</id>
 				<name>Ultimax Rain Forest Carbine</name>
 				<translate>Ultimax Rain Forest Carbine</translate>
-				<altpage>40bf3eed-b239-4521-ac1d-80a4e472451e</altpage>
+				<altpage>32</altpage>
 			</weapon>
 			<weapon>
 				<id>ad2ea9ea-74d0-411d-89b7-20702ee4105d</id>
@@ -43833,7 +44397,7 @@
 			</accessory>
 			<accessory>
 				<id>0da6149e-982f-4051-825b-52c1b79c7e52</id>
-				<name>Silencer</name>
+				<name>Silencer/Suppressor</name>
 				<translate>消音器</translate>
 				<altpage>398</altpage>
 			</accessory>
@@ -43967,187 +44531,187 @@
 				<id>4026650e-ecd3-4514-b2c6-d03dc1d466b5</id>
 				<name>Silencer, Ares Light Fire 75</name>
 				<translate>Silencer, Ares Light Fire 75</translate>
-				<altpage>4026650e-ecd3-4514-b2c6-d03dc1d466b5</altpage>
+				<altpage>425</altpage>
 			</accessory>
 			<accessory>
 				<id>7898e7dc-3ee6-46a9-83d7-d3ec54a456fb</id>
 				<name>Silencer, PSK-3 Collapsible Heavy Pistol</name>
 				<translate>Silencer, PSK-3 Collapsible Heavy Pistol</translate>
-				<altpage>7898e7dc-3ee6-46a9-83d7-d3ec54a456fb</altpage>
+				<altpage>32</altpage>
 			</accessory>
 			<accessory>
 				<id>b895c431-3fb0-49b7-a3fc-ddb4e54b69ee</id>
 				<name>Extra Case, Ares Executioner</name>
 				<translate>Extra Case, Ares Executioner</translate>
-				<altpage>b895c431-3fb0-49b7-a3fc-ddb4e54b69ee</altpage>
+				<altpage>35</altpage>
 			</accessory>
 			<accessory>
 				<id>f46b623b-75b5-4947-a3e4-baa2930749bf</id>
 				<name>Gas-Vent 1 System</name>
 				<translate>Gas-Vent 1 System</translate>
-				<altpage>f46b623b-75b5-4947-a3e4-baa2930749bf</altpage>
+				<altpage>431</altpage>
 			</accessory>
 			<accessory>
 				<id>baecb236-6b4a-4f7d-b9c4-25212f115d4a</id>
 				<name>Gyro Mount</name>
 				<translate>Gyro Mount</translate>
-				<altpage>baecb236-6b4a-4f7d-b9c4-25212f115d4a</altpage>
+				<altpage>432</altpage>
 			</accessory>
 			<accessory>
 				<id>4ed24342-276e-4455-acba-22b551e4d775</id>
 				<name>Spare Clip</name>
 				<translate>Spare Clip</translate>
-				<altpage>4ed24342-276e-4455-acba-22b551e4d775</altpage>
+				<altpage>433</altpage>
 			</accessory>
 			<accessory>
 				<id>2fa27223-dd56-4520-b26b-a112e8733320</id>
 				<name>Vindicator 200-Round Belt</name>
 				<translate>Vindicator 200-Round Belt</translate>
-				<altpage>2fa27223-dd56-4520-b26b-a112e8733320</altpage>
+				<altpage>42</altpage>
 			</accessory>
 			<accessory>
 				<id>06e128ee-00fd-4992-8bf5-4be35815fd11</id>
 				<name>Advanced Safety System, Basic</name>
 				<translate>Advanced Safety System, Basic</translate>
-				<altpage>06e128ee-00fd-4992-8bf5-4be35815fd11</altpage>
+				<altpage>50</altpage>
 			</accessory>
 			<accessory>
 				<id>fad8757c-622f-41ce-8412-8bbb6fbf6445</id>
 				<name>Advanced Safety System, Immobilization</name>
 				<translate>Advanced Safety System, Immobilization</translate>
-				<altpage>fad8757c-622f-41ce-8412-8bbb6fbf6445</altpage>
+				<altpage>50</altpage>
 			</accessory>
 			<accessory>
 				<id>c9739e50-bbaf-47e7-a19b-c3d7fd2b95af</id>
 				<name>Advanced Safety System, Self Destruct</name>
 				<translate>Advanced Safety System, Self Destruct</translate>
-				<altpage>c9739e50-bbaf-47e7-a19b-c3d7fd2b95af</altpage>
+				<altpage>50</altpage>
 			</accessory>
 			<accessory>
 				<id>25b695f8-ed5a-4b75-baf0-164dcde74f2d</id>
 				<name>Advanced Safety System, Explosive Self Destruct</name>
 				<translate>Advanced Safety System, Explosive Self Destruct</translate>
-				<altpage>25b695f8-ed5a-4b75-baf0-164dcde74f2d</altpage>
+				<altpage>50</altpage>
 			</accessory>
 			<accessory>
 				<id>b64d5256-0c24-4842-b05d-25ee735c9b6a</id>
 				<name>Advanced Safety System, Electro Shocker</name>
 				<translate>Advanced Safety System, Electro Shocker</translate>
-				<altpage>b64d5256-0c24-4842-b05d-25ee735c9b6a</altpage>
+				<altpage>50</altpage>
 			</accessory>
 			<accessory>
 				<id>ea64527d-0e1e-4248-957b-7c02d79dad30</id>
 				<name>Concealed Quick-Draw Holster</name>
 				<translate>Concealed Quick-Draw Holster</translate>
-				<altpage>ea64527d-0e1e-4248-957b-7c02d79dad30</altpage>
+				<altpage>51</altpage>
 			</accessory>
 			<accessory>
 				<id>381dd922-19af-46fd-9999-0202c85574de</id>
-				<name>Extreme Environment Modification, Level 1</name>
-				<translate>Extreme Environment Modification, Level 1</translate>
-				<altpage>381dd922-19af-46fd-9999-0202c85574de</altpage>
+				<name>Extreme Environment Modification</name>
+				<translate>Extreme Environment Modification</translate>
+				<altpage>51</altpage>
 			</accessory>
 			<accessory>
 				<id>487ae8d8-f45b-4133-a79f-c831a6b6a651</id>
 				<name>Flashlight, Low Light</name>
 				<translate>Flashlight, Low Light</translate>
-				<altpage>487ae8d8-f45b-4133-a79f-c831a6b6a651</altpage>
+				<altpage>51</altpage>
 			</accessory>
 			<accessory>
 				<id>f8090e1f-424a-4298-a5d9-f2e6d650ef39</id>
 				<name>Folding Stock</name>
 				<translate>Folding Stock</translate>
-				<altpage>f8090e1f-424a-4298-a5d9-f2e6d650ef39</altpage>
+				<altpage>51</altpage>
 			</accessory>
 			<accessory>
 				<id>627f212a-ac15-4739-afbc-f44676dfe508</id>
 				<name>Gecko Grip</name>
 				<translate>Gecko Grip</translate>
-				<altpage>627f212a-ac15-4739-afbc-f44676dfe508</altpage>
+				<altpage>52</altpage>
 			</accessory>
 			<accessory>
 				<id>21bc8b85-3fd7-4bde-ac8d-35e1fa099f21</id>
 				<name>Improved Range Finder</name>
 				<translate>Improved Range Finder</translate>
-				<altpage>21bc8b85-3fd7-4bde-ac8d-35e1fa099f21</altpage>
+				<altpage>52</altpage>
 			</accessory>
 			<accessory>
 				<id>06af1f95-772c-457d-9287-489cf1b0286d</id>
 				<name>Peak-Discharge Battery Pack, Power Clip</name>
 				<translate>Peak-Discharge Battery Pack, Power Clip</translate>
-				<altpage>06af1f95-772c-457d-9287-489cf1b0286d</altpage>
+				<altpage>52</altpage>
 			</accessory>
 			<accessory>
 				<id>dda0b64a-6fa5-4e61-8631-f662f7066756</id>
 				<name>Peak-Discharge Battery Pack, Satchel Power Pack</name>
 				<translate>Peak-Discharge Battery Pack, Satchel Power Pack</translate>
-				<altpage>dda0b64a-6fa5-4e61-8631-f662f7066756</altpage>
+				<altpage>52</altpage>
 			</accessory>
 			<accessory>
 				<id>5a7459f5-2d95-4866-a855-110c0bc4f158</id>
 				<name>Peak-Discharge Battery Pack, Power Backpack</name>
 				<translate>Peak-Discharge Battery Pack, Power Backpack</translate>
-				<altpage>5a7459f5-2d95-4866-a855-110c0bc4f158</altpage>
+				<altpage>52</altpage>
 			</accessory>
 			<accessory>
 				<id>51740a3d-4464-4a38-8e2e-8858b3c1481e</id>
 				<name>Safe Target System, Base</name>
 				<translate>Safe Target System, Base</translate>
-				<altpage>51740a3d-4464-4a38-8e2e-8858b3c1481e</altpage>
+				<altpage>52</altpage>
 			</accessory>
 			<accessory>
 				<id>fbf1ac2e-b131-499c-809e-c2c93c5ec286</id>
 				<name>Safe Target System, Additional set of RFID or GPS data (10 data sets)</name>
 				<translate>Safe Target System, Additional set of RFID or GPS data (10 data sets)</translate>
-				<altpage>fbf1ac2e-b131-499c-809e-c2c93c5ec286</altpage>
+				<altpage>52</altpage>
 			</accessory>
 			<accessory>
 				<id>9147a5ee-fba6-4915-9123-709df5835998</id>
 				<name>Safe Target System, Image Recognition Capabilities</name>
 				<translate>Safe Target System, Image Recognition Capabilities</translate>
-				<altpage>9147a5ee-fba6-4915-9123-709df5835998</altpage>
+				<altpage>52</altpage>
 			</accessory>
 			<accessory>
 				<id>69e7431a-cf62-4712-8e71-728297385d20</id>
 				<name>Safe Target System, Extra image profiles (10 profiles)</name>
 				<translate>Safe Target System, Extra image profiles (10 profiles)</translate>
-				<altpage>69e7431a-cf62-4712-8e71-728297385d20</altpage>
+				<altpage>52</altpage>
 			</accessory>
 			<accessory>
 				<id>de62b79f-2864-4023-a286-6c1f270aade3</id>
 				<name>Slide Mount</name>
 				<translate>Slide Mount</translate>
-				<altpage>de62b79f-2864-4023-a286-6c1f270aade3</altpage>
+				<altpage>52</altpage>
 			</accessory>
 			<accessory>
 				<id>324ee965-d210-4768-a282-aa3180588fc7</id>
 				<name>Tracker</name>
 				<translate>Tracker</translate>
-				<altpage>324ee965-d210-4768-a282-aa3180588fc7</altpage>
+				<altpage>53</altpage>
 			</accessory>
 			<accessory>
 				<id>2ce42c74-5129-4b33-b829-aa392c8eb392</id>
 				<name>Underbarrel Chainsaw</name>
 				<translate>Underbarrel Chainsaw</translate>
-				<altpage>2ce42c74-5129-4b33-b829-aa392c8eb392</altpage>
+				<altpage>53</altpage>
 			</accessory>
 			<accessory>
 				<id>25691076-94be-4869-a067-34e7657285b7</id>
 				<name>Underbarrel Grenade Launcher</name>
 				<translate>Underbarrel Grenade Launcher</translate>
-				<altpage>25691076-94be-4869-a067-34e7657285b7</altpage>
+				<altpage>53</altpage>
 			</accessory>
 			<accessory>
 				<id>4821b29d-55cd-4cb1-a6e2-c51e9d3a95a1</id>
 				<name>Vintage</name>
 				<translate>Vintage</translate>
-				<altpage>4821b29d-55cd-4cb1-a6e2-c51e9d3a95a1</altpage>
+				<altpage>3</altpage>
 			</accessory>
 			<accessory>
 				<id>85b01b5c-c788-4b43-8190-9e0c18391436</id>
 				<name>Personalized Grip</name>
 				<translate>Personalized Grip</translate>
-				<altpage>85b01b5c-c788-4b43-8190-9e0c18391436</altpage>
+				<altpage>182</altpage>
 			</accessory>
 			<accessory>
 				<id>036742ce-95d8-4510-b25f-5c380ef1076e</id>
@@ -45080,6 +45644,114 @@
 				<translate>Coriolis</translate>
 				<altpage>25</altpage>
 			</complexform>
+			<complexform>
+				<id>60b3f99f-f903-426a-ae13-ea604e77a956</id>
+				<name>Overdrive</name>
+				<translate>Overdrive</translate>
+				<altpage>0</altpage>
+			</complexform>
+			<complexform>
+				<id>3bed693e-d9dd-4873-8d54-2cbe97202174</id>
+				<name>LOTO</name>
+				<translate>LOTO</translate>
+				<altpage>0</altpage>
+			</complexform>
+			<complexform>
+				<id>174f61be-5dad-41ad-8d6b-641bc514b9bb</id>
+				<name>Hyperthreading</name>
+				<translate>Hyperthreading</translate>
+				<altpage>0</altpage>
+			</complexform>
+			<complexform>
+				<id>c9eb7fba-b5dd-40b1-907a-a6683dc9977d</id>
+				<name>Sprite Pet</name>
+				<translate>Sprite Pet</translate>
+				<altpage>0</altpage>
+			</complexform>
+			<complexform>
+				<id>92b4cf59-62ca-443b-aeb8-f5044967c835</id>
+				<name>Causal Nexus</name>
+				<translate>Causal Nexus</translate>
+				<altpage>0</altpage>
+			</complexform>
+			<complexform>
+				<id>4856cfa1-89c8-484a-9127-ddc4a2327c63</id>
+				<name>Dissonance Spike</name>
+				<translate>Dissonance Spike</translate>
+				<altpage>0</altpage>
+			</complexform>
+			<complexform>
+				<id>cadf7e01-c75d-4a49-8676-87ddcb0eaa74</id>
+				<name>Forced Heuristics</name>
+				<translate>Forced Heuristics</translate>
+				<altpage>0</altpage>
+			</complexform>
+			<complexform>
+				<id>07b461db-3982-4fa2-8e24-cc5007c377a4</id>
+				<name>Arc Feedback</name>
+				<translate>Arc Feedback</translate>
+				<altpage>0</altpage>
+			</complexform>
+			<complexform>
+				<id>42a11004-5379-4b79-90fa-a30f7ddf4f14</id>
+				<name>Bootleg Program</name>
+				<translate>Bootleg Program</translate>
+				<altpage>0</altpage>
+			</complexform>
+			<complexform>
+				<id>72630724-8d43-4a28-837c-160c735a0d0d</id>
+				<name>Host Emulator</name>
+				<translate>Host Emulator</translate>
+				<altpage>0</altpage>
+			</complexform>
+			<complexform>
+				<id>080013b7-deb3-4a2e-822f-400ecf8293b2</id>
+				<name>Mirrored Persona</name>
+				<translate>Mirrored Persona</translate>
+				<altpage>0</altpage>
+			</complexform>
+			<complexform>
+				<id>7d98d12d-5b02-4bc8-bf1f-b0b3507ebdaf</id>
+				<name>Pinch</name>
+				<translate>Pinch</translate>
+				<altpage>0</altpage>
+			</complexform>
+			<complexform>
+				<id>1a4a6137-53d6-4ada-a788-49e56f73bb86</id>
+				<name>Primed Charge</name>
+				<translate>Primed Charge</translate>
+				<altpage>0</altpage>
+			</complexform>
+			<complexform>
+				<id>b3e7f9e4-aec4-4114-bd49-e04a43be502f</id>
+				<name>Resonance Bind</name>
+				<translate>Resonance Bind</translate>
+				<altpage>0</altpage>
+			</complexform>
+			<complexform>
+				<id>c5185f4d-32b4-4239-91a9-f0095ccf8572</id>
+				<name>Resonance Cache</name>
+				<translate>Resonance Cache</translate>
+				<altpage>0</altpage>
+			</complexform>
+			<complexform>
+				<id>f89957e0-9c70-4503-b47d-0511b7bca5b6</id>
+				<name>Search History</name>
+				<translate>Search History</translate>
+				<altpage>0</altpage>
+			</complexform>
+			<complexform>
+				<id>819a111f-b49d-498b-ac63-54f770cf7cd7</id>
+				<name>Weaken Data Bomb</name>
+				<translate>Weaken Data Bomb</translate>
+				<altpage>0</altpage>
+			</complexform>
+			<complexform>
+				<id>9e849f66-6ad4-49fb-9ccd-e0b250b0625b</id>
+				<name>Weaken Encryption</name>
+				<translate>Weaken Encryption</translate>
+				<altpage>0</altpage>
+			</complexform>
 		</complexforms>
 	</chummer>
 	<chummer file="licenses.xml">
@@ -45751,405 +46423,75 @@
 		<mentors>
 			<mentor>
 				<id>acadd628-ebb5-4c79-a3c2-953ce7fa1885</id>
-				<name>01</name>
-				<translate>01</translate>
+				<name>01 (The World Tree)</name>
+				<translate>01 (The World Tree)</translate>
 				<altadvantage>+1 die for compiling and registering sprites of any type</altadvantage>
 				<altdisadvantage>Zero-One is the perfection of the code and demands the same from his followers, or at least teaches them a harsh lesson if they fail. Zero-One technomancers must spend 2 points of Edge to negate a glitch or downgrade a critical glitch.</altdisadvantage>
 				<altpage>150</altpage>
 			</mentor>
 			<mentor>
 				<id>46f88748-8c6c-4230-ad59-2eccb463cc35</id>
-				<name>Alias</name>
-				<translate>Alias</translate>
-				<altadvantage>+2 dice to Spoof Tests</altadvantage>
-				<altdisadvantage>Alias technomancers cannot abide to pay for their lifestyle and must therefore use their abilities to spoof their lifestyle.</altdisadvantage>
-				<altpage>150</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for Crack spirtes</name>
-						<translate>+1 die for Crack spirtes</translate>
-					</choice>
-					<choice>
-						<name>+1 dice for Sleuth Sprites</name>
-						<translate>+1 dice for Sleuth Sprites</translate>
-					</choice>
-				</choices>
+				<name>Architect</name>
+				<translate>Architect</translate>
+				<altadvantage>+1 limit and +1 dice pool bonus for Edit actions.</altadvantage>
+				<altdisadvantage>–1 limit and –1 dice for Snoop actions.</altdisadvantage>
+				<altpage>103</altpage>
 			</mentor>
 			<mentor>
 				<id>690ccad8-3f42-4d62-a358-e099747fc4e4</id>
-				<name>Abort</name>
-				<translate>Abort</translate>
-				<altadvantage>+2 dice to all Crash Tests</altadvantage>
-				<altdisadvantage>An Abort technomancer must make a Willpower + Charisma (3) Test to take any other action in cybercombat except for trying to crash his opponent’s software.</altdisadvantage>
+				<name>Archivist (The Record Keeper)</name>
+				<translate>Archivist (The Record Keeper)</translate>
+				<altadvantage>+1 limit and +1 dice pool bonus for Browse actions and digital legwork.</altadvantage>
+				<altdisadvantage>–1 limit for Edit actions designed to destroy data.</altdisadvantage>
 				<altpage>177</altpage>
-				<choices>
-					<choice>
-						<name>+1 dice for dissonant Crack sprites</name>
-						<translate>+1 dice for dissonant Crack sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 dice for dissonant Fault sprites</name>
-						<translate>+1 dice for dissonant Fault sprites</translate>
-					</choice>
-				</choices>
-			</mentor>
-			<mentor>
-				<id>6f709558-5cf8-4b4d-898c-d7d4b1fc0c80</id>
-				<name>Archivist</name>
-				<translate>Archivist</translate>
-				<altadvantage>+2 dice for all Browse Tests</altadvantage>
-				<altdisadvantage>Technomancers following the Archivist cannot willingly destroy or corrupt data. The technomancer must succeed at a Willpower + Logic (3) Test to purposely delete or corrupt data (or order a sprite to do so).</altdisadvantage>
-				<altpage>150</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for Code sprites</name>
-						<translate>+1 die for Code sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for Data sprites</name>
-						<translate>+1 die for Data sprites</translate>
-					</choice>
-				</choices>
-			</mentor>
-			<mentor>
-				<id>5405d069-c0df-4bb2-b66f-92a2fbf040f9</id>
-				<name>Architect</name>
-				<translate>Architect</translate>
-				<altadvantage>+2 die to Edit Tests</altadvantage>
-				<altdisadvantage>–1 die to Crash Tests</altdisadvantage>
-				<altpage>150</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for Data sprites</name>
-						<translate>+1 die for Data sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for Machine sprites</name>
-						<translate>+1 die for Machine sprites</translate>
-					</choice>
-				</choices>
-			</mentor>
-			<mentor>
-				<id>d2baacaa-6fa1-4953-8b01-b5398a405645</id>
-				<name>Babel</name>
-				<translate>Babel</translate>
-				<altadvantage>+1 to online Etiquette and Language Tests, +1 die for Courier or Tutor sprites (player must choose one)</altadvantage>
-				<altdisadvantage>Secrecy is the bane of communication, so Babel technomancers must make a Willpower + Logic (3) Test to encrypt anything.</altdisadvantage>
-				<altpage>150</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for Courier sprites</name>
-						<translate>+1 die for Courier sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for Tutor sprites</name>
-						<translate>+1 die for Tutor sprites</translate>
-					</choice>
-				</choices>
 			</mentor>
 			<mentor>
 				<id>117e7c69-abea-4637-b5e7-3a927ae0ad60</id>
-				<name>The Black Hat</name>
-				<translate>The Black Hat</translate>
-				<altadvantage>+2 dice to Exploit Tests</altadvantage>
-				<altdisadvantage>Black Hat technomancers have extreme difficulty restraining themselves from hacking into a node that is interesting in any way. The technomancer must succeed in a Willpower + Charisma (3) Test to avoid hacking such a system when the opportunity arises.</altdisadvantage>
-				<altpage>150</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for Crack sprites</name>
-						<translate>+1 die for Crack sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for Fault sprites</name>
-						<translate>+1 die for Fault sprites</translate>
-					</choice>
-				</choices>
+				<name>Black Hat (The Cracker)</name>
+				<translate>Black Hat (The Cracker)</translate>
+				<altadvantage>+2 limit for gaining marks on a target.</altadvantage>
+				<altdisadvantage>-1 limit and –1 die when setting a Data Bomb.</altdisadvantage>
+				<altpage>103</altpage>
 			</mentor>
 			<mentor>
 				<id>b74d032e-5d39-4e4a-b043-0707ffa00b5e</id>
-				<name>Cryptome</name>
-				<translate>Cryptome</translate>
-				<altadvantage>+2 dice to all Encryption and Decryption Tests</altadvantage>
-				<altdisadvantage>Technomancers who follow Cryptome don’t surrender secrets easily and never to unreliable sources. The technomancer must make a Willpower + Logic (3) Test to share a secret or important information with someone he does not completely trust … and such trust is rare.</altdisadvantage>
-				<altpage>150</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for Courier sprites</name>
-						<translate>+1 die for Courier sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for Data sprites</name>
-						<translate>+1 die for Data sprites</translate>
-					</choice>
-				</choices>
-			</mentor>
-			<mentor>
-				<id>fa271f4e-608f-4cdc-a118-54d714b68a85</id>
-				<name>Daedalus</name>
-				<translate>Daedalus</translate>
-				<altadvantage>+2 dice to Hardware Tests</altadvantage>
-				<altdisadvantage>Technomancers who follow Daedalus tend to interact with the machines on which they are working in an even more subconscious manner than usual. As a result, modifications they make are geared towards someone with their talents and worldview, rather than something that is intuitive to a mundane user or even a non-Daedalus technomancer. Devices built or modified by such technomancers have a more arcane user interface, imposing a –2 modifier on anyone who wants to legitimately use it.</altdisadvantage>
-				<altpage>150</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for Machine sprites</name>
-						<translate>+1 die for Machine sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for Fault sprites</name>
-						<translate>+1 die for Fault sprites</translate>
-					</choice>
-				</choices>
+				<name>Daedalus (The Inventor)</name>
+				<translate>Daedalus (The Inventor)</translate>
+				<altadvantage>+1 dice pool bonus for Hardware tests, +1 limit on Pilot skill tests when jumped in.</altadvantage>
+				<altdisadvantage>–1 dice and limit for all actions in the Deep Resonance.</altdisadvantage>
+				<altpage>103</altpage>
 			</mentor>
 			<mentor>
 				<id>c45c123c-06c7-42b3-a2ee-01e37f2f7bf8</id>
-				<name>Delphi</name>
-				<translate>Delphi</translate>
-				<altadvantage>+2 dice for Analyze Tests</altadvantage>
-				<altdisadvantage>Delphi technomancers don’t adapt easily to unexpected situations. They must make a Willpower + Logic (3) Test to make any quick decisions in situations they have not planned for.</altdisadvantage>
-				<altpage>151</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for Code sprites</name>
-						<translate>+1 die for Code sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for Tutor sprites</name>
-						<translate>+1 die for Tutor sprites</translate>
-					</choice>
-				</choices>
+				<name>Delphi (The Oracle)</name>
+				<translate>Delphi (The Oracle)</translate>
+				<altadvantage>+1 bonus to dice pool and limit when threading complex forms.</altadvantage>
+				<altdisadvantage>–2 modifier to the technomancer’s Initiative Score.</altdisadvantage>
+				<altpage>104</altpage>
 			</mentor>
 			<mentor>
 				<id>df42911f-0542-4fae-80d1-39573547ff68</id>
-				<name>Disinformation</name>
-				<translate>Disinformation</translate>
-				<altadvantage>+1 die to all test with skills from the Influence skill group</altadvantage>
-				<altdisadvantage>Disinformants must succeed in a Willpower + Charisma (3) Test to pass truthful, complete, or non-doctored information via the Matrix to non-dissonant technomancers.</altdisadvantage>
-				<altpage>177</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for dissonant Data sprites</name>
-						<translate>+1 die for dissonant Data sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for dissonant Tutor sprites</name>
-						<translate>+1 die for dissonant Tutor sprites</translate>
-					</choice>
-				</choices>
+				<name>Intrusion Countermeasure (The Guardian)</name>
+				<translate>Intrusion Countermeasure (The Guardian)</translate>
+				<altadvantage>+1 bonus to dice pool and limit in cybercombat, +1 to firewall.</altadvantage>
+				<altdisadvantage>–1 dice pool penalty when attacking IC in cybercombat.</altdisadvantage>
+				<altpage>104</altpage>
 			</mentor>
 			<mentor>
 				<id>da2f3bad-d934-461a-aa92-60fc6e5c3ef7</id>
-				<name>Echelon</name>
-				<translate>Echelon</translate>
-				<altadvantage>+1 die to Track and Sniffer Tests</altadvantage>
-				<altdisadvantage>Echelon followers obsessively work to gather information about what is going on around them. When caught off-guard, without having information they need, or when running blind into a situation, they suffer a –1 dice pool modifier on all actions as long as the situation remains.</altdisadvantage>
-				<altpage>151</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for Crack sprites</name>
-						<translate>+1 die for Crack sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for Sleuth sprites</name>
-						<translate>+1 die for Sleuth sprites</translate>
-					</choice>
-				</choices>
+				<name>Probe (The Scout)</name>
+				<translate>Probe (The Scout)</translate>
+				<altadvantage>+2 dice pool bonus and +1 limit on all actions when directly connected to an isolated system.</altadvantage>
+				<altdisadvantage>–1 limit penalty when logged into more than one grid.</altdisadvantage>
+				<altpage>104</altpage>
 			</mentor>
 			<mentor>
 				<id>de755412-5cae-4859-880f-75a7bd68d5a4</id>
-				<name>Flow</name>
-				<translate>Flow</translate>
-				<altadvantage>+2 dice for Threading Tests</altadvantage>
-				<altdisadvantage>–1 die to Cybercombat Attack Tests</altdisadvantage>
-				<altpage>151</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for Code sprites</name>
-						<translate>+1 die for Code sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for Data sprites</name>
-						<translate>+1 die for Data sprites</translate>
-					</choice>
-				</choices>
-			</mentor>
-			<mentor>
-				<id>fc11f3d0-4fa1-4425-9ae0-69e6edd9868d</id>
-				<name>Idoru</name>
-				<translate>Idoru</translate>
-				<altadvantage>+2 dice on Con Tests</altadvantage>
-				<altdisadvantage>Idoru followers must succeed in a Willpower + Logic (3) Test to avoid manipulating data in their favor when the opportunity affords.</altdisadvantage>
-				<altpage>151</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for Crack sprites</name>
-						<translate>+1 die for Crack sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for Sleuth sprites</name>
-						<translate>+1 die for Sleuth sprites</translate>
-					</choice>
-				</choices>
-			</mentor>
-			<mentor>
-				<id>c9a8412b-47c4-43b6-a439-fab9ad906040</id>
-				<name>Intrusion Countermeasure (IC)</name>
-				<translate>Intrusion Countermeasure (IC)</translate>
-				<altadvantage>+2 dice to all Matrix Damage Resistance Tests except Fading, +1 die for Paladin sprites</altadvantage>
-				<altdisadvantage>If an IC technomancer fails to protect or guard something he has committed to, or does not achieve a self-chosen goal, he suffers a –1 dice pool modifier on all actions until he atones for the failure.</altdisadvantage>
-				<altpage>151</altpage>
-			</mentor>
-			<mentor>
-				<id>a5a230a8-7aa8-4759-a5e2-0ccf3f3e0dd9</id>
-				<name>Jormungand</name>
-				<translate>Jormungand</translate>
-				<altadvantage>+2 dice Corrupt Tests</altadvantage>
-				<altdisadvantage>Jormungand technomancers are destructive and will take every opportunity to devastate a node by permanently deleting or corrupting its data. They must succeed in a Willpower + Logic (3) Test to leave a node they have hacked into unscathed.</altdisadvantage>
-				<altpage>177</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for dissonant Data sprites</name>
-						<translate>+1 die for dissonant Data sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for dissonant Code sprites</name>
-						<translate>+1 die for dissonant Code sprites</translate>
-					</choice>
-				</choices>
-			</mentor>
-			<mentor>
-				<id>a366564e-1da4-4684-9552-dfbb50a986cb</id>
-				<name>Nemesis</name>
-				<translate>Nemesis</translate>
-				<altadvantage>+2 dice to Con Tests</altadvantage>
-				<altdisadvantage>A Nemesis technomancer must make a Willpower + Charisma (3) Test to restrain himself from punishing those whom he feels deserve it.</altdisadvantage>
-				<altpage>177</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for dissonant Fault sprites</name>
-						<translate>+1 die for dissonant Fault sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for dissonant Sleuth sprites</name>
-						<translate>+1 die for dissonant Sleuth sprites</translate>
-					</choice>
-				</choices>
-			</mentor>
-			<mentor>
-				<id>dfe40900-5ab6-4b6f-a190-1711898e8f81</id>
-				<name>Noise</name>
-				<translate>Noise</translate>
-				<altadvantage>+2 dice to Threading Tests</altadvantage>
-				<altdisadvantage>Noise technomancers rely on the buzz of Matrix more so than others, and suffer double the modifiers applied to Matrix and non-Matrix actions when caught in static or dead zones (see p. 210, SR4).</altdisadvantage>
-				<altpage>177</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for dissonant Courier sprites</name>
-						<translate>+1 die for dissonant Courier sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for dissonant Code sprites</name>
-						<translate>+1 die for dissonant Code sprites</translate>
-					</choice>
-				</choices>
-			</mentor>
-			<mentor>
-				<id>a91fb6a7-5b73-4627-9f73-4d58efd5b538</id>
-				<name>Probe</name>
-				<translate>Probe</translate>
-				<altadvantage>+2 dice to all Scan Tests</altadvantage>
-				<altdisadvantage>Probe technomancers receive a –2 dice penalty when hacking on the fly without probing first.</altdisadvantage>
-				<altpage>151</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for Crack sprites</name>
-						<translate>+1 die for Crack sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for Sleuth sprites</name>
-						<translate>+1 die for Sleuth sprites</translate>
-					</choice>
-				</choices>
-			</mentor>
-			<mentor>
-				<id>b15294e5-5f3d-4e59-bbca-5a722e06663b</id>
-				<name>Pulse</name>
-				<translate>Pulse</translate>
-				<altadvantage>+2 dice on Matrix Initiative Tests</altadvantage>
-				<altdisadvantage>–2 dice on Hacking Tests when not hacking on the fly</altdisadvantage>
-				<altpage>151</altpage>
-			</mentor>
-			<mentor>
-				<id>498135a7-10e1-4c5e-9455-996beb0dce95</id>
-				<name>Shooter</name>
-				<translate>Shooter</translate>
-				<altadvantage>+2 dice to all Matrix Attack Tests</altadvantage>
-				<altdisadvantage>A Shooter technomancer must succeed in a Willpower + Logic (3) Test to retreat from a Matrix fight.</altdisadvantage>
-				<altpage>151</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for Paladin sprites</name>
-						<translate>+1 die for Paladin sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for Tank sprites</name>
-						<translate>+1 die for Tank sprites</translate>
-					</choice>
-				</choices>
-			</mentor>
-			<mentor>
-				<id>e17e1825-730a-40ce-99e3-0daf05a9d68d</id>
-				<name>Snuff</name>
-				<translate>Snuff</translate>
-				<altadvantage>+2 dice to all Sniffer Tests</altadvantage>
-				<altdisadvantage>Snuff technomancer suffer a –2 dice pool modifier to resisting addiction to BTL or Matrix media.</altdisadvantage>
-				<altpage>177</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for dissonant Crack sprites</name>
-						<translate>+1 die for dissonant Crack sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for dissonant Sleuth sprites</name>
-						<translate>+1 die for dissonant Sleuth sprites</translate>
-					</choice>
-				</choices>
-			</mentor>
-			<mentor>
-				<id>c2208cf0-4848-4a96-bbdd-e0a1b2291e28</id>
-				<name>Tiamat</name>
-				<translate>Tiamat</translate>
-				<altadvantage>+2 dice to Cybercombat</altadvantage>
-				<altdisadvantage>–1 die to all Hacking Tests</altdisadvantage>
-				<altpage>178</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for dissonant Crack sprites</name>
-						<translate>+1 die for dissonant Crack sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for dissonant Tank sprites</name>
-						<translate>+1 die for dissonant Tank sprites</translate>
-					</choice>
-				</choices>
-			</mentor>
-			<mentor>
-				<id>bb2e04c3-467c-42d1-bf92-29d457bede47</id>
-				<name>The World Tree</name>
-				<translate>The World Tree</translate>
-				<altadvantage>+2 dice to Analyze Tests</altadvantage>
-				<altdisadvantage>World Tree technomancers are easily distracted by information they find interesting. When faced with new information, unusual data, or phenomena, the technomancer must make a Willpower + Charisma (3) Test to resist dropping his current task to screen, analyze, and acquire the information (if possible).</altdisadvantage>
-				<altpage>151</altpage>
-				<choices>
-					<choice>
-						<name>+1 die for Code sprites</name>
-						<translate>+1 die for Code sprites</translate>
-					</choice>
-					<choice>
-						<name>+1 die for Courier sprites</name>
-						<translate>+1 die for Courier sprites</translate>
-					</choice>
-				</choices>
+				<name>Shooter (The Soldier)</name>
+				<translate>Shooter (The Soldier)</translate>
+				<altadvantage>+1 bonus to dice pool and limit in cybercombat, +1 limit to all attack actions (physical and Matrix</altadvantage>
+				<altdisadvantage>–2 dice pool penalty and –1 limit when compiling sprites.</altdisadvantage>
+				<altpage>105</altpage>
 			</mentor>
 		</mentors>
 	</chummer>
