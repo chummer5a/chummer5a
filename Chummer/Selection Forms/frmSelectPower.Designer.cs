@@ -139,6 +139,7 @@ namespace Chummer
             this.lblSourceLabel.Name = "lblSourceLabel";
             this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
             this.lblSourceLabel.TabIndex = 4;
+            this.lblSourceLabel.Tag = "Label_Source";
             this.lblSourceLabel.Text = "Source:";
             // 
             // txtSearch

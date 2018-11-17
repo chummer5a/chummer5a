@@ -6586,7 +6586,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_TechniquesCount</key>
-			<text>Techniques</text>
+			<text>Téchniques</text>
 		</string>
 		<string>
 			<key>String_SkillPoints</key>
@@ -7114,23 +7114,23 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_InvalidAttributeExcess</key>
-			<text>{0} over allotted Attribute point limit</text>
+			<text>{0} de plus que la limite de points d'attribut allouée</text>
 		</string>
 		<string>
 			<key>Message_InvalidSpecialExcess</key>
-			<text>{0} over allotted Special Attribute point limit</text>
+			<text>{0} de plus que la limite de points d'attribut spécial allouée</text>
 		</string>
 		<string>
 			<key>Message_InvalidSkillGroupExcess</key>
-			<text>{0} over allotted Skill Group point limit</text>
+			<text>{0} de plus que la limite de points de groupe de compétences allouée</text>
 		</string>
 		<string>
 			<key>Message_InvalidActiveSkillExcess</key>
-			<text>{0} over allotted Active Skill point limit</text>
+			<text>{0} de plus que la limite de points de compétence active allouée</text>
 		</string>
 		<string>
 			<key>Message_InvalidKnowledgeSkillExcess</key>
-			<text>{0} over allotted Knowledge Skill point limit</text>
+			<text>{0} de plus que la limite de points de compétence des connaissances allouées</text>
 		</string>
 		<string>
 			<key>Message_ExtraNuyen</key>
@@ -8518,7 +8518,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>InitRoller_Header</key>
-			<text>Initiative Dice Results</text>
+			<text>Résultats des dés d'initiative</text>
 		</string>
 		<string>
 			<key>Label_SumtoTenTalent</key>
@@ -8666,7 +8666,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_OutdatedChummerSave</key>
-			<text>This save file was created in a later version of Chummer ({0}) than your current version of Chummer ({1}). \nThis file may not load properly, and it is strongly suggested you update to the latest version of Chummer.\nAre you sure you want to continue loading this character?</text>
+			<text>Ce fichier de sauvegarde a été créé dans une version ultérieure de Chummer ({0}) que votre version actuelle de Chummer ({1}). \nCe fichier peut ne pas se charger correctement, et il est fortement recommandé de mettre à jour vers la dernière version de Chummer. Êtes-vous sûr de vouloir continuer à charger ce personnage ?</text>
 		</string>
 		<string>
 			<key>String_AttributeDEPLong</key>
@@ -8698,7 +8698,9 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>About_Description_Text</key>
-			<text>Character generator for Shadowrun 5th Edition\n\r\n\rThank you to Keith for all of the amazing work he put into creating and maintaining Chummer for 4th edition. Without him, none of this would be possible.\n\r\n\rBig thanks to everyone in the Dumpshock community for supporting this project with all of their valuable feedback, great ideas, bug reports, and pointing out of my silly mistakes. Also a big thanks to everyone who has volunteered their time to translate Chummer in other languages!</text>
+			<text>Générateur de personnages pour Shadowrun 5e édition\n\r\n\rMerci à Keith pour tout le travail incroyable qu'il a fait pour créer et maintenir Chummer pour 4e édition. Sans lui, rien de tout cela ne serait possible. Merci beaucoup à tous les membres de la communauté Dumpshock d'avoir soutenu ce projet avec tous leurs précieux commentaires, leurs bonnes idées, leurs rapports de problèmes, et avoir souligné mes erreurs stupides. Un grand merci aussi à tous ceux qui ont donné de leur temps pour traduire Chummer dans d'autres langues !
+
+</text>
 		</string>
 		<string>
 			<key>About_Company_Text</key>
@@ -8742,7 +8744,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_InvalidCyberwareGrades</key>
-			<text>Cyber/Bioware Grade limit exceeded for the following items:</text>
+			<text>La limite de grade Cyber/Bioware est dépassée pour les éléments suivants :</text>
 		</string>
 		<string>
 			<key>Checkbox_PrototypeTranshuman</key>
@@ -9258,11 +9260,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_Options_OpenPDFsAsURLs</key>
-			<text>Open PDFs as URLs (For use in browsers)</text>
+			<text>Ouvrir les PDFs comme URLs (Pour utilisation dans les navigateurs)</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_OpenPDFsAsUnix</key>
-			<text>Use Unix-Style Parameters when opening PDFs</text>
+			<text>Utiliser les paramètres de style Unix lors de l'ouverture de fichiers PDF</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_SearchInCategoryOnly</key>
@@ -9438,11 +9440,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_MissingSourceBooks</key>
-			<text>This character was created with the following books that are not enabled:\n\n{0}\n\nThis may cause issues. Do you want to continue loading the character?</text>
+			<text>Ce personnage a été créé avec les livres sources suivants qui ne sont pas activés:\n\n\n{0}\n\nCela peut causer des problèmes. Voulez-vous continuer à charger le personnage ?</text>
 		</string>
 		<string>
 			<key>Message_MissingCustomDataDirectories</key>
-			<text>This character was created with the following custom data directories that are not enabled:\n\n{0}\n\nThis may cause issues. Do you want to continue loading the character?</text>
+			<text>Ce personnage a été créé avec les répertoires de données personnalisés suivants qui ne sont pas activés:\n\n\n\n{0}\n\nCela peut causer des problèmes. Voulez-vous continuer à charger le personnage ?</text>
 		</string>
 		<string>
 			<key>Message_MissingGameplayOption</key>
@@ -9478,11 +9480,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_DuplicateGuidWarning</key>
-			<text>{0} items were found in the file {1} with the same GUID. If you are using custom content, please ensure that you use a new GUID for each item you add.\n\nItems with duplicate IDs:\n{2}</text>
+			<text>{0} éléments ont été trouvés dans le fichier {1} avec le même GUID. Si vous utilisez un contenu personnalisé, assurez-vous d'utiliser un nouveau GUID pour chaque élément que vous ajoutez. \n\n\nÉléments avec ID en double:\n{2}</text>
 		</string>
 		<string>
 			<key>Message_NonGuidIdWarning</key>
-			<text>{0} items were found in the file {1} with IDs that are not parsable as GUIDs. If you are using custom content, please ensure that ID fields are always filled with a unique GUID and only a unique GUID.\n\nItems with non-GUID ID fields:\n{2}</text>
+			<text>Les éléments {0} ont été trouvés dans le fichier {1} avec des ID qui ne sont pas utilisables comme GUIDs. Si vous utilisez un contenu personnalisé, assurez-vous que les champs ID sont toujours remplis avec un GUID unique et seulement un GUID unique. \n\nÉléments avec des champs ID non-GUID:\n{2}</text>
 		</string>
 		<string>
 			<key>Checkbox_DiceRoller_VariableGlitch</key>
