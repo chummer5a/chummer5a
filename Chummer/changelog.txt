@@ -11,6 +11,7 @@ Application Changes:
 - Fixed page offset changes not properly being stored.
 - Fixed a regression with exotic skills not picking up improvements. Fixes #3204
 - Fixed issues with objects not moving correctly when dragged between locations. Fixes #3079
+- Allowed gear to use forbidden and required nodes similar to those that can be used by qualities, cyberware, metamagics, and others.
 
 Data Changes:
 
