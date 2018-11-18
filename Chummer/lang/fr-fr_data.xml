@@ -469,7 +469,7 @@
 			<armor>
 				<id>9f88a210-9ec6-4fc5-ad91-ffb7e7051447</id>
 				<name>Ballistic Mask</name>
-				<translate>Masque ballistique</translate>
+				<translate>Masque balistique</translate>
 				<altpage>74</altpage>
 			</armor>
 			<armor>
@@ -649,7 +649,7 @@
 			<armor>
 				<id>8c47595f-b22c-44b7-8191-a5fd04f6a07a</id>
 				<name>Evo Armadillo Armored Spacesuit</name>
-				<translate>Scaphandre spacial blindé Evo Armadillo</translate>
+				<translate>Scaphandre spécial blindé Evo Armadillo</translate>
 				<altpage>82</altpage>
 			</armor>
 			<armor>
@@ -1177,7 +1177,7 @@
 			<armor>
 				<id>8136ccfb-d5ce-4e18-bc4a-21d33bb6b089</id>
 				<name>EVO/Yamatetsu Naval Technologies Rampart</name>
-				<translate>Rampart Ballistique Yamatetsu Naval Technologies by EVO</translate>
+				<translate>Rampart Balistique Yamatetsu Naval Technologies by EVO</translate>
 				<altpage>130</altpage>
 			</armor>
 			<armor>
@@ -1593,7 +1593,7 @@
 			<mod translated="True">
 				<id>80effbdd-047d-4b1f-8159-f13f86bba4e6</id>
 				<name>Internal Air Tank (5 Minutes)</name>
-				<translate>Interner Lufttank (5 Minuten)</translate>
+				<translate>Réservoir d'air interne (5 minutes)</translate>
 				<altpage>173</altpage>
 			</mod>
 		</mods>
@@ -3790,7 +3790,7 @@
 			<power>
 				<id>7cdbe90b-b16a-43c0-a20e-b4a54b83c6ed</id>
 				<name>Wall Walking</name>
-				<translate>Deplacement chtonien</translate>
+				<translate>Déplacement chtonien</translate>
 				<altpage>243</altpage>
 			</power>
 			<power>
@@ -4102,7 +4102,7 @@
 			<power>
 				<id>0f0b2ab2-3f71-43e6-b815-d9f6f5c6ed60</id>
 				<name>Acceleration</name>
-				<translate>Accelération</translate>
+				<translate>Accélération</translate>
 				<altpage>147</altpage>
 			</power>
 			<power>
@@ -4396,7 +4396,7 @@
 			<power>
 				<id>185aa4ff-7975-4d06-8fbc-52a07caeb9e2</id>
 				<name>Animal Control</name>
-				<translate>Controle animal</translate>
+				<translate>Contrôle animal</translate>
 				<altpage>164</altpage>
 			</power>
 			<power translated="True">
@@ -5935,7 +5935,7 @@
 			<metatype>
 				<id>bbbef5d0-4138-4d57-8e7e-a5a893ed6481</id>
 				<name>Chameleon</name>
-				<translate>Caméleon</translate>
+				<translate>Caméléon</translate>
 				<altpage>96</altpage>
 			</metatype>
 			<metatype translated="True">
@@ -8400,13 +8400,13 @@
 			<cyberware>
 				<id>7d61f860-0637-4214-914d-c68022361d24</id>
 				<name>Customized Strength</name>
-				<translate>Force personalisée</translate>
+				<translate>Force personnalisée</translate>
 				<altpage>343</altpage>
 			</cyberware>
 			<cyberware>
 				<id>7afb23c7-435f-450c-9d1c-f7a0e7e631a6</id>
 				<name>Customized Agility</name>
-				<translate>Agilité personalisée</translate>
+				<translate>Agilité personnalisée</translate>
 				<altpage>343</altpage>
 			</cyberware>
 			<cyberware>
@@ -8658,13 +8658,13 @@
 			<cyberware>
 				<id>02e45643-b577-4d31-8f98-18102eb4a600</id>
 				<name>Eye Protectors (Plastic)</name>
-				<translate>Protection d'oeil (Plastique)</translate>
+				<translate>Protection d'œil (Plastique)</translate>
 				<altpage>76</altpage>
 			</cyberware>
 			<cyberware>
 				<id>19cea27d-b57b-46b1-9604-3362974f68ff</id>
 				<name>Eye Protectors (Ballistic Glass)</name>
-				<translate>Protection d'oeil (Verre ballistique)</translate>
+				<translate>Protection d'œil (Verre balistique)</translate>
 				<altpage>76</altpage>
 			</cyberware>
 			<cyberware>
@@ -9180,7 +9180,7 @@
 			<cyberware>
 				<id>a40cbc72-7dc6-4f8f-a9ff-e5e3f471b895</id>
 				<name>Telescoping Limb</name>
-				<translate>Membre téléscopique</translate>
+				<translate>Membre télescopique</translate>
 				<altpage>90</altpage>
 			</cyberware>
 			<cyberware>
@@ -9378,7 +9378,7 @@
 			<cyberware>
 				<id>1c2e5421-84f6-4963-bcac-b2fca6001f35</id>
 				<name>Flametosser, Expanded Tank</name>
-				<translate>Lance-flammes - Réservoir auxilliaire</translate>
+				<translate>Lance-flammes - Réservoir auxiliaire</translate>
 				<altpage>91</altpage>
 			</cyberware>
 			<cyberware>
@@ -12973,7 +12973,7 @@
 			<gear>
 				<id>9fffceb6-adb1-423a-a7f7-6f97567fac7f</id>
 				<name>Telescoping Mirror on a Stick</name>
-				<translate>Miroir sur un bâton téléscopique</translate>
+				<translate>Miroir sur un bâton télescopique</translate>
 				<altpage>102</altpage>
 			</gear>
 			<gear>
@@ -13471,7 +13471,7 @@
 			<gear translated="True">
 				<id>1dd68a37-4606-4a44-b314-6b885f405ca4</id>
 				<name>Spinrad Industries Trompe L'Oeil</name>
-				<translate>Spinrad Industries Trompe L'Oeil</translate>
+				<translate>Spinrad Industries Trompe L'Œil</translate>
 				<altpage>126</altpage>
 			</gear>
 			<gear translated="True">
@@ -16795,7 +16795,7 @@
 			<gear>
 				<id>c51b5d51-6f27-4e8b-a521-92c3f1cfdb1e</id>
 				<name>Address</name>
-				<translate>Addresse</translate>
+				<translate>Adresse</translate>
 				<altpage>148</altpage>
 			</gear>
 			<gear>
@@ -16933,7 +16933,7 @@
 			<gear>
 				<id>579d8a5e-3c1b-4b91-adb0-f9212ae66d0a</id>
 				<name>Missile: Anti-Vehicle (2050)</name>
-				<translate>Missiles : Anti-Vehicle (2050)</translate>
+				<translate>Missiles : Anti-Véhicule (2050)</translate>
 				<altpage>191</altpage>
 			</gear>
 			<gear>
@@ -16957,7 +16957,7 @@
 			<gear>
 				<id>370767a9-5c8d-4ee3-ad2a-78b30b5f53fc</id>
 				<name>Rocket: Anti-Vehicle (2050)</name>
-				<translate>Rocket : Anti-Vehicle (2050)</translate>
+				<translate>Rocket : Anti-Véhicule (2050)</translate>
 				<altpage>191</altpage>
 			</gear>
 			<gear>
@@ -19332,7 +19332,7 @@
 			<quality>
 				<id>24c33e2d-bb97-4f82-a68d-dfa7c89a69d7</id>
 				<name>Special Work Area</name>
-				<translate>Atelier surréquipé</translate>
+				<translate>Atelier suréquipé</translate>
 				<altpage>370</altpage>
 			</quality>
 			<quality>
@@ -19634,6 +19634,30 @@
 				<name>Vocal Tension Lie Detection</name>
 				<translate>Détecteur de mensonges en ligne</translate>
 				<altpage>144</altpage>
+			</quality>
+			<quality>
+				<id>c714a2dd-5570-40ee-8006-42ed533bf7c9</id>
+				<name>Cramped Garage (Car (Body 14 or Less))</name>
+				<translate>Garage réduit (voiture, torse 14 ou moins)</translate>
+				<altpage>226</altpage>
+			</quality>
+			<quality>
+				<id>58040d75-7861-4364-b10e-594b63f9b941</id>
+				<name>Cramped Garage (Car (Body 15 or More))</name>
+				<translate>Garage réduit (voiture, torse 15 ou plus)</translate>
+				<altpage>226</altpage>
+			</quality>
+			<quality>
+				<id>e3a4b05e-8506-4cd0-bc04-5b49812d5fd9</id>
+				<name>Garage (Car (Body 14 or Less))</name>
+				<translate>Garage (voiture, torse 14 ou moins)</translate>
+				<altpage>226</altpage>
+			</quality>
+			<quality>
+				<id>a63933f8-c4d1-4332-add5-a684d4eff041</id>
+				<name>Garage (Car (Body 15 or More))</name>
+				<translate>Garage (voiture, torse 15 ou plus)</translate>
+				<altpage>226</altpage>
 			</quality>
 		</qualities>
 		<categories>
@@ -27193,7 +27217,7 @@
 			<program>
 				<id>e9110525-4261-4626-b765-8668eec04fd3</id>
 				<name>[Model] Maneuvering Autosoft</name>
-				<translate>Autopilote de manoeuvre de [Modèle]</translate>
+				<translate>Autopilote de manœuvre de [Modèle]</translate>
 				<altpage>269</altpage>
 			</program>
 			<program>
@@ -28297,7 +28321,7 @@
 			<quality>
 				<id>f356d63f-1782-4952-aca2-bc04e2cd6c60</id>
 				<name>Hawk Eye</name>
-				<translate>Oeil de faucon</translate>
+				<translate>Œil de faucon</translate>
 				<altpage>147</altpage>
 				<altnameonpage></altnameonpage>
 			</quality>
@@ -29729,7 +29753,7 @@
 			<quality>
 				<id>acd06d4f-7f09-4d80-8bab-006b680392a2</id>
 				<name>Cyclopean Eye</name>
-				<translate>Oeil de cyclope</translate>
+				<translate>Œil de cyclope</translate>
 				<altpage>120</altpage>
 				<altnameonpage></altnameonpage>
 			</quality>
@@ -29889,7 +29913,7 @@
 			<quality>
 				<id>dba6c764-3851-4d8e-97ce-344f45c8d771</id>
 				<name>Third Eye</name>
-				<translate>Troisième oeil</translate>
+				<translate>Troisième œil</translate>
 				<altpage>122</altpage>
 				<altnameonpage></altnameonpage>
 			</quality>
@@ -31496,7 +31520,7 @@
 			<quality>
 				<id>1abbf9a5-af57-4e9f-af7a-05872ae8ddad</id>
 				<name>Crystal Eye (One Eye)</name>
-				<translate>Cristal de sang - Oeil</translate>
+				<translate>Cristal de sang - Œil</translate>
 				<altpage>132</altpage>
 			</quality>
 			<quality>
@@ -32433,7 +32457,7 @@
 					<spec translate="Conception de sort (par catégorie)">Spell Design</spec>
 					<spec translate="Conception de focus (par type)">Focus Design</spec>
 					<spec translate="Formule d'esprit">Spirit Formula</spec>
-					<spec translate="Artéfacts magique">Magical Artifacts</spec>
+					<spec translate="Artéfacts magiques">Magical Artifacts</spec>
 					<spec translate="Théories spirituelles">Spirit Theory</spec>
 				</specs>
 				<altpage>144</altpage>
@@ -32720,7 +32744,7 @@
 					<spec translate="Arctique">Arctic</spec>
 					<spec translate="Grotte">Cave</spec>
 					<spec translate="Commerciale">Commercial</spec>
-					<spec translate="Hyperventilation controlée">Controlled Hyperventilation</spec>
+					<spec translate="Hyperventilation contrôlée">Controlled Hyperventilation</spec>
 					<spec translate="Appareil respiratoire liquide">Liquid Breathing Apparatus</spec>
 					<spec translate="Militaire">Military</spec>
 					<spec translate="[Autre appareil respiratoire]">[Other Breathing Apparatus]</spec>
@@ -32805,7 +32829,7 @@
 				<translate>Armes de véhicules</translate>
 				<specs>
 					<spec translate="Canons">Artillery</spec>
-					<spec translate="Ballistique">Ballistic</spec>
+					<spec translate="Balistique">Ballistic</spec>
 					<spec translate="Armes à énergie">Energy</spec>
 					<spec translate="Missiles guidés">Guided Missile</spec>
 					<spec translate="Roquettes">Rocket</spec>
@@ -33022,7 +33046,7 @@
 				<translate>Appareils Spatiaux</translate>
 				<specs>
 					<spec translate="Espace profond">Deep Space</spec>
-					<spec translate="lancement d'appareil">Launch Craft</spec>
+					<spec translate="Lancement d'appareil">Launch Craft</spec>
 					<spec translate="Opération à distance">Remote Operation</spec>
 					<spec translate="Semi-balistiques">Semiballistic</spec>
 					<spec translate="Suborbitaux">Suborbital</spec>
@@ -33355,7 +33379,7 @@
 					<spec translate="Milieu urbain">Urban</spec>
 					<spec translate="Milieu sauvage">Wilderness</spec>
 					<spec translate="[Terrain]">[Terrain]</spec>
-					<spec translate="Vehicle">Vehicle</spec>
+					<spec translate="Véhicule">Vehicle</spec>
 				</specs>
 				<altpage>135</altpage>
 			</skill>
@@ -33444,7 +33468,7 @@
 			<skill>
 				<id>878181d4-2f54-4993-ae30-06c9bf1ee11b</id>
 				<name>Danish</name>
-				<translate>Dannois</translate>
+				<translate>Danois</translate>
 				<specs>
 					<spec translate="Lire/Écrire">Read/Write</spec>
 					<spec translate="Parler">Speak</spec>
@@ -37347,7 +37371,7 @@
 			<spell>
 				<id>b7e36c07-0ac9-4a13-97b2-932cacc050e9</id>
 				<name>Circle of Healing</name>
-				<translate>Cerle de soins</translate>
+				<translate>Cercle de soins</translate>
 				<altpage>300</altpage>
 			</spell>
 			<spell>
@@ -37737,7 +37761,7 @@
 			<spell>
 				<id>c7db0147-a077-423a-b617-a5cc8c0d4982</id>
 				<name>Inanimate Vessel Preparation</name>
-				<translate>Préparation de réceptable inanimé</translate>
+				<translate>Préparation de réceptacle inanimé</translate>
 				<altpage>216</altpage>
 			</spell>
 			<spell>
@@ -37779,7 +37803,7 @@
 			<spell>
 				<id>e85244ab-038d-4168-b028-3f409d9d9974</id>
 				<name>Ritual of Change</name>
-				<translate>Rtiuel de changement</translate>
+				<translate>Rituel de changement</translate>
 				<altpage>134</altpage>
 			</spell>
 			<spell>
@@ -38295,13 +38319,13 @@
 			<spell>
 				<id>ef1febff-d790-4706-80b1-6ddfbf9d61e5</id>
 				<name>Evil Eye</name>
-				<translate>Mauvais oeil</translate>
+				<translate>Mauvais œil</translate>
 				<altpage>50</altpage>
 			</spell>
 			<spell>
 				<id>243313e6-a9af-456a-9631-6581d869aa02</id>
 				<name>Alter Ballistics</name>
-				<translate>Altération ballistique</translate>
+				<translate>Altération balistique</translate>
 				<altpage>51</altpage>
 			</spell>
 			<spell>
@@ -38838,7 +38862,7 @@
 			<tradition>
 				<id>a8f9687a-0999-4509-87a2-4b122fb2187c</id>
 				<name>Frisian Magic</name>
-				<translate>Tradition Frisienne</translate>
+				<translate>Tradition Frissienne</translate>
 				<altpage>113</altpage>
 			</tradition>
 			<tradition translated="True">
@@ -38942,7 +38966,7 @@
 			<spirit translated="True">
 				<id>05f52567-0406-41ce-ab5b-bea370963207</id>
 				<name>Noxious</name>
-				<translate>Esprit Déletère</translate>
+				<translate>Esprit Délétère</translate>
 				<altpage>387</altpage>
 			</spirit>
 			<spirit translated="True">
@@ -42090,7 +42114,7 @@
 			<mod>
 				<id>41117756-2827-47ef-94bf-117e14d2e00b</id>
 				<name>Synthetic Drone Leg</name>
-				<translate>Jambe syntéthique</translate>
+				<translate>Jambe synthétique</translate>
 				<altpage>125</altpage>
 			</mod>
 			<mod>
@@ -46765,7 +46789,7 @@
 			<complexform translated="True">
 				<id>080013b7-deb3-4a2e-822f-400ecf8293b2</id>
 				<name>Mirrored Persona</name>
-				<translate>Persona refleté</translate>
+				<translate>Persona reflété</translate>
 				<altpage>95</altpage>
 			</complexform>
 			<complexform>
@@ -48025,7 +48049,7 @@
 			<drugcomponent>
 				<id>e6001189-e413-43bc-86ee-2136ca5d10bf</id>
 				<name>Strike</name>
-				<translate>Oeil de lynx</translate>
+				<translate>Œil de lynx</translate>
 				<altpage>190</altpage>
 			</drugcomponent>
 			<drugcomponent>
