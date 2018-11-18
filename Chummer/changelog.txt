@@ -9,6 +9,7 @@ Application Changes:
 - Fixes an issue with the calculation of lifestyle multipliers. Should fix #2639, fixes an issue with trolls not stacking correctly.
 - Fixed an issue with martial art techniques not being able to be refunded properly if removed. Fixes #3196
 - Fixed page offset changes not properly being stored.
+- Fixed a regression with exotic skills not picking up improvements. Fixes #3204
 
 Data Changes:
 
