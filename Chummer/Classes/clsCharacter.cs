@@ -5389,7 +5389,7 @@ namespace Chummer
                 else if (objNewParent.Tag is string)
                 {
                     objGear.Location = null;
-                    intNewIndex = Math.Min(intNewIndex, Gear.Count);
+                    intNewIndex = Math.Min(intNewIndex, Gear.Count -1);
                     Gear.Move(Gear.IndexOf(objGear), intNewIndex);
                 }
             }
@@ -5464,7 +5464,7 @@ namespace Chummer
                 else if (objNewParent.Tag is string)
                 {
                     objArmor.Location = null;
-                    intNewIndex = Math.Min(intNewIndex, Armor.Count);
+                    intNewIndex = Math.Min(intNewIndex, Armor.Count -1);
                     Armor.Move(Armor.IndexOf(objArmor), intNewIndex);
                 }
             }
@@ -5516,7 +5516,7 @@ namespace Chummer
                 else if (objNewParent.Tag is string)
                 {
                     objWeapon.Location = null;
-                    intNewIndex = Math.Min(intNewIndex, Weapons.Count);
+                    intNewIndex = Math.Min(intNewIndex, Weapons.Count -1);
                     Weapons.Move(Weapons.IndexOf(objWeapon), intNewIndex);
                 }
             }
@@ -5568,7 +5568,7 @@ namespace Chummer
                 else if (objNewParent.Tag is string)
                 {
                     objVehicle.Location = null;
-                    intNewIndex = Math.Min(intNewIndex, Weapons.Count);
+                    intNewIndex = Math.Min(intNewIndex, Weapons.Count -1);
                     Vehicles.Move(Vehicles.IndexOf(objVehicle), intNewIndex);
                 }
             }

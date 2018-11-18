@@ -10,6 +10,7 @@ Application Changes:
 - Fixed an issue with martial art techniques not being able to be refunded properly if removed. Fixes #3196
 - Fixed page offset changes not properly being stored.
 - Fixed a regression with exotic skills not picking up improvements. Fixes #3204
+- Fixed issues with objects not moving correctly when dragged between locations. Fixes #3079
 
 Data Changes:
 
