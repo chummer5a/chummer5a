@@ -2957,9 +2957,7 @@ namespace Chummer
                             foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 objCyberware.SetupChildrenCyberwareCollectionChanged(false, treCyberware);
-                                TreeNode objNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
-                                    ? treCyberware.FindNode(objCyberware.SourceID.ToString("D"))
-                                    : treCyberware.FindNodeByTag(objCyberware);
+                                TreeNode objNode = treCyberware.FindNodeByTag(objCyberware);
                                 if (objNode != null)
                                 {
                                     TreeNode objParent = objNode.Parent;
@@ -2977,9 +2975,7 @@ namespace Chummer
                             foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 objCyberware.SetupChildrenCyberwareCollectionChanged(false, treCyberware);
-                                TreeNode objNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
-                                    ? treCyberware.FindNode(objCyberware.SourceID.ToString("D"))
-                                    : treCyberware.FindNodeByTag(objCyberware);
+                                TreeNode objNode = treCyberware.FindNodeByTag(objCyberware);
                                 if (objNode != null)
                                 {
                                     TreeNode objParent = objNode.Parent;

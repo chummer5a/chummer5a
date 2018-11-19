@@ -14319,8 +14319,13 @@ namespace Chummer
             Cyberware objCyberware = new Cyberware(CharacterObject);
             if (objCyberware.Purchase(objXmlCyberware, objSource, frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating, null, objSelectedCyberware?.Children ?? CharacterObject.Cyberware, CharacterObject.Vehicles, CharacterObject.Weapons, frmPickCyberware.Markup, frmPickCyberware.FreeCost))
             {
-                if (objCyberware.SourceID == Cyberware.EssenceHoleGUID || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
-                    CharacterObject.DecreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
+                // Consume any essence antihole that might exist. Holes and antiholes are managed through the Purchase method. 
+                if (objCyberware.SourceID != Cyberware.EssenceHoleGUID &&
+                    objCyberware.SourceID != Cyberware.EssenceAntiHoleGUID)
+                {
+                    CharacterObject.DecreaseEssenceHole((int) (objCyberware.CalculatedESS() * 100),
+                        objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID);
+                }
 
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
