@@ -35,6 +35,10 @@ namespace ChummerHub.Client.Backend
                 }
                 return _AuthorizationCookieContainer;
             }
+            set
+            {
+                _AuthorizationCookieContainer = value;
+            }
         }
 
         /// <summary>
@@ -113,13 +117,14 @@ namespace ChummerHub.Client.Backend
                             return null;
                         ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
                         ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-                        ServiceClientCredentials credentials = new TokenCredentials("Bearer");
+                        //ServiceClientCredentials credentials = new TokenCredentials("Bearer");
                         Uri baseUri = new Uri(Properties.Settings.Default.SINnerUrl);
-                        ServiceClientCredentials creds = new Backend.ApiKeyCredentials();
+                        Microsoft.Rest.ServiceClientCredentials credentials = new MyCredentials();
+                        //ServiceClientCredentials creds = new ServiceClientCredentials();
                         DelegatingHandler delegatingHandler = new MyMessageHandler();
                         HttpClientHandler httpClientHandler = new HttpClientHandler();
                         httpClientHandler.CookieContainer = AuthorizationCookieContainer;
-                        _client = new SINnersClient(baseUri, creds, httpClientHandler, delegatingHandler);
+                        _client = new SINnersClient(baseUri, credentials, httpClientHandler, delegatingHandler);
 
                     }
                     catch (Exception ex)

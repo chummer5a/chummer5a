@@ -28,6 +28,7 @@ namespace ChummerHub.Controllers.V1
         //GET: api/UploadClients
         [HttpGet]
         [Authorize(Roles = "Administrator")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSomeTestUploadClients")]
         public IEnumerable<UploadClient> GetSomeTestUploadClients()
         {
             return _context.UploadClients.Take(20);
@@ -35,9 +36,9 @@ namespace ChummerHub.Controllers.V1
 
         //GET: api/UploadClients/5
         [HttpGet("{id}")]
-        //[Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetUploadClient")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetUploadClient")]
         [AllowAnonymous]
-        public async Task<IActionResult> Get([FromRoute] Guid id)
+        public async Task<IActionResult> GetUploadClient([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)
             {
@@ -56,9 +57,9 @@ namespace ChummerHub.Controllers.V1
 
         // GET: api/UploadClients/5
         [HttpGet("{id}")]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSINnerFromUploadClient")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSINnersFromClient")]
         [AllowAnonymous]
-        public async Task<IActionResult> SINners([FromRoute] Guid id)
+        public async Task<IActionResult> GetSINners([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)
             {

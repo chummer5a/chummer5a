@@ -119,26 +119,33 @@ namespace ChummerHub.Client.UI
 
         }
 
-        private void webBrowser1_Navigated(object sender, WebBrowserNavigatedEventArgs e)
+        private async void webBrowser1_Navigated(object sender, WebBrowserNavigatedEventArgs e)
         {
             if (e.Url.AbsoluteUri == LoginUrl)
                 return;
             if (e.Url.AbsoluteUri.Contains("/Identity/Account/Manage/ExternalLogins"))
             {
                 
-                //delete old cookie settings
-                Properties.Settings.Default.CookieData = null;
-                Properties.Settings.Default.Save();
+                
                 //maybe we are logged in now
                 try
                 {
                     this.UseWaitCursor = true;
-                    
+                    StaticUtils.AuthorizationCookieContainer = null;
+                    //delete old cookie settings
+                    Properties.Settings.Default.CookieData = null;
+                    Properties.Settings.Default.Save();
                     //recreate cookiecontainer
                     var cookies = StaticUtils.AuthorizationCookieContainer.GetCookies(new Uri(Properties.Settings.Default.SINnerUrl));
                     StaticUtils.Client = null;
-                    
-                    var result = StaticUtils.Client.GetClaimsWithHttpMessagesAsync().Result;
+
+                    var result = StaticUtils.Client.GetRolesWithHttpMessagesAsync();
+                    await result;
+                    var roles = result.Result.Body as IList<string>;
+                    if (roles != null && roles.Any())
+                    {
+                        this.LoginStatus = true;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -155,8 +162,6 @@ namespace ChummerHub.Client.UI
                 //we are not logged in
                 this.LoginStatus = false;
             }
-            
-            
             UpdateDisplay();
         }
 

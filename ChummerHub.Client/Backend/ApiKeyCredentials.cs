@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace ChummerHub.Client.Backend
 {
-    class ApiKeyCredentials : ServiceClientCredentials
+    class MyCredentials : ServiceClientCredentials
     {
         public override Task ProcessHttpRequestAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            request.Headers.Add("Bearer", "123456");
+            //request.Headers.Add("Bearer", "123456");
             return base.ProcessHttpRequestAsync(request, cancellationToken);
         }
     }
