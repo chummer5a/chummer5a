@@ -20,7 +20,7 @@ namespace ChummerHub.Controllers.V1
     [Route("api/v{api-version:apiVersion}/[controller]/[action]")]
     [ApiVersion("1.0")]
     [ControllerName("ChummerHelper")]
-    [AllowAnonymous]
+    [Authorize]
     /// <summary>
     /// Collection of functions, that serve for helping the client
     /// with specific use-cases. These do not need to be related to an
@@ -44,6 +44,7 @@ namespace ChummerHub.Controllers.V1
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{sinnerid}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetDownloadFile([FromRoute] Guid sinnerid)
         {
             try

@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -28,12 +30,27 @@ namespace ChummerHub.Controllers
         }
 
         [HttpGet]
-        [Authorize]
-        public IActionResult GetClaims()
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Forbidden)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        
+        public async Task<ActionResult<List<String>>> GetRoles()
         {
-            //var user = _userManager.FindByEmailAsync(email).Result;
-            //var result = _signInManager.PasswordSignInAsync(email, password, true, true).Result;
-            return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
+            try
+            {
+                //var user = _userManager.FindByEmailAsync(email).Result;
+                var user = await _signInManager.UserManager.GetUserAsync(User);
+                var roles = await _userManager.GetRolesAsync(user);
+                
+                //var result = new JsonResult(roles);
+                return Ok(roles.ToList());
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e);
+            }
+            
         }
 
         

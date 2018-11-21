@@ -1,154 +1,118 @@
-//using System;
-//using System.Linq;
-//using System.Security.Claims;
-//using ChummerHub.Data;
-//using IdentityModel;
-//using IdentityServer4.EntityFramework.DbContexts;
-//using IdentityServer4.EntityFramework.Mappers;
+using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using ChummerHub.Data;
 
-//using Microsoft.AspNetCore.Identity;
-//using Microsoft.EntityFrameworkCore;
-//using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using ChummerHub.API;
 
-//namespace ChummerHub
-//{
-//    public class SeedData
-//    {
-//        public static void EnsureSeedData(IServiceProvider serviceProvider)
-//        {
-//            Console.WriteLine("Seeding database...");
+namespace ChummerHub
+{
+    public class SeedData
+    {
 
-//            using (var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
-//            {
-//                scope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+        #region snippet_Initialize
+        public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw)
+        {
+            using (var context = new ApplicationDbContext(
+                serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
+            {
 
-//                {
-//                    var context = scope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
-//                    context.Database.Migrate();
-//                    EnsureSeedData(context);
-//                }
+                if (context.Users.Any())
+                {
+                    return;   // DB has been seeded
+                }
+                //context.Users.AddRange(Config.GetAdminUsers());
+                foreach (var user in Config.GetAdminUsers())
+                {
+                    var userID = await EnsureUser(serviceProvider, user, testUserPw);
+                    //context.SaveChanges();
+                    await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.AdministratorsRole);
+                }
 
-//                {
-//                    var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-//                    context.Database.Migrate();
+                
+                // For sample purposes we are seeding 2 users both with the same password.
+                // The password is set with the following command:
+                // dotnet user-secrets set SeedUserPW <pw>
+                // The admin user can do anything
 
-//                    var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-//                    var alice = userMgr.FindByNameAsync("alice").Result;
-//                    if (alice == null)
-//                    {
-//                        alice = new ApplicationUser
-//                        {
-//                            UserName = "alice"
-//                        };
-//                        var result = userMgr.CreateAsync(alice, "Pass123$").Result;
-//                        if (!result.Succeeded)
-//                        {
-//                            throw new Exception(result.Errors.First().Description);
-//                        }
 
-//                        result = userMgr.AddClaimsAsync(alice, new Claim[]{
-//                            new Claim(JwtClaimTypes.Name, "Alice Smith"),
-//                            new Claim(JwtClaimTypes.GivenName, "Alice"),
-//                            new Claim(JwtClaimTypes.FamilyName, "Smith"),
-//                            new Claim(JwtClaimTypes.Email, "AliceSmith@email.com"),
-//                            new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
-//                            new Claim(JwtClaimTypes.WebSite, "http://alice.com"),
-//                            new Claim(JwtClaimTypes.Address, @"{ 'street_address': 'One Hacker Way', 'locality': 'Heidelberg', 'postal_code': 69118, 'country': 'Germany' }", IdentityServer4.IdentityServerConstants.ClaimValueTypes.Json)
-//                        }).Result;
-//                        if (!result.Succeeded)
-//                        {
-//                            throw new Exception(result.Errors.First().Description);
-//                        }
-//                        Console.WriteLine("alice created");
-//                    }
-//                    else
-//                    {
-//                        Console.WriteLine("alice already exists");
-//                    }
+                //var adminID = await EnsureUser(serviceProvider, "archon.megalon", "archon.megalon@gmail.com");
+                //await EnsureRole(serviceProvider, adminID, Authorizarion.Constants.AdministratorsRole);
 
-//                    var bob = userMgr.FindByNameAsync("bob").Result;
-//                    if (bob == null)
-//                    {
-//                        bob = new ApplicationUser
-//                        {
-//                            UserName = "bob"
-//                        };
-//                        var result = userMgr.CreateAsync(bob, "Pass123$").Result;
-//                        if (!result.Succeeded)
-//                        {
-//                            throw new Exception(result.Errors.First().Description);
-//                        }
+                // allowed user can create and edit contacts that they create
+                //var uid = await EnsureUser(serviceProvider, testUserPw, "manager@contoso.com");
+                //await EnsureRole(serviceProvider, uid, Constants.ContactManagersRole);
 
-//                        result = userMgr.AddClaimsAsync(bob, new Claim[]{
-//                        new Claim(JwtClaimTypes.Name, "Bob Smith"),
-//                        new Claim(JwtClaimTypes.GivenName, "Bob"),
-//                        new Claim(JwtClaimTypes.FamilyName, "Smith"),
-//                        new Claim(JwtClaimTypes.Email, "BobSmith@email.com"),
-//                        new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
-//                        new Claim(JwtClaimTypes.WebSite, "http://bob.com"),
-//                        new Claim(JwtClaimTypes.Address, @"{ 'street_address': 'One Hacker Way', 'locality': 'Heidelberg', 'postal_code': 69118, 'country': 'Germany' }", IdentityServer4.IdentityServerConstants.ClaimValueTypes.Json),
-//                        new Claim("location", "somewhere")
-//                    }).Result;
-//                        if (!result.Succeeded)
-//                        {
-//                            throw new Exception(result.Errors.First().Description);
-//                        }
-//                        Console.WriteLine("bob created");
-//                    }
-//                    else
-//                    {
-//                        Console.WriteLine("bob already exists");
-//                    }
-//                }
-//            }
+                context.SaveChanges();
+            }
+        }
 
-//            Console.WriteLine("Done seeding database.");
-//            Console.WriteLine();
-//        }
+      
+        private static async Task<Guid> EnsureUser(IServiceProvider serviceProvider,
+                                                   ApplicationUser user, string userPW)
+        {
+            try
+            {
+                var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
 
-//        private static void EnsureSeedData(ConfigurationDbContext context)
-//        {
-//            if (!context.Clients.Any())
-//            {
-//                Console.WriteLine("Clients being populated");
-//                foreach (var client in Config.GetClients().ToList())
-//                {
-//                    context.Clients.Add(client.ToEntity());
-//                }
-//                context.SaveChanges();
-//            }
-//            else
-//            {
-//                Console.WriteLine("Clients already populated");
-//            }
+                var u = await userManager.FindByNameAsync(user.UserName);
+                if (u == null)
+                {
+                    user.PasswordHash = userManager.PasswordHasher.HashPassword(user, userPW);
+                    await userManager.CreateAsync(user);
+                }
+                return u.Id;
+            }
+            catch(Exception e)
+            {
+                System.Diagnostics.Trace.TraceError(e.ToString());
+            }
+            return Guid.Empty;
+            
+        }
 
-//            if (!context.IdentityResources.Any())
-//            {
-//                Console.WriteLine("IdentityResources being populated");
-//                foreach (var resource in Config.GetIdentityResources().ToList())
-//                {
-//                    context.IdentityResources.Add(resource.ToEntity());
-//                }
-//                context.SaveChanges();
-//            }
-//            else
-//            {
-//                Console.WriteLine("IdentityResources already populated");
-//            }
+        private static async Task<IdentityResult> EnsureRole(IServiceProvider serviceProvider,
+                                                                      Guid uid, string role)
+        {
+            IdentityResult IR = null;
 
-//            if (!context.ApiResources.Any())
-//            {
-//                Console.WriteLine("ApiResources being populated");
-//                foreach (var resource in Config.GetApiResources().ToList())
-//                {
-//                    context.ApiResources.Add(resource.ToEntity());
-//                }
-//                context.SaveChanges();
-//            }
-//            else
-//            {
-//                Console.WriteLine("ApiResources already populated");
-//            }
-//        }
-//    }
-//}
+            try
+            {
+
+            
+                var roleManager = serviceProvider.GetService<RoleManager<ApplicationRole>>();
+
+                if (!await roleManager.RoleExistsAsync(role))
+                {
+                    IR = await roleManager.CreateAsync(new ApplicationRole(role));
+                }
+
+                var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
+
+                var user = await userManager.FindByIdAsync(uid.ToString());
+
+                IR = await userManager.AddToRoleAsync(user, role);
+
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Trace.TraceError(e.ToString());
+            }
+            return IR;
+
+        }
+        #endregion
+
+
+    }
+}

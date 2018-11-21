@@ -21,6 +21,17 @@ namespace ChummerHub.Client.UI
     public partial class SINnersOptions : UserControl
     {
         private bool? LoginStatus = null;
+
+        private string LoginUrl
+        {
+            get
+            {
+                string path = Properties.Settings.Default.SINnerUrl.TrimEnd('/');
+
+                path += "/Identity/Account/Login?returnUrl=/Identity/Account/Manage/ExternalLogins";
+                return path;
+            }
+        }
        
         private WebBrowser webBrowser1;
         public SINnersOptions()
@@ -94,10 +105,8 @@ namespace ChummerHub.Client.UI
                 tlpOptions.SetColumnSpan(webBrowser1, 5);
 
 
-                string path = Properties.Settings.Default.SINnerUrl.TrimEnd('/');
-
-                path += "/Identity/Account/Login";
-                webBrowser1.Navigate(path);
+                
+                webBrowser1.Navigate(LoginUrl);
                 this.ResumeLayout(false);
                 UpdateDisplay();
 
@@ -112,14 +121,41 @@ namespace ChummerHub.Client.UI
 
         private void webBrowser1_Navigated(object sender, WebBrowserNavigatedEventArgs e)
         {
-            try
+            if (e.Url.AbsoluteUri == LoginUrl)
+                return;
+            if (e.Url.AbsoluteUri.Contains("/Identity/Account/Manage/ExternalLogins"))
             {
-                var result = StaticUtils.Client.GetClaimsWithHttpMessagesAsync().Result;                
+                
+                //delete old cookie settings
+                Properties.Settings.Default.CookieData = null;
+                Properties.Settings.Default.Save();
+                //maybe we are logged in now
+                try
+                {
+                    this.UseWaitCursor = true;
+                    
+                    //recreate cookiecontainer
+                    var cookies = StaticUtils.AuthorizationCookieContainer.GetCookies(new Uri(Properties.Settings.Default.SINnerUrl));
+                    StaticUtils.Client = null;
+                    
+                    var result = StaticUtils.Client.GetClaimsWithHttpMessagesAsync().Result;
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Trace.TraceInformation(ex.ToString());
+                }
+                finally
+                {
+                    this.UseWaitCursor = false;
+                    
+                }
             }
-            catch(Exception ex)
+            else
             {
-                System.Diagnostics.Trace.TraceInformation(ex.ToString());
+                //we are not logged in
+                this.LoginStatus = false;
             }
+            
             
             UpdateDisplay();
         }

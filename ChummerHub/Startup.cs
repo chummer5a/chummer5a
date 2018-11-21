@@ -30,6 +30,8 @@ using ChummerHub.Services.GoogleDrive;
 using Microsoft.Extensions.Logging;
 using ChummerHub.API;
 using ChummerHub.Controllers.V1;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace ChummerHub
 {
@@ -101,6 +103,7 @@ namespace ChummerHub
 
               })
               .AddRoleManager<RoleManager<ApplicationRole>>()
+              .AddRoles<ApplicationRole>()
               .AddEntityFrameworkStores<ApplicationDbContext>()
               .AddDefaultTokenProviders()
               .AddSignInManager();
@@ -112,54 +115,44 @@ namespace ChummerHub
             services.Configure<AuthMessageSenderOptions>(Configuration);
 
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+            services.AddMvc(options =>
+            {
+                // using Microsoft.AspNetCore.Mvc.Authorization;
+                // using Microsoft.AspNetCore.Authorization;
+                var policy = new AuthorizationPolicyBuilder()
+                                 .RequireAuthenticatedUser()
+                                 .Build();
+                var filter = new AuthorizeFilter(policy);
+                options.Filters.Add(filter);
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddRazorPagesOptions(options =>
                 {
                     options.AllowAreas = true;
+                    //options.Conventions.AuthorizePage("/Home/Contact");
                     options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
                 });
 
-            
 
-            services.AddAuthentication()
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
                 .AddFacebook(facebookOptions =>
                 {
                     facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
                     facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
                     facebookOptions.BackchannelHttpHandler = new FacebookBackChannelHandler();
                     facebookOptions.UserInformationEndpoint = "https://graph.facebook.com/v2.8/me?fields=id,name,email,first_name,last_name";
-                    //facebookOptions.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
                 })
                 .AddGoogle(options =>
                 {
-                    //options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
                     options.ClientId = Configuration["Authentication:Google:ClientId"];
                     options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
                     options.CallbackPath = new PathString("/ExternalLogin");
                 })
-                //.AddCookie("Identity.External")
-                //.AddCookie("Identity.Application")
-                    //                .AddOpenIdConnect("oidc", options =>
-                    //                {
-                    //                    options.SignInScheme = "Cookies";
-                    //#if DEBUG
-                    //                    options.Authority = "http://localhost:5000";
-                    //#else
-                    //                    options.Authority = "http://sinners.azurewebsites.net";
-                    //#endif
-                    //                    options.RequireHttpsMetadata = false;
-
-                    //                    options.ClientId = "mvc";
-                    //                    options.SaveTokens = true;
-                    //                })
-                    ;
-
-            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            //    .AddCookie(options =>
-            //    {
-            //        options.ExpireTimeSpan = TimeSpan.MaxValue;
-            //    });
+                ;
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -186,29 +179,36 @@ namespace ChummerHub
                 options.SignIn.RequireConfirmedEmail = true;
 #endif
                 options.SignIn.RequireConfirmedPhoneNumber = false;
+
             });
 
-            //services.ConfigureApplicationCookie(options =>
-            //{
-            //    // Cookie settings
-            //    //options.Cookie.HttpOnly = false;
-            //    //options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                //options.Cookie.HttpOnly = false;
+                //options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
 
-            //    //options.LoginPath = "/Identity/Account/Login";
-            //    //options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-            //    //options.SlidingExpiration = true;
+                //options.LoginPath = "/Identity/Account/Login";
+                //options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                //options.SlidingExpiration = true;
 
-            //    options.LogoutPath = $"/Identity/Account/Logout";
-            //    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-            //    options.Cookie.Name = "SINnersCookie";
-            //    options.Cookie.HttpOnly = true;
-            //    options.ExpireTimeSpan = TimeSpan.MaxValue;
-            //    options.LoginPath = "/Identity/Account/Login";
-            //    // ReturnUrlParameter requires 
-            //    //using Microsoft.AspNetCore.Authentication.Cookies;
-            //    options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
-            //    options.SlidingExpiration = true;
-            //});
+                options.LogoutPath = $"/Identity/Account/Logout";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                options.Cookie.Name = "SINnersCookie";
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromDays(5*365);
+                options.LoginPath = "/Identity/Account/Login";
+                // ReturnUrlParameter requires 
+                //using Microsoft.AspNetCore.Authentication.Cookies;
+                options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+                options.SlidingExpiration = true;
+                //options.Events.OnRedirectToAccessDenied = context => {
+
+                //    // Your code here.
+                //    // e.g.
+                //    throw new Not();
+                //};
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 

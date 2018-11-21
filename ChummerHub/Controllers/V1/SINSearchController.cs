@@ -20,7 +20,7 @@ namespace ChummerHub.Controllers.V1
     [ApiController]
     [ApiVersion("1.0")]
     [ControllerName("SINSearch")]
-    [AllowAnonymous]
+    [Authorize]
     public class SINSearchController : ControllerBase
     {
         private readonly ApplicationDbContext _context;

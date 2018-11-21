@@ -15,7 +15,7 @@ namespace ChummerHub.Controllers.V1
     [ApiController]
     [ApiVersion("1.0")]
     [ControllerName("UploadClient")]
-    [AllowAnonymous]
+    [Authorize]
     public class UploadClientsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -25,34 +25,39 @@ namespace ChummerHub.Controllers.V1
             _context = context;
         }
 
-        // GET: api/UploadClients
-        //[HttpGet]
-        //public IEnumerable<UploadClient> Get()
-        //{
-        //    return _context.UploadClients.Take(20);
-        //}
+        //GET: api/UploadClients
+        [HttpGet]
+        [Authorize(Roles = "Administrator")]
+        public IEnumerable<UploadClient> GetSomeTestUploadClients()
+        {
+            return _context.UploadClients.Take(20);
+        }
 
-        // GET: api/UploadClients/5
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> Get([FromRoute] Guid id)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+        //GET: api/UploadClients/5
+        [HttpGet("{id}")]
+        //[Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetUploadClient")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Get([FromRoute] Guid id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        //    var uploadClient = await _context.UploadClients.FindAsync(id);
+            var uploadClient = await _context.UploadClients.FindAsync(id);
 
-        //    if (uploadClient == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (uploadClient == null)
+            {
+                return NotFound();
+            }
 
-        //    return Ok(uploadClient);
-        //}
+            return Ok(uploadClient);
+        }
 
         // GET: api/UploadClients/5
         [HttpGet("{id}")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSINnerFromUploadClient")]
+        [AllowAnonymous]
         public async Task<IActionResult> SINners([FromRoute] Guid id)
         {
             if (!ModelState.IsValid)

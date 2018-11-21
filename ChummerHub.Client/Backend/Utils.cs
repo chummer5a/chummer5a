@@ -19,18 +19,21 @@ namespace ChummerHub.Client.Backend
         }
         public static bool IsUnitTest { get { return MyUtils.IsUnitTest; } }
 
+        private static CookieContainer _AuthorizationCookieContainer = null;
+
         public static CookieContainer AuthorizationCookieContainer
         {
             get
             {
                 Properties.Settings.Default.Reload();
-                if (!String.IsNullOrEmpty(Properties.Settings.Default.CookieData))
+                if ((_AuthorizationCookieContainer == null)
+                    || (String.IsNullOrEmpty(Properties.Settings.Default.CookieData)))
                 {
                     Uri uri = new Uri(Properties.Settings.Default.SINnerUrl);
                     string cookieData = Properties.Settings.Default.CookieData;
-                    return GetUriCookieContainer(uri, cookieData);
+                    _AuthorizationCookieContainer = GetUriCookieContainer(uri, cookieData);
                 }
-                return null;
+                return _AuthorizationCookieContainer;
             }
         }
 

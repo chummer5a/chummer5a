@@ -484,9 +484,6 @@ namespace Chummer
             // 
             // tabOptions
             // 
-            this.tabOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpOptions.SetColumnSpan(this.tabOptions, 4);
             this.tabOptions.Controls.Add(this.tabGlobal);
             this.tabOptions.Controls.Add(this.tabCharacterOptions);
@@ -495,6 +492,7 @@ namespace Chummer
             this.tabOptions.Controls.Add(this.tabHouseRules);
             this.tabOptions.Controls.Add(this.tabGitHubIssues);
             this.tabOptions.Controls.Add(this.tabPlugins);
+            this.tabOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabOptions.Location = new System.Drawing.Point(3, 30);
             this.tabOptions.Name = "tabOptions";
             this.tabOptions.SelectedIndex = 0;

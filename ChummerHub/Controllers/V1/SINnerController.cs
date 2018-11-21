@@ -25,7 +25,7 @@ namespace ChummerHub.Controllers.V1
     [ApiController]
     [ApiVersion("1.0")]
     [ControllerName("SINner")]
-    [AllowAnonymous]
+    [Authorize]
     public class SINnerController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -39,37 +39,39 @@ namespace ChummerHub.Controllers.V1
         }
 
         // GET: api/ChummerFiles
-        //[HttpGet]
-        //[AllowAnonymous]
-        //[SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerListExample))]
-        //public IEnumerable<SINner> Get()
-        //{
-        //    try
-        //    {
-        //        _logger.LogTrace("Getting SINner");
-        //        var result = _context.SINners.OrderByDescending(a => a.UploadDateTime).Take(20);
-        //        result = _context.SINners.Include(sinner => sinner.SINnerMetaData)
-        //            .ThenInclude(meta => meta.Tags)
-        //            .ThenInclude(tag => tag.Tags)
-        //            .ThenInclude(tag => tag.Tags)
-        //            .ThenInclude(tag => tag.Tags)
-        //            .ThenInclude(tag => tag.Tags)
-        //            .ThenInclude(tag => tag.Tags)
-        //            .OrderByDescending(a => a.UploadDateTime).Take(20);
-        //        return result;
-        //    }
-        //    catch(Exception e)
-        //    {
-        //        HubException hue = new HubException("Exception in GetSINner: " + e.Message, e);
-        //        throw hue;
-        //    }
-        //}
+        [HttpGet]
+        [Authorize(Roles = "Administrator")]
+        [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerListExample))]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSomeTestSINners")]
+        public IEnumerable<SINner> Get()
+        {
+            try
+            {
+                _logger.LogTrace("Getting SINner");
+                var result = _context.SINners.OrderByDescending(a => a.UploadDateTime).Take(20);
+                result = _context.SINners.Include(sinner => sinner.SINnerMetaData)
+                    .ThenInclude(meta => meta.Tags)
+                    .ThenInclude(tag => tag.Tags)
+                    .ThenInclude(tag => tag.Tags)
+                    .ThenInclude(tag => tag.Tags)
+                    .ThenInclude(tag => tag.Tags)
+                    .ThenInclude(tag => tag.Tags)
+                    .OrderByDescending(a => a.UploadDateTime).Take(20);
+                return result;
+            }
+            catch (Exception e)
+            {
+                HubException hue = new HubException("Exception in GetSINner: " + e.Message, e);
+                throw hue;
+            }
+        }
 
         // GET: api/ChummerFiles/5
         [HttpGet("{id}")]
         [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerExample))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
+        [AllowAnonymous]
         public async Task<IActionResult> Get([FromRoute] Guid id)
         {
             try
@@ -106,6 +108,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NoContent)]
+        [AllowAnonymous]
         public async Task<IActionResult> Put([FromRoute] Guid id, IFormFile uploadedFile)
         {
             try
@@ -255,7 +258,7 @@ namespace ChummerHub.Controllers.V1
         [HttpDelete("{id}")]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
-
+        [Authorize]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             try

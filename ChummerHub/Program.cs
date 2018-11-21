@@ -11,6 +11,10 @@ using Serilog.Sinks.SystemConsole.Themes;
 using System.Linq;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore;
+using ChummerHub.Data;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChummerHub
 {
@@ -19,7 +23,30 @@ namespace ChummerHub
         public static void Main(string[] args)
         {
 
-            CreateWebHostBuilder(args).Build().Run();
+            var host = CreateWebHostBuilder(args).Build();
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var context = services.GetRequiredService<ApplicationDbContext>();
+                context.Database.Migrate();
+
+                // requires using Microsoft.Extensions.Configuration;
+                var config = host.Services.GetRequiredService<IConfiguration>();
+                // Set password with the Secret Manager tool.
+                // dotnet user-secrets set SeedUserPW <pw>
+
+                var testUserPw = config["SeedUserPW"];
+                try
+                {
+                    SeedData.Initialize(services, testUserPw).Wait();
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex.Message, "An error occurred seeding the DB.");
+                }
+            }
+            host.Run();
             return;
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
@@ -31,20 +58,20 @@ namespace ChummerHub
                 .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate)
                 .CreateLogger();
 
-            var seed = args.Contains("/seed");
-            if (seed)
-            {
-                args = args.Except(new[] { "/seed" }).ToArray();
-            }
+            //var seed = args.Contains("/seed");
+            //if (seed)
+            //{
+            //    args = args.Except(new[] { "/seed" }).ToArray();
+            //}
 
-            var host = CreateWebHostBuilder(args).Build();
+            //var host = CreateWebHostBuilder(args).Build();
             
-            if (seed)
-            {
-                //SeedData.EnsureSeedData(host.Services);
-            }
+            //if (seed)
+            //{
+            //    //SeedData.EnsureSeedData(host.Services);
+            //}
 
-            host.Run();
+            //host.Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
@@ -78,7 +105,9 @@ namespace ChummerHub
                             .MinimumLevel.Override("System", LogEventLevel.Warning)
                             .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
                             .Enrich.FromLogContext()
-                            .WriteTo.File(@"identityserver4_log.txt")
+#if DEBUG
+                            .WriteTo.File(@"SINners_log.txt")
+#endif
                             .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate);
                     })
                     .Build();
