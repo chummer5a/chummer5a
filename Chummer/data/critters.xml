@@ -43768,5 +43768,94 @@
       <page>92</page>
     </metatype>
     <!-- End Region -->
+	<!-- Region Aetherology -->
+    <metatype>
+      <id>a29dbdbd-d20f-4b8e-b273-7913f32e0b04</id>
+      <name>Gum Toad (Demon)</name>
+      <category>Spirits</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>F+7</bodmin>
+      <bodmax>F+7</bodmax>
+      <bodaug>F+7</bodaug>
+      <agimin>F-2</agimin>
+      <agimax>F-2</agimax>
+      <agiaug>F-2</agiaug>
+      <reamin>F</reamin>
+      <reamax>F</reamax>
+      <reaaug>F</reaaug>
+      <strmin>F+2</strmin>
+      <strmax>F+2</strmax>
+      <straug>F+2</straug>
+      <chamin>F+1</chamin>
+      <chamax>F+1</chamax>
+      <chaaug>F+1</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F-1</wilmin>
+      <wilmax>F-1</wilmax>
+      <wilaug>F-1</wilaug>
+      <inimin>(F*2)</inimin>
+      <inimax>(F*2)</inimax>
+      <iniaug>(F*2)+2</iniaug>
+      <edgmin>F</edgmin>
+      <edgmax>F</edgmax>
+      <edgaug>F</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <resmin>0</resmin>
+      <resmax>6</resmax>
+      <resaug>6</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>6</essmax>
+      <essaug>6</essaug>
+      <walk>(F-2)*2/(F-2)*2/(F-2)*2</walk>
+      <run>(F-2)*4/(F-2)*4/(F-2)*4</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>F</min>
+          <max>F</max>
+          <aug>F</aug>
+          <val>F</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass>1</initiativepass>
+      </bonus>
+      <powers>
+        <power>Astral Form</power>
+        <power rating="14">Armor</power>
+        <power>Banishing Resistance</power>
+        <power>Binding</power>
+        <power>Concealment</power>		
+        <power>Engulf</power>
+        <power>Materialization</power>
+        <power>Movement</power>
+        <power>Sapience</power>
+        <power>Search</power>
+      </powers>
+      <optionalpowers>
+      </optionalpowers>
+      <skills>
+        <skill rating="F">Assensing</skill>
+        <skill rating="F">Astral Combat</skill>
+        <skill rating="F">Perception</skill>
+        <skill rating="F">Unarmed Combat</skill>
+      </skills>
+      <source>AET</source>
+      <page>34</page>
+    </metatype>
+	<!-- End Region -->
   </metatypes>
 </chummer>
