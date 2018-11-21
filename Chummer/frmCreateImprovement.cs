@@ -234,39 +234,38 @@ namespace Chummer
                     }
                     break;
                 case "SelectSpecialAttribute":
-                {
-                    // TODO: Fix formatting
-                    List<string> lstAbbrevs = new List<string>(Backend.Attributes.AttributeSection.AttributeStrings);
-                    lstAbbrevs.RemoveAll(x => Backend.Attributes.AttributeSection.PhysicalAttributes.Contains(x) || Backend.Attributes.AttributeSection.MentalAttributes.Contains(x));
-                    lstAbbrevs.Remove("ESS");
-                    /*
-                    if (!_objCharacter.MAGEnabled)
                     {
-                        lstAbbrevs.Remove("MAG");
-                        lstAbbrevs.Remove("MAGAdept");
+                        List<string> lstAbbrevs = new List<string>(Backend.Attributes.AttributeSection.AttributeStrings);
+                        lstAbbrevs.RemoveAll(x => Backend.Attributes.AttributeSection.PhysicalAttributes.Contains(x) || Backend.Attributes.AttributeSection.MentalAttributes.Contains(x));
+                        lstAbbrevs.Remove("ESS");
+                        /*
+                        if (!_objCharacter.MAGEnabled)
+                        {
+                            lstAbbrevs.Remove("MAG");
+                            lstAbbrevs.Remove("MAGAdept");
+                        }
+                        else if (!_objCharacter.IsMysticAdept || !_objCharacter.Options.MysAdeptSecondMAGAttribute)
+                            lstAbbrevs.Remove("MAGAdept");
+
+                        if (!_objCharacter.RESEnabled)
+                            lstAbbrevs.Remove("RES");
+                        if (!_objCharacter.DEPEnabled)
+                            lstAbbrevs.Remove("DEP");
+                            */
+                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
+                        {
+                            Description = LanguageManager.GetString("Title_SelectAttribute", GlobalOptions.Language)
+                        };
+
+                        frmPickAttribute.ShowDialog(this);
+
+                        if (frmPickAttribute.DialogResult == DialogResult.OK)
+                        {
+                            txtSelect.Text = frmPickAttribute.SelectedAttribute;
+                            txtTranslateSelection.Text = TranslateField(_strSelect, frmPickAttribute.SelectedAttribute);
+                        }
+
                     }
-                    else if (!_objCharacter.IsMysticAdept || !_objCharacter.Options.MysAdeptSecondMAGAttribute)
-                        lstAbbrevs.Remove("MAGAdept");
-
-                    if (!_objCharacter.RESEnabled)
-                        lstAbbrevs.Remove("RES");
-                    if (!_objCharacter.DEPEnabled)
-                        lstAbbrevs.Remove("DEP");
-                        */
-                    frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
-                    {
-                        Description = LanguageManager.GetString("Title_SelectAttribute", GlobalOptions.Language)
-                    };
-
-                    frmPickAttribute.ShowDialog(this);
-
-                    if (frmPickAttribute.DialogResult == DialogResult.OK)
-                    {
-                        txtSelect.Text = frmPickAttribute.SelectedAttribute;
-                        txtTranslateSelection.Text = TranslateField(_strSelect, frmPickAttribute.SelectedAttribute);
-                    }
-                        
-                }
                     break;
                 case "SelectSkill":
                     {
