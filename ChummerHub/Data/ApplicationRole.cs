@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChummerHub.Data
 {
-    public class ApplicationRole : IdentityRole
+    public class ApplicationRole : IdentityRole<Guid>
     {
         public string MyRole { get; set; }
     }

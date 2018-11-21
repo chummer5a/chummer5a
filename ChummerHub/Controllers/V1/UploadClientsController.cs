@@ -26,30 +26,30 @@ namespace ChummerHub.Controllers.V1
         }
 
         // GET: api/UploadClients
-        [HttpGet]
-        public IEnumerable<UploadClient> Get()
-        {
-            return _context.UploadClients.Take(20);
-        }
+        //[HttpGet]
+        //public IEnumerable<UploadClient> Get()
+        //{
+        //    return _context.UploadClients.Take(20);
+        //}
 
         // GET: api/UploadClients/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get([FromRoute] Guid id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //[HttpGet("{id}")]
+        //public async Task<IActionResult> Get([FromRoute] Guid id)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            var uploadClient = await _context.UploadClients.FindAsync(id);
+        //    var uploadClient = await _context.UploadClients.FindAsync(id);
 
-            if (uploadClient == null)
-            {
-                return NotFound();
-            }
+        //    if (uploadClient == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return Ok(uploadClient);
-        }
+        //    return Ok(uploadClient);
+        //}
 
         // GET: api/UploadClients/5
         [HttpGet("{id}")]

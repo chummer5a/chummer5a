@@ -1847,6 +1847,10 @@ namespace Chummer
                         clbPlugins.Items.Add(plugin);
                     }
                 }
+                if (clbPlugins.Items.Count > 0)
+                {
+                    clbPlugins.SelectedIndex = 0;
+                }
             }
         }
 

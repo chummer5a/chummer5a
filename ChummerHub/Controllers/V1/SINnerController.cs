@@ -39,31 +39,31 @@ namespace ChummerHub.Controllers.V1
         }
 
         // GET: api/ChummerFiles
-        [HttpGet]
-        [AllowAnonymous]
-        [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerListExample))]
-        public IEnumerable<SINner> Get()
-        {
-            try
-            {
-                _logger.LogTrace("Getting SINner");
-                var result = _context.SINners.OrderByDescending(a => a.UploadDateTime).Take(20);
-                result = _context.SINners.Include(sinner => sinner.SINnerMetaData)
-                    .ThenInclude(meta => meta.Tags)
-                    .ThenInclude(tag => tag.Tags)
-                    .ThenInclude(tag => tag.Tags)
-                    .ThenInclude(tag => tag.Tags)
-                    .ThenInclude(tag => tag.Tags)
-                    .ThenInclude(tag => tag.Tags)
-                    .OrderByDescending(a => a.UploadDateTime).Take(20);
-                return result;
-            }
-            catch(Exception e)
-            {
-                HubException hue = new HubException("Exception in GetSINner: " + e.Message, e);
-                throw hue;
-            }
-        }
+        //[HttpGet]
+        //[AllowAnonymous]
+        //[SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerListExample))]
+        //public IEnumerable<SINner> Get()
+        //{
+        //    try
+        //    {
+        //        _logger.LogTrace("Getting SINner");
+        //        var result = _context.SINners.OrderByDescending(a => a.UploadDateTime).Take(20);
+        //        result = _context.SINners.Include(sinner => sinner.SINnerMetaData)
+        //            .ThenInclude(meta => meta.Tags)
+        //            .ThenInclude(tag => tag.Tags)
+        //            .ThenInclude(tag => tag.Tags)
+        //            .ThenInclude(tag => tag.Tags)
+        //            .ThenInclude(tag => tag.Tags)
+        //            .ThenInclude(tag => tag.Tags)
+        //            .OrderByDescending(a => a.UploadDateTime).Take(20);
+        //        return result;
+        //    }
+        //    catch(Exception e)
+        //    {
+        //        HubException hue = new HubException("Exception in GetSINner: " + e.Message, e);
+        //        throw hue;
+        //    }
+        //}
 
         // GET: api/ChummerFiles/5
         [HttpGet("{id}")]

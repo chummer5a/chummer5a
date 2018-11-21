@@ -10,6 +10,9 @@ using System.Windows.Forms;
 using IdentityModel.Client;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
+using System.Runtime.InteropServices;
+using System.Net;
+using ChummerHub.Client.Backend;
 //using Nemiro.OAuth;
 //using Nemiro.OAuth.LoginForms;
 
@@ -17,96 +20,86 @@ namespace ChummerHub.Client.UI
 {
     public partial class SINnersOptions : UserControl
     {
+        private bool? LoginStatus = null;
+       
+        private WebBrowser webBrowser1;
         public SINnersOptions()
         {
             InitializeComponent();
-            //OAuthManager.RegisterClient
-            //(
-            //"google",
-            //"408317291648-kgrn9i17g9fbsoqc6r93tp0f25t1ccbb.apps.googleusercontent.com",
-            //"hpMvvvCVV_D7ULV-zGKjUWO9",
-            //"https://www.googleapis.com/auth/drive"
-            //// for details please visit https://developers.google.com/drive/web/scopes
-            //);
+            Properties.Settings.Default.Reload();
+            this.cbSINnerUrl.DataSource = Properties.Settings.Default.SINnerUrls;
+            this.cbSINnerUrl.SelectedItem = Properties.Settings.Default.SINnerUrl;
+            UpdateDisplay();
+            cbSINnerUrl.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged;
+        }
+
+        private void CbSINnerUrl_SelectedValueChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.SINnerUrl = cbSINnerUrl.SelectedValue.ToString();
+            Properties.Settings.Default.Save();
+            if (StaticUtils.Client != null)
+                StaticUtils.Client = null;
+        }
+
+        
+
+        public void UpdateDisplay()
+        {
+            //StaticUtils.Client
+            if (LoginStatus == true)
+            {
+                this.bLogin.Enabled = false;
+                this.bLogout.Enabled = true;
+                this.labelAccountStatus.Text = "logged in";
+                this.labelAccountStatus.ForeColor = Color.DarkSeaGreen;
+            }
+            else if (LoginStatus == false)
+            {
+                this.bLogin.Enabled = true;
+                this.bLogout.Enabled = false;
+                this.labelAccountStatus.Text = "logged out";
+                this.labelAccountStatus.ForeColor = Color.DarkRed;
+            }
+            else
+            {
+                this.bLogin.Enabled = true;
+                this.bLogout.Enabled = true;
+                this.labelAccountStatus.Text = "unknown";
+                this.labelAccountStatus.ForeColor = Color.DeepPink;
+            }
         }
 
         private void bLogin_ClickAsync(object sender, EventArgs e)
         {
             try
             {
-                DiscoveryResponse disco;
-                string path = "";
-#if DEBUG
-                path = "localhost:5000";
-#else
-                 path = "sinners.azurewebsites.net";
-#endif
-                disco = DiscoveryClient.GetAsync("http://" + path).Result;
-                if (disco.IsError)
-                {
-                    MessageBox.Show(disco.Error);
-                    return;
-                }
-
-                // request token
-                //var tokenClient = new TokenClient(disco.TokenEndpoint, "client", "secret");
-                //var tokenResponse = tokenClient.RequestClientCredentialsAsync("api1").Result;
-
-                // request token
-                var tokenClient = new TokenClient(disco.TokenEndpoint, "ro.client", "secret");
-                var tokenResponse = tokenClient.RequestResourceOwnerPasswordAsync("alice", "password", "api1").Result;
 
 
-                if (tokenResponse.IsError)
-                {
-                    MessageBox.Show(tokenResponse.Error);
-                    return;
-                }
+                webBrowser1 = new System.Windows.Forms.WebBrowser();
+                this.SuspendLayout();
+                // 
+                // webBrowser1
+                // 
+                webBrowser1.Dock = System.Windows.Forms.DockStyle.Fill;
+                webBrowser1.Location = new System.Drawing.Point(0, 0);
+                webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
+                webBrowser1.Name = "webBrowser1";
+                webBrowser1.Size = new System.Drawing.Size(746, 603);
+                webBrowser1.TabIndex = 0;
+                webBrowser1.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser1_DocumentCompleted);
+                webBrowser1.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.webBrowser1_Navigated);
+                webBrowser1.ScriptErrorsSuppressed = true;
 
-                MessageBox.Show(tokenResponse.Json.ToString());
+                tlpOptions.Controls.Add(webBrowser1, 0, 2);
+                tlpOptions.SetColumnSpan(webBrowser1, 5);
 
-                // call api
-                var client = new HttpClient();
-                client.SetBearerToken(tokenResponse.AccessToken);
-                string tokenpath = "http://" + path + "/api/v1/Identity";
-                var response = client.GetAsync(tokenpath).Result;
-                if (!response.IsSuccessStatusCode)
-                {
-                    MessageBox.Show(response.StatusCode.ToString());
-                }
-                else
-                {
-                    var content = response.Content.ReadAsStringAsync().Result;
-                    MessageBox.Show(JArray.Parse(content).ToString());
-                }
 
-                //var glogin = new Nemiro.OAuth.LoginForms.GoogleLogin
-                //(
-                //  "408317291648-kgrn9i17g9fbsoqc6r93tp0f25t1ccbb.apps.googleusercontent.com",
-                //  "hpMvvvCVV_D7ULV-zGKjUWO9",
-                //  "https://oauthproxy.nemiro.net/", false, false
+                string path = Properties.Settings.Default.SINnerUrl.TrimEnd('/');
 
-                //);
-                //var ilogin = new InstagramLogin
-                //(
-                //  "9fcad1f7740b4b66ba9a0357eb9b7dda",
-                //  "3f04cbf48f194739a10d4911c93dcece",
-                //  "http://oauthproxy.nemiro.net/"
-                //);
-                //ilogin.Owner = this.ParentForm;
-                //var result = ilogin.ShowDialog();
-                //// authorization is success
-                //if (ilogin.IsSuccessfully)
-                //{
-                //    // use the access token for requests to API
-                //    MessageBox.Show(ilogin.AccessToken.Value);
-                //}
-                ////string url = OAuthWeb.GetAuthorizationUrl("google");
-                ////var result = OAuthWeb.VerifyAuthorization(url);
-                ////if (result.IsSuccessfully)
-                ////{
-                ////    var user = result.UserInfo;
-                ////}
+                path += "/Identity/Account/Login";
+                webBrowser1.Navigate(path);
+                this.ResumeLayout(false);
+                UpdateDisplay();
 
 
             }
@@ -116,5 +109,39 @@ namespace ChummerHub.Client.UI
             }
 
         }
+
+        private void webBrowser1_Navigated(object sender, WebBrowserNavigatedEventArgs e)
+        {
+            try
+            {
+                var result = StaticUtils.Client.GetClaimsWithHttpMessagesAsync().Result;                
+            }
+            catch(Exception ex)
+            {
+                System.Diagnostics.Trace.TraceInformation(ex.ToString());
+            }
+            
+            UpdateDisplay();
+        }
+
+        private void bLogout_Click(object sender, EventArgs e)
+        {
+            string path = Properties.Settings.Default.SINnerUrl.TrimEnd('/');
+
+            path += "/Identity/Account/Logout";
+            webBrowser1.Navigate(path);
+            UpdateDisplay();
+        }
+
+        private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            UpdateDisplay();
+            if (LoginStatus == true)
+            {
+                return;
+            }
+        }
+
+
     }
 }

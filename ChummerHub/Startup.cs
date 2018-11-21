@@ -136,6 +136,7 @@ namespace ChummerHub
                     //options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
                     options.ClientId = Configuration["Authentication:Google:ClientId"];
                     options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+                    options.CallbackPath = new PathString("/ExternalLogin");
                 })
                 //.AddCookie("Identity.External")
                 //.AddCookie("Identity.Application")
@@ -292,8 +293,6 @@ namespace ChummerHub
 
                 options.OperationFilter<FileUploadOperation>();
 
-
-
                 // add a custom operation filter which sets default values
                 //options.OperationFilter<SwaggerDefaultValues>();
 
@@ -313,9 +312,6 @@ namespace ChummerHub
 
             services.AddSwaggerExamples();
 
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-
-            
             //services.AddHttpsRedirection(options =>
             //{
             //    options.HttpsPort = 443;
@@ -385,9 +381,6 @@ namespace ChummerHub
                     options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
                 }
             });
-
-
-            
 
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             using (var serviceScope = serviceScopeFactory.CreateScope())

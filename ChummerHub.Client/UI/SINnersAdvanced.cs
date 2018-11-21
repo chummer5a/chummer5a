@@ -117,15 +117,7 @@ namespace ChummerHub.Client.UI
             MySINnersUsercontrol.DownloadFileAsync();
         }
 
-        private void tbSINnerUrl_TextChanged(object sender, EventArgs e)
-        {
-            this.MySINnersUsercontrol.Client = null;
-        }
-
-        private void cbSINnerUrl_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (this.MySINnersUsercontrol != null)
-                this.MySINnersUsercontrol.Client = null;
-        }
+       
+       
     }
 }

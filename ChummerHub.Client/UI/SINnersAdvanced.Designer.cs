@@ -128,7 +128,7 @@ namespace ChummerHub.Client.UI
             this.cbSINnerUrl.Name = "cbSINnerUrl";
             this.cbSINnerUrl.Size = new System.Drawing.Size(294, 21);
             this.cbSINnerUrl.TabIndex = 9;
-            this.cbSINnerUrl.SelectedIndexChanged += new System.EventHandler(this.cbSINnerUrl_SelectedIndexChanged);
+            
             // 
             // SINnersAdvanced
             // 

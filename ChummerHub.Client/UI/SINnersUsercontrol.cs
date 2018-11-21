@@ -45,38 +45,7 @@ namespace ChummerHub.Client.UI
 
         public Character CharacterObject => MySINner.CharacterObject;
 
-        private SINnersClient _client = null;
-        public SINnersClient Client
-        {
-            get
-            {
-                if (_client == null)
-                {
-                    try
-                    {
-                        ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
-                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-                        ServiceClientCredentials credentials = new TokenCredentials("Bearer");
-                        Uri baseUri = new Uri(TabSINnersAdvanced.cbSINnerUrl.SelectedItem.ToString());
-                        ServiceClientCredentials creds = new Backend.ApiKeyCredentials();
-                        DelegatingHandler delegatingHandler = new MyMessageHandler();
-                        _client = new SINnersClient(baseUri, creds, delegatingHandler);
-
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Trace.TraceError(ex.ToString());
-                        throw;
-                    }
-                }
-                return _client;
-            }
-            set
-            {
-                _client = value;
-            }
-
-        }
+        
 
         public SINnersUserControl SetCharacterFrom(CharacterShared mySINner)
         {
@@ -104,7 +73,7 @@ namespace ChummerHub.Client.UI
                 uploadInfoObject.Client = PluginHandler.MyUploadClient;
                 uploadInfoObject.UploadDateTime = DateTime.Now;
                 uploadInfoObject.SiNners = new List<SINner>() { MyCharacterExtended.MySINnerFile };
-                var response = await Client.ApiV1SINnerPostPostWithHttpMessagesAsync(uploadInfoObject);
+                var response = await StaticUtils.Client.PostWithHttpMessagesAsync(uploadInfoObject);
                 if (response.Response.StatusCode == HttpStatusCode.BadRequest
                     || response.Response.StatusCode == HttpStatusCode.Conflict)
                 {
@@ -128,7 +97,7 @@ namespace ChummerHub.Client.UI
                     MyCharacterExtended.ZipFilePath = MyCharacterExtended.PrepareModel();
                 using (FileStream fs = new FileStream(MyCharacterExtended.ZipFilePath, FileMode.Open, FileAccess.Read))
                 {
-                    Client.ApiV1SINnerPutByIdPutAsync(MyCharacterExtended.MySINnerFile.SiNnerId.Value, fs);
+                    StaticUtils.Client.PutAsync(MyCharacterExtended.MySINnerFile.SiNnerId.Value, fs);
                 }
             }
             catch (Exception ex)
@@ -143,7 +112,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                var response =  await Client.ApiV1ChummerHelperGetBySinneridGetWithHttpMessagesAsync(MyCharacterExtended.MySINnerFile.SiNnerId.Value);
+                var response =  await StaticUtils.Client.GetDownloadFileWithHttpMessagesAsync(MyCharacterExtended.MySINnerFile.SiNnerId.Value);
                 var content = await response.Response.Content.ReadAsStringAsync();
             }
             catch (Exception ex)
@@ -158,7 +127,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                    await Client.ApiV1SINnerDeleteByIdDeleteAsync(MyCharacterExtended.MySINnerFile.SiNnerId.Value);
+                    await StaticUtils.Client.DeleteAsync(MyCharacterExtended.MySINnerFile.SiNnerId.Value);
             }
             catch (Exception ex)
             {

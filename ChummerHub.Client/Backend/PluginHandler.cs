@@ -29,6 +29,7 @@ namespace Chummer.Plugins
 
         public static UploadClient MyUploadClient = null;
 
+        
         [ImportingConstructor]
         public PluginHandler()
         {

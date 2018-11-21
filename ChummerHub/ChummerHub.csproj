@@ -19,6 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="googleb94c18697e68333b.html" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Services\GoogleDrive\SINners.json" />
   </ItemGroup>
   <!--<PropertyGroup>
@@ -27,7 +31,6 @@
   </PropertyGroup>-->
   
   <ItemGroup>
-    <PackageReference Include="Google.Apis.Auth.Mvc" Version="1.36.1" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.36.1.1400" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.6" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.6" />
@@ -69,6 +72,12 @@
       <!--DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" /-->
       <!--DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" /-->
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\googleb94c18697e68333b.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
