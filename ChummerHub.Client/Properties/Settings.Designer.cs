@@ -74,5 +74,17 @@ namespace ChummerHub.Client.Properties {
                 this["CookieData"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SINnerVisibility {
+            get {
+                return ((string)(this["SINnerVisibility"]));
+            }
+            set {
+                this["SINnerVisibility"] = value;
+            }
+        }
     }
 }

@@ -34,7 +34,9 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Forbidden)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
-        
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetRoles")]
+        [Authorize]
+
         public async Task<ActionResult<List<String>>> GetRoles()
         {
             try
@@ -50,10 +52,79 @@ namespace ChummerHub.Controllers
             {
                 return BadRequest(e);
             }
-            
         }
 
-        
+        [HttpGet]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountByEmail")]
+        [Authorize]
+        public async Task<ActionResult<ApplicationUser>> GetUserByEmail(string email)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(email);
+                if (user == null)
+                    return NotFound();
+                user.PasswordHash = "";
+                user.SecurityStamp = "";
+                return Ok(user);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [HttpGet]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountByGuid")]
+        [Authorize]
+        public async Task<ActionResult<ApplicationUser>> GetUserByGuid(Guid uid)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(uid.ToString());
+                if (user == null)
+                    return NotFound();
+                user.PasswordHash = "";
+                user.SecurityStamp = "";
+                return Ok(user);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [HttpGet]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountLogout")]
+        [Authorize]
+
+        public async Task<ActionResult<bool>> Logout()
+        {
+            try
+            {
+                //var user = _userManager.FindByEmailAsync(email).Result;
+                //var user = await _signInManager.UserManager.GetUserAsync(User);
+                await _signInManager.SignOutAsync();
+                return Ok(true);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+
+
+
 
 
     }

@@ -21,9 +21,10 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINnerMetaData class.
         /// </summary>
-        public SINnerMetaData(Guid? siNnerMetaDataId = default(Guid?), IList<Tag> tags = default(IList<Tag>))
+        public SINnerMetaData(Guid? siNnerMetaDataId = default(Guid?), SINnerVisibility visibility = default(SINnerVisibility), IList<Tag> tags = default(IList<Tag>))
         {
             SiNnerMetaDataId = siNnerMetaDataId;
+            Visibility = visibility;
             Tags = tags;
         }
 
@@ -31,6 +32,11 @@ namespace SINners.Models
         /// </summary>
         [JsonProperty(PropertyName = "siNnerMetaDataId")]
         public Guid? SiNnerMetaDataId { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "visibility")]
+        public SINnerVisibility Visibility { get; set; }
 
         /// <summary>
         /// </summary>

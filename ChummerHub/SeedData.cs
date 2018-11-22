@@ -35,8 +35,8 @@ namespace ChummerHub
                 foreach (var user in Config.GetAdminUsers())
                 {
                     var userID = await EnsureUser(serviceProvider, user, testUserPw);
-                    //context.SaveChanges();
                     await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.AdministratorsRole);
+                    await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.RegisteredUserRole);
                 }
 
                 

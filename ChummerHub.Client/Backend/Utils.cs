@@ -38,6 +38,11 @@ namespace ChummerHub.Client.Backend
             set
             {
                 _AuthorizationCookieContainer = value;
+                if (value == null)
+                {
+                    Properties.Settings.Default.CookieData = null;
+                    Properties.Settings.Default.Save();
+                }
             }
         }
 

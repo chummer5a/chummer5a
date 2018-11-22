@@ -16,25 +16,28 @@ namespace ChummerHub.Data
 
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<ChummerHub.Models.V1.SINner>()
+            base.OnModelCreating(builder);
+            builder.Entity<ChummerHub.Models.V1.SINner>()
                 .HasIndex(b => b.SINnerId).IsUnique();
-            modelBuilder.Entity<ChummerHub.Models.V1.SINnerComment>()
+            builder.Entity<ChummerHub.Models.V1.SINnerComment>()
                 .HasIndex(b => b.SINnerId);
-            modelBuilder.Entity<ChummerHub.Models.V1.SINner>()
+            builder.Entity<ChummerHub.Models.V1.SINner>()
                 .HasIndex(b => b.UploadClientId);
-            modelBuilder.Entity<ChummerHub.Models.V1.Tag>()
+            builder.Entity<ChummerHub.Models.V1.Tag>()
                 .HasIndex(b => b.TagId).IsUnique();
-            modelBuilder.Entity<ChummerHub.Models.V1.Tag>()
+            builder.Entity<ChummerHub.Models.V1.Tag>()
                 .HasIndex(b => b.SINnerId);
-            modelBuilder.Entity<ChummerHub.Models.V1.Tag>()
+            builder.Entity<ChummerHub.Models.V1.Tag>()
                 .HasIndex(b => new { b.TagName, b.TagValue });
-            
+           
+
         }
 
         public DbSet<ChummerHub.Models.V1.SINner> SINners { get; set; }
+
+        public DbSet<ApplicationUser> dSINners { get; set; }
 
         public DbSet<ChummerHub.Models.V1.UploadClient> UploadClients { get; set; }
 

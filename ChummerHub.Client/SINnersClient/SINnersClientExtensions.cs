@@ -39,6 +39,80 @@ namespace SINners
                 }
             }
 
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='email'>
+            /// </param>
+            public static ApplicationUser GetUserByEmail(this ISINnersClient operations, string email = default(string))
+            {
+                return Task.Factory.StartNew(s => ((ISINnersClient)s).GetUserByEmailAsync(email), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='email'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<ApplicationUser> GetUserByEmailAsync(this ISINnersClient operations, string email = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.GetUserByEmailWithHttpMessagesAsync(email, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='uid'>
+            /// </param>
+            public static ApplicationUser GetUserByGuid(this ISINnersClient operations, Guid? uid = default(Guid?))
+            {
+                return Task.Factory.StartNew(s => ((ISINnersClient)s).GetUserByGuidAsync(uid), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='uid'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<ApplicationUser> GetUserByGuidAsync(this ISINnersClient operations, Guid? uid = default(Guid?), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.GetUserByGuidWithHttpMessagesAsync(uid, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            public static bool? Logout(this ISINnersClient operations)
+            {
+                return Task.Factory.StartNew(s => ((ISINnersClient)s).LogoutAsync(), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<bool?> LogoutAsync(this ISINnersClient operations, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.LogoutWithHttpMessagesAsync(null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
             /// <summary>
             /// Returns the Chummer-Save-File
             /// </summary>

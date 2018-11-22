@@ -14,6 +14,9 @@ namespace ChummerHub.Models.V1
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
         public Guid SINnerMetaDataId { get; set; }
+
+        public SINnerVisibility Visibility { get; set; }
+
         public List<Tag> Tags { get; set; }
 
         public SINnerMetaData()

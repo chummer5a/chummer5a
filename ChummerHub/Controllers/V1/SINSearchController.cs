@@ -39,6 +39,7 @@ namespace ChummerHub.Controllers.V1
         [SwaggerRequestExample(typeof(SearchTag), typeof(SINnerSearchExample))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SearchGetSINners")]
         public IEnumerable<SINner> Search(SearchTag searchTag)
         {
             try

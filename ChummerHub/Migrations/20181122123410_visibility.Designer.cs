@@ -4,14 +4,16 @@ using ChummerHub.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ChummerHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181122123410_visibility")]
+    partial class visibility
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,8 +113,6 @@ namespace ChummerHub.Migrations
                     b.Property<Guid?>("SINnerVisibilityId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Groupname");
-
                     b.Property<bool>("IsGroupVisible");
 
                     b.Property<bool>("IsPublic");
@@ -168,9 +168,13 @@ namespace ChummerHub.Migrations
 
                     b.Property<string>("ClientSecret");
 
+                    b.Property<Guid?>("SINnerVisibilityId");
+
                     b.Property<string>("UserEmail");
 
                     b.HasKey("UploadClientId");
+
+                    b.HasIndex("SINnerVisibilityId");
 
                     b.ToTable("UploadClients");
                 });
@@ -208,6 +212,8 @@ namespace ChummerHub.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
+                    b.Property<Guid?>("SINnerVisibilityId");
+
                     b.Property<string>("SecurityStamp");
 
                     b.Property<bool>("TwoFactorEnabled");
@@ -224,6 +230,8 @@ namespace ChummerHub.Migrations
                         .IsUnique()
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("SINnerVisibilityId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -334,6 +342,20 @@ namespace ChummerHub.Migrations
                     b.HasOne("ChummerHub.Models.V1.Tag")
                         .WithMany("Tags")
                         .HasForeignKey("TagId1");
+                });
+
+            modelBuilder.Entity("ChummerHub.Models.V1.UploadClient", b =>
+                {
+                    b.HasOne("ChummerHub.Models.V1.SINnerVisibility")
+                        .WithMany("IsVisibleToClientList")
+                        .HasForeignKey("SINnerVisibilityId");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.ApplicationUser", b =>
+                {
+                    b.HasOne("ChummerHub.Models.V1.SINnerVisibility")
+                        .WithMany("IsVisibleToUserList")
+                        .HasForeignKey("SINnerVisibilityId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

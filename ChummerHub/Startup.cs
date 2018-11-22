@@ -69,9 +69,8 @@ namespace ChummerHub
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
+                options.CheckConsentNeeded = context => false;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
-                
             });
 
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -131,6 +130,7 @@ namespace ChummerHub
                     //options.Conventions.AuthorizePage("/Home/Contact");
                     options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
+                    options.Conventions.AuthorizeAreaPage("Identity", "/Account/ChummerLogin/Logout");                    
                 });
 
 
@@ -139,20 +139,35 @@ namespace ChummerHub
             {
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
-                .AddFacebook(facebookOptions =>
+                //.AddFacebook(facebookOptions =>
+                //{
+                //    facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+                //    facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+                //    facebookOptions.BackchannelHttpHandler = new FacebookBackChannelHandler();
+                //    facebookOptions.UserInformationEndpoint = "https://graph.facebook.com/v2.8/me?fields=id,name,email,first_name,last_name";
+                //})
+                //.AddGoogle(options =>
+                //{
+                //    options.ClientId = Configuration["Authentication:Google:ClientId"];
+                //    options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+                //    options.CallbackPath = new PathString("/ExternalLogin");
+                //})
+                .AddCookie("Cookies", options =>
                 {
-                    facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
-                    facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-                    facebookOptions.BackchannelHttpHandler = new FacebookBackChannelHandler();
-                    facebookOptions.UserInformationEndpoint = "https://graph.facebook.com/v2.8/me?fields=id,name,email,first_name,last_name";
-                })
-                .AddGoogle(options =>
-                {
-                    options.ClientId = Configuration["Authentication:Google:ClientId"];
-                    options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
-                    options.CallbackPath = new PathString("/ExternalLogin");
+                    options.LoginPath = new PathString("/Identity/Account/Login");
+                    options.AccessDeniedPath = new PathString("/Identity/Account/AccessDenied");
+                    options.LogoutPath = $"/Identity/Account/Logout";
+                    options.Cookie.Name = "Cookies";
+                    options.Cookie.HttpOnly = false;
+                    options.ExpireTimeSpan = TimeSpan.FromDays(5 * 365);
+                    options.LoginPath = "/Identity/Account/Login";
+                    // ReturnUrlParameter requires 
+                    //using Microsoft.AspNetCore.Authentication.Cookies;
+                    options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+                    options.SlidingExpiration = false;
                 })
                 ;
+            ;
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -185,23 +200,16 @@ namespace ChummerHub
             services.ConfigureApplicationCookie(options =>
             {
                 // Cookie settings
-                //options.Cookie.HttpOnly = false;
-                //options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-
-                //options.LoginPath = "/Identity/Account/Login";
-                //options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-                //options.SlidingExpiration = true;
-
                 options.LogoutPath = $"/Identity/Account/Logout";
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-                options.Cookie.Name = "SINnersCookie";
-                options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromDays(5*365);
+                options.Cookie.Name = "Cookies";
+                options.Cookie.HttpOnly = false;
+                options.ExpireTimeSpan = TimeSpan.FromDays(5 * 365);
                 options.LoginPath = "/Identity/Account/Login";
                 // ReturnUrlParameter requires 
                 //using Microsoft.AspNetCore.Authentication.Cookies;
                 options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
-                options.SlidingExpiration = true;
+                options.SlidingExpiration = false;
                 //options.Events.OnRedirectToAccessDenied = context => {
 
                 //    // Your code here.

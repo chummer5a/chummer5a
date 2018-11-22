@@ -38,11 +38,62 @@ namespace ChummerHub.Controllers.V1
             _logger = logger;
         }
 
+        // GET: api/ChummerFiles/5
+        //[Route("download")]
+        //[SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerExample))]
+        /// <summary>
+        /// Returns the Chummer-Save-File
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{sinnerid}")]
+        [AllowAnonymous]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerDownloadFile")]
+        public async Task<IActionResult> GetDownloadFile([FromRoute] Guid sinnerid)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var chummerFile = await _context.SINners.FindAsync(sinnerid);
+
+                if (chummerFile == null)
+                {
+                    return NotFound();
+                }
+                if (String.IsNullOrEmpty(chummerFile.DownloadUrl))
+                {
+                    string msg = "Chummer " + chummerFile.SINnerId + " does not have a valid DownloadUrl!";
+                    throw new ArgumentException(msg);
+                }
+                string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.InternetCache), chummerFile.SINnerId.ToString() + ".chum5z");
+                using (var client = new WebClient())
+                {
+                    client.DownloadFile(new Uri(chummerFile.DownloadUrl), path);
+                }
+                if (!System.IO.File.Exists(path))
+                {
+                    throw new ArgumentException("No file downloaded from " + chummerFile.DownloadUrl);
+                }
+                var res = new FileResult(chummerFile.SINnerId.ToString() + ".chum5z", path, "application/octet-stream");
+
+                return res;
+            }
+            catch (Exception e)
+            {
+                HubException hue = new HubException("Exception in GetSINnerfile: " + e.Message, e);
+                return BadRequest(hue);
+            }
+        }
+
         // GET: api/ChummerFiles
         [HttpGet]
         [Authorize(Roles = "Administrator")]
         [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerListExample))]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSomeTestSINners")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerTestSINners")]
         public IEnumerable<SINner> Get()
         {
             try
@@ -71,7 +122,7 @@ namespace ChummerHub.Controllers.V1
         [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerExample))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSINner")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerGet")]
         [AllowAnonymous]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
@@ -109,6 +160,8 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NoContent)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerPut")]
+
         [AllowAnonymous]
         public async Task<IActionResult> Put([FromRoute] Guid id, IFormFile uploadedFile)
         {
@@ -247,6 +300,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerUpload")]
         //[Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created, Type = typeof(SINner))]
 
         public async Task<IActionResult> Post([FromBody] UploadInfoObject uploadInfo)
@@ -259,6 +313,7 @@ namespace ChummerHub.Controllers.V1
         [HttpDelete("{id}")]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerDelete")]
         [Authorize]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {

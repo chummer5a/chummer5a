@@ -4,7 +4,7 @@
         <name>ChummerHub</name>
     </assembly>
     <members>
-        <member name="M:ChummerHub.Controllers.V1.ChummerHelper.GetDownloadFile(System.Guid)">
+        <member name="M:ChummerHub.Controllers.V1.SINnerController.GetDownloadFile(System.Guid)">
             <summary>
             Returns the Chummer-Save-File
             </summary>
