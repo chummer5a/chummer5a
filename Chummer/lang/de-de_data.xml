@@ -4567,6 +4567,36 @@
 				<translate>Resonanzhost</translate>
 				<altpage>174</altpage>
 			</power>
+			<power translated="True">
+				<id>65dd2042-b786-471b-ac26-d6cc8cd16a58</id>
+				<name>Shift</name>
+				<translate>Gestaltwandel</translate>
+				<altpage>37</altpage>
+			</power>
+			<power translated="True">
+				<id>3243aece-a356-4e46-bd4c-af04cfc2a306</id>
+				<name>Skill</name>
+				<translate>Fertigkeit</translate>
+				<altpage>37</altpage>
+			</power>
+			<power translated="True">
+				<id>5aa4a4c2-d27f-416a-976b-330bc878539c</id>
+				<name>Transfer Energy (Essence)</name>
+				<translate>Energietransfer (Essenz)</translate>
+				<altpage>37</altpage>
+			</power>
+			<power translated="True">
+				<id>1ad48bb5-2f28-4076-8f4b-185c02f85456</id>
+				<name>Vanishing</name>
+				<translate>Verschwinden</translate>
+				<altpage>37</altpage>
+			</power>
+			<power translated="True">
+				<id>a3651bf9-dda2-4bf0-8c95-8c44bd8ae83b</id>
+				<name>Korrigan Pact</name>
+				<translate>Korriganen-Pakt</translate>
+				<altpage>37</altpage>
+			</power>
 		</powers>
 	</chummer>
 	<chummer file="critters.xml">

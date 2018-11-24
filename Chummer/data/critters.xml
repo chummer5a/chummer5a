@@ -44110,7 +44110,7 @@
         <power>Materialization</power>
         <power>Sapience</power>
         <power rating="Metahuman">Shift</power>
-        <power rating="Essence">Transfer Energy</power>
+        <power>Transfer Energy (Essence)</power>
         <power>Vanishing</power>
       </powers>
       <optionalpowers>
