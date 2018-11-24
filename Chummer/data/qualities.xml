@@ -17588,5 +17588,192 @@
     </quality>
     <!-- End Region -->
     <!-- End Region -->
+    <!-- Region Better Than Bad -->
+    <!-- Region Negative -->
+    <quality>
+      <id>c0d411e6-ca88-4011-b56c-9f594882beb4</id>
+      <name>Dead SIN</name>
+      <karma>-20</karma>
+      <category>Negative</category>
+      <bonus>
+        <addgear>
+          <name>Fake SIN</name>
+          <category>ID/Credsticks</category>
+          <rating>4</rating>
+          <children>
+            <child>
+              <name>Fake License</name>
+              <category>ID/Credsticks</category>
+              <rating>3</rating>
+            </child>
+            <child>
+              <name>Fake License</name>
+              <category>ID/Credsticks</category>
+              <rating>3</rating>
+            </child>
+            <child>
+              <name>Fake License</name>
+              <category>ID/Credsticks</category>
+              <rating>3</rating>
+            </child>
+          </children>
+        </addgear>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>SINner (Criminal)</quality>
+          <quality>SINner (National)</quality>
+          <quality>SINner (Corporate Limited)</quality>
+          <quality>SINner (Corporate)</quality>
+        </oneof>
+      </forbidden>
+      <source>BTB</source>
+      <page>162</page>
+    </quality>
+    <quality>
+      <id>96f148e1-fb72-416a-8235-89a3eeafe534</id>
+      <name>Hard Luck</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus /> <!-- TODO: Witchcraft -->
+      <source>BTB</source>
+      <page>162</page>
+    </quality>
+    <!-- End Region -->
+    <!-- Region Positive -->
+    <quality>
+      <id>5c49d5e2-ca52-406e-a532-8d4d148ea825</id>
+      <name>Hair Trigger</name>
+      <karma>2</karma>
+      <category>Positive</category>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>BTB</source>
+      <page>160</page>
+    </quality>
+    <quality>
+      <id>31e3097d-68c4-4140-969d-91bd43612afd</id>
+      <name>Hi-Rez</name>
+      <karma>4</karma>
+      <category>Positive</category>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>BTB</source>
+      <page>160</page>
+    </quality>
+    <quality>
+      <id>ef40cac3-d81e-4c7f-b14d-46abfd2f9dff</id>
+      <name>Instinctive Hack</name>
+      <karma>2</karma>
+      <category>Positive</category>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>BTB</source>
+      <page>160</page>
+    </quality>
+    <quality>
+      <id>1118c31d-521b-46c3-ba82-04123c1303be</id>
+      <name>Rabble Rouser</name>
+      <karma>6</karma>
+      <category>Positive</category>
+      <source>BTB</source>
+      <page>161</page>
+    </quality>
+    <quality>
+      <id>eb3b2334-29f3-4bd5-a9cc-817672b28d6e</id>
+      <name>Resonant Discordance</name>
+      <karma>13</karma>
+      <category>Positive</category>
+      <!-- TODO: Technomancers have access to mastery qualities?
+      <canbuywithspellpoints>True</canbuywithspellpoints>
+      <doublecareer>False</doublecareer> --> 
+      <required>
+        <allof>
+          <attribute>
+            <name>RES</name>
+            <total>1</total>
+          </attribute>
+          <submersiongrade>1</submersiongrade>
+        </allof>
+      </required>
+      <source>BTB</source>
+      <page>161</page>
+    </quality>
+    <quality>
+      <id>f6387f9d-c177-4c9b-a141-af2d17ea6317</id>
+      <name>Prototype Materials</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <forbidden>
+        <oneof>
+          <attributetotal>
+            <attributes>RES,MAG</attributes>
+            <val>1</val>
+          </attributetotal>
+        </oneof>
+      </forbidden>
+      <source>BTB</source>
+      <page>160</page>
+    </quality>
+    <quality>
+      <id>83e5f9a2-e76b-4a11-81db-4b0466b727ce</id>
+      <name>Shoot First, Don't Ask</name>
+      <karma>2</karma>
+      <category>Positive</category>
+      <source>BTB</source>
+      <page>161</page>
+    </quality>
+    <quality>
+      <id>0dd183a3-85ce-4029-9de5-9b6aa1eb539c</id>
+      <name>Special Modifications</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <limit>2</limit>
+      <forbidden>
+        <oneof>
+          <attributetotal>
+            <attributes>RES,MAG</attributes>
+            <val>1</val>
+          </attributetotal>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <quality>Prototype Materials</quality>
+        </oneof>
+      </required>
+      <source>BTB</source>
+      <page>161</page>
+    </quality>
+    <!-- End Region -->
+    <!-- Region Mastery Qualities -->
+    <quality>
+      <id>430af564-0be1-42f0-a0d0-318c093ea3d8</id>
+      <name>Elemental Attunement</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <canbuywithspellpoints>True</canbuywithspellpoints>
+      <doublecareer>False</doublecareer>
+      <required>
+        <allof>
+          <power>Killing Hands</power>
+          <power>Elemental Strike</power>
+          <power>Elemental Body</power>
+        </allof>
+      </required>
+      <source>BTB</source>
+      <page>161</page>
+    </quality>
+    <!-- End Region -->
+    <!-- End Region -->
   </qualities>
 </chummer>

@@ -243,9 +243,14 @@
       <code>KC</code>
     </book>
     <book>
-	  <id>6c97c3e8-8f13-43aa-b692-6218983c9396</id>
+      <id>6c97c3e8-8f13-43aa-b692-6218983c9396</id>
       <name>Hamburg (German-exclusive)</name>
       <code>HAMG</code>
+    </book>
+    <book>
+	  <id>612af603-65e6-442c-91b8-8b8cc0c77e4a</id>
+      <name>Better Than Bad</name>
+      <code>BTB</code>
     </book>
   </books>
 </chummer>

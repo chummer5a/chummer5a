@@ -1685,6 +1685,7 @@
         </specificskill>
       </bonus>
     </power>
+    <!-- End Region -->
     <!-- Region Cutting Aces -->
     <power>
       <id>7a5084df-b4d2-4f2a-84aa-43627f43c240</id>
@@ -1720,6 +1721,31 @@
       <limit>1</limit>
       <source>CA</source>
       <page>153</page>
+    </power>
+    <!-- End Region -->
+    <!-- Region Better Than Bad -->
+    <power>
+      <id>1ac890d7-5152-40a8-80e8-73d342571a33</id>
+      <name>Mystic Aptitude</name>
+      <points>0.75</points>
+      <levels>3</levels>
+      <limit>1</limit>
+      <source>BTB</source>
+      <page>153</page>
+    </power>
+    <power>
+      <id>56b4fe33-eb48-4365-ae2e-ebdffa05b1f6</id>
+      <name>State of Purity</name>
+      <points>1.5</points>
+      <levels>False</levels>
+      <limit>1</limit>
+      <source>BTB</source>
+      <page>154</page>
+      <required>
+        <oneof>
+          <ess>6</ess>
+        </oneof>
+      </required>
     </power>
     <!-- End Region -->
   </powers>

@@ -116,6 +116,23 @@
       <source>CF</source>
       <page>72</page>
     </grade>
+    <grade>
+      <id>e77b7a1f-1c7b-4494-b9b5-6dcb5b61010b</id>
+      <name>Greyware</name>
+      <ess>0.75</ess>
+      <cost>1.3</cost>
+      <devicerating>2</devicerating>
+      <avail>0</avail>
+      <bonus>
+        <specificattribute>
+          <name>MAG</name>
+          <val>-1</val>
+          <max>-1</max>
+        </specificattribute>
+      </bonus>
+      <source>BTB</source>
+      <page>158</page>
+    </grade>
     <!-- End Region -->
     <!-- Region Adapsin -->
     <grade>
@@ -197,6 +214,23 @@
       <avail>-4</avail>
       <source>CF</source>
       <page>71</page>
+    </grade>
+    <grade>
+      <id>c4d67932-0de4-4206-91b6-f3fd504c382f</id>
+      <name>Greyware (Adapsin)</name>
+      <ess>0.65</ess>
+      <cost>1.3</cost>
+      <devicerating>2</devicerating>
+      <avail>0</avail>
+      <bonus>
+        <specificattribute>
+          <name>MAG</name>
+          <val>-1</val>
+          <max>-1</max>
+        </specificattribute>
+      </bonus>
+      <source>BTB</source>
+      <page>158</page>
     </grade>
     <!-- End Region -->
   </grades>

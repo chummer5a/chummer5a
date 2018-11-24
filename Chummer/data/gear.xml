@@ -88,6 +88,7 @@
     <category blackmarket="Electronics">Vision Enhancements</category>
     <category blackmarket="Electronics">Matrix Accessories</category>
     <category blackmarket="Electronics">Booster Chips</category>
+    <category>Appearance Modification</category>
   </categories>
   <gears>
     <!-- Region Ammo -->
@@ -17951,6 +17952,32 @@
       <page>73</page>
       <avail>10R</avail>
       <cost>1200</cost>
+    </gear>
+    <!-- End Region -->
+    <!-- Region Tattoos -->
+    <gear>
+      <id>18e853c9-0fe8-4414-9b91-eedd0905359b</id>
+      <name>Grey Mana Tattoos</name>
+      <category>Appearance Modification</category> <!-- IDK, had to call it something -->
+      <rating>3</rating>
+      <source>BTB</source>
+      <page>156</page>
+      <avail>7F</avail>
+      <bonus>
+        <ess>-0.1*Rating</ess>
+        <selecttext />
+      </bonus>
+      <cost>Rating*500</cost>
+    </gear>
+    <gear>
+      <id>ae502bc1-1053-46ed-a5c1-4d37aedf3a3a</id>
+      <name>Blight</name>
+      <category>Toxins</category>
+      <rating>0</rating>
+      <source>BTB</source>
+      <page>157</page>
+      <avail>8F</avail>
+      <cost>250</cost>
     </gear>
     <!-- End Region -->
   </gears>
