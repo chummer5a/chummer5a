@@ -1596,6 +1596,12 @@
 				<translate>Interner Lufttank (5 Minuten)</translate>
 				<altpage>173</altpage>
 			</mod>
+			<mod translated="True">
+				<id>80effbdd-047d-4b1f-8159-f13f86bba4e6</id>
+				<name>Grey Mana Integration</name>
+				<translate>Grey Manaabwehr</translate>
+				<altpage>162</altpage>
+			</mod>
 		</mods>
 	</chummer>
 	<chummer file="bioware.xml">
@@ -3206,6 +3212,12 @@
 				<name>Hamburg (German-exclusive)</name>
 				<translate>Hamburg (Deutsch-exklusiv)</translate>
 				<altcode>HAMG</altcode>
+			</book>
+			<book>
+				<id>612af603-65e6-442c-91b8-8b8cc0c77e4a</id>
+				<name>Better Than Bad</name>
+				<translate>Schattenhelden</translate>
+				<altcode>BTB</altcode>
 			</book>
 		</books>
 	</chummer>
@@ -8060,6 +8072,18 @@
 				<translate>Omegaware (Adapsin)</translate>
 				<altpage>75</altpage>
 			</grade>
+			<grade translated="True">
+				<id>e77b7a1f-1c7b-4494-b9b5-6dcb5b61010b</id>
+				<name>Greyware</name>
+				<translate>GreyWare</translate>
+				<altpage>164</altpage>
+			</grade>
+			<grade translated="True">
+				<id>c4d67932-0de4-4206-91b6-f3fd504c382f</id>
+				<name>Greyware (Adapsin)</name>
+				<translate>GreyWare (Adapsin)</translate>
+				<altpage>164</altpage>
+			</grade>
 		</grades>
 		<categories>
 			<category translate="Headware" translated="True">Headware</category>
@@ -10476,6 +10500,7 @@
 			<category translate="Booster Chips">Booster Chips</category>
 			<category translate="Attribute des angepassten Cyberdecks">Custom Cyberdeck Attributes</category>
 			<category translate="Maßgeschneiderte Drogen">Custom Drug</category>
+			<category translate="Erscheinungsmodifikatoren">Appearance Modification</category>
 		</categories>
 		<gears>
 			<gear translated="True">
@@ -18414,6 +18439,18 @@
 				<translate>Globales Gitter</translate>
 				<altpage>231</altpage>
 			</gear>
+			<gear>
+				<id>18e853c9-0fe8-4414-9b91-eedd0905359b</id>
+				<name>Grey Mana Tattoos</name>
+				<translate>Grey Mana-Tattoos</translate>
+				<altpage>162</altpage>
+			</gear>
+			<gear>
+				<id>ae502bc1-1053-46ed-a5c1-4d37aedf3a3a</id>
+				<name>Blight</name>
+				<translate>Manafäule</translate>
+				<altpage>163</altpage>
+			</gear>
 		</gears>
 	</chummer>
 	<chummer file="lifestyles.xml">
@@ -24436,6 +24473,18 @@
 				<translate>Living Focus</translate>
 				<altpage>24</altpage>
 			</power>
+			<power>
+				<id>1ac890d7-5152-40a8-80e8-73d342571a33</id>
+				<name>Mystic Aptitude</name>
+				<translate>Mystische Fähigkeit</translate>
+				<altpage>166</altpage>
+			</power>
+			<power>
+				<id>56b4fe33-eb48-4365-ae2e-ebdffa05b1f6</id>
+				<name>State of Purity</name>
+				<translate>Innere Reinheit</translate>
+				<altpage>165</altpage>
+			</power>
 		</powers>
 		<enhancements>
 			<enhancement>
@@ -29904,6 +29953,72 @@
 				<name>Sprite Affinity</name>
 				<translate>Freundliche Sprites</translate>
 				<altpage>97</altpage>
+			</quality>
+			<quality translated="True">
+				<id>c0d411e6-ca88-4011-b56c-9f594882beb4</id>
+				<name>Dead SIN</name>
+				<translate>Tote SIN</translate>
+				<altpage>168</altpage>
+			</quality>
+			<quality translated="True">
+				<id>96f148e1-fb72-416a-8235-89a3eeafe534</id>
+				<name>Hard Luck</name>
+				<translate>Pech im Leben</translate>
+				<altpage>168</altpage>
+			</quality>
+			<quality>
+				<id>5c49d5e2-ca52-406e-a532-8d4d148ea825</id>
+				<name>Hair Trigger</name>
+				<translate>Hair Trigger</translate>
+				<altpage>166</altpage>
+			</quality>
+			<quality translated="True">
+				<id>31e3097d-68c4-4140-969d-91bd43612afd</id>
+				<name>Hi-Rez</name>
+				<translate>Hochauflösend</translate>
+				<altpage>166</altpage>
+			</quality>
+			<quality translated="True">
+				<id>ef40cac3-d81e-4c7f-b14d-46abfd2f9dff</id>
+				<name>Instinctive Hack</name>
+				<translate>Instinktives Hacking</translate>
+				<altpage>167</altpage>
+			</quality>
+			<quality translated="True">
+				<id>1118c31d-521b-46c3-ba82-04123c1303be</id>
+				<name>Rabble Rouser</name>
+				<translate>Aufrührer</translate>
+				<altpage>166</altpage>
+			</quality>
+			<quality translated="True">
+				<id>eb3b2334-29f3-4bd5-a9cc-817672b28d6e</id>
+				<name>Resonant Discordance</name>
+				<translate>Resonante Diskordanz</translate>
+				<altpage>168</altpage>
+			</quality>
+			<quality translated="True">
+				<id>f6387f9d-c177-4c9b-a141-af2d17ea6317</id>
+				<name>Prototype Materials</name>
+				<translate>Prototypenteile</translate>
+				<altpage>167</altpage>
+			</quality>
+			<quality translated="True">
+				<id>83e5f9a2-e76b-4a11-81db-4b0466b727ce</id>
+				<name>Shoot First, Don't Ask</name>
+				<translate>Erst schießen, dann nicht fragen</translate>
+				<altpage>166</altpage>
+			</quality>
+			<quality translated="True">
+				<id>0dd183a3-85ce-4029-9de5-9b6aa1eb539c</id>
+				<name>Special Modifications</name>
+				<translate>Spezialmodifikationen</translate>
+				<altpage>167</altpage>
+			</quality>
+			<quality translated="True">
+				<id>430af564-0be1-42f0-a0d0-318c093ea3d8</id>
+				<name>Elemental Attunement</name>
+				<translate>Elementare Einstimmung</translate>
+				<altpage>167</altpage>
 			</quality>
 		</qualities>
 	</chummer>
@@ -35980,6 +36095,18 @@
 				<name>Pulse</name>
 				<translate>Pulse</translate>
 				<altpage>21</altpage>
+			</spell>
+			<spell>
+				<id>89046778-a77a-4f21-a448-a750af0898eb</id>
+				<name>Astral Disruption</name>
+				<translate>Astrale Störung</translate>
+				<altpage>164</altpage>
+			</spell>
+			<spell>
+				<id>4c595074-add0-40da-a707-598d2b94ae4f</id>
+				<name>Mass Astral Disruption</name>
+				<translate>Astrales Störfeld</translate>
+				<altpage>164</altpage>
 			</spell>
 		</spells>
 	</chummer>
