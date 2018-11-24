@@ -21772,6 +21772,24 @@
 					</choice>
 				</choices>
 			</mentor>
+			<mentor>
+				<id>7397da6e-29b8-400f-9708-c99bd04d5c07</id>
+				<name>Guanyin</name>
+				<translate>Guanyin</translate>
+				<altadvantage>Allgemein: +2 Würfel für Prben auf Erste Hilfe</altadvantage>
+				<altdisadvantage>Anhänger von Guanyin sind höchst motiviert, andere Wesen zu retten. Wenn der Charakter das Angebot für einen Run bekommt, bei dem sich keine Gelegenheit für Hooding bietet, muss er eine erfolgreiche Probe auf Willenskraft + Charisma (3) ablegen, damit er annehmen kann. Misslingt die Probe, muss er den Job ablehnen.</altdisadvantage>
+				<altpage>145</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice for Healing spells</name>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
+					</choice>
+					<choice>
+						<name>Adept: Free Empathic Healing power</name>
+						<translate>Adept: Kraft Empathische Heilung gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
 		</mentors>
 	</chummer>
 	<chummer file="metamagic.xml">
@@ -30019,6 +30037,18 @@
 				<name>Elemental Attunement</name>
 				<translate>Elementare Einstimmung</translate>
 				<altpage>167</altpage>
+			</quality>
+			<quality translated="True">
+				<id>39803e82-d85a-4da1-9637-fdd3249f2f21</id>
+				<name>Quadriplegic</name>
+				<translate>Schwere Querschnittslähmung</translate>
+				<altpage>145</altpage>
+			</quality>
+			<quality translated="True">
+				<id>a766e0d9-954e-4738-88f2-bde4f4e89880</id>
+				<name>Social Chameleon</name>
+				<translate>Gern gesehen</translate>
+				<altpage>144</altpage>
 			</quality>
 		</qualities>
 	</chummer>
