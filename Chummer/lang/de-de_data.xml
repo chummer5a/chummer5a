@@ -3219,6 +3219,12 @@
 				<translate>Schattenhelden</translate>
 				<altcode>BTB</altcode>
 			</book>
+			<book>
+				<id>be47e4b5-cc4f-427a-b4cd-cb5c1c8821ce</id>
+				<name>Aetherology</name>
+				<translate>Ätherologie</translate>
+				<altcode>AET</altcode>
+			</book>
 		</books>
 	</chummer>
 	<chummer file="critterpowers.xml">
@@ -7965,6 +7971,48 @@
 				<name>Iridescent Owl</name>
 				<translate>Schilleruhu</translate>
 				<altpage>99</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>a29dbdbd-d20f-4b8e-b273-7913f32e0b04</id>
+				<name>Gum Toad (Demon)</name>
+				<translate>Harzkröte (Dämon)</translate>
+				<altpage>34</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>eece2f07-efa7-411e-a7be-adae734f19f9</id>
+				<name>Crawler (Demon)</name>
+				<translate>Krabbler (Dämon)</translate>
+				<altpage>34</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>250adb08-63e6-4b64-b593-57723730bb11</id>
+				<name>Ghasts (Demon)</name>
+				<translate>Ghasts (Dämon)</translate>
+				<altpage>35</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>e77798be-e755-441d-a143-5e49b3757576</id>
+				<name>Vrygoths</name>
+				<translate>Vrygoth</translate>
+				<altpage>35</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>fb6a313e-7bcd-4b27-8283-0ece49970dd4</id>
+				<name>Gremlin</name>
+				<translate>Gremlin</translate>
+				<altpage>36</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>7d8bc3b9-e2be-4139-9399-a3904e12528d</id>
+				<name>Anansi</name>
+				<translate>Anansi</translate>
+				<altpage>36</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>74a4b48f-01cf-4ff8-b95f-83a8b4b25734</id>
+				<name>Tsuchigumo Warrior</name>
+				<translate>Tsuchigumo-Krieger</translate>
+				<altpage>37</altpage>
 			</metatype>
 		</metatypes>
 	</chummer>
