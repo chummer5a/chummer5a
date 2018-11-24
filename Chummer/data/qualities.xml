@@ -17639,6 +17639,45 @@
       <source>BTB</source>
       <page>162</page>
     </quality>
+    <quality>
+      <id>39803e82-d85a-4da1-9637-fdd3249f2f21</id>
+      <name>Quadriplegic</name>
+      <karma>-25</karma>
+      <category>Negative</category>
+      <bonus>
+        <lifestylecost>30</lifestylecost>
+        <replaceattributes>
+          <replaceattribute>
+            <name>AGI</name>
+            <min>0</min>
+            <max>0</max>
+            <aug>0</aug>
+          </replaceattribute>
+          <replaceattribute>
+            <name>REA</name>
+            <min>0</min>
+            <max>0</max>
+            <aug>0</aug>
+          </replaceattribute>
+          <replaceattribute>
+            <name>STR</name>
+            <min>0</min>
+            <max>0</max>
+            <aug>0</aug>
+          </replaceattribute>
+        </replaceattributes>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <attributetotal>
+            <attributes>RES,MAG</attributes>
+            <val>1</val>
+          </attributetotal>
+        </oneof>
+      </forbidden>
+      <source>BTB</source>
+      <page>160</page>
+    </quality>
     <!-- End Region -->
     <!-- Region Positive -->
     <quality>
@@ -17685,6 +17724,20 @@
       <name>Rabble Rouser</name>
       <karma>6</karma>
       <category>Positive</category>
+      <source>BTB</source>
+      <page>161</page>
+    </quality>
+    <quality>
+      <id>a766e0d9-954e-4738-88f2-bde4f4e89880</id>
+      <name>Social Chameleon</name>
+      <karma>7</karma>
+      <category>Positive</category>
+      <bonus>
+        <specificskill>
+          <name>Etiquette</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </bonus>
       <source>BTB</source>
       <page>161</page>
     </quality>

@@ -2822,5 +2822,38 @@
       <source>SAG</source>
       <page>123</page>
     </mentor>
+    <mentor>
+      <id>7397da6e-29b8-400f-9708-c99bd04d5c07</id>
+      <name>Guanyin</name>
+      <advantage>All: +2 dice for First Aid tests.</advantage>
+      <disadvantage>A Guanyin magician is highly motivated to save other beings. If the Magician is offered a run that doesn’t involve hooding, she must make a Charisma + Willpower (3) test before she can accept the run. Failure on this test means she turns down the job.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>First Aid</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </bonus>
+      <choices>
+        <choice>
+          <name>Magician: +2 dice for Healing spells</name>
+          <bonus>
+            <spellcategory>
+              <name>Health</name>
+              <val>2</val>
+            </spellcategory>
+          </bonus>
+        </choice>
+        <choice>
+          <name>Adept: Free Empathic Healing power</name>
+          <bonus>
+            <specificpower>
+              <name>Empathic Healing</name>
+            </specificpower>
+          </bonus>
+        </choice>
+      </choices>
+      <source>BTB</source>
+      <page>139</page>
+    </mentor>
   </mentors>
 </chummer>
