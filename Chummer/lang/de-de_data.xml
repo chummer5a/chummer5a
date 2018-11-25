@@ -1591,10 +1591,16 @@
 				<altpage>70</altpage>
 			</mod>
 			<mod translated="True">
-				<id>80effbdd-047d-4b1f-8159-f13f86bba4e6</id>
+				<id>b7be75a4-72ff-49a2-8b7b-0bf36a9f40d8</id>
 				<name>Internal Air Tank (5 Minutes)</name>
 				<translate>Interner Lufttank (5 Minuten)</translate>
 				<altpage>173</altpage>
+			</mod>
+			<mod translated="True">
+				<id>80effbdd-047d-4b1f-8159-f13f86bba4e6</id>
+				<name>Grey Mana Integration</name>
+				<translate>Grey Manaabwehr</translate>
+				<altpage>162</altpage>
 			</mod>
 		</mods>
 	</chummer>
@@ -3207,6 +3213,18 @@
 				<translate>Hamburg (Deutsch-exklusiv)</translate>
 				<altcode>HAMG</altcode>
 			</book>
+			<book>
+				<id>612af603-65e6-442c-91b8-8b8cc0c77e4a</id>
+				<name>Better Than Bad</name>
+				<translate>Schattenhelden</translate>
+				<altcode>BTB</altcode>
+			</book>
+			<book>
+				<id>be47e4b5-cc4f-427a-b4cd-cb5c1c8821ce</id>
+				<name>Aetherology</name>
+				<translate>Ätherologie</translate>
+				<altcode>AET</altcode>
+			</book>
 		</books>
 	</chummer>
 	<chummer file="critterpowers.xml">
@@ -4548,6 +4566,36 @@
 				<name>Resonance Hosting</name>
 				<translate>Resonanzhost</translate>
 				<altpage>174</altpage>
+			</power>
+			<power translated="True">
+				<id>65dd2042-b786-471b-ac26-d6cc8cd16a58</id>
+				<name>Shift</name>
+				<translate>Gestaltwandel</translate>
+				<altpage>37</altpage>
+			</power>
+			<power translated="True">
+				<id>3243aece-a356-4e46-bd4c-af04cfc2a306</id>
+				<name>Skill</name>
+				<translate>Fertigkeit</translate>
+				<altpage>37</altpage>
+			</power>
+			<power translated="True">
+				<id>5aa4a4c2-d27f-416a-976b-330bc878539c</id>
+				<name>Transfer Energy (Essence)</name>
+				<translate>Energietransfer (Essenz)</translate>
+				<altpage>37</altpage>
+			</power>
+			<power translated="True">
+				<id>1ad48bb5-2f28-4076-8f4b-185c02f85456</id>
+				<name>Vanishing</name>
+				<translate>Verschwinden</translate>
+				<altpage>37</altpage>
+			</power>
+			<power translated="True">
+				<id>a3651bf9-dda2-4bf0-8c95-8c44bd8ae83b</id>
+				<name>Korrigan Pact</name>
+				<translate>Korriganen-Pakt</translate>
+				<altpage>37</altpage>
 			</power>
 		</powers>
 	</chummer>
@@ -7954,6 +8002,48 @@
 				<translate>Schilleruhu</translate>
 				<altpage>99</altpage>
 			</metatype>
+			<metatype translated="True">
+				<id>a29dbdbd-d20f-4b8e-b273-7913f32e0b04</id>
+				<name>Gum Toad (Demon)</name>
+				<translate>Harzkröte (Dämon)</translate>
+				<altpage>34</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>eece2f07-efa7-411e-a7be-adae734f19f9</id>
+				<name>Crawler (Demon)</name>
+				<translate>Krabbler (Dämon)</translate>
+				<altpage>34</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>250adb08-63e6-4b64-b593-57723730bb11</id>
+				<name>Ghasts (Demon)</name>
+				<translate>Ghasts (Dämon)</translate>
+				<altpage>35</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>e77798be-e755-441d-a143-5e49b3757576</id>
+				<name>Vrygoths</name>
+				<translate>Vrygoth</translate>
+				<altpage>35</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>fb6a313e-7bcd-4b27-8283-0ece49970dd4</id>
+				<name>Gremlin</name>
+				<translate>Gremlin</translate>
+				<altpage>36</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>7d8bc3b9-e2be-4139-9399-a3904e12528d</id>
+				<name>Anansi</name>
+				<translate>Anansi</translate>
+				<altpage>36</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>74a4b48f-01cf-4ff8-b95f-83a8b4b25734</id>
+				<name>Tsuchigumo Warrior</name>
+				<translate>Tsuchigumo-Krieger</translate>
+				<altpage>37</altpage>
+			</metatype>
 		</metatypes>
 	</chummer>
 	<chummer file="cyberware.xml">
@@ -8059,6 +8149,18 @@
 				<name>Omegaware (Adapsin)</name>
 				<translate>Omegaware (Adapsin)</translate>
 				<altpage>75</altpage>
+			</grade>
+			<grade translated="True">
+				<id>e77b7a1f-1c7b-4494-b9b5-6dcb5b61010b</id>
+				<name>Greyware</name>
+				<translate>GreyWare</translate>
+				<altpage>164</altpage>
+			</grade>
+			<grade translated="True">
+				<id>c4d67932-0de4-4206-91b6-f3fd504c382f</id>
+				<name>Greyware (Adapsin)</name>
+				<translate>GreyWare (Adapsin)</translate>
+				<altpage>164</altpage>
 			</grade>
 		</grades>
 		<categories>
@@ -10476,6 +10578,7 @@
 			<category translate="Booster Chips">Booster Chips</category>
 			<category translate="Attribute des angepassten Cyberdecks">Custom Cyberdeck Attributes</category>
 			<category translate="Maßgeschneiderte Drogen">Custom Drug</category>
+			<category translate="Erscheinungsmodifikatoren">Appearance Modification</category>
 		</categories>
 		<gears>
 			<gear translated="True">
@@ -18414,6 +18517,18 @@
 				<translate>Globales Gitter</translate>
 				<altpage>231</altpage>
 			</gear>
+			<gear>
+				<id>18e853c9-0fe8-4414-9b91-eedd0905359b</id>
+				<name>Grey Mana Tattoos</name>
+				<translate>Grey Mana-Tattoos</translate>
+				<altpage>162</altpage>
+			</gear>
+			<gear>
+				<id>ae502bc1-1053-46ed-a5c1-4d37aedf3a3a</id>
+				<name>Blight</name>
+				<translate>Manafäule</translate>
+				<altpage>163</altpage>
+			</gear>
 		</gears>
 	</chummer>
 	<chummer file="lifestyles.xml">
@@ -21735,6 +21850,24 @@
 					</choice>
 				</choices>
 			</mentor>
+			<mentor>
+				<id>7397da6e-29b8-400f-9708-c99bd04d5c07</id>
+				<name>Guanyin</name>
+				<translate>Guanyin</translate>
+				<altadvantage>Allgemein: +2 Würfel für Prben auf Erste Hilfe</altadvantage>
+				<altdisadvantage>Anhänger von Guanyin sind höchst motiviert, andere Wesen zu retten. Wenn der Charakter das Angebot für einen Run bekommt, bei dem sich keine Gelegenheit für Hooding bietet, muss er eine erfolgreiche Probe auf Willenskraft + Charisma (3) ablegen, damit er annehmen kann. Misslingt die Probe, muss er den Job ablehnen.</altdisadvantage>
+				<altpage>145</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice for Healing spells</name>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
+					</choice>
+					<choice>
+						<name>Adept: Free Empathic Healing power</name>
+						<translate>Adept: Kraft Empathische Heilung gratis</translate>
+					</choice>
+				</choices>
+			</mentor>
 		</mentors>
 	</chummer>
 	<chummer file="metamagic.xml">
@@ -24435,6 +24568,18 @@
 				<name>Living Focus</name>
 				<translate>Living Focus</translate>
 				<altpage>24</altpage>
+			</power>
+			<power>
+				<id>1ac890d7-5152-40a8-80e8-73d342571a33</id>
+				<name>Mystic Aptitude</name>
+				<translate>Mystische Fähigkeit</translate>
+				<altpage>166</altpage>
+			</power>
+			<power>
+				<id>56b4fe33-eb48-4365-ae2e-ebdffa05b1f6</id>
+				<name>State of Purity</name>
+				<translate>Innere Reinheit</translate>
+				<altpage>165</altpage>
 			</power>
 		</powers>
 		<enhancements>
@@ -29904,6 +30049,84 @@
 				<name>Sprite Affinity</name>
 				<translate>Freundliche Sprites</translate>
 				<altpage>97</altpage>
+			</quality>
+			<quality translated="True">
+				<id>c0d411e6-ca88-4011-b56c-9f594882beb4</id>
+				<name>Dead SIN</name>
+				<translate>Tote SIN</translate>
+				<altpage>168</altpage>
+			</quality>
+			<quality translated="True">
+				<id>96f148e1-fb72-416a-8235-89a3eeafe534</id>
+				<name>Hard Luck</name>
+				<translate>Pech im Leben</translate>
+				<altpage>168</altpage>
+			</quality>
+			<quality>
+				<id>5c49d5e2-ca52-406e-a532-8d4d148ea825</id>
+				<name>Hair Trigger</name>
+				<translate>Hair Trigger</translate>
+				<altpage>166</altpage>
+			</quality>
+			<quality translated="True">
+				<id>31e3097d-68c4-4140-969d-91bd43612afd</id>
+				<name>Hi-Rez</name>
+				<translate>Hochauflösend</translate>
+				<altpage>166</altpage>
+			</quality>
+			<quality translated="True">
+				<id>ef40cac3-d81e-4c7f-b14d-46abfd2f9dff</id>
+				<name>Instinctive Hack</name>
+				<translate>Instinktives Hacking</translate>
+				<altpage>167</altpage>
+			</quality>
+			<quality translated="True">
+				<id>1118c31d-521b-46c3-ba82-04123c1303be</id>
+				<name>Rabble Rouser</name>
+				<translate>Aufrührer</translate>
+				<altpage>166</altpage>
+			</quality>
+			<quality translated="True">
+				<id>eb3b2334-29f3-4bd5-a9cc-817672b28d6e</id>
+				<name>Resonant Discordance</name>
+				<translate>Resonante Diskordanz</translate>
+				<altpage>168</altpage>
+			</quality>
+			<quality translated="True">
+				<id>f6387f9d-c177-4c9b-a141-af2d17ea6317</id>
+				<name>Prototype Materials</name>
+				<translate>Prototypenteile</translate>
+				<altpage>167</altpage>
+			</quality>
+			<quality translated="True">
+				<id>83e5f9a2-e76b-4a11-81db-4b0466b727ce</id>
+				<name>Shoot First, Don't Ask</name>
+				<translate>Erst schießen, dann nicht fragen</translate>
+				<altpage>166</altpage>
+			</quality>
+			<quality translated="True">
+				<id>0dd183a3-85ce-4029-9de5-9b6aa1eb539c</id>
+				<name>Special Modifications</name>
+				<translate>Spezialmodifikationen</translate>
+				<altpage>167</altpage>
+			</quality>
+			<quality translated="True">
+				<id>430af564-0be1-42f0-a0d0-318c093ea3d8</id>
+				<name>Elemental Attunement</name>
+				<translate>Elementare Einstimmung</translate>
+				<altpage>167</altpage>
+			</quality>
+			<quality translated="True">
+				<id>39803e82-d85a-4da1-9637-fdd3249f2f21</id>
+				<name>Quadriplegic</name>
+				<translate>Schwere Querschnittslähmung</translate>
+				<altpage>145</altpage>
+			</quality>
+			<quality translated="True">
+				<id>a766e0d9-954e-4738-88f2-bde4f4e89880</id>
+				<name>Social Chameleon</name>
+				<translate>Gern gesehen</translate>
+				<altpage>144</altpage>
 			</quality>
 		</qualities>
 	</chummer>
@@ -35980,6 +36203,18 @@
 				<name>Pulse</name>
 				<translate>Pulse</translate>
 				<altpage>21</altpage>
+			</spell>
+			<spell>
+				<id>89046778-a77a-4f21-a448-a750af0898eb</id>
+				<name>Astral Disruption</name>
+				<translate>Astrale Störung</translate>
+				<altpage>164</altpage>
+			</spell>
+			<spell>
+				<id>4c595074-add0-40da-a707-598d2b94ae4f</id>
+				<name>Mass Astral Disruption</name>
+				<translate>Astrales Störfeld</translate>
+				<altpage>164</altpage>
 			</spell>
 		</spells>
 	</chummer>
