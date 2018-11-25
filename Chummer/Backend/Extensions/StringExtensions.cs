@@ -167,7 +167,7 @@ namespace Chummer
                 return string.Empty;
             if (strInput.Length < intToDeleteLength)
                 return strInput;
-            
+
             int intIndexToBeginRemove = strInput.IndexOf(strSubstringToDelete, intStartIndex, eComparison);
             return intIndexToBeginRemove == -1 ? strInput : strInput.Remove(intIndexToBeginRemove, intToDeleteLength);
         }
@@ -710,7 +710,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Tests whether a given string is a Guid. Returns false if not. 
+        /// Tests whether a given string is a Guid. Returns false if not.
         /// </summary>
         /// <param name="strGuid">String to test.</param>
         /// <returns>True if string is a Guid, false if not.</returns>
@@ -724,51 +724,50 @@ namespace Chummer
         /// Word wraps the given text to fit within the specified width.
         /// </summary>
         /// <param name="strText">Text to be word wrapped</param>
-        /// <param name="intWidth">Width, in characters, to which the text
-        /// should be word wrapped</param>
+        /// <param name="intWidth">Width, in characters, to which the text should be word wrapped</param>
         /// <returns>The modified text</returns>
         public static string WordWrap(this string strText, int intWidth)
         {
             // Lucidity checks
-            if (intWidth < 1)
-                return strText;
             if (string.IsNullOrEmpty(strText))
                 return strText;
+            if (intWidth >= strText.Length)
+                return strText;
 
-            int next;
-            StringBuilder sb = new StringBuilder(strText.Length);
+            int intNextPosition;
+            StringBuilder objReturn = new StringBuilder(strText.Length);
             string strNewLine = Environment.NewLine;
             // Parse each line of text
-            for (int pos = 0; pos < strText.Length; pos = next)
+            for (int intCurrentPosition = 0; intCurrentPosition < strText.Length; intCurrentPosition = intNextPosition)
             {
                 // Find end of line
-                int eol = strText.IndexOf(strNewLine, pos, StringComparison.Ordinal);
-                if (eol == -1)
-                    next = eol = strText.Length;
+                int intEndOfLinePosition = strText.IndexOf(strNewLine, intCurrentPosition, StringComparison.Ordinal);
+                if (intEndOfLinePosition == -1)
+                    intNextPosition = intEndOfLinePosition = strText.Length;
                 else
-                    next = eol + strNewLine.Length;
+                    intNextPosition = intEndOfLinePosition + strNewLine.Length;
 
                 // Copy this line of text, breaking into smaller lines as needed
-                if (eol > pos)
+                if (intEndOfLinePosition > intCurrentPosition)
                 {
                     do
                     {
-                        int len = eol - pos;
-                        if (len > intWidth)
-                            len = strText.BreakLine(pos, intWidth);
-                        sb.Append(strText, pos, len);
-                        sb.Append(strNewLine);
+                        int intLengthToRead = intEndOfLinePosition - intCurrentPosition;
+                        if (intLengthToRead > intWidth)
+                            intLengthToRead = strText.BreakLine(intCurrentPosition, intWidth);
+                        objReturn.Append(strText, intCurrentPosition, intLengthToRead);
+                        objReturn.Append(strNewLine);
 
                         // Trim whitespace following break
-                        pos += len;
-                        while (pos < eol && char.IsWhiteSpace(strText[pos]))
-                            pos += 1;
+                        intCurrentPosition += intLengthToRead;
+                        while (intCurrentPosition < intEndOfLinePosition && char.IsWhiteSpace(strText[intCurrentPosition]))
+                            intCurrentPosition += 1;
                     }
-                    while (eol > pos);
+                    while (intEndOfLinePosition > intCurrentPosition);
                 }
-                else sb.Append(strNewLine); // Empty line
+                else objReturn.Append(strNewLine); // Empty line
             }
-            return sb.ToString();
+            return objReturn.ToString();
         }
 
         /// <summary>
@@ -823,6 +822,24 @@ namespace Chummer
             objReturn.Append(strSearch);
             objReturn.Append("\")");
             return objReturn.ToString();
+        }
+
+        /// <summary>
+        /// Escapes characters in a string that would cause confusion if the string were placed as HTML content
+        /// </summary>
+        /// <param name="strToClean">String to clean.</param>
+        /// <returns>Copy of input string with the characters "&", the greater than sign, and the lesser than sign escaped for HTML.</returns>
+        public static string CleanForHTML(this string strToClean)
+        {
+            return strToClean
+                .CheapReplace("<br />", () => "\n")
+                .CheapReplace("&", () => "&amp;")
+                .CheapReplace("&amp;amp;", () => "&amp;")
+                .CheapReplace("<", () => "&lt;")
+                .CheapReplace(">", () => "&gt;")
+                .CheapReplace("\n\r", () => "<br />")
+                .CheapReplace("\n", () => "<br />")
+                .CheapReplace("\r", () => "<br />");
         }
     }
 }

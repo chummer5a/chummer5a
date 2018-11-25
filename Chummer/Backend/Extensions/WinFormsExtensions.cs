@@ -39,6 +39,22 @@ namespace Chummer
             else
                 funcToRun.Invoke();
         }
+
+        /// <summary>
+        /// Bind a control's property to a property via OnPropertyChanged
+        /// </summary>
+        /// <param name="objControl">Control to bind</param>
+        /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
+        /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
+        /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
+        public static void DoDatabinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
+        {
+            if (!objControl.IsHandleCreated)
+            {
+                objControl.CreateControl();
+            }
+            objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false, DataSourceUpdateMode.OnPropertyChanged);
+        }
         #endregion
 
         #region ComboBox Extensions
@@ -65,21 +81,16 @@ namespace Chummer
         /// <param name="blnDeep">Whether to look at grandchildren and greater descendents of this node.</param>
         public static TreeNode FindNode(this TreeNode objNode, string strGuid, bool blnDeep = true)
         {
-            if (objNode != null && !string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
+            if (objNode == null || string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid()) return null;
+            foreach (TreeNode objChild in objNode.Nodes)
             {
-                TreeNode objFound;
-                foreach (TreeNode objChild in objNode.Nodes)
-                {
-                    if (objChild.Tag.ToString() == strGuid)
-                        return objChild;
+                if (objChild.Tag is IHasInternalId idNode && idNode.InternalId == strGuid || objChild.Tag is string s && s == strGuid)
+                    return objChild;
 
-                    if (blnDeep)
-                    {
-                        objFound = objChild.FindNode(strGuid);
-                        if (objFound != null)
-                            return objFound;
-                    }
-                }
+                if (!blnDeep) continue;
+                var objFound = objChild.FindNode(strGuid);
+                if (objFound != null)
+                    return objFound;
             }
             return null;
         }
@@ -94,7 +105,6 @@ namespace Chummer
         {
             if (objNode != null && objTag != null)
             {
-                TreeNode objFound;
                 foreach (TreeNode objChild in objNode.Nodes)
                 {
                     if (objChild.Tag == objTag)
@@ -102,7 +112,7 @@ namespace Chummer
 
                     if (blnDeep)
                     {
-                        objFound = objChild.FindNodeByTag(objTag);
+                        TreeNode objFound = objChild.FindNodeByTag(objTag);
                         if (objFound != null)
                             return objFound;
                     }
@@ -145,7 +155,7 @@ namespace Chummer
             if (lstTreeViewNodes == null)
                 return;
             if (string.IsNullOrEmpty(strSelectedNodeTag))
-                strSelectedNodeTag = treView.SelectedNode?.Tag.ToString();
+                strSelectedNodeTag = (treView.SelectedNode?.Tag as IHasInternalId)?.InternalId;
             for (int i = 0; i < lstTreeViewNodes.Count; ++i)
             {
                 TreeNode objLoopNode = lstTreeViewNodes[i];
@@ -220,21 +230,16 @@ namespace Chummer
         /// <param name="blnDeep">Whether to look at grandchildren and greater descendents of this node.</param>
         public static TreeNode FindNode(this TreeView treTree, string strGuid, bool blnDeep = true)
         {
-            if (treTree != null && !string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
+            if (treTree == null || string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid()) return null;
+            foreach (TreeNode objNode in treTree.Nodes)
             {
-                TreeNode objFound;
-                foreach (TreeNode objNode in treTree.Nodes)
-                {
-                    if (objNode.Tag.ToString() == strGuid)
-                        return objNode;
+                if (objNode.Tag is IHasInternalId node && node.InternalId == strGuid || objNode.Tag.ToString() == strGuid)
+                    return objNode;
 
-                    if (blnDeep)
-                    {
-                        objFound = objNode.FindNode(strGuid);
-                        if (objFound != null)
-                            return objFound;
-                    }
-                }
+                if (!blnDeep) continue;
+                var objFound = objNode.FindNode(strGuid);
+                if (objFound != null)
+                    return objFound;
             }
             return null;
         }
@@ -249,7 +254,6 @@ namespace Chummer
         {
             if (treTree != null && objTag != null)
             {
-                TreeNode objFound;
                 foreach (TreeNode objNode in treTree.Nodes)
                 {
                     if (objNode.Tag == objTag)
@@ -257,7 +261,7 @@ namespace Chummer
 
                     if (blnDeep)
                     {
-                        objFound = objNode.FindNodeByTag(objTag);
+                        TreeNode objFound = objNode.FindNodeByTag(objTag);
                         if (objFound != null)
                             return objFound;
                     }

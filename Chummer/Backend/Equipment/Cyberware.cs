@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Cyberware.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Cyberware : IHasChildren<Cyberware>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes
+    public class Cyberware : IHasChildren<Cyberware>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource
     {
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
@@ -80,6 +80,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnPrototypeTranshuman;
         private Cyberware _objParent;
         private bool _blnAddToParentESS;
+        private bool _blnAddToParentCapacity;
         private string _strParentID = string.Empty;
         private string _strHasModularMount = string.Empty;
         private string _strPlugsIntoModularMount = string.Empty;
@@ -281,6 +282,7 @@ namespace Chummer.Backend.Equipment
                     break;
             }
 
+            bool blnDoMovementUpdate = false;
             if (blnDoCyberlimbAGIRefresh || blnDoCyberlimbSTRRefresh)
             {
                 foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
@@ -290,11 +292,20 @@ namespace Chummer.Backend.Equipment
                         objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                     }
                 }
+                blnDoMovementUpdate = _objCharacter.Options.CyberlegMovement && LimbSlot == "leg";
             }
-            if (blnDoRedlinerRefresh)
-                _objCharacter?.RefreshRedliner();
-            if (blnDoEssenceImprovementsRefresh)
-                _objCharacter?.OnPropertyChanged(EssencePropertyName);
+            if (_objCharacter != null)
+            {
+                List<string> lstPropertiesToChange = new List<string>();
+                if (blnDoRedlinerRefresh)
+                    lstPropertiesToChange.Add(nameof(Character.RedlinerBonus));
+                if (blnDoEssenceImprovementsRefresh)
+                    lstPropertiesToChange.Add(EssencePropertyName);
+                if (blnDoMovementUpdate)
+                    lstPropertiesToChange.Add(nameof(Character.GetMovement));
+                if (lstPropertiesToChange.Count > 0)
+                    _objCharacter.OnMultiplePropertyChanged(lstPropertiesToChange.ToArray());
+            }
         }
 
         private void GearChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -306,7 +317,10 @@ namespace Chummer.Backend.Equipment
                     if (ParentVehicle != null || !IsModularCurrentlyEquipped)
                     {
                         foreach (Gear objNewItem in e.NewItems)
+                        {
+                            objNewItem.Parent = this;
                             objNewItem.ChangeEquippedStatus(false);
+                        }
                     }
                     this.RefreshMatrixAttributeArray();
                     break;
@@ -319,7 +333,6 @@ namespace Chummer.Backend.Equipment
 
         /// Create a Cyberware from an XmlNode.
         /// <param name="objXmlCyberware">XmlNode to create the object from.</param>
-        /// <param name="objCharacter">Character object the Cyberware will be added to.</param>
         /// <param name="objGrade">Grade of the selected piece.</param>
         /// <param name="objSource">Source of the piece.</param>
         /// <param name="intRating">Selected Rating of the piece of Cyberware.</param>
@@ -330,7 +343,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="strForced">Force a particular value to be selected by an Improvement prompts.</param>
         /// <param name="objParent">Cyberware to which this new cyberware should be added (needed in creation method for selecting a side).</param>
         /// <param name="objParentVehicle">Vehicle to which this new cyberware will be added (needed in creation method for selecting a side and improvements).</param>
-        public void Create(XmlNode objXmlCyberware, Character objCharacter, Grade objGrade, Improvement.ImprovementSource objSource, int intRating, List<Weapon> lstWeapons, List<Vehicle> lstVehicles, bool blnCreateImprovements = true, bool blnCreateChildren = true, string strForced = "", Cyberware objParent = null, Vehicle objParentVehicle = null)
+        public void Create(XmlNode objXmlCyberware, Grade objGrade, Improvement.ImprovementSource objSource, int intRating, IList<Weapon> lstWeapons, IList<Vehicle> lstVehicles, bool blnCreateImprovements = true, bool blnCreateChildren = true, string strForced = "", Cyberware objParent = null, Vehicle objParentVehicle = null)
         {
             Parent = objParent;
             _strForced = strForced;
@@ -349,6 +362,7 @@ namespace Chummer.Backend.Equipment
             objXmlCyberware.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlCyberware.TryGetStringFieldQuickly("page", ref _strPage);
             _blnAddToParentESS = objXmlCyberware["addtoparentess"] != null;
+            _blnAddToParentCapacity = objXmlCyberware["addtoparentcapacity"] != null;
             _nodBonus = objXmlCyberware["bonus"];
             _nodPairBonus = objXmlCyberware["pairbonus"];
             _nodWirelessBonus = objXmlCyberware["wirelessbonus"];
@@ -399,7 +413,7 @@ namespace Chummer.Backend.Equipment
             {
                 string strSubsystem = string.Empty;
                 XmlNodeList lstSubSystems = objXmlCyberware.SelectNodes("allowsubsystems/category");
-                for (int i = 0; i < lstSubSystems.Count; i++)
+                for (int i = 0; i < lstSubSystems?.Count; i++)
                 {
                     strSubsystem += lstSubSystems[i].InnerText;
                     if (i != lstSubSystems.Count - 1)
@@ -439,7 +453,7 @@ namespace Chummer.Backend.Equipment
                         decMax = 1000000;
                     frmPickNumber.Minimum = decMin;
                     frmPickNumber.Maximum = decMax;
-                    frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
+                    frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language));
                     frmPickNumber.AllowCancel = false;
                     frmPickNumber.ShowDialog();
                     _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
@@ -459,7 +473,7 @@ namespace Chummer.Backend.Equipment
 
                 if (objXmlWeapon != null)
                 {
-                    Weapon objGearWeapon = new Weapon(objCharacter)
+                    Weapon objGearWeapon = new Weapon(_objCharacter)
                     {
                         ParentVehicle = ParentVehicle
                     };
@@ -512,7 +526,7 @@ namespace Chummer.Backend.Equipment
                 {
                     frmSelectSide frmPickSide = new frmSelectSide
                     {
-                        Description = LanguageManager.GetString("Label_SelectSide", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language))
+                        Description = string.Format(LanguageManager.GetString("Label_SelectSide", GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language))
                     };
                     string strForcedSide = string.Empty;
                     if (_strForced == "Right" || _strForced == "Left")
@@ -555,7 +569,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
                         ImprovementManager.ForcedValue = _strForced;
 
-                    if (Bonus != null && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString("D"), Bonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
+                    if (Bonus != null && !ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString("D"), Bonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
                     {
                         _guiID = Guid.Empty;
                         return;
@@ -563,7 +577,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
                         _strExtra = ImprovementManager.SelectedValue;
 
-                    if (WirelessBonus != null && WirelessOn && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString("D"), WirelessBonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
+                    if (WirelessBonus != null && WirelessOn && !ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString("D"), WirelessBonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
                     {
                         _guiID = Guid.Empty;
                         return;
@@ -593,7 +607,7 @@ namespace Chummer.Backend.Equipment
                             // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
                             intCount = intCount > 0 ? 1 : 0;
                         }
-                        if (intCount % 2 == 1 && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString("D") + "Pair", PairBonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
+                        if ((intCount & 1) == 1 && !ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString("D") + "Pair", PairBonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
                         {
                             _guiID = Guid.Empty;
                             return;
@@ -645,7 +659,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
-            
+
             if (blnCreateChildren)
                 CreateChildren(objXmlCyberware, objGrade, lstWeapons, lstVehicles, blnCreateImprovements);
 
@@ -653,7 +667,7 @@ namespace Chummer.Backend.Equipment
                 ChangeModularEquip(false);
         }
 
-        private void CreateChildren(XmlNode objParentNode, Grade objGrade, List<Weapon> lstWeapons, List<Vehicle> objVehicles, bool blnCreateImprovements = true)
+        private void CreateChildren(XmlNode objParentNode, Grade objGrade, IList<Weapon> lstWeapons, IList<Vehicle> objVehicles, bool blnCreateImprovements = true)
         {
             // If we've just added a new base item, see if there are any subsystems that should automatically be added.
             XmlNode xmlSubsystemsNode = objParentNode["subsystems"];
@@ -672,7 +686,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 Cyberware objSubsystem = new Cyberware(_objCharacter);
                                 int intSubSystemRating = Convert.ToInt32(objXmlSubsystemNode["rating"]?.InnerText);
-                                objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, Improvement.ImprovementSource.Cyberware, intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
+                                objSubsystem.Create(objXmlSubsystem, objGrade, Improvement.ImprovementSource.Cyberware, intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
                                     objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
                                 objSubsystem.ParentID = InternalId;
                                 objSubsystem.Cost = "0";
@@ -697,7 +711,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 Cyberware objSubsystem = new Cyberware(_objCharacter);
                                 int intSubSystemRating = Convert.ToInt32(objXmlSubsystemNode["rating"]?.InnerText);
-                                objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, Improvement.ImprovementSource.Bioware, intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
+                                objSubsystem.Create(objXmlSubsystem, objGrade, Improvement.ImprovementSource.Bioware, intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
                                     objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
                                 objSubsystem.ParentID = InternalId;
                                 objSubsystem.Cost = "0";
@@ -711,53 +725,32 @@ namespace Chummer.Backend.Equipment
             }
 
             // Check to see if there are any child elements.
-            XmlNode xmlGearsNode = objParentNode["gears"];
-            if (xmlGearsNode != null)
+            if (objParentNode["gears"] != null)
             {
-                // Create Gear using whatever information we're given.
-                using (XmlNodeList xmlGearList = xmlGearsNode.SelectNodes("usegear"))
-                    if (xmlGearList?.Count > 0)
+                XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
+
+                XmlNodeList objXmlGearList = objParentNode["gears"].SelectNodes("usegear");
+                if (objXmlGearList?.Count > 0)
+                {
+                    IList<Weapon> lstChildWeapons = new List<Weapon>();
+                    foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                     {
-                        XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
-                        foreach (XmlNode objXmlChild in xmlGearList)
+                        Gear objGear = new Gear(_objCharacter);
+                        if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons, blnCreateImprovements))
+                            continue;
+                        foreach (Weapon objWeapon in lstChildWeapons)
                         {
-                            XmlNode xmlNameNode = objXmlChild["name"];
-                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + xmlNameNode?.InnerText + "\" and category = \"" + objXmlChild["category"]?.InnerText + "\"]");
-                            if (objXmlGear != null)
-                            {
-                                XmlAttributeCollection xmlNameAttributes = xmlNameNode?.Attributes;
-                                int intChildRating = 0;
-                                decimal decChildQty = 1;
-                                string strChildForceSource = objXmlChild["source"]?.InnerText ?? string.Empty;
-                                string strChildForcePage = objXmlChild["page"]?.InnerText ?? string.Empty;
-                                string strChildForceValue = xmlNameAttributes?["select"]?.InnerText ?? string.Empty;
-                                if (objXmlChild["rating"] != null)
-                                    intChildRating = Convert.ToInt32(objXmlChild["rating"].InnerText);
-                                if (xmlNameAttributes?["qty"] != null)
-                                    decChildQty = Convert.ToDecimal(xmlNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
-                                // Create the new piece of Gear.
-                                List<Weapon> objChildWeapons = new List<Weapon>();
-
-                                Gear objChild = new Gear(_objCharacter);
-                                objChild.Create(objXmlGear, intChildRating, objChildWeapons, strChildForceValue, blnCreateImprovements);
-                                objChild.Quantity = decChildQty;
-
-                                objChild.Cost = "0";
-                                objChild.ParentID = InternalId;
-                                if (!string.IsNullOrEmpty(strChildForceSource))
-                                    objChild.Source = strChildForceSource;
-                                if (!string.IsNullOrEmpty(strChildForcePage))
-                                    objChild.Page = strChildForcePage;
-                                if (objXmlChild["capacity"] != null)
-                                    objChild.Capacity = '[' + objXmlChild["capacity"].InnerText + ']';
-                                // Create any Weapons that came with this Gear.
-                                foreach (Weapon objWeapon in objChildWeapons)
-                                    lstWeapons.Add(objWeapon);
-
-                                _lstGear.Add(objChild);
-                            }
+                            objWeapon.ParentID = InternalId;
                         }
+
+                        objGear.Parent = this;
+                        objGear.ParentID = InternalId;
+                        Gear.Add(objGear);
+                        lstChildWeapons.AddRange(lstWeapons);
                     }
+
+                    lstWeapons.AddRange(lstChildWeapons);
+                }
             }
         }
 
@@ -841,6 +834,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
             objWriter.WriteElementString("addtoparentess", _blnAddToParentESS.ToString());
+            objWriter.WriteElementString("addtoparentcapacity", _blnAddToParentCapacity.ToString());
 
             objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString());
             objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString());
@@ -859,7 +853,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("modattributearray", _strModAttributeArray);
             objWriter.WriteElementString("canswapattributes", _blnCanSwapAttributes.ToString());
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (string.IsNullOrEmpty(ParentID))
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -1016,6 +1012,16 @@ namespace Chummer.Backend.Equipment
             else
                 _blnAddToParentESS = GetNode()?["addtoparentess"] != null;
 
+            if (objNode["addtoparentcapacity"] != null)
+            {
+                if (bool.TryParse(objNode["addtoparentcapacity"].InnerText, out bool blnTmp))
+                {
+                    _blnAddToParentCapacity = blnTmp;
+                }
+            }
+            else
+                _blnAddToParentCapacity = GetNode()?["addtoparentcapacity"] != null;
+
             bool blnIsActive = false;
             if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
                 this.SetActiveCommlink(_objCharacter, true);
@@ -1057,7 +1063,7 @@ namespace Chummer.Backend.Equipment
                 GetNode()?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
             if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
                 GetNode()?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
-
+            
             if (blnCopy)
             {
                 if (Bonus != null || WirelessBonus != null || PairBonus != null)
@@ -1101,7 +1107,7 @@ namespace Chummer.Backend.Equipment
                             // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
                             intCount = intCount > 0 ? 1 : 0;
                         }
-                        if (intCount % 2 == 1)
+                        if ((intCount & 1) == 1)
                         {
                             ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId + "Pair", PairBonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
                         }
@@ -1133,7 +1139,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint) + strSpaceCharacter + '(' + _objCharacter.AGI.GetDisplayAbbrev(strLanguageToPrint) + strSpaceCharacter + TotalAgility.ToString(objCulture) + ',' + strSpaceCharacter + _objCharacter.STR.GetDisplayAbbrev(strLanguageToPrint) + strSpaceCharacter + TotalStrength.ToString(objCulture) + ',' + strSpaceCharacter + LanguageManager.GetString("String_LimitPhysicalShort", strLanguageToPrint) + strSpaceCharacter + intLimit.ToString(objCulture) + ')');
             }
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
-            
+
             objWriter.WriteElementString("ess", CalculatedESS().ToString(_objCharacter.Options.EssenceFormat, objCulture));
             objWriter.WriteElementString("capacity", Capacity);
             objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
@@ -1288,8 +1294,10 @@ namespace Chummer.Backend.Equipment
                     if (_objParent?.Category == "Cyberlimb" && _objParent.Parent?.InheritAttributes != false && _objParent.ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
                         !string.IsNullOrWhiteSpace(_objParent.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
                     {
+                        bool blnDoMovementUpdate = false;
                         if (value == "Enhanced Agility" || value == "Customized Agility" || strOldValue == "Enhanced Agility" || strOldValue == "Customized Agility")
                         {
+                            blnDoMovementUpdate = true;
                             foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                             {
                                 if (objCharacterAttrib.Abbrev == "AGI")
@@ -1300,6 +1308,7 @@ namespace Chummer.Backend.Equipment
                         }
                         if (value == "Enhanced Strength" || value == "Customized Strength" || strOldValue == "Enhanced Strength" || strOldValue == "Customized Strength")
                         {
+                            blnDoMovementUpdate = true;
                             foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                             {
                                 if (objCharacterAttrib.Abbrev == "STR")
@@ -1308,6 +1317,9 @@ namespace Chummer.Backend.Equipment
                                 }
                             }
                         }
+
+                        if (blnDoMovementUpdate && _objCharacter.Options.CyberlegMovement && LimbSlot == "leg")
+                            _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
                     }
                 }
             }
@@ -1329,6 +1341,7 @@ namespace Chummer.Backend.Equipment
         }
 
         public static Guid EssenceHoleGUID { get; } = new Guid("b57eadaa-7c3b-4b80-8d79-cbbd922c1196");
+        public static Guid EssenceAntiHoleGUID { get; } = new Guid("961eac53-0c43-4b19-8741-2872177a3a4c");
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
@@ -1337,9 +1350,9 @@ namespace Chummer.Backend.Equipment
         {
             string strReturn = DisplayNameShort(strLanguage);
             string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
-            if (Rating > 0 && SourceID != EssenceHoleGUID)
+            if (Rating > 0 && SourceID != EssenceHoleGUID && SourceID != EssenceAntiHoleGUID)
             {
-                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", strLanguage) + strSpaceCharacter + Rating.ToString() + ')';
+                strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", strLanguage) + strSpaceCharacter + Rating.ToString(GlobalOptions.CultureInfo) + ')';
             }
 
             if (!string.IsNullOrEmpty(Extra))
@@ -1394,6 +1407,9 @@ namespace Chummer.Backend.Equipment
                                 objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                             }
                         }
+
+                        if (_objCharacter.Options.CyberlegMovement && LimbSlot == "leg")
+                            _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
                     }
                 }
             }
@@ -1421,6 +1437,9 @@ namespace Chummer.Backend.Equipment
                                 objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                             }
                         }
+
+                        if (_objCharacter.Options.CyberlegMovement && (value == "leg" || strOldValue == "leg"))
+                            _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
                     }
                 }
             }
@@ -1456,6 +1475,9 @@ namespace Chummer.Backend.Equipment
                                 objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                             }
                         }
+
+                        if (_objCharacter.Options.CyberlegMovement && LimbSlot == "leg")
+                            _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
                     }
                 }
             }
@@ -1566,6 +1588,29 @@ namespace Chummer.Backend.Equipment
             return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
 
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == null)
+                {
+                    string strSource = Source;
+                    string strPage = Page(GlobalOptions.Language);
+                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                    {
+                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                    }
+                }
+
+                return _objCachedSourceDetail;
+            }
+        }
+
         /// <summary>
         /// ID of the object that added this cyberware (if any).
         /// </summary>
@@ -1666,7 +1711,7 @@ namespace Chummer.Backend.Equipment
                         // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
                         intCount = intCount > 0 ? 1 : 0;
                     }
-                    if (intCount % 2 == 1)
+                    if ((intCount & 1) == 1)
                     {
                         ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId + "Pair", PairBonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
                     }
@@ -1701,7 +1746,7 @@ namespace Chummer.Backend.Equipment
                     {
                         ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair");
                         // Go down the list and create pair bonuses for every second item
-                        if (intCount > 0 && intCount % 2 == 0)
+                        if (intCount > 0 && (intCount & 1) == 0)
                         {
                             ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                         }
@@ -1715,6 +1760,22 @@ namespace Chummer.Backend.Equipment
 
             foreach (Cyberware objChild in Children)
                 objChild.ChangeModularEquip(blnEquip);
+        }
+
+        public bool CanRemoveThroughImprovements
+        {
+            get
+            {
+                Cyberware objParent = this;
+                bool blnNoParentIsModular = string.IsNullOrEmpty(objParent.PlugsIntoModularMount);
+                while (objParent.Parent != null && blnNoParentIsModular)
+                {
+                    objParent = objParent.Parent;
+                    blnNoParentIsModular = string.IsNullOrEmpty(objParent.PlugsIntoModularMount);
+                }
+
+                return blnNoParentIsModular;
+            }
         }
 
         /// <summary>
@@ -1738,6 +1799,7 @@ namespace Chummer.Backend.Equipment
                 if (_intRating != intNewValue)
                 {
                     _intRating = intNewValue;
+                    bool blnDoMovementUpdate = false;
                     if (_objParent?.Category == "Cyberlimb" && _objParent.Parent?.InheritAttributes != false && _objParent.ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
                         !string.IsNullOrWhiteSpace(_objParent.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
                     {
@@ -1750,8 +1812,10 @@ namespace Chummer.Backend.Equipment
                                     objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                                 }
                             }
+
+                            blnDoMovementUpdate = true;
                         }
-                        if (Name == "Enhanced Strength" || Name == "Customized Strength")
+                        else if (Name == "Enhanced Strength" || Name == "Customized Strength")
                         {
                             foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                             {
@@ -1760,10 +1824,28 @@ namespace Chummer.Backend.Equipment
                                     objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                                 }
                             }
+
+                            blnDoMovementUpdate = true;
                         }
                     }
-                    if (ESS.Contains("Rating") && (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+
+                    blnDoMovementUpdate = blnDoMovementUpdate && _objCharacter.Options.CyberlegMovement && LimbSlot == "leg";
+                    bool blnDoEssenceUpdate = ESS.Contains("Rating") && (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null;
+                    if (blnDoMovementUpdate && blnDoEssenceUpdate)
+                        _objCharacter.OnMultiplePropertyChanged(nameof(Character.GetMovement), EssencePropertyName);
+                    else if (blnDoMovementUpdate)
+                        _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
+                    else if (blnDoEssenceUpdate)
                         _objCharacter.OnPropertyChanged(EssencePropertyName);
+
+                    if (Gear.Count > 0)
+                    {
+                        foreach (Gear objChild in Gear.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
+                        {
+                            // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                            objChild.Rating = objChild.Rating;
+                        }
+                    }
                 }
             }
         }
@@ -1857,7 +1939,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (_objGrade != value)
                 {
-                    bool blnGradeEssenceChanged = _objGrade.Essence == value.Essence;
+                    bool blnGradeEssenceChanged = _objGrade.Essence != value.Essence;
                     _objGrade = value;
                     if (blnGradeEssenceChanged && (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
                         _objCharacter.OnPropertyChanged(EssencePropertyName);
@@ -2017,6 +2099,24 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Whether or not the Cyberware's ESS cost increases that of its parent when added as a subsystem (usually no).
+        /// </summary>
+        public bool AddToParentCapacity
+        {
+            get => _blnAddToParentCapacity;
+            set
+            {
+                if (_blnAddToParentCapacity != value)
+                {
+                    bool blnOldValue = _blnAddToParentCapacity;
+                    _blnAddToParentCapacity = value;
+                    if ((Parent == null || AddToParentCapacity || blnOldValue) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                        _objCharacter.OnPropertyChanged(Capacity);
+                }
+            }
+        }
+
+        /// <summary>
         /// Parent Cyberware.
         /// </summary>
         public Cyberware Parent
@@ -2113,7 +2213,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (PrototypeTranshuman)
                     return nameof(Character.PrototypeTranshumanEssenceUsed);
-                if (SourceID.Equals(EssenceHoleGUID))
+                if (SourceID.Equals(EssenceHoleGUID) || SourceID.Equals(EssenceAntiHoleGUID))
                     return nameof(Character.EssenceHole);
                 if (SourceType == Improvement.ImprovementSource.Bioware)
                     return nameof(Character.BiowareEssence);
@@ -2200,6 +2300,8 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
+                if (blnModifyParentAvail)
+                    intAvail = 0;
                 StringBuilder objAvail = new StringBuilder(strAvail.TrimStart('+'));
                 objAvail.CheapReplace(strAvail, "MinRating", () => MinRating.ToString());
                 objAvail.CheapReplace(strAvail, "Rating", () => Rating.ToString());
@@ -2222,7 +2324,8 @@ namespace Chummer.Backend.Equipment
                 {
                     if (objChild.ParentID == InternalId ||
                         !objChild.IsModularCurrentlyEquipped &&
-                         objChild.PlugsIntoModularMount != string.Empty) continue;
+                         !string.IsNullOrEmpty(objChild.PlugsIntoModularMount))
+                        continue;
                     AvailabilityValue objLoopAvailTuple = objChild.TotalAvailTuple();
                     if (objLoopAvailTuple.AddToParent)
                         intAvail += objLoopAvailTuple.Value;
@@ -2298,7 +2401,7 @@ namespace Chummer.Backend.Equipment
 
                     if (blnSquareBrackets && strFirstHalf.Length > 2)
                         strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
-                    
+
                     try
                     {
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
@@ -2316,6 +2419,26 @@ namespace Chummer.Backend.Equipment
                         strReturn = '[' + strCapacity + ']';
 
                     strSecondHalf = strSecondHalf.Trim('[', ']');
+                    if (Children.Any(x => x.AddToParentCapacity))
+                    {
+                        // Run through its Children and deduct the Capacity costs.
+                        foreach (Cyberware objChildCyberware in Children.Where(objChild => objChild.AddToParentCapacity))
+                        {
+                            if (objChildCyberware.ParentID == InternalId)
+                            {
+                                continue;
+                            }
+                            string strLoopCapacity = objChildCyberware.CalculatedCapacity;
+                            int intLoopPos = strLoopCapacity.IndexOf("/[", StringComparison.Ordinal);
+                            if (intLoopPos != -1)
+                                strLoopCapacity = strLoopCapacity.Substring(intLoopPos + 2, strLoopCapacity.LastIndexOf(']') - intLoopPos - 2);
+                            else if (strLoopCapacity.StartsWith('['))
+                                strLoopCapacity = strLoopCapacity.Substring(1, strLoopCapacity.Length - 2);
+                            if (strLoopCapacity == "*")
+                                strLoopCapacity = "0";
+                            strSecondHalf += "+(" + strLoopCapacity + ')';
+                        }
+                    }
                     try
                     {
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
@@ -2332,14 +2455,37 @@ namespace Chummer.Backend.Equipment
 
                     strReturn += "/" + strSecondHalf;
                 }
-                else if (strCapacity.Contains("Rating"))
+                else if (strCapacity.Contains("Rating") || (strCapacity.StartsWith('[') && Children.Any(x => x.AddToParentCapacity)))
                 {
                     // If the Capaicty is determined by the Rating, evaluate the expression.
                     // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
                     bool blnSquareBrackets = strCapacity.StartsWith('[');
                     if (blnSquareBrackets)
+                    {
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                    
+                        if (Children.Any(x => x.AddToParentCapacity))
+                        {
+                            // Run through its Children and deduct the Capacity costs.
+                            foreach (Cyberware objChildCyberware in Children.Where(objChild => objChild.AddToParentCapacity))
+                            {
+                                if (objChildCyberware.ParentID == InternalId)
+                                {
+                                    continue;
+                                }
+
+                                string strLoopCapacity = objChildCyberware.CalculatedCapacity;
+                                int intLoopPos = strLoopCapacity.IndexOf("/[", StringComparison.Ordinal);
+                                if (intLoopPos != -1)
+                                    strLoopCapacity = strLoopCapacity.Substring(intLoopPos + 2, strLoopCapacity.LastIndexOf(']') - intLoopPos - 2);
+                                else if (strLoopCapacity.StartsWith('['))
+                                    strLoopCapacity = strLoopCapacity.Substring(1, strLoopCapacity.Length - 2);
+                                if (strLoopCapacity == "*")
+                                    strLoopCapacity = "0";
+                                strCapacity += "+(" + strLoopCapacity + ')';
+                            }
+                        }
+                    }
+
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
                     strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strCapacity;
                     if (blnSquareBrackets)
@@ -2352,7 +2498,7 @@ namespace Chummer.Backend.Equipment
                     // Just a straight Capacity, so return the value.
                     return strCapacity;
                 }
-                
+
                 return strReturn;
             }
         }
@@ -2364,7 +2510,7 @@ namespace Chummer.Backend.Equipment
         {
             if (PrototypeTranshuman && blnReturnPrototype)
                 return 0;
-            if (SourceID == EssenceHoleGUID) //Essence hole
+            if (SourceID == EssenceHoleGUID || SourceID == EssenceAntiHoleGUID) // Essence hole or antihole
             {
                 return Convert.ToDecimal(Rating, GlobalOptions.InvariantCultureInfo) / 100m;
             }
@@ -2401,7 +2547,7 @@ namespace Chummer.Backend.Equipment
                 decimal decDiscount = Convert.ToDecimal(ESSDiscount, GlobalOptions.InvariantCultureInfo) * 0.01m;
                 decTotalESSMultiplier *= 1.0m - decDiscount;
             }
-            
+
 
             // Retrieve the Bioware or Cyberware ESS Cost Multiplier. Bioware Modifiers do not apply to Genetech.
             if (ForceGrade == "None")
@@ -2645,7 +2791,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 decimal decReturn = TotalCostWithoutModifiers;
-                
+
                 if (_blnSuite)
                     decReturn *= 0.9m;
 
@@ -2713,7 +2859,7 @@ namespace Chummer.Backend.Equipment
 
                 if (DiscountCost)
                     decReturn *= 0.9m;
-                
+
                 if (_blnSuite)
                     decReturn *= 0.9m;
 
@@ -3290,7 +3436,7 @@ namespace Chummer.Backend.Equipment
                 {
                     ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair");
                     // Go down the list and create pair bonuses for every second item
-                    if (intCount > 0 && intCount % 2 == 0)
+                    if (intCount > 0 && (intCount & 1) == 0)
                     {
                         ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                     }
@@ -3336,7 +3482,7 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = SourceID == EssenceHoleGUID ? EssenceHoleGUID.ToString("D") : InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsCyberware,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -3379,7 +3525,506 @@ namespace Chummer.Backend.Equipment
                 return SystemColors.WindowText;
             }
         }
+
+        public void SetupChildrenCyberwareCollectionChanged(bool blnAdd, TreeView treCyberware, ContextMenuStrip cmsCyberware = null, ContextMenuStrip cmsCyberwareGear = null)
+        {
+            if (blnAdd)
+            {
+                Children.AddTaggedCollectionChanged(treCyberware, (x, y) => this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, null, y));
+                Gear.AddTaggedCollectionChanged(treCyberware, (x, y) => this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, () => Children.Count, y));
+
+                foreach (Cyberware objChild in Children)
+                    objChild.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware, cmsCyberwareGear);
+                foreach (Gear objGear in Gear)
+                    objGear.SetupChildrenGearsCollectionChanged(true, treCyberware, cmsCyberwareGear);
+            }
+            else
+            {
+                Children.RemoveTaggedCollectionChanged(treCyberware);
+                Gear.RemoveTaggedCollectionChanged(treCyberware);
+                foreach (Cyberware objChild in Children)
+                    objChild.SetupChildrenCyberwareCollectionChanged(false, treCyberware);
+                foreach (Gear objGear in Gear)
+                    objGear.SetupChildrenGearsCollectionChanged(false, treCyberware);
+            }
+        }
+        #endregion
+
+        #region Hero Lab Importing
+        public bool ImportHeroLabCyberware(XmlNode xmlCyberwareImportNode, XmlNode xmlParentCyberwareNode, IList<Weapon> lstWeapons, IList<Vehicle> lstVehicles, Grade objSelectedGrade = null)
+        {
+            if (xmlCyberwareImportNode == null)
+                return false;
+            bool blnCyberware = true;
+            string strGradeName = objSelectedGrade?.Name ?? "Standard";
+            string strOriginalName = xmlCyberwareImportNode.Attributes?["name"]?.InnerText ?? string.Empty;
+            if (!string.IsNullOrEmpty(strOriginalName))
+            {
+                IList<Grade> objCyberwareGradeList = _objCharacter.GetGradeList(Improvement.ImprovementSource.Cyberware);
+                IList<Grade> objBiowareGradeList = _objCharacter.GetGradeList(Improvement.ImprovementSource.Bioware);
+                if (objSelectedGrade == null)
+                {
+                    foreach (Grade objCyberwareGrade in objCyberwareGradeList)
+                    {
+                        if (strOriginalName.EndsWith(" (" + objCyberwareGrade.Name + ')'))
+                        {
+                            strGradeName = objCyberwareGrade.Name;
+                            strOriginalName = strOriginalName.TrimEndOnce(" (" + objCyberwareGrade.Name + ')');
+                            goto EndGradeCheck;
+                        }
+                    }
+                    foreach (Grade objCyberwareGrade in objBiowareGradeList)
+                    {
+                        if (strOriginalName.EndsWith(" (" + objCyberwareGrade.Name + ')'))
+                        {
+                            strGradeName = objCyberwareGrade.Name;
+                            strOriginalName = strOriginalName.TrimEndOnce(" (" + objCyberwareGrade.Name + ')');
+                            goto EndGradeCheck;
+                        }
+                    }
+                    EndGradeCheck:;
+                }
+                XmlDocument xmlCyberwareDocument = XmlManager.Load("cyberware.xml");
+                XmlDocument xmlBiowareDocument = XmlManager.Load("bioware.xml");
+                string strForceValue = string.Empty;
+                XmlNode xmlCyberwareDataNode = null;
+                XmlNodeList xmlCyberwareNodeList = xmlCyberwareDocument.SelectNodes("/chummer/cyberwares/cyberware[contains(name, \"" + strOriginalName + "\")]");
+                foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
+                {
+                    XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                    if (xmlTestNode != null)
+                    {
+                        // Assumes topmost parent is an AND node
+                        if (xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        {
+                            continue;
+                        }
+                    }
+                    xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                    if (xmlTestNode != null)
+                    {
+                        // Assumes topmost parent is an AND node
+                        if (!xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        {
+                            continue;
+                        }
+                    }
+
+                    xmlCyberwareDataNode = xmlLoopNode;
+                    break;
+                }
+
+                if (xmlCyberwareDataNode == null)
+                {
+                    blnCyberware = false;
+                    xmlCyberwareNodeList = xmlBiowareDocument.SelectNodes("/chummer/biowares/bioware[contains(name, \"" + strOriginalName + "\")]");
+                    foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
+                    {
+                        XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                        if (xmlTestNode != null)
+                        {
+                            // Assumes topmost parent is an AND node
+                            if (xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            {
+                                continue;
+                            }
+                        }
+                        xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                        if (xmlTestNode != null)
+                        {
+                            // Assumes topmost parent is an AND node
+                            if (!xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            {
+                                continue;
+                            }
+                        }
+
+                        xmlCyberwareDataNode = xmlLoopNode;
+                        break;
+                    }
+                }
+
+                if (xmlCyberwareDataNode == null)
+                {
+                    string[] astrOriginalNameSplit = strOriginalName.Split(':');
+                    if (astrOriginalNameSplit.Length > 1)
+                    {
+                        string strName = astrOriginalNameSplit[0].Trim();
+                        blnCyberware = true;
+                        xmlCyberwareNodeList = xmlCyberwareDocument.SelectNodes("/chummer/cyberwares/cyberware[contains(name, \"" + strName + "\")]");
+                        foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
+                        {
+                            XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                            if (xmlTestNode != null)
+                            {
+                                // Assumes topmost parent is an AND node
+                                if (xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                {
+                                    continue;
+                                }
+                            }
+                            xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                            if (xmlTestNode != null)
+                            {
+                                // Assumes topmost parent is an AND node
+                                if (!xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                {
+                                    continue;
+                                }
+                            }
+
+                            xmlCyberwareDataNode = xmlLoopNode;
+                            break;
+                        }
+                        if (xmlCyberwareDataNode != null)
+                            strForceValue = astrOriginalNameSplit[1].Trim();
+                        else
+                        {
+                            blnCyberware = false;
+                            xmlCyberwareNodeList = xmlBiowareDocument.SelectNodes("/chummer/biowares/bioware[contains(name, \"" + strName + "\")]");
+                            foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
+                            {
+                                XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                if (xmlTestNode != null)
+                                {
+                                    // Assumes topmost parent is an AND node
+                                    if (xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                    {
+                                        continue;
+                                    }
+                                }
+                                xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                if (xmlTestNode != null)
+                                {
+                                    // Assumes topmost parent is an AND node
+                                    if (!xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                    {
+                                        continue;
+                                    }
+                                }
+
+                                xmlCyberwareDataNode = xmlLoopNode;
+                                break;
+                            }
+                            if (xmlCyberwareDataNode != null)
+                                strForceValue = astrOriginalNameSplit[1].Trim();
+                        }
+                    }
+                    if (xmlCyberwareDataNode == null)
+                    {
+                        astrOriginalNameSplit = strOriginalName.Split(',');
+                        if (astrOriginalNameSplit.Length > 1)
+                        {
+                            string strName = astrOriginalNameSplit[0].Trim();
+                            blnCyberware = true;
+                            xmlCyberwareNodeList = xmlCyberwareDocument.SelectNodes("/chummer/cyberwares/cyberware[contains(name, \"" + strName + "\")]");
+                            foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
+                            {
+                                XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                if (xmlTestNode != null)
+                                {
+                                    // Assumes topmost parent is an AND node
+                                    if (xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                    {
+                                        continue;
+                                    }
+                                }
+                                xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                if (xmlTestNode != null)
+                                {
+                                    // Assumes topmost parent is an AND node
+                                    if (!xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                    {
+                                        continue;
+                                    }
+                                }
+
+                                xmlCyberwareDataNode = xmlLoopNode;
+                                break;
+                            }
+                            if (xmlCyberwareDataNode != null)
+                                strForceValue = astrOriginalNameSplit[1].Trim();
+                            else
+                            {
+                                blnCyberware = false;
+                                xmlCyberwareNodeList = xmlBiowareDocument.SelectNodes("/chummer/biowares/bioware[contains(name, \"" + strName + "\")]");
+                                foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
+                                {
+                                    XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                    if (xmlTestNode != null)
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        if (xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                    xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                    if (xmlTestNode != null)
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        if (!xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            continue;
+                                        }
+                                    }
+
+                                    xmlCyberwareDataNode = xmlLoopNode;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (xmlCyberwareDataNode != null)
+                {
+                    if (objSelectedGrade == null)
+                    {
+                        objSelectedGrade = (blnCyberware ? objCyberwareGradeList : objBiowareGradeList).FirstOrDefault(x => x.Name == strGradeName);
+                    }
+
+                    Create(xmlCyberwareDataNode, objSelectedGrade, blnCyberware ? Improvement.ImprovementSource.Cyberware : Improvement.ImprovementSource.Bioware,
+                        Convert.ToInt32(xmlCyberwareImportNode.Attributes?["rating"]?.InnerText), lstWeapons, lstVehicles, true, true, strForceValue);
+                    Notes = xmlCyberwareImportNode["description"]?.InnerText;
+
+                    ProcessHeroLabCyberwarePlugins(xmlCyberwareImportNode, objSelectedGrade, lstWeapons, lstVehicles);
+
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void ProcessHeroLabCyberwarePlugins(XmlNode xmlGearImportNode, Grade objParentGrade, IList<Weapon> lstWeapons, IList<Vehicle> lstVehicles)
+        {
+            if (xmlGearImportNode == null)
+                return;
+            foreach (string strPluginNodeName in Character.HeroLabPluginNodeNames)
+            {
+                foreach (XmlNode xmlPluginToAdd in xmlGearImportNode.SelectNodes(strPluginNodeName + "/item[@useradded != \"no\"]"))
+                {
+                    Cyberware objPlugin = new Cyberware(_objCharacter);
+                    if (objPlugin.ImportHeroLabCyberware(xmlPluginToAdd, GetNode(), lstWeapons, lstVehicles, objParentGrade))
+                    {
+                        objPlugin.Parent = this;
+                        Children.Add(objPlugin);
+                    }
+                    else
+                    {
+                        Gear objPluginGear = new Gear(_objCharacter);
+                        if (objPluginGear.ImportHeroLabGear(xmlPluginToAdd, GetNode(), lstWeapons))
+                        {
+                            objPluginGear.Parent = this;
+                            Gear.Add(objPluginGear);
+                        }
+                    }
+                }
+                foreach (XmlNode xmlPluginToAdd in xmlGearImportNode.SelectNodes(strPluginNodeName + "/item[@useradded = \"no\"]"))
+                {
+                    string strName = xmlPluginToAdd.Attributes?["name"]?.InnerText ?? string.Empty;
+                    if (!string.IsNullOrEmpty(strName))
+                    {
+                        Cyberware objPlugin = Children.FirstOrDefault(x => x.ParentID == InternalId && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                        if (objPlugin != null)
+                        {
+                            objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
+                            objPlugin.ProcessHeroLabCyberwarePlugins(xmlPluginToAdd, objParentGrade, lstWeapons, lstVehicles);
+                        }
+                        else
+                        {
+                            Gear objPluginGear = Gear.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                            if (objPluginGear != null)
+                            {
+                                objPluginGear.Quantity = Convert.ToDecimal(xmlPluginToAdd.Attributes?["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                                objPluginGear.Notes = xmlPluginToAdd["description"]?.InnerText;
+                                objPluginGear.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
+                            }
+                        }
+                    }
+                }
+            }
+            this.RefreshMatrixAttributeArray();
+        }
         #endregion
         #endregion
+
+        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
+        {
+            if (Capacity == "[*]" && Parent != null && (!characterObject.IgnoreRules || characterObject.Created))
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveCyberware", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_CannotRemoveCyberware", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+
+            if (blnConfirmDelete)
+            {
+                if (SourceType == Improvement.ImprovementSource.Bioware)
+                {
+                    if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteBioware",
+                        GlobalOptions.Language)))
+                        return false;
+                }
+                else
+                {
+                    if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteCyberware",
+                        GlobalOptions.Language)))
+                        return false;
+                }
+            }
+
+            if (ParentVehicle != null)
+            {
+                characterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == InternalId,
+                    out VehicleMod objMod);
+                objMod.Cyberware.Remove(this);
+            }
+            else if (Parent != null)
+                Parent.Children.Remove(this);
+            else
+            {
+                characterObject.Cyberware.Remove(this);
+            }
+
+            DeleteCyberware();
+            return true;
+        }
+
+        public void Sell(Character characterObject, decimal percentage)
+        {
+            // Create the Expense Log Entry for the sale.
+            decimal decAmount = TotalCost * percentage;
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(characterObject);
+            string strEntry = LanguageManager.GetString(SourceType == Improvement.ImprovementSource.Cyberware ? "String_ExpenseSoldCyberware" : "String_ExpenseSoldBioware", GlobalOptions.Language);
+            decAmount += DeleteCyberware() * percentage;
+            objExpense.Create(decAmount, strEntry + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            characterObject.ExpenseEntries.AddWithSort(objExpense);
+            characterObject.Nuyen += decAmount;
+
+            if (Parent != null)
+                Parent.Children.Remove(this);
+            else
+                characterObject.Cyberware.Remove(this);
+        }
+
+        /// <summary>
+        /// Purchases a selected piece of Cyberware with a given Grade and Rating. 
+        /// </summary>
+        /// <param name="objNode"></param>
+        /// <param name="objGrade"></param>
+        /// <param name="objImprovementSource"></param>
+        /// <param name="intRating"></param>
+        /// <param name="objVehicle"></param>
+        /// <param name="lstCyberwareCollection"></param>
+        /// <param name="lstVehicleCollection"></param>
+        /// <param name="lstWeaponCollection"></param>
+        /// <param name="decMarkup"></param>
+        /// <param name="blnFree"></param>
+        /// <param name="strExpenseString"></param>
+        /// <returns></returns>
+        public bool Purchase(XmlNode objNode, Improvement.ImprovementSource objImprovementSource, Grade objGrade, int intRating, Vehicle objVehicle, TaggedObservableCollection<Cyberware> lstCyberwareCollection, ObservableCollection<Vehicle> lstVehicleCollection, TaggedObservableCollection<Weapon> lstWeaponCollection, decimal decMarkup = 0, bool blnFree = false, bool blnForVehicle = false, string strExpenseString = "String_ExpensePurchaseCyberware")
+        {
+            // Create the Cyberware object.
+            List<Weapon> lstWeapons = new List<Weapon>();
+            List<Vehicle> lstVehicles = new List<Vehicle>();
+            Create(objNode, objGrade, objImprovementSource, intRating, lstWeapons, lstVehicles, true, true, string.Empty, null, objVehicle);
+            if (InternalId.IsEmptyGuid())
+            {
+                return false;
+            }
+
+            if (blnFree)
+                Cost = "0";
+
+            if (_objCharacter.Created)
+            {
+                decimal decCost = 0;
+                // Check the item's Cost and make sure the character can afford it.
+                if (!blnFree)
+                {
+                    decCost = TotalCost;
+
+                    // Multiply the cost if applicable.
+                    char chrAvail = TotalAvailTuple().Suffix;
+                    if (chrAvail == 'R' && _objCharacter.Options.MultiplyRestrictedCost)
+                        decCost *= _objCharacter.Options.RestrictedCostMultiplier;
+                    if (chrAvail == 'F' && _objCharacter.Options.MultiplyForbiddenCost)
+                        decCost *= _objCharacter.Options.ForbiddenCostMultiplier;
+
+                    // Apply a markup if applicable.
+                    if (decMarkup != 0)
+                    {
+                        decCost *= 1 + (decMarkup / 100.0m);
+                    }
+
+                    if (decCost > _objCharacter.Nuyen)
+                    {
+                        MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                        return false;
+                    }
+                }
+
+                // Create the Expense Log Entry.
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
+                string strEntry = LanguageManager.GetString(strExpenseString, GlobalOptions.Language);
+                string strName = DisplayNameShort(GlobalOptions.Language);
+                if (SourceID == EssenceHoleGUID || SourceID == EssenceAntiHoleGUID)
+                {
+                    strName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + Rating.ToString(GlobalOptions.CultureInfo) + ')';
+                }
+                objExpense.Create(decCost * -1,
+                    strEntry + LanguageManager.GetString("String_Space", GlobalOptions.Language) +
+                    strName, ExpenseType.Nuyen, DateTime.Now);
+                _objCharacter.ExpenseEntries.AddWithSort(objExpense);
+                _objCharacter.Nuyen -= decCost;
+
+                if (SourceID != EssenceHoleGUID && SourceID != EssenceAntiHoleGUID)
+                {
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateNuyen(blnForVehicle ? NuyenExpenseType.AddVehicleModCyberware : NuyenExpenseType.AddCyberware, InternalId);
+                    objExpense.Undo = objUndo;
+                }
+            }
+
+            if (SourceID == EssenceAntiHoleGUID)
+            {
+                _objCharacter.DecreaseEssenceHole((int)(CalculatedESS() * 100));
+            }
+            else if (SourceID == EssenceHoleGUID)
+            {
+                _objCharacter.IncreaseEssenceHole((int)(CalculatedESS() * 100));
+            }
+            else
+            {
+                lstCyberwareCollection.Add(this);
+
+                foreach (Weapon objWeapon in lstWeapons)
+                {
+                    objWeapon.ParentVehicle = objVehicle;
+                    lstWeaponCollection.Add(objWeapon);
+                }
+
+                foreach (Vehicle objLoopVehicle in lstVehicles)
+                {
+                    lstVehicleCollection.Add(objLoopVehicle);
+                }
+            }
+
+            return true;
+        }
+
+
+        /// <summary>
+        /// Alias map for SourceDetail control text and tooltip assignation. 
+        /// </summary>
+        /// <param name="sourceControl"></param>
+        public void SetSourceDetail(Control sourceControl)
+        {
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
+        }
     }
 }

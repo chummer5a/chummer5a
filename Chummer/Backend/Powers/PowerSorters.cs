@@ -24,7 +24,7 @@ namespace Chummer.Backend.Powers
     public sealed class PowerSorter : IComparer<Power>
     {
         private readonly Comparison<Power> _comparison;
-        
+
         public PowerSorter(Comparison<Power> comparison)
         {
             _comparison = comparison ?? throw new ArgumentNullException(nameof(comparison));

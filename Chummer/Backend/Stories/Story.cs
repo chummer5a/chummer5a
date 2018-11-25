@@ -16,7 +16,6 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -82,7 +81,7 @@ namespace Chummer
         public ObservableCollection<StoryModule> Modules => _lstStoryModules;
 
         public ConcurrentDictionary<string, StoryModule> PersistentModules => _dicPersistentModules;
-        
+
         public StoryModule GeneratePersistentModule(string strFunction)
         {
             XPathNavigator xmlStoryPool = _xmlStoryDocumentBaseNode.SelectSingleNode("storypools/storypool[name = \"" + strFunction + "\"]");

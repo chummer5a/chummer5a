@@ -38,7 +38,7 @@ namespace Chummer
         string ModDataProcessing { get; set; }
         string ModFirewall { get; set; }
         string Overclocked { get; set; }
-        
+
         string CanFormPersona { get; set; }
         bool IsCommlink { get; }
 
@@ -177,6 +177,10 @@ namespace Chummer
             int intBonusDP = objThis.GetBonusMatrixAttribute("Data Processing");
             int intBonusFirewall = objThis.GetBonusMatrixAttribute("Firewall");
 
+            cboAttack.SuspendLayout();
+            cboSleaze.SuspendLayout();
+            cboDP.SuspendLayout();
+            cboFirewall.SuspendLayout();
             cboAttack.BeginUpdate();
             cboSleaze.BeginUpdate();
             cboDP.BeginUpdate();
@@ -186,7 +190,7 @@ namespace Chummer
             cboAttack.BindingContext = new BindingContext();
             cboAttack.ValueMember = "Value";
             cboAttack.DisplayMember = "Name";
-            cboAttack.DataSource = new List<string>() { (intBaseAttack + intBonusAttack).ToString(), (intBaseSleaze + intBonusAttack).ToString(), (intBaseDP + intBonusAttack).ToString(), (intBaseFirewall + intBonusAttack).ToString() };
+            cboAttack.DataSource = new List<string> { (intBaseAttack + intBonusAttack).ToString(), (intBaseSleaze + intBonusAttack).ToString(), (intBaseDP + intBonusAttack).ToString(), (intBaseFirewall + intBonusAttack).ToString() };
             cboAttack.SelectedIndex = 0;
             cboAttack.Visible = true;
             cboAttack.Enabled = objThis.CanSwapAttributes;
@@ -195,7 +199,7 @@ namespace Chummer
             cboSleaze.BindingContext = new BindingContext();
             cboSleaze.ValueMember = "Value";
             cboSleaze.DisplayMember = "Name";
-            cboSleaze.DataSource = new List<string>() { (intBaseAttack + intBonusSleaze).ToString(), (intBaseSleaze + intBonusSleaze).ToString(), (intBaseDP + intBonusSleaze).ToString(), (intBaseFirewall + intBonusSleaze).ToString() };
+            cboSleaze.DataSource = new List<string> { (intBaseAttack + intBonusSleaze).ToString(), (intBaseSleaze + intBonusSleaze).ToString(), (intBaseDP + intBonusSleaze).ToString(), (intBaseFirewall + intBonusSleaze).ToString() };
             cboSleaze.SelectedIndex = 1;
             cboSleaze.Visible = true;
             cboSleaze.Enabled = objThis.CanSwapAttributes;
@@ -204,7 +208,7 @@ namespace Chummer
             cboDP.BindingContext = new BindingContext();
             cboDP.ValueMember = "Value";
             cboDP.DisplayMember = "Name";
-            cboDP.DataSource = new List<string>() { (intBaseAttack + intBonusDP).ToString(), (intBaseSleaze + intBonusDP).ToString(), (intBaseDP + intBonusDP).ToString(), (intBaseFirewall + intBonusDP).ToString() };
+            cboDP.DataSource = new List<string> { (intBaseAttack + intBonusDP).ToString(), (intBaseSleaze + intBonusDP).ToString(), (intBaseDP + intBonusDP).ToString(), (intBaseFirewall + intBonusDP).ToString() };
             cboDP.SelectedIndex = 2;
             cboDP.Visible = true;
             cboDP.Enabled = objThis.CanSwapAttributes;
@@ -213,7 +217,7 @@ namespace Chummer
             cboFirewall.BindingContext = new BindingContext();
             cboFirewall.ValueMember = "Value";
             cboFirewall.DisplayMember = "Name";
-            cboFirewall.DataSource = new List<string>() { (intBaseAttack + intBonusFirewall).ToString(), (intBaseSleaze + intBonusFirewall).ToString(), (intBaseDP + intBonusFirewall).ToString(), (intBaseFirewall + intBonusFirewall).ToString() };
+            cboFirewall.DataSource = new List<string> { (intBaseAttack + intBonusFirewall).ToString(), (intBaseSleaze + intBonusFirewall).ToString(), (intBaseDP + intBonusFirewall).ToString(), (intBaseFirewall + intBonusFirewall).ToString() };
             cboFirewall.SelectedIndex = 3;
             cboFirewall.Visible = true;
             cboFirewall.Enabled = objThis.CanSwapAttributes;
@@ -222,13 +226,17 @@ namespace Chummer
             cboSleaze.EndUpdate();
             cboDP.EndUpdate();
             cboFirewall.EndUpdate();
+            cboAttack.ResumeLayout();
+            cboSleaze.ResumeLayout();
+            cboDP.ResumeLayout();
+            cboFirewall.ResumeLayout();
         }
 
         public static bool ProcessMatrixAttributeCBOChange(this IHasMatrixAttributes objThis, Character objCharacter, ComboBox cboChangedAttributeCBO, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDP, ComboBox cboFirewall)
         {
             if (objThis == null)
                 return false;
-            
+
             string strTemp;
             Action<string> funcAttributePropertySetter;
 

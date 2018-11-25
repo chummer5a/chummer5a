@@ -38,7 +38,7 @@ namespace Chummer
         public DependancyGraphNode(T objMyObject, params DependancyGraphNode<T>[] lstDownStreamNodes)
         {
             MyObject = objMyObject;
-            
+
             foreach (DependancyGraphNode<T> objDownStreamNode in lstDownStreamNodes)
             {
                 objDownStreamNode.UpStreamNodes.Add(new DependancyGraphNodeWithCondition<T>(this, null));
@@ -86,7 +86,7 @@ namespace Chummer
         /// Object tied to this node in the DependancyGraph
         /// </summary>
         public T MyObject { get; }
-        
+
         /// <summary>
         /// Root DependancyGraph object to which this DependancyGraphNode is attached.
         /// </summary>
@@ -104,15 +104,13 @@ namespace Chummer
 
         public override bool Equals(object obj)
         {
-            if (Root != null)
+            if (obj is DependancyGraphNode<T> objOtherNode)
             {
-                if (obj is DependancyGraphNode<T> objOtherNode)
-                {
+                if (Root != null)
                     return Root == objOtherNode.Root && (MyObject == null && objOtherNode.MyObject == null || MyObject?.Equals(objOtherNode.MyObject) == true);
-                }
+                if (objOtherNode.Root != null)
+                    return false;
             }
-            else if (obj is DependancyGraphNode<T> objOtherNode && objOtherNode.Root != null)
-                return false;
 
             // ReSharper disable once BaseObjectEqualsIsObjectEquals
             return base.Equals(obj);

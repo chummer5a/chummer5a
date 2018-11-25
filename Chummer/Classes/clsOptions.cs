@@ -150,8 +150,6 @@ namespace Chummer
     /// </summary>
     public static class GlobalOptions
     {
-        private static readonly CultureInfo s_ObjSystemCultureInfo = CultureInfo.CurrentCulture;
-        private static readonly CultureInfo s_ObjInvariantCultureInfo = CultureInfo.InvariantCulture;
         private static CultureInfo s_ObjLanguageCultureInfo = CultureInfo.CurrentCulture;
 
         public static string ErrorMessage { get; } = string.Empty;
@@ -165,6 +163,8 @@ namespace Chummer
         private static readonly RegistryKey _objBaseChummerKey;
         public const string DefaultLanguage = "en-us";
         public const string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Skills grouped by Rating greater 0)";
+        public const string DefaultBuildMethodDefaultValue = "Priority";
+        public const string DefaultGameplayOptionDefaultValue = "Standard";
 
         private static bool _blnAutomaticUpdate;
         private static bool _blnLiveCustomData;
@@ -179,19 +179,24 @@ namespace Chummer
         private static bool _blnDronemodsMaximumPilot;
         private static bool _blnPreferNightlyUpdates;
         private static bool _blnLiveUpdateCleanCharacterFiles;
+        private static bool _blnHideCharacterRoster;
+        private static bool _blnCreateBackupOnCareer;
+        private static string _strDefaultBuildMethod = DefaultBuildMethodDefaultValue;
+        private static string _strDefaultGameplayOption = DefaultGameplayOptionDefaultValue;
 
         public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(DsfmtRandom.Create(DsfmtEdition.OptGen_216091));
 
         public static ToolTip ToolTipProcessor { get; } = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip
         {
+            UseAnimation = true,
             AllowLinksHandling = true,
             AutoPopDelay = 3600000,
             BaseStylesheet = null,
             InitialDelay = 250,
             IsBalloon = false,
-            MaximumSize = new System.Drawing.Size(0, 0),
             OwnerDraw = true,
             ReshowDelay = 100,
+            ShowAlways = true,
             TooltipCssClass = "htmltooltip",
             //UseAnimation = true,
             //UseFading = true
@@ -331,10 +336,10 @@ namespace Chummer
 
         static GlobalOptions()
         {
-            if (Utils.IsRunningInVisualStudio)
+            if (Utils.IsDesignerMode)
                 return;
 
-            string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
+            string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
             if (!Directory.Exists(settingsDirectoryPath))
             {
                 try
@@ -367,7 +372,7 @@ namespace Chummer
             if (_objBaseChummerKey == null)
                 return;
             _objBaseChummerKey.CreateSubKey("Sourcebook");
-            
+
             // Automatic Update.
             LoadBoolFromRegistry(ref _blnAutomaticUpdate, "autoupdate");
 
@@ -389,6 +394,10 @@ namespace Chummer
 
             LoadBoolFromRegistry(ref _blnDronemodsMaximumPilot, "dronemodsPilot");
 
+            LoadBoolFromRegistry(ref _blnHideCharacterRoster, "hidecharacterroster");
+
+            LoadBoolFromRegistry(ref _blnCreateBackupOnCareer, "createbackuponcareer");
+
             // Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
             LoadBoolFromRegistry(ref _blnPrintToFileFirst, "printtofilefirst");
 
@@ -396,6 +405,10 @@ namespace Chummer
             LoadStringFromRegistry(ref _strDefaultCharacterSheet, "defaultsheet");
             if (_strDefaultCharacterSheet == "Shadowrun (Rating greater 0)")
                 _strDefaultCharacterSheet = DefaultCharacterSheetDefaultValue;
+
+            LoadStringFromRegistry(ref _strDefaultBuildMethod, "defaultbuildmethod");
+
+            LoadStringFromRegistry(ref _strDefaultGameplayOption, "defaultgameplayoption");
 
             // Omae Settings.
             // Username.
@@ -449,7 +462,7 @@ namespace Chummer
 
             for (int i = 1; i <= MaxMruSize; i++)
             {
-                object objLoopValue = _objBaseChummerKey.GetValue("stickymru" + i.ToString());
+                object objLoopValue = _objBaseChummerKey.GetValue("stickymru" + i.ToString(InvariantCultureInfo));
                 if (objLoopValue != null)
                 {
                     string strFileName = objLoopValue.ToString();
@@ -461,7 +474,7 @@ namespace Chummer
 
             for (int i = 1; i <= MaxMruSize; i++)
             {
-                object objLoopValue = _objBaseChummerKey.GetValue("mru" + i.ToString());
+                object objLoopValue = _objBaseChummerKey.GetValue("mru" + i.ToString(InvariantCultureInfo));
                 if (objLoopValue != null)
                 {
                     string strFileName = objLoopValue.ToString();
@@ -474,6 +487,24 @@ namespace Chummer
         #endregion
 
         #region Properties
+        /// <summary>
+        /// Whether or not to create backups of characters before moving them to career mode. If true, a separate savefile is created before marking the current character as created.
+        /// </summary>
+        public static bool CreateBackupOnCareer
+        {
+            get => _blnCreateBackupOnCareer;
+            set => _blnCreateBackupOnCareer = value;
+        }
+
+        /// <summary>
+        /// Whether or not the Character Roster should be shown. If true, prevents the roster from being removed or hidden. 
+        /// </summary>
+        public static bool HideCharacterRoster
+        {
+            get => _blnHideCharacterRoster;
+            set => _blnHideCharacterRoster = value;
+        }
+
         /// <summary>
         /// Whether or not Automatic Updates are enabled.
         /// </summary>
@@ -503,7 +534,7 @@ namespace Chummer
             get => _lifeModuleEnabled;
             set => _lifeModuleEnabled = value;
         }
-        
+
         /// <summary>
         /// Whether or not the app should use logging.
         /// </summary>
@@ -628,14 +659,15 @@ namespace Chummer
         /// <summary>
         /// Invariant CultureInfo for saving and loading of numbers.
         /// </summary>
-        public static CultureInfo InvariantCultureInfo => s_ObjInvariantCultureInfo;
+        public static CultureInfo InvariantCultureInfo { get; } = CultureInfo.InvariantCulture;
 
         /// <summary>
         /// CultureInfo of the user's current system.
         /// </summary>
-        public static CultureInfo SystemCultureInfo => s_ObjSystemCultureInfo;
+        public static CultureInfo SystemCultureInfo { get; } = CultureInfo.CurrentCulture;
 
         private static XmlDocument _xmlClipboard = new XmlDocument();
+
         /// <summary>
         /// Clipboard.
         /// </summary>
@@ -664,6 +696,24 @@ namespace Chummer
         {
             get => _strDefaultCharacterSheet;
             set => _strDefaultCharacterSheet = value;
+        }
+
+        /// <summary>
+        /// Default build method to select when creating a new character
+        /// </summary>
+        public static string DefaultBuildMethod
+        {
+            get => _strDefaultBuildMethod;
+            set => _strDefaultBuildMethod = value;
+        }
+
+        /// <summary>
+        /// Default gameplay option to select when creating a new character
+        /// </summary>
+        public static string DefaultGameplayOption
+        {
+            get => _strDefaultGameplayOption;
+            set => _strDefaultGameplayOption = value;
         }
 
         public static RegistryKey ChummerRegistryKey => _objBaseChummerKey;
@@ -756,7 +806,7 @@ namespace Chummer
                         string strPath = string.Empty;
                         object objRegistryResult = objLoopKey.GetValue("Path");
                         if (objRegistryResult != null)
-                            strPath = objRegistryResult.ToString().Replace("$CHUMMER", Application.StartupPath);
+                            strPath = objRegistryResult.ToString().Replace("$CHUMMER", Utils.GetStartupPath);
                         if (!string.IsNullOrEmpty(strPath) && Directory.Exists(strPath))
                         {
                             CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo
@@ -840,9 +890,9 @@ namespace Chummer
                     for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
                     {
                         if (i <= _lstFavoritedCharacters.Count)
-                            _objBaseChummerKey.SetValue("stickymru" + i.ToString(), _lstFavoritedCharacters[i - 1]);
+                            _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
                         else
-                            _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(), false);
+                            _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                     }
 
                     MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
@@ -853,9 +903,9 @@ namespace Chummer
                     for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                     {
                         if (i <= _lstFavoritedCharacters.Count)
-                            _objBaseChummerKey.SetValue("stickymru" + i.ToString(), _lstFavoritedCharacters[i - 1]);
+                            _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
                         else
-                            _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(), false);
+                            _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                     }
                     MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
                     break;
@@ -864,15 +914,15 @@ namespace Chummer
                 {
                     string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
                     if (!string.IsNullOrEmpty(strNewFile))
-                        _objBaseChummerKey.SetValue("stickymru" + (e.OldStartingIndex + 1).ToString(), strNewFile);
+                        _objBaseChummerKey.SetValue("stickymru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
                     else
                     {
                         for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
                             if (i <= _lstFavoritedCharacters.Count)
-                                _objBaseChummerKey.SetValue("stickymru" + i.ToString(), _lstFavoritedCharacters[i - 1]);
+                                _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
                             else
-                                _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(), false);
+                                _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                         }
                     }
 
@@ -901,7 +951,7 @@ namespace Chummer
 
                     for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
                     {
-                        _objBaseChummerKey.SetValue("stickymru" + (i + 1).ToString(), _lstFavoritedCharacters[i]);
+                        _objBaseChummerKey.SetValue("stickymru" + (i + 1).ToString(InvariantCultureInfo), _lstFavoritedCharacters[i]);
                     }
                     MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
                     break;
@@ -911,9 +961,9 @@ namespace Chummer
                     for (int i = 1; i <= MaxMruSize; ++i)
                     {
                         if (i <= _lstFavoritedCharacters.Count)
-                            _objBaseChummerKey.SetValue("stickymru" + i.ToString(), _lstFavoritedCharacters[i - 1]);
+                            _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
                         else
-                            _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(), false);
+                            _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                     }
                     MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
                     break;

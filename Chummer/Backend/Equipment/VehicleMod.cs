@@ -33,7 +33,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class VehicleMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class VehicleMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanEquip, IHasSource, IHasRating
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -51,7 +51,7 @@ namespace Chummer.Backend.Equipment
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private bool _blnIncludeInVehicle;
-        private bool _blnInstalled = true;
+        private bool _blnEquipped = true;
         private int _intConditionMonitor;
         private readonly TaggedObservableCollection<Weapon> _lstVehicleWeapons = new TaggedObservableCollection<Weapon>();
         private string _strNotes = string.Empty;
@@ -62,7 +62,6 @@ namespace Chummer.Backend.Equipment
         private bool _blnDiscountCost;
         private bool _blnDowngrade;
         private string _strCapacity = string.Empty;
-        private WeaponMount _objWeaponMountParent;
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
@@ -190,7 +189,7 @@ namespace Chummer.Backend.Equipment
                         decMax = 1000000;
                     frmPickNumber.Minimum = decMin;
                     frmPickNumber.Maximum = decMax;
-                    frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
+                    frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language));
                     frmPickNumber.AllowCancel = false;
                     frmPickNumber.ShowDialog();
                     _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
@@ -219,6 +218,29 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == null)
+                {
+                    string strSource = Source;
+                    string strPage = Page(GlobalOptions.Language);
+                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                    {
+                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                    }
+                }
+
+                return _objCachedSourceDetail;
+            }
+        }
+
         /// <summary>
         /// Save the object's XML to the XmlWriter.
         /// </summary>
@@ -242,7 +264,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("included", _blnIncludeInVehicle.ToString());
-            objWriter.WriteElementString("installed", _blnInstalled.ToString());
+            objWriter.WriteElementString("equipped", _blnEquipped.ToString());
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
             objWriter.WriteElementString("subsystems", _strSubsystems);
             objWriter.WriteElementString("weaponmountcategories", _strWeaponMountCategories);
@@ -266,7 +288,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (!IncludedInVehicle)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -300,7 +324,11 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetDecFieldQuickly("markup", ref _decMarkup);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludeInVehicle);
-            objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
+            objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
+            if (!_blnEquipped)
+            {
+                objNode.TryGetBoolFieldQuickly("installed", ref _blnEquipped);
+            }
             objNode.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
             objNode.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
             objNode.TryGetStringFieldQuickly("subsystems", ref _strSubsystems);
@@ -372,6 +400,7 @@ namespace Chummer.Backend.Equipment
         {
             objWriter.WriteStartElement("mod");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("limit", Limit);
             objWriter.WriteElementString("slots", Slots);
@@ -405,11 +434,7 @@ namespace Chummer.Backend.Equipment
 
         public TaggedObservableCollection<Cyberware> Cyberware => _lstCyberware;
 
-        public WeaponMount WeaponMountParent
-        {
-            get => _objWeaponMountParent;
-            set => _objWeaponMountParent = value;
-        }
+        public WeaponMount WeaponMountParent { get; set; }
 
         /// <summary>
         /// Internal identifier which will be used to identify this piece of Gear in the Character.
@@ -480,12 +505,30 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Vehicle Mod capacity.
+        /// </summary>
+        public string Capacity
+        {
+            get => _strCapacity;
+            set => _strCapacity = value;
+        }
+
+        /// <summary>
         /// Rating.
         /// </summary>
         public int Rating
         {
             get => _intRating;
-            set => _intRating = Math.Max(0, value);
+            set
+            {
+                int intNewRating = Math.Max(0, value);
+                if (_intRating != intNewRating)
+                {
+                    _intRating = intNewRating;
+                    if (!IncludedInVehicle && Equipped && _objCharacter.IsAI && _objCharacter.HomeNode is Vehicle)
+                        _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCM));
+                }
+            }
         }
 
         /// <summary>
@@ -550,7 +593,15 @@ namespace Chummer.Backend.Equipment
         public XmlNode Bonus
         {
             get => _nodBonus;
-            set => _nodBonus = value;
+            set
+            {
+                if (_nodBonus != value)
+                {
+                    _nodBonus = value;
+                    if (!IncludedInVehicle && Equipped && _objCharacter.IsAI && _objCharacter.HomeNode is Vehicle)
+                        _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCM));
+                }
+            }
         }
 
         /// <summary>
@@ -583,10 +634,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Whether or not this Mod is installed and contributing towards the Vehicle's stats.
         /// </summary>
-        public bool Installed
+        public bool Equipped
         {
-            get => _blnInstalled;
-            set => _blnInstalled = value;
+            get => _blnEquipped;
+            set => _blnEquipped = value;
         }
 
         /// <summary>
@@ -641,7 +692,7 @@ namespace Chummer.Backend.Equipment
         public int ConditionMonitor => _intConditionMonitor;
 
         /// <summary>
-        /// Vehicle that the Mod is attached to. 
+        /// Vehicle that the Mod is attached to.
         /// </summary>
         public Vehicle Parent { internal get; set; }
 
@@ -1116,7 +1167,7 @@ namespace Chummer.Backend.Equipment
                 return Math.Min(intAttribute + intBonus, Math.Max(bod, 1));
             }
         }
-        
+
         /// <summary>
         /// Vehicle arm/leg Agility.
         /// </summary>
@@ -1209,7 +1260,7 @@ namespace Chummer.Backend.Equipment
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsVehicleMod,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap(100)
@@ -1256,5 +1307,12 @@ namespace Chummer.Backend.Equipment
         }
         #endregion
         #endregion
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
+        }
     }
 }

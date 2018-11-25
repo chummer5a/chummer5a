@@ -45,8 +45,9 @@ namespace Chummer
 
         private void frmExport_Load(object sender, EventArgs e)
         {
+            cboXSLT.Items.Add("Export JSON");
             // Populate the XSLT list with all of the XSL files found in the sheets directory.
-            string exportDirectoryPath = Path.Combine(Application.StartupPath, "export");
+            string exportDirectoryPath = Path.Combine(Utils.GetStartupPath, "export");
             foreach (string strFile in Directory.GetFiles(exportDirectoryPath))
             {
                 // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
@@ -56,8 +57,6 @@ namespace Chummer
                     cboXSLT.Items.Add(strFileName);
                 }
             }
-
-            cboXSLT.Items.Add("Export JSON");
 
             if (cboXSLT.Items.Count > 0)
                 cboXSLT.SelectedIndex = 0;
@@ -130,7 +129,7 @@ namespace Chummer
             // Look for the file extension information.
             string strLine;
             string strExtension = "xml";
-            string exportSheetPath = Path.Combine(Application.StartupPath, "export", cboXSLT.Text + ".xsl");
+            string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", cboXSLT.Text + ".xsl");
             StreamReader objFile = new StreamReader(exportSheetPath, Encoding.UTF8, true);
             while ((strLine = objFile.ReadLine()) != null)
             {
@@ -146,7 +145,7 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
-            
+
             File.WriteAllText(strSaveFile, rtbText.Text); // Change this to a proper path.
 
             DialogResult = DialogResult.OK;
@@ -154,7 +153,7 @@ namespace Chummer
 
         private void GenerateXml()
         {
-            string exportSheetPath = Path.Combine(Application.StartupPath, "export", cboXSLT.Text + ".xsl");
+            string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", cboXSLT.Text + ".xsl");
 
             XslCompiledTransform objXSLTransform = new XslCompiledTransform();
             objXSLTransform.Load(exportSheetPath); // Use the path for the export sheet.

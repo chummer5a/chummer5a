@@ -28,7 +28,7 @@ using System.Xml;
 namespace Chummer.Backend.Equipment
 {
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class LifestyleQuality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes
+    public class LifestyleQuality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
         private Guid _guiID;
         private Guid _SourceGuid;
@@ -92,7 +92,7 @@ namespace Chummer.Backend.Equipment
         }
     #endregion
 
-    #region Constructor, Create, Save, Load, and Print Methods
+        #region Constructor, Create, Save, Load, and Print Methods
     public LifestyleQuality(Character objCharacter)
         {
             // Create the GUID for the new LifestyleQuality.
@@ -166,6 +166,29 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == null)
+                {
+                    string strSource = Source;
+                    string strPage = Page(GlobalOptions.Language);
+                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                    {
+                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                    }
+                }
+
+                return _objCachedSourceDetail;
+            }
+        }
+
         /// <summary>
         /// Save the object's XML to the XmlWriter.
         /// </summary>
@@ -195,7 +218,9 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("bonus", string.Empty);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (OriginSource != QualitySource.BuiltIn)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -247,7 +272,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Performs actions based on the character's last loaded AppVersion attribute. 
+        /// Performs actions based on the character's last loaded AppVersion attribute.
         /// </summary>
         private void LegacyShim()
         {
@@ -269,7 +294,7 @@ namespace Chummer.Backend.Equipment
                     frmSelectItem frmSelect = new frmSelectItem
                     {
                         GeneralItems = lstQualities,
-                        Description = LanguageManager.GetString("String_CannotFindLifestyleQuality", GlobalOptions.Language).Replace("{0}", _strName)
+                        Description = string.Format(LanguageManager.GetString("String_CannotFindLifestyleQuality", GlobalOptions.Language), _strName)
                     };
                     frmSelect.ShowDialog();
                     if (frmSelect.DialogResult == DialogResult.Cancel)
@@ -314,6 +339,7 @@ namespace Chummer.Backend.Equipment
                 return;
             objWriter.WriteStartElement("quality");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("formattedname", FormattedDisplayName(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("lp", LP.ToString(objCulture));
@@ -335,7 +361,7 @@ namespace Chummer.Backend.Equipment
         }
 #endregion
 
-#region Properties
+        #region Properties
         /// <summary>
         /// Internal identifier which will be used to identify this LifestyleQuality in the Improvement system.
         /// </summary>
@@ -386,7 +412,7 @@ namespace Chummer.Backend.Equipment
             get => _strSource;
             set => _strSource = value;
         }
-        
+
         /// <summary>
         /// Page Number.
         /// </summary>
@@ -466,12 +492,16 @@ namespace Chummer.Backend.Equipment
             }
             else if (Multiplier < 0)
             {
-                strReturn += $" [-{Multiplier}%]";
+                strReturn += $" [{Multiplier}%]";
             }
 
             if (Cost > 0)
             {
                 strReturn += " [+" + Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture) + "¥]";
+            }
+            else if (Cost < 0)
+            {
+                strReturn += " [" + Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture) + "¥]";
             }
             return strReturn;
         }
@@ -558,22 +588,22 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Comfort LP is increased/reduced by this Quality. 
+        /// Comfort LP is increased/reduced by this Quality.
         /// </summary>
         public int Comfort { get; set; }
 
         /// <summary>
-        /// Comfort LP maximum is increased/reduced by this Quality. 
+        /// Comfort LP maximum is increased/reduced by this Quality.
         /// </summary>
         public int ComfortMaximum { get; set; }
 
         /// <summary>
-        /// Security LP value is increased/reduced by this Quality. 
+        /// Security LP value is increased/reduced by this Quality.
         /// </summary>
         public int SecurityMaximum { get; set; }
 
         /// <summary>
-        /// Security LP value is increased/reduced by this Quality. 
+        /// Security LP value is increased/reduced by this Quality.
         /// </summary>
         public int Security { get; set; }
 
@@ -596,7 +626,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Category of the Quality. 
+        /// Category of the Quality.
         /// </summary>
         public string Category
         {
@@ -610,7 +640,7 @@ namespace Chummer.Backend.Equipment
         public int AreaMaximum { get; set; }
 
         /// <summary>
-        /// Area/Neighborhood minimum is increased/reduced by this Quality. 
+        /// Area/Neighborhood minimum is increased/reduced by this Quality.
         /// </summary>
         public int Area { get; set; }
 
@@ -666,5 +696,12 @@ namespace Chummer.Backend.Equipment
             }
         }
         #endregion
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
+        }
     }
 }

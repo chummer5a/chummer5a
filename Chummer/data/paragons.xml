@@ -23,518 +23,116 @@
   <version>0</version>
   <categories>
     <category>Resonance</category>
-    <category>Dissonance</category>
+    <category>Resonance</category>
   </categories>
   <mentors>
     <mentor>
       <id>acadd628-ebb5-4c79-a3c2-953ce7fa1885</id>
-      <name>01</name>
+      <name>01 (The World Tree)</name>
       <category>Resonance</category>
-      <advantage>+1 die for compiling and registering sprites of any type</advantage>
-      <disadvantage>Zero-One is the perfection of the code and demands the same from his followers, or at least teaches them a harsh lesson if they fail. Zero-One technomancers must spend 2 points of Edge to negate a glitch or downgrade a critical glitch.</disadvantage>
-      <source>UN</source>
-      <page>150</page>
+      <advantage>If a follower of 01 has at least one mark on a target, they may act as if they have an extra mark on it.</advantage>
+      <disadvantage>–1 limit and –1 dice pool penalty when acting only in AR.</disadvantage>
+      <source>KC</source>
+      <page>103</page>
     </mentor>
     <mentor>
       <id>46f88748-8c6c-4230-ad59-2eccb463cc35</id>
-      <name>Alias</name>
+      <name>Architect</name>
       <category>Resonance</category>
-      <advantage>+2 dice to Spoof Tests</advantage>
-      <disadvantage>Alias technomancers cannot abide to pay for their lifestyle and must therefore use their abilities to spoof their lifestyle.</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 die for Crack spirtes</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 dice for Sleuth Sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
-      <page>150</page>
+      <advantage>+1 limit and +1 dice pool bonus for Edit actions.</advantage>
+      <disadvantage>–1 limit and –1 dice for Snoop actions.</disadvantage>
+      <source>KC</source>
+      <page>103</page>
     </mentor>
     <mentor>
       <id>690ccad8-3f42-4d62-a358-e099747fc4e4</id>
-      <name>Abort</name>
-      <category>Dissonance</category>
-      <advantage>+2 dice to all Crash Tests</advantage>
-      <disadvantage>An Abort technomancer must make a Willpower + Charisma (3) Test to take any other action in cybercombat except for trying to crash his opponent’s software.</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 dice for dissonant Crack sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 dice for dissonant Fault sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
+      <name>Archivist (The Record Keeper)</name>
+      <category>Resonance</category>
+      <advantage>+1 limit and +1 dice pool bonus for Browse actions and digital legwork.</advantage>
+      <disadvantage>–1 limit for Edit actions designed to destroy data.</disadvantage>
+      <source>KC</source>
       <page>177</page>
-    </mentor>
-    <mentor>
-      <id>6f709558-5cf8-4b4d-898c-d7d4b1fc0c80</id>
-      <name>Archivist</name>
-      <category>Resonance</category>
-      <advantage>+2 dice for all Browse Tests</advantage>
-      <disadvantage>Technomancers following the Archivist cannot willingly destroy or corrupt data. The technomancer must succeed at a Willpower + Logic (3) Test to purposely delete or corrupt data (or order a sprite to do so).</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 die for Code sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die for Data sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
-      <page>150</page>
-    </mentor>
-    <mentor>
-      <id>5405d069-c0df-4bb2-b66f-92a2fbf040f9</id>
-      <name>Architect</name>
-      <category>Resonance</category>
-      <advantage>+2 die to Edit Tests</advantage>
-      <disadvantage>–1 die to Crash Tests</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 die for Data sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die for Machine sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
-      <page>150</page>
-    </mentor>
-    <mentor>
-      <id>d2baacaa-6fa1-4953-8b01-b5398a405645</id>
-      <name>Babel</name>
-      <category>Resonance</category>
-      <advantage>+1 to online Etiquette and Language Tests, +1 die for Courier or Tutor sprites (player must choose one)</advantage>
-      <disadvantage>Secrecy is the bane of communication, so Babel technomancers must make a Willpower + Logic (3) Test to encrypt anything.</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 die for Courier sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die for Tutor sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
-      <page>150</page>
     </mentor>
     <mentor>
       <id>117e7c69-abea-4637-b5e7-3a927ae0ad60</id>
-      <name>The Black Hat</name>
+      <name>Black Hat (The Cracker)</name>
       <category>Resonance</category>
-      <advantage>+2 dice to Exploit Tests</advantage>
-      <disadvantage>Black Hat technomancers have extreme difficulty restraining themselves from hacking into a node that is interesting in any way. The technomancer must succeed in a Willpower + Charisma (3) Test to avoid hacking such a system when the opportunity arises.</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 die for Crack sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die for Fault sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
-      <page>150</page>
+      <advantage>+2 limit for gaining marks on a target.</advantage>
+      <disadvantage>-1 limit and –1 die when setting a Data Bomb.</disadvantage>
+      <source>KC</source>
+      <page>103</page>
     </mentor>
     <mentor>
       <id>b74d032e-5d39-4e4a-b043-0707ffa00b5e</id>
-      <name>Cryptome</name>
+      <name>Daedalus (The Inventor)</name>
       <category>Resonance</category>
-      <advantage>+2 dice to all Encryption and Decryption Tests</advantage>
-      <disadvantage>Technomancers who follow Cryptome don’t surrender secrets easily and never to unreliable sources. The technomancer must make a Willpower + Logic (3) Test to share a secret or important information with someone he does not completely trust … and such trust is rare.</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 die for Courier sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die for Data sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
-      <page>150</page>
-    </mentor>
-    <mentor>
-      <id>fa271f4e-608f-4cdc-a118-54d714b68a85</id>
-      <name>Daedalus</name>
-      <category>Resonance</category>
-      <advantage>+2 dice to Hardware Tests</advantage>
-      <disadvantage>Technomancers who follow Daedalus tend to interact with the machines on which they are working in an even more subconscious manner than usual. As a result, modifications they make are geared towards someone with their talents and worldview, rather than something that is intuitive to a mundane user or even a non-Daedalus technomancer. Devices built or modified by such technomancers have a more arcane user interface, imposing a –2 modifier on anyone who wants to legitimately use it.</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 die for Machine sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die for Fault sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
-      <page>150</page>
+      <advantage>+1 dice pool bonus for Hardware tests, +1 limit on Pilot skill tests when jumped in.</advantage>
+      <disadvantage>–1 dice and limit for all actions in the Deep Resonance.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Hardware</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
+      <source>KC</source>
+      <page>103</page>
     </mentor>
     <mentor>
       <id>c45c123c-06c7-42b3-a2ee-01e37f2f7bf8</id>
-      <name>Delphi</name>
+      <name>Delphi (The Oracle)</name>
       <category>Resonance</category>
-      <advantage>+2 dice for Analyze Tests</advantage>
-      <disadvantage>Delphi technomancers don’t adapt easily to unexpected situations. They must make a Willpower + Logic (3) Test to make any quick decisions in situations they have not planned for.</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 die for Code sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die for Tutor sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
-      <page>151</page>
+      <advantage>+1 bonus to dice pool and limit when threading complex forms.</advantage>
+      <disadvantage>–2 modifier to the technomancer’s Initiative Score.</disadvantage>
+      <bonus>
+          <initiative>-2</initiative>
+          <matrixinitiative>-2</matrixinitiative>
+          <specificskill>
+              <name>Compiling</name>
+              <bonus>1</bonus>
+          </specificskill>
+      </bonus>
+      <source>KC</source>
+      <page>104</page>
     </mentor>
     <mentor>
       <id>df42911f-0542-4fae-80d1-39573547ff68</id>
-      <name>Disinformation</name>
-      <category>Dissonance</category>
-      <advantage>+1 die to all test with skills from the Influence skill group</advantage>
-      <disadvantage>Disinformants must succeed in a Willpower + Charisma (3) Test to pass truthful, complete, or non-doctored information via the Matrix to non-dissonant technomancers.</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 die for dissonant Data sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die for dissonant Tutor sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
-      <page>177</page>
+      <name>Intrusion Countermeasure (The Guardian)</name>
+      <category>Resonance</category>
+      <advantage>+1 bonus to dice pool and limit in cybercombat, +1 to firewall.</advantage>
+      <disadvantage> –1 dice pool penalty when attacking IC in cybercombat.</disadvantage>
+        <bonus>
+          <livingpersonafirewall>1</livingpersonafirewall>
+          <specificskill>
+              <name>Cybercombat</name>
+              <bonus>1</bonus>
+          </specificskill>
+        </bonus>
+      <source>KC</source>
+      <page>104</page>
     </mentor>
     <mentor>
       <id>da2f3bad-d934-461a-aa92-60fc6e5c3ef7</id>
-      <name>Echelon</name>
+      <name>Probe (The Scout)</name>
       <category>Resonance</category>
-      <advantage>+1 die to Track and Sniffer Tests</advantage>
-      <disadvantage>Echelon followers obsessively work to gather information about what is going on around them. When caught off-guard, without having information they need, or when running blind into a situation, they suffer a –1 dice pool modifier on all actions as long as the situation remains.</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 die for Crack sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die for Sleuth sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
-      <page>151</page>
+      <advantage>+2 dice pool bonus and +1 limit on all actions when directly connected to an isolated system.</advantage>
+      <disadvantage>–1 limit penalty when logged into more than one grid.</disadvantage>
+      <source>KC</source>
+      <page>104</page>
     </mentor>
     <mentor>
       <id>de755412-5cae-4859-880f-75a7bd68d5a4</id>
-      <name>Flow</name>
+      <name>Shooter (The Soldier)</name>
       <category>Resonance</category>
-      <advantage>+2 dice for Threading Tests</advantage>
-      <disadvantage>–1 die to Cybercombat Attack Tests</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 die for Code sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die for Data sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
-      <page>151</page>
-    </mentor>
-    <mentor>
-      <id>fc11f3d0-4fa1-4425-9ae0-69e6edd9868d</id>
-      <name>Idoru</name>
-      <category>Resonance</category>
-      <advantage>+2 dice on Con Tests</advantage>
-      <disadvantage>Idoru followers must succeed in a Willpower + Logic (3) Test to avoid manipulating data in their favor when the opportunity affords.</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 die for Crack sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die for Sleuth sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
-      <page>151</page>
-    </mentor>
-    <mentor>
-      <id>c9a8412b-47c4-43b6-a439-fab9ad906040</id>
-      <name>Intrusion Countermeasure (IC)</name>
-      <category>Resonance</category>
-      <advantage>+2 dice to all Matrix Damage Resistance Tests except Fading, +1 die for Paladin sprites</advantage>
-      <disadvantage>If an IC technomancer fails to protect or guard something he has committed to, or does not achieve a self-chosen goal, he suffers a –1 dice pool modifier on all actions until he atones for the failure.</disadvantage>
-      <source>UN</source>
-      <page>151</page>
-    </mentor>
-    <mentor>
-      <id>a5a230a8-7aa8-4759-a5e2-0ccf3f3e0dd9</id>
-      <name>Jormungand</name>
-      <category>Dissonance</category>
-      <advantage>+2 dice Corrupt Tests</advantage>
-      <disadvantage>Jormungand technomancers are destructive and will take every opportunity to devastate a node by permanently deleting or corrupting its data. They must succeed in a Willpower + Logic (3) Test to leave a node they have hacked into unscathed.</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 die for dissonant Data sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die for dissonant Code sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
-      <page>177</page>
-    </mentor>
-    <mentor>
-      <id>a366564e-1da4-4684-9552-dfbb50a986cb</id>
-      <name>Nemesis</name>
-      <category>Dissonance</category>
-      <advantage>+2 dice to Con Tests</advantage>
-      <disadvantage>A Nemesis technomancer must make a Willpower + Charisma (3) Test to restrain himself from punishing those whom he feels deserve it.</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 die for dissonant Fault sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die for dissonant Sleuth sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
-      <page>177</page>
-    </mentor>
-    <mentor>
-      <id>dfe40900-5ab6-4b6f-a190-1711898e8f81</id>
-      <name>Noise</name>
-      <category>Dissonance</category>
-      <advantage>+2 dice to Threading Tests</advantage>
-      <disadvantage>Noise technomancers rely on the buzz of Matrix more so than others, and suffer double the modifiers applied to Matrix and non-Matrix actions when caught in static or dead zones (see p. 210, SR4).</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 die for dissonant Courier sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die for dissonant Code sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
-      <page>177</page>
-    </mentor>
-    <mentor>
-      <id>a91fb6a7-5b73-4627-9f73-4d58efd5b538</id>
-      <name>Probe</name>
-      <category>Resonance</category>
-      <advantage>+2 dice to all Scan Tests</advantage>
-      <disadvantage>Probe technomancers receive a –2 dice penalty when hacking on the fly without probing first.</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 die for Crack sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die for Sleuth sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
-      <page>151</page>
-    </mentor>
-    <mentor>
-      <id>b15294e5-5f3d-4e59-bbca-5a722e06663b</id>
-      <name>Pulse</name>
-      <category>Resonance</category>
-      <advantage>+2 dice on Matrix Initiative Tests</advantage>
-      <disadvantage>–2 dice on Hacking Tests when not hacking on the fly</disadvantage>
-      <source>UN</source>
-      <page>151</page>
-    </mentor>
-    <mentor>
-      <id>498135a7-10e1-4c5e-9455-996beb0dce95</id>
-      <name>Shooter</name>
-      <category>Resonance</category>
-      <advantage>+2 dice to all Matrix Attack Tests</advantage>
-      <disadvantage>A Shooter technomancer must succeed in a Willpower + Logic (3) Test to retreat from a Matrix fight.</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 die for Paladin sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die for Tank sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
-      <page>151</page>
-    </mentor>
-    <mentor>
-      <id>e17e1825-730a-40ce-99e3-0daf05a9d68d</id>
-      <name>Snuff</name>
-      <category>Dissonance</category>
-      <advantage>+2 dice to all Sniffer Tests</advantage>
-      <disadvantage>Snuff technomancer suffer a –2 dice pool modifier to resisting addiction to BTL or Matrix media.</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 die for dissonant Crack sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die for dissonant Sleuth sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
-      <page>177</page>
-    </mentor>
-    <mentor>
-      <id>c2208cf0-4848-4a96-bbdd-e0a1b2291e28</id>
-      <name>Tiamat</name>
-      <category>Dissonance</category>
-      <advantage>+2 dice to Cybercombat</advantage>
-      <disadvantage>–1 die to all Hacking Tests</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 die for dissonant Crack sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die for dissonant Tank sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
-      <page>178</page>
-    </mentor>
-    <mentor>
-      <id>bb2e04c3-467c-42d1-bf92-29d457bede47</id>
-      <name>The World Tree</name>
-      <category>Resonance</category>
-      <advantage>+2 dice to Analyze Tests</advantage>
-      <disadvantage>World Tree technomancers are easily distracted by information they find interesting. When faced with new information, unusual data, or phenomena, the technomancer must make a Willpower + Charisma (3) Test to resist dropping his current task to screen, analyze, and acquire the information (if possible).</disadvantage>
-      <choices>
-        <choice>
-          <name>+1 die for Code sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die for Courier sprites</name>
-          <bonus>
-            <selecttext />
-          </bonus>
-        </choice>
-      </choices>
-      <source>UN</source>
-      <page>151</page>
+      <advantage>+1 bonus to dice pool and limit in cybercombat, +1 limit to all attack actions (physical and Matrix)</advantage>
+      <disadvantage>–2 dice pool penalty and –1 limit when compiling sprites.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Cybercombat</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
+      <source>KC</source>
+      <page>104</page>
     </mentor>
   </mentors>
 </chummer>

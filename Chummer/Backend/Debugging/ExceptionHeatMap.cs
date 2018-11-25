@@ -36,7 +36,7 @@ namespace Chummer.Backend
             StackTrace trace = new StackTrace(e.Exception, true);
 
             StackFrame frame = trace.GetFrame(0);
-            // This kind of resolves a crash due to other applications querying Chummer's frames. 
+            // This kind of resolves a crash due to other applications querying Chummer's frames.
             // Specifically, the NVDA screen reader. See https://github.com/chummer5a/chummer5a/issues/1888
             // In theory shouldn't mask any existing issues?
             if (frame == null) return;

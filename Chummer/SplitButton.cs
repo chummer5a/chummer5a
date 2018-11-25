@@ -243,7 +243,7 @@ public class SplitButton : Button
         {
             State = PushButtonState.Hot;
         }
-               
+
     }
 
     protected override void OnMouseLeave(EventArgs e)
@@ -416,7 +416,7 @@ public class SplitButton : Button
         Point middle = new Point(Convert.ToInt32(dropDownRect.Left + dropDownRect.Width / 2), Convert.ToInt32(dropDownRect.Top + dropDownRect.Height / 2));
 
         //if the width is odd - favor pushing it over one pixel right.
-        middle.X += (dropDownRect.Width % 2);
+        middle.X += (dropDownRect.Width & 1);
 
         Point[] arrow = { new Point(middle.X - 2, middle.Y - 1), new Point(middle.X + 3, middle.Y - 1), new Point(middle.X, middle.Y + 2) };
 
@@ -432,7 +432,7 @@ public class SplitButton : Button
         {
             if (AutoSize)
                 return CalculateButtonAutoSize();
-                
+
             if (!string.IsNullOrEmpty(Text) && TextRenderer.MeasureText(Text, Font).Width + SplitSectionWidth > preferredSize.Width)
                 return preferredSize + new Size(SplitSectionWidth + BorderSize * 2, 0);
         }
@@ -484,8 +484,8 @@ public class SplitButton : Button
 
     #region Button Layout Calculations
 
-    //The following layout functions were taken from Mono's Windows.Forms 
-    //implementation, specifically "ThemeWin32Classic.cs", 
+    //The following layout functions were taken from Mono's Windows.Forms
+    //implementation, specifically "ThemeWin32Classic.cs",
     //then modified to fit the context of this splitButton
 
     private void CalculateButtonTextAndImageLayout(ref Rectangle content_rect, out Rectangle textRectangle, out Rectangle imageRectangle)

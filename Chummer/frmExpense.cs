@@ -159,7 +159,7 @@ namespace Chummer
 
         private void chkKarmaNuyenExchange_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkKarmaNuyenExchange.Checked)
+            if (chkKarmaNuyenExchange.Checked && !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString))
             {
                 txtDescription.Text = KarmaNuyenExchangeString;
             }
@@ -177,6 +177,7 @@ namespace Chummer
 
         private void frmExpanse_Load(object sender, EventArgs e)
         {
+            chkKarmaNuyenExchange.Visible = !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);
             chkKarmaNuyenExchange.Text = KarmaNuyenExchangeString;
         }
     }

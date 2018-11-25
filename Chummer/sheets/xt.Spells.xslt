@@ -25,9 +25,6 @@
       top: 50%;
       width: 100%;
       }
-      th {
-      text-align: center;
-      }
     </style>
     <style media="print">
       h5 {
@@ -77,7 +74,7 @@
             <xsl:when test="category_english = 'Enchantments'">
               <xsl:value-of select="$lang.Enchantments"/>
             </xsl:when>
-            <xsl:when test="category_english = 'Ritual'">
+            <xsl:when test="category_english = 'Rituals'">
               <xsl:value-of select="$lang.Rituals"/>
             </xsl:when>
             <xsl:otherwise>
@@ -102,50 +99,19 @@
           <xsl:value-of select="type"/>
         </td>
         <td style="text-align: center" valign="top">
-          <xsl:choose>
-            <xsl:when test="range = $lang.tstRange1">
-              <xsl:value-of select="$lang.Touch"/>
-            </xsl:when>
-            <xsl:when test="range = $lang.tstRange2">
-              <xsl:value-of select="$lang.LineofSight"/>
-            </xsl:when>
-            <xsl:when test="range = $lang.tstRange3 or range = $lang.tstRange4">
-              <xsl:value-of select="$lang.LineofSight"/> (<xsl:value-of select="$lang.Area"/>)
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="range"/>
-            </xsl:otherwise>
-          </xsl:choose>
+          <xsl:call-template name="fnx-range">
+            <xsl:with-param name="code" select="range"/>
+          </xsl:call-template>
         </td>
         <td style="text-align: center" valign="top">
-          <xsl:choose>
-            <xsl:when test="damage = $lang.tstDamage1">
-              <xsl:value-of select="$lang.Physical"/>
-            </xsl:when>
-            <xsl:when test="damage = $lang.tstDamage2">
-              <xsl:value-of select="$lang.Stun"/>
-            </xsl:when>
-            <xsl:when test="damage = '0'">-</xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="damage"/>
-            </xsl:otherwise>
-          </xsl:choose>
+          <xsl:call-template name="fnx-damage">
+            <xsl:with-param name="code" select="damage"/>
+          </xsl:call-template>
         </td>
         <td style="text-align: center" valign="top">
-          <xsl:choose>
-            <xsl:when test="duration = $lang.tstDuration1">
-              <xsl:value-of select="$lang.Instantaneous"/>
-            </xsl:when>
-            <xsl:when test="duration = $lang.tstDuration2">
-              <xsl:value-of select="$lang.Permanent"/>
-            </xsl:when>
-            <xsl:when test="duration = $lang.tstDuration3">
-              <xsl:value-of select="$lang.Sustained"/>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="duration"/>
-            </xsl:otherwise>
-          </xsl:choose>
+          <xsl:call-template name="fnx-duration">
+            <xsl:with-param name="code" select="duration"/>
+          </xsl:call-template>
         </td>
         <td style="text-align: center" valign="top">
           <xsl:value-of select="dv"/>

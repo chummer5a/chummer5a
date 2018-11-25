@@ -3436,7 +3436,7 @@
       <type>M</type>
       <required>
         <allof>
-          <metamagicart>Invocation</metamagicart>
+          <art>Invocation</art>
         </allof>
       </required>
     </spell>
@@ -4348,7 +4348,7 @@
       <duration>S</duration>
       <dv>F-2</dv>
       <range>Special</range>
-      <type>M</type>
+      <type>P</type>
     </spell>
     <spell>
       <id>1f10cb4f-67d6-4193-b897-1a7f5ab67c2a</id>
@@ -5058,6 +5058,34 @@
       </required>
     </spell>
     <!-- End Region -->
+    <!-- End Region -->
+    <!-- Region Better Than Bad -->
+    <spell>
+      <id>89046778-a77a-4f21-a448-a750af0898eb</id>
+      <name>Astral Disruption</name>
+      <page>158</page>
+      <source>BTB</source>
+      <category>Manipulation</category>
+      <damage>0</damage>
+      <descriptor>Mana</descriptor>
+      <duration>S</duration>
+      <dv>F-2</dv>
+      <range>LOS</range>
+      <type>M</type>
+    </spell>
+    <spell>
+      <id>4c595074-add0-40da-a707-598d2b94ae4f</id>
+      <name>Mass Astral Disruption</name>
+      <page>158</page>
+      <source>BTB</source>
+      <category>Manipulation</category>
+      <damage>0</damage>
+      <descriptor>Mana, Area</descriptor>
+      <duration>S</duration>
+      <dv>F</dv>
+      <range>LOS</range>
+      <type>M</type>
+    </spell>
     <!-- End Region -->
   </spells>
 </chummer>

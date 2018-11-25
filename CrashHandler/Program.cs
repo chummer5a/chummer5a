@@ -33,7 +33,7 @@ namespace CrashHandler
 					Application.Run(new frmNoMoreUserInput(dmper));
 				}
 			}
-			finally 
+			finally
 			{
 				//Last ditch attempt at closing chummer if not done yet
 				try
@@ -52,7 +52,7 @@ namespace CrashHandler
 		/// </summary>
 		[STAThread]
 		static void Main(string[] args)
-		{ 
+		{
             for (int i = 0; i < args.Length - 1; ++i)
             {
                 if (s_DictionaryFunctions.TryGetValue(args[i], out Action<string[]> actCachedAction))

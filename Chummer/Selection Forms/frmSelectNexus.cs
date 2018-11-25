@@ -229,7 +229,7 @@ namespace Chummer
 
             Gear objNexus = new Gear(_objCharacter)
             {
-                Name = LanguageManager.GetString("String_SelectNexus_Nexus", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_SelectNexus_Processor", GlobalOptions.Language) + ' ' + intProcessor.ToString() + ')',
+                Name = LanguageManager.GetString("String_SelectNexus_Nexus", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_SelectNexus_Processor", GlobalOptions.Language) + ' ' + intProcessor.ToString() + ')',
                 Cost = decCost.ToString(GlobalOptions.InvariantCultureInfo),
                 Avail = "0",
                 Category = "Nexus",
@@ -239,7 +239,7 @@ namespace Chummer
 
             Gear objResponse = new Gear(_objCharacter)
             {
-                Name = LanguageManager.GetString("String_Response", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + ' ' + intResponse.ToString() + ')',
+                Name = LanguageManager.GetString("String_Response", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + ' ' + intResponse.ToString() + ')',
                 Category = "Nexus Module",
                 Cost = "0",
                 Avail = strResponseAvail,
@@ -250,7 +250,7 @@ namespace Chummer
 
             Gear objSignal = new Gear(_objCharacter)
             {
-                Name = LanguageManager.GetString("String_Signal", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + ' ' + intSignal.ToString() + ')',
+                Name = LanguageManager.GetString("String_Signal", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + ' ' + intSignal.ToString() + ')',
                 Category = "Nexus Module",
                 Cost = "0",
                 Avail = "0",
@@ -261,7 +261,7 @@ namespace Chummer
 
             Gear objSystem = new Gear(_objCharacter)
             {
-                Name = LanguageManager.GetString("String_System", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + ' ' + intSystem.ToString() + ')',
+                Name = LanguageManager.GetString("String_System", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + ' ' + intSystem.ToString() + ')',
                 Category = "Nexus Module",
                 Cost = "0",
                 Avail = strSystemAvail,
@@ -272,7 +272,7 @@ namespace Chummer
 
             Gear objFirewall = new Gear(_objCharacter)
             {
-                Name = LanguageManager.GetString("String_Firewall", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + ' ' + intFirewall.ToString() + ')',
+                Name = LanguageManager.GetString("String_Firewall", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + ' ' + intFirewall.ToString() + ')',
                 Category = "Nexus Module",
                 Cost = "0",
                 Avail = strFirewallAvail,
@@ -283,7 +283,7 @@ namespace Chummer
 
             Gear objPersona = new Gear(_objCharacter)
             {
-                Name = LanguageManager.GetString("String_SelectNexus_PersonaLimit", GlobalOptions.Language) + " (" + intPersona.ToString() + ')',
+                Name = LanguageManager.GetString("String_SelectNexus_PersonaLimit", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + intPersona.ToString() + ')',
                 Category = "Nexus Module",
                 Cost = "0",
                 Avail = "0",

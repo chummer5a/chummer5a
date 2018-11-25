@@ -44,7 +44,7 @@ namespace Chummer
 
             try
             {
-                string strFile = Path.Combine(Application.StartupPath, "chummerlog.txt");
+                string strFile = Path.Combine(Utils.GetStartupPath, "chummerlog.txt");
                 report.AddData("chummerlog.txt", new StreamReader(strFile, Encoding.UTF8, true).BaseStream);
             }
             catch(Exception ex)
@@ -52,7 +52,7 @@ namespace Chummer
                 report.AddData("chummerlog.txt", ex.ToString());
             }
 
-            //Considering doing some magic with 
+            //Considering doing some magic with
             //Application.OpenForms
             //And reflection to all savefiles
             //here
@@ -60,7 +60,7 @@ namespace Chummer
             //try to include default settings file
             try
             {
-                string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
+                string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", "default.xml");
                 report.AddData("default.xml", new StreamReader(strFilePath, Encoding.UTF8, true).BaseStream);
             }
             catch (Exception ex)
@@ -73,7 +73,7 @@ namespace Chummer
             MessageBox.Show("Crash report sent." + Environment.NewLine + "Please refer to the crash id " + report.Id);
         }
 
-        private readonly List<KeyValuePair<string, Stream>> values; 
+        private readonly List<KeyValuePair<string, Stream>> values;
 
         /// <summary>
         /// Unique ID for the crash report, makes a user able to refer to a specific report
@@ -197,7 +197,7 @@ namespace Chummer
                 };
 
                 MailMessage message = new MailMessage(address, address);
-                
+
                 //Forwarding rule used instead?
                 message.CC.Add("chummer5isalive+chummerdump@gmail.com");
 

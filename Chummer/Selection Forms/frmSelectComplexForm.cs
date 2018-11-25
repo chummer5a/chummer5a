@@ -42,10 +42,9 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            MoveControls();
             // Load the Complex Form information.
             _xmlBaseComplexFormsNode = XmlManager.Load("complexforms.xml").GetFastNavigator().SelectSingleNode("/chummer/complexforms");
-            
+
             if (_objCharacter.IsCritter)
             {
                 _xmlOptionalComplexFormNode = XmlManager.Load("critters.xml").GetFastNavigator().SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]") ??
@@ -78,7 +77,7 @@ namespace Chummer
                 lblDuration.Text = string.Empty;
                 lblSource.Text = string.Empty;
                 lblFV.Text = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
+                lblSource.SetToolTip(string.Empty);
                 return;
             }
 
@@ -139,16 +138,15 @@ namespace Chummer
                         .CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV", GlobalOptions.Language))
                         .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", GlobalOptions.Language));
                 }
-                
+
                 lblFV.Text = strFV;
-                
+
                 string strSource = xmlComplexForm.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strPage = xmlComplexForm.SelectSingleNode("altpage")?.Value ?? xmlComplexForm.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
 
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource,
-                    CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter +
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter +
                     LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
             }
             else
@@ -156,8 +154,13 @@ namespace Chummer
                 lblDuration.Text = string.Empty;
                 lblSource.Text = string.Empty;
                 lblFV.Text = string.Empty;
-                GlobalOptions.ToolTipProcessor.SetToolTip(lblSource, string.Empty);
+                lblSource.SetToolTip(string.Empty);
             }
+
+            lblDurationLabel.Visible = !string.IsNullOrEmpty(lblDuration.Text);
+            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+            lblFVLabel.Visible = !string.IsNullOrEmpty(lblFV.Text);
+            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -238,7 +241,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            
+
             string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
 
             strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
@@ -290,19 +293,9 @@ namespace Chummer
             }
         }
 
-        private void MoveControls()
+        private void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            int intLeft = lblDurationLabel.Width;
-            intLeft = Math.Max(intLeft, lblTargetLabel.Width);
-            intLeft = Math.Max(intLeft, lblFV.Width);
-            intLeft = Math.Max(intLeft, lblSourceLabel.Width);
-
-            lblTarget.Left = lblTargetLabel.Left + intLeft + 6;
-            lblDuration.Left = lblDurationLabel.Left + intLeft + 6;
-            lblFV.Left = lblFVLabel.Left + intLeft + 6;
-            lblSource.Left = lblSourceLabel.Left + intLeft + 6;
-
-            lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
+            CommonFunctions.OpenPDFFromControl(sender, e);
         }
         #endregion
     }

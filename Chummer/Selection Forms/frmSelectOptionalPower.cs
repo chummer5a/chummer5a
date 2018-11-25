@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,13 +33,13 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            
+
             foreach (Tuple<string, string> lstObject in lstPowerExtraPairs)
             {
                 string strName = LanguageManager.TranslateExtra(lstObject.Item1, GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(lstObject.Item2))
                 {
-                    strName += " (" + LanguageManager.TranslateExtra(lstObject.Item2, GlobalOptions.Language) + ')';
+                    strName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.TranslateExtra(lstObject.Item2, GlobalOptions.Language) + ')';
                 }
                 _lstPowerItems.Add(new ListItem(lstObject, strName));
             }
