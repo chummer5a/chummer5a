@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Chummer;
 using ChummerHub.Client.Model;
 using SINners.Models;
+using ChummerHub.Client.Backend;
 
 namespace ChummerHub.Client.UI
 {
@@ -27,23 +28,34 @@ namespace ChummerHub.Client.UI
 
         private void SINnersSearchSearch_Load(object sender, EventArgs e)
         {
-            motherTag = new SearchTag();
-            ComboBox cbChar = GetCbFromMembers(dummyCharacter);
+            motherTag = new SearchTag()
+            {
+                STags = new List<SearchTag>(),
+                MyRuntimeObject = dummyCharacter,
+                STagName = "Root",
+                STagValue = "Search"
+            };
+            ComboBox cbChar = GetCbFromMembers(motherTag);
             
             flpReflectionMembers.Controls.Add(cbChar);
         }
 
-        private ComboBox GetCbFromMembers(Object data)
+        private ComboBox GetCbFromMembers(SearchTag stag)
         {
             ComboBox cb = new ComboBox();
+            cb.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb.FlatStyle = FlatStyle.Standard;
             cb.SelectedValueChanged += Cb_SelectedValueChanged;
             
+            var list = SearchTagExtractor.ExtractTagsFromAttributes(stag.MyRuntimeObject, stag);
+            cb.DataSource = list;
+            cb.DisplayMember = "STagName";
             return cb;
         }
 
         private void Cb_SelectedValueChanged(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            return;
         }
     }
 }

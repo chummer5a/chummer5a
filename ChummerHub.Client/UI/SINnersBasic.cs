@@ -44,7 +44,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                var response = await StaticUtils.Client.GetByIdWithHttpMessagesAsync(myUC.MyCharacterExtended.MySINnerFile.SiNnerId.Value);
+                var response = await StaticUtils.Client.GetByIdWithHttpMessagesAsync(myUC.MyCharacterExtended.MySINnerFile.Id.Value);
                 if (response.Response.StatusCode == HttpStatusCode.OK)
                 {
                     this.bUpload.Text = "Remove from SINners";
@@ -126,5 +126,7 @@ namespace ChummerHub.Client.UI
         {
 
         }
+
+        
     }
 }

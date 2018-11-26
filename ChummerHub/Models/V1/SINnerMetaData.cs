@@ -13,7 +13,7 @@ namespace ChummerHub.Models.V1
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
-        public Guid SINnerMetaDataId { get; set; }
+        public Guid Id { get; set; }
 
         public SINnerVisibility Visibility { get; set; }
 

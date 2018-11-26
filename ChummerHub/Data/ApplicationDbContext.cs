@@ -20,15 +20,15 @@ namespace ChummerHub.Data
         {
             base.OnModelCreating(builder);
             builder.Entity<ChummerHub.Models.V1.SINner>()
-                .HasIndex(b => b.SINnerId).IsUnique();
+                .HasIndex(b => b.Id).IsUnique();
             builder.Entity<ChummerHub.Models.V1.SINnerComment>()
-                .HasIndex(b => b.SINnerId);
+                .HasIndex(b => b.Id);
             builder.Entity<ChummerHub.Models.V1.SINner>()
-                .HasIndex(b => b.UploadClientId);
+                .HasIndex(b => b.Id);
             builder.Entity<ChummerHub.Models.V1.Tag>()
-                .HasIndex(b => b.TagId).IsUnique();
+                .HasIndex(b => b.Id).IsUnique();
             builder.Entity<ChummerHub.Models.V1.Tag>()
-                .HasIndex(b => b.SINnerId);
+                .HasIndex(b => b.Id);
             builder.Entity<ChummerHub.Models.V1.Tag>()
                 .HasIndex(b => new { b.TagName, b.TagValue });
            
@@ -37,7 +37,7 @@ namespace ChummerHub.Data
 
         public DbSet<ChummerHub.Models.V1.SINner> SINners { get; set; }
 
-        public DbSet<ApplicationUser> dSINners { get; set; }
+        //public DbSet<ApplicationUser> dSINners { get; set; }
 
         public DbSet<ChummerHub.Models.V1.UploadClient> UploadClients { get; set; }
 

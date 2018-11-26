@@ -488,8 +488,6 @@ namespace SINners
             return _result;
         }
 
-        /// <param name='uid'>
-        /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
         /// </param>
@@ -499,7 +497,7 @@ namespace SINners
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<ApplicationUser>> GetUserByGuidWithHttpMessagesAsync(Guid? uid = default(Guid?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<ApplicationUser>> GetUserByAuthorizationWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -508,22 +506,12 @@ namespace SINners
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("uid", uid);
                 tracingParameters.Add("cancellationToken", cancellationToken);
-                ServiceClientTracing.Enter(_invocationId, this, "GetUserByGuid", tracingParameters);
+                ServiceClientTracing.Enter(_invocationId, this, "GetUserByAuthorization", tracingParameters);
             }
             // Construct URL
             var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetUserByGuid").ToString();
-            List<string> _queryParameters = new List<string>();
-            if (uid != null)
-            {
-                _queryParameters.Add(string.Format("uid={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(uid, this.SerializationSettings).Trim('"'))));
-            }
-            if (_queryParameters.Count > 0)
-            {
-                _url += "?" + string.Join("&", _queryParameters);
-            }
+            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetUserByAuthorization").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;

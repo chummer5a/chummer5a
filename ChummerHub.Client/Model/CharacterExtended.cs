@@ -24,7 +24,7 @@ namespace ChummerHub.Client.Model
             {
                 MySINnerFile.SiNnerMetaData = new SINnerMetaData()
                 {
-                    SiNnerMetaDataId = Guid.NewGuid()
+                    Id = Guid.NewGuid(),
                 };
                 MySINnerFile.SiNnerMetaData.Tags = new List<Tag>();
             }
@@ -32,6 +32,13 @@ namespace ChummerHub.Client.Model
             {
                 MySINnerFile = JsonConvert.DeserializeObject<SINners.Models.SINner>(fileElement);
             }
+            if (MySINnerFile.SiNnerMetaData.Visibility == null)
+            {
+                if (!String.IsNullOrEmpty(Properties.Settings.Default.SINnerVisibility))
+                    MySINnerFile.SiNnerMetaData.Visibility = JsonConvert.DeserializeObject<SINnerVisibility>(Properties.Settings.Default.SINnerVisibility);
+            }
+            
+
         }
 
         public Character MyCharacter { get; }
@@ -47,7 +54,7 @@ namespace ChummerHub.Client.Model
             tag.MyRuntimeObject = MyCharacter;
             tag.MyParentTag = null;
             tag.ParentTagId = Guid.Empty;
-            tag.TagId = Guid.NewGuid();
+            tag.Id = Guid.NewGuid();
             tag.TagName = "Reflection";
             //Backend.TagExtractor.MyReflectionCollection = null;
 
@@ -96,15 +103,15 @@ namespace ChummerHub.Client.Model
 
             Guid singuid;
             if (MySINnerIds.TryGetValue(MyCharacter.Alias, out singuid))
-                MySINnerFile.SiNnerId = singuid;
+                MySINnerFile.Id = singuid;
             else
             {
-                MySINnerFile.SiNnerId = Guid.NewGuid();
-                MySINnerIds.Add(MyCharacter.Alias, MySINnerFile.SiNnerId.Value);
+                MySINnerFile.Id = Guid.NewGuid();
+                MySINnerIds.Add(MyCharacter.Alias, MySINnerFile.Id.Value);
                 MySINnerIds = MySINnerIds; //Save it!
             }
 
-            var tempDir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), MySINnerFile.SiNnerId.Value.ToString());
+            var tempDir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), MySINnerFile.Id.Value.ToString());
             if (!Directory.Exists(tempDir))
                 Directory.CreateDirectory(tempDir);
             foreach(var file in Directory.GetFiles(tempDir))
@@ -115,7 +122,7 @@ namespace ChummerHub.Client.Model
             MyCharacter.Save(tempfile);
             //Byte[] bytes = File.ReadAllBytes(tempfile);
             
-            string zipPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), MySINnerFile.SiNnerId.Value + ".chum5z");
+            string zipPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), MySINnerFile.Id.Value + ".chum5z");
             if (File.Exists(zipPath))
                 File.Delete(zipPath);
             ZipFile.CreateFromDirectory(tempDir, zipPath);

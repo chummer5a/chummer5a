@@ -67,7 +67,7 @@ namespace ChummerHub.Client.Backend
                         foreach (var classprop in classprops)
                         {
                             var tag = new Tag(item, classprop.Item1);
-                            tag.ParentTagId = parenttag.TagId;
+                            tag.ParentTagId = parenttag.Id;
                             tag.MyParentTag = parenttag;
                             parenttag.Tags.Add(tag);
                             resulttags.Add(tag);
@@ -152,8 +152,8 @@ namespace ChummerHub.Client.Backend
             tag.MyParentTag = parenttag;
             if (tag.MyParentTag != null)
                 tag.MyParentTag.Tags.Add(tag);
-            tag.ParentTagId = parenttag?.TagId;
-            tag.TagId = Guid.NewGuid();
+            tag.ParentTagId = parenttag?.Id;
+            tag.Id = Guid.NewGuid();
             if (!String.IsNullOrEmpty(attribute.TagName))
                 tag.TagName = attribute.TagName;
             else if (prop.Item1 != null)
@@ -293,8 +293,8 @@ namespace ChummerHub.Client.Backend
                     tag.MyParentTag = parenttag;
                     if (tag.MyParentTag != null)
                         tag.MyParentTag.Tags.Add(tag);
-                    tag.ParentTagId = parenttag?.TagId;
-                    tag.TagId = Guid.NewGuid();
+                    tag.ParentTagId = parenttag?.Id;
+                    tag.Id = Guid.NewGuid();
                     tag.TagName = property.Name;
                 
                     tag.MyRuntimeObject = propValue1;

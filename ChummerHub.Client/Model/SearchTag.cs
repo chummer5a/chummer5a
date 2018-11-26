@@ -11,8 +11,19 @@ using System.Xml.Serialization;
 
 namespace SINners.Models
 {
+    public enum EnumSSearchOpterator
+    {
+        bigger,
+        smaller,
+        equal,
+        contains
+    }
+
     public partial class SearchTag
     {
+
+        
+
         [IgnoreDataMember]
         [XmlIgnore]
         [JsonIgnore]
@@ -35,5 +46,13 @@ namespace SINners.Models
         public object MyRuntimeObject { get;  set; }
         public HubClassTagAttribute MyRuntimeHubClassTag { get;  set; }
         public HubTagAttribute MyRuntimeHubTag { get;  set; }
+
+        public String DisplayText
+        {
+            get
+            {
+                return this.STagName + " " + this.SSearchOpterator + " " + this.STagValue;
+            }
+        }
     }
 }

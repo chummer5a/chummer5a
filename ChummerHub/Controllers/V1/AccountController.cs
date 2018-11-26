@@ -81,13 +81,14 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountByGuid")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountByAuthorization")]
         [Authorize]
-        public async Task<ActionResult<ApplicationUser>> GetUserByGuid(Guid uid)
+        public async Task<ActionResult<ApplicationUser>> GetUserByAuthorization()
         {
             try
             {
-                var user = await _userManager.FindByIdAsync(uid.ToString());
+                var user = await _signInManager.UserManager.GetUserAsync(User);
+                
                 if (user == null)
                     return NotFound();
                 user.PasswordHash = "";

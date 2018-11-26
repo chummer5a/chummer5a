@@ -21,9 +21,9 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINner class.
         /// </summary>
-        public SINner(Guid? siNnerId = default(Guid?), string downloadUrl = default(string), DateTime? uploadDateTime = default(DateTime?), SINnerMetaData siNnerMetaData = default(SINnerMetaData))
+        public SINner(Guid? id = default(Guid?), string downloadUrl = default(string), DateTime? uploadDateTime = default(DateTime?), SINnerMetaData siNnerMetaData = default(SINnerMetaData))
         {
-            SiNnerId = siNnerId;
+            Id = id;
             DownloadUrl = downloadUrl;
             UploadDateTime = uploadDateTime;
             SiNnerMetaData = siNnerMetaData;
@@ -31,8 +31,8 @@ namespace SINners.Models
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "siNnerId")]
-        public Guid? SiNnerId { get; set; }
+        [JsonProperty(PropertyName = "id")]
+        public Guid? Id { get; set; }
 
         /// <summary>
         /// </summary>

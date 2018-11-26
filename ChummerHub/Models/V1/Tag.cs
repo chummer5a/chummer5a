@@ -15,7 +15,7 @@ namespace ChummerHub.Models.V1
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
-        public Guid TagId { get; set; }
+        public Guid Id { get; set; }
         public string TagName { get; set; }
         public string TagValue { get; set; }
         
@@ -69,13 +69,13 @@ namespace ChummerHub.Models.V1
         {
             this.SINner = sinner;
             if (sinner != null)
-                this.SINnerId = sinner.SINnerId;
+                this.SINnerId = sinner.Id;
             this.ParentTag = parent;
             this.TagName = "";
             this.TagValue = "";
             this.ParentTagId = Guid.Empty;
             if (parent != null)
-                this.ParentTagId = parent.TagId;
+                this.ParentTagId = parent.Id;
             this.Tags = new List<Tag>();
             this.TagType = TagValueEnum.unknown;
             IsUserGenerated = false;

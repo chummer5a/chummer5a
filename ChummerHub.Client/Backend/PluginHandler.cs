@@ -41,7 +41,7 @@ namespace Chummer.Plugins
                 Properties.Settings.Default.Save();
             }
 
-            MyUploadClient.UploadClientId = Properties.Settings.Default.UploadClientId;
+            MyUploadClient.Id = Properties.Settings.Default.UploadClientId;
         }
 
         public override string ToString()

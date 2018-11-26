@@ -32,7 +32,7 @@ namespace ChummerHub.Models.V1.Examples
                 UploadDateTime = DateTime.Now,
                 Client = new UploadClient()
                 {
-                    UploadClientId = id,
+                    Id = id,
                     ChummerVersion = System.Reflection.Assembly.GetAssembly(typeof(UploadInfoObjectExample)).GetName().Version.ToString(),
                 }
             };

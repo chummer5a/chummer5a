@@ -16,7 +16,7 @@ namespace ChummerHub.Models.V1
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
-        public Guid UploadClientId { get; set; }
+        public Guid Id { get; set; }
 
         public string ChummerVersion { get; set; }
 
@@ -24,7 +24,7 @@ namespace ChummerHub.Models.V1
 
         public UploadClient()
         {
-            this.UploadClientId = Guid.Empty;
+            this.Id = Guid.Empty;
             this.ChummerVersion = new Version().ToString();
             this.ClientSecret = "";
         }

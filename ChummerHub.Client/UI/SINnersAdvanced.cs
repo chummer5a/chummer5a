@@ -65,7 +65,7 @@ namespace ChummerHub.Client.UI
                     var child = new TreeNode()
                     {
                         Text = branch.TagName,
-                        Tag = branch.TagId,
+                        Tag = branch.Id,
                     };
                     PopulateTree(ref child, branch.Tags);
                     root.Nodes.Add(child);
@@ -78,7 +78,7 @@ namespace ChummerHub.Client.UI
                     var child = new TreeNode()
                     {
                         Text = tag.TagName,
-                        Tag = tag.TagId,
+                        Tag = tag.Id,
                     };
                     if (!String.IsNullOrEmpty(tag.TagValue))
                         child.Text += ": " + tag.TagValue;

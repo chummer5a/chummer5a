@@ -28,18 +28,18 @@ namespace ChummerHub.Models.V1.Examples
             Guid childTagGuid = Guid.NewGuid();
             var sin =  new SINner
             {
-                SINnerId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                  UploadClientId = Guid.NewGuid()
             };
             sin.SINnerMetaData = new SINnerMetaData()
             {
-                SINnerMetaDataId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 Tags = new List<Tag>(),
               
             };
             var parenttag = new Tag(sin, null)
             {
-                TagId = parentTagGuid,
+                Id = parentTagGuid,
                 TagName = "TestTag",
                 TagValue = "TestTagValue",
                 TagType = Tag.TagValueEnum.@string,
@@ -50,7 +50,7 @@ namespace ChummerHub.Models.V1.Examples
             {
                 new Tag(sin, parenttag)
                 {
-                    TagId = childTagGuid,
+                    Id = childTagGuid,
                     TagName = "TestChildTag",
                     TagValue = "TestChildTagValue",
                     TagType = Tag.TagValueEnum.@string,

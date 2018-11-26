@@ -228,7 +228,7 @@ namespace ChummerHub.Services.GoogleDrive
                 {
                     fileMetadata.Properties.Add(tag.Display, tag.TagValue);
                 }
-                fileMetadata.Name = chummerFile.SINnerId.ToString() + ".chum5z";
+                fileMetadata.Name = chummerFile.Id.ToString() + ".chum5z";
                 fileMetadata.Parents = new List<string> { _folderId };
                 _logger.LogError("Uploading " + uploadFile.FileName + " as " + fileMetadata.Name);// + " to folder: " + _folderId);
                 //fileMetadata.MimeType = _contentType;
@@ -247,7 +247,7 @@ namespace ChummerHub.Services.GoogleDrive
                 }
                 if (uploadprogress.Status == Google.Apis.Upload.UploadStatus.Failed)
                 {
-                    _logger.LogError("Chummer \"" + chummerFile.SINnerId.ToString() + "\" upload failed: " + uploadprogress.Exception?.ToString());
+                    _logger.LogError("Chummer \"" + chummerFile.Id.ToString() + "\" upload failed: " + uploadprogress.Exception?.ToString());
                     throw uploadprogress.Exception;
                 }
 
@@ -263,7 +263,7 @@ namespace ChummerHub.Services.GoogleDrive
                 throw;
             }
             
-            _logger.LogError("Chummer \"" + chummerFile.SINnerId.ToString() + "\" uploaded: " + request.ResponseBody?.ToString());
+            _logger.LogError("Chummer \"" + chummerFile.Id.ToString() + "\" uploaded: " + request.ResponseBody?.ToString());
 
             chummerFile.GoogleDriveFileId = request.ResponseBody?.Id;
             chummerFile.DownloadUrl = request.ResponseBody?.WebContentLink;
@@ -290,7 +290,7 @@ namespace ChummerHub.Services.GoogleDrive
             }
             catch(Exception e)
             {
-                string msg = "Error while setting permissions for " + chummerFile.SINnerId + ": " + Environment.NewLine;
+                string msg = "Error while setting permissions for " + chummerFile.Id + ": " + Environment.NewLine;
                 msg += e.ToString();
                 _logger.LogError(msg);
                 throw;

@@ -24,48 +24,62 @@ namespace ChummerHub.Client.UI
         private bool? LoginStatus = null;
         public IList<String> Roles = null;
 
+        private static SINners.Models.SINnerVisibility _SINnerVisibility = null;
         public static SINners.Models.SINnerVisibility SINnerVisibility
         {
             get
             {
-                Properties.Settings.Default.Reload();
+                if (_SINnerVisibility != null)
+                    return _SINnerVisibility;
+                //Properties.Settings.Default.Reload();
                 if (String.IsNullOrEmpty(Properties.Settings.Default.SINnerVisibility))
-                    return new SINners.Models.SINnerVisibility()
-                    {   IsPublic = true, IsGroupVisible = true,
-                        IsVisibleToUserGuids = new List<Guid?>(),
-                        CanEditClientGuids = new List<Guid?>(),
-                        CanEditUserGuids = new List<Guid?>(),
-                        Groupname = "",
-                        SiNnerVisibilityId = Guid.Empty };
+                    return _SINnerVisibility = new SINners.Models.SINnerVisibility()
+                    { IsPublic = true, IsGroupVisible = true,
+                        UserRights = new List<SINerUserRight>()
+                        {
+                            new SINerUserRight()
+                            {
+                                 EMail = Properties.Settings.Default.UserEmail,
+                                  CanEdit = true,
+                                  Id = Guid.NewGuid()
+                            }
+                            
+                        },
+                        Groupname = ""
+                        };
                 try
                 {
-                    return Newtonsoft.Json.JsonConvert.DeserializeObject<SINnerVisibility>(Properties.Settings.Default.SINnerVisibility);
+                    return _SINnerVisibility = Newtonsoft.Json.JsonConvert.DeserializeObject<SINnerVisibility>(Properties.Settings.Default.SINnerVisibility);
                 }
                 catch(Exception e)
                 {
                     System.Diagnostics.Trace.TraceError(e.ToString());
                 }
-                return new SINners.Models.SINnerVisibility()
+                return _SINnerVisibility = new SINners.Models.SINnerVisibility()
                 {
                     IsPublic = true,
                     IsGroupVisible = true,
-                    IsVisibleToUserGuids = new List<Guid?>(),
-                    CanEditClientGuids = new List<Guid?>(),
-                    CanEditUserGuids = new List<Guid?>(),
-                    Groupname = "",
-                    SiNnerVisibilityId = Guid.Empty
+                    UserRights = new List<SINerUserRight>()
+                        {
+                             new SINerUserRight()
+                            {
+                                 EMail = Properties.Settings.Default.UserEmail,
+                                  CanEdit = true,
+                                  Id = Guid.NewGuid()
+                            }
+                        },
+                    Groupname = ""
+                    
                 };
             }
             set
             {
                 if (value != null)
                 {
-                    Properties.Settings.Default.SINnerVisibility = Newtonsoft.Json.JsonConvert.SerializeObject(value);
+                    _SINnerVisibility = value;
                 }
                 else
                     Properties.Settings.Default.SINnerVisibility = null;
-
-                Properties.Settings.Default.Save();
             }
         }
 
@@ -88,9 +102,29 @@ namespace ChummerHub.Client.UI
             this.cbSINnerUrl.DataSource = Properties.Settings.Default.SINnerUrls;
             this.cbSINnerUrl.SelectedItem = Properties.Settings.Default.SINnerUrl;
             this.cbVisibilityIsPublic.BindingContext = new BindingContext();
-            UpdateDisplay();
+            var t = Task.Run(
+                async () =>
+                {
+                    await GetRolesStatus();
+                    UpdateDisplay();
+                });
+            this.cbVisibilityIsPublic.Checked = SINnersOptions.SINnerVisibility.IsPublic.Value;
+            this.cbVisibilityIsGroupVisible.Checked = SINnersOptions.SINnerVisibility.IsGroupVisible.Value;
+            ((ListBox)clbVisibilityToUsers).DataSource = SINnersOptions.SINnerVisibility.UserRightsObservable;
+            ((ListBox)clbVisibilityToUsers).DisplayMember = "EMail";
+            ((ListBox)clbVisibilityToUsers).ValueMember = "CanEdit";
+            for (int i = 0; i < clbVisibilityToUsers.Items.Count; i++)
+            {
+                SINerUserRight obj = (SINerUserRight)clbVisibilityToUsers.Items[i];
+                clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit.Value);
+            }
             cbSINnerUrl.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged;
             
+        }
+
+        ~SINnersOptions()
+        {
+            SINnerVisibility.Save(null);
         }
 
         private async void CbSINnerUrl_SelectedValueChanged(object sender, EventArgs e)
@@ -106,21 +140,26 @@ namespace ChummerHub.Client.UI
 
         public async void UpdateDisplay()
         {
+            if (InvokeRequired)
+            {
+                Invoke((Action)UpdateDisplay);
+                return;
+            }
             try
             {
-                this.UseWaitCursor = true;
                 this.tlpOptions.Enabled = false;
-                Roles = await GetLoginStatus();
+                
                 if (LoginStatus == true)
                 {
+                    if (String.IsNullOrEmpty(Properties.Settings.Default.UserEmail))
+                    {
+                        Properties.Settings.Default.UserEmail = await GetUserEmail();
+                    }
                     this.bLogin.Enabled = false;
                     //this.bLogout.Enabled = true;
                     this.labelAccountStatus.Text = Roles.Aggregate((a, b) => a + ", " + b);// "logged in";
                     this.labelAccountStatus.ForeColor = Color.DarkGreen;
                     HideWebBrowser();
-                    this.cbVisibilityIsPublic.Checked       = SINnersOptions.SINnerVisibility.IsPublic.Value;
-                    this.cbVisibilityIsGroupVisible.Checked = SINnersOptions.SINnerVisibility.IsGroupVisible.Value;
-                    this.lbVisibilityToUsers.DataSource = SINnersOptions.SINnerVisibility.IsVisibleToUsers;
                 }
                 else if (LoginStatus == false)
                 {
@@ -139,7 +178,8 @@ namespace ChummerHub.Client.UI
                     ShowWebBrowser(LoginUrl);
                 }
                 
-                
+
+
             }
             catch(Exception ex)
             {
@@ -148,8 +188,39 @@ namespace ChummerHub.Client.UI
             finally
             {
                 this.tlpOptions.Enabled = true;
+            }
+        }
+
+        private async Task<string> GetUserEmail()
+        {
+            try
+            {
+                this.UseWaitCursor = true;
+                var result = StaticUtils.Client.GetUserByAuthorizationWithHttpMessagesAsync();
+                await result;
+                var user = result.Result.Body;
+                if (user != null)
+                {
+                    Properties.Settings.Default.UserEmail = user.Email;
+                    Properties.Settings.Default.Save();
+                    return user.Email;
+                }
+                return null;
+            }
+            catch (Microsoft.Rest.SerializationException ex)
+            {
+                this.LoginStatus = false;
+                return null;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceWarning(ex.ToString());
+            }
+            finally
+            {
                 this.UseWaitCursor = false;
             }
+            return null;
         }
 
         private void bLogin_ClickAsync(object sender, EventArgs e)
@@ -159,7 +230,7 @@ namespace ChummerHub.Client.UI
 
         private void HideWebBrowser()
         {
-            if (webBrowser1.Document == null)
+            if (webBrowser1?.Document == null)
                 return;
             if (tlpOptions.Controls.Contains(webBrowser1))
             {
@@ -230,17 +301,20 @@ namespace ChummerHub.Client.UI
             }
         }
 
-        private async Task<IList<String>> GetLoginStatus()
+        private async Task<IList<String>> GetRolesStatus()
         {
             try
             {
+                this.UseWaitCursor = true;
                 var result = StaticUtils.Client.GetRolesWithHttpMessagesAsync();
                 await result;
                 var roles = result.Result.Body as IList<string>;
                 if (roles != null && roles.Any())
                 {
                     this.LoginStatus = true;
+                    Roles = roles;
                 }
+                
                 return roles;
             }
             catch(Microsoft.Rest.SerializationException ex)
@@ -251,6 +325,10 @@ namespace ChummerHub.Client.UI
             catch(Exception ex)
             {
                 System.Diagnostics.Trace.TraceWarning(ex.ToString());
+            }
+            finally
+            {
+                this.UseWaitCursor = false;
             }
             return null;
             
@@ -266,9 +344,7 @@ namespace ChummerHub.Client.UI
 
             SINnersOptions.SINnerVisibility.IsPublic = this.cbVisibilityIsPublic.Checked      ;
             SINnersOptions.SINnerVisibility.IsGroupVisible  = this.cbVisibilityIsGroupVisible.Checked;
-            //SINnersOptions.SINnerVisibility.Groupname = this.tbGroupname.Text;
-            //SINnersOptions.SINnerVisibility.IsVisibleToUserList = this.lbVisibilityToUsers.DataSource;
-            Properties.Settings.Default.Save();
+            SINnerVisibility.Save(null);
         }
 
         private void cbVisibilityIsPublic_CheckedChanged(object sender, EventArgs e)
@@ -281,54 +357,70 @@ namespace ChummerHub.Client.UI
             VisibilityUpdate();
         }
 
+        bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         private void bVisibilityAddEmail_Click(object sender, EventArgs e)
         {
             string email = this.tbVisibilityAddEmail.Text;
-            //StaticUtils.Client.Get
-            //SINnersOptions.SINnerVisibility.IsVisibleToUserList.Add()
+            if (!IsValidEmail(email))
+            {
+                MessageBox.Show("Please enter a valid email address!");
+                return;
+            }
+            SINerUserRight ur = new SINerUserRight()
+            {
+                EMail = email,
+                CanEdit = true,
+                Id = Guid.NewGuid()
+            };
+            SINnersOptions.SINnerVisibility.UserRightsObservable.Add(ur);
+            //Save it!
+            SINnerVisibility.Save(this.clbVisibilityToUsers);
         }
 
-        //private async void bLogout_Click(object sender, EventArgs e)
-        //{
-        //    try
-        //    {
-        //        var result = StaticUtils.Client.LogoutWithHttpMessagesAsync();
-        //        await result;
-        //        if (result.Result.Body.Value == true)
-        //        {
-        //            this.LoginStatus = false;
-        //        }
-        //        else
-        //        {
-        //            this.LoginStatus = null;
-        //        }
-        //        StaticUtils.AuthorizationCookieContainer = null;
-        //        //delete old cookie settings
-        //        Properties.Settings.Default.CookieData = null;
-        //        Properties.Settings.Default.Save();
-        //        StaticUtils.Client = null;
+        private void clbVisibilityToUsers_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            var obj = clbVisibilityToUsers.Items[e.Index];
+            var userright = obj as SINerUserRight;
+            if (e.NewValue == CheckState.Checked)
+                userright.CanEdit = true;
+            else
+                userright.CanEdit = false;
+        }
 
-        //    }
-        //    catch (Microsoft.Rest.SerializationException ex)
-        //    {
-        //        this.LoginStatus = null;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        System.Diagnostics.Trace.TraceWarning(ex.ToString());
-        //    }
-        //    UpdateDisplay();
-        //}
+        private void bVisibilityRemove_Click(object sender, EventArgs e)
+        {
+            ListBox.SelectedObjectCollection selectedItems = new ListBox.SelectedObjectCollection(clbVisibilityToUsers);
+            selectedItems = clbVisibilityToUsers.SelectedItems;
 
-        //private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
-        //{
-        //    UpdateDisplay();
-        //    if (LoginStatus == true)
-        //    {
-        //        return;
-        //    }
-        //}
+            if (clbVisibilityToUsers.SelectedIndex != -1)
+            {
+                for (int i = selectedItems.Count - 1; i >= 0; i--)
+                {
+                    var userright = selectedItems[i] as SINerUserRight;
+                    SINnersOptions.SINnerVisibility.UserRightsObservable.Remove(userright);
+                }
+                //Save it!
+                SINnerVisibility.Save(clbVisibilityToUsers);
+            }
+            else
+                MessageBox.Show("No email selected!");
+        }
 
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
 
+        }
     }
 }

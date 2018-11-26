@@ -21,9 +21,9 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SearchTag class.
         /// </summary>
-        public SearchTag(Guid? sTagId = default(Guid?), string sTagName = default(string), string sTagValue = default(string), Guid? sParentTagId = default(Guid?), IList<SearchTag> sTags = default(IList<SearchTag>), string sSearchOpterator = default(string))
+        public SearchTag(Guid? id = default(Guid?), string sTagName = default(string), string sTagValue = default(string), Guid? sParentTagId = default(Guid?), IList<SearchTag> sTags = default(IList<SearchTag>), string sSearchOpterator = default(string))
         {
-            STagId = sTagId;
+            Id = id;
             STagName = sTagName;
             STagValue = sTagValue;
             SParentTagId = sParentTagId;
@@ -33,8 +33,8 @@ namespace SINners.Models
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "sTagId")]
-        public Guid? STagId { get; set; }
+        [JsonProperty(PropertyName = "id")]
+        public Guid? Id { get; set; }
 
         /// <summary>
         /// </summary>

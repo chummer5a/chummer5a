@@ -16,6 +16,7 @@ using ChummerHub.Models.V1.Examples;
 using ChummerHub.Services.GoogleDrive;
 using Microsoft.AspNetCore.Http.Internal;
 using System.IO;
+using Microsoft.AspNetCore.Identity;
 //using Swashbuckle.AspNetCore.Filters;
 
 namespace ChummerHub.Controllers.V1
@@ -30,10 +31,11 @@ namespace ChummerHub.Controllers.V1
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger _logger;
+        private SignInManager<ApplicationUser> _signInManager = null;
 
-        public SINnerController(ApplicationDbContext context, ILogger<SINnerController> logger)
+        public SINnerController(ApplicationDbContext context, ILogger<SINnerController> logger, SignInManager<ApplicationUser> signInManager)
         {
-            
+            _signInManager = signInManager;
             _context = context;
             _logger = logger;
         }
@@ -66,10 +68,10 @@ namespace ChummerHub.Controllers.V1
                 }
                 if (String.IsNullOrEmpty(chummerFile.DownloadUrl))
                 {
-                    string msg = "Chummer " + chummerFile.SINnerId + " does not have a valid DownloadUrl!";
+                    string msg = "Chummer " + chummerFile.Id + " does not have a valid DownloadUrl!";
                     throw new ArgumentException(msg);
                 }
-                string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.InternetCache), chummerFile.SINnerId.ToString() + ".chum5z");
+                string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.InternetCache), chummerFile.Id.ToString() + ".chum5z");
                 using (var client = new WebClient())
                 {
                     client.DownloadFile(new Uri(chummerFile.DownloadUrl), path);
@@ -78,7 +80,7 @@ namespace ChummerHub.Controllers.V1
                 {
                     throw new ArgumentException("No file downloaded from " + chummerFile.DownloadUrl);
                 }
-                var res = new FileResult(chummerFile.SINnerId.ToString() + ".chum5z", path, "application/octet-stream");
+                var res = new FileResult(chummerFile.Id.ToString() + ".chum5z", path, "application/octet-stream");
 
                 return res;
             }
@@ -122,8 +124,9 @@ namespace ChummerHub.Controllers.V1
         [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerExample))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerGet")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             try
@@ -139,8 +142,21 @@ namespace ChummerHub.Controllers.V1
                 {
                     return NotFound();
                 }
+                if (chummerFile.SINnerMetaData.Visibility.IsPublic == true)
+                    return Ok(chummerFile);
+                var user = await _signInManager.UserManager.FindByEmailAsync(User.Identity.Name);
+                if ((from a in chummerFile.SINnerMetaData.Visibility.UserRights where a.EMail.ToUpperInvariant() == user.NormalizedEmail).Any())
+                    return Ok(chummerFile);
+                if (chummerFile.SINnerMetaData.Visibility.IsGroupVisible)
+                {
+                    if (chummerFile.SINnerMetaData.Visibility.Groupname?.ToUpperInvariant()
+                        == user.Groupname?.ToUpperInvariant())
+                    {
+                        return Ok(chummerFile);
+                    }
+                }
 
-                return Ok(chummerFile);
+                return BadRequest("not authorized");
             }
             catch (Exception e)
             {
@@ -159,10 +175,11 @@ namespace ChummerHub.Controllers.V1
         [HttpPut("{id}")]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NoContent)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerPut")]
 
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> Put([FromRoute] Guid id, IFormFile uploadedFile)
         {
             try
@@ -172,7 +189,12 @@ namespace ChummerHub.Controllers.V1
                 {
                     return NotFound();
                 }
-                
+                var user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+                if (!CheckIfUpdateSINnerFile(id, user))
+                {
+                    return Conflict();
+                }
+
                 _context.Entry(chummerFile).State = EntityState.Modified;
                
                 chummerFile.DownloadUrl = Startup.GDrive.StoreXmlInCloud(chummerFile, uploadedFile);
@@ -181,16 +203,9 @@ namespace ChummerHub.Controllers.V1
                 {
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException e)
                 {
-                    if (!SINnerFileExists(id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    Conflict(e);
                 }
 
                 return NoContent();
@@ -229,7 +244,7 @@ namespace ChummerHub.Controllers.V1
                     uploadInfo.UploadDateTime = DateTime.Now;
                 if (uploadInfo.Client != null)
                 {
-                    if (!UploadClientExists(uploadInfo.Client.UploadClientId))
+                    if (!UploadClientExists(uploadInfo.Client.Id))
                     {
                         _context.UploadClients.Add(uploadInfo.Client);
                     }
@@ -238,15 +253,17 @@ namespace ChummerHub.Controllers.V1
                         _context.Entry(uploadInfo.Client).CurrentValues.SetValues(uploadInfo.Client);
                     }
                 }
+                var returncode = HttpStatusCode.OK;
+                var user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                 foreach (var sinner in uploadInfo.SINners)
                 {
 
-                    if (sinner.SINnerId.ToString() == "string")
-                        sinner.SINnerId = Guid.Empty;
+                    if (sinner.Id.ToString() == "string")
+                        sinner.Id = Guid.Empty;
 
-                    sinner.UploadClientId = uploadInfo.Client.UploadClientId;
+                    sinner.UploadClientId = uploadInfo.Client.Id;
 
-                    if (SINnerFileExists(sinner.SINnerId.Value))
+                    if (CheckIfUpdateSINnerFile(sinner.Id.Value, user))
                     {
                         _context.Entry(sinner).CurrentValues.SetValues(sinner);
                         List<Tag> taglist = sinner.SINnerMetaData.Tags;
@@ -254,6 +271,7 @@ namespace ChummerHub.Controllers.V1
                     }
                     else
                     {
+                        returncode = HttpStatusCode.Created;
                         _context.SINners.Add(sinner);
                     }
                 }
@@ -266,8 +284,19 @@ namespace ChummerHub.Controllers.V1
                     HubException hue = new HubException("Exception in PostSINnerFile: " + e.Message, e);
                     return Conflict(hue);
                 }
-                List<Guid> myids = (from a in uploadInfo.SINners select a.SINnerId.Value).ToList();
-                return CreatedAtAction("PutSINnerFile", new  { Ids = myids });
+                List<Guid> myids = (from a in uploadInfo.SINners select a.Id.Value).ToList();
+                switch(returncode)
+                {
+                    case HttpStatusCode.OK:
+                        Accepted("PostSINnerFile", new { Ids = myids });
+                        break;
+                    case HttpStatusCode.Created:
+                        CreatedAtAction("PostSINnerFile", new { Ids = myids });
+                        break;
+                    default:
+                        break;
+                }
+                return BadRequest();
             }
             catch (Exception e)
             {
@@ -294,9 +323,10 @@ namespace ChummerHub.Controllers.V1
         /// <param name="uploadInfo"></param>
         /// <returns></returns>
         [HttpPost()]
-        [AllowAnonymous]
+        [Authorize]
         [SwaggerRequestExample(typeof(UploadInfoObject), typeof(UploadInfoObjectExample))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Accepted)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
@@ -329,6 +359,11 @@ namespace ChummerHub.Controllers.V1
                 {
                     return NotFound();
                 }
+                var user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+                if (!CheckIfUpdateSINnerFile(id, user))
+                {
+                    return BadRequest("not authorized");
+                }
 
                 _context.SINners.Remove(chummerFile);
                 await _context.SaveChangesAsync();
@@ -342,11 +377,22 @@ namespace ChummerHub.Controllers.V1
             }
         }
 
-        private bool SINnerFileExists(Guid id)
+        private bool CheckIfUpdateSINnerFile(Guid id, ApplicationUser user)
         {
             try
             {
-                return _context.SINners.Any(e => e.SINnerId == id);
+                
+                var existingseq = _context.SINners.Where(e => e.Id == id);
+                foreach(var existing in existingseq)
+                {
+                    var editseq = (from a in existing.SINnerMetaData.Visibility.UserRights where a.EMail.ToUpperInvariant() == user.NormalizedEmail select a).ToList();
+                    foreach(var edit in editseq)
+                    {
+                        if (edit.CanEdit == true)
+                            return true;
+                    }
+                }
+                return false;
             }
             catch (Exception e)
             {
@@ -359,7 +405,7 @@ namespace ChummerHub.Controllers.V1
         {
             try
             {
-                return _context.UploadClients.Any(e => e.UploadClientId == id);
+                return _context.UploadClients.Any(e => e.Id == id);
             }
             catch (Exception e)
             {

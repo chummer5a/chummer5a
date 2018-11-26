@@ -11,21 +11,21 @@ namespace SINners.Models
     using Microsoft.Rest;
     using Microsoft.Rest.Serialization;
 
-    public partial class SINnerMetaData
+    public partial class SINerUserRight
     {
         /// <summary>
-        /// Initializes a new instance of the SINnerMetaData class.
+        /// Initializes a new instance of the SINerUserRight class.
         /// </summary>
-        public SINnerMetaData() { }
+        public SINerUserRight() { }
 
         /// <summary>
-        /// Initializes a new instance of the SINnerMetaData class.
+        /// Initializes a new instance of the SINerUserRight class.
         /// </summary>
-        public SINnerMetaData(Guid? id = default(Guid?), SINnerVisibility visibility = default(SINnerVisibility), IList<Tag> tags = default(IList<Tag>))
+        public SINerUserRight(Guid? id = default(Guid?), string eMail = default(string), bool? canEdit = default(bool?))
         {
             Id = id;
-            Visibility = visibility;
-            Tags = tags;
+            EMail = eMail;
+            CanEdit = canEdit;
         }
 
         /// <summary>
@@ -35,13 +35,13 @@ namespace SINners.Models
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "visibility")]
-        public SINnerVisibility Visibility { get; set; }
+        [JsonProperty(PropertyName = "eMail")]
+        public string EMail { get; set; }
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "tags")]
-        public IList<Tag> Tags { get; set; }
+        [JsonProperty(PropertyName = "canEdit")]
+        public bool? CanEdit { get; set; }
 
     }
 }

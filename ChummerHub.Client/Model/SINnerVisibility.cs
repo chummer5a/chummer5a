@@ -1,34 +1,52 @@
 using ChummerHub.Client.Backend;
+using Newtonsoft.Json;
 using SINners.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace SINners.Models
 {
     public partial class SINnerVisibility
     {
-        private List<ApplicationUser> _isVisibleToUserslist;
-        public IReadOnlyList<ApplicationUser> IsVisibleToUsers
+
+        private BindingList<SINerUserRight> _UserRightsObservable = null;
+
+        [JsonIgnore]
+        [XmlIgnore]
+        [IgnoreDataMember]
+        public BindingList<SINerUserRight> UserRightsObservable
         {
             get
             {
-                if (_isVisibleToUserslist == null)
+                if (_UserRightsObservable == null)
                 {
-                    _isVisibleToUserslist = new List<ApplicationUser>();
-                    foreach(var uid in this.IsVisibleToUserGuids)
-                    {
-                        var user = StaticUtils.Client.GetUserByGuid(uid);
-                        _isVisibleToUserslist.Add(user);
-                    }
-                    
+                    _UserRightsObservable = new BindingList<SINerUserRight>(UserRights);
                 }
-                return _isVisibleToUserslist;
-
+                return _UserRightsObservable;
             }
         }
+
+        public void Save(CheckedListBox clbVisibilityToUsers)
+        {
+            var test = ChummerHub.Client.Properties.Settings.Default.SINnerVisibility = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+            ChummerHub.Client.Properties.Settings.Default.Save();
+            if (clbVisibilityToUsers != null)
+            {
+                for (int i = 0; i < clbVisibilityToUsers.Items.Count; i++)
+                {
+                    SINerUserRight obj = (SINerUserRight)clbVisibilityToUsers.Items[i];
+                    clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit.Value);
+                }
+            }
+        }
+        
     }
 }

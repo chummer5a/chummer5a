@@ -21,21 +21,19 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINnerVisibility class.
         /// </summary>
-        public SINnerVisibility(Guid? siNnerVisibilityId = default(Guid?), bool? isPublic = default(bool?), bool? isGroupVisible = default(bool?), string groupname = default(string), IList<Guid?> canEditClientGuids = default(IList<Guid?>), IList<Guid?> isVisibleToUserGuids = default(IList<Guid?>), IList<Guid?> canEditUserGuids = default(IList<Guid?>))
+        public SINnerVisibility(Guid? id = default(Guid?), bool? isPublic = default(bool?), bool? isGroupVisible = default(bool?), string groupname = default(string), IList<SINerUserRight> userRights = default(IList<SINerUserRight>))
         {
-            SiNnerVisibilityId = siNnerVisibilityId;
+            Id = id;
             IsPublic = isPublic;
             IsGroupVisible = isGroupVisible;
             Groupname = groupname;
-            CanEditClientGuids = canEditClientGuids;
-            IsVisibleToUserGuids = isVisibleToUserGuids;
-            CanEditUserGuids = canEditUserGuids;
+            UserRights = userRights;
         }
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "siNnerVisibilityId")]
-        public Guid? SiNnerVisibilityId { get; set; }
+        [JsonProperty(PropertyName = "id")]
+        public Guid? Id { get; set; }
 
         /// <summary>
         /// </summary>
@@ -54,18 +52,8 @@ namespace SINners.Models
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "canEditClientGuids")]
-        public IList<Guid?> CanEditClientGuids { get; set; }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "isVisibleToUserGuids")]
-        public IList<Guid?> IsVisibleToUserGuids { get; set; }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "canEditUserGuids")]
-        public IList<Guid?> CanEditUserGuids { get; set; }
+        [JsonProperty(PropertyName = "userRights")]
+        public IList<SINerUserRight> UserRights { get; set; }
 
     }
 }

@@ -48,7 +48,7 @@ namespace ChummerHub.Client.Backend
                         foreach (var classprop in classprops)
                         {
                             var tag = new SearchTag(item, classprop.Item1);
-                            tag.SParentTagId = parenttag.STagId;
+                            tag.SParentTagId = parenttag.Id;
                             tag.MyParentTag = parenttag;
                             parenttag.STags.Add(tag);
                             resulttags.Add(tag);
@@ -87,8 +87,13 @@ namespace ChummerHub.Client.Backend
 
             foreach (var prop in props)
             {
-                var proptags = ExtractTagsFromAttributesForProperty(prop, parenttag);
-                resulttags.AddRange(proptags);
+                SearchTag temptag = new SearchTag(prop.Item1, prop.Item2);
+                temptag.MyParentTag = parenttag;
+                temptag.SSearchOpterator = EnumSSearchOpterator.bigger.ToString();
+                temptag.STagName = prop.Item1.Name;
+                temptag.STagValue = "";
+                //var proptags = ExtractTagsFromAttributesForProperty(prop, parenttag);
+                resulttags.Add(temptag);
             }
             return resulttags;
         }
@@ -130,8 +135,8 @@ namespace ChummerHub.Client.Backend
             tag.MyParentTag = parenttag;
             if (tag.MyParentTag != null)
                 tag.MyParentTag.STags.Add(tag);
-            tag.SParentTagId = parenttag?.STagId;
-            tag.STagId = Guid.NewGuid();
+            tag.SParentTagId = parenttag?.Id;
+            tag.Id = Guid.NewGuid();
             if (!String.IsNullOrEmpty(attribute.TagName))
                 tag.STagName = attribute.TagName;
             else if (prop.Item1 != null)

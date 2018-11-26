@@ -18,7 +18,7 @@ namespace ChummerHub.Models.V1
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
-        public Guid? SINnerId { get; set; }
+        public Guid? Id { get; set; }
 
         [NotMapped]
         public string DownloadUrl { get; set; }
@@ -41,7 +41,7 @@ namespace ChummerHub.Models.V1
 
         public SINner()
         {
-            SINnerId = Guid.NewGuid();
+            Id = Guid.NewGuid();
             this.SINnerMetaData = new SINnerMetaData();
         }
     }

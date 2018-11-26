@@ -97,7 +97,7 @@ namespace ChummerHub.Client.UI
                     MyCharacterExtended.ZipFilePath = MyCharacterExtended.PrepareModel();
                 using (FileStream fs = new FileStream(MyCharacterExtended.ZipFilePath, FileMode.Open, FileAccess.Read))
                 {
-                    StaticUtils.Client.PutAsync(MyCharacterExtended.MySINnerFile.SiNnerId.Value, fs);
+                    StaticUtils.Client.PutAsync(MyCharacterExtended.MySINnerFile.Id.Value, fs);
                 }
             }
             catch (Exception ex)
@@ -112,7 +112,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                var response =  await StaticUtils.Client.GetDownloadFileWithHttpMessagesAsync(MyCharacterExtended.MySINnerFile.SiNnerId.Value);
+                var response =  await StaticUtils.Client.GetDownloadFileWithHttpMessagesAsync(MyCharacterExtended.MySINnerFile.Id.Value);
                 var content = await response.Response.Content.ReadAsStringAsync();
             }
             catch (Exception ex)
@@ -127,7 +127,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                    await StaticUtils.Client.DeleteAsync(MyCharacterExtended.MySINnerFile.SiNnerId.Value);
+                    await StaticUtils.Client.DeleteAsync(MyCharacterExtended.MySINnerFile.Id.Value);
             }
             catch (Exception ex)
             {

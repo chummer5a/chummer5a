@@ -21,9 +21,9 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the Tag class.
         /// </summary>
-        public Tag(Guid? tagId = default(Guid?), string tagName = default(string), string tagValue = default(string), Guid? parentTagId = default(Guid?), Guid? siNnerId = default(Guid?), IList<Tag> tags = default(IList<Tag>), bool? isUserGenerated = default(bool?), string tagType = default(string))
+        public Tag(Guid? id = default(Guid?), string tagName = default(string), string tagValue = default(string), Guid? parentTagId = default(Guid?), Guid? siNnerId = default(Guid?), IList<Tag> tags = default(IList<Tag>), bool? isUserGenerated = default(bool?), string tagType = default(string))
         {
-            TagId = tagId;
+            Id = id;
             TagName = tagName;
             TagValue = tagValue;
             ParentTagId = parentTagId;
@@ -35,8 +35,8 @@ namespace SINners.Models
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "tagId")]
-        public Guid? TagId { get; set; }
+        [JsonProperty(PropertyName = "id")]
+        public Guid? Id { get; set; }
 
         /// <summary>
         /// </summary>

@@ -85,7 +85,7 @@
   <ItemGroup>
     <Compile Include="Backend\ApiKeyCredentials.cs" />
     <Compile Include="Backend\PluginHandler.cs" />
-    <Compile Include="Backend\SearchTagExtractor.cs" />
+    <Compile Include="Backend\Search\SearchTagExtractor.cs" />
     <Compile Include="Backend\Utils.cs" />
     <Compile Include="Backend\MyMessageHandler.cs" />
     <Compile Include="Backend\TagExtractor.cs" />
@@ -106,6 +106,7 @@
     <Compile Include="SINnersClient\ISINnersClient.cs" />
     <Compile Include="SINnersClient\Models\ApplicationUser.cs" />
     <Compile Include="SINnersClient\Models\SearchTag.cs" />
+    <Compile Include="SINnersClient\Models\SINerUserRight.cs" />
     <Compile Include="SINnersClient\Models\SINner.cs" />
     <Compile Include="SINnersClient\Models\SINnerMetaData.cs" />
     <Compile Include="SINnersClient\Models\SINnerVisibility.cs" />
@@ -199,6 +200,7 @@
   <ItemGroup>
     <Resource Include="Resources\group.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetDir)$(TargetName).* $(OutDir)Plugins\</PostBuildEvent>

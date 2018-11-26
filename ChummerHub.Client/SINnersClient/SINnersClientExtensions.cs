@@ -68,24 +68,20 @@ namespace SINners
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='uid'>
-            /// </param>
-            public static ApplicationUser GetUserByGuid(this ISINnersClient operations, Guid? uid = default(Guid?))
+            public static ApplicationUser GetUserByAuthorization(this ISINnersClient operations)
             {
-                return Task.Factory.StartNew(s => ((ISINnersClient)s).GetUserByGuidAsync(uid), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                return Task.Factory.StartNew(s => ((ISINnersClient)s).GetUserByAuthorizationAsync(), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='uid'>
-            /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<ApplicationUser> GetUserByGuidAsync(this ISINnersClient operations, Guid? uid = default(Guid?), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<ApplicationUser> GetUserByAuthorizationAsync(this ISINnersClient operations, CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.GetUserByGuidWithHttpMessagesAsync(uid, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.GetUserByAuthorizationWithHttpMessagesAsync(null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }
