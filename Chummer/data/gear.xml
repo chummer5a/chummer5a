@@ -17964,7 +17964,7 @@
       <page>156</page>
       <avail>7F</avail>
       <bonus>
-        <ess>-0.1*Rating</ess>
+        <essencepenaltyt100>-10*Rating</essencepenaltyt100>
         <selecttext />
       </bonus>
       <cost>Rating*500</cost>
