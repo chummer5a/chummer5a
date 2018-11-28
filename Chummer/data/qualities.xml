@@ -17711,11 +17711,6 @@
       <name>Instinctive Hack</name>
       <karma>2</karma>
       <category>Positive</category>
-      <required>
-        <oneof>
-          <quality>Technomancer</quality>
-        </oneof>
-      </required>
       <source>BTB</source>
       <page>160</page>
     </quality>

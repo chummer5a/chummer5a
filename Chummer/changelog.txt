@@ -20,6 +20,7 @@ Data Changes:
 - Fixed an issue with Japanese translations of certain lifestyle qualities caused by duplicate entries. Fixes #3168.
 - Added content from the German-exclusive sourcebook "Hamburg".
 - Removed redundant 'Enable Spells and Spirits Tab' improvement. Closes #3189
+- Added an optional rule from Chrome Flesh to allow Trolls to treat their horns as per the bio-weapon on page 121 of Chrome Flesh. 
 
 New Strings:
 
