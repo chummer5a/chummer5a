@@ -1044,7 +1044,7 @@
 		</string>
 		<string>
 			<key>Message_PowerLevel</key>
-			<text>Ihre Kraftstufe kann die aktuelle Höhe ihres Magie-Attributes nicht übersteigen.</text>
+			<text>Ihre Kraftstufe kann die aktuelle Höhe Ihres Magie-Attributes nicht übersteigen.</text>
 		</string>
 		<string>
 			<key>MessageTitle_PowerLevel</key>
@@ -1084,7 +1084,7 @@
 		</string>
 		<string>
 			<key>Message_MetavariantQualitySwap</key>
-			<text>Sie können keine Gaben austauschen, die Sie durch ihre(n) Metatyp/Metavariante erhalten.</text>
+			<text>Sie können keine Gaben austauschen, die Sie durch Ihre(n) Metatyp/Metavariante erhalten.</text>
 		</string>
 		<string>
 			<key>MessageTitle_MetavariantQualitySwap</key>
@@ -3942,11 +3942,11 @@
 		</string>
 		<string>
 			<key>Message_Omae_ChooseUsername</key>
-			<text>Bitte wählen Sie ihren Benutzernamen.</text>
+			<text>Bitte wählen Sie Ihren Benutzernamen.</text>
 		</string>
 		<string>
 			<key>Message_Omae_EnterUsername</key>
-			<text>Bitte geben Sie ihren Benutzernamen ein.</text>
+			<text>Bitte geben Sie Ihren Benutzernamen ein.</text>
 		</string>
 		<string>
 			<key>MessageTitle_Omae_ChooseUsername</key>
@@ -3994,7 +3994,7 @@
 		</string>
 		<string>
 			<key>Message_Omae_PasswordNoEmail</key>
-			<text>Ihr Passwort kann nicht zurückgesetzt werden, weil in ihrem Account keine E-Mailadresse hinterlegt ist.</text>
+			<text>Ihr Passwort kann nicht zurückgesetzt werden, weil in Ihrem Account keine E-Mailadresse hinterlegt ist.</text>
 		</string>
 		<string>
 			<key>Message_Omae_PasswordReset</key>
@@ -4002,7 +4002,7 @@
 		</string>
 		<string>
 			<key>Message_Omae_InfoRequiresLogin</key>
-			<text>Sie müssen bei Omae eingeloggt sein, um ihre Account Informationen zu laden.</text>
+			<text>Sie müssen bei Omae eingeloggt sein, um Ihre Account Informationen zu laden.</text>
 		</string>
 		<string>
 			<key>String_Omae_NoCharacters</key>
