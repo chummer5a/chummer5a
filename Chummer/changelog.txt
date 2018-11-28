@@ -13,6 +13,7 @@ Application Changes:
 - Fixed issues with objects not moving correctly when dragged between locations. Fixes #3079
 - Allowed gear to use forbidden and required nodes similar to those that can be used by qualities, cyberware, metamagics, and others.
 - Implemented most content from Better Than Bad, with exception of life modules and the Hard Luck quality.
+- Fixed incorrect behaviour for cyberware purchased via Black Market Pipeline not properly being discounted. Fixes #3244
 
 Data Changes:
 
