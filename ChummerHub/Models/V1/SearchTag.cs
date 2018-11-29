@@ -25,7 +25,8 @@ namespace ChummerHub.Models.V1
             @smaller,
             @equal,
             @contains,
-            @notnull
+            @notnull,
+            @exists
         }
 
         public SearchTag()

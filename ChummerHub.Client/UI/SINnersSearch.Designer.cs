@@ -30,7 +30,7 @@ namespace ChummerHub.Client.UI
         {
             this.bSearch = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.tvSearchTags = new System.Windows.Forms.TreeView();
+            this.MyTagTreeView = new System.Windows.Forms.TreeView();
             this.bAssignTags = new System.Windows.Forms.Button();
             this.flpReflectionMembers = new System.Windows.Forms.FlowLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
@@ -53,7 +53,7 @@ namespace ChummerHub.Client.UI
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.Controls.Add(this.bSearch, 2, 2);
-            this.tableLayoutPanel1.Controls.Add(this.tvSearchTags, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.MyTagTreeView, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.bAssignTags, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.flpReflectionMembers, 2, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
@@ -65,16 +65,16 @@ namespace ChummerHub.Client.UI
             this.tableLayoutPanel1.Size = new System.Drawing.Size(775, 425);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
-            // tvSearchTags
+            // MyTagTreeView
             // 
-            this.tvSearchTags.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.MyTagTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tvSearchTags.Location = new System.Drawing.Point(3, 3);
-            this.tvSearchTags.Name = "tvSearchTags";
-            this.tableLayoutPanel1.SetRowSpan(this.tvSearchTags, 2);
-            this.tvSearchTags.Size = new System.Drawing.Size(361, 390);
-            this.tvSearchTags.TabIndex = 2;
+            this.MyTagTreeView.Location = new System.Drawing.Point(3, 3);
+            this.MyTagTreeView.Name = "MyTagTreeView";
+            this.tableLayoutPanel1.SetRowSpan(this.MyTagTreeView, 2);
+            this.MyTagTreeView.Size = new System.Drawing.Size(361, 390);
+            this.MyTagTreeView.TabIndex = 2;
             // 
             // bAssignTags
             // 
@@ -113,7 +113,7 @@ namespace ChummerHub.Client.UI
 
         private System.Windows.Forms.Button bSearch;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.TreeView tvSearchTags;
+        private System.Windows.Forms.TreeView MyTagTreeView;
         private System.Windows.Forms.Button bAssignTags;
         private System.Windows.Forms.FlowLayoutPanel flpReflectionMembers;
     }

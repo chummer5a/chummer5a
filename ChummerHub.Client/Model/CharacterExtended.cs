@@ -10,6 +10,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ChummerHub.Client.Model
 {
@@ -96,6 +97,54 @@ namespace ChummerHub.Client.Model
                 }
             }
         }
+
+        public void PopulateTree(ref TreeNode root, IList<Tag> tags, IList<SearchTag> filtertags)
+        {
+            if (tags == null)
+                tags = MySINnerFile.SiNnerMetaData.Tags;
+            if (root == null)
+            {
+                root = new TreeNode();
+                root.Text = "Tags";
+                root.Tag = null;
+                // get all tags in the list with parent is null
+                var onebranch = tags.Where(t => t.MyParentTag == null);
+                foreach (var branch in onebranch)
+                {
+                    var child = new TreeNode()
+                    {
+                        Text = branch.TagName,
+                        Tag = branch.Id,
+
+                    };
+                    if (!String.IsNullOrEmpty(branch.TagValue))
+                        child.Text += ": " + branch.TagValue;
+                    PopulateTree(ref child, branch.Tags, filtertags);
+                    root.Nodes.Add(child);
+                }
+                root.ExpandAll();
+            }
+            else
+            {
+                foreach (var tag in tags)
+                {
+                    if ((filtertags.Any(x => x.STagName == tag.TagName)
+                        || (tag.Tags.Any())))
+                    {
+                        var child = new TreeNode()
+                        {
+                            Text = tag.TagName,
+                            Tag = tag.Id,
+                        };
+                        if (!String.IsNullOrEmpty(tag.TagValue))
+                            child.Text += ": " + tag.TagValue;
+                        PopulateTree(ref child, tag.Tags, filtertags);
+                        root.Nodes.Add(child);
+                    }
+                }
+            }
+        }
+
 
         public string PrepareModel()
         {

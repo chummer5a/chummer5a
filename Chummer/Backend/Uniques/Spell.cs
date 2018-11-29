@@ -35,7 +35,8 @@ namespace Chummer
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     [HubClassTag("Name")]
-    public class Spell : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
+    public class Spell : IHasInternalId,
+        IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -267,7 +268,6 @@ namespace Chummer
         /// <summary>
         /// Spell's grade.
         /// </summary>
-        [HubTag(true)]
         public int Grade
         {
             get => _intGrade;
@@ -966,5 +966,14 @@ namespace Chummer
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
         }
+
+        //#region ReflectionHelper
+        
+        //XmlNodeList IHasXmlData.GetXmlNodes()
+        //{
+        //    var spells = XmlManager.Load("spells.xml").SelectNodes("/chummer/spells/spell/name");
+        //    return spells;
+        //}
+        //#endregion
     }
 }

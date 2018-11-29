@@ -2,9 +2,11 @@ using Microsoft.Rest;
 using SINners;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +15,32 @@ namespace ChummerHub.Client.Backend
 {
     public static class StaticUtils
     {
+        public static Type GetListType(object someList)
+        {
+            if (someList == null)
+                throw new ArgumentNullException("someList");
+            Type result;
+            var type = someList.GetType();
+
+            var genType = type.GetGenericTypeDefinition();
+
+
+            if (!type.IsGenericType)
+                throw new ArgumentException("someList", "Type must be List<>, but was " + type.FullName);
+            try
+            {
+                result = type.GetGenericArguments()[0];
+            }
+            catch (Exception e)
+            {
+                var ex = new ArgumentException("someList", "Type must be List<>, but was " + type.FullName, e);
+                throw ex;
+            }
+
+            return result;
+        }
+
+
         public static Utils MyUtils = new Utils();
         static StaticUtils()
         {
@@ -150,6 +178,8 @@ namespace ChummerHub.Client.Backend
 
     public class Utils
     {
+       
+
         public Utils()
         {
             IsUnitTest = false;

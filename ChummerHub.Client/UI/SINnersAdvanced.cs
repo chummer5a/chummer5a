@@ -47,47 +47,11 @@ namespace ChummerHub.Client.UI
             MyTagTreeView.Nodes.Clear();
             MySINnersUsercontrol.MyCharacterExtended.PopulateTags();
             TreeNode root = null;
-            PopulateTree(ref root, MySINnersUsercontrol.MyCharacterExtended.MySINnerFile.SiNnerMetaData.Tags);
+            MySINnersUsercontrol.MyCharacterExtended.PopulateTree(ref root, null, null);
             MyTagTreeView.Nodes.Add(root);
         }
 
-        public void PopulateTree(ref TreeNode root, IList<Tag> tags)
-        {
-            if (root == null)
-            {
-                root = new TreeNode();
-                root.Text = "Tags";
-                root.Tag = null;
-                // get all tags in the list with parent is null
-                var onebranch = tags.Where(t => t.MyParentTag == null);
-                foreach (var branch in onebranch)
-                {
-                    var child = new TreeNode()
-                    {
-                        Text = branch.TagName,
-                        Tag = branch.Id,
-                    };
-                    PopulateTree(ref child, branch.Tags);
-                    root.Nodes.Add(child);
-                }
-            }
-            else
-            {
-                foreach (var tag in tags)
-                {
-                    var child = new TreeNode()
-                    {
-                        Text = tag.TagName,
-                        Tag = tag.Id,
-                    };
-                    if (!String.IsNullOrEmpty(tag.TagValue))
-                        child.Text += ": " + tag.TagValue;
-                    PopulateTree(ref child, tag.Tags);
-                    root.Nodes.Add(child);
-                }
-            }
-        }
-
+       
         private void cmdPrepareModel_Click(object sender, EventArgs e)
         {
             MySINnersUsercontrol.MyCharacterExtended.PrepareModel();
@@ -103,7 +67,7 @@ namespace ChummerHub.Client.UI
         {
             MyTagTreeView.Nodes.Clear();
             TreeNode root = null;
-            PopulateTree(ref root, MySINnersUsercontrol.MyCharacterExtended.MySINnerFile.SiNnerMetaData.Tags);
+            MySINnersUsercontrol.MyCharacterExtended.PopulateTree(ref root, null, null);
             MyTagTreeView.Nodes.Add(root);
         }
 

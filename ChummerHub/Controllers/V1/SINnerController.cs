@@ -145,7 +145,8 @@ namespace ChummerHub.Controllers.V1
                 if (chummerFile.SINnerMetaData.Visibility.IsPublic == true)
                     return Ok(chummerFile);
                 var user = await _signInManager.UserManager.FindByEmailAsync(User.Identity.Name);
-                if ((from a in chummerFile.SINnerMetaData.Visibility.UserRights where a.EMail.ToUpperInvariant() == user.NormalizedEmail).Any())
+                var list = (from a in chummerFile.SINnerMetaData.Visibility.UserRights where a.EMail.ToUpperInvariant() == user.NormalizedEmail select a);
+                if (list.Any())
                     return Ok(chummerFile);
                 if (chummerFile.SINnerMetaData.Visibility.IsGroupVisible)
                 {

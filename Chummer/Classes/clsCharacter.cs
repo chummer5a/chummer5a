@@ -164,7 +164,7 @@ namespace Chummer
         private int _intMAGAdept;
 
         // Magic Tradition.
-        private readonly Tradition _objTradition;
+        private Tradition _objTradition;
 
         // Condition Monitor Progress.
         private int _intPhysicalCMFilled;
@@ -7444,7 +7444,6 @@ namespace Chummer
         /// <summary>
         /// Total Amount of Power Points this character has.
         /// </summary>
-        [HubTag]
         public int PowerPointsTotal
         {
             get
@@ -7487,7 +7486,18 @@ namespace Chummer
         /// Magician's Tradition.
         /// </summary>
         [HubTag]
-        public Tradition MagicTradition => _objTradition;
+        public Tradition MagicTradition
+        {
+            get
+            {
+                return _objTradition;
+            }
+            set
+            {
+                _objTradition = value;
+            }
+        }
+            
 
         /// <summary>
         /// Initiate Grade.
@@ -15981,7 +15991,8 @@ namespace Chummer
 
             return true;
         }
-#endregion
+        #endregion
+
     }
 }
 

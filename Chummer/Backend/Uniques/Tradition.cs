@@ -145,6 +145,8 @@ namespace Chummer.Backend.Uniques
             return true;
         }
 
+        
+
         public void RebuildSpiritList(bool blnDoOnPropertyChanged = true)
         {
             _lstAvailableSpirits.Clear();
@@ -958,6 +960,21 @@ namespace Chummer.Backend.Uniques
                     new DependancyGraphNode<string>(nameof(SpiritManipulation))
                 )
             );
+
+        public static List<Tradition> GetTraditions(Character character)
+        {
+            List<Tradition> result = new List<Tradition>();
+            XmlNodeList xmlTraditions = XmlManager.Load("traditions.xml").SelectNodes("/chummer/traditions/tradition");
+            foreach(XmlNode node in xmlTraditions)
+            {
+                Tradition tradition = new Tradition(character);
+                tradition.Create(node);
+                result.Add(tradition);
+            }
+            return result;
+
+        }
+
         #endregion
 
         public void SetSourceDetail(Control sourceControl)

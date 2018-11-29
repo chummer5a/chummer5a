@@ -4,6 +4,7 @@ using SINners.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,22 +30,39 @@ namespace SINners.Models
         [JsonIgnore]
         public SearchTag MyParentTag { get; set; }
 
-        public SearchTag(Object myRuntimeObject, Chummer.helpers.HubTagAttribute hubTag)
+        
+        [IgnoreDataMember]
+        [XmlIgnore]
+        [JsonIgnore]
+        public object MyRuntimePropertyValue { get; set; }
+
+        public SearchTag(PropertyInfo myPropertyInfo, Chummer.helpers.HubTagAttribute hubTag)
         {
-            MyRuntimeObject = myRuntimeObject;
+            MyPropertyInfo = myPropertyInfo;
             MyRuntimeHubTag = hubTag;
             this.STags = new List<SearchTag>();
         }
 
-        public SearchTag(Object myRuntimeObject, Chummer.helpers.HubClassTagAttribute hubClassTag)
+        public SearchTag(PropertyInfo myPropertyInfo, Chummer.helpers.HubClassTagAttribute hubClassTag)
         {
-            MyRuntimeObject = myRuntimeObject;
+            MyPropertyInfo = myPropertyInfo;
             MyRuntimeHubClassTag = hubClassTag;
             this.STags = new List<SearchTag>();
         }
 
-        public object MyRuntimeObject { get;  set; }
+        [IgnoreDataMember]
+        [XmlIgnore]
+        [JsonIgnore]
+        public PropertyInfo MyPropertyInfo { get;  set; }
+
+        [IgnoreDataMember]
+        [XmlIgnore]
+        [JsonIgnore]
         public HubClassTagAttribute MyRuntimeHubClassTag { get;  set; }
+
+        [IgnoreDataMember]
+        [XmlIgnore]
+        [JsonIgnore]
         public HubTagAttribute MyRuntimeHubTag { get;  set; }
 
         public String DisplayText
