@@ -57,29 +57,22 @@ namespace Chummer.UI.Skills
 
         private void LstSkillControlsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (HasLoaded)
-            {
-                int intNameLabelWidth = 0;
-                foreach (SkillControl2 objSkillControl in _lstSkillControls)
-                {
-                    intNameLabelWidth = Math.Max(intNameLabelWidth, objSkillControl.NameWidth);
-                }
-                foreach (SkillControl2 objSkillControl in _lstSkillControls)
-                {
-                    objSkillControl.MoveControls(intNameLabelWidth);
-                }
+            if (!HasLoaded) return;
+            int intNameLabelWidth = _lstSkillControls.Max(i => i.NameWidth);
 
-                if (!_objCharacter.Created)
-                {
-                    int intRatingLabelWidth = 0;
-                    foreach (SkillControl2 s in _lstSkillControls)
-                    {
-                        intRatingLabelWidth = Math.Max(intRatingLabelWidth, s.NudSkillWidth);
-                    }
-                    lblActiveSp.Left = lblActiveSkills.Left + intNameLabelWidth + 6;
-                    lblActiveKarma.Left = lblActiveSp.Left + intRatingLabelWidth + 6;
-                }
+            foreach (SkillControl2 objSkillControl in _lstSkillControls)
+            {
+                objSkillControl.MoveControls(intNameLabelWidth);
             }
+
+            if (_objCharacter.Created) return;
+            int intRatingLabelWidth = _lstSkillControls.Max(i => i.NudSkillWidth);
+            lblActiveSp.Left = lblActiveSkills.Left + intNameLabelWidth + 6;
+            lblActiveKarma.Left = lblActiveSp.Left + intRatingLabelWidth + 6;
+            //When in karma mode, we will occasionally fail to load the proper size; break if this is the case during debug and try a failback. 
+            if (lblActiveKarma.Left >= intNameLabelWidth) return;
+            Utils.BreakIfDebug();
+            lblActiveKarma.Left = intNameLabelWidth + 6;
         }
 
         public void MissingDatabindingsWorkaround()

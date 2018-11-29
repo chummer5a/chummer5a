@@ -29,7 +29,7 @@
 		</string>
 		<string>
 			<key>Message_Save_Error_Warning</key>
-			<text>Chummer5 a rencontré une erreur en sauvegardant le caractère.</text>
+			<text>Chummer5 a rencontré une erreur en sauvegardant le personnage.</text>
 		</string>
 		<!-- Common Strings -->
 		<string>
@@ -54,7 +54,7 @@
 		</string>
 		<string>
 			<key>String_Page</key>
-			<text>feuille</text>
+			<text>page</text>
 		</string>
 		<string>
 			<key>String_Of</key>
@@ -254,15 +254,15 @@
 		</string>
 		<string>
 			<key>Label_DV</key>
-			<text>VD :</text>
+			<text>Dég :</text>
 		</string>
 		<string>
 			<key>Label_RC</key>
-			<text>CR :</text>
+			<text>Compensation Recul :</text>
 		</string>
 		<string>
 			<key>Label_AP</key>
-			<text>PA :</text>
+			<text>Pénétration Armure :</text>
 		</string>
 		<string>
 			<key>Label_Ammo</key>
@@ -319,22 +319,6 @@
 		<string>
 			<key>Label_MaximumCapacityAllowed</key>
 			<text>Capacité maximum autorisée :</text>
-		</string>
-		<string>
-			<key>Label_BallisticArmorShort</key>
-			<text>Balistique :</text>
-		</string>
-		<string>
-			<key>Label_BallisticArmorLong</key>
-			<text>Armure Balistique :</text>
-		</string>
-		<string>
-			<key>Label_ImpactArmorShort</key>
-			<text>Impact :</text>
-		</string>
-		<string>
-			<key>Label_ImpactArmorLong</key>
-			<text>Armure d'Impact :</text>
 		</string>
 		<string>
 			<key>Label_Test</key>
@@ -417,14 +401,6 @@
 			<text>heures</text>
 		</string>
 		<string>
-			<key>String_BallisticEncumbrance</key>
-			<text>Encombrance balistique</text>
-		</string>
-		<string>
-			<key>String_ImpactEncumbrance</key>
-			<text>Emcombrance d'impact</text>
-		</string>
-		<string>
 			<key>String_StackedFocus</key>
 			<text>Focus multiple</text>
 		</string>
@@ -455,7 +431,7 @@
 		</string>
 		<string>
 			<key>String_LivingPersonaGear</key>
-			<text>Equipement du Persona incarné</text>
+			<text>Équipement du Persona incarné</text>
 		</string>
 		<string>
 			<key>String_MountTop</key>
@@ -521,7 +497,7 @@
 		</string>
 		<string>
 			<key>String_AttributeREAShort</key>
-			<text>REA</text>
+			<text>RÉA</text>
 		</string>
 		<string>
 			<key>String_AttributeSTRLong</key>
@@ -537,7 +513,7 @@
 		</string>
 		<string>
 			<key>String_AttributeCHAShort</key>
-			<text>CHR</text>
+			<text>CHA</text>
 		</string>
 		<string>
 			<key>String_AttributeINTLong</key>
@@ -585,7 +561,7 @@
 		</string>
 		<string>
 			<key>String_AttributeRESShort</key>
-			<text>RES</text>
+			<text>RÉS</text>
 		</string>
 		<string>
 			<key>String_AttributeINILong</key>
@@ -610,7 +586,7 @@
 		</string>
 		<string>
 			<key>Message_Main_RunningWild</key>
-			<text>Créatures du Sixième Monde doit être un supplément selectionné pour pouvoir créer une créature.</text>
+			<text>Running Wild doit être un supplément selectionné pour pouvoir créer une créature.</text>
 		</string>
 		<string>
 			<key>MessageTitle_Main_RunningWild</key>
@@ -622,7 +598,7 @@
 		</string>
 		<string>
 			<key>Menu_Main_Edit</key>
-			<text>Edition</text>
+			<text>É&amp;dition</text>
 		</string>
 		<string>
 			<key>Menu_Main_Tools</key>
@@ -743,7 +719,7 @@
 		</string>
 		<string>
 			<key>Menu_SpecialChangeMetatype</key>
-			<text>Changer de &amp;métatype</text>
+			<text>Changer de &amp;Métatype</text>
 		</string>
 		<string>
 			<key>Menu_SpecialConvertToMutantCritter</key>
@@ -779,7 +755,7 @@
 		</string>
 		<string>
 			<key>Menu_SpecialBPAvailLimit</key>
-			<text>Modifier la limite de BP/Disponibilité</text>
+			<text>Modifier la limite de PC/Disponibilité</text>
 		</string>
 		<string>
 			<key>Menu_AddAsPlugin</key>
@@ -787,7 +763,7 @@
 		</string>
 		<string>
 			<key>Menu_AddNaturalWeapon</key>
-			<text>Créer Arme Naturelle</text>
+			<text>Créer arme Naturelle</text>
 		</string>
 		<string>
 			<key>Menu_AddAccessory</key>
@@ -847,7 +823,7 @@
 		</string>
 		<string>
 			<key>Menu_Gear</key>
-			<text>&amp;Equipement</text>
+			<text>&amp;Équipement</text>
 		</string>
 		<string>
 			<key>Menu_Weapons</key>
@@ -895,7 +871,7 @@
 		</string>
 		<string>
 			<key>Button_EquipAll</key>
-			<text>Equiper tout</text>
+			<text>Équiper tout</text>
 		</string>
 		<string>
 			<key>Button_UnEquipAll</key>
@@ -955,7 +931,7 @@
 		</string>
 		<string>
 			<key>Tab_StreeGear</key>
-			<text>Equipement</text>
+			<text>Équipement</text>
 		</string>
 		<string>
 			<key>Tab_Vehicles</key>
@@ -967,7 +943,7 @@
 		</string>
 		<string>
 			<key>Tab_Karma</key>
-			<text>Karma et nuyens</text>
+			<text>Karma et Nuyen</text>
 		</string>
 		<string>
 			<key>Tab_Improvements</key>
@@ -1007,7 +983,7 @@
 		</string>
 		<string>
 			<key>Tab_Gear</key>
-			<text>Equipement</text>
+			<text>Équipement</text>
 		</string>
 		<string>
 			<key>Tab_Pets</key>
@@ -1059,7 +1035,7 @@
 		</string>
 		<string>
 			<key>Message_EnemyLimit</key>
-			<text>Vous ne pouvez pas gagner plus de {0} au travers d'Ennemis.</text>
+			<text>Vous ne pouvez pas gagner plus de {0} au travers d'ennemis.</text>
 		</string>
 		<string>
 			<key>MessageTitle_EnemyLimit</key>
@@ -1083,7 +1059,7 @@
 		</string>
 		<string>
 			<key>Message_DeleteEnemy</key>
-			<text>Êtes-vous sûr de vouloir supprimer cet Ennemi ?</text>
+			<text>Êtes-vous sûr de vouloir supprimer cet ennemi ?</text>
 		</string>
 		<string>
 			<key>Message_DeleteSpirit</key>
@@ -1115,7 +1091,7 @@
 		</string>
 		<string>
 			<key>Message_DeleteArmorLocation</key>
-			<text>Êtes-vous sûr de vouloir supprimer ce groupe d'équipement? Toutes les armures dans ce groupe vont être déplacées vers les Armures du personnage.</text>
+			<text>Êtes-vous sûr de vouloir supprimer ce groupe d'équipement ? Toutes les armures dans ce groupe vont être déplacées vers les Armures du personnage.</text>
 		</string>
 		<string>
 			<key>Message_DeleteWeapon</key>
@@ -1123,11 +1099,11 @@
 		</string>
 		<string>
 			<key>Message_DeleteWeaponLocation</key>
-			<text>Êtes-vous sûr de vouloir supprimer ce groupe d'équipement? Toutes les armes dans ce groupe vont être déplacées vers les Armes sélectionnées.</text>
+			<text>Êtes-vous sûr de vouloir supprimer ce groupe d'équipement ? Toutes les armes dans ce groupe vont être déplacées vers les armes sélectionnées.</text>
 		</string>
 		<string>
 			<key>Message_DeleteLifestyle</key>
-			<text>Êtes-vous sûr de vouloir supprimer ce Niveau de vie ?</text>
+			<text>Êtes-vous sûr de vouloir supprimer ce niveau de vie ?</text>
 		</string>
 		<string>
 			<key>Message_DeleteGear</key>
@@ -1143,7 +1119,7 @@
 		</string>
 		<string>
 			<key>Message_DeleteVehicleLocation</key>
-			<text>Êtes-vous sûr de vouloir supprimer ce groupe d'équipement? Tous les équipements dans ce groupe vont être déplacés vers le véhicule lui-même.</text>
+			<text>Êtes-vous sûr de vouloir supprimer ce groupe d'équipement ? Tous les équipements dans ce groupe vont être déplacés vers le véhicule lui-même.</text>
 		</string>
 		<string>
 			<key>Message_DeleteMartialArt</key>
@@ -1287,11 +1263,11 @@
 		</string>
 		<string>
 			<key>Message_CannotRemoveCyberware</key>
-			<text>Cet article ne peut pas être retiré car il est inclu de base dans une pièce de Cyberware.</text>
+			<text>Cet article ne peut pas être retiré car il est inclu de base dans une pièce de cyberware.</text>
 		</string>
 		<string>
 			<key>MessageTitle_CannotRemoveCyberware</key>
-			<text>Impossible de retirer le Cyberware</text>
+			<text>Impossible de retirer le cyberware</text>
 		</string>
 		<string>
 			<key>Message_ComplexFormLimit</key>
@@ -1311,19 +1287,19 @@
 		</string>
 		<string>
 			<key>Message_CannotRemoveCyberweapon</key>
-			<text>Vous ne pouvez pas retirer une Cyberarme depuis cet onglet. Vous devez plutôt retirer la Cyberarme depuis l'onglet Cyberware.</text>
+			<text>Vous ne pouvez pas retirer une cyberarme depuis cet onglet. Vous devez plutôt retirer la cyberarme depuis l'onglet cyberware.</text>
 		</string>
 		<string>
 			<key>MessageTitle_CannotRemoveCyberweapon</key>
-			<text>Impossible de retirer la Cyberarme</text>
+			<text>Impossible de retirer la cyberarme</text>
 		</string>
 		<string>
 			<key>Message_CannotRemoveGearWeapon</key>
-			<text>Vous ne pouvez pas retirer une arme créée par l'équipement depuis cet onglet. Vous devez plutôt retirer l'arme depuis l'onglet Equipement.</text>
+			<text>Vous ne pouvez pas retirer une arme créée par l'équipement depuis cet onglet. Vous devez plutôt retirer l'arme depuis l'onglet équipement.</text>
 		</string>
 		<string>
 			<key>Message_CannotRemoveGearWeaponVehicle</key>
-			<text>Vous ne pouvez pas retirer une arme créée par l'équipement depuis cet onglet. Vous devez plutôt retirer l'équipement depuis l'onglet Véhicules.</text>
+			<text>Vous ne pouvez pas retirer une arme créée par l'équipement depuis cet onglet. Vous devez plutôt retirer l'équipement depuis l'onglet véhicules.</text>
 		</string>
 		<string>
 			<key>MessageTitle_CannotRemoveGearWeapon</key>
@@ -1371,7 +1347,7 @@
 		</string>
 		<string>
 			<key>Message_AdditionalEchoLimit</key>
-			<text>Vous pouvez seulement avoir un nombre d'échos égal à votre RES + Grade de Submersion.</text>
+			<text>Vous pouvez seulement avoir un nombre d'échos égal à votre RÉS + Grade de Submersion.</text>
 		</string>
 		<string>
 			<key>MessageTitle_AdditionalEcho</key>
@@ -1387,7 +1363,7 @@
 		</string>
 		<string>
 			<key>Message_CannotIncreaseSubmersionGrade</key>
-			<text>Votre grade de Submersion ne peut pas excéder votre attribut de RES.</text>
+			<text>Votre grade de Submersion ne peut pas excéder votre attribut de RÉS.</text>
 		</string>
 		<string>
 			<key>MessageTitle_CannotIncreaseSubmersionGrade</key>
@@ -1395,11 +1371,11 @@
 		</string>
 		<string>
 			<key>Message_SelectCyberware</key>
-			<text>Vous devez d'abord sélectionner une piece de Cyberware avant de pouvoir lui installer une extension.</text>
+			<text>Vous devez d'abord sélectionner une piece de cyberware avant de pouvoir lui installer une extension.</text>
 		</string>
 		<string>
 			<key>MessageTitle_SelectCyberware</key>
-			<text>Sélectionnez du Cyberware</text>
+			<text>Sélectionnez du cyberware</text>
 		</string>
 		<string>
 			<key>Message_SelectWeaponAccessory</key>
@@ -1423,7 +1399,7 @@
 		</string>
 		<string>
 			<key>Message_CyberwareUnderbarrel</key>
-			<text>Les armes sous le canon ne peuvent pas être attachées aux Cyberarmes.</text>
+			<text>Les armes sous le canon ne peuvent pas être attachées aux cyberarmes.</text>
 		</string>
 		<string>
 			<key>MessageTitle_WeaponUnderbarrel</key>
@@ -1447,7 +1423,7 @@
 		</string>
 		<string>
 			<key>Message_CyberweaponNoAccessory</key>
-			<text>Les accessoires ne peuvent pas être associés aux Cyberarmes.</text>
+			<text>Les accessoires ne peuvent pas être associés aux cyberarmes.</text>
 		</string>
 		<string>
 			<key>MessageTitle_CyberweaponNoAccessory</key>
@@ -1455,11 +1431,11 @@
 		</string>
 		<string>
 			<key>Message_CyberwareGear</key>
-			<text>Impossible d'ajouter de l'équipement à cette partie de Cyberware.</text>
+			<text>Impossible d'ajouter de l'équipement à cette partie de cyberware.</text>
 		</string>
 		<string>
 			<key>MessageTitle_CyberwareGear</key>
-			<text>Impossible d'ajouter de l'Equipement</text>
+			<text>Impossible d'ajouter de l'équipement</text>
 		</string>
 		<string>
 			<key>Message_SelectArmor</key>
@@ -1483,15 +1459,15 @@
 		</string>
 		<string>
 			<key>MessageTitle_SelectGear</key>
-			<text>Sélectionnez un Equipement</text>
+			<text>Sélectionnez un équipement</text>
 		</string>
 		<string>
 			<key>Message_SelectVehicle</key>
-			<text>Vous devez d'abord sélectionner un Véhicule avant de pouvoir le modifier.</text>
+			<text>Vous devez d'abord sélectionner un véhicule avant de pouvoir le modifier.</text>
 		</string>
 		<string>
 			<key>Message_SelectVehicleName</key>
-			<text>Vous devez d'abord sélectionner un Véhicule avant de pouvoir le nommer.</text>
+			<text>Vous devez d'abord sélectionner un véhicule avant de pouvoir le nommer.</text>
 		</string>
 		<string>
 			<key>Message_SelectVehicleLocation</key>
@@ -1499,7 +1475,7 @@
 		</string>
 		<string>
 			<key>MessageTitle_SelectVehicle</key>
-			<text>Sélectionnez un Véhicule</text>
+			<text>Sélectionnez un véhicule</text>
 		</string>
 		<string>
 			<key>Message_CannotAddWeapon</key>
@@ -1531,7 +1507,7 @@
 		</string>
 		<string>
 			<key>MessageTitle_VehicleWeaponUnderbarrel</key>
-			<text>Impossible d'attacher une Arme sous le canon</text>
+			<text>Impossible d'attacher une arme sous le canon</text>
 		</string>
 		<string>
 			<key>Message_SelectGearVehicle</key>
@@ -1539,7 +1515,7 @@
 		</string>
 		<string>
 			<key>MessageTitle_SelectGearVehicle</key>
-			<text>Sélectionnez un Véhicule</text>
+			<text>Sélectionnez un véhicule</text>
 		</string>
 		<string>
 			<key>Message_ModifyVehicleGear</key>
@@ -1547,7 +1523,7 @@
 		</string>
 		<string>
 			<key>MessageTitle_ModifyVehicleGear</key>
-			<text>Sélectionnez une pièce d'équipement du Véhicule</text>
+			<text>Sélectionnez une pièce d'équipement du véhicule</text>
 		</string>
 		<string>
 			<key>Message_SelectComplexForm</key>
@@ -1571,11 +1547,11 @@
 		</string>
 		<string>
 			<key>Message_FocusMaximumForce</key>
-			<text>La Puissance totale de tous les Foci liés ne peut pas excéder 5 × MAG.</text>
+			<text>La Puissance totale de tous les Focus liés ne peut pas excéder 5 × MAG.</text>
 		</string>
 		<string>
 			<key>Message_FocusMaximumNumber</key>
-			<text>Le nombre maximum de Foci pouvant être liés est égal à MAG.</text>
+			<text>Le nombre maximum de Focus pouvant être liés est égal à MAG.</text>
 		</string>
 		<string>
 			<key>MessageTitle_FocusMaximum</key>
@@ -1671,19 +1647,19 @@
 		</string>
 		<string>
 			<key>Message_CyberwareGradeMismatch</key>
-			<text>Tout le Cyberware d'un personnage doit être de même grade pour créer une suite Cyberware.</text>
+			<text>Tout le cyberware d'un personnage doit être de même grade pour créer une suite cyberware.</text>
 		</string>
 		<string>
 			<key>MessageTitle_CyberwareGradeMismatch</key>
-			<text>Grade de Cyberware non identique</text>
+			<text>Grade de cyberware non identique</text>
 		</string>
 		<string>
 			<key>Message_NoCyberware</key>
-			<text>Ce personnage n'a pas de Cyberware.</text>
+			<text>Ce personnage n'a pas de cyberware.</text>
 		</string>
 		<string>
 			<key>MessageTitle_NoCyberware</key>
-			<text>Pas de Cyberware</text>
+			<text>Pas de cyberware</text>
 		</string>
 		<string>
 			<key>Message_CannotBurnEdge</key>
@@ -1779,11 +1755,11 @@
 		</string>
 		<string>
 			<key>Message_NotEnoughNuyen</key>
-			<text>Vous n'avez pas assez de Nuyens pour cette dépense.</text>
+			<text>Vous n'avez pas assez de Nuyen pour cette dépense.</text>
 		</string>
 		<string>
 			<key>MessageTitle_NotEnoughNuyen</key>
-			<text>Pas assez de Nuyens</text>
+			<text>Pas assez de Nuyen</text>
 		</string>
 		<string>
 			<key>Message_BreakSkillGroup</key>
@@ -1867,7 +1843,7 @@
 		</string>
 		<string>
 			<key>Message_VehicleCyberwarePlugin</key>
-			<text>Cette modification de véhicule n'admet pas d'extension de Cyberware.</text>
+			<text>Cette modification de véhicule n'admet pas d'extension de cyberware.</text>
 		</string>
 		<string>
 			<key>Message_CloningMachineNumberRequired</key>
@@ -1951,11 +1927,11 @@
 		</string>
 		<string>
 			<key>String_WeaponName</key>
-			<text>Entrez un nouveau nom pour cette Arme (ou rien pour le retirer).</text>
+			<text>Entrez un nouveau nom pour cette arme (ou rien pour le retirer).</text>
 		</string>
 		<string>
 			<key>String_VehicleName</key>
-			<text>Entrez un nouveau nom pour ce Véhicule (ou rien pour le retirer).</text>
+			<text>Entrez un nouveau nom pour ce véhicule (ou rien pour le retirer).</text>
 		</string>
 		<string>
 			<key>String_ArmorName</key>
@@ -1980,10 +1956,6 @@
 		<string>
 			<key>String_SpellLimited</key>
 			<text>Limité</text>
-		</string>
-		<string>
-			<key>String_AttributePilot</key>
-			<text>AutoPilote</text>
 		</string>
 		<string>
 			<key>String_AttributeResponse</key>
@@ -2071,11 +2043,11 @@
 		</string>
 		<string>
 			<key>String_ExpensePurchaseGear</key>
-			<text>Achat d'un Equipement</text>
+			<text>Achat d'un équipement</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldGear</key>
-			<text>Vente d'un Equipement</text>
+			<text>Vente d'un équipement</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseArmor</key>
@@ -2087,111 +2059,111 @@
 		</string>
 		<string>
 			<key>String_ExpensePurchaseArmorMod</key>
-			<text>Achat d'une Modification d'armure</text>
+			<text>Achat d'une modification d'armure</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldArmorMod</key>
-			<text>Vente d'une Modification d'armure</text>
+			<text>Vente d'une modification d'armure</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseArmorGear</key>
-			<text>Achat d'un Equipement d'armure</text>
+			<text>Achat d'un équipement d'armure</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldArmorGear</key>
-			<text>Vente d'un Equipement d'armure</text>
+			<text>Vente d'un équipement d'armure</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseCyberwareSuite</key>
-			<text>Achat d'une Suite Cyberware</text>
+			<text>Achat d'une Suite cyberware</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseWeapon</key>
-			<text>Achat d'une Arme</text>
+			<text>Achat d'une arme</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldWeapon</key>
-			<text>Vente d'une Arme</text>
+			<text>Vente d'une arme</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseWeaponAccessory</key>
-			<text>Achat d'un Accessoire d'arme</text>
+			<text>Achat d'un accessoire d'arme</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldWeaponAccessory</key>
-			<text>Vente d'un Accessoire d'arme</text>
+			<text>Vente d'un accessoire d'arme</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseWeaponMod</key>
-			<text>Achat d'une Modification d'arme</text>
+			<text>Achat d'une modification d'arme</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldWeaponMod</key>
-			<text>Vente d'une Modification d'arme</text>
+			<text>Vente d'une modification d'arme</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseWeaponGear</key>
-			<text>Achat d'un Accessoire d'arme</text>
+			<text>Achat d'un accessoire d'arme</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldWeaponGear</key>
-			<text>Vente d'un Accessoire d'arme</text>
+			<text>Vente d'un accessoire d'arme</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseVehicle</key>
-			<text>Achat d'un Véhicule</text>
+			<text>Achat d'un véhicule</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldVehicle</key>
-			<text>Vente d'un Véhicule</text>
+			<text>Vente d'un véhicule</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseVehicleMod</key>
-			<text>Achat d'une Modification de véhicule</text>
+			<text>Achat d'une modification de véhicule</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldVehicleMod</key>
-			<text>Vente d'une Modification de véhicule</text>
+			<text>Vente d'une modification de véhicule</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseVehicleGear</key>
-			<text>Achat d'un Equipement de véhicule</text>
+			<text>Achat d'un équipement de véhicule</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldVehicleGear</key>
-			<text>Vente d'un Equipement de véhicule</text>
+			<text>Vente d'un équipement de véhicule</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseVehicleWeapon</key>
-			<text>Achat d'une Arme de véhicule</text>
+			<text>Achat d'une arme de véhicule</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldVehicleWeapon</key>
-			<text>Vente d'une Arme de véhicule</text>
+			<text>Vente d'une arme de véhicule</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseVehicleWeaponAccessory</key>
-			<text>Achat d'un Accessoire d'arme de véhicule</text>
+			<text>Achat d'un accessoire d'arme de véhicule</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldVehicleWeaponAccessory</key>
-			<text>Vente d'un Accessoire d'arme de véhicule</text>
+			<text>Vente d'un accessoire d'arme de véhicule</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseVehicleWeaponMod</key>
-			<text>Achat d'une Modification d'arme de véhicule</text>
+			<text>Achat d'une modification d'arme de véhicule</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldVehicleWeaponMod</key>
-			<text>Vente d'une Modification d'arme de véhicule</text>
+			<text>Vente d'une modification d'arme de véhicule</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseVehicleCyberware</key>
-			<text>Achat d'une Extension de Cyberware pour véhicule</text>
+			<text>Achat d'une extension de cyberware pour véhicule</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldVehicleCyberware</key>
-			<text>Vente d'une Extension de Cyberware pour véhicule</text>
+			<text>Vente d'une extension de cyberware pour véhicule</text>
 		</string>
 		<string>
 			<key>String_ExpenseVehicleRetrofit</key>
@@ -2199,11 +2171,11 @@
 		</string>
 		<string>
 			<key>String_ExpenseLearnMartialArt</key>
-			<text>Apprentissage d'un Art Martial</text>
+			<text>Apprentissage d'un art martial</text>
 		</string>
 		<string>
 			<key>String_ExpenseLearnManeuver</key>
-			<text>Apprentissage d'une Manoeuvre</text>
+			<text>Apprentissage d'une manoeuvre</text>
 		</string>
 		<string>
 			<key>String_ExpenseLearnMetamagic</key>
@@ -2219,27 +2191,27 @@
 		</string>
 		<string>
 			<key>String_ExpensePurchaseCyberware</key>
-			<text>Achat de Cyberware</text>
+			<text>Achat de cyberware</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldCyberware</key>
-			<text>Vente de Cyberware</text>
+			<text>Vente de cyberware</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseBioware</key>
-			<text>Achat de Bioware</text>
+			<text>Achat de bioware</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldBioware</key>
-			<text>Vente de Bioware</text>
+			<text>Vente de bioware</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseCyberwearGear</key>
-			<text>Achat d'une Suite Cyberware</text>
+			<text>Achat d'une suite cyberware</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldCyberwareGear</key>
-			<text>Vente d'une Suite Cyberware</text>
+			<text>Vente d'une suite cyberware</text>
 		</string>
 		<string>
 			<key>String_ExpenseAddPositiveQuality</key>
@@ -2247,7 +2219,7 @@
 		</string>
 		<string>
 			<key>String_ExpenseSwapPositiveQuality</key>
-			<text>Echange de l'Avantage {0} pour {1}</text>
+			<text>Échange de l'Avantage {0} pour {1}</text>
 		</string>
 		<string>
 			<key>String_ExpenseAddNegativeQuality</key>
@@ -2259,7 +2231,7 @@
 		</string>
 		<string>
 			<key>String_ExpenseSwapNegativeQuality</key>
-			<text>Echange du Défaut {0} pour {1}</text>
+			<text>Échange du Défaut {0} pour {1}</text>
 		</string>
 		<string>
 			<key>String_ExpenseBound</key>
@@ -2363,7 +2335,7 @@
 		</string>
 		<string>
 			<key>String_APHalf</key>
-			<text>-moitié</text>
+			<text> – moitié</text>
 		</string>
 		<string>
 			<key>String_DamageChemical</key>
@@ -2375,15 +2347,15 @@
 		</string>
 		<string>
 			<key>String_DamageElectric</key>
-			<text>(e)</text>
+			<text>(Élec)</text>
 		</string>
 		<string>
 			<key>String_DamageFlechette</key>
-			<text>(f)</text>
+			<text>(Flch)</text>
 		</string>
 		<string>
 			<key>String_DamagePOrS</key>
-			<text>P or E</text>
+			<text>P ou E</text>
 		</string>
 		<string>
 			<key>String_DamageGrenade</key>
@@ -2431,11 +2403,11 @@
 		</string>
 		<string>
 			<key>String_AmmoBox</key>
-			<text>boite</text>
+			<text>boîte</text>
 		</string>
 		<string>
 			<key>String_AmmoClip</key>
-			<text>c</text>
+			<text>ch</text>
 		</string>
 		<string>
 			<key>String_AmmoCylinder</key>
@@ -2447,7 +2419,7 @@
 		</string>
 		<string>
 			<key>String_AmmoEnergy</key>
-			<text>Energie</text>
+			<text>énergie</text>
 		</string>
 		<string>
 			<key>String_AmmoExternalSource</key>
@@ -2455,15 +2427,15 @@
 		</string>
 		<string>
 			<key>String_AmmoMagazine</key>
-			<text>m</text>
+			<text>mg</text>
 		</string>
 		<string>
 			<key>String_AmmoMuzzleLoad</key>
-			<text>cn</text>
+			<text>can</text>
 		</string>
 		<string>
 			<key>String_AmmoSpecial</key>
-			<text>Spécial</text>
+			<text>spé.</text>
 		</string>
 		<string>
 			<key>String_ModeSingleShot</key>
@@ -2483,15 +2455,15 @@
 		</string>
 		<string>
 			<key>String_ModeSpecial</key>
-			<text>Spécial</text>
+			<text>Spé.</text>
 		</string>
 		<string>
 			<key>String_SpellTypePhysical</key>
-			<text>P</text>
+			<text>Ph</text>
 		</string>
 		<string>
 			<key>String_SpellTypeMana</key>
-			<text>M</text>
+			<text>Mn</text>
 		</string>
 		<string>
 			<key>String_SpellDurationInstant</key>
@@ -2507,7 +2479,7 @@
 		</string>
 		<string>
 			<key>String_SpellDurationPermanentLong</key>
-			<text>Permanente</text>
+			<text>Permanent</text>
 		</string>
 		<string>
 			<key>String_SpellDurationSustained</key>
@@ -2531,7 +2503,7 @@
 		</string>
 		<string>
 			<key>String_SpellRangeArea</key>
-			<text>Z</text>
+			<text>Zone</text>
 		</string>
 		<string>
 			<key>String_SpellRangeTouch</key>
@@ -2555,11 +2527,11 @@
 		</string>
 		<string>
 			<key>String_SpellOverflowDamage</key>
-			<text>Suprlus de dommage</text>
+			<text>Surplus de dégâts</text>
 		</string>
 		<string>
 			<key>String_SpellDamageValue</key>
-			<text>Valeur de dommage</text>
+			<text>Valeur de dégâts</text>
 		</string>
 		<string>
 			<key>String_SpellToxinDV</key>
@@ -2591,7 +2563,7 @@
 		</string>
 		<string>
 			<key>String_DescElemental</key>
-			<text>Elementaire</text>
+			<text>Élémentaire</text>
 		</string>
 		<string>
 			<key>String_DescEnvironmental</key>
@@ -2676,7 +2648,7 @@
 		</string>
 		<string>
 			<key>Label_Nuyen</key>
-			<text>Nuyens :</text>
+			<text>Nuyen :</text>
 		</string>
 		<string>
 			<key>Label_Contacts</key>
@@ -2720,7 +2692,7 @@
 		</string>
 		<string>
 			<key>Button_SwapQuality</key>
-			<text>Echanger ce trait...</text>
+			<text>Échanger</text>
 		</string>
 		<string>
 			<key>Button_AddContact</key>
@@ -2744,7 +2716,7 @@
 		</string>
 		<string>
 			<key>Tip_CommonAttributes</key>
-			<text>Les personnages ne peuvent dépenser plus de 50% de leurs PC dans les Attributs Primaires (en ne comptant pas la CHR, MAG et RES).
+			<text>Les personnages ne peuvent dépenser plus de 50% de leurs PC dans les Attributs Primaires (en ne comptant pas la CHA, MAG et RÉS).
 Un saul attribut peut atteindre sa valeur maximum durant la création de personnage.</text>
 		</string>
 		<string>
@@ -2761,11 +2733,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Tip_CommonNuyen</key>
-			<text>La quantité de Nuyens que votre personnage a pour acheter de l'équipment. 1 PC = 5,000¥.</text>
+			<text>La quantité de Nuyen que votre personnage a pour acheter de l'équipment. 1 PC = 5,000¥.</text>
 		</string>
 		<string>
 			<key>Tip_CommonAIRating</key>
-			<text>L'indice de l'I.A. est la moyenne de ses attributs de CHR, d'INT, de LOG et de VOL.</text>
+			<text>L'indice de l'I.A. est la moyenne de ses attributs de CHA, d'INT, de LOG et de VOL.</text>
 		</string>
 		<string>
 			<key>Tip_CommonAISystem</key>
@@ -2773,7 +2745,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Tip_CommonAIFirewall</key>
-			<text>Le Firewall d'une I.A. est la moyenne de ses Attributs de CHR et de VOL.</text>
+			<text>Le Firewall d'une I.A. est la moyenne de ses Attributs de CHA et de VOL.</text>
 		</string>
 		<string>
 			<key>Tip_CommonAIResponse</key>
@@ -2990,7 +2962,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Node_SelectedAutosoftComplexForms</key>
-			<text>Formes complexes d'autosofts sélectionnées</text>
+			<text>Formes complexes d'autopilotes sélectionnées</text>
 		</string>
 		<string>
 			<key>Node_SelectedCommonUseComplexForms</key>
@@ -3030,7 +3002,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Tip_TechnomancerSignal</key>
-			<text>Le Signal du persona incarné est égal à RES / 2.</text>
+			<text>Le Signal du persona incarné est égal à RÉS / 2.</text>
 		</string>
 		<string>
 			<key>Tip_TechnomancerSystem</key>
@@ -3042,7 +3014,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Tip_TechnomancerBiofeedbackFilter</key>
-			<text>Le Filtre de biofeedback du persona incarné est égal à CHR.</text>
+			<text>Le Filtre de biofeedback du persona incarné est égal à CHA.</text>
 		</string>
 		<!-- Critter Tab -->
 		<string>
@@ -3064,7 +3036,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<!-- Initiation Tab -->
 		<string>
 			<key>Label_InitiationGrade</key>
-			<text>Grade d'Initié :</text>
+			<text>Grade d'Initiation :</text>
 		</string>
 		<string>
 			<key>Label_SubmersionGrade</key>
@@ -3114,7 +3086,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<key>Button_AddEcho</key>
 			<text>Ajout d'un écho</text>
 		</string>
-		<!-- Cyberware Tab -->
+		<!-- cyberware Tab -->
 		<string>
 			<key>Button_AddCyberware</key>
 			<text>Ajouter une pièce de &amp;cyberware...</text>
@@ -3200,22 +3172,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Tip_ArmorEquipped</key>
 			<text>Les armure et modifications équipées sont prises en compte pour l'encombrement d'armure et pour la determination du plus grand Indice d'armure d'un personnage.</text>
-		</string>
-		<string>
-			<key>Tip_ArmorDegradationBPlus</key>
-			<text>Réparer la protection balistique de l'armure.</text>
-		</string>
-		<string>
-			<key>Tip_ArmorDegradationBMinus</key>
-			<text>Dégrader la protection balistique de l'armure.</text>
-		</string>
-		<string>
-			<key>Tip_ArmorDegradationIPlus</key>
-			<text>Réparer la protection d'impact de l'armure.</text>
-		</string>
-		<string>
-			<key>Tip_ArmorDegradationIMinus</key>
-			<text>Dégrader la protection d'impact de l'armure.</text>
 		</string>
 		<!-- Street Gear/Weapon Tab -->
 		<string>
@@ -3324,11 +3280,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_DamageStun</key>
-			<text>E</text>
+			<text>E </text>
 		</string>
 		<string>
 			<key>String_DamagePhysical</key>
-			<text>P</text>
+			<text>P </text>
 		</string>
 		<!-- Street Gear/Gear Tab -->
 		<string>
@@ -3394,7 +3350,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Button_AddVehicle</key>
-			<text>&amp;Ajout Véhicule</text>
+			<text>&amp;Ajout véhicule</text>
 		</string>
 		<string>
 			<key>Node_SelectedVehicles</key>
@@ -3418,7 +3374,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_VehicleWeaponModification</key>
-			<text>Modification d'arme de Véhicule</text>
+			<text>Modification d'arme de véhicule</text>
 		</string>
 		<string>
 			<key>Tab_Pets</key>
@@ -3435,7 +3391,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_Age</key>
-			<text>Age :</text>
+			<text>Âge :</text>
 		</string>
 		<string>
 			<key>Label_Eyes</key>
@@ -3467,7 +3423,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_Description</key>
-			<text>Signalement :</text>
+			<text>Description :</text>
 		</string>
 		<string>
 			<key>Label_Background</key>
@@ -3496,10 +3452,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Label_Mugshot</key>
 			<text>Photo du suspect</text>
-		</string>
-		<string>
-			<key>Label_MugshotDimensions</key>
-			<text>210 X 310 pixels</text>
 		</string>
 		<string>
 			<key>Checkbox_Created</key>
@@ -3560,11 +3512,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Button_NuyenGained</key>
-			<text>Gain de nuyens</text>
+			<text>Gain de Nuyen</text>
 		</string>
 		<string>
 			<key>Button_NuyenSpent</key>
-			<text>Dépense de nuyens</text>
+			<text>Dépense de Nuyen</text>
 		</string>
 		<string>
 			<key>Button_EditExpense</key>
@@ -3648,7 +3600,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_SummaryNuyen</key>
-			<text>Nuyens</text>
+			<text>Nuyen</text>
 		</string>
 		<string>
 			<key>Label_SummarySkillGroups</key>
@@ -3668,7 +3620,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_SummaryFoci</key>
-			<text>Foci</text>
+			<text>Focus</text>
 		</string>
 		<string>
 			<key>Label_SummarySpirits</key>
@@ -3684,7 +3636,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_SummaryInitiation</key>
-			<text>Initiation ou submersion</text>
+			<text>Initiation ou Submersion</text>
 		</string>
 		<string>
 			<key>Tip_BuildSpecialAttributes</key>
@@ -3697,10 +3649,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Tip_BuildNegativeQualities</key>
 			<text>Les personnages peuvent économiser jusqu'à -35 Points de création en défauts. Les traits en rouge sombre ne comptent pas dans cette limite.</text>
-		</string>
-		<string>
-			<key>Tip_BuildFoci</key>
-			<text>Chaque Focus lié coûte un nombre de Points de création égal à sa Puissance.</text>
 		</string>
 		<!-- Other Info Tab -->
 		<string>
@@ -3721,7 +3669,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_OtherMatrixInit</key>
-			<text>Initiative matricielle :</text>
+			<text>Initiative matricielle (RA) :</text>
 		</string>
 		<string>
 			<key>Label_OtherMatrixIP</key>
@@ -3736,24 +3684,16 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Passes d'Initiative astrale :</text>
 		</string>
 		<string>
-			<key>Label_OtherBallistic</key>
-			<text>Armure Balistique :</text>
-		</string>
-		<string>
-			<key>Label_OtherImpact</key>
-			<text>Armure d'Impact :</text>
-		</string>
-		<string>
 			<key>Label_OtherEssence</key>
 			<text>Essence :</text>
 		</string>
 		<string>
 			<key>String_NuyenRemaining</key>
-			<text>Nuyens restants</text>
+			<text>Nuyen restants</text>
 		</string>
 		<string>
 			<key>Label_OtherNuyenRemain</key>
-			<text>Nuyens restants :</text>
+			<text>Nuyen restants :</text>
 		</string>
 		<string>
 			<key>Label_OtherCareerKarma</key>
@@ -3761,7 +3701,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_OtherCareerNuyen</key>
-			<text>Nuyens de carrière :</text>
+			<text>Nuyen de carrière :</text>
 		</string>
 		<string>
 			<key>Label_OtherMovement</key>
@@ -3801,7 +3741,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Tip_OtherInitiative</key>
-			<text>L'Initiative est calculée par REA + INT.</text>
+			<text>L'Initiative est calculée par RÉA + INT.</text>
 		</string>
 		<string>
 			<key>Tip_OtherInitiativePasses</key>
@@ -3824,20 +3764,12 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Les personnages ont 3 Passes d'Initiative Astrale.</text>
 		</string>
 		<string>
-			<key>Tip_OtherBallisticArmor</key>
-			<text>Seule la plus grande des valeurs d'Armure Balistique est utilisée pour determiner votre indice d'Armure Balistique.\nSi le total des valeurs d'Armure Balistique de toute les pièces portées dépasse CON × 2, vous subirez une pénalité de -1 à l'AGI pour chaque 2 points en plus.</text>
-		</string>
-		<string>
-			<key>Tip_OtherImpactArmor</key>
-			<text>Seule la plus grande des valeurs d'Armure d'Impact est utilisée pour determiner votre indice d'Armure d'Impact.\nSi le total des valeurs d'Armure d'Impact de toute les pièces portées dépasse CON × 2, vous subirez une pénalité de -1 à l'AGI pour chaque 2 points en plus.</text>
-		</string>
-		<string>
 			<key>Tip_OtherEssence</key>
-			<text>Tous les personnages commencent avec une essence de 6. Le Cyberware, la Nanotech, la Génétech et le Bioware diminuent cette valeur.\nL'Essence devrait rester strictement positive sinon le personnage meurt sauf s'il est transformé en Cyberzombi.</text>
+			<text>Tous les personnages commencent avec une essence de 6. Le Cyberware, la Nanotech, la Génétech et le Bioware diminuent cette valeur.\nL'Essence devrait rester strictement positive sinon le personnage meurt sauf s'il est transformé en Cyberzombie.</text>
 		</string>
 		<string>
 			<key>Tip_OtherNuyen</key>
-			<text>Le montant en Nuyens qu'il vous reste pour acheter du matériel.</text>
+			<text>Le montant en Nuyen qu'il vous reste pour acheter du matériel.</text>
 		</string>
 		<string>
 			<key>Tip_OtherMovement</key>
@@ -3853,11 +3785,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Tip_OtherComposure</key>
-			<text>Le Sang-froid est calculé avec VOL + CHR.</text>
+			<text>Le Sang-froid est calculé avec VOL + CHA.</text>
 		</string>
 		<string>
 			<key>Tip_OtherJudgeIntentions</key>
-			<text>Jauger les Intentions est calculé avec INT + CHR.</text>
+			<text>Jauger les Intentions est calculé avec INT + CHA.</text>
 		</string>
 		<string>
 			<key>Tip_OtherLiftAndCarry</key>
@@ -3875,14 +3807,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Label_CMCMPenalty</key>
 			<text>Modificateur de blessures :</text>
-		</string>
-		<string>
-			<key>Label_CMBallistic</key>
-			<text>Armure Balistique :</text>
-		</string>
-		<string>
-			<key>Label_CMImpact</key>
-			<text>Armure d'Impact :</text>
 		</string>
 		<string>
 			<key>Label_CMResistancePool</key>
@@ -4103,7 +4027,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_Power_AdeptWay</key>
-			<text>Voie de l'A.</text>
+			<text>Voie de l'Adepte</text>
 		</string>
 		<string>
 			<key>Checkbox_Power_Geas</key>
@@ -4219,14 +4143,14 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<key>MessageTitle_SelectCritterType</key>
 			<text>Impossible de créer la créature</text>
 		</string>
-		<!-- Create Cyberware Suite Window -->
+		<!-- Create cyberware Suite Window -->
 		<string>
 			<key>Title_CreateCyberwareSuite</key>
-			<text>Créer une suite Cyberware</text>
+			<text>Créer une suite cyberware</text>
 		</string>
 		<string>
 			<key>Title_CreateBiowareSuite</key>
-			<text>Créer une suite Bioware</text>
+			<text>Créer une suite bioware</text>
 		</string>
 		<string>
 			<key>Label_CyberwareSuite_SuiteName</key>
@@ -4258,19 +4182,19 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_CyberwareSuite_DuplicateName</key>
-			<text>Une suite Cyberware nommée "{0}" existe déja dans un fichier de données. Veuillez choisir un autre nom.</text>
+			<text>Une suite cyberware nommée "{0}" existe déja dans un fichier de données. Veuillez choisir un autre nom.</text>
 		</string>
 		<string>
 			<key>MessageTitle_CyberwareSuite_DuplicateName</key>
-			<text>Suite Cyberware déja existante</text>
+			<text>Suite cyberware déja existante</text>
 		</string>
 		<string>
 			<key>Message_CyberwareSuite_SuiteCreated</key>
-			<text>Suite Cyberware "{0}" créée.</text>
+			<text>Suite cyberware "{0}" créée.</text>
 		</string>
 		<string>
 			<key>MessageTitle_CyberwareSuite_SuiteCreated</key>
-			<text>Suite Cyberware créée</text>
+			<text>Suite cyberware créée</text>
 		</string>
 		<!-- Create PACKS Kit Window -->
 		<string>
@@ -4291,7 +4215,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_CreatePACKSKit_StartingNuyen</key>
-			<text>Nuyens de départ</text>
+			<text>Nuyen de départ</text>
 		</string>
 		<string>
 			<key>Checkbox_CreatePACKSKit_ActiveSkills</key>
@@ -4462,11 +4386,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<!-- Expense Window -->
 		<string>
 			<key>Title_Expense_Karma</key>
-			<text>Changement Karmique</text>
+			<text>Évolution du Karma</text>
 		</string>
 		<string>
 			<key>Title_Expense_Nuyen</key>
-			<text>Changement Nuyens</text>
+			<text>Évolution des Nuyen</text>
 		</string>
 		<string>
 			<key>Label_Expense_KarmaAmount</key>
@@ -4474,7 +4398,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_Expense_NuyenAmount</key>
-			<text>Nuyens :</text>
+			<text>Nuyen :</text>
 		</string>
 		<string>
 			<key>String_Expense_Refund</key>
@@ -4494,7 +4418,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_Expense_RefundNuyen</key>
-			<text>Rembourser (ne compte pas dans le total des nuyens de carrière)</text>
+			<text>Rembourser (ne compte pas dans le total des Nuyen de carrière)</text>
 		</string>
 		<!-- History Window -->
 		<string>
@@ -4508,11 +4432,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<!-- Starting Nuyen Window -->
 		<string>
 			<key>Title_LifestyleNuyen</key>
-			<text>Nuyens de départ</text>
+			<text>Nuyen de départ</text>
 		</string>
 		<string>
 			<key>Label_LifestyleNuyen_Description</key>
-			<text>Jetez les dés indiqués ci-dessous et entrez le résultat pour determiner les Nuyens de départ pour votre personnage.</text>
+			<text>Jetez les dés indiqués ci-dessous et entrez le résultat pour determiner les Nuyen de départ pour votre personnage.</text>
 		</string>
 		<string>
 			<key>Label_LifestyleNuyen_ResultOf</key>
@@ -4643,35 +4567,35 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_Omae_CannotFindSheet</key>
-			<text>Impossible de trouver l'information téléchargée pour cette feuille de personnage.</text>
+			<text>Impossible de trouver l'information téléchargée pour cette fiche de personnage.</text>
 		</string>
 		<string>
 			<key>MessageTitle_Omae_CannotFindSheet</key>
-			<text>Impossible de trouver cette feuille de personnage</text>
+			<text>Impossible de trouver cette fiche de personnage</text>
 		</string>
 		<string>
 			<key>MessageTitle_Omae_DeleteSheet</key>
-			<text>Effacer la feuille de personnage</text>
+			<text>Effacer la fiche de personnage</text>
 		</string>
 		<string>
 			<key>Message_Omae_ConfirmSheet</key>
-			<text>Effacer cette feuille de personnage va supprimer toutes ses informations de Omae. Etes vous sûr de vouloir effacer cette feuille de personnage?</text>
+			<text>Effacer cette fiche de personnage va supprimer toutes ses informations de Omae. Etes vous sûr de vouloir effacer cette fiche de personnage?</text>
 		</string>
 		<string>
 			<key>Message_Omae_SheetDeleted</key>
-			<text>Feuille de personnage effacée.</text>
+			<text>Fiche de personnage effacée.</text>
 		</string>
 		<string>
 			<key>Message_Omae_SheetDeleteError</key>
-			<text>Il y a eu une erreur lors de la suppression de cette feuille de personnage. Veuillez essayer ultérieurement.</text>
+			<text>Il y a eu une erreur lors de la suppression de cette fiche de personnage. Veuillez essayer ultérieurement.</text>
 		</string>
 		<string>
 			<key>Message_Omae_SheetDownloaded</key>
-			<text>Feuille de personnage téléchargée.</text>
+			<text>Fiche de personnage téléchargée.</text>
 		</string>
 		<string>
 			<key>MessageTitle_Omae_SheetDownloaded</key>
-			<text>Feuille de Personnage Téléchargée</text>
+			<text>Fiche de personnage Téléchargée</text>
 		</string>
 		<string>
 			<key>Message_Omae_ChooseUsername</key>
@@ -4747,7 +4671,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_Omae_NoSheets</key>
-			<text>Pas de feuille de personnage trouvée.</text>
+			<text>Pas de fiche de personnage trouvée.</text>
 		</string>
 		<string>
 			<key>Checkbox_Omae_AutoLogin</key>
@@ -4957,23 +4881,23 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_OmaeUpload_SheetName</key>
-			<text>Vous devez entrer un nom pour cette feuille de personnage.</text>
+			<text>Vous devez entrer un nom pour cette fiche de personnage.</text>
 		</string>
 		<string>
 			<key>MessageTitle_OmaeUpload_SheetName</key>
-			<text>Nom de la feuille de personnage</text>
+			<text>Nom de la fiche de personnage</text>
 		</string>
 		<string>
 			<key>Message_OameUpload_SheetDescription</key>
-			<text>Donnez une courte description de ce que la feuille de personnage contient.</text>
+			<text>Donnez une courte description de ce que la fiche de personnage contient.</text>
 		</string>
 		<string>
 			<key>MessageTitle_OmaeUpload_SheetDescription</key>
-			<text>Description de la feuille de personnage</text>
+			<text>Description de la fiche de personnage</text>
 		</string>
 		<string>
 			<key>Message_OmaeUpload_SheetSelectFiles</key>
-			<text>Vous devez mettre au moins 1 fichier dans votre feuille de personnage.</text>
+			<text>Vous devez mettre au moins 1 fichier dans votre fiche de personnage.</text>
 		</string>
 		<!-- Options Window -->
 		<string>
@@ -4994,7 +4918,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_Options_DefaultCharacterSheet</key>
-			<text>Feuille de personnage par défaut:</text>
+			<text>Fiche de personnage par défaut:</text>
 		</string>
 		<string>
 			<key>Tab_Options_General</key>
@@ -5027,10 +4951,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Tab_Options_Miscellaneous</key>
 			<text>Divers</text>
-		</string>
-		<string>
-			<key>Label_Options_AdditionalBooks</key>
-			<text>Suppléments à utiliser</text>
 		</string>
 		<string>
 			<key>Label_Options_Defaults</key>
@@ -5270,7 +5190,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_Options_BindingFocus</key>
-			<text>Focus de Contrôle d’Esprits</text>
+			<text>Focus de Lien d’esprits</text>
 		</string>
 		<string>
 			<key>Label_Options_CenteringFocus</key>
@@ -5279,14 +5199,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Label_Options_CounterspellingFocus</key>
 			<text>Focus de Contresort</text>
-		</string>
-		<string>
-			<key>Label_Options_DiviningFocus</key>
-			<text>Focus de Divination</text>
-		</string>
-		<string>
-			<key>Label_Options_DowsingFocus</key>
-			<text>Focus de radiesthésie</text>
 		</string>
 		<string>
 			<key>Label_Options_InfusionFocus</key>
@@ -5299,10 +5211,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Label_Options_PowerFocus</key>
 			<text>Focus de pouvoir</text>
-		</string>
-		<string>
-			<key>Label_Options_ShieldingFocus</key>
-			<text>Focus de Bouclier</text>
 		</string>
 		<string>
 			<key>Label_Options_SpellcastingFocus</key>
@@ -5345,12 +5253,8 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Permet aux Compétences d'être re-groupées si tout les Indices sont les mêmes (SR4A, FAQ)</text>
 		</string>
 		<string>
-			<key>Checkbox_Options_MetatypesCostKarma</key>
-			<text>En méthode de création par Karma, les Métatypes coûtent autant en Karma qu'en PC</text>
-		</string>
-		<string>
 			<key>Checkbox_Options_FreeContactPointsKarma</key>
-			<text>Pts Contact gratuits : CHR ×</text>
+			<text>Pts Contact gratuits : CHA ×</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_FreeContactPointsBP</key>
@@ -5370,7 +5274,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_Options_EssenceLossReducesMaximum</key>
-			<text>La perte d'Essence ne réduit que les max de MAG/RES</text>
+			<text>La perte d'Essence ne réduit que les max de MAG/RÉS</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_NoArmorEncumbrance</key>
@@ -5414,7 +5318,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_Options_AllowCustomTransgenics</key>
-			<text>Autoriser la conversion de n'importe quel Bioware en Transgénique (AUG 93)</text>
+			<text>Autoriser la conversion de n'importe quel bioware en Transgénique (AUG 93)</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_UseRestrictionsToRecoilCompensation</key>
@@ -5482,7 +5386,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_Option_UnrestrictedNuyen</key>
-			<text>Autoriser la création de personnages avec autant de Points de Création que souhaité en nuyens</text>
+			<text>Autoriser la création de personnages avec autant de Points de Création que souhaité en Nuyen</text>
 		</string>
 		<string>
 			<key>Checkbox_Option_AllowHigherStackedFoci</key>
@@ -5510,7 +5414,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_Option_AllowBiowareSuites</key>
-			<text>Autoriser les suites Bioware</text>
+			<text>Autoriser les suites bioware</text>
 		</string>
 		<string>
 			<key>Checkbox_Option_PrintNotes</key>
@@ -5530,7 +5434,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_Option_TechnomancerAllowAutosoft</key>
-			<text>Les Technomancien peuvent sélectionner les Autosofts en tant que Formes complexes</text>
+			<text>Les Technomanciens peuvent sélectionner les autopilotes en tant que Formes complexes</text>
 		</string>
 		<string>
 			<key>Message_Options_RestoreDefaults</key>
@@ -5612,10 +5516,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Sécurité :</text>
 		</string>
 		<string>
-			<key>Label_SelectAdvancedLifestyle_TotalLP</key>
-			<text>Total PN :</text>
-		</string>
-		<string>
 			<key>Message_SelectAdvancedLifestyle_LifestyleName</key>
 			<text>Veuillez donner un nom à votre nouveau Niveau de vie.</text>
 		</string>
@@ -5631,7 +5531,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<!-- Select Armor Mod Window -->
 		<string>
 			<key>Title_SelectArmorMod</key>
-			<text>Sélection d'une Modification d'Armure</text>
+			<text>Sélection d'une modification d'Armure</text>
 		</string>
 		<!-- Select Attribute Window -->
 		<string>
@@ -5657,11 +5557,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_SelectBP_SumToX</key>
-			<text>Système à X points :</text>
+			<text>Somme à dix points :</text>
 		</string>
 		<string>
 			<key>Label_SelectBP_MaxNuyen</key>
-			<text>Max. nuyen en Karma :</text>
+			<text>Max. Nuyen en Karma :</text>
 		</string>
 		<string>
 			<key>Checkbox_SelectBP_IgnoreRules</key>
@@ -5682,10 +5582,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>String_SelectBP_LifeModuleSummary</key>
 			<text>Saissisez la disponibilité maximum et le nombre de points de karma disponibles pour créer un personnage ({0} par défaut).</text>
-		</string>
-		<string>
-			<key>Tip_SelectBP_IgnoreRules</key>
-			<text>Permet d'ignorer les règles de création de personnages (coût de création, Indices d'Attributs et de Compétences...).\nRéservé aux Maîtres de Jeu.</text>
 		</string>
 		<!-- Advanced Contact Options Window -->
 		<string>
@@ -5714,7 +5610,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_SelectContactConnection_TotalModifier</key>
-			<text>Total Modificateur d'Influence :</text>
+			<text>Total modificateur d'Influence :</text>
 		</string>
 		<string>
 			<key>Checkbox_SelectContactConnection_FreeContact</key>
@@ -5773,14 +5669,14 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<key>Title_SelectCritterPower</key>
 			<text>Sélection d'un Pouvoir de Créature</text>
 		</string>
-		<!-- Select Cyberware Window -->
+		<!-- Select cyberware Window -->
 		<string>
 			<key>Title_SelectCyberware</key>
-			<text>Sélection de Cyberware</text>
+			<text>Sélection de cyberware</text>
 		</string>
 		<string>
 			<key>Title_SelectCyberware_Bioware</key>
-			<text>Sélection de Bioware</text>
+			<text>Sélection de bioware</text>
 		</string>
 		<string>
 			<key>Label_SelectCyberware_ESSDiscount</key>
@@ -5790,22 +5686,22 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<key>Checkbox_Transgenic</key>
 			<text>Ajouter comme Transgénique</text>
 		</string>
-		<!-- Select Cyberware Suite Window -->
+		<!-- Select cyberware Suite Window -->
 		<string>
 			<key>Title_SelectCyberwareSuite</key>
-			<text>Sélection d'une Suite Cyberware</text>
+			<text>Sélection d'une Suite cyberware</text>
 		</string>
 		<string>
 			<key>Title_SelectBiowareSuite</key>
-			<text>Sélection d'une Suite Bioware</text>
+			<text>Sélection d'une Suite bioware</text>
 		</string>
 		<string>
 			<key>Label_SelectCyberwareSuite_PartsInSuite</key>
-			<text>Produits dans cette Suite Cyberware :</text>
+			<text>Produits dans cette Suite cyberware :</text>
 		</string>
 		<string>
 			<key>Label_SelectBiowareSuite_PartsInSuite</key>
-			<text>Produits dans cette Suite Bioware :</text>
+			<text>Produits dans cette Suite bioware :</text>
 		</string>
 		<!-- Select Exotic Skill Window -->
 		<string>
@@ -5819,7 +5715,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<!-- Select Gear Window -->
 		<string>
 			<key>Title_SelectGear</key>
-			<text>Sélection d'un Equipement</text>
+			<text>Sélection d'un équipement</text>
 		</string>
 		<string>
 			<key>Label_SelectGear_DoItYourself</key>
@@ -5835,7 +5731,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_SelectGear_Stack</key>
-			<text>Tas</text>
+			<text>Lot</text>
 		</string>
 		<string>
 			<key>Label_SelectGear_Markup</key>
@@ -5916,38 +5812,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Faites un choix :</text>
 		</string>
 		<!-- Select Metamagic Window -->
-		<string>
-			<key>Title_SelectMetamagic</key>
-			<text>Sélection d'une métamagie</text>
-		</string>
-		<string>
-			<key>Title_SelectMetamagic_Echo</key>
-			<text>Sélection d'un écho</text>
-		</string>
-		<string>
-			<key>Message_SelectMetamagic_MetamagicRequirement</key>
-			<text>Vous ne réunissez pas les conditions minimales pour cette métamagie. Vous devez réunir tout les critères suivants :</text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectMetamagic_MetamagicRequirement</key>
-			<text>Critères de la métamagie</text>
-		</string>
-		<string>
-			<key>Message_SelectMetamagic_EchoRequirement</key>
-			<text>Vous ne réunissez pas les conditions minimales pour cet écho. Vous devez réunir tout les critères suivants :</text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectMetamagic_EchoRequirement</key>
-			<text>Critères de l'écho</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectMetamagic_LimitList</key>
-			<text>N'afficher que les métamagies pouvant être prises</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectEcho_LimitList</key>
-			<text>N'afficher que les échos pouvant être pris</text>
-		</string>
 		<!-- Select Nexus Window -->
 		<string>
 			<key>Title_SelectNexus</key>
@@ -6065,7 +5929,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_SelectPACKSKit_StartingNuyenBP</key>
-			<text>Coût en PC(Nuyen) :</text>
+			<text>Coût en PC (Nuyen) :</text>
 		</string>
 		<string>
 			<key>String_SelectPACKSKit_Group</key>
@@ -6096,10 +5960,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Title_SelectComplexForm</key>
 			<text>Sélection d'un Programme</text>
-		</string>
-		<string>
-			<key>Label_SelectProgram_CommonlyUsedSkill</key>
-			<text>Comp. courament utilisée :</text>
 		</string>
 		<!-- Select Program Option Window -->
 		<string>
@@ -6240,7 +6100,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<key>Label_SelectWeapon_IncludedItems</key>
 			<text>Accessoires et modifications inclus :</text>
 		</string>
-		<!-- Select Weapon Accessory Window -->
+		<!-- Select Weapon accessory Window -->
 		<string>
 			<key>Title_SelectWeaponAccessory</key>
 			<text>Sélection d'un accessoire d'arme</text>
@@ -6354,7 +6214,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_Viewer_CharacterSheet</key>
-			<text>Feuille de perso :</text>
+			<text>Fiche de perso :</text>
 		</string>
 		<!-- Create Improvement Window -->
 		<string>
@@ -6538,7 +6398,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_IllusionSpell1</key>
-			<text>Evident</text>
+			<text>Évident</text>
 		</string>
 		<string>
 			<key>Checkbox_IllusionSpell2</key>
@@ -6558,7 +6418,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_ManipulationSpell1</key>
-			<text>Environnemental</text>
+			<text>Environnementale</text>
 		</string>
 		<string>
 			<key>Checkbox_ManipulationSpell2</key>
@@ -6652,11 +6512,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_Improvement_SideLeft</key>
-			<text>A gauche</text>
+			<text>À gauche</text>
 		</string>
 		<string>
 			<key>String_Improvement_SideRight</key>
-			<text>A droite</text>
+			<text>À droite</text>
 		</string>
 		<string>
 			<key>String_Improvement_SelectText</key>
@@ -6726,7 +6586,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_TechniquesCount</key>
-			<text>Techniques</text>
+			<text>Téchniques</text>
 		</string>
 		<string>
 			<key>String_SkillPoints</key>
@@ -6746,7 +6606,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_Bonus</key>
-			<text>Bonus:</text>
+			<text>Bonus :</text>
 		</string>
 		<string>
 			<key>Label_Accuracy</key>
@@ -6822,7 +6682,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_DeleteLimitModifier</key>
-			<text>Êtes-vous sûr de vouloir supprimer cette limite Modifiée ?</text>
+			<text>Êtes-vous sûr de vouloir supprimer cette limite modifiée ?</text>
 		</string>
 		<string>
 			<key>Message_CannotDeleteLimitModifier</key>
@@ -6858,7 +6718,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_SpellExtended</key>
-			<text>Etendu</text>
+			<text>Étendu</text>
 		</string>
 		<string>
 			<key>String_SpellAlchemical</key>
@@ -6949,48 +6809,12 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<text>Sur la base de votre sélection de talent, vous pouvez choisir {0}.</text>
 		</string>
 		<string>
-			<key>String_MetamagicSkillMagicianA</key>
-			<text>2 compétences magiques indice 5</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillTechnomancerA</key>
-			<text>2 compétences de Résonance indice 5</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillMagicianB</key>
-			<text>2 compétences magiques indice 4</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillTechnomancerB</key>
-			<text>2 compétences de Résonance indice 4</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillAdeptB</key>
-			<text>1 compétence active d'indice 4</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillAspectedB</key>
-			<text>1 groupe de compétences magiques d'indice 4</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillAdeptC</key>
-			<text>1 compétence active d'indice 2</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillAspectedC</key>
-			<text>1 groupe de compétences magiques d'indice 2</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillAspectedD</key>
-			<text>1 groupe de compétences magiques d'indice 0</text>
-		</string>
-		<string>
 			<key>Message_Metatype_Duplicate</key>
 			<text>Vous ne pouvez pas selectionner une même compétence deux fois.</text>
 		</string>
 		<string>
 			<key>Tip_SelectSpell_ExtendedSpell</key>
-			<text>Les sorts à portée étendue ont pour rayon (Puissnace × MAG × 10) metres mais ont leur drain augmenté de +2.</text>
+			<text>Les sorts à portée étendue ont pour rayon (Puissance × MAG × 10) metres mais ont leur drain augmenté de +2.</text>
 		</string>
 		<string>
 			<key>String_CustomItem_SelectText</key>
@@ -7034,7 +6858,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Lifestyle</key>
-			<text>Niveau de vie:</text>
+			<text>Niveau de vie :</text>
 		</string>
 		<string>
 			<key>String_SelectBP_PrioritySummary</key>
@@ -7058,7 +6882,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_Options_LicenseRestricted</key>
-			<text>Acquérir une licence chaque objet restreinte</text>
+			<text>Acquérir une licence pour chaque objet restreint</text>
 		</string>
 		<string>
 			<key>MessageTitle_Metatype_Duplicate</key>
@@ -7115,10 +6939,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Checkbox_SelectSpell_Alchemical</key>
 			<text>Préparation Alchimique (SR5 305)</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_Knucks</key>
-			<text>Les Poings américains bénéficient des bonus d'attaque à mains nues</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_BreakSkillGroupsInCreateMode</key>
@@ -7218,15 +7038,15 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_Echo</key>
-			<text>Echo</text>
+			<text>Écho</text>
 		</string>
 		<string>
 			<key>Label_Echo</key>
-			<text>Echo:</text>
+			<text>Écho :</text>
 		</string>
 		<string>
 			<key>Message_ConfirmKarmaandNuyenExpense</key>
-			<text>Êtes-vous sûr de vouloir dépenser {2} Karma et {3} Nuyens pour améliorer de {0} à {1} ?</text>
+			<text>Êtes-vous sûr de vouloir dépenser {2} Karma et {3} Nuyen pour améliorer de {0} à {1} ?</text>
 		</string>
 		<string>
 			<key>MessageTitle_NotHighestGrade</key>
@@ -7242,75 +7062,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Button_AddSubmersionGrade</key>
-			<text>Ajouter un Grade de Immersion</text>
+			<text>Ajouter un Grade de Submersion</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_IgnoreArt</key>
 			<text>Ignorer les prérequis du Grimoire des rues pour les Talents</text>
-		</string>
-		<string>
-			<key>Title_SelectArt</key>
-			<text>Selectionner un Talent</text>
-		</string>
-		<string>
-			<key>Title_SelectEnhancement</key>
-			<text>Selectionner une Amélioration</text>
-		</string>
-		<string>
-			<key>Title_SelectEnchantment</key>
-			<text>Selectionner un Enchantement</text>
-		</string>
-		<string>
-			<key>Title_SelectRitual</key>
-			<text>Selectionner un Rituel</text>
-		</string>
-		<string>
-			<key>Message_SelectArt_ArtRequirement</key>
-			<text>Vous ne remplissez pas les prérequises pour ce Talent. Vous devez répondre à tous les critères suivants:</text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectArt_ArtRequirement</key>
-			<text>Prérequis du Talent</text>
-		</string>
-		<string>
-			<key>Message_SelectArt_EnchantmentRequirement</key>
-			<text>Vous ne remplissez pas les prérequises pour cet Enchantement. Vous devez répondre à tous les critères suivants:</text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectArt_EnchantmentRequirement</key>
-			<text>Prérequis d'Enchantement</text>
-		</string>
-		<string>
-			<key>Message_SelectArt_EnhancementRequirement</key>
-			<text>Vous ne remplissez pas les prérequises pour cette Amélioration. Vous devez répondre à tous les critères suivants:</text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectArt_EnhancementRequirement</key>
-			<text>Prérequis d'Amélioration</text>
-		</string>
-		<string>
-			<key>Message_SelectArt_RitualRequirement</key>
-			<text>Vous ne remplissez pas les prérequises pour ce Rituel. Vous devez répondre à tous les critères suivants:</text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectArt_RitualRequirement</key>
-			<text>Prérequis du Rituel</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectArt_LimitList</key>
-			<text>Afficher uniquement les talents que je peux prendre</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectEnhancement_LimitList</key>
-			<text>Afficher uniquement les Améliorations que je peux prendre</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectEnchantment_LimitList</key>
-			<text>Afficher uniquement les Enchantements que je peux prendre</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectRitual_LimitList</key>
-			<text>Afficher uniquement les Rituels que je peux prendre</text>
 		</string>
 		<string>
 			<key>Message_UndoNotHighestGrade</key>
@@ -7326,7 +7082,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_Location</key>
-			<text>Location:</text>
+			<text>Endroit :</text>
 		</string>
 		<string>
 			<key>Label_Archtype</key>
@@ -7342,11 +7098,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_DeleteInitiateGrade</key>
-			<text>Êtes-vous sûr de vouloir effacer ce niveau d'initiation et tous les bonus associés ?</text>
+			<text>Êtes-vous sûr de vouloir effacer ce Grade d'Initiation et tous les bonus associés ?</text>
 		</string>
 		<string>
 			<key>Message_DeleteSubmersionGrade</key>
-			<text>Êtes-vous sûr de vouloir effacer ce niveau de conversion et tous les bonus associés ?</text>
+			<text>Êtes-vous sûr de vouloir effacer ce Grade de Submersion et tous les bonus associés ?</text>
 		</string>
 		<string>
 			<key>Message_DeleteArt</key>
@@ -7358,31 +7114,31 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_InvalidAttributeExcess</key>
-			<text>{0} over allotted Attribute point limit</text>
+			<text>{0} de plus que la limite de points d'attribut allouée</text>
 		</string>
 		<string>
 			<key>Message_InvalidSpecialExcess</key>
-			<text>{0} over allotted Special Attribute point limit</text>
+			<text>{0} de plus que la limite de points d'attribut spécial allouée</text>
 		</string>
 		<string>
 			<key>Message_InvalidSkillGroupExcess</key>
-			<text>{0} over allotted Skill Group point limit</text>
+			<text>{0} de plus que la limite de points de groupe de compétences allouée</text>
 		</string>
 		<string>
 			<key>Message_InvalidActiveSkillExcess</key>
-			<text>{0} over allotted Active Skill point limit</text>
+			<text>{0} de plus que la limite de points de compétence active allouée</text>
 		</string>
 		<string>
 			<key>Message_InvalidKnowledgeSkillExcess</key>
-			<text>{0} over allotted Knowledge Skill point limit</text>
+			<text>{0} de plus que la limite de points de compétence des connaissances allouées</text>
 		</string>
 		<string>
 			<key>Message_ExtraNuyen</key>
-			<text>You have {0} remaining but are only allowed to carry {1} over to your career.\nAre you sure you want to lose these extra nuyen?</text>
+			<text>You have {0} remaining but are only allowed to carry {1} over to your career.\nAre you sure you want to lose these extra Nuyen?</text>
 		</string>
 		<string>
 			<key>MessageTitle_ExtraNuyen</key>
-			<text>Extra Nuyen</text>
+			<text>Nuyen supplémentaires</text>
 		</string>
 		<string>
 			<key>String_Schooling</key>
@@ -7390,7 +7146,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_ValAugmented</key>
-			<text>Val (Aug)</text>
+			<text>Val (Spé)</text>
 		</string>
 		<string>
 			<key>Tip_OptionsUnarmedSkillImprovements</key>
@@ -7402,15 +7158,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Tip_OptionsCyberlegMovement</key>
-			<text>Permet aux caractères avec deux jambes de cyber d'utiliser l'agilité de jambes de cyber pour calculer des taux de mouvement.</text>
-		</string>
-		<string>
-			<key>Tip_OptionsDontDoubleQualities</key>
-			<text>Enabling this house rule will allow characters in Career mode to purchase Positive Qualities and buy off Negative at their normal price instead of doubling them.</text>
-		</string>
-		<string>
-			<key>Tip_OptionsExceptionalAttribute</key>
-			<text>Enabling this house rule will allow Attribute Points to be spent on the bonus point granted by the Exceptional Attributes quality.</text>
+			<text>Permet aux personnages avec deux jambes de cyber d'utiliser l'agilité de jambes de cyber pour calculer des taux de mouvement.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsExceptionalNotMaxed</key>
@@ -7422,47 +7170,43 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Tip_OptionsAllowInitiation</key>
-			<text>Allows Initiation/Submersion using Karma in Create mode.</text>
+			<text>Autorise l'utilisation de Karma pour l'Initiation/Submersion en Mode Création.</text>
 		</string>
 		<string>
 			<key>Label_TraditionName</key>
-			<text>Name:</text>
+			<text>Nom :</text>
 		</string>
 		<string>
 			<key>Label_SpiritCombat</key>
-			<text>Combat:</text>
+			<text>Combat :</text>
 		</string>
 		<string>
 			<key>Label_SpiritDetection</key>
-			<text>Detection:</text>
+			<text>Détection :</text>
 		</string>
 		<string>
 			<key>Label_SpiritHealth</key>
-			<text>Health:</text>
+			<text>Santé :</text>
 		</string>
 		<string>
 			<key>Label_SpiritIllusion</key>
-			<text>Illusion:</text>
+			<text>Illusion :</text>
 		</string>
 		<string>
 			<key>Label_SpiritManipulation</key>
-			<text>Manipulation:</text>
+			<text>Manipulation :</text>
 		</string>
 		<string>
 			<key>Node_SelectedEnchantments</key>
-			<text>Selected Enchantments</text>
+			<text>Enchantements choisis</text>
 		</string>
 		<string>
 			<key>Node_Astral</key>
-			<text>Astral</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_DontDoubleQualities</key>
-			<text>Don't double the cost of Qualities in Career Mode</text>
+			<text>Astrale</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_CyberlegMovement</key>
-			<text>Use Cyberleg Stats for Movement</text>
+			<text>Utiliser les stats des cyberjambes pour le déplacement</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceptionalAttributes</key>
@@ -7470,7 +7214,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceptionalNotMaxed</key>
-			<text>Exceptional Attributes not at cap, are not maxed</text>
+			<text>Les attributs exceptionnels n'étant pas au maximum n'obtiennent pas de bonus</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_PointsOnBrokenGroups</key>
@@ -7478,7 +7222,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_Options_AllowInitiation</key>
-			<text>Allow Initiation/Submersion in Create mode</text>
+			<text>Autoriser l'Initiation/Submersion en Mode Création</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_DroneArmorMultiplier</key>
@@ -7494,7 +7238,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_Condition</key>
-			<text>Condition:</text>
+			<text>Condition :</text>
 		</string>
 		<string>
 			<key>Message_ConfirmKarmaExpenseSkillSpecialization</key>
@@ -7511,7 +7255,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<!-- Advanced Programs Region -->
 		<string>
 			<key>Label_SummaryAINormalPrograms</key>
-			<text>Programmes Normales</text>
+			<text>Programmes Normaux</text>
 		</string>
 		<string>
 			<key>Label_SummaryAIAdvancedPrograms</key>
@@ -7652,7 +7396,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Title_ChooseCharacterPriorities</key>
-			<text>Choisir les priorités des caractères</text>
+			<text>Choisir les priorités des personnages</text>
 		</string>
 		<string>
 			<key>String_Seconds</key>
@@ -7704,11 +7448,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Treenode_Roster_RecentCharacters</key>
-			<text>Caractères récents</text>
+			<text>Personnages récents</text>
 		</string>
 		<string>
 			<key>Treenode_Roster_FavouriteCharacters</key>
-			<text>Caractères préférés</text>
+			<text>Personnages préférés</text>
 		</string>
 		<string>
 			<key>Menu_Delete</key>
@@ -7744,7 +7488,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Menu_ValidCharacter</key>
-			<text>Vérifier la validité des caractères</text>
+			<text>Vérifier la validité des personnages</text>
 		</string>
 		<string>
 			<key>Message_ValidCharacter</key>
@@ -7824,7 +7568,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_HighContact</key>
-			<text>Vous ne pouvez pas avoir un contact qui vaut plus de 7 points à la génération de caractères.</text>
+			<text>Vous ne pouvez pas avoir un contact qui vaut plus de 7 points à la génération de personnages.</text>
 		</string>
 		<string>
 			<key>Message_CannotFindWeapon</key>
@@ -7916,7 +7660,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_Loading_Characters</key>
-			<text>Charger les caractères...</text>
+			<text>Charger les personnages...</text>
 		</string>
 		<string>
 			<key>String_Generating_Sheet</key>
@@ -7924,11 +7668,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_SelectCyberware_CyberwareRestriction</key>
-			<text>Vous ne pouvez pas sélectionner ce Cyberware/Bioware parce que vous avez déjà pris l'un des équipements interdits suivants.</text>
+			<text>Vous ne pouvez pas sélectionner ce cyberware/bioware à cause d'un des équipements interdits suivants.</text>
 		</string>
 		<string>
 			<key>Node_SelectAdvancedLifestyle_FreeMatrixGrids</key>
-			<text>Grille de matrice gratuite</text>
+			<text>Grille matricielle gratuite</text>
 		</string>
 		<string>
 			<key>Label_Options_NuyenDecimalsMaximum</key>
@@ -7992,7 +7736,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_Options_AlchemicalFocus</key>
-			<text>Focus alchimique</text>
+			<text>Focus d'Alchimie</text>
 		</string>
 		<string>
 			<key>Label_Options_NewKnoSpecialization</key>
@@ -8024,7 +7768,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_SpellDefenceDecAttREA</key>
-			<text>Diminuer l'attribut (REA)</text>
+			<text>Diminuer l'attribut (RÉA)</text>
 		</string>
 		<string>
 			<key>Label_SpellDefenceDecAttLOG</key>
@@ -8072,7 +7816,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_DrugComponents</key>
-			<text>Ingrédients:</text>
+			<text>Ingrédients :</text>
 		</string>
 		<string>
 			<key>Skill_SortAlphabetical</key>
@@ -8136,7 +7880,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_Options_OmaeEnabled</key>
-			<text>Activer l'échange de caractères Omae</text>
+			<text>Activer l'échange de personnages Omae</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_Live_CustomData</key>
@@ -8144,7 +7888,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_Options_LiveUpdateCleanCharacterFiles</key>
-			<text>Charger automatiquement les modifications à partir des fichiers de sauvegarde des caractères ouverts s'il n'y a pas de modifications en attente à enregistrer</text>
+			<text>Charger automatiquement les modifications à partir des fichiers de sauvegarde des personnages ouverts s'il n'y a pas de modifications en attente à enregistrer</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_PrintFreeExpenses</key>
@@ -8152,7 +7896,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_Options_HideCharacterRoster</key>
-			<text>Masquer le directoire des caractères</text>
+			<text>Masquer le directoire des personnages</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_PreferNightlyBuilds</key>
@@ -8160,7 +7904,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_Options_CharacterRoster</key>
-			<text>Directory pour le suivi des caractères:</text>
+			<text>Directory pour le suivi des personnages:</text>
 		</string>
 		<string>
 			<key>Checkbox_Option_DontRoundEssenceInternally</key>
@@ -8232,11 +7976,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_Search</key>
-			<text>Chercher:</text>
+			<text>Chercher :</text>
 		</string>
 		<string>
 			<key>String_NotApplicable</key>
-			<text>s.o.</text>
+			<text>N/A</text>
 		</string>
 		<string>
 			<key>String_Error</key>
@@ -8244,7 +7988,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_Limit</key>
-			<text>Limite:</text>
+			<text>Limite :</text>
 		</string>
 		<string>
 			<key>String_All</key>
@@ -8328,7 +8072,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_InvalidExConWare</key>
-			<text>Les éléments suivants de Cyberware / Bioware limités ne sont pas permis sur un ExCon :</text>
+			<text>Les éléments suivants de cyberware / bioware limités ne sont pas permis sur un ExCon :</text>
 		</string>
 		<string>
 			<key>Message_ExtraPoints</key>
@@ -8388,11 +8132,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Tip_OptionsDontDoubleQualityRefunds</key>
-			<text>Permet aux caractères en mode carrière de supprimer les qualités négatives à leur coût normal au lieu de les doubler.</text>
+			<text>Permet aux personnages en mode carrière de supprimer les qualités négatives à leur coût normal au lieu de les doubler.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsDontDoubleQualityPurchases</key>
-			<text>Permet aux caractères en mode carrière d'acheter des qualités positives à leur prix normal au lieu de les doubler.</text>
+			<text>Permet aux personnages en mode carrière d'acheter des qualités positives à leur prix normal au lieu de les doubler.</text>
 		</string>
 		<string>
 			<key>Skill_SortAttributeValue</key>
@@ -8428,7 +8172,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Menu_AddWeaponMount</key>
-			<text>Ajouter un porte-arme</text>
+			<text>Ajouter une monture d'arme</text>
 		</string>
 		<string>
 			<key>Menu_EditWeaponMount</key>
@@ -8436,7 +8180,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_WeaponMounts</key>
-			<text>Porte-arme</text>
+			<text>Monture d'arme</text>
 		</string>
 		<string>
 			<key>Label_FiringMode</key>
@@ -8456,7 +8200,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Tip_Omae_Warning</key>
-			<text>Omae est indépendant de la volonté des développeurs actuels et contient de vieux caractères qui peuvent ne pas fonctionner ou planter la version actuelle de Chummer. L'utilisation se fait à vos propres risques.\nVoulez-vous continuer ?</text>
+			<text>Omae est indépendant de la volonté des développeurs actuels et contient de vieux personnages qui peuvent ne pas fonctionner ou planter la version actuelle de Chummer. L'utilisation se fait à vos propres risques.\nVoulez-vous continuer ?</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_Missions</key>
@@ -8480,15 +8224,15 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_WorkingForTheMan</key>
-			<text>Au service de l'homme</text>
+			<text>Au service de l'Homme</text>
 		</string>
 		<string>
 			<key>String_WorkingForThePeople</key>
-			<text>Au service du peuple</text>
+			<text>Au service du Peuple</text>
 		</string>
 		<string>
 			<key>String_WorkingForTheManPeople</key>
-			<text>Au service de l'homme / du peuple</text>
+			<text>Au service de l'Homme/du Peuple</text>
 		</string>
 		<string>
 			<key>Button_Options_UploadPastebin</key>
@@ -8500,15 +8244,15 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_SelectGeneric_ChargenRestriction</key>
-			<text>Vous ne pouvez pas sélectionner cette {0} parce que votre caractère a déjà été créé.</text>
+			<text>Vous ne pouvez pas sélectionner cette {0} parce que votre personnage a déjà été créé.</text>
 		</string>
 		<string>
 			<key>Message_SelectGeneric_PriorityRestriction</key>
-			<text>Vous ne pouvez pas sélectionner cette {0} parce que la méthode de création de votre caractère ne vous permet pas d'acheter cette {0}.</text>
+			<text>Vous ne pouvez pas sélectionner cette {0} parce que la méthode de création de votre personnage ne vous permet pas d'acheter cette {0}.</text>
 		</string>
 		<string>
 			<key>Message_SelectGeneric_CareerOnlyRestriction</key>
-			<text>Vous ne pouvez pas sélectionner cette {0} parce que votre caractère n'a pas encore été créé.</text>
+			<text>Vous ne pouvez pas sélectionner cette {0} parce que votre personnage n'a pas encore été créé.</text>
 		</string>
 		<string>
 			<key>Label_FilterByKarma</key>
@@ -8580,7 +8324,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>MessageTitle_KarmaValue</key>
-			<text>Caractère valeur du karma</text>
+			<text>Valeur de karma du personnage</text>
 		</string>
 		<string>
 			<key>Menu_KarmaValue</key>
@@ -8640,7 +8384,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_Updater_CleanReinstallPrompt</key>
-			<text>Effectuer une réinstallation complète supprimera tous les fichiers du répertoire Chummer5a qui ne sont pas dans le téléchargement principal. Cela inclut les fichiers de données personnalisés, les sauvegardes automatiques, les fichiers de feuilles personnalisés, les localisations personnalisées et tous les paramètres différents de ceux par défaut.\n\nÊtes-vous sûr de souhaiter une réinstallation propre ?
+			<text>Effectuer une réinstallation complète supprimera tous les fichiers du répertoire Chummer5a qui ne sont pas dans le téléchargement principal. Cela inclut les fichiers de données personnalisés, les sauvegardes automatiques, les fichiers de fiches personnalisées, les localisations personnalisées et tous les paramètres différents de ceux par défaut.\n\nÊtes-vous sûr de souhaiter une réinstallation propre ?
 
 </text>
 		</string>
@@ -8702,15 +8446,1049 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Skill_SortDicepool</key>
-			<text>Poule aux dés</text>
+			<text>Plus grand nombre de dés</text>
 		</string>
 		<string>
 			<key>Skill_SortLowerDicepool</key>
-			<text>Petit poule aux dés</text>
+			<text>Plus petit nombre de dés</text>
 		</string>
 		<string>
 			<key>Warning_NoLimitFound</key>
 			<text>Impossible de trouver la limite appropriée à modifier. Assurez-vous d'avoir sélectionné un modificateur de limite personnalisé.</text>
+		</string>
+		<string>
+			<key>String_Version</key>
+			<text>Version</text>
+		</string>
+		<string>
+			<key>String_D6</key>
+			<text>D6</text>
+		</string>
+		<string>
+			<key>Label_Stage</key>
+			<text>Rang :</text>
+		</string>
+		<string>
+			<key>String_PushTheLimit</key>
+			<text>Repoussez la limite</text>
+		</string>
+		<string>
+			<key>String_SeizeTheInit</key>
+			<text>Prendre l'initiative</text>
+		</string>
+		<string>
+			<key>String_Blitz</key>
+			<text>Blitz</text>
+		</string>
+		<string>
+			<key>String_CloseCall</key>
+			<text>Close Call</text>
+		</string>
+		<string>
+			<key>String_DeadManTrigger</key>
+			<text>Dead Man's Trigger</text>
+		</string>
+		<string>
+			<key>Main_Menu_GM_Dash</key>
+			<text>GM Dashboard</text>
+		</string>
+		<string>
+			<key>Main_Menu_Player_Dash</key>
+			<text>Player Dashboard</text>
+		</string>
+		<string>
+			<key>String_Dashboard</key>
+			<text>Dashboard</text>
+		</string>
+		<string>
+			<key>AddToken_Header</key>
+			<text>Ajouter un jeton Joueur</text>
+		</string>
+		<string>
+			<key>Label_InitiativeDice</key>
+			<text>Dés d'initiative</text>
+		</string>
+		<string>
+			<key>Label_AutoRollInit</key>
+			<text>Jeter initiative</text>
+		</string>
+		<string>
+			<key>Label_Exit</key>
+			<text>Sortie</text>
+		</string>
+		<string>
+			<key>InitRoller_Header</key>
+			<text>Résultats des dés d'initiative</text>
+		</string>
+		<string>
+			<key>Label_SumtoTenTalent</key>
+			<text>Magie ou Résonance :</text>
+		</string>
+		<string>
+			<key>Message_SumtoTenComplexFormLimit</key>
+			<text>Votre nombre de Formes Complexes ne peut pas excéder le nombre défini par votre priorité.</text>
+		</string>
+		<string>
+			<key>Message_OverCapacityLimit</key>
+			<text>La dimension de l'objet est supérieur à la capacité de l'objet parent : {0}, {1} requis</text>
+		</string>
+		<string>
+			<key>MessageTitle_OverCapacityLimit</key>
+			<text>Au-dessus de la limite de capacité</text>
+		</string>
+		<string>
+			<key>String_Space</key>
+			<text xml:space="preserve"> </text>
+		</string>
+		<string>
+			<key>String_Colon</key>
+			<text>:</text>
+		</string>
+		<string>
+			<key>String_TotalRating</key>
+			<text>Indice total</text>
+		</string>
+		<string>
+			<key>Label_BonusLP</key>
+			<text>Bonus LP:</text>
+		</string>
+		<string>
+			<key>Label_QualityLP</key>
+			<text>Quality LP:</text>
+		</string>
+		<string>
+			<key>Label_QualityCost</key>
+			<text>Coût :</text>
+		</string>
+		<string>
+			<key>Label_QualitySource</key>
+			<text>Source :</text>
+		</string>
+		<string>
+			<key>Checkbox_Randomize1D6</key>
+			<text>Randomize 1D6</text>
+		</string>
+		<string>
+			<key>String_Handling</key>
+			<text>Maniabilité</text>
+		</string>
+		<string>
+			<key>Label_Protection</key>
+			<text>Protection :</text>
+		</string>
+		<string>
+			<key>Label_Powertrain</key>
+			<text>Puissance :</text>
+		</string>
+		<string>
+			<key>Label_Bodymod</key>
+			<text>Modifs :</text>
+		</string>
+		<string>
+			<key>Label_Electromagnetic</key>
+			<text>Électro :</text>
+		</string>
+		<string>
+			<key>Label_Cosmetic</key>
+			<text>Esthétique :</text>
+		</string>
+		<string>
+			<key>Label_ExtraMount</key>
+			<text>Monture supp. :</text>
+		</string>
+		<string>
+			<key>String_Level</key>
+			<text>Niveau</text>
+		</string>
+		<string>
+			<key>String_Immediate</key>
+			<text>Immédiat</text>
+		</string>
+		<string>
+			<key>String_Second</key>
+			<text>seconde</text>
+		</string>
+		<string>
+			<key>String_Seconds</key>
+			<text>secondes</text>
+		</string>
+		<string>
+			<key>String_CombatTurn</key>
+			<text>tour de combat</text>
+		</string>
+		<string>
+			<key>String_CombatTurns</key>
+			<text>tours de combat</text>
+		</string>
+		<string>
+			<key>String_Minute</key>
+			<text>minute</text>
+		</string>
+		<string>
+			<key>String_Minutes</key>
+			<text>minutes</text>
+		</string>
+		<string>
+			<key>String_Initiative</key>
+			<text>{0} +{1}d6</text>
+		</string>
+		<string>
+			<key>String_MatrixInitiative</key>
+			<text>{0} + TD +{1}d6</text>
+		</string>
+		<string>
+			<key>String_MatrixInitiativeLong</key>
+			<text>{0} + Traitement de données +{1}d6</text>
+		</string>
+		<string>
+			<key>String_Immune</key>
+			<text>Immunisé</text>
+		</string>
+		<string>
+			<key>String_LifeModules</key>
+			<text>Modules de vie</text>
+		</string>
+		<string>
+			<key>String_Info</key>
+			<text>Infos</text>
+		</string>
+		<string>
+			<key>String_Matrix</key>
+			<text>Matrice</text>
+		</string>
+		<string>
+			<key>String_Paragon</key>
+			<text>Parangon</text>
+		</string>
+		<string>
+			<key>String_Stream</key>
+			<text>Flux</text>
+		</string>
+		<string>
+			<key>Message_OutdatedChummerSave</key>
+			<text>Ce fichier de sauvegarde a été créé dans une version ultérieure de Chummer ({0}) que votre version actuelle de Chummer ({1}). \nCe fichier peut ne pas se charger correctement, et il est fortement recommandé de mettre à jour vers la dernière version de Chummer. Êtes-vous sûr de vouloir continuer à charger ce personnage ?</text>
+		</string>
+		<string>
+			<key>String_AttributeDEPLong</key>
+			<text>Profondeur</text>
+		</string>
+		<string>
+			<key>String_AttributeDEPShort</key>
+			<text>PRO</text>
+		</string>
+		<string>
+			<key>String_AttributeESSLong</key>
+			<text>Essence</text>
+		</string>
+		<string>
+			<key>String_AttributeESSShort</key>
+			<text>ESS</text>
+		</string>
+		<string>
+			<key>String_CharacterRoster</key>
+			<text>Liste des Persos</text>
+		</string>
+		<string>
+			<key>Menu_Main_IssueTracker</key>
+			<text>Issue Tracker</text>
+		</string>
+		<string>
+			<key>Menu_Main_ChummerDiscord</key>
+			<text>Chummer Discord</text>
+		</string>
+		<string>
+			<key>About_Description_Text</key>
+			<text>Générateur de personnages pour Shadowrun 5e édition\n\r\n\rMerci à Keith pour tout le travail incroyable qu'il a fait pour créer et maintenir Chummer pour 4e édition. Sans lui, rien de tout cela ne serait possible. Merci beaucoup à tous les membres de la communauté Dumpshock d'avoir soutenu ce projet avec tous leurs précieux commentaires, leurs bonnes idées, leurs rapports de problèmes, et avoir souligné mes erreurs stupides. Un grand merci aussi à tous ceux qui ont donné de leur temps pour traduire Chummer dans d'autres langues !
+
+</text>
+		</string>
+		<string>
+			<key>About_Company_Text</key>
+			<text>Original Chummer for 4th edition by Keith Rudolph.\n\rChummer5 update by Adam Schmidt: srchummer5@gmail.com\n\rChummer5a update by Anonymous fa/tg/uy: chummer5isalive@gmail.com\n\rAdditional 5a updates by Johannes Elgaard: joha4270@gmail.com</text>
+		</string>
+		<string>
+			<key>About_Copyright_Text</key>
+			<text>Copyright © Keith Rudolph 2013</text>
+		</string>
+		<string>
+			<key>About_Label_Disclaimer</key>
+			<text>Disclaimer</text>
+		</string>
+		<string>
+			<key>About_Label_Disclaimer_Text</key>
+			<text>Chummer is completely unofficial and is in no way endorsed by The Topps Company, Inc. or Catalyst Game Labs. The Topps Company, Inc. has sole ownership of the names, logo, artwork, marks, photographs, sounds, audio, video and/or any proprietary material used in connection with the game Shadowrun.\n\r\n\rUnless agreed to in writing, the developer provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.\n\r\n\rBy using Chummer You agree that You legally own a copy of the Shadowrun rulebook and any sourcebook whose information you select to use. You are solely responsible for determining the appropriateness of using or redistributing the content You create and assume any risks associated with Your exercise of permissions under this License.\n\r\n\rChummer uses icons from the Silk icon set made by Mark James which is available at www.famfamfam.com.</text>
+		</string>
+		<string>
+			<key>Tab_Roster_Description</key>
+			<text>Description</text>
+		</string>
+		<string>
+			<key>Tab_Roster_Concept</key>
+			<text>Concept</text>
+		</string>
+		<string>
+			<key>Menu_SpecialChangePriorities</key>
+			<text>Changer de &amp;Priorité</text>
+		</string>
+		<string>
+			<key>Menu_SpecialChangeOptions</key>
+			<text>Changer fichier d'&amp;Options</text>
+		</string>
+		<string>
+			<key>String_MutantCritter</key>
+			<text>Faire muter l'animal</text>
+		</string>
+		<string>
+			<key>String_Cyberzombie</key>
+			<text>Cyberzombie</text>
+		</string>
+		<string>
+			<key>Message_InvalidCyberwareGrades</key>
+			<text>La limite de grade Cyber/Bioware est dépassée pour les éléments suivants :</text>
+		</string>
+		<string>
+			<key>Checkbox_PrototypeTranshuman</key>
+			<text>Prototype Transhumain</text>
+		</string>
+		<string>
+			<key>Label_Overclocker</key>
+			<text>Overclocker :</text>
+		</string>
+		<string>
+			<key>Label_Control</key>
+			<text>Controle :</text>
+		</string>
+		<string>
+			<key>Label_Size</key>
+			<text>Taille :</text>
+		</string>
+		<string>
+			<key>Message_OverPrototypeLimit</key>
+			<text>Bioware limit exceeded for Prototype Transhuman. Current: {0} Maximum: {1}</text>
+		</string>
+		<string>
+			<key>Message_OverPositiveMetagenicQualities</key>
+			<text>Trop de qualités métagénétiques. Actuel : {0} Maximum : {1}</text>
+		</string>
+		<string>
+			<key>Message_OverNegativeMetagenicQualities</key>
+			<text>Trop de défauts métagénétiques. Actuel : {0} Maximum : {1}</text>
+		</string>
+		<string>
+			<key>Message_MetagenicQualitiesUnbalanced</key>
+			<text>Les défauts métagénétiques sont déséquilibrés. Actuel : {0} Attendu : {1} ou {2}</text>
+		</string>
+		<string>
+			<key>Message_MetagenicQualitiesInsufficientKarma</key>
+			<text>1 Karma is required to balance Negative and Positive Metagenic Qualities. Currently available: {0}</text>
+		</string>
+		<string>
+			<key>Message_MetagenicQualitiesSubtractingKarma</key>
+			<text>1 Karma is required to balance Negative and Positive Metagenic Qualities. Currently available: {0}.\nIs it okay to spend this karma?</text>
+		</string>
+		<string>
+			<key>Message_NoExtraKarma</key>
+			<text>You have {0} Karma remaining but are not allowed to carry any over to your career.\nAre you sure you want to lose this extra Karma?</text>
+		</string>
+		<string>
+			<key>Message_SumtoTen</key>
+			<text>Your Priority selection must equal {0}. It is currently {1}.</text>
+		</string>
+		<string>
+			<key>String_EdgeUse</key>
+			<text>Utiliser Chance</text>
+		</string>
+		<string>
+			<key>String_EssenceLossChargen</key>
+			<text>Perte d'Essence (Création du personnage)</text>
+		</string>
+		<string>
+			<key>String_SpiritFettering</key>
+			<text>Entrave d'Esprit</text>
+		</string>
+		<string>
+			<key>Message_ConfirmKarmaExpenseKnowledgeSkill</key>
+			<text>Êtes-vous sûr de vouloir dépenser du Karma pour l'amélioration de {0} à {1} pour {2} points de karme, et verrouiller cette compétence à {3} ?</text>
+		</string>
+		<string>
+			<key>Message_ReapplyImprovementsFoundOutdatedItems_Bottom</key>
+			<text>\nAny improvements they granted could not be added back. Please manually remove and replace these items and/or make sure any custom data files used when creating this character are still present and active.</text>
+		</string>
+		<string>
+			<key>String_Ambidextrous</key>
+			<text>Ambidextre</text>
+		</string>
+		<string>
+			<key>String_LifestyleFreeNuyen</key>
+			<text>Covered by Lifestyle level</text>
+		</string>
+		<string>
+			<key>String_Pilot</key>
+			<text>Autopilote</text>
+		</string>
+		<string>
+			<key>String_PowerFilterAll</key>
+			<text>Montrer tous les pouvois</text>
+		</string>
+		<string>
+			<key>Power_SortAction</key>
+			<text>Action</text>
+		</string>
+		<string>
+			<key>String_PowerFilterRatingAboveZero</key>
+			<text>Montrer les pouvoirs avec indice &gt; 0</text>
+		</string>
+		<string>
+			<key>String_PowerFilterRatingZero</key>
+			<text>Montrer les pouvoirs avec indice = 0</text>
+		</string>
+		<string>
+			<key>String_SkillFilterNoSkillGroup</key>
+			<text>Montrer les compétences actives non groupées</text>
+		</string>
+		<string>
+			<key>String_ExpensePurchaseCritterPower</key>
+			<text>Pouvoir de créature acheté</text>
+		</string>
+		<string>
+			<key>String_ExpenseDecreaseLifestyle</key>
+			<text>Niveau de vie dégradé</text>
+		</string>
+		<string>
+			<key>String_ExpenseFetteredSpirit</key>
+			<text>Esprit entravé</text>
+		</string>
+		<string>
+			<key>String_ComplexFormLevel</key>
+			<text>Nv</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetPersona</key>
+			<text>Persona</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetDevice</key>
+			<text>Appareil</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetFile</key>
+			<text>Fichier</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetSprite</key>
+			<text>Sprite</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetHost</key>
+			<text>Hôte</text>
+		</string>
+		<string>
+			<key>String_ComplexFormTargetIC</key>
+			<text>CI</text>
+		</string>
+		<string>
+			<key>String_ActionInterrupt</key>
+			<text>Interrompre (-5 Initiative)</text>
+		</string>
+		<string>
+			<key>String_NotSupported</key>
+			<text>"This Race/Metavariant combination is incomplete and will be completed in a future release. Attempting to create a character with this combination may result in unexpected results."</text>
+		</string>
+		<string>
+			<key>String_Metatype</key>
+			<text>Métatype</text>
+		</string>
+		<string>
+			<key>String_Metavariant</key>
+			<text>Métavariante</text>
+		</string>
+		<string>
+			<key>String_SpellCategory</key>
+			<text>Catégorie de sort</text>
+		</string>
+		<string>
+			<key>String_Tradition</key>
+			<text>Tradition</text>
+		</string>
+		<string>
+			<key>Node_SelectedQualities</key>
+			<text>Traits sélectionnés</text>
+		</string>
+		<string>
+			<key>Skill_SortRating</key>
+			<text>Indice</text>
+		</string>
+		<string>
+			<key>Skill_SortGroupRating</key>
+			<text>Indice de groupe</text>
+		</string>
+		<string>
+			<key>Label_PowerLevels</key>
+			<text>Niveaux :</text>
+		</string>
+		<string>
+			<key>ColumnHeader_Notes</key>
+			<text>Notes</text>
+		</string>
+		<string>
+			<key>String_InitiationGroup</key>
+			<text>Groupe pour la nouvelle Initiation</text>
+		</string>
+		<string>
+			<key>String_InitiationType</key>
+			<text>Nouveau type d'Initiation</text>
+		</string>
+		<string>
+			<key>String_SubmersionNetwork</key>
+			<text>Réseau pour la nouvelle Submersion</text>
+		</string>
+		<string>
+			<key>String_SubmersionType</key>
+			<text>Nouveau type de Submersion</text>
+		</string>
+		<string>
+			<key>Button_RemoveInitiateGrade</key>
+			<text>Retirer Grade d'Initié</text>
+		</string>
+		<string>
+			<key>Button_RemoveSubmersionGrade</key>
+			<text>Retirer Grade de Submersion</text>
+		</string>
+		<string>
+			<key>Node_UnequippedModularCyberware</key>
+			<text>Cyberware modulable déséquipé</text>
+		</string>
+		<string>
+			<key>Label_PrototypeTranshuman</key>
+			<text>Prototype Transhumain :</text>
+		</string>
+		<string>
+			<key>Button_ChangeMountedLocation</key>
+			<text>Changer de monture d'arme</text>
+		</string>
+		<string>
+			<key>Node_Foundation</key>
+			<text>Bases Chimiques</text>
+		</string>
+		<string>
+			<key>Node_Block</key>
+			<text>Catalyseurs</text>
+		</string>
+		<string>
+			<key>Node_Enhancer</key>
+			<text>Améliorations</text>
+		</string>
+		<string>
+			<key>Label_AddictionRating</key>
+			<text>Degré d'addiction :</text>
+		</string>
+		<string>
+			<key>Label_AddictionThreshold</key>
+			<text>Seuil d'addiction :</text>
+		</string>
+		<string>
+			<key>Button_CreateCustomDrug</key>
+			<text>Créer une drogue personnalisée</text>
+		</string>
+		<string>
+			<key>Message_DuplicateDrugFoundationWarning</key>
+			<text>Vous ne pouvez pas utiliser plus d'une base pour une drogue.</text>
+		</string>
+		<string>
+			<key>String_MaximumDrugBlockLevel</key>
+			<text>Le niveau maximum qu'un catalyseur peut augmenter un attribut déjà diminué par la base est 2.</text>
+		</string>
+		<string>
+			<key>Label_CrashEffect</key>
+			<text>Effet de crash :</text>
+		</string>
+		<string>
+			<key>String_DamageUnresisted</key>
+			<text>Dégâts, encaissés</text>
+		</string>
+		<string>
+			<key>String_PerLevel</key>
+			<text>Par niveau</text>
+		</string>
+		<string>
+			<key>Menu_RenameExtraText</key>
+			<text>&amp;Rappel texte supplémentaire</text>
+		</string>
+		<string>
+			<key>Label_VehicleSeats</key>
+			<text>Sièges :</text>
+		</string>
+		<string>
+			<key>Enum_Skill</key>
+			<text>Compétences</text>
+		</string>
+		<string>
+			<key>Enum_GunneryCommandDevice</key>
+			<text>Commande appareil - Artillerie [AGI]</text>
+		</string>
+		<string>
+			<key>Enum_RemoteOperated</key>
+			<text>Opération à distance - Artillerie [LOG]</text>
+		</string>
+		<string>
+			<key>Enum_DogBrain</key>
+			<text>Contrôlé par drone</text>
+		</string>
+		<string>
+			<key>Enum_ManualOperation</key>
+			<text>Opération manuelle</text>
+		</string>
+		<string>
+			<key>Label_Handedness</key>
+			<text>Main directrice :</text>
+		</string>
+		<string>
+			<key>Checkbox_IsMainMugshot</key>
+			<text>Photo principale</text>
+		</string>
+		<string>
+			<key>Label_SummaryRituals</key>
+			<text>Rituels</text>
+		</string>
+		<string>
+			<key>Label_SummaryPreparations</key>
+			<text>Préparations</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_UseCalculatedPublicAwareness</key>
+			<text>Public Awareness should be (Street Cred + Notoriety /3)</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_AllowPointBuySpecializationsOnKarmaSkills</key>
+			<text>Allow skill points to be used to buy specializations for karma-bought skills</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_MysAdeptSecondMAGAttribute</key>
+			<text>Les Adeptes Mystiques utilisent un second attribut MAG au lieu des points de pouvoirs</text>
+		</string>
+		<string>
+			<key>Tip_LifeModule_Warning</key>
+			<text>Life Modules are currently an experiemental system with limited features; it is present exclusively for testing purposes. See https://github.com/chummer5a/chummer5a/issues/2000 for details about the existing issues. Proceed at your own risk.\nDo you want to continue?</text>
+		</string>
+		<string>
+			<key>Tip_CalculatedMovement</key>
+			<text>Marche : AGI × 2 ({0} m/TC) / ({1} km/h)\nCourse : AGI × 4 ({2} m/TC) / ({3} km/h)</text>
+		</string>
+		<string>
+			<key>Label_OtherCoreCM</key>
+			<text>Moniteur de condition physique :</text>
+		</string>
+		<string>
+			<key>Label_OtherMatrixCM</key>
+			<text>Moniteur de condition matricielle :</text>
+		</string>
+		<string>
+			<key>String_SpellDefense</key>
+			<text>Défense magique</text>
+		</string>
+		<string>
+			<key>String_SpellResistanceDice</key>
+			<text>Dés de résistance aux sorts</text>
+		</string>
+		<string>
+			<key>Label_CounterspellingDice</key>
+			<text>Dés de contresort</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceIndirectDodge</key>
+			<text>Esquive des sorts indirects</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceIndirect</key>
+			<text>Sorts indirects</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceDirectSoakMana</key>
+			<text>Sorts mana directs</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceDirectSoakPhysical</key>
+			<text>Sorts physiques directs</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceDetection</key>
+			<text>Sorts de détection</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceIllusionMana</key>
+			<text>Illusion - Mana</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceIllusionPhysical</key>
+			<text>Illusion - Physique</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceManipMental</key>
+			<text>Manipulation - Mentale</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceManipPhysical</key>
+			<text>Manipulation - Physique</text>
+		</string>
+		<string>
+			<key>Tip_ComplexFormFadingBase</key>
+			<text>Technodrain de base pour</text>
+		</string>
+		<string>
+			<key>Tip_ComplexFormFadingSeeDescription</key>
+			<text>Voir la description des Formes complexes</text>
+		</string>
+		<string>
+			<key>Tip_RecoilAccessories</key>
+			<text>{0} ({1} (Déployable))</text>
+		</string>
+		<string>
+			<key>Tip_TotalVehicleModCapacity</key>
+			<text>Cela indique la capacité du véhicule ainsi : Installé/Total.</text>
+		</string>
+		<string>
+			<key>String_DeviceRating</key>
+			<text>Indice d'appareil</text>
+		</string>
+		<string>
+			<key>String_Attack</key>
+			<text>Attaque</text>
+		</string>
+		<string>
+			<key>String_Sleaze</key>
+			<text>Corruption</text>
+		</string>
+		<string>
+			<key>String_DataProcessing</key>
+			<text>Traitement de données</text>
+		</string>
+		<string>
+			<key>String_Power</key>
+			<text>Puissance</text>
+		</string>
+		<string>
+			<key>Tip_Skill_OffHand</key>
+			<text>Mauvaise main</text>
+		</string>
+		<string>
+			<key>Tip_Skill_Cannot_Default</key>
+			<text>Vous ne pouvez pas défausser cette compétence.</text>
+		</string>
+		<string>
+			<key>Checkbox_Spirit_Fettered</key>
+			<text>Entravé</text>
+		</string>
+		<string>
+			<key>Checkbox_DiceRoller_BubbleDie</key>
+			<text>Dé pipé (réduit les risques d'échecs)</text>
+		</string>
+		<string>
+			<key>String_BubbleDie</key>
+			<text>Uniquement les complications :</text>
+		</string>
+		<string>
+			<key>Label_DiceRoller_Sum</key>
+			<text>Somme :</text>
+		</string>
+		<string>
+			<key>Tab_Options_GitHubIssues</key>
+			<text>GitHub Issues</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_KnowledgeMultiplier</key>
+			<text>Override Knowledge Points (INT + LOG) Multiplier</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_ContactMultiplier</key>
+			<text>Override Contact Points Charisma Multiplier</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_UseTotalValueForFreeKnowledge</key>
+			<text>Les points de connaissance gratuits sont calculés avec LOG+INT augmentées.</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_UseTotalValueForFreeContacts</key>
+			<text>Les points de contacts gratuis sont calculés avec CHA augmentée.</text>
+		</string>
+		<string>
+			<key>Label_Options_DisenchantingFocus</key>
+			<text>Focus de Désenchantement</text>
+		</string>
+		<string>
+			<key>Label_Options_FlexibleSignatureFocus</key>
+			<text>Focus de Signature flexible</text>
+		</string>
+		<string>
+			<key>Label_Options_QiFocus</key>
+			<text>Focus de qi</text>
+		</string>
+		<string>
+			<key>Label_Options_RitualSpellcastingFocus</key>
+			<text>Focus de Magie rituelle</text>
+		</string>
+		<string>
+			<key>Label_Options_SpellShapingFocus</key>
+			<text>Focus de Façonnage de sorts</text>
+		</string>
+		<string>
+			<key>Label_Options_MetatypesCostKarma</key>
+			<text>Multiplicateur de coup en karma du métatype</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_FreeKarmaContacts</key>
+			<text>Karma Build: Free Contacts like Priority Build</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_ExceedPositiveQualitiesCostDoubled</key>
+			<text>Use Career costs for all Positive Quality karma costs in excess of the limit</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_ReverseAttributePriorityOrder</key>
+			<text>Spend Karma on Attributes before Priority Points</text>
+		</string>
+		<string>
+			<key>Checkbox_Option_AllowMysadPowerPointCareer</key>
+			<text>Allow Mystic Adepts to buy power points during career</text>
+		</string>
+		<string>
+			<key>Checkbox_Option_PrioritySpellsAsAdeptPowers</key>
+			<text>Allow spending of free spells from Magic Priority as power points</text>
+		</string>
+		<string>
+			<key>Checkbox_Option_EducationQualitiesApplyOnChargenKarma</key>
+			<text>Education qualities give karma discount for knowledge skills in create mode</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_OpenPDFsAsURLs</key>
+			<text>Ouvrir les PDFs comme URLs (Pour utilisation dans les navigateurs)</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_OpenPDFsAsUnix</key>
+			<text>Utiliser les paramètres de style Unix lors de l'ouverture de fichiers PDF</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_SearchInCategoryOnly</key>
+			<text>La recherche dans les listes est limitée à la catégorie actuelle.</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_Base_Lifestyle</key>
+			<text>[{0}/{1}]</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_Base_Comforts</key>
+			<text>[{0}/{1}]</text>
+		</string>
+		<string>
+			<key>Node_SelectAdvancedLifestyle_Entertainments</key>
+			<text>Loisirs</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_Rating</key>
+			<text>Indice :</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_Base_Neighborhood</key>
+			<text>[{0}/{1}]</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_Base_Security</key>
+			<text>[{0}/{1}]</text>
+		</string>
+		<string>
+			<key>MessageTitle_SelectAdvancedLifestyle_OverLPLimit</key>
+			<text>Au-delà du niveau de vie</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_TrustFund</key>
+			<text>Fond d'investissement fiable</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_Tenant</key>
+			<text>Actionnaire principal</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_LPContribution</key>
+			<text>Contribue au niveau de vie</text>
+		</string>
+		<string>
+			<key>Label_Options_KarmaMysticAdeptPowerPoint</key>
+			<text>Point de pouvoir d'adepte mystique</text>
+		</string>
+		<string>
+			<key>Tip_SelectKarma_IgnoreRules</key>
+			<text>Si cocher, les valeurs de Karma et d'attributs/compétences ne sont pas vérifié. Pour le MJ et les PNJ uniquement.</text>
+		</string>
+		<string>
+			<key>Checkbox_HideBannedCyberwareGrades</key>
+			<text>Cacher les grades de cyberware interdits</text>
+		</string>
+		<string>
+			<key>MessageTitle_BannedGrade</key>
+			<text>Grade interdit !</text>
+		</string>
+		<string>
+			<key>Message_BannedGrade</key>
+			<text>Vous avez choisi un grade interdit par vos options de jeu. Veuillez choisir un grade valide.</text>
+		</string>
+		<string>
+			<key>String_CannotFindLifestyleQuality</key>
+			<text>La qualité {0} n'est pas disponible. Choisissez une qualité appropriée dans la liste ci-dessous.</text>
+		</string>
+		<string>
+			<key>String_CannotFindLifestyle</key>
+			<text>Le nom du niveau de vie {0} ne peut pas être trouvé. Choisissez un nom approprié dans la liste ci-dessous.</text>
+		</string>
+		<string>
+			<key>Message_SelectGeneric_Requirement</key>
+			<text>Vous ne remplissez pas les conditions nécessaires pour [{0}]. Vous devez remplir ces critères :</text>
+		</string>
+		<string>
+			<key>MessageTitle_SelectGeneric_Requirement</key>
+			<text>Nécessite {0}</text>
+		</string>
+		<string>
+			<key>Message_SelectGeneric_Restriction</key>
+			<text>Vous ne pouvez pas choisir [{0}] à cause d'un des objets interdits suivants.</text>
+		</string>
+		<string>
+			<key>MessageTitle_SelectGeneric_Restriction</key>
+			<text>Restreindre {0}</text>
+		</string>
+		<string>
+			<key>MessageTitle_SelectGeneric_Limit</key>
+			<text>Limiter {0}</text>
+		</string>
+		<string>
+			<key>String_Nightly_Changelog_Warning</key>
+			<text>Versions in the nightly changelog are temporary.</text>
+		</string>
+		<string>
+			<key>String_Stable</key>
+			<text>stable</text>
+		</string>
+		<string>
+			<key>String_Nightly</key>
+			<text>nightly</text>
+		</string>
+		<string>
+			<key>String_Improvement_SelectOptionalPower</key>
+			<text>Choisir un pouvoir à obtenir.</text>
+		</string>
+		<string>
+			<key>Message_KarmaValue</key>
+			<text>En plus des points de compétences de connaissances du module de vie, et en ignorant les effets du métatypes pour lesquels le karma ne peut être évalué, ce personnage a le niveau de karma suivant :</text>
+		</string>
+		<string>
+			<key>String_Total</key>
+			<text>Total</text>
+		</string>
+		<string>
+			<key>String_TotalComparisonWithPointBuy</key>
+			<text>Total (pour comparaison, en achat de points)</text>
+		</string>
+		<string>
+			<key>String_FreeSpells</key>
+			<text>Sorts gratuits</text>
+		</string>
+		<string>
+			<key>String_FreeCFs</key>
+			<text>Formes complexes gratuites</text>
+		</string>
+		<string>
+			<key>String_MetamagicSkills</key>
+			<text>{0} {1} qui commence(nt) au niveau {2}</text>
+		</string>
+		<string>
+			<key>String_MetamagicSkillType_magic</key>
+			<text>compétence(s) magique(s)</text>
+		</string>
+		<string>
+			<key>String_MetamagicSkillType_resonance</key>
+			<text>compétence(s) de Résonance</text>
+		</string>
+		<string>
+			<key>String_MetamagicSkillType_matrix</key>
+			<text>compétence(s) matricielle(s)</text>
+		</string>
+		<string>
+			<key>String_MetamagicSkillType_active</key>
+			<text>compétence(s) active(s)</text>
+		</string>
+		<string>
+			<key>String_MetamagicSkillType_specific</key>
+			<text>compétence(s) spécifique(s)</text>
+		</string>
+		<string>
+			<key>String_MetamagicSkillType_grouped</key>
+			<text>groupe(s) de compétences</text>
+		</string>
+		<string>
+			<key>String_DealerConnection_Drones</key>
+			<text>Drones</text>
+		</string>
+		<string>
+			<key>String_DealerConnection_Groundcraft</key>
+			<text>Véhicules terrestres</text>
+		</string>
+		<string>
+			<key>String_DealerConnection_Watercraft</key>
+			<text>Véhicules aquatiques</text>
+		</string>
+		<string>
+			<key>String_DealerConnection_Aircraft</key>
+			<text>Véhicules aériens</text>
+		</string>
+		<string>
+			<key>Message_MissingSourceBooks</key>
+			<text>Ce personnage a été créé avec les livres sources suivants qui ne sont pas activés:\n\n\n{0}\n\nCela peut causer des problèmes. Voulez-vous continuer à charger le personnage ?</text>
+		</string>
+		<string>
+			<key>Message_MissingCustomDataDirectories</key>
+			<text>Ce personnage a été créé avec les répertoires de données personnalisés suivants qui ne sont pas activés:\n\n\n\n{0}\n\nCela peut causer des problèmes. Voulez-vous continuer à charger le personnage ?</text>
+		</string>
+		<string>
+			<key>Message_MissingGameplayOption</key>
+			<text>This character was created with the following gameplay option:\n\n{0}\n\nThis gameplay option could not be found in the current data files. In order to continue loading this character, a new gameplay option must be selected for them.</text>
+		</string>
+		<string>
+			<key>Message_MissingGameplayOption_Title</key>
+			<text>Missing Gameplay Option</text>
+		</string>
+		<string>
+			<key>Message_ImprovementLoadError</key>
+			<text>Chummer5a encountered an error when loading one or more improvements for this character. This is likely because a certain improvement present in an older version of Chummer has been significantly altered in a later version.\n\nThe issue can be fixed by re-applying only the improvements that caused issues.\n\nDo you wish to re-apply the problematic issues right now? If you do not, the issues can still be fixed by re-applying all improvements via Special &gt; Re-apply Improvements.</text>
+		</string>
+		<string>
+			<key>String_MentorSpirit</key>
+			<text>Esprit Mentor</text>
+		</string>
+		<string>
+			<key>String_Metamagics</key>
+			<text>Métamagie</text>
+		</string>
+		<string>
+			<key>String_LegacyFixes</key>
+			<text>Correctifs historiques</text>
+		</string>
+		<string>
+			<key>String_UI</key>
+			<text>Interface</text>
+		</string>
+		<string>
+			<key>Message_HeroLabImporterWarning</key>
+			<text>Due to the differences between how Hero Lab and Chummer5a handle save files, certain items will import incorrectly into Chummer5a, especially concerning karma allocation for characters at character creation.\n\nIn addition, the following items will not be properly imported:\n - Complex Forms\n - Martial Arts\n - Anything related to Initiations and Submersions\n - Mystic Adept PPs\n - Spirits and Sprites\n - Vehicles\n - AI Advanced Programs\n\nNon-mundane characters in Priority or Sum-to-Ten character creation mode will also need to re-apply their priorities after importing is complete (Special &gt; Change Priority Selection &gt; Press OK).\n\nAre you sure you wish to use this tool?</text>
+		</string>
+		<string>
+			<key>Message_DuplicateGuidWarning</key>
+			<text>{0} éléments ont été trouvés dans le fichier {1} avec le même GUID. Si vous utilisez un contenu personnalisé, assurez-vous d'utiliser un nouveau GUID pour chaque élément que vous ajoutez. \n\n\nÉléments avec ID en double:\n{2}</text>
+		</string>
+		<string>
+			<key>Message_NonGuidIdWarning</key>
+			<text>Les éléments {0} ont été trouvés dans le fichier {1} avec des ID qui ne sont pas utilisables comme GUIDs. Si vous utilisez un contenu personnalisé, assurez-vous que les champs ID sont toujours remplis avec un GUID unique et seulement un GUID unique. \n\nÉléments avec des champs ID non-GUID:\n{2}</text>
+		</string>
+		<string>
+			<key>Checkbox_DiceRoller_VariableGlitch</key>
+			<text>Complication avec plus d'un que de succès, pas avec la moitié des dés</text>
 		</string>
 	</strings>
 </chummer>

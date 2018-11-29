@@ -50,6 +50,7 @@ namespace Chummer
             this.chkFree = new System.Windows.Forms.CheckBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.txtTranslateSelection = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudVal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMax)).BeginInit();
@@ -252,11 +253,12 @@ namespace Chummer
             this.txtSelect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpMain.SetColumnSpan(this.txtSelect, 2);
-            this.txtSelect.Location = new System.Drawing.Point(107, 56);
+            this.txtSelect.Location = new System.Drawing.Point(107, 189);
             this.txtSelect.Name = "txtSelect";
             this.txtSelect.ReadOnly = true;
             this.txtSelect.Size = new System.Drawing.Size(157, 20);
             this.txtSelect.TabIndex = 5;
+            this.txtSelect.Visible = false;
             // 
             // cmdChangeSelection
             // 
@@ -326,7 +328,6 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.cmdChangeSelection, 3, 2);
             this.tlpMain.Controls.Add(this.lblHelp, 4, 0);
             this.tlpMain.Controls.Add(this.nudMin, 1, 4);
-            this.tlpMain.Controls.Add(this.txtSelect, 1, 2);
             this.tlpMain.Controls.Add(this.cboImprovemetType, 1, 0);
             this.tlpMain.Controls.Add(this.txtName, 1, 1);
             this.tlpMain.Controls.Add(this.nudVal, 1, 3);
@@ -334,6 +335,8 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.lblSelect, 0, 2);
             this.tlpMain.Controls.Add(this.lblVal, 0, 3);
             this.tlpMain.Controls.Add(this.flowLayoutPanel1, 0, 8);
+            this.tlpMain.Controls.Add(this.txtSelect, 1, 7);
+            this.tlpMain.Controls.Add(this.txtTranslateSelection, 1, 2);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
@@ -347,6 +350,9 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpMain.Size = new System.Drawing.Size(686, 263);
             this.tlpMain.TabIndex = 20;
             // 
@@ -363,6 +369,17 @@ namespace Chummer
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(156, 23);
             this.flowLayoutPanel1.TabIndex = 20;
+            // 
+            // txtTranslateSelection
+            // 
+            this.txtTranslateSelection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpMain.SetColumnSpan(this.txtTranslateSelection, 2);
+            this.txtTranslateSelection.Location = new System.Drawing.Point(107, 56);
+            this.txtTranslateSelection.Name = "txtTranslateSelection";
+            this.txtTranslateSelection.ReadOnly = true;
+            this.txtTranslateSelection.Size = new System.Drawing.Size(157, 20);
+            this.txtTranslateSelection.TabIndex = 21;
             // 
             // frmCreateImprovement
             // 
@@ -420,5 +437,6 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkFree;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.TextBox txtTranslateSelection;
     }
 }

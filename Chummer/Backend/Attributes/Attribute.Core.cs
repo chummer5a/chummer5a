@@ -500,6 +500,24 @@ namespace Chummer.Backend.Attributes
                             break;
                     }
                 }
+                //TODO: TEST THIS. There's probably some stupid combination of cybersuites that will cause a weird conflict with this and regular limbs. Something something extra limbs, idk. 
+                foreach (Cyberware objCyberSuite in _objCharacter.Cyberware.Where(objCyberware =>
+                    objCyberware.Category == "Cybersuite"))
+                {
+                    foreach (Cyberware objCyberware in objCyberSuite.Children.Where(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                    {
+                        intLimbCount += objCyberware.LimbSlotCount;
+                        switch (Abbrev)
+                        {
+                            case "STR":
+                                intLimbTotal += objCyberware.TotalStrength * objCyberware.LimbSlotCount;
+                                break;
+                            case "AGI":
+                                intLimbTotal += objCyberware.TotalAgility * objCyberware.LimbSlotCount;
+                                break;
+                        }
+                    }
+                }
 
                 if (intLimbCount > 0)
                 {

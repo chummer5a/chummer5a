@@ -3925,9 +3925,11 @@ namespace Chummer.Backend.Equipment
         /// <param name="lstWeaponCollection"></param>
         /// <param name="decMarkup"></param>
         /// <param name="blnFree"></param>
+        /// <param name="blnBlackMarket"></param>
+        /// <param name="blnForVehicle"></param>
         /// <param name="strExpenseString"></param>
         /// <returns></returns>
-        public bool Purchase(XmlNode objNode, Improvement.ImprovementSource objImprovementSource, Grade objGrade, int intRating, Vehicle objVehicle, TaggedObservableCollection<Cyberware> lstCyberwareCollection, ObservableCollection<Vehicle> lstVehicleCollection, TaggedObservableCollection<Weapon> lstWeaponCollection, decimal decMarkup = 0, bool blnFree = false, bool blnForVehicle = false, string strExpenseString = "String_ExpensePurchaseCyberware")
+        public bool Purchase(XmlNode objNode, Improvement.ImprovementSource objImprovementSource, Grade objGrade, int intRating, Vehicle objVehicle, TaggedObservableCollection<Cyberware> lstCyberwareCollection, ObservableCollection<Vehicle> lstVehicleCollection, TaggedObservableCollection<Weapon> lstWeaponCollection, decimal decMarkup = 0, bool blnFree = false, bool blnBlackMarket = false, bool blnForVehicle = false, string strExpenseString = "String_ExpensePurchaseCyberware")
         {
             // Create the Cyberware object.
             List<Weapon> lstWeapons = new List<Weapon>();
@@ -3940,6 +3942,7 @@ namespace Chummer.Backend.Equipment
 
             if (blnFree)
                 Cost = "0";
+            DiscountCost = blnBlackMarket;
 
             if (_objCharacter.Created)
             {

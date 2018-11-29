@@ -19,7 +19,7 @@
  using System;
  using System.ComponentModel;
  using System.Diagnostics;
-﻿using System.IO;
+using System.IO;
 using System.Reflection;
  using System.Windows.Forms;
 
@@ -54,6 +54,7 @@ namespace Chummer
         {
             get
             {
+
                 if (!IsUnitTest)
                     return Application.StartupPath;
                 return AppDomain.CurrentDomain.SetupInformation.ApplicationBase;

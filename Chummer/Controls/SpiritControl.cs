@@ -73,10 +73,10 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             Width = cmdDelete.Left + cmdDelete.Width;
 
+            chkFettered.DataBindings.Add("Checked", _objSpirit, nameof(_objSpirit.Fettered), false,
+                DataSourceUpdateMode.OnPropertyChanged);
             if (blnIsSpirit)
             {
-                chkFettered.DataBindings.Add("Checked", _objSpirit, nameof(_objSpirit.Fettered), false,
-                    DataSourceUpdateMode.OnPropertyChanged);
                 lblForce.Text = LanguageManager.GetString("Label_Spirit_Force", GlobalOptions.Language);
                 chkBound.Text = LanguageManager.GetString("Checkbox_Spirit_Bound", GlobalOptions.Language);
                 imgLink.SetToolTip(LanguageManager.GetString(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Spirit_OpenFile" : "Tip_Spirit_LinkSpirit", GlobalOptions.Language));
@@ -88,9 +88,9 @@ namespace Chummer
             }
             else
             {
-                chkFettered.Visible = false;
                 lblForce.Text = LanguageManager.GetString("Label_Sprite_Rating", GlobalOptions.Language);
                 chkBound.Text = LanguageManager.GetString("Label_Sprite_Registered", GlobalOptions.Language);
+                chkFettered.Text = LanguageManager.GetString("Checkbox_Sprite_Pet", GlobalOptions.Language);
                 imgLink.SetToolTip(LanguageManager.GetString(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Sprite_OpenFile" : "Tip_Sprite_LinkSpirit", GlobalOptions.Language));
 
                 string strTooltip = LanguageManager.GetString("Tip_Sprite_EditNotes", GlobalOptions.Language);

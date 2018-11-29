@@ -3999,20 +3999,34 @@
       <page>73</page>
     </mod>
     <!-- End Region -->
-	<!-- Region Hamburg -->
+    <!-- Region Hamburg -->
     <mod>
-      <id>80effbdd-047d-4b1f-8159-f13f86bba4e6</id>
+      <id>b7be75a4-72ff-49a2-8b7b-0bf36a9f40d8</id>
       <name>Internal Air Tank (5 Minutes)</name>
       <category>General</category>
       <armor>0</armor>
+      <hide />
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
       <source>HAMG</source>
       <page>173</page>
-      <hide />
     </mod>
-	<!-- End Region -->
+    <!-- End Region -->
+    <!-- Region Better Than Bad -->
+    <mod>
+      <id>80effbdd-047d-4b1f-8159-f13f86bba4e6</id>
+      <name>Grey Mana Integration</name>
+      <category>General</category>
+      <armor>0</armor>
+      <maxrating>6</maxrating>
+      <armorcapacity>[Rating]</armorcapacity>
+      <avail>FixedValues(6F,6F,6F,9F,9F,9F)</avail>
+      <cost>FixedValues(Ratingx1000,Ratingx1000,Ratingx1000,Ratingx2000,Ratingx2000,Ratingx2000)</cost>
+      <source>BTB</source>
+      <page>156</page>
+    </mod>
+    <!-- End Region -->
   </mods>
 </chummer>

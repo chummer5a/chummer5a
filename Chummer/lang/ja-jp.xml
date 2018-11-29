@@ -4905,10 +4905,6 @@
 			<text>その他</text>
 		</string>
 		<string>
-			<key>Label_Options_AdditionalBooks</key>
-			<text>使用する追加ルールブック</text>
-		</string>
-		<string>
 			<key>Label_Options_Defaults</key>
 			<text>新規キャラクターの標準設定</text>
 		</string>
@@ -5211,10 +5207,6 @@
 		<string>
 			<key>Checkbox_Options_SkillRegroup</key>
 			<text>技能値がすべて同じなら, 能動技能を再びグループにしてもよい (SR4 FAQ)</text>
-		</string>
-		<string>
-			<key>Checkbox_Options_MetatypesCostKarma</key>
-			<text>メタタイプのカルマコストはカルマ作成時と同様</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_FreeContactPointsKarma</key>
@@ -8793,10 +8785,6 @@
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Rating</key>
 			<text>レーティング:</text>
-		</string>
-		<string>
-			<key>Label_SelectAdvancedLifestyle_Base_Area</key>
-			<text>Area: [{0}/{1}]</text>
 		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Base_Security</key>

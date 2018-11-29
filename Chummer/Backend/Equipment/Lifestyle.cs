@@ -908,7 +908,8 @@ namespace Chummer.Backend.Equipment
                 if (_eType == LifestyleType.Standard)
                    d += Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.InvariantCultureInfo);
                 d += LifestyleQualities.Sum(lq => lq.Multiplier);
-                return d / 100;
+                d += 100M;
+                return (d / 100);
             }
         }
 
@@ -971,7 +972,6 @@ namespace Chummer.Backend.Equipment
                 //Qualities may have reduced the cost below zero. No spooky mansion payouts here, so clamp it to zero or higher. 
                 decReturn = Math.Max(decReturn, 0);
 
-                decReturn *= CostMultiplier + 1.0m;
                 if (!PrimaryTenant)
                 {
                     decReturn /= _intRoommates + 1.0m;

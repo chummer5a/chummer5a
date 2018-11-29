@@ -1777,6 +1777,8 @@ namespace Chummer.Backend.Equipment
                     if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV && objImprovement.Enabled &&
                         (objImprovement.ImprovedName == strCategory ||
                          objImprovement.ImprovedName == strUseSkill ||
+                         Skill?.IsExoticSkill == true && objImprovement.ImprovedName == $"Exotic Melee Weapon ({Name})" ||
+                         Skill?.IsExoticSkill == true && objImprovement.ImprovedName == $"Exotic Ranged Weapon ({Name})" ||
                          "Cyberware " + objImprovement.ImprovedName == strCategory))
                     {
                         intImprove += objImprovement.Value;

@@ -457,11 +457,6 @@ namespace Chummer
             if (objSource != null)
             {
                 grpSelectedSourcebook.Visible = true;
-                bool blnOldLoading = _blnLoading;
-                _blnLoading = true;
-                txtPDFLocation.Text = string.Empty;
-                nudPDFOffset.Value = 0;
-                _blnLoading = blnOldLoading;
                 txtPDFLocation.Text = objSource.Path;
                 nudPDFOffset.Value = objSource.Offset;
             }
@@ -473,7 +468,7 @@ namespace Chummer
 
         private void nudPDFOffset_ValueChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_blnSkipRefresh || _blnLoading)
                 return;
 
             int intOffset = decimal.ToInt32(nudPDFOffset.Value);

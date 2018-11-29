@@ -60,6 +60,7 @@ namespace Chummer
         AddAIAdvancedProgram,
         AddCritterPower,
         SpiritFettering,
+        AddMartialArtTechnique
     }
 
     public enum NuyenExpenseType
