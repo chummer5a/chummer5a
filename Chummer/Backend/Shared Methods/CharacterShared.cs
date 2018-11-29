@@ -6203,11 +6203,26 @@ namespace Chummer
 
         protected void AddSprite()
         {
-            // The number of registered Sprites cannot exceed the character's LOG.
-            if (!CharacterObject.IgnoreRules && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite) >= CharacterObject.LOG.Value)
+            if (CharacterObject.Created && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite && !x.Bound && !x.Fettered) > 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_RegisteredSpriteLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_RegisteredSpriteLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // Once created, new sprites are added as Unbound first. We're not permitted to have more than 1 at a time. 
+                MessageBox.Show(LanguageManager.GetString("Message_UnregisteredSpriteLimit", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_UnregisteredSpriteLimit", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
+            }
+            else
+            {
+                // In create, all sprites are added as Bound/Registered. The number of registered Sprites cannot exceed the character's LOG.
+                if (!CharacterObject.IgnoreRules &&
+                    CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite && x.Bound) >=
+                    CharacterObject.LOG.Value)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_RegisteredSpriteLimit", GlobalOptions.Language),
+                        LanguageManager.GetString("MessageTitle_RegisteredSpriteLimit", GlobalOptions.Language),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
             }
 
             Spirit objSprite = new Spirit(CharacterObject)

@@ -14,6 +14,7 @@ Application Changes:
 - Allowed gear to use forbidden and required nodes similar to those that can be used by qualities, cyberware, metamagics, and others.
 - Implemented most content from Better Than Bad, with exception of life modules and the Hard Luck quality.
 - Fixed incorrect behaviour for cyberware purchased via Black Market Pipeline not properly being discounted. Fixes #3244
+- Added basic functionality for the Sprite Pet from Kill Code. This is not currently restricted to the technoshaman archetype. 
 
 Data Changes:
 
