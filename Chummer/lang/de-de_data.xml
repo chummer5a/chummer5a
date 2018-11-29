@@ -20948,15 +20948,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +1 to the number of services gained when successfully summoning a spirit</name>
-						<translate>Magician: +1 to the number of services gained when successfully summoning a spirit</translate>
+						<translate>Zauberer: +1 zur Anzahl an Diensten bei der erfolgreichen Herbeirufung eines Geistes</translate>
 					</choice>
 					<choice>
 						<name>Adept: Gains Rooting (2) power for free.</name>
-						<translate>Adept: Gains Rooting (2) power for free.</translate>
+						<translate>Adept: 2 Stufen Verwurzeln</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: Home Ground Quality is gained for free.</altadvantage>
-				<altdisadvantage>A follower of Boar does not like it if there are others intruding in his space or disrupting his routine. At best, the follower protects the bar and employees of the bar he always goes to. At worst, he will start a fight for a specific table or stool that he thinks is his. A warning is optional and usually proffered by the follower’s friends. It takes a Charisma + Willpower (3) Test for a follower of Boar to leave his home, safehouse, or routine permanently, otherwise he will keep coming back, even at the risk of his own safety. If the Boar does leave, he receives a –1 penalty to all active skill tests for three weeks until he finally settles into a new place and routine.</altdisadvantage>
+				<altadvantage>Allgemein: Vorteil Vertrautes Terrain</altadvantage>
+				<altdisadvantage>Ein Anhänger von Wildschwein mag es nicht, wenn andere Leute in sein Territorium eindringen oder seine Routineabläufe stören. Im besten Fall beschützt er seine Lieblingsbar und deren Angestellte. Im schlimmsten Fall fängt er Streit wegen eines bestimmten Tisches oder Barhockers an, den er für seinen hält. Dabei gibt es nicht immer eine Vorwarnung, die außerdem meistens von seinen Freunden, aber nicht von ihm ausgesprochen wird. Damit er sein Zuhause, Safehouse odeer seine Routineabläufe permanent hinter sich lässt, muss einem Anhänger von Wildschwein eine Probe auf Charisma + Willenskraft (3) gelingen, sonst kommt er immer wieder zurück, selbst wenn das für ihn gefährlich ist. Wenn er diese Umstellung schafft, erhält er trotzdem 3 Wochen lang einen Würfelpoolmalus von -1 auf alle Proben mit Aktionsfertigkeiten, bis er endlich ein neues Heim und neue Routinen gefunden hat.</altdisadvantage>
 				<altpage>42</altpage>
 			</mentor>
 			<mentor translated="True">
@@ -20966,23 +20966,23 @@
 				<choices>
 					<choice>
 						<name>+2 dice on Assensing Tests</name>
-						<translate>+2 dice on Assensing Tests</translate>
+						<translate>+2 Würfel für Askennen-Proben</translate>
 					</choice>
 					<choice>
 						<name>+2 on Judge Intentions Tests</name>
-						<translate>+2 on Judge Intentions Tests</translate>
+						<translate>+2 Würfel für Menschenkenntnis-Proben</translate>
 					</choice>
 					<choice set="2">
 						<name>Magician: +2 to Conjuring skill tests of air spirits</name>
-						<translate>Magician: +2 to Conjuring skill tests of air spirits</translate>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen von Luftgeistern</translate>
 					</choice>
 					<choice set="2">
 						<name>Adept: 2 free levels of Piercing Senses</name>
-						<translate>Adept: 2 free levels of Piercing Senses</translate>
+						<translate>Adept: 2 Stufen Wahre Sicht</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 Assensing skill tests or +2 to Judge Intentions test (choose one)</altadvantage>
-				<altdisadvantage>A follower of Giraffe stumbles through social etiquette, as she believes the small talk and chitchat that are the core of social chatter are fundamentally dishonest and not worthy of her efforts. She can make a wide range of situations awkward and receives –2 dice for Etiquette skill tests. </altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Akskennen-Proben oder Menschenkenntnis-Proben (nach Wahl des Spielers)</altadvantage>
+				<altdisadvantage>Ein Anhänger von Giraffe gleitet auf dem gesellschaftlichen Parkett leicht aus, weil er Small Talk und Plauderei, die den Kern sozialen Geredes ausmachen, als grundsätzlich unehrlich und seiner Mühen nicht wert erachtet. Das kann viele Situationen etwas peinnlich machen und führt zu einem Würfelpoolmalus von -2 auf Gebräuche-Proben.</altdisadvantage>
 				<altpage>41</altpage>
 			</mentor>
 			<mentor>
@@ -20992,23 +20992,23 @@
 				<choices>
 					<choice>
 						<name>+2 dice on Artisan tests</name>
-						<translate>+2 dice on Artisan tests</translate>
+						<translate>+2 Würfel für Handwerk-Proben</translate>
 					</choice>
 					<choice>
 						<name>+2 on Pilot Watercraft Tests</name>
-						<translate>+2 on Pilot Watercraft Tests</translate>
+						<translate>+2 Würfel für Schiffe-Proben</translate>
 					</choice>
 					<choice set="2">
 						<name>Magician: +2 for health spells, preparations, and spell rituals.</name>
-						<translate>Magician: +2 for health spells, preparations, and spell rituals.</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
 					</choice>
 					<choice set="2">
 						<name>Adept: Gain Flexibility (2) power for free</name>
-						<translate>Adept: Gain Flexibility (2) power for free</translate>
+						<translate>Adept: 2 Stufen Flexibilität</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice on Artisan skill tests or Pilot Watercraft skill tests (choose one)</altadvantage>
-				<altdisadvantage>Followers are altruistic when it comes to helping people and cannot turn a blind eye to those who they believe deserve their help. It is difficult for them not to get involved when they see someone being bullied or obviously polluting the environment. If they see such a situation, it takes a Charisma + Willpower (3) Test for a follower of Dolphin not to intervene. If the job that the follower of Dolphin is on involves polluting the environment or becoming the bully/enforcer on those less deserving, then the follower loses 2 dice after each such deed until she atones. Atonement is up to the gamemaster but can involve time and money spent with charities.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Handwerk- oder Schiffe-Proben (nach Wahl des Spielers)</altadvantage>
+				<altdisadvantage>Anhänger von Delphin sind altruistisch gesinnt und können an niemandem vorbeigehen, von dem sie glauben, dass er ihrer Hilfe bedarf. Es ist für sie schwer, sich nicht einzumischen, wenn sie sehen, wie jemand bedrängt wird oder offensichtlich die Umwelt verschmutzt. Wenn sie in eine solche Situation geraten, muss ihnen eine Probe auf Charisma + Willenskraft (3) gelingen, um nicht einzuschreiten. Wenn ein Auftrag das Verschmutzen der Umwelt oder das Bedrohen von Unschuldigen beinhaltet, erhält ein Anhänger von Delphin nach jeder solchen Tat einen Würfelpoolmalus von -2 Würfel auf alle Proben, bis er die Tat gesühnt hat. Die genaue Sühne obliegt dem Spielleiter und kann Zeit- und Geldaufwand beinhalten.</altdisadvantage>
 				<altpage>42</altpage>
 			</mentor>
 			<mentor>
@@ -21018,23 +21018,23 @@
 				<choices>
 					<choice>
 						<name>+2 dice on Swimming tests</name>
-						<translate>+2 dice on Swimming tests</translate>
+						<translate>+2 Würfel für Schimmen-Proben</translate>
 					</choice>
 					<choice>
 						<name>+2 on Pilot Watercraft Tests</name>
-						<translate>+2 on Pilot Watercraft Tests</translate>
+						<translate>+2 Würfel für Schiffe-Proben</translate>
 					</choice>
 					<choice set="2">
 						<name>Magician: +2 to Conjuring skill tests for spirits of water</name>
-						<translate>Magician: +2 to Conjuring skill tests for spirits of water</translate>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen von Wassergeistern</translate>
 					</choice>
 					<choice set="2">
 						<name>Adept: Receive 2 ranks in Iron Lungs or free.</name>
-						<translate>Adept: Receive 2 ranks in Iron Lungs or free.</translate>
+						<translate>Adept: 2 Stufen Eiserne Lunge</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice to Swimming or Pilot Watercraft skill tests (choose one)</altadvantage>
-				<altdisadvantage>Because of their personal sense of ethics, followers of the whale must honor any agreement they enter into. This can be an oath to an organization or a verbal contract with a corporation. Failing to honor the contract or oath results in a loss of a point of Magic. The Whale mentor spirit understands if circumstances to complete the contract are out of the Awakened’s hands. For everything else, the follower can attempt to atone, but at the gamemaster’s discretion.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Schwimmen- oder Schiffe-Proben (nach Wahl des Spielers)</altadvantage>
+				<altdisadvantage>Wegen ihres Ehrgefühls müssen Anhänger von Wal alle Übereinkünfte einhalten. Dabei kann es sich um Eide gegenüber Organisationen oder mündliche Vereinbarungen mit Konzernen handeln. Wenn der Anhänger den Eid oder Kontrakt nicht einhält, verliert er 1 Punkt seines Magieattributs. Der Schutzgeist versteht, dass es Umstände gibt, unter denen der Erwachte einen Kontrakt einfach nicht erfüllen kann. In allen anderen Fällen kann der Anhänger versuchen, die Übertretung zu sühnen. Die Details dafür unterliegen der Maßgabe des Spielleiters.</altdisadvantage>
 				<altpage>43</altpage>
 			</mentor>
 			<mentor>
