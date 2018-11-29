@@ -15,6 +15,7 @@ Application Changes:
 - Implemented most content from Better Than Bad, with exception of life modules and the Hard Luck quality.
 - Fixed incorrect behaviour for cyberware purchased via Black Market Pipeline not properly being discounted. Fixes #3244
 - Added basic functionality for the Sprite Pet from Kill Code. This is not currently restricted to the technoshaman archetype. 
+- Mildly ugly fix for cybersuites that come with cyberlimbs not properly being counted for attribute calculation.
 
 Data Changes:
 
