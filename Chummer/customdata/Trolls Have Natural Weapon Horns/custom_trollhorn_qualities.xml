@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+  <qualities>
+    <quality>
+      <id>7ea5c757-0547-4832-b613-ea56ad44c6a5</id>
+      <name>Horns</name>
+      <karma>0</karma>
+      <category>Positive</category>
+      <naturalweapons>
+        <naturalweapon>
+          <id>15b01ea6-fbac-4478-aa27-d8cd770ce297</id>
+          <name>Horns</name>
+          <category>Bio-Weapon</category>
+          <type>Melee</type>
+          <conceal>0</conceal>
+          <accuracy>6</accuracy>
+          <reach>0</reach>
+          <damage>(STR+1)P</damage>
+          <ap>-4</ap>
+          <mode>0</mode>
+          <rc>0</rc>
+          <ammo>0</ammo>
+          <avail>0</avail>
+          <cost>0</cost>
+          <source>CF</source>
+          <page>121</page>
+          <allowaccessory>False</allowaccessory>
+          <useskill>Unarmed Combat</useskill>
+        </naturalweapon>
+      </naturalweapons>
+      <hide />
+      <source>CF</source>
+      <page>121</page>
+    </quality>
+  </qualities>
+</chummer>

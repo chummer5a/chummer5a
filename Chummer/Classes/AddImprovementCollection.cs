@@ -1549,51 +1549,71 @@ namespace Chummer.Classes
             Log.Info("SourceName = " + SourceName);
 
             Log.Info("Adding Gear");
-            string strName = bonusNode["name"]?.InnerText ?? string.Empty;
-            string strCategory = bonusNode["category"]?.InnerText ?? string.Empty;
-            XmlNode node = XmlManager.Load("gear.xml").SelectSingleNode("/chummer/gears/gear[name = " + strName.CleanXPath() + " and category = " + strCategory.CleanXPath() + "]");
 
-            if (node == null)
-                throw new AbortedException();
-            int intRating = 1;
-            string strTemp = string.Empty;
-            if (bonusNode.TryGetStringFieldQuickly("rating", ref strTemp))
-                intRating = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
-            decimal decQty = 1.0m;
-            if (bonusNode["quantity"] != null)
-                decQty = Convert.ToDecimal(bonusNode["quantity"].InnerText, GlobalOptions.InvariantCultureInfo);
-
-            // Create the new piece of Gear.
-            List<Weapon> lstWeapons = new List<Weapon>();
-
-            Gear objNewGear = new Gear(_objCharacter);
-            objNewGear.Create(node, intRating, lstWeapons, ForcedValue);
-
-            if (objNewGear.InternalId.IsEmptyGuid())
-                throw new AbortedException();
-
-            objNewGear.Quantity = decQty;
-
-            // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
-            if (_objCharacter.ActiveCommlink == null && objNewGear.IsCommlink)
+            Gear newGear = Purchase(bonusNode);
+            if (bonusNode["children"]?.ChildNodes.Count > 0)
             {
-                objNewGear.SetActiveCommlink(_objCharacter, true);
+                foreach (XmlNode child in bonusNode["children"]?.ChildNodes)
+                {
+                    Purchase(child, newGear, false);
+                }
             }
 
-            if (bonusNode["fullcost"] == null)
-                objNewGear.Cost = "0";
-            // Create any Weapons that came with this Gear.
-            foreach (Weapon objWeapon in lstWeapons)
-                _objCharacter.Weapons.Add(objWeapon);
+            Gear Purchase(XmlNode gearNode, Gear parent = null, bool addToCharacter = true)
+            {
+                string strName = gearNode["name"]?.InnerText ?? string.Empty;
+                string strCategory = gearNode["category"]?.InnerText ?? string.Empty;
+                XmlNode node = XmlManager.Load("gear.xml").SelectSingleNode("/chummer/gears/gear[name = " + strName.CleanXPath() + " and category = " + strCategory.CleanXPath() + "]");
 
-            objNewGear.ParentID = SourceName;
+                if (node == null)
+                    throw new AbortedException();
+                int intRating = 1;
+                string strTemp = string.Empty;
+                if (gearNode.TryGetStringFieldQuickly("rating", ref strTemp))
+                    intRating = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
+                decimal decQty = 1.0m;
+                if (gearNode["quantity"] != null)
+                    decQty = Convert.ToDecimal(gearNode["quantity"].InnerText, GlobalOptions.InvariantCultureInfo);
 
-            _objCharacter.Gear.Add(objNewGear);
+                // Create the new piece of Gear.
+                List<Weapon> lstWeapons = new List<Weapon>();
 
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(objNewGear.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.Gear,
-                _strUnique);
+                Gear objNewGear = new Gear(_objCharacter);
+                objNewGear.Create(node, intRating, lstWeapons, ForcedValue);
+
+                if (objNewGear.InternalId.IsEmptyGuid())
+                    throw new AbortedException();
+
+                objNewGear.Quantity = decQty;
+
+                // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
+                if (_objCharacter.ActiveCommlink == null && objNewGear.IsCommlink)
+                {
+                    objNewGear.SetActiveCommlink(_objCharacter, true);
+                }
+
+                if (gearNode["fullcost"] == null)
+                    objNewGear.Cost = "0";
+                // Create any Weapons that came with this Gear.
+                foreach (Weapon objWeapon in lstWeapons)
+                    _objCharacter.Weapons.Add(objWeapon);
+
+                objNewGear.ParentID = SourceName;
+                if (addToCharacter)
+                {
+                    _objCharacter.Gear.Add(objNewGear);
+                }
+                else
+                {
+                    parent.Children.Add(objNewGear);
+                }
+
+                Log.Info("Calling CreateImprovement");
+                CreateImprovement(objNewGear.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.Gear,
+                    _strUnique);
+                return objNewGear;
+            }
         }
 
         // Add a specific Gear to the Character.

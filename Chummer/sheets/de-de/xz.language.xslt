@@ -118,7 +118,7 @@
   <xsl:variable name="lang.Health"    select="'Heilung'"/>
   <xsl:variable name="lang.Heavy"    select="'Schwer'"/>
   <xsl:variable name="lang.Height"    select="'Größe'"/>
-  <xsl:variable name="lang.hit"      select="'hit'"/>
+  <xsl:variable name="lang.hit"      select="'Erfolg'"/>
   <xsl:variable name="lang.Illusion"    select="'Illusion'"/>
   <xsl:variable name="lang.Implant"    select="'Implantat'"/>
   <xsl:variable name="lang.Indirect"      select="'Indirekt'"/>

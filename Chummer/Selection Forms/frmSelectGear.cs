@@ -1054,6 +1054,9 @@ namespace Chummer
                     }
                 }
 
+                if (!objXmlGear.RequirementsMet(_objCharacter))
+                    continue;
+
                 if (!blnDoUIUpdate && blnTerminateAfterFirst)
                 {
                     lstGears.Add(new ListItem(string.Empty, string.Empty));

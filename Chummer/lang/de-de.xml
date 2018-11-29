@@ -260,7 +260,7 @@
 		</string>
 		<string>
 			<key>Label_AP</key>
-			<text>PB:</text>
+			<text>DK:</text>
 		</string>
 		<string>
 			<key>Label_Ammo</key>
@@ -6525,7 +6525,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_DatesIncludeTime</key>
-			<text>Unkosten mit Zeitangabe anzeigen.</text>
+			<text>Zu Ausgaben soll die Uhrzeit angezeigt werden</text>
 		</string>
 		<!-- Version 455 -->
 		<string>
@@ -9421,6 +9421,10 @@
 		<string>
 			<key>Checkbox_DiceRoller_BubbleDie</key>
 			<text>Scheinwürfel (egalisiert Patzerwahrscheinlichkeit bei gerader Anzahl von Würfeln)</text>
+		</string>
+		<string>
+			<key>Checkbox_DiceRoller_VariableGlitch</key>
+			<text>Patzer bei mehr Einsen als Erfolgen, nicht bei halbem Würfelpool</text>
 		</string>
 	</strings>
 </chummer>

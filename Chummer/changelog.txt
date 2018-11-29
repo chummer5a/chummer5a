@@ -5,12 +5,25 @@ Application Changes:
 - Fixed an issue where certain controls (e.g. Skills, Knowledge Skills) would not get their children controls translated. Fixes #3171.
 - Fixed an issue where drag-and-dropping weapons in career mode, as well as drag-and-dropping gear under certain circumstances, would not work. Fixes #3172.
 - Added an option to the dice roller tool where a roll glitches if there are more 1's than hits rather than more 1's than half of the character's dicepool.
+- Fixed a regression when purchasing Cyberware in Career mode in which it would not properly deduct from Essence Holes first. Fixes #3188
+- Fixes an issue with the calculation of lifestyle multipliers. Should fix #2639, fixes an issue with trolls not stacking correctly.
+- Fixed an issue with martial art techniques not being able to be refunded properly if removed. Fixes #3196
+- Fixed page offset changes not properly being stored.
+- Fixed a regression with exotic skills not picking up improvements. Fixes #3204
+- Fixed issues with objects not moving correctly when dragged between locations. Fixes #3079
+- Allowed gear to use forbidden and required nodes similar to those that can be used by qualities, cyberware, metamagics, and others.
+- Implemented most content from Better Than Bad, with exception of life modules and the Hard Luck quality.
+- Fixed incorrect behaviour for cyberware purchased via Black Market Pipeline not properly being discounted. Fixes #3244
+- Added basic functionality for the Sprite Pet from Kill Code. This is not currently restricted to the technoshaman archetype. 
+- Mildly ugly fix for cybersuites that come with cyberlimbs not properly being counted for attribute calculation.
 
 Data Changes:
 
 - Fixed Autopicker having an incorrect cost. Fixes #3167.
 - Fixed an issue with Japanese translations of certain lifestyle qualities caused by duplicate entries. Fixes #3168.
 - Added content from the German-exclusive sourcebook "Hamburg".
+- Removed redundant 'Enable Spells and Spirits Tab' improvement. Closes #3189
+- Added an optional rule from Chrome Flesh to allow Trolls to treat their horns as per the bio-weapon on page 121 of Chrome Flesh. 
 
 New Strings:
 

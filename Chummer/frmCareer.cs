@@ -6957,7 +6957,7 @@ namespace Chummer
                         CharacterObject.Karma -= karmaCost;
 
                         ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateKarma(KarmaExpenseType.AddMartialArtManeuver, objAdvantage.InternalId);
+                        objUndo.CreateKarma(KarmaExpenseType.AddMartialArtTechnique, objAdvantage.InternalId);
                         objEntry.Undo = objUndo;
                     }
                 } while (blnAddAgain);
@@ -8074,10 +8074,11 @@ namespace Chummer
                         }
                         break;
                     }
-#if LEGACY
-                    case KarmaExpenseType.AddMartialArtManeuver:
+                case KarmaExpenseType.AddMartialArtManeuver:
+                case KarmaExpenseType.AddMartialArtTechnique:
                     {
-                        // Locate the Martial Art Maneuver that was affected.
+#if LEGACY
+// Locate the Martial Art Maneuver that was affected.
                         foreach (MartialArtManeuver objManeuver in CharacterObject.MartialArtManeuvers.Where(x => x.InternalId == objEntry.Undo.ObjectId).ToList())
                         {
                             // Remove any Improvements created by the Maneuver.
@@ -8086,9 +8087,23 @@ namespace Chummer
                             // Remove the Maneuver from the character.
                             CharacterObject.MartialArtManeuvers.Remove(objManeuver);
                         }
-                    }
-                    break;
 #endif
+                    // Locate the Martial Art Maneuver that was affected.
+                    foreach (MartialArt objArt in CharacterObject.MartialArts)
+                    {
+                        foreach (MartialArtTechnique objTechnique in objArt.Techniques.Where(x =>
+                            x.InternalId == objEntry.Undo.ObjectId))
+                        {
+                            // Remove any Improvements created by the Maneuver.
+                            ImprovementManager.RemoveImprovements(CharacterObject,
+                                Improvement.ImprovementSource.MartialArtTechnique, objTechnique.InternalId);
+
+                            // Remove the Maneuver from the character.
+                            objArt.Techniques.Remove(objTechnique);
+                        }
+                    }
+                }
+                    break;
                 case KarmaExpenseType.AddComplexForm:
                     {
                         // Locate the Complex Form that was affected.
@@ -8985,11 +9000,13 @@ namespace Chummer
 
                 XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + frmPickCyberware.SelectedCyberware + "\"]");
                 Cyberware objCyberware = new Cyberware(CharacterObject);
-                if (objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware, frmPickCyberware.SelectedGrade,frmPickCyberware.SelectedRating,objVehicle,objMod.Cyberware,CharacterObject.Vehicles,objMod.Weapons,frmPickCyberware.Markup,frmPickCyberware.FreeCost, true, "String_ExpensePurchaseVehicleCyberware"))
+                if (objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware, frmPickCyberware.SelectedGrade,frmPickCyberware.SelectedRating,objVehicle,objMod.Cyberware,CharacterObject.Vehicles,objMod.Weapons,frmPickCyberware.Markup,frmPickCyberware.FreeCost, frmPickCyberware.BlackMarketDiscount, true, "String_ExpensePurchaseVehicleCyberware"))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
                 }
+                else
+                    objCyberware.DeleteCyberware();
 
                 frmPickCyberware.Dispose();
             }
@@ -14300,14 +14317,21 @@ namespace Chummer
             XmlNode objXmlCyberware = objSource == Improvement.ImprovementSource.Bioware ? XmlManager.Load("bioware.xml").SelectSingleNode("/chummer/biowares/bioware[id = \"" + frmPickCyberware.SelectedCyberware + "\"]") : XmlManager.Load("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + frmPickCyberware.SelectedCyberware + "\"]");
 
             Cyberware objCyberware = new Cyberware(CharacterObject);
-            if (objCyberware.Purchase(objXmlCyberware, objSource, frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating, null, objSelectedCyberware?.Children ?? CharacterObject.Cyberware, CharacterObject.Vehicles, CharacterObject.Weapons, frmPickCyberware.Markup, frmPickCyberware.FreeCost))
+            if (objCyberware.Purchase(objXmlCyberware, objSource, frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating, null, objSelectedCyberware?.Children ?? CharacterObject.Cyberware, CharacterObject.Vehicles, CharacterObject.Weapons, frmPickCyberware.Markup, frmPickCyberware.FreeCost, frmPickCyberware.BlackMarketDiscount))
             {
-                if (objCyberware.SourceID != Cyberware.EssenceHoleGUID && objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
-                    CharacterObject.DecreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
+                // Consume any essence antihole that might exist. Holes and antiholes are managed through the Purchase method. 
+                if (objCyberware.SourceID != Cyberware.EssenceHoleGUID &&
+                    objCyberware.SourceID != Cyberware.EssenceAntiHoleGUID)
+                {
+                    CharacterObject.DecreaseEssenceHole((int) (objCyberware.CalculatedESS() * 100),
+                        objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID);
+                }
 
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
             }
+            else
+                objCyberware.DeleteCyberware();
 
             frmPickCyberware.Dispose();
             

@@ -5389,7 +5389,7 @@ namespace Chummer
                 else if (objNewParent.Tag is string)
                 {
                     objGear.Location = null;
-                    intNewIndex = Math.Min(intNewIndex, Gear.Count);
+                    intNewIndex = Math.Min(intNewIndex, Gear.Count -1);
                     Gear.Move(Gear.IndexOf(objGear), intNewIndex);
                 }
             }
@@ -5464,7 +5464,7 @@ namespace Chummer
                 else if (objNewParent.Tag is string)
                 {
                     objArmor.Location = null;
-                    intNewIndex = Math.Min(intNewIndex, Armor.Count);
+                    intNewIndex = Math.Min(intNewIndex, Armor.Count -1);
                     Armor.Move(Armor.IndexOf(objArmor), intNewIndex);
                 }
             }
@@ -5516,7 +5516,7 @@ namespace Chummer
                 else if (objNewParent.Tag is string)
                 {
                     objWeapon.Location = null;
-                    intNewIndex = Math.Min(intNewIndex, Weapons.Count);
+                    intNewIndex = Math.Min(intNewIndex, Weapons.Count -1);
                     Weapons.Move(Weapons.IndexOf(objWeapon), intNewIndex);
                 }
             }
@@ -5568,7 +5568,7 @@ namespace Chummer
                 else if (objNewParent.Tag is string)
                 {
                     objVehicle.Location = null;
-                    intNewIndex = Math.Min(intNewIndex, Weapons.Count);
+                    intNewIndex = Math.Min(intNewIndex, Weapons.Count -1);
                     Vehicles.Move(Vehicles.IndexOf(objVehicle), intNewIndex);
                 }
             }
@@ -7877,9 +7877,19 @@ namespace Chummer
                 {
                     objHole.Rating += intCentiessence;
                 }
-            }
-        }
 
+                if (objHole?.Rating == 0 && Cyberware.Contains(objHole))
+                    Cyberware.Remove(objHole);
+            }
+
+            if (objAntiHole?.Rating == 0 && Cyberware.Contains(objAntiHole))
+                Cyberware.Remove(objAntiHole);
+        }
+        /// <summary>
+        /// Decrease or create an Essence Hole, if required.
+        /// </summary>
+        /// <param name="intCentiessence">Hundredths of Essence to push into a new Essence Hole or Antihole.</param>
+        /// <param name="blnOverflowIntoAntiHole">Should we increase or create an Essence Antihole to handle any overflow. Remember, Essence Holes are consumed first.</param>
         public void DecreaseEssenceHole(int intCentiessence, bool blnOverflowIntoAntiHole = true)
         {
             Cyberware objHole = Cyberware.FirstOrDefault(x => x.SourceID == Backend.Equipment.Cyberware.EssenceHoleGUID);
@@ -7897,7 +7907,7 @@ namespace Chummer
                 Cyberware.Remove(objHole);
             }
 
-            if (blnOverflowIntoAntiHole)
+            if (blnOverflowIntoAntiHole && intCentiessence != 0)
             {
                 Cyberware objAntiHole = Cyberware.FirstOrDefault(x => x.SourceID == Backend.Equipment.Cyberware.EssenceAntiHoleGUID);
                 if (objAntiHole == null)
@@ -7923,7 +7933,13 @@ namespace Chummer
                 {
                     objAntiHole.Rating += intCentiessence;
                 }
+
+                if (objAntiHole?.Rating == 0 && Cyberware.Contains(objAntiHole))
+                    Cyberware.Remove(objAntiHole);
             }
+
+            if (objHole?.Rating == 0 && Cyberware.Contains(objHole))
+                Cyberware.Remove(objHole);
         }
 
         private decimal _decCachedPrototypeTranshumanEssenceUsed = decimal.MinValue;
