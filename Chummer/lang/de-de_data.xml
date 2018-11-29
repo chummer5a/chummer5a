@@ -21488,15 +21488,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Ritual Spellcasting Tests</name>
-						<translate>Magician: +2 dice for Ritual Spellcasting Tests</translate>
+						<translate>Zauberer: +2 Würfel für Ritualzauberei</translate>
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Authoritative Tone</name>
-						<translate>Adept: 1 free level of Authoritative Tone</translate>
+						<translate>Adept: 1 Stufe Gebieterischer Ton gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifier for Instruction Tests.</altadvantage>
-				<altdisadvantage>The Goddess refuses to take a backseat to any male counterparts. Unless you succeed in a Charisma + Willpower Test (3), you will not take orders from a male, or if a male disrespects you, you must respond with equal measure</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Unterrichtproben</altadvantage>
+				<altdisadvantage>Die Göttin spielt hinter männlichen Gegenstücken niemals die zweite Geige. Einer Anhängerin der Göttin muss eine Probe auf Charisma + Willenskraft (3) gelingen, sonst nimmt sie keine Befehle von Männern entgegen und zahlt Respektlosigkeit von Männern mit gleicher Münze heim.</altdisadvantage>
 				<altpage>132</altpage>
 			</mentor>
 			<mentor>
@@ -21506,15 +21506,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice to Combat spells, preparations, and rituals</name>
-						<translate>Magician: +2 dice to Combat spells, preparations, and rituals</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeubnisse der Kategorie Kampf</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Attribute Boost (Strength)</name>
-						<translate>Adept: 2 free levels of Attribute Boost (Strength)</translate>
+						<translate>Adept: 2 Stufen Attributsschub (Stärke) gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifier for Survival Tests, Running Tests, or Tracking Tests (Choose One)</altadvantage>
-				<altdisadvantage>In combat situations, a Lion will never leave a comrade behind, and will fght to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot ﬂee combat before your team members are safe. Further, whenever taking actions that don’t beneft the team somehow, your physical and mental limits are reduced by 2.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Survival- oder Laufen- oder Spurenlesen-Proben (nach Wahl des Spielers)</altadvantage>
+				<altdisadvantage>Die größte Stärke des Löwen ist zugleich seine größte Schwäche. Er umgibt sich mit anderen, ähnlich gesinnten Individuen und geht mit ihnen langanhaltende, beinahe familiäre Bindungen ein. Daher tut er alles, um Freunde und Familie zu schützen. In Kampfsituationen lässt er nie einen Kameraden zurück und kämpft bis zum Tod, um Verbündete zu schützen. Wenn einem Anhänger von Löwe eine Probe auf Charisma + Willenskraft (3) nicht gelingt, kann er erst aus dem Kampf fliehen, wenn seine Teammitglieder in Sicherheit sind. Außerdem werden sein Körperliches und sein Geistiges Limit um 2 gesenkt, wenn er eine Handlung durchführt, die nicht irgendwie dem Team zugutekommen.</altdisadvantage>
 				<altpage>135</altpage>
 			</mentor>
 			<mentor>
@@ -21524,19 +21524,19 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice to Detection spells, preparations, and rituals.</name>
-						<translate>Magician: +2 dice to Detection spells, preparations, and rituals.</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Wahrnehmung</translate>
 					</choice>
 					<choice>
 						<name>Magician: +2 dice to summoning spirits if summoner also has Code of Honor: Harmony with Nature, The Shaman’s Code and bargains with the summoned spirit.</name>
-						<translate>Magician: +2 dice to summoning spirits if summoner also has Code of Honor: Harmony with Nature, The Shaman’s Code and bargains with the summoned spirit.</translate>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen von Geistern, wenn der Charakter auch den Nachteil Ehrenkodex: Harmonie mit der Natur - der Kodex des Schamanen hat und mit dem herbeigerufenen Geist feilscht</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Enhanced Perception.</name>
-						<translate>Adept: 2 free levels of Enhanced Perception.</translate>
+						<translate>Adept: 2 Stufen Verbesserte Wahrnehmung gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice pool modifier for knowledge skill tests.</altadvantage>
-				<altdisadvantage>Followers of Raven share their mentor’s love of collecting. When presented with data, knowledge, or other gear that would be valuable (gamemaster’s discretion), you must pass a Charisma + Willpower Test (3), or be unable to resist trying to acquiring it.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Proben mit Wissenfertigkeiten</altadvantage>
+				<altdisadvantage>Anhänger von Rabe teilen die Sammelleidenschaft ihres Schutzgeistes. Wenn ein Anhänger von Rabe auf (nach Maßgabe des Spielleiters) nützliche Daten, Wissen oder Ausrüstung stößt, muss ihm eine Probe auf Charisma + Willenskraft (3) gelingen, ansonsten kann er dem Drang nicht widerstehen, zu versuchen, sie in seinen Besitz zu bekommen.</altdisadvantage>
 				<altpage>125</altpage>
 			</mentor>
 			<mentor>
