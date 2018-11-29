@@ -21506,7 +21506,7 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice to Combat spells, preparations, and rituals</name>
-						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeubnisse der Kategorie Kampf</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Kampf</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Attribute Boost (Strength)</name>
@@ -21535,7 +21535,7 @@
 						<translate>Adept: 2 Stufen Verbesserte Wahrnehmung gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>Allgemein: +2 Würfel für Proben mit Wissenfertigkeiten</altadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Proben mit Wissensfertigkeiten</altadvantage>
 				<altdisadvantage>Anhänger von Rabe teilen die Sammelleidenschaft ihres Schutzgeistes. Wenn ein Anhänger von Rabe auf (nach Maßgabe des Spielleiters) nützliche Daten, Wissen oder Ausrüstung stößt, muss ihm eine Probe auf Charisma + Willenskraft (3) gelingen, ansonsten kann er dem Drang nicht widerstehen, zu versuchen, sie in seinen Besitz zu bekommen.</altdisadvantage>
 				<altpage>125</altpage>
 			</mentor>
