@@ -20671,7 +20671,7 @@
 					</choice>
 					<choice>
 						<name>Magician: +2 dice for Illusion Spells</name>
-						<translate>Magician: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Illusion</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Illusion</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Improved Potential (limit)</name>
@@ -20762,31 +20762,31 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for summoning or binding plague spirits</name>
-						<translate>Zauberer: +2 Würfel for summoning or binding plague spirits</translate>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen und Binden von Seuchengeistern (toxischen Geistern des Menschen)</translate>
 					</choice>
 					<choice>
 						<name>Adept: Free Plague Cloud</name>
-						<translate>Adept: Free Plague Cloud</translate>
+						<translate>Adept: Seuchenwolke</translate>
 					</choice>
 					<choice>
 						<name>Magician: +2 dice for summoning or binding plague spirits</name>
-						<translate>Zauberer: +2 Würfel for summoning or binding plague spirits</translate>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen und Binden von Seuchengeistern (toxischen Geistern des Menschen)</translate>
 					</choice>
 					<choice>
 						<name>Adept: Free Plague Cloud</name>
-						<translate>Adept: Free Plague Cloud</translate>
+						<translate>Adept: Seuchenwolke</translate>
 					</choice>
 					<choice>
 						<name>Magician: +2 dice for summoning or binding plague spirits</name>
-						<translate>Magician: +2 dice for summoning or binding plague spirits</translate>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen und Binden von Seuchengeistern (toxischen Geistern des Menschen)</translate>
 					</choice>
 					<choice>
 						<name>Adept: Free Plague Cloud</name>
-						<translate>Adept: Free Plague Cloud</translate>
+						<translate>Adept: Seuchenwolke</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 to resist all pathogens and toxins</altadvantage>
-				<altdisadvantage>Followers of Disease must make a Charisma + Willpower (3) Test to not flee or seek cover whenever in a combat situation, unless they outnumber their opponents. If they begin a fight with greater numbers but then their side is reduced so that they no longer outnumber their opponents, they must make a test to avoid fleeing.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Widerstandsproben gegen Pathogene und Toxine</altadvantage>
+				<altdisadvantage>Anhänger von Krankheit müssen eine Probe auf Charisma + Willenskraft (3) schaffen, um in einer Kampfsituation nicht zu fliehen oder Deckung zu suchen, wenn sie nicht in Überzahl sind. Wenn sie einen Kampf in Überzahl beginnen, aber ihre eigene Seite im Kampf geschwächt wird und dann nicht mehr in Überzahl ist, müssen sie die Probe schaffen, um nicht zu fliehen.</altdisadvantage>
 				<altpage>89</altpage>
 			</mentor>
 			<mentor>
@@ -20818,15 +20818,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Counterspelling and disenchanting</name>
-						<translate>Magician: +2 dice for Counterspelling and disenchanting</translate>
+						<translate>Zauberer: +2 Würfel für Antimagie- und Entzaubern-Proben</translate>
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Iron Will</name>
-						<translate>Adept: 1 free level of Iron Will</translate>
+						<translate>Adept: 1 Stufe Eiserner Wille gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice to demolitions tests.</altadvantage>
-				<altdisadvantage>Because of their deep-seated hatred for authority, a teammate’s use of leadership skill is counterproductive to followers of Adversary, invoking either a negative dice penalty or loss of initiative. If the plan doesn’t go the way that the adversary follower wants it to go, it takes a Charisma + Willpower (3) Test for him to get him to cooperate.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Sprengstoff-Proben</altadvantage>
+				<altdisadvantage>Wegen seines tiefsitzenden Hasses auf Autoritäten an sich wirkt der Einsatz von Führung durch ein Teammitglied auf einen Anhänger des Widersachers negativ. Dadurch erhält er entweder einen Würfelpoolmalus oder verliert einen Teil seiner Initiative (nach Maßgabe des Spielleiters). Wenn der Plan nicht so läuft, wie der Anhänger des Widersachers es möchte, muss er einen erfolgreiche Probe auf Charisma + Willenskraft (3) ablegen, um zu kooperieren.</altdisadvantage>
 				<altpage>131</altpage>
 			</mentor>
 			<mentor translated="True">
@@ -20836,15 +20836,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for conjuring spirits of Water or Man (Choose one.)</name>
-						<translate>Magician: +2 dice for conjuring spirits of Water or Man (Choose one.)</translate>
+						<translate>Zauberer: +2 Würfel für das Herbeirufen von Geistern des Wassers oder des Menschen (nach Wahl des Spielers)</translate>
 					</choice>
 					<choice>
 						<name>Adept: Free Inertia Strike</name>
-						<translate>Adept: Free Inertia Strike</translate>
+						<translate>Adept: Trägheitsschlag gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice to intimidation tests.</altadvantage>
-				<altdisadvantage>A follower of Alligator is stubborn about changing a plan or action to which he is committed. When the rest of the team goes to Plan B, the magician must succeed in a Charisma + Willpower (3) Test for the magician to stop trying Plan A.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Einschüchtern-Proben</altadvantage>
+				<altdisadvantage>Anhänger von Alligator sind sehr stur, wenn es darum geht, von einem einmal gewählten Weg abzuweichen. Wenn der Rest des Teams Plan B verfolgt, muss einem Anhänger von Alligator eine Probe auf Charisma + Willenskraft (3) gelingen, um nicht weiter Plan A zu verfolgen.</altdisadvantage>
 				<altpage>131</altpage>
 			</mentor>
 			<mentor>
@@ -20854,15 +20854,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +1 dice for conjuring spirits.</name>
-						<translate>Magician: +1 dice for conjuring spirits.</translate>
+						<translate>Zauberer: +1 Würfel für das Herbeirufen von Geistern jeglicher Art</translate>
 					</choice>
 					<choice>
 						<name>Adept: Free motion sense</name>
-						<translate>Adept: Free motion sense</translate>
+						<translate>Adept: Bewegungsgespür gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice to navigation tests.</altadvantage>
-				<altdisadvantage>A follower of Bat is easily distracted and becomes irritable during enforced inaction. She prefers spontaneity to routine. Every week that the magician stays in the same place, she takes a –1 penalty to all actions until she finds a new place to stay. Also, unless she succeeds in a Charisma + Willpower (3) Test, she cannot enter a hangout (bar, club, restaurant) more than once in a week without suffering a –1 to all Magic tests for the next twenty-four hours.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Navigations-Proben</altadvantage>
+				<altdisadvantage>Anhänger von Fledermaus sind leicht abzulenken und werden nervös, wenn sie zur Untätigkeit gezwungen sind. Fledermaus zieht die Spontaneität der Routine vor. Für jede Woche, die ein Anhänger von Fledermaus am selben Ort bleibt, erleidet er einen Würfelpoolmalus von -1 auf alle Handlungen, bis er an einen neuen Ort kommt. Außerdem muss Anhängern von Fledermaus eine Probe auf Charisma + Willenskraft (3) gelingen, um mehr als einmal pro Woche ein Etablissement (Bar, Club, Restaurant) zu betreten, ohne für 24 Stunden einen Würfelpoolmalus von -1 auf alle Proben mit Magie zu erhalten.</altdisadvantage>
 				<altpage>131</altpage>
 			</mentor>
 			<mentor>
@@ -20872,15 +20872,15 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for spells, preparations, and rituals of the manipulation type.</name>
-						<translate>Magician: +2 dice for spells, preparations, and rituals of the manipulation type.</translate>
+						<translate>Zauberer: + 2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Manipulation</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Hang Time.</name>
-						<translate>Adept: 2 free levels of Hang Time.</translate>
+						<translate>Adept: 2 Stufen Fester Halt gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 dice to gymnastics tests involving climbing.</altadvantage>
-				<altdisadvantage>Because Monkey is not an assassin, the magician must succeed in a Charisma + Willpower (3) Test in order to strike a surprised opponent. Monkey must be able to watch his prank go off or see the look on the opponent’s face after taunting them, otherwise he suffers –1 to all Magic tests until the next sunrise/sunset.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Akrobatik-Proben, die mit Klettern zu tun haben</altadvantage>
+				<altdisadvantage>Weil Affe kein Meuchelmörder ist, muss seinen Anhängern eine Probe auf Charisma + Willenskraft (3) gelingen, um einen überraschten Gegner anzugreifen. Affe muss sehen, wie seine Streiche wirken oder wie seine Gegner reagieren, wenn er sie reizt, sonst erhält er bis zum nächsten Sonnenauf- oder -untergang einen Würfelpoolmalus von -1 auf alle Proben mit Magie.</altdisadvantage>
 				<altpage>131</altpage>
 			</mentor>
 			<mentor>
