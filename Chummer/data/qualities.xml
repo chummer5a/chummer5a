@@ -17741,9 +17741,8 @@
       <name>Resonant Discordance</name>
       <karma>13</karma>
       <category>Positive</category>
-      <!-- TODO: Technomancers have access to mastery qualities?
       <canbuywithspellpoints>True</canbuywithspellpoints>
-      <doublecareer>False</doublecareer> --> 
+      <doublecareer>False</doublecareer>
       <required>
         <allof>
           <attribute>
