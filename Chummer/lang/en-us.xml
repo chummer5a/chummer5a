@@ -2158,6 +2158,14 @@
       <text>Bound Spirit Limit</text>
     </string>
     <string>
+      <key>Message_UnregisteredSpriteLimit</key>
+      <text>You cannot have more than one unregistered Sprite at a time.</text>
+    </string>
+    <string>
+      <key>Message_UnregisteredSpriteLimit</key>
+      <text>Unregistered Sprite Limit</text>
+    </string>
+    <string>
       <key>Message_RegisteredSpriteLimit</key>
       <text>Your number of registered Sprites cannot exceed your LOG score.</text>
     </string>
@@ -6125,6 +6133,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Checkbox_Spirit_Fettered</key>
       <text>Fettered</text>
+    </string>
+    <string>
+      <key>Checkbox_Sprite_Pet</key>
+      <text>Sprite Pet</text>
     </string>
     <string>
       <key>Label_Sprite_Rating</key>

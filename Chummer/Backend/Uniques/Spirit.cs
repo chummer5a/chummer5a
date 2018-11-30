@@ -588,28 +588,35 @@ namespace Chummer
                         }
                         if (CharacterObject.Created)
                         {
-                            int FetteringCost = Force * 3;
+                            // Sprites only cost Force in Karma to become Fettered. Spirits cost Force * 3.
+                            int fetteringCost = EntityType == SpiritType.Spirit ? Force * 3 : Force;
                             if (!CharacterObject.ConfirmKarmaExpense(string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language)
                                 , Name
-                                , FetteringCost.ToString(GlobalOptions.CultureInfo))))
+                                , fetteringCost.ToString(GlobalOptions.CultureInfo))))
                             {
                                 return;
                             }
 
                             // Create the Expense Log Entry.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(FetteringCost * -1,
+                            objExpense.Create(fetteringCost * -1,
                                 LanguageManager.GetString("String_ExpenseFetteredSpirit", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + Name,
                                 ExpenseType.Karma, DateTime.Now);
                             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                            CharacterObject.Karma -= FetteringCost;
+                            CharacterObject.Karma -= fetteringCost;
 
                             ExpenseUndo objUndo = new ExpenseUndo();
                             objUndo.CreateKarma(KarmaExpenseType.SpiritFettering, InternalId);
                             objExpense.Undo = objUndo;
                         }
-                        ImprovementManager.CreateImprovement(CharacterObject, EntityType == SpiritType.Spirit ? "MAG" : "RES", Improvement.ImprovementSource.SpiritFettering, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1);
-                        ImprovementManager.Commit(CharacterObject);
+
+                        if (EntityType == SpiritType.Spirit)
+                        {
+                            ImprovementManager.CreateImprovement(CharacterObject, "MAG",
+                                Improvement.ImprovementSource.SpiritFettering, string.Empty,
+                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1);
+                            ImprovementManager.Commit(CharacterObject);
+                        }
                     }
                     else
                     {
