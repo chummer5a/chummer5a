@@ -9196,11 +9196,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_Options_KnowledgeMultiplier</key>
-			<text>Override Knowledge Points (INT + LOG) Multiplier</text>
+			<text>Remplacer le multiplicateur pour les points de connaissance (INT + LOG)</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ContactMultiplier</key>
-			<text>Override Contact Points Charisma Multiplier</text>
+			<text>Remplacer le multiplicateur de charisme pour les points de connexion</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_UseTotalValueForFreeKnowledge</key>
@@ -9236,7 +9236,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_Options_FreeKarmaContacts</key>
-			<text>Karma Build: Free Contacts like Priority Build</text>
+			<text>Création par Karma : Contacts gratuits comme la création de priorités</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedPositiveQualitiesCostDoubled</key>
@@ -9244,15 +9244,15 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_Options_ReverseAttributePriorityOrder</key>
-			<text>Spend Karma on Attributes before Priority Points</text>
+			<text>Dépensez du karma sur les attributs avant les points de priorité</text>
 		</string>
 		<string>
 			<key>Checkbox_Option_AllowMysadPowerPointCareer</key>
-			<text>Allow Mystic Adepts to buy power points during career</text>
+			<text>Permettre aux Adeptes Mystiques d'acheter des points de pouvoir en mode carrière</text>
 		</string>
 		<string>
 			<key>Checkbox_Option_PrioritySpellsAsAdeptPowers</key>
-			<text>Allow spending of free spells from Magic Priority as power points</text>
+			<text>Permet de dépenser les sorts gratuits de la priorité magique comme points de pouvoir</text>
 		</string>
 		<string>
 			<key>Checkbox_Option_EducationQualitiesApplyOnChargenKarma</key>
