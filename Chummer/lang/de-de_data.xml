@@ -2976,13 +2976,13 @@
 			<book>
 				<id>3976dc50-f7db-481d-9372-fc2a5c1178ce</id>
 				<name>Street Grimoire</name>
-				<translate>Strassengrimoire</translate>
+				<translate>Straßengrimoire</translate>
 				<altcode>SG</altcode>
 			</book>
 			<book>
 				<id>f4cf7430-4c2d-4f3c-b1d2-fd1e08ad777d</id>
 				<name>Street Grimoire (German-exclusive Content)</name>
-				<translate>Strassengrimoire (Deutsch-exklusiver Inhalt)</translate>
+				<translate>Straßengrimoire (Deutsch-exklusiver Inhalt)</translate>
 				<altcode>SGG</altcode>
 			</book>
 			<book translated="True">
