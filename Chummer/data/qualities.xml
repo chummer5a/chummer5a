@@ -17768,6 +17768,11 @@
           </attributetotal>
         </oneof>
       </forbidden>
+      <required>
+        <oneof>
+          <quality>Special Modifications</quality>
+        </oneof>
+      </required>
       <source>BTB</source>
       <page>160</page>
     </quality>
@@ -17793,11 +17798,6 @@
           </attributetotal>
         </oneof>
       </forbidden>
-      <required>
-        <oneof>
-          <quality>Prototype Materials</quality>
-        </oneof>
-      </required>
       <source>BTB</source>
       <page>161</page>
     </quality>
