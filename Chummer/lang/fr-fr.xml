@@ -9456,9 +9456,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_ImprovementLoadError</key>
-			<text>Chummer5a a rencontré une erreur lors du chargement d'une ou plusieurs améliorations pour ce personnage. C'est probablement parce qu'une certaine amélioration présente dans une ancienne version de Chummer a été considérablement modifiée dans une version ultérieure.\n\nLe problème peut être corrigé en appliquant à nouveau seulement les améliorations qui ont causé les problèmes.\n\nVoulez-vous appliquer à nouveau les problèmes problématiques maintenant ? Si ce n'est pas le cas, les problèmes peuvent toujours être résolus en appliquant à nouveau toutes les améliorations via Améliorations Spéciale &gt; Ré-appliquer les améliorations.
-
-</text>
+			<text>Chummer5a a rencontré une erreur lors du chargement d'une ou plusieurs améliorations pour ce personnage. C'est probablement parce qu'une certaine amélioration présente dans une ancienne version de Chummer a été considérablement modifiée dans une version ultérieure.\n\nLe problème peut être corrigé en appliquant à nouveau seulement les améliorations qui ont causé les problèmes.\n\nVoulez-vous appliquer à nouveau les problèmes problématiques maintenant ? Si ce n'est pas le cas, les problèmes peuvent toujours être résolus en appliquant à nouveau toutes les améliorations via Améliorations Spéciale &gt; Ré-appliquer les améliorations.</text>
 		</string>
 		<string>
 			<key>String_MentorSpirit</key>
