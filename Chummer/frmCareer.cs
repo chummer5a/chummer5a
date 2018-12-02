@@ -17103,7 +17103,8 @@ private void RefreshSelectedSpell()
 
         private void chkGearWireless_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh) return;
+            if (IsRefreshing)
+                return;
             if (treGear.SelectedNode.Tag is IHasWirelessBonus obj)
             {
                 //obj.WirelessOn = chkGearWireless.Checked;
@@ -17112,7 +17113,8 @@ private void RefreshSelectedSpell()
 
         private void chkCyberwareWireless_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh) return;
+            if (IsRefreshing)
+                return;
             if (treCyberware.SelectedNode.Tag is IHasWirelessBonus obj)
             {
                 obj.WirelessOn = chkCyberwareWireless.Checked;
