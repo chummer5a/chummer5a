@@ -23,7 +23,6 @@ using System.Windows.Forms;
 using System.Xml.XPath;
  using Chummer.Backend.Equipment;
 using System.Text;
- using iTextSharp.text.pdf;
 
 namespace Chummer
 {
@@ -54,7 +53,6 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            MoveControls();
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = XmlManager.Load("vehicles.xml").GetFastNavigator().SelectSingleNode("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode);
@@ -77,7 +75,7 @@ namespace Chummer
                 lblMarkupLabel.Visible = false;
                 nudMarkup.Visible = false;
                 lblMarkupPercentLabel.Visible = false;
-                chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
+                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
@@ -680,10 +678,10 @@ namespace Chummer
                     if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
                         XPathNavigator objXmlLimit = _xmlBaseVehicleDataNode.SelectSingleNode("limits/limit[. = \"" + strLimit + "\"/@translate]");
-                        lblLimit.Text = " (" + objXmlLimit?.Value ?? strLimit + ')';
+                        lblLimit.Text = LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + objXmlLimit?.Value ?? strLimit + ')';
                     }
                     else
-                        lblLimit.Text = " (" + strLimit + ')';
+                        lblLimit.Text = LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + strLimit + ')';
                 }
                 else
                     lblLimit.Text = string.Empty;
@@ -740,11 +738,6 @@ namespace Chummer
                 default:
                     return string.Empty;
             }
-        }
-
-        private void MoveControls()
-        {
-            lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
         }
 
         private string ReplaceStrings(string strInput, int intExtraSlots = 0)

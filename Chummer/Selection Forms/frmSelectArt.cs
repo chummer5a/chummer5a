@@ -82,8 +82,8 @@ namespace Chummer
 
         private void frmSelectArt_Load(object sender, EventArgs e)
         {
-            Text = LanguageManager.GetString("Title_SelectGeneric", GlobalOptions.Language).Replace("{0}", _strLocalName);
-            chkLimitList.Text = LanguageManager.GetString("Checkbox_SelectGeneric_LimitList", GlobalOptions.Language).Replace("{0}", _strLocalName);
+            Text = string.Format(LanguageManager.GetString("Title_SelectGeneric", GlobalOptions.Language), _strLocalName);
+            chkLimitList.Text = string.Format(LanguageManager.GetString("Checkbox_SelectGeneric_LimitList", GlobalOptions.Language), _strLocalName);
 
             _blnLoading = false;
 
@@ -103,7 +103,7 @@ namespace Chummer
                 return;
             }
 
-            // Retireve the information for the selected piece of Cyberware.
+            // Retrieve the information for the selected art
             XPathNavigator objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strBaseXPath + "[id = \"" + strSelected + "\"]");
 
             if (objXmlMetamagic == null)
@@ -147,7 +147,7 @@ namespace Chummer
 
         #region Properties
         /// <summary>
-        /// Name of Metamagic that was selected in the dialogue.
+        /// Id of the Art that was selected in the dialogue.
         /// </summary>
         public string SelectedItem => _strSelectedItem;
 
@@ -155,7 +155,7 @@ namespace Chummer
 
         #region Methods
         /// <summary>
-        /// Build the list of Metamagics.
+        /// Build the list of Arts.
         /// </summary>
         private void BuildList()
         {

@@ -220,7 +220,7 @@ namespace Chummer
                     strFileName = FileSafe(strFileName);
 
                     // If the Omae save directory does not yet exist, create it.
-                    string strSavePath = Path.Combine(Application.StartupPath, "saves");
+                    string strSavePath = Path.Combine(Utils.GetStartupPath, "saves");
                     if (!Directory.Exists(strSavePath))
                         Directory.CreateDirectory(strSavePath);
                     string omaeDirectoryPath = Path.Combine(strSavePath, "omae");
@@ -231,7 +231,8 @@ namespace Chummer
                     string strFullPath = Path.Combine(omaeDirectoryPath, strFileName);
                     if (File.Exists(strFullPath))
                     {
-                        if (MessageBox.Show(LanguageManager.GetString("Message_Omae_FileExists", GlobalOptions.Language).Replace("{0}", strFileName), LanguageManager.GetString("MessageTitle_Omae_FileExists", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                        if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_Omae_FileExists", GlobalOptions.Language), strFileName),
+                                LanguageManager.GetString("MessageTitle_Omae_FileExists", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                             return;
                     }
 
@@ -270,7 +271,7 @@ namespace Chummer
                     strFileName = FileSafe(strFileName);
 
                     // If the Omae save directory does not yet exist, create it.
-                    string strSavePath = Path.Combine(Application.StartupPath, "saves");
+                    string strSavePath = Path.Combine(Utils.GetStartupPath, "saves");
                     if (!Directory.Exists(strSavePath))
                         Directory.CreateDirectory(strSavePath);
 
@@ -323,7 +324,7 @@ namespace Chummer
             else if (_objMode == OmaeMode.Sheets)
             {
                 // If the Omae sheets directory does not yet exist, create it.
-                string strSheetsPath = Path.Combine(Application.StartupPath, "sheets", "omae");
+                string strSheetsPath = Path.Combine(Utils.GetStartupPath, "sheets", "omae");
                 if (!Directory.Exists(strSheetsPath))
                     Directory.CreateDirectory(strSheetsPath);
 
@@ -531,7 +532,7 @@ namespace Chummer
                 {
                     _strUserName = txtUserName.Text;
                     _blnLoggedIn = true;
-                    lblLoggedIn.Text = LanguageManager.GetString("Label_Omae_LoggedInAs", GlobalOptions.Language).Replace("{0}", txtUserName.Text);
+                    lblLoggedIn.Text = string.Format(LanguageManager.GetString("Label_Omae_LoggedInAs", GlobalOptions.Language), txtUserName.Text);
                     panLogin.Visible = false;
                     panLoggedIn.Visible = true;
 
@@ -896,7 +897,7 @@ namespace Chummer
 
         private void cmdCompressData_Click(object sender, EventArgs e)
         {
-            foreach (string strFile in Directory.GetFiles(Path.Combine(Application.StartupPath, "data"), "*.xml"))
+            foreach (string strFile in Directory.GetFiles(Path.Combine(Utils.GetStartupPath, "data"), "*.xml"))
             {
                 byte[] bytFile = File.ReadAllBytes(strFile);
                 bytFile = OmaeHelper.Compress(bytFile);

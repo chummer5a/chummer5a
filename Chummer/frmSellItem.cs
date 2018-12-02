@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            MoveControls();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -41,17 +40,7 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
         #endregion
-
-        #region Methods
-        private void MoveControls()
-        {
-            nudPercent.Left = lblSellForLabel.Left + lblSellForLabel.Width + 6;
-            lblPercentLabel.Left = nudPercent.Left + nudPercent.Width + 6;
-            Width = lblPercentLabel.Left + lblPercentLabel.Width + 19;
-            if (Width < 185)
-                Width = 185;
-        }
-        #endregion
+        
 
         #region Properties
         /// <summary>

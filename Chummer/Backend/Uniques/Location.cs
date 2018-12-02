@@ -37,15 +37,13 @@ namespace Chummer
         private string _strNotes = string.Empty;
         private readonly Character _objCharacter;
         #region Constructor, Create, Save, Load, and Print Methods
-        public Location(Character objCharacter, ObservableCollection<Location> parent, string name = "", bool addToList = true)
+        public Location(Character objCharacter, ObservableCollection<Location> objParent, string strName = "")
         {
             // Create the GUID for the new art.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-            _strName = name;
-            Parent = parent;
-            if (addToList)
-                Parent.Add(this);
+            _strName = strName;
+            Parent = objParent;
             Children.CollectionChanged += ChildrenOnCollectionChanged;
         }
 
@@ -78,7 +76,7 @@ namespace Chummer
                 objNode.TryGetStringFieldQuickly("name", ref _strName);
                 objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             }
-            if (Parent == null || Parent.Contains(this)) return;
+            if (Parent?.Contains(this) == false)
                 Parent.Add(this);
         }
 
@@ -143,7 +141,7 @@ namespace Chummer
 
         public TaggedObservableCollection<IHasLocation> Children { get; } = new TaggedObservableCollection<IHasLocation>();
 
-        public ObservableCollection<Location> Parent { get; set; }
+        public ObservableCollection<Location> Parent { get; }
         #endregion
 
         #region UI Methods

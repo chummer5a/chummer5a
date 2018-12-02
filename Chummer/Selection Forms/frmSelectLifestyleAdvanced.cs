@@ -43,7 +43,6 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _objLifestyle = new Lifestyle(objCharacter);
-            MoveControls();
             // Load the Lifestyles information.
             _xmlDocument = XmlManager.Load("lifestyles.xml");
         }
@@ -967,22 +966,7 @@ namespace Chummer
             _objSourceLifestyle = objLifestyle;
             StyleType = objLifestyle.StyleType;
         }
-
-        private void MoveControls()
-        {
-            //int intLeft = 0;
-            //intLeft = Math.Max(lblLifestyleNameLabel.Left + lblLifestyleNameLabel.Width, Label_SelectAdvancedLifestyle_Upgrade_Comforts.Left + Label_SelectAdvancedLifestyle_Upgrade_Comforts.Width);
-            //intLeft = Math.Max(intLeft, lblNeighborhood.Left + lblNeighborhood.Width);
-            //intLeft = Math.Max(intLeft, lblSecurity.Left + lblSecurity.Width);
-
-            //txtLifestyleName.Left = intLeft + 6;
-            //cboBaseLifestyle.Left = intLeft + 6;
-
-            lblQualityLp.Left = lblQualityLPLabel.Left + lblQualityLPLabel.Width + 6;
-            lblQualityCost.Left = lblQualityCostLabel.Left + lblQualityCostLabel.Width + 6;
-            lblQualitySource.Left = lblQualitySourceLabel.Left + lblQualitySourceLabel.Width + 6;
-        }
-
+        
         private void OpenSourceFromLabel(object sender, EventArgs e)
         {
             CommonFunctions.OpenPDFFromControl(sender, e);

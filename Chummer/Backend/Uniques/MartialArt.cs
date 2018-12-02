@@ -67,7 +67,6 @@ namespace Chummer
                 ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArt, InternalId,
                     objXmlArtNode["bonus"], false, 1, DisplayNameShort(GlobalOptions.Language));
             }
-            SourceDetail = new SourceString(_strSource, _strPage);
 
             /*
             if (string.IsNullOrEmpty(_strNotes))
@@ -80,7 +79,28 @@ namespace Chummer
             }*/
         }
 
-        public SourceString SourceDetail { get; set; }
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == null)
+                {
+                    string strSource = Source;
+                    string strPage = Page(GlobalOptions.Language);
+                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                    {
+                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                    }
+                }
+
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -104,7 +124,9 @@ namespace Chummer
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (!IsQuality)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -142,7 +164,6 @@ namespace Chummer
                     }
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -362,7 +383,7 @@ namespace Chummer
                     objCharacter.Karma -= intKarmaCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateKarma(KarmaExpenseType.AddMartialArt, objMartialArt.Name);
+                    objUndo.CreateKarma(KarmaExpenseType.AddMartialArt, objMartialArt.InternalId);
                     objExpense.Undo = objUndo;
                 }
                 objCharacter.MartialArts.Add(objMartialArt);
@@ -413,19 +434,9 @@ namespace Chummer
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (SourceDetail != null)
-            {
-                SourceDetail.SetControl(sourceControl);
-            }
-            else if (!string.IsNullOrWhiteSpace(_strPage) && !string.IsNullOrWhiteSpace(_strSource))
-            {
-                SourceDetail = new SourceString(_strSource, _strPage);
-                SourceDetail.SetControl(sourceControl);
-            }
-            else
-            {
-                Utils.BreakIfDebug();
-            }
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
         }
     }
 }

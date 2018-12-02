@@ -59,7 +59,6 @@ namespace Chummer.Backend.Equipment
         private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
         private bool _blnDiscountCost;
-        private Armor _objParent;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public ArmorMod(Character objCharacter)
@@ -127,7 +126,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
+                        frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language));
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
@@ -166,7 +165,7 @@ namespace Chummer.Backend.Equipment
                             objXmlArmorGear.TryGetInt32FieldQuickly("rating", ref intRating);
                             objXmlArmorGear.TryGetStringFieldQuickly("select", ref strForceValue);
 
-                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlArmorGear.InnerText + "\"]");
+                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlArmorGear.InnerText.CleanXPath() + "]");
                             Gear objGear = new Gear(_objCharacter);
 
                             objGear.Create(objXmlGear, intRating, lstWeapons, strForceValue, !blnSkipSelectForms);
@@ -203,7 +202,6 @@ namespace Chummer.Backend.Equipment
                             Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
                         }
             }
-            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -251,7 +249,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (!IncludedInArmor)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -301,8 +301,7 @@ namespace Chummer.Backend.Equipment
                             _lstGear.Add(objGear);
                         }
             }
-
-            SourceDetail = new SourceString(_strSource, _strPage);
+            
             if (!blnCopy) return;
             if (!string.IsNullOrEmpty(Extra))
                 ImprovementManager.ForcedValue = Extra;
@@ -554,14 +553,42 @@ namespace Chummer.Backend.Equipment
             set => _strPage = value;
         }
 
-        public SourceString SourceDetail { get; private set; }
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == null)
+                {
+                    string strSource = Source;
+                    string strPage = DisplayPage(GlobalOptions.Language);
+                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                    {
+                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                    }
+                }
 
+                return _objCachedSourceDetail;
+            }
+        }
+
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty. 
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
-                return _strPage;
-
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
+                return Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         /// <summary>
@@ -663,11 +690,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Parent Armor.
         /// </summary>
-        public Armor Parent
-        {
-            get => _objParent;
-            set => _objParent = value;
-        }
+        public Armor Parent { get; set; }
 
         /// <summary>
         /// The Gear currently applied to the Armor.
@@ -1099,19 +1122,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="sourceControl"></param>
         public void SetSourceDetail(Control sourceControl)
         {
-            if (SourceDetail != null)
-            {
-                SourceDetail.SetControl(sourceControl);
-            }
-            else if (!string.IsNullOrWhiteSpace(_strPage) && !string.IsNullOrWhiteSpace(_strSource))
-            {
-                SourceDetail = new SourceString(_strSource, _strPage);
-                SourceDetail.SetControl(sourceControl);
-            }
-            else
-            {
-                Utils.BreakIfDebug();
-            }
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
         }
     }
 }

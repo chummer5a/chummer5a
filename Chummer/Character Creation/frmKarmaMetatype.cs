@@ -96,10 +96,7 @@ namespace Chummer
                 cboCategory.SelectedIndex = 0;
 
             cboCategory.EndUpdate();
-
-            Height = cmdOK.Bottom + 40;
-            lstMetatypes.Height = cmdOK.Bottom - lstMetatypes.Top;
-
+            
             // Add Possession and Inhabitation to the list of Critter Tradition variations.
             chkPossessionBased.SetToolTip(LanguageManager.GetString("Tip_Metatype_PossessionTradition", GlobalOptions.Language));
             chkBloodSpirit.SetToolTip(LanguageManager.GetString("Tip_Metatype_BloodSpirit", GlobalOptions.Language));
@@ -500,7 +497,7 @@ namespace Chummer
                     {
                         frmSelectText frmPickText = new frmSelectText
                         {
-                            Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", xmlComplexFormData["translate"]?.InnerText ?? xmlComplexFormData["name"].InnerText)
+                            Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), xmlComplexFormData["translate"]?.InnerText ?? xmlComplexFormData["name"].InnerText)
                         };
                         frmPickText.ShowDialog();
                         // Make sure the dialogue window was not canceled.
@@ -536,7 +533,7 @@ namespace Chummer
                     {
                         frmSelectText frmPickText = new frmSelectText
                         {
-                            Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", xmlAIProgramData["translate"]?.InnerText ?? xmlAIProgramData["name"].InnerText)
+                            Description = string.Format(LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language), xmlAIProgramData["translate"]?.InnerText ?? xmlAIProgramData["name"].InnerText)
                         };
                         frmPickText.ShowDialog();
                         // Make sure the dialogue window was not canceled.
@@ -560,7 +557,7 @@ namespace Chummer
                 XmlDocument xmlGearDocument = XmlManager.Load("gear.xml");
                 foreach (XmlNode xmlGear in charNode.SelectNodes("gears/gear"))
                 {
-                    XmlNode xmlGearData = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + xmlGear["name"].InnerText + "\" and category = \"" + xmlGear["category"].InnerText + "\"]");
+                    XmlNode xmlGearData = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + xmlGear["name"].InnerText.CleanXPath() + " and category = " + xmlGear["category"].InnerText.CleanXPath() + "]");
                     if (xmlGearData == null)
                         continue;
 

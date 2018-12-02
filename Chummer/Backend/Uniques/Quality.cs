@@ -311,10 +311,30 @@ namespace Chummer
                 else
                     Notes = strQualityNotes;
             }
-            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
-        public SourceString SourceDetail { get; set; }
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == null)
+                {
+                    string strSource = Source;
+                    string strPage = DisplayPage(GlobalOptions.Language);
+                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                    {
+                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                    }
+                }
+
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -363,6 +383,12 @@ namespace Chummer
             }
 
             objWriter.WriteEndElement();
+
+            if (OriginSource != QualitySource.BuiltIn &&
+                OriginSource != QualitySource.Improvement &&
+                OriginSource != QualitySource.LifeModule &&
+                OriginSource != QualitySource.Metatype &&
+                OriginSource != QualitySource.MetatypeRemovable)
             _objCharacter.SourceProcess(_strSource);
         }
 
@@ -413,7 +439,6 @@ namespace Chummer
             {
                 objNode.TryGetStringFieldQuickly("stage", ref _strStage);
             }
-            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -520,16 +545,19 @@ namespace Chummer
             get => _strPage;
             set => _strPage = value;
         }
-
+        
         /// <summary>
-        /// Page Number.
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty. 
         /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Page;
-
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         /// <summary>
@@ -936,7 +964,7 @@ namespace Chummer
                 }
             }
 
-            return conflictingQualities.Count <= 0 & reason == QualityFailureReason.Allowed;
+            return conflictingQualities.Count <= 0 && reason == QualityFailureReason.Allowed;
         }
 
         /// <summary>
@@ -1015,7 +1043,9 @@ namespace Chummer
 
                 if (blnAddItem)
                 {
-                    if (!objCharacter.ConfirmKarmaExpense(LanguageManager.GetString("Message_QualitySwap", GlobalOptions.Language).Replace("{0}", objOldQuality.DisplayNameShort(GlobalOptions.Language)).Replace("{1}", DisplayNameShort(GlobalOptions.Language))))
+                    if (!objCharacter.ConfirmKarmaExpense(string.Format(LanguageManager.GetString("Message_QualitySwap", GlobalOptions.Language)
+                        , objOldQuality.DisplayNameShort(GlobalOptions.Language)
+                        , DisplayNameShort(GlobalOptions.Language))))
                         blnAddItem = false;
                 }
 
@@ -1025,9 +1055,9 @@ namespace Chummer
                     // Create the Karma expense.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
                     objExpense.Create(intKarmaCost * -1,
-                        LanguageManager.GetString("String_ExpenseSwapPositiveQuality", GlobalOptions.Language)
-                            .Replace("{0}", DisplayNameShort(GlobalOptions.Language))
-                            .Replace("{1}", DisplayNameShort(GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now);
+                        string.Format(LanguageManager.GetString("String_ExpenseSwapPositiveQuality", GlobalOptions.Language)
+                            , DisplayNameShort(GlobalOptions.Language)
+                            , DisplayNameShort(GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now);
                     objCharacter.ExpenseEntries.AddWithSort(objExpense);
                     objCharacter.Karma -= intKarmaCost;
                 }
@@ -1049,7 +1079,7 @@ namespace Chummer
 
                     if (blnAddItem)
                     {
-                        if (!objCharacter.ConfirmKarmaExpense(LanguageManager.GetString("Message_QualitySwap", GlobalOptions.Language).Replace("{0}", objOldQuality.DisplayNameShort(GlobalOptions.Language)).Replace("{1}", DisplayNameShort(GlobalOptions.Language))))
+                        if (!objCharacter.ConfirmKarmaExpense(string.Format(LanguageManager.GetString("Message_QualitySwap", GlobalOptions.Language), objOldQuality.DisplayNameShort(GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language))))
                             blnAddItem = false;
                     }
                 }
@@ -1060,9 +1090,9 @@ namespace Chummer
                     // Create the Karma expense.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
                     objExpense.Create(intKarmaCost * -1,
-                        LanguageManager.GetString("String_ExpenseSwapNegativeQuality", GlobalOptions.Language)
-                            .Replace("{0}", DisplayNameShort(GlobalOptions.Language))
-                            .Replace("{1}", DisplayNameShort(GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now);
+                        string.Format(LanguageManager.GetString("String_ExpenseSwapNegativeQuality", GlobalOptions.Language)
+                            , DisplayNameShort(GlobalOptions.Language)
+                            , DisplayNameShort(GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now);
                     objCharacter.ExpenseEntries.AddWithSort(objExpense);
                     objCharacter.Karma -= intKarmaCost;
                 }
@@ -1102,19 +1132,9 @@ namespace Chummer
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (SourceDetail != null)
-            {
-                SourceDetail.SetControl(sourceControl);
-            }
-            else if (!string.IsNullOrWhiteSpace(_strPage) && !string.IsNullOrWhiteSpace(_strSource))
-            {
-                SourceDetail = new SourceString(_strSource, _strPage);
-                SourceDetail.SetControl(sourceControl);
-            }
-            else
-            {
-                Utils.BreakIfDebug();
-            }
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
         }
     }
 }

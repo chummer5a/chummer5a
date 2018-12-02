@@ -91,7 +91,6 @@ namespace Chummer
             }
 
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            MoveControls();
 
             _lstGrades = _objCharacter.GetGradeList(objWareSource);
             _strNoneGradeId = _lstGrades.FirstOrDefault(x => x.Name == "None")?.SourceId.ToString("D");
@@ -115,7 +114,7 @@ namespace Chummer
                 nudMarkup.Visible = false;
                 lblMarkupPercentLabel.Visible = false;
                 chkHideBannedGrades.Visible = !_objCharacter.IgnoreRules;
-                chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
+                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
 
@@ -940,7 +939,7 @@ namespace Chummer
             strFilter += " and " + strCategoryFilter + " or category = \"None\")";
 
             if (ParentVehicle == null && _objCharacter.IsAI)
-                strFilter += " and (name = \"Essence Hole\" or name = \"Essence Antihole\" or mountsto)";
+                strFilter += " and (id = \"" + Cyberware.EssenceHoleGUID + "\" or id = \"" + Cyberware.EssenceAntiHoleGUID + "\" or mountsto)";
             else if (_objParentNode != null)
                 strFilter += " and (requireparent or contains(capacity, \"[\")) and not(mountsto)";
             else
@@ -1185,12 +1184,10 @@ namespace Chummer
 
                     if (decMaximumCapacityUsed - decCapacity < 0)
                     {
-                        MessageBox.Show(
-                            LanguageManager.GetString("Message_OverCapacityLimit", GlobalOptions.Language)
-                                .Replace("{0}", decMaximumCapacityUsed.ToString("#,0.##", GlobalOptions.CultureInfo))
-                                .Replace("{1}", decCapacity.ToString("#,0.##", GlobalOptions.CultureInfo)),
-                            LanguageManager.GetString("MessageTitle_OverCapacityLimit", GlobalOptions.Language),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_OverCapacityLimit", GlobalOptions.Language)
+                                , decMaximumCapacityUsed.ToString("#,0.##", GlobalOptions.CultureInfo)
+                                , decCapacity.ToString("#,0.##", GlobalOptions.CultureInfo)),
+                            LanguageManager.GetString("MessageTitle_OverCapacityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
                 }
@@ -1360,27 +1357,6 @@ namespace Chummer
                 lstCyberware.SelectedValue = strOldSelectedCyberware;
 
             _blnPopulatingCategories = false;
-        }
-
-        private void MoveControls()
-        {
-            int intWidth = Math.Max(lblRatingLabel.Width, lblEssenceLabel.Width);
-            intWidth = Math.Max(intWidth, lblCapacityLabel.Width);
-            intWidth = Math.Max(intWidth, lblAvailLabel.Width);
-            intWidth = Math.Max(intWidth, lblCostLabel.Width);
-
-            nudRating.Left = lblRatingLabel.Left + intWidth + 6;
-            lblEssence.Left = lblEssenceLabel.Left + intWidth + 6;
-            lblCapacity.Left = lblCapacityLabel.Left + intWidth + 6;
-            lblAvail.Left = lblAvailLabel.Left + intWidth + 6;
-            lblCost.Left = lblCostLabel.Left + intWidth + 6;
-
-            lblSource.Left = lblSourceLabel.Left + lblSourceLabel.Width + 6;
-            lblTest.Left = lblTestLabel.Left + lblTestLabel.Width + 6;
-            nudESSDiscount.Left = lblESSDiscountLabel.Left + lblESSDiscountLabel.Width + 6;
-            lblESSDiscountPercentLabel.Left = nudESSDiscount.Left + nudESSDiscount.Width;
-
-            lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
         }
 
         private void OpenSourceFromLabel(object sender, EventArgs e)

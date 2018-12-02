@@ -150,7 +150,7 @@ namespace Chummer
             {
                 foreach (XmlNode objXmlSkill in objXmlSkillList)
                 {
-                    string strXmlSkillName = objXmlSkill["name"].InnerText;
+                    string strXmlSkillName = objXmlSkill["name"]?.InnerText;
                     Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(strXmlSkillName);
                     if (objExistingSkill == null)
                     {
@@ -200,14 +200,14 @@ namespace Chummer
                         // Use the translated Exotic Skill name if available.
                         XmlNode objXmlSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[exotic = \"True\" and name = \"" + objExoticSkill.Name + "\"]");
                         lstSkills.Add(new ListItem(objExoticSkill.Name + " (" + objExoticSkill.Specific + ')',
-                            (objXmlSkill["translate"]?.InnerText ?? objExoticSkill.Name) + " (" + objExoticSkill.DisplaySpecializationMethod(GlobalOptions.Language) + ')'));
+                            (objXmlSkill["translate"]?.InnerText ?? objExoticSkill.Name) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + objExoticSkill.DisplaySpecializationMethod(GlobalOptions.Language) + ')'));
                     }
                 }
             }
 
             if (lstSkills.Count <= 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language).Replace("{0}", _strSourceName));
+                MessageBox.Show(string.Format(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language), _strSourceName));
                 DialogResult = DialogResult.Cancel;
                 return;
             }

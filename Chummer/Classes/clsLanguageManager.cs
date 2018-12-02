@@ -32,6 +32,7 @@ namespace Chummer
     {
         public class LanguageData
         {
+            public bool IsRightToLeftScript { get; }
             public IDictionary<string, string> TranslatedStrings { get; } = new Dictionary<string, string>();
             public XmlDocument DataDocument { get; } = new XmlDocument();
             public string ErrorMessage { get; } = string.Empty;
@@ -39,7 +40,7 @@ namespace Chummer
 
             public LanguageData(string strLanguage)
             {
-                string strFilePath = Path.Combine(Application.StartupPath, "lang", strLanguage + ".xml");
+                string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
                 if (File.Exists(strFilePath))
                 {
                     XmlDocument objLanguageDocument = new XmlDocument();
@@ -66,8 +67,10 @@ namespace Chummer
 
                         if (objLanguageDocument != null)
                         {
+                            IsRightToLeftScript = objLanguageDocument.SelectSingleNode("/chummer/righttoleft")?.InnerText == bool.TrueString;
                             using (XmlNodeList xmlStringList = objLanguageDocument.SelectNodes("/chummer/strings/string"))
-                                if (xmlStringList != null)
+                            {
+                                if (xmlStringList?.Count > 0)
                                 {
                                     foreach (XmlNode objNode in xmlStringList)
                                     {
@@ -88,6 +91,7 @@ namespace Chummer
                                 {
                                     ErrorMessage += "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: " + strExtraMessage + "." + Environment.NewLine;
                                 }
+                            }
                         }
                         else
                         {
@@ -105,7 +109,7 @@ namespace Chummer
                 }
 
                 // Check to see if the data translation file for the selected language exists.
-                string strDataPath = Path.Combine(Application.StartupPath, "lang", strLanguage + "_data.xml");
+                string strDataPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + "_data.xml");
                 if (File.Exists(strDataPath))
                 {
                     try
@@ -149,10 +153,10 @@ namespace Chummer
         #region Constructor
         static LanguageManager()
         {
-            if (!Utils.IsRunningInVisualStudio)
+            if (!Utils.IsDesignerMode)
             {
                 XmlDocument objEnglishDocument = new XmlDocument();
-                string strFilePath = Path.Combine(Application.StartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
+                string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
                 if (File.Exists(strFilePath))
                 {
                     try
@@ -211,10 +215,21 @@ namespace Chummer
         /// <param name="objObject">Object to translate.</param>
         public static void TranslateWinForm(string strIntoLanguage, Control objObject)
         {
-            if (LoadLanguage(strIntoLanguage))
-                UpdateControls(objObject, strIntoLanguage);
-            else if (strIntoLanguage != GlobalOptions.DefaultLanguage)
-                UpdateControls(objObject, GlobalOptions.DefaultLanguage);
+            if (!Utils.IsDesignerMode)
+            {
+                if (LoadLanguage(strIntoLanguage))
+                {
+                    RightToLeft eIntoRightToLeft = RightToLeft.No;
+                    if (DictionaryLanguages.TryGetValue(strIntoLanguage, out LanguageData objLanguageData))
+                    {
+                        eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
+                    }
+
+                    UpdateControls(objObject, strIntoLanguage, eIntoRightToLeft);
+                }
+                else if (strIntoLanguage != GlobalOptions.DefaultLanguage)
+                    UpdateControls(objObject, GlobalOptions.DefaultLanguage, RightToLeft.No);
+            }
         }
 
         private static bool LoadLanguage(string strLanguage)
@@ -245,10 +260,12 @@ namespace Chummer
         /// </summary>
         /// <param name="strIntoLanguage">Language into which the control should be translated</param>
         /// <param name="objParent">Control container to translate.</param>
-        private static void UpdateControls(Control objParent, string strIntoLanguage)
+        private static void UpdateControls(Control objParent, string strIntoLanguage, RightToLeft eIntoRightToLeft)
         {
             if (objParent == null)
                 return;
+            
+            objParent.RightToLeft = eIntoRightToLeft;
 
             if (objParent is Form frmForm)
             {
@@ -263,12 +280,21 @@ namespace Chummer
                 // update any menu strip items that have tags
                 if (frmForm.MainMenuStrip != null)
                     foreach (ToolStripMenuItem tssItem in frmForm.MainMenuStrip.Items)
-                        TranslateToolStripItemsRecursively(tssItem, strIntoLanguage);
+                        TranslateToolStripItemsRecursively(tssItem, strIntoLanguage, eIntoRightToLeft);
             }
 
             // Translatable items are identified by having a value in their Tag attribute. The contents of Tag is the string to lookup in the language list.
             foreach (Control objChild in objParent.Controls)
             {
+                try
+                {
+                    objChild.RightToLeft = eIntoRightToLeft;
+                }
+                catch (NotSupportedException)
+                {
+                    Utils.BreakIfDebug();
+                }
+
                 if (objChild is Label || objChild is Button || objChild is CheckBox)
                 {
                     string strControlTag = objChild.Tag?.ToString();
@@ -281,7 +307,7 @@ namespace Chummer
                 {
                     foreach (ToolStripItem tssItem in tssStrip.Items)
                     {
-                        TranslateToolStripItemsRecursively(tssItem, strIntoLanguage);
+                        TranslateToolStripItemsRecursively(tssItem, strIntoLanguage, eIntoRightToLeft);
                     }
                 }
                 else if (objChild is ListView lstList)
@@ -305,17 +331,26 @@ namespace Chummer
                         else if (tabPage.Text.StartsWith('['))
                             tabPage.Text = string.Empty;
 
-                        UpdateControls(tabPage, strIntoLanguage);
+                        UpdateControls(tabPage, strIntoLanguage, eIntoRightToLeft);
                     }
                 }
                 else if (objChild is SplitContainer objSplitControl)
                 {
-                    UpdateControls(objSplitControl.Panel1, strIntoLanguage);
-                    UpdateControls(objSplitControl.Panel2, strIntoLanguage);
+                    UpdateControls(objSplitControl.Panel1, strIntoLanguage, eIntoRightToLeft);
+                    UpdateControls(objSplitControl.Panel2, strIntoLanguage, eIntoRightToLeft);
+                }
+                else if (objChild is GroupBox)
+                {
+                    string strControlTag = objChild.Tag?.ToString();
+                    if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
+                        objChild.Text = GetString(strControlTag, strIntoLanguage);
+                    else if (objChild.Text.StartsWith('['))
+                        objChild.Text = string.Empty;
+                    UpdateControls(objChild, strIntoLanguage, eIntoRightToLeft);
                 }
                 else if (objChild is Panel)
                 {
-                    UpdateControls(objChild, strIntoLanguage);
+                    UpdateControls(objChild, strIntoLanguage, eIntoRightToLeft);
                 }
                 else if (objChild is TreeView treTree)
                 {
@@ -335,9 +370,9 @@ namespace Chummer
                             objNode.Text = string.Empty;
                     }
                 }
-                else if (objChild is DataGridView)
+                else if (objChild is DataGridView objDataGridView)
                 {
-                    foreach (DataGridViewTextBoxColumn objColumn in ((DataGridView) objChild).Columns)
+                    foreach (DataGridViewTextBoxColumn objColumn in objDataGridView.Columns)
                     {
                         if (objColumn is DataGridViewTextBoxColumnTranslated objTranslatedColumn && !string.IsNullOrWhiteSpace(objTranslatedColumn.TranslationTag))
                         {
@@ -358,8 +393,18 @@ namespace Chummer
         /// </summary>
         /// <param name="tssItem">Given ToolStripItem to translate.</param>
         /// <param name="strIntoLanguage">Language into which the ToolStripItem and all dropdown items should be translated.</param>
-        public static void TranslateToolStripItemsRecursively(ToolStripItem tssItem, string strIntoLanguage)
+        /// <param name="eIntoRightToLeft">Whether <paramref name="strIntoLanguage"/> uses right-to-left script or left-to-right. If left at Inherit, then a loading function will be used to set the value.</param>
+        public static void TranslateToolStripItemsRecursively(ToolStripItem tssItem, string strIntoLanguage, RightToLeft eIntoRightToLeft = RightToLeft.Inherit)
         {
+            if (eIntoRightToLeft == RightToLeft.Inherit)
+            {
+                if (LoadLanguage(strIntoLanguage) && DictionaryLanguages.TryGetValue(strIntoLanguage, out LanguageData objLanguageData))
+                {
+                    eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
+                }
+            }
+            tssItem.RightToLeft = eIntoRightToLeft;
+
             string strControlTag = tssItem.Tag?.ToString();
             if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
                 tssItem.Text = GetString(strControlTag, strIntoLanguage);
@@ -368,7 +413,7 @@ namespace Chummer
 
             if (tssItem is ToolStripDropDownItem tssDropDownItem)
                 foreach (ToolStripItem tssDropDownChild in tssDropDownItem.DropDownItems)
-                    TranslateToolStripItemsRecursively(tssDropDownChild, strIntoLanguage);
+                    TranslateToolStripItemsRecursively(tssDropDownChild, strIntoLanguage, eIntoRightToLeft);
         }
 
         /// <summary>
@@ -385,10 +430,12 @@ namespace Chummer
         /// Retrieve a string from the language file.
         /// </summary>
         /// <param name="strKey">Key to retrieve.</param>
-        /// <param name="strLanguage">Language in from which the string should be retrieved.</param>
+        /// <param name="strLanguage">Language from which the string should be retrieved.</param>
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
         public static string GetString(string strKey, string strLanguage, bool blnReturnError = true)
         {
+            if (Utils.IsDesignerMode)
+                return strKey;
             string strReturn;
             if (LoadLanguage(strLanguage))
             {
@@ -405,6 +452,109 @@ namespace Chummer
                 return strReturn;
             }
             return !blnReturnError ? string.Empty : $"{strKey} not found; check language file for string";
+        }
+
+        /// <summary>
+        /// Processes a compound string that contains both plaintext and references to localized strings
+        /// </summary>
+        /// <param name="strInput">Input string to process.</param>
+        /// <param name="strLanguage">Language into which to translate the compound string.</param>
+        /// <param name="blnUseTranslateExtra">Whether to use TranslateExtra() or GetString() for translating localized strings.</param>
+        /// <returns></returns>
+        public static string ProcessCompoundString(string strInput, string strLanguage, bool blnUseTranslateExtra = false)
+        {
+            if (Utils.IsDesignerMode)
+                return strInput;
+            // Exit out early if we don't have a pair of curly brackets, which is what would signify localized strings
+            int intStartPosition = strInput.IndexOf('{');
+            if (intStartPosition < 0)
+                return strInput;
+            int intEndPosition = strInput.LastIndexOf('}');
+            if (intEndPosition < 0)
+                return strInput;
+
+            // strInput will get split up based on curly brackets and put into this list as a string-bool Tuple.
+            // String value in Tuple will be a section of strInput either enclosed in curly brackets or between sets of enclosed curly brackets
+            // Bool value in Tuple is a flag for whether the item was enclosed in curly brackets (True) or between sets of enclosed curly brackets (False)
+            List<Tuple<string, bool>> lstStringWithCompoundsSplit = new List<Tuple<string, bool>>
+            {
+                // Start out with part between start of string and the first set of enclosed curly brackets already added to the list
+                new Tuple<string, bool>(strInput.Substring(0, intStartPosition), false)
+            };
+
+            char[] achrCurlyBrackets = {'{', '}'};
+            // Current bracket level. This needs to be tracked so that this method can be performed recursively on curly bracket sets inside of curly bracket sets
+            int intBracketLevel = 1;
+            // Loop will be jumping to instances of '{' or '}' within strInput until it reaches the last closing curly bracket (at intEndPosition)
+            for (int i = strInput.IndexOfAny(achrCurlyBrackets, intStartPosition + 1); i <= intEndPosition; i = strInput.IndexOfAny(achrCurlyBrackets, i + 1))
+            {
+                char chrLoop = strInput[i];
+                switch (chrLoop)
+                {
+                    case '{':
+                    {
+                        if (intBracketLevel == 0)
+                        {
+                            // End of area between sets of curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to False
+                            lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), false));
+                            // Tracks the start of the top-level curly bracket opening to know where to start the substring when this item will be closed by a closing curly bracket
+                            intStartPosition = i;
+                        }
+                        intBracketLevel += 1;
+                        break;
+                    }
+                    case '}':
+                    {
+                        // Makes sure the function doesn't mess up when there's a closing curly bracket without a matching opening curly bracket
+                        if (intBracketLevel > 0)
+                        {
+                            intBracketLevel -= 1;
+                            if (intBracketLevel == 0)
+                            {
+                                // End of area enclosed by curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to True
+                                lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), true));
+                                // Tracks the start of the area between curly bracket sets to know where to start the substring when the next set of curly brackets is encountered
+                                intStartPosition = i;
+                            }
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            // End with part between the last set of enclosed curly brackets and the end of the string. This will also catch cases where there are opening curly brackets without matching closing brackets
+            lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intEndPosition + 1), false));
+
+            // Start building the return value.
+            StringBuilder objReturn = new StringBuilder(strInput.Length);
+            foreach (Tuple<string, bool> objLoop in lstStringWithCompoundsSplit)
+            {
+                string strLoop = objLoop.Item1;
+                if (!string.IsNullOrEmpty(strLoop))
+                {
+                    // Items inside curly brackets need of processing, so do processing on them and append the result to the return value
+                    if (objLoop.Item2)
+                    {
+                        // Inner string is a compound string in and of itself, so recurse this method
+                        if (strLoop.IndexOfAny('{', '}') != -1)
+                        {
+                            strLoop = ProcessCompoundString(strLoop, strLanguage, blnUseTranslateExtra);
+                        }
+                        // Use more expensive TranslateExtra if flag is set to use that
+                        objReturn.Append(blnUseTranslateExtra
+                            ? TranslateExtra(strLoop, strLanguage)
+                            : GetString(strLoop, strLanguage, false));
+                    }
+                    // Items between curly bracket sets do not need processing, so just append them to the return value wholesale
+                    else
+                    {
+                        objReturn.Append(strLoop);
+                    }
+                }
+            }
+
+            return objReturn.ToString();
         }
 
         /// <summary>
@@ -433,7 +583,7 @@ namespace Chummer
                 {
                     // Load the English version.
                     XmlDocument objEnglishDocument = new XmlDocument();
-                    string strFilePath = Path.Combine(Application.StartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
+                    string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
 
                     try
                     {
@@ -467,7 +617,7 @@ namespace Chummer
                 {
                     // Load the selected language version.
                     XmlDocument objLanguageDocument = new XmlDocument();
-                    string strLangPath = Path.Combine(Application.StartupPath, "lang", strLanguage + ".xml");
+                    string strLangPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
 
                     try
                     {
@@ -646,7 +796,7 @@ namespace Chummer
                         strReturn = GetString("String_AttributeMAGShort", strIntoLanguage);
                         break;
                     case "MAGAdept":
-                        strReturn = GetString("String_AttributeMAGShort", strIntoLanguage) + " (" + GetString("String_DescAdept", strIntoLanguage) + ')';
+                        strReturn = GetString("String_AttributeMAGShort", strIntoLanguage) + GetString("String_Space", strIntoLanguage) + '(' + GetString("String_DescAdept", strIntoLanguage) + ')';
                         break;
                     case "RES":
                         strReturn = GetString("String_AttributeRESShort", strIntoLanguage);
@@ -774,7 +924,7 @@ namespace Chummer
                     return "MAG";
                 }
 
-                if (strExtra == GetString("String_AttributeMAGShort", strFromLanguage) + " (" + GetString("String_DescAdept", strFromLanguage) + ')')
+                if (strExtra == GetString("String_AttributeMAGShort", strFromLanguage) + GetString("String_Space", strFromLanguage) + '(' + GetString("String_DescAdept", strFromLanguage) + ')')
                 {
                     return "MAGAdept";
                 }

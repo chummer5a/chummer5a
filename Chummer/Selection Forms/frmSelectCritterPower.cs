@@ -51,7 +51,9 @@ namespace Chummer
                 _xmlMetatypeDataNode = XmlManager.Load("critters.xml").GetFastNavigator().SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
                 if (_xmlMetatypeDataNode != null && !string.IsNullOrEmpty(_objCharacter.Metavariant) && _objCharacter.Metavariant != "None")
                 {
-                    _xmlMetatypeDataNode = _xmlMetatypeDataNode.SelectSingleNode("/metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]") ?? _xmlMetatypeDataNode;
+                    XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.SelectSingleNode("/metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]");
+                    if (xmlMetavariantNode != null)
+                        _xmlMetatypeDataNode = xmlMetavariantNode;
                 }
             }
             if (_xmlMetatypeDataNode == null)
@@ -59,7 +61,9 @@ namespace Chummer
                 _xmlMetatypeDataNode = XmlManager.Load("metatypes.xml").GetFastNavigator().SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
                 if (_xmlMetatypeDataNode != null && !string.IsNullOrEmpty(_objCharacter.Metavariant) && _objCharacter.Metavariant != "None")
                 {
-                    _xmlMetatypeDataNode = _xmlMetatypeDataNode.SelectSingleNode("/metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]") ?? _xmlMetatypeDataNode;
+                    XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.SelectSingleNode("/metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]");
+                    if (xmlMetavariantNode != null)
+                        _xmlMetatypeDataNode = xmlMetavariantNode;
                 }
             }
         }
@@ -113,7 +117,7 @@ namespace Chummer
             }
 
             // Remove Emergent Powers if the critter is not a Sprite or A.I.
-            if (!_objCharacter.MetatypeCategory.EndsWith("Sprites") && !_objCharacter.MetatypeCategory.EndsWith("Sprite") && !_objCharacter.MetatypeCategory.EndsWith("A.I.s") & _objCharacter.MetatypeCategory != "Technocritters" && _objCharacter.MetatypeCategory != "Protosapients")
+            if (!_objCharacter.MetatypeCategory.EndsWith("Sprites") && !_objCharacter.MetatypeCategory.EndsWith("Sprite") && !_objCharacter.MetatypeCategory.EndsWith("A.I.s") && _objCharacter.MetatypeCategory != "Technocritters" && _objCharacter.MetatypeCategory != "Protosapients")
             {
                 foreach (ListItem objItem in _lstCategory)
                 {

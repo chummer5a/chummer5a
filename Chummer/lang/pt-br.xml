@@ -20,6 +20,7 @@
 <chummer>
   <version>-500</version>
   <name>Português (pt-BR)</name>
+  <righttoleft>False</righttoleft>
   <strings>
     <!-- Region Common Strings -->
     <string>
@@ -443,8 +444,12 @@
       <text>PEV:</text>
     </string>
     <string>
+      <key>String_KarmaRemaining</key>
+      <text>Carma Restante</text>
+    </string>
+    <string>
       <key>Label_KarmaRemaining</key>
-      <text>Carma restante:</text>
+      <text>Carma Restante:</text>
     </string>
     <string>
       <key>Label_Source</key>
@@ -4915,6 +4920,10 @@
       <text>Essência:</text>
     </string>
     <string>
+      <key>String_NuyenRemaining</key>
+      <text>Neoienes Restantes</text>
+    </string>
+    <string>
       <key>Label_OtherNuyenRemain</key>
       <text>Neoienes Restantes:</text>
     </string>
@@ -6289,7 +6298,7 @@
     </string>
     <string>
       <key>Tab_Options_Character</key>
-      <text>Personagem e Impressão</text>
+      <text>Personagem</text>
     </string>
     <string>
       <key>Tab_Options_Miscellaneous</key>

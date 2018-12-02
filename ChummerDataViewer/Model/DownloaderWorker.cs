@@ -29,23 +29,23 @@ namespace ChummerDataViewer.Model
 		{
 			try
 			{
-				WebClient client = new WebClient();
-				while (true)
-				{
-                    if (_queue.TryTake(out DownloadTask task))
+                using (WebClient client = new WebClient())
+                    while (true)
                     {
-                        OnStatusChanged(new StatusChangedEventArgs("Downloading " + task.Url + Queue()));
-                        byte[] encrypted = client.DownloadData(task.Url);
-                        byte[] buffer = Decrypt(task.Key, encrypted);
-                        WriteAndForget(buffer, task.DestinationPath, task.ReportGuid);
-                    }
+                        if (_queue.TryTake(out DownloadTask task))
+                        {
+                            OnStatusChanged(new StatusChangedEventArgs("Downloading " + task.Url + Queue()));
+                            byte[] encrypted = client.DownloadData(task.Url);
+                            byte[] buffer = Decrypt(task.Key, encrypted);
+                            WriteAndForget(buffer, task.DestinationPath, task.ReportGuid);
+                        }
 
-                    if (_queue.IsEmpty)
-					{
-						OnStatusChanged(new StatusChangedEventArgs("Idle"));
-						resetEvent.WaitOne(15000);  //in case i fuck something up
-					}
-				}
+                        if (_queue.IsEmpty)
+                        {
+                            OnStatusChanged(new StatusChangedEventArgs("Idle"));
+                            resetEvent.WaitOne(15000);  //in case i fuck something up
+                        }
+                    }
 			}
 #if DEBUG
 			catch(StackOverflowException ex)
@@ -101,7 +101,7 @@ namespace ChummerDataViewer.Model
 			string keypart = key.Split(':')[1];
 
 			return Enumerable.Range(0, keypart.Length)
-					 .Where(x => x % 2 == 0)
+					 .Where(x => (x & 1) == 0)
 					 .Select(x => Convert.ToByte(keypart.Substring(x, 2), 16))
 					 .ToArray();
 		}
@@ -111,7 +111,7 @@ namespace ChummerDataViewer.Model
 			string ivpart = iv.Split(':')[0];
 
 			return Enumerable.Range(0, ivpart.Length)
-					 .Where(x => x % 2 == 0)
+					 .Where(x => (x & 1) == 0)
 					 .Select(x => Convert.ToByte(ivpart.Substring(x, 2), 16))
 					 .ToArray();
 

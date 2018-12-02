@@ -69,8 +69,8 @@ namespace Chummer
 
         private void frmSelectMetamagic_Load(object sender, EventArgs e)
         {
-            Text = LanguageManager.GetString("Title_SelectGeneric", GlobalOptions.Language).Replace("{0}", _strType);
-            chkLimitList.Text = LanguageManager.GetString("Checkbox_SelectGeneric_LimitList", GlobalOptions.Language).Replace("{0}", _strType);
+            Text = string.Format(LanguageManager.GetString("Title_SelectGeneric", GlobalOptions.Language), _strType);
+            chkLimitList.Text = string.Format(LanguageManager.GetString("Checkbox_SelectGeneric_LimitList", GlobalOptions.Language), _strType);
 
             _blnLoading = false;
             BuildMetamagicList();

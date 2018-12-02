@@ -88,6 +88,7 @@
     <category blackmarket="Electronics">Vision Enhancements</category>
     <category blackmarket="Electronics">Matrix Accessories</category>
     <category blackmarket="Electronics">Booster Chips</category>
+    <category>Appearance Modification</category>
   </categories>
   <gears>
     <!-- Region Ammo -->
@@ -1366,6 +1367,17 @@
       <avail>18F</avail>
       <addweapon>Missile: High Explosive</addweapon>
       <cost>2100</cost>
+    </gear>
+    <gear>
+      <id>9ff4b57d-4aaf-482f-ab67-66e10ed58e13</id>
+      <name>Ammo: Renraku/Ingram Supermach</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>132</page>
+      <avail>16F</avail>
+      <cost>20</cost>
+      <costfor>10</costfor>
     </gear>
     <!-- Region Kill Code-->
 
@@ -6270,18 +6282,6 @@
       <devicerating>4</devicerating>
     </gear>
     <gear>
-      <id>01fc2535-e4a1-4a72-9f13-f197a58d6e7f</id>
-      <name>Trode Patch</name>
-      <category>Electronics Accessories</category>
-      <rating>0</rating>
-      <source>SR5</source>
-      <page>439</page>
-      <avail>0</avail>
-      <armorcapacity>[2]</armorcapacity>
-      <cost>1250</cost>
-      <devicerating>4</devicerating>
-    </gear>
-    <gear>
       <id>a14a00c5-439f-45d1-9703-55bf5525e7f8</id>
       <name>SmartSafety Bracelet</name>
       <category>Electronics Accessories</category>
@@ -8024,7 +8024,7 @@
           <condition>Only for picking mechanical locks</condition>
         </limitmodifier>
       </bonus>
-      <cost>Rating * 250</cost>
+      <cost>Rating * 500</cost>
     </gear>
     <gear>
       <id>d90a58cd-f89c-486d-b785-991d2fecf32f</id>
@@ -8972,6 +8972,39 @@
     </gear>
     <!-- End Region -->
     <!-- Region Contracts and Upkeep -->
+    <gear>
+      <id>f13d9739-aa52-4260-ad2f-0eacde7b9e13</id>
+      <name>Public Grid</name>
+      <category>Contracts/Upkeep</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>233</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <hide />
+    </gear>
+    <gear>
+      <id>9bb90566-c924-477e-b6ee-71d350548e9b</id>
+      <name>Local Grid</name>
+      <category>Contracts/Upkeep</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>234</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <hide />
+    </gear>
+    <gear>
+      <id>42d552fd-d939-42db-a88a-7cde7451dded</id>
+      <name>Global Grid</name>
+      <category>Contracts/Upkeep</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>234</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <hide />
+    </gear>
     <gear>
       <id>20543d97-0eb6-4eda-b0d0-d18000a094ab</id>
       <name>Fab Sensor Upkeep (1 Month Advance Payment)</name>
@@ -11944,6 +11977,8 @@
       <required>
         <geardetails>
           <OR>
+            <NONE />
+            <category>Commlink</category>
             <category>Cyberdecks</category>
             <category>Cyberterminals</category>
             <category>Custom</category>
@@ -17886,7 +17921,7 @@
       <cost>750</cost>
     </gear>
     <gear>
-      <id>d2a1cc9b-72e3-49df-957c-8ed6fb47a813</id>
+      <id>fb7465a7-4691-4647-a82c-a7b486fab34a</id>
       <name>Narcojet Dazzler</name>
       <category>Survival Gear</category>
       <rating>0</rating>
@@ -17917,6 +17952,32 @@
       <page>73</page>
       <avail>10R</avail>
       <cost>1200</cost>
+    </gear>
+    <!-- End Region -->
+    <!-- Region Tattoos -->
+    <gear>
+      <id>18e853c9-0fe8-4414-9b91-eedd0905359b</id>
+      <name>Grey Mana Tattoos</name>
+      <category>Appearance Modification</category> <!-- IDK, had to call it something -->
+      <rating>3</rating>
+      <source>BTB</source>
+      <page>156</page>
+      <avail>7F</avail>
+      <bonus>
+        <essencepenaltyt100>-10*Rating</essencepenaltyt100>
+        <selecttext />
+      </bonus>
+      <cost>Rating*500</cost>
+    </gear>
+    <gear>
+      <id>ae502bc1-1053-46ed-a5c1-4d37aedf3a3a</id>
+      <name>Blight</name>
+      <category>Toxins</category>
+      <rating>0</rating>
+      <source>BTB</source>
+      <page>157</page>
+      <avail>8F</avail>
+      <cost>250</cost>
     </gear>
     <!-- End Region -->
   </gears>

@@ -116,6 +116,23 @@
       <source>CF</source>
       <page>72</page>
     </grade>
+    <grade>
+      <id>e77b7a1f-1c7b-4494-b9b5-6dcb5b61010b</id>
+      <name>Greyware</name>
+      <ess>0.75</ess>
+      <cost>1.3</cost>
+      <devicerating>2</devicerating>
+      <avail>0</avail>
+      <bonus>
+        <specificattribute>
+          <name>MAG</name>
+          <val>-1</val>
+          <max>-1</max>
+        </specificattribute>
+      </bonus>
+      <source>BTB</source>
+      <page>158</page>
+    </grade>
     <!-- End Region -->
     <!-- Region Adapsin -->
     <grade>
@@ -198,6 +215,23 @@
       <source>CF</source>
       <page>71</page>
     </grade>
+    <grade>
+      <id>c4d67932-0de4-4206-91b6-f3fd504c382f</id>
+      <name>Greyware (Adapsin)</name>
+      <ess>0.65</ess>
+      <cost>1.3</cost>
+      <devicerating>2</devicerating>
+      <avail>0</avail>
+      <bonus>
+        <specificattribute>
+          <name>MAG</name>
+          <val>-1</val>
+          <max>-1</max>
+        </specificattribute>
+      </bonus>
+      <source>BTB</source>
+      <page>158</page>
+    </grade>
     <!-- End Region -->
   </grades>
   <categories>
@@ -231,6 +265,12 @@
       <source>SR5</source>
       <page>0</page>
       <rating>600</rating>
+      <forcegrade>None</forcegrade>
+      <required>
+        <parentdetails>
+          <NONE />
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>961eac53-0c43-4b19-8741-2872177a3a4c</id>
@@ -244,6 +284,12 @@
       <source>SR5</source>
       <page>0</page>
       <rating>600</rating>
+      <forcegrade>None</forcegrade>
+      <required>
+        <parentdetails>
+          <NONE />
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>6b219dfa-310a-45ab-98af-40a62e2431cf</id>
@@ -5664,6 +5710,31 @@
     </cyberware>
     <!-- End Region -->
     <!-- End Region -->
+    <!-- Region Bullets and Bandages -->
+    <cyberware>
+      <id>b933e9e1-3ec3-45fd-8918-f88cc14d3ea0</id>
+      <name>STATscan</name>
+      <limit>{arm}</limit>
+      <category>Cyberlimb Accessory</category>
+      <ess>0</ess>
+      <capacity>[2]</capacity>
+      <avail>8</avail>
+      <cost>2500</cost>
+      <source>BB</source>
+      <page>22</page>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <required>
+        <parentdetails>
+          <OR>
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Hand</name>
+            <name operation="contains">Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
+    </cyberware>
+    <!-- End Region -->
     <!-- Region Hard Targets -->
     <cyberware>
       <id>2e533c08-7403-42de-a9cc-97ded71fe142</id>
@@ -8138,7 +8209,6 @@
       <limit>False</limit>
       <category>Headware</category>
       <ess>0.15</ess>
-      <capacity>0</capacity>
       <avail>4</avail>
       <cost>Rating*3500</cost>
       <rating>3</rating>
@@ -8149,6 +8219,10 @@
           <category>Tools</category>
         </usegear>
       </gears>
+      <allowgear>
+        <gearcategory>Common Programs</gearcategory>
+        <gearcategory>Hacking Programs</gearcategory>
+      </allowgear>
       <source>KC</source>
       <page>65</page>
     </cyberware>

@@ -103,9 +103,8 @@ namespace Chummer
 
                 //Otherwise just log it
 #if DEBUG
-                System.Reflection.MethodBase mth
-                    = new StackTrace().GetFrame(1).GetMethod();
-                string errorMsg = string.Format("Tried to read missing field \"{0}\" in {1}.{2}", field, mth.ReflectedType?.Name, mth);
+                System.Reflection.MethodBase mth = new StackTrace().GetFrame(1).GetMethod();
+                string errorMsg = $"Tried to read missing field \"{field}\" in {mth.ReflectedType?.Name}.{mth}";
 #else
                 string errorMsg = $"Tried to read missing field \"{field}\"";
 #endif

@@ -33,32 +33,31 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            MoveControls();
         }
 
         private void frmReload_Load(object sender, EventArgs e)
         {
             List<ListItem> lstAmmo = new List<ListItem>();
-
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             // Add each of the items to a new List since we need to also grab their plugin information.
             foreach (Gear objGear in _lstAmmo)
             {
                 string strName = objGear.DisplayNameShort(GlobalOptions.Language) + " x" + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
                 if (objGear.Rating > 0)
-                    strName += $" ({LanguageManager.GetString("String_Rating", GlobalOptions.Language)} {objGear.Rating})";
+                    strName += strSpace + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + strSpace + objGear.Rating.ToString(GlobalOptions.CultureInfo) + ')';
 
                 if (objGear.Parent is Gear objParent)
                 {
                     if (!string.IsNullOrEmpty(objParent.DisplayNameShort(GlobalOptions.Language)))
                     {
-                        strName += " (" + objParent.DisplayNameShort(GlobalOptions.Language);
+                        strName += strSpace + '(' + objParent.DisplayNameShort(GlobalOptions.Language);
                         if (objParent.Location != null)
-                            strName += " @ " + objParent.Location.DisplayName(GlobalOptions.Language);
+                            strName += strSpace + '@' + strSpace + objParent.Location.DisplayName(GlobalOptions.Language);
                         strName += ')';
                     }
                 }
                 else if (objGear.Location != null)
-                    strName += " (" + objGear.Location.DisplayName(GlobalOptions.Language) + ')';
+                    strName += strSpace + '(' + objGear.Location.DisplayName(GlobalOptions.Language) + ')';
                 
                 // Retrieve the plugin information if it has any.
                 if (objGear.Children.Count > 0)
@@ -66,24 +65,26 @@ namespace Chummer
                     string strPlugins = string.Empty;
                     foreach (Gear objChild in objGear.Children)
                     {
-                        strPlugins += objChild.DisplayNameShort(GlobalOptions.Language) + ", ";
+                        strPlugins += objChild.DisplayNameShort(GlobalOptions.Language) + ',' + strSpace;
                     }
                     // Remove the trailing comma.
-                    strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);
+                    strPlugins = strPlugins.Substring(0, strPlugins.Length - 1 - strSpace.Length);
                     // Append the plugin information to the name.
-                    strName += " [" + strPlugins + "]";
+                    strName += strSpace + '[' + strPlugins + ']';
                 }
                 lstAmmo.Add(new ListItem(objGear.InternalId, strName));
             }
 
             // Populate the lists.
             cboAmmo.BeginUpdate();
-            cboAmmo.ValueMember = "Value";
-            cboAmmo.DisplayMember = "Name";
+            cboAmmo.DataSource = null;
+            cboAmmo.ValueMember = nameof(ListItem.Value);
+            cboAmmo.DisplayMember = nameof(ListItem.Name);
             cboAmmo.DataSource = lstAmmo;
             cboAmmo.EndUpdate();
 
             cboType.BeginUpdate();
+            cboType.DataSource = null;
             cboType.DataSource = _lstCount;
             cboType.EndUpdate();
 
@@ -139,15 +140,6 @@ namespace Chummer
         private void AcceptForm()
         {
             DialogResult = DialogResult.OK;
-        }
-
-        private void MoveControls()
-        {
-            int intWidth = Math.Max(lblAmmoLabel.Width, lblTypeLabel.Width);
-            cboAmmo.Left = lblAmmoLabel.Left + intWidth + 6;
-            cboAmmo.Width = Width - cboAmmo.Left - 19;
-            cboType.Left = lblTypeLabel.Left + intWidth + 6;
-            cboType.Width = Width - cboType.Left - 19;
         }
         #endregion
     }

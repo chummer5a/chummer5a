@@ -3086,7 +3086,7 @@
       <limit>3</limit>
       <nolevels />
       <bonus>
-        <restrictedgear />
+        <restrictedgear>24</restrictedgear>
       </bonus>
       <source>RF</source>
       <page>149</page>
@@ -7034,41 +7034,49 @@
             <name>BOD</name>
             <min>6</min>
             <max>12</max>
+            <aug>16</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>2</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>5</min>
             <max>12</max>
+            <aug>16</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -7159,41 +7167,49 @@
             <name>BOD</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>2</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>3</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -7304,41 +7320,49 @@
             <name>BOD</name>
             <min>5</min>
             <max>12</max>
+            <aug>16</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>5</min>
             <max>12</max>
+            <aug>16</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -7445,41 +7469,49 @@
             <name>BOD</name>
             <min>5</min>
             <max>13</max>
+            <aug>17</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>5</min>
             <max>13</max>
+            <aug>17</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -7571,41 +7603,49 @@
             <name>BOD</name>
             <min>3</min>
             <max>12</max>
+            <aug>16</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>3</min>
             <max>11</max>
+            <aug>15</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>2</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -7705,41 +7745,49 @@
             <name>BOD</name>
             <min>1</min>
             <max>10</max>
+            <aug>14</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>2</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>1</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -7839,41 +7887,49 @@
             <name>BOD</name>
             <min>1</min>
             <max>10</max>
+            <aug>14</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>1</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -7973,41 +8029,49 @@
             <name>BOD</name>
             <min>4</min>
             <max>13</max>
+            <aug>17</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>3</min>
             <max>11</max>
+            <aug>15</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>3</max>
+            <aug>7</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -8107,41 +8171,49 @@
             <name>BOD</name>
             <min>6</min>
             <max>15</max>
+            <aug>19</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>5</min>
             <max>13</max>
+            <aug>17</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>3</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -8241,41 +8313,49 @@
             <name>BOD</name>
             <min>5</min>
             <max>14</max>
+            <aug>18</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>5</min>
             <max>13</max>
+            <aug>17</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>3</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -8367,41 +8447,49 @@
             <name>BOD</name>
             <min>3</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>3</min>
             <max>10</max>
+            <aug>14</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>2</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -8500,41 +8588,49 @@
             <name>BOD</name>
             <min>3</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>3</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>2</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -8658,41 +8754,49 @@
             <name>BOD</name>
             <min>4</min>
             <max>11</max>
+            <aug>15</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>3</min>
             <max>11</max>
+            <aug>15</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -8795,41 +8899,49 @@
             <name>BOD</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>2</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>1</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -8947,41 +9059,49 @@
             <name>BOD</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>1</min>
             <max>10</max>
+            <aug>14</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -9114,41 +9234,49 @@
             <name>BOD</name>
             <min>5</min>
             <max>12</max>
+            <aug>16</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>5</min>
             <max>13</max>
+            <aug>17</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>5</max>
+            <aug>9</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>4</max>
+            <aug>8</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -9272,41 +9400,49 @@
             <name>BOD</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -9414,41 +9550,49 @@
             <name>BOD</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -9551,41 +9695,49 @@
             <name>BOD</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -9687,41 +9839,49 @@
             <name>BOD</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -9825,41 +9985,49 @@
             <name>BOD</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>8</max>
+            <aug>12</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -9983,41 +10151,49 @@
             <name>BOD</name>
             <min>4</min>
             <max>11</max>
+            <aug>15</aug>
           </replaceattribute>
           <replaceattribute>
             <name>AGI</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>REA</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>STR</name>
             <min>3</min>
             <max>9</max>
+            <aug>13</aug>
           </replaceattribute>
           <replaceattribute>
             <name>WIL</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>LOG</name>
             <min>1</min>
             <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
             <max>7</max>
+            <aug>11</aug>
           </replaceattribute>
         </replaceattributes>
         <runmultiplier>
@@ -11617,7 +11793,7 @@
       </bonus>
       <required>
         <oneof>
-          <ess grade="Betaware">1</ess>
+          <ess grade="Betaware,Deltaware,Gammaware">1</ess>
         </oneof>
       </required>
       <source>CF</source>
@@ -15927,7 +16103,9 @@
         <limitspiritcategory>
           <spirit>Spirit of Air</spirit>
         </limitspiritcategory>
-        <skillgroupdisable>Enchanting</skillgroupdisable>
+        <skilldisable>Artificing</skilldisable>
+        <skilldisable>Disenchanting</skilldisable>
+        <skilldisable>Alchemy</skilldisable>
       </bonus>
       <required>
         <oneof>
@@ -15953,7 +16131,9 @@
         <limitspiritcategory>
           <spirit>Spirit of Earth</spirit>
         </limitspiritcategory>
-        <skillgroupdisable>Enchanting</skillgroupdisable>
+        <skilldisable>Artificing</skilldisable>
+        <skilldisable>Disenchanting</skilldisable>
+        <skilldisable>Alchemy</skilldisable>
       </bonus>
       <required>
         <oneof>
@@ -15979,7 +16159,9 @@
         <limitspiritcategory>
           <spirit>Spirit of Fire</spirit>
         </limitspiritcategory>
-        <skillgroupdisable>Enchanting</skillgroupdisable>
+        <skilldisable>Artificing</skilldisable>
+        <skilldisable>Disenchanting</skilldisable>
+        <skilldisable>Alchemy</skilldisable>
       </bonus>
       <required>
         <oneof>
@@ -16005,7 +16187,9 @@
         <limitspiritcategory>
           <spirit>Spirit of Water</spirit>
         </limitspiritcategory>
-        <skillgroupdisable>Enchanting</skillgroupdisable>
+        <skilldisable>Artificing</skilldisable>
+        <skilldisable>Disenchanting</skilldisable>
+        <skilldisable>Alchemy</skilldisable>
       </bonus>
       <required>
         <oneof>
@@ -16032,6 +16216,62 @@
         <spellcategorydrain>
           <val>-2</val>
         </spellcategorydrain>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Aware</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Apprentice</quality>
+          <quality>Explorer</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
+      <source>FA</source>
+      <page>43</page>
+    </quality>
+    <quality>
+      <id>90691f29-5b81-4a81-9ebc-21f2f5da1d55</id>
+      <name>Seer</name>
+      <karma>0</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <skillgroupdisable>Sorcery</skillgroupdisable>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+        <skillgroupdisable>Enchanting</skillgroupdisable>
+        <addmetamagic forced="True">Psychometry</addmetamagic>
+        <addmetamagic forced="True">Sensing</addmetamagic>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Aware</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Apprentice</quality>
+          <quality>Explorer</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
+      <source>FA</source>
+      <page>43</page>
+    </quality>
+    <quality>
+      <id>ecb5ab50-68c9-45ee-9fb4-c2f0b3051096</id>
+      <name>Null Wizard</name>
+      <karma>0</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <skilldisable>Binding</skilldisable>
+        <skilldisable>Spellcasting</skilldisable>
+        <skilldisable>Ritual Spellcasting</skilldisable>
+        <skilldisable>Alchemy</skilldisable>
+        <skilldisable>Artificing</skilldisable>
+        <addmetamagic forced="True">Reflection</addmetamagic>
+        <addqualities>
+          <addquality forced="True">Magic Resistance</addquality>
+        </addqualities>
       </bonus>
       <required>
         <oneof>
@@ -16689,9 +16929,9 @@
       <category>Positive</category>
       <bonus />
       <required>
-        <allof>
+        <oneof>
           <quality>Technomancer</quality>
-        </allof>
+        </oneof>
       </required>
       <source>KC</source>
       <page>96</page>
@@ -16829,6 +17069,23 @@
           <quality>Technomancer</quality>
         </oneof>
       </forbidden>
+      <source>KC</source>
+      <page>97</page>
+    </quality>
+    <quality>
+      <id>eeb4db5b-f5b7-4ab5-b310-1d7107cd722f</id>
+      <name>Sprite Affinity</name>
+      <karma>7</karma>
+      <category>Positive</category>
+      <limit>False</limit>
+      <bonus>
+        <selectsprite />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
       <page>97</page>
     </quality>
@@ -17328,6 +17585,240 @@
       </required>
       <source>KC</source>
       <page>132</page>
+    </quality>
+    <!-- End Region -->
+    <!-- End Region -->
+    <!-- Region Better Than Bad -->
+    <!-- Region Negative -->
+    <quality>
+      <id>c0d411e6-ca88-4011-b56c-9f594882beb4</id>
+      <name>Dead SIN</name>
+      <karma>-20</karma>
+      <category>Negative</category>
+      <bonus>
+        <addgear>
+          <name>Fake SIN</name>
+          <category>ID/Credsticks</category>
+          <rating>4</rating>
+          <children>
+            <child>
+              <name>Fake License</name>
+              <category>ID/Credsticks</category>
+              <rating>3</rating>
+            </child>
+            <child>
+              <name>Fake License</name>
+              <category>ID/Credsticks</category>
+              <rating>3</rating>
+            </child>
+            <child>
+              <name>Fake License</name>
+              <category>ID/Credsticks</category>
+              <rating>3</rating>
+            </child>
+          </children>
+        </addgear>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>SINner (Criminal)</quality>
+          <quality>SINner (National)</quality>
+          <quality>SINner (Corporate Limited)</quality>
+          <quality>SINner (Corporate)</quality>
+        </oneof>
+      </forbidden>
+      <source>BTB</source>
+      <page>162</page>
+    </quality>
+    <quality>
+      <id>96f148e1-fb72-416a-8235-89a3eeafe534</id>
+      <name>Hard Luck</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus /> <!-- TODO: Witchcraft -->
+      <source>BTB</source>
+      <page>162</page>
+    </quality>
+    <quality>
+      <id>39803e82-d85a-4da1-9637-fdd3249f2f21</id>
+      <name>Quadriplegic</name>
+      <karma>-25</karma>
+      <category>Negative</category>
+      <bonus>
+        <lifestylecost>30</lifestylecost>
+        <replaceattributes>
+          <replaceattribute>
+            <name>AGI</name>
+            <min>0</min>
+            <max>0</max>
+            <aug>0</aug>
+          </replaceattribute>
+          <replaceattribute>
+            <name>REA</name>
+            <min>0</min>
+            <max>0</max>
+            <aug>0</aug>
+          </replaceattribute>
+          <replaceattribute>
+            <name>STR</name>
+            <min>0</min>
+            <max>0</max>
+            <aug>0</aug>
+          </replaceattribute>
+        </replaceattributes>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <attributetotal>
+            <attributes>RES,MAG</attributes>
+            <val>1</val>
+          </attributetotal>
+        </oneof>
+      </forbidden>
+      <source>BTB</source>
+      <page>160</page>
+    </quality>
+    <!-- End Region -->
+    <!-- Region Positive -->
+    <quality>
+      <id>5c49d5e2-ca52-406e-a532-8d4d148ea825</id>
+      <name>Hair Trigger</name>
+      <karma>2</karma>
+      <category>Positive</category>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>BTB</source>
+      <page>160</page>
+    </quality>
+    <quality>
+      <id>31e3097d-68c4-4140-969d-91bd43612afd</id>
+      <name>Hi-Rez</name>
+      <karma>4</karma>
+      <category>Positive</category>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
+      <source>BTB</source>
+      <page>160</page>
+    </quality>
+    <quality>
+      <id>ef40cac3-d81e-4c7f-b14d-46abfd2f9dff</id>
+      <name>Instinctive Hack</name>
+      <karma>2</karma>
+      <category>Positive</category>
+      <source>BTB</source>
+      <page>160</page>
+    </quality>
+    <quality>
+      <id>1118c31d-521b-46c3-ba82-04123c1303be</id>
+      <name>Rabble Rouser</name>
+      <karma>6</karma>
+      <category>Positive</category>
+      <source>BTB</source>
+      <page>161</page>
+    </quality>
+    <quality>
+      <id>a766e0d9-954e-4738-88f2-bde4f4e89880</id>
+      <name>Social Chameleon</name>
+      <karma>7</karma>
+      <category>Positive</category>
+      <bonus>
+        <specificskill>
+          <name>Etiquette</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </bonus>
+      <source>BTB</source>
+      <page>161</page>
+    </quality>
+    <quality>
+      <id>eb3b2334-29f3-4bd5-a9cc-817672b28d6e</id>
+      <name>Resonant Discordance</name>
+      <karma>13</karma>
+      <category>Positive</category>
+      <canbuywithspellpoints>True</canbuywithspellpoints>
+      <doublecareer>False</doublecareer>
+      <required>
+        <allof>
+          <attribute>
+            <name>RES</name>
+            <total>1</total>
+          </attribute>
+          <submersiongrade>1</submersiongrade>
+        </allof>
+      </required>
+      <source>BTB</source>
+      <page>161</page>
+    </quality>
+    <quality>
+      <id>f6387f9d-c177-4c9b-a141-af2d17ea6317</id>
+      <name>Prototype Materials</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <forbidden>
+        <oneof>
+          <attributetotal>
+            <attributes>RES,MAG</attributes>
+            <val>1</val>
+          </attributetotal>
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <quality>Special Modifications</quality>
+        </oneof>
+      </required>
+      <source>BTB</source>
+      <page>160</page>
+    </quality>
+    <quality>
+      <id>83e5f9a2-e76b-4a11-81db-4b0466b727ce</id>
+      <name>Shoot First, Don't Ask</name>
+      <karma>2</karma>
+      <category>Positive</category>
+      <source>BTB</source>
+      <page>161</page>
+    </quality>
+    <quality>
+      <id>0dd183a3-85ce-4029-9de5-9b6aa1eb539c</id>
+      <name>Special Modifications</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <limit>2</limit>
+      <forbidden>
+        <oneof>
+          <attributetotal>
+            <attributes>RES,MAG</attributes>
+            <val>1</val>
+          </attributetotal>
+        </oneof>
+      </forbidden>
+      <source>BTB</source>
+      <page>161</page>
+    </quality>
+    <!-- End Region -->
+    <!-- Region Mastery Qualities -->
+    <quality>
+      <id>430af564-0be1-42f0-a0d0-318c093ea3d8</id>
+      <name>Elemental Attunement</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <canbuywithspellpoints>True</canbuywithspellpoints>
+      <doublecareer>False</doublecareer>
+      <required>
+        <allof>
+          <power>Killing Hands</power>
+          <power>Elemental Strike</power>
+          <power>Elemental Body</power>
+        </allof>
+      </required>
+      <source>BTB</source>
+      <page>161</page>
     </quality>
     <!-- End Region -->
     <!-- End Region -->

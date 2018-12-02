@@ -535,7 +535,7 @@
       <bonus>
         <drainresist>-2</drainresist>
         <spellcategory>
-          <category>Illusion</category>
+          <name>Illusion</name>
           <val>3</val>
         </spellcategory>
       </bonus>
@@ -586,11 +586,11 @@
       <drain>WIL + CHA</drain>
       <bonus>
         <spellcategory>
-          <category>Health</category>
+          <name>Health</name>
           <val>2</val>
         </spellcategory>
         <spellcategory>
-          <category>Combat</category>
+          <name>Combat</name>
           <val>-2</val>
         </spellcategory>
       </bonus>
@@ -637,7 +637,12 @@
       <name>Pariah</name>
       <drain>WIL + LOG</drain>
       <bonus>
-        <!-- TODO: Disable Conjuring, Binding, Spellcasting, Ritual Spellcasting, Artificing, and Alchemy -->
+        <skilldisable>Summoning</skilldisable>
+        <skilldisable>Binding</skilldisable>
+        <skilldisable>Spellcasting</skilldisable>
+        <skilldisable>Ritual Spellcasting</skilldisable>
+        <skilldisable>Alchemy</skilldisable>
+        <skilldisable>Artificing</skilldisable>
         <specificskill>
           <name>Banishing</name>
           <bonus>2</bonus>

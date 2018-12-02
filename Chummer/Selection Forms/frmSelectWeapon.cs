@@ -55,7 +55,6 @@ namespace Chummer
             nudMarkup.Visible = objCharacter.Created;
             lblMarkupPercentLabel.Visible = objCharacter.Created;
             _objCharacter = objCharacter;
-            MoveControls();
             // Load the Weapon information.
             _objXmlDocument = XmlManager.Load("weapons.xml");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objXmlDocument);
@@ -78,7 +77,7 @@ namespace Chummer
             }
             else
             {
-                chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
+                chkHideOverAvailLimit.Text = string.Format(chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
 
@@ -308,7 +307,7 @@ namespace Chummer
                     if (strbldAccessories.Length > 0)
                         strbldAccessories.Length -= Environment.NewLine.Length;
                     AvailabilityValue objAvail = objWeapon.TotalAvailTuple();
-                    SourceString strSource = new SourceString(objWeapon.Source, objWeapon.DisplayPage(GlobalOptions.Language));
+                    SourceString strSource = new SourceString(objWeapon.Source, objWeapon.DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
                     NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal _));
 
                     tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP, strRC, strAmmo, strMode, strReach, strbldAccessories.ToString(), objAvail, strSource, strCost);
@@ -611,11 +610,6 @@ namespace Chummer
                     }
                     break;
             }
-        }
-
-        private void MoveControls()
-        {
-            lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
         }
 
         private void OpenSourceFromLabel(object sender, EventArgs e)

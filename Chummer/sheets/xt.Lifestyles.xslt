@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- Character contacts -->
+<!-- Character lifestyles -->
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
         xmlns:msxsl="urn:schemas-microsoft-com:xslt">
   <xsl:template name="Lifestyles">
 
     <tr class="title">
-      <td width="40%">
+      <th width="40%" style="text-align: left">
         <xsl:value-of select="$lang.Lifestyle"/>
-      </td>
-      <td width="10%" style="text-align: center">
+      </th>
+      <th width="10%" style="text-align: center">
         <xsl:value-of select="$lang.Level"/>
-      </td>
-      <td width="10%" style="text-align: center">
+      </th>
+      <th width="10%" style="text-align: center">
         <xsl:value-of select="$lang.Cost"/>
-      </td>
-      <td width="20%" style="text-align: center">
+      </th>
+      <th width="20%" style="text-align: center">
         <xsl:value-of select="$lang.Duration"/>
-      </td>
-      <td width="10%"/>
-      <td width="10%"/>
+      </th>
+      <th width="10%"/>
+      <th width="10%"/>
     </tr>
 
     <xsl:for-each select="lifestyles/lifestyle">
@@ -80,7 +80,7 @@
 
       <tr><td colspan="100%" style="padding: 0 2%; text-align: justify;">
         <xsl:for-each select="qualities/quality">
-          <xsl:value-of select="name"/>
+          <xsl:value-of select="fullname"/>
           <text>; </text>
         </xsl:for-each>
       </td></tr>

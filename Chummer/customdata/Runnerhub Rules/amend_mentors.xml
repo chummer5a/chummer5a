@@ -97,7 +97,7 @@
 		  <name>Spider (Alt)</name>
 		  <choices amendoperation="replace">
 		    <choice>
-		      <name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+		      <name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
 		      <bonus>
 		        <spellcategory>
 		          <name>Manipulation</name>

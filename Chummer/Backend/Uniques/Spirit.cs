@@ -59,7 +59,6 @@ namespace Chummer
         private string _strFileName = string.Empty;
         private string _strRelativeName = string.Empty;
         private string _strNotes = string.Empty;
-        private readonly Character _objCharacter;
         private Character _objLinkedCharacter;
 
         private readonly List<Image> _lstMugshots = new List<Image>();
@@ -88,7 +87,7 @@ namespace Chummer
         public Spirit(Character objCharacter)
         {
             // Create the GUID for the new Spirit.
-            _objCharacter = objCharacter;
+            CharacterObject = objCharacter;
         }
 
         /// <summary>
@@ -397,7 +396,7 @@ namespace Chummer
         /// <summary>
         /// The Character object being used by the Spirit.
         /// </summary>
-        public Character CharacterObject => _objCharacter;
+        public Character CharacterObject { get; }
 
         /// <summary>
         /// Name of the Spirit's Metatype.
@@ -589,28 +588,35 @@ namespace Chummer
                         }
                         if (CharacterObject.Created)
                         {
-                            int FetteringCost = Force * 3;
-                            if (!CharacterObject.ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language)
-                                        .Replace("{0}", Name)
-                                        .Replace("{1}", FetteringCost.ToString())))
+                            // Sprites only cost Force in Karma to become Fettered. Spirits cost Force * 3.
+                            int fetteringCost = EntityType == SpiritType.Spirit ? Force * 3 : Force;
+                            if (!CharacterObject.ConfirmKarmaExpense(string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language)
+                                , Name
+                                , fetteringCost.ToString(GlobalOptions.CultureInfo))))
                             {
                                 return;
                             }
 
                             // Create the Expense Log Entry.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(FetteringCost * -1,
+                            objExpense.Create(fetteringCost * -1,
                                 LanguageManager.GetString("String_ExpenseFetteredSpirit", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + Name,
                                 ExpenseType.Karma, DateTime.Now);
                             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                            CharacterObject.Karma -= FetteringCost;
+                            CharacterObject.Karma -= fetteringCost;
 
                             ExpenseUndo objUndo = new ExpenseUndo();
                             objUndo.CreateKarma(KarmaExpenseType.SpiritFettering, InternalId);
                             objExpense.Undo = objUndo;
                         }
-                        ImprovementManager.CreateImprovement(CharacterObject, EntityType == SpiritType.Spirit ? "MAG" : "RES", Improvement.ImprovementSource.SpiritFettering, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1);
-                        ImprovementManager.Commit(CharacterObject);
+
+                        if (EntityType == SpiritType.Spirit)
+                        {
+                            ImprovementManager.CreateImprovement(CharacterObject, "MAG",
+                                Improvement.ImprovementSource.SpiritFettering, string.Empty,
+                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1);
+                            ImprovementManager.Commit(CharacterObject);
+                        }
                     }
                     else
                     {
@@ -666,12 +672,9 @@ namespace Chummer
             if ((lstNamesOfChangedProperties?.Count > 0) != true)
                 return;
 
-            if (PropertyChanged != null)
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
-                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
-                {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-                }
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
         }
 
@@ -735,7 +738,8 @@ namespace Chummer
 
                 if (blnError && blnShowError)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language).Replace("{0}", FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), FileName),
+                        LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             if (!blnError)
@@ -914,7 +918,7 @@ namespace Chummer
                 // Since IE is retarded and can't handle base64 images before IE9, we need to dump the image to a temporary directory and re-write the information.
                 // If you give it an extension of jpg, gif, or png, it expects the file to be in that format and won't render the image unless it was originally that type.
                 // But if you give it the extension img, it will render whatever you give it (which doesn't make any damn sense, but that's IE for you).
-                string strMugshotsDirectoryPath = Path.Combine(Application.StartupPath, "mugshots");
+                string strMugshotsDirectoryPath = Path.Combine(Utils.GetStartupPath, "mugshots");
                 if (!Directory.Exists(strMugshotsDirectoryPath))
                 {
                     try

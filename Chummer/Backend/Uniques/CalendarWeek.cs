@@ -260,7 +260,10 @@ namespace Chummer
         /// </summary>
         public string DisplayName(string strLanguage)
         {
-            string strReturn = LanguageManager.GetString("String_WeekDisplay", strLanguage).Replace("{0}", _intYear.ToString()).Replace("{1}", Month.ToString()).Replace("{2}", MonthWeek.ToString());
+            string strReturn = string.Format(LanguageManager.GetString("String_WeekDisplay", strLanguage)
+                , Year.ToString()
+                , Month.ToString()
+                , MonthWeek.ToString());
             return strReturn;
         }
 
@@ -273,8 +276,7 @@ namespace Chummer
                     intReturn = Week.CompareTo(objWeek.Week);
                 return intReturn;
             }
-            else
-                return DisplayName(GlobalOptions.Language).CompareTo(obj);
+            return DisplayName(GlobalOptions.Language).CompareTo(obj);
         }
 
         /// <summary>

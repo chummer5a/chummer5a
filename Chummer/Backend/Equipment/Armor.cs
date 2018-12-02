@@ -200,7 +200,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
+                        frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language));
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
@@ -375,8 +375,6 @@ namespace Chummer.Backend.Equipment
 
                 Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
             }
-
-            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -555,8 +553,6 @@ namespace Chummer.Backend.Equipment
                     Equipped = false;
                 }
             }
-
-            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -876,7 +872,30 @@ namespace Chummer.Backend.Equipment
 
             return strReturn.CheapReplace("Rating", () => LanguageManager.GetString("String_Rating", GlobalOptions.Language)) + '¥';
         }
-        public SourceString SourceDetail { get; private set; }
+
+
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == null)
+                {
+                    string strSource = Source;
+                    string strPage = Page(GlobalOptions.Language);
+                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                    {
+                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                    }
+                }
+
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Armor's Sourcebook.
@@ -1005,7 +1024,7 @@ namespace Chummer.Backend.Equipment
                 intTotalArmor += ArmorMods.Where(o => o.Equipped).Sum(o => o.Armor);
                 intTotalArmor -= ArmorDamage;
 
-                return intTotalArmor;
+                return Math.Max(intTotalArmor, 0);
             }
         }
 
@@ -1021,7 +1040,7 @@ namespace Chummer.Backend.Equipment
                 intTotalArmor += ArmorMods.Where(o => o.Equipped).Sum(o => o.Armor);
                 intTotalArmor -= ArmorDamage;
 
-                return intTotalArmor;
+                return Math.Max(intTotalArmor, 0);
             }
         }
 
@@ -1236,18 +1255,9 @@ namespace Chummer.Backend.Equipment
             {
                 string strReturn = TotalArmorCapacity;
 
-                // If an Armor Capacity is specified for the Armor, use that value. Otherwise, use the higher of 6 or (Highest Armor Rating * 1.5, round up).
+                // If an Armor Capacity is specified for the Armor, use that value.
                 if (string.IsNullOrEmpty(strReturn) || strReturn == "0")
-                {
-                    // This is only calculated if the Maximum Armor Modification rule is enabled.
-                    if (_objCharacter.Options.MaximumArmorModifications)
-                    {
-                        int intA = (3 * Convert.ToInt32(ArmorValue, GlobalOptions.CultureInfo) + 1) / 2;
-                        strReturn = Math.Max(intA, 6).ToString();
-                    }
-                    else
-                        strReturn = (0.0m).ToString("#,0.##", GlobalOptions.CultureInfo);
-                }
+                    strReturn = (0.0m).ToString("#,0.##", GlobalOptions.CultureInfo);
                 else if (strReturn == "Rating")
                     strReturn = Rating.ToString();
                 else if (decimal.TryParse(strReturn, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
@@ -1627,19 +1637,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="sourceControl"></param>
         public void SetSourceDetail(Control sourceControl)
         {
-            if (SourceDetail != null)
-            {
-                SourceDetail.SetControl(sourceControl);
-            }
-            else if (!string.IsNullOrWhiteSpace(_strPage) && !string.IsNullOrWhiteSpace(_strSource))
-            {
-                SourceDetail = new SourceString(_strSource, _strPage);
-                SourceDetail.SetControl(sourceControl);
-            }
-            else
-            {
-                Utils.BreakIfDebug();
-            }
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
         }
 
         public TaggedObservableCollection<Gear> Children => Gear;

@@ -23,14 +23,12 @@ namespace Chummer
 {
     public class TextEventArgs : EventArgs
     {
-        private readonly string _strText;
-
         public TextEventArgs(string strText)
         {
-            _strText = strText;
+            Text = strText;
         }
 
-        public string Text => _strText;
+        public string Text { get; }
     }
 
     [ComVisible(true)]

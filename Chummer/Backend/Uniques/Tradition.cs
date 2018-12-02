@@ -87,6 +87,7 @@ namespace Chummer.Backend.Uniques
             SpiritForm = "Materialization";
             AvailableSpirits.Clear();
             Type = TraditionType.None;
+            _objCachedSourceDetail = null;
         }
 
         /// Create a Tradition from an XmlNode.
@@ -137,7 +138,6 @@ namespace Chummer.Backend.Uniques
                     _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
                 }
             }*/
-            SourceDetail = new SourceString(_strSource, _strPage);
             RebuildSpiritList();
             OnMultiplePropertyChanged(nameof(Name), nameof(Extra), nameof(Source), nameof(Page));
             return true;
@@ -264,7 +264,6 @@ namespace Chummer.Backend.Uniques
                 }
             }
             _nodBonus = xmlNode["bonus"];
-            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -292,6 +291,27 @@ namespace Chummer.Backend.Uniques
                 else
                     xpathCharacterNode.TryGetStringFieldQuickly("tradition", ref _strName);
                 xpathCharacterNode.TryGetStringFieldQuickly("traditiondrain", ref _strDrainExpression);
+            }
+        }
+
+        public void LoadFromHeroLab(XmlNode xmlHeroLabNode)
+        {
+            _eTraditionType = TraditionType.MAG;
+            _strName = xmlHeroLabNode.SelectSingleNode("@name")?.InnerText;
+            XmlNode xmlTraditionDataNode = !string.IsNullOrEmpty(_strName) ? XmlManager.Load("traditions.xml").SelectSingleNode("/chummer/traditions/tradition[name = \"" + _strName + "\"]") : null;
+            if (xmlTraditionDataNode?.TryGetStringFieldQuickly("id", ref _strSourceGuid) != true)
+            {
+                _strSourceGuid = CustomMagicalTraditionGuid;
+                xmlTraditionDataNode = GetNode();
+            }
+            Create(xmlTraditionDataNode);
+            if (IsCustomTradition)
+            {
+                _strSpiritCombat = xmlHeroLabNode.SelectSingleNode("@combatspirits")?.InnerText;
+                _strSpiritDetection = xmlHeroLabNode.SelectSingleNode("@detectionspirits")?.InnerText;
+                _strSpiritHealth = xmlHeroLabNode.SelectSingleNode("@healthspirits")?.InnerText;
+                _strSpiritIllusion = xmlHeroLabNode.SelectSingleNode("@illusionspirits")?.InnerText;
+                _strSpiritManipulation = xmlHeroLabNode.SelectSingleNode("@manipulationspirits")?.InnerText;
             }
         }
 
@@ -337,10 +357,28 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string SourceID => Type == TraditionType.None ? string.Empty : _strSourceGuid;
 
-        /// <summary>
-        /// String used to display Tradition's source
-        /// </summary>
-        public SourceString SourceDetail { get; set; }
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == null)
+                {
+                    string strSource = Source;
+                    string strPage = Page(GlobalOptions.Language);
+                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                    {
+                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                    }
+                }
+
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Bonus node from the XML file.
@@ -922,19 +960,9 @@ namespace Chummer.Backend.Uniques
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (SourceDetail != null)
-            {
-                SourceDetail.SetControl(sourceControl);
-            }
-            else if (!string.IsNullOrWhiteSpace(_strPage) && !string.IsNullOrWhiteSpace(_strSource))
-            {
-                SourceDetail = new SourceString(_strSource, _strPage);
-                SourceDetail.SetControl(sourceControl);
-            }
-            else
-            {
-                Utils.BreakIfDebug();
-            }
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
         }
 
         [NotifyPropertyChangedInvocator]
@@ -960,13 +988,12 @@ namespace Chummer.Backend.Uniques
             if ((lstNamesOfChangedProperties?.Count > 0) != true)
                 return;
 
-            if (PropertyChanged != null)
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
-                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
-                {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-                }
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
+
+            _objCharacter?.OnPropertyChanged(nameof(Character.MagicTradition));
         }
     }
 }

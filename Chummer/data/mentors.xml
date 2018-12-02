@@ -1756,7 +1756,7 @@
     <mentor>
       <id>a83f0580-9783-401b-8249-bb39843fe0c7</id>
       <name>Goddess</name>
-      <advantage>All: +2 dice pool modifer for Instruction Tests.</advantage>
+      <advantage>All: +2 dice pool modifier for Instruction Tests.</advantage>
       <disadvantage>The Goddess refuses to take a backseat to any male counterparts. Unless you succeed in a Charisma + Willpower Test (3), you will not take orders from a male, or if a male disrespects you, you must respond with equal measure</disadvantage>
       <bonus>
         <specificskill>
@@ -1790,7 +1790,7 @@
     <mentor>
       <id>c9b8f607-43f7-4707-aaac-60da183f22ac</id>
       <name>Lion</name>
-      <advantage>All: +2 dice pool modifer for Survival Tests, Running Tests, or Tracking Tests (Choose One)</advantage>
+      <advantage>All: +2 dice pool modifier for Survival Tests, Running Tests, or Tracking Tests (Choose One)</advantage>
       <disadvantage>In combat situations, a Lion will never leave a comrade behind, and will fght to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot ﬂee combat before your team members are safe. Further, whenever taking actions that don’t beneft the team somehow, your physical and mental limits are reduced by 2.</disadvantage>
       <bonus>
         <selectskill limittoskill="Survival,Running,Tracking">
@@ -1828,7 +1828,7 @@
     <mentor>
       <id>d1089dd2-68b8-4e2a-977e-718e720f44d3</id>
       <name>Raven (Alt)</name>
-      <advantage>All: +2 dice pool modifer for knowledge skill tests.</advantage>
+      <advantage>All: +2 dice pool modifier for knowledge skill tests.</advantage>
       <disadvantage>Followers of Raven share their mentor’s love of collecting. When presented with data, knowledge, or other gear that would be valuable (gamemaster’s discretion), you must pass a Charisma + Willpower Test (3), or be unable to resist trying to acquiring it.</disadvantage>
       <bonus>
         <skillcategory>
@@ -1887,8 +1887,8 @@
     <mentor>
       <id>bd56ecdf-ebba-4b66-8e39-445831744496</id>
       <name>Dove</name>
-      <advantage>All: +2 dice pool modifer for Negotiation tests.</advantage>
-      <disadvantage>Dove discourages combat whenever possible. As such, those who follow Dove are at –2 dice pool modifer to cast Combat spells or when using lethal force.</disadvantage>
+      <advantage>All: +2 dice pool modifier for Negotiation tests.</advantage>
+      <disadvantage>Dove discourages combat whenever possible. As such, those who follow Dove are at –2 dice pool modifier to cast Combat spells or when using lethal force.</disadvantage>
       <bonus>
         <specificskill>
           <name>Negotiation</name>
@@ -1897,7 +1897,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +1 dice pool modifer for casting Health spells, +1 dice pool modifer to summon air spirits</name>
+          <name>Magician: +1 dice pool modifier for casting Health spells, +1 dice pool modifier to summon air spirits</name>
           <bonus>
             <spellcategory>
               <name>Health</name>
@@ -1947,7 +1947,7 @@
       <disadvantage>Followers of the Arcana must use Tarot decks or individual cards as foci and fetishes, or else take –2 when attempting to use them. The Tarot Arcana plays such a major part in the lives of its adherents that when a follower of Arcana becomes a grade 1 initiate, they must choose centering or adept centering for their frst beneft, with the cards of Tarot being the focus of their centering.</disadvantage>
       <choices>
         <choice>
-          <name>Magician: +1 dice pool modifer for casting Detection spells, an additional +2 dice pool modifer to cast Clairvoyance spells.</name>
+          <name>Magician: +1 dice pool modifier for casting Detection spells, an additional +2 dice pool modifier to cast Clairvoyance spells.</name>
           <bonus>
             <spellcategory>
               <name>Detection</name>
@@ -1981,7 +1981,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool modifer when using the Banishing skill.</name>
+          <name>Magician: +2 dice pool modifier when using the Banishing skill.</name>
           <bonus>
             <specificskill>
               <name>Banishing</name>
@@ -1990,7 +1990,7 @@
           </bonus>
         </choice>
         <choice>
-          <name>Magician: +2 dice pool modifer when casting Health spells.</name>
+          <name>Magician: +2 dice pool modifier when casting Health spells.</name>
           <bonus>
             <spellcategory>
               <name>Health</name>
@@ -2024,7 +2024,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool modifer when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</name>
+          <name>Magician: +2 dice pool modifier when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</name>
           <bonus>
             <!-- TODO: Dicepool modifiers for individual spells -->
           </bonus>
@@ -2058,7 +2058,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool modifer when casting Combat spells, preparations, and rituals.</name>
+          <name>Magician: +2 dice pool modifier when casting Combat spells, preparations, and rituals.</name>
           <bonus>
             <spellcategory>
               <name>Combat</name>
@@ -2081,7 +2081,7 @@
     <mentor>
       <id>12a4d51d-1d4c-405f-b62e-1ba5ad0aaf01</id>
       <name>Tohu Wa-Bohu</name>
-      <advantage>All: +2 dice pool modifer for Intimidation or Demolitions tests (choose one)</advantage>
+      <advantage>All: +2 dice pool modifier for Intimidation or Demolitions tests (choose one)</advantage>
       <disadvantage>Followers gain the Driven quality, in which the focus is the opportunity to destroy something meaningful. Further, they fnd it hard to work in groups given their destructive nature. They can never beneft from teamwork or leadership bonuses.</disadvantage>
       <bonus>
         <addqualities>
@@ -2115,7 +2115,7 @@
     <mentor>
       <id>0855eb9d-65b2-4168-ae58-6b07c38b86c3</id>
       <name>Green Man</name>
-      <advantage>All: +2 dice pool modifer for Negotiation Tests.</advantage>
+      <advantage>All: +2 dice pool modifier for Negotiation Tests.</advantage>
       <disadvantage>When signifcant damage is being done to vegetation, they must pass a Charisma + Willpower (3) Test or use all means possible to stop the destruction.</disadvantage>
       <bonus>
         <specificskill>
@@ -2125,7 +2125,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool modifer to summon Plant Spirits.</name>
+          <name>Magician: +2 dice pool modifier to summon Plant Spirits.</name>
         </choice>
         <choice>
           <name>Adept: Gain 2 free levels of Rooting.</name>
@@ -2143,11 +2143,11 @@
     <mentor>
       <id>79346916-7987-4332-b031-4b8bd59700d7</id>
       <name>Sun</name>
-      <advantage>All: +2 dice pool modifer for Perception tests when outside during the day.</advantage>
+      <advantage>All: +2 dice pool modifier for Perception tests when outside during the day.</advantage>
       <disadvantage>Followers of Sun must pass a Charisma + Willpower (4) Test in order to purposefully deceive others.</disadvantage>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool modifer when casting Sun- or Fire-based spells.</name>
+          <name>Magician: +2 dice pool modifier when casting Sun- or Fire-based spells.</name>
           <bonus />
         </choice>
         <choice>
@@ -2314,7 +2314,7 @@
     <mentor>
       <id>26eed20e-86c6-4245-be55-231370fff939</id>
       <name>Spider (Alt)</name>
-      <advantage>All: +2 dice pool modifer for tests using the Stealth skill group.</advantage>
+      <advantage>All: +2 dice pool modifier for tests using the Stealth skill group.</advantage>
       <disadvantage>When not following a plan or a plan doesn’t go according to plan, followers of Spider must pass a Charisma + Willpower (4) Test or suffer –2 to all rolls until a new plan is established.</disadvantage>
       <bonus>
         <skillgroup>
@@ -2324,7 +2324,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+          <name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
           <bonus>
             <spellcategory>
               <name>Manipulation</name>
@@ -2348,7 +2348,7 @@
     <mentor>
       <id>a7532966-cdeb-4732-b486-59cbf5552f83</id>
       <name>Wolf (Alt)</name>
-      <advantage>All: +1 dice pool modifer for tests using the Sneaking, Perception, Survival, and Tracking skills.</advantage>
+      <advantage>All: +1 dice pool modifier for tests using the Sneaking, Perception, Survival, and Tracking skills.</advantage>
       <disadvantage>Whenever a follower of Wolf sees an opportunity to survive by attacking or sacrifcing the weak, they must pass a Charisma + Willpower (4) Test or attempt to seize the opportunity. This does not apply to those the Wolf considers friends or family.</disadvantage>
       <bonus>
         <specificskill>
@@ -2370,7 +2370,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +1 dice pool modifer when casting Combat spells, preparations, and rituals.</name>
+          <name>Magician: +1 dice pool modifier when casting Combat spells, preparations, and rituals.</name>
           <bonus>
             <spellcategory>
               <name>Combat</name>
@@ -2394,7 +2394,7 @@
     <mentor>
       <id>e27fd190-c19f-4d86-8e99-7552df1e8be3</id>
       <name>Rat (Alt)</name>
-      <advantage>All: +1 dice pool modifer for tests using the Perception and Sneaking skills.</advantage>
+      <advantage>All: +1 dice pool modifier for tests using the Perception and Sneaking skills.</advantage>
       <disadvantage> Followers of Rat cannot receive aid or aid others with a Teamwork test unless they trust the individuals they are teaming with. Further, if they do trust the individuals, but that trust is broken through incompetence or betrayal, they must pass a Charisma + Willpower (4) Test to be able to use teamwork with that individual each time in the future.</disadvantage>
       <bonus>
         <specificskill>
@@ -2408,7 +2408,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +1 dice pool modifer when casting Health spells, preparations, and rituals</name>
+          <name>Magician: +1 dice pool modifier when casting Health spells, preparations, and rituals</name>
           <bonus>
             <spellcategory>
               <name>Health</name>
@@ -2432,7 +2432,7 @@
     <mentor>
       <id>3244e940-4666-4510-b1a1-c34df97797fe</id>
       <name>Eurasian Jay</name>
-      <advantage>All: +1 dice pool modifer for tests using the Perception and Palming skills.</advantage>
+      <advantage>All: +1 dice pool modifier for tests using the Perception and Palming skills.</advantage>
       <disadvantage>Eurasian Jay loves to split his posessions. If a follower of Eurasian Jay receives a splittable reward, she must make a Charisma + Willpower (3) test to not spread the reward over different accounts or rooms.</disadvantage>
       <bonus>
         <specificskill>
@@ -2446,7 +2446,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool modifer when casting Illusion spells, preparations, and rituals</name>
+          <name>Magician: +2 dice pool modifier when casting Illusion spells, preparations, and rituals</name>
           <bonus>
             <spellcategory>
               <name>Illusion</name>
@@ -2455,7 +2455,7 @@
           </bonus>
         </choice>
         <choice>
-          <name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+          <name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
           <bonus>
             <spellcategory>
               <name>Manipulation</name>
@@ -2488,7 +2488,7 @@
     <mentor>
       <id>bcf60ea4-577a-4487-9996-6c40a86294c5</id>
       <name>Squirrel</name>
-      <advantage>All: +2 dice pool modifer for tests using the Gymnastics skill.</advantage>
+      <advantage>All: +2 dice pool modifier for tests using the Gymnastics skill.</advantage>
       <disadvantage>When followers of Squirrel are in confined spaces, they must make a Willpower + Chrisma (3) Tests or take a -1 dice pool modifier on all tests while feeling cramped.</disadvantage>
       <bonus>
         <specificskill>
@@ -2498,7 +2498,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool modifer when casting Detection spells, preparations, and rituals</name>
+          <name>Magician: +2 dice pool modifier when casting Detection spells, preparations, and rituals</name>
           <bonus>
             <spellcategory>
               <name>Detection</name>
@@ -2522,7 +2522,7 @@
     <mentor>
       <id>50b20b8c-8cf4-4b92-95ea-b0c8bbf560b0</id>
       <name>Fox</name>
-      <advantage>All: +2 dice pool modifer for tests using the Perception skill.</advantage>
+      <advantage>All: +2 dice pool modifier for tests using the Perception skill.</advantage>
       <disadvantage>If Fox fights, it'll fight to kill. A follower of this mentor spirit must make a Willpower + Charisma (3) Test to spare a bettered foe.</disadvantage>
       <bonus>
         <specificskill>
@@ -2532,7 +2532,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool modifer when casting Illusion spells, preparations, and rituals</name>
+          <name>Magician: +2 dice pool modifier when casting Illusion spells, preparations, and rituals</name>
           <bonus>
             <spellcategory>
               <name>Illusion</name>
@@ -2556,7 +2556,7 @@
     <mentor>
       <id>b83bab65-bbda-4367-aa50-3069def5b2e4</id>
       <name>Tide</name>
-      <advantage>All: +2 dice pool modifer for tests using the Ritual Spellcasting skill.</advantage>
+      <advantage>All: +2 dice pool modifier for tests using the Ritual Spellcasting skill.</advantage>
       <disadvantage>Followers of Tide live in transition, but in the consistency of a cycle. They also design their lives this way. If their normal life cycle is lastingly impaired by Sleep deprivation or illness, they suffer a -1 dice pool modifier on all tests until the cycle is restored.</disadvantage>
       <bonus>
         <specificskill>
@@ -2584,7 +2584,7 @@
     <mentor>
       <id>62188234-323a-4c8e-96c4-b8b8a750e272</id>
       <name>Heinzelmännchen</name>
-      <advantage>All: +2 dice pool modifer for tests using the Artisan skill and the Engineering skill group.</advantage>
+      <advantage>All: +2 dice pool modifier for tests using the Artisan skill and the Engineering skill group.</advantage>
       <disadvantage>Heinzelmännchen works in secret. If a follower of Heinzelmännchen wants to perform magic in public or under close observation, they'll have to make a Willpower + Charisma (3) Test or else their magic cease to function for the moment.</disadvantage>
       <bonus>
         <specificskill>
@@ -2598,7 +2598,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+          <name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
           <bonus>
             <spellcategory>
               <name>Manipulation</name>
@@ -2630,7 +2630,7 @@
     <mentor>
       <id>128ba60a-7825-4d29-8b94-8dd291fdc468</id>
       <name>Groundhog</name>
-      <advantage>All: +1 dice pool modifer for tests using the Perception and Etiquette skills.</advantage>
+      <advantage>All: +1 dice pool modifier for tests using the Perception and Etiquette skills.</advantage>
       <disadvantage>If a follower of Grounghog get into a fight (intentionally or unintentionally), they'll have to make a Willpower + Chraisma (3) Test to not flee immediately.</disadvantage>
       <bonus>
         <specificskill>
@@ -2644,7 +2644,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool modifer when casting Detection spells, preparations, and rituals</name>
+          <name>Magician: +2 dice pool modifier when casting Detection spells, preparations, and rituals</name>
           <bonus>
             <spellcategory>
               <name>Detection</name>
@@ -2681,7 +2681,7 @@
     <mentor>
       <id>ad1bc54f-1f59-4972-8791-a1c36860f196</id>
       <name>Seal</name>
-      <advantage>All: +2 dice pool modifer for Judge Intentions tests.</advantage>
+      <advantage>All: +2 dice pool modifier for Judge Intentions tests.</advantage>
       <disadvantage>Seal has compassion, but she is lacking in tact dealing with the feelings of others. Whenever a follower of Seal gains insight into the emotional world of an other, it's difficult for him to respect private boundaries and not address the subject. In order to remain discreet in such situations, they must make a Charisma + Willpower (3) test. Glitches in social test are automatically critical.</disadvantage>
       <bonus>
         <judgeintentions>2</judgeintentions>
@@ -2691,7 +2691,7 @@
           <name>Magician: +2 dice summoning spirits of water.</name>
         </choice>
         <choice>
-          <name>Magician: +2 dice pool modifer when casting Illusion spells, preparations, and rituals</name>
+          <name>Magician: +2 dice pool modifier when casting Illusion spells, preparations, and rituals</name>
           <bonus>
             <spellcategory>
               <name>Illusion</name>
@@ -2714,7 +2714,7 @@
     <mentor>
       <id>255affd2-1a85-422e-bb64-3dd7ab2faa77</id>
       <name>Pig</name>
-      <advantage>All: +2 dice pool modifer for tests using the Con skill.</advantage>
+      <advantage>All: +2 dice pool modifier for tests using the Con skill.</advantage>
       <disadvantage>A follower of Pig must make a Willpower + Charisma (3) Test to break free from pleasurable activities like sleeping, eating, drinking or consuming drugs.</disadvantage>
       <bonus>
         <specificskill>
@@ -2724,7 +2724,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
+          <name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
           <bonus>
             <spellcategory>
               <name>Manipulation</name>
@@ -2755,7 +2755,7 @@
     <mentor>
       <id>7c904908-81e5-448b-a60e-9b7b3af53842</id>
       <name>Capricorn</name>
-      <advantage>All: +2 dice pool modifer for tests using the Gymnastics skill.</advantage>
+      <advantage>All: +2 dice pool modifier for tests using the Gymnastics skill.</advantage>
       <disadvantage>Capricorn may not be stubborn, but he decides and acts quickly. He has neither tolerance nor time for hesitation. If a follower of Capricorn is confronted with long decision-making processes, discussions, or indecision, he must make a Charisma + Willpower (3) test in order not to immediately choose the in his opinion best decision available and to put it into practice immediately.</disadvantage>
       <bonus>
         <specificskill>
@@ -2783,7 +2783,7 @@
     <mentor>
       <id>88b517e3-a3c8-4028-9a69-d947f3384aab</id>
       <name>Wild Hunt</name>
-      <advantage>All: +2 dice pool modifer for tests using the Pilot Ground Craft or Intimidation skill.</advantage>
+      <advantage>All: +2 dice pool modifier for tests using the Pilot Ground Craft or Intimidation skill.</advantage>
       <disadvantage>A follower of the Wild Hunt always leaves behind a swath of devastation. If objects or uninvolved persons could be harmed in the fight, he wouldn't take any consideration. If a follower of the Wild Hunt is consciously considerate in the fight, he must succeed in a Charisma + Willpower (3) test, otherwise he is so inhibited that he suffers a -2 dicepool modifier on all actions.</disadvantage>
       <choices>
         <choice>
@@ -2821,6 +2821,39 @@
       </choices>
       <source>SAG</source>
       <page>123</page>
+    </mentor>
+    <mentor>
+      <id>7397da6e-29b8-400f-9708-c99bd04d5c07</id>
+      <name>Guanyin</name>
+      <advantage>All: +2 dice for First Aid tests.</advantage>
+      <disadvantage>A Guanyin magician is highly motivated to save other beings. If the Magician is offered a run that doesn’t involve hooding, she must make a Charisma + Willpower (3) test before she can accept the run. Failure on this test means she turns down the job.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>First Aid</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </bonus>
+      <choices>
+        <choice>
+          <name>Magician: +2 dice for Healing spells</name>
+          <bonus>
+            <spellcategory>
+              <name>Health</name>
+              <val>2</val>
+            </spellcategory>
+          </bonus>
+        </choice>
+        <choice>
+          <name>Adept: Free Empathic Healing power</name>
+          <bonus>
+            <specificpower>
+              <name>Empathic Healing</name>
+            </specificpower>
+          </bonus>
+        </choice>
+      </choices>
+      <source>BTB</source>
+      <page>139</page>
     </mentor>
   </mentors>
 </chummer>

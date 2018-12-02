@@ -29,14 +29,14 @@ namespace Chummer.Backend.Equipment
     public class Grade : IHasName, IHasInternalId, IHasXmlNode
     {
         private Guid _guidSourceId = Guid.Empty;
-        private Guid _guidId;
+        private readonly Guid _guidId;
         private string _strName = "Standard";
         private decimal _decEss = 1.0m;
         private decimal _decCost = 1.0m;
         private int _intAvail;
         private string _strSource = "SR5";
         private int _intDeviceRating = 2;
-	    private int _intAddictionThreshold = 0;
+	    private int _intAddictionThreshold;
 		private readonly Improvement.ImprovementSource _eSource;
 
         #region Constructor and Load Methods
@@ -55,7 +55,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             if (!objNode.TryGetField("id", Guid.TryParse, out _guidSourceId))
             {
-                XmlNode xmlDataNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml", GlobalOptions.Language).SelectSingleNode("/chummer/grades/grade[name = \"" + Name + "\"]");
+                XmlNode xmlDataNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml", GlobalOptions.Language).SelectSingleNode("/chummer/grades/grade[name = " + Name.CleanXPath() + "]");
                 if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guidSourceId) != true)
                     _guidSourceId = Guid.NewGuid();
             }
@@ -174,8 +174,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int AddictionThreshold
         {
-            get { return _intAddictionThreshold; }
-            set { _intAddictionThreshold = value; }
+            get => _intAddictionThreshold;
+            set => _intAddictionThreshold = value;
         }
 		#endregion
 	}

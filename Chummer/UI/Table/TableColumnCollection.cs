@@ -46,14 +46,14 @@ namespace Chummer.UI.Table
 
         public int Count => _lstColumns.Count;
 
-        public void Add(TableColumn<T> column) {
-            if (column == null)
+        public void Add(TableColumn<T> objColumn) {
+            if (objColumn == null)
             {
-                throw new ArgumentException();
+                throw new ArgumentException(nameof(objColumn));
             }
 
-            _lstColumns.Add(column);
-            _table.ColumnAdded(column);
+            _lstColumns.Add(objColumn);
+            _table.ColumnAdded(objColumn);
         }
 
         public IEnumerator<TableColumn<T>> GetEnumerator()

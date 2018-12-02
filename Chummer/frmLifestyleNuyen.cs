@@ -31,7 +31,6 @@ namespace Chummer
             _objCharacter = objCharacter;
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            MoveControls();
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -47,17 +46,18 @@ namespace Chummer
 
         private void frmLifestyleNuyen_Load(object sender, EventArgs e)
         {
-            lblDice.Text = LanguageManager.GetString("Label_LifestyleNuyen_ResultOf", GlobalOptions.Language).Replace("{0}", Dice.ToString());
+            lblDice.Text = string.Format(LanguageManager.GetString("Label_LifestyleNuyen_ResultOf", GlobalOptions.Language), Dice.ToString(GlobalOptions.CultureInfo));
             nudDiceResult.Maximum = Dice * 6;
             nudDiceResult.Minimum = Dice;
             nudDiceResult_ValueChanged(sender, e);
-            MoveControls();
         }
 
         private void nudDiceResult_ValueChanged(object sender, EventArgs e)
         {
-            lblResult.Text = " + " + Extra.ToString("#,0", GlobalOptions.CultureInfo) + ") × " + Multiplier.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo)
-                + " = " + StartingNuyen.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo);
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            lblResult.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalOptions.CultureInfo) + ')' + strSpace + '×'
+                             + strSpace + Multiplier.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo)
+                             + strSpace + '=' + strSpace + StartingNuyen.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo);
         }
         #endregion
 
@@ -82,14 +82,6 @@ namespace Chummer
         /// </summary>
         public decimal StartingNuyen => ((nudDiceResult.Value + Extra) * Multiplier);
 
-        #endregion
-
-        #region Methods
-        private void MoveControls()
-        {
-            nudDiceResult.Left = lblDice.Left + lblDice.Width + 6;
-            lblResult.Left = nudDiceResult.Left + nudDiceResult.Width + 6;
-        }
         #endregion
     }
 }

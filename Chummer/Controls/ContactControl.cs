@@ -244,7 +244,7 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language).Replace("{0}", _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -273,7 +273,7 @@ namespace Chummer
                     : LanguageManager.GetString("Tip_Contact_OpenFile", GlobalOptions.Language));
 
             // Set the relative path.
-            Uri uriApplication = new Uri(Application.StartupPath);
+            Uri uriApplication = new Uri(Utils.GetStartupPath);
             Uri uriFile = new Uri(_objContact.FileName);
             Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
             _objContact.RelativeFileName = "../" + uriRelative;

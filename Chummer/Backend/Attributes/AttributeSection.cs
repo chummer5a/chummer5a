@@ -57,12 +57,9 @@ namespace Chummer.Backend.Attributes
             if ((lstNamesOfChangedProperties?.Count > 0) != true)
                 return;
 
-            if (PropertyChanged != null)
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
-                foreach (string strPropertyToChange in lstNamesOfChangedProperties)
-                {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-                }
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
         }
 
@@ -79,7 +76,44 @@ namespace Chummer.Backend.Attributes
 	    private static readonly string[] s_LstMentalAttributes = { "CHA", "INT", "LOG", "WIL" };
         public static ReadOnlyCollection<string> MentalAttributes => Array.AsReadOnly(s_LstMentalAttributes);
 
-	    private readonly Dictionary<string, BindingSource> _dicBindings = new Dictionary<string, BindingSource>(AttributeStrings.Count);
+	    public static string GetAttributeEnglishName(string strAbbrev)
+	    {
+	        switch (strAbbrev)
+	        {
+                case "BOD":
+                    return "Body";
+                case "AGI":
+                    return "Agility";
+	            case "REA":
+	                return "Reaction";
+	            case "STR":
+	                return "Strength";
+	            case "CHA":
+	                return "Charisma";
+	            case "INT":
+	                return "Intuition";
+	            case "LOG":
+	                return "Logic";
+	            case "WIL":
+	                return "Willpower";
+	            case "EDG":
+	                return "Edge";
+	            case "MAG":
+	                return "Magic";
+	            case "MAGAdept":
+	                return "Magic (Adept)";
+	            case "RES":
+	                return "Resonance";
+	            case "ESS":
+	                return "Essence";
+	            case "DEP":
+	                return "Depth";
+                default:
+                    return string.Empty;
+            }
+	    }
+
+        private readonly Dictionary<string, BindingSource> _dicBindings = new Dictionary<string, BindingSource>(AttributeStrings.Count);
 		private readonly Character _objCharacter;
 		private CharacterAttrib.AttributeCategory _eAttributeCategory = CharacterAttrib.AttributeCategory.Standard;
 
@@ -185,6 +219,186 @@ namespace Chummer.Backend.Attributes
 			Timekeeper.Finish("load_char_attrib");
 		}
 
+	    public void LoadFromHeroLab(XmlNode xmlStatBlockBaseNode)
+	    {
+            Timekeeper.Start("load_char_attrib");
+            foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
+                objAttribute.UnbindAttribute();
+            AttributeList.Clear();
+            SpecialAttributeList.Clear();
+            XmlDocument objXmlDocument = XmlManager.Load(_objCharacter.IsCritter ? "critters.xml" : "metatypes.xml");
+            XmlNode xmlMetatypeNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
+            XmlNode xmlCharNode = xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]") ?? xmlMetatypeNode;
+            // We only want to remake attributes for shifters in career mode, because they only get their second set of attributes when exporting from create mode into career mode
+            XmlNode xmlCharNodeAnimalForm = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? xmlMetatypeNode : null;
+            foreach (string strAttribute in AttributeStrings)
+            {
+                // First, remake the attribute
+                CharacterAttrib objAttribute = new CharacterAttrib(_objCharacter, strAttribute);
+                objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
+                switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
+                {
+                    case CharacterAttrib.AttributeCategory.Special:
+                        SpecialAttributeList.Add(objAttribute);
+                        break;
+                    case CharacterAttrib.AttributeCategory.Standard:
+                        AttributeList.Add(objAttribute);
+                        break;
+                }
+                if (xmlCharNodeAnimalForm != null)
+                {
+                    objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Shapeshifter);
+                    objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
+                    switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
+                    {
+                        case CharacterAttrib.AttributeCategory.Special:
+                            SpecialAttributeList.Add(objAttribute);
+                            break;
+                        case CharacterAttrib.AttributeCategory.Standard:
+                            AttributeList.Add(objAttribute);
+                            break;
+                    }
+                }
+
+                // Then load in attribute karma levels (we'll adjust these later if the character is in Create mode)
+                if (strAttribute == "ESS") // Not Essence though, this will get modified automatically instead of having its value set to the one HeroLab displays
+                    continue;
+                XmlNode xmlHeroLabAttributeNode = xmlStatBlockBaseNode.SelectSingleNode("attributes/attribute[@name = \"" + GetAttributeEnglishName(strAttribute) + "\"]");
+                XmlNode xmlAttributeBaseNode = xmlHeroLabAttributeNode?.SelectSingleNode("@base");
+                if (xmlAttributeBaseNode != null &&
+                    int.TryParse(xmlAttributeBaseNode.InnerText, out int intHeroLabAttributeBaseValue))
+                {
+                    int intAttributeMinimumValue = GetAttributeByName(strAttribute).MetatypeMinimum;
+                    if (intHeroLabAttributeBaseValue != intAttributeMinimumValue)
+                    {
+                        objAttribute.Karma = intHeroLabAttributeBaseValue - intAttributeMinimumValue;
+                    }
+                }
+            }
+
+	        if (!_objCharacter.Created && _objCharacter.BuildMethodHasSkillPoints)
+	        {
+                // Allocate Attribute Points
+	            int intAttributePointCount = _objCharacter.TotalAttributes;
+	            CharacterAttrib objAttributeToPutPointsInto;
+                // First loop through attributes where costs can be 100% covered with points
+	            do
+	            {
+	                objAttributeToPutPointsInto = null;
+	                int intAttributeToPutPointsIntoTotalKarmaCost = 0;
+                    foreach (CharacterAttrib objLoopAttribute in AttributeList)
+	                {
+                        if (objLoopAttribute.Karma == 0)
+                            continue;
+                        // Put points into the attribute with the highest total karma cost.
+	                    // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+	                    int intLoopTotalKarmaCost = objLoopAttribute.TotalKarmaCost;
+                        if (objAttributeToPutPointsInto == null || (objLoopAttribute.Karma <= intAttributePointCount &&
+                                                                    (intLoopTotalKarmaCost > intAttributeToPutPointsIntoTotalKarmaCost ||
+                                                                     (intLoopTotalKarmaCost == intAttributeToPutPointsIntoTotalKarmaCost && objLoopAttribute.Karma > objAttributeToPutPointsInto.Karma))))
+	                    {
+	                        objAttributeToPutPointsInto = objLoopAttribute;
+	                        intAttributeToPutPointsIntoTotalKarmaCost = intLoopTotalKarmaCost;
+	                    }
+	                }
+
+	                if (objAttributeToPutPointsInto != null)
+	                {
+	                    objAttributeToPutPointsInto.Base = objAttributeToPutPointsInto.Karma;
+                        intAttributePointCount -= objAttributeToPutPointsInto.Karma;
+                        objAttributeToPutPointsInto.Karma = 0;
+	                }
+	            } while (objAttributeToPutPointsInto != null && intAttributePointCount > 0);
+
+                // If any points left over, then put them all into the attribute with the highest karma cost
+	            if (intAttributePointCount > 0 && AttributeList.Any(x => x.Karma != 0))
+	            {
+	                int intHighestTotalKarmaCost = 0;
+	                foreach (CharacterAttrib objLoopAttribute in AttributeList)
+	                {
+	                    if (objLoopAttribute.Karma == 0)
+	                        continue;
+	                    // Put points into the attribute with the highest total karma cost.
+	                    // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+	                    int intLoopTotalKarmaCost = objLoopAttribute.TotalKarmaCost;
+	                    if (objAttributeToPutPointsInto == null ||
+	                        intLoopTotalKarmaCost > intHighestTotalKarmaCost ||
+	                        (intLoopTotalKarmaCost == intHighestTotalKarmaCost && objLoopAttribute.Karma > objAttributeToPutPointsInto.Karma))
+	                    {
+	                        objAttributeToPutPointsInto = objLoopAttribute;
+	                        intHighestTotalKarmaCost = intLoopTotalKarmaCost;
+	                    }
+	                }
+
+	                if (objAttributeToPutPointsInto != null)
+	                {
+	                    objAttributeToPutPointsInto.Base = intAttributePointCount;
+	                    objAttributeToPutPointsInto.Karma -= intAttributePointCount;
+	                }
+                }
+
+	            // Allocate Special Attribute Points
+                intAttributePointCount = _objCharacter.TotalSpecial;
+                // First loop through attributes where costs can be 100% covered with points
+                do
+                {
+                    objAttributeToPutPointsInto = null;
+                    int intAttributeToPutPointsIntoTotalKarmaCost = 0;
+                    foreach (CharacterAttrib objLoopAttribute in SpecialAttributeList)
+                    {
+                        if (objLoopAttribute.Karma == 0)
+                            continue;
+                        // Put points into the attribute with the highest total karma cost.
+                        // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+                        int intLoopTotalKarmaCost = objLoopAttribute.TotalKarmaCost;
+                        if (objAttributeToPutPointsInto == null || (objLoopAttribute.Karma <= intAttributePointCount &&
+                                                                    (intLoopTotalKarmaCost > intAttributeToPutPointsIntoTotalKarmaCost ||
+                                                                     (intLoopTotalKarmaCost == intAttributeToPutPointsIntoTotalKarmaCost && objLoopAttribute.Karma > objAttributeToPutPointsInto.Karma))))
+                        {
+                            objAttributeToPutPointsInto = objLoopAttribute;
+                            intAttributeToPutPointsIntoTotalKarmaCost = intLoopTotalKarmaCost;
+                        }
+                    }
+
+                    if (objAttributeToPutPointsInto != null)
+                    {
+                        objAttributeToPutPointsInto.Base = objAttributeToPutPointsInto.Karma;
+                        intAttributePointCount -= objAttributeToPutPointsInto.Karma;
+                        objAttributeToPutPointsInto.Karma = 0;
+                    }
+                } while (objAttributeToPutPointsInto != null);
+
+                // If any points left over, then put them all into the attribute with the highest karma cost
+                if (intAttributePointCount > 0 && SpecialAttributeList.Any(x => x.Karma != 0))
+                {
+                    int intHighestTotalKarmaCost = 0;
+                    foreach (CharacterAttrib objLoopAttribute in SpecialAttributeList)
+                    {
+                        if (objLoopAttribute.Karma == 0)
+                            continue;
+                        // Put points into the attribute with the highest total karma cost.
+                        // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+                        int intLoopTotalKarmaCost = objLoopAttribute.TotalKarmaCost;
+                        if (objAttributeToPutPointsInto == null ||
+                            intLoopTotalKarmaCost > intHighestTotalKarmaCost ||
+                            (intLoopTotalKarmaCost == intHighestTotalKarmaCost && objLoopAttribute.Karma > objAttributeToPutPointsInto.Karma))
+                        {
+                            objAttributeToPutPointsInto = objLoopAttribute;
+                            intHighestTotalKarmaCost = intLoopTotalKarmaCost;
+                        }
+                    }
+
+                    if (objAttributeToPutPointsInto != null)
+                    {
+                        objAttributeToPutPointsInto.Base = intAttributePointCount;
+                        objAttributeToPutPointsInto.Karma -= intAttributePointCount;
+                    }
+                }
+            }
+            ResetBindings();
+            Timekeeper.Finish("load_char_attrib");
+        }
+
         private static CharacterAttrib RemakeAttribute(CharacterAttrib objNewAttribute, XmlNode objCharacterNode)
         {
             string strAttributeLower = objNewAttribute.Abbrev.ToLowerInvariant();
@@ -286,21 +500,21 @@ namespace Chummer.Backend.Attributes
 			}
 		}
 
-		public static void CopyAttribute(CharacterAttrib source, CharacterAttrib target, string mv, XmlDocument xmlDoc)
+		public static void CopyAttribute(CharacterAttrib objSource, CharacterAttrib objTarget, string strMetavariantXPath, XmlDocument xmlDoc)
 		{
-            string strSourceAbbrev = source.Abbrev.ToLower();
+            string strSourceAbbrev = objSource.Abbrev.ToLower();
             if (strSourceAbbrev == "magadept")
                 strSourceAbbrev = "mag";
-            XmlNode node = xmlDoc.SelectSingleNode($"{mv}");
+            XmlNode node = !string.IsNullOrEmpty(strMetavariantXPath) ? xmlDoc.SelectSingleNode(strMetavariantXPath) : null;
 		    if (node != null)
 		    {
-		        target.MetatypeMinimum = Convert.ToInt32(node[$"{strSourceAbbrev}min"]?.InnerText);
-		        target.MetatypeMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}max"]?.InnerText);
-		        target.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}aug"]?.InnerText);
+		        objTarget.MetatypeMinimum = Convert.ToInt32(node[$"{strSourceAbbrev}min"]?.InnerText);
+		        objTarget.MetatypeMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}max"]?.InnerText);
+		        objTarget.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}aug"]?.InnerText);
 		    }
 
-		    target.Base = source.Base;
-			target.Karma = source.Karma;
+		    objTarget.Base = objSource.Base;
+		    objTarget.Karma = objSource.Karma;
         }
 
 		internal void Reset()

@@ -1,4 +1,37 @@
-Future Build 203
+Future Build 204
+
+Application Changes:
+
+- Fixed an issue where certain controls (e.g. Skills, Knowledge Skills) would not get their children controls translated. Fixes #3171.
+- Fixed an issue where drag-and-dropping weapons in career mode, as well as drag-and-dropping gear under certain circumstances, would not work. Fixes #3172.
+- Added an option to the dice roller tool where a roll glitches if there are more 1's than hits rather than more 1's than half of the character's dicepool.
+- Fixed a regression when purchasing Cyberware in Career mode in which it would not properly deduct from Essence Holes first. Fixes #3188
+- Fixes an issue with the calculation of lifestyle multipliers. Should fix #2639, fixes an issue with trolls not stacking correctly.
+- Fixed an issue with martial art techniques not being able to be refunded properly if removed. Fixes #3196
+- Fixed page offset changes not properly being stored.
+- Fixed a regression with exotic skills not picking up improvements. Fixes #3204
+- Fixed issues with objects not moving correctly when dragged between locations. Fixes #3079
+- Allowed gear to use forbidden and required nodes similar to those that can be used by qualities, cyberware, metamagics, and others.
+- Implemented most content from Better Than Bad, with exception of life modules and the Hard Luck quality.
+- Fixed incorrect behaviour for cyberware purchased via Black Market Pipeline not properly being discounted. Fixes #3244
+- Added basic functionality for the Sprite Pet from Kill Code. This is not currently restricted to the technoshaman archetype. 
+- Mildly ugly fix for cybersuites that come with cyberlimbs not properly being counted for attribute calculation.
+
+Data Changes:
+
+- Fixed Autopicker having an incorrect cost. Fixes #3167.
+- Fixed an issue with Japanese translations of certain lifestyle qualities caused by duplicate entries. Fixes #3168.
+- Added content from the German-exclusive sourcebook "Hamburg".
+- Removed redundant 'Enable Spells and Spirits Tab' improvement. Closes #3189
+- Added an optional rule from Chrome Flesh to allow Trolls to treat their horns as per the bio-weapon on page 121 of Chrome Flesh. 
+- Fixed incorrect requirements for the Special Modifications and Prototype Materials qualities. 
+- The Dual Natured critter power now grants access to Astral Combat. Magical Guard now grants access to the Counterspelling skill. RAW implies this is correct, but I'm not super confident in it. Closes #3195
+
+New Strings:
+
+- Checkbox_DiceRoller_VariableGlitch
+
+Build 203
 
 Application Changes:
 
@@ -58,6 +91,63 @@ Application Changes:
 - Fixed an incorrect string reference in the Limit right-click menu. Fixes #2995.
 - Fixed an issue where the Custom Drug creation screen and the custom drug system in general did not properly support translations. Fixes #2946.
 - Fixed an issue where custom drugs were never exposed to Print methods, meaning no character sheet could properly integrate them. No character sheet currently outputs information on custom drugs, but at least the foundation is now there.
+- Fixed an issue where saved custom drugs would not show up properly afted a character is loaded.
+- Lifestyle qualities will now also display their Extra information in the Shadowrun 5 character sheet set.
+- Fixed a potential crash in Create mode that could occur if an attribute's karma levels exceeded the maximum possible karma levels. Fixes #3004.
+- Fixed various issues that caused comboboxes in controls for skills and/or knowledge skills to not load translations properly. Fixes #3000.
+- Fixed an issue where the "Notes" menu point under the Advanced Lifestyles context menu strip would not get translated properly. Fixes #2998.
+- The Complex Forms & Sprites tab will now display the character's Paragon and information relevant to it if they have chosen a Paragon.
+- Fixed many cases where the presence of a quotation mark in an item's name would cause the program to crash. Fixes #3007.
+- Fixed cases where having certain characters in the notes and/or custom name fields would cause the program to crash when displaying the affected field's tooltip. Fixes #2982.
+- Added the ability for improvements to disable individual skills through the "disableskill" bonus node.
+- Added the ability for improvements to add arts through the "addart" and "selectart" bonus nodes.
+- Added the ability for improvements that add qualities, metamagics, arts, and/or echoes to ignore checking whether the newly added item has all of its requirements met before adding said item (e.g. for adding metamagics without adding the art prerequisites for the metamagic).
+- Properly implemented karma costs for Drake powers in career mode.
+- Fixed a bug where the checkbox for Working for the Man/People would appear as an empty checkbox when refunding an expense. Fixes #3016.
+- Fixed an issue where line breaks in notes would not show up properly in tooltips. Fixes #3019.
+- Fixed a bug where existing bioware on a character would not get removed if/when the character took Sensitive System or another quality that removed access to bioware. A similar bug was fixed for improvements that removed access to cyberware and/or 'ware entirely.
+- Fixed a bug where newly created characters would not get added to the list of characters open in internal memory, which could cause a whole lot of other issues, least of which was that the character's tab would not get properly updated if the character's alias was changed.
+- Added a loading bar/screen that is displayed when the program is performing its initial loading and whenever the program loads in a character.
+- Fixed a bug where the program's UI showed English page number references even for non-English languages. Fixes #3024.
+- Adept Way Discounts are no longer available to powers that don't have a populated Adept Way requirement. Fixes part of #3042
+- Fixed an issue with the Karma Metatype selector not showing the correct height.
+- The "ess" requirement used by Cyber-Snob and some other qualities can now filter based on multiple grades instead of just one. This allows a mixture of Betaware and Deltaware to qualify for Cyber-Snob, for example. Fixes #3047
+- Re-enabled the option to use More Lethal gameplay rules from 4th edition (the option is in the House Rules section).
+- Reorganized the options menu so that global options that are independent from the currently opened character are easier to tell apart, and so that the PDF information of individual sourcebooks can be modified even if a custom ruleset is enabled that disables the given sourcebooks.
+- The options menu now supports selecting a default gameplay option when creating a new character instead of modifying the default max availability and max starting karma amounts.
+- Gameplay options can now declare default values for karma levels under Point Buy, karma levels under Life Modules, and Sum-to-X value under Sum-to-Ten build methods in their XML entries.
+- Fixed a bug where improvements that added to a weapon type's DV would sometimes apply their bonus twice. Fixes #3036.
+- Fixed an issue where the dropdown menu option to change a character's metatype would show as "Change Priority Selection" regardless of the character's build method.
+- The Translator tool now warns users that the "Rebuild" option will delete translations for any data entries that are not present in the core Chummer5a data files, and now has a separate "Update" option that does not delete such translations. Fixes #2932.
+- Fixed an issue where increasing the quantity of gear that contained plugins would count the cost from its children incorrectly. Fixes #3003.
+- Fixed a bug where group layout boxes and controls within those group layout boxes would not get translated. Fixes #3052.
+- Added preliminary support for right-to-left scripts to Chummer5a's translation system and the Translator tool. It's currently relatively untested, but bugs will be ironed out if/when translations that use right-to-left scripts get included with the program.
+- Fixed a bug where improvements that grant extra damage resistance dice would also get added to armor when printing character information. Fixes #3058.
+- Fixed behaviour of DisplayPage property to not return an empty string if that's in the data file. Fixes #3064
+- Ugly workaround fix for characters that managed to get a power rating higher than total maximum magic to prevent them from crashing. Fixes #3062.
+- Base augmented attribute maxima are now properly fetched from a character's metatype/metavariant data instead of being fixed to 4 for regular attributes and 0 for special attributes.
+- Fixed an issue where an advanced lifestyle could not be edited during character creation if the final cost of the lifestyle was more than the character's current nuyen.
+- Fixed an issue where armor degradation could cause a piece of armor to have negative value.
+- Fixed an issue with attribute controls causing a crash if the character has multiple attributes at max-1 and takes an improvement that reduces that attribute maximum. Fixes #3086
+- Fixed an issue where the title of the character roster form was not getting translated. Fixes #3092.
+- Initiation Groups and Submersion Networks can now have their details edited at character creation.
+- Fixed behaviour of the Cyberadept Daemon to properly provide restored Essence. Due to legacy issues with the way Base attribute bonuses are calculated, this will not show up as a tooltip. This will be amended in a future patch.
+- The Restricted Gear bonus can now be set to apply to any availability limit at character generation instead of being hardcoded to 24.
+- Mentor Spirit and Paragon source references are now displayed next to their names within the Spells and Spirits tab (for Mentor Spirits) and the Sprites and Complex Forms tab (for Paragons).
+- Complex Forms will now display their dicepool as well as a button to roll it in career mode if the appropriate options have been set.
+- Fixed the calculation of Drain Value Tooltips improperly showing the Extended and Limited drain calculation.
+- Fixed an issue where certain items that came with an existing item would sometimes have their availabilities incorrectly checked for the availability limit, and fixed a similar issue where items that would be added onto such items by the player would not get their availabilities checked. Fixes #3117.
+- Fixed an issue where items that came built into items originating from different sourcebooks (e.g. a lifestyle quality from Run Faster coming by default with a lifestyle from the Core Rulebook) would process necessary sourcebooks for the character incorrectly. Existing saved characters with this issue will still have it, but no newly saved characters going forward will have this issue. Fixes #3109.
+- Fixed a bug where characters without Run Faster enabled could still add Advanced Lifestyles despite them being part of Run Faster.
+- Fixed an issue where limit modifiers added by improvements could get edited and/or deleted independent from their improvement.
+- Fixed an issue where some limit modifiers added by gear would not get properly removed when the gear was removed. Technical fix for #3115, though existing characters with these issues will need their existing, orphaned limit modifiers removed manually.
+- Added a limited-functionality Hero Lab importer tool. This tool can convert .por files into Chummer5a characters to a certain extent, as certain character elements aren't saved in ways that can be (easily) converted into Chummer5a information.
+- Fixed an issue where weapon accessories often would not get their proper ratings set. Fixes #3123.
+- Fixed an issue where renaming various locations would not cause the corresponding node in the appropriate TreeView to update. Fixes #3078.
+- Fixed a crash when changing between selected spells if going from a spell that can be Extended to a spell in the Detection category. Fixes #3153.
+- Fixed an issue where Magic-enabled characters without access to the Spells & Spirits tab could not be exported into Career mode because the program would prompt them for a Tradition that they are unable to select without access to the Spells & Spirits tab. Fixes #3148.
+- Fixed an issue where opening multiple characters from the command line would cause the program to open multiple instances of the last character in the list. Fixes #3151.
+- Fixed an issue where Essence Antihole would get treated like regular Cyberware instead of the opposite of an Essence Hole, e.g. in having Biocompatibility reduce the Essence effect of an Essence Antihole. Fixes #3146.
 
 Data Changes:
 
@@ -94,6 +184,25 @@ Data Changes:
 - Added the RunnerHub Rules custom ruleset, courtesy of /u/EnviousShadow.
 - Added "Mixed Unit Tactics" from Street Lethal as an example knowledge skill. It is assumed that the character can learn and use Mixed Unit Tactics as a knowledge skill without prerequisites, and the prerequisites described in Street Lethal only apply when using Mixed Unit Tactics' maneuvers from Street Lethal.
 - Added the previously missing categories node to drugcomponents.xml.
+- Added the previously missing option to add STATscan to a cyberhand.
+- Added entries for Seer and Null Wizard from Forbidden Arcana.
+- Fixed a bug where Elementalist would disable access to the Enchanting skill group instead of disabling access to skills in the Enchanting group.
+- Pariah tradition now properly disables access to skills noted in its description and properly gives +2 to Banishing, Counterspelling, and Disenchanting.
+- Fixed incorrect Slots for the Workshop vehicle mod.
+- Fixed inability to take Cyber-Snob with Deltaware cyberware. 
+- Fixed a typo in the name of the Dassault Janitorial Drone.
+- All instances of "NeoNET" are now capitalized as such (some items previously said "NeoNet" or "Neonet"). Fixes #3033.
+- Added (hidden) Gear items for Public Grid, Local Grid, and Global Grid so that these phrases can be handled by TranslateExtra. Part of #3002.
+- Fixed an issue with the Text-Only sheet that caused it to fail to load the LOG attribute.
+- Fixed incorrect RC and page reference for the Cavalier Thunderstruck. Fixes #3083.
+- Fixed a rare crash that would happen on startup if/when different loading theads would collide with one another while performing initial loading.
+- Fixed an issue where Combat Sense could not get discounted from The Invisible Way. Fixes #3098.
+- Fixed incorrect spell type for the Powerblade spell.
+- Fixed incorrect weapon mount entries for the EMC 2073 Catcher.
+- Fixed incorrect incorrect ammo category for the Lemat 2072's shotgun barrel.
+- Fixed incorrect ammo categories for the MP75 and HK 223C.
+- Fixed a crash when attempting to add programs to the Datajack Plus.
+- Fixed an issue where Essence Hole and Essence Antihole Cyberware could get grades applied to them and could potentially be added to something other than the base character's cyberware collection. Part of fix for #3146.
 
 New Strings:
 
@@ -120,6 +229,47 @@ New Strings:
 - Label_CrashEffect
 - String_DamageUnresisted
 - String_PerLevel
+- String_Loading
+- String_Loading_Pattern
+- String_Initializing
+- String_Settings
+- String_MentorSpirit
+- String_Locations
+- String_Metamagics
+- String_Arts
+- String_Enhancements
+- String_Expenses
+- String_LegacyFixes
+- String_GeneratedImprovements
+- String_UI
+- Tab_Options_GitHubIssues
+- Label_Options_EditSourcebookInfo
+- Label_Options_SourcebooksToUse
+- Label_Options_SelectedSourcebook
+- Label_Options_MetatypesCostKarma
+- Label_Options_CustomDataDirectories
+- Button_Options_UploadPastebin
+- Menu_SpecialChangePriorities
+- String_Matrix
+- String_Info
+- String_Vehicle
+- String_Weapon
+- String_Armor
+- String_InitiationGroup
+- String_InitiationType
+- String_SubmersionNetwork
+- String_SubmersionType
+- String_Paragon
+- String_Stream
+- Label_InitRoller_ResultOf
+- String_KarmaRemaining
+- String_NuyenRemaining
+- Title_HeroLabImporter
+- Message_HeroLabImporterWarning_Title
+- Message_HeroLabImporterWarning
+- Label_HeroLabTrademarks
+- String_SelectPORFile
+- String_ImportCharacter
 
 Changed Strings:
 
@@ -133,10 +283,22 @@ Changed Strings:
 - Label_SelectBP_SumToX
 - Label_SelectBP_MaxNuyen
 - Label_AddictionThreshold
+- Menu_Notes
+- Tab_Options_Global
+- Tab_Options_Character
+- Label_Options_Defaults
+- Label_Options_CyberlimbCount
+- Label_Options_NuyenPerBP
+- Checkbox_Options_MoreLethalGameplace
+- Checkbox_Option_CreateBackupOnCareer
+- Label_Options_CharacterRoster
+- Menu_SpecialChangeMetatype
 
 Removed Strings:
 
 - Label_SelectAdvancedLifestyle_Base_Area
+- Label_Options_AdditionalBooks
+- Checkbox_Options_MetatypesCostKarma
 
 Build 202
 

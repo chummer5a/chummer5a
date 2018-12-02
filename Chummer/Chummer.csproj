@@ -264,6 +264,18 @@
     <Compile Include="frmCreateWeaponMount.Designer.cs">
       <DependentUpon>frmCreateWeaponMount.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmLoading.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmLoading.Designer.cs">
+      <DependentUpon>frmLoading.cs</DependentUpon>
+    </Compile>
+    <Compile Include="helpers\BufferedTableLayoutPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="helpers\BufferedTableLayoutPanel.Designer.cs">
+      <DependentUpon>BufferedTableLayoutPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="helpers\DataGridViewTextBoxColumnTranslated.cs" />
     <Compile Include="helpers\ElasticComboBox.cs">
       <SubType>Component</SubType>
@@ -271,6 +283,7 @@
     <Compile Include="helpers\ButtonWithToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="helpers\FlagImageGetter.cs" />
     <Compile Include="helpers\LabelWithToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -421,6 +434,18 @@
     <Compile Include="UI\Attributes\AttributeControl.Designer.cs">
       <DependentUpon>AttributeControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Shared\LimitTabUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Shared\LimitTabUserControl.Designer.cs">
+      <DependentUpon>LimitTabUserControl.cs</DependentUpon>
+    </Compile>
+    <None Include="UI\Shared\VehiclesTabUserControl.cs">
+      <SubType>UserControl</SubType>
+    </None>
+    <None Include="UI\Shared\VehiclesTabUserControl.Designer.cs">
+      <DependentUpon>VehiclesTabUserControl.cs</DependentUpon>
+    </None>
     <Compile Include="UI\Skills\KnowledgeSkillControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -537,6 +562,12 @@
     </Compile>
     <Compile Include="frmHistory.Designer.cs">
       <DependentUpon>frmHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Utilities\frmHeroLabImporter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Utilities\frmHeroLabImporter.Designer.cs">
+      <DependentUpon>frmHeroLabImporter.cs</DependentUpon>
     </Compile>
     <Compile Include="Utilities\frmInitiative.cs">
       <SubType>Form</SubType>
@@ -1017,6 +1048,9 @@
     <EmbeddedResource Include="frmGMDashboard.resx">
       <DependentUpon>frmGMDashboard.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmLoading.resx">
+      <DependentUpon>frmLoading.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectOptionalPower.resx">
       <DependentUpon>frmSelectOptionalPower.cs</DependentUpon>
     </EmbeddedResource>
@@ -1034,6 +1068,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Attributes\AttributeControl.resx">
       <DependentUpon>AttributeControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Shared\LimitTabUserControl.resx">
+      <DependentUpon>LimitTabUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Shared\VehiclesTabUserControl.resx">
+      <DependentUpon>VehiclesTabUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Skills\KnowledgeSkillControl.resx">
       <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>
@@ -1071,6 +1111,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmHistory.resx">
       <DependentUpon>frmHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Utilities\frmHeroLabImporter.resx">
+      <DependentUpon>frmHeroLabImporter.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Utilities\frmInitiative.resx">
       <DependentUpon>frmInitiative.cs</DependentUpon>
@@ -1759,6 +1802,9 @@
     <Content Include="customdata\Delnar Skills Remake\amend_mentors.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_metatypes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Delnar Skills Remake\amend_powers.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1767,6 +1813,7 @@
     </Content>
     <Content Include="customdata\Delnar Skills Remake\amend_qualities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="customdata\Delnar Skills Remake\amend_skills.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1816,7 +1863,37 @@
     <Content Include="customdata\German Data Changes - Rigger 5 Mods - Catalina 2\amend_vehicles.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Legal SIN and Licenses\amend_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\German Data Changes - Seeker Shaft and Monotip Head Cost and Avail\amend_arrows_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Point Priority Chargen\amend_bioware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Point Priority Chargen\amend_echoes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Point Priority Chargen\amend_gameplayoptions.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Point Priority Chargen\amend_mentors.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Point Priority Chargen\amend_metatypes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Point Priority Chargen\amend_powers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Point Priority Chargen\amend_priorities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Point Priority Chargen\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Point Priority Chargen\amend_skills.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Radar Sensor as Sensor Function\custom_radarsensorfunction_gear.xml">
@@ -1832,6 +1909,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Runnerhub Rules\amend_bioware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Runnerhub Rules\amend_complexforms.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Runnerhub Rules\amend_cyberware.xml">
@@ -1937,6 +2017,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\SR Missions Animal Prices\amend_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Trolls Have Natural Weapon Horns\amend_trollhorn_metatypes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Trolls Have Natural Weapon Horns\custom_trollhorn_qualities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\sheets.xml">
@@ -2362,6 +2448,253 @@
     <Content Include="icons\film_link.png" />
     <Content Include="icons\film_save.png" />
     <Content Include="icons\find.png" />
+    <Content Include="icons\flags\ad.png" />
+    <Content Include="icons\flags\ae.png" />
+    <Content Include="icons\flags\af.png" />
+    <Content Include="icons\flags\ag.png" />
+    <Content Include="icons\flags\ai.png" />
+    <Content Include="icons\flags\al.png" />
+    <Content Include="icons\flags\am.png" />
+    <Content Include="icons\flags\an.png" />
+    <Content Include="icons\flags\ao.png" />
+    <Content Include="icons\flags\ar.png" />
+    <Content Include="icons\flags\as.png" />
+    <Content Include="icons\flags\at.png" />
+    <Content Include="icons\flags\au.png" />
+    <Content Include="icons\flags\aw.png" />
+    <Content Include="icons\flags\ax.png" />
+    <Content Include="icons\flags\az.png" />
+    <Content Include="icons\flags\ba.png" />
+    <Content Include="icons\flags\bb.png" />
+    <Content Include="icons\flags\bd.png" />
+    <Content Include="icons\flags\be.png" />
+    <Content Include="icons\flags\bf.png" />
+    <Content Include="icons\flags\bg.png" />
+    <Content Include="icons\flags\bh.png" />
+    <Content Include="icons\flags\bi.png" />
+    <Content Include="icons\flags\bj.png" />
+    <Content Include="icons\flags\bm.png" />
+    <Content Include="icons\flags\bn.png" />
+    <Content Include="icons\flags\bo.png" />
+    <Content Include="icons\flags\br.png" />
+    <Content Include="icons\flags\bs.png" />
+    <Content Include="icons\flags\bt.png" />
+    <Content Include="icons\flags\bv.png" />
+    <Content Include="icons\flags\bw.png" />
+    <Content Include="icons\flags\by.png" />
+    <Content Include="icons\flags\bz.png" />
+    <Content Include="icons\flags\ca.png" />
+    <Content Include="icons\flags\cc.png" />
+    <Content Include="icons\flags\cd.png" />
+    <Content Include="icons\flags\cf.png" />
+    <Content Include="icons\flags\cg.png" />
+    <Content Include="icons\flags\ch.png" />
+    <Content Include="icons\flags\ci.png" />
+    <Content Include="icons\flags\ck.png" />
+    <Content Include="icons\flags\cl.png" />
+    <Content Include="icons\flags\cm.png" />
+    <Content Include="icons\flags\cn.png" />
+    <Content Include="icons\flags\co.png" />
+    <Content Include="icons\flags\cr.png" />
+    <Content Include="icons\flags\cs.png" />
+    <Content Include="icons\flags\ct.png" />
+    <Content Include="icons\flags\cu.png" />
+    <Content Include="icons\flags\cv.png" />
+    <Content Include="icons\flags\cx.png" />
+    <Content Include="icons\flags\cy.png" />
+    <Content Include="icons\flags\cz.png" />
+    <Content Include="icons\flags\de.png" />
+    <Content Include="icons\flags\defaulted.png" />
+    <Content Include="icons\flags\dj.png" />
+    <Content Include="icons\flags\dk.png" />
+    <Content Include="icons\flags\dm.png" />
+    <Content Include="icons\flags\do.png" />
+    <Content Include="icons\flags\dz.png" />
+    <Content Include="icons\flags\ec.png" />
+    <Content Include="icons\flags\ee.png" />
+    <Content Include="icons\flags\eg.png" />
+    <Content Include="icons\flags\eh.png" />
+    <Content Include="icons\flags\er.png" />
+    <Content Include="icons\flags\es.png" />
+    <Content Include="icons\flags\et.png" />
+    <Content Include="icons\flags\eu.png" />
+    <Content Include="icons\flags\fi.png" />
+    <Content Include="icons\flags\fj.png" />
+    <Content Include="icons\flags\fk.png" />
+    <Content Include="icons\flags\fm.png" />
+    <Content Include="icons\flags\fo.png" />
+    <Content Include="icons\flags\fr.png" />
+    <Content Include="icons\flags\ga.png" />
+    <Content Include="icons\flags\gb.png" />
+    <Content Include="icons\flags\gd.png" />
+    <Content Include="icons\flags\ge.png" />
+    <Content Include="icons\flags\gf.png" />
+    <Content Include="icons\flags\gh.png" />
+    <Content Include="icons\flags\gi.png" />
+    <Content Include="icons\flags\gl.png" />
+    <Content Include="icons\flags\gm.png" />
+    <Content Include="icons\flags\gn.png" />
+    <Content Include="icons\flags\gp.png" />
+    <Content Include="icons\flags\gq.png" />
+    <Content Include="icons\flags\gr.png" />
+    <Content Include="icons\flags\gs.png" />
+    <Content Include="icons\flags\gt.png" />
+    <Content Include="icons\flags\gu.png" />
+    <Content Include="icons\flags\gw.png" />
+    <Content Include="icons\flags\gy.png" />
+    <Content Include="icons\flags\hk.png" />
+    <Content Include="icons\flags\hm.png" />
+    <Content Include="icons\flags\hn.png" />
+    <Content Include="icons\flags\hr.png" />
+    <Content Include="icons\flags\ht.png" />
+    <Content Include="icons\flags\hu.png" />
+    <Content Include="icons\flags\id.png" />
+    <Content Include="icons\flags\ie.png" />
+    <Content Include="icons\flags\il.png" />
+    <Content Include="icons\flags\in.png" />
+    <Content Include="icons\flags\io.png" />
+    <Content Include="icons\flags\iq.png" />
+    <Content Include="icons\flags\ir.png" />
+    <Content Include="icons\flags\is.png" />
+    <Content Include="icons\flags\it.png" />
+    <Content Include="icons\flags\jm.png" />
+    <Content Include="icons\flags\jo.png" />
+    <Content Include="icons\flags\jp.png" />
+    <Content Include="icons\flags\ke.png" />
+    <Content Include="icons\flags\kg.png" />
+    <Content Include="icons\flags\kh.png" />
+    <Content Include="icons\flags\ki.png" />
+    <Content Include="icons\flags\km.png" />
+    <Content Include="icons\flags\kn.png" />
+    <Content Include="icons\flags\kp.png" />
+    <Content Include="icons\flags\kr.png" />
+    <Content Include="icons\flags\kw.png" />
+    <Content Include="icons\flags\ky.png" />
+    <Content Include="icons\flags\kz.png" />
+    <Content Include="icons\flags\la.png" />
+    <Content Include="icons\flags\lb.png" />
+    <Content Include="icons\flags\lc.png" />
+    <Content Include="icons\flags\li.png" />
+    <Content Include="icons\flags\lk.png" />
+    <Content Include="icons\flags\lr.png" />
+    <Content Include="icons\flags\ls.png" />
+    <Content Include="icons\flags\lt.png" />
+    <Content Include="icons\flags\lu.png" />
+    <Content Include="icons\flags\lv.png" />
+    <Content Include="icons\flags\ly.png" />
+    <Content Include="icons\flags\ma.png" />
+    <Content Include="icons\flags\mc.png" />
+    <Content Include="icons\flags\md.png" />
+    <Content Include="icons\flags\me.png" />
+    <Content Include="icons\flags\mg.png" />
+    <Content Include="icons\flags\mh.png" />
+    <Content Include="icons\flags\mk.png" />
+    <Content Include="icons\flags\ml.png" />
+    <Content Include="icons\flags\mm.png" />
+    <Content Include="icons\flags\mn.png" />
+    <Content Include="icons\flags\mo.png" />
+    <Content Include="icons\flags\mp.png" />
+    <Content Include="icons\flags\mq.png" />
+    <Content Include="icons\flags\mr.png" />
+    <Content Include="icons\flags\ms.png" />
+    <Content Include="icons\flags\mt.png" />
+    <Content Include="icons\flags\mu.png" />
+    <Content Include="icons\flags\mv.png" />
+    <Content Include="icons\flags\mw.png" />
+    <Content Include="icons\flags\mx.png" />
+    <Content Include="icons\flags\my.png" />
+    <Content Include="icons\flags\mz.png" />
+    <Content Include="icons\flags\na.png" />
+    <Content Include="icons\flags\nc.png" />
+    <Content Include="icons\flags\ne.png" />
+    <Content Include="icons\flags\nf.png" />
+    <Content Include="icons\flags\ng.png" />
+    <Content Include="icons\flags\ni.png" />
+    <Content Include="icons\flags\nl.png" />
+    <Content Include="icons\flags\no.png" />
+    <Content Include="icons\flags\np.png" />
+    <Content Include="icons\flags\nr.png" />
+    <Content Include="icons\flags\nu.png" />
+    <Content Include="icons\flags\nz.png" />
+    <Content Include="icons\flags\om.png" />
+    <Content Include="icons\flags\pa.png" />
+    <Content Include="icons\flags\pe.png" />
+    <Content Include="icons\flags\pf.png" />
+    <Content Include="icons\flags\pg.png" />
+    <Content Include="icons\flags\ph.png" />
+    <Content Include="icons\flags\pk.png" />
+    <Content Include="icons\flags\pl.png" />
+    <Content Include="icons\flags\pm.png" />
+    <Content Include="icons\flags\pn.png" />
+    <Content Include="icons\flags\pr.png" />
+    <Content Include="icons\flags\ps.png" />
+    <Content Include="icons\flags\pt.png" />
+    <Content Include="icons\flags\pw.png" />
+    <Content Include="icons\flags\py.png" />
+    <Content Include="icons\flags\qa.png" />
+    <Content Include="icons\flags\re.png" />
+    <Content Include="icons\flags\ro.png" />
+    <Content Include="icons\flags\rs.png" />
+    <Content Include="icons\flags\ru.png" />
+    <Content Include="icons\flags\rw.png" />
+    <Content Include="icons\flags\sa.png" />
+    <Content Include="icons\flags\sb.png" />
+    <Content Include="icons\flags\sc.png" />
+    <Content Include="icons\flags\sd.png" />
+    <Content Include="icons\flags\se.png" />
+    <Content Include="icons\flags\sg.png" />
+    <Content Include="icons\flags\sh.png" />
+    <Content Include="icons\flags\si.png" />
+    <Content Include="icons\flags\sj.png" />
+    <Content Include="icons\flags\sk.png" />
+    <Content Include="icons\flags\sl.png" />
+    <Content Include="icons\flags\sm.png" />
+    <Content Include="icons\flags\sn.png" />
+    <Content Include="icons\flags\so.png" />
+    <Content Include="icons\flags\sr.png" />
+    <Content Include="icons\flags\st.png" />
+    <Content Include="icons\flags\sv.png" />
+    <Content Include="icons\flags\sy.png" />
+    <Content Include="icons\flags\sz.png" />
+    <Content Include="icons\flags\tc.png" />
+    <Content Include="icons\flags\td.png" />
+    <Content Include="icons\flags\tf.png" />
+    <Content Include="icons\flags\tg.png" />
+    <Content Include="icons\flags\th.png" />
+    <Content Include="icons\flags\tj.png" />
+    <Content Include="icons\flags\tk.png" />
+    <Content Include="icons\flags\tl.png" />
+    <Content Include="icons\flags\tm.png" />
+    <Content Include="icons\flags\tn.png" />
+    <Content Include="icons\flags\to.png" />
+    <Content Include="icons\flags\tr.png" />
+    <Content Include="icons\flags\tt.png" />
+    <Content Include="icons\flags\tv.png" />
+    <Content Include="icons\flags\tw.png" />
+    <Content Include="icons\flags\tz.png" />
+    <Content Include="icons\flags\ua.png" />
+    <Content Include="icons\flags\ug.png" />
+    <Content Include="icons\flags\um.png" />
+    <Content Include="icons\flags\us.png" />
+    <Content Include="icons\flags\uy.png" />
+    <Content Include="icons\flags\uz.png" />
+    <Content Include="icons\flags\va.png" />
+    <Content Include="icons\flags\vc.png" />
+    <Content Include="icons\flags\ve.png" />
+    <Content Include="icons\flags\vg.png" />
+    <Content Include="icons\flags\vi.png" />
+    <Content Include="icons\flags\vn.png" />
+    <Content Include="icons\flags\vu.png" />
+    <Content Include="icons\flags\wf.png" />
+    <Content Include="icons\flags\ws.png" />
+    <Content Include="icons\flags\xe.png" />
+    <Content Include="icons\flags\xs.png" />
+    <Content Include="icons\flags\xw.png" />
+    <Content Include="icons\flags\ye.png" />
+    <Content Include="icons\flags\yt.png" />
+    <Content Include="icons\flags\za.png" />
+    <Content Include="icons\flags\zm.png" />
+    <Content Include="icons\flags\zw.png" />
     <Content Include="icons\flag_blue.png" />
     <Content Include="icons\flag_green.png" />
     <Content Include="icons\flag_orange.png" />
@@ -2413,6 +2746,7 @@
     <Content Include="icons\heart_add.png" />
     <Content Include="icons\heart_delete.png" />
     <Content Include="icons\help.png" />
+    <Content Include="icons\HeroLab_16.png" />
     <Content Include="icons\hourglass.png" />
     <Content Include="icons\hourglass_add.png" />
     <Content Include="icons\hourglass_delete.png" />
@@ -2883,7 +3217,7 @@
     <Content Include="icons\transmit_edit.png" />
     <Content Include="icons\transmit_error.png" />
     <Content Include="icons\transmit_go.png" />
-    <Content Include="icons\troll.png" />
+    <Content Include="Resources\troll.png" />
     <Content Include="icons\tux.png" />
     <Content Include="icons\user.png" />
     <Content Include="icons\user_comment.png" />
@@ -3015,6 +3349,9 @@
     <Content Include="sheets\de-de\Game Master Summary.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="sheets\de-de\Spirits and Sprites.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sheets\de-de\xz.language.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -3098,6 +3435,9 @@
     <Content Include="sheets\fr-fr\Shadowrun 5.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="sheets\fr-fr\Spirits and Sprites.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sheets\fr-fr\Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -3165,6 +3505,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\ja-jp\Shadowrun 5.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\ja-jp\Spirits and Sprites.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\ja-jp\Text-Only.xsl">
@@ -3236,6 +3579,9 @@
     <Content Include="sheets\pt-br\Shadowrun 5.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="sheets\pt-br\Spirits and Sprites.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sheets\pt-br\Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -3273,6 +3619,12 @@
     <Content Include="sheets\Shadowrun 5.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="sheets\Spirits and Sprites set.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\Spirits and Sprites.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sheets\Text-Only set.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -3286,6 +3638,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\xs.fnx.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\xs.fnxTests.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\xs.SkillsGroupedAssorted.xslt">
@@ -3323,6 +3678,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\xt.Lifestyles.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\xt.MetamagicArts.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\xt.Metamagics.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\xt.MovementRate.xslt">
@@ -3425,6 +3786,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\zh-cn\Commlinks.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\zh-cn\Spirits and Sprites.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\zh-cn\Vehicles.xsl">

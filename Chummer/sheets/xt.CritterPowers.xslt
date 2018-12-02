@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- Format Complex Forms list of Character Sheet -->
+<!-- Format Critter Powers list of Character Sheet -->
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
         xmlns:msxsl="urn:schemas-microsoft-com:xslt">
 
   <xsl:template name="CritterPowers">
     <tr>
-      <th width="50%" style="text-align: left">
-        <xsl:value-of select="$lang.Critter"/>
+      <th width="30%" style="text-align: left">
+        <xsl:value-of select="$lang.CritterPower"/>
       </th>
-      <th width="30%"><xsl:value-of select="$lang.Rating"/></th>
-      <th width="10%"/>
+      <th width="10%"><xsl:value-of select="$lang.Category"/></th>
+      <th width="6%"><xsl:value-of select="$lang.Type"/></th>
+      <th width="8%"><xsl:value-of select="$lang.Action"/></th>
+      <th width="17%"><xsl:value-of select="$lang.Range"/></th>
+      <th width="8%"><xsl:value-of select="$lang.Rating"/></th>
+      <th width="11%"><xsl:value-of select="$lang.Duration"/></th>
       <th width="10%"/>
     </tr>
 
@@ -25,9 +29,27 @@
           <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
         </td>
         <td style="text-align: center">
+          <xsl:value-of select="category"/>
+        </td>
+        <td style="text-align: center">
+          <xsl:value-of select="type"/>
+        </td>
+        <td style="text-align: center">
+          <xsl:value-of select="action"/>
+        </td>
+        <td style="text-align: center">
+          <xsl:call-template name="fnx-range">
+            <xsl:with-param name="code" select="range"/>
+          </xsl:call-template>
+        </td>
+        <td style="text-align: center">
           <xsl:value-of select="rating"/>
         </td>
-        <td/>
+        <td style="text-align: center">
+          <xsl:call-template name="fnx-duration">
+            <xsl:with-param name="code" select="duration"/>
+          </xsl:call-template>
+        </td>
         <td style="text-align: center">
           <xsl:value-of select="source"/>
           <xsl:text> </xsl:text>
@@ -52,5 +74,4 @@
       </xsl:call-template>
     </xsl:for-each>
   </xsl:template>
-
 </xsl:stylesheet>

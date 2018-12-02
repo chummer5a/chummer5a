@@ -73,10 +73,10 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             Width = cmdDelete.Left + cmdDelete.Width;
 
+            chkFettered.DataBindings.Add("Checked", _objSpirit, nameof(_objSpirit.Fettered), false,
+                DataSourceUpdateMode.OnPropertyChanged);
             if (blnIsSpirit)
             {
-                chkFettered.DataBindings.Add("Checked", _objSpirit, nameof(_objSpirit.Fettered), false,
-                    DataSourceUpdateMode.OnPropertyChanged);
                 lblForce.Text = LanguageManager.GetString("Label_Spirit_Force", GlobalOptions.Language);
                 chkBound.Text = LanguageManager.GetString("Checkbox_Spirit_Bound", GlobalOptions.Language);
                 imgLink.SetToolTip(LanguageManager.GetString(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Spirit_OpenFile" : "Tip_Spirit_LinkSpirit", GlobalOptions.Language));
@@ -88,9 +88,9 @@ namespace Chummer
             }
             else
             {
-                chkFettered.Visible = false;
                 lblForce.Text = LanguageManager.GetString("Label_Sprite_Rating", GlobalOptions.Language);
                 chkBound.Text = LanguageManager.GetString("Label_Sprite_Registered", GlobalOptions.Language);
+                chkFettered.Text = LanguageManager.GetString("Checkbox_Sprite_Pet", GlobalOptions.Language);
                 imgLink.SetToolTip(LanguageManager.GetString(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Sprite_OpenFile" : "Tip_Sprite_LinkSpirit", GlobalOptions.Language));
 
                 string strTooltip = LanguageManager.GetString("Tip_Sprite_EditNotes", GlobalOptions.Language);
@@ -196,7 +196,7 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language).Replace("{0}", _objSpirit.FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), _objSpirit.FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -215,7 +215,7 @@ namespace Chummer
                 imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_LinkSpirit" : "Tip_Sprite_LinkSprite", GlobalOptions.Language));
 
                 // Set the relative path.
-                Uri uriApplication = new Uri(Application.StartupPath);
+                Uri uriApplication = new Uri(Utils.GetStartupPath);
                 Uri uriFile = new Uri(_objSpirit.FileName);
                 Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
                 _objSpirit.RelativeFileName = "../" + uriRelative.ToString();
@@ -458,7 +458,7 @@ namespace Chummer
             // If the Critter could not be found, show an error and get out of here.
             if (objXmlMetatype == null)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_UnknownCritterType", GlobalOptions.Language).Replace("{0}", strCritterName), LanguageManager.GetString("MessageTitle_SelectCritterType", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(string.Format(LanguageManager.GetString("Message_UnknownCritterType", GlobalOptions.Language), strCritterName), LanguageManager.GetString("MessageTitle_SelectCritterType", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -634,7 +634,7 @@ namespace Chummer
                 if (objXmlGear.Attributes["rating"] != null)
                     intRating = ExpressionToInt(objXmlGear.Attributes["rating"].InnerText, decimal.ToInt32(nudForce.Value), 0);
                 string strForceValue = objXmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
-                XmlNode objXmlGearItem = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlGear.InnerText + "\"]");
+                XmlNode objXmlGearItem = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlGear.InnerText.CleanXPath() + "]");
                 Gear objGear = new Gear(objCharacter);
                 List<Weapon> lstWeapons = new List<Weapon>();
                 objGear.Create(objXmlGearItem, intRating, lstWeapons, strForceValue);

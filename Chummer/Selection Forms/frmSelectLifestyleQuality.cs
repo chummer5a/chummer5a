@@ -57,8 +57,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             _strSelectedLifestyle = strSelectedLifestyle;
             _lstExistingQualities = lstExistingQualities;
-
-            MoveControls();
+            
             // Load the Quality information.
             _objXmlDocument = XmlManager.Load("lifestyles.xml");
             _objMetatypeDocument = XmlManager.Load("metatypes.xml");
@@ -642,7 +641,7 @@ namespace Chummer
                                 if (_objCharacter.CareerKarma >= Convert.ToInt32(objXmlRequired.InnerText))
                                     blnOneOfMet = true;
                                 else
-                                    strThisRequirement = Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language).Replace("{0}", objXmlRequired.InnerText);
+                                    strThisRequirement = Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language), objXmlRequired.InnerText);
                                 break;
                             case "ess":
                                 // Check Essence requirement.
@@ -895,7 +894,7 @@ namespace Chummer
                                 if (_objCharacter.CareerKarma >= Convert.ToInt32(objXmlRequired.InnerText))
                                     blnFound = true;
                                 else
-                                    strThisRequirement = Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language).Replace("{0}", objXmlRequired.InnerText);
+                                    strThisRequirement = Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language), objXmlRequired.InnerText);
                                 break;
                             case "ess":
                                 // Check Essence requirement.
@@ -1090,15 +1089,6 @@ namespace Chummer
             }
 
             return true;
-        }
-
-        private void MoveControls()
-        {
-            int intWidth = Math.Max(lblBPLabel.Width, lblSourceLabel.Width);
-            lblBP.Left = lblBPLabel.Left + intWidth + 6;
-            lblSource.Left = lblSourceLabel.Left + intWidth + 6;
-
-            lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
         }
 
         private void OpenSourceFromLabel(object sender, EventArgs e)

@@ -106,15 +106,35 @@ namespace Chummer
             objXmlSpellNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
 
-            SourceDetail = new SourceString(_strSource, _strPage);
             /*
-            if (_strNotes == string.Empty)
+            if (string.IsNullOrEmpty(_strNotes))
             {
                 _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
             }*/
         }
 
-        public SourceString SourceDetail { get; set; }
+        private SourceString _objCachedSourceDetail;
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == null)
+                {
+                    string strSource = Source;
+                    string strPage = DisplayPage(GlobalOptions.Language);
+                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+                    {
+                        _objCachedSourceDetail = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    }
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                    }
+                }
+
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -144,7 +164,9 @@ namespace Chummer
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
+
+            if (Grade >= 0)
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -181,7 +203,6 @@ namespace Chummer
 
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            SourceDetail = new SourceString(_strSource, _strPage);
         }
 
         /// <summary>
@@ -460,19 +481,20 @@ namespace Chummer
                     {
                         int intDV = Convert.ToInt32(Math.Floor(Convert.ToDouble(xprResult.ToString(), GlobalOptions.InvariantCultureInfo)));
 
-                        if (Limited)
-                        {
-                            intDV -= 2;
-                        }
-                        if (Extended && !Name.EndsWith("Extended"))
-                        {
-                            intDV += 2;
-                        }
-
                         // Drain cannot be lower than 2.
                         if (intDV < 2)
                             intDV = 2;
-                        strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Force", GlobalOptions.Language) + strSpaceCharacter + i.ToString() + ':' + strSpaceCharacter + intDV.ToString());
+                        strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Force", GlobalOptions.Language) + strSpaceCharacter + i.ToString(GlobalOptions.CultureInfo)
+                                      + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + strSpaceCharacter + intDV);
+
+                        if (Limited)
+                        {
+                            strTip.Append($"{strSpaceCharacter}({LanguageManager.GetString("String_SpellLimited", GlobalOptions.Language)}{strSpaceCharacter}:{strSpaceCharacter}-2");
+                        }
+                        if (Extended && !Name.EndsWith("Extended"))
+                        {
+                            strTip.Append($"{strSpaceCharacter}({LanguageManager.GetString("String_SpellExtended", GlobalOptions.Language)}{strSpaceCharacter}:{strSpaceCharacter}+2");
+                        }
                     }
                     else
                     {
@@ -663,12 +685,18 @@ namespace Chummer
             set => _strPage = value;
         }
 
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty. 
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Page;
-
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         /// <summary>
@@ -833,14 +861,19 @@ namespace Chummer
                     strReturn = objSkill.DisplayNameMethod(GlobalOptions.Language) + strSpaceCharacter + '(' + intPool.ToString(GlobalOptions.CultureInfo) + ')';
                     // Add any Specialization bonus if applicable.
                     if (objSkill.HasSpecialization(Category))
-                        strReturn += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language) + ':' + strSpaceCharacter + DisplayCategory(GlobalOptions.Language) + strSpaceCharacter + '(' + 2.ToString(GlobalOptions.CultureInfo) + ')';
+                        strReturn += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language)
+                                     + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + strSpaceCharacter + DisplayCategory(GlobalOptions.Language)
+                                     + strSpaceCharacter + '(' + 2.ToString(GlobalOptions.CultureInfo) + ')';
                 }
 
                 // Include any Improvements to the Spell Category.
-                int intSpellImprovements = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SpellCategory, false, Category);
-                if (intSpellImprovements != 0)
-                    strReturn += strSpaceCharacter + '+' + strSpaceCharacter + DisplayCategory(GlobalOptions.Language) + strSpaceCharacter + '(' + intSpellImprovements.ToString(GlobalOptions.CultureInfo) + ')';
-
+                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                {
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.SpellCategory && objImprovement.Enabled && objImprovement.ImprovedName == Category)
+                    {
+                        strReturn += strSpaceCharacter + '+' + strSpaceCharacter + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter + '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')';
+                    }
+                }
                 return strReturn;
             }
         }
@@ -925,19 +958,9 @@ namespace Chummer
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (SourceDetail != null)
-            {
-                SourceDetail.SetControl(sourceControl);
-            }
-            else if (!string.IsNullOrWhiteSpace(_strPage) && !string.IsNullOrWhiteSpace(_strSource))
-            {
-                SourceDetail = new SourceString(_strSource, _strPage);
-                SourceDetail.SetControl(sourceControl);
-            }
-            else
-            {
-                Utils.BreakIfDebug();
-            }
+            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = null;
+            SourceDetail.SetControl(sourceControl);
         }
     }
 }
