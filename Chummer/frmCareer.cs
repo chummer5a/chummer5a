@@ -17100,6 +17100,7 @@ private void RefreshSelectedSpell()
 
             IsDirty = true;
         }
+        #region Wireless Toggles
 
         private void chkGearWireless_CheckedChanged(object sender, EventArgs e)
         {
@@ -17120,6 +17121,28 @@ private void RefreshSelectedSpell()
                 obj.WirelessOn = chkCyberwareWireless.Checked;
             }
         }
+
+        private void chkWeaponWireless_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+            if (treWeapons.SelectedNode.Tag is IHasWirelessBonus obj)
+            {
+                obj.WirelessOn = chkWeaponWireless.Checked;
+            }
+
+        }
+
+        private void chkArmorWireless_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+            if (treArmor.SelectedNode.Tag is IHasWirelessBonus obj)
+            {
+                obj.WirelessOn = chkArmorWireless.Checked;
+            }
+        }
+        #endregion
 
         private void pnlAttributes_Layout(object sender, LayoutEventArgs e)
         {
