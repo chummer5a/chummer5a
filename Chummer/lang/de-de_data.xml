@@ -38998,6 +38998,12 @@
 				<translate>Yongkang Water Spirit</translate>
 				<altpage>177</altpage>
 			</vehicle>
+			<vehicle translated="True">
+				<id>4f1cc61b-7eae-4909-b549-5dda9e6f3f3f</id>
+				<name>Maersk Shipyards Wavecutter MPAC</name>
+				<translate>Maersk Shipyards Wavecutter MPAC</translate>
+				<altpage>138</altpage>
+			</vehicle>
 		</vehicles>
 		<mods>
 			<mod>
@@ -43576,6 +43582,24 @@
 				<name>Elektro-Netz</name>
 				<translate>Elektro-Netz</translate>
 				<altpage>172</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>79599718-2154-45ad-ba32-bbb65c0a5bf4</id>
+				<name>Renkaru Red Samurai Katana</name>
+				<translate>Katana der roten Samurai</translate>
+				<altpage>139</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>09502fce-989a-4143-95a8-86dbe70b909d</id>
+				<name>SK/Onotari Arms Silent Claw Stiletto</name>
+				<translate>SK/Onotari Arms Silent Claw</translate>
+				<altpage>140</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>b14a54e6-a60d-4e89-8ddb-91b4af9d41e8</id>
+				<name>Wuxing-Armtec PTL-02</name>
+				<translate>Wuxing-Armtec PTL-02</translate>
+				<altpage>141</altpage>
 			</weapon>
 		</weapons>
 		<accessories>
