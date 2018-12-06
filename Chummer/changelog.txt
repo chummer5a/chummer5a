@@ -17,6 +17,8 @@ Application Changes:
 - Added basic functionality for the Sprite Pet from Kill Code. This is not currently restricted to the technoshaman archetype. 
 - Mildly ugly fix for cybersuites that come with cyberlimbs not properly being counted for attribute calculation.
 - Added a catch to prevent Chummer from crashing when updating if old files are still being held by other applications. Should fix #3250
+- The Digital Doppelganger quality now allows for Fake SINs as a requirement.
+- Added gear as a requirement check.
 
 Data Changes:
 
