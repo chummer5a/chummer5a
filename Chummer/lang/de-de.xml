@@ -9426,5 +9426,9 @@
 			<key>Checkbox_DiceRoller_VariableGlitch</key>
 			<text>Patzer bei mehr Einsen als Erfolgen, nicht bei halbem Würfelpool</text>
 		</string>
+		<string>
+			<key>Checkbox_Sprite_Pet</key>
+			<text>Sprite-Haustier</text>
+		</string>
 	</strings>
 </chummer>
