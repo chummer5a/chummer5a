@@ -8482,7 +8482,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_CloseCall</key>
-			<text>Close Call</text>
+			<text>C'est pas loin</text>
 		</string>
 		<string>
 			<key>String_DeadManTrigger</key>
@@ -8764,7 +8764,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_OverPrototypeLimit</key>
-			<text>Bioware limit exceeded for Prototype Transhuman. Current: {0} Maximum: {1}</text>
+			<text>Limite de Bioware dépassée pour le Prototype Transhuman. Courant : {0} Maximum : {1}</text>
 		</string>
 		<string>
 			<key>Message_OverPositiveMetagenicQualities</key>
@@ -8780,19 +8780,19 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_MetagenicQualitiesInsufficientKarma</key>
-			<text>1 Karma is required to balance Negative and Positive Metagenic Qualities. Currently available: {0}</text>
+			<text>1 Karma est nécessaire pour équilibrer les qualités métagéniques négatives et positives. Actuellement disponible : {0}</text>
 		</string>
 		<string>
 			<key>Message_MetagenicQualitiesSubtractingKarma</key>
-			<text>1 Karma is required to balance Negative and Positive Metagenic Qualities. Currently available: {0}.\nIs it okay to spend this karma?</text>
+			<text>1 Karma est nécessaire pour équilibrer les qualités métagéniques négatives et positives. Actuellement disponible : {0}.\nEst-ce acceptable de dépenser ce karma ?</text>
 		</string>
 		<string>
 			<key>Message_NoExtraKarma</key>
-			<text>You have {0} Karma remaining but are not allowed to carry any over to your career.\nAre you sure you want to lose this extra Karma?</text>
+			<text>Vous avez encore {0} karma, mais vous ne pouvez pas le mettre en carrière. Êtes-vous sûr de vouloir perdre ce karma supplémentaire ?</text>
 		</string>
 		<string>
 			<key>Message_SumtoTen</key>
-			<text>Your Priority selection must equal {0}. It is currently {1}.</text>
+			<text>Votre sélection de priorité doit être égale à {0}. Il est actuellement {1}.</text>
 		</string>
 		<string>
 			<key>String_EdgeUse</key>
@@ -8812,7 +8812,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_ReapplyImprovementsFoundOutdatedItems_Bottom</key>
-			<text>\nAny improvements they granted could not be added back. Please manually remove and replace these items and/or make sure any custom data files used when creating this character are still present and active.</text>
+			<text>\nToutes les améliorations que vous avez accordées ne pouvaient pas être ajoutées à nouveau. Veuillez retirer et remplacer ces éléments manuellement et/ou vous assurer que tous les fichiers de données personnalisés utilisés pour créer ce caractère sont toujours présents et actifs.</text>
 		</string>
 		<string>
 			<key>String_Ambidextrous</key>
@@ -9060,7 +9060,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_Options_AllowPointBuySpecializationsOnKarmaSkills</key>
-			<text>Allow skill points to be used to buy specializations for karma-bought skills</text>
+			<text>Permettre l'utilisation des points de compétences pour l'achat de spécialisations pour des compétences achetées par karma</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_MysAdeptSecondMAGAttribute</key>
@@ -9068,7 +9068,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Tip_LifeModule_Warning</key>
-			<text>Life Modules are currently an experiemental system with limited features; it is present exclusively for testing purposes. See https://github.com/chummer5a/chummer5a/issues/2000 for details about the existing issues. Proceed at your own risk.\nDo you want to continue?</text>
+			<text>Les modules de vie sont actuellement un système expérimental avec des fonctionnalités limitées ; il est présent exclusivement à des fins de test. Visitez https://github.com/chummer5a/chummer5a/issues/2000 pour plus de détails sur les questions existantes. Procédez à vos risques et périls.\nVous voulez continuer ?</text>
 		</string>
 		<string>
 			<key>Tip_CalculatedMovement</key>
@@ -9196,11 +9196,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_Options_KnowledgeMultiplier</key>
-			<text>Override Knowledge Points (INT + LOG) Multiplier</text>
+			<text>Remplacer le multiplicateur pour les points de connaissance (INT + LOG)</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ContactMultiplier</key>
-			<text>Override Contact Points Charisma Multiplier</text>
+			<text>Remplacer le multiplicateur de charisme pour les points de connexion</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_UseTotalValueForFreeKnowledge</key>
@@ -9236,27 +9236,27 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Checkbox_Options_FreeKarmaContacts</key>
-			<text>Karma Build: Free Contacts like Priority Build</text>
+			<text>Création par Karma : Contacts gratuits comme la création de priorités</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedPositiveQualitiesCostDoubled</key>
-			<text>Use Career costs for all Positive Quality karma costs in excess of the limit</text>
+			<text>Utilisez les coûts de carrière pour tous les coûts du karma de qualité positive qui dépassent la limite.</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ReverseAttributePriorityOrder</key>
-			<text>Spend Karma on Attributes before Priority Points</text>
+			<text>Dépensez du karma sur les attributs avant les points de priorité</text>
 		</string>
 		<string>
 			<key>Checkbox_Option_AllowMysadPowerPointCareer</key>
-			<text>Allow Mystic Adepts to buy power points during career</text>
+			<text>Permettre aux Adeptes Mystiques d'acheter des points de pouvoir en mode carrière</text>
 		</string>
 		<string>
 			<key>Checkbox_Option_PrioritySpellsAsAdeptPowers</key>
-			<text>Allow spending of free spells from Magic Priority as power points</text>
+			<text>Permet de dépenser les sorts gratuits de la priorité magique comme points de pouvoir</text>
 		</string>
 		<string>
 			<key>Checkbox_Option_EducationQualitiesApplyOnChargenKarma</key>
-			<text>Education qualities give karma discount for knowledge skills in create mode</text>
+			<text>Les qualités d'éducation permettent au karma de bénéficier d'un escompte pour les compétences de connaissance en mode création.</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_OpenPDFsAsURLs</key>
@@ -9360,7 +9360,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_Nightly_Changelog_Warning</key>
-			<text>Versions in the nightly changelog are temporary.</text>
+			<text>Les versions du journal des modifications nightly sont temporaires.</text>
 		</string>
 		<string>
 			<key>String_Stable</key>
@@ -9448,7 +9448,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_MissingGameplayOption</key>
-			<text>This character was created with the following gameplay option:\n\n{0}\n\nThis gameplay option could not be found in the current data files. In order to continue loading this character, a new gameplay option must be selected for them.</text>
+			<text>Ce personnage a été créé avec l'option de gameplay suivante :\n\n{0}\n\nCette option de jeu n'a pas pu être trouvée dans les fichiers de données actuels. Pour continuer à charger ce personnage, une nouvelle option de gameplay doit être sélectionnée pour lui.</text>
 		</string>
 		<string>
 			<key>Message_MissingGameplayOption_Title</key>
@@ -9456,7 +9456,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Message_ImprovementLoadError</key>
-			<text>Chummer5a encountered an error when loading one or more improvements for this character. This is likely because a certain improvement present in an older version of Chummer has been significantly altered in a later version.\n\nThe issue can be fixed by re-applying only the improvements that caused issues.\n\nDo you wish to re-apply the problematic issues right now? If you do not, the issues can still be fixed by re-applying all improvements via Special &gt; Re-apply Improvements.</text>
+			<text>Chummer5a a rencontré une erreur lors du chargement d'une ou plusieurs améliorations pour ce personnage. C'est probablement parce qu'une certaine amélioration présente dans une ancienne version de Chummer a été considérablement modifiée dans une version ultérieure.\n\nLe problème peut être corrigé en appliquant à nouveau seulement les améliorations qui ont causé les problèmes.\n\nVoulez-vous appliquer à nouveau les problèmes problématiques maintenant ? Si ce n'est pas le cas, les problèmes peuvent toujours être résolus en appliquant à nouveau toutes les améliorations via Améliorations Spéciale &gt; Ré-appliquer les améliorations.</text>
 		</string>
 		<string>
 			<key>String_MentorSpirit</key>
