@@ -12617,7 +12617,7 @@ namespace Chummer
             {
                 int metageneticPositiveQualities = 0;
                 int metageneticNegativeQualities = 0;
-                foreach (Quality objQuality in CharacterObject.Qualities.Where(objQuality => objQuality.Metagenetic && objQuality.OriginSource.ToString() != QualitySource.Metatype.ToString()))
+                foreach (Quality objQuality in CharacterObject.Qualities.Where(objQuality => objQuality.Metagenetic && objQuality.OriginSource != QualitySource.Metatype && objQuality.OriginSource != QualitySource.MetatypeRemovable))
                 {
                     if (objQuality.Type == QualityType.Positive)
                     {

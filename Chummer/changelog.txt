@@ -19,6 +19,8 @@ Application Changes:
 - Added a catch to prevent Chummer from crashing when updating if old files are still being held by other applications. Should fix #3250
 - The Digital Doppelganger quality now allows for Fake SINs as a requirement.
 - Added gear as a requirement check.
+- Added condition checks to critter power purchases separate to the existing catregory filtering. 
+- MetatypeRemovable metagenetic qualities now no longer count towards metagenetic limits. For example, Wakyambi with Surge don't have to remove their Celerity quality.
 
 Data Changes:
 
@@ -29,6 +31,7 @@ Data Changes:
 - Added an optional rule from Chrome Flesh to allow Trolls to treat their horns as per the bio-weapon on page 121 of Chrome Flesh. 
 - Fixed incorrect requirements for the Special Modifications and Prototype Materials qualities. 
 - The Dual Natured critter power now grants access to Astral Combat. Magical Guard now grants access to the Counterspelling skill. RAW implies this is correct, but I'm not super confident in it. Closes #3195
+- Added missing critter powers from Dark Terrors, courtesy of Keeper M. 
 
 New Strings:
 
