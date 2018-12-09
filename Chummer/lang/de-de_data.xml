@@ -20148,7 +20148,7 @@
 					</choice>
 					<choice set="2">
 						<name>Magician: +2 dice for Combat spells</name>
-						<translate>Zauberer: +2 Würfel auf Kampfzauber</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Kampf</translate>
 					</choice>
 					<choice set="2">
 						<name>Adept: free Killing Hands</name>
@@ -20164,7 +20164,7 @@
 					</choice>
 					<choice set="2">
 						<name>Magician: +2 dice for Combat spells</name>
-						<translate>Zauberer: +2 Würfel auf Kampfzauber</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Kampf</translate>
 					</choice>
 					<choice set="2">
 						<name>Adept: free Killing Hands</name>
@@ -20180,19 +20180,15 @@
 					</choice>
 					<choice set="2">
 						<name>Magician: +2 dice for Combat spells</name>
-						<translate>Zauberer: +2 Würfel auf Kampfzauber</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Kampf</translate>
 					</choice>
 					<choice set="2">
 						<name>Adept: free Killing Hands</name>
 						<translate>Adept: Todeskralle gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>+2 Würfel für toxische Geister des Menschen oder toxische Geister des Tieres (Spieler muss eins auswählen),+2 Würfel auf überreden-Proben.</altadvantage>
-				<altdisadvantage>
-					Überzeugt davon, dass das Ende nah ist, sehen die Verkünder des Untergangs keinen Sinn drin, Beziehungen aufrechtzuerhalten, bestimmte Interessen zu verfolgen oder sich an jegliche
-					Besitztümer zu hängen, die für ihre apokalyptischen Pläne nicht von Bedeutung sind. Solche Zauberer müssen eine Willenskraft + Charisma(3)-Probe bestehen, um eine Handlung zu vollbringen, die
-					solche unnötigen Anhängsel fördert.
-				</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Sprengstoffe oder eine einzelne Kampffertigkeit nach Wahl des Charakters</altadvantage>
+				<altdisadvantage>Anhänger von Untergang müssen eine Probe auf Willenskraft + Charisma (3) schaffen, um nicht an einem Kampf teilzunehmen, der bereits begonnen hat, oder einen gewalttätigen Plan nicht umzusetzen. Wenn sie scheitern, müssen sie kämpfen, bis alle Gegner besiegt sind oder fliehen.</altdisadvantage>
 				<altpage>90</altpage>
 			</mentor>
 			<mentor>
@@ -20371,12 +20367,8 @@
 						<translate>Adept: 2 freie Stufen auf ein körperliches Attribut nach Wahl</translate>
 					</choice>
 				</choices>
-				<altadvantage>+2 Würfel für toxische Geister des Menschen oder toxische Geister des Tieres (Speiler muss eins wählen), +2 Würfel auf Heilzauber</altadvantage>
-				<altdisadvantage>
-					Anhänger der Mutation verachten Schwäche. Sollte der Zauberer jemals eine Schwäche zeigen oder sich herausstellen, dass er einem anderen unterlegen ist, erleidet er einen
-					Würfelpool-Modifikator von -1 auf alle Handlungen, bis er die Schwäche irgendwie ausgeglichen oder seinen Rivalen besiegt hat(was viele Zauberer dazu veranlasst, sich neue Implantate oder andere
-					Verbesserungen einsetzen zu lassen).
-				</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für eine Körperliche Fertigkeit nach Wahl des Charakters</altadvantage>
+				<altdisadvantage>Wenn ein Anhänger von Mutation feststellt, dass er einem Gegner auf einem bestmimten Gebiet unterlegen ist, erhält er auf alle Handlungen einen Würfelpoolmalus von -1, bis er den Gegner auf diesem Gebiet besiegt oder seine Schwäche anders (z. B. durch neue Kräfte, Zauber oder Bodytech) kompensiert hat.</altdisadvantage>
 				<altpage>90</altpage>
 			</mentor>
 			<mentor>
@@ -20409,11 +20401,8 @@
 						<translate>Adept: Toxischer Schlag gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>+2 Würfel für toxische Wasser-, Luft- oder Erdgeister (Spieler muss eins auswählen), +2 Würfel beim Widerstand gegen Pathogene und Toxine</altadvantage>
-				<altdisadvantage>
-					Ein Zauberer der Verschmutzung muss eine Willenskraft + Charisma(3)-Probe bestehen, um sich zurückzuhalten, eine natürliche Umgebung nicht auf irgendeine Weise zu verunreinigen oder
-					zu beschmutzen.
-				</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Chemieproben beim Umgang mit Umweltgiften; Improvisieren bei Chemie ist möglich</altadvantage>
+				<altdisadvantage>Wenn ein Anhänger von Verschmutzung sich in einem Gebiet befindet, das sauberer als sein normaler Wohnort ist, muss er jeden Tag eine Probe auf Willenskraft + Charisma (3) ablegen. Misslingt die Probe, muss er mindestens acht Stunden dieses Tages mit der Verschmutzung des Gebiets verbringen – egal, welche anderen Pläne er für diese Zeit eigentlich hatte.</altdisadvantage>
 				<altpage>90</altpage>
 			</mentor>
 			<mentor>
@@ -20441,11 +20430,11 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Manipulation spells</name>
-						<translate>Zauberer: +2 Würfel für Manipulationszauber</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Manipulation</translate>
 					</choice>
 					<choice>
 						<name>Adept: Free Traceless Walk and 1 level of Voice Control</name>
-						<translate>Adept: Spurloser Schritt und 1 Stufe Stimmkontrolle gratis</translate>
+						<translate>Adept: Spurloser Schritt oder 1 Stufe Stimmkontrolle gratis</translate>
 					</choice>
 				</choices>
 				<altadvantage>Allgemein: +2 Würfel für Überredenproben</altadvantage>
@@ -20466,7 +20455,7 @@
 						<translate>Adept: 1 Stufe Verbesserte Fertigkeit auf eine Athletikfertigkeit</translate>
 					</choice>
 				</choices>
-				<altadvantage>Allgemein: +2 Würfel für Schwimmenproben.</altadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Schwimmenproben</altadvantage>
 				<altdisadvantage>Ein Anhänger von Meer muss eine Probe auf Charisma + Willenskraft (3) schaffen, um etwas herzugeben, das ihm gehört, oder auf irgendeine Weise wohltätig zu sein.</altdisadvantage>
 				<altpage>322</altpage>
 			</mentor>
@@ -20682,7 +20671,7 @@
 						<translate>Adept: 2 Stufen auf Erhöhtes Potential (entweder 2 Stufen für dasselbe Limit oder jeweils 1 Stufe für unterschiedliche Limits) gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>All: +2 Würfel für Überredenproben</altadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Überredenproben</altadvantage>
 				<altdisadvantage>Der Charakter stiftet durch Gerüchte andauernd Unruhe - vor allem unter Freunden - und kann daher Geheimnisse schlecht für sich behalten. Außerdem muss er, wenn ihm eine öffentliche Situation (nach Maßgabe des Spielleiters) zu ruhig und friedlich scheint, eine Probe auf Intuition + Willenskraft (3) ablegen. Misslingt die Probe, muss er versuchen, die Lage auf irgendeine Weise - durch einen Angriff, das Erzählen von Lügen oder das Ausschütten eines Drinks über den Nachbarn - anzuheizen.</altdisadvantage>
 				<altpage>231</altpage>
 			</mentor>
@@ -20796,7 +20785,7 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Manipulation spells</name>
-						<translate>Zauberer: +2 Würfel für Manipulationszauber</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Manipulation</translate>
 					</choice>
 					<choice>
 						<name>Adept: Free Traceless Walk</name>
