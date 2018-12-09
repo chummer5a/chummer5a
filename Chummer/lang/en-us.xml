@@ -2162,7 +2162,7 @@
       <text>You cannot have more than one unregistered Sprite at a time.</text>
     </string>
     <string>
-      <key>Message_UnregisteredSpriteLimit</key>
+      <key>MessageTitle_UnregisteredSpriteLimit</key>
       <text>Unregistered Sprite Limit</text>
     </string>
     <string>
