@@ -9430,5 +9430,13 @@
 			<key>Checkbox_Sprite_Pet</key>
 			<text>Sprite-Haustier</text>
 		</string>
+		<string>
+			<key>Message_UnregisteredSpriteLimit</key>
+			<text>Sie können nicht mehr als einen nicht registrierten Sprite auf einmal haben.</text>
+		</string>
+		<string>
+			<key>MessageTitle_UnregisteredSpriteLimit</key>
+			<text>Limit für nicht registrierte Sprites</text>
+		</string>
 	</strings>
 </chummer>
