@@ -32,6 +32,7 @@ Data Changes:
 - Fixed incorrect requirements for the Special Modifications and Prototype Materials qualities. 
 - The Dual Natured critter power now grants access to Astral Combat. Magical Guard now grants access to the Counterspelling skill. RAW implies this is correct, but I'm not super confident in it. Closes #3195
 - Added missing critter powers from Dark Terrors, courtesy of Keeper M. 
+- Per updated Runnerhub Rules, the Liminal bodies are now available and Armor enhancements can be added to skulls and torsos.
 
 New Strings:
 
