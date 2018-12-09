@@ -4597,6 +4597,162 @@
 				<translate>Korriganen-Pakt</translate>
 				<altpage>37</altpage>
 			</power>
+			<power translated="True">
+				<id>9163fb4f-0531-4f11-8894-ed681306ebfd</id>
+				<name>Amphibious</name>
+				<translate>Amphibisch</translate>
+				<altpage>157</altpage>
+			</power>
+			<power translated="True">
+				<id>c330495b-c6af-4744-b399-c6e068864a8d</id>
+				<name>Astral Brute</name>
+				<translate>Astraler Kraftprotz</translate>
+				<altpage>158</altpage>
+			</power>
+			<power translated="True">
+				<id>c788063f-8daa-4e32-8017-9562513541a0</id>
+				<name>Bacchanal</name>
+				<translate>Bacchanal</translate>
+				<altpage>158</altpage>
+			</power>
+			<power translated="True">
+				<id>f79f9ee8-f5db-4673-9225-e6a375aed465</id>
+				<name>Bone Spikes</name>
+				<translate>Knochenlanzen</translate>
+				<altpage>161</altpage>
+			</power>
+			<power translated="True">
+				<id>363c3991-5d17-4ca7-963f-e3f2ef395fda</id>
+				<name>Calcified Hide</name>
+				<translate>Kalkpanzer</translate>
+				<altpage>161</altpage>
+			</power>
+			<power translated="True">
+				<id>ea3a7442-477a-440f-adcd-4b5050c67b52</id>
+				<name>Corrosive Spit (Infected)</name>
+				<translate>Ätzender Speichel</translate>
+				<altpage>158</altpage>
+			</power>
+			<power translated="True">
+				<id>090c0194-3ac9-4ed8-8e82-7a60f18853e8</id>
+				<name>Deathlock Venom</name>
+				<translate>Todesgift</translate>
+				<altpage>164</altpage>
+			</power>
+			<power translated="True">
+				<id>6cbf07be-1491-46c1-ab67-d5f1dd4aa709</id>
+				<name>Digitigrade Legs</name>
+				<translate>Raubtierbeine</translate>
+				<altpage>162</altpage>
+			</power>
+			<power translated="True">
+				<id>00461512-b49c-4759-bc91-e41167682f22</id>
+				<name>Drag Down</name>
+				<translate>Beutegriff</translate>
+				<altpage>159</altpage>
+			</power>
+			<power translated="True">
+				<id>dc0d00da-1d10-42b2-a57a-c336da372df7</id>
+				<name>Dread Feast</name>
+				<translate>Amrita</translate>
+				<altpage>157</altpage>
+			</power>
+			<power translated="True">
+				<id>9a4bde71-3d1b-4852-a613-5a7a8b1898ee</id>
+				<name>Dual Concealment</name>
+				<translate>Duale Verschleierung</translate>
+				<altpage>160</altpage>
+			</power>
+			<power translated="True">
+				<id>a9809219-9291-4efe-8f74-23a58e144d73</id>
+				<name>Evolved Reflexes</name>
+				<translate>Hochentwickelte Reflexe</translate>
+				<altpage>161</altpage>
+			</power>
+			<power translated="True">
+				<id>3f607df5-a2af-4fc7-b1ae-9ae2de40964f</id>
+				<name>Feral Dash</name>
+				<translate>Wilder Sprint</translate>
+				<altpage>164</altpage>
+			</power>
+			<power translated="True">
+				<id>cd9ffa1a-d300-4650-8127-4f27fce3a14b</id>
+				<name>Gnashing Teeth</name>
+				<translate>Nagezähne</translate>
+				<altpage>162</altpage>
+			</power>
+			<power translated="True">
+				<id>53a990fc-ed69-44eb-98d5-5363bf9139f7</id>
+				<name>Metahuman Masque</name>
+				<translate>Metamenschliche Maske</translate>
+				<altpage>161</altpage>
+			</power>
+			<power translated="True">
+				<id>09fb492d-0aa0-4a2e-8542-53e2cf97f432</id>
+				<name>Morningstar Fall</name>
+				<translate>Sanfte Landung</translate>
+				<altpage>162</altpage>
+			</power>
+			<power translated="True">
+				<id>b1cef6fe-aa5f-4b12-a621-a3eb24568dbf</id>
+				<name>Mystic Armor (Infected)</name>
+				<translate>Mystischer Panzer (Infizierte)</translate>
+				<altpage>161</altpage>
+			</power>
+			<power translated="True">
+				<id>53dfd3bb-8c93-4d28-a88f-646c187f7940</id>
+				<name>Plague Bearer</name>
+				<translate>Seuchenbringer</translate>
+				<altpage>163</altpage>
+			</power>
+			<power translated="True">
+				<id>f61e6df3-bd1a-4ce8-9c75-b49df275cfb3</id>
+				<name>Predator's Glamour</name>
+				<translate>Raubtierglamour</translate>
+				<altpage>162</altpage>
+			</power>
+			<power translated="True">
+				<id>80d692d9-6f13-4148-b346-bb8fc7b78d34</id>
+				<name>Rat King</name>
+				<translate>Rattenkönig</translate>
+				<altpage>162</altpage>
+			</power>
+			<power translated="True">
+				<id>0daa8f5c-f4de-4558-aca8-82354eecb941</id>
+				<name>Scythe Claws</name>
+				<translate>Sichelklauen</translate>
+				<altpage>163</altpage>
+			</power>
+			<power translated="True">
+				<id>96ce4db8-74c5-47ea-8305-1096858ba8ee</id>
+				<name>Sonic Shriek</name>
+				<translate>Schallschrei</translate>
+				<altpage>162</altpage>
+			</power>
+			<power translated="True">
+				<id>a2346acb-c604-4c9d-83b6-e374348f1749</id>
+				<name>Spines</name>
+				<translate>Dornengräten</translate>
+				<altpage>159</altpage>
+			</power>
+			<power translated="True">
+				<id>9b2033d3-be97-440e-a5f4-f9d8a230c09c</id>
+				<name>Stupefying Miasma</name>
+				<translate>Benebelnder Gestank</translate>
+				<altpage>159</altpage>
+			</power>
+			<power translated="True">
+				<id>5589e7d4-0573-40c4-9798-eb6b604ef82c</id>
+				<name>Terrorscape</name>
+				<translate>Schreckenslandschaft</translate>
+				<altpage>163</altpage>
+			</power>
+			<power translated="True">
+				<id>97829992-2433-463d-8df7-d8ef0db20e00</id>
+				<name>Traceless Walk</name>
+				<translate>Spurloser Schritt</translate>
+				<altpage>163</altpage>
+			</power>
 		</powers>
 	</chummer>
 	<chummer file="critters.xml">
@@ -20316,7 +20472,7 @@
 					</choice>
 				</choices>
 				<altadvantage>Allgemein: +2 Würfel für Proben auf Erste Hilfe</altadvantage>
-				<altdisadvantage>Immer wenn ein Anhänger der Großen Mutter absichtlich oder unabsichtlich dem lebensspendenden Wesen der Natur (seiner Auslegung) zuwiderhandelt, erleidet er einen Würfelpoolmodifikator von 1- auf alle Handlungen bis er seine Zuwiderhandlung wiedergutgemacht hat.</altdisadvantage>
+				<altdisadvantage>Immer wenn ein Anhänger der Großen Mutter absichtlich oder unabsichtlich dem lebensspendenden Wesen der Natur (seiner Auslegung) zuwiderhandelt, erleidet er einen Würfelpoolmodifikator von -1 auf alle Handlungen bis er seine Zuwiderhandlung wiedergutgemacht hat.</altdisadvantage>
 				<altpage>232</altpage>
 			</mentor>
 			<mentor>
