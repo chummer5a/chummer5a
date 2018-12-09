@@ -138,7 +138,7 @@
 		</string>
 		<string>
 			<key>Label_LP</key>
-			<text>LP:</text>
+			<text>PV :</text>
 		</string>
 		<string>
 			<key>String_KarmaRemaining</key>
@@ -8550,11 +8550,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_BonusLP</key>
-			<text>Bonus LP:</text>
+			<text>Bonus PV :</text>
 		</string>
 		<string>
 			<key>Label_QualityLP</key>
-			<text>Quality LP:</text>
+			<text>Quality PV :</text>
 		</string>
 		<string>
 			<key>Label_QualityCost</key>
@@ -8820,7 +8820,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_LifestyleFreeNuyen</key>
-			<text>Covered by Lifestyle level</text>
+			<text>Inclus par niveau de vie</text>
 		</string>
 		<string>
 			<key>String_Pilot</key>
@@ -9489,6 +9489,18 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		<string>
 			<key>Checkbox_DiceRoller_VariableGlitch</key>
 			<text>Complication avec plus d'un que de succès, pas avec la moitié des dés</text>
+		</string>
+		<string>
+			<key>Message_UnregisteredSpriteLimit</key>
+			<text>Vous ne pouvez pas avoir plus d'un Sprite non enregistré à la fois.</text>
+		</string>
+		<string>
+			<key>MessageTitle_UnregisteredSpriteLimit</key>
+			<text>Limite pour les sprites non enregistrés</text>
+		</string>
+		<string>
+			<key>Checkbox_Sprite_Pet</key>
+			<text>Animal de compagnie Sprite</text>
 		</string>
 	</strings>
 </chummer>
