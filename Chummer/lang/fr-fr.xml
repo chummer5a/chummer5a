@@ -6610,15 +6610,15 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_Accuracy</key>
-			<text>Précision:</text>
+			<text>Précision :</text>
 		</string>
 		<string>
 			<key>Label_DeviceRating</key>
-			<text>Indice:</text>
+			<text>Indice :</text>
 		</string>
 		<string>
 			<key>Label_Attack</key>
-			<text>Attaque:</text>
+			<text>Attaque :</text>
 		</string>
 		<string>
 			<key>String_Break</key>
@@ -6626,7 +6626,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_Sleaze</key>
-			<text>Corruption:</text>
+			<text>Corruption :</text>
 		</string>
 		<string>
 			<key>Label_DataProcessing</key>
@@ -6634,35 +6634,35 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_ArmorShort</key>
-			<text>Nom:</text>
+			<text>Nom :</text>
 		</string>
 		<string>
 			<key>Label_ArmorValueShort</key>
-			<text>Armure:</text>
+			<text>Armure :</text>
 		</string>
 		<string>
 			<key>Label_ArmorLong</key>
-			<text>Armure:</text>
+			<text>Armure :</text>
 		</string>
 		<string>
 			<key>Label_PriorityHeritage</key>
-			<text>Métatype:</text>
+			<text>Métatype :</text>
 		</string>
 		<string>
 			<key>Label_PriorityTalent</key>
-			<text>Magie ou Résonance:</text>
+			<text>Magie ou Résonance :</text>
 		</string>
 		<string>
 			<key>Label_PriorityAttributes</key>
-			<text>Attributs:</text>
+			<text>Attributs :</text>
 		</string>
 		<string>
 			<key>Label_PrioritySkills</key>
-			<text>Compétences:</text>
+			<text>Compétences :</text>
 		</string>
 		<string>
 			<key>Label_PriorityResources</key>
-			<text>Ressources:</text>
+			<text>Ressources :</text>
 		</string>
 		<string>
 			<key>String_Contacts</key>
@@ -7536,7 +7536,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_CyberlimbSTR</key>
-			<text>Force (STR):</text>
+			<text>Force (FOR):</text>
 		</string>
 		<string>
 			<key>Label_CyberlimbAGI</key>
@@ -7756,11 +7756,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_SpellDefenceDecAttBOD</key>
-			<text>Diminuer l'attribut (BOD)</text>
+			<text>Diminuer l'attribut (CON)</text>
 		</string>
 		<string>
 			<key>Label_SpellDefenceDecAttSTR</key>
-			<text>Diminuer l'attribut (STR)</text>
+			<text>Diminuer l'attribut (FOR)</text>
 		</string>
 		<string>
 			<key>Label_SpellDefenceDecAttAGI</key>
@@ -7776,7 +7776,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_SpellDefenceDecAttWIL</key>
-			<text>Diminuer l'attribut (WIL)</text>
+			<text>Diminuer l'attribut (VOL)</text>
 		</string>
 		<string>
 			<key>Label_SpellDefenceDecAttINT</key>
@@ -8892,7 +8892,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>String_NotSupported</key>
-			<text>"This Race/Metavariant combination is incomplete and will be completed in a future release. Attempting to create a character with this combination may result in unexpected results."</text>
+			<text>"Cette combinaison race / métavariante est incomplète et sera complétée dans une prochaine version. Tenter de créer un personnage avec cette combinaison peut avoir des résultats inattendus."</text>
 		</string>
 		<string>
 			<key>String_Metatype</key>
