@@ -35,6 +35,7 @@ Data Changes:
 - The Dual Natured critter power now grants access to Astral Combat. Magical Guard now grants access to the Counterspelling skill. RAW implies this is correct, but I'm not super confident in it. Closes #3195
 - Added missing critter powers from Dark Terrors, courtesy of Keeper M. 
 - Per updated Runnerhub Rules, the Liminal bodies are now available and Armor enhancements can be added to skulls and torsos.
+- Fixed conditional behaviour on the Death Dealer quality to properly work for Mystic Adepts. Fixes #3255
 
 New Strings:
 

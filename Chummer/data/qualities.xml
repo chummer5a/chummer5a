@@ -13503,9 +13503,10 @@
         </spellcategorydrain>
       </bonus>
       <forbidden>
-        <oneof>
+        <allof>
           <quality>Adept</quality>
-        </oneof>
+          <quality>Mystic Adept</quality>
+        </allof>
       </forbidden>
       <required>
         <allof>
@@ -13556,10 +13557,11 @@
             <name>MAG</name>
             <total>1</total>
           </attribute>
-          <quality>Adept</quality>
+          <power>Critical Strike</power>
         </allof>
         <oneof>
-          <power>Critical Strike</power>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
         </oneof>
       </required>
       <source>FA</source>
