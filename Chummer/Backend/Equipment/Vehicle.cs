@@ -347,10 +347,11 @@ namespace Chummer.Backend.Equipment
                         // Find the first free Weapon Mount in the Vehicle.
                         foreach (WeaponMount objWeaponMount in _lstWeaponMounts)
                         {
+                            if (objWeaponMount.Weapons.Count != 0) continue;
                             if (!objWeaponMount.AllowedWeaponCategories.Contains(objWeapon.SizeCategory) &&
-                                !objWeaponMount.AllowedWeapons.Contains(objWeapon.Name) &&
-                                objWeaponMount.Weapons.Count != 0) continue;
+                                !objWeaponMount.AllowedWeapons.Contains(objWeapon.Name)) continue;
                             objWeaponMount.Weapons.Add(objWeapon);
+                            blnAttached = true;
                             foreach (Weapon objSubWeapon in objSubWeapons)
                                 objWeaponMount.Weapons.Add(objSubWeapon);
                             break;
