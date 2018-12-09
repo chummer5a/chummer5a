@@ -13591,7 +13591,7 @@
       <mode>FA</mode>
       <rc>0</rc>
       <ammo>20(m)</ammo>
-      <avail>15F</avail>
+      <avail>0</avail>
       <cost>750</cost>
       <source>SL</source>
       <page>40</page>
