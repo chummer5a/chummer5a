@@ -21,12 +21,14 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINner class.
         /// </summary>
-        public SINner(Guid? id = default(Guid?), string downloadUrl = default(string), DateTime? uploadDateTime = default(DateTime?), SINnerMetaData siNnerMetaData = default(SINnerMetaData))
+        public SINner(Guid? id = default(Guid?), string downloadUrl = default(string), DateTime? uploadDateTime = default(DateTime?), DateTime? lastChange = default(DateTime?), SINnerMetaData siNnerMetaData = default(SINnerMetaData), string jsonSummary = default(string))
         {
             Id = id;
             DownloadUrl = downloadUrl;
             UploadDateTime = uploadDateTime;
+            LastChange = lastChange;
             SiNnerMetaData = siNnerMetaData;
+            JsonSummary = jsonSummary;
         }
 
         /// <summary>
@@ -46,8 +48,18 @@ namespace SINners.Models
 
         /// <summary>
         /// </summary>
+        [JsonProperty(PropertyName = "lastChange")]
+        public DateTime? LastChange { get; set; }
+
+        /// <summary>
+        /// </summary>
         [JsonProperty(PropertyName = "siNnerMetaData")]
         public SINnerMetaData SiNnerMetaData { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "jsonSummary")]
+        public string JsonSummary { get; set; }
 
     }
 }

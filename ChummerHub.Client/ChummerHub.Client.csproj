@@ -203,8 +203,12 @@
   <ItemGroup>
     <Resource Include="Resources\group.png" />
   </ItemGroup>
-   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetDir)$(TargetName).* $(OutDir)Plugins\</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>

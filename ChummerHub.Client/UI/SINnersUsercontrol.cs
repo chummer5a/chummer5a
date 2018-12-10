@@ -96,8 +96,26 @@ namespace ChummerHub.Client.UI
                 if (String.IsNullOrEmpty(MyCharacterExtended.ZipFilePath))
                     MyCharacterExtended.ZipFilePath = MyCharacterExtended.PrepareModel();
                 using (FileStream fs = new FileStream(MyCharacterExtended.ZipFilePath, FileMode.Open, FileAccess.Read))
-                {
-                    StaticUtils.Client.PutAsync(MyCharacterExtended.MySINnerFile.Id.Value, fs);
+                {   try
+                    {
+                        Cursor = Cursors.WaitCursor;
+                        var task = StaticUtils.Client.PutAsync(MyCharacterExtended.MySINnerFile.Id.Value, fs);
+                        await task.ContinueWith((sender) =>
+                         {
+                             string msg = "Upload completed with status: " + sender.Status.ToString();
+                             msg += Environment.NewLine + sender.Exception?.Message;
+                             MessageBox.Show(msg);
+                         });
+                    }
+                    catch(Exception e)
+                    {
+                        System.Diagnostics.Trace.TraceError(e.ToString());
+                        MessageBox.Show(e.Message);
+                    }
+                    finally
+                    {
+                        Cursor = Cursors.Default;
+                    }
                 }
             }
             catch (Exception ex)

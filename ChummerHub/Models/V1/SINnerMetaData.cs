@@ -22,6 +22,7 @@ namespace ChummerHub.Models.V1
         public SINnerMetaData()
         {
             this.Tags = new List<Tag>();
+            Visibility = new SINnerVisibility();
         }
         
     }

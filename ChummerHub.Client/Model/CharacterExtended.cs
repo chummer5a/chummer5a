@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Chummer.frmCharacterRoster;
 
 namespace ChummerHub.Client.Model
 {
@@ -126,22 +127,23 @@ namespace ChummerHub.Client.Model
             }
             else
             {
-                foreach (var tag in tags)
-                {
-                    if ((filtertags.Any(x => x.STagName == tag.TagName)
-                        || (tag.Tags.Any())))
+                    foreach (var tag in tags)
                     {
-                        var child = new TreeNode()
+                        if (filtertags == null || (filtertags.Any(x => x.STagName == tag.TagName)
+                            || (tag.Tags.Any())))
                         {
-                            Text = tag.TagName,
-                            Tag = tag.Id,
-                        };
-                        if (!String.IsNullOrEmpty(tag.TagValue))
-                            child.Text += ": " + tag.TagValue;
-                        PopulateTree(ref child, tag.Tags, filtertags);
-                        root.Nodes.Add(child);
+                            var child = new TreeNode()
+                            {
+                                Text = tag.TagName,
+                                Tag = tag.Id,
+                            };
+                            if (!String.IsNullOrEmpty(tag.TagValue))
+                                child.Text += ": " + tag.TagValue;
+                            PopulateTree(ref child, tag.Tags, filtertags);
+                            root.Nodes.Add(child);
+                        }
                     }
-                }
+                
             }
         }
 
@@ -160,6 +162,8 @@ namespace ChummerHub.Client.Model
                 MySINnerIds = MySINnerIds; //Save it!
             }
 
+            
+
             var tempDir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), MySINnerFile.Id.Value.ToString());
             if (!Directory.Exists(tempDir))
                 Directory.CreateDirectory(tempDir);
@@ -168,8 +172,10 @@ namespace ChummerHub.Client.Model
                 System.IO.File.Delete(file);
             }
             var tempfile = System.IO.Path.Combine(tempDir, MyCharacter.FileName);
+            var summary = new CharacterCache(MyCharacter.FileName);
+            MySINnerFile.JsonSummary = Newtonsoft.Json.JsonConvert.SerializeObject(summary);
             MyCharacter.Save(tempfile);
-            //Byte[] bytes = File.ReadAllBytes(tempfile);
+            
             
             string zipPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), MySINnerFile.Id.Value + ".chum5z");
             if (File.Exists(zipPath))

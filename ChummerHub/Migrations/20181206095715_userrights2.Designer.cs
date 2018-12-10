@@ -4,14 +4,16 @@ using ChummerHub.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ChummerHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181206095715_userrights2")]
+    partial class userrights2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,15 +56,9 @@ namespace ChummerHub.Migrations
 
                     b.Property<string>("EMail");
 
-                    b.Property<Guid?>("SINnerId");
-
                     b.Property<Guid?>("SINnerVisibilityId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Id");
-
-                    b.HasIndex("SINnerId");
 
                     b.HasIndex("SINnerVisibilityId");
 
@@ -77,10 +73,6 @@ namespace ChummerHub.Migrations
                     b.Property<string>("DownloadUrlInternal");
 
                     b.Property<string>("GoogleDriveFileId");
-
-                    b.Property<string>("JsonSummary");
-
-                    b.Property<DateTime?>("LastChange");
 
                     b.Property<Guid?>("SINnerMetaDataId");
 
@@ -145,8 +137,6 @@ namespace ChummerHub.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id");
-
                     b.ToTable("SINnerVisibility");
                 });
 
@@ -176,8 +166,6 @@ namespace ChummerHub.Migrations
                     b.HasIndex("Id")
                         .IsUnique();
 
-                    b.HasIndex("SINnerId");
-
                     b.HasIndex("SINnerMetaDataId");
 
                     b.HasIndex("TagId");
@@ -199,8 +187,6 @@ namespace ChummerHub.Migrations
                     b.Property<string>("UserEmail");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Id");
 
                     b.ToTable("UploadClients");
                 });

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
@@ -21,6 +22,8 @@ namespace Chummer.Plugins
         IEnumerable<TabPage> GetTabPages(frmCareer input);
         IEnumerable<TabPage> GetTabPages(frmCreate input);
         IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem menu);
+
+        Task<TreeNode> GetCharacterRosterTreeNode(ConcurrentDictionary<string, frmCharacterRoster.CharacterCache> CharDic);
 
         UserControl GetOptionsControl();
 

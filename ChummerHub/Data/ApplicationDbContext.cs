@@ -30,14 +30,26 @@ namespace ChummerHub.Data
             builder.Entity<ChummerHub.Models.V1.Tag>()
                 .HasIndex(b => b.Id);
             builder.Entity<ChummerHub.Models.V1.Tag>()
+                .HasIndex(b => b.SINnerId);
+            builder.Entity<ChummerHub.Models.V1.Tag>()
                 .HasIndex(b => new { b.TagName, b.TagValue });
-           
+            builder.Entity<ChummerHub.Models.V1.SINerUserRight>()
+                .HasIndex(b => b.SINnerId);
+            builder.Entity<ChummerHub.Models.V1.SINerUserRight>()
+                .HasIndex(b => b.Id);
+            builder.Entity<ChummerHub.Models.V1.SINnerVisibility>()
+                .HasIndex(b => b.Id);
+            builder.Entity<ChummerHub.Models.V1.UploadClient>()
+                .HasIndex(b => b.Id);
+
 
         }
 
         public DbSet<ChummerHub.Models.V1.SINner> SINners { get; set; }
 
-        //public DbSet<ApplicationUser> dSINners { get; set; }
+        public DbSet<ChummerHub.Models.V1.Tag> Tags { get; set; }
+
+        public DbSet<ChummerHub.Models.V1.SINerUserRight> UserRights { get; set; }
 
         public DbSet<ChummerHub.Models.V1.UploadClient> UploadClients { get; set; }
 

@@ -35,6 +35,18 @@ namespace ChummerHub.Models.V1.Examples
             {
                 Id = Guid.NewGuid(),
                 Tags = new List<Tag>(),
+                Visibility = new SINnerVisibility()
+                {
+                    IsGroupVisible = true,
+                    UserRights = new List<SINerUserRight>()
+                    {
+                         new SINerUserRight(sin.Id.Value)
+                         {
+                              EMail = "archon.megalon@gmail.com",
+                              CanEdit = true
+                         }
+                    }
+                }
               
             };
             var parenttag = new Tag(sin, null)

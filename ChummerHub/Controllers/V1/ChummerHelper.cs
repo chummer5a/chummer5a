@@ -13,6 +13,8 @@ using System.Net;
 using System.IO;
 using ChummerHub.API;
 using ChummerHub.Models.V1.Examples;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace ChummerHub.Controllers.V1
 {

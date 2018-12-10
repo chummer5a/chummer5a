@@ -17,6 +17,7 @@ using ChummerHub.Services.GoogleDrive;
 using Microsoft.AspNetCore.Http.Internal;
 using System.IO;
 using Microsoft.AspNetCore.Identity;
+
 //using Swashbuckle.AspNetCore.Filters;
 
 namespace ChummerHub.Controllers.V1
@@ -32,9 +33,14 @@ namespace ChummerHub.Controllers.V1
         private readonly ApplicationDbContext _context;
         private readonly ILogger _logger;
         private SignInManager<ApplicationUser> _signInManager = null;
+        private UserManager<ApplicationUser> _userManager = null;
 
-        public SINnerController(ApplicationDbContext context, ILogger<SINnerController> logger, SignInManager<ApplicationUser> signInManager)
+        public SINnerController(ApplicationDbContext context,
+            ILogger<SINnerController> logger,
+            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager)
         {
+            _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
             _logger = logger;
@@ -109,6 +115,7 @@ namespace ChummerHub.Controllers.V1
                     .ThenInclude(tag => tag.Tags)
                     .ThenInclude(tag => tag.Tags)
                     .ThenInclude(tag => tag.Tags)
+                    .Include(a => a.SINnerMetaData.Visibility.UserRights)
                     .OrderByDescending(a => a.UploadDateTime).Take(20);
                 return result;
             }
@@ -136,24 +143,40 @@ namespace ChummerHub.Controllers.V1
                     return BadRequest(ModelState);
                 }
 
-                var chummerFile = await _context.SINners.FindAsync(id);
-
-                if (chummerFile == null)
+                var sin = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights).FirstOrDefaultAsync(a=> a.Id == id);
+                if (sin == null)
                 {
                     return NotFound();
                 }
-                if (chummerFile.SINnerMetaData.Visibility.IsPublic == true)
-                    return Ok(chummerFile);
-                var user = await _signInManager.UserManager.FindByEmailAsync(User.Identity.Name);
-                var list = (from a in chummerFile.SINnerMetaData.Visibility.UserRights where a.EMail.ToUpperInvariant() == user.NormalizedEmail select a);
-                if (list.Any())
-                    return Ok(chummerFile);
-                if (chummerFile.SINnerMetaData.Visibility.IsGroupVisible)
+                //sin.SINnerMetaData.Tags = await (from a in _context.Tags.Include(b => b.Tags)
+                //                                 .ThenInclude(t => t.Tags)
+                //                                 .ThenInclude(t => t.Tags)
+                //                                 .ThenInclude(t => t.Tags)
+                //                                 .ThenInclude(t => t.Tags)
+                //                                 .ThenInclude(t => t.Tags)
+                //                                 .ThenInclude(t => t.Tags)
+                //                        where a.SINnerId == sin.Id
+                //                        select a).ToListAsync();
+
+                if (sin.SINnerMetaData.Visibility.IsPublic == true)
+                    return Ok(sin);
+
+                //sin.SINnerMetaData.Visibility.UserRights = await (from a in _context.UserRights where a.SINnerId == sin.Id select a).ToListAsync();
+                
+                var user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+                if (user == null)
                 {
-                    if (chummerFile.SINnerMetaData.Visibility.Groupname?.ToUpperInvariant()
+                    return BadRequest("Could not find user: " + User.Identity.Name);
+                }
+                var list = (from a in sin.SINnerMetaData.Visibility.UserRights where a.EMail.ToUpperInvariant() == user.NormalizedEmail select a);
+                if (list.Any())
+                    return Ok(sin);
+                if (sin.SINnerMetaData.Visibility.IsGroupVisible)
+                {
+                    if (sin.SINnerMetaData.Visibility.Groupname?.ToUpperInvariant()
                         == user.Groupname?.ToUpperInvariant())
                     {
-                        return Ok(chummerFile);
+                        return Ok(sin);
                     }
                 }
 
@@ -191,7 +214,8 @@ namespace ChummerHub.Controllers.V1
                     return NotFound();
                 }
                 var user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
-                if (!CheckIfUpdateSINnerFile(id, user))
+                var check = await CheckIfUpdateSINnerFile(id, user);
+                if (!check)
                 {
                     return Conflict();
                 }
@@ -262,9 +286,15 @@ namespace ChummerHub.Controllers.V1
                     if (sinner.Id.ToString() == "string")
                         sinner.Id = Guid.Empty;
 
-                    sinner.UploadClientId = uploadInfo.Client.Id;
+                    foreach (var ur in sinner.SINnerMetaData.Visibility.UserRights)
+                        ur.SINnerId = sinner.Id;
 
-                    if (CheckIfUpdateSINnerFile(sinner.Id.Value, user))
+                    foreach (var tag in sinner.SINnerMetaData.Tags)
+                        tag.SINnerId = sinner.Id;
+
+                    sinner.UploadClientId = uploadInfo.Client.Id;
+                    var check = await CheckIfUpdateSINnerFile(sinner.Id.Value, user);
+                    if (check)
                     {
                         _context.Entry(sinner).CurrentValues.SetValues(sinner);
                         List<Tag> taglist = sinner.SINnerMetaData.Tags;
@@ -289,11 +319,9 @@ namespace ChummerHub.Controllers.V1
                 switch(returncode)
                 {
                     case HttpStatusCode.OK:
-                        Accepted("PostSINnerFile", new { Ids = myids });
-                        break;
+                        return Accepted("PostSINnerFile", new { Ids = myids });
                     case HttpStatusCode.Created:
-                        CreatedAtAction("PostSINnerFile", new { Ids = myids });
-                        break;
+                        return CreatedAtAction("PostSINnerFile", new { Ids = myids });
                     default:
                         break;
                 }
@@ -361,7 +389,8 @@ namespace ChummerHub.Controllers.V1
                     return NotFound();
                 }
                 var user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
-                if (!CheckIfUpdateSINnerFile(id, user))
+                var check = await CheckIfUpdateSINnerFile(id, user);
+                if (!check)
                 {
                     return BadRequest("not authorized");
                 }
@@ -369,7 +398,7 @@ namespace ChummerHub.Controllers.V1
                 _context.SINners.Remove(chummerFile);
                 await _context.SaveChangesAsync();
 
-                return Ok(chummerFile);
+                return Ok("deleted");
             }
             catch (Exception e)
             {
@@ -378,11 +407,20 @@ namespace ChummerHub.Controllers.V1
             }
         }
 
-        private bool CheckIfUpdateSINnerFile(Guid id, ApplicationUser user)
+        private async Task<bool> CheckIfUpdateSINnerFile(Guid id, ApplicationUser user)
         {
             try
             {
-                
+                bool admin = false;
+                var roles = await _userManager.GetRolesAsync(user);
+                foreach (var role in roles)
+                {
+                    if (role.ToUpperInvariant() == "Administrator".ToUpperInvariant())
+                    {
+                        admin = true;
+                        break;
+                    }
+                }
                 var existingseq = _context.SINners.Where(e => e.Id == id);
                 foreach(var existing in existingseq)
                 {
@@ -392,7 +430,11 @@ namespace ChummerHub.Controllers.V1
                         if (edit.CanEdit == true)
                             return true;
                     }
+                    if (admin)
+                        return true;
                 }
+                
+                
                 return false;
             }
             catch (Exception e)

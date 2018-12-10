@@ -58,7 +58,7 @@ namespace SINners.Models
 
         /// <summary>
         /// Possible values include: 'bigger', 'smaller', 'equal', 'contains',
-        /// 'notnull'
+        /// 'notnull', 'exists'
         /// </summary>
         [JsonProperty(PropertyName = "sSearchOpterator")]
         public string SSearchOpterator { get; set; }

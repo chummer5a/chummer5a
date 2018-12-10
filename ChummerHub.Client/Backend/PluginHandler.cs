@@ -6,6 +6,7 @@ using ChummerHub.Client.UI;
 using Newtonsoft.Json;
 using SINners.Models;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Composition;
 using System.IO;
@@ -122,6 +123,11 @@ namespace Chummer.Plugins
         public System.Windows.Forms.UserControl GetOptionsControl()
         {
             return new SINnersOptions();
+        }
+
+        public async Task<TreeNode> GetCharacterRosterTreeNode(ConcurrentDictionary<string, frmCharacterRoster.CharacterCache> CharDic)
+        {
+            return await Utils.GetCharacterRosterTreeNode(CharDic);
         }
     }
 }

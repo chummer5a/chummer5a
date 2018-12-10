@@ -15,6 +15,7 @@ using System.Xml;
 using System.Collections;
 using GroupControls;
 using System.Reflection;
+using Chummer.Backend.Equipment;
 
 namespace ChummerHub.Client.UI
 {
@@ -193,6 +194,7 @@ namespace ChummerHub.Client.UI
             
             switch (switchname)
             {
+                ///these are sample implementations to get added one by one...
                 case "Spell":
                     {
                         Button button = new Button();
@@ -219,6 +221,34 @@ namespace ChummerHub.Client.UI
                         return button;
                         break;
                     }
+                case "Quality":
+                    {
+                        Button button = new Button();
+                        button.Text = "select Quality";
+                        button.Click += ((sender, e) =>
+                        {
+                            var frmPick = new frmSelectQuality(MySearchCharacter.MyCharacter);
+                            frmPick.ShowDialog();
+                            // Open the Spells XML file and locate the selected piece.
+                            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
+                            XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmPick.SelectedQuality + "\"]");
+                            Quality objQuality = new Quality(MySearchCharacter.MyCharacter);
+                            List<Weapon> lstWeapons = new List<Weapon>();
+                            objQuality.Create(objXmlNode, QualitySource.Selected, lstWeapons);
+                            MySearchCharacter.MyCharacter.Qualities.Add(objQuality);
+                            SearchTag newtag = new SearchTag(stag.MyPropertyInfo, stag.MyRuntimeHubClassTag);
+                            newtag.MyRuntimePropertyValue = objQuality;
+                            newtag.MyParentTag = stag;
+                            newtag.STagName = objQuality.Name;
+                            newtag.STagValue = "";
+                            newtag.SSearchOpterator = "exists";
+                            MySetTags.Add(newtag);
+                            UpdateDialog();
+                        });
+                        return button;
+                        break;
+                    }
+                    break;
                 default:
                     break;
             }

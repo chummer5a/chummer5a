@@ -29,11 +29,15 @@ namespace ChummerHub.Models.V1
 
         public DateTime? UploadDateTime { get; set; }
 
+        public DateTime? LastChange { get; set; }
+
         [JsonIgnore]
         [XmlIgnore]
         public Guid UploadClientId { get; set; }
 
         public SINnerMetaData SINnerMetaData { get; set; }
+
+        public String JsonSummary { get; set; }
 
         [JsonIgnore]
         [XmlIgnore]

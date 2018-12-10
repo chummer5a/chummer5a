@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -23,10 +24,12 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Serialization;
 using System.Xml.XPath;
 
 namespace Chummer
@@ -320,6 +323,32 @@ namespace Chummer
                             }
                         }
                     }
+                },
+                () =>
+                {
+                    try
+                    {
+                        foreach (var plugin in Program.MainForm.PluginLoader.MyActivePlugins)
+                        {
+                            var task = plugin.GetCharacterRosterTreeNode(_lstCharacterCache);
+                            TreeNode pluginnode = task.Result;
+                            if (pluginnode != null)
+                            {
+                                if (treCharacterList.InvokeRequired)
+                                {
+                                    Invoke((MethodInvoker)(() => treCharacterList.Nodes.Add(pluginnode)));
+                                }
+                                else
+                                {
+                                    treCharacterList.Nodes.Add(pluginnode);
+                                }
+                            }
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        System.Diagnostics.Trace.TraceError(e.Message);
+                    }
                 });
             if (objFavouriteNode != null)
             {
@@ -379,93 +408,15 @@ namespace Chummer
             treCharacterList.ExpandAll();
         }
 
+       
+
         /// <summary>
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
         /// </summary>
         /// <param name="strFile"></param>
         private TreeNode CacheCharacter(string strFile)
         {
-            CharacterCache objCache = new CharacterCache();
-            string strErrorText = string.Empty;
-            XPathNavigator xmlSourceNode;
-            if (!File.Exists(strFile))
-            {
-                xmlSourceNode = null;
-                strErrorText = LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language);
-            }
-            else
-            {
-                // If we run into any problems loading the character cache, fail out early.
-                try
-                {
-                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                    {
-                        XmlDocument xmlDoc = new XmlDocument();
-                        xmlDoc.Load(objStreamReader);
-                        xmlSourceNode = xmlDoc.CreateNavigator().SelectSingleNode("/character");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    xmlSourceNode = null;
-                    strErrorText = ex.ToString();
-                }
-            }
-
-            if (xmlSourceNode != null)
-            {
-                objCache.Description = xmlSourceNode.SelectSingleNode("description")?.Value;
-                objCache.BuildMethod = xmlSourceNode.SelectSingleNode("buildmethod")?.Value;
-                objCache.Background = xmlSourceNode.SelectSingleNode("background")?.Value;
-                objCache.CharacterNotes = xmlSourceNode.SelectSingleNode("notes")?.Value;
-                objCache.GameNotes = xmlSourceNode.SelectSingleNode("gamenotes")?.Value;
-                objCache.Concept = xmlSourceNode.SelectSingleNode("concept")?.Value;
-                objCache.Karma = xmlSourceNode.SelectSingleNode("totalkarma")?.Value;
-                objCache.Metatype = xmlSourceNode.SelectSingleNode("metatype")?.Value;
-                objCache.Metavariant = xmlSourceNode.SelectSingleNode("metavariant")?.Value;
-                objCache.PlayerName = xmlSourceNode.SelectSingleNode("playername")?.Value;
-                objCache.CharacterName = xmlSourceNode.SelectSingleNode("name")?.Value;
-                objCache.CharacterAlias = xmlSourceNode.SelectSingleNode("alias")?.Value;
-                objCache.Created = xmlSourceNode.SelectSingleNode("created")?.Value == bool.TrueString;
-                objCache.Essence = xmlSourceNode.SelectSingleNode("totaless")?.Value;
-                string strSettings = xmlSourceNode.SelectSingleNode("settings")?.Value ?? string.Empty;
-                objCache.SettingsFile = !File.Exists(Path.Combine(Utils.GetStartupPath, "settings", strSettings)) ? LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language) : strSettings;
-                string strMugshotBase64 = xmlSourceNode.SelectSingleNode("mugshot")?.Value;
-                if (!string.IsNullOrEmpty(strMugshotBase64))
-                {
-                    objCache.Mugshot = strMugshotBase64.ToImage();
-                }
-                else
-                {
-                    XPathNavigator xmlMainMugshotIndex = xmlSourceNode.SelectSingleNode("mainmugshotindex");
-                    if (xmlMainMugshotIndex != null && int.TryParse(xmlMainMugshotIndex.Value, out int intMainMugshotIndex) && intMainMugshotIndex >= 0)
-                    {
-                        XPathNodeIterator xmlMugshotList = xmlSourceNode.Select("mugshots/mugshot");
-                        if (xmlMugshotList.Count > intMainMugshotIndex)
-                        {
-                            int intIndex = 0;
-                            foreach (XPathNavigator xmlMugshot in xmlMugshotList)
-                            {
-                                if (intMainMugshotIndex == intIndex)
-                                {
-                                    objCache.Mugshot = xmlMugshot.Value.ToImage();
-                                    break;
-                                }
-
-                                intIndex += 1;
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                objCache.ErrorText = strErrorText;
-            }
-
-            objCache.FilePath = strFile;
-            objCache.FileName = strFile.Substring(strFile.LastIndexOf(Path.DirectorySeparatorChar) + 1);
-
+            CharacterCache objCache = new CharacterCache(strFile);
             if (!_lstCharacterCache.TryAdd(strFile, objCache))
                 _lstCharacterCache[strFile] = objCache;
 
@@ -631,15 +582,17 @@ namespace Chummer
                 string strFile = objSelectedNode.Tag.ToString();
                 if (!string.IsNullOrEmpty(strFile) && _lstCharacterCache.TryGetValue(strFile, out CharacterCache objCache) && string.IsNullOrEmpty(objCache.ErrorText))
                 {
-                    Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-                    Cursor = Cursors.WaitCursor;
-                    if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                    try
                     {
-                        objOpenCharacter = Program.MainForm.LoadCharacter(strFile);
-                        Program.MainForm.OpenCharacter(objOpenCharacter);
+                        objCache.OnDoubleClick(sender, Program.MainForm);
                         objSelectedNode.Text = CalculatedName(objCache);
+                        Cursor = Cursors.WaitCursor;
                     }
-                    Cursor = Cursors.Default;
+                    finally
+                    {
+                        Cursor = Cursors.Default;
+                    }
+                    
                 }
             }
         }
@@ -748,27 +701,150 @@ namespace Chummer
         /// <summary>
         /// Caches a subset of a full character's properties for loading purposes.
         /// </summary>
-        private sealed class CharacterCache
+        public sealed class CharacterCache
         {
-            internal string FilePath { get; set; }
-            internal string FileName { get; set; }
-            internal string ErrorText { get; set; }
-            internal string Description { get; set; }
-            internal string Background { get; set; }
-            internal string GameNotes { get; set; }
-            internal string CharacterNotes { get; set; }
-            internal string Concept { get; set; }
-            internal string Karma { get; set; }
-            internal string Metatype { get; set; }
-            internal string Metavariant { get; set; }
-            internal string PlayerName { get; set; }
-            internal string CharacterName { get; set; }
-            internal string CharacterAlias { get; set; }
-            internal string BuildMethod { get; set; }
-            internal string Essence { get; set; }
-            internal Image Mugshot { get; set; }
-            internal bool Created { get; set; }
+
+            public string FilePath { get; set; }
+            public string FileName { get; set; }
+            public string ErrorText { get; set; }
+            public string Description { get; set; }
+            public string Background { get; set; }
+            public string GameNotes { get; set; }
+            public string CharacterNotes { get; set; }
+            public string Concept { get; set; }
+            public string Karma { get; set; }
+            public string Metatype { get; set; }
+            public string Metavariant { get; set; }
+            public string PlayerName { get; set; }
+            public string CharacterName { get; set; }
+            public string CharacterAlias { get; set; }
+            public string BuildMethod { get; set; }
+            public string Essence { get; set; }
+            public Image Mugshot { get; set; }
+            public bool Created { get; set; }
             public string SettingsFile { get; set; }
+
+
+            [JsonIgnore]
+            [XmlIgnore]
+            [IgnoreDataMember]
+            public Dictionary<string, object> MyPluginDataDic { get; set; }
+
+            public CharacterCache()
+            {
+                HandlePlugins();
+                OnDoubleClick += OnDefaultDoubleClick;
+            }
+
+            [JsonIgnore]
+            [XmlIgnore]
+            [IgnoreDataMember]
+            public EventHandler<frmChummerMain> OnDoubleClick;
+
+           
+
+            private void HandlePlugins()
+            {
+                MyPluginDataDic = new Dictionary<string, object>();
+               
+            }
+
+            public void OnDefaultDoubleClick(object sender, frmChummerMain mainForm)
+            {
+                Character objOpenCharacter = mainForm.OpenCharacters.FirstOrDefault(x => x.FileName == this.FileName);
+             
+                if (objOpenCharacter == null || !mainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                {
+                    objOpenCharacter = mainForm.LoadCharacter(this.FilePath);
+                    mainForm.OpenCharacter(objOpenCharacter);
+                }
+            }
+
+            public CharacterCache(string strFile)
+            {
+                OnDoubleClick += OnDefaultDoubleClick;
+                string strErrorText = string.Empty;
+                XPathNavigator xmlSourceNode;
+                if (!File.Exists(strFile))
+                {
+                    xmlSourceNode = null;
+                    strErrorText = LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language);
+                }
+                else
+                {
+                    // If we run into any problems loading the character cache, fail out early.
+                    try
+                    {
+                        using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
+                        {
+                            XmlDocument xmlDoc = new XmlDocument();
+                            xmlDoc.Load(objStreamReader);
+                            xmlSourceNode = xmlDoc.CreateNavigator().SelectSingleNode("/character");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        xmlSourceNode = null;
+                        strErrorText = ex.ToString();
+                    }
+                }
+
+                if (xmlSourceNode != null)
+                {
+                    Description = xmlSourceNode.SelectSingleNode("description")?.Value;
+                    BuildMethod = xmlSourceNode.SelectSingleNode("buildmethod")?.Value;
+                    Background = xmlSourceNode.SelectSingleNode("background")?.Value;
+                    CharacterNotes = xmlSourceNode.SelectSingleNode("notes")?.Value;
+                    GameNotes = xmlSourceNode.SelectSingleNode("gamenotes")?.Value;
+                    Concept = xmlSourceNode.SelectSingleNode("concept")?.Value;
+                    Karma = xmlSourceNode.SelectSingleNode("totalkarma")?.Value;
+                    Metatype = xmlSourceNode.SelectSingleNode("metatype")?.Value;
+                    Metavariant = xmlSourceNode.SelectSingleNode("metavariant")?.Value;
+                    PlayerName = xmlSourceNode.SelectSingleNode("playername")?.Value;
+                    CharacterName = xmlSourceNode.SelectSingleNode("name")?.Value;
+                    CharacterAlias = xmlSourceNode.SelectSingleNode("alias")?.Value;
+                    Created = xmlSourceNode.SelectSingleNode("created")?.Value == bool.TrueString;
+                    Essence = xmlSourceNode.SelectSingleNode("totaless")?.Value;
+                    string strSettings = xmlSourceNode.SelectSingleNode("settings")?.Value ?? string.Empty;
+                    SettingsFile = !File.Exists(Path.Combine(Utils.GetStartupPath, "settings", strSettings)) ? LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language) : strSettings;
+                    string strMugshotBase64 = xmlSourceNode.SelectSingleNode("mugshot")?.Value;
+                    if (!string.IsNullOrEmpty(strMugshotBase64))
+                    {
+                        Mugshot = strMugshotBase64.ToImage();
+                    }
+                    else
+                    {
+                        XPathNavigator xmlMainMugshotIndex = xmlSourceNode.SelectSingleNode("mainmugshotindex");
+                        if (xmlMainMugshotIndex != null && int.TryParse(xmlMainMugshotIndex.Value, out int intMainMugshotIndex) && intMainMugshotIndex >= 0)
+                        {
+                            XPathNodeIterator xmlMugshotList = xmlSourceNode.Select("mugshots/mugshot");
+                            if (xmlMugshotList.Count > intMainMugshotIndex)
+                            {
+                                int intIndex = 0;
+                                foreach (XPathNavigator xmlMugshot in xmlMugshotList)
+                                {
+                                    if (intMainMugshotIndex == intIndex)
+                                    {
+                                        Mugshot = xmlMugshot.Value.ToImage();
+                                        break;
+                                    }
+
+                                    intIndex += 1;
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    ErrorText = strErrorText;
+                }
+
+                FilePath = strFile;
+                FileName = strFile.Substring(strFile.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+
+                HandlePlugins();
+            }
         }
         #endregion
 

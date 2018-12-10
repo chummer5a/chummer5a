@@ -28,23 +28,15 @@ namespace ChummerHub.Client.UI
         /// </summary>
         private void InitializeComponent()
         {
-            this.bSearch = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.MyTagTreeView = new System.Windows.Forms.TreeView();
-            this.bAssignTags = new System.Windows.Forms.Button();
             this.flpReflectionMembers = new System.Windows.Forms.FlowLayoutPanel();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel1.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // bSearch
-            // 
-            this.bSearch.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.bSearch.Location = new System.Drawing.Point(554, 399);
-            this.bSearch.Name = "bSearch";
-            this.bSearch.Size = new System.Drawing.Size(75, 23);
-            this.bSearch.TabIndex = 0;
-            this.bSearch.Text = "button1";
-            this.bSearch.UseVisualStyleBackColor = true;
             // 
             // tableLayoutPanel1
             // 
@@ -52,49 +44,56 @@ namespace ChummerHub.Client.UI
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.bSearch, 2, 2);
-            this.tableLayoutPanel1.Controls.Add(this.MyTagTreeView, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.bAssignTags, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.flpReflectionMembers, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.groupBox1, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.groupBox2, 0, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(775, 425);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // MyTagTreeView
             // 
-            this.MyTagTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.MyTagTreeView.Location = new System.Drawing.Point(3, 3);
+            this.MyTagTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MyTagTreeView.Location = new System.Drawing.Point(3, 16);
             this.MyTagTreeView.Name = "MyTagTreeView";
-            this.tableLayoutPanel1.SetRowSpan(this.MyTagTreeView, 2);
-            this.MyTagTreeView.Size = new System.Drawing.Size(361, 390);
+            this.MyTagTreeView.Size = new System.Drawing.Size(375, 400);
             this.MyTagTreeView.TabIndex = 2;
-            // 
-            // bAssignTags
-            // 
-            this.bAssignTags.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.bAssignTags.Location = new System.Drawing.Point(370, 87);
-            this.bAssignTags.Name = "bAssignTags";
-            this.bAssignTags.Size = new System.Drawing.Size(35, 23);
-            this.bAssignTags.TabIndex = 3;
-            this.bAssignTags.Text = "<-";
-            this.bAssignTags.UseVisualStyleBackColor = true;
             // 
             // flpReflectionMembers
             // 
-            this.flpReflectionMembers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.flpReflectionMembers.Location = new System.Drawing.Point(411, 3);
+            this.flpReflectionMembers.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpReflectionMembers.Location = new System.Drawing.Point(3, 16);
             this.flpReflectionMembers.Name = "flpReflectionMembers";
-            this.flpReflectionMembers.Size = new System.Drawing.Size(361, 192);
+            this.flpReflectionMembers.Size = new System.Drawing.Size(376, 187);
             this.flpReflectionMembers.TabIndex = 4;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.flpReflectionMembers);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox1.Location = new System.Drawing.Point(390, 3);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(382, 206);
+            this.groupBox1.TabIndex = 5;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "available search properties";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.MyTagTreeView);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox2.Location = new System.Drawing.Point(3, 3);
+            this.groupBox2.Name = "groupBox2";
+            this.tableLayoutPanel1.SetRowSpan(this.groupBox2, 3);
+            this.groupBox2.Size = new System.Drawing.Size(381, 419);
+            this.groupBox2.TabIndex = 6;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Selected Properties";
             // 
             // SINnersSearch
             // 
@@ -105,16 +104,17 @@ namespace ChummerHub.Client.UI
             this.Size = new System.Drawing.Size(781, 433);
             this.Load += new System.EventHandler(this.SINnersSearchSearch_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Button bSearch;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.TreeView MyTagTreeView;
-        private System.Windows.Forms.Button bAssignTags;
         private System.Windows.Forms.FlowLayoutPanel flpReflectionMembers;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
     }
 }
