@@ -8550,12 +8550,12 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 		</string>
 		<string>
 			<key>Label_BonusLP</key>
-			<text>Bonus PV :</text>
+			<text>PV Bonus :</text>
 		</string>
 		<string>
 			<key>Label_QualityLP</key>
-			<text>Quality PV :</text>
-		</string>
+			<text>PV Qualité : </text>
+    </string>
 		<string>
 			<key>Label_QualityCost</key>
 			<text>Coût :</text>
