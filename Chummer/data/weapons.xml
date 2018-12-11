@@ -14167,6 +14167,27 @@
         <spec>Grenade Launchers</spec>
         <useskill>Heavy Weapons</useskill>
     </weapon>
+    <weapon>
+      <id>c92b23e2-9b75-4590-99b2-b3c80048fdc2</id>
+      <name>Minigrenade: MCT/Winchester-Howe Hornet Direct-Fire</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>-2</conceal>
+      <accuracy>0</accuracy>
+      <reach>0</reach>
+      <damage>Special</damage>
+      <ap>-</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>16F</avail>
+      <cost>400</cost>
+      <source>SL</source>
+      <page>132</page>
+      <range>Grenade Launchers</range>
+      <spec>Grenade Launcher</spec>
+      <useskill>Heavy Weapons</useskill>
+    </weapon>
     <!-- End Region -->
     <!-- Region Hamburg -->    
 	<weapon>
