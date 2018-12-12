@@ -23,6 +23,7 @@ Application Changes:
 - MetatypeRemovable metagenetic qualities now no longer count towards metagenetic limits. For example, Wakyambi with Surge don't have to remove their Celerity quality.
 - Fixed an issue with the Select Weapon window causing a crash if receiving incorrectly filtered strings. Fixes #3256
 - Fixed an issue with built-in weapons being incorrectly added to the first weapon mount in a list.
+- Fixed an issue with lifestyle multipliers that prevented them from calculating their cost correctly if they reduced the cost below 100%.
 
 Data Changes:
 
