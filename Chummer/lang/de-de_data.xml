@@ -18685,6 +18685,12 @@
 				<translate>Manafäule</translate>
 				<altpage>163</altpage>
 			</gear>
+			<gear>
+				<id>2790877a-046e-4c93-be2d-1053fbafd6c0</id>
+				<name>Minigrenade: MCT/Winchester-Howe Hornet Direct-Fire</name>
+				<translate>Minigranate: MCT/Winchester-Howe Hornet</translate>
+				<altpage>139</altpage>
+			</gear>
 		</gears>
 	</chummer>
 	<chummer file="lifestyles.xml">
