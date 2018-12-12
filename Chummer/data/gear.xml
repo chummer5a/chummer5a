@@ -17908,7 +17908,6 @@
       <cost>5000</cost>
     </gear>
     <!-- End Region -->
-    <!-- End Region -->
     <!-- Region Street Lethal -->
     <gear>
       <id>be56ed13-cff0-47a8-b6ba-556f2313f64f</id>
@@ -17929,6 +17928,17 @@
       <page>46</page>
       <avail>15R</avail>
       <cost>1000</cost>
+    </gear>
+    <gear>
+      <id>2790877a-046e-4c93-be2d-1053fbafd6c0</id>
+      <name>Minigrenade: MCT/Winchester-Howe Hornet Direct-Fire</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>132</page>
+      <avail>16F</avail>
+      <addweapon>Minigrenade: MCT/Winchester-Howe Hornet Direct-Fire</addweapon>
+      <cost>400</cost>
     </gear>
     <!-- End Region -->
     <!-- Region Kill Code -->
