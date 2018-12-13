@@ -38,6 +38,8 @@ Data Changes:
 - Per updated Runnerhub Rules, the Liminal bodies are now available and Armor enhancements can be added to skulls and torsos.
 - Fixed conditional behaviour on the Death Dealer quality to properly work for Mystic Adepts. Fixes #3255
 - Fixed an incorrect cost for Household Gremlins (1600 instead of 600).
+- Fixed incorrect costs for the Dermal Alteration (Rhino Hide) and Functional Tail (Prehensile) qualities. 
+- Added an amend file to allow the Practice, Practice, Practice quality to be taken multiple times, per German data changes.
 
 New Strings:
 
