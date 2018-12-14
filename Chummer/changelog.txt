@@ -25,6 +25,7 @@ Application Changes:
 - Fixed an issue with built-in weapons being incorrectly added to the first weapon mount in a list.
 - Fixed an issue with lifestyle multipliers that prevented them from calculating their cost correctly if they reduced the cost below 100%.
 - Fixed missing text changes for the Delete Metamagic button that prevented it updating properly for Technomancers. 
+- Fixed a potential crash when importing non-Technomancer characters from Herolab into Chummer.
 
 Data Changes:
 

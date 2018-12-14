@@ -15552,7 +15552,7 @@ namespace Chummer
             Timekeeper.Start("load_char_complex");
 
             // Compex Forms/Technomancer Programs.
-            string strComplexFormsLine = lstTextStatBlockLines.FirstOrDefault(x => x.StartsWith("Complex Forms:"));
+            string strComplexFormsLine = lstTextStatBlockLines?.FirstOrDefault(x => x.StartsWith("Complex Forms:"));
             if (!string.IsNullOrEmpty(strComplexFormsLine))
             {
                 XmlDocument xmlComplexFormsDocument = XmlManager.Load("complexforms.xml");
