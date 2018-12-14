@@ -886,6 +886,7 @@ namespace Chummer
                             tabInitiation.Text = LanguageManager.GetString("Tab_Initiation", GlobalOptions.Language);
                             tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddMetamagic", GlobalOptions.Language);
                             cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddInitiateGrade", GlobalOptions.Language);
+                            cmdDeleteMetamagic.Text = LanguageManager.GetString("Button_RemoveInitiateGrade", GlobalOptions.Language);
                             chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_InitiationOrdeal", GlobalOptions.Language);
                             gpbInitiationType.Text = LanguageManager.GetString("String_InitiationType", GlobalOptions.Language);
                             gpbInitiationGroup.Text = LanguageManager.GetString("String_InitiationGroup", GlobalOptions.Language);
@@ -951,6 +952,7 @@ namespace Chummer
                             tabInitiation.Text = LanguageManager.GetString("Tab_Submersion", GlobalOptions.Language);
                             tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddEcho", GlobalOptions.Language);
                             cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddSubmersionGrade", GlobalOptions.Language);
+                            cmdDeleteMetamagic.Text = LanguageManager.GetString("Button_RemoveSubmersionGrade", GlobalOptions.Language);
                             chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_SubmersionTask", GlobalOptions.Language);
                             gpbInitiationType.Text = LanguageManager.GetString("String_SubmersionType", GlobalOptions.Language);
                             gpbInitiationGroup.Text = LanguageManager.GetString("String_SubmersionNetwork", GlobalOptions.Language);

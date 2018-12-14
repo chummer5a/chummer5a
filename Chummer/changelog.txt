@@ -24,6 +24,7 @@ Application Changes:
 - Fixed an issue with the Select Weapon window causing a crash if receiving incorrectly filtered strings. Fixes #3256
 - Fixed an issue with built-in weapons being incorrectly added to the first weapon mount in a list.
 - Fixed an issue with lifestyle multipliers that prevented them from calculating their cost correctly if they reduced the cost below 100%.
+- Fixed missing text changes for the Delete Metamagic button that prevented it updating properly for Technomancers. 
 
 Data Changes:
 
@@ -40,6 +41,7 @@ Data Changes:
 - Fixed an incorrect cost for Household Gremlins (1600 instead of 600).
 - Fixed incorrect costs for the Dermal Alteration (Rhino Hide) and Functional Tail (Prehensile) qualities. 
 - Added an amend file to allow the Practice, Practice, Practice quality to be taken multiple times, per German data changes.
+- Fixed incorrect ratings on the Fortified and Slick Willy booster chips.
 
 New Strings:
 
