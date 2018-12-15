@@ -67,7 +67,10 @@ namespace Chummer.Backend.Attributes
             new DependancyGraph<string>(
             );
 
-        private static readonly string[] s_LstAttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP" };
+
+	    public ObservableCollection<CharacterAttrib> Attributes { get; set; }
+
+	    private static readonly string[] s_LstAttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP" };
         public static ReadOnlyCollection<string> AttributeStrings => Array.AsReadOnly(s_LstAttributeStrings);
 
 	    private static readonly string[] s_LstPhysicalAttributes = { "BOD", "AGI", "REA", "STR" };
@@ -117,11 +120,11 @@ namespace Chummer.Backend.Attributes
 		private readonly Character _objCharacter;
 		private CharacterAttrib.AttributeCategory _eAttributeCategory = CharacterAttrib.AttributeCategory.Standard;
 
-        #region Constructor, Save, Load, Print Methods
+	    #region Constructor, Save, Load, Print Methods
         public AttributeSection(Character character)
 		{
 			_objCharacter = character;
-		}
+        }
 
 		private void BuildBindingList()
 		{
@@ -215,6 +218,33 @@ namespace Chummer.Backend.Attributes
                     }
                 }
             }
+
+		    Attributes = new ObservableCollection<CharacterAttrib>
+		    {
+		        _objCharacter.BOD,
+		        _objCharacter.AGI,
+		        _objCharacter.REA,
+		        _objCharacter.STR,
+		        _objCharacter.CHA,
+		        _objCharacter.INT,
+		        _objCharacter.LOG,
+		        _objCharacter.WIL,
+		        _objCharacter.EDG
+		    };
+		    if (_objCharacter.MAGEnabled)
+		    {
+		        Attributes.Add(_objCharacter.MAG);
+		        if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+		            Attributes.Add(_objCharacter.MAGAdept);
+		    }
+		    if (_objCharacter.RESEnabled)
+		    {
+		        Attributes.Add(_objCharacter.RES);
+		    }
+		    if (_objCharacter.DEPEnabled)
+		    {
+		        Attributes.Add(_objCharacter.DEP);
+		    }
             ResetBindings();
 			Timekeeper.Finish("load_char_attrib");
 		}

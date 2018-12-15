@@ -26,6 +26,9 @@ Application Changes:
 - Fixed an issue with lifestyle multipliers that prevented them from calculating their cost correctly if they reduced the cost below 100%.
 - Fixed missing text changes for the Delete Metamagic button that prevented it updating properly for Technomancers. 
 - Fixed a potential crash when importing non-Technomancer characters from Herolab into Chummer.
+- Moved all Attribute references out of CharacterShared and into AttributeSection. 
+- Collapsed Special and Physical attributes into one list, since we weren't using them for any particular purpose anyway. 
+- Fixed an issue with MAG being removed incorrectly when using the Mystic Adept Second Attribute optional rule if the charactrer started with a magic attribute, such as shapeshifters. Fixes #3253
 
 Data Changes:
 

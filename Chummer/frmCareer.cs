@@ -673,8 +673,7 @@ namespace Chummer
 
             RefreshAttributes(pnlAttributes);
 
-            PrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
-            SpecialAttributes.CollectionChanged += AttributeCollectionChanged;
+            CharacterObject.AttributeSection.Attributes.CollectionChanged += AttributeCollectionChanged;
 
             // Condition Monitor.
             ProcessCharacterConditionMonitorBoxDisplays(panPhysicalCM, CharacterObject.PhysicalCM, CharacterObject.CMThreshold, CharacterObject.PhysicalCMThresholdOffset, CharacterObject.CMOverflow, chkPhysicalCM_CheckedChanged, true, CharacterObject.PhysicalCMFilled);
@@ -901,8 +900,7 @@ namespace Chummer
                     ToolStripManager.RevertMerge("toolStrip");
 
                 // Unsubscribe from events.
-                PrimaryAttributes.CollectionChanged -= AttributeCollectionChanged;
-                SpecialAttributes.CollectionChanged -= AttributeCollectionChanged;
+                CharacterObject.AttributeSection.Attributes.CollectionChanged -= AttributeCollectionChanged;
                 CharacterObject.Spells.CollectionChanged -= SpellCollectionChanged;
                 CharacterObject.ComplexForms.CollectionChanged -= ComplexFormCollectionChanged;
                 CharacterObject.Arts.CollectionChanged -= ArtCollectionChanged;
@@ -1087,13 +1085,13 @@ namespace Chummer
                             chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedGroup", GlobalOptions.Language);
                             chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_GroupInitiation", GlobalOptions.Language);
 
-                            if (!SpecialAttributes.Contains(CharacterObject.MAG))
+                            if (!CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAG))
                             {
-                                SpecialAttributes.Add(CharacterObject.MAG);
+                                CharacterObject.AttributeSection.Attributes.Add(CharacterObject.MAG);
                             }
-                            if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && !SpecialAttributes.Contains(CharacterObject.MAGAdept))
+                            if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && !CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAGAdept))
                             {
-                                SpecialAttributes.Add(CharacterObject.MAGAdept);
+                                CharacterObject.AttributeSection.Attributes.Add(CharacterObject.MAGAdept);
                             }
                         }
                         else
@@ -1101,13 +1099,13 @@ namespace Chummer
                             if (!CharacterObject.RESEnabled)
                                 tabCharacterTabs.TabPages.Remove(tabInitiation);
 
-                            if (SpecialAttributes.Contains(CharacterObject.MAG))
+                            if (CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAG))
                             {
-                                SpecialAttributes.Remove(CharacterObject.MAG);
+                                CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.MAG);
                             }
-                            if (SpecialAttributes.Contains(CharacterObject.MAGAdept))
+                            if (CharacterObject.AttributeSection.Attributes.Any(att => att.Abbrev == "MAGAdept"))
                             {
-                                SpecialAttributes.Remove(CharacterObject.MAGAdept);
+                                CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.MAGAdept);
                             }
                         }
                         gpbGearBondedFoci.Visible = CharacterObject.MAGEnabled;
@@ -1141,9 +1139,9 @@ namespace Chummer
                             chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedNetwork", GlobalOptions.Language);
                             chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_NetworkSubmersion", GlobalOptions.Language);
 
-                            if (!SpecialAttributes.Contains(CharacterObject.RES))
+                            if (!CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.RES))
                             {
-                                SpecialAttributes.Add(CharacterObject.RES);
+                                CharacterObject.AttributeSection.Attributes.Add(CharacterObject.RES);
                             }
                         }
                         else
@@ -1151,9 +1149,9 @@ namespace Chummer
                             if (!CharacterObject.MAGEnabled)
                                 tabCharacterTabs.TabPages.Remove(tabInitiation);
 
-                            if (SpecialAttributes.Contains(CharacterObject.RES))
+                            if (CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.RES))
                             {
-                                SpecialAttributes.Remove(CharacterObject.RES);
+                                CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.RES);
                             }
                         }
                     }
@@ -1162,16 +1160,16 @@ namespace Chummer
                     {
                         if (CharacterObject.DEPEnabled)
                         {
-                            if (!SpecialAttributes.Contains(CharacterObject.DEP))
+                            if (!CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.DEP))
                             {
-                                SpecialAttributes.Add(CharacterObject.DEP);
+                                CharacterObject.AttributeSection.Attributes.Add(CharacterObject.DEP);
                             }
                         }
                         else
                         {
-                            if (SpecialAttributes.Contains(CharacterObject.DEP))
+                            if (CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.DEP))
                             {
-                                SpecialAttributes.Remove(CharacterObject.DEP);
+                                CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.DEP);
                             }
                         }
                     }
@@ -1222,18 +1220,18 @@ namespace Chummer
                                 tabCharacterTabs.TabPages.Insert(3, tabMagician);
 
                             cmdAddSpell.Enabled = true;
-                            if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && !SpecialAttributes.Contains(CharacterObject.MAGAdept))
+                            if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && !CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAGAdept))
                             {
-                                SpecialAttributes.Add(CharacterObject.MAGAdept);
+                                CharacterObject.AttributeSection.Attributes.Add(CharacterObject.MAGAdept);
                             }
                         }
                         else
                         {
                             tabCharacterTabs.TabPages.Remove(tabMagician);
                             cmdAddSpell.Enabled = false;
-                            if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && SpecialAttributes.Contains(CharacterObject.MAGAdept))
+                            if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAGAdept))
                             {
-                                SpecialAttributes.Remove(CharacterObject.MAGAdept);
+                                CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.MAGAdept);
                             }
                         }
                         cmdAddSpirit.Visible = CharacterObject.MagicianEnabled;
@@ -1249,9 +1247,9 @@ namespace Chummer
                                 tabCharacterTabs.TabPages.Insert(3, tabMagician);
 
                             cmdAddSpell.Enabled = true;
-                            if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && !SpecialAttributes.Contains(CharacterObject.MAGAdept))
+                            if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && !CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAGAdept))
                             {
-                                SpecialAttributes.Add(CharacterObject.MAGAdept);
+                                CharacterObject.AttributeSection.Attributes.Add(CharacterObject.MAGAdept);
                             }
 
                             if (!tabCharacterTabs.TabPages.Contains(tabAdept))
@@ -1263,9 +1261,9 @@ namespace Chummer
                             {
                                 tabCharacterTabs.TabPages.Remove(tabMagician);
                                 cmdAddSpell.Enabled = false;
-                                if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && SpecialAttributes.Contains(CharacterObject.MAGAdept))
+                                if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAGAdept))
                                 {
-                                    SpecialAttributes.Remove(CharacterObject.MAGAdept);
+                                    CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.MAGAdept);
                                 }
                             }
                             else
