@@ -4701,6 +4701,7 @@ namespace Chummer
                 WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
                 objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.SelectedMount, frmPickWeaponAccessory.SelectedRating);
                 objAccessory.Parent = objWeapon;
+                objAccessory.DiscountCost = frmPickWeaponAccessory.BlackMarketDiscount;
 
                 if (frmPickWeaponAccessory.FreeCost)
                 {
@@ -5110,6 +5111,7 @@ namespace Chummer
                 WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
                 objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.SelectedMount, frmPickWeaponAccessory.SelectedRating);
                 objAccessory.Parent = objWeapon;
+                objAccessory.DiscountCost = frmPickWeaponAccessory.BlackMarketDiscount;
 
                 if (frmPickWeaponAccessory.FreeCost)
                 {
