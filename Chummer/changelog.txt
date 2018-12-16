@@ -47,6 +47,7 @@ Data Changes:
 - Fixed incorrect costs for the Dermal Alteration (Rhino Hide) and Functional Tail (Prehensile) qualities. 
 - Added an amend file to allow the Practice, Practice, Practice quality to be taken multiple times, per German data changes.
 - Fixed incorrect ratings on the Fortified and Slick Willy booster chips.
+- Fixed a crash when selecting components of Commlink Functionality on gear. Fixes #3178
 
 New Strings:
 
