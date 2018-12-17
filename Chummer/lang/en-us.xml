@@ -117,7 +117,7 @@
     </string>
     <string>
       <key>Tip_SplitItems</key>
-      <text>This item is made up of multiple combined skills. Press here to seperate them</text>
+      <text>This item is made up of multiple combined skills. Press here to separate them</text>
     </string>
     <string>
       <key>String_PushTheLimit</key>
@@ -313,7 +313,7 @@
     </string>
     <string>
       <key>String_BuyWithKarma</key>
-      <text>Buy With Karma</text>
+      <text>Buy with Karma</text>
     </string>
     <string>
       <key>String_Points</key>
@@ -1667,7 +1667,7 @@
     </string>
     <string>
       <key>Menu_AddFromFile</key>
-      <text>&amp;Add From File</text>
+      <text>&amp;Add from File</text>
     </string>
     <string>
       <key>Tab_Common</key>
@@ -1839,7 +1839,7 @@
     </string>
     <string>
       <key>String_CyberzombieWILDescription</key>
-      <text>Roll the number of dice show and enter the number of Hits in the space provided. This will determine the value of Negative Qualities you must pick for becoming a Cyberzombie.</text>
+      <text>Roll the number of dice shown and enter the number of hits in the space provided. This will determine the value of Negative Qualities you must pick for becoming a Cyberzombie.</text>
     </string>
     <string>
       <key>Message_EnemyLimit</key>
@@ -2031,11 +2031,11 @@
     </string>
     <string>
       <key>Message_DeletePositiveQualityCareer</key>
-      <text>Are you sure you want to delete this Positive Quality? You will not receiving any Karma for removing it.</text>
+      <text>Are you sure you want to delete this Positive Quality? You will not receive any Karma for removing it.</text>
     </string>
 	<string>
 	  <key>Message_LowerPositiveQualityLevelCareer</key>
-	  <text>Are you sure you want to remove a level from this Positive Quality? You will not receiving any Karma for removing it.</text>
+	  <text>Are you sure you want to remove a level from this Positive Quality? You will not receive any Karma for removing it.</text>
 	</string>
     <string>
       <key>Message_DeleteImprovement</key>
@@ -2162,7 +2162,7 @@
       <text>You cannot have more than one unregistered Sprite at a time.</text>
     </string>
     <string>
-      <key>Message_UnregisteredSpriteLimit</key>
+      <key>MessageTitle_UnregisteredSpriteLimit</key>
       <text>Unregistered Sprite Limit</text>
     </string>
     <string>
@@ -2183,11 +2183,11 @@
     </string>
     <string>
       <key>Message_ComplexFormLimit</key>
-      <text>Your cannot have more complex forms than twice your RES score. Ref: Page 98, SR5 Core (Errata'd).</text>
+      <text>You cannot have more complex forms than twice your RES score. Ref: Page 98, SR5 Core (Errata'd).</text>
     </string>
     <string>
       <key>Message_PriorityComplexFormLimit</key>
-      <text>Your cannot have more complex forms than allowed by your selected Talent priority.</text>
+      <text>You cannot have more complex forms than allowed by your selected Talent priority.</text>
     </string>
     <string>
       <key>MessageTitle_ComplexFormLimit</key>
@@ -2927,7 +2927,7 @@
     </string>
     <string>
       <key>Message_UndoNotHighestGrade</key>
-      <text>You must undo the the entries for initiate grades above this one first.</text>
+      <text>You must undo the entries for initiate grades above this one first.</text>
     </string>
     <string>
       <key>MessageTitle_NotHighestGrade</key>
@@ -5019,7 +5019,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Menu_RenameExtraText</key>
-      <text>&amp;Remame Extra Text</text>
+      <text>&amp;Rename Extra Text</text>
     </string>
     <!-- End Region-->
     <!-- Region Vehicles Tab -->
@@ -5451,7 +5451,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_Options_StrictSkillGroups</key>
-      <text>Strict interprentation of breaking skill groups in create mode</text>
+      <text>Strict interpretation of breaking skill groups in create mode</text>
     </string>
     <string>
       <key>Checkbox_Options_UseCyberlimbCalculation</key>
@@ -5503,7 +5503,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Tip_LifeModule_Warning</key>
-      <text>Life Modules are currently an experiemental system with limited features; it is present exclusively for testing purposes. See https://github.com/chummer5a/chummer5a/issues/2000 for details about the existing issues. Proceed at your own risk.\nDo you want to continue?</text>
+      <text>Life Modules are currently an experimental system with limited features; it is present exclusively for testing purposes. See https://github.com/chummer5a/chummer5a/issues/2000 for details about the existing issues. Proceed at your own risk.\nDo you want to continue?</text>
     </string>
     <!-- End Region-->
     <!-- Region Other Info Tab -->
@@ -8631,7 +8631,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Message_SelectQuality_RequireESSGradeBelow</key>
-      <text>Less then {0} Essence consumed by {1} Grade: You have {2}</text>
+      <text>Less than {0} Essence consumed by {1} Grade: You have {2}</text>
     </string>
     <string>
       <key>Message_SelectQuality_RequireESSGradeAbove</key>

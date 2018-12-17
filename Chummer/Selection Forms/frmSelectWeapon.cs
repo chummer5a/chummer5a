@@ -37,7 +37,7 @@ namespace Chummer
         private bool _blnSkipUpdate;
         private bool _blnAddAgain;
         private bool _blnBlackMarketDiscount;
-        private HashSet<string> _strLimitToCategories = new HashSet<string>();
+        private HashSet<string> _hashLimitToCategories = new HashSet<string>();
         private static string s_StrSelectCategory = string.Empty;
         private readonly Character _objCharacter;
         private readonly XmlDocument _objXmlDocument;
@@ -90,7 +90,7 @@ namespace Chummer
                         foreach (XmlNode objXmlCategory in xmlCategoryList)
                         {
                             string strInnerText = objXmlCategory.InnerText;
-                            if (_strLimitToCategories.Count == 0 || _strLimitToCategories.Contains(strInnerText))
+                            if (_hashLimitToCategories.Count == 0 || _hashLimitToCategories.Contains(strInnerText))
                                 _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                         }
                     }
@@ -523,7 +523,8 @@ namespace Chummer
         /// </summary>
         public string LimitToCategories
         {
-            set => _strLimitToCategories = new HashSet<string>(value.Split(','));
+            // If passed an empty string, consume it and keep _strLimitToCategories as an empty hash.
+            set => _hashLimitToCategories = string.IsNullOrWhiteSpace(value) ? null : new HashSet<string>(value.Split(','));
         }
 
         public bool Underbarrel { get; set; }
@@ -540,9 +541,9 @@ namespace Chummer
             else
             {
                 StringBuilder objCategoryFilter = new StringBuilder();
-                if (_strLimitToCategories.Count > 0)
+                if (_hashLimitToCategories.Count > 0)
                 {
-                    foreach (string strLoopCategory in _strLimitToCategories)
+                    foreach (string strLoopCategory in _hashLimitToCategories)
                     {
                         objCategoryFilter.Append("category = \"" + strLoopCategory + "\" or ");
                     }

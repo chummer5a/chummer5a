@@ -47473,7 +47473,7 @@
 				<translate>Canons d'assaut</translate>
 			</range>
 			<range>
-				<name>Grenades Launchers</name>
+				<name>Grenade Launchers</name>
 				<translate>Lance-Grenades</translate>
 			</range>
 			<range>
@@ -47509,11 +47509,11 @@
 				<translate>Shurikens</translate>
 			</range>
 			<range>
-				<name>Standard Grenades</name>
+				<name>Standard Grenade</name>
 				<translate>Grenades standards</translate>
 			</range>
 			<range>
-				<name>Aerodynamic Grenades</name>
+				<name>Aerodynamic Grenade</name>
 				<translate>Grenades aérodynamiques</translate>
 			</range>
 			<range>

@@ -106,6 +106,17 @@
           </xs:simpleContent>
         </xs:complexType>
       </xs:element>
+      <xs:element name="gear" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="minrating" type="xs:integer" use="optional"  />
+              <xs:attribute name="rating" type="xs:integer" use="optional" />
+              <xs:attribute name="maxrating" type="xs:integer" use="optional" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="group" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:group ref="checks" minOccurs="1" maxOccurs="1" />

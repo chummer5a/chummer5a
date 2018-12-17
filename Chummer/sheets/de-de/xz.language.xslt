@@ -247,7 +247,7 @@
   <xsl:variable name="lang.Sustained"    select="'Aufrechterhaltend'"/>
   <xsl:variable name="lang.Swim"      select="'Schwimmen'"/>
   <xsl:variable name="lang.Target"    select="'Ziel'"/>
-  <xsl:variable name="lang.Tasks"    select="'Tasks'"/>
+  <xsl:variable name="lang.Tasks"    select="'Aufgaben'"/>
   <xsl:variable name="lang.Total"      select="'Summe'"/>
   <xsl:variable name="lang.Touch"      select="'Berührung'"/>
   <xsl:variable name="lang.Toxin"      select="'Toxin'"/>

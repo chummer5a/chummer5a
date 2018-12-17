@@ -2510,6 +2510,8 @@ namespace Chummer.Backend.Equipment
         {
             if (PrototypeTranshuman && blnReturnPrototype)
                 return 0;
+            if (Parent != null)
+                return 0;
             if (SourceID == EssenceHoleGUID || SourceID == EssenceAntiHoleGUID) // Essence hole or antihole
             {
                 return Convert.ToDecimal(Rating, GlobalOptions.InvariantCultureInfo) / 100m;

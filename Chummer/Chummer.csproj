@@ -1859,6 +1859,9 @@
     <Content Include="customdata\German Data Changes - Poseidon RCC\amend_poseidonrcc_gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\German Data Changes - Practice, Practice, Practice\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\German Data Changes - Rigger 5 Mods - Catalina 2\amend_vehicles.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
