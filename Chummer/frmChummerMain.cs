@@ -39,6 +39,8 @@ using System.Diagnostics;
 using System.ComponentModel;
 using System.Net;
 using System.Text;
+using Chummer.Plugins;
+using System.IO.Compression;
 
 namespace Chummer
 {
@@ -54,12 +56,18 @@ namespace Chummer
         private readonly BackgroundWorker _workerVersionUpdateChecker = new BackgroundWorker();
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private readonly string _strCurrentVersion;
+        public readonly PluginControl PluginLoader = new PluginControl();
+
 
 #region Control Events
         public frmChummerMain(bool isUnitTest = false)
         {
             Utils.IsUnitTest = isUnitTest;
             InitializeComponent();
+
+            
+            
+
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             _strCurrentVersion = $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
             Text = Application.ProductName + strSpaceCharacter + '-' + strSpaceCharacter + LanguageManager.GetString("String_Version", GlobalOptions.Language) + strSpaceCharacter + _strCurrentVersion;
@@ -97,6 +105,7 @@ namespace Chummer
             PopulateMRUToolstripMenu(this, null);
 
             Program.MainForm = this;
+            PluginLoader.LoadPlugins();
 
             // Set the Tag for each ToolStrip item so it can be translated.
             foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
@@ -205,6 +214,7 @@ namespace Chummer
                 CharacterRoster.WindowState = FormWindowState.Maximized;
                 CharacterRoster.Show();
             }
+            PluginLoader.CallPlugins(toolsMenu);
             frmLoadingForm.Close();
         }
 

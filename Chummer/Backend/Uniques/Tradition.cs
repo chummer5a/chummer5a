@@ -27,6 +27,7 @@ using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
+using Chummer.helpers;
 
 namespace Chummer.Backend.Uniques
 {
@@ -39,6 +40,7 @@ namespace Chummer.Backend.Uniques
     /// <summary>
     /// A Tradition
     /// </summary>
+    [HubClassTag("Name")]
     public class Tradition : IHasInternalId, IHasName, IHasXmlNode, IHasSource, INotifyMultiplePropertyChanged
     {
         private Guid _guiID;
@@ -142,6 +144,8 @@ namespace Chummer.Backend.Uniques
             OnMultiplePropertyChanged(nameof(Name), nameof(Extra), nameof(Source), nameof(Page));
             return true;
         }
+
+        
 
         public void RebuildSpiritList(bool blnDoOnPropertyChanged = true)
         {
@@ -956,6 +960,21 @@ namespace Chummer.Backend.Uniques
                     new DependancyGraphNode<string>(nameof(SpiritManipulation))
                 )
             );
+
+        public static List<Tradition> GetTraditions(Character character)
+        {
+            List<Tradition> result = new List<Tradition>();
+            XmlNodeList xmlTraditions = XmlManager.Load("traditions.xml").SelectNodes("/chummer/traditions/tradition");
+            foreach(XmlNode node in xmlTraditions)
+            {
+                Tradition tradition = new Tradition(character);
+                tradition.Create(node);
+                result.Add(tradition);
+            }
+            return result;
+
+        }
+
         #endregion
 
         public void SetSourceDetail(Control sourceControl)

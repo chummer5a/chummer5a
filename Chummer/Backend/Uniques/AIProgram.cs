@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.helpers;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -28,6 +29,7 @@ namespace Chummer
     /// An AI Program or Advanced Program.
     /// </summary>
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
+    [HubClassTag("Name")]
     public class AIProgram : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
         private Guid _guiID;
@@ -175,6 +177,7 @@ namespace Chummer
         /// <summary>
         /// AI Program's extra info.
         /// </summary>
+        [HubTag]
         public string Extra
         {
             get => _strExtra;

@@ -28,6 +28,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Attributes;
+using Chummer.helpers;
 
 namespace Chummer.Backend.Equipment
 {
@@ -35,6 +36,7 @@ namespace Chummer.Backend.Equipment
     /// A specific piece of Armor.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    [HubClassTag("Name")]
     public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating
     {
         private Guid _sourceID = Guid.Empty;
@@ -649,6 +651,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Value that was selected during an ImprovementManager dialogue.
         /// </summary>
+        [HubTag(true)]
         public string Extra
         {
             get => _strExtra;
@@ -732,6 +735,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Rating.
         /// </summary>
+        [HubTag(true)]
         public int Rating
         {
             get => Math.Min(_intRating, MaxRating);

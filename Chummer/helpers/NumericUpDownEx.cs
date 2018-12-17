@@ -399,7 +399,14 @@ namespace Chummer
             }
             else
             {
-                base.UpButton();
+                try
+                {
+                    base.UpButton();
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    Value = Maximum;
+                }
             }
         }
 

@@ -16,17 +16,21 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Serialization;
 using System.Xml.XPath;
 
 namespace Chummer
@@ -141,7 +145,7 @@ namespace Chummer
                     string strFile = objCharacterNode.Tag.ToString();
                     if (_lstCharacterCache.TryGetValue(strFile, out CharacterCache objCache) && objCache != null)
                     {
-                        objCharacterNode.Text = CalculatedName(objCache);
+                        objCharacterNode.Text = objCache.CalculatedName();
                         objCharacterNode.ToolTipText = objCache.FilePath.CheapReplace(Utils.GetStartupPath, () => '<' + Application.ProductName + '>');
                         if (!string.IsNullOrEmpty(objCache.ErrorText))
                         {
@@ -166,7 +170,7 @@ namespace Chummer
             }
         }
 
-        private void LoadCharacters(bool blnRefreshFavorites = true, bool blnRefreshRecents = true, bool blnRefreshWatch = true)
+        public void LoadCharacters(bool blnRefreshFavorites = true, bool blnRefreshRecents = true, bool blnRefreshWatch = true, bool blnRefreshPlugins = true)
         {
             ReadOnlyObservableCollection<string> lstFavorites = new ReadOnlyObservableCollection<string>(GlobalOptions.FavoritedCharacters);
             bool blnAddFavouriteNode = false;
@@ -247,6 +251,7 @@ namespace Chummer
 
                 lstRecentsNodes = new TreeNode[lstRecents.Count];
             }
+            ConcurrentBag<List<TreeNode>> NodesToAdd = new ConcurrentBag<List<TreeNode>>();
             Parallel.Invoke(
                 () => {
                     if (objFavouriteNode != null && lstFavoritesNodes != null)
@@ -320,6 +325,27 @@ namespace Chummer
                             }
                         }
                     }
+                },
+                () =>
+                {
+                    if (blnRefreshPlugins)
+                    {
+                        try
+                        {
+                            foreach (var plugin in Program.MainForm.PluginLoader.MyActivePlugins)
+                            {
+                                var task = plugin.GetCharacterRosterTreeNode(_lstCharacterCache);
+                                if (task.Result != null)
+                                {
+                                    NodesToAdd.Add(task.Result.ToList());
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            System.Diagnostics.Trace.TraceError(e.Message);
+                        }
+                    }
                 });
             if (objFavouriteNode != null)
             {
@@ -339,7 +365,22 @@ namespace Chummer
                     }
                 }
             }
-
+            foreach (var nodelist in NodesToAdd)
+            {
+                foreach (var node in nodelist)
+                {
+                    var querycoll = treCharacterList.Nodes.Cast<TreeNode>();
+                    var found = from a in querycoll
+                                where a.Text == node.Text && a.Tag == node.Tag
+                                select a;
+                    if (found.Any())
+                    {
+                        treCharacterList.Nodes.Remove(found.FirstOrDefault());
+                    }
+                    if (node.Nodes.Count > 0)
+                        treCharacterList.Nodes.Insert(1, node);
+                }
+            }
             if (objRecentNode != null)
             {
                 if (blnAddRecentNode)
@@ -379,100 +420,22 @@ namespace Chummer
             treCharacterList.ExpandAll();
         }
 
+       
+
         /// <summary>
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
         /// </summary>
         /// <param name="strFile"></param>
         private TreeNode CacheCharacter(string strFile)
         {
-            CharacterCache objCache = new CharacterCache();
-            string strErrorText = string.Empty;
-            XPathNavigator xmlSourceNode;
-            if (!File.Exists(strFile))
-            {
-                xmlSourceNode = null;
-                strErrorText = LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language);
-            }
-            else
-            {
-                // If we run into any problems loading the character cache, fail out early.
-                try
-                {
-                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                    {
-                        XmlDocument xmlDoc = new XmlDocument();
-                        xmlDoc.Load(objStreamReader);
-                        xmlSourceNode = xmlDoc.CreateNavigator().SelectSingleNode("/character");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    xmlSourceNode = null;
-                    strErrorText = ex.ToString();
-                }
-            }
-
-            if (xmlSourceNode != null)
-            {
-                objCache.Description = xmlSourceNode.SelectSingleNode("description")?.Value;
-                objCache.BuildMethod = xmlSourceNode.SelectSingleNode("buildmethod")?.Value;
-                objCache.Background = xmlSourceNode.SelectSingleNode("background")?.Value;
-                objCache.CharacterNotes = xmlSourceNode.SelectSingleNode("notes")?.Value;
-                objCache.GameNotes = xmlSourceNode.SelectSingleNode("gamenotes")?.Value;
-                objCache.Concept = xmlSourceNode.SelectSingleNode("concept")?.Value;
-                objCache.Karma = xmlSourceNode.SelectSingleNode("totalkarma")?.Value;
-                objCache.Metatype = xmlSourceNode.SelectSingleNode("metatype")?.Value;
-                objCache.Metavariant = xmlSourceNode.SelectSingleNode("metavariant")?.Value;
-                objCache.PlayerName = xmlSourceNode.SelectSingleNode("playername")?.Value;
-                objCache.CharacterName = xmlSourceNode.SelectSingleNode("name")?.Value;
-                objCache.CharacterAlias = xmlSourceNode.SelectSingleNode("alias")?.Value;
-                objCache.Created = xmlSourceNode.SelectSingleNode("created")?.Value == bool.TrueString;
-                objCache.Essence = xmlSourceNode.SelectSingleNode("totaless")?.Value;
-                string strSettings = xmlSourceNode.SelectSingleNode("settings")?.Value ?? string.Empty;
-                objCache.SettingsFile = !File.Exists(Path.Combine(Utils.GetStartupPath, "settings", strSettings)) ? LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language) : strSettings;
-                string strMugshotBase64 = xmlSourceNode.SelectSingleNode("mugshot")?.Value;
-                if (!string.IsNullOrEmpty(strMugshotBase64))
-                {
-                    objCache.Mugshot = strMugshotBase64.ToImage();
-                }
-                else
-                {
-                    XPathNavigator xmlMainMugshotIndex = xmlSourceNode.SelectSingleNode("mainmugshotindex");
-                    if (xmlMainMugshotIndex != null && int.TryParse(xmlMainMugshotIndex.Value, out int intMainMugshotIndex) && intMainMugshotIndex >= 0)
-                    {
-                        XPathNodeIterator xmlMugshotList = xmlSourceNode.Select("mugshots/mugshot");
-                        if (xmlMugshotList.Count > intMainMugshotIndex)
-                        {
-                            int intIndex = 0;
-                            foreach (XPathNavigator xmlMugshot in xmlMugshotList)
-                            {
-                                if (intMainMugshotIndex == intIndex)
-                                {
-                                    objCache.Mugshot = xmlMugshot.Value.ToImage();
-                                    break;
-                                }
-
-                                intIndex += 1;
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                objCache.ErrorText = strErrorText;
-            }
-
-            objCache.FilePath = strFile;
-            objCache.FileName = strFile.Substring(strFile.LastIndexOf(Path.DirectorySeparatorChar) + 1);
-
+            CharacterCache objCache = new CharacterCache(strFile);
             if (!_lstCharacterCache.TryAdd(strFile, objCache))
                 _lstCharacterCache[strFile] = objCache;
 
             TreeNode objNode = new TreeNode
             {
                 ContextMenuStrip = cmsRoster,
-                Text = CalculatedName(objCache),
+                Text = objCache.CalculatedName(),
                 ToolTipText = objCache.FilePath.CheapReplace(Utils.GetStartupPath, () => '<' + Application.ProductName + '>'),
                 Tag = strFile
             };
@@ -486,39 +449,7 @@ namespace Chummer
             return objNode;
         }
 
-        /// <summary>
-        /// Generates a name for the treenode based on values contained in the CharacterCache object.
-        /// </summary>
-        /// <param name="objCache">Cache from which to generate name.</param>
-        /// <param name="blnAddMarkerIfOpen">Whether to add an asterisk to the beginning of the name if the character is open.</param>
-        /// <returns></returns>
-        private static string CalculatedName(CharacterCache objCache, bool blnAddMarkerIfOpen = true)
-        {
-            string strReturn;
-            if (!string.IsNullOrEmpty(objCache.ErrorText))
-            {
-                strReturn = Path.GetFileNameWithoutExtension(objCache.FileName) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ')';
-            }
-            else
-            {
-                strReturn = objCache.CharacterAlias;
-                if (string.IsNullOrEmpty(strReturn))
-                {
-                    strReturn = objCache.CharacterName;
-                    if (string.IsNullOrEmpty(strReturn))
-                        strReturn = LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language);
-                }
-
-                string strBuildMethod = LanguageManager.GetString("String_" + objCache.BuildMethod, GlobalOptions.Language, false);
-                if (string.IsNullOrEmpty(strBuildMethod))
-                    strBuildMethod = LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                string strCreated = LanguageManager.GetString(objCache.Created ? "Title_CareerMode" : "Title_CreateMode", GlobalOptions.Language);
-                strReturn += $" ({strBuildMethod} - {strCreated})";
-            }
-            if (blnAddMarkerIfOpen && Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject.FileName == objCache.FilePath))
-                strReturn = "* " + strReturn;
-            return strReturn;
-        }
+        
 
         /// <summary>
         /// Update the labels and images based on the selected treenode.
@@ -607,6 +538,7 @@ namespace Chummer
             lblFilePathLabel.Visible = !string.IsNullOrEmpty(lblFilePath.Text);
             lblSettingsLabel.Visible = !string.IsNullOrEmpty(lblSettings.Text);
             ProcessMugshotSizeMode();
+            
         }
 
         #region Form Methods
@@ -619,6 +551,8 @@ namespace Chummer
             {
                 _lstCharacterCache.TryGetValue(objSelectedNode.Tag.ToString(), out objCache);
             }
+            if (objCache != null)
+                objCache.OnAfterSelect(sender, e);
             UpdateCharacter(objCache);
             treCharacterList.ClearNodeBackground(treCharacterList.SelectedNode);
         }
@@ -631,37 +565,30 @@ namespace Chummer
                 string strFile = objSelectedNode.Tag.ToString();
                 if (!string.IsNullOrEmpty(strFile) && _lstCharacterCache.TryGetValue(strFile, out CharacterCache objCache) && string.IsNullOrEmpty(objCache.ErrorText))
                 {
-                    Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-                    Cursor = Cursors.WaitCursor;
-                    if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                    try
                     {
-                        objOpenCharacter = Program.MainForm.LoadCharacter(strFile);
-                        Program.MainForm.OpenCharacter(objOpenCharacter);
-                        objSelectedNode.Text = CalculatedName(objCache);
+                        objCache.OnDoubleClick(sender, e);
+                        objSelectedNode.Text = objCache.CalculatedName();
+                        Cursor = Cursors.WaitCursor;
                     }
-                    Cursor = Cursors.Default;
+                    finally
+                    {
+                        Cursor = Cursors.Default;
+                    }
+                    
                 }
             }
         }
         private void treCharacterList_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Delete)
-            {
-                TreeNode t = treCharacterList.SelectedNode;
+            
+            TreeNode t = treCharacterList.SelectedNode;
 
-                if (t != null && _lstCharacterCache.TryGetValue(t.Tag.ToString(), out CharacterCache objCache) && objCache != null)
-                {
-                    switch (t.Parent.Tag.ToString())
-                    {
-                        case "Recent":
-                            GlobalOptions.MostRecentlyUsedCharacters.Remove(objCache.FilePath);
-                            break;
-                        case "Favourite":
-                            GlobalOptions.FavoritedCharacters.Remove(objCache.FilePath);
-                            break;
-                    }
-                }
+            if (t != null && _lstCharacterCache.TryGetValue(t.Tag.ToString(), out CharacterCache objCache) && objCache != null)
+            {
+                objCache.OnKeyDown(sender, new Tuple<KeyEventArgs, TreeNode>(e, t));
             }
+
         }
 
         private void treCharacterList_DragEnter(object sender, DragEventArgs e)
@@ -748,27 +675,255 @@ namespace Chummer
         /// <summary>
         /// Caches a subset of a full character's properties for loading purposes.
         /// </summary>
-        private sealed class CharacterCache
+        public class CharacterCache
         {
-            internal string FilePath { get; set; }
-            internal string FileName { get; set; }
-            internal string ErrorText { get; set; }
-            internal string Description { get; set; }
-            internal string Background { get; set; }
-            internal string GameNotes { get; set; }
-            internal string CharacterNotes { get; set; }
-            internal string Concept { get; set; }
-            internal string Karma { get; set; }
-            internal string Metatype { get; set; }
-            internal string Metavariant { get; set; }
-            internal string PlayerName { get; set; }
-            internal string CharacterName { get; set; }
-            internal string CharacterAlias { get; set; }
-            internal string BuildMethod { get; set; }
-            internal string Essence { get; set; }
-            internal Image Mugshot { get; set; }
-            internal bool Created { get; set; }
+
+            public string FilePath { get; set; }
+            public string FileName { get; set; }
+            public string ErrorText { get; set; }
+            public string Description { get; set; }
+            public string Background { get; set; }
+            public string GameNotes { get; set; }
+            public string CharacterNotes { get; set; }
+            public string Concept { get; set; }
+            public string Karma { get; set; }
+            public string Metatype { get; set; }
+            public string Metavariant { get; set; }
+            public string PlayerName { get; set; }
+            public string CharacterName { get; set; }
+            public string CharacterAlias { get; set; }
+            public string BuildMethod { get; set; }
+            public string Essence { get; set; }
+
+            private Image _mugshot = null;
+
+            [JsonIgnore]
+            [XmlIgnore]
+            [IgnoreDataMember]
+            public Image Mugshot
+            {
+                get
+                {
+                    if (_mugshot == null)
+                    {
+                        if (!String.IsNullOrEmpty(MugshotBase64))
+                            _mugshot = MugshotBase64.ToImage();
+                    }
+                    return _mugshot;
+
+                }
+                set
+                {
+                    _mugshot = value;
+                    if (value != null)
+                    {
+                        MugshotBase64 = value.ToBase64String();
+                    }
+
+                }
+            }
+
+            public string MugshotBase64 { get; set; }
+
+            public bool Created { get; set; }
             public string SettingsFile { get; set; }
+
+
+            [JsonIgnore]
+            [XmlIgnore]
+            [IgnoreDataMember]
+            public Dictionary<string, object> MyPluginDataDic { get; set; }
+
+            public CharacterCache()
+            {
+                SetDefaultEventHandlers();
+                HandlePlugins();
+                
+            }
+
+            private void SetDefaultEventHandlers()
+            {
+                OnDoubleClick += OnDefaultDoubleClick;
+                OnAfterSelect += OnDefaultAfterSelect;
+                OnKeyDown += OnDefaultKeyDown;
+            }
+
+            [JsonIgnore]
+            [XmlIgnore]
+            [IgnoreDataMember]
+            public EventHandler OnDoubleClick;
+
+            [JsonIgnore]
+            [XmlIgnore]
+            [IgnoreDataMember]
+            public EventHandler<TreeViewEventArgs> OnAfterSelect;
+
+            [JsonIgnore]
+            [XmlIgnore]
+            [IgnoreDataMember]
+            public EventHandler<Tuple<KeyEventArgs, TreeNode>> OnKeyDown;
+
+
+            private void HandlePlugins()
+            {
+                MyPluginDataDic = new Dictionary<string, object>();
+               
+            }
+
+            public void OnDefaultDoubleClick(object sender, EventArgs e)
+            {
+                Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == this.FileName);
+             
+                if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                {
+                    objOpenCharacter = Program.MainForm.LoadCharacter(this.FilePath);
+                    Program.MainForm.OpenCharacter(objOpenCharacter);
+                }
+            }
+
+            public CharacterCache(string strFile)
+            {
+                SetDefaultEventHandlers();
+                string strErrorText = string.Empty;
+                XPathNavigator xmlSourceNode;
+                if (!File.Exists(strFile))
+                {
+                    xmlSourceNode = null;
+                    strErrorText = LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language);
+                }
+                else
+                {
+                    // If we run into any problems loading the character cache, fail out early.
+                    try
+                    {
+                        using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
+                        {
+                            XmlDocument xmlDoc = new XmlDocument();
+                            xmlDoc.Load(objStreamReader);
+                            xmlSourceNode = xmlDoc.CreateNavigator().SelectSingleNode("/character");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        xmlSourceNode = null;
+                        strErrorText = ex.ToString();
+                    }
+                }
+
+                if (xmlSourceNode != null)
+                {
+                    Description = xmlSourceNode.SelectSingleNode("description")?.Value;
+                    BuildMethod = xmlSourceNode.SelectSingleNode("buildmethod")?.Value;
+                    Background = xmlSourceNode.SelectSingleNode("background")?.Value;
+                    CharacterNotes = xmlSourceNode.SelectSingleNode("notes")?.Value;
+                    GameNotes = xmlSourceNode.SelectSingleNode("gamenotes")?.Value;
+                    Concept = xmlSourceNode.SelectSingleNode("concept")?.Value;
+                    Karma = xmlSourceNode.SelectSingleNode("totalkarma")?.Value;
+                    Metatype = xmlSourceNode.SelectSingleNode("metatype")?.Value;
+                    Metavariant = xmlSourceNode.SelectSingleNode("metavariant")?.Value;
+                    PlayerName = xmlSourceNode.SelectSingleNode("playername")?.Value;
+                    CharacterName = xmlSourceNode.SelectSingleNode("name")?.Value;
+                    CharacterAlias = xmlSourceNode.SelectSingleNode("alias")?.Value;
+                    Created = xmlSourceNode.SelectSingleNode("created")?.Value == bool.TrueString;
+                    Essence = xmlSourceNode.SelectSingleNode("totaless")?.Value;
+                    string strSettings = xmlSourceNode.SelectSingleNode("settings")?.Value ?? string.Empty;
+                    SettingsFile = !File.Exists(Path.Combine(Utils.GetStartupPath, "settings", strSettings)) ? LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language) : strSettings;
+                    MugshotBase64 = xmlSourceNode.SelectSingleNode("mugshot")?.Value;
+                    if (!string.IsNullOrEmpty(MugshotBase64))
+                    {
+                        _mugshot = MugshotBase64.ToImage();
+                    }
+                    else
+                    {
+                        XPathNavigator xmlMainMugshotIndex = xmlSourceNode.SelectSingleNode("mainmugshotindex");
+                        if (xmlMainMugshotIndex != null && int.TryParse(xmlMainMugshotIndex.Value, out int intMainMugshotIndex) && intMainMugshotIndex >= 0)
+                        {
+                            XPathNodeIterator xmlMugshotList = xmlSourceNode.Select("mugshots/mugshot");
+                            if (xmlMugshotList.Count > intMainMugshotIndex)
+                            {
+                                int intIndex = 0;
+                                foreach (XPathNavigator xmlMugshot in xmlMugshotList)
+                                {
+                                    if (intMainMugshotIndex == intIndex)
+                                    {
+                                        MugshotBase64 = xmlMugshot.Value;
+                                        _mugshot = MugshotBase64.ToImage();
+                                        break;
+                                    }
+
+                                    intIndex += 1;
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    ErrorText = strErrorText;
+                }
+
+                FilePath = strFile;
+                FileName = strFile.Substring(strFile.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+
+                HandlePlugins();
+            }
+
+            /// <summary>
+            /// Generates a name for the treenode based on values contained in the CharacterCache object.
+            /// </summary>
+            /// <param name="objCache">Cache from which to generate name.</param>
+            /// <param name="blnAddMarkerIfOpen">Whether to add an asterisk to the beginning of the name if the character is open.</param>
+            /// <returns></returns>
+            public string CalculatedName(bool blnAddMarkerIfOpen = true)
+            {
+                string strReturn;
+                if (!string.IsNullOrEmpty(this.ErrorText))
+                {
+                    strReturn = Path.GetFileNameWithoutExtension(this.FileName) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ')';
+                }
+                else
+                {
+                    strReturn = this.CharacterAlias;
+                    if (string.IsNullOrEmpty(strReturn))
+                    {
+                        strReturn = this.CharacterName;
+                        if (string.IsNullOrEmpty(strReturn))
+                            strReturn = LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language);
+                    }
+
+                    string strBuildMethod = LanguageManager.GetString("String_" + this.BuildMethod, GlobalOptions.Language, false);
+                    if (string.IsNullOrEmpty(strBuildMethod))
+                        strBuildMethod = LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                    string strCreated = LanguageManager.GetString(this.Created ? "Title_CareerMode" : "Title_CreateMode", GlobalOptions.Language);
+                    strReturn += $" ({strBuildMethod} - {strCreated})";
+                }
+                if (blnAddMarkerIfOpen && Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject.FileName == this.FilePath))
+                    strReturn = "* " + strReturn;
+                return strReturn;
+            }
+
+            public void OnDefaultAfterSelect(object sender, TreeViewEventArgs e)
+            {
+                return;
+            }
+
+            public void OnDefaultKeyDown(object sender, Tuple<KeyEventArgs, TreeNode> args)
+            {
+                if (args.Item1.KeyCode == Keys.Delete)
+                {
+                    switch (args.Item2.Parent.Tag.ToString())
+                    {
+                        case "Recent":
+                            GlobalOptions.MostRecentlyUsedCharacters.Remove(this.FilePath);
+                            break;
+                        case "Favourite":
+                            GlobalOptions.FavoritedCharacters.Remove(this.FilePath);
+                            break;
+                    }
+                }
+            }
+
+
         }
         #endregion
 
@@ -811,7 +966,7 @@ namespace Chummer
                             {
                                 string strLoopFile = GlobalOptions.MostRecentlyUsedCharacters[i];
                                 if (_lstCharacterCache.TryGetValue(strLoopFile, out CharacterCache objLoopCache) && objLoopCache != null)
-                                    lstSorted.Add(new Tuple<string, string>(CalculatedName(objLoopCache, false), strLoopFile));
+                                    lstSorted.Add(new Tuple<string, string>(objLoopCache.CalculatedName(false), strLoopFile));
                                 else
                                     lstSorted.Add(new Tuple<string, string>(Path.GetFileNameWithoutExtension(strLoopFile), strLoopFile));
                             }
@@ -835,7 +990,7 @@ namespace Chummer
                             {
                                 string strLoopFile = GlobalOptions.FavoritedCharacters[i];
                                 if (_lstCharacterCache.TryGetValue(strLoopFile, out CharacterCache objLoopCache) && objLoopCache != null)
-                                    lstSorted.Add(new Tuple<string, string>(CalculatedName(objLoopCache, false), strLoopFile));
+                                    lstSorted.Add(new Tuple<string, string>(objLoopCache.CalculatedName(false), strLoopFile));
                                 else
                                     lstSorted.Add(new Tuple<string, string>(Path.GetFileNameWithoutExtension(strLoopFile), strLoopFile));
                             }

@@ -34,13 +34,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GroupControls, Version=1.5.3.0, Culture=neutral, PublicKeyToken=3726d9da21b6ac8f, processorArchitecture=MSIL">
+      <HintPath>..\packages\GroupControls.1.5.3\lib\net452\GroupControls.dll</HintPath>
+    </Reference>
+    <Reference Include="IdentityModel, Version=3.10.1.0, Culture=neutral, PublicKeyToken=e7877f4675df049f, processorArchitecture=MSIL">
+      <HintPath>..\packages\IdentityModel.3.10.1\lib\net452\IdentityModel.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.17\lib\net452\Microsoft.Rest.ClientRuntime.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.2\lib\net45\Microsoft.Rest.ClientRuntime.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Composition.AttributedModel, Version=1.0.33.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Composition.AttributedModel.1.2.0\lib\portable-net45+win8+wp8+wpa81\System.Composition.AttributedModel.dll</HintPath>
@@ -58,10 +65,17 @@
       <HintPath>..\packages\System.Composition.TypedParts.1.2.0\lib\portable-net45+win8+wp8+wpa81\System.Composition.TypedParts.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Text.Encodings.Web, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.4.5.0\lib\netstandard1.0\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -70,15 +84,18 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backend\ApiKeyCredentials.cs" />
     <Compile Include="Backend\PluginHandler.cs" />
+    <Compile Include="Backend\Search\SearchTagExtractor.cs" />
     <Compile Include="Backend\Utils.cs" />
     <Compile Include="Backend\MyMessageHandler.cs" />
     <Compile Include="Backend\TagExtractor.cs" />
     <Compile Include="Model\CharacterExtended.cs" />
     <Compile Include="Model\SearchTag.cs" />
+    <Compile Include="Model\SINnerVisibility.cs" />
     <Compile Include="Model\Tag.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -91,33 +108,54 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="SINnersClient\ISINnersClient.cs" />
-    <Compile Include="SINnersClient\Models\ChummerUploadClient.cs" />
+    <Compile Include="SINnersClient\Models\ApplicationUser.cs" />
+    <Compile Include="SINnersClient\Models\ChummerHubVersion.cs" />
+    <Compile Include="SINnersClient\Models\SearchTag.cs" />
+    <Compile Include="SINnersClient\Models\SINerUserRight.cs" />
     <Compile Include="SINnersClient\Models\SINner.cs" />
-    <Compile Include="SINnersClient\Models\SINnerComment.cs" />
     <Compile Include="SINnersClient\Models\SINnerMetaData.cs" />
+    <Compile Include="SINnersClient\Models\SINnerVisibility.cs" />
     <Compile Include="SINnersClient\Models\Tag.cs" />
+    <Compile Include="SINnersClient\Models\UploadClient.cs" />
+    <Compile Include="SINnersClient\Models\UploadInfoObject.cs" />
     <Compile Include="SINnersClient\SINnersClient.cs" />
     <Compile Include="SINnersClient\SINnersClientExtensions.cs" />
-    <Compile Include="UI\frmSINnerSearch.cs" />
+    <Compile Include="UI\frmSINnerSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="UI\frmSINnerSearch.Designer.cs">
       <DependentUpon>frmSINnerSearch.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\SINnersAdvanced.cs" />
+    <Compile Include="UI\SINnersAdvanced.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UI\SINnersAdvanced.Designer.cs">
       <DependentUpon>SINnersAdvanced.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\SINnersBasic.cs" />
+    <Compile Include="UI\SINnersBasic.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UI\SINnersBasic.Designer.cs">
       <DependentUpon>SINnersBasic.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\SINnersUserControl.cs" />
+    <Compile Include="UI\SINnersOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SINnersOptions.Designer.cs">
+      <DependentUpon>SINnersOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SINnersUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UI\SINnersUserControl.Designer.cs">
       <DependentUpon>SINnersUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\ucSearch.cs" />
-    <Compile Include="UI\ucSearch.Designer.cs">
-      <DependentUpon>ucSearch.cs</DependentUpon>
+    <Compile Include="UI\SINnersSearch.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SINnersSearch.Designer.cs">
+      <DependentUpon>SINnersSearch.cs</DependentUpon>
     </Compile>
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
@@ -135,11 +173,14 @@
     <EmbeddedResource Include="UI\SINnersBasic.resx">
       <DependentUpon>SINnersBasic.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\SINnersOptions.resx">
+      <DependentUpon>SINnersOptions.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\SINnersUserControl.resx">
       <DependentUpon>SINnersUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\ucSearch.resx">
-      <DependentUpon>ucSearch.cs</DependentUpon>
+    <EmbeddedResource Include="UI\SINnersSearch.resx">
+      <DependentUpon>SINnersSearch.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +191,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="libman.json" />
     <None Include="packages.config" />
     <None Include="Properties\DataSources\SINners.Models.Tag.datasource" />
     <None Include="Properties\Settings.settings">
@@ -165,6 +207,12 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetDir)$(TargetName).* $(OutDir)Plugins\</PostBuildEvent>
+    <PostBuildEvent>copy $(TargetDir)$(TargetName).* $(OutDir)Plugins\
+copy $(TargetDir)$(TargetName).* $(SolutionDir)\ChummerHub.Client.Tests\bin\Debug\Plugins\
+</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>

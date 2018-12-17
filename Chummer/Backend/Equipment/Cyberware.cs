@@ -28,6 +28,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Attributes;
+using Chummer.helpers;
 
 namespace Chummer.Backend.Equipment
 {
@@ -35,6 +36,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Cyberware.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    [HubClassTag("Name")]
     public class Cyberware : IHasChildren<Cyberware>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource
     {
         private Guid _guiSourceID = Guid.Empty;
@@ -1526,6 +1528,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Extra string associted with the 'ware.
         /// </summary>
+        [HubTag(true)]
         public string Extra
         {
             get => _strExtra;
@@ -1790,6 +1793,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Rating.
         /// </summary>
+        [HubTag]
         public int Rating
         {
             get => Math.Max(Math.Min(_intRating, MaxRating), MinRating);

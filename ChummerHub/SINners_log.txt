@@ -1,0 +1,2 @@
+2018-11-22 15:05:49.798 +01:00 [WRN] There are multiple relationships between 'ApplicationUser' and 'SINnerVisibility' without configured foreign key properties causing EF to create shadow properties on 'ApplicationUser' with names dependent on the discovery order.
+2018-11-22 15:05:59.574 +01:00 [WRN] There are multiple relationships between 'ApplicationUser' and 'SINnerVisibility' without configured foreign key properties causing EF to create shadow properties on 'ApplicationUser' with names dependent on the discovery order.

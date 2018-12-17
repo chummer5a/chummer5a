@@ -18,6 +18,7 @@
  */
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
+using Chummer.helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -35,6 +36,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    [HubClassTag("Name")]
     public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasMatrixConditionMonitor, IHasPhysicalConditionMonitor, IHasLocation, IHasSource
     {
         private Guid _guiID;

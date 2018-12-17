@@ -25,6 +25,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Skills;
+using Chummer.helpers;
 
 namespace Chummer
 {
@@ -32,6 +33,7 @@ namespace Chummer
     /// A Technomancer Program or Complex Form.
     /// </summary>
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
+    [HubClassTag("Name")]
     public class ComplexForm : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
         private Guid _guiID;
@@ -191,6 +193,7 @@ namespace Chummer
         /// <summary>
         /// Complex Form's extra info.
         /// </summary>
+        [HubTag]
         public string Extra
         {
             get => _strExtra;
@@ -200,6 +203,7 @@ namespace Chummer
         /// <summary>
         /// Complex Form's grade.
         /// </summary>
+        [HubTag]
         public int Grade
         {
             get => _intGrade;
