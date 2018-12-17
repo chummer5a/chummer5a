@@ -606,8 +606,11 @@ namespace Chummer
             {
                 foreach (string strFileToDelete in lstFilesToDelete)
                 {
-                    if (File.Exists(strFileToDelete))
+                    //TODO: This will quite likely leave some wreckage behind. Introduce a sleep and scream after x seconds. 
+                    if (!IsFileLocked(strFileToDelete))
                         File.Delete(strFileToDelete);
+                    else
+                        Utils.BreakIfDebug();
                 }
                 Utils.RestartApplication(GlobalOptions.Language, string.Empty);
             }
@@ -658,6 +661,30 @@ namespace Chummer
                 MessageBox.Show(string.Format(LanguageManager.GetString("Warning_Update_CouldNotConnectException", GlobalOptions.Language), strException), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 cmdUpdate.Enabled = true;
             }
+        }
+
+        /// <summary>
+        /// Test if the file at a given path is accessible to write operations. 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns>File is locked if True.</returns>
+        protected virtual bool IsFileLocked(string path)
+        {
+            try
+            {
+                File.OpenText(path);
+            }
+            catch (IOException)
+            {
+                //the file is unavailable because it is:
+                //still being written to
+                //or being processed by another thread
+                //or does not exist (has already been processed)
+                return true;
+            }
+
+            //file is not locked
+            return false;
         }
 
         #region AsyncDownload Events

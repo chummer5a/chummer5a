@@ -264,7 +264,7 @@
 		</string>
 		<string>
 			<key>Label_Ammo</key>
-			<text>Muni:</text>
+			<text>Munition:</text>
 		</string>
 		<string>
 			<key>Label_Reach</key>
@@ -884,7 +884,7 @@
 		</string>
 		<string>
 			<key>Message_CyberzombieRequirements</key>
-			<text>Ihr Charakter erfüllt nicht die Bedingungen um ein Cyberzombie zu werden:</text>
+			<text>Ihr Charakter erfüllt nicht die Bedingungen, um ein Cyberzombie zu werden:</text>
 		</string>
 		<string>
 			<key>Message_CyberzombieRequirementsEssence</key>
@@ -1044,7 +1044,7 @@
 		</string>
 		<string>
 			<key>Message_PowerLevel</key>
-			<text>Ihre Kraftstufe kann die aktuelle Höhe ihres Magie-Attributes nicht übersteigen.</text>
+			<text>Ihre Kraftstufe kann die aktuelle Höhe Ihres Magie-Attributes nicht übersteigen.</text>
 		</string>
 		<string>
 			<key>MessageTitle_PowerLevel</key>
@@ -1084,7 +1084,7 @@
 		</string>
 		<string>
 			<key>Message_MetavariantQualitySwap</key>
-			<text>Sie können keine Gaben austauschen, die Sie durch ihre(n) Metatyp/Metavariante erhalten.</text>
+			<text>Sie können keine Gaben austauschen, die Sie durch Ihre(n) Metatyp/Metavariante erhalten.</text>
 		</string>
 		<string>
 			<key>MessageTitle_MetavariantQualitySwap</key>
@@ -1224,7 +1224,7 @@
 		</string>
 		<string>
 			<key>Message_SelectWeaponName</key>
-			<text>Sie müssen erst eine Waffe auswählen um sie zu benennen.</text>
+			<text>Sie müssen erst eine Waffe auswählen, um sie zu benennen.</text>
 		</string>
 		<string>
 			<key>Message_SelectWeaponUnderbarrel</key>
@@ -1408,7 +1408,7 @@
 		</string>
 		<string>
 			<key>Message_InvalidPointExcess</key>
-			<text>{0} über dem erlaubtem Limit</text>
+			<text>{0} über dem erlaubten Limit</text>
 		</string>
 		<string>
 			<key>Message_InvalidNuyenExcess</key>
@@ -1524,7 +1524,7 @@
 		</string>
 		<string>
 			<key>Message_ConfirmKarmaExpenseEnemy</key>
-			<text>Müssen Sie Karma ausgeben um diesen Feind zu entfernen?</text>
+			<text>Müssen Sie Karma ausgeben, um diesen Feind zu entfernen?</text>
 		</string>
 		<string>
 			<key>Message_ConfirmKarmaExpenseSpend</key>
@@ -1668,7 +1668,7 @@
 		</string>
 		<string>
 			<key>MessageTitle_CannotSplitGear</key>
-			<text>Kann Ausrüstung nicht aufteilen</text>
+			<text>Ausrüstung kann nicht aufgeteilt werden</text>
 		</string>
 		<string>
 			<key>Message_CannotMergeGear</key>
@@ -3218,7 +3218,7 @@
 		</string>
 		<string>
 			<key>Label_OtherMatrixInit</key>
-			<text>Matrixiniative:</text>
+			<text>Matrixinitiative:</text>
 		</string>
 		<string>
 			<key>Label_OtherMatrixIP</key>
@@ -3866,7 +3866,7 @@
 		</string>
 		<string>
 			<key>Label_LifestyleNuyen_Description</key>
-			<text>Würfeln Sie die unten angegebene Menge an Würfeln um Ihr Nuyen Startkapital zu ermitteln.</text>
+			<text>Würfeln Sie die unten angegebene Menge an Würfeln, um Ihr Nuyen Startkapital zu ermitteln.</text>
 		</string>
 		<string>
 			<key>Label_LifestyleNuyen_ResultOf</key>
@@ -3942,11 +3942,11 @@
 		</string>
 		<string>
 			<key>Message_Omae_ChooseUsername</key>
-			<text>Bitte wählen Sie ihren Benutzernamen.</text>
+			<text>Bitte wählen Sie Ihren Benutzernamen.</text>
 		</string>
 		<string>
 			<key>Message_Omae_EnterUsername</key>
-			<text>Bitte geben Sie ihren Benutzernamen ein.</text>
+			<text>Bitte geben Sie Ihren Benutzernamen ein.</text>
 		</string>
 		<string>
 			<key>MessageTitle_Omae_ChooseUsername</key>
@@ -3994,7 +3994,7 @@
 		</string>
 		<string>
 			<key>Message_Omae_PasswordNoEmail</key>
-			<text>Ihr Passwort kann nicht zurückgesetzt werden, weil in ihrem Account keine E-Mailadresse hinterlegt ist.</text>
+			<text>Ihr Passwort kann nicht zurückgesetzt werden, weil in Ihrem Account keine E-Mailadresse hinterlegt ist.</text>
 		</string>
 		<string>
 			<key>Message_Omae_PasswordReset</key>
@@ -4002,7 +4002,7 @@
 		</string>
 		<string>
 			<key>Message_Omae_InfoRequiresLogin</key>
-			<text>Sie müssen bei Omae eingeloggt sein um ihre Account Informationen zu laden.</text>
+			<text>Sie müssen bei Omae eingeloggt sein, um Ihre Account Informationen zu laden.</text>
 		</string>
 		<string>
 			<key>String_Omae_NoCharacters</key>
@@ -4962,7 +4962,7 @@
 		</string>
 		<string>
 			<key>Label_SelectSetting_SettingsDescription</key>
-			<text>Wählen Sie ein Konfigurationsprofil. Jedes Profil regelt die Generierungsart, Anzahl der Generierungspunkte, die maximale Verfügbarkeiten und jegliche Haus-Regeln die für bei der Erschaffung eines Charakters benutzt werden.</text>
+			<text>Wählen Sie ein Konfigurationsprofil. Jedes Profil regelt die Generierungsart, Anzahl der Generierungspunkte, die maximale Verfügbarkeiten und jegliche Hausregeln die für bei der Erschaffung eines Charakters benutzt werden.</text>
 		</string>
 		<string>
 			<key>Title_SelectSide</key>
@@ -5466,7 +5466,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Expense_RefundNuyen</key>
-			<text>Kostenerstattung (wird nicht zu den Karriere Einnahmen hinzu addiert)</text>
+			<text>Kostenerstattung (wird nicht zu den Karriere Einnahmen hinzuaddiert)</text>
 		</string>
 		<string>
 			<key>Button_CreateStackedFocus</key>
@@ -5474,7 +5474,7 @@
 		</string>
 		<string>
 			<key>Message_CannotStackFoci</key>
-			<text>Sie müssen mindestens 2 ungebundene Foki besitzen um einen Mehrfachfokus erstellen zu können</text>
+			<text>Sie müssen mindestens 2 ungebundene Foki besitzen, um einen Mehrfachfokus erstellen zu können.</text>
 		</string>
 		<string>
 			<key>Message_StackedFocusMinimum</key>
@@ -5494,7 +5494,7 @@
 		</string>
 		<string>
 			<key>String_SelectItemFocus</key>
-			<text>Wählen Sie den Foki der zu dem Mehrfachfokus hinzugefügt werden soll. Beenden Sie diese Prozedur mit Abbruch.</text>
+			<text>Wählen Sie den Fokus, der zu dem Mehrfachfokus hinzugefügt werden soll. Beenden Sie diese Prozedur mit Abbruch.</text>
 		</string>
 		<!-- Added with Build 303 -->
 		<string>
@@ -5796,7 +5796,7 @@
 		</string>
 		<string>
 			<key>Message_ConfirmReapplyImprovements</key>
-			<text>Chummer wird versuchen alle verbesserbaren Gegenstände zu finden um die erlaubten Verbesserungen wieder anzuwenden. Dieses bedeutet, dass sich Attribute, Fertigkeiten oder andere Werte verändern können, wenn die Gegenstände so etwas mit bringen. Es wird empfohlen den Charakter vorher zu speichern, bevor sie diese Operation durchführen. Wollen Sie wirklich die Verbesserungen erneut anwenden?</text>
+			<text>Chummer wird versuchen alle verbesserbaren Gegenstände zu finden, um die erlaubten Verbesserungen wieder anzuwenden. Dies bedeutet, dass sich Attribute, Fertigkeiten oder andere Werte verändern können, wenn die Gegenstände so etwas mitbringen. Es wird empfohlen den Charakter vorher zu speichern, bevor sie diese Operation durchführen. Wollen Sie wirklich die Verbesserungen erneut anwenden?</text>
 		</string>
 		<string>
 			<key>MessageTitle_ConfirmReapplyImprovements</key>
@@ -5912,7 +5912,7 @@
 		</string>
 		<string>
 			<key>Message_Omae_DataDownloaded</key>
-			<text>Datei erfolgreich heruntergeladen. Sie müssen Chummer neu starten um die neuen Daten nutzen zu können.</text>
+			<text>Datei erfolgreich heruntergeladen. Sie müssen Chummer neu starten, um die neuen Daten nutzen zu können.</text>
 		</string>
 		<string>
 			<key>MessageTitle_Omae_DataDownloaded</key>
@@ -6385,7 +6385,7 @@
 		</string>
 		<string>
 			<key>String_GearName</key>
-			<text>Geben Sie den Namen für die Ausrüstung ein (oder Feld leer lassen um eine Benennung zu löschen).</text>
+			<text>Geben Sie den Namen für die Ausrüstung ein (oder Feld leer lassen, um eine Benennung zu löschen).</text>
 		</string>
 		<!-- Version 408 -->
 		<string>
@@ -6408,7 +6408,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Option_SpecialAttributeKarmaLimit</key>
-			<text>Spezialattribute (EDG,MAG,RES) werden während der Charaktererschaffung nicht dem 50% Limit für Attribute angerechnet</text>
+			<text>Spezialattribute (EDG, MAG, RES) werden während der Charaktererschaffung nicht dem 50% Limit für Attribute angerechnet</text>
 		</string>
 		<!-- Version 418 -->
 		<string>
@@ -6435,7 +6435,7 @@
 		</string>
 		<string>
 			<key>Tip_ActiveCommlink</key>
-			<text>Dieses ausgewählte Kommlink als das gerade aktive markieren. Die Matrix Initiative wird mit diesem Kommlink berechnet.</text>
+			<text>Dieses ausgewählte Kommlink als das gerade aktive markieren. Die Matrixinitiative wird mit diesem Kommlink berechnet.</text>
 		</string>
 		<!-- Version 429 -->
 		<string>
@@ -6504,7 +6504,7 @@
 		</string>
 		<string>
 			<key>Message_Update_MultipleInstances</key>
-			<text>Chummer kann ein vorhandenes Update nicht einspielen während mehrere Instanzen des Programmes laufen. Bitte schließen Sie die anderen Instanzen und führen Sie das Update noch einmal aus.</text>
+			<text>Chummer kann ein vorhandenes Update nicht einspielen, während mehrere Instanzen des Programmes laufen. Bitte schließen Sie die anderen Instanzen und führen Sie das Update noch einmal aus.</text>
 		</string>
 		<!-- Version 453 -->
 		<string>
@@ -6938,7 +6938,7 @@
 		</string>
 		<string>
 			<key>Tip_OptionsIgnoreArt</key>
-			<text>Aktivierung dieser Hausregel erlaubt es, alle Anforderungen an Metamagie, Verbesserungen, Verzauberungen und Ritualen zu ignorieren, die in Straßengrimoire beschrieben sind.</text>
+			<text>Aktivierung dieser Hausregel erlaubt es, alle Anforderungen an Metamagie, Verbesserungen, Verzauberungen und Rituale zu ignorieren, die in Straßengrimoire beschrieben sind.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsCyberlegMovement</key>
@@ -7624,7 +7624,7 @@
 		</string>
 		<string>
 			<key>Message_DeleteExoticSkill</key>
-			<text>Möchten Sie diese exotische Fertigkeiten wirklich löschen?</text>
+			<text>Möchten Sie diese exotische Fertigkeit wirklich löschen?</text>
 		</string>
 		<string>
 			<key>Message_SelectQuality_RequireESSAbove</key>
@@ -7768,7 +7768,7 @@
 		</string>
 		<string>
 			<key>MessageTitle_CharacterOptions_OpenOptions</key>
-			<text>Keine Konfiguationsdatei gefunden</text>
+			<text>Keine Konfigurationsdatei gefunden</text>
 		</string>
 		<string>
 			<key>String_AttributeDEPLong</key>
@@ -8164,7 +8164,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_DontDoubleQualityPurchases</key>
-			<text>Kosten zum Kaufen von Vorteile im Karrieremodus nicht verdoppeln</text>
+			<text>Kosten zum Kaufen von Vorteilen im Karrieremodus nicht verdoppeln</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_DontDoubleNegativeQualityRefunds</key>
@@ -8384,7 +8384,7 @@
 		</string>
 		<string>
 			<key>Message_ImprovementQuality</key>
-			<text>Diese Gabe wurde durch {0} hinzugefügt. Sie müssen die Quelle entfernen um diese Gabe zu entfernen.</text>
+			<text>Diese Gabe wurde durch {0} hinzugefügt. Sie müssen die Quelle entfernen, um diese Gabe zu entfernen.</text>
 		</string>
 		<string>
 			<key>Message_InvalidCyberwareGrades</key>
@@ -8820,7 +8820,7 @@
 		</string>
 		<string>
 			<key>Message_ReapplyImprovementsFoundOutdatedItems_Bottom</key>
-			<text>\nAlle von ihnen gewährten Verbesserungen konnten nicht wieder hinzugefügt werden. Bitte entfernen und ersetzen Sie diese Elemente manuell und/oder stellen Sie sicher, dass alle benutzerdefinierten Datendateien, die beim Erstellen dieses Charakters verwendet werden, noch vorhanden und aktiv sind.</text>
+			<text>\nAlle von Ihnen gewährten Verbesserungen konnten nicht wieder hinzugefügt werden. Bitte entfernen und ersetzen Sie diese Elemente manuell und/oder stellen Sie sicher, dass alle benutzerdefinierten Datendateien, die beim Erstellen dieses Charakters verwendet werden, noch vorhanden und aktiv sind.</text>
 		</string>
 		<string>
 			<key>String_AttributeLoss</key>
@@ -8908,7 +8908,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_AllowHoverIncrement</key>
-			<text>Veränderung von Werten über numerische Drehfelder erlauben, indem mit der Maus darüber gefahren wird</text>
+			<text>Veränderung von Werten über numerische Drehfelder erlauben, indem mit der Maus darübergefahren wird</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_MysAdeptSecondMAGAttribute</key>
@@ -9220,7 +9220,7 @@
 		</string>
 		<string>
 			<key>About_Description_Text</key>
-			<text>Charaktergenerator für Shadowrun 5. Edition\n\r\n\rDanke an Keith für die wundervolle Arbeit, die er in die Erstellung und Pflege von Chummer für die 4. Edition gesteckt hat. Ohne ihn wäre das alles nicht möglich.\n\r\n\rHerzlichen Dank an alle der 'Dumpshock community', dass sie dieses Projekt mit all ihren wertvollen Rückmeldungen, tollen Ideen, Verbesserungsvorschlägen und Hinweise auf enthaltene Fehler unterstützt haben. Ein großen Dankeschön auch an alle, die sich freiwillig gemeldet haben um Chummer in andere Sprachen zu übersetzen!</text>
+			<text>Charaktergenerator für Shadowrun 5. Edition\n\r\n\rDanke an Keith für die wundervolle Arbeit, die er in die Erstellung und Pflege von Chummer für die 4. Edition gesteckt hat. Ohne ihn wäre das alles nicht möglich.\n\r\n\rHerzlichen Dank an alle der 'Dumpshock community', dass sie dieses Projekt mit all ihren wertvollen Rückmeldungen, tollen Ideen, Verbesserungsvorschlägen und Hinweise auf enthaltene Fehler unterstützt haben. Ein großes Dankeschön auch an alle, die sich freiwillig gemeldet haben um Chummer in andere Sprachen zu übersetzen!</text>
 		</string>
 		<string>
 			<key>String_WorkingForTheMan</key>
@@ -9296,11 +9296,11 @@
 		</string>
 		<string>
 			<key>Message_MetagenicQualitiesInsufficientKarma</key>
-			<text>Es ist 1 Karma notwendig um metagenetische Nachteile und Vorteile auszugleichen. Aktuell verfügbar: {0}</text>
+			<text>Es ist 1 Karma notwendig, um metagenetische Nachteile und Vorteile auszugleichen. Aktuell verfügbar: {0}</text>
 		</string>
 		<string>
 			<key>Message_MetagenicQualitiesSubtractingKarma</key>
-			<text>Es ist 1 Karma notwendig um metagenetische Nachteile und Vorteile auszugleichen. Aktuell verfügbar: {0}.\nIst es in Ordnung, dieses Karma auszugeben?</text>
+			<text>Es ist 1 Karma notwendig, um metagenetische Nachteile und Vorteile auszugleichen. Aktuell verfügbar: {0}.\nIst es in Ordnung, dieses Karma auszugeben?</text>
 		</string>
 		<string>
 			<key>Message_MetagenicQualitiesUnbalanced</key>
@@ -9425,6 +9425,18 @@
 		<string>
 			<key>Checkbox_DiceRoller_VariableGlitch</key>
 			<text>Patzer bei mehr Einsen als Erfolgen, nicht bei halbem Würfelpool</text>
+		</string>
+		<string>
+			<key>Checkbox_Sprite_Pet</key>
+			<text>Sprite-Haustier</text>
+		</string>
+		<string>
+			<key>Message_UnregisteredSpriteLimit</key>
+			<text>Sie können nicht mehr als einen nicht registrierten Sprite auf einmal haben.</text>
+		</string>
+		<string>
+			<key>MessageTitle_UnregisteredSpriteLimit</key>
+			<text>Limit für nicht registrierte Sprites</text>
 		</string>
 	</strings>
 </chummer>

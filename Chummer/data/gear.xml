@@ -2082,6 +2082,8 @@
           <name>Earbuds</name>
           <category>Audio Devices</category>
           <capacity>0</capacity>
+          <rating>1</rating>
+          <maxrating>1</maxrating>
         </usegear>
         <usegear>
           <name>Shock- and Water-Resistant Case</name>
@@ -5969,7 +5971,7 @@
       <id>8dfceac4-1c5a-4b30-bcd2-81b16553c6ce</id>
       <name>Slick Willy</name>
       <category>Booster Chips</category>
-      <rating></rating>
+      <rating>4</rating>
       <source>KC</source>
       <page>59</page>
       <avail>Rating*4R</avail>
@@ -5991,7 +5993,7 @@
       <id>7b8e0c95-375d-4982-b523-576952aced75</id>
       <name>Fortified</name>
       <category>Booster Chips</category>
-      <rating></rating>
+      <rating>4</rating>
       <source>KC</source>
       <page>59</page>
       <avail>Rating*4R</avail>
@@ -6901,7 +6903,7 @@
       <id>fa6fa434-107b-4f36-a138-f98b044dae76</id>
       <name>Camera, Micro</name>
       <category>Vision Devices</category>
-      <rating>1</rating>
+      <rating>0</rating>
       <source>SR5</source>
       <page>443</page>
       <avail>0</avail>
@@ -17908,7 +17910,6 @@
       <cost>5000</cost>
     </gear>
     <!-- End Region -->
-    <!-- End Region -->
     <!-- Region Street Lethal -->
     <gear>
       <id>be56ed13-cff0-47a8-b6ba-556f2313f64f</id>
@@ -17929,6 +17930,17 @@
       <page>46</page>
       <avail>15R</avail>
       <cost>1000</cost>
+    </gear>
+    <gear>
+      <id>2790877a-046e-4c93-be2d-1053fbafd6c0</id>
+      <name>Minigrenade: MCT/Winchester-Howe Hornet Direct-Fire</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>132</page>
+      <avail>16F</avail>
+      <addweapon>Minigrenade: MCT/Winchester-Howe Hornet Direct-Fire</addweapon>
+      <cost>400</cost>
     </gear>
     <!-- End Region -->
     <!-- Region Kill Code -->

@@ -2658,6 +2658,7 @@
       </bonus>
       <required>
         <oneof>
+          <gear minrating="4">Fake SIN</gear>
           <quality>SINner (Criminal)</quality>
           <quality>SINner (National)</quality>
           <quality>SINner (Corporate Limited)</quality>
@@ -5081,7 +5082,7 @@
     <quality>
       <id>bfb6b16b-d2b1-4b28-af37-e011d016da37</id>
       <name>Dermal Alteration (Rhino Hide)</name>
-      <karma>7</karma>
+      <karma>8</karma>
       <category>Positive</category>
       <metagenetic>True</metagenetic>
       <bonus>
@@ -5292,7 +5293,7 @@
     <quality>
       <id>c724871b-6ae9-43fe-a0ae-83b0afcd4123</id>
       <name>Functional Tail (Prehensile)</name>
-      <karma>7</karma>
+      <karma>6</karma>
       <category>Positive</category>
       <metagenetic>True</metagenetic>
       <bonus>
@@ -13502,9 +13503,10 @@
         </spellcategorydrain>
       </bonus>
       <forbidden>
-        <oneof>
+        <allof>
           <quality>Adept</quality>
-        </oneof>
+          <quality>Mystic Adept</quality>
+        </allof>
       </forbidden>
       <required>
         <allof>
@@ -13555,10 +13557,11 @@
             <name>MAG</name>
             <total>1</total>
           </attribute>
-          <quality>Adept</quality>
+          <power>Critical Strike</power>
         </allof>
         <oneof>
-          <power>Critical Strike</power>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
         </oneof>
       </required>
       <source>FA</source>
@@ -17741,9 +17744,8 @@
       <name>Resonant Discordance</name>
       <karma>13</karma>
       <category>Positive</category>
-      <!-- TODO: Technomancers have access to mastery qualities?
       <canbuywithspellpoints>True</canbuywithspellpoints>
-      <doublecareer>False</doublecareer> --> 
+      <doublecareer>False</doublecareer>
       <required>
         <allof>
           <attribute>
@@ -17769,6 +17771,11 @@
           </attributetotal>
         </oneof>
       </forbidden>
+      <required>
+        <oneof>
+          <quality>Special Modifications</quality>
+        </oneof>
+      </required>
       <source>BTB</source>
       <page>160</page>
     </quality>
@@ -17794,11 +17801,6 @@
           </attributetotal>
         </oneof>
       </forbidden>
-      <required>
-        <oneof>
-          <quality>Prototype Materials</quality>
-        </oneof>
-      </required>
       <source>BTB</source>
       <page>161</page>
     </quality>

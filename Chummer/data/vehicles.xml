@@ -9755,6 +9755,30 @@
       </gears>
       <seats>6</seats>
     </vehicle>
+    <vehicle>
+      <id>4f1cc61b-7eae-4909-b549-5dda9e6f3f3f</id>
+      <name>Maersk Shipyards Wavecutter MPAC</name>
+      <page>131</page>
+      <source>SL</source>
+      <accel>3</accel>
+      <armor>25</armor>
+      <avail>22F</avail>
+      <body>25</body>
+      <category>Boats</category>
+      <cost>360000</cost>
+      <handling>5</handling>
+      <pilot>4</pilot>
+      <sensor>5</sensor>
+      <speed>5</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <seats>12</seats>
+    </vehicle>
     <!-- End Region -->
   </vehicles>
   <mods>

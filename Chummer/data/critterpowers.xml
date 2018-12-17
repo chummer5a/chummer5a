@@ -2,24 +2,24 @@
 
 <!--This file is part of Chummer5a.
 
-    Chummer5a is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  Chummer5a is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    Chummer5a is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  Chummer5a is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License
+  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
 
-    You can obtain the full source code for Chummer5a at
-    https://github.com/chummer5a/chummer5a
+  You can obtain the full source code for Chummer5a at
+  https://github.com/chummer5a/chummer5a
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema critterpowers.xsd">
+   xsi:schemaLocation="http://www.w3.org/2001/XMLSchema critterpowers.xsd">
   <version>0</version>
   <categories>
     <category>Allowed Optional Powers</category>
@@ -146,10 +146,11 @@
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
+      <duration>Always</duration>
       <bonus>
         <unlockskills name="Assensing">Name</unlockskills>
+        <unlockskills name="Astral Combat">Name</unlockskills>
       </bonus>
-      <duration>Always</duration>
       <source>SR5</source>
       <page>395</page>
     </power>
@@ -514,6 +515,7 @@
       <action>Complex</action>
       <range>LOS</range>
       <duration>Sustained</duration>
+      <karma>9</karma>
       <source>SG</source>
       <page>194</page>
     </power>
@@ -580,6 +582,9 @@
       <action>Free</action>
       <range>LOS</range>
       <duration>Instant</duration>
+      <bonus>
+        <unlockskills name="Counterspelling">Name</unlockskills>
+      </bonus>
       <source>SG</source>
       <page>196</page>
     </power>
@@ -2115,6 +2120,7 @@
       <action>Complex</action>
       <range>LOS</range>
       <duration>Sustained</duration>
+      <karma>9</karma>
       <source>HS</source>
       <page>189</page>
     </power>
@@ -2470,8 +2476,8 @@
       <type>M</type>
       <action>Complex</action>
       <range>LOS</range>
-      <karma>9</karma>
       <duration>Special</duration>
+      <karma>9</karma>
       <source>HS</source>
       <page>164</page>
     </power>
@@ -2482,7 +2488,7 @@
       <type>M</type>
       <action>Complex</action>
       <range>LOS</range>
-      <karma>14</karma>
+      <duration>Special</duration>
       <bonus>
         <movementreplace>
           <category>Fly</category>
@@ -2510,7 +2516,7 @@
           <quality>Dracoform (Western Drake)</quality>
         </oneof>
       </required>
-      <duration>Special</duration>
+      <karma>14</karma>
       <source>HS</source>
       <page>164</page>
     </power>
@@ -2573,7 +2579,7 @@
       <type>M</type>
       <action>Auto</action>
       <range>Self</range>
-      <karma>6</karma>
+      <duration>Special</duration>
       <bonus>
         <critterpowerlevels>
           <power>
@@ -2587,7 +2593,7 @@
           <quality>Dracoform (Western Drake)</quality>
         </oneof>
       </required>
-      <duration>Special</duration>
+      <karma>6</karma>
       <source>HS</source>
       <page>165</page>
     </power>
@@ -2598,7 +2604,7 @@
       <type>M</type>
       <action>Auto</action>
       <range>Self</range>
-      <karma>16</karma>
+      <duration>Special</duration>
       <bonus>
         <critterpowerlevels>
           <power>
@@ -2611,7 +2617,7 @@
           </power>
         </critterpowerlevels>
       </bonus>
-      <duration>Special</duration>
+      <karma>16</karma>
       <source>HS</source>
       <page>165</page>
     </power>
@@ -2622,7 +2628,7 @@
       <type>M</type>
       <action>Complex</action>
       <range>LOS</range>
-      <karma>14</karma>
+      <duration>Special</duration>
       <bonus>
         <movementreplace>
           <category>Fly</category>
@@ -2645,7 +2651,7 @@
           <quality>Dracoform (Eastern Drake)</quality>
         </oneof>
       </required>
-      <duration>Special</duration>
+      <karma>14</karma>
       <source>HS</source>
       <page>165</page>
     </power>
@@ -2681,7 +2687,6 @@
       <action>Complex</action>
       <range>Special</range>
       <duration>Instant</duration>
-      <karma>8</karma>
       <bonus>
         <toxincontactresist>1</toxincontactresist>
         <toxiningestionresist>1</toxiningestionresist>
@@ -2692,6 +2697,7 @@
         <pathogeninhalationresist>1</pathogeninhalationresist>
         <pathogeninjectionresist>1</pathogeninjectionresist>
       </bonus>
+      <karma>8</karma>
       <source>HS</source>
       <page>165</page>
     </power>
@@ -2810,6 +2816,1021 @@
       <karma />
       <source>AET</source>
       <page>39</page>
+    </power>
+    <!-- End Region -->
+    <!-- Region Dark Terrors -->
+    <power>
+      <id>9163fb4f-0531-4f11-8894-ed681306ebfd</id>
+      <name>Amphibious</name>
+      <category>Paranormal</category>
+      <type>M</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>6</karma>
+      <source>DTR</source>
+      <page>156</page>
+    </power>
+    <power>
+      <id>c330495b-c6af-4744-b399-c6e068864a8d</id>
+      <name>Astral Brute</name>
+      <category>Paranormal</category>
+      <type>M</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>9</karma>
+      <source>DTR</source>
+      <page>157</page>
+    </power>
+    <power>
+      <id>c788063f-8daa-4e32-8017-9562513541a0</id>
+      <name>Bacchanal</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Complex</action>
+      <range>Self</range>
+      <duration>Sustained</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>9</karma>
+      <source>DTR</source>
+      <page>157</page>
+    </power>
+    <power>
+      <id>f79f9ee8-f5db-4673-9225-e6a375aed465</id>
+      <name>Bone Spikes</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <bonus>
+        <unarmeddv>2</unarmeddv>
+        <!--TODO: Probably needs to be a specific weapon? -->
+        <unarmeddvphysical />
+        <!-- TODO: armorcostmarkup -->
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>5</karma>
+      <source>DTR</source>
+      <page>157</page>
+    </power>
+    <power>
+      <id>363c3991-5d17-4ca7-963f-e3f2ef395fda</id>
+      <name>Calcified Hide</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <required>
+        <allof>
+          <group>
+            <quality>Infected: Bandersnatch</quality>
+            <quality>Infected: Banshee</quality>
+            <quality>Infected: Dzoo-Noo-Qua</quality>
+            <quality>Infected: Fomoraig</quality>
+            <quality>Infected: Ghoul (Dwarf)</quality>
+            <quality>Infected: Ghoul (Elf)</quality>
+            <quality>Infected: Ghoul (Human)</quality>
+            <quality>Infected: Ghoul (Ork)</quality>
+            <quality>Infected: Ghoul (Sasquatch)</quality>
+            <quality>Infected: Ghoul (Troll)</quality>
+            <quality>Infected: Gnawer</quality>
+            <quality>Infected: Goblin</quality>
+            <quality>Infected: Grendel</quality>
+            <quality>Infected: Harvester</quality>
+            <quality>Infected: Loup-Garou</quality>
+            <quality>Infected: Mutaqua</quality>
+            <quality>Infected: Nosferatu</quality>
+            <quality>Infected: Vampire (Human)</quality>
+            <quality>Infected: Vampire (Non-Human)</quality>
+            <quality>Infected: Sukuyan (Human)</quality>
+            <quality>Infected: Sukuyan (Non-Human)</quality>
+            <quality>Infected: Wendigo</quality>
+          </group>
+          <group>
+            <critterpower>Armor</critterpower>
+          </group>
+        </allof>
+      </required>
+      <karma>5</karma>
+      <source>DTR</source>
+      <page>157</page>
+    </power>
+    <power>
+      <id>ea3a7442-477a-440f-adcd-4b5050c67b52</id>
+      <name>Corrosive Spit (Infected)</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Complex</action>
+      <range>Special</range>
+      <duration>Instant</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>9</karma>
+      <source>DTR</source>
+      <page>159</page>
+    </power>
+    <power>
+      <id>090c0194-3ac9-4ed8-8e82-7a60f18853e8</id>
+      <name>Deathlock Venom</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>9</karma>
+      <source>DTR</source>
+      <page>159</page>
+    </power>
+    <power>
+      <id>6cbf07be-1491-46c1-ab67-d5f1dd4aa709</id>
+      <name>Digitigrade Legs</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <bonus>
+        <movementreplace>
+          <category>Ground</category>
+          <speed>run</speed>
+          <val>6</val>
+        </movementreplace>
+        <sprintbonus>
+          <category>Ground</category>
+          <val>100</val>
+        </sprintbonus>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>6</karma>
+      <source>DTR</source>
+      <page>159</page>
+    </power>
+    <power>
+      <id>00461512-b49c-4759-bc91-e41167682f22</id>
+      <name>Drag Down</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>6</karma>
+      <source>DTR</source>
+      <page>159</page>
+    </power>
+    <power>
+      <id>dc0d00da-1d10-42b2-a57a-c336da372df7</id>
+      <name>Dread Feast</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>12</karma>
+      <source>DTR</source>
+      <page>159</page>
+    </power>
+    <power>
+      <id>9a4bde71-3d1b-4852-a613-5a7a8b1898ee</id>
+      <name>Dual Concealment</name>
+      <category>Paranormal</category>
+      <type>M</type>
+      <action>Simple</action>
+      <range>LOS</range>
+      <duration>Sustained</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>9</karma>
+      <source>DTR</source>
+      <page>160</page>
+    </power>
+    <power>
+      <id>a9809219-9291-4efe-8f74-23a58e144d73</id>
+      <name>Evolved Reflexes</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <bonus>
+        <initiativedice>1</initiativedice>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>12</karma>
+      <source>DTR</source>
+      <page>160</page>
+    </power>
+    <power>
+      <id>3f607df5-a2af-4fc7-b1ae-9ae2de40964f</id>
+      <name>Feral Dash</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>5</karma>
+      <source>DTR</source>
+      <page>160</page>
+    </power>
+    <power>
+      <id>cd9ffa1a-d300-4650-8127-4f27fce3a14b</id>
+      <name>Gnashing Teeth</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>6</karma>
+      <source>DTR</source>
+      <page>160</page>
+    </power>
+    <power>
+      <id>53a990fc-ed69-44eb-98d5-5363bf9139f7</id>
+      <name>Metahuman Masque</name>
+      <category>Paranormal</category>
+      <type>M</type>
+      <action>Complex</action>
+      <range>Self</range>
+      <duration>Sustained</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>12</karma>
+      <source>DTR</source>
+      <page>160</page>
+    </power>
+    <power>
+      <id>09fb492d-0aa0-4a2e-8542-53e2cf97f432</id>
+      <name>Morningstar Fall</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>9</karma>
+      <source>DTR</source>
+      <page>161</page>
+    </power>
+    <power>
+      <id>b1cef6fe-aa5f-4b12-a621-a3eb24568dbf</id>
+      <name>Mystic Armor (Infected)</name>
+      <category>Paranormal</category>
+      <type>M</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>6</karma>
+      <source>DTR</source>
+      <page>161</page>
+    </power>
+    <power>
+      <id>53dfd3bb-8c93-4d28-a88f-646c187f7940</id>
+      <name>Plague Bearer</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>12</karma>
+      <source>DTR</source>
+      <page>161</page>
+    </power>
+    <power>
+      <id>f61e6df3-bd1a-4ce8-9c75-b49df275cfb3</id>
+      <name>Predator's Glamour</name>
+      <category>Paranormal</category>
+      <type>M</type>
+      <action>Complex</action>
+      <range>Self</range>
+      <duration>Sustained</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>9</karma>
+      <source>DTR</source>
+      <page>161</page>
+    </power>
+    <power>
+      <id>80d692d9-6f13-4148-b346-bb8fc7b78d34</id>
+      <name>Rat King</name>
+      <category>Paranormal</category>
+      <type>M</type>
+      <action>Auto</action>
+      <range>MAG x 25 m</range>
+      <duration>Always</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>12</karma>
+      <source>DTR</source>
+      <page>162</page>
+    </power>
+    <power>
+      <id>0daa8f5c-f4de-4558-aca8-82354eecb941</id>
+      <name>Scythe Claws</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>6</karma>
+      <source>DTR</source>
+      <page>162</page>
+    </power>
+    <power>
+      <id>96ce4db8-74c5-47ea-8305-1096858ba8ee</id>
+      <name>Sonic Shriek</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Complex</action>
+      <range>Special</range>
+      <duration>Sustained</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>9</karma>
+      <source>DTR</source>
+      <page>162</page>
+    </power>
+    <power>
+      <id>a2346acb-c604-4c9d-83b6-e374348f1749</id>
+      <name>Spines</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>6</karma>
+      <source>DTR</source>
+      <page>162</page>
+    </power>
+    <power>
+      <id>9b2033d3-be97-440e-a5f4-f9d8a230c09c</id>
+      <name>Stupefying Miasma</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Simple</action>
+      <range>Self</range>
+      <duration>Sustained</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>9</karma>
+      <source>DTR</source>
+      <page>162</page>
+    </power>
+    <power>
+      <id>5589e7d4-0573-40c4-9798-eb6b604ef82c</id>
+      <name>Terrorscape</name>
+      <category>Paranormal</category>
+      <type>M</type>
+      <action>Complex</action>
+      <range>Special</range>
+      <duration>Sustained</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>12</karma>
+      <source>DTR</source>
+      <page>162</page>
+    </power>
+    <power>
+      <id>97829992-2433-463d-8df7-d8ef0db20e00</id>
+      <name>Traceless Walk</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
+      <karma>9</karma>
+      <source>DTR</source>
+      <page>163</page>
     </power>
     <!-- End Region -->
   </powers>

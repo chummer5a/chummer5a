@@ -16,6 +16,20 @@ Application Changes:
 - Fixed incorrect behaviour for cyberware purchased via Black Market Pipeline not properly being discounted. Fixes #3244
 - Added basic functionality for the Sprite Pet from Kill Code. This is not currently restricted to the technoshaman archetype. 
 - Mildly ugly fix for cybersuites that come with cyberlimbs not properly being counted for attribute calculation.
+- Added a catch to prevent Chummer from crashing when updating if old files are still being held by other applications. Should fix #3250
+- The Digital Doppelganger quality now allows for Fake SINs as a requirement.
+- Added gear as a requirement check.
+- Added condition checks to critter power purchases separate to the existing catregory filtering. 
+- MetatypeRemovable metagenetic qualities now no longer count towards metagenetic limits. For example, Wakyambi with Surge don't have to remove their Celerity quality.
+- Fixed an issue with the Select Weapon window causing a crash if receiving incorrectly filtered strings. Fixes #3256
+- Fixed an issue with built-in weapons being incorrectly added to the first weapon mount in a list.
+- Fixed an issue with lifestyle multipliers that prevented them from calculating their cost correctly if they reduced the cost below 100%.
+- Fixed missing text changes for the Delete Metamagic button that prevented it updating properly for Technomancers. 
+- Fixed a potential crash when importing non-Technomancer characters from Herolab into Chummer.
+- Moved all Attribute references out of CharacterShared and into AttributeSection. 
+- Collapsed Special and Physical attributes into one list, since we weren't using them for any particular purpose anyway. 
+- Fixed an issue with MAG being removed incorrectly when using the Mystic Adept Second Attribute optional rule if the charactrer started with a magic attribute, such as shapeshifters. Fixes #3253
+- Fixed behaviour of plugins incorrectly applying their Essence costs in career mode instead of using the capacity cost. Should fix #3279, may have some additional edge cases.
 
 Data Changes:
 
@@ -24,6 +38,16 @@ Data Changes:
 - Added content from the German-exclusive sourcebook "Hamburg".
 - Removed redundant 'Enable Spells and Spirits Tab' improvement. Closes #3189
 - Added an optional rule from Chrome Flesh to allow Trolls to treat their horns as per the bio-weapon on page 121 of Chrome Flesh. 
+- Fixed incorrect requirements for the Special Modifications and Prototype Materials qualities. 
+- The Dual Natured critter power now grants access to Astral Combat. Magical Guard now grants access to the Counterspelling skill. RAW implies this is correct, but I'm not super confident in it. Closes #3195
+- Added missing critter powers from Dark Terrors, courtesy of Keeper M. 
+- Per updated Runnerhub Rules, the Liminal bodies are now available and Armor enhancements can be added to skulls and torsos.
+- Fixed conditional behaviour on the Death Dealer quality to properly work for Mystic Adepts. Fixes #3255
+- Fixed an incorrect cost for Household Gremlins (1600 instead of 600).
+- Fixed incorrect costs for the Dermal Alteration (Rhino Hide) and Functional Tail (Prehensile) qualities. 
+- Added an amend file to allow the Practice, Practice, Practice quality to be taken multiple times, per German data changes.
+- Fixed incorrect ratings on the Fortified and Slick Willy booster chips.
+- Fixed a crash when selecting components of Commlink Functionality on gear. Fixes #3178
 
 New Strings:
 
