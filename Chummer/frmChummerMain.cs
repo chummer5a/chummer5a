@@ -40,6 +40,7 @@ using System.ComponentModel;
 using System.Net;
 using System.Text;
 using Chummer.Plugins;
+using System.IO.Compression;
 
 namespace Chummer
 {
@@ -64,7 +65,7 @@ namespace Chummer
             Utils.IsUnitTest = isUnitTest;
             InitializeComponent();
 
-            PluginLoader.LoadPlugins();
+            
             
 
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
@@ -104,6 +105,7 @@ namespace Chummer
             PopulateMRUToolstripMenu(this, null);
 
             Program.MainForm = this;
+            PluginLoader.LoadPlugins();
 
             // Set the Tag for each ToolStrip item so it can be translated.
             foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())

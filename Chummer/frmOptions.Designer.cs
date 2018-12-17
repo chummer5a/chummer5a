@@ -29,9 +29,9 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            this.tlpOptions = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.tlpOptions = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.lblSetting = new System.Windows.Forms.Label();
             this.lblSettingName = new System.Windows.Forms.Label();
@@ -301,7 +301,6 @@ namespace Chummer
             this.clbPlugins = new System.Windows.Forms.CheckedListBox();
             this.panelPluginOption = new System.Windows.Forms.Panel();
             this.flpOKCancel = new System.Windows.Forms.FlowLayoutPanel();
-            this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabGlobal.SuspendLayout();
             this.tlpGlobal.SuspendLayout();
@@ -382,6 +381,26 @@ namespace Chummer
             this.flpOKCancel.SuspendLayout();
             this.SuspendLayout();
             // 
+            // tlpOptions
+            //
+            
+            this.tlpOptions.AutoSize = true;
+            this.tlpOptions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpOptions.ColumnCount = 4;
+            this.tlpOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpOptions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpOptions.Location = new System.Drawing.Point(9, 9);
+            this.tlpOptions.Name = "tlpOptions";
+            this.tlpOptions.RowCount = 3;
+            this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpOptions.Size = new System.Drawing.Size(1246, 663);
+            this.tlpOptions.TabIndex = 6;
+            // 
             // cmdOK
             // 
             this.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
@@ -410,31 +429,6 @@ namespace Chummer
             this.cmdCancel.Text = "Cancel";
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
-            // 
-            // tlpOptions
-            // 
-            this.tlpOptions.AutoSize = true;
-            this.tlpOptions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpOptions.ColumnCount = 4;
-            this.tlpOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpOptions.Controls.Add(this.txtSettingName, 3, 0);
-            this.tlpOptions.Controls.Add(this.lblSetting, 0, 0);
-            this.tlpOptions.Controls.Add(this.lblSettingName, 2, 0);
-            this.tlpOptions.Controls.Add(this.cboSetting, 1, 0);
-            this.tlpOptions.Controls.Add(this.tabOptions, 0, 1);
-            this.tlpOptions.Controls.Add(this.flpOKCancel, 0, 2);
-            this.tlpOptions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpOptions.Location = new System.Drawing.Point(9, 9);
-            this.tlpOptions.Name = "tlpOptions";
-            this.tlpOptions.RowCount = 3;
-            this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpOptions.Size = new System.Drawing.Size(1246, 663);
-            this.tlpOptions.TabIndex = 6;
             // 
             // txtSettingName
             // 
@@ -484,7 +478,6 @@ namespace Chummer
             // 
             // tabOptions
             // 
-            this.tlpOptions.SetColumnSpan(this.tabOptions, 4);
             this.tabOptions.Controls.Add(this.tabGlobal);
             this.tabOptions.Controls.Add(this.tabCharacterOptions);
             this.tabOptions.Controls.Add(this.tabKarmaCosts);
@@ -4346,6 +4339,7 @@ namespace Chummer
             this.tabPlugins.Padding = new System.Windows.Forms.Padding(3);
             this.tabPlugins.Size = new System.Drawing.Size(1232, 575);
             this.tabPlugins.TabIndex = 6;
+            this.tabGitHubIssues.Tag = "Tab_Options_Plugins";
             this.tabPlugins.Text = "Plugins";
             // 
             // bufferedTableLayoutPanel1
@@ -4401,7 +4395,6 @@ namespace Chummer
             // 
             this.flpOKCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.flpOKCancel.AutoSize = true;
-            this.tlpOptions.SetColumnSpan(this.flpOKCancel, 4);
             this.flpOKCancel.Controls.Add(this.cmdOK);
             this.flpOKCancel.Controls.Add(this.cmdCancel);
             this.flpOKCancel.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
@@ -4430,9 +4423,8 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_Options";
             this.Text = "Options";
+
             this.Load += new System.EventHandler(this.frmOptions_Load);
-            this.tlpOptions.ResumeLayout(false);
-            this.tlpOptions.PerformLayout();
             this.tabOptions.ResumeLayout(false);
             this.tabGlobal.ResumeLayout(false);
             this.tabGlobal.PerformLayout();

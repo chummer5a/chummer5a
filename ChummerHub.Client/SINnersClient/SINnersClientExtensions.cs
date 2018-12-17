@@ -90,6 +90,28 @@ namespace SINners
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
+            public static string GetResetDb(this ISINnersClient operations)
+            {
+                return Task.Factory.StartNew(s => ((ISINnersClient)s).GetResetDbAsync(), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<string> GetResetDbAsync(this ISINnersClient operations, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.GetResetDbWithHttpMessagesAsync(null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
             public static IList<SINner> GetSINnersByAuthorization(this ISINnersClient operations)
             {
                 return Task.Factory.StartNew(s => ((ISINnersClient)s).GetSINnersByAuthorizationAsync(), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
@@ -131,6 +153,28 @@ namespace SINners
                 }
             }
 
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            public static ChummerHubVersion GetVersion(this ISINnersClient operations)
+            {
+                return Task.Factory.StartNew(s => ((ISINnersClient)s).GetVersionAsync(), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<ChummerHubVersion> GetVersionAsync(this ISINnersClient operations, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.GetVersionWithHttpMessagesAsync(null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
             /// <summary>
             /// Returns the Chummer-Save-File
             /// </summary>
@@ -139,9 +183,9 @@ namespace SINners
             /// </param>
             /// <param name='sinnerid'>
             /// </param>
-            public static void GetDownloadFile(this ISINnersClient operations, Guid sinnerid)
+            public static System.IO.Stream GetDownloadFile(this ISINnersClient operations, Guid sinnerid)
             {
-                Task.Factory.StartNew(s => ((ISINnersClient)s).GetDownloadFileAsync(sinnerid), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                return Task.Factory.StartNew(s => ((ISINnersClient)s).GetDownloadFileAsync(sinnerid), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -155,9 +199,11 @@ namespace SINners
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task GetDownloadFileAsync(this ISINnersClient operations, Guid sinnerid, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<System.IO.Stream> GetDownloadFileAsync(this ISINnersClient operations, Guid sinnerid, CancellationToken cancellationToken = default(CancellationToken))
             {
-                await operations.GetDownloadFileWithHttpMessagesAsync(sinnerid, null, cancellationToken).ConfigureAwait(false);
+                var _result = await operations.GetDownloadFileWithHttpMessagesAsync(sinnerid, null, cancellationToken).ConfigureAwait(false);
+                _result.Request.Dispose();
+                return _result.Body;
             }
 
             /// <param name='operations'>

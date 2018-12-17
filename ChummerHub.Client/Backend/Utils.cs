@@ -1,4 +1,6 @@
 using Chummer;
+using Chummer.Plugins;
+using ChummerHub.Client.Model;
 using Microsoft.Rest;
 using SINners;
 using System;
@@ -6,6 +8,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -58,7 +61,7 @@ namespace ChummerHub.Client.Backend
         {
             get
             {
-                Properties.Settings.Default.Reload();
+                //Properties.Settings.Default.Reload();
                 if ((_AuthorizationCookieContainer == null)
                     || (String.IsNullOrEmpty(Properties.Settings.Default.CookieData)))
                 {
@@ -142,6 +145,8 @@ namespace ChummerHub.Client.Backend
             return cookieData.ToString().Replace(';', ',');
         }
 
+        private static bool clientErrorShown = false;
+
         private static SINnersClient _client = null;
         public static SINnersClient Client
         {
@@ -152,7 +157,12 @@ namespace ChummerHub.Client.Backend
                     try
                     {
                         if (String.IsNullOrEmpty(Properties.Settings.Default.SINnerUrl))
-                            return null;
+                        {
+                            if (!StaticUtils.IsUnitTest)
+                                return null;
+                            Properties.Settings.Default.SINnerUrl = "https://sinners.azurewebsites.net/";
+                        }
+                            
                         ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
                         ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
                         //ServiceClientCredentials credentials = new TokenCredentials("Bearer");
@@ -163,12 +173,23 @@ namespace ChummerHub.Client.Backend
                         HttpClientHandler httpClientHandler = new HttpClientHandler();
                         httpClientHandler.CookieContainer = AuthorizationCookieContainer;
                         _client = new SINnersClient(baseUri, credentials, httpClientHandler, delegatingHandler);
-
+                        var version = _client.GetVersion();
+                        //var version = _client.GetVersionWithHttpMessagesAsync().Result;
+                        System.Diagnostics.Trace.TraceInformation("Connected to SINners in version " + version.AssemblyVersion + ".");
                     }
                     catch (Exception ex)
                     {
                         System.Diagnostics.Trace.TraceError(ex.ToString());
-                        throw;
+                        if (!clientErrorShown)
+                        {
+                            Exception inner = ex;
+                            while (inner.InnerException != null)
+                                inner = inner.InnerException;
+                            string msg = "Error connecting to SINners: " + Environment.NewLine + Environment.NewLine + inner.Message;
+                            msg += Environment.NewLine + Environment.NewLine + "Please check the Plugin-Options dialog.";
+                            MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            clientErrorShown = true;
+                        }
                     }
                 }
                 return _client;
@@ -192,42 +213,46 @@ namespace ChummerHub.Client.Backend
 
         public bool IsUnitTest { get; set; }
 
+        private static TreeNode MyOnlineTreeNode { get; set; }
+
         /// <summary>
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
         /// </summary>
         /// <param name="strFile"></param>
-        internal async static Task<TreeNode> GetCharacterRosterTreeNode(ConcurrentDictionary<string, CharacterCache> CharCache)
+        internal async static Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(ConcurrentDictionary<string, CharacterCache> CharCache)
         {
             try
             {
                 var response = await StaticUtils.Client.GetSINnersByAuthorizationWithHttpMessagesAsync();
+
+                if (MyOnlineTreeNode == null)
+                {
+                    MyOnlineTreeNode = new TreeNode()
+                    {
+                        Text = "Online",
+                        Tag = "OnlineTag"
+                    };
+                }
+                else
+                {
+                    MyOnlineTreeNode.Nodes.Clear();
+                }
                 if (response == null || response.Body?.Any() == false)
                 {
-                    return null;
+                    return new List<TreeNode>() { MyOnlineTreeNode }; 
                 }
-                TreeNode onlineNode = new TreeNode()
-                {
-                    Text = "Online"
-                };
                 foreach (var sinner in response.Body)
                 {
                     try
                     {
-                        var objCache = Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(sinner.JsonSummary);
-                        objCache.OnDoubleClick -= objCache.OnDefaultDoubleClick;
-                        objCache.OnDoubleClick += (sender, mainForm) =>
-                           {
-                               Character objOpenCharacter = mainForm.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName);
+                        if (String.IsNullOrEmpty(sinner.JsonSummary))
+                            continue;
+                        CharacterCache objCache = Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(sinner.JsonSummary);
+                        SetEventHandlers(sinner, objCache);
 
-                               if (objOpenCharacter == null || !mainForm.SwitchToOpenCharacter(objOpenCharacter, true))
-                               {
-                                   objOpenCharacter = mainForm.LoadCharacter(objCache.FilePath);
-                                   mainForm.OpenCharacter(objOpenCharacter);
-                               }
-                           };
                         TreeNode objNode = new TreeNode
                         {
-                            Text = sinner.Id?.ToString(),
+                            Text = objCache.CalculatedName(),
                             Tag = sinner.Id.Value.ToString()
                         };
                         if (!string.IsNullOrEmpty(objCache.ErrorText))
@@ -240,15 +265,15 @@ namespace ChummerHub.Client.Backend
                         CharCache.TryRemove(sinner.Id.Value.ToString(), out delObj);
                         CharCache.TryAdd(sinner.Id.Value.ToString(), objCache);
 
-                        onlineNode.Nodes.Add(objNode);
+                        MyOnlineTreeNode.Nodes.Add(objNode);
                     }
                     catch (Exception e)
                     {
                         System.Diagnostics.Trace.TraceWarning("Could not deseialize CharacterCache-Object: " + sinner.JsonSummary);
                     }
                 }
-                if (onlineNode.Nodes.Count > 0)
-                    return onlineNode;
+                if (MyOnlineTreeNode.Nodes.Count > 0)
+                    return new List<TreeNode>() { MyOnlineTreeNode };
                 else
                     return null;
             }
@@ -257,27 +282,146 @@ namespace ChummerHub.Client.Backend
                 System.Diagnostics.Trace.TraceError(ex.ToString());
                 throw;
             }
-            return null;
-            //CharacterCache objCache = new CharacterCache(strFile);
-            //if (!CharCache.TryAdd(strFile, objCache))
-            //    CharCache[strFile] = objCache;
+        }
 
-            //TreeNode objNode = new TreeNode
-            //{
-            //    ContextMenuStrip = cmsRoster,
-            //    Text = CalculatedName(objCache),
-            //    ToolTipText = objCache.FilePath.CheapReplace(Utils.GetStartupPath, () => '<' + Application.ProductName + '>'),
-            //    Tag = strFile
-            //};
-            //if (!string.IsNullOrEmpty(objCache.ErrorText))
-            //{
-            //    objNode.ForeColor = Color.Red;
-            //    objNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error", GlobalOptions.Language)
-            //                            + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + Environment.NewLine + objCache.ErrorText;
-            //}
+        //private void streamToFile(SINners.Models.Stream fileStream, string filePath)
+        //{
+        //    using (FileStream writeStream = new FileStream(filePath,
+        //                                    FileMode.Create,
+        //                                    FileAccess.Write))
+        //    {
+        //        int length = 1024;
+        //        Byte[] buffer = new Byte[length];
+        //        int bytesRead = fileStream.Read(buffer, 0, length);
+        //        while (bytesRead > 0)
+        //        {
+        //            writeStream.Write(buffer, 0, bytesRead);
+        //            bytesRead = fileStream.Read(buffer, 0, length);
+        //        }
+        //        fileStream.Close();
+        //        writeStream.Close();
+        //    }
+        //}
 
-            //return objNode;
-            
+        public static byte[] ReadFully(Stream input)
+        {
+            byte[] buffer = new byte[16 * 1024];
+            using (MemoryStream ms = new MemoryStream())
+            {
+                int read;
+                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    ms.Write(buffer, 0, read);
+                }
+                return ms.ToArray();
+            }
+        }
+
+        private static void SetEventHandlers(SINners.Models.SINner sinner, CharacterCache objCache)
+        {
+            objCache.OnDoubleClick -= objCache.OnDefaultDoubleClick;
+            objCache.OnDoubleClick += (sender, e) =>
+            {
+                //currently only one chum5-File per chum5z ZipFile is implemented!
+                string loadFilePath = null;
+                string zipPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SINner", sinner.Id.Value.ToString());
+                if (Directory.Exists(zipPath))
+                {
+                    var files = Directory.EnumerateFiles(zipPath, "*.chum5", SearchOption.TopDirectoryOnly);
+                    foreach (var file in files)
+                    {
+                        DateTime lastwrite = File.GetLastWriteTime(file);
+                        if ((lastwrite >= sinner.LastChange)
+                            || sinner.LastChange == null)
+                        {
+                            loadFilePath = file;
+                            break;
+                        }
+                        //no recent file found - download it (again).
+                        File.Delete(file);
+                    }
+                }
+                else
+                {
+                    Directory.CreateDirectory(zipPath);
+                }
+                Character objOpenCharacter = PluginHandler.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == loadFilePath);
+                if (objOpenCharacter == null || !PluginHandler.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                {
+                    if (String.IsNullOrEmpty(loadFilePath))
+                    {
+                        try
+                        {
+                            PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
+                            string zippedFile = Path.Combine(System.IO.Path.GetTempPath(), "SINner", sinner.Id.Value + ".chum5z");
+                            if (File.Exists(zippedFile))
+                                File.Delete(zippedFile);
+                            var filestream = StaticUtils.Client.GetDownloadFile(sinner.Id.Value);
+                            //var action = StaticUtils.Client.GetDownloadFileWithHttpMessagesAsync();
+                            //action.RunSynchronously();
+                            //var download = action.Result;
+                            var array = ReadFully(filestream);
+                            File.WriteAllBytes(zippedFile, array);
+                            System.IO.Compression.ZipFile.ExtractToDirectory(zippedFile, zipPath);
+                            var files = Directory.EnumerateFiles(zipPath, "*.chum5", SearchOption.TopDirectoryOnly);
+                            foreach (var file in files)
+                            {
+                                if (sinner.UploadDateTime != null)
+                                    File.SetCreationTime(file, sinner.UploadDateTime.Value);
+                                if (sinner.LastChange != null)
+                                    File.SetLastWriteTime(file, sinner.LastChange.Value);
+                                loadFilePath = file;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Trace.TraceError(ex.Message);
+                            objCache.ErrorText = ex.Message;
+                        }
+                        finally
+                        {
+                            PluginHandler.MainForm.Cursor = Cursors.Default;
+                        }
+                    }
+
+                    objOpenCharacter = PluginHandler.MainForm.LoadCharacter(loadFilePath);
+                    PluginHandler.MainForm.OpenCharacter(objOpenCharacter);
+
+
+                }
+            };
+            objCache.OnAfterSelect -= objCache.OnDefaultAfterSelect;
+            objCache.OnAfterSelect += (sender, treeViewEventArgs) =>
+            {
+                //download Char in background...
+            };
+            objCache.OnKeyDown -= objCache.OnDefaultKeyDown;
+            objCache.OnKeyDown += (sender, args) =>
+            {
+                try
+                {
+                    PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
+                    if (args.Item1.KeyCode == Keys.Delete)
+                    {
+                        StaticUtils.Client.Delete(sinner.Id.Value);
+                        objCache.ErrorText = "deleted!";
+                        PluginHandler.MainForm.Invoke(new MethodInvoker(() =>
+                        {
+                            PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+                        }));
+                        
+                    }
+                    PluginHandler.MainForm.Cursor = Cursors.Default;
+                }
+                catch (Exception e)
+                {
+                    objCache.ErrorText = e.Message;
+                }
+                finally
+                {
+                    PluginHandler.MainForm.Cursor = Cursors.Default;
+                }
+            };
         }
     }
 }

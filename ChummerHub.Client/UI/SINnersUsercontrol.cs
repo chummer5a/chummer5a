@@ -18,6 +18,7 @@ using System.Composition;
 using Chummer.Plugins;
 using System.IO;
 using SINners.Models;
+using System.Windows.Threading;
 
 namespace ChummerHub.Client.UI
 {
@@ -65,46 +66,67 @@ namespace ChummerHub.Client.UI
             return this;
         }
 
-        public async void PostSINnerAsync()
+        public async Task PostSINnerAsync()
         {
             try
             {
+                if (!StaticUtils.IsUnitTest)
+                    Cursor = Cursors.WaitCursor;
                 UploadInfoObject uploadInfoObject = new UploadInfoObject();
                 uploadInfoObject.Client = PluginHandler.MyUploadClient;
                 uploadInfoObject.UploadDateTime = DateTime.Now;
+                MyCharacterExtended.MySINnerFile.UploadDateTime = DateTime.Now;
                 uploadInfoObject.SiNners = new List<SINner>() { MyCharacterExtended.MySINnerFile };
-                var response = await StaticUtils.Client.PostWithHttpMessagesAsync(uploadInfoObject);
-                if (response.Response.StatusCode == HttpStatusCode.BadRequest
-                    || response.Response.StatusCode == HttpStatusCode.Conflict)
-                {
-                    var errorMessage = response.Response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                    string msg = "Answer from WebService BadRequest: " + Environment.NewLine + Environment.NewLine + errorMessage;
-                    MessageBox.Show(msg);
-                }
+                System.Diagnostics.Trace.TraceInformation("Posting " + MyCharacterExtended.MySINnerFile.Id + "...");
+                await StaticUtils.Client.PostAsync(uploadInfoObject);
+                System.Diagnostics.Trace.TraceInformation("Post of " + MyCharacterExtended.MySINnerFile.Id + " finished.");
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Trace.TraceError(ex.ToString());
                 throw;
             }
+            finally
+            {
+                if (!StaticUtils.IsUnitTest)
+                    Cursor = Cursors.Default;
+            }
         }
 
-        public async void UploadChummerFileAsync()
+        public async Task UploadChummerFileAsync()
         {
             try
             {
                 if (String.IsNullOrEmpty(MyCharacterExtended.ZipFilePath))
                     MyCharacterExtended.ZipFilePath = MyCharacterExtended.PrepareModel();
+                
                 using (FileStream fs = new FileStream(MyCharacterExtended.ZipFilePath, FileMode.Open, FileAccess.Read))
                 {   try
                     {
-                        Cursor = Cursors.WaitCursor;
+                        if (!StaticUtils.IsUnitTest)
+                            Cursor = Cursors.WaitCursor;
                         var task = StaticUtils.Client.PutAsync(MyCharacterExtended.MySINnerFile.Id.Value, fs);
                         await task.ContinueWith((sender) =>
                          {
                              string msg = "Upload completed with status: " + sender.Status.ToString();
                              msg += Environment.NewLine + sender.Exception?.Message;
-                             MessageBox.Show(msg);
+                             if (!StaticUtils.IsUnitTest)
+                             {
+                                 this.Invoke(new MethodInvoker(() =>
+                                 {
+                                     Cursor = Cursors.Default;
+                                 }));
+                             
+                                 Chummer.Plugins.PluginHandler.MainForm.Invoke(new MethodInvoker(() =>
+                                 {
+                                     Chummer.Plugins.PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+                                 }));
+                                 MessageBox.Show(msg);
+                             }
+                             else
+                             {
+                                 System.Diagnostics.Trace.TraceInformation(msg);
+                             }
                          });
                     }
                     catch(Exception e)
@@ -114,7 +136,8 @@ namespace ChummerHub.Client.UI
                     }
                     finally
                     {
-                        Cursor = Cursors.Default;
+                        if (!StaticUtils.IsUnitTest)
+                            Cursor = Cursors.Default;
                     }
                 }
             }
@@ -126,7 +149,7 @@ namespace ChummerHub.Client.UI
         }
 
         
-        public async void DownloadFileAsync()
+        public async Task DownloadFileAsync()
         {
             try
             {
@@ -141,7 +164,7 @@ namespace ChummerHub.Client.UI
         }
 
 
-        public async void RemoveSINnerAsync()
+        public async Task RemoveSINnerAsync()
         {
             try
             {

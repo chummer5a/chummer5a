@@ -109,6 +109,45 @@ namespace ChummerHub.Controllers
         [HttpGet]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("ResetDb")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<ActionResult<string>> GetResetDb()
+        {
+            try
+            {
+                var user = await _signInManager.UserManager.GetUserAsync(User);
+                if (user == null)
+                    return Unauthorized();
+                var roles = await _userManager.GetRolesAsync(user);
+                if (!roles.Contains("Administrator"))
+                    return Unauthorized();
+                var count = await _context.SINners.CountAsync();
+                using (var transaction = _context.Database.BeginTransaction())
+                {
+                    _context.UserRights.RemoveRange(_context.UserRights.ToList());
+                    _context.SINnerComments.RemoveRange(_context.SINnerComments.ToList());
+                    _context.Tags.RemoveRange(_context.Tags.ToList());
+                    _context.SINnerVisibility.RemoveRange(_context.SINnerVisibility.ToList());
+                    _context.SINnerMetaData.RemoveRange(_context.SINnerMetaData.ToList());
+                    _context.SINners.RemoveRange(_context.SINners.ToList());
+                    _context.UploadClients.RemoveRange(_context.UploadClients.ToList());
+             
+                    await _context.SaveChangesAsync();
+                    // Commit transaction if all commands succeed, transaction will auto-rollback
+                    // when disposed if either commands fails
+                    transaction.Commit();
+                }
+                return Ok("Reseted " + count + " SINners");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [HttpGet]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SinnersByAuthorization")]
         [Authorize]
@@ -126,36 +165,11 @@ namespace ChummerHub.Controllers
                 {
                     if (ur?.SINnerId == null) continue;
                     var sin = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights).FirstOrDefaultAsync(a => a.Id == ur.SINnerId);
-
-                    //var sin = await _context.SINners.FindAsync(ur.SINnerId);
                     if (sin != null)
                     {
-                        
-                        //sin.SINnerMetaData.Tags = await (from a in _context.Tags.Include(b => b.Tags)
-                        //                                 .ThenInclude(t => t.Tags)
-                        //                                 .ThenInclude(t => t.Tags)
-                        //                                 .ThenInclude(t => t.Tags)
-                        //                                 .ThenInclude(t => t.Tags)
-                        //                                 .ThenInclude(t => t.Tags)
-                        //                                 .ThenInclude(t => t.Tags)
-                        //                                 where a.SINnerId == sin.Id select a).ToListAsync();
-                        //sin.SINnerMetaData.Visibility.UserRights = await (from a in _context.UserRights where a.SINnerId == sin.Id select a).ToListAsync();
-
                         result.Add(sin);
                     }
                 }
-                //var sinnersseq = (from a in _context.SINners
-                //                 where a.SINnerMetaData.Visibility != null
-                //                        && a.SINnerMetaData.Visibility.UserRights.Any(b => userseq.Contains(b)) select a).ToList();
-                //foreach(var sin in sinnersseq)
-                //{
-                //    await _context.Entry(sin).Reference(i => i.SINnerMetaData).LoadAsync();
-                //    //await _context.Entry(sin.SINnerMetaData).Reference(i => i.Visibility).LoadAsync();
-                //    //sin.SINnerMetaData.Tags = (from a in _context.Tags where a.SINnerId == sin.Id select a).ToList();
-                //    //await _context.Entry(sin.SINnerMetaData).Collection(i => i.Tags).LoadAsync();
-                //    //await _context.Entry(sin.SINnerMetaData.Visibility).Collection(i => i.UserRights).LoadAsync();
-
-                //}
                 return Ok(result);
             }
             catch (Exception e)

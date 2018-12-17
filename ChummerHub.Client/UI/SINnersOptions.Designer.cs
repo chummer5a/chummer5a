@@ -47,8 +47,9 @@ namespace ChummerHub.Client.UI
             this.bVisibilityRemove = new System.Windows.Forms.Button();
             this.lGroupname = new System.Windows.Forms.Label();
             this.tbGroupname = new System.Windows.Forms.TextBox();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.tbHelptext = new System.Windows.Forms.TextBox();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.bMultiUpload = new System.Windows.Forms.Button();
             this.tlpOptions.SuspendLayout();
             this.gbVisibility.SuspendLayout();
             this.tlpVisibility.SuspendLayout();
@@ -79,14 +80,16 @@ namespace ChummerHub.Client.UI
             this.tlpOptions.Controls.Add(this.cbSINnerUrl, 1, 1);
             this.tlpOptions.Controls.Add(this.gbVisibility, 0, 2);
             this.tlpOptions.Controls.Add(this.tbHelptext, 0, 3);
+            this.tlpOptions.Controls.Add(this.bMultiUpload, 0, 4);
             this.tlpOptions.Dock = System.Windows.Forms.DockStyle.Left;
             this.tlpOptions.Location = new System.Drawing.Point(0, 0);
             this.tlpOptions.Name = "tlpOptions";
-            this.tlpOptions.RowCount = 4;
+            this.tlpOptions.RowCount = 5;
             this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 66.66666F));
             this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOptions.Size = new System.Drawing.Size(541, 579);
             this.tlpOptions.TabIndex = 1;
             // 
@@ -143,7 +146,7 @@ namespace ChummerHub.Client.UI
             this.gbVisibility.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbVisibility.Location = new System.Drawing.Point(3, 59);
             this.gbVisibility.Name = "gbVisibility";
-            this.gbVisibility.Size = new System.Drawing.Size(535, 342);
+            this.gbVisibility.Size = new System.Drawing.Size(535, 323);
             this.gbVisibility.TabIndex = 7;
             this.gbVisibility.TabStop = false;
             this.gbVisibility.Text = "Visibility of uploaded SINners";
@@ -170,7 +173,7 @@ namespace ChummerHub.Client.UI
             this.tlpVisibility.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVisibility.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVisibility.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVisibility.Size = new System.Drawing.Size(529, 323);
+            this.tlpVisibility.Size = new System.Drawing.Size(529, 304);
             this.tlpVisibility.TabIndex = 0;
             // 
             // cbVisibilityIsPublic
@@ -209,7 +212,7 @@ namespace ChummerHub.Client.UI
             this.gpVisibilityToUserList.Location = new System.Drawing.Point(179, 3);
             this.gpVisibilityToUserList.Name = "gpVisibilityToUserList";
             this.tlpVisibility.SetRowSpan(this.gpVisibilityToUserList, 5);
-            this.gpVisibilityToUserList.Size = new System.Drawing.Size(347, 317);
+            this.gpVisibilityToUserList.Size = new System.Drawing.Size(347, 298);
             this.gpVisibilityToUserList.TabIndex = 4;
             this.gpVisibilityToUserList.TabStop = false;
             this.gpVisibilityToUserList.Text = "Visible to Users (checked = may edit)";
@@ -230,7 +233,7 @@ namespace ChummerHub.Client.UI
             this.tlpVisibilityToUsers.RowCount = 2;
             this.tlpVisibilityToUsers.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpVisibilityToUsers.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVisibilityToUsers.Size = new System.Drawing.Size(341, 298);
+            this.tlpVisibilityToUsers.Size = new System.Drawing.Size(341, 279);
             this.tlpVisibilityToUsers.TabIndex = 0;
             // 
             // clbVisibilityToUsers
@@ -241,14 +244,14 @@ namespace ChummerHub.Client.UI
             this.clbVisibilityToUsers.Location = new System.Drawing.Point(3, 3);
             this.clbVisibilityToUsers.MinimumSize = new System.Drawing.Size(100, 60);
             this.clbVisibilityToUsers.Name = "clbVisibilityToUsers";
-            this.clbVisibilityToUsers.Size = new System.Drawing.Size(335, 263);
+            this.clbVisibilityToUsers.Size = new System.Drawing.Size(335, 244);
             this.clbVisibilityToUsers.TabIndex = 0;
             this.clbVisibilityToUsers.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbVisibilityToUsers_ItemCheck);
             // 
             // tbVisibilityAddEmail
             // 
             this.tbVisibilityAddEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbVisibilityAddEmail.Location = new System.Drawing.Point(3, 273);
+            this.tbVisibilityAddEmail.Location = new System.Drawing.Point(3, 254);
             this.tbVisibilityAddEmail.Name = "tbVisibilityAddEmail";
             this.tbVisibilityAddEmail.Size = new System.Drawing.Size(198, 20);
             this.tbVisibilityAddEmail.TabIndex = 1;
@@ -256,7 +259,7 @@ namespace ChummerHub.Client.UI
             // bVisibilityAddEmail
             // 
             this.bVisibilityAddEmail.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.bVisibilityAddEmail.Location = new System.Drawing.Point(207, 272);
+            this.bVisibilityAddEmail.Location = new System.Drawing.Point(207, 253);
             this.bVisibilityAddEmail.Name = "bVisibilityAddEmail";
             this.bVisibilityAddEmail.Size = new System.Drawing.Size(62, 23);
             this.bVisibilityAddEmail.TabIndex = 2;
@@ -267,7 +270,7 @@ namespace ChummerHub.Client.UI
             // bVisibilityRemove
             // 
             this.bVisibilityRemove.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.bVisibilityRemove.Location = new System.Drawing.Point(275, 272);
+            this.bVisibilityRemove.Location = new System.Drawing.Point(275, 253);
             this.bVisibilityRemove.Name = "bVisibilityRemove";
             this.bVisibilityRemove.Size = new System.Drawing.Size(63, 23);
             this.bVisibilityRemove.TabIndex = 3;
@@ -298,22 +301,32 @@ namespace ChummerHub.Client.UI
             this.tbGroupname.TabIndex = 3;
             this.tbGroupname.TextChanged += new System.EventHandler(this.tbGroupname_TextChanged);
             // 
-            // backgroundWorker1
-            // 
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            // 
             // tbHelptext
             // 
             this.tbHelptext.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpOptions.SetColumnSpan(this.tbHelptext, 3);
-            this.tbHelptext.Location = new System.Drawing.Point(3, 407);
+            this.tbHelptext.Location = new System.Drawing.Point(3, 388);
             this.tbHelptext.Multiline = true;
             this.tbHelptext.Name = "tbHelptext";
-            this.tbHelptext.Size = new System.Drawing.Size(535, 169);
+            this.tbHelptext.Size = new System.Drawing.Size(535, 158);
             this.tbHelptext.TabIndex = 8;
             this.tbHelptext.Text = resources.GetString("tbHelptext.Text");
+            // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            // 
+            // bMultiUpload
+            // 
+            this.bMultiUpload.Location = new System.Drawing.Point(3, 552);
+            this.bMultiUpload.Name = "bMultiUpload";
+            this.bMultiUpload.Size = new System.Drawing.Size(75, 23);
+            this.bMultiUpload.TabIndex = 9;
+            this.bMultiUpload.Text = "Multi-Upload";
+            this.bMultiUpload.UseVisualStyleBackColor = true;
+            this.bMultiUpload.Click += new System.EventHandler(this.bMultiUpload_Click);
             // 
             // SINnersOptions
             // 
@@ -357,5 +370,6 @@ namespace ChummerHub.Client.UI
         private System.Windows.Forms.Button bVisibilityAddEmail;
         private System.Windows.Forms.Button bVisibilityRemove;
         private System.Windows.Forms.TextBox tbHelptext;
+        private System.Windows.Forms.Button bMultiUpload;
     }
 }

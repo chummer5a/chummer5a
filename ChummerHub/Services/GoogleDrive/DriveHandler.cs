@@ -158,7 +158,7 @@ namespace ChummerHub.Services.GoogleDrive
                     throw new HubException("HubException: " + msg);
                 }
 
-                UploadFileToDrive(service, uploadedFile, _contentType, chummerFile);
+                chummerFile.DownloadUrl = UploadFileToDrive(service, uploadedFile, _contentType, chummerFile);
                 
                 // Define parameters of request.
                 FilesResource.ListRequest listRequest = service.Files.List();
@@ -263,14 +263,14 @@ namespace ChummerHub.Services.GoogleDrive
                 throw;
             }
             
-            _logger.LogError("Chummer \"" + chummerFile.Id.ToString() + "\" uploaded: " + request.ResponseBody?.ToString());
+            _logger.LogError("Chummer \"" + chummerFile.Id.ToString() + "\" uploaded: " + request.ResponseBody?.WebContentLink.ToString());
 
             chummerFile.GoogleDriveFileId = request.ResponseBody?.Id;
             chummerFile.DownloadUrl = request.ResponseBody?.WebContentLink;
 
             UploadFilePermission(service, chummerFile);
 
-            return chummerFile.GoogleDriveFileId;
+            return request.ResponseBody?.WebContentLink;
 
 
         }

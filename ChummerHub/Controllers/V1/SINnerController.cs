@@ -46,6 +46,9 @@ namespace ChummerHub.Controllers.V1
             _logger = logger;
         }
 
+
+        private static System.Net.Http.HttpClient MyHttpClient { get; } = new System.Net.Http.HttpClient();
+
         // GET: api/ChummerFiles/5
         //[Route("download")]
         //[SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerExample))]
@@ -57,43 +60,65 @@ namespace ChummerHub.Controllers.V1
         [HttpGet("{sinnerid}")]
         [AllowAnonymous]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerDownloadFile")]
-        public async Task<IActionResult> GetDownloadFile([FromRoute] Guid sinnerid)
+        //[Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        //[Swashbuckle.AspNetCore.Annotations.SwaggerResponse(200, type: typeof(FileResult))]
+        //[ProducesResponseType(typeof(FileResult), 200)]
+        [ProducesResponseType(typeof(FileStreamResult), (int)HttpStatusCode.OK)]
+        //[ProducesResponseType(typeof(FileContentResult), 200)]
+        [Produces(@"application/json", @"application/octet-stream")]
+        public async Task<FileResult> GetDownloadFile([FromRoute] Guid sinnerid)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    throw new ArgumentException("ModelState is invalid!");
                 }
 
                 var chummerFile = await _context.SINners.FindAsync(sinnerid);
 
                 if (chummerFile == null)
                 {
-                    return NotFound();
+                    throw new ArgumentException("Could not find id " + sinnerid.ToString());
                 }
                 if (String.IsNullOrEmpty(chummerFile.DownloadUrl))
                 {
                     string msg = "Chummer " + chummerFile.Id + " does not have a valid DownloadUrl!";
                     throw new ArgumentException(msg);
                 }
-                string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.InternetCache), chummerFile.Id.ToString() + ".chum5z");
-                using (var client = new WebClient())
+                //string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.InternetCache), chummerFile.Id.ToString() + ".chum5z");
+                var stream = await MyHttpClient.GetStreamAsync(new Uri(chummerFile.DownloadUrl));
+                string downloadname = chummerFile.Id.ToString() + ".chum5z";
+                return new FileStreamResult(stream, new Microsoft.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream"))
                 {
-                    client.DownloadFile(new Uri(chummerFile.DownloadUrl), path);
-                }
-                if (!System.IO.File.Exists(path))
-                {
-                    throw new ArgumentException("No file downloaded from " + chummerFile.DownloadUrl);
-                }
-                var res = new FileResult(chummerFile.Id.ToString() + ".chum5z", path, "application/octet-stream");
+                    FileDownloadName = downloadname
+                };
 
-                return res;
+               
+                //using (var client = new WebClient())
+                //{
+                //    client.DownloadFile(new Uri(chummerFile.DownloadUrl), path);
+                //}
+                //if (!System.IO.File.Exists(path))
+                //{
+                //    string msg = "No file downloaded from " + chummerFile.DownloadUrl;
+                //    return BadRequest(msg);
+                //}
+                
+                ////var res = new FileStreamResult(new MemoryStream(path), "application/octet-stream");
+                ////var res = new FileResult(downloadname, path, "application/octet-stream");
+                ////var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+                ////var reader = new StreamReader(stream, true);
+                //return PhysicalFile(path, "application/octet-stream", downloadname);
+                ////return File(path, "application/octet-stream");
+                ////return new ObjectResult(reader.BaseStream);
             }
             catch (Exception e)
             {
-                HubException hue = new HubException("Exception in GetSINnerfile: " + e.Message, e);
-                return BadRequest(hue);
+                HubException hue = new HubException("Exception in GetDownloadFile: " + e.Message, e);
+                throw hue;
             }
         }
 
@@ -201,6 +226,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NoContent)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerPut")]
 
         [Authorize]
@@ -208,8 +234,8 @@ namespace ChummerHub.Controllers.V1
         {
             try
             {
-                var chummerFile = await _context.SINners.FindAsync(id);
-                if (chummerFile == null)
+                var sin = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights).FirstOrDefaultAsync(a => a.Id == id);
+                if (sin == null)
                 {
                     return NotFound();
                 }
@@ -217,23 +243,21 @@ namespace ChummerHub.Controllers.V1
                 var check = await CheckIfUpdateSINnerFile(id, user);
                 if (!check)
                 {
-                    return Conflict();
+                    return Conflict("CheckIfUpdateSINnerFile");
                 }
-
-                _context.Entry(chummerFile).State = EntityState.Modified;
-               
-                chummerFile.DownloadUrl = Startup.GDrive.StoreXmlInCloud(chummerFile, uploadedFile);
-
+                sin.DownloadUrl = Startup.GDrive.StoreXmlInCloud(sin, uploadedFile);
+                _context.Entry(sin).CurrentValues.SetValues(sin);
+                
                 try
                 {
-                    await _context.SaveChangesAsync();
+                    int x = await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException e)
                 {
-                    Conflict(e);
+                    return Conflict(e);
                 }
 
-                return NoContent();
+                return Ok(sin.DownloadUrl);
             }
             catch (Exception e)
             {
@@ -382,9 +406,9 @@ namespace ChummerHub.Controllers.V1
                 {
                     return BadRequest(ModelState);
                 }
+                var sin = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights).FirstOrDefaultAsync(a => a.Id == id);
 
-                var chummerFile = await _context.SINners.FindAsync(id);
-                if (chummerFile == null)
+                if (sin == null)
                 {
                     return NotFound();
                 }
@@ -395,7 +419,8 @@ namespace ChummerHub.Controllers.V1
                     return BadRequest("not authorized");
                 }
 
-                _context.SINners.Remove(chummerFile);
+                _context.SINners.Remove(sin);
+                _context.UserRights.RemoveRange(sin.SINnerMetaData.Visibility.UserRights);
                 await _context.SaveChangesAsync();
 
                 return Ok("deleted");

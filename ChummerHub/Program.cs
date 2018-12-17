@@ -76,15 +76,16 @@ namespace ChummerHub
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                /*.UseKestrel(options =>
+                .UseKestrel(options =>
                 {
-                    options.Listen(IPAddress.Loopback, 5000);  // http:localhost:5000
-                    options.Listen(IPAddress.Any, 80);         // http:*:80
-                    options.Listen(IPAddress.Loopback, 443, listenOptions =>
-                    {
-                        listenOptions.UseHttps("certificate.pfx", "password");
-                    });
-                })*/
+                    options.Limits.MinResponseDataRate = null;
+                    //options.Listen(IPAddress.Loopback, 5000);  // http:localhost:5000
+                    //options.Listen(IPAddress.Any, 80);         // http:*:80
+                    //options.Listen(IPAddress.Loopback, 443, listenOptions =>
+                    //{
+                    //    listenOptions.UseHttps("certificate.pfx", "password");
+                    //});
+                })
                 .UseStartup<Startup>()
                 .ConfigureLogging((hostingContext, logging) =>
                 {

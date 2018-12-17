@@ -14,6 +14,9 @@ using System.Runtime.InteropServices;
 using System.Net;
 using ChummerHub.Client.Backend;
 using SINners.Models;
+using System.Diagnostics;
+using Chummer;
+using Chummer.Plugins;
 //using Nemiro.OAuth;
 //using Nemiro.OAuth.LoginForms;
 
@@ -98,6 +101,13 @@ namespace ChummerHub.Client.UI
         public SINnersOptions()
         {
             InitializeComponent();
+            InitializeMe();
+            cbSINnerUrl.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged;
+
+        }
+
+        private void InitializeMe()
+        {
             Properties.Settings.Default.Reload();
             this.cbSINnerUrl.DataSource = Properties.Settings.Default.SINnerUrls;
             this.cbSINnerUrl.SelectedItem = Properties.Settings.Default.SINnerUrl;
@@ -118,8 +128,6 @@ namespace ChummerHub.Client.UI
                 SINerUserRight obj = (SINerUserRight)clbVisibilityToUsers.Items[i];
                 clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit.Value);
             }
-            cbSINnerUrl.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged;
-            
         }
 
         ~SINnersOptions()
@@ -133,7 +141,8 @@ namespace ChummerHub.Client.UI
             Properties.Settings.Default.Save();
             if (StaticUtils.Client != null)
                 StaticUtils.Client = null;
-            
+            InitializeMe();
+
         }
 
         
@@ -421,6 +430,69 @@ namespace ChummerHub.Client.UI
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
 
+        }
+
+        private void bMultiUpload_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog thisDialog = new OpenFileDialog();
+
+            thisDialog.Filter = "Chummer files (*.chum5)|*.chum5|All files (*.*)|*.*";
+            thisDialog.FilterIndex = 1;
+            thisDialog.RestoreDirectory = true;
+            thisDialog.Multiselect = true;
+            thisDialog.Title = "Please Select Chummer File(s) for Batch-Upload";
+
+            if (thisDialog.ShowDialog() == DialogResult.OK)
+            {
+                foreach (String file in thisDialog.FileNames)
+                {
+                    try
+                    {
+                        Debug.WriteLine("Loading: " + file);
+                        Character c = PluginHandler.MainForm.LoadCharacter(file);
+                        if (c == null)
+                            continue;
+                        Debug.WriteLine("Character loaded: " + c.Name);
+                        if (c.Created)
+                        {
+                            using (frmCareer career = new frmCareer(c))
+                            {
+                                career.Show();
+                                SINnersUserControl sINnersUsercontrol = new SINnersUserControl();
+                                sINnersUsercontrol.SetCharacterFrom(career);
+                                var posttask = sINnersUsercontrol.PostSINnerAsync();
+                                posttask.Wait();
+                                var uptask = sINnersUsercontrol.UploadChummerFileAsync();
+                                uptask.Wait();
+                                career.Hide();
+                                career.Dispose();
+                            }
+                        }
+                        else
+                        {
+                            using (frmCreate create = new frmCreate(c))
+                            {
+                                create.Show();
+                                SINnersUserControl sINnersUsercontrol = new SINnersUserControl();
+                                sINnersUsercontrol.SetCharacterFrom(create);
+                                var posttask = sINnersUsercontrol.PostSINnerAsync();
+                                posttask.Wait();
+                                var uptask = sINnersUsercontrol.UploadChummerFileAsync();
+                                uptask.Wait();
+                                create.Hide();
+                                create.Dispose();
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        string msg = "Exception while loading " + file + ":";
+                        msg += Environment.NewLine + ex.ToString();
+                        Debug.Write(msg);
+                        throw;
+                    }
+                }
+            }
         }
     }
 }

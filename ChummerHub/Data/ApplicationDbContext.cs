@@ -21,26 +21,12 @@ namespace ChummerHub.Data
             base.OnModelCreating(builder);
             builder.Entity<ChummerHub.Models.V1.SINner>()
                 .HasIndex(b => b.Id).IsUnique();
-            builder.Entity<ChummerHub.Models.V1.SINnerComment>()
-                .HasIndex(b => b.Id);
-            builder.Entity<ChummerHub.Models.V1.SINner>()
-                .HasIndex(b => b.Id);
             builder.Entity<ChummerHub.Models.V1.Tag>()
                 .HasIndex(b => b.Id).IsUnique();
-            builder.Entity<ChummerHub.Models.V1.Tag>()
-                .HasIndex(b => b.Id);
-            builder.Entity<ChummerHub.Models.V1.Tag>()
-                .HasIndex(b => b.SINnerId);
             builder.Entity<ChummerHub.Models.V1.Tag>()
                 .HasIndex(b => new { b.TagName, b.TagValue });
             builder.Entity<ChummerHub.Models.V1.SINerUserRight>()
                 .HasIndex(b => b.SINnerId);
-            builder.Entity<ChummerHub.Models.V1.SINerUserRight>()
-                .HasIndex(b => b.Id);
-            builder.Entity<ChummerHub.Models.V1.SINnerVisibility>()
-                .HasIndex(b => b.Id);
-            builder.Entity<ChummerHub.Models.V1.UploadClient>()
-                .HasIndex(b => b.Id);
 
 
         }
@@ -54,10 +40,12 @@ namespace ChummerHub.Data
         public DbSet<ChummerHub.Models.V1.UploadClient> UploadClients { get; set; }
 
         public DbSet<ChummerHub.Models.V1.SINnerComment> SINnerComments { get; set; }
+        public DbSet<ChummerHub.Models.V1.SINnerVisibility> SINnerVisibility { get; set; }
+        public DbSet<ChummerHub.Models.V1.SINnerMetaData> SINnerMetaData { get; set; }
 
-       
 
-        
+
+
 
     }
 }

@@ -316,6 +316,15 @@ namespace ChummerHub
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
 
+                options.MapType<FileResult>(() => new Schema
+                {
+                    Type = "file",
+                });
+                options.MapType<FileStreamResult>(() => new Schema
+                {
+                    Type = "file",
+                });
+
             });
 
             services.AddSwaggerExamples();

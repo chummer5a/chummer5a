@@ -30,7 +30,8 @@ namespace Chummer.Plugins
 
         public static UploadClient MyUploadClient = null;
 
-        
+        public static frmChummerMain MainForm = null;
+
         [ImportingConstructor]
         public PluginHandler()
         {
@@ -125,9 +126,14 @@ namespace Chummer.Plugins
             return new SINnersOptions();
         }
 
-        public async Task<TreeNode> GetCharacterRosterTreeNode(ConcurrentDictionary<string, frmCharacterRoster.CharacterCache> CharDic)
+        public async Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(ConcurrentDictionary<string, frmCharacterRoster.CharacterCache> CharDic)
         {
             return await Utils.GetCharacterRosterTreeNode(CharDic);
+        }
+
+        public void CustomInitialize(frmChummerMain mainControl)
+        {
+            MainForm = mainControl;
         }
     }
 }

@@ -20,12 +20,8 @@ namespace ChummerHub.Models.V1
 
         public Guid? Id { get; set; }
 
-        [NotMapped]
+        
         public string DownloadUrl { get; set; }
-
-        [JsonIgnore]
-        [XmlIgnore]
-        public string DownloadUrlInternal { get; set; }
 
         public DateTime? UploadDateTime { get; set; }
 

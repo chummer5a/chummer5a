@@ -1,6 +1,7 @@
 using Chummer;
 using Chummer.Plugins;
 using ChummerHub.Client.Backend;
+using ChummerHub.Client.UI;
 using Newtonsoft.Json;
 using SINners.Models;
 using System;
@@ -161,26 +162,36 @@ namespace ChummerHub.Client.Model
                 MySINnerIds.Add(MyCharacter.Alias, MySINnerFile.Id.Value);
                 MySINnerIds = MySINnerIds; //Save it!
             }
+            MySINnerFile.LastChange = File.GetLastWriteTime(MyCharacter.FileName);
+            if (MySINnerFile.SiNnerMetaData.Visibility?.UserRights == null)
+            {
+                MySINnerFile.SiNnerMetaData.Visibility = new SINnerVisibility();
+                MySINnerFile.SiNnerMetaData.Visibility.Groupname = SINnersOptions.SINnerVisibility.Groupname;
+                MySINnerFile.SiNnerMetaData.Visibility.IsGroupVisible = SINnersOptions.SINnerVisibility.IsGroupVisible;
+                MySINnerFile.SiNnerMetaData.Visibility.IsPublic = SINnersOptions.SINnerVisibility.IsPublic;
+                MySINnerFile.SiNnerMetaData.Visibility.UserRights = SINnersOptions.SINnerVisibility.UserRights;
+            }
 
-            
 
-            var tempDir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), MySINnerFile.Id.Value.ToString());
+            var tempDir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SINner", MySINnerFile.Id.Value.ToString());
             if (!Directory.Exists(tempDir))
                 Directory.CreateDirectory(tempDir);
             foreach(var file in Directory.GetFiles(tempDir))
             {
                 System.IO.File.Delete(file);
             }
-            var tempfile = System.IO.Path.Combine(tempDir, MyCharacter.FileName);
+            
             var summary = new CharacterCache(MyCharacter.FileName);
             MySINnerFile.JsonSummary = Newtonsoft.Json.JsonConvert.SerializeObject(summary);
+            var tempfile = System.IO.Path.Combine(tempDir, summary.FileName);
             MyCharacter.Save(tempfile);
             
             
-            string zipPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), MySINnerFile.Id.Value + ".chum5z");
+            string zipPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SINner",  MySINnerFile.Id.Value + ".chum5z");
             if (File.Exists(zipPath))
                 File.Delete(zipPath);
             ZipFile.CreateFromDirectory(tempDir, zipPath);
+            this.ZipFilePath = zipPath;
             return zipPath;
         }
     }

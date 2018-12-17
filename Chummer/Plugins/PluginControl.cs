@@ -16,14 +16,13 @@ namespace Chummer.Plugins
     [InheritedExport(typeof(IPlugin))]
     public interface IPlugin
     {
-        //UserControl GetUserControl(frmCareer input);
-        //UserControl GetUserControl(frmCreate input);
+        void CustomInitialize(frmChummerMain mainControl);
 
         IEnumerable<TabPage> GetTabPages(frmCareer input);
         IEnumerable<TabPage> GetTabPages(frmCreate input);
         IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem menu);
 
-        Task<TreeNode> GetCharacterRosterTreeNode(ConcurrentDictionary<string, frmCharacterRoster.CharacterCache> CharDic);
+        Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(ConcurrentDictionary<string, frmCharacterRoster.CharacterCache> CharDic);
 
         UserControl GetOptionsControl();
 
@@ -55,6 +54,7 @@ namespace Chummer.Plugins
             container.ComposeParts(this);
             foreach (var plugin in MyPlugins)
             {
+                plugin.CustomInitialize(Program.MainForm);
                 plugin.SetIsUnitTest(Utils.IsUnitTest);
             }
         }
@@ -131,6 +131,21 @@ namespace Chummer.Plugins
                     {
                         if (!frmCareer.TabCharacterTabs.TabPages.Contains(page))
                             frmCareer.TabCharacterTabs.TabPages.Add(page);
+                    }
+                }
+            }
+        }
+
+        internal void CallPlugins(frmCreate frmCreate)
+        {
+            foreach (var plugin in MyActivePlugins)
+            {
+                foreach (TabPage page in plugin.GetTabPages(frmCreate))
+                {
+                    if (page != null)
+                    {
+                        if (!frmCreate.TabCharacterTabs.TabPages.Contains(page))
+                            frmCreate.TabCharacterTabs.TabPages.Add(page);
                     }
                 }
             }

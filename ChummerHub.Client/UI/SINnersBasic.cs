@@ -44,6 +44,11 @@ namespace ChummerHub.Client.UI
         {
             try
             {
+                if (myUC.MyCharacterExtended.MySINnerFile.Id == Guid.Empty)
+                {
+                    this.bUpload.Text = "SINless Character";
+                    return;
+                }
                 var response = await StaticUtils.Client.GetByIdWithHttpMessagesAsync(myUC.MyCharacterExtended.MySINnerFile.Id.Value);
                 if (response.Response.StatusCode == HttpStatusCode.OK)
                 {

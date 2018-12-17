@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using Chummer;
 using ChummerHub.Client.UI;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -13,13 +14,16 @@ namespace ChummerHub.Client.Tests
     {
         //public static SINnersUsercontrol MySINnersUsercontrol = new SINnersUsercontrol();
 
-        public static frmChummerMain MainForm = new frmChummerMain();
+        public static frmChummerMain MainForm;
 
         [TestMethod]
-        public void LoadCharacter()
+        public async Task LoadCharacter()
         {
+            Properties.Settings.Default.SINnerUrl = "https://sinners.azurewebsites.net/";
             Debug.WriteLine("Unit test initialized for: LoadCharacter()");
             string path = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+            if (MainForm == null)
+                MainForm = new frmChummerMain(true);
             path = System.IO.Path.Combine(path, "data");
             DirectoryInfo d = new DirectoryInfo(path);//Assuming Test is your Folder
             FileInfo[] Files = d.GetFiles("*.chum5"); //Getting Text files
@@ -34,10 +38,29 @@ namespace ChummerHub.Client.Tests
                     Debug.WriteLine("Character loaded: " + c.Name);
                     if (c.Created)
                     {
-                        frmCareer career = new frmCareer(c);
-                        SINnersUserControl sINnersUsercontrol = new SINnersUserControl();
-                        sINnersUsercontrol.SetCharacterFrom(career);
-                        sINnersUsercontrol.PostSINnerAsync();
+                        using (frmCareer career = new frmCareer(c))
+                        {
+                            career.Show();
+                            SINnersUserControl sINnersUsercontrol = new SINnersUserControl();
+                            sINnersUsercontrol.SetCharacterFrom(career);
+                            await sINnersUsercontrol.PostSINnerAsync();
+                            await sINnersUsercontrol.UploadChummerFileAsync();
+                            career.Hide();
+                            career.Dispose();
+                        }
+                    }
+                    else
+                    {
+                        using (frmCreate create = new frmCreate(c))
+                        {
+                            create.Show();
+                            SINnersUserControl sINnersUsercontrol = new SINnersUserControl();
+                            sINnersUsercontrol.SetCharacterFrom(create);
+                            await sINnersUsercontrol.PostSINnerAsync();
+                            await sINnersUsercontrol.UploadChummerFileAsync();
+                            create.Hide();
+                            create.Dispose();
+                        }
                     }
                 }
                 catch(Exception e)

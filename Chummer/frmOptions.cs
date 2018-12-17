@@ -1023,6 +1023,7 @@ namespace Chummer
             string strOldSelected = cboBuildMethod.SelectedValue?.ToString() ?? GlobalOptions.DefaultBuildMethod;
 
             cboBuildMethod.BeginUpdate();
+            cboBuildMethod.BindingContext = this.BindingContext;
             cboBuildMethod.DataSource = null;
             cboBuildMethod.DataSource = lstBuildMethod;
             cboBuildMethod.ValueMember = nameof(ListItem.Value);
@@ -1063,6 +1064,7 @@ namespace Chummer
             string strOldSelected = cboPDFParameters.SelectedValue?.ToString();
 
             cboDefaultGameplayOption.BeginUpdate();
+            cboDefaultGameplayOption.BindingContext = this.BindingContext;
             cboDefaultGameplayOption.DataSource = null;
             cboDefaultGameplayOption.DataSource = lstGameplayOptions;
             cboDefaultGameplayOption.ValueMember = nameof(ListItem.Value);
@@ -1097,6 +1099,7 @@ namespace Chummer
             string strOldSelected = cboLimbCount.SelectedValue?.ToString();
 
             cboLimbCount.BeginUpdate();
+            cboLimbCount.BindingContext = this.BindingContext;
             cboLimbCount.ValueMember = "Value";
             cboLimbCount.DisplayMember = "Name";
             cboLimbCount.DataSource = lstLimbCount;
@@ -1132,6 +1135,7 @@ namespace Chummer
             string strOldSelected = cboPDFParameters.SelectedValue?.ToString();
 
             cboPDFParameters.BeginUpdate();
+            cboPDFParameters.BindingContext = this.BindingContext;
             cboPDFParameters.ValueMember = "Value";
             cboPDFParameters.DisplayMember = "Name";
             cboPDFParameters.DataSource = lstPdfParameters;
@@ -1222,6 +1226,7 @@ namespace Chummer
             string strOldSelected = cboSetting.SelectedValue?.ToString();
 
             cboSetting.BeginUpdate();
+            cboSetting.BindingContext = this.BindingContext;
             cboSetting.ValueMember = "Value";
             cboSetting.DisplayMember = "Name";
             cboSetting.DataSource = lstSettings;
@@ -1270,6 +1275,7 @@ namespace Chummer
             lstLanguages.Sort(CompareListItems.CompareNames);
 
             cboLanguage.BeginUpdate();
+            cboLanguage.BindingContext = this.BindingContext;
             cboLanguage.ValueMember = "Value";
             cboLanguage.DisplayMember = "Name";
             cboLanguage.DataSource = lstLanguages;
@@ -1327,6 +1333,7 @@ namespace Chummer
             lstSheetLanguages.Sort(CompareListItems.CompareNames);
 
             cboSheetLanguage.BeginUpdate();
+            cboSheetLanguage.BindingContext = this.BindingContext;
             cboSheetLanguage.ValueMember = "Value";
             cboSheetLanguage.DisplayMember = "Name";
             cboSheetLanguage.DataSource = lstSheetLanguages;
