@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Cyberware.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Cyberware : IHasChildren<Cyberware>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource
+    public class Cyberware : IHasChildren<Cyberware>, IHasGear<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource
     {
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
@@ -314,13 +314,10 @@ namespace Chummer.Backend.Equipment
             {
                 case NotifyCollectionChangedAction.Add:
                 case NotifyCollectionChangedAction.Replace:
-                    if (ParentVehicle != null || !IsModularCurrentlyEquipped)
+                    foreach (Gear objNewItem in e.NewItems)
                     {
-                        foreach (Gear objNewItem in e.NewItems)
-                        {
-                            objNewItem.Parent = this;
-                            objNewItem.ChangeEquippedStatus(false);
-                        }
+                        objNewItem.Parent = this;
+                        objNewItem.ChangeEquippedStatus(IsModularCurrentlyEquipped);
                     }
                     this.RefreshMatrixAttributeArray();
                     break;

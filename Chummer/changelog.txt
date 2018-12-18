@@ -30,6 +30,7 @@ Application Changes:
 - Collapsed Special and Physical attributes into one list, since we weren't using them for any particular purpose anyway. 
 - Fixed an issue with MAG being removed incorrectly when using the Mystic Adept Second Attribute optional rule if the charactrer started with a magic attribute, such as shapeshifters. Fixes #3253
 - Fixed behaviour of plugins incorrectly applying their Essence costs in career mode instead of using the capacity cost. Should fix #3279, may have some additional edge cases.
+- Mildly ghetto workaround for inability to remove gear from a cyberware parent. Probably needs a more universal and robust fix, but it's functional.
 
 Data Changes:
 
