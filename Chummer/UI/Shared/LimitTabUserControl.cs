@@ -250,7 +250,7 @@ namespace Chummer.UI.Shared
                     }
                 }
 
-                treLimit.SortCustom(strSelectedId);
+                treLimit.SortCustomAlphabetically(strSelectedId);
             }
             else
             {

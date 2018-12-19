@@ -248,7 +248,7 @@ namespace Chummer
                 nodFreeGridsRoot.Nodes.Add(objNode);
             }
 
-            treLifestyleQualities.SortCustom(strSelectedNode);
+            treLifestyleQualities.SortCustomAlphabetically(strSelectedNode);
         }
 
         private void LifestyleQualitiesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)

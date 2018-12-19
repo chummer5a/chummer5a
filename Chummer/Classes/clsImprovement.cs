@@ -35,7 +35,7 @@ using Chummer.Backend.Uniques;
 namespace Chummer
 {
     [DebuggerDisplay("{" + nameof(DisplayDebug) + "()}")]
-    public class Improvement: IHasNotes, IHasInternalId
+    public class Improvement: IHasNotes, IHasInternalId, ICanSort
     {
         private string DisplayDebug()
         {
