@@ -2082,6 +2082,8 @@
           <name>Earbuds</name>
           <category>Audio Devices</category>
           <capacity>0</capacity>
+          <rating>1</rating>
+          <maxrating>1</maxrating>
         </usegear>
         <usegear>
           <name>Shock- and Water-Resistant Case</name>
@@ -6901,7 +6903,7 @@
       <id>fa6fa434-107b-4f36-a138-f98b044dae76</id>
       <name>Camera, Micro</name>
       <category>Vision Devices</category>
-      <rating>1</rating>
+      <rating>0</rating>
       <source>SR5</source>
       <page>443</page>
       <avail>0</avail>

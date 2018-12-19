@@ -3283,10 +3283,10 @@ namespace Chummer.Backend.Equipment
                     return false;
             }
 
-            if (Parent is IHasChildren<Gear> objHasChildren)
+            if (Parent is IHasGear<Gear> objHasChildren)
             {
                 DeleteGear();
-                objHasChildren.Children.Remove(this);
+                objHasChildren.Gear.Remove(this);
             }
             else
             {

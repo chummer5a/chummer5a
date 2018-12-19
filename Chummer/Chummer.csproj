@@ -298,6 +298,7 @@
     <Compile Include="Interfaces\ICanSell.cs" />
     <Compile Include="Interfaces\IHasChildren.cs" />
     <Compile Include="Interfaces\IHasChildrenAndCost.cs" />
+    <Compile Include="Interfaces\IHasGear.cs" />
     <Compile Include="Interfaces\IHasLocation.cs" />
     <Compile Include="Interfaces\IHasMatrixAttributes.cs" />
     <Compile Include="Interfaces\IHasMugshots.cs" />

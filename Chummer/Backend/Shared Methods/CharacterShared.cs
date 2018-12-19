@@ -44,8 +44,6 @@ namespace Chummer
     public class CharacterShared : Form
     {
         private readonly Character _objCharacter;
-        private readonly ObservableCollection<CharacterAttrib> _lstPrimaryAttributes;
-        private readonly ObservableCollection<CharacterAttrib> _lstSpecialAttributes;
         private readonly CharacterOptions _objOptions;
         private bool _blnIsDirty;
         private bool _blnIsRefreshing;
@@ -56,37 +54,6 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
-
-            _lstPrimaryAttributes = new ObservableCollection<CharacterAttrib>
-            {
-                CharacterObject.BOD,
-                CharacterObject.AGI,
-                CharacterObject.REA,
-                CharacterObject.STR,
-                CharacterObject.CHA,
-                CharacterObject.INT,
-                CharacterObject.LOG,
-                CharacterObject.WIL
-            };
-
-            _lstSpecialAttributes = new ObservableCollection<CharacterAttrib>
-            {
-                CharacterObject.EDG
-            };
-            if (CharacterObject.MAGEnabled)
-            {
-                _lstSpecialAttributes.Add(CharacterObject.MAG);
-                if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                    _lstSpecialAttributes.Add(CharacterObject.MAGAdept);
-            }
-            if (CharacterObject.RESEnabled)
-            {
-                _lstSpecialAttributes.Add(CharacterObject.RES);
-            }
-            if (CharacterObject.DEPEnabled)
-            {
-                _lstSpecialAttributes.Add(CharacterObject.DEP);
-            }
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -251,7 +218,7 @@ namespace Chummer
                 pnlAttributes.SuspendLayout();
                 pnlAttributes.Controls.Clear();
 
-                foreach (CharacterAttrib objAttrib in _lstPrimaryAttributes.Concat(_lstSpecialAttributes))
+                foreach (CharacterAttrib objAttrib in CharacterObject.AttributeSection.Attributes)
                 {
                     AttributeControl objControl = new AttributeControl(objAttrib);
                     objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
@@ -6449,11 +6416,7 @@ namespace Chummer
 
         protected CharacterOptions CharacterObjectOptions => _objOptions;
 
-        protected ObservableCollection<CharacterAttrib> PrimaryAttributes => _lstPrimaryAttributes;
-
-        protected ObservableCollection<CharacterAttrib> SpecialAttributes => _lstSpecialAttributes;
-
-        protected virtual string FormMode => string.Empty;
+		protected virtual string FormMode => string.Empty;
 
         protected void ShiftTabsOnMouseScroll(object sender, MouseEventArgs e)
         {
