@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace ChummerHub.Models.V1
 {
-    public class SearchTag
+    public class SearchTag : Tag
     {
-        [Key]
-        public Guid Id { get; set; }
-        public string sTagName { get; set; }
-        public string sTagValue { get; set; }
+        //[Key]
+        //public Guid Id { get; set; }
+        //public string sTagName { get; set; }
+        //public string sTagValue { get; set; }
 
-        public Guid? sParentTagId { get; set; }
+        //public Guid? sParentTagId { get; set; }
 
-        public List<SearchTag> sTags { get; set; }
+        public List<SearchTag> SearchTags { get; set; }
 
-        public TagOperatorEnum sSearchOpterator { get; set; }
+        public TagOperatorEnum SearchOpterator { get; set; }
 
         public enum TagOperatorEnum
         {
@@ -31,10 +31,7 @@ namespace ChummerHub.Models.V1
 
         public SearchTag()
         {
-            Id = Guid.NewGuid();
-            this.sTagName = "";
-            this.sTagValue = "";
-            this.sTags = new List<SearchTag>();
+            SearchTags = new List<SearchTag>();
         }
     }
 }

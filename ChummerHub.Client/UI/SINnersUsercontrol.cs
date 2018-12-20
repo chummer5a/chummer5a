@@ -32,13 +32,7 @@ namespace ChummerHub.Client.UI
 
         public SINnersAdvanced TabSINnersAdvanced = null;
 
-        public CharacterExtended MyCE
-        {
-            get
-            {
-                return PluginHandler.GetCharExtended(CharacterObject, null);
-            }
-        }
+        public CharacterExtended MyCE { get; set; }
 
         public Character CharacterObject => MySINner.CharacterObject;
 
@@ -51,8 +45,9 @@ namespace ChummerHub.Client.UI
             TabSINnersBasic.Visible = true;
             TabSINnersAdvanced = new SINnersAdvanced(this);
             TabSINnersAdvanced.Visible = true;
-            MyCE.PopulateTags();
-            MyCE.ZipFilePath = MyCE.PrepareModel(false);
+            MyCE = new CharacterExtended(mySINner.CharacterObject, null);
+            MyCE.MySINnerFile.SiNnerMetaData.Tags = MyCE.PopulateTags();
+            MyCE.ZipFilePath = MyCE.PrepareModel();
             InitializeComponent();
             this.tabPageBasic.Controls.Add(TabSINnersBasic);
             this.tabPageAdvanced.Controls.Add(TabSINnersAdvanced);

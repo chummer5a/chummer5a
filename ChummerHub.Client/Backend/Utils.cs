@@ -262,7 +262,10 @@ namespace ChummerHub.Client.Backend
                         TreeNode objNode = new TreeNode
                         {
                             Text = objCache.CalculatedName(),
-                            Tag = sinner.Id.Value.ToString()
+                            Tag = sinner.Id.Value.ToString(),
+                            ToolTipText = "Last Change: " + sinner.LastChange,
+                            ContextMenuStrip = PluginHandler.MainForm.CharacterRoster.ContextMenuStrip
+
                         };
                         if (!string.IsNullOrEmpty(objCache.ErrorText))
                         {
@@ -320,12 +323,14 @@ namespace ChummerHub.Client.Backend
                 var t = DownloadFileTask(sinner, objCache);
                 t.ContinueWith((downloadtask) =>
                 {
+                    PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(true);
                     Character c = downloadtask.Result as Character;
                     if (c != null)
                     {
                         SwitchToCharacter(c);
                     }
                     SwitchToCharacter(objCache);
+                    PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(false);
                 });
                 
             };
@@ -367,9 +372,9 @@ namespace ChummerHub.Client.Backend
             PluginHandler.MainForm.DoThreadSafe(() =>
             {
                 PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
-                if (objOpenCharacter == null || !PluginHandler.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                if (objOpenCharacter == null || !PluginHandler.MainForm.SwitchToOpenCharacter(objOpenCharacter, false))
                 {
-                    PluginHandler.MainForm.OpenCharacter(objOpenCharacter);
+                    PluginHandler.MainForm.OpenCharacter(objOpenCharacter, false);
                 }
                 PluginHandler.MainForm.Cursor = Cursors.Default;
             });
@@ -381,6 +386,7 @@ namespace ChummerHub.Client.Backend
             if (objOpenCharacter == null) 
                 objOpenCharacter = PluginHandler.MainForm.LoadCharacter(objCache.FilePath);
             SwitchToCharacter(objOpenCharacter);
+        
 
         }
 
@@ -402,9 +408,25 @@ namespace ChummerHub.Client.Backend
                 uploadInfoObject.SiNners = new List<SINner>() { ce.MySINnerFile };
                 System.Diagnostics.Trace.TraceInformation("Posting " + ce.MySINnerFile.Id + "...");
                 if (!StaticUtils.IsUnitTest)
-                    await StaticUtils.Client.PostAsync(uploadInfoObject);
+                {
+                    var res = await StaticUtils.Client.PostWithHttpMessagesAsync(uploadInfoObject);
+                    if ((res.Response.StatusCode != HttpStatusCode.OK)
+                        && (res.Response.StatusCode != HttpStatusCode.Accepted)
+                        && (res.Response.StatusCode != HttpStatusCode.Created))
+                    {
+                        var msg = "Post of " + ce.MyCharacter.Alias + " completed with StatusCode: " + res.Response.StatusCode;
+                        msg += Environment.NewLine + res.Response.ReasonPhrase;
+                        System.Diagnostics.Trace.TraceWarning(msg);
+                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        {
+                            MessageBox.Show(msg);
+                        });
+                    }
+                }
                 else
-                    StaticUtils.Client.Post(uploadInfoObject);
+                {
+                    StaticUtils.Client.PostWithHttpMessagesAsync(uploadInfoObject).RunSynchronously();
+                }
                 System.Diagnostics.Trace.TraceInformation("Post of " + ce.MySINnerFile.Id + " finished.");
             }
             catch (Exception ex)
@@ -429,7 +451,7 @@ namespace ChummerHub.Client.Backend
             try
             {
                 if (String.IsNullOrEmpty(ce.ZipFilePath))
-                    ce.ZipFilePath = ce.PrepareModel(false);
+                    ce.ZipFilePath = ce.PrepareModel();
 
                 using (FileStream fs = new FileStream(ce.ZipFilePath, FileMode.Open, FileAccess.Read))
                 {
@@ -441,15 +463,24 @@ namespace ChummerHub.Client.Backend
                             {
                                 PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
                             });
-                            var task = StaticUtils.Client.PutAsync(ce.MySINnerFile.Id.Value, fs);
-                            await task.ContinueWith((sender) =>
+                            var res = StaticUtils.Client.PutWithHttpMessagesAsync(ce.MySINnerFile.Id.Value, fs);
+                            //var task = StaticUtils.Client.PutAsync(ce.MySINnerFile.Id.Value, fs);
+                            await res.ContinueWith((sender) =>
                             {
-                                string msg = "Upload completed with status: " + sender.Status.ToString();
+                                
+                                string msg = "Upload " + sender.Status.ToString() + " with statuscode: ";
+                                msg += res?.Result?.Response?.StatusCode + Environment.NewLine;
+                                msg += res?.Result?.Response?.ReasonPhrase;
                                 msg += Environment.NewLine + sender.Exception?.Message;
+                                System.Diagnostics.Trace.TraceInformation(msg);
                                 if (!StaticUtils.IsUnitTest)
                                 {
                                     PluginHandler.MainForm.DoThreadSafe(() =>
                                     {
+                                        if (res?.Result?.Response?.StatusCode != HttpStatusCode.OK)
+                                        {
+                                            MessageBox.Show(msg);
+                                        }
                                         Chummer.Plugins.PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
                                         PluginHandler.MainForm.Cursor = Cursors.Default;
                                     });

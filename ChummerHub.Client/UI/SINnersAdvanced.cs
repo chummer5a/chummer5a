@@ -45,7 +45,7 @@ namespace ChummerHub.Client.UI
         private void cmdPopulateTags_Click(object sender, EventArgs e)
         {
             MyTagTreeView.Nodes.Clear();
-            MySINnersUsercontrol.MyCE.PopulateTags();
+            MySINnersUsercontrol.MyCE.MySINnerFile.SiNnerMetaData.Tags = MySINnersUsercontrol.MyCE.PopulateTags();
             TreeNode root = null;
             MySINnersUsercontrol.MyCE.PopulateTree(ref root, null, null);
             MyTagTreeView.Nodes.Add(root);
@@ -54,7 +54,7 @@ namespace ChummerHub.Client.UI
        
         private void cmdPrepareModel_Click(object sender, EventArgs e)
         {
-            MySINnersUsercontrol.MyCE.PrepareModel(true);
+            MySINnersUsercontrol.MyCE.PrepareModel();
             
         }
 

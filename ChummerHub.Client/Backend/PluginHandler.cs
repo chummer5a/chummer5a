@@ -29,17 +29,17 @@ namespace Chummer.Plugins
         //public static CharacterExtended MyCharacterExtended = null;
         private static Dictionary<int, CharacterExtended> MyCharExtendedDic = new Dictionary<int, CharacterExtended>();
 
-        public static CharacterExtended GetCharExtended(Character c, string fileElement)
-        {
-            CharacterExtended ce;
-            if (!MyCharExtendedDic.TryGetValue(c.GetHashCode(), out ce))
-            {
-                ce = new CharacterExtended(c, fileElement);
-                MyCharExtendedDic.Add(ce.GetHashCode(), ce);
-            }
-            return ce;    
+        //public static CharacterExtended GetCharExtended(Character c, string fileElement)
+        //{
+        //    CharacterExtended ce;
+        //    if (!MyCharExtendedDic.TryGetValue(c.GetHashCode(), out ce))
+        //    {
+        //        ce = new CharacterExtended(c, fileElement);
+        //        MyCharExtendedDic.Add(ce.GetHashCode(), ce);
+        //    }
+        //    return ce;    
             
-        }
+        //}
 
         public static UploadClient MyUploadClient = null;
 
@@ -66,9 +66,8 @@ namespace Chummer.Plugins
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCareer input)
         {
-            var ce = GetCharExtended(input.CharacterObject, null);
             SINnersUserControl uc = new SINnersUserControl();
-            uc.SetCharacterFrom(input);
+            var ce = uc.SetCharacterFrom(input);
             TabPage page = new TabPage("SINners");
             page.Controls.Add(uc);
             return new List<TabPage>() { page };
@@ -76,35 +75,43 @@ namespace Chummer.Plugins
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCreate input)
         {
-            var ce = GetCharExtended(input.CharacterObject, null);
             SINnersUserControl uc = new SINnersUserControl();
-            uc.SetCharacterFrom(input);
+            var ce = uc.SetCharacterFrom(input);
             TabPage page = new TabPage("SINners");
             page.Controls.Add(uc);
             return new List<TabPage>() { page };
         }
 
+        private bool IsSaving = false;
+
         string IPlugin.GetSaveToFileElement(Character input)
         {
-            var ce = GetCharExtended(input, null);
-            if (SINnersOptions.UploadOnSave == true)
+            
+            CharacterExtended ce = new CharacterExtended(input, null);
+            if ((SINnersOptions.UploadOnSave == true) && (IsSaving == false))
             {
-                input.OnSaveCompleted += (async (sender, e) =>
-                {
-                    ce.PrepareModel(false);
-                    await Utils.PostSINnerAsync(ce);
-                    await Utils.UploadChummerFileAsync(ce);
-                });
+                IsSaving = true;
+                //removing a handler that is not registered is legal - that way only one handler is registered EVER!
+                input.OnSaveCompleted -= MyOnSaveUpload;
+                input.OnSaveCompleted += MyOnSaveUpload;
             }
             return JsonConvert.SerializeObject(ce.MySINnerFile);
         }
 
-        
+        private async void MyOnSaveUpload(object sender, Character input)
+        {
+            input.OnSaveCompleted -= MyOnSaveUpload;
+            CharacterExtended ce = new CharacterExtended(input, null);
+            ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
+            ce.PrepareModel();
+            await Utils.PostSINnerAsync(ce);
+            await Utils.UploadChummerFileAsync(ce);
+            IsSaving = false;
+        }
 
         void IPlugin.LoadFileElement(Character input, string fileElement)
         {
-            var ce = GetCharExtended(input, fileElement);
-
+            //we don't need that functionality right now...
         }
 
         IEnumerable<ToolStripMenuItem> IPlugin.GetMenuItems(ToolStripMenuItem input)

@@ -24,16 +24,16 @@ namespace ChummerHub.Models.V1.Examples
             Guid parentTagGuid = Guid.NewGuid();
             var sin = new SearchTag
             {
-                sTagName = "Reflection",
-                sTagValue = "",
-                sSearchOpterator = SearchTag.TagOperatorEnum.notnull,
-                sTags = new List<SearchTag>()
+                TagName = "Reflection",
+                TagValue = "",
+                SearchOpterator = SearchTag.TagOperatorEnum.notnull,
+                Tags = new List<Tag>()
                 {
                     new SearchTag ()
                     {
-                         sTags = new List<SearchTag>(),
-                         sTagName = "AttributeSection",
-
+                         Tags = new List<Tag>(),
+                         TagName = "AttributeSection",
+                         SearchOpterator = SearchTag.TagOperatorEnum.exists
                     }
                 }
 

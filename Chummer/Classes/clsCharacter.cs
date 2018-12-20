@@ -249,7 +249,7 @@ namespace Chummer
         [Newtonsoft.Json.JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public EventHandler<string> OnSaveCompleted;
+        public EventHandler<Character> OnSaveCompleted;
        
         #region Initialization, Save, Load, Print, and Reset Methods
 
@@ -1154,7 +1154,7 @@ namespace Chummer
         /// <summary>
         /// Save the Character to an XML file. Returns true if successful.
         /// </summary>
-        public bool Save(string strFileName = "")
+        public bool Save(string strFileName = "", bool addToMRU = true, bool callOnSaveCallBack = true)
         {
             if (IsSaving)
                 return false;
@@ -1820,11 +1820,14 @@ namespace Chummer
             }
 
             objWriter.Close();
-
+            if (addToMRU)
+                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, this.FileName);
+            
             IsSaving = false;
             _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
 
-            this.OnSaveCompleted(this, strFileName);
+            if (callOnSaveCallBack)
+                this.OnSaveCompleted(this, this);
             return blnErrorFree;
         }
 

@@ -68,42 +68,55 @@ namespace Chummer
                 watcherCharacterRosterFolder = new FileSystemWatcher(GlobalOptions.CharacterRosterPath, "*.chum5");
             }
         }
+
+        public void SetMyEventHandlers(bool deleteThem = false)
+        {
+            if (!deleteThem)
+            {
+                GlobalOptions.MRUChanged += PopulateCharacterList;
+                treCharacterList.ItemDrag += treCharacterList_ItemDrag;
+                treCharacterList.DragEnter += treCharacterList_DragEnter;
+                treCharacterList.DragDrop += treCharacterList_DragDrop;
+                treCharacterList.DragOver += treCharacterList_DragOver;
+                OnMyMouseDown += OnDefaultMouseDown;
+
+                if (watcherCharacterRosterFolder != null)
+                {
+                    watcherCharacterRosterFolder.Changed += RefreshWatchListOnly;
+                    watcherCharacterRosterFolder.Created += RefreshWatchListOnly;
+                    watcherCharacterRosterFolder.Deleted += RefreshWatchListOnly;
+                    watcherCharacterRosterFolder.Renamed += RefreshWatchListOnly;
+                }
+            }
+            else
+            {
+                GlobalOptions.MRUChanged -= PopulateCharacterList;
+                treCharacterList.ItemDrag -= treCharacterList_ItemDrag;
+                treCharacterList.DragEnter -= treCharacterList_DragEnter;
+                treCharacterList.DragDrop -= treCharacterList_DragDrop;
+                treCharacterList.DragOver -= treCharacterList_DragOver;
+                OnMyMouseDown -= OnDefaultMouseDown;
+
+                if (watcherCharacterRosterFolder != null)
+                {
+                    watcherCharacterRosterFolder.Changed -= RefreshWatchListOnly;
+                    watcherCharacterRosterFolder.Created -= RefreshWatchListOnly;
+                    watcherCharacterRosterFolder.Deleted -= RefreshWatchListOnly;
+                    watcherCharacterRosterFolder.Renamed -= RefreshWatchListOnly;
+                }
+            }
+        }
+
         private void frmCharacterRoster_Load(object sender, EventArgs e)
         {
-            GlobalOptions.MRUChanged += PopulateCharacterList;
-            treCharacterList.ItemDrag += treCharacterList_ItemDrag;
-            treCharacterList.DragEnter += treCharacterList_DragEnter;
-            treCharacterList.DragDrop += treCharacterList_DragDrop;
-            treCharacterList.DragOver += treCharacterList_DragOver;
-
-            if (watcherCharacterRosterFolder != null)
-            {
-                watcherCharacterRosterFolder.Changed += RefreshWatchListOnly;
-                watcherCharacterRosterFolder.Created += RefreshWatchListOnly;
-                watcherCharacterRosterFolder.Deleted += RefreshWatchListOnly;
-                watcherCharacterRosterFolder.Renamed += RefreshWatchListOnly;
-            }
-
+            SetMyEventHandlers();
             LoadCharacters();
             UpdateCharacter(null);
         }
 
         private void frmCharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
         {
-
-            GlobalOptions.MRUChanged -= PopulateCharacterList;
-            treCharacterList.ItemDrag -= treCharacterList_ItemDrag;
-            treCharacterList.DragEnter -= treCharacterList_DragEnter;
-            treCharacterList.DragDrop -= treCharacterList_DragDrop;
-            treCharacterList.DragOver -= treCharacterList_DragOver;
-
-            if (watcherCharacterRosterFolder != null)
-            {
-                watcherCharacterRosterFolder.Changed -= RefreshWatchListOnly;
-                watcherCharacterRosterFolder.Created -= RefreshWatchListOnly;
-                watcherCharacterRosterFolder.Deleted -= RefreshWatchListOnly;
-                watcherCharacterRosterFolder.Renamed -= RefreshWatchListOnly;
-            }
+            SetMyEventHandlers(true);
         }
 
         public void RefreshWatchListOnly(object sender, EventArgs e)
@@ -1046,7 +1059,18 @@ namespace Chummer
             }
         }
 
+
+        [JsonIgnore]
+        [XmlIgnore]
+        [IgnoreDataMember]
+        public EventHandler<MouseEventArgs> OnMyMouseDown;
+
         private void TreeView_MouseDown(object sender, MouseEventArgs e)
+        {
+            OnMyMouseDown(sender, e);
+        }
+
+        public void OnDefaultMouseDown(object sender, MouseEventArgs e)
         {
             // Generic event for all TreeViews to allow right-clicking to select a TreeNode so the proper ContextMenu is shown.
             //if (e.Button == System.Windows.Forms.MouseButtons.Right)

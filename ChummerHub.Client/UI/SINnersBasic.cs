@@ -37,6 +37,7 @@ namespace ChummerHub.Client.UI
             InitializeComponent();
             this.AutoSize = true;
             myUC = parent;
+            myUC.MyCE = parent.MyCE;
             CheckSINnerStatus();
         }
 

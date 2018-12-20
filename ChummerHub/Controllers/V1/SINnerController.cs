@@ -311,7 +311,10 @@ namespace ChummerHub.Controllers.V1
                         sinner.Id = Guid.Empty;
 
                     foreach (var ur in sinner.SINnerMetaData.Visibility.UserRights)
+                    {
+                        ur.Id = Guid.NewGuid();
                         ur.SINnerId = sinner.Id;
+                    }
 
                     foreach (var tag in sinner.SINnerMetaData.Tags)
                         tag.SINnerId = sinner.Id;
@@ -337,7 +340,8 @@ namespace ChummerHub.Controllers.V1
                 catch(Exception e)
                 {
                     HubException hue = new HubException("Exception in PostSINnerFile: " + e.Message, e);
-                    return Conflict(hue);
+                    var msg = new System.Net.Http.HttpResponseMessage(HttpStatusCode.Conflict) { ReasonPhrase = hue.Message };
+                    return Conflict(msg);
                 }
                 List<Guid> myids = (from a in uploadInfo.SINners select a.Id.Value).ToList();
                 switch(returncode)
