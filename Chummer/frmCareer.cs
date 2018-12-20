@@ -274,7 +274,17 @@ namespace Chummer
             RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
             RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsVehicleCyberware, cmsVehicleCyberwareGear);
             RefreshDrugs(treCustomDrugs);
-            
+
+            treWeapons.SortCustomOrder();
+            treArmor.SortCustomOrder();
+            treGear.SortCustomOrder();
+            treLifestyles.SortCustomOrder();
+            treCustomDrugs.SortCustomOrder();
+            treCyberware.SortCustomOrder();
+            treVehicles.SortCustomOrder();
+            treCritterPowers.SortCustomOrder();
+            treImprovements.SortCustomOrder();
+
             // Set up events that would change various lists
             CharacterObject.Spells.CollectionChanged += SpellCollectionChanged;
             CharacterObject.ComplexForms.CollectionChanged += ComplexFormCollectionChanged;
@@ -10236,10 +10246,18 @@ namespace Chummer
                 nodDestination = treWeapons.Nodes[treWeapons.Nodes.Count - 1];
             }
 
+            TreeNode objSelected = treWeapons.SelectedNode;
+
+            // Put the weapon in the right location (or lack thereof)
             if (treWeapons.SelectedNode.Level == 1)
-                CharacterObject.MoveWeaponNode(intNewIndex, nodDestination, treWeapons.SelectedNode);
+                CharacterObject.MoveWeaponNode(intNewIndex, nodDestination, objSelected);
             else
-                CharacterObject.MoveWeaponRoot(intNewIndex, nodDestination, treWeapons.SelectedNode);
+                CharacterObject.MoveWeaponRoot(intNewIndex, nodDestination, objSelected);
+
+            // Put the weapon in the right order in the tree
+            MoveTreeNode(treWeapons.FindNodeByTag(objSelected?.Tag), intNewIndex);
+            // Update the entire tree to prevent any holes in the sort order
+            treWeapons.CacheSortOrder();
 
             // Clear the background color for all Nodes.
             treWeapons.ClearNodeBackground(null);
@@ -10299,10 +10317,18 @@ namespace Chummer
                 nodDestination = treArmor.Nodes[treArmor.Nodes.Count - 1];
             }
 
+            TreeNode objSelected = treArmor.SelectedNode;
+
+            // Put the armor in the right location (or lack thereof)
             if (treArmor.SelectedNode.Level == 1)
-                CharacterObject.MoveArmorNode(intNewIndex, nodDestination, treArmor.SelectedNode);
+                CharacterObject.MoveArmorNode(intNewIndex, nodDestination, objSelected);
             else
-                CharacterObject.MoveArmorRoot(intNewIndex, nodDestination, treArmor.SelectedNode);
+                CharacterObject.MoveArmorRoot(intNewIndex, nodDestination, objSelected);
+
+            // Put the armor in the right order in the tree
+            MoveTreeNode(treArmor.FindNodeByTag(objSelected?.Tag), intNewIndex);
+            // Update the entire tree to prevent any holes in the sort order
+            treArmor.CacheSortOrder();
 
             // Clear the background color for all Nodes.
             treArmor.ClearNodeBackground(null);
@@ -10602,16 +10628,23 @@ namespace Chummer
                 nodDestination = treGear.Nodes[treGear.Nodes.Count - 1];
             }
 
+            TreeNode objSelected = treGear.SelectedNode;
+
             // If the item was moved using the left mouse button, change the order of things.
             if (_eDragButton == MouseButtons.Left)
             {
                 if (treGear.SelectedNode.Level == 1)
-                    CharacterObject.MoveGearNode(intNewIndex, nodDestination, treGear.SelectedNode);
+                    CharacterObject.MoveGearNode(intNewIndex, nodDestination, objSelected);
                 else
-                    CharacterObject.MoveGearRoot(intNewIndex, nodDestination, treGear.SelectedNode);
+                    CharacterObject.MoveGearRoot(intNewIndex, nodDestination, objSelected);
             }
             if (_eDragButton == MouseButtons.Right)
-                CharacterObject.MoveGearParent(nodDestination, treGear.SelectedNode);
+                CharacterObject.MoveGearParent(objSelected, treGear.SelectedNode);
+
+            // Put the gear in the right order in the tree
+            MoveTreeNode(treGear.FindNodeByTag(objSelected?.Tag), intNewIndex);
+            // Update the entire tree to prevent any holes in the sort order
+            treGear.CacheSortOrder();
 
             // Clear the background color for all Nodes.
             treGear.ClearNodeBackground(null);
@@ -11240,16 +11273,23 @@ namespace Chummer
                 nodDestination = treVehicles.Nodes[treVehicles.Nodes.Count - 1];
             }
 
+            TreeNode objSelected = treVehicles.SelectedNode;
+
             if (!_blnDraggingGear)
             {
-                CharacterObject.MoveVehicleNode(intNewIndex, nodDestination, treVehicles.SelectedNode);
+                CharacterObject.MoveVehicleNode(intNewIndex, nodDestination, objSelected);
             }
             else
             {
                 if (_eDragButton == MouseButtons.Left)
                     return;
-                CharacterObject.MoveVehicleGearParent(nodDestination, treVehicles.SelectedNode);
+                CharacterObject.MoveVehicleGearParent(nodDestination, objSelected);
             }
+
+            // Put the armor in the right order in the tree
+            MoveTreeNode(treVehicles.FindNodeByTag(objSelected?.Tag), intNewIndex);
+            // Update the entire tree to prevent any holes in the sort order
+            treVehicles.CacheSortOrder();
 
             // Clear the background color for all Nodes.
             treVehicles.ClearNodeBackground(null);
@@ -12403,10 +12443,17 @@ namespace Chummer
                 }
             }
 
+            TreeNode objSelected = treImprovements.SelectedNode;
+
             if (treImprovements.SelectedNode.Level == 1)
                 CharacterObject.MoveImprovementNode(intNewIndex, nodDestination, treImprovements.SelectedNode);
             else
                 CharacterObject.MoveImprovementRoot(intNewIndex, nodDestination, treImprovements.SelectedNode);
+
+            // Put the armor in the right order in the tree
+            MoveTreeNode(treImprovements.FindNodeByTag(objSelected?.Tag), intNewIndex);
+            // Update the entire tree to prevent any holes in the sort order
+            treImprovements.CacheSortOrder();
 
             // Clear the background color for all Nodes.
             treImprovements.ClearNodeBackground(null);
@@ -12649,9 +12696,106 @@ namespace Chummer
         {
             RefreshPasteStatus();
         }
-#endregion
 
-#region Condition Monitors
+        private enum CmdOperation { None, Up, Down };
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            CmdOperation op = CmdOperation.None;
+
+            // Determine which custom operation we're attempting, if any
+            switch (keyData)
+            {
+                case Keys.Up | Keys.Alt:
+                    op = CmdOperation.Up;
+                    break;
+
+                case Keys.Down | Keys.Alt:
+                    op = CmdOperation.Down;
+                    break;
+            }
+
+            if (op == CmdOperation.Up || op == CmdOperation.Down)
+            {
+                bool up = op == CmdOperation.Up;
+                bool requireParentSortable = false;
+                TreeView treActiveView = null;
+
+                if (tabCharacterTabs.SelectedTab == tabStreetGear)
+                {
+                    // Lifestyle Tab.
+                    if (tabStreetGearTabs.SelectedTab == tabLifestyle)
+                    {
+                        treActiveView = treLifestyles;
+                    }
+                    // Armor Tab.
+                    else if (tabStreetGearTabs.SelectedTab == tabArmor)
+                    {
+                        treActiveView = treArmor;
+                    }
+                    // Weapons Tab.
+                    else if (tabStreetGearTabs.SelectedTab == tabWeapons)
+                    {
+                        treActiveView = treWeapons;
+                    }
+                    // Gear Tab.
+                    else if (tabStreetGearTabs.SelectedTab == tabGear)
+                    {
+                        treActiveView = treGear;
+                    }
+                    // Drugs Tab.
+                    else if (tabStreetGearTabs.SelectedTab == tabDrugs)
+                    {
+                        treActiveView = treCustomDrugs;
+                    }
+                }
+                // Cyberware Tab.
+                else if (tabCharacterTabs.SelectedTab == tabCyberware)
+                {
+                    // Top-level cyberware is sorted alphabetically, but we can re-arrange any plugins/gear inside them
+                    requireParentSortable = true;
+                    treActiveView = treCyberware;
+                }
+                // Vehicles Tab.
+                else if (tabCharacterTabs.SelectedTab == tabVehicles)
+                {
+                    treActiveView = treVehicles;
+                }
+                // Critter Powers Tab.
+                else if (tabCharacterTabs.SelectedTab == tabCritter)
+                {
+                    treActiveView = treCritterPowers;
+                }
+                // Improvements Tab.
+                else if (tabCharacterTabs.SelectedTab == tabImprovements)
+                {
+                    treActiveView = treImprovements;
+                }
+
+                if (treActiveView != null)
+                {
+                    TreeNode objSelectedNode = treActiveView.SelectedNode;
+                    TreeNode objParentNode = objSelectedNode?.Parent;
+                    TreeNodeCollection lstNodes = objParentNode?.Nodes ?? treActiveView.Nodes;
+
+                    if (!requireParentSortable || objParentNode?.Tag is ICanSort)
+                    {
+                        int intNewIndex = lstNodes.IndexOf(objSelectedNode);
+                        intNewIndex = up ? Math.Max(0, intNewIndex - 1) : Math.Min(lstNodes.Count - 1, intNewIndex + 1);
+
+                        MoveTreeNode(objSelectedNode, intNewIndex);
+                    }
+                }
+
+                // Returning true tells the program to consume the input
+                return true;
+            }
+
+            // If none of our key combinations are used then use the default logic
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+        #endregion
+
+        #region Condition Monitors
         private void chkPhysicalCM_CheckedChanged(object sender, EventArgs e)
         {
             if (sender is CheckBox objBox)

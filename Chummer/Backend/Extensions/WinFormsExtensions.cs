@@ -17,7 +17,9 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
@@ -149,7 +151,7 @@ namespace Chummer
         /// </summary>
         /// <param name="treView">TreeView to sort.</param>
         /// <param name="strSelectedNodeTag">String of the tag to select after sorting.</param>
-        public static void SortCustom(this TreeView treView, string strSelectedNodeTag = "")
+        public static void SortCustomAlphabetically(this TreeView treView, string strSelectedNodeTag = "")
         {
             TreeNodeCollection lstTreeViewNodes = treView?.Nodes;
             if (lstTreeViewNodes == null)
@@ -183,7 +185,7 @@ namespace Chummer
         /// </summary>
         /// <param name="treView">TreeView to sort.</param>
         /// <param name="objSelectedNodeTag">String of the tag to select after sorting.</param>
-        public static void SortCustom(this TreeView treView, object objSelectedNodeTag = null)
+        public static void SortCustomAlphabetically(this TreeView treView, object objSelectedNodeTag = null)
         {
             TreeNodeCollection lstTreeViewNodes = treView?.Nodes;
             if (lstTreeViewNodes == null)
@@ -210,6 +212,70 @@ namespace Chummer
             TreeNode objSelectedNode = treView.FindNodeByTag(objSelectedNodeTag);
             if (objSelectedNode != null)
                 treView.SelectedNode = objSelectedNode;
+        }
+
+        /// <summary>
+        /// Sort the contents of a TreeView based on the sorting property of any
+        /// ICanSorts in the tree
+        /// </summary>
+        /// <param name="treView">The tree to sort</param>
+        public static void SortCustomOrder(this TreeView treView)
+        {
+            string strSelectedNodeTag = (treView.SelectedNode?.Tag as IHasInternalId)?.InternalId;
+
+            var currentSorter = treView.TreeViewNodeSorter;
+            treView.TreeViewNodeSorter = new CustomNodeSorter();
+            treView.Sort();
+            treView.TreeViewNodeSorter = currentSorter;
+
+            // Reselect whatever was selected before
+            TreeNode objSelectedNode = treView.FindNode(strSelectedNodeTag);
+            if (objSelectedNode != null)
+                treView.SelectedNode = objSelectedNode;
+        }
+
+        /// <summary>
+        /// Custom comparer used by SortCustomOrder
+        /// </summary>
+        private class CustomNodeSorter : System.Collections.IComparer
+        {
+            public CustomNodeSorter() { }
+
+            public int Compare(object x, object y)
+            {
+                ICanSort lhs = (x as TreeNode)?.Tag as ICanSort;
+                ICanSort rhs = (y as TreeNode)?.Tag as ICanSort;
+
+                // Sort any non-sortables first
+                if (lhs == null)
+                    return -1;
+                if (rhs == null)
+                    return 1;
+
+                return lhs.SortOrder.CompareTo(rhs.SortOrder);
+            }
+        }
+
+        /// <summary>
+        /// Iterates through a TreeView and stores the sorting order on any
+        /// ICanSort objects, allowing them to retain the order after a load
+        /// </summary>
+        /// <param name="treView"></param>
+        public static void CacheSortOrder(this TreeView treView)
+        {
+            CacheSortOrderRecursive(treView?.Nodes);
+        }
+
+        /// <summary>
+        /// Does a breadth-first recursion to set the sorting property of any ICanSorts in the tree
+        /// </summary>
+        /// <param name="lstNodes">The list if TreeNodes to iterate over</param>
+        private static void CacheSortOrderRecursive(TreeNodeCollection lstNodes)
+        {
+            List<TreeNode> lstEnumerable = lstNodes.Cast<TreeNode>().ToList();
+            // Do this as two steps because non-sortables can own sortables
+            lstEnumerable?.Where(n => n?.Tag is ICanSort).ToList().ForEach(n => (n.Tag as ICanSort).SortOrder = n.Index);
+            lstEnumerable?.ForEach(n => CacheSortOrderRecursive(n.Nodes));
         }
 
         /// <summary>

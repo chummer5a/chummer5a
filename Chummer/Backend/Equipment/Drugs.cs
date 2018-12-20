@@ -30,7 +30,7 @@ using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Equipment
 {
-    public class Drug : IHasName, IHasXmlNode
+    public class Drug : IHasName, IHasXmlNode, ICanSort
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -49,6 +49,7 @@ namespace Chummer.Backend.Equipment
         private int _intAddictionThreshold;
         private int _intAddictionRating;
         private decimal _decQty;
+        private int _intSortOrder;
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -101,6 +102,7 @@ namespace Chummer.Backend.Equipment
             objXmlData.TryGetInt32FieldQuickly("rating", ref _intAddictionRating);
             objXmlData.TryGetInt32FieldQuickly("threshold", ref _intAddictionThreshold);
             objXmlData.TryGetStringFieldQuickly("grade", ref _strGrade);
+            objXmlData.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             //objXmlData.TryGetField("source", out _strSource);
             //objXmlData.TryGetField("page", out _strPage);
         }
@@ -129,6 +131,7 @@ namespace Chummer.Backend.Equipment
             if (_intAddictionThreshold != 0)
                 objXmlWriter.WriteElementString("threshold", _intAddictionThreshold.ToString());
             objXmlWriter.WriteElementString("grade", _strGrade);
+            objXmlWriter.WriteElementString("sortorder", _intSortOrder.ToString());
             /*if (source != null)
                 objXmlWriter.WriteElementString("source", source);
             if (page != 0)
@@ -524,6 +527,15 @@ namespace Chummer.Backend.Equipment
                 _intCachedCrashDamage = Components.Sum(d => d.ActiveDrugEffect.Duration);
                 return _intCachedCrashDamage;
             }
+        }
+
+        /// <summary>
+        /// Used by our sorting algorithm to remember which order the user moves things to
+        /// </summary>
+        public int SortOrder
+        {
+            get => _intSortOrder;
+            set => _intSortOrder = value;
         }
 
         public string Notes { get; internal set; }

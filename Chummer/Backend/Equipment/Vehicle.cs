@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasMatrixConditionMonitor, IHasPhysicalConditionMonitor, IHasLocation, IHasSource
+    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasMatrixConditionMonitor, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -90,6 +90,7 @@ namespace Chummer.Backend.Equipment
         private string _strProgramLimit = string.Empty;
         private string _strOverclocked = "None";
         private bool _blnCanSwapAttributes;
+        private int _intSortOrder;
 
         // Condition Monitor Progress.
         private int _intPhysicalCMFilled;
@@ -526,6 +527,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("modfirewall", _strModFirewall);
             objWriter.WriteElementString("modattributearray", _strModAttributeArray);
             objWriter.WriteElementString("canswapattributes", _blnCanSwapAttributes.ToString());
+            objWriter.WriteElementString("sortorder", _intSortOrder.ToString());
 
             if (string.IsNullOrEmpty(ParentID))
                 _objCharacter.SourceProcess(_strSource);
@@ -646,6 +648,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
             objNode.TryGetInt32FieldQuickly("physicalcmfilled", ref _intPhysicalCMFilled);
             objNode.TryGetStringFieldQuickly("vehiclename", ref _strVehicleName);
+            objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
 
             string strNodeInnerXml = objNode.InnerXml;
             if (strNodeInnerXml.Contains("<mods>"))
@@ -1324,6 +1327,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _blnBlackMarketDiscount && _objCharacter.BlackMarketDiscount;
             set => _blnBlackMarketDiscount = value;
+        }
+
+        /// <summary>
+        /// Used by our sorting algorithm to remember which order the user moves things to
+        /// </summary>
+        public int SortOrder
+        {
+            get => _intSortOrder;
+            set => _intSortOrder = value;
         }
 
         /// <summary>

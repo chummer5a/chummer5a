@@ -292,6 +292,7 @@
     </Compile>
     <Compile Include="Interfaces\ICanEquip.cs" />
     <Compile Include="Interfaces\ICanRemove.cs" />
+    <Compile Include="Interfaces\ICanSort.cs" />
     <Compile Include="Interfaces\IHasConditionMonitor.cs" />
     <Compile Include="Interfaces\IHasCustomName.cs" />
     <Compile Include="Interfaces\ICanSell.cs" />
