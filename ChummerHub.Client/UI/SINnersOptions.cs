@@ -106,6 +106,19 @@ namespace ChummerHub.Client.UI
 
         }
 
+        public static bool UploadOnSave
+        {
+            get
+            {
+                return Properties.Settings.Default.UploadOnSave;
+            }
+            set
+            {
+                Properties.Settings.Default.UploadOnSave = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
         private void InitializeMe()
         {
             Properties.Settings.Default.Reload();
@@ -128,6 +141,7 @@ namespace ChummerHub.Client.UI
                 SINerUserRight obj = (SINerUserRight)clbVisibilityToUsers.Items[i];
                 clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit.Value);
             }
+            cbUploadOnSave.Checked = SINnersOptions.UploadOnSave;
         }
 
         ~SINnersOptions()
@@ -345,10 +359,10 @@ namespace ChummerHub.Client.UI
 
         private void cbVisibilityIsGroupVisible_CheckedChanged(object sender, EventArgs e)
         {
-            VisibilityUpdate();
+            OptionsUpdate();
         }
 
-        private void VisibilityUpdate()
+        private void OptionsUpdate()
         {
 
             SINnersOptions.SINnerVisibility.IsPublic = this.cbVisibilityIsPublic.Checked      ;
@@ -358,12 +372,12 @@ namespace ChummerHub.Client.UI
 
         private void cbVisibilityIsPublic_CheckedChanged(object sender, EventArgs e)
         {
-            VisibilityUpdate();
+            OptionsUpdate();
         }
 
         private void tbGroupname_TextChanged(object sender, EventArgs e)
         {
-            VisibilityUpdate();
+            OptionsUpdate();
         }
 
         bool IsValidEmail(string email)
@@ -459,10 +473,10 @@ namespace ChummerHub.Client.UI
                             {
                                 career.Show();
                                 SINnersUserControl sINnersUsercontrol = new SINnersUserControl();
-                                sINnersUsercontrol.SetCharacterFrom(career);
-                                var posttask = sINnersUsercontrol.PostSINnerAsync();
+                                var ce = sINnersUsercontrol.SetCharacterFrom(career);
+                                var posttask = Utils.PostSINnerAsync(ce);
                                 posttask.Wait();
-                                var uptask = sINnersUsercontrol.UploadChummerFileAsync();
+                                var uptask = Utils.UploadChummerFileAsync(ce);
                                 uptask.Wait();
                                 career.Hide();
                                 career.Dispose();
@@ -474,10 +488,10 @@ namespace ChummerHub.Client.UI
                             {
                                 create.Show();
                                 SINnersUserControl sINnersUsercontrol = new SINnersUserControl();
-                                sINnersUsercontrol.SetCharacterFrom(create);
-                                var posttask = sINnersUsercontrol.PostSINnerAsync();
+                                var ce = sINnersUsercontrol.SetCharacterFrom(create);
+                                var posttask = Utils.PostSINnerAsync(ce);
                                 posttask.Wait();
-                                var uptask = sINnersUsercontrol.UploadChummerFileAsync();
+                                var uptask = Utils.UploadChummerFileAsync(ce);
                                 uptask.Wait();
                                 create.Hide();
                                 create.Dispose();
@@ -493,6 +507,12 @@ namespace ChummerHub.Client.UI
                     }
                 }
             }
+        }
+
+        private void cbUploadOnSave_CheckedChanged(object sender, EventArgs e)
+        {
+            SINnersOptions.UploadOnSave = cbUploadOnSave.Checked;
+
         }
     }
 }

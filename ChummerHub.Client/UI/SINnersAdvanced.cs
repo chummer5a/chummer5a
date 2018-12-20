@@ -45,41 +45,38 @@ namespace ChummerHub.Client.UI
         private void cmdPopulateTags_Click(object sender, EventArgs e)
         {
             MyTagTreeView.Nodes.Clear();
-            MySINnersUsercontrol.MyCharacterExtended.PopulateTags();
+            MySINnersUsercontrol.MyCE.PopulateTags();
             TreeNode root = null;
-            MySINnersUsercontrol.MyCharacterExtended.PopulateTree(ref root, null, null);
+            MySINnersUsercontrol.MyCE.PopulateTree(ref root, null, null);
             MyTagTreeView.Nodes.Add(root);
         }
 
        
         private void cmdPrepareModel_Click(object sender, EventArgs e)
         {
-            MySINnersUsercontrol.MyCharacterExtended.PrepareModel();
+            MySINnersUsercontrol.MyCE.PrepareModel(true);
             
         }
 
-        private void cmdPostSINnerMetaData_Click(object sender, EventArgs e)
+        private async void cmdPostSINnerMetaData_Click(object sender, EventArgs e)
         {
-            MySINnersUsercontrol.PostSINnerAsync();
+            await Utils.PostSINnerAsync(MySINnersUsercontrol.MyCE);
         }
 
         private void MyTagTreeView_VisibleChanged(object sender, EventArgs e)
         {
             MyTagTreeView.Nodes.Clear();
             TreeNode root = null;
-            MySINnersUsercontrol.MyCharacterExtended.PopulateTree(ref root, null, null);
+            MySINnersUsercontrol.MyCE.PopulateTree(ref root, null, null);
             MyTagTreeView.Nodes.Add(root);
         }
 
-        private void cmdUploadChummerFile_Click(object sender, EventArgs e)
+        private async void cmdUploadChummerFile_Click(object sender, EventArgs e)
         {
-            MySINnersUsercontrol.UploadChummerFileAsync();
+            await Utils.UploadChummerFileAsync(MySINnersUsercontrol.MyCE);
         }
 
-        private void cmdDownloadChummerFile_Click(object sender, EventArgs e)
-        {
-            MySINnersUsercontrol.DownloadFileAsync();
-        }
+       
 
        
        

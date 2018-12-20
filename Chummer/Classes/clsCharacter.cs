@@ -39,6 +39,8 @@ using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Uniques;
 using Chummer.helpers;
+using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace Chummer
 {
@@ -244,6 +246,11 @@ namespace Chummer
         private string _strVersionCreated = Application.ProductVersion.FastEscapeOnceFromStart("0.0.");
         Version _verSavedVersion = new Version();
 
+        [Newtonsoft.Json.JsonIgnore]
+        [XmlIgnore]
+        [IgnoreDataMember]
+        public EventHandler<string> OnSaveCompleted;
+       
         #region Initialization, Save, Load, Print, and Reset Methods
 
         /// <summary>
@@ -1816,6 +1823,8 @@ namespace Chummer
 
             IsSaving = false;
             _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
+
+            this.OnSaveCompleted(this, strFileName);
             return blnErrorFree;
         }
 

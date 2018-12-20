@@ -3,6 +3,7 @@ using Chummer.Plugins;
 using ChummerHub.Client.Model;
 using Microsoft.Rest;
 using SINners;
+using SINners.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -215,12 +216,16 @@ namespace ChummerHub.Client.Backend
 
         private static TreeNode MyOnlineTreeNode { get; set; }
 
+        private static List<TreeNode> MyTreeNodeList { get; set; }
+
         /// <summary>
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
         /// </summary>
         /// <param name="strFile"></param>
-        internal async static Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(ConcurrentDictionary<string, CharacterCache> CharCache)
+        internal async static Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(ConcurrentDictionary<string, CharacterCache> CharCache, bool forceUpdate)
         {
+            if ((MyTreeNodeList != null) && !forceUpdate)
+                return MyTreeNodeList;
             try
             {
                 var response = await StaticUtils.Client.GetSINnersByAuthorizationWithHttpMessagesAsync();
@@ -235,7 +240,11 @@ namespace ChummerHub.Client.Backend
                 }
                 else
                 {
-                    MyOnlineTreeNode.Nodes.Clear();
+                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    {
+                        MyOnlineTreeNode.Nodes.Clear();
+                    });
+                    
                 }
                 if (response == null || response.Body?.Any() == false)
                 {
@@ -265,7 +274,11 @@ namespace ChummerHub.Client.Backend
                         CharCache.TryRemove(sinner.Id.Value.ToString(), out delObj);
                         CharCache.TryAdd(sinner.Id.Value.ToString(), objCache);
 
-                        MyOnlineTreeNode.Nodes.Add(objNode);
+                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        {
+                            MyOnlineTreeNode.Nodes.Add(objNode);
+                        });
+                        
                     }
                     catch (Exception e)
                     {
@@ -273,9 +286,9 @@ namespace ChummerHub.Client.Backend
                     }
                 }
                 if (MyOnlineTreeNode.Nodes.Count > 0)
-                    return new List<TreeNode>() { MyOnlineTreeNode };
+                    return MyTreeNodeList = new List<TreeNode>() { MyOnlineTreeNode };
                 else
-                    return null;
+                    return MyTreeNodeList = null;
             }
             catch (Exception ex)
             {
@@ -284,24 +297,6 @@ namespace ChummerHub.Client.Backend
             }
         }
 
-        //private void streamToFile(SINners.Models.Stream fileStream, string filePath)
-        //{
-        //    using (FileStream writeStream = new FileStream(filePath,
-        //                                    FileMode.Create,
-        //                                    FileAccess.Write))
-        //    {
-        //        int length = 1024;
-        //        Byte[] buffer = new Byte[length];
-        //        int bytesRead = fileStream.Read(buffer, 0, length);
-        //        while (bytesRead > 0)
-        //        {
-        //            writeStream.Write(buffer, 0, bytesRead);
-        //            bytesRead = fileStream.Read(buffer, 0, length);
-        //        }
-        //        fileStream.Close();
-        //        writeStream.Close();
-        //    }
-        //}
 
         public static byte[] ReadFully(Stream input)
         {
@@ -319,9 +314,189 @@ namespace ChummerHub.Client.Backend
 
         private static void SetEventHandlers(SINners.Models.SINner sinner, CharacterCache objCache)
         {
-            objCache.OnDoubleClick -= objCache.OnDefaultDoubleClick;
-            objCache.OnDoubleClick += (sender, e) =>
+            objCache.OnMyDoubleClick -= objCache.OnDefaultDoubleClick;
+            objCache.OnMyDoubleClick += (sender, e) =>
             {
+                var t = DownloadFileTask(sinner, objCache);
+                t.ContinueWith((downloadtask) =>
+                {
+                    Character c = downloadtask.Result as Character;
+                    if (c != null)
+                    {
+                        SwitchToCharacter(c);
+                    }
+                    SwitchToCharacter(objCache);
+                });
+                
+            };
+            objCache.OnMyAfterSelect -= objCache.OnDefaultAfterSelect;
+            objCache.OnMyAfterSelect += (sender, treeViewEventArgs) =>
+            {
+                DownloadFileTask(sinner, objCache);
+            };
+            objCache.OnMyKeyDown -= objCache.OnDefaultKeyDown;
+            objCache.OnMyKeyDown += (sender, args) =>
+            {
+                try
+                {
+                    PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
+                    if (args.Item1.KeyCode == Keys.Delete)
+                    {
+                        StaticUtils.Client.Delete(sinner.Id.Value);
+                        objCache.ErrorText = "deleted!";
+                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        {
+                            PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+                        });
+                    }
+                    PluginHandler.MainForm.Cursor = Cursors.Default;
+                }
+                catch (Exception e)
+                {
+                    objCache.ErrorText = e.Message;
+                }
+                finally
+                {
+                    PluginHandler.MainForm.Cursor = Cursors.Default;
+                }
+            };
+        }
+
+        private static void SwitchToCharacter(Character objOpenCharacter)
+        {
+            PluginHandler.MainForm.DoThreadSafe(() =>
+            {
+                PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
+                if (objOpenCharacter == null || !PluginHandler.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                {
+                    PluginHandler.MainForm.OpenCharacter(objOpenCharacter);
+                }
+                PluginHandler.MainForm.Cursor = Cursors.Default;
+            });
+        }
+
+        private static void SwitchToCharacter(CharacterCache objCache)
+        {
+            Character objOpenCharacter = PluginHandler.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FilePath);
+            if (objOpenCharacter == null) 
+                objOpenCharacter = PluginHandler.MainForm.LoadCharacter(objCache.FilePath);
+            SwitchToCharacter(objOpenCharacter);
+
+        }
+
+        public static async Task PostSINnerAsync(CharacterExtended ce)
+        {
+            try
+            {
+                if (!StaticUtils.IsUnitTest)
+                {
+                  PluginHandler.MainForm.DoThreadSafe(() =>
+                  {
+                      PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
+                  });
+                }
+                UploadInfoObject uploadInfoObject = new UploadInfoObject();
+                uploadInfoObject.Client = PluginHandler.MyUploadClient;
+                uploadInfoObject.UploadDateTime = DateTime.Now;
+                ce.MySINnerFile.UploadDateTime = DateTime.Now;
+                uploadInfoObject.SiNners = new List<SINner>() { ce.MySINnerFile };
+                System.Diagnostics.Trace.TraceInformation("Posting " + ce.MySINnerFile.Id + "...");
+                if (!StaticUtils.IsUnitTest)
+                    await StaticUtils.Client.PostAsync(uploadInfoObject);
+                else
+                    StaticUtils.Client.Post(uploadInfoObject);
+                System.Diagnostics.Trace.TraceInformation("Post of " + ce.MySINnerFile.Id + " finished.");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError(ex.ToString());
+                throw;
+            }
+            finally
+            {
+                if (!StaticUtils.IsUnitTest)
+                {
+                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    {
+                        PluginHandler.MainForm.Cursor = Cursors.Default;
+                    });
+                }
+            }
+        }
+
+        public static async Task UploadChummerFileAsync(CharacterExtended ce)
+        {
+            try
+            {
+                if (String.IsNullOrEmpty(ce.ZipFilePath))
+                    ce.ZipFilePath = ce.PrepareModel(false);
+
+                using (FileStream fs = new FileStream(ce.ZipFilePath, FileMode.Open, FileAccess.Read))
+                {
+                    try
+                    {
+                        if (!StaticUtils.IsUnitTest)
+                        {
+                            PluginHandler.MainForm.DoThreadSafe(() =>
+                            {
+                                PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
+                            });
+                            var task = StaticUtils.Client.PutAsync(ce.MySINnerFile.Id.Value, fs);
+                            await task.ContinueWith((sender) =>
+                            {
+                                string msg = "Upload completed with status: " + sender.Status.ToString();
+                                msg += Environment.NewLine + sender.Exception?.Message;
+                                if (!StaticUtils.IsUnitTest)
+                                {
+                                    PluginHandler.MainForm.DoThreadSafe(() =>
+                                    {
+                                        Chummer.Plugins.PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
+                                        PluginHandler.MainForm.Cursor = Cursors.Default;
+                                    });
+                                }
+                                else
+                                {
+                                    System.Diagnostics.Trace.TraceInformation(msg);
+                                }
+                            });
+                        }
+                        else
+                        {
+                            StaticUtils.Client.Put(ce.MySINnerFile.Id.Value, fs);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        System.Diagnostics.Trace.TraceError(e.ToString());
+                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        {
+                            MessageBox.Show(e.Message);
+                        });
+                    }
+                    finally
+                    {
+                        if (!StaticUtils.IsUnitTest)
+                        {
+                            PluginHandler.MainForm.DoThreadSafe(() =>
+                            {
+                                PluginHandler.MainForm.Cursor = Cursors.Default;
+                            });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError(ex.ToString());
+                throw;
+            }
+        }
+
+        public static Character DownloadFile(SINners.Models.SINner sinner, CharacterCache objCache)
+        {
+            try
+            {
+
                 //currently only one chum5-File per chum5z ZipFile is implemented!
                 string loadFilePath = null;
                 string zipPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SINner", sinner.Id.Value.ToString());
@@ -346,82 +521,73 @@ namespace ChummerHub.Client.Backend
                     Directory.CreateDirectory(zipPath);
                 }
                 Character objOpenCharacter = PluginHandler.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == loadFilePath);
-                if (objOpenCharacter == null || !PluginHandler.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                if ((objOpenCharacter != null))
                 {
-                    if (String.IsNullOrEmpty(loadFilePath))
+                    return objOpenCharacter;
+                }
+                if (String.IsNullOrEmpty(loadFilePath))
+                {
+                    try
                     {
-                        try
+                        PluginHandler.MainForm.DoThreadSafe(() =>
                         {
                             PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
-                            string zippedFile = Path.Combine(System.IO.Path.GetTempPath(), "SINner", sinner.Id.Value + ".chum5z");
-                            if (File.Exists(zippedFile))
-                                File.Delete(zippedFile);
-                            var filestream = StaticUtils.Client.GetDownloadFile(sinner.Id.Value);
-                            //var action = StaticUtils.Client.GetDownloadFileWithHttpMessagesAsync();
-                            //action.RunSynchronously();
-                            //var download = action.Result;
-                            var array = ReadFully(filestream);
-                            File.WriteAllBytes(zippedFile, array);
-                            System.IO.Compression.ZipFile.ExtractToDirectory(zippedFile, zipPath);
-                            var files = Directory.EnumerateFiles(zipPath, "*.chum5", SearchOption.TopDirectoryOnly);
-                            foreach (var file in files)
-                            {
-                                if (sinner.UploadDateTime != null)
-                                    File.SetCreationTime(file, sinner.UploadDateTime.Value);
-                                if (sinner.LastChange != null)
-                                    File.SetLastWriteTime(file, sinner.LastChange.Value);
-                                loadFilePath = file;
-                            }
-                        }
-                        catch (Exception ex)
+                        });
+                        string zippedFile = Path.Combine(System.IO.Path.GetTempPath(), "SINner", sinner.Id.Value + ".chum5z");
+                        if (File.Exists(zippedFile))
+                            File.Delete(zippedFile);
+                        var filestream = StaticUtils.Client.GetDownloadFile(sinner.Id.Value);
+                        var array = ReadFully(filestream);
+                        File.WriteAllBytes(zippedFile, array);
+                        System.IO.Compression.ZipFile.ExtractToDirectory(zippedFile, zipPath);
+                        var files = Directory.EnumerateFiles(zipPath, "*.chum5", SearchOption.TopDirectoryOnly);
+                        foreach (var file in files)
                         {
-                            System.Diagnostics.Trace.TraceError(ex.Message);
-                            objCache.ErrorText = ex.Message;
+                            if (sinner.UploadDateTime != null)
+                                File.SetCreationTime(file, sinner.UploadDateTime.Value);
+                            if (sinner.LastChange != null)
+                                File.SetLastWriteTime(file, sinner.LastChange.Value);
+                            loadFilePath = file;
                         }
-                        finally
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Trace.TraceError(ex.Message);
+                        if (objCache != null)
+                            objCache.ErrorText = ex.Message;
+                    }
+                    finally
+                    {
+                        PluginHandler.MainForm.DoThreadSafe(() =>
                         {
                             PluginHandler.MainForm.Cursor = Cursors.Default;
-                        }
+                        });
                     }
-
-                    objOpenCharacter = PluginHandler.MainForm.LoadCharacter(loadFilePath);
-                    PluginHandler.MainForm.OpenCharacter(objOpenCharacter);
-
-
+                    
                 }
-            };
-            objCache.OnAfterSelect -= objCache.OnDefaultAfterSelect;
-            objCache.OnAfterSelect += (sender, treeViewEventArgs) =>
+                return null;
+            }
+            catch (Exception e)
             {
-                //download Char in background...
-            };
-            objCache.OnKeyDown -= objCache.OnDefaultKeyDown;
-            objCache.OnKeyDown += (sender, args) =>
-            {
-                try
-                {
-                    PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
-                    if (args.Item1.KeyCode == Keys.Delete)
-                    {
-                        StaticUtils.Client.Delete(sinner.Id.Value);
-                        objCache.ErrorText = "deleted!";
-                        PluginHandler.MainForm.Invoke(new MethodInvoker(() =>
-                        {
-                            PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
-                        }));
-                        
-                    }
-                    PluginHandler.MainForm.Cursor = Cursors.Default;
-                }
-                catch (Exception e)
-                {
-                    objCache.ErrorText = e.Message;
-                }
-                finally
-                {
-                    PluginHandler.MainForm.Cursor = Cursors.Default;
-                }
-            };
+                System.Diagnostics.Trace.TraceError(e.Message);
+                throw;
+            }
         }
+
+        public static Task<Character> DownloadFileTask(SINners.Models.SINner sinner, CharacterCache objCache)
+        {
+            if (objCache.DownLoadRunning != null)
+                return objCache.DownLoadRunning;
+
+            objCache.DownLoadRunning = Task.Factory.StartNew<Character>(() =>
+            {
+                return DownloadFile(sinner, objCache);
+            });
+            return objCache.DownLoadRunning;
+        }
+
+
+            
+        
     }
 }

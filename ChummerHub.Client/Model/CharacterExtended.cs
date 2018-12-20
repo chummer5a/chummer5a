@@ -149,7 +149,7 @@ namespace ChummerHub.Client.Model
         }
 
 
-        public string PrepareModel()
+        public string PrepareModel(bool saveAgain)
         {
             MySINnerFile.UploadDateTime = DateTime.Now;
 
@@ -183,10 +183,19 @@ namespace ChummerHub.Client.Model
             
             var summary = new CharacterCache(MyCharacter.FileName);
             MySINnerFile.JsonSummary = Newtonsoft.Json.JsonConvert.SerializeObject(summary);
+            this.MySINnerFile.LastChange = File.GetLastWriteTime(summary.FileName);
             var tempfile = System.IO.Path.Combine(tempDir, summary.FileName);
-            MyCharacter.Save(tempfile);
+            if (saveAgain)
+            {
+                var tempdelegate = MyCharacter.OnSaveCompleted;
+                MyCharacter.OnSaveCompleted -= tempdelegate;
+                MyCharacter.Save(tempfile);
+                MyCharacter.OnSaveCompleted += tempdelegate;
+                this.MySINnerFile.LastChange = File.GetLastWriteTime(summary.FileName);
+            }
             
-            
+            this.MySINnerFile.LastChange = DateTime.Now;
+
             string zipPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SINner",  MySINnerFile.Id.Value + ".chum5z");
             if (File.Exists(zipPath))
                 File.Delete(zipPath);

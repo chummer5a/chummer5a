@@ -26,7 +26,20 @@ namespace Chummer.Plugins
     //[ExportMetadata("frmCareer", "true")]
     public class PluginHandler : IPlugin
     {
-        public static CharacterExtended MyCharacterExtended = null;
+        //public static CharacterExtended MyCharacterExtended = null;
+        private static Dictionary<int, CharacterExtended> MyCharExtendedDic = new Dictionary<int, CharacterExtended>();
+
+        public static CharacterExtended GetCharExtended(Character c, string fileElement)
+        {
+            CharacterExtended ce;
+            if (!MyCharExtendedDic.TryGetValue(c.GetHashCode(), out ce))
+            {
+                ce = new CharacterExtended(c, fileElement);
+                MyCharExtendedDic.Add(ce.GetHashCode(), ce);
+            }
+            return ce;    
+            
+        }
 
         public static UploadClient MyUploadClient = null;
 
@@ -53,8 +66,7 @@ namespace Chummer.Plugins
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCareer input)
         {
-            if (MyCharacterExtended?.MyCharacter != input.CharacterObject)
-                MyCharacterExtended = new CharacterExtended(input.CharacterObject, null);
+            var ce = GetCharExtended(input.CharacterObject, null);
             SINnersUserControl uc = new SINnersUserControl();
             uc.SetCharacterFrom(input);
             TabPage page = new TabPage("SINners");
@@ -64,8 +76,7 @@ namespace Chummer.Plugins
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCreate input)
         {
-            if (MyCharacterExtended?.MyCharacter != input.CharacterObject)
-                MyCharacterExtended = new CharacterExtended(input.CharacterObject, null);
+            var ce = GetCharExtended(input.CharacterObject, null);
             SINnersUserControl uc = new SINnersUserControl();
             uc.SetCharacterFrom(input);
             TabPage page = new TabPage("SINners");
@@ -75,16 +86,25 @@ namespace Chummer.Plugins
 
         string IPlugin.GetSaveToFileElement(Character input)
         {
-            if (MyCharacterExtended?.MyCharacter != input)
-                MyCharacterExtended = new CharacterExtended(input, null);
-            return JsonConvert.SerializeObject(MyCharacterExtended.MySINnerFile);
+            var ce = GetCharExtended(input, null);
+            if (SINnersOptions.UploadOnSave == true)
+            {
+                input.OnSaveCompleted += (async (sender, e) =>
+                {
+                    ce.PrepareModel(false);
+                    await Utils.PostSINnerAsync(ce);
+                    await Utils.UploadChummerFileAsync(ce);
+                });
+            }
+            return JsonConvert.SerializeObject(ce.MySINnerFile);
         }
+
+        
 
         void IPlugin.LoadFileElement(Character input, string fileElement)
         {
-            if (MyCharacterExtended?.MyCharacter != input)
-                MyCharacterExtended = new CharacterExtended(input, fileElement);
-            
+            var ce = GetCharExtended(input, fileElement);
+
         }
 
         IEnumerable<ToolStripMenuItem> IPlugin.GetMenuItems(ToolStripMenuItem input)
@@ -126,9 +146,9 @@ namespace Chummer.Plugins
             return new SINnersOptions();
         }
 
-        public async Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(ConcurrentDictionary<string, frmCharacterRoster.CharacterCache> CharDic)
+        public async Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(ConcurrentDictionary<string, frmCharacterRoster.CharacterCache> CharDic, bool forceUpdate)
         {
-            return await Utils.GetCharacterRosterTreeNode(CharDic);
+            return await Utils.GetCharacterRosterTreeNode(CharDic, forceUpdate);
         }
 
         public void CustomInitialize(frmChummerMain mainControl)
