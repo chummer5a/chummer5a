@@ -1003,6 +1003,23 @@
       <bonus>
         <skillwire precedence="0">Rating</skillwire>
       </bonus>
+      <wirelessbonus>
+        <limitmodifier>
+          <limit>Mental</limit>
+          <value>1</value>
+          <condition>Only for Skillwires</condition>
+        </limitmodifier>
+        <limitmodifier>
+          <limit>Physical</limit>
+          <value>1</value>
+          <condition>Only for Skillwires</condition>
+        </limitmodifier>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>1</value>
+          <condition>Only for Skillwires</condition>
+        </limitmodifier>
+      </wirelessbonus>
       <rating>6</rating>
     </cyberware>
     <cyberware>
@@ -2324,6 +2341,12 @@
       <capacity>[4]</capacity>
       <avail>4</avail>
       <cost>1000</cost>
+      <wirelessbonus>
+          <skillcategory>
+            <name>Combat Active</name>
+            <bonus>1</bonus>
+          </skillcategory>
+      </wirelessbonus>
       <source>CF</source>
       <page>77</page>
     </cyberware>
