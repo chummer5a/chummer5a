@@ -14127,7 +14127,7 @@ namespace Chummer
 
                 foreach (XmlNode objXmlLifestyle in xmlLifestyles.SelectNodes("lifestyle"))
                 {
-                    string strName = objXmlLifestyle["name"].InnerText;
+                    string strName = objXmlLifestyle["baselifestyle"].InnerText;
                     int intMonths = Convert.ToInt32(objXmlLifestyle["months"].InnerText);
 
                     // Create the Lifestyle.
@@ -14145,7 +14145,7 @@ namespace Chummer
                         // This is an Advanced Lifestyle, so build it manually.
                         objLifestyle.CustomName = strName;
                         objLifestyle.Increments = intMonths;
-                        objLifestyle.Cost = Convert.ToInt32(objXmlLifestyle["cost"].InnerText);
+                        objLifestyle.Cost = Convert.ToDecimal(objXmlLifestyle["cost"].InnerText);
                         objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"].InnerText);
                         objLifestyle.Multiplier = Convert.ToInt32(objXmlLifestyle["multiplier"].InnerText);
                         objLifestyle.BaseLifestyle = objXmlLifestyle["baselifestyle"].InnerText;

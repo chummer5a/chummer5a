@@ -32,7 +32,8 @@ Application Changes:
 - Fixed behaviour of plugins incorrectly applying their Essence costs in career mode instead of using the capacity cost. Should fix #3279, may have some additional edge cases.
 - Mildly ghetto workaround for inability to remove gear from a cyberware parent. Probably needs a more universal and robust fix, but it's functional.
 - Added a tooltip to the positive and negative quality labels to show where the karma costs have come from.
-- Fixed a crash when loading qualities in PACKS kits.
+- Fixed a crash when loading qualities and lifestyles in PACKS kits.
+- Added validation to ensure that custom drugs are given a name before they're accepted. 
 
 Data Changes:
 
@@ -55,6 +56,8 @@ Data Changes:
 New Strings:
 
 - Checkbox_DiceRoller_VariableGlitch
+- Message_CustomDrug_Name
+- MessageTitle_CustomDrug_Name
 
 Build 203
 

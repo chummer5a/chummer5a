@@ -137,7 +137,13 @@ namespace Chummer
 
 		private void AcceptForm()
 		{
-			_objDrug.Quantity = 1;
+		    // Make sure the suite and file name fields are populated.
+		    if (string.IsNullOrEmpty(txtDrugName.Text))
+		    {
+		        MessageBox.Show(LanguageManager.GetString("Message_CustomDrug_Name", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Name", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+		    }
+            _objDrug.Quantity = 1;
 		}
 
 		private void AddSelectedComponent()
