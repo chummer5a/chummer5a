@@ -9133,6 +9133,8 @@ namespace Chummer
             //int intPointsUsed = 0; // used as a running total for each section
             int intFreestyleBPMin = 0;
             int intFreestyleBP = 0;
+            string strPositiveQualityTooltip = string.Empty;
+            string strNegativeQualityTooltip = string.Empty;
             string strPoints = blnDoUIUpdate ? LanguageManager.GetString("String_Karma", GlobalOptions.Language) : string.Empty;
 
             // ------------------------------------------------------------------------------
@@ -9236,33 +9238,49 @@ namespace Chummer
                                 intPositiveQualitiesNoDoubleExcess += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
                             else
                                 intPositiveQualities += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
+                            strPositiveQualityTooltip +=
+                                $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP * CharacterObjectOptions.KarmaQuality})\n";
                         }
                         else if (objLoopQuality.Type == QualityType.Negative)
                         {
                             intNegativeQualities += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
+                            strNegativeQualityTooltip += $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP})\n";
                         }
                         else if (objLoopQuality.Type == QualityType.LifeModule)
                         {
                             intLifeModuleQualities += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
+                            strPositiveQualityTooltip +=
+                                $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP * CharacterObjectOptions.KarmaQuality})\n";
                         }
                     }
                     else if (objLoopQuality.Type == QualityType.Positive)
                     {
                         intUnlimitedPositive += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
+                        strPositiveQualityTooltip += $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP})\n";
                     }
                     else if (objLoopQuality.Type == QualityType.Negative)
                     {
                         intUnlimitedNegative += objLoopQuality.BP * CharacterObjectOptions.KarmaQuality;
+                        strNegativeQualityTooltip += $"{objLoopQuality.DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language)} ({objLoopQuality.BP})\n";
                     }
                 }
             }
-            
+
             // Deduct the amounts for free Qualities.
             int intPositiveFree = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreePositiveQualities) * CharacterObjectOptions.KarmaQuality;
             int intNegativeFree = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeNegativeQualities) * CharacterObjectOptions.KarmaQuality;
 
             intNegativeQualities -= intNegativeFree;
+            if (intNegativeFree != 0)
+            {
+                strNegativeQualityTooltip += $"-{intNegativeFree}\n";
+            }
+
             intPositiveQualities -= intPositiveFree;
+            if (intPositiveFree != 0)
+            {
+                strPositiveQualityTooltip += $"-{intPositiveFree}\n";
+            }
 
             // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
             if (CharacterObjectOptions.ExceedNegativeQualitiesLimit)
@@ -9281,6 +9299,7 @@ namespace Chummer
                 if (intPositiveQualityExcess > 0)
                 {
                     intPositiveQualities += intPositiveQualityExcess;
+                    strPositiveQualityTooltip += $"+{intPositiveQualityExcess}\n";
                 }
             }
             // Now we add in the karma from qualities that are not doubled in career mode
@@ -9785,6 +9804,9 @@ namespace Chummer
                 lblNegativeQualitiesBP.Text = intUnlimitedNegative > 0
                     ? $"{(-intNegativeQualities).ToString(GlobalOptions.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}{strSpaceCharacter}({(intNegativeQualities + intUnlimitedNegative).ToString(GlobalOptions.CultureInfo)})"
                     : $"{(-intNegativeQualities).ToString(GlobalOptions.CultureInfo)}/{CharacterObject.GameplayOptionQualityLimit.ToString(GlobalOptions.CultureInfo)}{strSpaceCharacter}{strPoints}";
+
+                lblPositiveQualitiesBP.SetToolTip(strPositiveQualityTooltip);
+                lblNegativeQualitiesBP.SetToolTip(strNegativeQualityTooltip);
 
                 lblAttributesBP.Text = BuildAttributes(CharacterObject.AttributeSection.AttributeList);
                 lblPBuildSpecial.Text = BuildAttributes(CharacterObject.AttributeSection.SpecialAttributeList, null, true);
