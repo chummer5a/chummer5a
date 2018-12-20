@@ -35,8 +35,8 @@ namespace Chummer.Backend.Equipment
     /// A Weapon.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasWirelessBonus
-    {
+    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource, ICanSort, IHasWirelessBonus
+	{
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -114,6 +114,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnCanSwapAttributes;
         private bool _blnWirelessOn;
         private int _intMatrixCMFilled;
+        private int _intSortOrder;
 
         private readonly Character _objCharacter;
         private string _strMount;
@@ -552,6 +553,7 @@ namespace Chummer.Backend.Equipment
             else
                 objWriter.WriteElementString("wirelessbonus", string.Empty);
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
+            objWriter.WriteElementString("sortorder", _intSortOrder.ToString());
             objWriter.WriteEndElement();
 
             if (!IncludedInWeapon)
@@ -651,6 +653,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("conceal", ref _intConceal);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
+            objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             objNode.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objNode.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -1548,6 +1551,16 @@ namespace Chummer.Backend.Equipment
         /// The second Active Skill Specialization that this Weapon uses, in addition to any others it would normally use.
         /// </summary>
         public string Spec2 => _strSpec2;
+
+        /// <summary>
+        /// Used by our sorting algorithm to remember which order the user moves things to
+        /// </summary>
+        public int SortOrder
+        {
+            get => _intSortOrder;
+            set => _intSortOrder = value;
+        }
+
 
         public Guid SourceID => _sourceID;
 

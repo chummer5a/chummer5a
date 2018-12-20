@@ -13591,7 +13591,7 @@
       <mode>FA</mode>
       <rc>0</rc>
       <ammo>20(m)</ammo>
-      <avail>15F</avail>
+      <avail>0</avail>
       <cost>750</cost>
       <source>SL</source>
       <page>40</page>
@@ -14073,7 +14073,7 @@
         <spec>Grenade Launcher</spec>
         <useskill>Heavy Weapons</useskill>
       </weapon>
-    <weapon>
+	<weapon>
       <id>93190477-d1f9-45d0-bee9-9f9bc9a29638</id>
       <name>Renraku/Ingram Supermach 200</name>
       <category>Submachine Guns</category>
@@ -14106,6 +14106,66 @@
         <mount>Internal</mount>
       </accessorymounts>
       <ammoname>Ammo: Renraku/Ingram Supermach</ammoname>
+    </weapon>
+	<weapon>
+        <id>79599718-2154-45ad-ba32-bbb65c0a5bf4</id>
+        <name>Renkaru Red Samurai Katana</name>
+        <category>Blades</category>
+        <type>Melee</type>
+        <conceal>6</conceal>
+        <accuracy>6</accuracy>
+        <reach>1</reach>
+        <damage>(STR+3)P</damage>
+        <ap>-4</ap>
+        <mode>0</mode>
+        <rc>0</rc>
+        <ammo>0</ammo>
+        <avail>99</avail>
+        <cost>0</cost>
+        <source>SL</source>
+        <page>132</page>
+        <spec>Swords</spec>
+    </weapon>
+	<weapon>
+        <id>09502fce-989a-4143-95a8-86dbe70b909d</id>
+        <name>SK/Onotari Arms Silent Claw Stiletto</name>
+        <category>Blades</category>
+        <type>Melee</type>
+        <conceal>4</conceal>
+        <accuracy>6</accuracy>
+        <reach>0</reach>
+        <damage>(STR)P</damage>
+        <ap>-5</ap>
+        <mode>0</mode>
+        <rc>0</rc>
+        <ammo>0</ammo>
+        <avail>12F</avail>
+        <cost>400</cost>
+        <source>SL</source>
+        <page>133</page>
+        <spec>Swords</spec>
+    </weapon>
+    <weapon>
+        <id>b14a54e6-a60d-4e89-8ddb-91b4af9d41e8</id>
+        <name>Wuxing-Armtec PTL-02</name>
+        <category>Grenade Launchers</category>
+        <type>Ranged</type>
+        <conceal>6</conceal>
+        <accuracy>5</accuracy>
+        <reach>0</reach>
+        <damage>Grenade</damage>
+        <ap>-</ap>
+        <mode>SS</mode>
+        <rc>0</rc>
+        <ammo>6(c)</ammo>
+        <avail>18F</avail>
+        <cost>5000</cost>
+        <source>SL</source>
+        <page>133</page>
+        <ammocategory>Grenade Launchers</ammocategory>
+        <range>Grenade Launchers</range>
+        <spec>Grenade Launchers</spec>
+        <useskill>Heavy Weapons</useskill>
     </weapon>
     <!-- End Region -->
     <!-- Region Hamburg -->    

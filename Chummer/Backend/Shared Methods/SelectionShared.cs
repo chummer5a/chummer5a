@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using Chummer.Backend.Attributes;
+using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
 using System;
 using System.Collections.Generic;
@@ -562,6 +563,41 @@ namespace Chummer
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{strTranslate}{LanguageManager.GetString("String_Space", GlobalOptions.Language)}({LanguageManager.GetString("String_Echo", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText}{LanguageManager.GetString("String_Space", GlobalOptions.Language)}({LanguageManager.GetString("String_Echo", GlobalOptions.Language)})";
+                        }
+                        return false;
+                    }
+                case "gear":
+                    {
+                        Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText);
+                        //TODO: Probably a better way to handle minrating/rating/maxrating but eh, YAGNI.
+                        if (xmlNode.Attributes?["minrating"]?.InnerText != null)
+                        {
+                            int rating = Convert.ToInt32(xmlNode.Attributes?["minrating"]?.InnerText);
+                            objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating >= rating);
+                        }
+                        else if (xmlNode.Attributes?["rating"]?.InnerText != null)
+                        {
+                            int rating = Convert.ToInt32(xmlNode.Attributes?["rating"]?.InnerText);
+                            objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating == rating);
+                        }
+                        else if (xmlNode.Attributes?["maxrating"]?.InnerText != null)
+                        {
+                            int rating = Convert.ToInt32(xmlNode.Attributes?["maxrating"]?.InnerText);
+                            objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating <= rating);
+                        }
+                        if (objGear != null)
+                        {
+                            if (blnShowMessage)
+                                strName = objGear.DisplayNameShort(GlobalOptions.Language);
+                            return true;
+                        }
+                        if (blnShowMessage)
+                        {
+                            // Character needs a specific Gear.
+                            string strTranslate = XmlManager.Load("gear.xml").SelectSingleNode($"/chummer/gears/gear[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
+                            strName = !string.IsNullOrEmpty(strTranslate)
+                                ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Gear", GlobalOptions.Language)})"
+                                : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Gear", GlobalOptions.Language)})";
                         }
                         return false;
                     }
@@ -1633,6 +1669,42 @@ namespace Chummer
                             strName = !string.IsNullOrEmpty(strTranslate)
                                 ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Echo", GlobalOptions.Language)})"
                                 : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Echo", GlobalOptions.Language)})";
+                        }
+                        return false;
+                    }
+                case "gear":
+                    {
+                        Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText);
+                        //TODO: Probably a better way to handle minrating/rating/maxrating but eh, YAGNI.
+                        
+                        if (xmlNode.SelectSingleNode("@minrating")?.Value != null)
+                        {
+                            int rating = Convert.ToInt32(xmlNode.SelectSingleNode("@minrating")?.Value);
+                            objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating >= rating);
+                        }
+                        else if (xmlNode.SelectSingleNode("@rating")?.Value != null)
+                        {
+                            int rating = Convert.ToInt32(xmlNode.SelectSingleNode("@rating")?.Value);
+                            objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating == rating);
+                        }
+                        else if (xmlNode.SelectSingleNode("@maxrating")?.Value != null)
+                        {
+                            int rating = Convert.ToInt32(xmlNode.SelectSingleNode("@maxrating")?.Value);
+                            objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating <= rating);
+                        }
+                        if (objGear != null)
+                        {
+                            if (blnShowMessage)
+                                strName = objGear.DisplayNameShort(GlobalOptions.Language);
+                            return true;
+                        }
+                        if (blnShowMessage)
+                        {
+                            // Character needs a specific Martial Art.
+                            string strTranslate = XmlManager.Load("gear.xml").SelectSingleNode($"/chummer/gears/gear[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
+                            strName = !string.IsNullOrEmpty(strTranslate)
+                                ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Gear", GlobalOptions.Language)})"
+                                : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Gear", GlobalOptions.Language)})";
                         }
                         return false;
                     }

@@ -44,8 +44,6 @@ namespace Chummer
     public class CharacterShared : Form
     {
         private readonly Character _objCharacter;
-        private readonly ObservableCollection<CharacterAttrib> _lstPrimaryAttributes;
-        private readonly ObservableCollection<CharacterAttrib> _lstSpecialAttributes;
         private readonly CharacterOptions _objOptions;
         private bool _blnIsDirty;
         private bool _blnIsRefreshing;
@@ -56,37 +54,6 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
-
-            _lstPrimaryAttributes = new ObservableCollection<CharacterAttrib>
-            {
-                CharacterObject.BOD,
-                CharacterObject.AGI,
-                CharacterObject.REA,
-                CharacterObject.STR,
-                CharacterObject.CHA,
-                CharacterObject.INT,
-                CharacterObject.LOG,
-                CharacterObject.WIL
-            };
-
-            _lstSpecialAttributes = new ObservableCollection<CharacterAttrib>
-            {
-                CharacterObject.EDG
-            };
-            if (CharacterObject.MAGEnabled)
-            {
-                _lstSpecialAttributes.Add(CharacterObject.MAG);
-                if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                    _lstSpecialAttributes.Add(CharacterObject.MAGAdept);
-            }
-            if (CharacterObject.RESEnabled)
-            {
-                _lstSpecialAttributes.Add(CharacterObject.RES);
-            }
-            if (CharacterObject.DEPEnabled)
-            {
-                _lstSpecialAttributes.Add(CharacterObject.DEP);
-            }
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -251,7 +218,7 @@ namespace Chummer
                 pnlAttributes.SuspendLayout();
                 pnlAttributes.Controls.Clear();
 
-                foreach (CharacterAttrib objAttrib in _lstPrimaryAttributes.Concat(_lstSpecialAttributes))
+                foreach (CharacterAttrib objAttrib in CharacterObject.AttributeSection.Attributes)
                 {
                     AttributeControl objControl = new AttributeControl(objAttrib);
                     objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
@@ -370,7 +337,7 @@ namespace Chummer
                     }
                     AddToTree(objSpell, false);
                 }
-                treSpells.SortCustom(strSelectedId);
+                treSpells.SortCustomAlphabetically(strSelectedId);
                 treMetamagic.SelectedNode = treMetamagic.FindNode(strSelectedMetamagicId);
             }
             else
@@ -622,7 +589,7 @@ namespace Chummer
                     AddToTree(objAIProgram, false);
                 }
 
-                treAIPrograms.SortCustom(strSelectedId);
+                treAIPrograms.SortCustomAlphabetically(strSelectedId);
             }
             else
             {
@@ -742,7 +709,7 @@ namespace Chummer
                     AddToTree(objComplexForm, false);
                 }
 
-                treComplexForms.SortCustom(strSelectedId);
+                treComplexForms.SortCustomAlphabetically(strSelectedId);
                 treMetamagic.SelectedNode = treMetamagic.FindNode(strSelectedMetamagicId);
             }
             else
@@ -1518,7 +1485,7 @@ namespace Chummer
                     AddToTree(objPower, false);
                 }
 
-                treCritterPowers.SortCustom(strSelectedId);
+                treCritterPowers.SortCustomAlphabetically(strSelectedId);
             }
             else
             {
@@ -1670,7 +1637,7 @@ namespace Chummer
                     AddToTree(objQuality, false);
                 }
 
-                treQualities.SortCustom(strSelectedNode);
+                treQualities.SortCustomAlphabetically(strSelectedNode);
             }
             else
             {
@@ -1844,7 +1811,7 @@ namespace Chummer
                     objQualityNode.Text = ((Quality)objQualityNode.Tag).DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 }
             }
-            treQualities.SortCustom(objSelectedNode?.Tag);
+            treQualities.SortCustomAlphabetically(objSelectedNode?.Tag);
         }
 
         /// <summary>
@@ -2014,6 +1981,8 @@ namespace Chummer
                     AddToTree(objWeapon, -1, false);
                     objWeapon.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
                 }
+
+
 
                 treWeapons.SelectedNode = treWeapons.FindNode(strSelectedId);
             }
@@ -2932,7 +2901,7 @@ namespace Chummer
                     objCyberware.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware, cmsCyberwareGear);
                 }
 
-                treCyberware.SortCustom(strSelectedId);
+                treCyberware.SortCustomAlphabetically(strSelectedId);
             }
             else
             {
@@ -3991,7 +3960,7 @@ namespace Chummer
                             break;
                     }
                 }
-                treFoci.SortCustom(strSelectedId);
+                treFoci.SortCustomAlphabetically(strSelectedId);
             }
             else
             {
@@ -4293,7 +4262,7 @@ namespace Chummer
                     objMartialArt.Techniques.AddTaggedCollectionChanged(treMartialArts, (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y));
                 }
 
-                treMartialArts.SortCustom(strSelectedId);
+                treMartialArts.SortCustomAlphabetically(strSelectedId);
             }
             else
             {
@@ -4467,7 +4436,7 @@ namespace Chummer
                             AddToTree(objTechnique, false);
                         }
 
-                        treMartialArts.SortCustom(strSelectedId);
+                        treMartialArts.SortCustomAlphabetically(strSelectedId);
                     }
                     break;
             }
@@ -4541,7 +4510,7 @@ namespace Chummer
                 }
 
                 // Sort the list of Custom Improvements in alphabetical order based on their Custom Name within each Group.
-                treImprovements.SortCustom(strSelectedId);
+                treImprovements.SortCustomAlphabetically(strSelectedId);
             }
             else
             {
@@ -4944,7 +4913,7 @@ namespace Chummer
                         AddToTree(objLifestyle, false);
                     }
 
-                    treLifestyles.SortCustom(strSelectedId);
+                    treLifestyles.SortCustomAlphabetically(strSelectedId);
                 }
             }
             else
@@ -5444,6 +5413,46 @@ namespace Chummer
                         }
                         break;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Moves a tree node to a specified spot in it's parent node collection.
+        /// Will persist between loads if the node's object is an ICanSort
+        /// </summary>
+        /// <param name="objNode">The item to move</param>
+        /// <param name="intNewIndex">The new index in the parent array</param>
+        public void MoveTreeNode(TreeNode objNode, int intNewIndex)
+        {
+            if (objNode == null || !(objNode.Tag is ICanSort))
+                return;
+
+            ICanSort objSortable = objNode.Tag as ICanSort;
+            TreeView treOwningTree = objNode.TreeView;
+            TreeNode objParent = objNode.Parent;
+            TreeNodeCollection lstNodes = objParent?.Nodes ?? treOwningTree.Nodes;
+
+            if (lstNodes != null)
+            {
+                List<ICanSort> lstSorted = lstNodes.Cast<TreeNode>().Select(n => n.Tag).OfType<ICanSort>().ToList();
+
+                // Anything that can't be sorted gets sent to the front of the list, so subtract that number from our new
+                // sorting index and make sure we're still inside the array
+                intNewIndex = Math.Min(lstSorted.Count - 1, Math.Max(0, intNewIndex + lstSorted.Count - lstNodes.Count));
+
+                lstSorted.Remove(objSortable);
+                lstSorted.Insert(intNewIndex, objSortable);
+
+                // Update the sort field of everything in the array. Doing it this way means we only t
+                for (int i = 0; i < lstSorted.Count; ++i)
+                {
+                    lstSorted[i].SortOrder = i;
+                }
+
+                // Sort the actual tree
+                treOwningTree.SortCustomOrder();
+
+                IsDirty = true;
             }
         }
 
@@ -6407,11 +6416,7 @@ namespace Chummer
 
         protected CharacterOptions CharacterObjectOptions => _objOptions;
 
-        protected ObservableCollection<CharacterAttrib> PrimaryAttributes => _lstPrimaryAttributes;
-
-        protected ObservableCollection<CharacterAttrib> SpecialAttributes => _lstSpecialAttributes;
-
-        protected virtual string FormMode => string.Empty;
+		protected virtual string FormMode => string.Empty;
 
         protected void ShiftTabsOnMouseScroll(object sender, MouseEventArgs e)
         {

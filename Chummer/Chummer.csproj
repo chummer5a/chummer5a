@@ -292,11 +292,13 @@
     </Compile>
     <Compile Include="Interfaces\ICanEquip.cs" />
     <Compile Include="Interfaces\ICanRemove.cs" />
+    <Compile Include="Interfaces\ICanSort.cs" />
     <Compile Include="Interfaces\IHasConditionMonitor.cs" />
     <Compile Include="Interfaces\IHasCustomName.cs" />
     <Compile Include="Interfaces\ICanSell.cs" />
     <Compile Include="Interfaces\IHasChildren.cs" />
     <Compile Include="Interfaces\IHasChildrenAndCost.cs" />
+    <Compile Include="Interfaces\IHasGear.cs" />
     <Compile Include="Interfaces\IHasLocation.cs" />
     <Compile Include="Interfaces\IHasMatrixAttributes.cs" />
     <Compile Include="Interfaces\IHasMugshots.cs" />
@@ -1858,6 +1860,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\German Data Changes - Poseidon RCC\amend_poseidonrcc_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Practice, Practice, Practice\amend_qualities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\German Data Changes - Rigger 5 Mods - Catalina 2\amend_vehicles.xml">

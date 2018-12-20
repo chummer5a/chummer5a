@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+    <qualities>
+        <quality>
+            <id>81fc0829-3456-4701-8ecc-f101d145b538</id>
+            <limit amendoperation="addnode">False</limit>
+        </quality>
+    </qualities>
+</chummer>

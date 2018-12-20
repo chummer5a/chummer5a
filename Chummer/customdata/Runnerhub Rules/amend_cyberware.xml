@@ -94,24 +94,14 @@
 			</notes>
 		</cyberware>
 		<cyberware>
-			<name>Liminal Body, Wheeled (Full)</name>
-			<hide />
-		</cyberware>
-		<cyberware>
-			<name>Liminal Body, Centaur</name>
-			<hide />
-		</cyberware>
-		<cyberware>
-			<name>Liminal Body, Tank (Full)</name>
-			<hide />
-		</cyberware>
-		<cyberware>
 			<name>Armor</name>
 			<required amendoperation="addnode">
         <parentdetails>
           <OR>
+	          <name operation="contains">Full Arm</name>
             <name operation="contains">Full Leg</name>
-            <name operation="contains">Full Arm</name>
+	          <name operation="contains">Drone Arm</name>
+	          <name operation="contains">Drone Leg</name>
           </OR>
         </parentdetails>
       </required>
