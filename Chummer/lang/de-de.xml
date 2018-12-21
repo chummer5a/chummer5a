@@ -9438,5 +9438,13 @@
 			<key>MessageTitle_UnregisteredSpriteLimit</key>
 			<text>Limit für nicht registrierte Sprites</text>
 		</string>
+		<string>
+			<key>MessageTitle_CustomDrug_Name</key>
+			<text>Drogenname</text>
+		</string>
+		<string>
+			<key>Message_CustomDrug_Name</key>
+			<text>Bitte geben Sie einen Namen für Ihre Droge ein.</text>
+		</string>
 	</strings>
 </chummer>

@@ -1375,7 +1375,7 @@
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>3P</damage>
-      <ap>-</ap>
+      <ap>-1</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>1</ammo>
@@ -1395,7 +1395,7 @@
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>12P</damage>
-      <ap>-2</ap>
+      <ap>-3</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>1</ammo>
@@ -1415,7 +1415,7 @@
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>4P</damage>
-      <ap>-</ap>
+      <ap>-1</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>1</ammo>
@@ -1435,7 +1435,7 @@
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>5P</damage>
-      <ap>-</ap>
+      <ap>-1</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>1</ammo>
@@ -1475,7 +1475,7 @@
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
-      <ap>-1</ap>
+      <ap>-2</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>1</ammo>
@@ -1495,7 +1495,7 @@
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>8P</damage>
-      <ap>-1</ap>
+      <ap>-2</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>1</ammo>
@@ -1515,7 +1515,7 @@
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>9P</damage>
-      <ap>-1</ap>
+      <ap>-2</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>1</ammo>
@@ -1555,7 +1555,7 @@
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>11P</damage>
-      <ap>-2</ap>
+      <ap>-3</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>1</ammo>
@@ -5550,7 +5550,7 @@
       <damage>12P</damage>
       <ap>-3</ap>
       <mode>SA/BF</mode>
-      <rc>1</rc>
+      <rc>0</rc>
       <ammo>25(c)</ammo>
       <avail>13F</avail>
       <cost>12500</cost>
