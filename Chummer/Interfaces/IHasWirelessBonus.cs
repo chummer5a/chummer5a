@@ -11,6 +11,6 @@ namespace Chummer
     {
         bool WirelessOn { get; set; }
 
-        XmlNode WirelessBonus { get; set; }
+        XmlNode WirelessBonus { get; }
     }
 }
