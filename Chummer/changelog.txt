@@ -34,6 +34,7 @@ Application Changes:
 - Added a tooltip to the positive and negative quality labels to show where the karma costs have come from.
 - Fixed a crash when loading qualities and lifestyles in PACKS kits.
 - Added validation to ensure that custom drugs are given a name before they're accepted. 
+- Swapping a negative quality for a cheaper one no longer costs karma.
 
 Data Changes:
 
