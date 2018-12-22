@@ -1054,6 +1054,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayAmmoCategory(string strLanguage)
         {
+            if (!string.IsNullOrWhiteSpace(AmmoName))
+                return DisplayAmmoName(strLanguage);
             // Get the translated name if applicable.
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return AmmoCategory;

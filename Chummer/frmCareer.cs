@@ -10739,7 +10739,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickGear(null, null, true, null, string.Empty, lstAmmoPrefixStrings);
+                blnAddAgain = PickGear(null, null, true, null, objWeapon.AmmoName, lstAmmoPrefixStrings);
             }
             while (blnAddAgain);
         }

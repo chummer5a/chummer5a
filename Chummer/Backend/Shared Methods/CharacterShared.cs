@@ -6254,7 +6254,7 @@ namespace Chummer
                 bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
                 if (!CharacterObject.ConfirmDelete(LanguageManager.GetString(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite", GlobalOptions.Language)))
                     return;
-
+                objSpirit.Fettered = false; // Fettered spirits consume MAG.
                 CharacterObject.Spirits.Remove(objSpirit);
 
                 IsCharacterUpdateRequested = true;

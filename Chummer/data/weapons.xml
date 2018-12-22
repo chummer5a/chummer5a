@@ -13842,8 +13842,8 @@
       <conceal>0</conceal>
       <accuracy>6</accuracy>
       <reach>0</reach>
-      <damage>Chemical</damage>
-      <ap>-</ap>
+      <damage>10S</damage>
+      <ap>Special</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>2x10(c)</ammo>
@@ -13857,6 +13857,7 @@
       </accessorymounts>
       <range>Heavy Pistols</range>
       <useskill>Exotic Ranged Weapon</useskill>
+      <ammoname>Ammo: Peak-Discharge Energy Units</ammoname>
     </weapon>
     <weapon>
       <id>823ffbe6-b8a9-43f6-91e1-ba3e312ce577</id>

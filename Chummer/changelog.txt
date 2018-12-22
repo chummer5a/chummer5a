@@ -35,6 +35,8 @@ Application Changes:
 - Fixed a crash when loading qualities and lifestyles in PACKS kits.
 - Added validation to ensure that custom drugs are given a name before they're accepted. 
 - Swapping a negative quality for a cheaper one no longer costs karma.
+- Purchasing Ammo for weapons that have a particular name restriction (Narcoject PEP firing peak-energy units, for example) will properly be filtered to that restriction in the Select Gear window.
+- Fixed an issue with removing fettered spirits not properly removing the Fettered magic loss. Will retroactively fix any affected characters on load.
 
 Data Changes:
 
@@ -53,6 +55,7 @@ Data Changes:
 - Added an amend file to allow the Practice, Practice, Practice quality to be taken multiple times, per German data changes.
 - Fixed incorrect ratings on the Fortified and Slick Willy booster chips.
 - Fixed a crash when selecting components of Commlink Functionality on gear. Fixes #3178
+- Fixed damage and AP of the Narcoject PEP. Fixes #3295
 
 New Strings:
 
