@@ -13884,6 +13884,9 @@ namespace Chummer
             else
                 tabWeaponMatrixCM.Visible = false;
 
+            gpbWeaponsMatrix.Visible = treWeapons.SelectedNode.Tag is IHasMatrixAttributes ||
+                                       treWeapons.SelectedNode.Tag is IHasWirelessBonus;
+
             IsRefreshing = false;
             flpWeapons.ResumeLayout();
         }
@@ -14108,6 +14111,9 @@ namespace Chummer
                 cmdDeleteArmor.Enabled = false;
             }
 
+            gpbArmorMatrix.Visible = treArmor.SelectedNode.Tag is IHasMatrixAttributes ||
+                                     treArmor.SelectedNode.Tag is IHasWirelessBonus;
+
             IsRefreshing = false;
             flpArmor.ResumeLayout();
         }
@@ -14268,6 +14274,10 @@ namespace Chummer
                 // Buttons
                 cmdDeleteGear.Enabled = treGear.SelectedNode?.Tag is ICanRemove;
             }
+
+
+            gpbGearMatrix.Visible = treGear.SelectedNode.Tag is IHasMatrixAttributes ||
+                                    treGear.SelectedNode.Tag is IHasWirelessBonus;
 
             IsRefreshing = false;
             flpGear.ResumeLayout();
@@ -15641,6 +15651,9 @@ namespace Chummer
 
             panVehicleCM.Visible = (treVehicles.SelectedNode?.Tag is IHasPhysicalConditionMonitor ||
                                     treVehicles.SelectedNode?.Tag is IHasMatrixConditionMonitor);
+
+            gpbVehiclesMatrix.Visible = treVehicles.SelectedNode.Tag is IHasMatrixAttributes ||
+                                        treVehicles.SelectedNode.Tag is IHasWirelessBonus;
 
             if (panVehicleCM.Visible)
             {
