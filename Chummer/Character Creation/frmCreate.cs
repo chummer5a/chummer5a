@@ -3470,7 +3470,7 @@ namespace Chummer
             objWeapon.Create(objXmlWeapon, lstWeapons);
             objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
             //objWeapon.Location = objLocation;
-            objLocation.Children.Add(objWeapon);
+            objLocation?.Children.Add(objWeapon);
 
             if (frmPickWeapon.FreeCost)
             {
@@ -3593,7 +3593,7 @@ namespace Chummer
             }
 
             //objVehicle.Location = objLocation;
-            objLocation.Children.Add(objVehicle);
+            objLocation?.Children.Add(objVehicle);
 
             CharacterObject.Vehicles.Add(objVehicle);
 
