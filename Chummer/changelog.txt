@@ -56,6 +56,7 @@ Data Changes:
 - Fixed incorrect ratings on the Fortified and Slick Willy booster chips.
 - Fixed a crash when selecting components of Commlink Functionality on gear. Fixes #3178
 - Fixed damage and AP of the Narcoject PEP. Fixes #3295
+- Fixed incorrect level limitation on the Mystic Aptituide power.
 
 New Strings:
 
