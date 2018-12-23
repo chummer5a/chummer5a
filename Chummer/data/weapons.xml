@@ -15165,6 +15165,7 @@
       <accessorymounts>
         <mount>Inherit</mount>
       </accessorymounts>
+      <!-- Update -->
       <allowaccessories>True</allowaccessories>
       <accessorylimit>1</accessorylimit>
       <source>RG</source>
