@@ -327,7 +327,7 @@ namespace Chummer.Backend.Equipment
             // If there are any Accessories that come with the Weapon, add them.
             if (blnCreateChildren && objXmlWeapon["accessories"] != null)
             {
-                XmlNodeList objXmlAccessoryList = objXmlWeapon["accessories"].SelectNodes("accessory");
+                XmlNodeList objXmlAccessoryList = objXmlWeapon.SelectNodes("accessories/accessory");
                 Debug.Assert(objXmlAccessoryList != null, nameof(objXmlAccessoryList) + " != null");
                 foreach (XmlNode objXmlWeaponAccessory in objXmlAccessoryList)
                 {

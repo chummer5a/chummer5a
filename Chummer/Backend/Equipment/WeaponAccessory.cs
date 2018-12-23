@@ -80,6 +80,12 @@ namespace Chummer.Backend.Equipment
         private string _strAmmoReplace = string.Empty;
         private int _intAmmoBonus;
         private int _intSortOrder;
+        private XmlNode _objCachedMyXmlNode;
+        private string _strCachedXmlNodeLanguage = string.Empty;
+        private int _accessoryLimit;
+        private bool _allowAccessories;
+        private string _strMountLocations;
+        private List<WeaponAccessory> _lstAccessories = new List<WeaponAccessory>();
 
         #region Constructor, Create, Save, Load, and Print Methods
         public WeaponAccessory(Character objCharacter)
@@ -1137,14 +1143,7 @@ namespace Chummer.Backend.Equipment
             set => _intSortOrder = value;
         }
 
-        private List<WeaponAccessory> _lstAccessories = new List<WeaponAccessory>();
         public List<WeaponAccessory> Accessories => _lstAccessories;
-        
-        private XmlNode _objCachedMyXmlNode;
-        private string _strCachedXmlNodeLanguage = string.Empty;
-        private int _accessoryLimit;
-        private bool _allowAccessories;
-        private string _strMountLocations;
 
         public XmlNode GetNode()
         {
