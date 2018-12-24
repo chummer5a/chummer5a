@@ -4561,6 +4561,7 @@ namespace Chummer
                 objGear.Quantity = decMove;
                 objGear.Location = null;
 
+                objGear.Parent = objVehicle;
                 objVehicle.Gear.Add(objGear);
             }
             else
@@ -7094,7 +7095,7 @@ namespace Chummer
                 {
                     // Add the Gear to the Vehicle.
                     objSelectedVehicle.Gear.Add(objGear);
-
+                    objGear.Parent = objSelectedVehicle;
                     foreach (Weapon objWeapon in lstWeapons)
                     {
                         objWeapon.ParentVehicle = objSelectedVehicle;
@@ -7908,6 +7909,7 @@ namespace Chummer
             treVehicles.SelectedNode.Expand();
 
             objSelectedVehicle.Gear.Add(objGear);
+            objGear.Parent = objSelectedVehicle;
 
             IsCharacterUpdateRequested = true;
 

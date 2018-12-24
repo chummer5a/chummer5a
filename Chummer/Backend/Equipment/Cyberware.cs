@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Cyberware.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Cyberware : IHasChildren<Cyberware>, IHasGear<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort
+    public class Cyberware : IHasChildren<Cyberware>, IHasGear, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort
     {
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;

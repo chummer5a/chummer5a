@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasMatrixConditionMonitor, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort
+    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasMatrixConditionMonitor, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort, IHasGear
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -684,6 +684,7 @@ namespace Chummer.Backend.Equipment
                     Gear objGear = new Gear(_objCharacter);
                     objGear.Load(nodChild, blnCopy);
                     _lstGear.Add(objGear);
+                    objGear.Parent = this;
                 }
             }
 

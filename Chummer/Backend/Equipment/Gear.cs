@@ -3283,7 +3283,7 @@ namespace Chummer.Backend.Equipment
                     return false;
             }
 
-            if (Parent is IHasGear<Gear> objHasChildren)
+            if (Parent is IHasGear objHasChildren)
             {
                 DeleteGear();
                 objHasChildren.Gear.Remove(this);

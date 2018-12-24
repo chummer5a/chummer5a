@@ -2453,6 +2453,7 @@ namespace Chummer.UI.Shared
                 {
                     // Add the Gear to the Vehicle.
                     objSelectedVehicle.Gear.Add(objGear);
+                    objGear.Parent = objSelectedVehicle;
 
                     foreach (Weapon objWeapon in lstWeapons)
                     {
