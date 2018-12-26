@@ -69,7 +69,7 @@
       <mode>SA</mode>
       <rc>0</rc>
       <ammo>10(c) + energy</ammo>
-      <avail>24F</avail>
+      <avail>12F</avail>
       <cost>26000</cost>
       <source>RG</source>
       <page>45</page>
@@ -1031,7 +1031,7 @@
       <category>Blades</category>
       <type>Melee</type>
       <conceal>2</conceal>
-      <accuracy>7</accuracy>
+      <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>(STR+3)P</damage>
       <ap>-1</ap>
@@ -1050,7 +1050,7 @@
       <category>Blades</category>
       <type>Melee</type>
       <conceal>0</conceal>
-      <accuracy>7</accuracy>
+      <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>(STR+2)P</damage>
       <ap>-1</ap>
@@ -1879,8 +1879,8 @@
       <category>Exotic Melee Weapons</category>
       <type>Melee</type>
       <conceal>8</conceal>
-      <accuracy>4</accuracy>
-      <reach>0</reach>
+      <accuracy>5</accuracy>
+      <reach>1</reach>
       <damage>(STR+3)P</damage>
       <ap>-1</ap>
       <mode>0</mode>
@@ -1898,7 +1898,7 @@
       <category>Exotic Melee Weapons</category>
       <type>Melee</type>
       <conceal>8</conceal>
-      <accuracy>4</accuracy>
+      <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>16P</damage>
       <ap>-4</ap>
@@ -3215,7 +3215,7 @@
       <damage>12P</damage>
       <ap>-4</ap>
       <mode>FA</mode>
-      <rc>0</rc>
+      <rc>-1</rc>
       <ammo>50(c) or 100(belt)</ammo>
       <avail>18F</avail>
       <cost>19600</cost>
@@ -3254,7 +3254,7 @@
       <damage>11P</damage>
       <ap>-4</ap>
       <mode>FA</mode>
-      <rc>0</rc>
+      <rc>-6</rc>
       <ammo>50(c) or 100(belt)</ammo>
       <avail>16F</avail>
       <cost>16000</cost>
@@ -3776,7 +3776,7 @@
       <type>Melee</type>
       <conceal>10</conceal>
       <accuracy>3</accuracy>
-      <reach>0</reach>
+      <reach>1</reach>
       <damage>(STR+2)S</damage>
       <ap>0</ap>
       <mode>0</mode>
@@ -3965,7 +3965,7 @@
       <ap>-10</ap>
       <mode>SA</mode>
       <rc>0</rc>
-      <ammo>2x10(c) or Internal source</ammo>
+      <ammo>2x10(c) or External source</ammo>
       <avail>18F</avail>
       <cost>16000</cost>
       <source>RG</source>
@@ -3989,7 +3989,7 @@
       <ap>-10</ap>
       <mode>SA</mode>
       <rc>0</rc>
-      <ammo>10(c) or Internal source</ammo>
+      <ammo>10(c) or External source</ammo>
       <avail>14F</avail>
       <cost>7500</cost>
       <source>RG</source>
@@ -4012,7 +4012,7 @@
       <damage>9P</damage>
       <ap>-4</ap>
       <mode>FA</mode>
-      <rc>2</rc>
+      <rc>-2</rc>
       <ammo>200(belt)</ammo>
       <avail>24F</avail>
       <cost>6000</cost>
@@ -4120,7 +4120,7 @@
       <damage>9P</damage>
       <ap>-2</ap>
       <mode>BF/FA</mode>
-      <rc>0</rc>
+      <rc>-2</rc>
       <ammo>50(c) or 100(belt)</ammo>
       <avail>16F</avail>
       <cost>6500</cost>
@@ -4393,8 +4393,8 @@
       <mode>SA</mode>
       <rc>0</rc>
       <ammo>18(c)</ammo>
-      <avail>4R</avail>
-      <cost>270</cost>
+      <avail>10R</avail>
+      <cost>300</cost>
       <source>RG</source>
       <page>31</page>
       <accessories>
@@ -4765,7 +4765,7 @@
       <damage>6P</damage>
       <ap>-</ap>
       <mode>BF/FA</mode>
-      <rc>0</rc>
+      <rc>2</rc>
       <ammo>15(c)</ammo>
       <avail>7R</avail>
       <cost>800</cost>
@@ -4799,7 +4799,7 @@
       <damage>11P</damage>
       <ap>-3</ap>
       <mode>FA</mode>
-      <rc>0</rc>
+      <rc>-2</rc>
       <ammo>50(c) or 100(belt)</ammo>
       <avail>18F</avail>
       <cost>8500</cost>
@@ -4866,7 +4866,7 @@
       <damage>10P</damage>
       <ap>-2</ap>
       <mode>FA</mode>
-      <rc>0</rc>
+      <rc>-1</rc>
       <ammo>50(c) or 100(belt)</ammo>
       <avail>16F</avail>
       <cost>7600</cost>
@@ -4982,7 +4982,7 @@
       <damage>13P</damage>
       <ap>-1</ap>
       <mode>SA/BF/FA</mode>
-      <rc>2</rc>
+      <rc>-2</rc>
       <ammo>10(c) or 32(d)</ammo>
       <avail>18F</avail>
       <cost>1800</cost>
@@ -5163,7 +5163,7 @@
       <damage>12P</damage>
       <ap>-1</ap>
       <mode>SA/BF</mode>
-      <rc>0</rc>
+      <rc>-1</rc>
       <ammo>10(c)</ammo>
       <avail>12F</avail>
       <cost>1050</cost>
@@ -5550,7 +5550,7 @@
       <damage>12P</damage>
       <ap>-3</ap>
       <mode>SA/BF</mode>
-      <rc>0</rc>
+      <rc>1</rc>
       <ammo>25(c)</ammo>
       <avail>13F</avail>
       <cost>12500</cost>

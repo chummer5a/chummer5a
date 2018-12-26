@@ -522,8 +522,8 @@
 			</armor>
 			<armor translated="True">
 				<id>d90a8823-7387-4c50-bc47-3d63f0ffd543</id>
-				<name>Ares Flashield</name>
-				<translate>Ares Flashield</translate>
+				<name>Ares FlaShield</name>
+				<translate>Ares FlaShield</translate>
 				<altpage>72</altpage>
 			</armor>
 			<armor>
@@ -594,8 +594,8 @@
 			</armor>
 			<armor>
 				<id>81fdc8a3-7106-4b08-a1f4-c72140bc90fc</id>
-				<name>Evo Hel Suit</name>
-				<translate>Evo Hel-Anzug</translate>
+				<name>Evo HEL Suit</name>
+				<translate>Evo HEL-Anzug</translate>
 				<altpage>81</altpage>
 			</armor>
 			<armor>
@@ -42843,7 +42843,7 @@
 			<weapon>
 				<id>e5ac06f4-3755-42a7-9da9-88de4b3b2ad8</id>
 				<name>Ares Thunderstruck Gauss Rifle</name>
-				<translate>Ares Thunderstruck Gaussgewehr</translate>
+				<translate>Ares Thunderstruck Gaußgewehr</translate>
 				<altpage>45</altpage>
 			</weapon>
 			<weapon>
