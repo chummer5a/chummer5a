@@ -9502,5 +9502,13 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<key>Checkbox_Sprite_Pet</key>
 			<text>Animal de compagnie Sprite</text>
 		</string>
+		<string>
+			<key>MessageTitle_CustomDrug_Name</key>
+			<text>Nom de drogue</text>
+		</string>
+		<string>
+			<key>Message_CustomDrug_Name</key>
+			<text>Veuillez entrer un nom pour votre drogue.</text>
+		</string>
 	</strings>
 </chummer>

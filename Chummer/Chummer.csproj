@@ -310,11 +310,13 @@
     </Compile>
     <Compile Include="Interfaces\ICanEquip.cs" />
     <Compile Include="Interfaces\ICanRemove.cs" />
+    <Compile Include="Interfaces\ICanSort.cs" />
     <Compile Include="Interfaces\IHasConditionMonitor.cs" />
     <Compile Include="Interfaces\IHasCustomName.cs" />
     <Compile Include="Interfaces\ICanSell.cs" />
     <Compile Include="Interfaces\IHasChildren.cs" />
     <Compile Include="Interfaces\IHasChildrenAndCost.cs" />
+    <Compile Include="Interfaces\IHasGear.cs" />
     <Compile Include="Interfaces\IHasLocation.cs" />
     <Compile Include="Interfaces\IHasMatrixAttributes.cs" />
     <Compile Include="Interfaces\IHasMugshots.cs" />

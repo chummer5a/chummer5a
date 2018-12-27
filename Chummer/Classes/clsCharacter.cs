@@ -2896,6 +2896,11 @@ namespace Chummer
                 _lstSpirits.Add(objSpirit);
             }
 
+            if (!_lstSpirits.Any(s => s.Fettered) && Improvements.Any(imp => imp.ImproveSource == Improvement.ImprovementSource.SpiritFettering))
+            {
+                // If we don't have any Fettered spirits, make sure that we 
+                ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.SpiritFettering);
+            }
             Timekeeper.Finish("load_char_spirits");
             Timekeeper.Start("load_char_complex");
             frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_ComplexForms"));

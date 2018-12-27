@@ -33,7 +33,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class VehicleMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanEquip, IHasSource, IHasRating
+    public class VehicleMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanEquip, IHasSource, IHasRating, ICanSort
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -67,6 +67,7 @@ namespace Chummer.Backend.Equipment
         private string _strCachedXmlNodeLanguage = string.Empty;
         private string _strAmmoReplace;
         private int _intAmmoBonus;
+        private int _intSortOrder;
 
         private readonly Character _objCharacter;
 
@@ -287,6 +288,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteRaw(_nodWirelessBonus.OuterXml);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
+            objWriter.WriteElementString("sortorder", _intSortOrder.ToString());
             objWriter.WriteEndElement();
 
             if (!IncludedInVehicle)
@@ -388,6 +390,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
+            objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
         }
 
         /// <summary>
@@ -712,6 +715,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _strAmmoReplace;
             set => _strAmmoReplace = value;
+        }
+
+        /// <summary>
+        /// Used by our sorting algorithm to remember which order the user moves things to
+        /// </summary>
+        public int SortOrder
+        {
+            get => _intSortOrder;
+            set => _intSortOrder = value;
         }
         #endregion
 
