@@ -522,7 +522,7 @@ namespace Chummer
 
             // Select the Magician's Tradition.
             if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
-                cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                cboTradition.SelectedValue = CharacterObject.MagicTradition.strSourceID;
             else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
                 cboTradition.SelectedIndex = 0;
 
@@ -530,7 +530,7 @@ namespace Chummer
 
             // Select the Technomancer's Stream.
             if (CharacterObject.MagicTradition.Type == TraditionType.RES)
-                cboStream.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                cboStream.SelectedValue = CharacterObject.MagicTradition.strSourceID;
             else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
                 cboStream.SelectedIndex = 0;
 
@@ -8220,13 +8220,13 @@ namespace Chummer
 
             // Select the Magician's Tradition.
             if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
-                cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                cboTradition.SelectedValue = CharacterObject.MagicTradition.strSourceID;
             else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
                 cboTradition.SelectedIndex = 0;
 
             // Select the Technomancer's Stream.
             if (CharacterObject.MagicTradition.Type == TraditionType.RES)
-                cboStream.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                cboStream.SelectedValue = CharacterObject.MagicTradition.strSourceID;
             else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
                 cboStream.SelectedIndex = 0;
 
@@ -11799,7 +11799,7 @@ namespace Chummer
                 else
                 {
                     CharacterObject.MagicTradition.ResetTradition();
-                    cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                    cboTradition.SelectedValue = CharacterObject.MagicTradition.strSourceID;
                 }
             }
             else
@@ -11836,7 +11836,7 @@ namespace Chummer
                 else
                 {
                     CharacterObject.MagicTradition.ResetTradition();
-                    cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                    cboTradition.SelectedValue = CharacterObject.MagicTradition.strSourceID;
                 }
             }
         }
@@ -11853,7 +11853,7 @@ namespace Chummer
             if (IsLoading || IsRefreshing || CharacterObject.MagicTradition.Type != TraditionType.MAG)
                 return;
             string strSelectedId = cboStream.SelectedValue?.ToString();
-            if (string.IsNullOrEmpty(strSelectedId) || strSelectedId == CharacterObject.MagicTradition.SourceID)
+            if (string.IsNullOrEmpty(strSelectedId) || strSelectedId == CharacterObject.MagicTradition.strSourceID)
                 return;
 
             XmlNode xmlNewStreamNode = XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions/tradition[id = \"" + strSelectedId + "\"]");
@@ -11866,7 +11866,7 @@ namespace Chummer
             else
             {
                 CharacterObject.MagicTradition.ResetTradition();
-                cboStream.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                cboStream.SelectedValue = CharacterObject.MagicTradition.strSourceID;
             }
         }
 
@@ -14422,7 +14422,7 @@ namespace Chummer
             }
             if (blnAmmoOnly)
             {
-                frmPickGear.SelectedGear = objSelectedGear.SourceID;
+                frmPickGear.SelectedGear = objSelectedGear.strSourceID;
             }
 
             frmPickGear.ShowDialog(this);

@@ -39,7 +39,7 @@ namespace Chummer.Backend.Equipment
     /// Standard Character Gear.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
-    [HubClassTag("Name")]
+    [HubClassTag("SourceID", true, "Name")]
     public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertyChanged
     {
         private Guid _guiID;
@@ -1203,7 +1203,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string InternalId => _guiID.ToString("D");
 
-        public string SourceID => _SourceGuid;
+        public Guid SourceID { get { return Guid.Parse(_SourceGuid); } }
+
+        public string strSourceID => _SourceGuid;
 
         /// <summary>
         /// Guid of a Cyberware Weapon.

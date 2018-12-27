@@ -50,6 +50,41 @@ namespace ChummerHub.Client.Backend
 
             if (!typeof(String).IsAssignableFrom(obj.GetType()))
             {
+                if (obj.GetType().Assembly.FullName.Contains("Chummer"))
+                {
+                    //check, if the type has an HubClassTagAttribute
+                    List<Tuple<Chummer.helpers.HubClassTagAttribute, Object>> classprops = (from p in obj.GetType().GetCustomAttributes(typeof(Chummer.helpers.HubClassTagAttribute), true)
+                                                                                            select new Tuple<Chummer.helpers.HubClassTagAttribute, Object>(p as Chummer.helpers.HubClassTagAttribute, obj)).ToList();
+                    if (classprops.Any())
+                    {
+                        foreach (var classprop in classprops)
+                        {
+                            var tag = new Tag(obj, classprop.Item1);
+                            tag.ParentTagId = parenttag.Id;
+                            tag.MyParentTag = parenttag;
+                            parenttag.Tags.Add(tag);
+                            resulttags.Add(tag);
+                            tag.MyRuntimeHubClassTag = classprop.Item1;
+                            //tag.TagName = classprop.Item1.ListName;
+                            tag.TagType = obj.GetType().FullName;
+                            if (!String.IsNullOrEmpty(classprop.Item1.ListInstanceNameFromProperty))
+                            {
+                                tag.TagName = classprop.Item1.ListInstanceNameFromProperty;
+                                var childprop = from p in obj.GetType().GetProperties()
+                                                where p.Name == classprop.Item1.ListInstanceNameFromProperty
+                                                select p;
+                                if (!childprop.Any())
+                                    throw new ArgumentOutOfRangeException("Could not find property " + classprop.Item1.ListInstanceNameFromProperty + " on instance of type " + obj.GetType().ToString() + ".");
+                                tag.TagValue += childprop.FirstOrDefault().GetValue(obj);
+                            }
+                            if (String.IsNullOrEmpty(tag.TagName))
+                                tag.TagName = obj.ToString();
+                            ExtractTagsAddIncludeProperties(obj, resulttags, classprop, tag);
+                        }
+                        return resulttags;
+                    }
+
+                }
                 IEnumerable islist = obj as IEnumerable;
        
                 if (islist == null)
@@ -76,26 +111,18 @@ namespace ChummerHub.Client.Backend
                             tag.TagType = "list";
                             if (!String.IsNullOrEmpty(classprop.Item1.ListInstanceNameFromProperty))
                             {
+                                tag.TagName = classprop.Item1.ListInstanceNameFromProperty;
                                 var childprop = from p in item.GetType().GetProperties()
                                                 where p.Name == classprop.Item1.ListInstanceNameFromProperty
                                                 select p;
                                 if (!childprop.Any())
                                     throw new ArgumentOutOfRangeException("Could not find property " + classprop.Item1.ListInstanceNameFromProperty + " on instance of type " + item.GetType().ToString() + ".");
-                                tag.TagName += childprop.FirstOrDefault().GetValue(item);
+                                tag.TagValue += childprop.FirstOrDefault().GetValue(item);
                             }
                             if (String.IsNullOrEmpty(tag.TagName))
                                 tag.TagName = item.ToString();
-                            
-                            //Add complex Object
-                            var childtags = ExtractTagsFromAttributes(item, tag);
-                            if (classprop.Item1.DeleteEmptyTags)
-                            {
-                                if (!tag.Tags.Any())
-                                {
-                                    parenttag.Tags.Remove(tag);
-                                    resulttags.Remove(tag);
-                                }
-                            }
+
+                            ExtractTagsAddIncludeProperties(item, resulttags, classprop, tag);
                         }
                     }
                     if (counter == 0)
@@ -114,6 +141,34 @@ namespace ChummerHub.Client.Backend
                 resulttags.AddRange(proptags);
             }
             return resulttags;
+        }
+
+        private static void ExtractTagsAddIncludeProperties(object obj, List<Tag> resulttags, Tuple<Chummer.helpers.HubClassTagAttribute, object> classprop, Tag tag)
+        {
+            foreach (string includeprop in classprop.Item1.ListIncludeProperties)
+            {
+                var propfoundseq = from p in obj.GetType().GetProperties()
+                                   where p.Name == includeprop
+                                   select p;
+                if (!propfoundseq.Any())
+                {
+                    throw new ArgumentOutOfRangeException("Could not find property " + includeprop + " on instance of type " + obj.GetType().ToString() + ".");
+                }
+                var includeInstance = propfoundseq.FirstOrDefault().GetValue(obj);
+                if (includeInstance != null)
+                {
+                    var instanceTag = new Tag(includeInstance, classprop.Item1);
+                    instanceTag.ParentTagId = tag.Id;
+                    instanceTag.MyParentTag = tag;
+                    tag.Tags.Add(instanceTag);
+                    resulttags.Add(instanceTag);
+                    instanceTag.MyRuntimeHubClassTag = classprop.Item1;
+                    instanceTag.TagName = includeprop;
+                    instanceTag.TagType = obj.GetType().FullName;
+                    instanceTag.TagValue = includeInstance.ToString();
+                }
+
+            }
         }
 
         internal static IList<Tag> ExtractTagsFromAttributesForProperty(Tuple<PropertyInfo, Chummer.helpers.HubTagAttribute, Object> prop, Tag parenttag)
@@ -191,6 +246,7 @@ namespace ChummerHub.Client.Backend
             }
             else
             {
+
                 tag.TagType = "other";
             }
             if (tag.TagValue == typeValue.FullName)

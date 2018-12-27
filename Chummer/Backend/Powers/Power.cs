@@ -40,7 +40,7 @@ namespace Chummer
     /// An Adept Power.
     /// </summary>
     [DebuggerDisplay("{DisplayNameMethod(GlobalOptions.DefaultLanguage)}")]
-    [HubClassTag("Name")]
+    [HubClassTag("SourceID", true, "Name")]
     public class Power : INotifyMultiplePropertyChanged, IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
         private Guid _guiID;
@@ -355,6 +355,8 @@ namespace Chummer
         /// The Character object being used by the Power.
         /// </summary>
         public Character CharacterObject { get; }
+
+        public Guid SourceID { get { return _sourceID; } }
 
         private CharacterAttrib _objMAGAttribute;
         /// <summary>

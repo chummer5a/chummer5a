@@ -36,7 +36,7 @@ namespace Chummer.Backend.Equipment
     /// A Weapon.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    [HubClassTag("Name")]
+    [HubClassTag("SourceID", true, "Name")]
     public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource
     {
         private Guid _sourceID = Guid.Empty;
@@ -958,6 +958,8 @@ namespace Chummer.Backend.Equipment
         #endregion
 
         #region Properties
+               
+
         /// <summary>
         /// Weapon Accessories.
         /// </summary>

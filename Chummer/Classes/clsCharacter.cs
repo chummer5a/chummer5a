@@ -7499,7 +7499,7 @@ namespace Chummer
         /// <summary>
         /// Magician's Tradition.
         /// </summary>
-        [HubTag]
+        [HubTag("Tradition", "", "MagicTradition", false)]
         public Tradition MagicTradition
         {
             get
