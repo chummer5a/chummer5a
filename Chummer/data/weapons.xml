@@ -69,7 +69,7 @@
       <mode>SA</mode>
       <rc>0</rc>
       <ammo>10(c) + energy</ammo>
-      <avail>12F</avail>
+      <avail>24F</avail>
       <cost>26000</cost>
       <source>RG</source>
       <page>45</page>
@@ -624,7 +624,7 @@
       <damage>9P</damage>
       <ap>-2</ap>
       <mode>BF/FA</mode>
-      <rc>0</rc>
+      <rc>2</rc>
       <ammo>100(belt)</ammo>
       <avail>0</avail>
       <cost>0</cost>
@@ -792,7 +792,7 @@
       <damage>9P</damage>
       <ap>-2</ap>
       <mode>SA/BF/FA</mode>
-      <rc>0</rc>
+      <rc>1</rc>
       <ammo>30(c)</ammo>
       <avail>10F</avail>
       <cost>2300</cost>
@@ -1031,7 +1031,7 @@
       <category>Blades</category>
       <type>Melee</type>
       <conceal>2</conceal>
-      <accuracy>6</accuracy>
+      <accuracy>7</accuracy>
       <reach>0</reach>
       <damage>(STR+3)P</damage>
       <ap>-1</ap>
@@ -1050,7 +1050,7 @@
       <category>Blades</category>
       <type>Melee</type>
       <conceal>0</conceal>
-      <accuracy>6</accuracy>
+      <accuracy>7</accuracy>
       <reach>0</reach>
       <damage>(STR+2)P</damage>
       <ap>-1</ap>
@@ -3215,7 +3215,7 @@
       <damage>12P</damage>
       <ap>-4</ap>
       <mode>FA</mode>
-      <rc>-1</rc>
+      <rc>3</rc>
       <ammo>50(c) or 100(belt)</ammo>
       <avail>18F</avail>
       <cost>19600</cost>
@@ -3936,7 +3936,7 @@
       <ap>-10</ap>
       <mode>SA</mode>
       <rc>0</rc>
-      <ammo>Internal source</ammo>
+      <ammo>External source</ammo>
       <avail>24F</avail>
       <cost>35000</cost>
       <source>RG</source>
@@ -4012,7 +4012,7 @@
       <damage>9P</damage>
       <ap>-4</ap>
       <mode>FA</mode>
-      <rc>-2</rc>
+      <rc>2</rc>
       <ammo>200(belt)</ammo>
       <avail>24F</avail>
       <cost>6000</cost>
@@ -4120,7 +4120,7 @@
       <damage>9P</damage>
       <ap>-2</ap>
       <mode>BF/FA</mode>
-      <rc>-2</rc>
+      <rc>2</rc>
       <ammo>50(c) or 100(belt)</ammo>
       <avail>16F</avail>
       <cost>6500</cost>
@@ -4799,7 +4799,7 @@
       <damage>11P</damage>
       <ap>-3</ap>
       <mode>FA</mode>
-      <rc>-2</rc>
+      <rc>2</rc>
       <ammo>50(c) or 100(belt)</ammo>
       <avail>18F</avail>
       <cost>8500</cost>
@@ -4866,7 +4866,7 @@
       <damage>10P</damage>
       <ap>-2</ap>
       <mode>FA</mode>
-      <rc>-1</rc>
+      <rc>1</rc>
       <ammo>50(c) or 100(belt)</ammo>
       <avail>16F</avail>
       <cost>7600</cost>
@@ -4982,7 +4982,7 @@
       <damage>13P</damage>
       <ap>-1</ap>
       <mode>SA/BF/FA</mode>
-      <rc>-2</rc>
+      <rc>2</rc>
       <ammo>10(c) or 32(d)</ammo>
       <avail>18F</avail>
       <cost>1800</cost>
@@ -5163,7 +5163,7 @@
       <damage>12P</damage>
       <ap>-1</ap>
       <mode>SA/BF</mode>
-      <rc>-1</rc>
+      <rc>1</rc>
       <ammo>10(c)</ammo>
       <avail>12F</avail>
       <cost>1050</cost>
@@ -6097,7 +6097,7 @@
       <category>Exotic Ranged Weapons</category>
       <type>Ranged</type>
       <conceal>-5</conceal>
-      <accuracy>6</accuracy>
+      <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
       <ap>0</ap>
@@ -6444,7 +6444,7 @@
       <category>Submachine Guns</category>
       <type>Ranged</type>
       <conceal>2</conceal>
-      <accuracy>6</accuracy>
+      <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
       <ap>-</ap>
@@ -7138,7 +7138,7 @@
     <!-- Region Run and Gun -->
     <weapon>
       <id>232dfc49-21ad-4b90-b05f-e5523b3ee142</id>
-      <name>Nissan Optiumum II Shotgun</name>
+      <name>Nissan Optimum II Shotgun</name>
       <category>Underbarrel Weapons</category>
       <type>Ranged</type>
       <conceal>6</conceal>
@@ -7147,7 +7147,7 @@
       <damage>10P</damage>
       <ap>-1</ap>
       <mode>SA</mode>
-      <rc>0</rc>
+      <rc>1</rc>
       <ammo>5(m)</ammo>
       <avail>0</avail>
       <cost>0</cost>

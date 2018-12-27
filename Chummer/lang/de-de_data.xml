@@ -42020,8 +42020,8 @@
 			</weapon>
 			<weapon>
 				<id>232dfc49-21ad-4b90-b05f-e5523b3ee142</id>
-				<name>Nissan Optiumum II Shotgun</name>
-				<translate>Nissan Optiumum II Unterlauf-Schrotflinte</translate>
+				<name>Nissan Optimum II Shotgun</name>
+				<translate>Nissan Optimum II Unterlauf-Schrotflinte</translate>
 				<altpage>38</altpage>
 			</weapon>
 			<weapon>
@@ -42867,7 +42867,7 @@
 			<weapon translated="True">
 				<id>08e04ae5-ee6f-451d-8dc9-7873b6f9d3a5</id>
 				<name>Ultamax MMG</name>
-				<translate>Ultamax MMG</translate>
+				<translate>Ultimax MMG</translate>
 				<altpage>44</altpage>
 			</weapon>
 			<weapon>
