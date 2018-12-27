@@ -400,7 +400,7 @@
       <ap>-1</ap>
       <mode>SA/BF</mode>
       <rc>1</rc>
-      <ammo>36(c)</ammo>
+      <ammo>35(c)</ammo>
       <avail>11R</avail>
       <cost>2250</cost>
       <source>GH3</source>
@@ -860,7 +860,7 @@
       <damage>10P</damage>
       <ap>-1</ap>
       <mode>SA/FA</mode>
-      <rc>0</rc>
+      <rc>1</rc>
       <ammo>6x20(ml)</ammo>
       <avail>10F</avail>
       <cost>1900</cost>
@@ -4506,7 +4506,7 @@
       <damage>6P</damage>
       <ap>0</ap>
       <mode>BF/FA</mode>
-      <rc>0</rc>
+      <rc>1</rc>
       <ammo>20(c)</ammo>
       <avail>8R</avail>
       <cost>775</cost>
@@ -5707,7 +5707,7 @@
       <category>Sniper Rifles</category>
       <type>Ranged</type>
       <conceal>8</conceal>
-      <accuracy>6</accuracy>
+      <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>10P</damage>
       <ap>-2</ap>
@@ -7925,7 +7925,7 @@
       <damage>9S</damage>
       <ap>-2</ap>
       <mode>SS</mode>
-      <rc>0</rc>
+      <rc>1</rc>
       <ammo>1(b)</ammo>
       <avail>15F</avail>
       <cost>10000</cost>
@@ -8235,7 +8235,7 @@
       <category>Exotic Ranged Weapons</category>
       <type>Ranged</type>
       <conceal>+4</conceal>
-      <accuracy>5</accuracy>
+      <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>6P</damage>
       <ap>-5</ap>
@@ -8877,7 +8877,7 @@
       <damage>6P</damage>
       <ap>0</ap>
       <mode>SA</mode>
-      <rc>0</rc>
+      <rc>1</rc>
       <ammo>6(c)</ammo>
       <avail>8R</avail>
       <cost>325</cost>
@@ -8909,7 +8909,7 @@
       <damage>6P</damage>
       <ap>0</ap>
       <mode>SA/BF</mode>
-      <rc>0</rc>
+      <rc>1</rc>
       <ammo>8(ML)x4</ammo>
       <avail>10R</avail>
       <cost>750</cost>
@@ -10985,8 +10985,8 @@
       <mode>SA</mode>
       <rc>1</rc>
       <ammo>6(cy)</ammo>
-      <avail>5R</avail>
-      <cost>725</cost>
+      <avail>4R</avail>
+      <cost>1150</cost>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
@@ -11104,15 +11104,15 @@
       <category>Machine Pistols</category>
       <type>Ranged</type>
       <conceal>0</conceal>
-      <accuracy>6</accuracy>
+      <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
       <ap>-</ap>
       <mode>SA/BF/FA</mode>
       <rc>0</rc>
       <ammo>28(c)</ammo>
-      <avail>6R</avail>
-      <cost>700</cost>
+      <avail>10R</avail>
+      <cost>450</cost>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -11142,10 +11142,10 @@
       <damage>7P</damage>
       <ap>-</ap>
       <mode>SA/BF/FA</mode>
-      <rc>0</rc>
+      <rc>3</rc>
       <ammo>28(c)</ammo>
-      <avail>6R</avail>
-      <cost>700</cost>
+      <avail>9R</avail>
+      <cost>2300</cost>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -11300,12 +11300,12 @@
       <category>Submachine Guns</category>
       <type>Ranged</type>
       <conceal>2</conceal>
-      <accuracy>6</accuracy>
+      <accuracy>7</accuracy>
       <reach>0</reach>
       <damage>8P</damage>
-      <ap>-1</ap>
+      <ap>0</ap>
       <mode>SA/BF/FA</mode>
-      <rc>0</rc>
+      <rc>1</rc>
       <ammo>36(c)</ammo>
       <avail>20F</avail>
       <cost>6200</cost>
@@ -11346,7 +11346,7 @@
       <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
-      <accuracy>6</accuracy>
+      <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>Grenade</damage>
       <ap>-</ap>
@@ -11506,7 +11506,7 @@
       <damage>10P</damage>
       <ap>-3</ap>
       <mode>SA</mode>
-      <rc>2</rc>
+      <rc>0</rc>
       <ammo>10(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
@@ -11545,7 +11545,7 @@
       <damage>9P</damage>
       <ap>-2</ap>
       <mode>SA/BF/FA</mode>
-      <rc>0</rc>
+      <rc>3</rc>
       <ammo>32(c)</ammo>
       <avail>9F</avail>
       <cost>2850</cost>
@@ -11596,13 +11596,13 @@
       <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
-      <accuracy>6</accuracy>
+      <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>Grenade</damage>
       <ap>-</ap>
       <mode>SS</mode>
       <rc>0</rc>
-      <ammo>4(m)</ammo>
+      <ammo>8(m)</ammo>
       <ammocategory>Grenade Launchers</ammocategory>
       <avail>0</avail>
       <cost>0</cost>
@@ -11663,7 +11663,7 @@
       <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
-      <accuracy>4</accuracy>
+      <accuracy>3</accuracy>
       <reach>0</reach>
       <damage>10P</damage>
       <ap>-1</ap>
@@ -12327,8 +12327,8 @@
       <category>Unarmed</category>
       <type>Melee</type>
       <conceal>0</conceal>
-      <accuracy>Phsical</accuracy>
-      <reach>1</reach>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
       <damage>(STR)P</damage>
       <ap>0</ap>
       <mode>0</mode>
@@ -12347,7 +12347,7 @@
       <type>Melee</type>
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
-      <reach>1</reach>
+      <reach>0</reach>
       <damage>8S(e)</damage>
       <ap>-5</ap>
       <mode>0</mode>
@@ -12636,7 +12636,7 @@
       <ap>0</ap>
       <mode>SA</mode>
       <rc>0</rc>
-      <ammo>4(m)</ammo>
+      <ammo>5(c)</ammo>
       <avail>4R</avail>
       <cost>500</cost>
       <source>SL</source>
@@ -12853,7 +12853,7 @@
       <damage>8P</damage>
       <ap>-1</ap>
       <mode>BF</mode>
-      <rc>1</rc>
+      <rc>3</rc>
       <ammo>12(c)</ammo>
       <avail>12F</avail>
       <cost>1150</cost>
@@ -12886,7 +12886,7 @@
       <damage>7P</damage>
       <ap>-3</ap>
       <mode>BF</mode>
-      <rc>3</rc>
+      <rc>0</rc>
       <ammo>8x2(c)</ammo>
       <avail>10R</avail>
       <cost>700</cost>
@@ -13006,8 +13006,8 @@
       <mode>SA</mode>
       <rc>1</rc>
       <ammo>12(c)</ammo>
-      <avail>6R</avail>
-      <cost>500</cost>
+      <avail>7R</avail>
+      <cost>750</cost>
       <source>SL</source>
       <page>33</page>
       <accessories>
@@ -13383,7 +13383,7 @@
       <conceal>+2</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
-      <damage>9P</damage>
+      <damage>7P</damage>
       <ap>-2</ap>
       <mode>FA</mode>
       <rc>0</rc>
@@ -13550,13 +13550,13 @@
       <conceal>+6</conceal>
       <accuracy>3</accuracy>
       <reach>0</reach>
-      <damage>10P</damage>
+      <damage>12P</damage>
       <ap>-1</ap>
       <mode>SS</mode>
       <rc>1</rc>
-      <ammo>20(m)</ammo>
+      <ammo>5(m)</ammo>
       <avail>12F</avail>
-      <cost>750</cost>
+      <cost>2000</cost>
       <source>SL</source>
       <page>40</page>
       <accessories>
@@ -13587,12 +13587,12 @@
       <accuracy>4</accuracy>
       <reach>1</reach>
       <damage>(STR+2)P</damage>
-      <ap>-1</ap>
+      <ap>0</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>20(m)</ammo>
-      <avail>0</avail>
-      <cost>750</cost>
+      <ammo>5(m)</ammo>
+      <avail>12F</avail>
+      <cost>2000</cost>
       <source>SL</source>
       <page>40</page>
     </weapon>
@@ -13762,8 +13762,8 @@
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>1(ml)</ammo>
-      <avail>10F</avail>
-      <cost>1200</cost>
+      <avail>20F</avail>
+      <cost>2600</cost>
       <source>SL</source>
       <page>42</page>
       <accessories>
@@ -13873,7 +13873,7 @@
       <rc>0</rc>
       <ammo>6</ammo>
       <avail>15R</avail>
-      <cost>950</cost>
+      <cost>8500</cost>
       <source>SL</source>
       <page>44</page>
       <accessorymounts>
@@ -13898,8 +13898,8 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>10</ammo>
-      <avail>0</avail>
-      <cost>0</cost>
+      <avail>10R</avail>
+      <cost>800</cost>
       <source>SL</source>
       <page>46</page>
     </weapon>
@@ -13914,7 +13914,7 @@
       <damage>18P</damage>
       <ap>-6</ap>
       <mode>FA</mode>
-      <rc>-6</rc>
+      <rc>6</rc>
       <ammo>200(belt)</ammo>
       <avail>24F</avail>
       <cost>29000</cost>
@@ -13960,7 +13960,7 @@
           <category>Hold-outs</category>
           <type>Ranged</type>
           <conceal>-2</conceal>
-          <accuracy>4</accuracy>
+          <accuracy>5</accuracy>
           <reach>0</reach>
           <damage>5P</damage>
           <ap>0</ap>
@@ -13978,7 +13978,7 @@
           <category>Blades</category>
           <type>Melee</type>
           <conceal>-2</conceal>
-          <accuracy>5</accuracy>
+          <accuracy>4</accuracy>
           <reach>0</reach>
           <damage>(STR)P</damage>
           <ap>-2</ap>

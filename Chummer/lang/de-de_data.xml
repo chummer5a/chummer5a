@@ -3142,6 +3142,12 @@
 				<altcode>SFME</altcode>
 			</book>
 			<book>
+				<id>81c02566-af38-45e3-9e46-3b1d083f84f2</id>
+				<name>Shadows In Focus: San Francisco Metroplex</name>
+				<translate>Shadows In Focus: San Francisco Metroplex</translate>
+				<altcode>SFM</altcode>
+			</book>
+			<book>
 				<id>40515dbc-fec6-4530-ba79-959cc8c54c61</id>
 				<name>Cutting Aces</name>
 				<translate>Mit Tricks und Finesse</translate>
@@ -43371,7 +43377,7 @@
 			<weapon>
 				<id>4378e735-859d-4606-9396-f9af248487e2</id>
 				<name>Barrens Special: Bayonet</name>
-				<translate>Barens Spezial: Bajonett</translate>
+				<translate>Barrens Spezial: Bajonett</translate>
 				<altpage>29</altpage>
 			</weapon>
 			<weapon translated="True">
