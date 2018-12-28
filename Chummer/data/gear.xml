@@ -10380,7 +10380,7 @@
       <rating>20</rating>
       <source>SG</source>
       <page>213</page>
-      <avail>Rating * Rating</avail>
+      <avail>(Rating * Rating)R</avail>
       <bonus>
         <selecttext />
       </bonus>
