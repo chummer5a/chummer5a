@@ -8239,7 +8239,7 @@
       <source>SAG</source>
       <accel>3</accel>
       <armor>6</armor>
-      <avail>10</avail>
+      <avail>12</avail>
       <body>14</body>
       <category>Rotorcraft</category>
       <cost>300000</cost>
@@ -8533,7 +8533,7 @@
       <body>2</body>
       <category>Drones: Small</category>
       <cost>9500</cost>
-      <handling>2</handling>
+      <handling>3</handling>
       <pilot>2</pilot>
       <sensor>4</sensor>
       <speed>1</speed>
@@ -8592,7 +8592,7 @@
       <cost>12000</cost>
       <handling>4</handling>
       <pilot>3</pilot>
-      <sensor>3</sensor>
+      <sensor>4</sensor>
       <speed>3</speed>
       <gears>
         <gear>
