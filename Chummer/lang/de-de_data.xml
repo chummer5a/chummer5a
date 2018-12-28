@@ -14633,8 +14633,8 @@
 			</gear>
 			<gear>
 				<id>7852ac25-b78f-4f3b-ada9-437b8009dad6</id>
-				<name>Microtronica Azteca Maletin, Luggage (2050)</name>
-				<translate>Microtronica Azteca Maletin, Gepäck</translate>
+				<name>Microtrónica Azteca Maletin, Luggage (2050)</name>
+				<translate>Microtrónica Azteca Maletin, Gepäck</translate>
 				<altpage>171</altpage>
 			</gear>
 			<gear>
@@ -15430,7 +15430,7 @@
 			<gear translated="True">
 				<id>1c672c5d-88f7-43dd-b4d0-42571eb07547</id>
 				<name>Leäl</name>
-				<translate>Leäl</translate>
+				<translate>Lëal</translate>
 				<altpage>186</altpage>
 			</gear>
 			<gear>
@@ -15490,13 +15490,13 @@
 			<gear>
 				<id>1131acde-3791-4870-8c05-1b261e3beaa1</id>
 				<name>PsychChips (Illegal)</name>
-				<translate>Psychochips (Illegal)</translate>
+				<translate>Psychochips (illegal)</translate>
 				<altpage>187</altpage>
 			</gear>
 			<gear>
 				<id>48c252e2-8bfd-46e4-ae77-b394b9e92773</id>
 				<name>PsychChips (Legal)</name>
-				<translate>Psychochips (Legal)</translate>
+				<translate>Psychochips (legal)</translate>
 				<altpage>187</altpage>
 			</gear>
 			<gear translated="True">
@@ -16990,7 +16990,7 @@
 			<gear>
 				<id>f634ee1f-0c3f-47bd-bea7-10236b24de39</id>
 				<name>Smart Corrosives</name>
-				<translate>Smart-Säuren</translate>
+				<translate>Smartsäuren</translate>
 				<altpage>156</altpage>
 			</gear>
 			<gear>

@@ -9194,7 +9194,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>138</page>
-      <avail>0</avail>
+      <avail>6</avail>
       <cost>500</cost>
     </gear>
     <gear>
@@ -15311,7 +15311,7 @@
       <id>bb0be5c4-90c4-4dbe-ae4b-76e3680f1952</id>
       <name>Nantidotes</name>
       <category>Nanogear</category>
-      <rating>9</rating>
+      <rating>6</rating>
       <source>CF</source>
       <page>149</page>
       <avail>8F</avail>
@@ -15513,7 +15513,7 @@
       <rating>0</rating>
       <source>CA</source>
       <page>143</page>
-      <avail>22R</avail>
+      <avail>4</avail>
       <cost>75</cost>
     </gear>
     <gear>
@@ -16970,7 +16970,7 @@
     </gear>
     <gear>
       <id>7852ac25-b78f-4f3b-ada9-437b8009dad6</id>
-      <name>Microtronica Azteca Maletin, Luggage (2050)</name>
+      <name>Microtrónica Azteca Maletin, Luggage (2050)</name>
       <category>Cyberdecks</category>
       <rating>0</rating>
       <source>2050</source>
@@ -17844,7 +17844,7 @@
       <rating>0</rating>
       <source>FA</source>
       <page>193</page>
-      <avail>0</avail>
+      <avail>4</avail>
       <cost>500</cost>
     </gear>
     <gear>
