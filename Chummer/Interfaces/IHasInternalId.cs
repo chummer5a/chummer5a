@@ -114,7 +114,7 @@ namespace Chummer
                 TreeNode objNode = objGear.CreateTreeNode(cmsGear);
                 if (objNode == null)
                     return;
-                if (objGear.Location != null)
+                if (objGear.Location == null)
                 {
                     if (intIndex >= 0)
                         nodParent.Nodes.Insert(intIndex, objNode);

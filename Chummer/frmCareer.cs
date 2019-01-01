@@ -3491,7 +3491,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddVehicle();
+                blnAddAgain = AddVehicle(treVehicles.SelectedNode?.Tag is Location objLocation ? objLocation : null);
             }
             while (blnAddAgain);
         }
@@ -5898,8 +5898,17 @@ namespace Chummer
 
         private void cmdAddVehicleLocation_Click(object sender, EventArgs e)
         {
+            TaggedObservableCollection<Location> destCollection = null;
             // Make sure a Vehicle is selected.
-            if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle))
+            if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle)
+            {
+                destCollection = objVehicle.Locations;
+            }
+            else if (treVehicles.SelectedNode?.Tag.ToString() == "Node_SelectedVehicles" || treVehicles.SelectedNode?.Tag == null)
+            {
+                destCollection = CharacterObject.VehicleLocations;
+            }
+            else
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectVehicleLocation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5912,8 +5921,8 @@ namespace Chummer
 
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                 return;
-            Location objLocation = new Location(CharacterObject, objVehicle.Locations, frmPickText.SelectedValue);
-            objVehicle.Locations.Add(objLocation);
+            Location objLocation = new Location(CharacterObject, destCollection, frmPickText.SelectedValue);
+            destCollection.Add(objLocation);
 
             IsDirty = true;
         }
@@ -6986,7 +6995,18 @@ namespace Chummer
         private void tsVehicleAddGear_Click(object sender, EventArgs e)
         {
             // Locate the selected Vehicle.
-            if (!(treVehicles.SelectedNode?.Tag is Vehicle objSelectedVehicle))
+            Vehicle objSelectedVehicle = null;
+            Location objLocation = null;
+            if (treVehicles.SelectedNode?.Tag is Vehicle)
+            {
+                objSelectedVehicle = treVehicles.SelectedNode?.Tag as Vehicle;
+            }
+            else if (treVehicles.SelectedNode?.Tag is Location)
+            {
+                objLocation = treVehicles.SelectedNode.Tag as Location;
+                objSelectedVehicle = treVehicles.SelectedNode.Parent.Tag as Vehicle;
+            }
+            else
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectGearVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGearVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -7094,10 +7114,19 @@ namespace Chummer
                 if (!blnMatchFound)
                 {
                     // Add the Gear to the Vehicle.
+                    if (objLocation != null)
+                    {
+                        objLocation.Children.Add(objGear);
+                    }
                     objSelectedVehicle.Gear.Add(objGear);
                     objGear.Parent = objSelectedVehicle;
+
                     foreach (Weapon objWeapon in lstWeapons)
                     {
+                        if (objLocation != null)
+                        {
+                            objLocation.Children.Add(objGear);
+                        }
                         objWeapon.ParentVehicle = objSelectedVehicle;
                         objSelectedVehicle.Weapons.Add(objWeapon);
                     }
@@ -14465,14 +14494,6 @@ namespace Chummer
             Cyberware objCyberware = new Cyberware(CharacterObject);
             if (objCyberware.Purchase(objXmlCyberware, objSource, frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating, null, objSelectedCyberware?.Children ?? CharacterObject.Cyberware, CharacterObject.Vehicles, CharacterObject.Weapons, frmPickCyberware.Markup, frmPickCyberware.FreeCost, frmPickCyberware.BlackMarketDiscount))
             {
-                // Consume any essence antihole that might exist. Holes and antiholes are managed through the Purchase method. 
-                if (objCyberware.SourceID != Cyberware.EssenceHoleGUID &&
-                    objCyberware.SourceID != Cyberware.EssenceAntiHoleGUID)
-                {
-                    CharacterObject.DecreaseEssenceHole((int) (objCyberware.CalculatedESS() * 100),
-                        objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID);
-                }
-
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
             }

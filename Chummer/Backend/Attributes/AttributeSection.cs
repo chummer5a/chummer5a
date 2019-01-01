@@ -220,6 +220,7 @@ namespace Chummer.Backend.Attributes
                 Attributes.Add(_objCharacter.DEP);
             }
             ResetBindings();
+            _objCharacter.RefreshAttributeBindings();
             Timekeeper.Finish("create_char_attrib");
         }
 
@@ -313,7 +314,8 @@ namespace Chummer.Backend.Attributes
 		        Attributes.Add(_objCharacter.DEP);
 		    }
             ResetBindings();
-			Timekeeper.Finish("load_char_attrib");
+		    _objCharacter.RefreshAttributeBindings();
+            Timekeeper.Finish("load_char_attrib");
 		}
 
 	    public void LoadFromHeroLab(XmlNode xmlStatBlockBaseNode)
@@ -493,6 +495,7 @@ namespace Chummer.Backend.Attributes
                 }
             }
             ResetBindings();
+            _objCharacter.RefreshAttributeBindings();
             Timekeeper.Finish("load_char_attrib");
         }
 
