@@ -522,8 +522,8 @@
 			</armor>
 			<armor translated="True">
 				<id>d90a8823-7387-4c50-bc47-3d63f0ffd543</id>
-				<name>Ares Flashield</name>
-				<translate>Ares Flashield</translate>
+				<name>Ares FlaShield</name>
+				<translate>Ares FlaShield</translate>
 				<altpage>72</altpage>
 			</armor>
 			<armor>
@@ -594,8 +594,8 @@
 			</armor>
 			<armor>
 				<id>81fdc8a3-7106-4b08-a1f4-c72140bc90fc</id>
-				<name>Evo Hel Suit</name>
-				<translate>Evo Hel-Anzug</translate>
+				<name>Evo HEL Suit</name>
+				<translate>Evo HEL-Anzug</translate>
 				<altpage>81</altpage>
 			</armor>
 			<armor>
@@ -2808,7 +2808,7 @@
 				<altpage>117</altpage>
 			</bioware>
 			<bioware>
-				<id>11d6fbc9-c2cf-4686-8f95-ef46a83cc0ff</id>
+				<id>c60d9b5f-080b-4209-8a8e-19a76eca7a5b</id>
 				<name>Hand and Foot Webbing (Feet)</name>
 				<translate>Schwimmhäute (Füße)</translate>
 				<altpage>117</altpage>
@@ -3140,6 +3140,12 @@
 				<name>Shadows In Focus: Metropole</name>
 				<translate>Shadows In Focus: Metropole</translate>
 				<altcode>SFME</altcode>
+			</book>
+			<book>
+				<id>81c02566-af38-45e3-9e46-3b1d083f84f2</id>
+				<name>Shadows In Focus: San Francisco Metroplex</name>
+				<translate>Shadows In Focus: San Francisco Metroplex</translate>
+				<altcode>SFM</altcode>
 			</book>
 			<book>
 				<id>40515dbc-fec6-4530-ba79-959cc8c54c61</id>
@@ -10799,8 +10805,8 @@
 			</gear>
 			<gear translated="True">
 				<id>03d25169-214b-4e85-8a11-e33b022a6e32</id>
-				<name>Microtronica Azteca Raptor</name>
-				<translate>Microtronica Azteca Raptor</translate>
+				<name>Microtrónica Azteca Raptor</name>
+				<translate>Microtrónica Azteca Raptor</translate>
 				<altpage>19</altpage>
 			</gear>
 			<gear translated="True">
@@ -10925,8 +10931,8 @@
 			</gear>
 			<gear translated="True">
 				<id>dfc9bfdc-ef5e-45f7-8df5-fd80e011f547</id>
-				<name>Microtronica Azteca 300</name>
-				<translate>Microtronica Azteca 300</translate>
+				<name>Microtrónica Azteca 300</name>
+				<translate>Microtrónica Azteca 300</translate>
 				<altpage>72</altpage>
 			</gear>
 			<gear translated="True">
@@ -14627,8 +14633,8 @@
 			</gear>
 			<gear>
 				<id>7852ac25-b78f-4f3b-ada9-437b8009dad6</id>
-				<name>Microtronica Azteca Maletin, Luggage (2050)</name>
-				<translate>Microtronica Azteca Maletin, Gepäck</translate>
+				<name>Microtrónica Azteca Maletin, Luggage (2050)</name>
+				<translate>Microtrónica Azteca Maletin, Gepäck</translate>
 				<altpage>171</altpage>
 			</gear>
 			<gear>
@@ -15424,7 +15430,7 @@
 			<gear translated="True">
 				<id>1c672c5d-88f7-43dd-b4d0-42571eb07547</id>
 				<name>Leäl</name>
-				<translate>Leäl</translate>
+				<translate>Lëal</translate>
 				<altpage>186</altpage>
 			</gear>
 			<gear>
@@ -15484,13 +15490,13 @@
 			<gear>
 				<id>1131acde-3791-4870-8c05-1b261e3beaa1</id>
 				<name>PsychChips (Illegal)</name>
-				<translate>Psychochips (Illegal)</translate>
+				<translate>Psychochips (illegal)</translate>
 				<altpage>187</altpage>
 			</gear>
 			<gear>
 				<id>48c252e2-8bfd-46e4-ae77-b394b9e92773</id>
 				<name>PsychChips (Legal)</name>
-				<translate>Psychochips (Legal)</translate>
+				<translate>Psychochips (legal)</translate>
 				<altpage>187</altpage>
 			</gear>
 			<gear translated="True">
@@ -16984,7 +16990,7 @@
 			<gear>
 				<id>f634ee1f-0c3f-47bd-bea7-10236b24de39</id>
 				<name>Smart Corrosives</name>
-				<translate>Smart-Säuren</translate>
+				<translate>Smartsäuren</translate>
 				<altpage>156</altpage>
 			</gear>
 			<gear>
@@ -21993,7 +21999,7 @@
 				<id>7397da6e-29b8-400f-9708-c99bd04d5c07</id>
 				<name>Guanyin</name>
 				<translate>Guanyin</translate>
-				<altadvantage>Allgemein: +2 Würfel für Prben auf Erste Hilfe</altadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Proben auf Erste Hilfe</altadvantage>
 				<altdisadvantage>Anhänger von Guanyin sind höchst motiviert, andere Wesen zu retten. Wenn der Charakter das Angebot für einen Run bekommt, bei dem sich keine Gelegenheit für Hooding bietet, muss er eine erfolgreiche Probe auf Willenskraft + Charisma (3) ablegen, damit er annehmen kann. Misslingt die Probe, muss er den Job ablehnen.</altdisadvantage>
 				<altpage>145</altpage>
 				<choices>
@@ -42020,8 +42026,8 @@
 			</weapon>
 			<weapon>
 				<id>232dfc49-21ad-4b90-b05f-e5523b3ee142</id>
-				<name>Nissan Optiumum II Shotgun</name>
-				<translate>Nissan Optiumum II Unterlauf-Schrotflinte</translate>
+				<name>Nissan Optimum II Shotgun</name>
+				<translate>Nissan Optimum II Unterlauf-Schrotflinte</translate>
 				<altpage>38</altpage>
 			</weapon>
 			<weapon>
@@ -42843,7 +42849,7 @@
 			<weapon>
 				<id>e5ac06f4-3755-42a7-9da9-88de4b3b2ad8</id>
 				<name>Ares Thunderstruck Gauss Rifle</name>
-				<translate>Ares Thunderstruck Gaussgewehr</translate>
+				<translate>Ares Thunderstruck Gaußgewehr</translate>
 				<altpage>45</altpage>
 			</weapon>
 			<weapon>
@@ -42867,7 +42873,7 @@
 			<weapon translated="True">
 				<id>08e04ae5-ee6f-451d-8dc9-7873b6f9d3a5</id>
 				<name>Ultamax MMG</name>
-				<translate>Ultamax MMG</translate>
+				<translate>Ultimax MMG</translate>
 				<altpage>44</altpage>
 			</weapon>
 			<weapon>
@@ -43371,7 +43377,7 @@
 			<weapon>
 				<id>4378e735-859d-4606-9396-f9af248487e2</id>
 				<name>Barrens Special: Bayonet</name>
-				<translate>Barens Spezial: Bajonett</translate>
+				<translate>Barrens Spezial: Bajonett</translate>
 				<altpage>29</altpage>
 			</weapon>
 			<weapon translated="True">

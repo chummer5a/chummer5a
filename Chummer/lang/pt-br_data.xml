@@ -462,8 +462,8 @@
 			</armor>
 			<armor>
 				<id>d90a8823-7387-4c50-bc47-3d63f0ffd543</id>
-				<name>Ares Flashield</name>
-				<translate>Ares Flashield</translate>
+				<name>Ares FlaShield</name>
+				<translate>Ares FlaShield</translate>
 				<altpage>72</altpage>
 			</armor>
 			<armor>
@@ -576,8 +576,8 @@
 			</armor>
 			<armor>
 				<id>81fdc8a3-7106-4b08-a1f4-c72140bc90fc</id>
-				<name>Evo Hel Suit</name>
-				<translate>Evo Hel Suit</translate>
+				<name>Evo HEL Suit</name>
+				<translate>Evo HEL Suit</translate>
 				<altpage>81</altpage>
 			</armor>
 			<armor>
@@ -2650,7 +2650,7 @@
 				<altpage>113</altpage>
 			</bioware>
 			<bioware>
-				<id>11d6fbc9-c2cf-4686-8f95-ef46a83cc0ff</id>
+				<id>c60d9b5f-080b-4209-8a8e-19a76eca7a5b</id>
 				<name>Hand and Foot Webbing (Feet)</name>
 				<translate>Hand and Foot Webbing (Feet)</translate>
 				<altpage>113</altpage>
@@ -3008,6 +3008,12 @@
 				<name>Lockdown</name>
 				<translate>Lockdown</translate>
 				<altcode>LCD</altcode>
+			</book>
+			<book>
+				<id>81c02566-af38-45e3-9e46-3b1d083f84f2</id>
+				<name>Shadows In Focus: San Francisco Metroplex</name>
+				<translate>Shadows In Focus: San Francisco Metroplex</translate>
+				<altcode>SFM</altcode>
 			</book>
 			<book>
 				<id>40515dbc-fec6-4530-ba79-959cc8c54c61</id>
@@ -6958,7 +6964,7 @@
 			</metatype>
 			<metatype>
 				<id>9beb359e-f6c9-41a1-8bd9-cb283133b5ef</id>
-				<name>Hellcow</name>
+				<name>Hellcow (Running Wild)</name>
 				<translate>Hellcow</translate>
 				<altpage>163</altpage>
 			</metatype>
@@ -8370,7 +8376,7 @@
 			</cyberware>
 			<cyberware translated="True">
 				<id>8b9541a9-e10a-488d-a076-4e5b1c469839</id>
-				<name>Silencer</name>
+				<name>Silencer/Suppressor</name>
 				<translate>Silenciador</translate>
 				<altpage>457</altpage>
 			</cyberware>
@@ -11161,8 +11167,8 @@
 			</gear>
 			<gear>
 				<id>03d25169-214b-4e85-8a11-e33b022a6e32</id>
-				<name>Microtronica Azteca Raptor</name>
-				<translate>Microtronica Azteca Raptor</translate>
+				<name>Microtrónica Azteca Raptor</name>
+				<translate>Microtrónica Azteca Raptor</translate>
 				<altpage>17</altpage>
 			</gear>
 			<gear>
@@ -11263,8 +11269,8 @@
 			</gear>
 			<gear>
 				<id>dfc9bfdc-ef5e-45f7-8df5-fd80e011f547</id>
-				<name>Microtronica Azteca 300</name>
-				<translate>Microtronica Azteca 300</translate>
+				<name>Microtrónica Azteca 300</name>
+				<translate>Microtrónica Azteca 300</translate>
 				<altpage>64</altpage>
 			</gear>
 			<gear>
@@ -13825,7 +13831,7 @@
 			</gear>
 			<gear>
 				<id>875bf273-1a0d-4a42-80ab-6547d7a1235a</id>
-				<name>Narcoject</name>
+				<name>Narcojet</name>
 				<translate>Narcojeção</translate>
 				<altpage>410</altpage>
 			</gear>
@@ -16513,8 +16519,8 @@
 			</gear>
 			<gear>
 				<id>7852ac25-b78f-4f3b-ada9-437b8009dad6</id>
-				<name>Microtronica Azteca Maletin, Luggage (2050)</name>
-				<translate>Microtronica Azteca Maletin, Luggage (2050)</translate>
+				<name>Microtrónica Azteca Maletin, Luggage (2050)</name>
+				<translate>Microtrónica Azteca Maletin, Luggage (2050)</translate>
 				<altpage>171</altpage>
 			</gear>
 			<gear>
@@ -35338,8 +35344,8 @@
 			</vehicle>
 			<vehicle>
 				<id>17d1e41b-6650-45e2-b898-d047c3b8702a</id>
-				<name>Shiawase I-Doll</name>
-				<translate>Shiawase I-Doll</translate>
+				<name>Shiawase i-Doll</name>
+				<translate>Shiawase i-Doll</translate>
 				<altpage>148</altpage>
 			</vehicle>
 			<vehicle>
@@ -35410,8 +35416,8 @@
 			</vehicle>
 			<vehicle>
 				<id>e338dcf9-3149-4519-9228-589354be5667</id>
-				<name>Messerschmitt-Kawasaki Jagdschreccke</name>
-				<translate>Messerschmitt-Kawasaki Jagdschreccke</translate>
+				<name>Messerschmitt-Kawasaki Jagdschrecke</name>
+				<translate>Messerschmitt-Kawasaki Jagdschrecke</translate>
 				<altpage>69</altpage>
 			</vehicle>
 			<vehicle>
@@ -38338,8 +38344,8 @@
 			</weapon>
 			<weapon>
 				<id>232dfc49-21ad-4b90-b05f-e5523b3ee142</id>
-				<name>Nissan Optiumum II Shotgun</name>
-				<translate>Nissan Optiumum II Shotgun</translate>
+				<name>Nissan Optimum II Shotgun</name>
+				<translate>Nissan Optimum II Shotgun</translate>
 				<altpage>38</altpage>
 			</weapon>
 			<weapon>
@@ -39666,7 +39672,7 @@
 			</accessory>
 			<accessory translated="True">
 				<id>0da6149e-982f-4051-825b-52c1b79c7e52</id>
-				<name>Silencer</name>
+				<name>Silencer/Suppressor</name>
 				<translate>Silenciador</translate>
 				<altpage>432</altpage>
 			</accessory>
