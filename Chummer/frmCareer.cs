@@ -5538,11 +5538,8 @@ namespace Chummer
 
             if (frmPickImprovement.DialogResult == DialogResult.Cancel)
                 return;
-            if (!string.IsNullOrWhiteSpace(location))
-            {
-                //TODO: Improvement system interface needs a better handler for 
-                RefreshCustomImprovements(treImprovements,lmtControl.LimitTreeView,cmsImprovementLocation,cmsImprovement,lmtControl.LimitContextMenuStrip);
-            }
+
+            RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView, cmsImprovementLocation, cmsImprovement, lmtControl.LimitContextMenuStrip);
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
@@ -12339,64 +12336,46 @@ namespace Chummer
         private void treImprovements_AfterSelect(object sender, TreeViewEventArgs e)
         {
             IsRefreshing = true;
-            if (treImprovements.SelectedNode != null)
+            if (treImprovements.SelectedNode?.Tag is Improvement objImprovement)
             {
-                if (treImprovements.SelectedNode.Level == 0)
+                // Get the human-readable name of the Improvement from the Improvements file.
+
+                XmlNode objNode = XmlManager.Load("improvements.xml").SelectSingleNode("/chummer/improvements/improvement[id = \"" + objImprovement.CustomId + "\"]");
+                if (objNode != null)
                 {
-                    cmdImprovementsEnableAll.Visible = true;
-                    cmdImprovementsDisableAll.Visible = true;
-                    lblImprovementType.Text = string.Empty;
-                    lblImprovementValue.Text = string.Empty;
-                    chkImprovementActive.Checked = false;
-                    chkImprovementActive.Visible = false;
+                    lblImprovementType.Text = objNode["translate"]?.InnerText ?? objNode["name"]?.InnerText;
                 }
-                else
-                {
-                    string strSelectedId = treImprovements.SelectedNode?.Tag.ToString();
-                    Improvement objImprovement = CharacterObject.Improvements.FirstOrDefault(x => x.SourceName == strSelectedId);
 
-                    if (objImprovement != null)
-                    {
-                        // Get the human-readable name of the Improvement from the Improvements file.
+                string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                // Build a string that contains the value(s) of the Improvement.
+                string strValue = string.Empty;
+                if (objImprovement.Value != 0)
+                    strValue += LanguageManager.GetString("Label_CreateImprovementValue", GlobalOptions.Language) + strSpace + objImprovement.Value + ',' + strSpace;
+                if (objImprovement.Minimum != 0)
+                    strValue += LanguageManager.GetString("Label_CreateImprovementMinimum", GlobalOptions.Language) + strSpace + objImprovement.Minimum + ',' + strSpace;
+                if (objImprovement.Maximum != 0)
+                    strValue += LanguageManager.GetString("Label_CreateImprovementMaximum", GlobalOptions.Language) + strSpace + objImprovement.Maximum + ',' + strSpace;
+                if (objImprovement.Augmented != 0)
+                    strValue += LanguageManager.GetString("Label_CreateImprovementAugmented", GlobalOptions.Language) + strSpace + objImprovement.Augmented + ',' + strSpace;
 
-                        XmlNode objNode = XmlManager.Load("improvements.xml").SelectSingleNode("/chummer/improvements/improvement[id = \"" + objImprovement.CustomId + "\"]");
-                        if (objNode != null)
-                        {
-                            lblImprovementType.Text = objNode["translate"]?.InnerText ?? objNode["name"]?.InnerText;
-                        }
+                // Remove the trailing comma.
+                if (!string.IsNullOrEmpty(strValue))
+                    strValue = strValue.Substring(0, strValue.Length - 1 - strSpace.Length);
 
-                        string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                        // Build a string that contains the value(s) of the Improvement.
-                        string strValue = string.Empty;
-                        if (objImprovement.Value != 0)
-                            strValue += LanguageManager.GetString("Label_CreateImprovementValue", GlobalOptions.Language) + strSpace + objImprovement.Value + ',' + strSpace;
-                        if (objImprovement.Minimum != 0)
-                            strValue += LanguageManager.GetString("Label_CreateImprovementMinimum", GlobalOptions.Language) + strSpace + objImprovement.Minimum + ',' + strSpace;
-                        if (objImprovement.Maximum != 0)
-                            strValue += LanguageManager.GetString("Label_CreateImprovementMaximum", GlobalOptions.Language) + strSpace + objImprovement.Maximum + ',' + strSpace;
-                        if (objImprovement.Augmented != 0)
-                            strValue += LanguageManager.GetString("Label_CreateImprovementAugmented", GlobalOptions.Language) + strSpace + objImprovement.Augmented + ',' + strSpace;
-
-                        // Remove the trailing comma.
-                        if (!string.IsNullOrEmpty(strValue))
-                            strValue = strValue.Substring(0, strValue.Length - 1 - strSpace.Length);
-
-                        cmdImprovementsEnableAll.Visible = false;
-                        cmdImprovementsDisableAll.Visible = false;
-                        lblImprovementValue.Text = strValue;
-                        chkImprovementActive.Checked = objImprovement.Enabled;
-                        chkImprovementActive.Visible = true;
-                    }
-                    else
-                    {
-                        cmdImprovementsEnableAll.Visible = false;
-                        cmdImprovementsDisableAll.Visible = false;
-                        lblImprovementType.Text = string.Empty;
-                        lblImprovementValue.Text = string.Empty;
-                        chkImprovementActive.Checked = false;
-                        chkImprovementActive.Visible = false;
-                    }
-                }
+                cmdImprovementsEnableAll.Visible = false;
+                cmdImprovementsDisableAll.Visible = false;
+                lblImprovementValue.Text = strValue;
+                chkImprovementActive.Checked = objImprovement.Enabled;
+                chkImprovementActive.Visible = true;
+            }
+            else if (treImprovements.SelectedNode.Level == 0)
+            {
+                cmdImprovementsEnableAll.Visible = true;
+                cmdImprovementsDisableAll.Visible = true;
+                lblImprovementType.Text = string.Empty;
+                lblImprovementValue.Text = string.Empty;
+                chkImprovementActive.Checked = false;
+                chkImprovementActive.Visible = false;
             }
             else
             {
