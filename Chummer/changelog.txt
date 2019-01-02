@@ -67,6 +67,10 @@ New Strings:
 - Message_CustomDrug_Name
 - MessageTitle_CustomDrug_Name
 
+Changed Strings:
+
+- Checkbox_Options_PrintAllSkills
+
 Build 203
 
 Application Changes:

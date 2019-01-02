@@ -7146,7 +7146,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_Options_PrintAllSkills</key>
-      <text>Print all Active Skills with total score higher than 0</text>
+      <text>Print all Active Skills with Rating 0 or higher</text>
     </string>
     <string>
       <key>Checkbox_Options_UseTotalValueForFreeKnowledge</key>
