@@ -493,8 +493,8 @@
 			</armor>
 			<armor>
 				<id>d90a8823-7387-4c50-bc47-3d63f0ffd543</id>
-				<name>Ares Flashield</name>
-				<translate>Ares Flashield</translate>
+				<name>Ares FlaShield</name>
+				<translate>Ares FlaShield</translate>
 				<altpage>72</altpage>
 			</armor>
 			<armor>
@@ -595,8 +595,8 @@
 			</armor>
 			<armor>
 				<id>81fdc8a3-7106-4b08-a1f4-c72140bc90fc</id>
-				<name>Evo Hel Suit</name>
-				<translate>Evo Hel Suit</translate>
+				<name>Evo HEL Suit</name>
+				<translate>Evo HEL Suit</translate>
 				<altpage>81</altpage>
 			</armor>
 			<armor>
@@ -1901,7 +1901,7 @@
 				<altpage>113</altpage>
 			</bioware>
 			<bioware>
-				<id>11d6fbc9-c2cf-4686-8f95-ef46a83cc0ff</id>
+				<id>c60d9b5f-080b-4209-8a8e-19a76eca7a5b</id>
 				<name>Hand and Foot Webbing (Feet)</name>
 				<translate>Hand and Foot Webbing (Feet)</translate>
 				<altpage>113</altpage>
@@ -3121,6 +3121,12 @@
 				<name>Lockdown</name>
 				<translate>Lockdown</translate>
 				<altcode>LCD</altcode>
+			</book>
+			<book>
+				<id>81c02566-af38-45e3-9e46-3b1d083f84f2</id>
+				<name>Shadows In Focus: San Francisco Metroplex</name>
+				<translate>Shadows In Focus: San Francisco Metroplex</translate>
+				<altcode>SFM</altcode>
 			</book>
 			<book>
 				<id>ad384a90-33c2-40bd-b128-37117d02f36c</id>
@@ -13527,8 +13533,8 @@
 			</gear>
 			<gear>
 				<id>03d25169-214b-4e85-8a11-e33b022a6e32</id>
-				<name>Microtronica Azteca Raptor</name>
-				<translate>Microtronica Azteca Raptor</translate>
+				<name>Microtrónica Azteca Raptor</name>
+				<translate>Microtrónica Azteca Raptor</translate>
 				<altpage>17</altpage>
 			</gear>
 			<gear>
@@ -13671,8 +13677,8 @@
 			</gear>
 			<gear>
 				<id>dfc9bfdc-ef5e-45f7-8df5-fd80e011f547</id>
-				<name>Microtronica Azteca 300</name>
-				<translate>Microtronica Azteca 300</translate>
+				<name>Microtrónica Azteca 300</name>
+				<translate>Microtrónica Azteca 300</translate>
 				<altpage>64</altpage>
 			</gear>
 			<gear>
@@ -17379,8 +17385,8 @@
 			</gear>
 			<gear>
 				<id>7852ac25-b78f-4f3b-ada9-437b8009dad6</id>
-				<name>Microtronica Azteca Maletin, Luggage (2050)</name>
-				<translate>Microtronica Azteca Maletin, Luggage (2050)</translate>
+				<name>Microtrónica Azteca Maletin, Luggage (2050)</name>
+				<translate>Microtrónica Azteca Maletin, Luggage (2050)</translate>
 				<altpage>171</altpage>
 			</gear>
 			<gear>
@@ -43286,8 +43292,8 @@
 			</weapon>
 			<weapon>
 				<id>232dfc49-21ad-4b90-b05f-e5523b3ee142</id>
-				<name>Nissan Optiumum II Shotgun</name>
-				<translate>Nissan Optiumum II Shotgun</translate>
+				<name>Nissan Optimum II Shotgun</name>
+				<translate>Nissan Optimum II Shotgun</translate>
 				<altpage>38</altpage>
 			</weapon>
 			<weapon>

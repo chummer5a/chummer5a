@@ -3235,7 +3235,7 @@ namespace Chummer
                                 Text = objLocation.DisplayName(GlobalOptions.Language),
                                 ContextMenuStrip = cmsVehicleLocation
                             };
-                            treVehicles.Nodes.Insert(intNewIndex, objNode);
+                            nodRoot.Nodes.Insert(intNewIndex, objNode);
                             intNewIndex += 1;
                         }
                     }

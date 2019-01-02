@@ -119,6 +119,7 @@ namespace Chummer
             txtSelect.Visible = false;
             txtSelect.Text = string.Empty;
             txtTranslateSelection.Text = string.Empty;
+            txtTranslateSelection.Visible = false;
             cmdChangeSelection.Visible = false;
             _strSelect = string.Empty;
 

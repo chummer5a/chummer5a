@@ -177,8 +177,8 @@ namespace Chummer.UI.Shared
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddVehicle();
-            }
+				blnAddAgain = AddVehicle(treVehicles.SelectedNode?.Tag is Location objLocation ? objLocation : null);
+			}
             while (blnAddAgain);
         }
 

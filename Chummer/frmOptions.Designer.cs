@@ -1492,7 +1492,7 @@ namespace Chummer
             this.chkPrintSkillsWithZeroRating.Size = new System.Drawing.Size(274, 17);
             this.chkPrintSkillsWithZeroRating.TabIndex = 11;
             this.chkPrintSkillsWithZeroRating.Tag = "Checkbox_Options_PrintAllSkills";
-            this.chkPrintSkillsWithZeroRating.Text = "Print all Active Skills with total score higher than 0";
+            this.chkPrintSkillsWithZeroRating.Text = "Print all Active Skills with Rating 0 or higher";
             this.chkPrintSkillsWithZeroRating.UseVisualStyleBackColor = true;
             this.chkPrintSkillsWithZeroRating.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 

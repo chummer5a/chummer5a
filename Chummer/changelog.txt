@@ -37,6 +37,9 @@ Application Changes:
 - Swapping a negative quality for a cheaper one no longer costs karma.
 - Purchasing Ammo for weapons that have a particular name restriction (Narcoject PEP firing peak-energy units, for example) will properly be filtered to that restriction in the Select Gear window.
 - Fixed an issue with removing fettered spirits not properly removing the Fettered magic loss. Will retroactively fix any affected characters on load.
+- Fixed an issue with loading the attribute section that caused it not to refresh attribute-dependent properties. 
+- Fixed an issue with vehicle locations that caused them to not work correctly. Some issues remain with adding children to locations inside vehicles, but root-level locations work as expected again.
+- Fixed regressions in behaviour of the Improvements tab not properly populating names or showing what they improve. 
 
 Data Changes:
 
@@ -63,6 +66,10 @@ New Strings:
 - Checkbox_DiceRoller_VariableGlitch
 - Message_CustomDrug_Name
 - MessageTitle_CustomDrug_Name
+
+Changed Strings:
+
+- Checkbox_Options_PrintAllSkills
 
 Build 203
 

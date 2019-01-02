@@ -232,7 +232,7 @@ namespace Chummer
 
         private readonly ObservableCollection<Location> _lstGearLocations = new ObservableCollection<Location>();
         private readonly ObservableCollection<Location> _lstArmorLocations = new ObservableCollection<Location>();
-        private readonly ObservableCollection<Location> _lstVehicleLocations = new ObservableCollection<Location>();
+        private readonly TaggedObservableCollection<Location> _lstVehicleLocations = new TaggedObservableCollection<Location>();
         private readonly ObservableCollection<Location> _lstWeaponLocations = new ObservableCollection<Location>();
         private readonly ObservableCollection<string> _lstImprovementGroups = new ObservableCollection<string>();
         private readonly BindingList<CalendarWeek> _lstCalendar = new BindingList<CalendarWeek>();
@@ -274,8 +274,7 @@ namespace Chummer
             _lstPowers.BeforeRemove += PowersOnBeforeRemove;
             _lstQualities.CollectionChanged += QualitiesCollectionChanged;
 
-            RefreshAttributeBindings();
-
+            #region DependencyGraph
             CharacterDependencyGraph =
                 new DependancyGraph<string>(
                     new DependancyGraphNode<string>(nameof(CharacterName),
@@ -832,10 +831,11 @@ namespace Chummer
                         )
                     )
                 );
+            #endregion
             _objTradition = new Tradition(this);
         }
 
-        private void RefreshAttributeBindings()
+        public void RefreshAttributeBindings()
         {
             BOD.PropertyChanged += RefreshBODDependentProperties;
             AGI.PropertyChanged += RefreshAGIDependentProperties;
@@ -2410,7 +2410,6 @@ namespace Chummer
             Timekeeper.Finish("load_char_quality");
             frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Attributes"));
             AttributeSection.Load(objXmlCharacter);
-            RefreshAttributeBindings();
             Timekeeper.Start("load_char_misc2");
 
             // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
@@ -9328,7 +9327,7 @@ namespace Chummer
         /// <summary>
         /// Vehicle Locations.
         /// </summary>
-        public ObservableCollection<Location> VehicleLocations => _lstVehicleLocations;
+        public TaggedObservableCollection<Location> VehicleLocations => _lstVehicleLocations;
 
         /// <summary>
         /// Weapon Locations.
@@ -14958,7 +14957,6 @@ namespace Chummer
 
             Timekeeper.Finish("load_char_quality");
             AttributeSection.LoadFromHeroLab(xmlStatBlockBaseNode);
-            RefreshAttributeBindings();
             Timekeeper.Start("load_char_misc2");
 
             /* TODO: Find some way to get Mystic Adept PPs from Hero Lab files
