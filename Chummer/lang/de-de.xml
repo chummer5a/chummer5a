@@ -4222,7 +4222,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_PrintAllSkills</key>
-			<text>Alle Aktionsfertigkeiten mit eine Gesamtstufe von über 0 drucken</text>
+			<text>Alle Aktionsfertigkeiten mit einer Gesamtstufe von 0 und höher drucken</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_PrintExpenses</key>
