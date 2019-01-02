@@ -106,7 +106,6 @@ namespace ChummerHub.Services.GoogleDrive
                 _logger.LogError("Could Authorize Google User: " + e.ToString());
                 throw;
             }
-            return null;
         }
 
         private static IAuthorizationCodeFlow flow = null;
