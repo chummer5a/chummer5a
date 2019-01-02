@@ -12,6 +12,9 @@ namespace ChummerHub.Models.V1.Examples
  
     public class SINnerExample : IExamplesProvider
     {
+        /// <summary>
+        /// Class to enalbe Swagger to generate an Example
+        /// </summary>
         public SINnerExample()
         {
 
