@@ -1809,13 +1809,13 @@ namespace Chummer
         {
             if (show)
             {
-                if (!tabControl1.TabPages.Contains(tabPlugins))
-                    tabControl1.TabPages.Add(tabPlugins);
+                if (!tabOptions.TabPages.Contains(tabPlugins))
+                    tabOptions.TabPages.Add(tabPlugins);
             }
             else
             {
-                if (tabControl1.TabPages.Contains(tabPlugins))
-                    tabControl1.TabPages.Remove(tabPlugins);
+                if (tabOptions.TabPages.Contains(tabPlugins))
+                    tabOptions.TabPages.Remove(tabPlugins);
             }
         }
 
