@@ -28,8 +28,9 @@ namespace Chummer
     /// <summary>
     /// An AI Program or Advanced Program.
     /// </summary>
-    [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
     [HubClassTag("SourceID", true, "Name")]
+    [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
+    
     public class AIProgram : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
         private Guid _guiID;

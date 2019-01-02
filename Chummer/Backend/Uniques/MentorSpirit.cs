@@ -24,8 +24,8 @@ using System.Xml;
 
 namespace Chummer
 {
-    [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
     [HubClassTag("SourceID", true, "Name")]
+    [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
     public class MentorSpirit : IHasInternalId, IHasName, IHasXmlNode, IHasSource
     {
         private Guid _guiID;

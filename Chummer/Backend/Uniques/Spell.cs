@@ -33,8 +33,9 @@ namespace Chummer
     /// <summary>
     /// A Magician Spell.
     /// </summary>
-    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     [HubClassTag("SourceID", true, "Name")]
+    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    
     public class Spell : IHasInternalId,
         IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {

@@ -35,8 +35,9 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// A specific piece of Armor.
     /// </summary>
-    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     [HubClassTag("SourceID", true, "TotalArmor")]
+    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    
     public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating, ICanSort
     {
         private Guid _sourceID = Guid.Empty;

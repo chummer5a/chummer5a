@@ -29,8 +29,9 @@ namespace Chummer
     /// <summary>
     /// A Metamagic or Echo.
     /// </summary>
-    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     [HubClassTag("SourceID", true, "Name")]
+    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    
     public class Metamagic : IHasInternalId, IHasName, IHasXmlNode, IHasNotes,ICanRemove, IHasSource
     {
         private Guid _guiID;

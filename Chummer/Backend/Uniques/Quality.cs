@@ -72,8 +72,9 @@ namespace Chummer
     /// <summary>
     /// A Quality.
     /// </summary>
-    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     [HubClassTag("SourceID", true, "Name")]
+    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    
     public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
         private Guid _sourceID = Guid.Empty;

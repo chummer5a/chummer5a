@@ -32,8 +32,9 @@ namespace Chummer
     /// <summary>
     /// A Technomancer Program or Complex Form.
     /// </summary>
-    [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
     [HubClassTag("SourceID", true, "Name")]
+    [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
+    
     public class ComplexForm : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
         private Guid _guiID;
