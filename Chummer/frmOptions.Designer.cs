@@ -12,7 +12,7 @@ namespace Chummer
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
-        {  
+        {
             if (disposing)
             {
                 components?.Dispose();
@@ -29,14 +29,14 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.tlpOptions = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
+            this.tlpOptions = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.lblSetting = new System.Windows.Forms.Label();
             this.lblSettingName = new System.Windows.Forms.Label();
             this.cboSetting = new Chummer.ElasticComboBox();
-            this.tabOptions = new System.Windows.Forms.TabControl();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabGlobal = new System.Windows.Forms.TabPage();
             this.tlpGlobal = new Chummer.BufferedTableLayoutPanel(this.components);
             this.imgSheetLanguageFlag = new System.Windows.Forms.PictureBox();
@@ -296,12 +296,13 @@ namespace Chummer
             this.tabGitHubIssues = new System.Windows.Forms.TabPage();
             this.cmdUploadPastebin = new System.Windows.Forms.Button();
             this.tabPlugins = new System.Windows.Forms.TabPage();
-            this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.tlpPlugins = new System.Windows.Forms.TableLayoutPanel();
+            this.gbPluginsList = new System.Windows.Forms.GroupBox();
             this.clbPlugins = new System.Windows.Forms.CheckedListBox();
             this.panelPluginOption = new System.Windows.Forms.Panel();
             this.flpOKCancel = new System.Windows.Forms.FlowLayoutPanel();
-            this.tabOptions.SuspendLayout();
+            this.tlpOptions.SuspendLayout();
+            this.tabControl1.SuspendLayout();
             this.tabGlobal.SuspendLayout();
             this.tlpGlobal.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgSheetLanguageFlag)).BeginInit();
@@ -376,30 +377,10 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudKnowledgeMultiplier)).BeginInit();
             this.tabGitHubIssues.SuspendLayout();
             this.tabPlugins.SuspendLayout();
-            this.bufferedTableLayoutPanel1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.tlpPlugins.SuspendLayout();
+            this.gbPluginsList.SuspendLayout();
             this.flpOKCancel.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // tlpOptions
-            //
-            
-            this.tlpOptions.AutoSize = true;
-            this.tlpOptions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpOptions.ColumnCount = 4;
-            this.tlpOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpOptions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpOptions.Location = new System.Drawing.Point(9, 9);
-            this.tlpOptions.Name = "tlpOptions";
-            this.tlpOptions.RowCount = 3;
-            this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpOptions.Size = new System.Drawing.Size(1246, 663);
-            this.tlpOptions.TabIndex = 6;
             // 
             // cmdOK
             // 
@@ -429,6 +410,31 @@ namespace Chummer
             this.cmdCancel.Text = "Cancel";
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
+            // 
+            // tlpOptions
+            // 
+            this.tlpOptions.AutoSize = true;
+            this.tlpOptions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpOptions.ColumnCount = 4;
+            this.tlpOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpOptions.Controls.Add(this.txtSettingName, 3, 0);
+            this.tlpOptions.Controls.Add(this.lblSetting, 0, 0);
+            this.tlpOptions.Controls.Add(this.lblSettingName, 2, 0);
+            this.tlpOptions.Controls.Add(this.cboSetting, 1, 0);
+            this.tlpOptions.Controls.Add(this.tabControl1, 0, 1);
+            this.tlpOptions.Controls.Add(this.flpOKCancel, 0, 2);
+            this.tlpOptions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpOptions.Location = new System.Drawing.Point(9, 9);
+            this.tlpOptions.Name = "tlpOptions";
+            this.tlpOptions.RowCount = 3;
+            this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpOptions.Size = new System.Drawing.Size(1246, 663);
+            this.tlpOptions.TabIndex = 6;
             // 
             // txtSettingName
             // 
@@ -476,21 +482,24 @@ namespace Chummer
             this.cboSetting.TooltipText = "";
             this.cboSetting.SelectedIndexChanged += new System.EventHandler(this.cboSetting_SelectedIndexChanged);
             // 
-            // tabOptions
+            // tabControl1
             // 
-            this.tabOptions.Controls.Add(this.tabGlobal);
-            this.tabOptions.Controls.Add(this.tabCharacterOptions);
-            this.tabOptions.Controls.Add(this.tabKarmaCosts);
-            this.tabOptions.Controls.Add(this.tabOptionalRules);
-            this.tabOptions.Controls.Add(this.tabHouseRules);
-            this.tabOptions.Controls.Add(this.tabGitHubIssues);
-            this.tabOptions.Controls.Add(this.tabPlugins);
-            this.tabOptions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabOptions.Location = new System.Drawing.Point(3, 30);
-            this.tabOptions.Name = "tabOptions";
-            this.tabOptions.SelectedIndex = 0;
-            this.tabOptions.Size = new System.Drawing.Size(1240, 601);
-            this.tabOptions.TabIndex = 4;
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpOptions.SetColumnSpan(this.tabControl1, 4);
+            this.tabControl1.Controls.Add(this.tabGlobal);
+            this.tabControl1.Controls.Add(this.tabCharacterOptions);
+            this.tabControl1.Controls.Add(this.tabKarmaCosts);
+            this.tabControl1.Controls.Add(this.tabOptionalRules);
+            this.tabControl1.Controls.Add(this.tabHouseRules);
+            this.tabControl1.Controls.Add(this.tabGitHubIssues);
+            this.tabControl1.Controls.Add(this.tabPlugins);
+            this.tabControl1.Location = new System.Drawing.Point(3, 30);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(1240, 601);
+            this.tabControl1.TabIndex = 4;
             // 
             // tabGlobal
             // 
@@ -555,7 +564,7 @@ namespace Chummer
             this.tlpGlobal.Controls.Add(this.lblEditSourcebookInfo, 0, 0);
             this.tlpGlobal.Controls.Add(this.lstGlobalSourcebookInfos, 0, 1);
             this.tlpGlobal.Controls.Add(this.imgLanguageFlag, 2, 0);
-            this.tlpGlobal.Controls.Add(this.chkEnablePlugins, 4, 5);
+            this.tlpGlobal.Controls.Add(this.chkEnablePlugins, 4, 9);
             this.tlpGlobal.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpGlobal.Location = new System.Drawing.Point(9, 9);
             this.tlpGlobal.Name = "tlpGlobal";
@@ -606,8 +615,7 @@ namespace Chummer
             this.tlpGlobal.SetColumnSpan(this.chkSearchInCategoryOnly, 4);
             this.chkSearchInCategoryOnly.Location = new System.Drawing.Point(694, 211);
             this.chkSearchInCategoryOnly.Name = "chkSearchInCategoryOnly";
-            this.tlpGlobal.SetRowSpan(this.chkSearchInCategoryOnly, 2);
-            this.chkSearchInCategoryOnly.Size = new System.Drawing.Size(517, 44);
+            this.chkSearchInCategoryOnly.Size = new System.Drawing.Size(517, 19);
             this.chkSearchInCategoryOnly.TabIndex = 21;
             this.chkSearchInCategoryOnly.Tag = "Checkbox_Options_SearchInCategoryOnly";
             this.chkSearchInCategoryOnly.Text = "Searching in selection forms is restricted to the current Category";
@@ -1097,7 +1105,8 @@ namespace Chummer
             this.tlpGlobal.SetColumnSpan(this.chkHideItemsOverAvail, 4);
             this.chkHideItemsOverAvail.Location = new System.Drawing.Point(694, 111);
             this.chkHideItemsOverAvail.Name = "chkHideItemsOverAvail";
-            this.chkHideItemsOverAvail.Size = new System.Drawing.Size(517, 19);
+            this.tlpGlobal.SetRowSpan(this.chkHideItemsOverAvail, 2);
+            this.chkHideItemsOverAvail.Size = new System.Drawing.Size(517, 44);
             this.chkHideItemsOverAvail.TabIndex = 40;
             this.chkHideItemsOverAvail.Tag = "Checkbox_Option_HideItemsOverAvailLimit";
             this.chkHideItemsOverAvail.Text = "Hide items that are over the Availability Limit during character creation";
@@ -1329,16 +1338,13 @@ namespace Chummer
             // 
             // chkEnablePlugins
             // 
-            this.chkEnablePlugins.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.chkEnablePlugins.AutoSize = true;
-            this.tlpGlobal.SetColumnSpan(this.chkEnablePlugins, 4);
-            this.chkEnablePlugins.Location = new System.Drawing.Point(694, 136);
+            this.tlpGlobal.SetColumnSpan(this.chkEnablePlugins, 3);
+            this.chkEnablePlugins.Location = new System.Drawing.Point(694, 236);
             this.chkEnablePlugins.Name = "chkEnablePlugins";
-            this.chkEnablePlugins.Size = new System.Drawing.Size(517, 19);
+            this.chkEnablePlugins.Size = new System.Drawing.Size(188, 17);
             this.chkEnablePlugins.TabIndex = 51;
-            this.chkEnablePlugins.Text = "Enable Plugins (experimental)";
+            this.chkEnablePlugins.Text = "Enable Plugins (EXPERIMANTAL)";
             this.chkEnablePlugins.UseVisualStyleBackColor = true;
             this.chkEnablePlugins.CheckedChanged += new System.EventHandler(this.chkEnablePlugins_CheckedChanged);
             // 
@@ -1485,7 +1491,7 @@ namespace Chummer
             this.chkPrintSkillsWithZeroRating.Size = new System.Drawing.Size(448, 17);
             this.chkPrintSkillsWithZeroRating.TabIndex = 11;
             this.chkPrintSkillsWithZeroRating.Tag = "Checkbox_Options_PrintAllSkills";
-            this.chkPrintSkillsWithZeroRating.Text = "Print all Active Skills with total score higher than 0";
+            this.chkPrintSkillsWithZeroRating.Text = "Print all Active Skills with Rating 0 or higher";
             this.chkPrintSkillsWithZeroRating.UseVisualStyleBackColor = true;
             this.chkPrintSkillsWithZeroRating.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
@@ -4332,43 +4338,46 @@ namespace Chummer
             // 
             // tabPlugins
             // 
-            this.tabPlugins.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPlugins.Controls.Add(this.bufferedTableLayoutPanel1);
+            this.tabPlugins.Controls.Add(this.tlpPlugins);
             this.tabPlugins.Location = new System.Drawing.Point(4, 22);
             this.tabPlugins.Name = "tabPlugins";
             this.tabPlugins.Padding = new System.Windows.Forms.Padding(3);
             this.tabPlugins.Size = new System.Drawing.Size(1232, 575);
             this.tabPlugins.TabIndex = 6;
-            this.tabGitHubIssues.Tag = "Tab_Options_Plugins";
             this.tabPlugins.Text = "Plugins";
+            this.tabPlugins.UseVisualStyleBackColor = true;
             // 
-            // bufferedTableLayoutPanel1
+            // tlpPlugins
             // 
-            this.bufferedTableLayoutPanel1.AutoSize = true;
-            this.bufferedTableLayoutPanel1.ColumnCount = 2;
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75F));
-            this.bufferedTableLayoutPanel1.Controls.Add(this.groupBox1, 0, 0);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.panelPluginOption, 1, 0);
-            this.bufferedTableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bufferedTableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
-            this.bufferedTableLayoutPanel1.Name = "bufferedTableLayoutPanel1";
-            this.bufferedTableLayoutPanel1.RowCount = 2;
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(1226, 569);
-            this.bufferedTableLayoutPanel1.TabIndex = 0;
+            this.tlpPlugins.AutoScroll = true;
+            this.tlpPlugins.AutoSize = true;
+            this.tlpPlugins.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpPlugins.ColumnCount = 2;
+            this.tlpPlugins.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.tlpPlugins.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpPlugins.Controls.Add(this.gbPluginsList, 0, 0);
+            this.tlpPlugins.Controls.Add(this.panelPluginOption, 1, 0);
+            this.tlpPlugins.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpPlugins.Location = new System.Drawing.Point(3, 3);
+            this.tlpPlugins.Name = "tlpPlugins";
+            this.tlpPlugins.RowCount = 1;
+            this.tlpPlugins.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpPlugins.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 569F));
+            this.tlpPlugins.Size = new System.Drawing.Size(1226, 569);
+            this.tlpPlugins.TabIndex = 0;
             // 
-            // groupBox1
+            // gbPluginsList
             // 
-            this.groupBox1.Controls.Add(this.clbPlugins);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox1.Location = new System.Drawing.Point(3, 3);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(300, 543);
-            this.groupBox1.TabIndex = 0;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "available Plugins";
+            this.gbPluginsList.AutoSize = true;
+            this.gbPluginsList.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gbPluginsList.Controls.Add(this.clbPlugins);
+            this.gbPluginsList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gbPluginsList.Location = new System.Drawing.Point(3, 3);
+            this.gbPluginsList.Name = "gbPluginsList";
+            this.gbPluginsList.Size = new System.Drawing.Size(144, 563);
+            this.gbPluginsList.TabIndex = 0;
+            this.gbPluginsList.TabStop = false;
+            this.gbPluginsList.Text = "available Plugins";
             // 
             // clbPlugins
             // 
@@ -4376,7 +4385,7 @@ namespace Chummer
             this.clbPlugins.FormattingEnabled = true;
             this.clbPlugins.Location = new System.Drawing.Point(3, 16);
             this.clbPlugins.Name = "clbPlugins";
-            this.clbPlugins.Size = new System.Drawing.Size(294, 524);
+            this.clbPlugins.Size = new System.Drawing.Size(138, 544);
             this.clbPlugins.TabIndex = 0;
             this.clbPlugins.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbPlugins_ItemCheck);
             this.clbPlugins.SelectedValueChanged += new System.EventHandler(this.clbPlugins_SelectedValueChanged);
@@ -4384,17 +4393,20 @@ namespace Chummer
             // 
             // panelPluginOption
             // 
+            this.panelPluginOption.AutoScroll = true;
             this.panelPluginOption.AutoSize = true;
+            this.panelPluginOption.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.panelPluginOption.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelPluginOption.Location = new System.Drawing.Point(309, 3);
+            this.panelPluginOption.Location = new System.Drawing.Point(153, 3);
             this.panelPluginOption.Name = "panelPluginOption";
-            this.panelPluginOption.Size = new System.Drawing.Size(914, 543);
+            this.panelPluginOption.Size = new System.Drawing.Size(1070, 563);
             this.panelPluginOption.TabIndex = 1;
             // 
             // flpOKCancel
             // 
             this.flpOKCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.flpOKCancel.AutoSize = true;
+            this.tlpOptions.SetColumnSpan(this.flpOKCancel, 4);
             this.flpOKCancel.Controls.Add(this.cmdOK);
             this.flpOKCancel.Controls.Add(this.cmdCancel);
             this.flpOKCancel.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
@@ -4423,9 +4435,10 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_Options";
             this.Text = "Options";
-
             this.Load += new System.EventHandler(this.frmOptions_Load);
-            this.tabOptions.ResumeLayout(false);
+            this.tlpOptions.ResumeLayout(false);
+            this.tlpOptions.PerformLayout();
+            this.tabControl1.ResumeLayout(false);
             this.tabGlobal.ResumeLayout(false);
             this.tabGlobal.PerformLayout();
             this.tlpGlobal.ResumeLayout(false);
@@ -4516,9 +4529,9 @@ namespace Chummer
             this.tabGitHubIssues.PerformLayout();
             this.tabPlugins.ResumeLayout(false);
             this.tabPlugins.PerformLayout();
-            this.bufferedTableLayoutPanel1.ResumeLayout(false);
-            this.bufferedTableLayoutPanel1.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
+            this.tlpPlugins.ResumeLayout(false);
+            this.tlpPlugins.PerformLayout();
+            this.gbPluginsList.ResumeLayout(false);
             this.flpOKCancel.ResumeLayout(false);
             this.flpOKCancel.PerformLayout();
             this.ResumeLayout(false);
@@ -4586,7 +4599,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblKarmaComplexFormOptionExtra;
         private System.Windows.Forms.NumericUpDown nudKarmaComplexFormOption;
         private System.Windows.Forms.Label lblKarmaComplexFormOption;
-        private System.Windows.Forms.TabControl tabOptions;
+        private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabCharacterOptions;
         private System.Windows.Forms.TabPage tabKarmaCosts;
         private System.Windows.Forms.TabPage tabOptionalRules;
@@ -4794,10 +4807,10 @@ namespace Chummer
         private Chummer.BufferedTableLayoutPanel tlpSelectedSourcebook;
         private System.Windows.Forms.FlowLayoutPanel flpPDFOffset;
         private System.Windows.Forms.TableLayoutPanel tlpKarmaCosts;
-        private System.Windows.Forms.CheckBox chkEnablePlugins;
         private System.Windows.Forms.TabPage tabPlugins;
-        private BufferedTableLayoutPanel bufferedTableLayoutPanel1;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.CheckBox chkEnablePlugins;
+        private System.Windows.Forms.TableLayoutPanel tlpPlugins;
+        private System.Windows.Forms.GroupBox gbPluginsList;
         private System.Windows.Forms.CheckedListBox clbPlugins;
         private System.Windows.Forms.Panel panelPluginOption;
     }
