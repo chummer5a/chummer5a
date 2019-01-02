@@ -43,6 +43,7 @@ namespace Chummer.Backend.Equipment
         private string _strCategory = string.Empty;
         private string _strType = string.Empty;
         private int _intReach;
+        private int _intAmmoSlots = 1;
         private string _strDamage = string.Empty;
         private string _strAP = "0";
         private string _strMode = string.Empty;
@@ -196,6 +197,8 @@ namespace Chummer.Backend.Equipment
                 objXmlWeapon.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlWeapon.TryGetStringFieldQuickly("ammocategory", ref _strAmmoCategory);
             objXmlWeapon.TryGetStringFieldQuickly("ammoname", ref _strAmmoName);
+            if (!objXmlWeapon.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots))
+                _intAmmoSlots = 1;
             objXmlWeapon.TryGetStringFieldQuickly("rc", ref _strRC);
             objXmlWeapon.TryGetInt32FieldQuickly("conceal", ref _intConceal);
             objXmlWeapon.TryGetStringFieldQuickly("avail", ref _strAvail);
@@ -472,6 +475,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("cyberware", _blnCyberware.ToString());
             objWriter.WriteElementString("ammocategory", _strAmmoCategory);
             objWriter.WriteElementString("ammoname", _strAmmoName);
+            objWriter.WriteElementString("ammoslots", _intAmmoSlots.ToString());
             objWriter.WriteElementString("sizecategory", _strSizeCategory);
             objWriter.WriteElementString("firingmode",_eFiringMode.ToString());
             objWriter.WriteStartElement("clips");
@@ -638,6 +642,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("cyberware", ref _blnCyberware);
             objNode.TryGetStringFieldQuickly("ammocategory", ref _strAmmoCategory);
             objNode.TryGetStringFieldQuickly("ammoname", ref _strAmmoName);
+            if (!objNode.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots))
+                _intAmmoSlots = 1;
             objNode.TryGetStringFieldQuickly("sizecategory", ref _strSizeCategory);
             objNode.TryGetInt32FieldQuickly("conceal", ref _intConceal);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
@@ -1278,7 +1284,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return 1 + WeaponAccessories.Sum(objAccessory => objAccessory.AmmoSlots);
+                return _intAmmoSlots + WeaponAccessories.Sum(objAccessory => objAccessory.AmmoSlots);
             }
         }
 

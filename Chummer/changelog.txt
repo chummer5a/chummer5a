@@ -40,6 +40,7 @@ Application Changes:
 - Fixed an issue with loading the attribute section that caused it not to refresh attribute-dependent properties. 
 - Fixed an issue with vehicle locations that caused them to not work correctly. Some issues remain with adding children to locations inside vehicles, but root-level locations work as expected again.
 - Fixed regressions in behaviour of the Improvements tab not properly populating names or showing what they improve. 
+- Allowed multiple ammo slots for a single weapon to better support the Hammerli Gemini and Shiawase Arms Monsoon. Fixes #3312
 
 Data Changes:
 
@@ -60,6 +61,7 @@ Data Changes:
 - Fixed a crash when selecting components of Commlink Functionality on gear. Fixes #3178
 - Fixed damage and AP of the Narcoject PEP. Fixes #3295
 - Fixed incorrect level limitation on the Mystic Aptituide power.
+- Reorganised weapons.xml data layout per XSD.
 
 New Strings:
 
