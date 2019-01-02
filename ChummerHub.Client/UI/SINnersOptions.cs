@@ -180,25 +180,71 @@ namespace ChummerHub.Client.UI
                     }
                     this.bLogin.Enabled = false;
                     //this.bLogout.Enabled = true;
-                    this.labelAccountStatus.Text = Roles.Aggregate((a, b) => a + ", " + b);// "logged in";
-                    this.labelAccountStatus.ForeColor = Color.DarkGreen;
-                    HideWebBrowser();
+                    if (InvokeRequired)
+                    {
+                        Invoke((Action)(() =>
+                            {
+                                this.labelAccountStatus.Text = Roles.Aggregate((a, b) => a + ", " + b);
+                                this.labelAccountStatus.ForeColor = Color.DarkGreen;
+                                HideWebBrowser();
+                            })
+                        );
+                    }
+                    else
+                    {
+                        this.labelAccountStatus.Text = Roles.Aggregate((a, b) => a + ", " + b);
+                        this.labelAccountStatus.ForeColor = Color.DarkGreen;
+                        HideWebBrowser();
+                    }
+                    
+                   
                 }
                 else if (LoginStatus == false)
                 {
-                    this.bLogin.Enabled = true;
-                    //this.bLogout.Enabled = false;
-                    this.labelAccountStatus.Text = "logged out";
-                    this.labelAccountStatus.ForeColor = Color.DarkRed;
-                    ShowWebBrowser(LoginUrl);
+                    if (InvokeRequired)
+                    {
+                        Invoke((Action)(() =>
+                        {
+                            this.bLogin.Enabled = true;
+                            //this.bLogout.Enabled = false;
+                            this.labelAccountStatus.Text = "logged out";
+                            this.labelAccountStatus.ForeColor = Color.DarkRed;
+                            ShowWebBrowser(LoginUrl);
+                        })
+                        );
+                    }
+                    else
+                    {
+                        this.bLogin.Enabled = true;
+                        //this.bLogout.Enabled = false;
+                        this.labelAccountStatus.Text = "logged out";
+                        this.labelAccountStatus.ForeColor = Color.DarkRed;
+                        ShowWebBrowser(LoginUrl);
+                    }
                 }
                 else
                 {
-                    this.bLogin.Enabled = true;
-                    //this.bLogout.Enabled = true;
-                    this.labelAccountStatus.Text = "unknown";
-                    this.labelAccountStatus.ForeColor = Color.DeepPink;
-                    ShowWebBrowser(LoginUrl);
+                    if (InvokeRequired)
+                    {
+                        Invoke((Action)(() =>
+                        {
+                            this.bLogin.Enabled = true;
+                            //this.bLogout.Enabled = true;
+                            this.labelAccountStatus.Text = "unknown";
+                            this.labelAccountStatus.ForeColor = Color.DeepPink;
+                            ShowWebBrowser(LoginUrl);
+                        })
+                        );
+                    }
+                    else
+                    {
+                        this.bLogin.Enabled = true;
+                        //this.bLogout.Enabled = true;
+                        this.labelAccountStatus.Text = "unknown";
+                        this.labelAccountStatus.ForeColor = Color.DeepPink;
+                        ShowWebBrowser(LoginUrl);
+                    }
+                  
                 }
                 
 
@@ -210,7 +256,19 @@ namespace ChummerHub.Client.UI
             }
             finally
             {
-                this.tlpOptions.Enabled = true;
+                if (InvokeRequired)
+                {
+                    Invoke((Action)(() =>
+                    {
+                        this.tlpOptions.Enabled = true;
+                    })
+                    );
+                }
+                else
+                {
+                    this.tlpOptions.Enabled = true;
+                }
+
             }
         }
 

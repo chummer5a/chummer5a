@@ -49,8 +49,8 @@ namespace ChummerHub.Client.UI
             this.lGroupname = new System.Windows.Forms.Label();
             this.tbGroupname = new System.Windows.Forms.TextBox();
             this.bMultiUpload = new System.Windows.Forms.Button();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.cbUploadOnSave = new System.Windows.Forms.CheckBox();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.tlpOptions.SuspendLayout();
             this.gbVisibility.SuspendLayout();
             this.tlpVisibility.SuspendLayout();
@@ -338,10 +338,6 @@ namespace ChummerHub.Client.UI
             this.bMultiUpload.UseVisualStyleBackColor = true;
             this.bMultiUpload.Click += new System.EventHandler(this.bMultiUpload_Click);
             // 
-            // backgroundWorker1
-            // 
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            // 
             // cbUploadOnSave
             // 
             this.cbUploadOnSave.AutoSize = true;
@@ -353,6 +349,10 @@ namespace ChummerHub.Client.UI
             this.cbUploadOnSave.Text = "Upload on Save automatically (\"onlinemode\")";
             this.cbUploadOnSave.UseVisualStyleBackColor = true;
             this.cbUploadOnSave.CheckedChanged += new System.EventHandler(this.cbUploadOnSave_CheckedChanged);
+            // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
             // 
             // SINnersOptions
             // 
