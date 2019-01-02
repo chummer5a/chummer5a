@@ -4,6 +4,11 @@
         <name>ChummerHub</name>
     </assembly>
     <members>
+        <member name="M:ChummerHub.Models.V1.Examples.SINnerExample.#ctor">
+            <summary>
+            Class to enalbe Swagger to generate an Example
+            </summary>
+        </member>
         <member name="M:ChummerHub.Controllers.V1.SINnerController.GetDownloadFile(System.Guid)">
             <summary>
             Returns the Chummer-Save-File
