@@ -19738,5 +19738,6 @@ namespace Chummer
         private FlowLayoutPanel flpComplexFormDicePool;
         private Label lblComplexFormDicePool;
         private Button cmdRollComplexForm;
+
     }
 }
