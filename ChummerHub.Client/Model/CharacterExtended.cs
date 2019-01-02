@@ -50,27 +50,7 @@ namespace ChummerHub.Client.Model
 
         public string ZipFilePath { get; set; }
 
-        internal void PopulateTags()
-        {
-            var tag = new Tag();
-            tag.Tags = new List<Tag>();
-            tag.MyRuntimeObject = MyCharacter;
-            tag.MyParentTag = null;
-            tag.ParentTagId = Guid.Empty;
-            tag.Id = Guid.NewGuid();
-            tag.TagName = "Reflection";
-            //Backend.TagExtractor.MyReflectionCollection = null;
-
-            var tags = Backend.TagExtractor.ExtractTagsFromAttributes(MyCharacter, tag);
-            //var tags = Backend.TagExtractor.ExtractTags(MyCharacter, 3, tag);
-            var found = from a in MySINnerFile.SiNnerMetaData.Tags.ToList() where a.TagName == "Reflection" select a;
-            foreach (var f in found)
-            {
-                MySINnerFile.SiNnerMetaData.Tags.Remove(f);
-            }
-            MySINnerFile.SiNnerMetaData.Tags.Add(tag);
-            
-        }
+        
 
         private static Dictionary<string, Guid> _SINnerIds = null;
 
@@ -98,6 +78,28 @@ namespace ChummerHub.Client.Model
                     Properties.Settings.Default.Save();
                 }
             }
+        }
+
+        internal List<Tag> PopulateTags()
+        {
+            var tag = new Tag();
+            tag.Tags = new List<Tag>();
+            tag.MyRuntimeObject = MyCharacter;
+            tag.MyParentTag = null;
+            tag.ParentTagId = Guid.Empty;
+            tag.Id = Guid.NewGuid();
+            tag.TagName = "Reflection";
+            //Backend.TagExtractor.MyReflectionCollection = null;
+
+            var tags = Backend.TagExtractor.ExtractTagsFromAttributes(MyCharacter, tag);
+            //var tags = Backend.TagExtractor.ExtractTags(MyCharacter, 3, tag);
+            var found = from a in MySINnerFile.SiNnerMetaData.Tags.ToList() where a.TagName == "Reflection" select a;
+            foreach (var f in found)
+            {
+                MySINnerFile.SiNnerMetaData.Tags.Remove(f);
+            }
+            MySINnerFile.SiNnerMetaData.Tags.Add(tag);
+            return MySINnerFile.SiNnerMetaData.Tags;
         }
 
         public void PopulateTree(ref TreeNode root, IList<Tag> tags, IList<SearchTag> filtertags)
@@ -130,7 +132,7 @@ namespace ChummerHub.Client.Model
             {
                     foreach (var tag in tags)
                     {
-                        if (filtertags == null || (filtertags.Any(x => x.STagName == tag.TagName)
+                        if (filtertags == null || (filtertags.Any(x => x.TagName == tag.TagName)
                             || (tag.Tags.Any())))
                         {
                             var child = new TreeNode()
@@ -162,7 +164,7 @@ namespace ChummerHub.Client.Model
                 MySINnerIds.Add(MyCharacter.Alias, MySINnerFile.Id.Value);
                 MySINnerIds = MySINnerIds; //Save it!
             }
-            MySINnerFile.LastChange = File.GetLastWriteTime(MyCharacter.FileName);
+            MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
             if (MySINnerFile.SiNnerMetaData.Visibility?.UserRights == null)
             {
                 MySINnerFile.SiNnerMetaData.Visibility = new SINnerVisibility();
@@ -183,9 +185,12 @@ namespace ChummerHub.Client.Model
             
             var summary = new CharacterCache(MyCharacter.FileName);
             MySINnerFile.JsonSummary = Newtonsoft.Json.JsonConvert.SerializeObject(summary);
+            this.MySINnerFile.LastChange = this.MyCharacter.FileLastWriteTime;
             var tempfile = System.IO.Path.Combine(tempDir, summary.FileName);
-            MyCharacter.Save(tempfile);
-            
+            if (!File.Exists(tempfile))
+            {
+                File.Copy(MyCharacter.FileName, tempfile);
+            }
             
             string zipPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SINner",  MySINnerFile.Id.Value + ".chum5z");
             if (File.Exists(zipPath))

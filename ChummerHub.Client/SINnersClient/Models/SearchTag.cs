@@ -21,15 +21,31 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SearchTag class.
         /// </summary>
-        public SearchTag(Guid? id = default(Guid?), string sTagName = default(string), string sTagValue = default(string), Guid? sParentTagId = default(Guid?), IList<SearchTag> sTags = default(IList<SearchTag>), string sSearchOpterator = default(string))
+        public SearchTag(IList<SearchTag> searchTags = default(IList<SearchTag>), string searchOpterator = default(string), Guid? id = default(Guid?), string tagName = default(string), string tagValue = default(string), Guid? parentTagId = default(Guid?), Guid? siNnerId = default(Guid?), IList<Tag> tags = default(IList<Tag>), bool? isUserGenerated = default(bool?), string tagType = default(string))
         {
+            SearchTags = searchTags;
+            SearchOpterator = searchOpterator;
             Id = id;
-            STagName = sTagName;
-            STagValue = sTagValue;
-            SParentTagId = sParentTagId;
-            STags = sTags;
-            SSearchOpterator = sSearchOpterator;
+            TagName = tagName;
+            TagValue = tagValue;
+            ParentTagId = parentTagId;
+            SiNnerId = siNnerId;
+            Tags = tags;
+            IsUserGenerated = isUserGenerated;
+            TagType = tagType;
         }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "searchTags")]
+        public IList<SearchTag> SearchTags { get; set; }
+
+        /// <summary>
+        /// Possible values include: 'bigger', 'smaller', 'equal', 'contains',
+        /// 'notnull', 'exists'
+        /// </summary>
+        [JsonProperty(PropertyName = "searchOpterator")]
+        public string SearchOpterator { get; set; }
 
         /// <summary>
         /// </summary>
@@ -38,30 +54,40 @@ namespace SINners.Models
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "sTagName")]
-        public string STagName { get; set; }
+        [JsonProperty(PropertyName = "tagName")]
+        public string TagName { get; set; }
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "sTagValue")]
-        public string STagValue { get; set; }
+        [JsonProperty(PropertyName = "tagValue")]
+        public string TagValue { get; set; }
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "sParentTagId")]
-        public Guid? SParentTagId { get; set; }
+        [JsonProperty(PropertyName = "parentTagId")]
+        public Guid? ParentTagId { get; set; }
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "sTags")]
-        public IList<SearchTag> STags { get; set; }
+        [JsonProperty(PropertyName = "siNnerId")]
+        public Guid? SiNnerId { get; set; }
 
         /// <summary>
-        /// Possible values include: 'bigger', 'smaller', 'equal', 'contains',
-        /// 'notnull', 'exists'
         /// </summary>
-        [JsonProperty(PropertyName = "sSearchOpterator")]
-        public string SSearchOpterator { get; set; }
+        [JsonProperty(PropertyName = "tags")]
+        public IList<Tag> Tags { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "isUserGenerated")]
+        public bool? IsUserGenerated { get; set; }
+
+        /// <summary>
+        /// Possible values include: 'list', 'bool', 'int', 'Guid', 'string',
+        /// 'double', 'binary', 'enum', 'other', 'unknown'
+        /// </summary>
+        [JsonProperty(PropertyName = "tagType")]
+        public string TagType { get; set; }
 
     }
 }

@@ -37,6 +37,7 @@ namespace ChummerHub.Client.UI
             InitializeComponent();
             this.AutoSize = true;
             myUC = parent;
+            myUC.MyCE = parent.MyCE;
             CheckSINnerStatus();
         }
 
@@ -44,12 +45,12 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                if (myUC.MyCharacterExtended.MySINnerFile.Id == Guid.Empty)
+                if (myUC.MyCE.MySINnerFile.Id == Guid.Empty)
                 {
                     this.bUpload.Text = "SINless Character";
                     return;
                 }
-                var response = await StaticUtils.Client.GetByIdWithHttpMessagesAsync(myUC.MyCharacterExtended.MySINnerFile.Id.Value);
+                var response = await StaticUtils.Client.GetByIdWithHttpMessagesAsync(myUC.MyCE.MySINnerFile.Id.Value);
                 if (response.Response.StatusCode == HttpStatusCode.OK)
                 {
                     this.bUpload.Text = "Remove from SINners";
@@ -69,7 +70,7 @@ namespace ChummerHub.Client.UI
         private void cbSRMReady_Click(object sender, EventArgs e)
         {
             
-            var tagseq = from a in myUC.MyCharacterExtended.MySINnerFile.SiNnerMetaData.Tags
+            var tagseq = from a in myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags
                          where a.TagName == "SRM_ready"
                          select a;
             if (cbSRMReady.Checked == true)
@@ -81,7 +82,7 @@ namespace ChummerHub.Client.UI
                     tag.TagName = "SRM_ready";
                     tag.TagValue = "True";
                     tag.TagType = "bool";
-                    myUC.MyCharacterExtended.MySINnerFile.SiNnerMetaData.Tags.Add(tag);
+                    myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Add(tag);
                 }
             }
             else
@@ -90,7 +91,7 @@ namespace ChummerHub.Client.UI
                 {
                     foreach(var tag in tagseq)
                     {
-                        myUC.MyCharacterExtended.MySINnerFile.SiNnerMetaData.Tags.Remove(tag);
+                        myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Remove(tag);
                     }
                 }
             }
@@ -99,7 +100,7 @@ namespace ChummerHub.Client.UI
 
         private void tbGroupname_TextChanged(object sender, EventArgs e)
         {
-            var tagseq = from a in myUC.MyCharacterExtended.MySINnerFile.SiNnerMetaData.Tags
+            var tagseq = from a in myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags
                          where a.TagName == "GM_Groupname"
                          select a;
             if (!tagseq.Any())
@@ -107,9 +108,9 @@ namespace ChummerHub.Client.UI
                 Tag tag = new Tag(true);
                 tag.TagName = "GM_Groupname";
                 tag.TagType = "string";
-                myUC.MyCharacterExtended.MySINnerFile.SiNnerMetaData.Tags.Add(tag);
+                myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Add(tag);
             }
-            tagseq = from a in myUC.MyCharacterExtended.MySINnerFile.SiNnerMetaData.Tags
+            tagseq = from a in myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags
                      where a.TagName == "GM_Groupname"
                      select a;
             foreach (var tag in tagseq)
@@ -118,10 +119,10 @@ namespace ChummerHub.Client.UI
             }
         }
 
-        private void bUpload_Click(object sender, EventArgs e)
+        private async void bUpload_Click(object sender, EventArgs e)
         {
             if (bUpload.Text.Contains("Upload"))
-                myUC.PostSINnerAsync();
+                await Utils.PostSINnerAsync(myUC.MyCE);
             else
                 myUC.RemoveSINnerAsync();
             CheckSINnerStatus();

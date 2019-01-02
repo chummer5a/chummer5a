@@ -40,7 +40,7 @@ namespace Chummer.Backend.Uniques
     /// <summary>
     /// A Tradition
     /// </summary>
-    [HubClassTag("Name")]
+    [HubClassTag("SourceID", true, "Name")]
     public class Tradition : IHasInternalId, IHasName, IHasXmlNode, IHasSource, INotifyMultiplePropertyChanged
     {
         private Guid _guiID;
@@ -351,6 +351,9 @@ namespace Chummer.Backend.Uniques
         #endregion
 
         #region Properties
+
+        public Guid SourceID { get { return Guid.Parse(_strSourceGuid); } }
+
         /// <summary>
         /// Internal identifier which will be used to identify this Tradition in the Improvement system.
         /// </summary>
@@ -359,7 +362,8 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// GUID used to identify the original data node of this tradition
         /// </summary>
-        public string SourceID => Type == TraditionType.None ? string.Empty : _strSourceGuid;
+        /// <remarks>So why not make it an Guid?</remarks>
+        public string strSourceID => Type == TraditionType.None ? string.Empty : _strSourceGuid;
 
         private SourceString _objCachedSourceDetail;
         public SourceString SourceDetail
@@ -418,7 +422,7 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// Whether or not a Tradition is a custom one (i.e. it has a custom name and custom spirit settings)
         /// </summary>
-        public bool IsCustomTradition => SourceID == CustomMagicalTraditionGuid; // TODO: If Custom Technomancer Tradition added to streams.xml, check for that GUID as well
+        public bool IsCustomTradition => strSourceID == CustomMagicalTraditionGuid; // TODO: If Custom Technomancer Tradition added to streams.xml, check for that GUID as well
 
         /// <summary>
         /// Tradition name.
@@ -897,7 +901,7 @@ namespace Chummer.Backend.Uniques
                 return null;
             if (_xmlCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _xmlCachedMyXmlNode = GetTraditionDocument(strLanguage).SelectSingleNode("/chummer/traditions/tradition[id = \"" + SourceID + "\"]");
+                _xmlCachedMyXmlNode = GetTraditionDocument(strLanguage).SelectSingleNode("/chummer/traditions/tradition[id = \"" + strSourceID + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _xmlCachedMyXmlNode;

@@ -205,7 +205,7 @@ namespace Chummer
                                 Text = objNode.SelectSingleNode("translate")?.Value ?? objXmlQuality.Value
                             };
 
-                            string strSelect = objXmlQuality.SelectSingleNode("@select").Value;
+                            string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
                                 objChild.Text += $" ({LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language)})";
                             objParent.Nodes.Add(objChild);
@@ -225,7 +225,7 @@ namespace Chummer
                                 Text = objNode.SelectSingleNode("translate")?.Value ?? objXmlQuality.Value
                             };
 
-                            string strSelect = objXmlQuality.SelectSingleNode("@select").Value;
+                            string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
                                 objChild.Text += $" ({LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language)})";
                             objParent.Nodes.Add(objChild);

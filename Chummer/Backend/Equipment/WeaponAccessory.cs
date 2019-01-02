@@ -34,7 +34,7 @@ namespace Chummer.Backend.Equipment
     /// Weapon Accessory.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating
+    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort
     {
         private Guid _guiID;
         private readonly Character _objCharacter;
@@ -77,6 +77,7 @@ namespace Chummer.Backend.Equipment
         private string _strAddMode = string.Empty;
         private string _strAmmoReplace = string.Empty;
         private int _intAmmoBonus;
+        private int _intSortOrder;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public WeaponAccessory(Character objCharacter)
@@ -299,6 +300,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("rangebonus", _intRangeBonus.ToString());
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("ammobonus", _intAmmoBonus.ToString());
+            objWriter.WriteElementString("sortorder", _intSortOrder.ToString());
             objWriter.WriteEndElement();
 
             if (!IncludedInWeapon)
@@ -377,6 +379,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("rangebonus", ref _intRangeBonus);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
+            objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
 
             if (blnCopy && !Equipped)
             {
@@ -1009,6 +1012,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _strExtra;
             set => _strExtra = value;
+        }
+
+        /// <summary>
+        /// Used by our sorting algorithm to remember which order the user moves things to
+        /// </summary>
+        public int SortOrder
+        {
+            get => _intSortOrder;
+            set => _intSortOrder = value;
         }
         
         private XmlNode _objCachedMyXmlNode;

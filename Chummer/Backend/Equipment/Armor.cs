@@ -35,9 +35,10 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// A specific piece of Armor.
     /// </summary>
+    [HubClassTag("SourceID", true, "TotalArmor")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    [HubClassTag("Name")]
-    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating
+    
+    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating, ICanSort
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -66,6 +67,7 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodWirelessBonus;
         private bool _blnWirelessOn = true;
         private bool _blnDiscountCost;
+        private int _intSortOrder;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Armor(Character objCharacter)
@@ -442,6 +444,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
             if (_guiWeaponID != Guid.Empty)
                 objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString("D"));
+            objWriter.WriteElementString("sortorder", _intSortOrder.ToString());
             objWriter.WriteEndElement();
             _objCharacter.SourceProcess(_strSource);
         }
@@ -506,6 +509,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("damage", ref _intDamage);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
+            objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             _nodBonus = objNode["bonus"];
             _nodWirelessBonus = objNode["wirelessbonus"];
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
@@ -1162,6 +1166,16 @@ namespace Chummer.Backend.Equipment
             get => _blnDiscountCost && _objCharacter.BlackMarketDiscount;
             set => _blnDiscountCost = value;
         }
+
+        /// <summary>
+        /// Used by our sorting algorithm to remember which order the user moves things to
+        /// </summary>
+        public int SortOrder
+        {
+            get => _intSortOrder;
+            set => _intSortOrder = value;
+        }
+
         public Guid SourceID => _sourceID;
 
         #endregion

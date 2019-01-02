@@ -34,7 +34,6 @@ namespace ChummerHub.Client.UI
             this.cmdPrepareModel = new System.Windows.Forms.Button();
             this.cmdPostSINnerMetadata = new System.Windows.Forms.Button();
             this.cmdUploadChummerFile = new System.Windows.Forms.Button();
-            this.cmdDownloadChummerFile = new System.Windows.Forms.Button();
             this.labelSINnerUrl = new System.Windows.Forms.Label();
             this.cbSINnerUrl = new System.Windows.Forms.ComboBox();
             this.groupBox_Tags.SuspendLayout();
@@ -98,16 +97,6 @@ namespace ChummerHub.Client.UI
             this.cmdUploadChummerFile.UseVisualStyleBackColor = true;
             this.cmdUploadChummerFile.Click += new System.EventHandler(this.cmdUploadChummerFile_Click);
             // 
-            // cmdDownloadChummerFile
-            // 
-            this.cmdDownloadChummerFile.Location = new System.Drawing.Point(323, 166);
-            this.cmdDownloadChummerFile.Name = "cmdDownloadChummerFile";
-            this.cmdDownloadChummerFile.Size = new System.Drawing.Size(92, 23);
-            this.cmdDownloadChummerFile.TabIndex = 6;
-            this.cmdDownloadChummerFile.Text = "Download";
-            this.cmdDownloadChummerFile.UseVisualStyleBackColor = true;
-            this.cmdDownloadChummerFile.Click += new System.EventHandler(this.cmdDownloadChummerFile_Click);
-            // 
             // labelSINnerUrl
             // 
             this.labelSINnerUrl.AutoSize = true;
@@ -128,7 +117,6 @@ namespace ChummerHub.Client.UI
             this.cbSINnerUrl.Name = "cbSINnerUrl";
             this.cbSINnerUrl.Size = new System.Drawing.Size(294, 21);
             this.cbSINnerUrl.TabIndex = 9;
-            
             // 
             // SINnersAdvanced
             // 
@@ -139,7 +127,6 @@ namespace ChummerHub.Client.UI
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.cbSINnerUrl);
             this.Controls.Add(this.labelSINnerUrl);
-            this.Controls.Add(this.cmdDownloadChummerFile);
             this.Controls.Add(this.cmdUploadChummerFile);
             this.Controls.Add(this.cmdPostSINnerMetadata);
             this.Controls.Add(this.cmdPrepareModel);
@@ -161,7 +148,6 @@ namespace ChummerHub.Client.UI
         private System.Windows.Forms.Button cmdPostSINnerMetadata;
         private System.Windows.Forms.TreeView MyTagTreeView;
         private System.Windows.Forms.Button cmdUploadChummerFile;
-        private System.Windows.Forms.Button cmdDownloadChummerFile;
         private System.Windows.Forms.Label labelSINnerUrl;
         public System.Windows.Forms.ComboBox cbSINnerUrl;
     }

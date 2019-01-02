@@ -72,10 +72,12 @@ namespace Chummer
     /// <summary>
     /// A Quality.
     /// </summary>
+    [HubClassTag("SourceID", true, "Name")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    [HubClassTag("Name")]
+    
     public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
+        private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
         private string _strName = string.Empty;
         private bool _blnMetagenetic;
@@ -195,6 +197,7 @@ namespace Chummer
 
             if (objXmlQuality.TryGetField("id", Guid.TryParse, out Guid guiTemp))
             {
+                _sourceID = guiTemp;
                 _guiQualityId = guiTemp;
                 _objCachedMyXmlNode = null;
             }
@@ -410,6 +413,7 @@ namespace Chummer
             }
             else
                 _objCachedMyXmlNode = null;
+            _sourceID = _guiQualityId;
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("bp", ref _intBP);
             objNode.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
@@ -484,6 +488,9 @@ namespace Chummer
         #endregion
 
         #region Properties
+
+        public Guid SourceID { get { return _sourceID; } }
+
         /// <summary>
         /// Internal identifier which will be used to identify this Quality in the Improvement system.
         /// </summary>
@@ -1035,7 +1042,7 @@ namespace Chummer
             // Make sure the character has enough Karma to pay for the Quality.
             if (Type == QualityType.Positive)
             {
-                if (!objCharacter.Options.DontDoubleQualityPurchases)
+                if (objCharacter.Created && !objCharacter.Options.DontDoubleQualityPurchases)
                 {
                     intKarmaCost *= 2;
                 }
@@ -1086,6 +1093,11 @@ namespace Chummer
                         if (!objCharacter.ConfirmKarmaExpense(string.Format(LanguageManager.GetString("Message_QualitySwap", GlobalOptions.Language), objOldQuality.DisplayNameShort(GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language))))
                             blnAddItem = false;
                     }
+                }
+                else
+                {
+                    // Trading a more expensive quality for a less expensive quality shouldn't give you karma. TODO: Optional rule to govern this behaviour.
+                    intKarmaCost = 0;
                 }
 
                 if (!blnAddItem) return false;

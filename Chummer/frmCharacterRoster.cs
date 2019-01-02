@@ -68,42 +68,55 @@ namespace Chummer
                 watcherCharacterRosterFolder = new FileSystemWatcher(GlobalOptions.CharacterRosterPath, "*.chum5");
             }
         }
+
+        public void SetMyEventHandlers(bool deleteThem = false)
+        {
+            if (!deleteThem)
+            {
+                GlobalOptions.MRUChanged += PopulateCharacterList;
+                treCharacterList.ItemDrag += treCharacterList_ItemDrag;
+                treCharacterList.DragEnter += treCharacterList_DragEnter;
+                treCharacterList.DragDrop += treCharacterList_DragDrop;
+                treCharacterList.DragOver += treCharacterList_DragOver;
+                OnMyMouseDown += OnDefaultMouseDown;
+
+                if (watcherCharacterRosterFolder != null)
+                {
+                    watcherCharacterRosterFolder.Changed += RefreshWatchListOnly;
+                    watcherCharacterRosterFolder.Created += RefreshWatchListOnly;
+                    watcherCharacterRosterFolder.Deleted += RefreshWatchListOnly;
+                    watcherCharacterRosterFolder.Renamed += RefreshWatchListOnly;
+                }
+            }
+            else
+            {
+                GlobalOptions.MRUChanged -= PopulateCharacterList;
+                treCharacterList.ItemDrag -= treCharacterList_ItemDrag;
+                treCharacterList.DragEnter -= treCharacterList_DragEnter;
+                treCharacterList.DragDrop -= treCharacterList_DragDrop;
+                treCharacterList.DragOver -= treCharacterList_DragOver;
+                OnMyMouseDown -= OnDefaultMouseDown;
+
+                if (watcherCharacterRosterFolder != null)
+                {
+                    watcherCharacterRosterFolder.Changed -= RefreshWatchListOnly;
+                    watcherCharacterRosterFolder.Created -= RefreshWatchListOnly;
+                    watcherCharacterRosterFolder.Deleted -= RefreshWatchListOnly;
+                    watcherCharacterRosterFolder.Renamed -= RefreshWatchListOnly;
+                }
+            }
+        }
+
         private void frmCharacterRoster_Load(object sender, EventArgs e)
         {
-            GlobalOptions.MRUChanged += PopulateCharacterList;
-            treCharacterList.ItemDrag += treCharacterList_ItemDrag;
-            treCharacterList.DragEnter += treCharacterList_DragEnter;
-            treCharacterList.DragDrop += treCharacterList_DragDrop;
-            treCharacterList.DragOver += treCharacterList_DragOver;
-
-            if (watcherCharacterRosterFolder != null)
-            {
-                watcherCharacterRosterFolder.Changed += RefreshWatchListOnly;
-                watcherCharacterRosterFolder.Created += RefreshWatchListOnly;
-                watcherCharacterRosterFolder.Deleted += RefreshWatchListOnly;
-                watcherCharacterRosterFolder.Renamed += RefreshWatchListOnly;
-            }
-
+            SetMyEventHandlers();
             LoadCharacters();
             UpdateCharacter(null);
         }
 
         private void frmCharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
         {
-
-            GlobalOptions.MRUChanged -= PopulateCharacterList;
-            treCharacterList.ItemDrag -= treCharacterList_ItemDrag;
-            treCharacterList.DragEnter -= treCharacterList_DragEnter;
-            treCharacterList.DragDrop -= treCharacterList_DragDrop;
-            treCharacterList.DragOver -= treCharacterList_DragOver;
-
-            if (watcherCharacterRosterFolder != null)
-            {
-                watcherCharacterRosterFolder.Changed -= RefreshWatchListOnly;
-                watcherCharacterRosterFolder.Created -= RefreshWatchListOnly;
-                watcherCharacterRosterFolder.Deleted -= RefreshWatchListOnly;
-                watcherCharacterRosterFolder.Renamed -= RefreshWatchListOnly;
-            }
+            SetMyEventHandlers(true);
         }
 
         public void RefreshWatchListOnly(object sender, EventArgs e)
@@ -112,7 +125,7 @@ namespace Chummer
                 return;
 
             SuspendLayout();
-            LoadCharacters(false, false);
+            LoadCharacters(false, false, true, false);
             ResumeLayout();
         }
 
@@ -126,12 +139,12 @@ namespace Chummer
             {
                 treCharacterList.Nodes.Clear();
                 _lstCharacterCache.Clear();
-                LoadCharacters();
+                LoadCharacters(true, true, true, false);
                 GC.Collect();
             }
             else
             {
-                LoadCharacters(false);
+                LoadCharacters(false, true, true, false);
             }
             ResumeLayout();
         }
@@ -251,7 +264,6 @@ namespace Chummer
 
                 lstRecentsNodes = new TreeNode[lstRecents.Count];
             }
-            ConcurrentBag<List<TreeNode>> NodesToAdd = new ConcurrentBag<List<TreeNode>>();
             Parallel.Invoke(
                 () => {
                     if (objFavouriteNode != null && lstFavoritesNodes != null)
@@ -328,25 +340,46 @@ namespace Chummer
                 },
                 () =>
                 {
-                    if (blnRefreshPlugins)
+                    foreach (var plugin in Program.MainForm.PluginLoader.MyActivePlugins)
                     {
-                        try
+                        var t = Task.Factory.StartNew<IEnumerable<List<TreeNode>>>(() =>
                         {
-                            foreach (var plugin in Program.MainForm.PluginLoader.MyActivePlugins)
+                            System.Diagnostics.Trace.TraceInformation("Starting new Task to get CharacterRosterTreeNodes for plugin:" + plugin.ToString());
+                            var result = new List<List<TreeNode>>();
+                            var task = plugin.GetCharacterRosterTreeNode(_lstCharacterCache, blnRefreshPlugins);
+                            if (task.Result != null)
                             {
-                                var task = plugin.GetCharacterRosterTreeNode(_lstCharacterCache);
-                                if (task.Result != null)
+                                result.Add(task.Result.ToList());
+                            }
+                            return result;
+                        });
+                        t.ContinueWith((nodestask) =>
+                        {
+                            foreach (var nodelist in nodestask.Result)
+                            {
+                                foreach (var node in nodelist)
                                 {
-                                    NodesToAdd.Add(task.Result.ToList());
+                                    var querycoll = treCharacterList.Nodes.Cast<TreeNode>();
+                                    var found = from a in querycoll
+                                                where a.Text == node.Text && a.Tag == node.Tag
+                                                select a;
+                                    Program.MainForm.DoThreadSafe(() =>
+                                    {
+                                        if (found.Any())
+                                        {
+                                            treCharacterList.Nodes.Remove(found.FirstOrDefault());
+                                        }
+                                        if (node.Nodes.Count > 0)
+                                            treCharacterList.Nodes.Insert(1, node);
+                                        node.ExpandAll();
+                                    });
                                 }
                             }
-                        }
-                        catch (Exception e)
-                        {
-                            System.Diagnostics.Trace.TraceError(e.Message);
-                        }
+                            System.Diagnostics.Trace.TraceInformation("Task to get and add CharacterRosterTreeNodes for plugin " + plugin.ToString() + " finished.");
+                        });
                     }
                 });
+            System.Diagnostics.Trace.TraceInformation("Populating CharacterRosterTreeNode (MainThread).");
             if (objFavouriteNode != null)
             {
                 if (blnAddFavouriteNode)
@@ -365,22 +398,7 @@ namespace Chummer
                     }
                 }
             }
-            foreach (var nodelist in NodesToAdd)
-            {
-                foreach (var node in nodelist)
-                {
-                    var querycoll = treCharacterList.Nodes.Cast<TreeNode>();
-                    var found = from a in querycoll
-                                where a.Text == node.Text && a.Tag == node.Tag
-                                select a;
-                    if (found.Any())
-                    {
-                        treCharacterList.Nodes.Remove(found.FirstOrDefault());
-                    }
-                    if (node.Nodes.Count > 0)
-                        treCharacterList.Nodes.Insert(1, node);
-                }
-            }
+            
             if (objRecentNode != null)
             {
                 if (blnAddRecentNode)
@@ -552,7 +570,7 @@ namespace Chummer
                 _lstCharacterCache.TryGetValue(objSelectedNode.Tag.ToString(), out objCache);
             }
             if (objCache != null)
-                objCache.OnAfterSelect(sender, e);
+                objCache.OnMyAfterSelect(sender, e);
             UpdateCharacter(objCache);
             treCharacterList.ClearNodeBackground(treCharacterList.SelectedNode);
         }
@@ -567,7 +585,7 @@ namespace Chummer
                 {
                     try
                     {
-                        objCache.OnDoubleClick(sender, e);
+                        objCache.OnMyDoubleClick(sender, e);
                         objSelectedNode.Text = objCache.CalculatedName();
                         Cursor = Cursors.WaitCursor;
                     }
@@ -586,7 +604,7 @@ namespace Chummer
 
             if (t != null && _lstCharacterCache.TryGetValue(t.Tag.ToString(), out CharacterCache objCache) && objCache != null)
             {
-                objCache.OnKeyDown(sender, new Tuple<KeyEventArgs, TreeNode>(e, t));
+                objCache.OnMyKeyDown(sender, new Tuple<KeyEventArgs, TreeNode>(e, t));
             }
 
         }
@@ -734,6 +752,8 @@ namespace Chummer
             [IgnoreDataMember]
             public Dictionary<string, object> MyPluginDataDic { get; set; }
 
+            public Task<Character> DownLoadRunning { get; set; }
+
             public CharacterCache()
             {
                 SetDefaultEventHandlers();
@@ -743,25 +763,25 @@ namespace Chummer
 
             private void SetDefaultEventHandlers()
             {
-                OnDoubleClick += OnDefaultDoubleClick;
-                OnAfterSelect += OnDefaultAfterSelect;
-                OnKeyDown += OnDefaultKeyDown;
+                OnMyDoubleClick += OnDefaultDoubleClick;
+                OnMyAfterSelect += OnDefaultAfterSelect;
+                OnMyKeyDown += OnDefaultKeyDown;
             }
 
             [JsonIgnore]
             [XmlIgnore]
             [IgnoreDataMember]
-            public EventHandler OnDoubleClick;
+            public EventHandler OnMyDoubleClick;
 
             [JsonIgnore]
             [XmlIgnore]
             [IgnoreDataMember]
-            public EventHandler<TreeViewEventArgs> OnAfterSelect;
+            public EventHandler<TreeViewEventArgs> OnMyAfterSelect;
 
             [JsonIgnore]
             [XmlIgnore]
             [IgnoreDataMember]
-            public EventHandler<Tuple<KeyEventArgs, TreeNode>> OnKeyDown;
+            public EventHandler<Tuple<KeyEventArgs, TreeNode>> OnMyKeyDown;
 
 
             private void HandlePlugins()
@@ -783,6 +803,7 @@ namespace Chummer
 
             public CharacterCache(string strFile)
             {
+                DownLoadRunning = null;
                 SetDefaultEventHandlers();
                 string strErrorText = string.Empty;
                 XPathNavigator xmlSourceNode;
@@ -924,6 +945,10 @@ namespace Chummer
             }
 
 
+
+            
+
+
         }
         #endregion
 
@@ -1034,7 +1059,18 @@ namespace Chummer
             }
         }
 
+
+        [JsonIgnore]
+        [XmlIgnore]
+        [IgnoreDataMember]
+        public EventHandler<MouseEventArgs> OnMyMouseDown;
+
         private void TreeView_MouseDown(object sender, MouseEventArgs e)
+        {
+            OnMyMouseDown(sender, e);
+        }
+
+        public void OnDefaultMouseDown(object sender, MouseEventArgs e)
         {
             // Generic event for all TreeViews to allow right-clicking to select a TreeNode so the proper ContextMenu is shown.
             //if (e.Button == System.Windows.Forms.MouseButtons.Right)
@@ -1077,5 +1113,8 @@ namespace Chummer
             }
             Cursor = Cursors.Default;
         }
+
+           
+
     }
 }

@@ -34,7 +34,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Armor Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating
+    public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -59,6 +59,7 @@ namespace Chummer.Backend.Equipment
         private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
         private bool _blnDiscountCost;
+        private int _intSortOrder;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public ArmorMod(Character objCharacter)
@@ -249,6 +250,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString("D"));
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
+            objWriter.WriteElementString("sortorder", _intSortOrder.ToString());
             objWriter.WriteEndElement();
 
             if (!IncludedInArmor)
@@ -289,6 +291,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
+            objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
 
             XmlNode xmlChildrenNode = objNode["gears"];
             if (xmlChildrenNode != null)
@@ -680,6 +683,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _blnDiscountCost && _objCharacter.BlackMarketDiscount;
             set => _blnDiscountCost = value;
+        }
+
+        /// <summary>
+        /// Used by our sorting algorithm to remember which order the user moves things to
+        /// </summary>
+        public int SortOrder
+        {
+            get => _intSortOrder;
+            set => _intSortOrder = value;
         }
 
         /// <summary>

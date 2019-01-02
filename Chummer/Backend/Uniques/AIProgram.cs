@@ -28,8 +28,9 @@ namespace Chummer
     /// <summary>
     /// An AI Program or Advanced Program.
     /// </summary>
+    [HubClassTag("SourceID", true, "Name")]
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
-    [HubClassTag("Name")]
+    
     public class AIProgram : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
         private Guid _guiID;
@@ -159,6 +160,8 @@ namespace Chummer
         /// Internal identifier which will be used to identify this AI Program in the Improvement system.
         /// </summary>
         public string InternalId => _guiID.ToString("D");
+
+        public Guid SourceID { get { return _guiID; } }
 
         /// <summary>
         /// AI Program's name.

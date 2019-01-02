@@ -29,9 +29,10 @@ namespace Chummer
     /// <summary>
     /// A Critter Power.
     /// </summary>
+    [HubClassTag("SourceID", true, "Name")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    [HubClassTag("Name")]
-    public class CritterPower : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
+   
+    public class CritterPower : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource, ICanSort
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -51,6 +52,7 @@ namespace Chummer
         private bool _blnCountTowardsLimit = true;
         private int _intRating;
         private int _intGrade;
+        private int _intSortOrder;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public CritterPower(Character objCharacter)
@@ -162,6 +164,7 @@ namespace Chummer
             else
                 objWriter.WriteElementString("bonus", string.Empty);
             objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("sortorder", _intSortOrder.ToString());
             objWriter.WriteEndElement();
 
             if (Grade >= 0)
@@ -190,6 +193,7 @@ namespace Chummer
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             _nodBonus = objNode["bonus"];
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
         }
 
         /// <summary>
@@ -219,6 +223,9 @@ namespace Chummer
         #endregion
 
         #region Properties
+
+        public Guid SourceID { get { return _guiID; } }
+
         /// <summary>
         /// Internal identifier which will be used to identify this Critter Power in the Improvement system.
         /// </summary>
@@ -531,6 +538,15 @@ namespace Chummer
         {
             get => _intKarma;
             set => _intKarma = value;
+        }
+
+        /// <summary>
+        /// Used by our sorting algorithm to remember which order the user moves things to
+        /// </summary>
+        public int SortOrder
+        {
+            get => _intSortOrder;
+            set => _intSortOrder = value;
         }
 
         private XmlNode _objCachedMyXmlNode;

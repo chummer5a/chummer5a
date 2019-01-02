@@ -19,8 +19,8 @@ namespace ChummerHub.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<ChummerHub.Models.V1.SINner>()
-                .HasIndex(b => b.Id).IsUnique();
+            //builder.Entity<ChummerHub.Models.V1.SINner>()
+            //    .HasIndex(b => b.Id).IsUnique();
             builder.Entity<ChummerHub.Models.V1.Tag>()
                 .HasIndex(b => b.Id).IsUnique();
             builder.Entity<ChummerHub.Models.V1.Tag>()

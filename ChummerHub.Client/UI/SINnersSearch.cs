@@ -61,7 +61,7 @@ namespace ChummerHub.Client.UI
                 var list = SearchTagExtractor.ExtractTagsFromAttributes(stag.MyRuntimePropertyValue, stag);
                 if (list.Any())
                 {
-                    var ordered = (from a in list orderby a.STagName select a).ToList();
+                    var ordered = (from a in list orderby a.TagName select a).ToList();
                     ComboBox cb = new ComboBox
                     {
                         DropDownStyle = ComboBoxStyle.DropDownList,
@@ -69,7 +69,7 @@ namespace ChummerHub.Client.UI
                     };
                     flpReflectionMembers.Controls.Add(cb);
                     cb.DataSource = ordered;
-                    cb.DisplayMember = "STagName";
+                    cb.DisplayMember = "TagName";
                     cb.SelectedValueChanged += (sender, e) =>
                     {
                         var tag = cb.SelectedItem as SearchTag;
@@ -89,7 +89,7 @@ namespace ChummerHub.Client.UI
 
         private Control GetUserInputControl(SearchTag stag)
         {
-            string switchname = stag.STagName;
+            string switchname = stag.TagName;
             string typename = stag.MyRuntimePropertyValue.GetType().ToString();
             FlowLayoutPanel flp = new FlowLayoutPanel(); ;
             TextBox tb = null;
@@ -103,7 +103,7 @@ namespace ChummerHub.Client.UI
                         RadioButtonList rdb = new RadioButtonList();
                         RadioButtonListItem itrue = new RadioButtonListItem() { Text = "true" };
                         RadioButtonListItem ifalse = new RadioButtonListItem() { Text = "false" };
-                        rdb.Text = stag.STagName;
+                        rdb.Text = stag.TagName;
                         rdb.Items.Add(itrue);
                         rdb.Items.Add(ifalse);
                         rdb.SelectedIndexChanged += (sender, e) =>
@@ -165,7 +165,7 @@ namespace ChummerHub.Client.UI
                                 return;
                             PropertyInfo info = stag.MyPropertyInfo as PropertyInfo;
                             info.SetValue(stag.MyParentTag.MyRuntimePropertyValue, cb.SelectedValue);
-                            stag.STagValue = (cb.SelectedValue as Chummer.Backend.Uniques.Tradition).Name;
+                            stag.TagValue = (cb.SelectedValue as Chummer.Backend.Uniques.Tradition).Name;
                             MySetTags.Add(stag);
                             UpdateDialog();
                         };
@@ -212,9 +212,9 @@ namespace ChummerHub.Client.UI
                             SearchTag spellsearch = new SearchTag(stag.MyPropertyInfo, stag.MyRuntimeHubClassTag);
                             spellsearch.MyRuntimePropertyValue = objSpell;
                             spellsearch.MyParentTag = stag;
-                            spellsearch.STagName = objSpell.Name;
-                            spellsearch.STagValue = "";
-                            spellsearch.SSearchOpterator = "exists";
+                            spellsearch.TagName = objSpell.Name;
+                            spellsearch.TagValue = "";
+                            spellsearch.SearchOpterator = "exists";
                             MySetTags.Add(spellsearch);
                             UpdateDialog();
                         });
@@ -239,9 +239,9 @@ namespace ChummerHub.Client.UI
                             SearchTag newtag = new SearchTag(stag.MyPropertyInfo, stag.MyRuntimeHubClassTag);
                             newtag.MyRuntimePropertyValue = objQuality;
                             newtag.MyParentTag = stag;
-                            newtag.STagName = objQuality.Name;
-                            newtag.STagValue = "";
-                            newtag.SSearchOpterator = "exists";
+                            newtag.TagName = objQuality.Name;
+                            newtag.TagValue = "";
+                            newtag.SearchOpterator = "exists";
                             MySetTags.Add(newtag);
                             UpdateDialog();
                         });
@@ -260,18 +260,17 @@ namespace ChummerHub.Client.UI
         {
             flpReflectionMembers.Controls.Clear();
             MySearchCharacter.MySINnerFile.SiNnerMetaData.Tags.Clear();
-            MySearchCharacter.PopulateTags();
             MyTagTreeView.Nodes.Clear();
             TreeNode root = null;
             MySearchCharacter.PopulateTree(ref root, null, MySetTags);
             MyTagTreeView.Nodes.Add(root);
             motherTag = new SearchTag()
             {
-                STags = new List<SearchTag>(),
+                Tags = new List<Tag>(),
                 MyPropertyInfo = null,
                 MyRuntimePropertyValue = MySearchCharacter.MyCharacter,
-                STagName = "Root",
-                STagValue = "Search"
+                TagName = "Root",
+                TagValue = "Search"
             };
             Control cbChar = GetCbOrOInputontrolFromMembers(motherTag);
         }

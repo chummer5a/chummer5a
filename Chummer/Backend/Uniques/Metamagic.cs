@@ -29,8 +29,9 @@ namespace Chummer
     /// <summary>
     /// A Metamagic or Echo.
     /// </summary>
+    [HubClassTag("SourceID", true, "Name")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    [HubClassTag("Name")]
+    
     public class Metamagic : IHasInternalId, IHasName, IHasXmlNode, IHasNotes,ICanRemove, IHasSource
     {
         private Guid _guiID;
@@ -192,6 +193,9 @@ namespace Chummer
         #endregion
 
         #region Properties
+
+        public Guid SourceID { get { return _guiID; } }
+
         /// <summary>
         /// Internal identifier which will be used to identify this Metamagic in the Improvement system.
         /// </summary>

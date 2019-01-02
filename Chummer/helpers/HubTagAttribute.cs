@@ -6,23 +6,35 @@ using System.Threading.Tasks;
 
 namespace Chummer.helpers
 {
+    /// <summary>
+    /// How should instances of this Class be tagged?
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public class HubClassTagAttribute : System.Attribute
     {
         //private string _ListName;
         private string _ListInstanceNameFromProperty;
         private bool _DeleteEmptyTags = false;
+        private List<string> _includeProperties = new List<string>();
         
 
 
-
-        public HubClassTagAttribute(string listInstanceNameFromProperty, bool deleteEmptyTags = false)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="listInstanceNameFromProperty"></param>
+        /// <param name="deleteEmptyTags"></param>
+        /// <param name="includeProperties">a list of Properties to tag - delimiter is ";"</param>
+        public HubClassTagAttribute(string listInstanceNameFromProperty, bool deleteEmptyTags, string includeProperties)
         {
             //_ListName = ListName;
             _ListInstanceNameFromProperty = listInstanceNameFromProperty;
             _DeleteEmptyTags = deleteEmptyTags;
+            if (!String.IsNullOrEmpty(includeProperties))
+                _includeProperties = new List<string> (includeProperties.Split(';'));
        }
 
+        public List<string> ListIncludeProperties {  get { return _includeProperties; } }
       
 
         public string ListInstanceNameFromProperty

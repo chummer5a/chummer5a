@@ -87,9 +87,9 @@ namespace ChummerHub.Client.Backend
             {
                 SearchTag temptag = new SearchTag(prop.Item1, prop.Item2);
                 temptag.MyParentTag = parenttag;
-                temptag.SSearchOpterator = EnumSSearchOpterator.bigger.ToString();
-                temptag.STagName = prop.Item1.Name;
-                temptag.STagValue = "";
+                temptag.SearchOpterator = EnumSSearchOpterator.bigger.ToString();
+                temptag.TagName = prop.Item1.Name;
+                temptag.TagValue = "";
                 temptag.MyRuntimePropertyValue = prop.Item1.GetValue(prop.Item3);
                 resulttags.Add(temptag);
             }
@@ -129,26 +129,26 @@ namespace ChummerHub.Client.Backend
 
             var tag = new SearchTag(property, attribute);
             tag.MyRuntimePropertyValue = propValue;
-            tag.STags = new List<SearchTag>();
+            tag.SearchTags = new List<SearchTag>();
             tag.MyParentTag = parenttag;
             if (tag.MyParentTag != null)
-                tag.MyParentTag.STags.Add(tag);
-            tag.SParentTagId = parenttag?.Id;
+                tag.MyParentTag.SearchTags.Add(tag);
+            tag.ParentTagId = parenttag?.Id;
             tag.Id = Guid.NewGuid();
             if (!String.IsNullOrEmpty(attribute.TagName))
-                tag.STagName = attribute.TagName;
+                tag.TagName = attribute.TagName;
             else if (prop.Item1 != null)
-                tag.STagName = prop.Item1.Name;
+                tag.TagName = prop.Item1.Name;
             else
-                tag.STagName = prop.Item3.ToString();
+                tag.TagName = prop.Item3.ToString();
 
             Type t = prop.Item3.GetType();
             if (!String.IsNullOrEmpty(attribute.TagNameFromProperty))
             {
                 var addObject = t.GetProperty(attribute.TagNameFromProperty).GetValue(prop.Item3, null);
-                tag.STagName += String.Format("{0}", addObject);
+                tag.TagName += String.Format("{0}", addObject);
             }
-            tag.STagValue = String.Format("{0}", tag.MyRuntimePropertyValue);
+            tag.TagValue = String.Format("{0}", tag.MyRuntimePropertyValue);
             Type typeValue = tag.MyRuntimePropertyValue.GetType();
             //if (typeof(int).IsAssignableFrom(typeValue))
             //{
@@ -196,9 +196,9 @@ namespace ChummerHub.Client.Backend
             }
             if (attribute.DeleteIfEmpty)
             {
-                if (!tag.STags.Any() && String.IsNullOrEmpty(tag.STagValue))
+                if (!tag.Tags.Any() && String.IsNullOrEmpty(tag.TagValue))
                 {
-                    tag.MyParentTag.STags.Remove(tag);
+                    tag.MyParentTag.SearchTags.Remove(tag);
                 }
             }
             return proptaglist;

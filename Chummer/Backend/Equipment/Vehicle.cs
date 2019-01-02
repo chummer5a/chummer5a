@@ -35,9 +35,10 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Vehicle.
     /// </summary>
+    [HubClassTag("SourceID", true, "Name")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    [HubClassTag("Name")]
-    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasMatrixConditionMonitor, IHasPhysicalConditionMonitor, IHasLocation, IHasSource
+    
+    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasMatrixConditionMonitor, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort, IHasGear
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -92,6 +93,7 @@ namespace Chummer.Backend.Equipment
         private string _strProgramLimit = string.Empty;
         private string _strOverclocked = "None";
         private bool _blnCanSwapAttributes;
+        private int _intSortOrder;
 
         // Condition Monitor Progress.
         private int _intPhysicalCMFilled;
@@ -528,6 +530,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("modfirewall", _strModFirewall);
             objWriter.WriteElementString("modattributearray", _strModAttributeArray);
             objWriter.WriteElementString("canswapattributes", _blnCanSwapAttributes.ToString());
+            objWriter.WriteElementString("sortorder", _intSortOrder.ToString());
 
             if (string.IsNullOrEmpty(ParentID))
                 _objCharacter.SourceProcess(_strSource);
@@ -648,6 +651,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
             objNode.TryGetInt32FieldQuickly("physicalcmfilled", ref _intPhysicalCMFilled);
             objNode.TryGetStringFieldQuickly("vehiclename", ref _strVehicleName);
+            objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
 
             string strNodeInnerXml = objNode.InnerXml;
             if (strNodeInnerXml.Contains("<mods>"))
@@ -683,6 +687,7 @@ namespace Chummer.Backend.Equipment
                     Gear objGear = new Gear(_objCharacter);
                     objGear.Load(nodChild, blnCopy);
                     _lstGear.Add(objGear);
+                    objGear.Parent = this;
                 }
             }
 
@@ -708,14 +713,14 @@ namespace Chummer.Backend.Equipment
                 {
                     // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
                     _objLocation =
-                        _objCharacter.WeaponLocations.FirstOrDefault(location =>
+                        _objCharacter.VehicleLocations.FirstOrDefault(location =>
                             location.InternalId == temp.ToString());
                 }
                 else
                 {
                     //Legacy. Location is a string. 
                     _objLocation =
-                        _objCharacter.WeaponLocations.FirstOrDefault(location =>
+                        _objCharacter.VehicleLocations.FirstOrDefault(location =>
                             location.Name == strLocation);
                 }
                 _objLocation?.Children.Add(this);
@@ -1326,6 +1331,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _blnBlackMarketDiscount && _objCharacter.BlackMarketDiscount;
             set => _blnBlackMarketDiscount = value;
+        }
+
+        /// <summary>
+        /// Used by our sorting algorithm to remember which order the user moves things to
+        /// </summary>
+        public int SortOrder
+        {
+            get => _intSortOrder;
+            set => _intSortOrder = value;
         }
 
         /// <summary>
@@ -2831,7 +2845,21 @@ namespace Chummer.Backend.Equipment
             {
                 TreeNode objLoopNode = objWeapon.CreateTreeNode(cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
                 if (objLoopNode != null)
-                    lstChildNodes.Add(objLoopNode);
+                {
+                    TreeNode objParent = objNode;
+                    if (objWeapon.Location != null)
+                    {
+                        foreach (TreeNode objFind in lstChildNodes)
+                        {
+                            if (objFind.Tag != objWeapon.Location) continue;
+                            objParent = objFind;
+                            break;
+                        }
+                    }
+
+                    objParent.Nodes.Add(objLoopNode);
+                    objParent.Expand();
+                }
             }
 
             // Vehicle Gear.

@@ -38,9 +38,10 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Standard Character Gear.
     /// </summary>
+    [HubClassTag("SourceID", true, "Name")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
-    [HubClassTag("Name")]
-    public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertyChanged
+    
+    public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertyChanged, ICanSort
     {
         private Guid _guiID;
         private string _SourceGuid;
@@ -93,6 +94,7 @@ namespace Chummer.Backend.Equipment
         private string _strProgramLimit = string.Empty;
         private string _strOverclocked = "None";
         private bool _blnCanSwapAttributes;
+        private int _intSortOrder;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Gear(Character objCharacter)
@@ -769,6 +771,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("canswapattributes", _blnCanSwapAttributes.ToString());
             objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString());
             objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString());
+            objWriter.WriteElementString("sortorder", _intSortOrder.ToString());
 
             objWriter.WriteEndElement();
 
@@ -906,6 +909,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
+            objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
 
             // Convert old qi foci to the new bonus. In order to force the user to update their powers, unequip the focus and remove all improvements.
             if (_strName == "Qi Focus")
@@ -1203,7 +1207,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string InternalId => _guiID.ToString("D");
 
-        public string SourceID => _SourceGuid;
+        public Guid SourceID { get { return Guid.Parse(_SourceGuid); } }
+
+        public string strSourceID => _SourceGuid;
 
         /// <summary>
         /// Guid of a Cyberware Weapon.
@@ -1938,6 +1944,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _blnCanSwapAttributes;
             set => _blnCanSwapAttributes = value;
+        }
+
+        /// <summary>
+        /// Used by our sorting algorithm to remember which order the user moves things to
+        /// </summary>
+        public int SortOrder
+        {
+            get => _intSortOrder;
+            set => _intSortOrder = value;
         }
 
         /// <summary>
@@ -3275,10 +3290,10 @@ namespace Chummer.Backend.Equipment
                     return false;
             }
 
-            if (Parent is IHasChildren<Gear> objHasChildren)
+            if (Parent is IHasGear objHasChildren)
             {
                 DeleteGear();
-                objHasChildren.Children.Remove(this);
+                objHasChildren.Gear.Remove(this);
             }
             else
             {

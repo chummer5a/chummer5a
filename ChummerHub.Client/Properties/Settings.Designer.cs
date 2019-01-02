@@ -98,5 +98,17 @@ namespace ChummerHub.Client.Properties {
                 this["UserEmail"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UploadOnSave {
+            get {
+                return ((bool)(this["UploadOnSave"]));
+            }
+            set {
+                this["UploadOnSave"] = value;
+            }
+        }
     }
 }

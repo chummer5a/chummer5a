@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Chummer;
+using ChummerHub.Client.Backend;
 using ChummerHub.Client.UI;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -42,9 +43,9 @@ namespace ChummerHub.Client.Tests
                         {
                             career.Show();
                             SINnersUserControl sINnersUsercontrol = new SINnersUserControl();
-                            sINnersUsercontrol.SetCharacterFrom(career);
-                            await sINnersUsercontrol.PostSINnerAsync();
-                            await sINnersUsercontrol.UploadChummerFileAsync();
+                            var ce = sINnersUsercontrol.SetCharacterFrom(career);
+                            await Utils.PostSINnerAsync(ce);
+                            await Utils.UploadChummerFileAsync(ce);
                             career.Hide();
                             career.Dispose();
                         }
@@ -55,9 +56,9 @@ namespace ChummerHub.Client.Tests
                         {
                             create.Show();
                             SINnersUserControl sINnersUsercontrol = new SINnersUserControl();
-                            sINnersUsercontrol.SetCharacterFrom(create);
-                            await sINnersUsercontrol.PostSINnerAsync();
-                            await sINnersUsercontrol.UploadChummerFileAsync();
+                            var ce = sINnersUsercontrol.SetCharacterFrom(create);
+                            await Utils.PostSINnerAsync(ce);
+                            await Utils.UploadChummerFileAsync(ce);
                             create.Hide();
                             create.Dispose();
                         }
