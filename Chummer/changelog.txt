@@ -62,6 +62,7 @@ Data Changes:
 - Fixed damage and AP of the Narcoject PEP. Fixes #3295
 - Fixed incorrect level limitation on the Mystic Aptituide power.
 - Reorganised weapons.xml data layout per XSD.
+- Added emergency vehicle from Stolen Souls, courtesy of Catpocalypse on Discord.
 
 New Strings:
 
