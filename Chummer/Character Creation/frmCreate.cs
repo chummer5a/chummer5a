@@ -693,6 +693,7 @@ namespace Chummer
             // Stupid hack to get the MDI icon to show up properly.
             Icon = Icon.Clone() as Icon;
 
+            Program.MainForm.PluginLoader.CallPlugins(this);
             Timekeeper.Finish("load_frm_create");
             Timekeeper.Finish("loading");
 

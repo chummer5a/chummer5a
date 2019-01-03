@@ -706,6 +706,9 @@ namespace Chummer
             // Stupid hack to get the MDI icon to show up properly.
             Icon = Icon.Clone() as Icon;
             Timekeeper.Finish("load_frm_career");
+            Timekeeper.Start("load_plugins_frmcareer");
+            Program.MainForm.PluginLoader.CallPlugins(this);
+            Timekeeper.Finish("load_plugins_frmcareer");
             Timekeeper.Finish("loading");
 
             if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0)
@@ -14559,7 +14562,7 @@ namespace Chummer
             }
             if (blnAmmoOnly)
             {
-                frmPickGear.SelectedGear = objSelectedGear.SourceID;
+                frmPickGear.SelectedGear = objSelectedGear.strSourceID;
             }
 
             frmPickGear.ShowDialog(this);
