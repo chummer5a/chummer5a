@@ -39149,6 +39149,72 @@
 				<translate>Maersk Shipyards Wavecutter MPAC</translate>
 				<altpage>138</altpage>
 			</vehicle>
+			<vehicle translated="True">
+				<id>ee67b675-6acf-4edc-9d95-2797ddbd2f1a</id>
+				<name>Corporate Mobile Command Center (Ares Roadmaster)</name>
+				<translate>SWAT-Einsatzfahrzeug/Mobile Kommandozentrale (Ares Roadmaster), Nachahmung</translate>
+				<altpage>203</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>fbafc72c-fc94-4196-ac8a-a170ac942dd3</id>
+				<name>Law Enforcement Patrol Cruiser (Chrysler-Nissan Journey)</name>
+				<translate>Lohne-Star-Streifenwagen (Chrysler-Nissan Journey), Nachahmung</translate>
+				<altpage>203</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>ba29b0d3-8f49-4b96-a25f-4efbf139419d</id>
+				<name>Corporate Moving Truck (Conestoga Trailblazer)</name>
+				<translate>Firmenmöbelwagen (Conestoga Trailblazer), Nachahmung</translate>
+				<altpage>203</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>7114ccdd-3e5c-41a7-9c24-999e41ec5807</id>
+				<name>Corporate Moving Truck w/Trailer (Conestoga Trailblazer)</name>
+				<translate>Firmenmöbelwagen mit Anhänger (Conestoga Trailblazer), Nachahmung</translate>
+				<altpage>203</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>f1b499b8-3ff0-4134-9723-4dd5b7c22b97</id>
+				<name>Corporate Garbage Hauler (Dodge Ram Industrial: Large)</name>
+				<translate>Firmenmüllwagen (Dodge Ram Industrial: breit)</translate>
+				<altpage>203</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>bd45e719-82a5-443d-83bd-976abdcf786b</id>
+				<name>Corporate Garbage Hauler (Dodge Ram Industrial: Narrow)</name>
+				<translate>Firmenmüllwagen (Dodge Ram Industrial: schmal)</translate>
+				<altpage>203</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>c470d083-325f-43f4-a87e-3e3a56a73362</id>
+				<name>Government Black SUV (Esprit Industries Watcher)</name>
+				<translate>CAS-Regierungsfahrzeug (Esprit Industries Watcher (SUV)), Nachahmung</translate>
+				<altpage>203</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>2ddf358f-0681-4521-b2a4-735797752aba</id>
+				<name>Corporate Ambulance (GMC Endurance)</name>
+				<translate>DocWagon-Krankenwagen (GMC Endurance (Van)), Nachahmung</translate>
+				<altpage>203</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>f19454df-6b7a-45cb-97f4-f6ecf71c6fbd</id>
+				<name>Government Pursuit SUV (GMC Sidewinder)</name>
+				<translate>UCAS-Regierungsfahrzeug (GMC Sidewinder (SUV)), Nachahmung</translate>
+				<altpage>203</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>c971c599-71e6-4f19-ac41-48db3911760d</id>
+				<name>Corporate Patrol Cruiser (Honda Artemis)</name>
+				<translate>Knight-Errant-Streifenwagen (Honda Artemis), Nachahmung</translate>
+				<altpage>203</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>88724f5f-d51b-4d67-a18f-71c5262696e7</id>
+				<name>Municipal Ambulance (S-K LT-21)</name>
+				<translate>CrashCart-Krankenwagen (S-K LT-21), Nachahmung</translate>
+				<altpage>203</altpage>
+			</vehicle>
 		</vehicles>
 		<mods>
 			<mod>
