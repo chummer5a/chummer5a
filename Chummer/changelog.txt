@@ -68,6 +68,8 @@ New Strings:
 - Checkbox_DiceRoller_VariableGlitch
 - Message_CustomDrug_Name
 - MessageTitle_CustomDrug_Name
+- Tab_Options_Plugins
+- String_AvailablePlugins
 
 Changed Strings:
 
