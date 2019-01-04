@@ -9446,5 +9446,13 @@
 			<key>Message_CustomDrug_Name</key>
 			<text>Bitte geben Sie einen Namen für Ihre Droge ein.</text>
 		</string>
+		<string>
+			<key>Tab_Options_Plugins</key>
+			<text>Module</text>
+		</string>
+		<string>
+			<key>String_AvailablePlugins</key>
+			<text>Verfügbare Module</text>
+		</string>
 	</strings>
 </chummer>

@@ -9510,5 +9510,13 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<key>Message_CustomDrug_Name</key>
 			<text>Veuillez entrer un nom pour votre drogue.</text>
 		</string>
+		<string>
+			<key>Tab_Options_Plugins</key>
+			<text>Plugins</text>
+		</string>
+		<string>
+			<key>String_AvailablePlugins</key>
+			<text>Plugins disponibles</text>
+		</string>
 	</strings>
 </chummer>
