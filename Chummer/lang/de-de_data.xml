@@ -21485,7 +21485,7 @@
 			<mentor>
 				<id>a9f0231a-2354-44a9-864b-630bf3d58ddb</id>
 				<name>Coyote</name>
-				<translate>Coyote</translate>
+				<translate>Kojote</translate>
 				<choices>
 					<choice>
 						<name>Magician: +1 to all Manipulation and Illusion spell tests, preparations, and rituals.</name>
@@ -21493,12 +21493,12 @@
 					</choice>
 					<choice>
 						<name>Adept: Danger Sense level 2.</name>
-						<translate>Adept: 2 Stufen Gefahrsinn</translate>
+						<translate>Adept: 2 Stufen Gefahrsinn gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>Allgemein: +2 Würfel für alle Con-Proben</altadvantage>
-				<altdisadvantage>Coyote has a hard time with head-on attacks or brute force methods, unless it’s part of a larger con or misdirection. Anytime he is forced into such actions, he must make a Willpower + Charisma [Mental] (4) Test. If he fails, then he decides to do things another way, which means he may exit a combat instead of participating in it.</altdisadvantage>
-				<altpage>24</altpage>
+				<altadvantage>Allgemein: +2 Würfel für Überredenproben</altadvantage>
+				<altdisadvantage>Kojote steht auf Kriegsfuß mit direkten Angriffen oder Holzhammermethoden, wenn sie nicht gerade Teil einer größeren Irreführung sind. Jedes Mal, wenn er zu solchen Handlungen gezwungen wird, muss er eine Probe auf Willenskraft + Charisma (4) ablegen. Misslingt diese Probe, beschließt er, die Dinge auf eine andere Art anzugehen, was auch bedeuten kann, dass er aus einem Kampf aussteigt, statt an ihm teilzunehmen.</altdisadvantage>
+				<altpage>50</altpage>
 			</mentor>
 			<mentor>
 				<id>9f020eb4-975f-4449-9ba1-c1242159d774</id>
