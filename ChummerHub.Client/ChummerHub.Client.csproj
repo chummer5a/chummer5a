@@ -216,8 +216,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetDir)$(TargetName).* $(OutDir)Plugins\
-copy $(TargetDir)$(TargetName).* $(SolutionDir)\ChummerHub.Client.Tests\bin\Debug\Plugins\
+    <PostBuildEvent>copy $(TargetDir)$(TargetName).* $(OutDir)Plugins\ /Y
+copy $(TargetDir)$(TargetName).* $(SolutionDir)ChummerHub.Client.Tests\bin\Debug\Plugins\ /Y
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
