@@ -1201,7 +1201,7 @@ namespace Chummer.Backend.Equipment
 
         #region Properties
 
-        public Guid SourceID { get { return Guid.Parse(_SourceGuid); } }
+        public Guid SourceID => Guid.TryParse(_SourceGuid, out var result) ? result : Guid.NewGuid();
         /// <summary>
         /// Internal identifier which will be used to identify this piece of Gear in the Character.
         /// </summary>

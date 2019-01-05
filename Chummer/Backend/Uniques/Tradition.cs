@@ -352,7 +352,7 @@ namespace Chummer.Backend.Uniques
 
         #region Properties
 
-        public Guid SourceID { get { return Guid.Parse(_strSourceGuid); } }
+        public Guid SourceID => Guid.TryParse(_strSourceGuid, out var result) ? result : Guid.NewGuid();
 
         /// <summary>
         /// Internal identifier which will be used to identify this Tradition in the Improvement system.

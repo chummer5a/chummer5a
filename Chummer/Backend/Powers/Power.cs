@@ -398,6 +398,8 @@ namespace Chummer
         /// </summary>
         public string InternalId => _guiID.ToString("D");
 
+        public Guid SourceID => _sourceID;
+
         /// <summary>
         /// Power's name.
         /// </summary>

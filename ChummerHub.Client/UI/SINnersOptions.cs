@@ -18,6 +18,8 @@ using System.Diagnostics;
 using Chummer;
 using Chummer.Plugins;
 using System.Threading;
+using ChummerHub.Client.Model;
+
 //using Nemiro.OAuth;
 //using Nemiro.OAuth.LoginForms;
 
@@ -341,8 +343,7 @@ namespace ChummerHub.Client.UI
 
         private void HideWebBrowser()
         {
-            if(frmWebBrowser != null)
-                frmWebBrowser.Hide();
+            frmWebBrowser?.Hide();
         }
 
         private frmWebBrowser frmWebBrowser = null;
@@ -523,55 +524,28 @@ namespace ChummerHub.Client.UI
             thisDialog.Multiselect = true;
             thisDialog.Title = "Please Select Chummer File(s) for Batch-Upload";
 
-            if (thisDialog.ShowDialog() == DialogResult.OK)
+            if (thisDialog.ShowDialog() != DialogResult.OK) return;
+            foreach (var file in thisDialog.FileNames)
             {
-                foreach (String file in thisDialog.FileNames)
+                try
                 {
-                    try
-                    {
-                        Debug.WriteLine("Loading: " + file);
-                        Character c = PluginHandler.MainForm.LoadCharacter(file);
-                        if (c == null)
-                            continue;
-                        Debug.WriteLine("Character loaded: " + c.Name);
-                        if (c.Created)
-                        {
-                            using (frmCareer career = new frmCareer(c))
-                            {
-                                career.Show();
-                                SINnersUserControl sINnersUsercontrol = new SINnersUserControl();
-                                var ce = sINnersUsercontrol.SetCharacterFrom(career);
-                                var posttask = Utils.PostSINnerAsync(ce);
-                                posttask.Wait();
-                                var uptask = Utils.UploadChummerFileAsync(ce);
-                                uptask.Wait();
-                                career.Hide();
-                                career.Dispose();
-                            }
-                        }
-                        else
-                        {
-                            using (frmCreate create = new frmCreate(c))
-                            {
-                                create.Show();
-                                SINnersUserControl sINnersUsercontrol = new SINnersUserControl();
-                                var ce = sINnersUsercontrol.SetCharacterFrom(create);
-                                var posttask = Utils.PostSINnerAsync(ce);
-                                posttask.Wait();
-                                var uptask = Utils.UploadChummerFileAsync(ce);
-                                uptask.Wait();
-                                create.Hide();
-                                create.Dispose();
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        string msg = "Exception while loading " + file + ":";
-                        msg += Environment.NewLine + ex.ToString();
-                        Debug.Write(msg);
-                        throw;
-                    }
+                    Debug.WriteLine("Loading: " + file);
+                    var c = new Character {FileName = file};
+                    if (!c.Load())
+                        continue;
+                    Debug.WriteLine("Character loaded: " + c.Name);
+                    CharacterExtended ce = new CharacterExtended(c);
+                    var posttask = Utils.PostSINnerAsync(ce);
+                    posttask.Wait();
+                    var uptask = Utils.UploadChummerFileAsync(ce);
+                    uptask.Wait();
+                }
+                catch (Exception ex)
+                {
+                    string msg = "Exception while loading " + file + ":";
+                    msg += Environment.NewLine + ex.ToString();
+                    Debug.Write(msg);
+                    throw;
                 }
             }
         }
