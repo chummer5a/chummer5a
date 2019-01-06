@@ -21503,7 +21503,7 @@
 			<mentor>
 				<id>9f020eb4-975f-4449-9ba1-c1242159d774</id>
 				<name>Oak (SHB)</name>
-				<translate>Oak (SHB)</translate>
+				<translate>Eiche (SHB)</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Detection spells.</name>
@@ -21515,31 +21515,31 @@
 					</choice>
 				</choices>
 				<altadvantage>Allgemein: +2 Würfel auf Erinnerungsproben</altadvantage>
-				<altdisadvantage>A follower of Oak has to succeed in a CHA+WIL (3) test to retreat from a dangerous area instead of waiting till the danger passes.</altdisadvantage>
+				<altdisadvantage>Ein Jünger von Eiche sitzt Gefahrensituationen lieber aus. Ihm muss eine Probe auf Charisma + Willenskraft (3) gelingen, damit er sich aus einem Gefahrenbereich zurückziehen kann.</altdisadvantage>
 				<altpage>179</altpage>
 			</mentor>
 			<mentor>
 				<id>f8f32157-2dbf-42b3-9ea6-2e60640875c7</id>
 				<name>Artist</name>
-				<translate>Artist</translate>
+				<translate>Künstler</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Illusion spells.</name>
-						<translate>Zauberer: +2 Würfel für Illusionszauber</translate>
+						<translate>Zauberer: +2 Würfel Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Illusion</translate>
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Improved Potential.</name>
-						<translate>Adept: 1 Stufe auf Erhöhtes Potential</translate>
+						<translate>Adept: 1 x Erhöhtes Potenzial (Limit) gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>Allgemein: +2 Würfel auf Proben für Handwerk oder Fälschen</altadvantage>
-				<altdisadvantage>If for more than two weeks the Artist fails to find an audience for a presentation of her ability, she has to make a WIL+ CHA (3) test. Should she fail, she fall into depression (-2 dice for every skill linked to LOG, INT or CHA) for 1d6 days. After that (or if she succeeded in the the WIL+CHA test) a new 14 day period begins in which she has to show off her skills.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Handwerk- oder Fälschenproben (nach Wahl des Spielers)</altadvantage>
+				<altdisadvantage>Sollte es dem Künstler länger als 2 Wochen am Stück nicht gelingen, ein Publikum für eine Darbietung seines Könnens zu finden, muss ihm eine Probe auf Willenskraft + Charisma (3) gelingen. Misslingt sie, verfällt der Charakter für 1W6 Tage in eine Depression. Während dieser Zeit ist er lethargisch, unmotiviert und kann sich nicht konzentrieren. Er erhält einen Würfelpoolmodifikator von -2 auf alle Proben die mit Logik, Intuition oder Charisma verbunden sind. Danach (bzw. direkt nach einer wie oben beschriebenen gelungenen Probe) beginnt der 2-Wochen-Zyklus von Neuem.</altdisadvantage>
 				<altpage>179</altpage>
 			</mentor>
 			<mentor>
 				<id>66f968d6-96da-404e-b1ef-a4d7377ac3cf</id>
 				<name>Blacksmith</name>
-				<translate>Blacksmith</translate>
+				<translate>Schmied</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for summoning spirits of fire.</name>
@@ -21547,29 +21547,29 @@
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Enhanced Accuracy (skill)</name>
-						<translate>Adept: 2 Stufen auf Erhöhte Präzision gratis</translate>
+						<translate>Adept: 2 x Erhöhte Präzision (Fertigkeit) gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>Allgemein: +2 Würfel auf Proben für Handwerk oder Alchemie</altadvantage>
-				<altdisadvantage>You have to pass a CHA + WIL (3) check to refrain from instantanously avenging an insult.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Handwerk- oder Alchemieproben (nach Wahl des Spielers)</altadvantage>
+				<altdisadvantage>Einem Anhänger von Schmied muss eine Probe auf Charisma + Willenskraft (3) gelingen, damit er eine Kränkung nicht sofort rächt.</altdisadvantage>
 				<altpage>179</altpage>
 			</mentor>
 			<mentor>
 				<id>f152ddfc-13b2-46fa-b8d0-77e2a518acf5</id>
 				<name>Gambler</name>
-				<translate>Gambler</translate>
+				<translate>Spieler</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Manipulation Spells.</name>
-						<translate>Zauberer: +2 Würfel für Manipulationszauber</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Manipulation</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Danger Sense.</name>
 						<translate>Adept: 2 Stufen Gefahrsinn gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>Allgemein: +2 Würfel auf Proben für Gebräuche oder Fingerfertigkeit</altadvantage>
-				<altdisadvantage>Gain the Distinctive Style negative quality.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Gebräuche- oder Fingerfertigkeitsproben (nach Wahl des Spielers)</altadvantage>
+				<altdisadvantage>Personen, die zielstrebig etwas verfolgen, sich unter die Leute mischen, lügen und betrügen, fallen auf. Anhänger des Spielers erhalten den Nachteil Auffälliger Stil ohne Karmabonus.</altdisadvantage>
 				<altpage>179</altpage>
 			</mentor>
 			<mentor translated="True">
@@ -39071,31 +39071,31 @@
 				<translate>Jena Robotnik Araneus</translate>
 				<altpage>59</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>ed101e66-64fc-4a07-b1e5-dfc13526f4a5</id>
 				<name>Plex-Cab</name>
 				<translate>Plex-Cab</translate>
 				<altpage>215</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>7b728361-e755-4c86-815b-3018b17e7753</id>
 				<name>oTTo</name>
 				<translate>oTTo</translate>
 				<altpage>216</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>25ef3104-a0aa-449c-bbd2-be6aa9ade610</id>
 				<name>VW Urban Clipper</name>
 				<translate>VW Urban Clipper</translate>
 				<altpage>217</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>1f0a690e-3b60-49de-9271-9ab7305e135e</id>
 				<name>Link-Bus</name>
 				<translate>Link-Bus</translate>
 				<altpage>218</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>188daf6f-4b37-4e6f-a4a7-d7a186643787</id>
 				<name>Eurocopter FC</name>
 				<translate>Eurocopter FC</translate>
@@ -42970,43 +42970,43 @@
 				<id>bb650f05-87ea-45de-bce4-ba1c4f9e98ed</id>
 				<name>Mannlicher Marpingen Pro D (Shotgun Barrels)</name>
 				<translate>Mannlicher Marpingen Pro D (Shotgun Barrels)</translate>
-				<altpage>0</altpage>
+				<altpage>187</altpage>
 			</weapon>
 			<weapon>
 				<id>026343e0-f47d-4c5a-905d-bbbc2411b5da</id>
 				<name>Mannlicher Marpingen Pro D</name>
 				<translate>Mannlicher Marpingen Pro D</translate>
-				<altpage>0</altpage>
+				<altpage>187</altpage>
 			</weapon>
 			<weapon>
 				<id>5c04009f-7858-4c9a-bc9e-d21880e420cf</id>
 				<name>HK MP75</name>
 				<translate>HK MP75</translate>
-				<altpage>0</altpage>
+				<altpage>186</altpage>
 			</weapon>
 			<weapon>
 				<id>e8324402-ac55-49c8-8286-40486a5ec8b6</id>
 				<name>Mannlicher Dirmingen SX BD: Shotgun Barrel</name>
 				<translate>Mannlicher Dirmingen SX BD: Shotgun Barrel</translate>
-				<altpage>0</altpage>
+				<altpage>188</altpage>
 			</weapon>
 			<weapon>
 				<id>4dee0b90-b3d0-41a8-a784-8c3342a69719</id>
 				<name>Mannlicher Dirmingen SX BD</name>
 				<translate>Mannlicher Dirmingen SX BD</translate>
-				<altpage>0</altpage>
+				<altpage>188</altpage>
 			</weapon>
 			<weapon>
 				<id>deaf5a3d-7428-4a58-be14-c8447716b0f8</id>
 				<name>Mannlicher Dirmingen SX BD: Small Caliber</name>
 				<translate>Mannlicher Dirmingen SX BD: Small Caliber</translate>
-				<altpage>0</altpage>
+				<altpage>188</altpage>
 			</weapon>
 			<weapon>
 				<id>581ed592-9caa-41ea-aaf2-55cee20c94e7</id>
 				<name>Walther PP110</name>
 				<translate>Walther PP110</translate>
-				<altpage>0</altpage>
+				<altpage>185</altpage>
 			</weapon>
 			<weapon>
 				<id>44d3a69e-643e-42e2-9c68-c7772d27ffa6</id>

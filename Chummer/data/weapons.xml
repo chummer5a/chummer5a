@@ -8714,7 +8714,7 @@
       <category>Light Pistols</category>
       <type>Ranged</type>
       <conceal>0</conceal>
-      <accuracy>5</accuracy>
+      <accuracy>7</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
       <ap>0</ap>
