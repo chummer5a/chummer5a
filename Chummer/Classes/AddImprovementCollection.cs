@@ -3299,7 +3299,6 @@ namespace Chummer.Classes
 
             Log.Info("weaponcategorydv");
             Log.Info("weaponcategorydv = " + bonusNode.OuterXml);
-            XmlNodeList objXmlCategoryList = bonusNode.SelectNodes("weaponcategorydv");
             XmlNode nodWeapon = bonusNode;
 
             if (nodWeapon["selectskill"] != null)
@@ -3314,28 +3313,21 @@ namespace Chummer.Classes
 
                 Log.Info("strSelected = " + SelectedValue);
 
-                foreach (Power objPower in _objCharacter.Powers)
-                {
-                    if (objPower.InternalId == SourceName)
-                    {
-                        objPower.Extra = SelectedValue;
-                    }
-                }
-
-                Log.Info("Calling CreateImprovement");
-                CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.WeaponCategoryDV, _strUnique, ImprovementManager.ValueToInt(_objCharacter, nodWeapon["bonus"]?.InnerXml, _intRating));
+                Power objPower = _objCharacter.Powers.FirstOrDefault(p => p.InternalId == SourceName);
+                if (objPower != null)
+                    objPower.Extra = SelectedValue;
             }
-            else if (objXmlCategoryList != null)
+            else if (nodWeapon["name"] != null)
             {
-                // Run through each of the Skill Groups since there may be more than one affected.
-                foreach (XmlNode objXmlCategory in objXmlCategoryList)
-                {
-                    Log.Info("Calling CreateImprovement");
-                    CreateImprovement(objXmlCategory["name"]?.InnerText, _objImprovementSource, SourceName,
-                        Improvement.ImprovementType.WeaponCategoryDV, _strUnique, ImprovementManager.ValueToInt(_objCharacter, objXmlCategory["bonus"]?.InnerXml, _intRating));
-                }
+                SelectedValue = nodWeapon["name"].InnerText;
             }
+            else
+            {
+                Utils.BreakIfDebug();
+            }
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.WeaponCategoryDV, _strUnique, ImprovementManager.ValueToInt(_objCharacter, nodWeapon["bonus"]?.InnerXml, _intRating));
         }
 
         public void weaponcategorydice(XmlNode bonusNode)

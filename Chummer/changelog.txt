@@ -42,6 +42,7 @@ Application Changes:
 - Fixed regressions in behaviour of the Improvements tab not properly populating names or showing what they improve. 
 - Allowed multiple ammo slots for a single weapon to better support the Hammerli Gemini and Shiawase Arms Monsoon. Fixes #3312
 - Fixed an issue with inability to remove Gear from its parent.
+- Fixed behaviour of the WeaponCategoryDV Improvement when specifying names instead. Fixes a regression with the custom improvement not working correctly.
 
 Data Changes:
 
