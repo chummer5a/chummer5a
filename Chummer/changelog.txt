@@ -41,6 +41,7 @@ Application Changes:
 - Fixed an issue with vehicle locations that caused them to not work correctly. Some issues remain with adding children to locations inside vehicles, but root-level locations work as expected again.
 - Fixed regressions in behaviour of the Improvements tab not properly populating names or showing what they improve. 
 - Allowed multiple ammo slots for a single weapon to better support the Hammerli Gemini and Shiawase Arms Monsoon. Fixes #3312
+- Fixed an issue with inability to remove Gear from its parent.
 
 Data Changes:
 

@@ -3283,15 +3283,20 @@ namespace Chummer.Backend.Equipment
                     return false;
             }
 
-            if (Parent is IHasGear objHasChildren)
+            switch (Parent)
             {
-                DeleteGear();
-                objHasChildren.Gear.Remove(this);
-            }
-            else
-            {
-                DeleteGear();
-                characterObject.Gear.Remove(this);
+                case IHasGear objHasChildren:
+                    DeleteGear();
+                    objHasChildren.Gear.Remove(this);
+                    break;
+                case IHasChildren<Gear> objHasChildren:
+                    DeleteGear();
+                    objHasChildren.Children.Remove(this);
+                    break;
+                default:
+                    DeleteGear();
+                    characterObject.Gear.Remove(this);
+                    break;
             }
 
             return true;
