@@ -71,7 +71,7 @@ namespace Chummer
     /// <summary>
     /// A Quality.
     /// </summary>
-    [HubClassTag("SourceID", true, "Name")]
+    [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {

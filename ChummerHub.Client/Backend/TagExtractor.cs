@@ -147,7 +147,8 @@ namespace ChummerHub.Client.Backend
 
         private static void ExtractTagsAddIncludeProperties(object obj, List<Tag> resulttags, Tuple<Chummer.HubClassTagAttribute, object> classprop, Tag tag)
         {
-            foreach (string includeprop in classprop.Item1.ListIncludeProperties)
+            //add the TagComment
+            foreach (string includeprop in classprop.Item1.ListCommentProperties)
             {
                 var propfoundseq = from p in obj.GetType().GetProperties()
                                    where p.Name == includeprop
@@ -159,23 +160,36 @@ namespace ChummerHub.Client.Backend
                 var includeInstance = propfoundseq.FirstOrDefault().GetValue(obj);
                 if (includeInstance != null)
                 {
-                    //DONT set a whole new Tag, Just add the Comment!
-                    tag.TagComment = includeInstance.ToString();
-
-                    //Old Code
-                    //var instanceTag = new Tag(includeInstance, classprop.Item1);
-                    //instanceTag.SiNnerId = tag.SiNnerId;
-                    //instanceTag.ParentTagId = tag.Id;
-                    //instanceTag.MyParentTag = tag;
-                    //tag.Tags.Add(instanceTag);
-                    //resulttags.Add(instanceTag);
-                    //instanceTag.MyRuntimeHubClassTag = classprop.Item1;
-                    //instanceTag.TagName = includeprop;
-                    //SetTagTypeEnumFromCLRType(instanceTag, obj.GetType());
-                    //instanceTag.TagValue = includeInstance.ToString();
+                    tag.TagComment += includeInstance.ToString() + " ";
                 }
-
             }
+            tag.TagComment = tag.TagComment.TrimEnd(" ");
+            //add the "Extra" to this Instance
+            foreach(string includeprop in classprop.Item1.ListExtraProperties)
+            {
+                var propfoundseq = from p in obj.GetType().GetProperties()
+                                   where p.Name == includeprop
+                                   select p;
+                if(!propfoundseq.Any())
+                {
+                    throw new ArgumentOutOfRangeException("Could not find property " + includeprop + " on instance of type " + obj.GetType().ToString() + ".");
+                }
+                var includeInstance = propfoundseq.FirstOrDefault().GetValue(obj);
+                if(includeInstance != null && !String.IsNullOrEmpty(includeInstance.ToString()))
+                {
+                    var instanceTag = new Tag(includeInstance, classprop.Item1);
+                    instanceTag.SiNnerId = tag.SiNnerId;
+                    instanceTag.ParentTagId = tag.Id;
+                    instanceTag.MyParentTag = tag;
+                    tag.Tags.Add(instanceTag);
+                    resulttags.Add(instanceTag);
+                    instanceTag.MyRuntimeHubClassTag = classprop.Item1;
+                    instanceTag.TagName = includeprop;
+                    SetTagTypeEnumFromCLRType(instanceTag, obj.GetType());
+                    instanceTag.TagValue = includeInstance.ToString();
+                }
+            }
+            
         }
 
         internal static IList<Tag> ExtractTagsFromAttributesForProperty(Tuple<PropertyInfo, Chummer.HubTagAttribute, Object> prop, Tag parenttag)

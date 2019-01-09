@@ -11,6 +11,7 @@ WebService Changes:
 
 Application Changes:
 
+- Added the "Extra" for each HubClassTagAttribute (so that Increase [Attribute] gets a + WIL-Childtag)
 - Show TagComment in the TreeNodeList of the Tags
 - HubClassTags saves it's children in the Comment (SourceID should be enough to identify it)
 - tweaked Login/Logout (no spamming of frmWebBrowser anymore)

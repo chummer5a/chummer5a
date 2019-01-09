@@ -38,7 +38,7 @@ namespace Chummer
     /// <summary>
     /// An Adept Power.
     /// </summary>
-    [HubClassTag("SourceID", true, "Name")]
+    [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayNameMethod(GlobalOptions.DefaultLanguage)}")]
     public class Power : INotifyMultiplePropertyChanged, IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {

@@ -15,7 +15,9 @@ namespace Chummer
         //private string _ListName;
         private string _ListInstanceNameFromProperty;
         private bool _DeleteEmptyTags = false;
-        private List<string> _includeProperties = new List<string>();
+        private List<string> _CommentProperties = new List<string>();
+        private List<string> _ExtraProperties = new List<string>();
+        
 
 
 
@@ -24,17 +26,21 @@ namespace Chummer
         /// </summary>
         /// <param name="listInstanceNameFromProperty"></param>
         /// <param name="deleteEmptyTags"></param>
-        /// <param name="includeProperties">a list of Properties to tag - delimiter is ";"</param>
-        public HubClassTagAttribute(string listInstanceNameFromProperty, bool deleteEmptyTags, string includeProperties)
+        /// <param name="commentProperties">a list of Properties to tag - delimiter is ";"</param>
+        public HubClassTagAttribute(string listInstanceNameFromProperty, bool deleteEmptyTags, string commentProperties, string extraProperties)
         {
             //_ListName = ListName;
             _ListInstanceNameFromProperty = listInstanceNameFromProperty;
             _DeleteEmptyTags = deleteEmptyTags;
-            if(!String.IsNullOrEmpty(includeProperties))
-                _includeProperties = new List<string>(includeProperties.Split(';'));
+            if(!String.IsNullOrEmpty(commentProperties))
+                _CommentProperties = new List<string>(commentProperties.Split(';'));
+            if(!String.IsNullOrEmpty(extraProperties))
+                _ExtraProperties = new List<string>(extraProperties.Split(';'));
         }
 
-        public List<string> ListIncludeProperties { get { return _includeProperties; } }
+        public List<string> ListCommentProperties { get { return _CommentProperties; } }
+
+        public List<string> ListExtraProperties { get { return _ExtraProperties; } }
 
 
         public string ListInstanceNameFromProperty
