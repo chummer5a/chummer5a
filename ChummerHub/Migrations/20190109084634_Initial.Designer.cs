@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChummerHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20181122140549_visibility3")]
-    partial class visibility3
+    [Migration("20190109084634_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
+                .HasAnnotation("ProductVersion", "2.2.0-rtm-35687")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -47,14 +47,40 @@ namespace ChummerHub.Migrations
                     b.ToTable("AspNetRoles");
                 });
 
-            modelBuilder.Entity("ChummerHub.Models.V1.SINner", b =>
+            modelBuilder.Entity("ChummerHub.Models.V1.SINerUserRight", b =>
                 {
-                    b.Property<Guid?>("SINnerId")
+                    b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("DownloadUrlInternal");
+                    b.Property<bool>("CanEdit");
+
+                    b.Property<string>("EMail");
+
+                    b.Property<Guid?>("SINnerId");
+
+                    b.Property<Guid?>("SINnerVisibilityId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SINnerId");
+
+                    b.HasIndex("SINnerVisibilityId");
+
+                    b.ToTable("UserRights");
+                });
+
+            modelBuilder.Entity("ChummerHub.Models.V1.SINner", b =>
+                {
+                    b.Property<Guid?>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("DownloadUrl");
 
                     b.Property<string>("GoogleDriveFileId");
+
+                    b.Property<string>("JsonSummary");
+
+                    b.Property<DateTime>("LastChange");
 
                     b.Property<Guid?>("SINnerMetaDataId");
 
@@ -62,21 +88,16 @@ namespace ChummerHub.Migrations
 
                     b.Property<DateTime?>("UploadDateTime");
 
-                    b.HasKey("SINnerId");
-
-                    b.HasIndex("SINnerId")
-                        .IsUnique();
+                    b.HasKey("Id");
 
                     b.HasIndex("SINnerMetaDataId");
-
-                    b.HasIndex("UploadClientId");
 
                     b.ToTable("SINners");
                 });
 
             modelBuilder.Entity("ChummerHub.Models.V1.SINnerComment", b =>
                 {
-                    b.Property<Guid?>("SINnerCommentId")
+                    b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Comment");
@@ -87,30 +108,28 @@ namespace ChummerHub.Migrations
 
                     b.Property<Guid?>("SINnerId");
 
-                    b.HasKey("SINnerCommentId");
-
-                    b.HasIndex("SINnerId");
+                    b.HasKey("Id");
 
                     b.ToTable("SINnerComments");
                 });
 
             modelBuilder.Entity("ChummerHub.Models.V1.SINnerMetaData", b =>
                 {
-                    b.Property<Guid>("SINnerMetaDataId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid?>("VisibilitySINnerVisibilityId");
+                    b.Property<Guid?>("VisibilityId");
 
-                    b.HasKey("SINnerMetaDataId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("VisibilitySINnerVisibilityId");
+                    b.HasIndex("VisibilityId");
 
                     b.ToTable("SINnerMetaData");
                 });
 
             modelBuilder.Entity("ChummerHub.Models.V1.SINnerVisibility", b =>
                 {
-                    b.Property<Guid?>("SINnerVisibilityId")
+                    b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Groupname");
@@ -119,14 +138,14 @@ namespace ChummerHub.Migrations
 
                     b.Property<bool>("IsPublic");
 
-                    b.HasKey("SINnerVisibilityId");
+                    b.HasKey("Id");
 
                     b.ToTable("SINnerVisibility");
                 });
 
             modelBuilder.Entity("ChummerHub.Models.V1.Tag", b =>
                 {
-                    b.Property<Guid>("TagId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<bool>("IsUserGenerated");
@@ -137,7 +156,7 @@ namespace ChummerHub.Migrations
 
                     b.Property<Guid?>("SINnerMetaDataId");
 
-                    b.Property<Guid?>("TagId1");
+                    b.Property<Guid?>("TagId");
 
                     b.Property<string>("TagName");
 
@@ -145,38 +164,32 @@ namespace ChummerHub.Migrations
 
                     b.Property<string>("TagValue");
 
-                    b.HasKey("TagId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("SINnerId");
+                    b.HasIndex("Id")
+                        .IsUnique();
 
                     b.HasIndex("SINnerMetaDataId");
 
-                    b.HasIndex("TagId")
-                        .IsUnique();
-
-                    b.HasIndex("TagId1");
+                    b.HasIndex("TagId");
 
                     b.HasIndex("TagName", "TagValue");
 
-                    b.ToTable("Tag");
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("ChummerHub.Models.V1.UploadClient", b =>
                 {
-                    b.Property<Guid>("UploadClientId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("ChummerVersion");
 
                     b.Property<string>("ClientSecret");
 
-                    b.Property<Guid?>("SINnerVisibilityId");
-
                     b.Property<string>("UserEmail");
 
-                    b.HasKey("UploadClientId");
-
-                    b.HasIndex("SINnerVisibilityId");
+                    b.HasKey("Id");
 
                     b.ToTable("UploadClients");
                 });
@@ -214,10 +227,6 @@ namespace ChummerHub.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
-                    b.Property<Guid?>("SINnerVisibilityId");
-
-                    b.Property<Guid?>("SINnerVisibilityId1");
-
                     b.Property<string>("SecurityStamp");
 
                     b.Property<bool>("TwoFactorEnabled");
@@ -234,10 +243,6 @@ namespace ChummerHub.Migrations
                         .IsUnique()
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("SINnerVisibilityId");
-
-                    b.HasIndex("SINnerVisibilityId1");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -325,6 +330,13 @@ namespace ChummerHub.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("ChummerHub.Models.V1.SINerUserRight", b =>
+                {
+                    b.HasOne("ChummerHub.Models.V1.SINnerVisibility")
+                        .WithMany("UserRights")
+                        .HasForeignKey("SINnerVisibilityId");
+                });
+
             modelBuilder.Entity("ChummerHub.Models.V1.SINner", b =>
                 {
                     b.HasOne("ChummerHub.Models.V1.SINnerMetaData", "SINnerMetaData")
@@ -336,7 +348,7 @@ namespace ChummerHub.Migrations
                 {
                     b.HasOne("ChummerHub.Models.V1.SINnerVisibility", "Visibility")
                         .WithMany()
-                        .HasForeignKey("VisibilitySINnerVisibilityId");
+                        .HasForeignKey("VisibilityId");
                 });
 
             modelBuilder.Entity("ChummerHub.Models.V1.Tag", b =>
@@ -347,25 +359,7 @@ namespace ChummerHub.Migrations
 
                     b.HasOne("ChummerHub.Models.V1.Tag")
                         .WithMany("Tags")
-                        .HasForeignKey("TagId1");
-                });
-
-            modelBuilder.Entity("ChummerHub.Models.V1.UploadClient", b =>
-                {
-                    b.HasOne("ChummerHub.Models.V1.SINnerVisibility")
-                        .WithMany("CanEditClientList")
-                        .HasForeignKey("SINnerVisibilityId");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.ApplicationUser", b =>
-                {
-                    b.HasOne("ChummerHub.Models.V1.SINnerVisibility")
-                        .WithMany("CanEditUserList")
-                        .HasForeignKey("SINnerVisibilityId");
-
-                    b.HasOne("ChummerHub.Models.V1.SINnerVisibility")
-                        .WithMany("IsVisibleToUserList")
-                        .HasForeignKey("SINnerVisibilityId1");
+                        .HasForeignKey("TagId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

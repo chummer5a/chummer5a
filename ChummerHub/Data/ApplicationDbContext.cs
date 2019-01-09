@@ -28,7 +28,7 @@ namespace ChummerHub.Data
             builder.Entity<ChummerHub.Models.V1.SINerUserRight>()
                 .HasIndex(b => b.SINnerId);
 
-
+            
         }
 
         public DbSet<ChummerHub.Models.V1.SINner> SINners { get; set; }

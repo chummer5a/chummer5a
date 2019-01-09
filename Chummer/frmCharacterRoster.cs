@@ -369,7 +369,7 @@ namespace Chummer
                                         {
                                             treCharacterList.Nodes.Remove(found.FirstOrDefault());
                                         }
-                                        if(node.Nodes.Count > 0)
+                                        if(node.Nodes.Count > 0 || !String.IsNullOrEmpty(node.ToolTipText))
                                             treCharacterList.Nodes.Insert(1, node);
                                         node.ExpandAll();
                                     });

@@ -148,6 +148,35 @@ namespace ChummerHub.Controllers
         [HttpGet]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("DeleteAndRecreate")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<ActionResult<string>> GetDeleteAndRecreateDb()
+        {
+            try
+            {
+#if DEBUG
+                System.Diagnostics.Trace.TraceInformation("Users is NOT checked in Debug!");
+#else
+                var user = await _signInManager.UserManager.GetUserAsync(User);
+                if(user == null)
+                    return Unauthorized();
+                var roles = await _userManager.GetRolesAsync(user);
+                if(!roles.Contains("Administrator"))
+                    return Unauthorized();
+#endif
+                await _context.Database.EnsureDeletedAsync();
+                Program.InitializeDatabase();
+                return Ok("Database recreated");
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [HttpGet]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SinnersByAuthorization")]
         [Authorize]

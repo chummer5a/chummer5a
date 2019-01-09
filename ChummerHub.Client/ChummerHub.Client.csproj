@@ -214,6 +214,9 @@
   <ItemGroup>
     <Resource Include="Resources\group.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="changelog.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetDir)$(TargetName).* $(OutDir)Plugins\ /Y

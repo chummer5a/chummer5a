@@ -20,33 +20,13 @@ namespace ChummerHub
 {
     public class Program
     {
+        public static IWebHost MyHost = null;
         public static void Main(string[] args)
         {
 
-            var host = CreateWebHostBuilder(args).Build();
-            using (var scope = host.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                var context = services.GetRequiredService<ApplicationDbContext>();
-                context.Database.Migrate();
-
-                // requires using Microsoft.Extensions.Configuration;
-                var config = host.Services.GetRequiredService<IConfiguration>();
-                // Set password with the Secret Manager tool.
-                // dotnet user-secrets set SeedUserPW <pw>
-
-                var testUserPw = config["SeedUserPW"];
-                try
-                {
-                    SeedData.Initialize(services, testUserPw).Wait();
-                }
-                catch (Exception ex)
-                {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex.Message, "An error occurred seeding the DB.");
-                }
-            }
-            host.Run();
+            MyHost = CreateWebHostBuilder(args).Build();
+            InitializeDatabase();
+            MyHost.Run();
             return;
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
@@ -72,6 +52,41 @@ namespace ChummerHub
             //}
 
             //host.Run();
+        }
+
+        public static void InitializeDatabase()
+        {
+            
+            using(var scope = MyHost.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                ApplicationDbContext context = services.GetRequiredService<ApplicationDbContext>();
+                try
+                {
+                    context.Database.Migrate();
+                }
+                catch(Exception e)
+                {
+                    logger.LogError(e.Message, "An error occurred migrating the DB: " + e.ToString());
+                    context.Database.EnsureDeleted();
+                    context.Database.EnsureCreated();
+                }
+                // requires using Microsoft.Extensions.Configuration;
+                var config = services.GetRequiredService<IConfiguration>();
+                // Set password with the Secret Manager tool.
+                // dotnet user-secrets set SeedUserPW <pw>
+                var testUserPw = config["SeedUserPW"];
+                try
+                {
+                    SeedData.Initialize(services, testUserPw).Wait();
+                }
+                catch(Exception ex)
+                {
+                    logger.LogError(ex.Message, "An error occurred seeding the DB: " + ex.ToString());
+                }
+            }
+
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

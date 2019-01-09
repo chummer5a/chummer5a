@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <None Remove="googleb94c18697e68333b.html" />
+    <None Remove="Migrations\ApplicationDbContextModelSnapshot.cs.txt" />
   </ItemGroup>
 
   <ItemGroup>

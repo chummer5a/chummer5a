@@ -16,20 +16,16 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINnerMetaData class.
         /// </summary>
-        public SINnerMetaData()
-        {
-            Tags = new List<Tag>();
-        }
+        public SINnerMetaData() { }
 
         /// <summary>
         /// Initializes a new instance of the SINnerMetaData class.
         /// </summary>
-        public SINnerMetaData(Guid? id = default(Guid?),
-            SINnerVisibility visibility = default(SINnerVisibility))
+        public SINnerMetaData(Guid? id = default(Guid?), SINnerVisibility visibility = default(SINnerVisibility), List<Tag> tags = default(List<Tag>))
         {
             Id = id;
             Visibility = visibility;
-            Tags = new List<Tag>();
+            Tags = tags;
         }
 
         /// <summary>

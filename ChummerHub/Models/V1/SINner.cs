@@ -25,7 +25,7 @@ namespace ChummerHub.Models.V1
 
         public DateTime? UploadDateTime { get; set; }
 
-        public DateTime? LastChange { get; set; }
+        public DateTime LastChange { get; set; }
 
         [JsonIgnore]
         [XmlIgnore]

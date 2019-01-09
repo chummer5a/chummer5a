@@ -49,6 +49,14 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="M:ChummerHub.SeedData.GetSqlCommandMasterUser(System.String,System.String)">
+            <summary>
+            TODO: This statement needs to be executed in a SEPERATE connection to the Azure-Master-DB
+            </summary>
+            <param name="username"></param>
+            <param name="userpwd"></param>
+            <returns></returns>
+        </member>
         <member name="T:ChummerHub.Services.GoogleDrive.GoogleIDataStore">
             <summary>
             Handles internal token storage, bypassing filesystem

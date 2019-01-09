@@ -1,0 +1,17 @@
+Future Build 1.0.0.1
+
+WebService Changes:
+
+- wiped the Database clean (because it WAS really messed up)
+- added function GetDeleteAndRecreateDb() for cases where it's really messed up
+- added basic validation in the Post WebService function in SinnersController
+- changed LastChange (Sinner-Property) from DateTime? to DateTime
+
+Application Changes:
+
+- SinnerId is taken into account after the first POST to the WebService
+- moved Uploadfunction into CharacterExtended
+- added a ToolTip to the Online-Treenode in case something goes wrong with the ChummerHub-Query
+- reworked Multi-Upload Button in Options-Dialog
+- Fixed NullReferenceException when no spell was selected in the Sinner-Search dialog.
+- added Changelog ;)

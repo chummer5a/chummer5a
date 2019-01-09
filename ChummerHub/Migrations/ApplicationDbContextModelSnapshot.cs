@@ -78,7 +78,7 @@ namespace ChummerHub.Migrations
 
                     b.Property<string>("JsonSummary");
 
-                    b.Property<DateTime?>("LastChange");
+                    b.Property<DateTime>("LastChange");
 
                     b.Property<Guid?>("SINnerMetaDataId");
 
@@ -87,9 +87,6 @@ namespace ChummerHub.Migrations
                     b.Property<DateTime?>("UploadDateTime");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
 
                     b.HasIndex("SINnerMetaDataId");
 

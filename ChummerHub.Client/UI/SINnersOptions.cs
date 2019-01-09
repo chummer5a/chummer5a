@@ -530,26 +530,25 @@ namespace ChummerHub.Client.UI
                 try
                 {
                     Debug.WriteLine("Loading: " + file);
-                    var c = new Character {FileName = file};
-                    if (!c.Load())
+                    var c = new Character { FileName = file };
+                    if(!c.Load())
                         continue;
                     Debug.WriteLine("Character loaded: " + c.Name);
                     CharacterExtended ce = new CharacterExtended(c);
-                    var posttask = Utils.PostSINnerAsync(ce);
-                    posttask.Wait();
-                    var uptask = Utils.UploadChummerFileAsync(ce);
-                    uptask.Wait();
+                    ce.UploadInBackground();
                 }
                 catch (Exception ex)
                 {
                     string msg = "Exception while loading " + file + ":";
                     msg += Environment.NewLine + ex.ToString();
                     Debug.Write(msg);
+                    System.Diagnostics.Trace.TraceWarning(msg);
                     throw;
                 }
             }
         }
 
+    
         private void cbUploadOnSave_CheckedChanged(object sender, EventArgs e)
         {
             SINnersOptions.UploadOnSave = cbUploadOnSave.Checked;

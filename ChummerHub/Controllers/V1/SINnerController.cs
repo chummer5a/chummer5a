@@ -27,7 +27,11 @@ namespace ChummerHub.Controllers.V1
     [ApiController]
     [ApiVersion("1.0")]
     [ControllerName("SINner")]
+#if DEBUG
+    [AllowAnonymous]
+#else
     [Authorize]
+#endif
     public class SINnerController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -228,8 +232,11 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NoContent)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerPut")]
-
+#if DEBUG
+        [AllowAnonymous]
+#else
         [Authorize]
+#endif
         public async Task<IActionResult> Put([FromRoute] Guid id, IFormFile uploadedFile)
         {
             try
@@ -237,7 +244,7 @@ namespace ChummerHub.Controllers.V1
                 var sin = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights).FirstOrDefaultAsync(a => a.Id == id);
                 if (sin == null)
                 {
-                    return NotFound();
+                    return NotFound("Sinner with Id " + id + " not found!");
                 }
                 var user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                 var check = await CheckIfUpdateSINnerFile(id, user);
@@ -310,6 +317,19 @@ namespace ChummerHub.Controllers.V1
                     if (sinner.Id.ToString() == "string")
                         sinner.Id = Guid.Empty;
 
+                    if(String.IsNullOrEmpty(sinner.JsonSummary))
+                        return BadRequest("sinner " + sinner.Id +": JsonSummary == null");
+
+                    if (sinner.SINnerMetaData.Visibility.UserRights.Any() == false)
+                    {
+                        return BadRequest("Sinner  " + sinner.Id + ": Visibility contains no entries!");
+                    }
+
+                    if (sinner.LastChange == null)
+                    {
+                        return BadRequest("Sinner  " + sinner.Id + ": LastChange not set!");
+                    }
+
                     foreach (var ur in sinner.SINnerMetaData.Visibility.UserRights)
                     {
                         ur.Id = Guid.NewGuid();
@@ -347,9 +367,9 @@ namespace ChummerHub.Controllers.V1
                 switch(returncode)
                 {
                     case HttpStatusCode.OK:
-                        return Accepted("PostSINnerFile", new { Ids = myids });
+                        return Accepted("PostSINnerFile", myids);
                     case HttpStatusCode.Created:
-                        return CreatedAtAction("PostSINnerFile", new { Ids = myids });
+                        return CreatedAtAction("PostSINnerFile", myids);
                     default:
                         break;
                 }
@@ -380,7 +400,6 @@ namespace ChummerHub.Controllers.V1
         /// <param name="uploadInfo"></param>
         /// <returns></returns>
         [HttpPost()]
-        [Authorize]
         [SwaggerRequestExample(typeof(UploadInfoObject), typeof(UploadInfoObjectExample))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Accepted)]
@@ -389,7 +408,11 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerUpload")]
         //[Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created, Type = typeof(SINner))]
-
+#if DEBUG
+        [AllowAnonymous]
+#else
+        [Authorize]
+#endif
         public async Task<IActionResult> Post([FromBody] UploadInfoObject uploadInfo)
         {
             

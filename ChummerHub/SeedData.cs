@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ChummerHub.API;
+using Microsoft.Extensions.Configuration;
 
 namespace ChummerHub
 {
@@ -19,12 +20,16 @@ namespace ChummerHub
             using (var context = new ApplicationDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
             {
-
+                
                 if (context.Users.Any())
                 {
                     return;   // DB has been seeded
                 }
-                //context.Users.AddRange(Config.GetAdminUsers());
+                var config = serviceProvider.GetRequiredService<IConfiguration>();
+                //currently AzureLogins need to be created on the master-DB
+                //Todo: implement this with a seperate connection to the masters-DB
+                //var sqlMasterUser = GetSqlCommandMasterUser(config["SqlSinnerUserName"], config["SqlSinnerUserPW"]);
+                //context.Database.ExecuteSqlCommandAsync(sqlMasterUser);
                 foreach (var user in Config.GetAdminUsers())
                 {
                     var userID = await EnsureUser(serviceProvider, user, testUserPw);
@@ -32,22 +37,30 @@ namespace ChummerHub
                     await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.RegisteredUserRole);
                 }
 
-                
-                // For sample purposes we are seeding 2 users both with the same password.
-                // The password is set with the following command:
-                // dotnet user-secrets set SeedUserPW <pw>
-                // The admin user can do anything
-
-
-                //var adminID = await EnsureUser(serviceProvider, "archon.megalon", "archon.megalon@gmail.com");
-                //await EnsureRole(serviceProvider, adminID, Authorizarion.Constants.AdministratorsRole);
-
-                // allowed user can create and edit contacts that they create
-                //var uid = await EnsureUser(serviceProvider, testUserPw, "manager@contoso.com");
-                //await EnsureRole(serviceProvider, uid, Constants.ContactManagersRole);
-
                 context.SaveChanges();
             }
+        }
+
+        /// <summary>
+        /// TODO: This statement needs to be executed in a SEPERATE connection to the Azure-Master-DB
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="userpwd"></param>
+        /// <returns></returns>
+        private static String GetSqlCommandMasterUser(string username, string userpwd)
+        {
+            string sqltext =                       @"IF NOT EXISTS (SELECT name FROM sys.sql_logins WHERE name='" + username + "') ";
+            sqltext += " " + Environment.NewLine + "   BEGIN";
+            sqltext += " " + Environment.NewLine + "       CREATE LOGIN " + username + " WITH PASSWORD = '" + userpwd + "';";
+            sqltext += " " + Environment.NewLine + "       CREATE USER[" + username + "] FROM LOGIN[" + username + "];";
+            sqltext += " " + Environment.NewLine + "       ALTER ROLE db_owner ADD MEMBER " + username + ";";
+            sqltext += " " + Environment.NewLine + "    END";
+            sqltext += " " + Environment.NewLine + "ELSE";
+            sqltext += " " + Environment.NewLine + "    BEGIN";
+            sqltext += " " + Environment.NewLine + "        ALTER LOGIN " + username + " WITH PASSWORD = '" + userpwd + "';";
+            //sqltext += " " + Environment.NewLine + "        CREATE USER[" + username + "] FROM LOGIN[" + username + "];";
+            sqltext += " " + Environment.NewLine + "    END; ";
+            return sqltext;
         }
 
       

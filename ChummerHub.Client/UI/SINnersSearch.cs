@@ -207,6 +207,8 @@ namespace ChummerHub.Client.UI
                         XmlDocument objXmlDocument = XmlManager.Load("spells.xml");
                             XmlNode objXmlSpell = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickSpell.SelectedSpell + "\"]");
                             Spell objSpell = new Spell(MySearchCharacter.MyCharacter);
+                            if(String.IsNullOrEmpty(objSpell?.Name))
+                                return;
                             objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.Limited, frmPickSpell.Extended, frmPickSpell.Alchemical);
                             MySearchCharacter.MyCharacter.Spells.Add(objSpell);
                             SearchTag spellsearch = new SearchTag(stag.MyPropertyInfo, stag.MyRuntimeHubClassTag);
