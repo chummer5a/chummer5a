@@ -95,7 +95,7 @@ namespace ChummerHub.Client.UI
         {
             InitializeComponent();
             InitializeMe();
-            cbSINnerUrl.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged;
+            
 
         }
 
@@ -133,15 +133,19 @@ namespace ChummerHub.Client.UI
 
         private void InitializeMe()
         {
+            cbSINnerUrl.SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
             Properties.Settings.Default.Reload();
+            var sinnerurl = Properties.Settings.Default.SINnerUrl;
             this.cbSINnerUrl.DataSource = Properties.Settings.Default.SINnerUrls;
-            this.cbSINnerUrl.SelectedItem = Properties.Settings.Default.SINnerUrl;
+            this.cbSINnerUrl.SelectedItem = sinnerurl;
             this.cbVisibilityIsPublic.BindingContext = new BindingContext();
             var t = StartSTATask(
                 async () =>
                 {
-                    await GetRolesStatus();
+                    var roles = await GetRolesStatus();
                     UpdateDisplay();
+                    if (!roles.Any())
+                        ShowWebBrowser();
                 });
             //var t = Task.Run(
             //    async () =>
@@ -160,6 +164,7 @@ namespace ChummerHub.Client.UI
                 clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit.Value);
             }
             cbUploadOnSave.Checked = SINnersOptions.UploadOnSave;
+            cbSINnerUrl.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged;
         }
 
         ~SINnersOptions()
@@ -173,6 +178,10 @@ namespace ChummerHub.Client.UI
             Properties.Settings.Default.Save();
             if (StaticUtils.Client != null)
                 StaticUtils.Client = null;
+            this.bLogin.Text = "Logout";
+            this.labelAccountStatus.Text = "logged out";
+            this.labelAccountStatus.ForeColor = Color.DarkRed;
+            this.LoginStatus = false;
             InitializeMe();
 
         }
@@ -197,7 +206,6 @@ namespace ChummerHub.Client.UI
                         Properties.Settings.Default.UserEmail = await GetUserEmail();
                     }
                     this.bLogin.Text = "Logout";
-                    //this.bLogout.Enabled = true;
                     if (InvokeRequired)
                     {
                         Invoke((Action)(() =>
@@ -248,7 +256,6 @@ namespace ChummerHub.Client.UI
                             //this.bLogout.Enabled = true;
                             this.labelAccountStatus.Text = "unknown";
                             this.labelAccountStatus.ForeColor = Color.DeepPink;
-                            ShowWebBrowser();
                         })
                         );
                     }
@@ -258,13 +265,9 @@ namespace ChummerHub.Client.UI
                         //this.bLogout.Enabled = true;
                         this.labelAccountStatus.Text = "unknown";
                         this.labelAccountStatus.ForeColor = Color.DeepPink;
-                        ShowWebBrowser();
                     }
                   
                 }
-                
-
-
             }
             catch(Exception ex)
             {
@@ -284,7 +287,6 @@ namespace ChummerHub.Client.UI
                 {
                     this.tlpOptions.Enabled = true;
                 }
-
             }
         }
 
@@ -330,8 +332,10 @@ namespace ChummerHub.Client.UI
                 var t = StartSTATask(
                       async () =>
                       {
-                          await GetRolesStatus();
+                          var roles = await GetRolesStatus();
                           UpdateDisplay();
+                          if(!roles.Any())
+                              ShowWebBrowser();
                       });
             }
             else
@@ -364,7 +368,7 @@ namespace ChummerHub.Client.UI
                         var t = StartSTATask(
                         async () =>
                         {
-                            await GetRolesStatus();
+                            var roles = await GetRolesStatus();
                             UpdateDisplay();
                         });
                     })
@@ -376,7 +380,7 @@ namespace ChummerHub.Client.UI
                     var t = StartSTATask(
                            async () =>
                            {
-                               await GetRolesStatus();
+                               var roles = await GetRolesStatus();
                                UpdateDisplay();
                            });
                 }

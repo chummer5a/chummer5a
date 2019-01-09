@@ -520,7 +520,7 @@ namespace ChummerHub.Client.Backend
                                 PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
                             });
                             HttpStatusCode myStatus = HttpStatusCode.Unused;
-                            var taskres = StaticUtils.Client.PutWithHttpMessagesAsync(ce.MySINnerFile.Id.Value, fs);
+                            var taskres = StaticUtils.Client.PutWithHttpMessagesAsync(ce.MySINnerFile.Id.Value, fs, null);
                             res = taskres.Result;
                             var task = taskres.ContinueWith((sender) =>
                             {

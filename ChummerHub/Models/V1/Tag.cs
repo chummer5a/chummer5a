@@ -27,11 +27,11 @@ namespace ChummerHub.Models.V1
         [NotMapped]
         public Tag ParentTag { get; set; }
 
-        [IgnoreDataMember]
-        [JsonIgnore]
-        [XmlIgnore]
-        [NotMapped]
-        public SINner SINner { get; set; }
+        //[IgnoreDataMember]
+        //[JsonIgnore]
+        //[XmlIgnore]
+        //[NotMapped]
+        //public SINner SINner { get; set; }
 
         public Guid? SINnerId { get; set; }
 
@@ -67,7 +67,6 @@ namespace ChummerHub.Models.V1
 
         private Tag TagConstructor(SINner sinner, Tag parent)
         {
-            this.SINner = sinner;
             if (sinner != null)
                 this.SINnerId = sinner.Id;
             this.ParentTag = parent;
@@ -105,6 +104,13 @@ namespace ChummerHub.Models.V1
                 return str;
             }
 
+        }
+
+        internal void SetSinnerIdRecursive(Guid? id)
+        {
+            this.SINnerId = id;
+            foreach(var child in this.Tags)
+                child.SetSinnerIdRecursive(id);
         }
     }
 }

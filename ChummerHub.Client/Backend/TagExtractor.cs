@@ -66,7 +66,7 @@ namespace ChummerHub.Client.Backend
                             resulttags.Add(tag);
                             tag.MyRuntimeHubClassTag = classprop.Item1;
                             //tag.TagName = classprop.Item1.ListName;
-                            tag.TagType = obj.GetType().FullName;
+                            SetTagTypeEnumFromCLRType(tag, obj.GetType());
                             if (!String.IsNullOrEmpty(classprop.Item1.ListInstanceNameFromProperty))
                             {
                                 tag.TagName = classprop.Item1.ListInstanceNameFromProperty;
@@ -164,7 +164,7 @@ namespace ChummerHub.Client.Backend
                     resulttags.Add(instanceTag);
                     instanceTag.MyRuntimeHubClassTag = classprop.Item1;
                     instanceTag.TagName = includeprop;
-                    instanceTag.TagType = obj.GetType().FullName;
+                    SetTagTypeEnumFromCLRType(instanceTag, obj.GetType());
                     instanceTag.TagValue = includeInstance.ToString();
                 }
 
@@ -177,23 +177,23 @@ namespace ChummerHub.Client.Backend
             Chummer.HubTagAttribute attribute = prop.Item2 as Chummer.HubTagAttribute;
             Object propValue;
             PropertyInfo property = prop.Item1 as PropertyInfo;
-            if (property == null)
+            if(property == null)
             {
                 propValue = prop.Item3;
             }
             else
             {
                 propValue = property.GetValue(prop.Item3);
-                if (propValue.GetType().IsAssignableFrom(typeof(bool)))
+                if(propValue.GetType().IsAssignableFrom(typeof(bool)))
                 {
-                    if (propValue as bool? == false)
+                    if(propValue as bool? == false)
                     { //dont save "false" values
                         return proptaglist;
                     }
                 }
-                if (propValue.GetType().IsAssignableFrom(typeof(int)))
+                if(propValue.GetType().IsAssignableFrom(typeof(int)))
                 {
-                    if (propValue as int? == 0)
+                    if(propValue as int? == 0)
                     {   //dont save "0" values
                         return proptaglist;
                     }
@@ -205,42 +205,69 @@ namespace ChummerHub.Client.Backend
 
             tag.Tags = new List<Tag>();
             tag.MyParentTag = parenttag;
-            if (tag.MyParentTag != null)
+            if(tag.MyParentTag != null)
                 tag.MyParentTag.Tags.Add(tag);
             tag.ParentTagId = parenttag?.Id;
             tag.Id = Guid.NewGuid();
-            if (!String.IsNullOrEmpty(attribute.TagName))
+            if(!String.IsNullOrEmpty(attribute.TagName))
                 tag.TagName = attribute.TagName;
-            else if (prop.Item1 != null)
+            else if(prop.Item1 != null)
                 tag.TagName = prop.Item1.Name;
             else
                 tag.TagName = prop.Item3.ToString();
 
             Type t = prop.Item3.GetType();
-            if (!String.IsNullOrEmpty(attribute.TagNameFromProperty))
+            if(!String.IsNullOrEmpty(attribute.TagNameFromProperty))
             {
                 var addObject = t.GetProperty(attribute.TagNameFromProperty).GetValue(prop.Item3, null);
                 tag.TagName += String.Format("{0}", addObject);
             }
             tag.TagValue = String.Format("{0}", tag.MyRuntimeObject);
             Type typeValue = tag.MyRuntimeObject.GetType();
-            if (typeof(int).IsAssignableFrom(typeValue))
+            SetTagTypeEnumFromCLRType(tag, typeValue);
+            if(!String.IsNullOrEmpty(attribute.TagValueFromProperty))
+            {
+                var addObject = t.GetProperty(attribute.TagValueFromProperty).GetValue(prop.Item3, null);
+                tag.TagValue = String.Format("{0}", addObject);
+            }
+            proptaglist.Add(tag);
+            if(prop.Item1 != null)
+            {
+                var childlist = ExtractTagsFromAttributes(tag.MyRuntimeObject, tag);
+                if(childlist != null)
+                {
+                    proptaglist.AddRange(childlist);
+                }
+            }
+            if(attribute.DeleteIfEmpty)
+            {
+                if(!tag.Tags.Any() && String.IsNullOrEmpty(tag.TagValue))
+                {
+                    tag.MyParentTag.Tags.Remove(tag);
+                }
+            }
+            return proptaglist;
+        }
+
+        private static void SetTagTypeEnumFromCLRType(Tag tag, Type typeValue)
+        {
+            if(typeof(int).IsAssignableFrom(typeValue))
             {
                 tag.TagType = "int";
             }
-            else if (typeof(double).IsAssignableFrom(typeValue))
+            else if(typeof(double).IsAssignableFrom(typeValue))
             {
                 tag.TagType = "double";
             }
-            else if (typeof(bool).IsAssignableFrom(typeValue))
+            else if(typeof(bool).IsAssignableFrom(typeValue))
             {
                 tag.TagType = "bool";
             }
-            else if (typeof(string).IsAssignableFrom(typeValue))
+            else if(typeof(string).IsAssignableFrom(typeValue))
             {
                 tag.TagType = "string";
             }
-            else if (typeof(Guid).IsAssignableFrom(typeValue))
+            else if(typeof(Guid).IsAssignableFrom(typeValue))
             {
                 tag.TagType = "Guid";
             }
@@ -249,37 +276,15 @@ namespace ChummerHub.Client.Backend
 
                 tag.TagType = "other";
             }
-            if (tag.TagValue == typeValue.FullName)
+            if(tag.TagValue == typeValue.FullName)
                 tag.TagValue = "";
-            if ((typeof(IEnumerable).IsAssignableFrom(typeValue)
+            if((typeof(IEnumerable).IsAssignableFrom(typeValue)
                 || typeof(ICollection).IsAssignableFrom(typeValue))
                 && !typeof(string).IsAssignableFrom(typeValue))
             {
                 tag.TagType = "list";
                 tag.TagValue = "";
             }
-            if (!String.IsNullOrEmpty(attribute.TagValueFromProperty))
-            {
-                var addObject = t.GetProperty(attribute.TagValueFromProperty).GetValue(prop.Item3, null);
-                tag.TagValue = String.Format("{0}", addObject);
-            }
-            proptaglist.Add(tag);
-            if (prop.Item1 != null)
-            {
-                var childlist = ExtractTagsFromAttributes(tag.MyRuntimeObject, tag);
-                if (childlist != null)
-                {
-                    proptaglist.AddRange(childlist);
-                }
-            }
-            if (attribute.DeleteIfEmpty)
-            {
-                if (!tag.Tags.Any() && String.IsNullOrEmpty(tag.TagValue))
-                {
-                    tag.MyParentTag.Tags.Remove(tag);
-                }
-            }
-            return proptaglist;
         }
 
         internal static IList<Tag> ExtractTags(Object obj, int level, Tag parenttag)

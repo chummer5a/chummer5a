@@ -2,6 +2,7 @@ Future Build 1.0.0.1
 
 WebService Changes:
 
+- SinnerID is set in every tag now
 - wiped the Database clean (because it WAS really messed up)
 - added function GetDeleteAndRecreateDb() for cases where it's really messed up
 - added basic validation in the Post WebService function in SinnersController
@@ -9,6 +10,8 @@ WebService Changes:
 
 Application Changes:
 
+- tweaked Login/Logout (no spamming of frmWebBrowser anymore)
+- TagType was not set correctly in the TagExtractor-Reflection
 - SinnerId is taken into account after the first POST to the WebService
 - moved Uploadfunction into CharacterExtended
 - added a ToolTip to the Online-Treenode in case something goes wrong with the ChummerHub-Query

@@ -336,8 +336,10 @@ namespace ChummerHub.Controllers.V1
                         ur.SINnerId = sinner.Id;
                     }
 
-                    foreach (var tag in sinner.SINnerMetaData.Tags)
-                        tag.SINnerId = sinner.Id;
+                    foreach(var tag in sinner.SINnerMetaData.Tags)
+                    {
+                        tag.SetSinnerIdRecursive(sinner.Id);
+                    }
 
                     sinner.UploadClientId = uploadInfo.Client.Id;
                     var check = await CheckIfUpdateSINnerFile(sinner.Id.Value, user);

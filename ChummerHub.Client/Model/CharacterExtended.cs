@@ -204,10 +204,8 @@ namespace ChummerHub.Client.Model
    
         public void UploadInBackground()
         {
-            if (!this.MySINnerFile.Id.HasValue)
-            {
-                this.PrepareModel();
-            }
+            this.PopulateTags();
+            this.PrepareModel();
             Utils.PostSINnerAsync(this).ContinueWith((posttask) =>
             {
                 if(posttask.Status != TaskStatus.RanToCompletion)
