@@ -79,6 +79,7 @@ namespace ChummerHub.Client.UI
                 if (!tagseq.Any())
                 {
                     Tag tag = new Tag(true);
+                    tag.SiNnerId = myUC.MyCE.MySINnerFile.Id;
                     tag.TagName = "SRM_ready";
                     tag.TagValue = "True";
                     tag.TagType = "bool";
@@ -106,6 +107,7 @@ namespace ChummerHub.Client.UI
             if (!tagseq.Any())
             {
                 Tag tag = new Tag(true);
+                tag.SiNnerId = myUC.MyCE.MySINnerFile.Id;
                 tag.TagName = "GM_Groupname";
                 tag.TagType = "string";
                 myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Add(tag);

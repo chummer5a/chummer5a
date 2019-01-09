@@ -21,13 +21,14 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SearchTag class.
         /// </summary>
-        public SearchTag(IList<SearchTag> searchTags = default(IList<SearchTag>), string searchOpterator = default(string), Guid? id = default(Guid?), string tagName = default(string), string tagValue = default(string), Guid? parentTagId = default(Guid?), Guid? siNnerId = default(Guid?), IList<Tag> tags = default(IList<Tag>), bool? isUserGenerated = default(bool?), string tagType = default(string))
+        public SearchTag(IList<SearchTag> searchTags = default(IList<SearchTag>), string searchOpterator = default(string), Guid? id = default(Guid?), string tagName = default(string), string tagValue = default(string), string tagComment = default(string), Guid? parentTagId = default(Guid?), Guid? siNnerId = default(Guid?), IList<Tag> tags = default(IList<Tag>), bool? isUserGenerated = default(bool?), string tagType = default(string))
         {
             SearchTags = searchTags;
             SearchOpterator = searchOpterator;
             Id = id;
             TagName = tagName;
             TagValue = tagValue;
+            TagComment = tagComment;
             ParentTagId = parentTagId;
             SiNnerId = siNnerId;
             Tags = tags;
@@ -61,6 +62,12 @@ namespace SINners.Models
         /// </summary>
         [JsonProperty(PropertyName = "tagValue")]
         public string TagValue { get; set; }
+
+        /// <summary>
+        /// This has NO FUNCTION and is only here for Debugging reasons.
+        /// </summary>
+        [JsonProperty(PropertyName = "tagComment")]
+        public string TagComment { get; set; }
 
         /// <summary>
         /// </summary>

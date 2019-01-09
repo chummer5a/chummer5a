@@ -112,6 +112,28 @@ namespace SINners
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
+            public static string GetDeleteAndRecreateDb(this ISINnersClient operations)
+            {
+                return Task.Factory.StartNew(s => ((ISINnersClient)s).GetDeleteAndRecreateDbAsync(), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<string> GetDeleteAndRecreateDbAsync(this ISINnersClient operations, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.GetDeleteAndRecreateDbWithHttpMessagesAsync(null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
             public static IList<SINner> GetSINnersByAuthorization(this ISINnersClient operations)
             {
                 return Task.Factory.StartNew(s => ((ISINnersClient)s).GetSINnersByAuthorizationAsync(), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();

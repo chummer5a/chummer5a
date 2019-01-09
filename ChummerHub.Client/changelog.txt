@@ -2,6 +2,7 @@ Future Build 1.0.0.1
 
 WebService Changes:
 
+- Tags now have a Property "TagComment", which should help to find errors (Debugging)
 - SinnerID is set in every tag now
 - wiped the Database clean (because it WAS really messed up)
 - added function GetDeleteAndRecreateDb() for cases where it's really messed up
@@ -10,6 +11,8 @@ WebService Changes:
 
 Application Changes:
 
+- Show TagComment in the TreeNodeList of the Tags
+- HubClassTags saves it's children in the Comment (SourceID should be enough to identify it)
 - tweaked Login/Logout (no spamming of frmWebBrowser anymore)
 - TagType was not set correctly in the TagExtractor-Reflection
 - SinnerId is taken into account after the first POST to the WebService

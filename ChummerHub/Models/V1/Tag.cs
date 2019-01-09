@@ -18,6 +18,11 @@ namespace ChummerHub.Models.V1
         public Guid Id { get; set; }
         public string TagName { get; set; }
         public string TagValue { get; set; }
+
+        /// <summary>
+        /// This has NO FUNCTION and is only here for Debugging reasons.
+        /// </summary>
+        public string TagComment { get; set; }
         
         public Guid? ParentTagId { get; set; }
 

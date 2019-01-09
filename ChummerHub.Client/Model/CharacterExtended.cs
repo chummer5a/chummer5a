@@ -78,6 +78,15 @@ namespace ChummerHub.Client.Model
 
         internal List<Tag> PopulateTags()
         {
+            if(MySINnerIds.TryGetValue(MyCharacter.Alias, out var singuid))
+                MySINnerFile.Id = singuid;
+            else
+            {
+                MySINnerFile.Id = Guid.NewGuid();
+                MySINnerIds.Add(MyCharacter.Alias, MySINnerFile.Id.Value);
+                MySINnerIds = MySINnerIds; //Save it!
+            }
+
             var tag = new Tag
             {
                 Tags = new List<Tag>(),
@@ -87,18 +96,18 @@ namespace ChummerHub.Client.Model
                 Id = Guid.NewGuid(),
                 TagName = "Reflection"
             };
-            //Backend.TagExtractor.MyReflectionCollection = null;
-
             var tags = TagExtractor.ExtractTagsFromAttributes(MyCharacter, tag);
-            //var tags = Backend.TagExtractor.ExtractTags(MyCharacter, 3, tag);
             var found = from a in MySINnerFile.SiNnerMetaData.Tags.ToList() where a.TagName == "Reflection" select a;
             foreach (var f in found)
             {
                 MySINnerFile.SiNnerMetaData.Tags.Remove(f);
             }
-
             MySINnerFile.SiNnerMetaData.Tags.Add(tag);
-            return MySINnerFile.SiNnerMetaData.Tags;
+            foreach(var childtag in MySINnerFile.SiNnerMetaData.Tags)
+            {
+                childtag.SetSinnerIdRecursive(MySINnerFile.Id);
+            }
+            return MySINnerFile.SiNnerMetaData.Tags.ToList();
         }
 
         public void PopulateTree(ref TreeNode root, IList<Tag> tags, IList<SearchTag> filtertags)
@@ -123,6 +132,8 @@ namespace ChummerHub.Client.Model
                     };
                     if (!string.IsNullOrEmpty(branch.TagValue))
                         child.Text += ": " + branch.TagValue;
+                    if(!string.IsNullOrEmpty(branch.TagComment))
+                        child.ToolTipText = branch.TagComment;
                     PopulateTree(ref child, branch.Tags, filtertags);
                     root.Nodes.Add(child);
                 }
@@ -137,11 +148,15 @@ namespace ChummerHub.Client.Model
                         continue;
                     var child = new TreeNode()
                     {
-                        Text = tag.TagName,
-                        Tag = tag.Id,
+                        Text = "",
+                        Tag = tag.Id
                     };
+                    if(!string.IsNullOrEmpty(tag.TagComment))
+                        child.Text = "(" + tag.TagComment + ") ";
+                    child.Text += tag.TagName;
                     if (!string.IsNullOrEmpty(tag.TagValue))
                         child.Text += ": " + tag.TagValue;
+                    
                     PopulateTree(ref child, tag.Tags, filtertags);
                     root.Nodes.Add(child);
                 }

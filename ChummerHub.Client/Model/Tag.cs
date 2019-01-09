@@ -19,6 +19,7 @@ namespace SINners.Models
 
         public Tag (Object myRuntimeObject, Chummer.HubTagAttribute hubTag)
         {
+            this.Id = Guid.NewGuid();
             MyRuntimeObject = myRuntimeObject;
             MyRuntimeHubTag = hubTag;
             this.Tags = new List<Tag>();
@@ -26,12 +27,14 @@ namespace SINners.Models
 
         public Tag (bool isUserGenerated)
         {
+            this.Id = Guid.NewGuid();
             this.IsUserGenerated = isUserGenerated;
             this.Tags = new List<Tag>();
         }
 
         public Tag(Object myRuntimeObject, Chummer.HubClassTagAttribute hubClassTag)
         {
+            this.Id = Guid.NewGuid();
             MyRuntimeObject = myRuntimeObject;
             MyRuntimeHubClassTag = hubClassTag;
             this.Tags = new List<Tag>();
@@ -56,6 +59,8 @@ namespace SINners.Models
                     str = tempstr;
                     tempParent = tempParent.MyParentTag;
                 }
+                if(!String.IsNullOrEmpty(this.TagComment))
+                    str += " (" + this.TagComment + ")";
                 return str;
             }
             
@@ -81,6 +86,12 @@ namespace SINners.Models
         [JsonIgnore]
         public Chummer.HubClassTagAttribute MyRuntimeHubClassTag { get; set; }
 
-        
+        internal void SetSinnerIdRecursive(Guid? id)
+        {
+            this.SiNnerId = id;
+            foreach(var childtag in this.Tags)
+                childtag.SetSinnerIdRecursive(id);
+        }
+
     }
 }

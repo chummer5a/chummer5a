@@ -9,6 +9,11 @@
             Class to enalbe Swagger to generate an Example
             </summary>
         </member>
+        <member name="P:ChummerHub.Models.V1.Tag.TagComment">
+            <summary>
+            This has NO FUNCTION and is only here for Debugging reasons.
+            </summary>
+        </member>
         <member name="M:ChummerHub.Controllers.V1.SINnerController.GetDownloadFile(System.Guid)">
             <summary>
             Returns the Chummer-Save-File

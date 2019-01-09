@@ -197,96 +197,35 @@ namespace ChummerHub.Client.UI
             }
             try
             {
-                this.tlpOptions.Enabled = false;
-                
                 if (LoginStatus == true)
                 {
                     if (String.IsNullOrEmpty(Properties.Settings.Default.UserEmail))
                     {
-                        Properties.Settings.Default.UserEmail = await GetUserEmail();
+                        Properties.Settings.Default.UserEmail = GetUserEmail().Result;
                     }
                     this.bLogin.Text = "Logout";
-                    if (InvokeRequired)
-                    {
-                        Invoke((Action)(() =>
-                            {
-                                this.labelAccountStatus.Text = Roles.Aggregate((a, b) => a + ", " + b);
-                                this.labelAccountStatus.ForeColor = Color.DarkGreen;
-                                HideWebBrowser();
-                            })
-                        );
-                    }
-                    else
-                    {
-                        this.labelAccountStatus.Text = Roles.Aggregate((a, b) => a + ", " + b);
-                        this.labelAccountStatus.ForeColor = Color.DarkGreen;
-                        HideWebBrowser();
-                    }
+                    string status = Roles.Aggregate((a, b) => a + ", " + b);
+                    this.labelAccountStatus.Text = status;
+                    this.labelAccountStatus.ForeColor = Color.DarkGreen;
+                    HideWebBrowser();
                     
-                   
                 }
                 else if (LoginStatus == false)
                 {
-                    if (InvokeRequired)
-                    {
-                        Invoke((Action)(() =>
-                        {
-                            this.bLogin.Text = "Login";
-                            //this.bLogout.Enabled = false;
-                            this.labelAccountStatus.Text = "logged out";
-                            this.labelAccountStatus.ForeColor = Color.DarkRed;
-                        })
-                        );
-                    }
-                    else
-                    {
-                        this.bLogin.Text = "Login";
-                        //this.bLogout.Enabled = false;
-                        this.labelAccountStatus.Text = "logged out";
-                        this.labelAccountStatus.ForeColor = Color.DarkRed;
-                    }
+                    this.bLogin.Text = "Login";
+                    this.labelAccountStatus.Text = "logged out";
+                    this.labelAccountStatus.ForeColor = Color.DarkRed;
                 }
                 else
                 {
-                    if (InvokeRequired)
-                    {
-                        Invoke((Action)(() =>
-                        {
-                            this.bLogin.Text = "Login";
-                            //this.bLogout.Enabled = true;
-                            this.labelAccountStatus.Text = "unknown";
-                            this.labelAccountStatus.ForeColor = Color.DeepPink;
-                        })
-                        );
-                    }
-                    else
-                    {
-                        this.bLogin.Text = "Login";
-                        //this.bLogout.Enabled = true;
-                        this.labelAccountStatus.Text = "unknown";
-                        this.labelAccountStatus.ForeColor = Color.DeepPink;
-                    }
-                  
+                    this.bLogin.Text = "Login";
+                    this.labelAccountStatus.Text = "unknown";
+                    this.labelAccountStatus.ForeColor = Color.DeepPink;
                 }
             }
             catch(Exception ex)
             {
                 System.Diagnostics.Trace.TraceError(ex.ToString());
-            }
-            finally
-            {
-                if (InvokeRequired)
-                {
-                    Invoke((Action)(() =>
-                    {
-                        this.tlpOptions.Enabled = true;
-                    })
-                    );
-                }
-                else
-                {
-                    this.tlpOptions.Enabled = true;
-                }
             }
         }
 

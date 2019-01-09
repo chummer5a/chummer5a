@@ -80,6 +80,14 @@ namespace SINners
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
+        Task<HttpOperationResponse<string>> GetDeleteAndRecreateDbWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
         Task<HttpOperationResponse<IList<SINner>>> GetSINnersByAuthorizationWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <param name='customHeaders'>

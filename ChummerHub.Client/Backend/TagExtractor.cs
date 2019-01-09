@@ -60,6 +60,7 @@ namespace ChummerHub.Client.Backend
                         foreach (var classprop in classprops)
                         {
                             var tag = new Tag(obj, classprop.Item1);
+                            tag.SiNnerId = parenttag.SiNnerId;
                             tag.ParentTagId = parenttag.Id;
                             tag.MyParentTag = parenttag;
                             parenttag.Tags.Add(tag);
@@ -102,6 +103,7 @@ namespace ChummerHub.Client.Backend
                         foreach (var classprop in classprops)
                         {
                             var tag = new Tag(item, classprop.Item1);
+                            tag.SiNnerId = parenttag.SiNnerId;
                             tag.ParentTagId = parenttag.Id;
                             tag.MyParentTag = parenttag;
                             parenttag.Tags.Add(tag);
@@ -157,15 +159,20 @@ namespace ChummerHub.Client.Backend
                 var includeInstance = propfoundseq.FirstOrDefault().GetValue(obj);
                 if (includeInstance != null)
                 {
-                    var instanceTag = new Tag(includeInstance, classprop.Item1);
-                    instanceTag.ParentTagId = tag.Id;
-                    instanceTag.MyParentTag = tag;
-                    tag.Tags.Add(instanceTag);
-                    resulttags.Add(instanceTag);
-                    instanceTag.MyRuntimeHubClassTag = classprop.Item1;
-                    instanceTag.TagName = includeprop;
-                    SetTagTypeEnumFromCLRType(instanceTag, obj.GetType());
-                    instanceTag.TagValue = includeInstance.ToString();
+                    //DONT set a whole new Tag, Just add the Comment!
+                    tag.TagComment = includeInstance.ToString();
+
+                    //Old Code
+                    //var instanceTag = new Tag(includeInstance, classprop.Item1);
+                    //instanceTag.SiNnerId = tag.SiNnerId;
+                    //instanceTag.ParentTagId = tag.Id;
+                    //instanceTag.MyParentTag = tag;
+                    //tag.Tags.Add(instanceTag);
+                    //resulttags.Add(instanceTag);
+                    //instanceTag.MyRuntimeHubClassTag = classprop.Item1;
+                    //instanceTag.TagName = includeprop;
+                    //SetTagTypeEnumFromCLRType(instanceTag, obj.GetType());
+                    //instanceTag.TagValue = includeInstance.ToString();
                 }
 
             }
@@ -202,7 +209,7 @@ namespace ChummerHub.Client.Backend
 
 
             var tag = new Tag(propValue, attribute);
-
+            tag.SiNnerId = parenttag?.SiNnerId;
             tag.Tags = new List<Tag>();
             tag.MyParentTag = parenttag;
             if(tag.MyParentTag != null)
