@@ -25,7 +25,7 @@ namespace ChummerHub
                 {
                     return;   // DB has been seeded
                 }
-                var config = serviceProvider.GetRequiredService<IConfiguration>();
+                //var config = serviceProvider.GetRequiredService<IConfiguration>();
                 //currently AzureLogins need to be created on the master-DB
                 //Todo: implement this with a seperate connection to the masters-DB
                 //var sqlMasterUser = GetSqlCommandMasterUser(config["SqlSinnerUserName"], config["SqlSinnerUserPW"]);
@@ -33,8 +33,8 @@ namespace ChummerHub
                 foreach (var user in Config.GetAdminUsers())
                 {
                     var userID = await EnsureUser(serviceProvider, user, testUserPw);
-                    await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.AdministratorsRole);
-                    await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.RegisteredUserRole);
+                    await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.AdministratorsRole, null, null);
+                    await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.RegisteredUserRole, null, null);
                 }
                 context.SaveChanges();
             }
@@ -86,24 +86,21 @@ namespace ChummerHub
             
         }
 
-        private static async Task<IdentityResult> EnsureRole(IServiceProvider serviceProvider,
-                                                                      Guid uid, string role)
+        public static async Task<IdentityResult> EnsureRole(IServiceProvider serviceProvider,
+                                                                      Guid uid, string role, RoleManager<ApplicationRole> roleManager, UserManager<ApplicationUser> userManager)
         {
             IdentityResult IR = null;
 
             try
             {
-
-            
-                var roleManager = serviceProvider.GetService<RoleManager<ApplicationRole>>();
-
+                if (roleManager == null)
+                    roleManager = serviceProvider.GetService<RoleManager<ApplicationRole>>();
                 if (!await roleManager.RoleExistsAsync(role))
                 {
                     IR = await roleManager.CreateAsync(new ApplicationRole(role));
                 }
-
-                var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
-
+                if (userManager == null)
+                    userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
                 var user = await userManager.FindByIdAsync(uid.ToString());
 
                 IR = await userManager.AddToRoleAsync(user, role);

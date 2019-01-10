@@ -24,14 +24,17 @@ namespace ChummerHub.Controllers
         private UserManager<ApplicationUser> _userManager = null;
         private SignInManager<ApplicationUser> _signInManager = null;
         private ApplicationDbContext _context;
+        private RoleManager<ApplicationRole> _roleManager;
 
         public AccountController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager,
+            RoleManager<ApplicationRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
         [HttpGet]
@@ -48,9 +51,11 @@ namespace ChummerHub.Controllers
             {
                 //var user = _userManager.FindByEmailAsync(email).Result;
                 var user = await _signInManager.UserManager.GetUserAsync(User);
+                if (user.EmailConfirmed)
+                {
+                    await SeedData.EnsureRole(Program.MyHost.Services, user.Id, API.Authorizarion.Constants.ConfirmedUserRole, _roleManager, _userManager);
+                }
                 var roles = await _userManager.GetRolesAsync(user);
-                
-                //var result = new JsonResult(roles);
                 return Ok(roles.ToList());
             }
             catch(Exception e)
