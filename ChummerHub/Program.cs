@@ -90,6 +90,7 @@ namespace ChummerHub
 
         public static IWebHost CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseApplicationInsights()
                 .UseKestrel(options =>
                 {
                     options.Limits.MinResponseDataRate = null;
