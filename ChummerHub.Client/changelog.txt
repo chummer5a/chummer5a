@@ -2,6 +2,10 @@ Future Build 1.0.0.1
 
 WebService Changes:
 
+- set the daily Data-Volume Cap to 1GB (for now, can be raised - just to avoid unpleasant surprises)
+- DELETE now actually deletes all database-entries in every table, not only the head.
+- fixed a bug, where Tags where only added but not removed if not present anymore on a sinner
+- added Flat Tags for better searchability (only on the server and hidden)
 - Tags now have a Property "TagComment", which should help to find errors (Debugging)
 - SinnerID is set in every tag now
 - wiped the Database clean (because it WAS really messed up)
@@ -11,6 +15,8 @@ WebService Changes:
 
 Application Changes:
 
+- fixed a bug, where the upload DID finish, but the execution of the program didn't resume
+- Added a timeout to the Put (=Upload) function, so that it actually does not just "hang"
 - Added the "Extra" for each HubClassTagAttribute (so that Increase [Attribute] gets a + WIL-Childtag)
 - Show TagComment in the TreeNodeList of the Tags
 - HubClassTags saves it's children in the Comment (SourceID should be enough to identify it)

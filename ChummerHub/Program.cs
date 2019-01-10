@@ -10,7 +10,6 @@ using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using System.Linq;
 using Microsoft.AspNetCore;
-using Microsoft.AspNetCore;
 using ChummerHub.Data;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
@@ -24,8 +23,8 @@ namespace ChummerHub
         public static void Main(string[] args)
         {
 
-            MyHost = CreateWebHostBuilder(args).Build();
-            InitializeDatabase();
+            MyHost = CreateWebHostBuilder(args);
+            Seed();
             MyHost.Run();
             return;
             Log.Logger = new LoggerConfiguration()
@@ -54,7 +53,7 @@ namespace ChummerHub
             //host.Run();
         }
 
-        public static void InitializeDatabase()
+        public static void Seed()
         {
             
             using(var scope = MyHost.Services.CreateScope())
@@ -89,7 +88,7 @@ namespace ChummerHub
 
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        public static IWebHost CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseKestrel(options =>
                 {
@@ -102,31 +101,34 @@ namespace ChummerHub
                     //});
                 })
                 .UseStartup<Startup>()
+                .UseIISIntegration()
                 .ConfigureLogging((hostingContext, logging) =>
                 {
                     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                     logging.AddConsole();
                     logging.AddDebug();
-                });
+                })
+                .CaptureStartupErrors(true)
+                .Build();
 
-        public static IWebHost BuildWebHost(string[] args)
-        {
-            return WebHost.CreateDefaultBuilder(args)
-                    .UseStartup<Startup>()
-                    .UseSerilog((context, configuration) =>
-                    {
-                        configuration
-                            .MinimumLevel.Debug()
-                            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-                            .MinimumLevel.Override("System", LogEventLevel.Warning)
-                            .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
-                            .Enrich.FromLogContext()
-#if DEBUG
-                            .WriteTo.File(@"SINners_log.txt")
-#endif
-                            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate);
-                    })
-                    .Build();
-        }
+//        public static IWebHost BuildWebHost(string[] args)
+//        {
+//            return WebHost.CreateDefaultBuilder(args)
+//                    .UseStartup<Startup>()
+//                    .UseSerilog((context, configuration) =>
+//                    {
+//                        configuration
+//                            .MinimumLevel.Debug()
+//                            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+//                            .MinimumLevel.Override("System", LogEventLevel.Warning)
+//                            .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
+//                            .Enrich.FromLogContext()
+//#if DEBUG
+//                            .WriteTo.File(@"SINners_log.txt")
+//#endif
+//                            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate);
+//                    })
+//                    .Build();
+//        }
     }
 }

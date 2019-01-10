@@ -165,7 +165,7 @@ namespace ChummerHub.Controllers
                     return Unauthorized();
 #endif
                 await _context.Database.EnsureDeletedAsync();
-                Program.InitializeDatabase();
+                Program.Seed();
                 return Ok("Database recreated");
             }
             catch(Exception e)

@@ -31,7 +31,7 @@ namespace ChummerHub.Models.V1.Examples
             Guid childTagGuid = Guid.NewGuid();
             var sin =  new SINner
             {
-                Id = Guid.NewGuid(),
+                 Id = Guid.NewGuid(),
                  UploadClientId = Guid.NewGuid()
             };
             sin.SINnerMetaData = new SINnerMetaData()

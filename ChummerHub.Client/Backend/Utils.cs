@@ -520,16 +520,14 @@ namespace ChummerHub.Client.Backend
                                 PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
                             });
                             HttpStatusCode myStatus = HttpStatusCode.Unused;
-                            var taskres = StaticUtils.Client.PutWithHttpMessagesAsync(ce.MySINnerFile.Id.Value, fs, null);
-                            res = taskres.Result;
-                            var task = taskres.ContinueWith((sender) =>
-                            {
+                            res = await StaticUtils.Client.PutWithHttpMessagesAsync(ce.MySINnerFile.Id.Value, fs);
+                            //var task = res.ContinueWith((sender) =>
+                            //{
 
-                                string msg = "Upload " + sender.Status.ToString() + " with statuscode: ";
+                                string msg = "Upload ended with statuscode: ";
                                 msg += res?.Response?.StatusCode + Environment.NewLine;
                                 msg += res?.Response?.ReasonPhrase;
                                 msg += Environment.NewLine + res?.Response?.Content.ReadAsStringAsync().Result;
-                                msg += Environment.NewLine + sender.Exception?.Message;
                                 System.Diagnostics.Trace.TraceInformation(msg);
                                 myStatus = res.Response.StatusCode;
                                 if(!StaticUtils.IsUnitTest)
@@ -548,8 +546,7 @@ namespace ChummerHub.Client.Backend
                                 {
                                     System.Diagnostics.Trace.TraceInformation(msg);
                                 }
-                            });
-                            res = taskres.Result;
+                            //});
                         }
                         else
                         {

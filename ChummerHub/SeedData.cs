@@ -36,7 +36,6 @@ namespace ChummerHub
                     await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.AdministratorsRole);
                     await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.RegisteredUserRole);
                 }
-
                 context.SaveChanges();
             }
         }

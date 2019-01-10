@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using System.Xml.Serialization;
 
 namespace ChummerHub.Models.V1
 {
+    [DebuggerDisplay("UserRight {EMail}: {CanEdit}")]
     public class SINerUserRight
     {
         public SINerUserRight()

@@ -77,7 +77,6 @@ namespace ChummerHub
             {
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection"));
-                
             });
 
             services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();

@@ -27,11 +27,7 @@ namespace ChummerHub.Controllers.V1
     [ApiController]
     [ApiVersion("1.0")]
     [ControllerName("SINner")]
-#if DEBUG
-    [AllowAnonymous]
-#else
     [Authorize]
-#endif
     public class SINnerController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -51,7 +47,12 @@ namespace ChummerHub.Controllers.V1
         }
 
 
-        private static System.Net.Http.HttpClient MyHttpClient { get; } = new System.Net.Http.HttpClient();
+        private System.Net.Http.HttpClient MyHttpClient { get; } = new System.Net.Http.HttpClient();
+
+        ~SINnerController()
+        {
+            MyHttpClient?.Dispose();
+        }
 
         // GET: api/ChummerFiles/5
         //[Route("download")]
@@ -232,11 +233,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NoContent)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerPut")]
-#if DEBUG
-        [AllowAnonymous]
-#else
         [Authorize]
-#endif
         public async Task<IActionResult> Put([FromRoute] Guid id, IFormFile uploadedFile)
         {
             try
@@ -329,11 +326,14 @@ namespace ChummerHub.Controllers.V1
                     {
                         return BadRequest("Sinner  " + sinner.Id + ": LastChange not set!");
                     }
-
+                    _context.Entry(sinner.SINnerMetaData.Visibility).CurrentValues.SetValues(sinner.SINnerMetaData.Visibility);
+                    var olduserrights = await (from a in _context.UserRights where a.SINnerId == sinner.Id select a).ToListAsync();
+                    _context.UserRights.RemoveRange(olduserrights);
                     foreach (var ur in sinner.SINnerMetaData.Visibility.UserRights)
                     {
                         ur.Id = Guid.NewGuid();
                         ur.SINnerId = sinner.Id;
+                        _context.UserRights.Add(ur);
                     }
 
                     foreach(var tag in sinner.SINnerMetaData.Tags)
@@ -345,6 +345,7 @@ namespace ChummerHub.Controllers.V1
                     var check = await CheckIfUpdateSINnerFile(sinner.Id.Value, user);
                     if (check)
                     {
+                        _context.Tags.RemoveRange(sinner.AllTags);
                         _context.Entry(sinner).CurrentValues.SetValues(sinner);
                         List<Tag> taglist = sinner.SINnerMetaData.Tags;
                         UpdateEntityEntries(taglist);
@@ -388,6 +389,8 @@ namespace ChummerHub.Controllers.V1
         {
             foreach (var item in taglist)
             {
+                if(!_context.Tags.Contains(item))
+                    _context.Tags.Add(item);
                 _context.Entry(item).CurrentValues.SetValues(item);
                 UpdateEntityEntries(item.Tags);
             }
@@ -410,11 +413,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerUpload")]
         //[Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created, Type = typeof(SINner))]
-#if DEBUG
-        [AllowAnonymous]
-#else
         [Authorize]
-#endif
         public async Task<IActionResult> Post([FromBody] UploadInfoObject uploadInfo)
         {
             
@@ -435,9 +434,9 @@ namespace ChummerHub.Controllers.V1
                 {
                     return BadRequest(ModelState);
                 }
-                var sin = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights).FirstOrDefaultAsync(a => a.Id == id);
+                var sinner = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights).FirstOrDefaultAsync(a => a.Id == id);
 
-                if (sin == null)
+                if (sinner == null)
                 {
                     return NotFound();
                 }
@@ -447,9 +446,15 @@ namespace ChummerHub.Controllers.V1
                 {
                     return BadRequest("not authorized");
                 }
-
-                _context.SINners.Remove(sin);
-                _context.UserRights.RemoveRange(sin.SINnerMetaData.Visibility.UserRights);
+                var olduserrights = await (from a in _context.UserRights where a.SINnerId == sinner.Id select a).ToListAsync();
+                _context.UserRights.RemoveRange(olduserrights);
+                _context.Tags.RemoveRange(sinner.AllTags);
+                if (_context.SINnerVisibility.Contains(sinner.SINnerMetaData.Visibility))
+                    _context.SINnerVisibility.Remove(sinner.SINnerMetaData.Visibility);
+                if(_context.SINnerMetaData.Contains(sinner.SINnerMetaData))
+                    _context.SINnerMetaData.Remove(sinner.SINnerMetaData);
+                if (_context.SINners.Contains(sinner))
+                    _context.SINners.Remove(sinner);
                 await _context.SaveChangesAsync();
 
                 return Ok("deleted");
