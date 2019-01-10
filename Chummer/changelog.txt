@@ -1,4 +1,9 @@
-Future Build 204
+Future Build 205
+
+Data Changes:
+- Fixed incorrect underbarrel weapon name for the Nissan Optimum II that caused a crash. Fixes part of #3344
+
+Build 204
 
 Application Changes:
 
