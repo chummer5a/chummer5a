@@ -462,7 +462,10 @@ namespace Chummer
                     if (objSkill.HasSpecialization(DisplayName))
                         intReturn += 2;
                 }
-                
+
+                // Include any Improvements to Threading.
+                intReturn += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ActionDicePool, false, "Threading");
+
                 return intReturn;
             }
         }
@@ -485,7 +488,15 @@ namespace Chummer
                     if (objSkill.HasSpecialization(DisplayName))
                         strReturn += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language) + strSpaceCharacter + '(' + 2.ToString(GlobalOptions.CultureInfo) + ')';
                 }
-                
+
+                // Include any Improvements to the Spell Category.
+                foreach (Improvement objImprovement in _objCharacter.Improvements
+                    .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.ActionDicePool && objImprovement.Enabled
+                    && objImprovement.ImprovedName == "Threading"))
+                {
+                    strReturn += $"{strSpaceCharacter}+{strSpaceCharacter}{_objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)}{strSpaceCharacter}({objImprovement.Value.ToString(GlobalOptions.CultureInfo)})";
+                }
+
                 return strReturn;
             }
         }

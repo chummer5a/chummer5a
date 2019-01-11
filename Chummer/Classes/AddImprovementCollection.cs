@@ -6181,6 +6181,18 @@ namespace Chummer.Classes
             int final = (int) Math.Min((decimal) Math.Ceiling(0.5 * _objCharacter.SubmersionGrade), _objCharacter.CyberwareEssence);
             CreateImprovement("RESBase", _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute, _strUnique, final, 1, 0, 0, final);
         }
+
+        /// <summary>
+        /// Improvement increases the Dice Pool for a specific named Action.
+        /// TODO: Link to actions.xml when we implement that. 
+        /// </summary>
+        /// <param name="bonusNode"></param>
+        public void actiondicepool(XmlNode bonusNode)
+        {
+            Log.Info("actiondicepool");
+            CreateImprovement(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.ActionDicePool,
+                _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
+        }
         #endregion
     }
 

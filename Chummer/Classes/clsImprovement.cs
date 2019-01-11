@@ -306,6 +306,7 @@ namespace Chummer
             WeaponSkillAccuracy,
             MetageneticLimit,
             Tradition,
+            ActionDicePool,
             NumImprovementTypes, // 🡐 This one should always be the last defined enum
         }
 
