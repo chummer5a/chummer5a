@@ -44777,6 +44777,12 @@
 	<chummer file="improvements.xml">
 		<improvements>
 			<improvement>
+				<id>actiondicepool</id>
+				<name>Action Dice-Pool Modifier</name>
+				<translate>Würfelpoolmodifikator für Aktionen</translate>
+				<altpage>Stellt die Anzahl der Kästchen ein, die der Charakter in seinem geistigen Zustandsmonitor hat. Positive Zahlen erhöhen die Anzahl der Kästchen im Zustandsmonitor. Negative Zahlen reduzieren die Anzahl der Kästchen im Zustandsmonitor.</altpage>
+			</improvement>
+			<improvement>
 				<id>specificattribute</id>
 				<name>Attribute</name>
 				<translate>Attribut</translate>
