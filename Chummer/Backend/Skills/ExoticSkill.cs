@@ -81,6 +81,7 @@ namespace Chummer.Backend.Skills
             set
             {
                 _strSpecific = value;
+
                 OnPropertyChanged();
             }
         }

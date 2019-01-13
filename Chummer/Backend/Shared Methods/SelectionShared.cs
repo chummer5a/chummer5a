@@ -1964,6 +1964,16 @@ namespace Chummer
                         }
                         return false;
                     }
+                case "program":
+                {
+                    // Character needs a specific Program.
+                    if (!blnShowMessage) return objCharacter.AIPrograms.Any(p => p.Name == strNodeInnerText);
+                    string strTranslate = XmlManager.Load("programs.xml").SelectSingleNode($"/chummer/programs/program[name = {strNodeInnerText.CleanXPath()}]/translate")?.InnerText;
+                    strName = !string.IsNullOrEmpty(strTranslate)
+                        ? $"{Environment.NewLine}\t{strTranslate} ({LanguageManager.GetString("String_Program", GlobalOptions.Language)})"
+                        : $"{Environment.NewLine}\t{strNodeInnerText} ({LanguageManager.GetString("String_Program", GlobalOptions.Language)})";
+                    return objCharacter.AIPrograms.Any(p => p.Name == strNodeInnerText);
+                }
                 case "quality":
                 {
                     string strExtra = xmlNode.SelectSingleNode("@extra")?.Value;

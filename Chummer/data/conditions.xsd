@@ -138,6 +138,7 @@
       <xs:element name="metatypecategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="metavariant" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="power" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="program" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="quality" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:simpleContent>

@@ -5908,6 +5908,7 @@
         <mount>Stock</mount>
         <mount>Side</mount>
       </accessorymounts>
+      <ammoname>Ammo: Gyrojet</ammoname>
       <range>Heavy Pistols</range>
       <sizecategory>Heavy Pistols</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>

@@ -2,10 +2,13 @@ Future Build 205
 
 Application Changes:
 - Added a new improvement type - actiondicepool - to support specific Actions receiving dicepool bonuses. Currently only Threading is supported by this.
+- Fixed behaviour of Exotic weapons to prevent them from from using the first exotic skill found.
+- Exposed the selection of AI programs to the main RequirementsMet method. Prevents issues with programs not being translated, offends me slightly less. Fixes #3350
 
 Data Changes:
 - Fixed incorrect underbarrel weapon name for the Nissan Optimum II that caused a crash. Fixes part of #3344
 - Fixed incorrect bonus for the Delphi Paragon to apply to Threading actions instead of Compiling.
+- Set the ammo type for the FN-AAL to Gyrojet. Possibly not correct, as there's no proper RAW on what ammo the weapon is supposed to fire. 
 
 Build 204
 

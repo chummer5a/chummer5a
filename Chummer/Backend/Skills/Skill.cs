@@ -918,6 +918,11 @@ namespace Chummer.Backend.Skills
                     return string.Empty; //Unleveled skills cannot have a specialization;
                 }
 
+                if (IsExoticSkill)
+                {
+                    return ((ExoticSkill) this).Specific;
+                }
+
                 if (Specializations.Count > 0)
                 {
                     return Specializations[0].DisplayName(GlobalOptions.Language);
@@ -961,6 +966,11 @@ namespace Chummer.Backend.Skills
 
         public bool HasSpecialization(string strSpecialization)
         {
+
+            if (IsExoticSkill)
+            {
+                return ((ExoticSkill)this).Specific == strSpecialization;
+            }
             return Specializations.Any(x => (x.Name == strSpecialization || x.DisplayName(GlobalOptions.Language) == strSpecialization)) && !CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && x.UniqueName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled);
         }
 

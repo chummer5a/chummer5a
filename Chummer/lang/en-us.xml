@@ -8556,8 +8556,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Select AI Program or Advanced Program</text>
     </string>
     <string>
-      <key>Message_SelectAIProgram_AdvancedProgramRequirement</key>
-      <text>You do not meet the requirements for this Advanced Program. You must know the following Program: </text>
+      <key>String_Program</key>
+      <text>Program</text>
     </string>
     <string>
       <key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>

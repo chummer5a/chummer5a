@@ -3673,19 +3673,16 @@ namespace Chummer.Backend.Equipment
                 Skill objSkill = null;
                 foreach (Skill objCharacterSkill in _objCharacter.SkillsSection.Skills)
                 {
-                    if (objCharacterSkill.Name == strSkill)
+                    if (objCharacterSkill.Name != strSkill) continue;
+                    if (string.IsNullOrEmpty(strSpec) || (objCharacterSkill.HasSpecialization(strSpec)))
                     {
-                        if (string.IsNullOrEmpty(strSpec) || (objCharacterSkill.HasSpecialization(strSpec)))
-                        {
-                            objSkill = objCharacterSkill;
-                            break;
-                        }
-                        if (string.IsNullOrEmpty(Spec2) || objCharacterSkill.HasSpecialization(Spec2))
-                        {
-                            objSkill = objCharacterSkill;
-                            break;
-                        }
+                        objSkill = objCharacterSkill;
+                        break;
                     }
+                    //If the weapon doesn't have a Spec2 or it doesn't match, move along. Mostly affects exotics.
+                    if (string.IsNullOrEmpty(Spec2) || !objCharacterSkill.HasSpecialization(Spec2)) continue;
+                    objSkill = objCharacterSkill;
+                    break;
                 }
                 return objSkill;
             }
@@ -3845,15 +3842,13 @@ namespace Chummer.Backend.Equipment
                 if (objSkill != null)
                 {
                     intDicePool = objSkill.Pool;
+                    strKey = objSkill.IsExoticSkill ? $"{objSkill.DisplayName}: {((ExoticSkill) objSkill).Specific}" : objSkill.DisplayName;
                 }
+                string strReturn = $"{strKey}{strSpaceCharacter}({intDicePool.ToString(GlobalOptions.CultureInfo)})";
 
-                string strReturn = objSkill?.DisplayName ?? strKey + strSpaceCharacter + '(' + intDicePool.ToString(GlobalOptions.CultureInfo) + ')';
-
-                if (!string.IsNullOrEmpty(objSkill?.Specialization) && !objSkill.IsExoticSkill)
-                {
-                    if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) || objSkill.HasSpecialization(Name) || objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) || objSkill.HasSpecialization(Category) || (!string.IsNullOrEmpty(objSkill.Specialization) && (objSkill.HasSpecialization(Spec) || objSkill.HasSpecialization(Spec2))))
-                        strReturn += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language) + strSpaceCharacter + '(' + 2.ToString(GlobalOptions.CultureInfo) + ')';
-                }
+                if (string.IsNullOrEmpty(objSkill?.Specialization) || objSkill.IsExoticSkill) return strReturn;
+                if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) || objSkill.HasSpecialization(Name) || objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) || objSkill.HasSpecialization(Category) || (!string.IsNullOrEmpty(objSkill.Specialization) && (objSkill.HasSpecialization(Spec) || objSkill.HasSpecialization(Spec2))))
+                    strReturn += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language) + strSpaceCharacter + '(' + 2.ToString(GlobalOptions.CultureInfo) + ')';
 
                 return strReturn;
             }
