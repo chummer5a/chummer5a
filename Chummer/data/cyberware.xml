@@ -312,7 +312,7 @@
       <category>Headware</category>
       <ess>Rating * 1</ess>
       <capacity>0</capacity>
-      <avail>Rating * 5</avail>
+      <avail>(Rating * 5)R</avail>
       <cost>FixedValues(43000,97000,208000)</cost>
       <source>SR5</source>
       <page>452</page>
