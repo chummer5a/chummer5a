@@ -248,6 +248,7 @@ namespace ChummerHub.Controllers.V1
                 {
                     return Conflict("CheckIfUpdateSINnerFile");
                 }
+                sin.GoogleDriveFileId = dbsinner.GoogleDriveFileId;
                 sin.DownloadUrl = Startup.GDrive.StoreXmlInCloud(sin, uploadedFile);
                 _context.Entry(dbsinner).CurrentValues.SetValues(sin);
                 
@@ -354,6 +355,10 @@ namespace ChummerHub.Controllers.V1
                     if (dbsinner != null)
                     {
                         _context.SINners.Attach(dbsinner);
+                        if (String.IsNullOrEmpty(sinner.GoogleDriveFileId))
+                            sinner.GoogleDriveFileId = dbsinner.GoogleDriveFileId;
+                        if(String.IsNullOrEmpty(sinner.DownloadUrl))
+                            sinner.DownloadUrl = dbsinner.DownloadUrl;
                         //_context.Entry(dbsinner.SINnerMetaData.Visibility).State = EntityState.Modified;
                         _context.Entry(dbsinner.SINnerMetaData.Visibility).CurrentValues.SetValues(sinner.SINnerMetaData.Visibility);
 

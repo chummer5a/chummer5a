@@ -2,6 +2,7 @@ Future Build 1.0.0.1
 
 WebService Changes:
 
+- fixed a bug were the check if a Chummer is already on GDrive used the new uploaded (and always empty) GDriveID from the Client - now this ID is kept from the database if it's empty on upload (which it SHOULD be)
 - added a DeploymentSlot "Beta" for Azure reachable under https://sinners-beta.azurewebsites.net/ - doubles the cost, halves the chance of me messing things up in production later
 - fixed a Bug where Properties were not updated in the Database on POST
 - Files at GDrive are checked for existance before uploading and are only updated, if they exist
