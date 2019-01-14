@@ -8508,7 +8508,7 @@
 			<cyberware>
 				<id>4fd033ab-9a43-4ee0-9675-47414af3c8f4</id>
 				<name>Bone Lacing (Plastic)</name>
-				<translate>Kompositknochen (Plastik)</translate>
+				<translate>Kompositknochen (Kunststoff)</translate>
 				<altpage>460</altpage>
 			</cyberware>
 			<cyberware>
@@ -44776,6 +44776,12 @@
 	</chummer>
 	<chummer file="improvements.xml">
 		<improvements>
+			<improvement>
+				<id>actiondicepool</id>
+				<name>Action Dice-Pool Modifier</name>
+				<translate>Würfelpoolmodifikator für Aktionen</translate>
+				<altpage>Stellt die Anzahl der Kästchen ein, die der Charakter in seinem geistigen Zustandsmonitor hat. Positive Zahlen erhöhen die Anzahl der Kästchen im Zustandsmonitor. Negative Zahlen reduzieren die Anzahl der Kästchen im Zustandsmonitor.</altpage>
+			</improvement>
 			<improvement>
 				<id>specificattribute</id>
 				<name>Attribute</name>
