@@ -171,7 +171,7 @@ namespace ChummerHub.Client.UI
             this.gbVisibility.Size = new System.Drawing.Size(611, 218);
             this.gbVisibility.TabIndex = 7;
             this.gbVisibility.TabStop = false;
-            this.gbVisibility.Text = "Visibility of uploaded SINners";
+            this.gbVisibility.Text = "Visibility of uploaded SINner";
             // 
             // tlpVisibility
             // 

@@ -40,7 +40,9 @@ namespace ChummerHub.Client.UI
                 //Properties.Settings.Default.Reload();
                 if (String.IsNullOrEmpty(Properties.Settings.Default.SINnerVisibility))
                     return _SINnerVisibility = new SINners.Models.SINnerVisibility()
-                    { IsPublic = true, IsGroupVisible = true,
+                    {
+                        Id = Guid.NewGuid(),
+                        IsPublic = true, IsGroupVisible = true,
                         UserRights = new List<SINerUserRight>()
                         {
                             new SINerUserRight()
@@ -63,6 +65,7 @@ namespace ChummerHub.Client.UI
                 }
                 return _SINnerVisibility = new SINners.Models.SINnerVisibility()
                 {
+                    Id = Guid.NewGuid(),
                     IsPublic = true,
                     IsGroupVisible = true,
                     UserRights = new List<SINerUserRight>()
@@ -205,9 +208,10 @@ namespace ChummerHub.Client.UI
                     }
                     this.bLogin.Text = "Logout";
                     string status = Roles.Aggregate((a, b) => a + ", " + b);
-                    this.labelAccountStatus.Text = status;
-                    this.labelAccountStatus.ForeColor = Color.DarkGreen;
-                    HideWebBrowser();
+                    Invoke(new Action(() => labelAccountStatus.Text = status));
+                    Invoke(new Action(() => this.labelAccountStatus.ForeColor = Color.DarkGreen));
+                    Invoke(new Action(() => HideWebBrowser()));
+                    
                     
                 }
                 else if (LoginStatus == false)
@@ -229,7 +233,7 @@ namespace ChummerHub.Client.UI
             }
         }
 
-        private async Task<string> GetUserEmail()
+        public async Task<string> GetUserEmail()
         {
             try
             {
@@ -271,10 +275,25 @@ namespace ChummerHub.Client.UI
                 var t = StartSTATask(
                       async () =>
                       {
-                          var roles = await GetRolesStatus();
-                          UpdateDisplay();
-                          if(!roles.Any())
-                              ShowWebBrowser();
+                          try
+                          {
+                              var signout = StaticUtils.Client.LogoutWithHttpMessagesAsync().Result;
+                              if (signout.Response.StatusCode != HttpStatusCode.OK)
+                              {
+                                  var roles = GetRolesStatus().Result;
+                              }
+                              else
+                              {
+                                  Roles = new List<String>();
+                              }
+                              UpdateDisplay();
+                              //if(!roles.Any())
+                              //    ShowWebBrowser();
+                          }
+                          catch(Exception ex)
+                          {
+                              System.Diagnostics.Trace.TraceWarning(ex.ToString());
+                          }
                       });
             }
             else
@@ -340,9 +359,10 @@ namespace ChummerHub.Client.UI
             try
             {
                 this.UseWaitCursor = true;
-                var result = StaticUtils.Client.GetRolesWithHttpMessagesAsync();
-                await result;
-                var roles = result.Result.Body as IList<string>;
+                var myresult = StaticUtils.Client.GetRolesWithHttpMessagesAsync().Result;
+                //var result = StaticUtils.Client.GetRolesWithHttpMessagesAsync();
+                //await result;
+                var roles = myresult.Body as IList<string>; //result.Result.Body as IList<string>;
                 if (roles != null && roles.Any())
                 {
                     this.LoginStatus = true;
@@ -355,6 +375,10 @@ namespace ChummerHub.Client.UI
             {
                 this.LoginStatus = false;
                 return null;
+            }
+            catch(TaskCanceledException ex)
+            {
+                System.Diagnostics.Trace.TraceWarning(ex.ToString());
             }
             catch(Exception ex)
             {
@@ -391,7 +415,7 @@ namespace ChummerHub.Client.UI
             OptionsUpdate();
         }
 
-        bool IsValidEmail(string email)
+        private static bool IsValidEmail(string email)
         {
             try
             {
@@ -407,7 +431,14 @@ namespace ChummerHub.Client.UI
         private void bVisibilityAddEmail_Click(object sender, EventArgs e)
         {
             string email = this.tbVisibilityAddEmail.Text;
-            if (!IsValidEmail(email))
+            AddVisibilityForEmail(email);
+            //Save it!
+            SINnerVisibility.Save(clbVisibilityToUsers);
+        }
+
+        public static void AddVisibilityForEmail(string email)
+        {
+            if(!IsValidEmail(email))
             {
                 MessageBox.Show("Please enter a valid email address!");
                 return;
@@ -418,9 +449,12 @@ namespace ChummerHub.Client.UI
                 CanEdit = true,
                 Id = Guid.NewGuid()
             };
-            SINnersOptions.SINnerVisibility.UserRightsObservable.Add(ur);
-            //Save it!
-            SINnerVisibility.Save(this.clbVisibilityToUsers);
+            var found = from a in SINnersOptions.SINnerVisibility.UserRightsObservable where a.EMail.ToLowerInvariant() == email.ToLowerInvariant() select a;
+            if(found.Any())
+                ur = found.FirstOrDefault();
+            if (!SINnersOptions.SINnerVisibility.UserRightsObservable.Contains(ur))
+                SINnersOptions.SINnerVisibility.UserRightsObservable.Add(ur);
+       
         }
 
         private void clbVisibilityToUsers_ItemCheck(object sender, ItemCheckEventArgs e)

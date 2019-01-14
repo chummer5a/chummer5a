@@ -29,11 +29,15 @@ namespace ChummerHub.Client.UI
                 if(String.IsNullOrEmpty(Properties.Settings.Default.SINnerUrl))
                 {
                     Properties.Settings.Default.SINnerUrl = "https://sinners.azurewebsites.net/";
+#if DEBUG
+                    string msg = "if you are (want to be) a Beta-Tester, change this to http://sinners-beta.azurewebsites.net/!";
+                    System.Diagnostics.Trace.TraceWarning(msg);
+#endif
                     Properties.Settings.Default.Save();
                 }
                 string path = Properties.Settings.Default.SINnerUrl.TrimEnd('/');
 
-                path += "/Identity/Account/Login?returnUrl=/Identity/Account/Manage/ExternalLogins";
+                path += "/Identity/Account/Login?returnUrl=/Identity/Account/Manage";
                 return path;
             }
         }
@@ -59,29 +63,39 @@ namespace ChummerHub.Client.UI
         {
             if(e.Url.AbsoluteUri == LoginUrl)
                 return;
-            if((e.Url.AbsoluteUri.Contains("/Identity/Account/Manage/ExternalLogins"))
-                || (e.Url.AbsoluteUri.Contains("/Identity/Account/Logout")))
+            if((e.Url.AbsoluteUri.Contains("/Identity/Account/Logout")))
             {
-
-
                 //maybe we are logged in now
-                try
-                {
-                    this.UseWaitCursor = true;
-                    Properties.Settings.Default.CookieData = null;
-                    Properties.Settings.Default.Save();
-                    //recreate cookiecontainer
-                    var cookies = StaticUtils.AuthorizationCookieContainer.GetCookies(new Uri(Properties.Settings.Default.SINnerUrl));
-                    StaticUtils.Client = null;
-                }
-                catch(Exception ex)
-                {
-                    System.Diagnostics.Trace.TraceInformation(ex.ToString());
-                }
-                finally
-                {
-                    this.UseWaitCursor = false;
-                }
+                GetCookieContainer();
+            }
+            else if (e.Url.AbsoluteUri.Contains("/Identity/Account/Manage"))
+            {
+                //we are logged in!
+                GetCookieContainer();
+                var user = await StaticUtils.Client.GetUserByAuthorizationWithHttpMessagesAsync();
+                SINnersOptions.AddVisibilityForEmail(user.Body.Email);
+                this.Close();
+            }
+        }
+
+        private void GetCookieContainer()
+        {
+            try
+            {
+                this.UseWaitCursor = true;
+                Properties.Settings.Default.CookieData = null;
+                Properties.Settings.Default.Save();
+                //recreate cookiecontainer
+                var cookies = StaticUtils.AuthorizationCookieContainer.GetCookies(new Uri(Properties.Settings.Default.SINnerUrl));
+                StaticUtils.Client = null;
+            }
+            catch(Exception ex)
+            {
+                System.Diagnostics.Trace.TraceInformation(ex.ToString());
+            }
+            finally
+            {
+                this.UseWaitCursor = false;
             }
         }
     }

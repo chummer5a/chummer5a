@@ -33,14 +33,33 @@ namespace ChummerHub.Client.Model
                 MySINnerFile = JsonConvert.DeserializeObject<SINner>(fileElement);
             }
 
-            if (MySINnerFile.SiNnerMetaData.Visibility != null) return;
+            if(MySINnerFile.SiNnerMetaData.Visibility != null)
+            {
+                if(MySINnerFile.SiNnerMetaData.Visibility.Id == null)
+                    MySINnerFile.SiNnerMetaData.Visibility.Id = Guid.NewGuid();
+                return;
+            }
+            
             if (!string.IsNullOrEmpty(Properties.Settings.Default.SINnerVisibility))
                 MySINnerFile.SiNnerMetaData.Visibility =
                     JsonConvert.DeserializeObject<SINnerVisibility>(Properties.Settings.Default.SINnerVisibility);
 
+            if(MySINnerFile.SiNnerMetaData.Visibility.Id == null)
+                MySINnerFile.SiNnerMetaData.Visibility.Id = Guid.NewGuid();
+
             var cache = new frmCharacterRoster.CharacterCache(character.FileName);
-            this.MySINnerFile.JsonSummary = JsonConvert.SerializeObject(cache);
+        
             this.MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
+
+            if(MySINnerIds.TryGetValue(MyCharacter.Alias, out var singuid))
+                MySINnerFile.Id = singuid;
+            else
+            {
+                MySINnerFile.Id = Guid.NewGuid();
+                MySINnerIds.Add(MyCharacter.Alias, MySINnerFile.Id.Value);
+                MySINnerIds = MySINnerIds; //Save it!
+            }
+            this.MySINnerFile.JsonSummary = JsonConvert.SerializeObject(cache);
         }
 
         public Character MyCharacter { get; }
@@ -78,14 +97,7 @@ namespace ChummerHub.Client.Model
 
         internal List<Tag> PopulateTags()
         {
-            if(MySINnerIds.TryGetValue(MyCharacter.Alias, out var singuid))
-                MySINnerFile.Id = singuid;
-            else
-            {
-                MySINnerFile.Id = Guid.NewGuid();
-                MySINnerIds.Add(MyCharacter.Alias, MySINnerFile.Id.Value);
-                MySINnerIds = MySINnerIds; //Save it!
-            }
+    
 
             var tag = new Tag
             {
@@ -183,6 +195,7 @@ namespace ChummerHub.Client.Model
                 MySINnerFile.SiNnerMetaData.Visibility =
                     new SINnerVisibility
                     {
+                        Id = Guid.NewGuid(),
                         Groupname = SINnersOptions.SINnerVisibility.Groupname,
                         IsGroupVisible = SINnersOptions.SINnerVisibility.IsGroupVisible,
                         IsPublic = SINnersOptions.SINnerVisibility.IsPublic,

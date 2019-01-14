@@ -21,6 +21,11 @@ namespace ChummerHub.Data
             
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.EnableSensitiveDataLogging();
+        }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -32,8 +37,6 @@ namespace ChummerHub.Data
                 .HasIndex(b => new { b.TagName, b.TagValue });
             builder.Entity<ChummerHub.Models.V1.SINerUserRight>()
                 .HasIndex(b => b.SINnerId);
-
-            
         }
 
         public DbSet<ChummerHub.Models.V1.SINner> SINners { get; set; }

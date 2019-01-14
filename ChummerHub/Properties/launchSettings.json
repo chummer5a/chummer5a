@@ -2,6 +2,10 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/ChummerHub",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "https://localhost:5001",
       "sslPort": 5001

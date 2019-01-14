@@ -82,6 +82,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Properties\PublishProfiles\SINners - Web Deploy.pubxml.user" />
+    <None Include="Properties\PublishProfiles\sinners-Beta - Web Deploy.pubxml.user" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="System.Web">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Web.dll</HintPath>
     </Reference>

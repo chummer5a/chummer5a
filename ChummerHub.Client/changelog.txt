@@ -2,6 +2,9 @@ Future Build 1.0.0.1
 
 WebService Changes:
 
+- added a DeploymentSlot "Beta" for Azure reachable under https://sinners-beta.azurewebsites.net/ - doubles the cost, halves the chance of me messing things up in production later
+- fixed a Bug where Properties were not updated in the Database on POST
+- Files at GDrive are checked for existance before uploading and are only updated, if they exist
 - added ApplicationInsights Livetracking to see what's going on in the Azure Portal
 - added a Role "ConfirmedUser" (Email Address confirmed) for future use (maybe allow versioning only for these users?)
 - set the daily Data-Volume Cap to 1GB (for now, can be raised - just to avoid unpleasant surprises)
@@ -17,6 +20,9 @@ WebService Changes:
 
 Application Changes:
 
+- added http://sinners-beta.azurewebsites.net/ to the selectable SINnerUrls
+- OnSave checkes first, if the uploaded version is already up to date and either skips upload or does it
+- frmWebBrowser closes after successfull login and saves the users EMail in his Visibility-Object
 - fixed a bug, where the upload DID finish, but the execution of the program didn't resume
 - Added the "Extra" for each HubClassTagAttribute (so that Increase [Attribute] gets a + WIL-Childtag)
 - Show TagComment in the TreeNodeList of the Tags

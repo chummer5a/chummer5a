@@ -255,9 +255,9 @@ namespace SINners
             /// </param>
             /// <param name='id'>
             /// </param>
-            public static void GetById(this ISINnersClient operations, Guid id)
+            public static SINner GetById(this ISINnersClient operations, Guid id)
             {
-                Task.Factory.StartNew(s => ((ISINnersClient)s).GetByIdAsync(id), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                return Task.Factory.StartNew(s => ((ISINnersClient)s).GetByIdAsync(id), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
             /// <param name='operations'>
@@ -268,9 +268,12 @@ namespace SINners
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task GetByIdAsync(this ISINnersClient operations, Guid id, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<SINner> GetByIdAsync(this ISINnersClient operations, Guid id, CancellationToken cancellationToken = default(CancellationToken))
             {
-                await operations.GetByIdWithHttpMessagesAsync(id, null, cancellationToken).ConfigureAwait(false);
+                using (var _result = await operations.GetByIdWithHttpMessagesAsync(id, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
             }
 
             /// <summary>

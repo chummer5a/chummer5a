@@ -100,13 +100,38 @@ namespace Chummer.Plugins
 
         private async void MyOnSaveUpload(object sender, Character input)
         {
-            input.OnSaveCompleted -= MyOnSaveUpload;
-            CharacterExtended ce = new CharacterExtended(input, null);
-            ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
-            ce.PrepareModel();
-            await Utils.PostSINnerAsync(ce);
-            await Utils.UploadChummerFileAsync(ce);
-            IsSaving = false;
+            try
+            {
+
+
+                input.OnSaveCompleted -= MyOnSaveUpload;
+                CharacterExtended ce = new CharacterExtended(input, null);
+                var found = await StaticUtils.Client.GetByIdWithHttpMessagesAsync(ce.MySINnerFile.Id.Value);
+                if(found.Response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var sinjson = await found.Response.Content.ReadAsStringAsync();
+                    var foundobj = Newtonsoft.Json.JsonConvert.DeserializeObject<SINner>(sinjson);
+                    SINner foundsin = foundobj as SINner;
+                    if(foundsin.LastChange >= ce.MyCharacter.FileLastWriteTime)
+                    {
+                        //is already up to date!
+                        return;
+                    }
+
+                }
+                ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
+                ce.PrepareModel();
+                await Utils.PostSINnerAsync(ce);
+                await Utils.UploadChummerFileAsync(ce);
+            }
+            catch(Exception e)
+            {
+                System.Diagnostics.Trace.TraceError(e.ToString());
+            }
+            finally
+            {
+                IsSaving = false;
+            }
         }
 
         void IPlugin.LoadFileElement(Character input, string fileElement)

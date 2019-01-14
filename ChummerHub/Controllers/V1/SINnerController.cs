@@ -164,7 +164,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerGet")]
         [Authorize]
-        public async Task<IActionResult> GetById([FromRoute] Guid id)
+        public async Task<ActionResult<SINner>> GetById([FromRoute] Guid id)
         {
             try
             {
@@ -230,8 +230,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NoContent)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerPut")]
         [Authorize]
         public async Task<IActionResult> Put([FromRoute] Guid id, IFormFile uploadedFile)
@@ -244,13 +243,13 @@ namespace ChummerHub.Controllers.V1
                     return NotFound("Sinner with Id " + id + " not found!");
                 }
                 var user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
-                var check = await CheckIfUpdateSINnerFile(id, user);
-                if (!check)
+                SINner dbsinner = await CheckIfUpdateSINnerFile(id, user);
+                if (dbsinner == null)
                 {
                     return Conflict("CheckIfUpdateSINnerFile");
                 }
                 sin.DownloadUrl = Startup.GDrive.StoreXmlInCloud(sin, uploadedFile);
-                _context.Entry(sin).CurrentValues.SetValues(sin);
+                _context.Entry(dbsinner).CurrentValues.SetValues(sin);
                 
                 try
                 {
@@ -262,6 +261,10 @@ namespace ChummerHub.Controllers.V1
                 }
 
                 return Ok(sin.DownloadUrl);
+            }
+            catch(NoUserRightException e)
+            {
+                return BadRequest(e);
             }
             catch (Exception e)
             {
@@ -303,6 +306,8 @@ namespace ChummerHub.Controllers.V1
                     }
                     else
                     {
+                        _context.UploadClients.Attach(uploadInfo.Client);
+                        _context.Entry(uploadInfo.Client).State = EntityState.Modified;
                         _context.Entry(uploadInfo.Client).CurrentValues.SetValues(uploadInfo.Client);
                     }
                 }
@@ -310,7 +315,7 @@ namespace ChummerHub.Controllers.V1
                 var user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                 foreach (var sinner in uploadInfo.SINners)
                 {
-
+                    
                     if (sinner.Id.ToString() == "string")
                         sinner.Id = Guid.Empty;
 
@@ -326,7 +331,10 @@ namespace ChummerHub.Controllers.V1
                     {
                         return BadRequest("Sinner  " + sinner.Id + ": LastChange not set!");
                     }
-                    _context.Entry(sinner.SINnerMetaData.Visibility).CurrentValues.SetValues(sinner.SINnerMetaData.Visibility);
+                    if (sinner.SINnerMetaData.Visibility.Id == null)
+                    {
+                        sinner.SINnerMetaData.Visibility.Id = Guid.NewGuid();
+                    }
                     var olduserrights = await (from a in _context.UserRights where a.SINnerId == sinner.Id select a).ToListAsync();
                     _context.UserRights.RemoveRange(olduserrights);
                     foreach (var ur in sinner.SINnerMetaData.Visibility.UserRights)
@@ -342,11 +350,19 @@ namespace ChummerHub.Controllers.V1
                     }
 
                     sinner.UploadClientId = uploadInfo.Client.Id;
-                    var check = await CheckIfUpdateSINnerFile(sinner.Id.Value, user);
-                    if (check)
+                    SINner dbsinner = await CheckIfUpdateSINnerFile(sinner.Id.Value, user);
+                    if (dbsinner != null)
                     {
-                        _context.Tags.RemoveRange(sinner.AllTags);
-                        _context.Entry(sinner).CurrentValues.SetValues(sinner);
+                        _context.SINners.Attach(dbsinner);
+                        //_context.Entry(dbsinner.SINnerMetaData.Visibility).State = EntityState.Modified;
+                        _context.Entry(dbsinner.SINnerMetaData.Visibility).CurrentValues.SetValues(sinner.SINnerMetaData.Visibility);
+
+                        //_context.Tags.RemoveRange(dbsinner.AllTags);
+                        _context.Entry(dbsinner).State = EntityState.Modified;
+                        _context.Entry(dbsinner).CurrentValues.SetValues(sinner);
+                        string msg = "Sinner " + sinner.Id + " updated: " + _context.Entry(dbsinner).State.ToString();
+                        msg += Environment.NewLine + Environment.NewLine + "LastChange: " + dbsinner.LastChange;
+                        _logger.LogError(msg);
                         List<Tag> taglist = sinner.SINnerMetaData.Tags;
                         UpdateEntityEntries(taglist);
                     }
@@ -359,6 +375,27 @@ namespace ChummerHub.Controllers.V1
                 try
                 {
                     await _context.SaveChangesAsync();
+                }
+                
+                catch(DbUpdateConcurrencyException ex)
+                {
+                    foreach(var entry in ex.Entries)
+                    {
+                        if(entry.Entity is SINner)
+                        {
+                            DbUpdateConcurrencyExceptionHandler(entry);
+                        }
+                        else if (entry.Entity is Tag)
+                        {
+                            DbUpdateConcurrencyExceptionHandler(entry);
+                        }
+                        else
+                        {
+                            throw new NotSupportedException(
+                                "Don't know how to handle concurrency conflicts for "
+                                + entry.Metadata.Name);
+                        }
+                    }
                 }
                 catch(Exception e)
                 {
@@ -385,13 +422,43 @@ namespace ChummerHub.Controllers.V1
             }
         }
 
+        private void DbUpdateConcurrencyExceptionHandler(Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry entry)
+        {
+            var proposedValues = entry.CurrentValues;
+            var databaseValues = entry.GetDatabaseValues();
+            string msg = "";
+            foreach(var property in proposedValues.Properties)
+            {
+                Object proposedValue = null;
+                Object databaseValue = null;
+                if(proposedValues?.Properties?.Contains(property) == true)
+                    proposedValue = proposedValues[property];
+                if(databaseValues?.Properties?.Contains(property) == true)
+                    databaseValue = databaseValues[property];
+
+                msg += Environment.NewLine + "property: " + property + Environment.NewLine;
+                msg += "\tproposedValue: " + proposedValue + Environment.NewLine;
+                msg += "\tdatabaseValue: " + databaseValue + Environment.NewLine;
+                _logger.LogError(msg);
+                // TODO: decide which value should be written to database
+                // proposedValues[property] = <value to be saved>;
+            }
+            throw new NotSupportedException(
+               "Don't know how to handle concurrency conflicts for "
+               + entry.Metadata.Name + ": " + msg);
+            // Refresh original values to bypass next concurrency check
+            entry.OriginalValues.SetValues(databaseValues);
+        }
+
         private void UpdateEntityEntries(List<Tag> taglist)
         {
             foreach (var item in taglist)
             {
                 if(!_context.Tags.Contains(item))
                     _context.Tags.Add(item);
-                _context.Entry(item).CurrentValues.SetValues(item);
+                //_context.Tags.Attach(item);
+                //_context.Entry(item).State = EntityState.Modified;
+                //_context.Entry(item).CurrentValues.SetValues(item);
                 UpdateEntityEntries(item.Tags);
             }
         }
@@ -441,20 +508,20 @@ namespace ChummerHub.Controllers.V1
                     return NotFound();
                 }
                 var user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
-                var check = await CheckIfUpdateSINnerFile(id, user);
-                if (!check)
+                var dbsinner = await CheckIfUpdateSINnerFile(id, user);
+                if (dbsinner == null)
                 {
                     return BadRequest("not authorized");
                 }
                 var olduserrights = await (from a in _context.UserRights where a.SINnerId == sinner.Id select a).ToListAsync();
                 _context.UserRights.RemoveRange(olduserrights);
-                _context.Tags.RemoveRange(sinner.AllTags);
-                if (_context.SINnerVisibility.Contains(sinner.SINnerMetaData.Visibility))
-                    _context.SINnerVisibility.Remove(sinner.SINnerMetaData.Visibility);
-                if(_context.SINnerMetaData.Contains(sinner.SINnerMetaData))
-                    _context.SINnerMetaData.Remove(sinner.SINnerMetaData);
-                if (_context.SINners.Contains(sinner))
-                    _context.SINners.Remove(sinner);
+                _context.Tags.RemoveRange(dbsinner.AllTags);
+                if (_context.SINnerVisibility.Contains(dbsinner.SINnerMetaData.Visibility))
+                    _context.SINnerVisibility.Remove(dbsinner.SINnerMetaData.Visibility);
+                if(_context.SINnerMetaData.Contains(dbsinner.SINnerMetaData))
+                    _context.SINnerMetaData.Remove(dbsinner.SINnerMetaData);
+                if (_context.SINners.Contains(dbsinner))
+                    _context.SINners.Remove(dbsinner);
                 await _context.SaveChangesAsync();
 
                 return Ok("deleted");
@@ -466,7 +533,7 @@ namespace ChummerHub.Controllers.V1
             }
         }
 
-        private async Task<bool> CheckIfUpdateSINnerFile(Guid id, ApplicationUser user)
+        private async Task<SINner> CheckIfUpdateSINnerFile(Guid id, ApplicationUser user)
         {
             try
             {
@@ -480,21 +547,20 @@ namespace ChummerHub.Controllers.V1
                         break;
                     }
                 }
-                var existingseq = _context.SINners.Where(e => e.Id == id);
-                foreach(var existing in existingseq)
-                {
-                    var editseq = (from a in existing.SINnerMetaData.Visibility.UserRights where a.EMail.ToUpperInvariant() == user.NormalizedEmail select a).ToList();
+                var dbsinner = await _context.SINners.FirstOrDefaultAsync(e => e.Id == id);
+                if (dbsinner != null)
+                { 
+                    var editseq = (from a in dbsinner.SINnerMetaData.Visibility.UserRights where a.EMail.ToUpperInvariant() == user.NormalizedEmail select a).ToList();
                     foreach(var edit in editseq)
                     {
                         if (edit.CanEdit == true)
-                            return true;
+                            return dbsinner;
                     }
                     if (admin)
-                        return true;
+                        return dbsinner;
+                    throw new ChummerHub.NoUserRightException(user.UserName, dbsinner.Id);
                 }
-                
-                
-                return false;
+                return null;
             }
             catch (Exception e)
             {
