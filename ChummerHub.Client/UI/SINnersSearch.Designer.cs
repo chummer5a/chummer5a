@@ -29,10 +29,11 @@ namespace ChummerHub.Client.UI
         private void InitializeComponent()
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.MyTagTreeView = new System.Windows.Forms.TreeView();
-            this.flpReflectionMembers = new System.Windows.Forms.FlowLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.flpReflectionMembers = new System.Windows.Forms.FlowLayoutPanel();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.MyTagTreeView = new System.Windows.Forms.TreeView();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -46,6 +47,7 @@ namespace ChummerHub.Client.UI
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.Controls.Add(this.groupBox1, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.groupBox2, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.textBox1, 2, 2);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
@@ -56,32 +58,24 @@ namespace ChummerHub.Client.UI
             this.tableLayoutPanel1.Size = new System.Drawing.Size(775, 425);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
-            // MyTagTreeView
-            // 
-            this.MyTagTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MyTagTreeView.Location = new System.Drawing.Point(3, 16);
-            this.MyTagTreeView.Name = "MyTagTreeView";
-            this.MyTagTreeView.Size = new System.Drawing.Size(375, 400);
-            this.MyTagTreeView.TabIndex = 2;
-            // 
-            // flpReflectionMembers
-            // 
-            this.flpReflectionMembers.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpReflectionMembers.Location = new System.Drawing.Point(3, 16);
-            this.flpReflectionMembers.Name = "flpReflectionMembers";
-            this.flpReflectionMembers.Size = new System.Drawing.Size(376, 187);
-            this.flpReflectionMembers.TabIndex = 4;
-            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.flpReflectionMembers);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(390, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(382, 206);
+            this.groupBox1.Size = new System.Drawing.Size(382, 193);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "available search properties";
+            // 
+            // flpReflectionMembers
+            // 
+            this.flpReflectionMembers.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpReflectionMembers.Location = new System.Drawing.Point(3, 16);
+            this.flpReflectionMembers.Name = "flpReflectionMembers";
+            this.flpReflectionMembers.Size = new System.Drawing.Size(376, 174);
+            this.flpReflectionMembers.TabIndex = 4;
             // 
             // groupBox2
             // 
@@ -95,6 +89,24 @@ namespace ChummerHub.Client.UI
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Selected Properties";
             // 
+            // MyTagTreeView
+            // 
+            this.MyTagTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MyTagTreeView.Location = new System.Drawing.Point(3, 16);
+            this.MyTagTreeView.Name = "MyTagTreeView";
+            this.MyTagTreeView.Size = new System.Drawing.Size(375, 400);
+            this.MyTagTreeView.TabIndex = 2;
+            // 
+            // textBox1
+            // 
+            this.textBox1.BackColor = System.Drawing.SystemColors.Control;
+            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox1.Location = new System.Drawing.Point(390, 401);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(382, 20);
+            this.textBox1.TabIndex = 7;
+            this.textBox1.Text = "This functionality is currently under development and not available yet.";
+            // 
             // SINnersSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -104,6 +116,7 @@ namespace ChummerHub.Client.UI
             this.Size = new System.Drawing.Size(781, 433);
             this.Load += new System.EventHandler(this.SINnersSearchSearch_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -116,5 +129,6 @@ namespace ChummerHub.Client.UI
         private System.Windows.Forms.FlowLayoutPanel flpReflectionMembers;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }

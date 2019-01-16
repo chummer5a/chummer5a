@@ -30,9 +30,9 @@ namespace ChummerHub.Client.UI
         {
             this.tabLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.cbSRMReady = new System.Windows.Forms.CheckBox();
-            this.tbGroupname = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.tbGroupname = new System.Windows.Forms.TextBox();
             this.bUpload = new System.Windows.Forms.Button();
             this.tabLayoutPanel.SuspendLayout();
             this.SuspendLayout();
@@ -42,11 +42,11 @@ namespace ChummerHub.Client.UI
             this.tabLayoutPanel.ColumnCount = 2;
             this.tabLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tabLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tabLayoutPanel.Controls.Add(this.bUpload, 0, 3);
             this.tabLayoutPanel.Controls.Add(this.cbSRMReady, 0, 0);
             this.tabLayoutPanel.Controls.Add(this.label1, 0, 1);
             this.tabLayoutPanel.Controls.Add(this.textBox1, 0, 2);
             this.tabLayoutPanel.Controls.Add(this.tbGroupname, 1, 1);
-            this.tabLayoutPanel.Controls.Add(this.bUpload, 0, 3);
             this.tabLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.tabLayoutPanel.Name = "tabLayoutPanel";
             this.tabLayoutPanel.RowCount = 4;
@@ -70,15 +70,6 @@ namespace ChummerHub.Client.UI
             this.cbSRMReady.UseVisualStyleBackColor = true;
             this.cbSRMReady.Click += new System.EventHandler(this.cbSRMReady_Click);
             // 
-            // tbGroupname
-            // 
-            this.tbGroupname.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.tbGroupname.Location = new System.Drawing.Point(88, 26);
-            this.tbGroupname.Name = "tbGroupname";
-            this.tbGroupname.Size = new System.Drawing.Size(190, 20);
-            this.tbGroupname.TabIndex = 2;
-            this.tbGroupname.TextChanged += new System.EventHandler(this.tbGroupname_TextChanged);
-            // 
             // label1
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -101,10 +92,20 @@ namespace ChummerHub.Client.UI
             this.textBox1.Text = "As you probalby can tell, I\'m not an UI dev. This is just a demo to call the WebS" +
     "ervice. I hope some of you awesome UI guys pick this up.";
             // 
+            // tbGroupname
+            // 
+            this.tbGroupname.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.tbGroupname.Location = new System.Drawing.Point(88, 26);
+            this.tbGroupname.Name = "tbGroupname";
+            this.tbGroupname.Size = new System.Drawing.Size(190, 20);
+            this.tbGroupname.TabIndex = 2;
+            this.tbGroupname.TextChanged += new System.EventHandler(this.tbGroupname_TextChanged);
+            // 
             // bUpload
             // 
             this.bUpload.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.tabLayoutPanel.SetColumnSpan(this.bUpload, 2);
+            this.bUpload.Enabled = false;
             this.bUpload.Location = new System.Drawing.Point(160, 179);
             this.bUpload.Name = "bUpload";
             this.bUpload.Size = new System.Drawing.Size(75, 23);

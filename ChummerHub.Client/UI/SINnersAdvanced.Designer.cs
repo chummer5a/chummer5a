@@ -59,6 +59,7 @@ namespace ChummerHub.Client.UI
             // 
             // cmdPopulateTags
             // 
+            this.cmdPopulateTags.Enabled = false;
             this.cmdPopulateTags.Location = new System.Drawing.Point(322, 46);
             this.cmdPopulateTags.Name = "cmdPopulateTags";
             this.cmdPopulateTags.Size = new System.Drawing.Size(93, 23);
@@ -69,6 +70,7 @@ namespace ChummerHub.Client.UI
             // 
             // cmdPrepareModel
             // 
+            this.cmdPrepareModel.Enabled = false;
             this.cmdPrepareModel.Location = new System.Drawing.Point(323, 76);
             this.cmdPrepareModel.Name = "cmdPrepareModel";
             this.cmdPrepareModel.Size = new System.Drawing.Size(92, 23);
@@ -79,6 +81,7 @@ namespace ChummerHub.Client.UI
             // 
             // cmdPostSINnerMetadata
             // 
+            this.cmdPostSINnerMetadata.Enabled = false;
             this.cmdPostSINnerMetadata.Location = new System.Drawing.Point(323, 106);
             this.cmdPostSINnerMetadata.Name = "cmdPostSINnerMetadata";
             this.cmdPostSINnerMetadata.Size = new System.Drawing.Size(92, 23);
@@ -89,6 +92,7 @@ namespace ChummerHub.Client.UI
             // 
             // cmdUploadChummerFile
             // 
+            this.cmdUploadChummerFile.Enabled = false;
             this.cmdUploadChummerFile.Location = new System.Drawing.Point(323, 136);
             this.cmdUploadChummerFile.Name = "cmdUploadChummerFile";
             this.cmdUploadChummerFile.Size = new System.Drawing.Size(92, 23);

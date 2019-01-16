@@ -126,7 +126,7 @@ namespace ChummerHub.Client.UI
             if (bUpload.Text.Contains("Upload"))
                 await Utils.PostSINnerAsync(myUC.MyCE);
             else
-                myUC.RemoveSINnerAsync();
+                await myUC.RemoveSINnerAsync();
             CheckSINnerStatus();
         }
 

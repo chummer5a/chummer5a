@@ -299,6 +299,8 @@ namespace ChummerHub.Client.Backend
                 {
                     try
                     {
+                        if(!list.SiNners.Any())
+                            continue;
                         TreeNode objListNode = new TreeNode
                         {
                             Text = list.Header,

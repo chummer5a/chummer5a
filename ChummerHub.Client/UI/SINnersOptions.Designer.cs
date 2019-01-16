@@ -34,16 +34,16 @@ namespace ChummerHub.Client.UI
             this.bMultiUpload = new System.Windows.Forms.Button();
             this.gbVisibility = new System.Windows.Forms.GroupBox();
             this.tlpVisibility = new System.Windows.Forms.TableLayoutPanel();
-            this.tbGroupname = new System.Windows.Forms.TextBox();
-            this.lGroupname = new System.Windows.Forms.Label();
+            this.cbVisibilityIsPublic = new System.Windows.Forms.CheckBox();
+            this.cbVisibilityIsGroupVisible = new System.Windows.Forms.CheckBox();
             this.gpVisibilityToUserList = new System.Windows.Forms.GroupBox();
             this.tlpVisibilityToUsers = new System.Windows.Forms.TableLayoutPanel();
-            this.bVisibilityRemove = new System.Windows.Forms.Button();
-            this.bVisibilityAddEmail = new System.Windows.Forms.Button();
-            this.tbVisibilityAddEmail = new System.Windows.Forms.TextBox();
             this.clbVisibilityToUsers = new System.Windows.Forms.CheckedListBox();
-            this.cbVisibilityIsGroupVisible = new System.Windows.Forms.CheckBox();
-            this.cbVisibilityIsPublic = new System.Windows.Forms.CheckBox();
+            this.tbVisibilityAddEmail = new System.Windows.Forms.TextBox();
+            this.bVisibilityAddEmail = new System.Windows.Forms.Button();
+            this.bVisibilityRemove = new System.Windows.Forms.Button();
+            this.lGroupname = new System.Windows.Forms.Label();
+            this.tbGroupname = new System.Windows.Forms.TextBox();
             this.tbHelptext = new System.Windows.Forms.TextBox();
             this.cbSINnerUrl = new System.Windows.Forms.ComboBox();
             this.lSINnerUrl = new System.Windows.Forms.Label();
@@ -129,28 +129,33 @@ namespace ChummerHub.Client.UI
             this.tlpVisibility.Size = new System.Drawing.Size(605, 199);
             this.tlpVisibility.TabIndex = 0;
             // 
-            // tbGroupname
+            // cbVisibilityIsPublic
             // 
-            this.tbGroupname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbGroupname.Location = new System.Drawing.Point(3, 69);
-            this.tbGroupname.Name = "tbGroupname";
-            this.tbGroupname.Size = new System.Drawing.Size(170, 20);
-            this.tbGroupname.TabIndex = 3;
-            this.tbGroupname.TextChanged += new System.EventHandler(this.tbGroupname_TextChanged);
-            // 
-            // lGroupname
-            // 
-            this.lGroupname.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.cbVisibilityIsPublic.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lGroupname.AutoSize = true;
-            this.lGroupname.Location = new System.Drawing.Point(3, 46);
-            this.lGroupname.MinimumSize = new System.Drawing.Size(20, 20);
-            this.lGroupname.Name = "lGroupname";
-            this.lGroupname.Size = new System.Drawing.Size(170, 20);
-            this.lGroupname.TabIndex = 2;
-            this.lGroupname.Text = "Groupname:";
-            this.lGroupname.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.cbVisibilityIsPublic.AutoSize = true;
+            this.cbVisibilityIsPublic.Location = new System.Drawing.Point(3, 26);
+            this.cbVisibilityIsPublic.Name = "cbVisibilityIsPublic";
+            this.cbVisibilityIsPublic.Size = new System.Drawing.Size(176, 17);
+            this.cbVisibilityIsPublic.TabIndex = 0;
+            this.cbVisibilityIsPublic.Text = "discoverable (upcoming search)";
+            this.cbVisibilityIsPublic.UseVisualStyleBackColor = true;
+            this.cbVisibilityIsPublic.CheckedChanged += new System.EventHandler(this.cbVisibilityIsPublic_CheckedChanged);
+            // 
+            // cbVisibilityIsGroupVisible
+            // 
+            this.cbVisibilityIsGroupVisible.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbVisibilityIsGroupVisible.AutoSize = true;
+            this.cbVisibilityIsGroupVisible.Location = new System.Drawing.Point(3, 3);
+            this.cbVisibilityIsGroupVisible.Name = "cbVisibilityIsGroupVisible";
+            this.cbVisibilityIsGroupVisible.Size = new System.Drawing.Size(176, 17);
+            this.cbVisibilityIsGroupVisible.TabIndex = 1;
+            this.cbVisibilityIsGroupVisible.Text = "visible to members of my group";
+            this.cbVisibilityIsGroupVisible.UseVisualStyleBackColor = true;
+            this.cbVisibilityIsGroupVisible.CheckedChanged += new System.EventHandler(this.cbVisibilityIsGroupVisible_CheckedChanged);
             // 
             // gpVisibilityToUserList
             // 
@@ -158,10 +163,10 @@ namespace ChummerHub.Client.UI
             this.gpVisibilityToUserList.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpVisibilityToUserList.Controls.Add(this.tlpVisibilityToUsers);
             this.gpVisibilityToUserList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gpVisibilityToUserList.Location = new System.Drawing.Point(179, 3);
+            this.gpVisibilityToUserList.Location = new System.Drawing.Point(185, 3);
             this.gpVisibilityToUserList.Name = "gpVisibilityToUserList";
             this.tlpVisibility.SetRowSpan(this.gpVisibilityToUserList, 5);
-            this.gpVisibilityToUserList.Size = new System.Drawing.Size(423, 193);
+            this.gpVisibilityToUserList.Size = new System.Drawing.Size(417, 193);
             this.gpVisibilityToUserList.TabIndex = 4;
             this.gpVisibilityToUserList.TabStop = false;
             this.gpVisibilityToUserList.Text = "Visible to Users (checked = may edit)";
@@ -184,38 +189,8 @@ namespace ChummerHub.Client.UI
             this.tlpVisibilityToUsers.RowCount = 2;
             this.tlpVisibilityToUsers.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVisibilityToUsers.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVisibilityToUsers.Size = new System.Drawing.Size(417, 174);
+            this.tlpVisibilityToUsers.Size = new System.Drawing.Size(411, 174);
             this.tlpVisibilityToUsers.TabIndex = 0;
-            // 
-            // bVisibilityRemove
-            // 
-            this.bVisibilityRemove.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.bVisibilityRemove.Location = new System.Drawing.Point(343, 148);
-            this.bVisibilityRemove.Name = "bVisibilityRemove";
-            this.bVisibilityRemove.Size = new System.Drawing.Size(63, 23);
-            this.bVisibilityRemove.TabIndex = 3;
-            this.bVisibilityRemove.Text = "Remove";
-            this.bVisibilityRemove.UseVisualStyleBackColor = true;
-            this.bVisibilityRemove.Click += new System.EventHandler(this.bVisibilityRemove_Click);
-            // 
-            // bVisibilityAddEmail
-            // 
-            this.bVisibilityAddEmail.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.bVisibilityAddEmail.Location = new System.Drawing.Point(260, 148);
-            this.bVisibilityAddEmail.Name = "bVisibilityAddEmail";
-            this.bVisibilityAddEmail.Size = new System.Drawing.Size(62, 23);
-            this.bVisibilityAddEmail.TabIndex = 2;
-            this.bVisibilityAddEmail.Text = "Add";
-            this.bVisibilityAddEmail.UseVisualStyleBackColor = true;
-            this.bVisibilityAddEmail.Click += new System.EventHandler(this.bVisibilityAddEmail_Click);
-            // 
-            // tbVisibilityAddEmail
-            // 
-            this.tbVisibilityAddEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbVisibilityAddEmail.Location = new System.Drawing.Point(3, 149);
-            this.tbVisibilityAddEmail.Name = "tbVisibilityAddEmail";
-            this.tbVisibilityAddEmail.Size = new System.Drawing.Size(244, 20);
-            this.tbVisibilityAddEmail.TabIndex = 1;
             // 
             // clbVisibilityToUsers
             // 
@@ -225,37 +200,62 @@ namespace ChummerHub.Client.UI
             this.clbVisibilityToUsers.Location = new System.Drawing.Point(3, 3);
             this.clbVisibilityToUsers.MinimumSize = new System.Drawing.Size(100, 60);
             this.clbVisibilityToUsers.Name = "clbVisibilityToUsers";
-            this.clbVisibilityToUsers.Size = new System.Drawing.Size(411, 139);
+            this.clbVisibilityToUsers.Size = new System.Drawing.Size(405, 139);
             this.clbVisibilityToUsers.TabIndex = 0;
             this.clbVisibilityToUsers.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbVisibilityToUsers_ItemCheck);
             // 
-            // cbVisibilityIsGroupVisible
+            // tbVisibilityAddEmail
             // 
-            this.cbVisibilityIsGroupVisible.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.tbVisibilityAddEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbVisibilityAddEmail.Location = new System.Drawing.Point(3, 149);
+            this.tbVisibilityAddEmail.Name = "tbVisibilityAddEmail";
+            this.tbVisibilityAddEmail.Size = new System.Drawing.Size(240, 20);
+            this.tbVisibilityAddEmail.TabIndex = 1;
+            // 
+            // bVisibilityAddEmail
+            // 
+            this.bVisibilityAddEmail.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.bVisibilityAddEmail.Location = new System.Drawing.Point(256, 148);
+            this.bVisibilityAddEmail.Name = "bVisibilityAddEmail";
+            this.bVisibilityAddEmail.Size = new System.Drawing.Size(62, 23);
+            this.bVisibilityAddEmail.TabIndex = 2;
+            this.bVisibilityAddEmail.Text = "Add";
+            this.bVisibilityAddEmail.UseVisualStyleBackColor = true;
+            this.bVisibilityAddEmail.Click += new System.EventHandler(this.bVisibilityAddEmail_Click);
+            // 
+            // bVisibilityRemove
+            // 
+            this.bVisibilityRemove.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.bVisibilityRemove.Location = new System.Drawing.Point(338, 148);
+            this.bVisibilityRemove.Name = "bVisibilityRemove";
+            this.bVisibilityRemove.Size = new System.Drawing.Size(63, 23);
+            this.bVisibilityRemove.TabIndex = 3;
+            this.bVisibilityRemove.Text = "Remove";
+            this.bVisibilityRemove.UseVisualStyleBackColor = true;
+            this.bVisibilityRemove.Click += new System.EventHandler(this.bVisibilityRemove_Click);
+            // 
+            // lGroupname
+            // 
+            this.lGroupname.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbVisibilityIsGroupVisible.AutoSize = true;
-            this.cbVisibilityIsGroupVisible.Location = new System.Drawing.Point(3, 3);
-            this.cbVisibilityIsGroupVisible.Name = "cbVisibilityIsGroupVisible";
-            this.cbVisibilityIsGroupVisible.Size = new System.Drawing.Size(170, 17);
-            this.cbVisibilityIsGroupVisible.TabIndex = 1;
-            this.cbVisibilityIsGroupVisible.Text = "visible to members of my group";
-            this.cbVisibilityIsGroupVisible.UseVisualStyleBackColor = true;
-            this.cbVisibilityIsGroupVisible.CheckedChanged += new System.EventHandler(this.cbVisibilityIsGroupVisible_CheckedChanged);
+            this.lGroupname.AutoSize = true;
+            this.lGroupname.Location = new System.Drawing.Point(3, 46);
+            this.lGroupname.MinimumSize = new System.Drawing.Size(20, 20);
+            this.lGroupname.Name = "lGroupname";
+            this.lGroupname.Size = new System.Drawing.Size(176, 20);
+            this.lGroupname.TabIndex = 2;
+            this.lGroupname.Text = "Groupname:";
+            this.lGroupname.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // cbVisibilityIsPublic
+            // tbGroupname
             // 
-            this.cbVisibilityIsPublic.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbVisibilityIsPublic.AutoSize = true;
-            this.cbVisibilityIsPublic.Location = new System.Drawing.Point(3, 26);
-            this.cbVisibilityIsPublic.Name = "cbVisibilityIsPublic";
-            this.cbVisibilityIsPublic.Size = new System.Drawing.Size(170, 17);
-            this.cbVisibilityIsPublic.TabIndex = 0;
-            this.cbVisibilityIsPublic.Text = "visible to everyone";
-            this.cbVisibilityIsPublic.UseVisualStyleBackColor = true;
-            this.cbVisibilityIsPublic.CheckedChanged += new System.EventHandler(this.cbVisibilityIsPublic_CheckedChanged);
+            this.tbGroupname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbGroupname.Location = new System.Drawing.Point(3, 69);
+            this.tbGroupname.Name = "tbGroupname";
+            this.tbGroupname.Size = new System.Drawing.Size(176, 20);
+            this.tbGroupname.TabIndex = 3;
+            this.tbGroupname.TextChanged += new System.EventHandler(this.tbGroupname_TextChanged);
             // 
             // tbHelptext
             // 
