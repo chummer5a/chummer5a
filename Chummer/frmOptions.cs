@@ -48,7 +48,7 @@ namespace Chummer
 #if !DEBUG
             // tabPage3 only contains cmdUploadPastebin, which is not used if DEBUG is not enabled
             // Remove this line if cmdUploadPastebin_Click has some functionality if DEBUG is not enabled or if tabPage3 gets some other control that can be used if DEBUG is not enabled
-            tabControl1.TabPages.Remove(tabGitHubIssues);
+            tabOptions.TabPages.Remove(tabGitHubIssues);
 #endif
             LanguageManager.TranslateWinForm(_strSelectedLanguage, this);
 

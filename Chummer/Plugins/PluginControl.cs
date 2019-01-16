@@ -125,7 +125,10 @@ namespace Chummer.Plugins
         {
             foreach(var plugin in MyActivePlugins)
             {
-                foreach (TabPage page in plugin.GetTabPages(frmCareer))
+                var pages = plugin.GetTabPages(frmCareer);
+                if(pages == null)
+                    continue;
+                foreach (TabPage page in pages)
                 {
                     if (page != null)
                     {
@@ -140,7 +143,10 @@ namespace Chummer.Plugins
         {
             foreach (var plugin in MyActivePlugins)
             {
-                foreach (TabPage page in plugin.GetTabPages(frmCreate))
+                var pages = plugin.GetTabPages(frmCreate);
+                if(pages == null)
+                    continue;
+                foreach (TabPage page in pages)
                 {
                     if (page != null)
                     {
@@ -155,7 +161,10 @@ namespace Chummer.Plugins
         {
             foreach (var plugin in MyActivePlugins)
             {
-                foreach (ToolStripMenuItem plugInMenu in plugin.GetMenuItems(menu))
+                var menuitems = plugin.GetMenuItems(menu);
+                if (menuitems == null)
+                    continue;
+                foreach (ToolStripMenuItem plugInMenu in menuitems)
                 {
                     if (plugInMenu != null)
                     {

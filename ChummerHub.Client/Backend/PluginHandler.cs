@@ -66,20 +66,28 @@ namespace Chummer.Plugins
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCareer input)
         {
+#if DEBUG
             SINnersUserControl uc = new SINnersUserControl();
             var ce = uc.SetCharacterFrom(input);
             TabPage page = new TabPage("SINners");
             page.Controls.Add(uc);
             return new List<TabPage>() { page };
+#else
+            return null;
+#endif
         }
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCreate input)
         {
+#if DEBUG
             SINnersUserControl uc = new SINnersUserControl();
             var ce = uc.SetCharacterFrom(input);
             TabPage page = new TabPage("SINners");
             page.Controls.Add(uc);
             return new List<TabPage>() { page };
+#else
+            return null;
+#endif
         }
 
         private bool IsSaving = false;
@@ -149,6 +157,7 @@ namespace Chummer.Plugins
 
         IEnumerable<ToolStripMenuItem> IPlugin.GetMenuItems(ToolStripMenuItem input)
         {
+#if DEBUG
             ToolStripMenuItem mnuSINners = new ToolStripMenuItem();
             mnuSINners.Name = "mnuSINners";
             mnuSINners.Text = "&SINners";
@@ -158,6 +167,9 @@ namespace Chummer.Plugins
             mnuSINners.Size = new System.Drawing.Size(148, 22);
             mnuSINners.Tag = "Menu_SINners";
             return new List<ToolStripMenuItem>() { mnuSINners };
+#else
+            return null;
+#endif
         }
 
         private void mnuSINners_Click(object sender, EventArgs e)
