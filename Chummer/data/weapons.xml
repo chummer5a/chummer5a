@@ -15046,6 +15046,7 @@
       <required>
         <weapondetails>
           <OR>
+            <ammo operation="contains">External source</ammo>
             <ammo operation="contains">Internal source</ammo>
             <ammo operation="contains">energy</ammo>
           </OR>
@@ -15066,6 +15067,7 @@
       <required>
         <weapondetails>
           <OR>
+            <ammo operation="contains">External source</ammo>
             <ammo operation="contains">Internal source</ammo>
             <ammo operation="contains">energy</ammo>
           </OR>
@@ -15086,6 +15088,7 @@
       <required>
         <weapondetails>
           <OR>
+            <ammo operation="contains">External source</ammo>
             <ammo operation="contains">Internal source</ammo>
             <ammo operation="contains">energy</ammo>
           </OR>
