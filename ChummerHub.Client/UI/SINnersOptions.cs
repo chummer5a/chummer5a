@@ -19,6 +19,7 @@ using Chummer;
 using Chummer.Plugins;
 using System.Threading;
 using ChummerHub.Client.Model;
+using System.IO;
 
 //using Nemiro.OAuth;
 //using Nemiro.OAuth.LoginForms;
@@ -368,6 +369,14 @@ namespace ChummerHub.Client.UI
                     this.LoginStatus = true;
                     Roles = roles;
                 }
+                if (Roles.Contains("Administrator"))
+                {
+                    Invoke(new Action(() => bBackup.Visible = true));
+                }
+                else
+                {
+                    Invoke(new Action(() => bBackup.Visible = false));
+                }
                 
                 return roles;
             }
@@ -530,6 +539,107 @@ namespace ChummerHub.Client.UI
         {
             SINnersOptions.UploadOnSave = cbUploadOnSave.Checked;
 
+        }
+
+        private void bBackup_Click(object sender, EventArgs e)
+        {
+            var folderBrowserDialog1 = new FolderBrowserDialog();
+
+            // Show the FolderBrowserDialog.
+            DialogResult result = folderBrowserDialog1.ShowDialog();
+            if(result == DialogResult.OK)
+            {
+                string folderName = folderBrowserDialog1.SelectedPath;
+                try
+                {
+                    var t = StaticUtils.Client.AdminGetSINnersWithHttpMessagesAsync();
+                    t.ContinueWith((getsinnertask) =>
+                    {
+                        foreach(var sinner in getsinnertask.Result.Body)
+                        {
+                            if (!sinner.SiNnerMetaData.Tags.Any())
+                            {
+                                System.Diagnostics.Trace.TraceError("Sinner " + sinner.Id + " has no Tags!");
+                                continue;
+                            }
+                            string jsonsinner = Newtonsoft.Json.JsonConvert.SerializeObject(sinner);
+                            string filePath = Path.Combine(folderName, sinner.Id.ToString()+ ".chum5json");
+                            if(File.Exists(filePath))
+                                File.Delete(filePath);
+                            File.WriteAllText(filePath, jsonsinner);
+                            //frmCharacterRoster.CharacterCache cache = Newtonsoft.Json.JsonConvert.DeserializeObject<frmCharacterRoster.CharacterCache>(sinner.JsonSummary);
+                            //Character c = Utils.DownloadFile(sinner, cache);
+                            System.Diagnostics.Trace.TraceInformation("Sinner " + sinner.Id + " saved to " + filePath);
+                        }
+                    });
+                }
+                catch(Exception ex)
+                {
+                    System.Diagnostics.Trace.TraceError(ex.ToString());
+                    Invoke(new Action(() => MessageBox.Show(ex.Message)));
+
+                }
+            }
+           
+        }
+
+        private void bRestore_Click(object sender, EventArgs e)
+        {
+            var folderBrowserDialog1 = new FolderBrowserDialog();
+
+            // Show the FolderBrowserDialog.
+            DialogResult result = folderBrowserDialog1.ShowDialog();
+            if(result == DialogResult.OK)
+            {
+                string folderName = folderBrowserDialog1.SelectedPath;
+                try
+                {
+                    DirectoryInfo d = new DirectoryInfo(folderName);//Assuming Test is your Folder
+                    FileInfo[] Files = d.GetFiles("*.chum5json"); //Getting Text files
+                    foreach(FileInfo file in Files)
+                    {
+                        try
+                        {
+                            string sinjson = File.ReadAllText(file.FullName);
+                            SINner sin = Newtonsoft.Json.JsonConvert.DeserializeObject<SINner>(sinjson);
+                            UploadInfoObject uploadInfoObject = new UploadInfoObject();
+                            uploadInfoObject.Client = PluginHandler.MyUploadClient;
+                            uploadInfoObject.UploadDateTime = DateTime.Now;
+                            uploadInfoObject.SiNners = new List<SINner>
+                            {
+                                sin
+                            };
+                            var t = StaticUtils.Client.PostWithHttpMessagesAsync(uploadInfoObject);
+                            t.ContinueWith((posttask) =>
+                            {
+                                if(posttask.Result.Response.IsSuccessStatusCode)
+                                {
+                                    System.Diagnostics.Trace.TraceInformation("SINner " + sin.Id + " posted!");
+                                }
+                                else
+                                {
+                                    string msg = posttask.Result.Response.ReasonPhrase + ": " + Environment.NewLine;
+                                    var content = posttask.Result.Response.Content.ReadAsStringAsync().Result;
+                                    msg += content;
+                                    System.Diagnostics.Trace.TraceWarning("SINner " + sin.Id + " not posted: " + msg);
+                                }
+                            });
+                        }
+                        catch(Exception ex)
+                        {
+                            System.Diagnostics.Trace.TraceError("Could not read file " + file.FullName + ": " + ex.ToString());
+                            continue;
+                        }
+                        
+                    }
+                }
+                catch(Exception ex)
+                {
+                    System.Diagnostics.Trace.TraceError(ex.ToString());
+                    Invoke(new Action(() => MessageBox.Show(ex.Message)));
+
+                }
+            }
         }
     }
 }

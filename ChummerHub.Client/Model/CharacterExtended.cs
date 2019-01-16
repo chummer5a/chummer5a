@@ -30,7 +30,14 @@ namespace ChummerHub.Client.Model
             }
             else
             {
-                MySINnerFile = JsonConvert.DeserializeObject<SINner>(fileElement);
+                try
+                {
+                    MySINnerFile.SiNnerMetaData = JsonConvert.DeserializeObject<SINnerMetaData>(fileElement);
+                }
+                catch(Exception e)
+                {
+                    System.Diagnostics.Trace.TraceWarning(e.ToString());
+                }
             }
 
             if(MySINnerFile.SiNnerMetaData.Visibility != null)
@@ -62,7 +69,7 @@ namespace ChummerHub.Client.Model
             this.MySINnerFile.JsonSummary = JsonConvert.SerializeObject(cache);
         }
 
-        public Character MyCharacter { get; }
+        public Character MyCharacter { get; set; }
 
         // ReSharper disable once InconsistentNaming
         public SINner MySINnerFile { get; }

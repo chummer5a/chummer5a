@@ -116,7 +116,7 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("ResetDb")]
         [Authorize(Roles = "Administrator")]
-        public async Task<ActionResult<string>> GetResetDb()
+        public async Task<ActionResult<string>> GetDeleteAllSINnersDb()
         {
             try
             {
@@ -185,30 +185,71 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SinnersByAuthorization")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<Models.V1.SINner>>> GetSINnersByAuthorization()
+        public async Task<ActionResult<SINSearchResult>> GetSINnersByAuthorization()
         {
+            SINSearchResult ret = new SINSearchResult();
             try
             {
                 var user = await _signInManager.UserManager.GetUserAsync(User);
-                if (user == null)
-                    return Unauthorized();
-
-                var userseq = (from a in _context.UserRights where a.EMail == user.NormalizedEmail select a).ToList();
-                List<SINner> result = new List<SINner>();
+                if(user == null)
+                {
+                    ret.ErrorText = "Unauthorized";
+                    return Unauthorized(ret);
+                }
+                //get all from visibility
+                SINnersList list = new SINnersList();
+                var userseq = (from a in _context.UserRights where a.EMail == user.NormalizedEmail && a.CanEdit == true select a).ToList();
                 foreach(var ur in userseq)
                 {
                     if (ur?.SINnerId == null) continue;
                     var sin = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights).FirstOrDefaultAsync(a => a.Id == ur.SINnerId);
                     if (sin != null)
                     {
-                        result.Add(sin);
+                        list.SINners.Add(sin);
                     }
                 }
-                return Ok(result);
+                list.Header = "Edit";
+                ret.SINLists.Add(list);
+                //get all from my group
+                SINnersList grouplist = new SINnersList();
+                var sinseq = (from a in _context.SINners.Include(a => a.SINnerMetaData).Include(b => b.SINnerMetaData.Visibility) where a.SINnerMetaData.Visibility.IsGroupVisible == true && a.SINnerMetaData.Visibility.Groupname == user.Groupname select a).ToList();
+                foreach(var sin in sinseq)
+                {
+                    if(sin.Id == null) continue;
+                    if(list.SINners.Contains(sin))
+                        continue;
+                    if(sin != null)
+                    {
+                        grouplist.SINners.Add(sin);
+                    }
+                }
+                grouplist.Header = "Group";
+                ret.SINLists.Add(grouplist);
+                //get all that are viewable but NOT editable
+                SINnersList viewlist = new SINnersList();
+                userseq = (from a in _context.UserRights where a.EMail == user.NormalizedEmail && a.CanEdit == false select a).ToList();
+                foreach(var ur in userseq)
+                {
+                    if(ur?.SINnerId == null) continue;
+                    var sin = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights).FirstOrDefaultAsync(a => a.Id == ur.SINnerId);
+                    if(sin != null)
+                    {
+                        if(list.SINners.Contains(sin))
+                            continue;
+                        if(grouplist.SINners.Contains(sin))
+                            continue;
+                        viewlist.SINners.Add(sin);
+                    }
+                }
+                viewlist.Header = "View";
+                ret.SINLists.Add(viewlist);
+               
+                return Ok(ret);
             }
             catch (Exception e)
             {
-                return BadRequest(e);
+                ret.ErrorText = e.ToString();
+                return BadRequest(ret);
             }
         }
 

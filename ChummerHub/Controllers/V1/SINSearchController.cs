@@ -36,7 +36,7 @@ namespace ChummerHub.Controllers.V1
 
         // GET: api/ChummerFiles
         [HttpGet()]
-        [AllowAnonymous]
+        [Authorize]
         [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerListExample))]
         [SwaggerRequestExample(typeof(SearchTag), typeof(SINnerSearchExample))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
@@ -61,6 +61,35 @@ namespace ChummerHub.Controllers.V1
             catch (Exception e)
             {
                 HubException hue = new HubException("Exception in SearchSINnerFile: " + e.Message, e);
+                throw hue;
+            }
+        }
+
+        // GET: api/ChummerFiles
+        [HttpGet()]
+        [Authorize(Roles = "Administrator")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SearchAdminGetSINnerIds")]
+        public async Task<IEnumerable<SINner>> AdminGetSINners()
+        {
+            try
+            {
+                _logger.LogTrace("AdminGetIds");
+                var result = await (from a in _context.SINners.Include(sinner => sinner.SINnerMetaData)
+                                    .ThenInclude(meta => meta.Visibility)
+                                    .ThenInclude(vis => vis.UserRights)
+                                    .Include(meta => meta.SINnerMetaData)
+                                    .ThenInclude(tag => tag.Tags)
+                                    .ThenInclude(tag => tag.Tags)
+                                    .ThenInclude(tag => tag.Tags)
+                                    .ThenInclude(tag => tag.Tags)
+                                    .ThenInclude(tag => tag.Tags)
+                                    .ThenInclude(tag => tag.Tags)
+                                    select a).ToListAsync();
+                return result;
+            }
+            catch(Exception e)
+            {
+                HubException hue = new HubException("Exception in AdminGetIds: " + e.Message, e);
                 throw hue;
             }
         }

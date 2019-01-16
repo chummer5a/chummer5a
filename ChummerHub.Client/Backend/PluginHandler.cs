@@ -27,7 +27,7 @@ namespace Chummer.Plugins
     public class PluginHandler : IPlugin
     {
         //public static CharacterExtended MyCharacterExtended = null;
-        private static Dictionary<int, CharacterExtended> MyCharExtendedDic = new Dictionary<int, CharacterExtended>();
+        private static Dictionary<string, CharacterExtended> MyCharExtendedDic = new Dictionary<string, CharacterExtended>();
 
         //public static CharacterExtended GetCharExtended(Character c, string fileElement)
         //{
@@ -86,24 +86,25 @@ namespace Chummer.Plugins
 
         string IPlugin.GetSaveToFileElement(Character input)
         {
-            
-            CharacterExtended ce = new CharacterExtended(input, null);
-            if ((SINnersOptions.UploadOnSave == true) && (IsSaving == false))
+            CharacterExtended ce;
+            if(MyCharExtendedDic.ContainsKey(input.FileName))
+                MyCharExtendedDic.Remove(input.FileName);
+            ce = new CharacterExtended(input, null);
+            MyCharExtendedDic.Add(ce.MyCharacter.FileName, ce);
+            if((SINnersOptions.UploadOnSave == true) && (IsSaving == false))
             {
                 IsSaving = true;
                 //removing a handler that is not registered is legal - that way only one handler is registered EVER!
                 input.OnSaveCompleted -= MyOnSaveUpload;
                 input.OnSaveCompleted += MyOnSaveUpload;
             }
-            return JsonConvert.SerializeObject(ce.MySINnerFile);
+            return JsonConvert.SerializeObject(ce.MySINnerFile.SiNnerMetaData);
         }
 
         private async void MyOnSaveUpload(object sender, Character input)
         {
             try
             {
-
-
                 input.OnSaveCompleted -= MyOnSaveUpload;
                 CharacterExtended ce = new CharacterExtended(input, null);
                 var found = await StaticUtils.Client.GetByIdWithHttpMessagesAsync(ce.MySINnerFile.Id.Value);
@@ -136,7 +137,14 @@ namespace Chummer.Plugins
 
         void IPlugin.LoadFileElement(Character input, string fileElement)
         {
-            //we don't need that functionality right now...
+            CharacterExtended ce;
+            if(MyCharExtendedDic.TryGetValue(input.FileName, out ce))
+            {
+                ce.MyCharacter = input;
+            }
+            else
+                ce = new CharacterExtended(input, fileElement);
+            
         }
 
         IEnumerable<ToolStripMenuItem> IPlugin.GetMenuItems(ToolStripMenuItem input)

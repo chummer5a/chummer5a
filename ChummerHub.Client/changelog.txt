@@ -2,6 +2,8 @@ Future Build 1.0.0.1
 
 WebService Changes:
 
+- implemented AdminGetSinners to create a backup of the whole Database. Plz note, that the Chummerfiles themself are NOT affected because they are on GDrive
+- changed the initial search for the SINners by Authorization: SINners are grouped now: edit, group, view
 - fixed a bug were the check if a Chummer is already on GDrive used the new uploaded (and always empty) GDriveID from the Client - now this ID is kept from the database if it's empty on upload (which it SHOULD be)
 - added a DeploymentSlot "Beta" for Azure reachable under https://sinners-beta.azurewebsites.net/ - doubles the cost, halves the chance of me messing things up in production later
 - fixed a Bug where Properties were not updated in the Database on POST
@@ -21,6 +23,9 @@ WebService Changes:
 
 Application Changes:
 
+- added a backup and restore-Button for Admins in the Options-Dialog (working, but no visual feedback)
+- Online-Sinners are now shown as part of their "group": edit, group(name), view. This will be extended with "search", as soon as it is implemented
+- changed FileSaveElement (now SINnerMetaData is serialized, so that the Mugshot is not stored twice in the save-file)
 - added http://sinners-beta.azurewebsites.net/ to the selectable SINnerUrls
 - OnSave checkes first, if the uploaded version is already up to date and either skips upload or does it
 - frmWebBrowser closes after successfull login and saves the users EMail in his Visibility-Object

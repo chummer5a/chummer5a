@@ -114,7 +114,9 @@
     <Compile Include="SINnersClient\Models\SINerUserRight.cs" />
     <Compile Include="SINnersClient\Models\SINner.cs" />
     <Compile Include="SINnersClient\Models\SINnerMetaData.cs" />
+    <Compile Include="SINnersClient\Models\SINnersList.cs" />
     <Compile Include="SINnersClient\Models\SINnerVisibility.cs" />
+    <Compile Include="SINnersClient\Models\SINSearchResult.cs" />
     <Compile Include="SINnersClient\Models\Tag.cs" />
     <Compile Include="SINnersClient\Models\UploadClient.cs" />
     <Compile Include="SINnersClient\Models\UploadInfoObject.cs" />

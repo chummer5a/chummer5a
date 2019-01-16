@@ -291,46 +291,59 @@ namespace ChummerHub.Client.Backend
                     MyOnlineTreeNode.ToolTipText = msg;
                     return new List<TreeNode>() { MyOnlineTreeNode };
                 }
-                if (response == null || response.Body == null || response.Body?.Any() == false)
+                if (response == null || response.Body == null || response.Body?.SinLists == null)
                 {
                     return new List<TreeNode>() { MyOnlineTreeNode }; 
                 }
-                foreach (var sinner in response.Body)
+                foreach (var list in response.Body.SinLists)
                 {
                     try
                     {
-                        if (String.IsNullOrEmpty(sinner.JsonSummary))
-                            continue;
-                        CharacterCache objCache = Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(sinner.JsonSummary);
-                        SetEventHandlers(sinner, objCache);
-
-                        TreeNode objNode = new TreeNode
+                        TreeNode objListNode = new TreeNode
                         {
-                            Text = objCache.CalculatedName(),
-                            Tag = sinner.Id.Value.ToString(),
-                            ToolTipText = "Last Change: " + sinner.LastChange,
+                            Text = list.Header,
+                            Tag = list,
                             ContextMenuStrip = PluginHandler.MainForm.CharacterRoster.ContextMenuStrip
-
                         };
-                        if (!string.IsNullOrEmpty(objCache.ErrorText))
+                        foreach(var sinner in list.SiNners)
                         {
-                            objNode.ForeColor = Color.Red;
-                            objNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error", GlobalOptions.Language)
-                                                    + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + Environment.NewLine + objCache.ErrorText;
+                            if(String.IsNullOrEmpty(sinner.JsonSummary))
+                                continue;
+                            CharacterCache objCache = Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(sinner.JsonSummary);
+                            SetEventHandlers(sinner, objCache);
+
+                            TreeNode objNode = new TreeNode
+                            {
+                                Text = objCache.CalculatedName(),
+                                Tag = sinner.Id.Value.ToString(),
+                                ToolTipText = "Last Change: " + sinner.LastChange,
+                                ContextMenuStrip = PluginHandler.MainForm.CharacterRoster.ContextMenuStrip
+
+                            };
+                            if(!string.IsNullOrEmpty(objCache.ErrorText))
+                            {
+                                objNode.ForeColor = Color.Red;
+                                objNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error", GlobalOptions.Language)
+                                                        + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + Environment.NewLine + objCache.ErrorText;
+                            }
+                            CharacterCache delObj;
+                            CharCache.TryRemove(sinner.Id.Value.ToString(), out delObj);
+                            CharCache.TryAdd(sinner.Id.Value.ToString(), objCache);
+                            PluginHandler.MainForm.DoThreadSafe(() =>
+                            {
+                                objListNode.Nodes.Add(objNode);
+                            });
                         }
-                        CharacterCache delObj;
-                        CharCache.TryRemove(sinner.Id.Value.ToString(), out delObj);
-                        CharCache.TryAdd(sinner.Id.Value.ToString(), objCache);
 
                         PluginHandler.MainForm.DoThreadSafe(() =>
                         {
-                            MyOnlineTreeNode.Nodes.Add(objNode);
+                            MyOnlineTreeNode.Nodes.Add(objListNode);
                         });
                         
                     }
                     catch (Exception e)
                     {
-                        System.Diagnostics.Trace.TraceWarning("Could not deseialize CharacterCache-Object: " + sinner.JsonSummary);
+                        System.Diagnostics.Trace.TraceWarning("Could not deserialize CharacterCache-Object: " + list.Header);
                     }
                 }
                 if (MyOnlineTreeNode.Nodes.Count > 0)
@@ -609,7 +622,8 @@ namespace ChummerHub.Client.Backend
                 {
                     Directory.CreateDirectory(zipPath);
                 }
-                Character objOpenCharacter = PluginHandler.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == loadFilePath);
+                Character objOpenCharacter = null;
+                objOpenCharacter = PluginHandler.MainForm?.OpenCharacters?.FirstOrDefault(x => x.FileName == loadFilePath);
                 if ((objOpenCharacter != null))
                 {
                     return objOpenCharacter;
@@ -618,7 +632,7 @@ namespace ChummerHub.Client.Backend
                 {
                     try
                     {
-                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        PluginHandler.MainForm?.DoThreadSafe(() =>
                         {
                             PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
                         });
@@ -647,7 +661,7 @@ namespace ChummerHub.Client.Backend
                     }
                     finally
                     {
-                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        PluginHandler.MainForm?.DoThreadSafe(() =>
                         {
                             PluginHandler.MainForm.Cursor = Cursors.Default;
                         });
