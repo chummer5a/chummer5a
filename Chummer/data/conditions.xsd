@@ -38,6 +38,7 @@
   </xs:element>
   <xs:group name="checks">
     <xs:sequence>
+      <xs:element name="accessory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="art" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="attribute" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
@@ -137,6 +138,7 @@
       <xs:element name="metatypecategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="metavariant" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="power" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="program" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="quality" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:simpleContent>
@@ -290,7 +292,102 @@
   </xs:group>
   <xs:group name="weapondetailoptions">
     <xs:sequence>
+      <xs:element name="ammo" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attributeGroup ref="xmloperations"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="accessorymounts" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attributeGroup ref="xmloperations"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="ammocategory" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attributeGroup ref="xmloperations"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="AND" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:group ref="weapondetailoptions" />
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="category" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attributeGroup ref="xmloperations"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="conceal" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attributeGroup ref="xmloperations"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="damage" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attributeGroup ref="xmloperations"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="name" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attributeGroup ref="xmloperations"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="spec" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attributeGroup ref="xmloperations"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="spec2" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attributeGroup ref="xmloperations"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="type" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attributeGroup ref="xmloperations"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="useskill" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">

@@ -1,4 +1,20 @@
-Future Build 204
+Future Build 205
+
+Application Changes:
+- Added a new improvement type - actiondicepool - to support specific Actions receiving dicepool bonuses. Currently only Threading is supported by this.
+- Fixed behaviour of Exotic weapons to prevent them from from using the first exotic skill found.
+- Exposed the selection of AI programs to the main RequirementsMet method. Prevents issues with programs not being translated, offends me slightly less. Fixes #3350
+- Fixed processing of FixedValues on the Select Gear window.
+- Refactored string processing method for Gear Ratings into a single method. Allows MinRating, MaxRating, MatrixAttributes and TotalBonusMatrixBoxes (for LivingPersona only) to use complex strings such as {Parent DeviceRating}. Fixes #3360
+
+Data Changes:
+- Fixed incorrect underbarrel weapon name for the Nissan Optimum II that caused a crash. Fixes part of #3344
+- Fixed incorrect bonus for the Delphi Paragon to apply to Threading actions instead of Compiling.
+- Set the ammo type for the FN-AAL to Gyrojet. Possibly not correct, as there's no proper RAW on what ammo the weapon is supposed to fire. 
+- Fixed incorrect price for the Reakt geneware. 
+- Allowed the Peak-Discharge energy packs to be added as accessories to weapons with External Source ammo types. Fixes #3361.
+
+Build 204
 
 Application Changes:
 
@@ -32,6 +48,17 @@ Application Changes:
 - Fixed behaviour of plugins incorrectly applying their Essence costs in career mode instead of using the capacity cost. Should fix #3279, may have some additional edge cases.
 - Mildly ghetto workaround for inability to remove gear from a cyberware parent. Probably needs a more universal and robust fix, but it's functional.
 - Added a tooltip to the positive and negative quality labels to show where the karma costs have come from.
+- Fixed a crash when loading qualities and lifestyles in PACKS kits.
+- Added validation to ensure that custom drugs are given a name before they're accepted. 
+- Swapping a negative quality for a cheaper one no longer costs karma.
+- Purchasing Ammo for weapons that have a particular name restriction (Narcoject PEP firing peak-energy units, for example) will properly be filtered to that restriction in the Select Gear window.
+- Fixed an issue with removing fettered spirits not properly removing the Fettered magic loss. Will retroactively fix any affected characters on load.
+- Fixed an issue with loading the attribute section that caused it not to refresh attribute-dependent properties. 
+- Fixed an issue with vehicle locations that caused them to not work correctly. Some issues remain with adding children to locations inside vehicles, but root-level locations work as expected again.
+- Fixed regressions in behaviour of the Improvements tab not properly populating names or showing what they improve. 
+- Allowed multiple ammo slots for a single weapon to better support the Hammerli Gemini and Shiawase Arms Monsoon. Fixes #3312
+- Fixed an issue with inability to remove Gear from its parent.
+- Fixed behaviour of the WeaponCategoryDV Improvement when specifying names instead. Fixes a regression with the custom improvement not working correctly.
 
 Data Changes:
 
@@ -50,10 +77,20 @@ Data Changes:
 - Added an amend file to allow the Practice, Practice, Practice quality to be taken multiple times, per German data changes.
 - Fixed incorrect ratings on the Fortified and Slick Willy booster chips.
 - Fixed a crash when selecting components of Commlink Functionality on gear. Fixes #3178
+- Fixed damage and AP of the Narcoject PEP. Fixes #3295
+- Fixed incorrect level limitation on the Mystic Aptituide power.
+- Reorganised weapons.xml data layout per XSD.
+- Added emergency vehicle from Stolen Souls, courtesy of Catpocalypse on Discord.
 
 New Strings:
 
 - Checkbox_DiceRoller_VariableGlitch
+- Message_CustomDrug_Name
+- MessageTitle_CustomDrug_Name
+
+Changed Strings:
+
+- Checkbox_Options_PrintAllSkills
 
 Build 203
 

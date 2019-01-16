@@ -615,6 +615,12 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strAvailExpr))
             {
+                if (strAvailExpr.StartsWith("FixedValues("))
+                {
+                    string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    strAvailExpr = strValues[(int) Math.Max(Math.Min(nudRating.Value, strValues.Length) - 1, 0)];
+                }
+
                 char chrLastChar = strAvailExpr[strAvailExpr.Length - 1];
                 if (chrLastChar == 'R')
                 {

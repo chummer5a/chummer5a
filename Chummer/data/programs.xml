@@ -2,24 +2,24 @@
 
 <!--This file is part of Chummer5a.
 
-    Chummer5a is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  Chummer5a is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    Chummer5a is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  Chummer5a is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License
+  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
 
-    You can obtain the full source code for Chummer5a at
-    https://github.com/chummer5a/chummer5a
+  You can obtain the full source code for Chummer5a at
+  https://github.com/chummer5a/chummer5a
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema programs.xsd">
+     xsi:schemaLocation="http://www.w3.org/2001/XMLSchema programs.xsd">
   <version>0</version>
   <categories>
     <category>Autosofts</category>
@@ -471,11 +471,11 @@
       <name>[Model] Evasion Autosoft</name>
       <category>Autosofts</category>
       <rating>6</rating>
+      <avail>Rating * 2</avail>
+      <cost>Rating * 500</cost>
       <bonus>
         <selecttext />
       </bonus>
-      <avail>Rating * 2</avail>
-      <cost>Rating * 500</cost>
       <source>SR5</source>
       <page>269</page>
     </program>
@@ -484,11 +484,11 @@
       <name>[Model] Maneuvering Autosoft</name>
       <category>Autosofts</category>
       <rating>6</rating>
+      <avail>Rating * 2</avail>
+      <cost>Rating * 500</cost>
       <bonus>
         <selecttext />
       </bonus>
-      <avail>Rating * 2</avail>
-      <cost>Rating * 500</cost>
       <source>SR5</source>
       <page>269</page>
     </program>
@@ -497,11 +497,11 @@
       <name>[Model] Stealth Autosoft</name>
       <category>Autosofts</category>
       <rating>6</rating>
-      <bonus>
-        <selecttext />
-      </bonus>
       <avail>Rating * 2</avail>
       <cost>Rating * 500</cost>
+        <bonus>
+            <selecttext />
+        </bonus>
       <source>SR5</source>
       <page>270</page>
     </program>
@@ -510,11 +510,11 @@
       <name>[Weapon] Targeting Autosoft</name>
       <category>Autosofts</category>
       <rating>6</rating>
+      <avail>Rating * 2</avail>
+      <cost>Rating * 500</cost>
       <bonus>
         <selecttext />
       </bonus>
-      <avail>Rating * 2</avail>
-      <cost>Rating * 500</cost>
       <source>SR5</source>
       <page>270</page>
     </program>
@@ -545,11 +545,11 @@
       <name>Skill Autosoft</name>
       <category>Autosofts</category>
       <rating>6</rating>
+      <avail>Rating * 2</avail>
+      <cost>Rating * 500</cost>
       <bonus>
         <selecttext />
       </bonus>
-      <avail>Rating * 2</avail>
-      <cost>Rating * 500</cost>
       <source>R5</source>
       <page>127</page>
     </program>
@@ -558,11 +558,11 @@
       <name>Skill Autosoft (Restricted)</name>
       <category>Autosofts</category>
       <rating>6</rating>
+      <avail>(Rating * 2)R</avail>
+      <cost>Rating * 500</cost>
       <bonus>
         <selectskill />
       </bonus>
-      <avail>(Rating * 2)R</avail>
-      <cost>Rating * 500</cost>
       <source>R5</source>
       <page>127</page>
     </program>
@@ -571,11 +571,11 @@
       <name>[Weapon] Melee Autosoft</name>
       <category>Autosofts</category>
       <rating>6</rating>
+      <avail>Rating * 2</avail>
+      <cost>Rating * 500</cost>
       <bonus>
         <selecttext />
       </bonus>
-      <avail>Rating * 2</avail>
-      <cost>Rating * 500</cost>
       <source>R5</source>
       <page>127</page>
     </program>
@@ -585,9 +585,13 @@
       <id>dfd1e040-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Abduction</name>
       <category>Advanced Programs</category>
-      <require>Clearsight Autosoft</require>
       <avail>0F</avail>
       <cost>0</cost>
+      <required>
+        <oneof>
+          <program>Clearsight Autosoft</program>
+        </oneof>
+      </required>
       <source>DT</source>
       <page>158</page>
     </program>
@@ -595,9 +599,13 @@
       <id>dfd1e39c-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Authority</name>
       <category>Advanced Programs</category>
-      <require>Exploit</require>
       <avail>0F</avail>
       <cost>0</cost>
+      <required>
+        <oneof>
+          <program>Exploit</program>
+        </oneof>
+      </required>
       <source>DT</source>
       <page>158</page>
     </program>
@@ -605,9 +613,13 @@
       <id>dfd1e5c2-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Cascade</name>
       <category>Advanced Programs</category>
-      <require>Decryption</require>
       <avail>0F</avail>
       <cost>0</cost>
+      <required>
+        <oneof>
+          <program>Decryption</program>
+        </oneof>
+      </required>
       <source>DT</source>
       <page>158</page>
     </program>
@@ -615,9 +627,13 @@
       <id>dfd1e7e8-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Eguchi Smile</name>
       <category>Advanced Programs</category>
-      <require>Wrapper</require>
       <avail>0F</avail>
       <cost>0</cost>
+      <required>
+        <oneof>
+          <program>Wrapper</program>
+        </oneof>
+      </required>
       <source>DT</source>
       <page>158</page>
     </program>
@@ -625,9 +641,13 @@
       <id>dfd1e978-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Fnord</name>
       <category>Advanced Programs</category>
-      <require>Sneak</require>
       <avail>0F</avail>
       <cost>0</cost>
+      <required>
+        <oneof>
+          <program>Sneak</program>
+        </oneof>
+      </required>
       <source>DT</source>
       <page>158</page>
     </program>
@@ -635,9 +655,13 @@
       <id>dfd1eb26-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Medic</name>
       <category>Advanced Programs</category>
-      <require>Toolbox</require>
       <avail>0F</avail>
       <cost>0</cost>
+      <required>
+        <oneof>
+          <program>Toolbox</program>
+        </oneof>
+      </required>
       <source>DT</source>
       <page>159</page>
     </program>
@@ -645,9 +669,13 @@
       <id>dfd1ed06-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Nyetworking</name>
       <category>Advanced Programs</category>
-      <require>Cat's Paw</require>
       <avail>0F</avail>
       <cost>0</cost>
+      <required>
+        <oneof>
+          <program>Cat's Paw</program>
+        </oneof>
+      </required>
       <source>DT</source>
       <page>159</page>
     </program>
@@ -655,9 +683,13 @@
       <id>dfd1ef36-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Poke</name>
       <category>Advanced Programs</category>
-      <require>Exploit</require>
       <avail>0F</avail>
       <cost>0</cost>
+      <required>
+        <oneof>
+          <program>Exploit</program>
+        </oneof>
+      </required>
       <source>DT</source>
       <page>159</page>
     </program>
@@ -665,9 +697,13 @@
       <id>dfd1f184-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Psychotropic Biofeedback</name>
       <category>Advanced Programs</category>
-      <require>Biofeedback</require>
       <avail>0F</avail>
       <cost>0</cost>
+      <required>
+        <oneof>
+          <program>Biofeedback</program>
+        </oneof>
+      </required>
       <source>DT</source>
       <page>160</page>
     </program>
@@ -675,9 +711,13 @@
       <id>dfd1f38c-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Rootkit</name>
       <category>Advanced Programs</category>
-      <require>Stealth</require>
       <avail>0F</avail>
       <cost>0</cost>
+      <required>
+        <oneof>
+          <program>Stealth</program>
+        </oneof>
+      </required>
       <source>DT</source>
       <page>160</page>
     </program>
@@ -685,9 +725,13 @@
       <id>dfd1f5d0-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Rust</name>
       <category>Advanced Programs</category>
-      <require>Guard</require>
       <avail>0F</avail>
       <cost>0</cost>
+        <required>
+            <oneof>
+                <program>Guard</program>
+            </oneof>
+        </required>
       <source>DT</source>
       <page>160</page>
     </program>
@@ -695,9 +739,13 @@
       <id>dfd1f7f6-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Shunt</name>
       <category>Advanced Programs</category>
-      <require>Shell</require>
       <avail>0F</avail>
       <cost>0</cost>
+      <required>
+        <oneof>
+          <program>Shell</program>
+        </oneof>
+      </required>
       <source>DT</source>
       <page>160</page>
     </program>
@@ -705,12 +753,16 @@
       <id>dfd1f940-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Spotter</name>
       <category>Advanced Programs</category>
-      <require>[Weapon] Targeting Autosoft</require>
+      <avail>0F</avail>
+      <cost>0</cost>
       <bonus>
         <selecttext />
       </bonus>
-      <avail>0F</avail>
-      <cost>0</cost>
+      <required>
+        <oneof>
+          <program>[Weapon] Targeting Autosoft</program>
+        </oneof>
+      </required>
       <source>DT</source>
       <page>160</page>
     </program>
@@ -718,9 +770,13 @@
       <id>dfd1fbe8-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Teergrube</name>
       <category>Advanced Programs</category>
-      <require>Lockdown</require>
       <avail>0F</avail>
       <cost>0</cost>
+        <required>
+            <oneof>
+                <program>Lockdown</program>
+            </oneof>
+        </required>
       <source>DT</source>
       <page>160</page>
     </program>
@@ -728,9 +784,13 @@
       <id>dfd1fe90-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>Uncertainty</name>
       <category>Advanced Programs</category>
-      <require>Cat's Paw</require>
       <avail>0F</avail>
       <cost>0</cost>
+      <required>
+        <oneof>
+          <program>Cat's Paw</program>
+        </oneof>
+      </required>
       <source>DT</source>
       <page>160</page>
     </program>
@@ -738,12 +798,16 @@
       <id>dfd2783e-ba62-11e6-a4a6-cec0c932ce01</id>
       <name>WTLM</name>
       <category>Advanced Programs</category>
-      <require>[Model] Maneuvering Autosoft</require>
+      <avail>0F</avail>
+      <cost>0</cost>
       <bonus>
         <selecttext />
       </bonus>
-      <avail>0F</avail>
-      <cost>0</cost>
+      <required>
+        <oneof>
+          <program>[Model] Maneuvering Autosoft</program>
+        </oneof>
+      </required>
       <source>DT</source>
       <page>160</page>
     </program>

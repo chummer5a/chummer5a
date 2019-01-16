@@ -565,6 +565,8 @@ namespace Chummer
                     return objImprovementAdder.metageneticlimit;
                 case "CYBERADEPTDAEMON":
                     return objImprovementAdder.cyberadeptdaemon;
+                case "ACTIONDICEPOOL":
+                    return objImprovementAdder.actiondicepool;
                 // No method matches, return a null pointer
                 default:
                     return null;

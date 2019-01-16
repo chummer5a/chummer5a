@@ -522,8 +522,8 @@
 			</armor>
 			<armor translated="True">
 				<id>d90a8823-7387-4c50-bc47-3d63f0ffd543</id>
-				<name>Ares Flashield</name>
-				<translate>Ares Flashield</translate>
+				<name>Ares FlaShield</name>
+				<translate>Ares FlaShield</translate>
 				<altpage>72</altpage>
 			</armor>
 			<armor>
@@ -594,8 +594,8 @@
 			</armor>
 			<armor>
 				<id>81fdc8a3-7106-4b08-a1f4-c72140bc90fc</id>
-				<name>Evo Hel Suit</name>
-				<translate>Evo Hel-Anzug</translate>
+				<name>Evo HEL Suit</name>
+				<translate>Evo HEL-Anzug</translate>
 				<altpage>81</altpage>
 			</armor>
 			<armor>
@@ -2808,7 +2808,7 @@
 				<altpage>117</altpage>
 			</bioware>
 			<bioware>
-				<id>11d6fbc9-c2cf-4686-8f95-ef46a83cc0ff</id>
+				<id>c60d9b5f-080b-4209-8a8e-19a76eca7a5b</id>
 				<name>Hand and Foot Webbing (Feet)</name>
 				<translate>Schwimmhäute (Füße)</translate>
 				<altpage>117</altpage>
@@ -3088,12 +3088,6 @@
 				<altcode>HS</altcode>
 			</book>
 			<book>
-				<id>9b88873f-61fa-4419-b733-49b96997bd42</id>
-				<name>Battle Of Manhattan</name>
-				<translate>Krieg um Manhattan</translate>
-				<altcode>BOM</altcode>
-			</book>
-			<book>
 				<id>6b37230a-dd55-4c3f-882d-0a1c6324a457</id>
 				<name>Splintered State</name>
 				<translate>Tödliche Fragmente</translate>
@@ -3142,16 +3136,16 @@
 				<altcode>HKS</altcode>
 			</book>
 			<book>
-				<id>81c02566-af38-45e3-9e46-3b1d083f84f2</id>
-				<name>Shadows In Focus: San Francisco Metroplex</name>
-				<translate>Shadows In Focus: San Francisco Metroplex</translate>
-				<altcode>SFM</altcode>
-			</book>
-			<book>
 				<id>ad384a90-33c2-40bd-b128-37117d02f36c</id>
 				<name>Shadows In Focus: Metropole</name>
 				<translate>Shadows In Focus: Metropole</translate>
 				<altcode>SFME</altcode>
+			</book>
+			<book>
+				<id>81c02566-af38-45e3-9e46-3b1d083f84f2</id>
+				<name>Shadows In Focus: San Francisco Metroplex</name>
+				<translate>Shadows In Focus: San Francisco Metroplex</translate>
+				<altcode>SFM</altcode>
 			</book>
 			<book>
 				<id>40515dbc-fec6-4530-ba79-959cc8c54c61</id>
@@ -8514,7 +8508,7 @@
 			<cyberware>
 				<id>4fd033ab-9a43-4ee0-9675-47414af3c8f4</id>
 				<name>Bone Lacing (Plastic)</name>
-				<translate>Kompositknochen (Plastik)</translate>
+				<translate>Kompositknochen (Kunststoff)</translate>
 				<altpage>460</altpage>
 			</cyberware>
 			<cyberware>
@@ -10811,8 +10805,8 @@
 			</gear>
 			<gear translated="True">
 				<id>03d25169-214b-4e85-8a11-e33b022a6e32</id>
-				<name>Microtronica Azteca Raptor</name>
-				<translate>Microtronica Azteca Raptor</translate>
+				<name>Microtrónica Azteca Raptor</name>
+				<translate>Microtrónica Azteca Raptor</translate>
 				<altpage>19</altpage>
 			</gear>
 			<gear translated="True">
@@ -10937,8 +10931,8 @@
 			</gear>
 			<gear translated="True">
 				<id>dfc9bfdc-ef5e-45f7-8df5-fd80e011f547</id>
-				<name>Microtronica Azteca 300</name>
-				<translate>Microtronica Azteca 300</translate>
+				<name>Microtrónica Azteca 300</name>
+				<translate>Microtrónica Azteca 300</translate>
 				<altpage>72</altpage>
 			</gear>
 			<gear translated="True">
@@ -14639,8 +14633,8 @@
 			</gear>
 			<gear>
 				<id>7852ac25-b78f-4f3b-ada9-437b8009dad6</id>
-				<name>Microtronica Azteca Maletin, Luggage (2050)</name>
-				<translate>Microtronica Azteca Maletin, Gepäck</translate>
+				<name>Microtrónica Azteca Maletin, Luggage (2050)</name>
+				<translate>Microtrónica Azteca Maletin, Gepäck</translate>
 				<altpage>171</altpage>
 			</gear>
 			<gear>
@@ -15436,7 +15430,7 @@
 			<gear translated="True">
 				<id>1c672c5d-88f7-43dd-b4d0-42571eb07547</id>
 				<name>Leäl</name>
-				<translate>Leäl</translate>
+				<translate>Lëal</translate>
 				<altpage>186</altpage>
 			</gear>
 			<gear>
@@ -15496,13 +15490,13 @@
 			<gear>
 				<id>1131acde-3791-4870-8c05-1b261e3beaa1</id>
 				<name>PsychChips (Illegal)</name>
-				<translate>Psychochips (Illegal)</translate>
+				<translate>Psychochips (illegal)</translate>
 				<altpage>187</altpage>
 			</gear>
 			<gear>
 				<id>48c252e2-8bfd-46e4-ae77-b394b9e92773</id>
 				<name>PsychChips (Legal)</name>
-				<translate>Psychochips (Legal)</translate>
+				<translate>Psychochips (legal)</translate>
 				<altpage>187</altpage>
 			</gear>
 			<gear translated="True">
@@ -16996,7 +16990,7 @@
 			<gear>
 				<id>f634ee1f-0c3f-47bd-bea7-10236b24de39</id>
 				<name>Smart Corrosives</name>
-				<translate>Smart-Säuren</translate>
+				<translate>Smartsäuren</translate>
 				<altpage>156</altpage>
 			</gear>
 			<gear>
@@ -21491,7 +21485,7 @@
 			<mentor>
 				<id>a9f0231a-2354-44a9-864b-630bf3d58ddb</id>
 				<name>Coyote</name>
-				<translate>Coyote</translate>
+				<translate>Kojote</translate>
 				<choices>
 					<choice>
 						<name>Magician: +1 to all Manipulation and Illusion spell tests, preparations, and rituals.</name>
@@ -21499,17 +21493,17 @@
 					</choice>
 					<choice>
 						<name>Adept: Danger Sense level 2.</name>
-						<translate>Adept: 2 Stufen Gefahrsinn</translate>
+						<translate>Adept: 2 Stufen Gefahrsinn gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>Allgemein: +2 Würfel für alle Con-Proben</altadvantage>
-				<altdisadvantage>Coyote has a hard time with head-on attacks or brute force methods, unless it’s part of a larger con or misdirection. Anytime he is forced into such actions, he must make a Willpower + Charisma [Mental] (4) Test. If he fails, then he decides to do things another way, which means he may exit a combat instead of participating in it.</altdisadvantage>
-				<altpage>24</altpage>
+				<altadvantage>Allgemein: +2 Würfel für Überredenproben</altadvantage>
+				<altdisadvantage>Kojote steht auf Kriegsfuß mit direkten Angriffen oder Holzhammermethoden, wenn sie nicht gerade Teil einer größeren Irreführung sind. Jedes Mal, wenn er zu solchen Handlungen gezwungen wird, muss er eine Probe auf Willenskraft + Charisma (4) ablegen. Misslingt diese Probe, beschließt er, die Dinge auf eine andere Art anzugehen, was auch bedeuten kann, dass er aus einem Kampf aussteigt, statt an ihm teilzunehmen.</altdisadvantage>
+				<altpage>50</altpage>
 			</mentor>
 			<mentor>
 				<id>9f020eb4-975f-4449-9ba1-c1242159d774</id>
 				<name>Oak (SHB)</name>
-				<translate>Oak (SHB)</translate>
+				<translate>Eiche (SHB)</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Detection spells.</name>
@@ -21521,31 +21515,31 @@
 					</choice>
 				</choices>
 				<altadvantage>Allgemein: +2 Würfel auf Erinnerungsproben</altadvantage>
-				<altdisadvantage>A follower of Oak has to succeed in a CHA+WIL (3) test to retreat from a dangerous area instead of waiting till the danger passes.</altdisadvantage>
+				<altdisadvantage>Ein Jünger von Eiche sitzt Gefahrensituationen lieber aus. Ihm muss eine Probe auf Charisma + Willenskraft (3) gelingen, damit er sich aus einem Gefahrenbereich zurückziehen kann.</altdisadvantage>
 				<altpage>179</altpage>
 			</mentor>
 			<mentor>
 				<id>f8f32157-2dbf-42b3-9ea6-2e60640875c7</id>
 				<name>Artist</name>
-				<translate>Artist</translate>
+				<translate>Künstler</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Illusion spells.</name>
-						<translate>Zauberer: +2 Würfel für Illusionszauber</translate>
+						<translate>Zauberer: +2 Würfel Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Illusion</translate>
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Improved Potential.</name>
-						<translate>Adept: 1 Stufe auf Erhöhtes Potential</translate>
+						<translate>Adept: 1 x Erhöhtes Potenzial (Limit) gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>Allgemein: +2 Würfel auf Proben für Handwerk oder Fälschen</altadvantage>
-				<altdisadvantage>If for more than two weeks the Artist fails to find an audience for a presentation of her ability, she has to make a WIL+ CHA (3) test. Should she fail, she fall into depression (-2 dice for every skill linked to LOG, INT or CHA) for 1d6 days. After that (or if she succeeded in the the WIL+CHA test) a new 14 day period begins in which she has to show off her skills.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Handwerk- oder Fälschenproben (nach Wahl des Spielers)</altadvantage>
+				<altdisadvantage>Sollte es dem Künstler länger als 2 Wochen am Stück nicht gelingen, ein Publikum für eine Darbietung seines Könnens zu finden, muss ihm eine Probe auf Willenskraft + Charisma (3) gelingen. Misslingt sie, verfällt der Charakter für 1W6 Tage in eine Depression. Während dieser Zeit ist er lethargisch, unmotiviert und kann sich nicht konzentrieren. Er erhält einen Würfelpoolmodifikator von -2 auf alle Proben die mit Logik, Intuition oder Charisma verbunden sind. Danach (bzw. direkt nach einer wie oben beschriebenen gelungenen Probe) beginnt der 2-Wochen-Zyklus von Neuem.</altdisadvantage>
 				<altpage>179</altpage>
 			</mentor>
 			<mentor>
 				<id>66f968d6-96da-404e-b1ef-a4d7377ac3cf</id>
 				<name>Blacksmith</name>
-				<translate>Blacksmith</translate>
+				<translate>Schmied</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for summoning spirits of fire.</name>
@@ -21553,29 +21547,29 @@
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Enhanced Accuracy (skill)</name>
-						<translate>Adept: 2 Stufen auf Erhöhte Präzision gratis</translate>
+						<translate>Adept: 2 x Erhöhte Präzision (Fertigkeit) gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>Allgemein: +2 Würfel auf Proben für Handwerk oder Alchemie</altadvantage>
-				<altdisadvantage>You have to pass a CHA + WIL (3) check to refrain from instantanously avenging an insult.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Handwerk- oder Alchemieproben (nach Wahl des Spielers)</altadvantage>
+				<altdisadvantage>Einem Anhänger von Schmied muss eine Probe auf Charisma + Willenskraft (3) gelingen, damit er eine Kränkung nicht sofort rächt.</altdisadvantage>
 				<altpage>179</altpage>
 			</mentor>
 			<mentor>
 				<id>f152ddfc-13b2-46fa-b8d0-77e2a518acf5</id>
 				<name>Gambler</name>
-				<translate>Gambler</translate>
+				<translate>Spieler</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Manipulation Spells.</name>
-						<translate>Zauberer: +2 Würfel für Manipulationszauber</translate>
+						<translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Manipulation</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free levels of Danger Sense.</name>
 						<translate>Adept: 2 Stufen Gefahrsinn gratis</translate>
 					</choice>
 				</choices>
-				<altadvantage>Allgemein: +2 Würfel auf Proben für Gebräuche oder Fingerfertigkeit</altadvantage>
-				<altdisadvantage>Gain the Distinctive Style negative quality.</altdisadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Gebräuche- oder Fingerfertigkeitsproben (nach Wahl des Spielers)</altadvantage>
+				<altdisadvantage>Personen, die zielstrebig etwas verfolgen, sich unter die Leute mischen, lügen und betrügen, fallen auf. Anhänger des Spielers erhalten den Nachteil Auffälliger Stil ohne Karmabonus.</altdisadvantage>
 				<altpage>179</altpage>
 			</mentor>
 			<mentor translated="True">
@@ -22005,7 +21999,7 @@
 				<id>7397da6e-29b8-400f-9708-c99bd04d5c07</id>
 				<name>Guanyin</name>
 				<translate>Guanyin</translate>
-				<altadvantage>Allgemein: +2 Würfel für Prben auf Erste Hilfe</altadvantage>
+				<altadvantage>Allgemein: +2 Würfel für Proben auf Erste Hilfe</altadvantage>
 				<altdisadvantage>Anhänger von Guanyin sind höchst motiviert, andere Wesen zu retten. Wenn der Charakter das Angebot für einen Run bekommt, bei dem sich keine Gelegenheit für Hooding bietet, muss er eine erfolgreiche Probe auf Willenskraft + Charisma (3) ablegen, damit er annehmen kann. Misslingt die Probe, muss er den Job ablehnen.</altdisadvantage>
 				<altpage>145</altpage>
 				<choices>
@@ -39077,31 +39071,31 @@
 				<translate>Jena Robotnik Araneus</translate>
 				<altpage>59</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>ed101e66-64fc-4a07-b1e5-dfc13526f4a5</id>
 				<name>Plex-Cab</name>
 				<translate>Plex-Cab</translate>
 				<altpage>215</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>7b728361-e755-4c86-815b-3018b17e7753</id>
 				<name>oTTo</name>
 				<translate>oTTo</translate>
 				<altpage>216</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>25ef3104-a0aa-449c-bbd2-be6aa9ade610</id>
 				<name>VW Urban Clipper</name>
 				<translate>VW Urban Clipper</translate>
 				<altpage>217</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>1f0a690e-3b60-49de-9271-9ab7305e135e</id>
 				<name>Link-Bus</name>
 				<translate>Link-Bus</translate>
 				<altpage>218</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>188daf6f-4b37-4e6f-a4a7-d7a186643787</id>
 				<name>Eurocopter FC</name>
 				<translate>Eurocopter FC</translate>
@@ -39154,6 +39148,72 @@
 				<name>Maersk Shipyards Wavecutter MPAC</name>
 				<translate>Maersk Shipyards Wavecutter MPAC</translate>
 				<altpage>138</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>ee67b675-6acf-4edc-9d95-2797ddbd2f1a</id>
+				<name>Corporate Mobile Command Center (Ares Roadmaster)</name>
+				<translate>SWAT-Einsatzfahrzeug/Mobile Kommandozentrale (Ares Roadmaster), Nachahmung</translate>
+				<altpage>203</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>fbafc72c-fc94-4196-ac8a-a170ac942dd3</id>
+				<name>Law Enforcement Patrol Cruiser (Chrysler-Nissan Journey)</name>
+				<translate>Lohne-Star-Streifenwagen (Chrysler-Nissan Journey), Nachahmung</translate>
+				<altpage>203</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>ba29b0d3-8f49-4b96-a25f-4efbf139419d</id>
+				<name>Corporate Moving Truck (Conestoga Trailblazer)</name>
+				<translate>Firmenmöbelwagen (Conestoga Trailblazer), Nachahmung</translate>
+				<altpage>203</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>7114ccdd-3e5c-41a7-9c24-999e41ec5807</id>
+				<name>Corporate Moving Truck w/Trailer (Conestoga Trailblazer)</name>
+				<translate>Firmenmöbelwagen mit Anhänger (Conestoga Trailblazer), Nachahmung</translate>
+				<altpage>203</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>f1b499b8-3ff0-4134-9723-4dd5b7c22b97</id>
+				<name>Corporate Garbage Hauler (Dodge Ram Industrial: Large)</name>
+				<translate>Firmenmüllwagen (Dodge Ram Industrial: breit)</translate>
+				<altpage>203</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>bd45e719-82a5-443d-83bd-976abdcf786b</id>
+				<name>Corporate Garbage Hauler (Dodge Ram Industrial: Narrow)</name>
+				<translate>Firmenmüllwagen (Dodge Ram Industrial: schmal)</translate>
+				<altpage>203</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>c470d083-325f-43f4-a87e-3e3a56a73362</id>
+				<name>Government Black SUV (Esprit Industries Watcher)</name>
+				<translate>CAS-Regierungsfahrzeug (Esprit Industries Watcher (SUV)), Nachahmung</translate>
+				<altpage>203</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>2ddf358f-0681-4521-b2a4-735797752aba</id>
+				<name>Corporate Ambulance (GMC Endurance)</name>
+				<translate>DocWagon-Krankenwagen (GMC Endurance (Van)), Nachahmung</translate>
+				<altpage>203</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>f19454df-6b7a-45cb-97f4-f6ecf71c6fbd</id>
+				<name>Government Pursuit SUV (GMC Sidewinder)</name>
+				<translate>UCAS-Regierungsfahrzeug (GMC Sidewinder (SUV)), Nachahmung</translate>
+				<altpage>203</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>c971c599-71e6-4f19-ac41-48db3911760d</id>
+				<name>Corporate Patrol Cruiser (Honda Artemis)</name>
+				<translate>Knight-Errant-Streifenwagen (Honda Artemis), Nachahmung</translate>
+				<altpage>203</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>88724f5f-d51b-4d67-a18f-71c5262696e7</id>
+				<name>Municipal Ambulance (S-K LT-21)</name>
+				<translate>CrashCart-Krankenwagen (S-K LT-21), Nachahmung</translate>
+				<altpage>203</altpage>
 			</vehicle>
 		</vehicles>
 		<mods>
@@ -41331,7 +41391,7 @@
 			<weapon translated="True">
 				<id>fd7f400f-c8d5-4e8c-94aa-001109635f19</id>
 				<name>Nissan Optimum II</name>
-				<translate>Nissan Optimum II</translate>
+				<translate>Nitama Optimum II</translate>
 				<altpage>38</altpage>
 			</weapon>
 			<weapon translated="True">
@@ -42032,8 +42092,8 @@
 			</weapon>
 			<weapon>
 				<id>232dfc49-21ad-4b90-b05f-e5523b3ee142</id>
-				<name>Nissan Optiumum II Shotgun</name>
-				<translate>Nissan Optiumum II Unterlauf-Schrotflinte</translate>
+				<name>Nissan Optimum II Shotgun</name>
+				<translate>Nitama Optimum II Unterlauf-Schrotflinte</translate>
 				<altpage>38</altpage>
 			</weapon>
 			<weapon>
@@ -42855,7 +42915,7 @@
 			<weapon>
 				<id>e5ac06f4-3755-42a7-9da9-88de4b3b2ad8</id>
 				<name>Ares Thunderstruck Gauss Rifle</name>
-				<translate>Ares Thunderstruck Gaussgewehr</translate>
+				<translate>Ares Thunderstruck Gaußgewehr</translate>
 				<altpage>45</altpage>
 			</weapon>
 			<weapon>
@@ -42879,7 +42939,7 @@
 			<weapon translated="True">
 				<id>08e04ae5-ee6f-451d-8dc9-7873b6f9d3a5</id>
 				<name>Ultamax MMG</name>
-				<translate>Ultamax MMG</translate>
+				<translate>Ultimax MMG</translate>
 				<altpage>44</altpage>
 			</weapon>
 			<weapon>
@@ -42910,43 +42970,43 @@
 				<id>bb650f05-87ea-45de-bce4-ba1c4f9e98ed</id>
 				<name>Mannlicher Marpingen Pro D (Shotgun Barrels)</name>
 				<translate>Mannlicher Marpingen Pro D (Shotgun Barrels)</translate>
-				<altpage>0</altpage>
+				<altpage>187</altpage>
 			</weapon>
 			<weapon>
 				<id>026343e0-f47d-4c5a-905d-bbbc2411b5da</id>
 				<name>Mannlicher Marpingen Pro D</name>
 				<translate>Mannlicher Marpingen Pro D</translate>
-				<altpage>0</altpage>
+				<altpage>187</altpage>
 			</weapon>
 			<weapon>
 				<id>5c04009f-7858-4c9a-bc9e-d21880e420cf</id>
 				<name>HK MP75</name>
 				<translate>HK MP75</translate>
-				<altpage>0</altpage>
+				<altpage>186</altpage>
 			</weapon>
 			<weapon>
 				<id>e8324402-ac55-49c8-8286-40486a5ec8b6</id>
 				<name>Mannlicher Dirmingen SX BD: Shotgun Barrel</name>
 				<translate>Mannlicher Dirmingen SX BD: Shotgun Barrel</translate>
-				<altpage>0</altpage>
+				<altpage>188</altpage>
 			</weapon>
 			<weapon>
 				<id>4dee0b90-b3d0-41a8-a784-8c3342a69719</id>
 				<name>Mannlicher Dirmingen SX BD</name>
 				<translate>Mannlicher Dirmingen SX BD</translate>
-				<altpage>0</altpage>
+				<altpage>188</altpage>
 			</weapon>
 			<weapon>
 				<id>deaf5a3d-7428-4a58-be14-c8447716b0f8</id>
 				<name>Mannlicher Dirmingen SX BD: Small Caliber</name>
 				<translate>Mannlicher Dirmingen SX BD: Small Caliber</translate>
-				<altpage>0</altpage>
+				<altpage>188</altpage>
 			</weapon>
 			<weapon>
 				<id>581ed592-9caa-41ea-aaf2-55cee20c94e7</id>
 				<name>Walther PP110</name>
 				<translate>Walther PP110</translate>
-				<altpage>0</altpage>
+				<altpage>185</altpage>
 			</weapon>
 			<weapon>
 				<id>44d3a69e-643e-42e2-9c68-c7772d27ffa6</id>
@@ -43383,7 +43443,7 @@
 			<weapon>
 				<id>4378e735-859d-4606-9396-f9af248487e2</id>
 				<name>Barrens Special: Bayonet</name>
-				<translate>Barens Spezial: Bajonett</translate>
+				<translate>Barrens Spezial: Bajonett</translate>
 				<altpage>29</altpage>
 			</weapon>
 			<weapon translated="True">
@@ -44716,6 +44776,12 @@
 	</chummer>
 	<chummer file="improvements.xml">
 		<improvements>
+			<improvement>
+				<id>actiondicepool</id>
+				<name>Action Dice-Pool Modifier</name>
+				<translate>Würfelpoolmodifikator für Aktionen</translate>
+				<altpage>Stellt die Anzahl der Kästchen ein, die der Charakter in seinem geistigen Zustandsmonitor hat. Positive Zahlen erhöhen die Anzahl der Kästchen im Zustandsmonitor. Negative Zahlen reduzieren die Anzahl der Kästchen im Zustandsmonitor.</altpage>
+			</improvement>
 			<improvement>
 				<id>specificattribute</id>
 				<name>Attribute</name>

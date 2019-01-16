@@ -3491,7 +3491,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddVehicle();
+                blnAddAgain = AddVehicle(treVehicles.SelectedNode?.Tag is Location objLocation ? objLocation : null);
             }
             while (blnAddAgain);
         }
@@ -4561,6 +4561,7 @@ namespace Chummer
                 objGear.Quantity = decMove;
                 objGear.Location = null;
 
+                objGear.Parent = objVehicle;
                 objVehicle.Gear.Add(objGear);
             }
             else
@@ -5537,11 +5538,8 @@ namespace Chummer
 
             if (frmPickImprovement.DialogResult == DialogResult.Cancel)
                 return;
-            if (!string.IsNullOrWhiteSpace(location))
-            {
-                //TODO: Improvement system interface needs a better handler for 
-                RefreshCustomImprovements(treImprovements,lmtControl.LimitTreeView,cmsImprovementLocation,cmsImprovement,lmtControl.LimitContextMenuStrip);
-            }
+
+            RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView, cmsImprovementLocation, cmsImprovement, lmtControl.LimitContextMenuStrip);
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
@@ -5897,8 +5895,17 @@ namespace Chummer
 
         private void cmdAddVehicleLocation_Click(object sender, EventArgs e)
         {
+            TaggedObservableCollection<Location> destCollection = null;
             // Make sure a Vehicle is selected.
-            if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle))
+            if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle)
+            {
+                destCollection = objVehicle.Locations;
+            }
+            else if (treVehicles.SelectedNode?.Tag.ToString() == "Node_SelectedVehicles" || treVehicles.SelectedNode?.Tag == null)
+            {
+                destCollection = CharacterObject.VehicleLocations;
+            }
+            else
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectVehicleLocation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5911,8 +5918,8 @@ namespace Chummer
 
             if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                 return;
-            Location objLocation = new Location(CharacterObject, objVehicle.Locations, frmPickText.SelectedValue);
-            objVehicle.Locations.Add(objLocation);
+            Location objLocation = new Location(CharacterObject, destCollection, frmPickText.SelectedValue);
+            destCollection.Add(objLocation);
 
             IsDirty = true;
         }
@@ -6985,7 +6992,18 @@ namespace Chummer
         private void tsVehicleAddGear_Click(object sender, EventArgs e)
         {
             // Locate the selected Vehicle.
-            if (!(treVehicles.SelectedNode?.Tag is Vehicle objSelectedVehicle))
+            Vehicle objSelectedVehicle = null;
+            Location objLocation = null;
+            if (treVehicles.SelectedNode?.Tag is Vehicle)
+            {
+                objSelectedVehicle = treVehicles.SelectedNode?.Tag as Vehicle;
+            }
+            else if (treVehicles.SelectedNode?.Tag is Location)
+            {
+                objLocation = treVehicles.SelectedNode.Tag as Location;
+                objSelectedVehicle = treVehicles.SelectedNode.Parent.Tag as Vehicle;
+            }
+            else
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectGearVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGearVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -7093,10 +7111,19 @@ namespace Chummer
                 if (!blnMatchFound)
                 {
                     // Add the Gear to the Vehicle.
+                    if (objLocation != null)
+                    {
+                        objLocation.Children.Add(objGear);
+                    }
                     objSelectedVehicle.Gear.Add(objGear);
+                    objGear.Parent = objSelectedVehicle;
 
                     foreach (Weapon objWeapon in lstWeapons)
                     {
+                        if (objLocation != null)
+                        {
+                            objLocation.Children.Add(objGear);
+                        }
                         objWeapon.ParentVehicle = objSelectedVehicle;
                         objSelectedVehicle.Weapons.Add(objWeapon);
                     }
@@ -7907,6 +7934,7 @@ namespace Chummer
             treVehicles.SelectedNode.Expand();
 
             objSelectedVehicle.Gear.Add(objGear);
+            objGear.Parent = objSelectedVehicle;
 
             IsCharacterUpdateRequested = true;
 
@@ -10738,7 +10766,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickGear(null, null, true, null, string.Empty, lstAmmoPrefixStrings);
+                blnAddAgain = PickGear(null, null, true, null, objWeapon.AmmoName, lstAmmoPrefixStrings);
             }
             while (blnAddAgain);
         }
@@ -12307,64 +12335,46 @@ namespace Chummer
         private void treImprovements_AfterSelect(object sender, TreeViewEventArgs e)
         {
             IsRefreshing = true;
-            if (treImprovements.SelectedNode != null)
+            if (treImprovements.SelectedNode?.Tag is Improvement objImprovement)
             {
-                if (treImprovements.SelectedNode.Level == 0)
+                // Get the human-readable name of the Improvement from the Improvements file.
+
+                XmlNode objNode = XmlManager.Load("improvements.xml").SelectSingleNode("/chummer/improvements/improvement[id = \"" + objImprovement.CustomId + "\"]");
+                if (objNode != null)
                 {
-                    cmdImprovementsEnableAll.Visible = true;
-                    cmdImprovementsDisableAll.Visible = true;
-                    lblImprovementType.Text = string.Empty;
-                    lblImprovementValue.Text = string.Empty;
-                    chkImprovementActive.Checked = false;
-                    chkImprovementActive.Visible = false;
+                    lblImprovementType.Text = objNode["translate"]?.InnerText ?? objNode["name"]?.InnerText;
                 }
-                else
-                {
-                    string strSelectedId = treImprovements.SelectedNode?.Tag.ToString();
-                    Improvement objImprovement = CharacterObject.Improvements.FirstOrDefault(x => x.SourceName == strSelectedId);
 
-                    if (objImprovement != null)
-                    {
-                        // Get the human-readable name of the Improvement from the Improvements file.
+                string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                // Build a string that contains the value(s) of the Improvement.
+                string strValue = string.Empty;
+                if (objImprovement.Value != 0)
+                    strValue += LanguageManager.GetString("Label_CreateImprovementValue", GlobalOptions.Language) + strSpace + objImprovement.Value + ',' + strSpace;
+                if (objImprovement.Minimum != 0)
+                    strValue += LanguageManager.GetString("Label_CreateImprovementMinimum", GlobalOptions.Language) + strSpace + objImprovement.Minimum + ',' + strSpace;
+                if (objImprovement.Maximum != 0)
+                    strValue += LanguageManager.GetString("Label_CreateImprovementMaximum", GlobalOptions.Language) + strSpace + objImprovement.Maximum + ',' + strSpace;
+                if (objImprovement.Augmented != 0)
+                    strValue += LanguageManager.GetString("Label_CreateImprovementAugmented", GlobalOptions.Language) + strSpace + objImprovement.Augmented + ',' + strSpace;
 
-                        XmlNode objNode = XmlManager.Load("improvements.xml").SelectSingleNode("/chummer/improvements/improvement[id = \"" + objImprovement.CustomId + "\"]");
-                        if (objNode != null)
-                        {
-                            lblImprovementType.Text = objNode["translate"]?.InnerText ?? objNode["name"]?.InnerText;
-                        }
+                // Remove the trailing comma.
+                if (!string.IsNullOrEmpty(strValue))
+                    strValue = strValue.Substring(0, strValue.Length - 1 - strSpace.Length);
 
-                        string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-                        // Build a string that contains the value(s) of the Improvement.
-                        string strValue = string.Empty;
-                        if (objImprovement.Value != 0)
-                            strValue += LanguageManager.GetString("Label_CreateImprovementValue", GlobalOptions.Language) + strSpace + objImprovement.Value + ',' + strSpace;
-                        if (objImprovement.Minimum != 0)
-                            strValue += LanguageManager.GetString("Label_CreateImprovementMinimum", GlobalOptions.Language) + strSpace + objImprovement.Minimum + ',' + strSpace;
-                        if (objImprovement.Maximum != 0)
-                            strValue += LanguageManager.GetString("Label_CreateImprovementMaximum", GlobalOptions.Language) + strSpace + objImprovement.Maximum + ',' + strSpace;
-                        if (objImprovement.Augmented != 0)
-                            strValue += LanguageManager.GetString("Label_CreateImprovementAugmented", GlobalOptions.Language) + strSpace + objImprovement.Augmented + ',' + strSpace;
-
-                        // Remove the trailing comma.
-                        if (!string.IsNullOrEmpty(strValue))
-                            strValue = strValue.Substring(0, strValue.Length - 1 - strSpace.Length);
-
-                        cmdImprovementsEnableAll.Visible = false;
-                        cmdImprovementsDisableAll.Visible = false;
-                        lblImprovementValue.Text = strValue;
-                        chkImprovementActive.Checked = objImprovement.Enabled;
-                        chkImprovementActive.Visible = true;
-                    }
-                    else
-                    {
-                        cmdImprovementsEnableAll.Visible = false;
-                        cmdImprovementsDisableAll.Visible = false;
-                        lblImprovementType.Text = string.Empty;
-                        lblImprovementValue.Text = string.Empty;
-                        chkImprovementActive.Checked = false;
-                        chkImprovementActive.Visible = false;
-                    }
-                }
+                cmdImprovementsEnableAll.Visible = false;
+                cmdImprovementsDisableAll.Visible = false;
+                lblImprovementValue.Text = strValue;
+                chkImprovementActive.Checked = objImprovement.Enabled;
+                chkImprovementActive.Visible = true;
+            }
+            else if (treImprovements.SelectedNode.Level == 0)
+            {
+                cmdImprovementsEnableAll.Visible = true;
+                cmdImprovementsDisableAll.Visible = true;
+                lblImprovementType.Text = string.Empty;
+                lblImprovementValue.Text = string.Empty;
+                chkImprovementActive.Checked = false;
+                chkImprovementActive.Visible = false;
             }
             else
             {
@@ -13910,6 +13920,7 @@ namespace Chummer
 
                 IsRefreshing = false;
                 flpArmor.ResumeLayout();
+                return;
             }
             
             if (treArmor.SelectedNode?.Tag is IHasSource objSelected)
@@ -14472,14 +14483,6 @@ namespace Chummer
             Cyberware objCyberware = new Cyberware(CharacterObject);
             if (objCyberware.Purchase(objXmlCyberware, objSource, frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating, null, objSelectedCyberware?.Children ?? CharacterObject.Cyberware, CharacterObject.Vehicles, CharacterObject.Weapons, frmPickCyberware.Markup, frmPickCyberware.FreeCost, frmPickCyberware.BlackMarketDiscount))
             {
-                // Consume any essence antihole that might exist. Holes and antiholes are managed through the Purchase method. 
-                if (objCyberware.SourceID != Cyberware.EssenceHoleGUID &&
-                    objCyberware.SourceID != Cyberware.EssenceAntiHoleGUID)
-                {
-                    CharacterObject.DecreaseEssenceHole((int) (objCyberware.CalculatedESS() * 100),
-                        objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID);
-                }
-
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
             }

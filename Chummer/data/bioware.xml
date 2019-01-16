@@ -884,7 +884,7 @@
       <page>113</page>
     </bioware>
     <bioware>
-      <id>11d6fbc9-c2cf-4686-8f95-ef46a83cc0ff</id>
+      <id>c60d9b5f-080b-4209-8a8e-19a76eca7a5b</id>
       <name>Hand and Foot Webbing (Feet)</name>
       <category>Basic</category>
       <ess>0.05</ess>
@@ -2382,7 +2382,7 @@
       <ess>0.4</ess>
       <capacity>0</capacity>
       <avail>10</avail>
-      <cost>75000</cost>
+      <cost>73000</cost>
       <forcegrade>None</forcegrade>
       <bonus>
         <dodge>2</dodge>

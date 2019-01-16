@@ -119,6 +119,7 @@ namespace Chummer
             txtSelect.Visible = false;
             txtSelect.Text = string.Empty;
             txtTranslateSelection.Text = string.Empty;
+            txtTranslateSelection.Visible = false;
             cmdChangeSelection.Visible = false;
             _strSelect = string.Empty;
 
@@ -171,6 +172,27 @@ namespace Chummer
         {
             switch (_strSelect)
             {
+                case "SelectActionDicePool":
+                    List<ListItem> lstActions = new List<ListItem>();
+                    using (XmlNodeList xmlActionList = XmlManager.Load("actions.xml").SelectNodes("/chummer/actions/action"))
+                        if (xmlActionList != null)
+                            foreach (XmlNode xmlAction in xmlActionList)
+                            {
+                                lstActions.Add(new ListItem(xmlAction["name"].InnerText, xmlAction["translate"]?.InnerText ?? xmlAction["name"]?.InnerText));
+                            }
+
+                    frmSelectItem select = new frmSelectItem
+                    {
+                        Description = LanguageManager.GetString("Title_SelectAction", GlobalOptions.Language)
+                    };
+                    select.ShowDialog(this);
+
+                    if (select.DialogResult == DialogResult.OK)
+                    {
+                        txtSelect.Text = select.SelectedName;
+                        txtTranslateSelection.Text = TranslateField(_strSelect, select.SelectedName);
+                    }
+                    break;
                 case "SelectAttribute":
                     {
                         List<string> lstAbbrevs = new List<string>(Backend.Attributes.AttributeSection.AttributeStrings);

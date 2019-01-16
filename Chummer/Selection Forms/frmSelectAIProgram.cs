@@ -379,25 +379,9 @@ namespace Chummer
                     return;
 
                 // Check to make sure requirement is met
-                string strRequiresProgram = xmlProgram.SelectSingleNode("require")?.Value;
-                if (!string.IsNullOrEmpty(strRequiresProgram))
+                if (!xmlProgram.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Program", GlobalOptions.Language)))
                 {
-                    bool blnRequirementsMet = false;
-                    foreach (AIProgram objLoopAIProgram in _objCharacter.AIPrograms)
-                    {
-                        if (objLoopAIProgram.Name == strRequiresProgram)
-                        {
-                            blnRequirementsMet = true;
-                            break;
-                        }
-                    }
-                    if (!blnRequirementsMet)
-                    {
-                        MessageBox.Show(LanguageManager.GetString("Message_SelectAIProgram_AdvancedProgramRequirement", GlobalOptions.Language) + strRequiresProgram,
-                            LanguageManager.GetString("MessageTitle_SelectAIProgram_AdvancedProgramRequirement", GlobalOptions.Language),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
+                    return;
                 }
 
                 _strSelectedAIProgram = strSelectedId;

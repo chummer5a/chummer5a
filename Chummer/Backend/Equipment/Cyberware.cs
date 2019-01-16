@@ -35,8 +35,8 @@ namespace Chummer.Backend.Equipment
     /// A piece of Cyberware.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Cyberware : IHasChildren<Cyberware>, IHasGear<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort, IHasWirelessBonus
-	{
+    public class Cyberware : IHasChildren<Cyberware>, IHasGear, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort
+    {
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -4252,6 +4252,11 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
+                if (_objCharacter.Created && objVehicle == null)
+                {
+                    _objCharacter.DecreaseEssenceHole((int)(CalculatedESS() * 100),
+                        SourceID == Cyberware.EssenceAntiHoleGUID);
+                }
                 lstCyberwareCollection.Add(this);
 
                 foreach (Weapon objWeapon in lstWeapons)

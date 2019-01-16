@@ -35,7 +35,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasMatrixConditionMonitor, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort
+    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasMatrixConditionMonitor, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort, IHasGear
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -684,6 +684,7 @@ namespace Chummer.Backend.Equipment
                     Gear objGear = new Gear(_objCharacter);
                     objGear.Load(nodChild, blnCopy);
                     _lstGear.Add(objGear);
+                    objGear.Parent = this;
                 }
             }
 
@@ -709,14 +710,14 @@ namespace Chummer.Backend.Equipment
                 {
                     // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
                     _objLocation =
-                        _objCharacter.WeaponLocations.FirstOrDefault(location =>
+                        _objCharacter.VehicleLocations.FirstOrDefault(location =>
                             location.InternalId == temp.ToString());
                 }
                 else
                 {
                     //Legacy. Location is a string. 
                     _objLocation =
-                        _objCharacter.WeaponLocations.FirstOrDefault(location =>
+                        _objCharacter.VehicleLocations.FirstOrDefault(location =>
                             location.Name == strLocation);
                 }
                 _objLocation?.Children.Add(this);
@@ -2841,7 +2842,21 @@ namespace Chummer.Backend.Equipment
             {
                 TreeNode objLoopNode = objWeapon.CreateTreeNode(cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
                 if (objLoopNode != null)
-                    lstChildNodes.Add(objLoopNode);
+                {
+                    TreeNode objParent = objNode;
+                    if (objWeapon.Location != null)
+                    {
+                        foreach (TreeNode objFind in lstChildNodes)
+                        {
+                            if (objFind.Tag != objWeapon.Location) continue;
+                            objParent = objFind;
+                            break;
+                        }
+                    }
+
+                    objParent.Nodes.Add(objLoopNode);
+                    objParent.Expand();
+                }
             }
 
             // Vehicle Gear.

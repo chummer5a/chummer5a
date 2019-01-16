@@ -1353,32 +1353,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 string strExpression = MinRating;
-                if (string.IsNullOrEmpty(strExpression))
-                    return 0;
-
-                if (strExpression.StartsWith("FixedValues("))
-                {
-                    string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
-                    strExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
-                }
-
-                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
-                {
-                    StringBuilder objValue = new StringBuilder(strExpression);
-                    objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                    objValue.CheapReplace(strExpression, "{Parent Rating}", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
-                    foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
-                    {
-                        objValue.CheapReplace(strExpression, '{' + strCharAttributeName + '}', () => CharacterObject.GetAttribute(strCharAttributeName).TotalValue.ToString());
-                        objValue.CheapReplace(strExpression, '{' + strCharAttributeName + "Base}", () => CharacterObject.GetAttribute(strCharAttributeName).TotalBase.ToString());
-                    }
-                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
-                    return blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
-                }
-                int.TryParse(strExpression, out int intReturn);
-
-                return intReturn;
+                return string.IsNullOrEmpty(strExpression) ? 0 : ProcessRatingString(strExpression);
             }
             set => MinRating = value.ToString(GlobalOptions.InvariantCultureInfo);
         }
@@ -1391,34 +1366,63 @@ namespace Chummer.Backend.Equipment
             get
             {
                 string strExpression = MaxRating;
-                if (string.IsNullOrEmpty(strExpression))
-                    return int.MaxValue;
-
-                if (strExpression.StartsWith("FixedValues("))
-                {
-                    string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
-                    strExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
-                }
-
-                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
-                {
-                    StringBuilder objValue = new StringBuilder(strExpression);
-                    objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                    objValue.CheapReplace(strExpression, "{Parent Rating}", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo) ?? int.MaxValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
-                    {
-                        objValue.CheapReplace(strExpression, '{' + strCharAttributeName + '}', () => CharacterObject.GetAttribute(strCharAttributeName).TotalValue.ToString());
-                        objValue.CheapReplace(strExpression, '{' + strCharAttributeName + "Base}", () => CharacterObject.GetAttribute(strCharAttributeName).TotalBase.ToString());
-                    }
-                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
-                    return blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
-                }
-                int.TryParse(strExpression, out int intReturn);
-
-                return intReturn;
+                return string.IsNullOrEmpty(strExpression) ? int.MaxValue : ProcessRatingString(strExpression);
             }
             set => MaxRating = value.ToString(GlobalOptions.InvariantCultureInfo);
+        }
+
+        /// <summary>
+        /// Processes a string into an int based on logical processing. 
+        /// </summary>
+        /// <param name="strExpression"></param>
+        /// <returns></returns>
+        private int ProcessRatingString(string strExpression)
+        {
+            if (strExpression.StartsWith("FixedValues("))
+            {
+                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                strExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
+            }
+
+            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+            {
+                StringBuilder objValue = new StringBuilder(strExpression);
+                objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
+                objValue.CheapReplace(strExpression, "{Parent Rating}",
+                    () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo) ??
+                          int.MaxValue.ToString(GlobalOptions.InvariantCultureInfo));
+                foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
+                {
+                    objValue.CheapReplace(strExpression, '{' + strCharAttributeName + '}',
+                        () => CharacterObject.GetAttribute(strCharAttributeName).TotalValue.ToString());
+                    objValue.CheapReplace(strExpression, '{' + strCharAttributeName + "Base}",
+                        () => CharacterObject.GetAttribute(strCharAttributeName).TotalBase.ToString());
+                }
+
+                foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                {
+                    objValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}',
+                        () => ((Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(strMatrixAttribute) ?? 0).ToString(
+                            GlobalOptions.InvariantCultureInfo));
+                    objValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}',
+                        () => (Parent as IHasMatrixAttributes).GetMatrixAttributeString(strMatrixAttribute) ?? "0");
+                    if (Children.Count <= 0 || !strExpression.Contains("{Children " + strMatrixAttribute + '}'))
+                        continue;
+                    int intTotalChildrenValue = Children.Where(g => g.Equipped)
+                        .Sum(loopGear => loopGear.GetBaseMatrixAttribute(strMatrixAttribute));
+
+                    objValue.Replace("{Children " + strMatrixAttribute + '}',
+                        intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
+                }
+
+                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
+                return blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double) objProcess)) : 0;
+            }
+
+            int.TryParse(strExpression, out int intReturn);
+
+            return intReturn;
         }
 
         /// <summary>
@@ -1687,40 +1691,7 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(strExtraExpression))
                     strExpression += strExtraExpression;
             }
-
-            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
-            {
-                StringBuilder objValue = new StringBuilder(strExpression);
-                objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                objValue.CheapReplace(strExpression, "{Parent Rating}", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
-                {
-                    objValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}', () => ((Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(strMatrixAttribute) ?? 0).ToString(GlobalOptions.InvariantCultureInfo));
-                    objValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}', () => (Parent as IHasMatrixAttributes).GetMatrixAttributeString(strMatrixAttribute) ?? "0");
-                    if (Children.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + '}'))
-                    {
-                        int intTotalChildrenValue = 0;
-                        foreach (Gear loopGear in Children)
-                        {
-                            if (loopGear.Equipped)
-                            {
-                                intTotalChildrenValue += loopGear.GetBaseMatrixAttribute(strMatrixAttribute);
-                            }
-                        }
-                        objValue.Replace("{Children " + strMatrixAttribute + '}', intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    }
-                }
-                foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
-                {
-                    objValue.CheapReplace(strExpression, '{' + strCharAttributeName + '}', () => CharacterObject.GetAttribute(strCharAttributeName).TotalValue.ToString());
-                    objValue.CheapReplace(strExpression, '{' + strCharAttributeName + "Base}", () => CharacterObject.GetAttribute(strCharAttributeName).TotalBase.ToString());
-                }
-                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
-                return blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
-            }
-            int.TryParse(strExpression, out int intReturn);
-            return intReturn;
+            return string.IsNullOrEmpty(strExpression) ? 0 : ProcessRatingString(strExpression);
         }
 
         /// <summary>
@@ -2526,46 +2497,10 @@ namespace Chummer.Backend.Equipment
                 if (Name == "Living Persona")
                 {
                     string strExpression = string.Concat(CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaMatrixCM && x.Enabled).Select(x => x.ImprovedName));
-                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
-                    {
-                        StringBuilder objValue = new StringBuilder(strExpression);
-                        objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                        objValue.CheapReplace(strExpression, "{Parent Rating}", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                        foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
-                        {
-                            objValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}', () => ((Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(strMatrixAttribute) ?? 0).ToString(GlobalOptions.InvariantCultureInfo));
-                            objValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}', () => (Parent as IHasMatrixAttributes).GetMatrixAttributeString(strMatrixAttribute) ?? "0");
-                            if (Children.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + '}'))
-                            {
-                                int intTotalChildrenValue = 0;
-                                foreach (Gear loopGear in Children)
-                                {
-                                    if (loopGear.Equipped)
-                                    {
-                                        intTotalChildrenValue += loopGear.GetBaseMatrixAttribute(strMatrixAttribute);
-                                    }
-                                }
-                                objValue.Replace("{Children " + strMatrixAttribute + '}', intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
-                            }
-                        }
-                        foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
-                        {
-                            objValue.CheapReplace(strExpression, '{' + strCharAttributeName + '}', () => CharacterObject.GetAttribute(strCharAttributeName).TotalValue.ToString());
-                            objValue.CheapReplace(strExpression, '{' + strCharAttributeName + "Base}", () => CharacterObject.GetAttribute(strCharAttributeName).TotalBase.ToString());
-                        }
-                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
-                        if (blnIsSuccess)
-                            intReturn += Convert.ToInt32(Math.Ceiling((double) objProcess));
-                    }
+                    intReturn += string.IsNullOrEmpty(strExpression) ? 0 : ProcessRatingString(strExpression);
                 }
-                foreach (Gear objGear in Children)
-                {
-                    if (objGear.Equipped)
-                    {
-                        intReturn += objGear.TotalBonusMatrixBoxes;
-                    }
-                }
+                intReturn += Children.Where(g => g.Equipped)
+                    .Sum(loopGear => loopGear.TotalBonusMatrixBoxes);
                 return intReturn;
             }
         }
@@ -3283,15 +3218,20 @@ namespace Chummer.Backend.Equipment
                     return false;
             }
 
-            if (Parent is IHasGear<Gear> objHasChildren)
+            switch (Parent)
             {
-                DeleteGear();
-                objHasChildren.Gear.Remove(this);
-            }
-            else
-            {
-                DeleteGear();
-                characterObject.Gear.Remove(this);
+                case IHasGear objHasChildren:
+                    DeleteGear();
+                    objHasChildren.Gear.Remove(this);
+                    break;
+                case IHasChildren<Gear> objHasChildren:
+                    DeleteGear();
+                    objHasChildren.Children.Remove(this);
+                    break;
+                default:
+                    DeleteGear();
+                    characterObject.Gear.Remove(this);
+                    break;
             }
 
             return true;

@@ -3020,6 +3020,7 @@ namespace Chummer
                             else if (objSelectedObject is Vehicle objVehicle)
                             {
                                 objVehicle.Gear.Add(objGear);
+                                objGear.Parent = objVehicle;
                                 objParentVehicle = objVehicle;
                             }
                             else if (objSelectedObject is WeaponAccessory objAccessory)
@@ -3470,7 +3471,7 @@ namespace Chummer
             objWeapon.Create(objXmlWeapon, lstWeapons);
             objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
             //objWeapon.Location = objLocation;
-            objLocation.Children.Add(objWeapon);
+            objLocation?.Children.Add(objWeapon);
 
             if (frmPickWeapon.FreeCost)
             {
@@ -3593,7 +3594,7 @@ namespace Chummer
             }
 
             //objVehicle.Location = objLocation;
-            objLocation.Children.Add(objVehicle);
+            objLocation?.Children.Add(objVehicle);
 
             CharacterObject.Vehicles.Add(objVehicle);
 
@@ -3609,7 +3610,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddVehicle();
+                blnAddAgain = AddVehicle(treVehicles.SelectedNode?.Tag is Location objLocation ? objLocation : null);
             }
             while (blnAddAgain);
         }
@@ -5345,6 +5346,7 @@ namespace Chummer
                 {
                     // Add the Gear to the Vehicle.
                     objSelectedVehicle.Gear.Add(objGear);
+                    objGear.Parent = objSelectedVehicle;
                 }
 
                 foreach (Weapon objWeapon in lstWeapons)
@@ -5709,6 +5711,7 @@ namespace Chummer
             treVehicles.SelectedNode.Expand();
 
             objSelectedVehicle.Gear.Add(objGear);
+            objGear.Parent = objSelectedVehicle;
 
             IsCharacterUpdateRequested = true;
 
@@ -14127,7 +14130,7 @@ namespace Chummer
 
                 foreach (XmlNode objXmlLifestyle in xmlLifestyles.SelectNodes("lifestyle"))
                 {
-                    string strName = objXmlLifestyle["name"].InnerText;
+                    string strName = objXmlLifestyle["baselifestyle"].InnerText;
                     int intMonths = Convert.ToInt32(objXmlLifestyle["months"].InnerText);
 
                     // Create the Lifestyle.
@@ -14145,7 +14148,7 @@ namespace Chummer
                         // This is an Advanced Lifestyle, so build it manually.
                         objLifestyle.CustomName = strName;
                         objLifestyle.Increments = intMonths;
-                        objLifestyle.Cost = Convert.ToInt32(objXmlLifestyle["cost"].InnerText);
+                        objLifestyle.Cost = Convert.ToDecimal(objXmlLifestyle["cost"].InnerText);
                         objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"].InnerText);
                         objLifestyle.Multiplier = Convert.ToInt32(objXmlLifestyle["multiplier"].InnerText);
                         objLifestyle.BaseLifestyle = objXmlLifestyle["baselifestyle"].InnerText;
@@ -15104,7 +15107,10 @@ namespace Chummer
             else if (objParentObject is Cyberware objParentCyberware)
                 objParentCyberware.Gear.Add(objNewGear);
             else if (objParentObject is Vehicle objParentVehicle)
+            {
+                objNewGear.Parent = objParentVehicle;
                 objParentVehicle.Gear.Add(objNewGear);
+            }
 
             // Look for child components.
             using (XmlNodeList xmlChildrenList = objXmlGear.SelectNodes("gears/gear"))

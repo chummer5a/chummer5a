@@ -1031,7 +1031,7 @@ namespace Chummer
             // Make sure the character has enough Karma to pay for the Quality.
             if (Type == QualityType.Positive)
             {
-                if (!objCharacter.Options.DontDoubleQualityPurchases)
+                if (objCharacter.Created && !objCharacter.Options.DontDoubleQualityPurchases)
                 {
                     intKarmaCost *= 2;
                 }
@@ -1082,6 +1082,11 @@ namespace Chummer
                         if (!objCharacter.ConfirmKarmaExpense(string.Format(LanguageManager.GetString("Message_QualitySwap", GlobalOptions.Language), objOldQuality.DisplayNameShort(GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language))))
                             blnAddItem = false;
                     }
+                }
+                else
+                {
+                    // Trading a more expensive quality for a less expensive quality shouldn't give you karma. TODO: Optional rule to govern this behaviour.
+                    intKarmaCost = 0;
                 }
 
                 if (!blnAddItem) return false;

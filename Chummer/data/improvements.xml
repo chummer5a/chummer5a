@@ -22,6 +22,17 @@
   <version>0</version>
   <improvements>
     <improvement>
+      <name>Action Dice-Pool Modifier</name>
+      <id>actiondicepool</id>
+      <internal>actiondicepool</internal>
+      <fields>
+        <field>SelectActionDicePool</field>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[<name>{select}</name><<val>{val}</val>]]></xml>
+      <page>Adjusts the number of boxes the character has in their Stun Condition Monitor. Positive numbers increase the number of boxes in the Condition Monitor. Negative numbers reduce the number of boxes in the Condition Monitor.</page>
+    </improvement>
+    <improvement>
       <name>Enable Special Attribute</name>
       <id>enableattribute</id>
       <internal>enableattribute</internal>

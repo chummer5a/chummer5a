@@ -8239,7 +8239,7 @@
       <source>SAG</source>
       <accel>3</accel>
       <armor>6</armor>
-      <avail>10</avail>
+      <avail>12</avail>
       <body>14</body>
       <category>Rotorcraft</category>
       <cost>300000</cost>
@@ -8533,7 +8533,7 @@
       <body>2</body>
       <category>Drones: Small</category>
       <cost>9500</cost>
-      <handling>2</handling>
+      <handling>3</handling>
       <pilot>2</pilot>
       <sensor>4</sensor>
       <speed>1</speed>
@@ -8592,7 +8592,7 @@
       <cost>12000</cost>
       <handling>4</handling>
       <pilot>3</pilot>
-      <sensor>3</sensor>
+      <sensor>4</sensor>
       <speed>3</speed>
       <gears>
         <gear>
@@ -9778,6 +9778,272 @@
         </gear>
       </gears>
       <seats>12</seats>
+    </vehicle>
+    <!-- End Region -->
+    <!-- Region Stolen Souls Emergency Vehicles -->
+    <vehicle>
+      <id>ee67b675-6acf-4edc-9d95-2797ddbd2f1a</id>
+      <name>Corporate Mobile Command Center (Ares Roadmaster)</name>
+      <page>187</page>
+      <source>SS</source>
+      <accel>2</accel>
+      <armor>27</armor>
+      <avail>12R</avail>
+      <body>27</body>
+      <category>Corpsec/Police/Military</category>
+      <cost>78000</cost>
+      <handling>5/5</handling>
+      <pilot>5</pilot>
+      <sensor>5</sensor>
+      <speed>5</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>5</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <seats>12</seats>
+    </vehicle>
+    <vehicle>
+      <id>fbafc72c-fc94-4196-ac8a-a170ac942dd3</id>
+      <name>Law Enforcement Patrol Cruiser (Chrysler-Nissan Journey)</name>
+      <page>187</page>
+      <source>SS</source>
+      <accel>5</accel>
+      <armor>8</armor>
+      <avail>6R</avail>
+      <body>14</body>
+      <category>Corpsec/Police/Military</category>
+      <cost>25500</cost>
+      <handling>6/5</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>5</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <seats>6</seats>
+    </vehicle>
+    <vehicle>
+      <id>ba29b0d3-8f49-4b96-a25f-4efbf139419d</id>
+      <name>Corporate Moving Truck (Conestoga Trailblazer)</name>
+      <page>187</page>
+      <source>SS</source>
+      <accel>2</accel>
+      <armor>9</armor>
+      <avail>6R</avail>
+      <body>21</body>
+      <category>Corpsec/Police/Military</category>
+      <cost>112500</cost>
+      <handling>3/2</handling>
+      <pilot>3</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <seats>3</seats>
+    </vehicle>
+    <vehicle>
+      <id>7114ccdd-3e5c-41a7-9c24-999e41ec5807</id>
+      <name>Corporate Moving Truck w/Trailer (Conestoga Trailblazer)</name>
+      <page>187</page>
+      <source>SS</source>
+      <accel>2</accel>
+      <armor>9</armor>
+      <avail>6R</avail>
+      <body>30</body>
+      <category>Corpsec/Police/Military</category>
+      <cost>142500</cost>
+      <handling>2/2</handling>
+      <pilot>3</pilot>
+      <sensor>2</sensor>
+      <speed>2</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <seats>3</seats>
+    </vehicle>
+    <vehicle>
+      <id>f1b499b8-3ff0-4134-9723-4dd5b7c22b97</id>
+      <name>Corporate Garbage Hauler (Dodge Ram Industrial: Large)</name>
+      <page>187</page>
+      <source>SS</source>
+      <accel>2</accel>
+      <armor>12</armor>
+      <avail>6R</avail>
+      <body>24</body>
+      <category>Corpsec/Police/Military</category>
+      <cost>76500</cost>
+      <handling>3/2</handling>
+      <pilot>3</pilot>
+      <sensor>6</sensor>
+      <speed>2</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <seats>6</seats>
+    </vehicle>
+    <vehicle>
+      <id>bd45e719-82a5-443d-83bd-976abdcf786b</id>
+      <name>Corporate Garbage Hauler (Dodge Ram Industrial: Narrow)</name>
+      <page>187</page>
+      <source>SS</source>
+      <accel>2</accel>
+      <armor>12</armor>
+      <avail>6R</avail>
+      <body>24</body>
+      <category>Corpsec/Police/Military</category>
+      <cost>73500</cost>
+      <handling>5/2</handling>
+      <pilot>3</pilot>
+      <sensor>6</sensor>
+      <speed>2</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <seats>6</seats>
+    </vehicle>
+    <vehicle>
+      <id>c470d083-325f-43f4-a87e-3e3a56a73362</id>
+      <name>Government Black SUV (Esprit Industries Watcher)</name>
+      <page>187</page>
+      <source>SS</source>
+      <accel>5</accel>
+      <armor>12</armor>
+      <avail>6R</avail>
+      <body>14</body>
+      <category>Corpsec/Police/Military</category>
+      <cost>60000</cost>
+      <handling>5/5</handling>
+      <pilot>2</pilot>
+      <sensor>5</sensor>
+      <speed>5</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <seats>8</seats>
+    </vehicle>
+    <vehicle>
+      <id>2ddf358f-0681-4521-b2a4-735797752aba</id>
+      <name>Corporate Ambulance (GMC Endurance)</name>
+      <page>187</page>
+      <source>SS</source>
+      <accel>5</accel>
+      <armor>9</armor>
+      <avail>4R</avail>
+      <body>21</body>
+      <category>Corpsec/Police/Military</category>
+      <cost>52500</cost>
+      <handling>5/5</handling>
+      <pilot>2</pilot>
+      <sensor>3</sensor>
+      <speed>6</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <seats>12</seats>
+    </vehicle>
+    <vehicle>
+      <id>f19454df-6b7a-45cb-97f4-f6ecf71c6fbd</id>
+      <name>Government Pursuit SUV (GMC Sidewinder)</name>
+      <page>187</page>
+      <source>SS</source>
+      <accel>3</accel>
+      <armor>9</armor>
+      <avail>6R</avail>
+      <body>15</body>
+      <category>Corpsec/Police/Military</category>
+      <cost>49500</cost>
+      <handling>6/5</handling>
+      <pilot>3</pilot>
+      <sensor>3</sensor>
+      <speed>6</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <seats>9</seats>
+    </vehicle>
+    <vehicle>
+      <id>c971c599-71e6-4f19-ac41-48db3911760d</id>
+      <name>Corporate Patrol Cruiser (Honda Artemis)</name>
+      <page>187</page>
+      <source>SS</source>
+      <accel>5</accel>
+      <armor>9</armor>
+      <avail>4R</avail>
+      <body>14</body>
+      <category>Corpsec/Police/Military</category>
+      <cost>25500</cost>
+      <handling>6/3</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>5</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <seats>6</seats>
+    </vehicle>
+    <vehicle>
+      <id>88724f5f-d51b-4d67-a18f-71c5262696e7</id>
+      <name>Municipal Ambulance (S-K LT-21)</name>
+      <page>187</page>
+      <source>SS</source>
+      <accel>2</accel>
+      <armor>11</armor>
+      <avail>4R</avail>
+      <body>23</body>
+      <category>Corpsec/Police/Military</category>
+      <cost>46500</cost>
+      <handling>3/2</handling>
+      <pilot>3</pilot>
+      <sensor>3</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <seats>3</seats>
     </vehicle>
     <!-- End Region -->
   </vehicles>

@@ -220,7 +220,7 @@
       <category>High-Fashion Armor Clothing</category>
       <armor>8</armor>
       <armorcapacity>4</armorcapacity>
-      <avail>8</avail>
+      <avail>10</avail>
       <cost>2500</cost>
       <bonus>
         <limitmodifier>
@@ -244,7 +244,7 @@
       <category>High-Fashion Armor Clothing</category>
       <armor>8</armor>
       <armorcapacity>4</armorcapacity>
-      <avail>8</avail>
+      <avail>10</avail>
       <cost>2500</cost>
       <bonus>
         <limitmodifier>
@@ -1546,7 +1546,7 @@
     </armor>
     <armor>
       <id>d90a8823-7387-4c50-bc47-3d63f0ffd543</id>
-      <name>Ares Flashield</name>
+      <name>Ares FlaShield</name>
       <category>Specialty Armor</category>
       <armor>+6</armor>
       <armorcapacity>4</armorcapacity>
@@ -1693,7 +1693,7 @@
       <id>541acec2-bd2f-4684-b0f8-c85bb45d1e8d</id>
       <name>Snake Mesh Socks</name>
       <category>Specialty Armor</category>
-      <armor>+0</armor>
+      <armor>+2</armor>
       <armorcapacity>0</armorcapacity>
       <avail>6</avail>
       <cost>50</cost>
@@ -1896,7 +1896,7 @@
     </armor>
     <armor>
       <id>81fdc8a3-7106-4b08-a1f4-c72140bc90fc</id>
-      <name>Evo Hel Suit</name>
+      <name>Evo HEL Suit</name>
       <category>Specialty Armor</category>
       <armor>8</armor>
       <armorcapacity>5</armorcapacity>

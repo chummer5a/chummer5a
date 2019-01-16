@@ -177,8 +177,8 @@ namespace Chummer.UI.Shared
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddVehicle();
-            }
+				blnAddAgain = AddVehicle(treVehicles.SelectedNode?.Tag is Location objLocation ? objLocation : null);
+			}
             while (blnAddAgain);
         }
 
@@ -2453,6 +2453,7 @@ namespace Chummer.UI.Shared
                 {
                     // Add the Gear to the Vehicle.
                     objSelectedVehicle.Gear.Add(objGear);
+                    objGear.Parent = objSelectedVehicle;
 
                     foreach (Weapon objWeapon in lstWeapons)
                     {

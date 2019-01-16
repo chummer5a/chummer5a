@@ -4960,6 +4960,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>The maximum level of a block that positively modifies an Attribute that the chosen foundation negatively modifies is Level 2. (CF 191)</text>
     </string>
     <string>
+      <key>Message_CustomDrug_Name</key>
+      <text>Please enter a name for your Drug.</text>
+    </string>
+    <string>
+      <key>MessageTitle_CustomDrug_Name</key>
+      <text>Drug Name</text>
+    </string>
+    <string>
       <key>Label_CrashEffect</key>
       <text>Crash Effect:</text>
     </string>
@@ -7146,7 +7154,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_Options_PrintAllSkills</key>
-      <text>Print all Active Skills with total score higher than 0</text>
+      <text>Print all Active Skills with Rating 0 or higher</text>
     </string>
     <string>
       <key>Checkbox_Options_UseTotalValueForFreeKnowledge</key>
@@ -8556,8 +8564,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Select AI Program or Advanced Program</text>
     </string>
     <string>
-      <key>Message_SelectAIProgram_AdvancedProgramRequirement</key>
-      <text>You do not meet the requirements for this Advanced Program. You must know the following Program: </text>
+      <key>String_Program</key>
+      <text>Program</text>
     </string>
     <string>
       <key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>
