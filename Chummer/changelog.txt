@@ -12,6 +12,7 @@ Data Changes:
 - Fixed incorrect bonus for the Delphi Paragon to apply to Threading actions instead of Compiling.
 - Set the ammo type for the FN-AAL to Gyrojet. Possibly not correct, as there's no proper RAW on what ammo the weapon is supposed to fire. 
 - Fixed incorrect price for the Reakt geneware. 
+- Allowed the Peak-Discharge energy packs to be added as accessories to weapons with External Source ammo types. Fixes #3361.
 
 Build 204
 

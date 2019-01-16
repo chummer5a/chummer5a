@@ -624,7 +624,7 @@
       <damage>9P</damage>
       <ap>-2</ap>
       <mode>BF/FA</mode>
-      <rc>2</rc>
+      <rc>0</rc>
       <ammo>100(belt)</ammo>
       <avail>0</avail>
       <cost>0</cost>
@@ -860,7 +860,7 @@
       <damage>10P</damage>
       <ap>-1</ap>
       <mode>SA/FA</mode>
-      <rc>1</rc>
+      <rc>0</rc>
       <ammo>20(ml)</ammo>
       <avail>10F</avail>
       <cost>1900</cost>
@@ -3216,7 +3216,7 @@
       <damage>12P</damage>
       <ap>-4</ap>
       <mode>FA</mode>
-      <rc>3</rc>
+      <rc>0</rc>
       <ammo>50(c) or 100(belt)</ammo>
       <avail>18F</avail>
       <cost>19600</cost>
@@ -3255,7 +3255,7 @@
       <damage>11P</damage>
       <ap>-4</ap>
       <mode>FA</mode>
-      <rc>-6</rc>
+      <rc>0</rc>
       <ammo>50(c) or 100(belt)</ammo>
       <avail>16F</avail>
       <cost>16000</cost>
@@ -4121,7 +4121,7 @@
       <damage>9P</damage>
       <ap>-2</ap>
       <mode>BF/FA</mode>
-      <rc>2</rc>
+      <rc>0</rc>
       <ammo>50(c) or 100(belt)</ammo>
       <avail>16F</avail>
       <cost>6500</cost>
@@ -4507,7 +4507,7 @@
       <damage>6P</damage>
       <ap>0</ap>
       <mode>BF/FA</mode>
-      <rc>1</rc>
+      <rc>0</rc>
       <ammo>20(c)</ammo>
       <avail>8R</avail>
       <cost>775</cost>
@@ -4766,7 +4766,7 @@
       <damage>6P</damage>
       <ap>-</ap>
       <mode>BF/FA</mode>
-      <rc>2</rc>
+      <rc>0</rc>
       <ammo>15(c)</ammo>
       <avail>7R</avail>
       <cost>800</cost>
@@ -4800,7 +4800,7 @@
       <damage>11P</damage>
       <ap>-3</ap>
       <mode>FA</mode>
-      <rc>2</rc>
+      <rc>0</rc>
       <ammo>50(c) or 100(belt)</ammo>
       <avail>18F</avail>
       <cost>8500</cost>
@@ -4867,7 +4867,7 @@
       <damage>10P</damage>
       <ap>-2</ap>
       <mode>FA</mode>
-      <rc>1</rc>
+      <rc>0</rc>
       <ammo>50(c) or 100(belt)</ammo>
       <avail>16F</avail>
       <cost>7600</cost>
@@ -8875,7 +8875,7 @@
       <damage>6P</damage>
       <ap>0</ap>
       <mode>SA</mode>
-      <rc>1</rc>
+      <rc>0</rc>
       <ammo>6(c)</ammo>
       <avail>8R</avail>
       <cost>325</cost>
@@ -8907,7 +8907,7 @@
       <damage>6P</damage>
       <ap>0</ap>
       <mode>SA/BF</mode>
-      <rc>1</rc>
+      <rc>0</rc>
       <ammo>8(ML)x4</ammo>
       <avail>10R</avail>
       <cost>750</cost>
@@ -11128,7 +11128,7 @@
       <damage>7P</damage>
       <ap>-</ap>
       <mode>SA/BF/FA</mode>
-      <rc>3</rc>
+      <rc>0</rc>
       <ammo>28(c)</ammo>
       <avail>9R</avail>
       <cost>2300</cost>
@@ -11294,7 +11294,7 @@
       <damage>8P</damage>
       <ap>0</ap>
       <mode>SA/BF/FA</mode>
-      <rc>1</rc>
+      <rc>0</rc>
       <ammo>36(c)</ammo>
       <avail>20F</avail>
       <cost>6200</cost>
@@ -13907,7 +13907,7 @@
       <damage>18P</damage>
       <ap>-6</ap>
       <mode>FA</mode>
-      <rc>6</rc>
+      <rc>0</rc>
       <ammo>200(belt)</ammo>
       <avail>24F</avail>
       <cost>29000</cost>
@@ -15046,6 +15046,7 @@
       <required>
         <weapondetails>
           <OR>
+            <ammo operation="contains">External source</ammo>
             <ammo operation="contains">Internal source</ammo>
             <ammo operation="contains">energy</ammo>
           </OR>
@@ -15066,6 +15067,7 @@
       <required>
         <weapondetails>
           <OR>
+            <ammo operation="contains">External source</ammo>
             <ammo operation="contains">Internal source</ammo>
             <ammo operation="contains">energy</ammo>
           </OR>
@@ -15086,6 +15088,7 @@
       <required>
         <weapondetails>
           <OR>
+            <ammo operation="contains">External source</ammo>
             <ammo operation="contains">Internal source</ammo>
             <ammo operation="contains">energy</ammo>
           </OR>
