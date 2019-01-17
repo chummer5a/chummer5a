@@ -419,9 +419,16 @@ namespace ChummerHub.Client.Backend
                     }
                     PluginHandler.MainForm.Cursor = Cursors.Default;
                 }
+                catch(HttpOperationException e)
+                {
+                    objCache.ErrorText = e.Message;
+                    objCache.ErrorText += Environment.NewLine + e.Response.Content;
+                    System.Diagnostics.Trace.TraceWarning(e.ToString());
+                }
                 catch (Exception e)
                 {
                     objCache.ErrorText = e.Message;
+                    System.Diagnostics.Trace.TraceWarning(e.ToString());
                 }
                 finally
                 {

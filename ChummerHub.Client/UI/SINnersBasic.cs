@@ -45,9 +45,9 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                if (myUC.MyCE.MySINnerFile.Id == Guid.Empty)
+                if ((myUC?.MyCE?.MySINnerFile?.Id == null) || (myUC.MyCE.MySINnerFile.Id == Guid.Empty))
                 {
-                    this.bUpload.Text = "SINless Character";
+                    this.bUpload.Text = "SINless Character/Error";
                     return;
                 }
                 var response = await StaticUtils.Client.GetByIdWithHttpMessagesAsync(myUC.MyCE.MySINnerFile.Id.Value);

@@ -520,13 +520,17 @@ namespace ChummerHub.Controllers.V1
                 }
                 var olduserrights = await (from a in _context.UserRights where a.SINnerId == sinner.Id select a).ToListAsync();
                 _context.UserRights.RemoveRange(olduserrights);
-                _context.Tags.RemoveRange(dbsinner.AllTags);
-                if (_context.SINnerVisibility.Contains(dbsinner.SINnerMetaData.Visibility))
-                    _context.SINnerVisibility.Remove(dbsinner.SINnerMetaData.Visibility);
-                if(_context.SINnerMetaData.Contains(dbsinner.SINnerMetaData))
-                    _context.SINnerMetaData.Remove(dbsinner.SINnerMetaData);
-                if (_context.SINners.Contains(dbsinner))
-                    _context.SINners.Remove(dbsinner);
+                var oldtags = await (from a in _context.Tags where a.SINnerId == sinner.Id select a).ToListAsync();
+                _context.Tags.RemoveRange(oldtags);
+                var oldsinners = await (from a in _context.SINners where a.Id == sinner.Id select a).ToListAsync();
+                foreach(var oldsin in oldsinners)
+                {
+                    if(_context.SINnerVisibility.Contains(oldsin.SINnerMetaData.Visibility))
+                        _context.SINnerVisibility.Remove(oldsin.SINnerMetaData.Visibility);
+                    if(_context.SINnerMetaData.Contains(oldsin.SINnerMetaData))
+                        _context.SINnerMetaData.Remove(oldsin.SINnerMetaData);
+                }
+                _context.SINners.RemoveRange(oldsinners);
                 await _context.SaveChangesAsync();
 
                 return Ok("deleted");

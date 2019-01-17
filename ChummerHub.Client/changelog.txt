@@ -2,6 +2,7 @@ Future Build 1.0.0.1
 
 WebService Changes:
 
+- patched a Bug in handling different SINners with the same Id. That should not happen, unless people are editing the Guids directly - but nethertheless, they can be deleted now withouth Primary Key constraints.
 - implemented AdminGetSinners to create a backup of the whole Database. Plz note, that the Chummerfiles themself are NOT affected because they are on GDrive
 - changed the initial search for the SINners by Authorization: SINners are grouped now: edit, group, view
 - fixed a bug were the check if a Chummer is already on GDrive used the new uploaded (and always empty) GDriveID from the Client - now this ID is kept from the database if it's empty on upload (which it SHOULD be)

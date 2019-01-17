@@ -510,11 +510,11 @@ namespace Chummer
 
                 // Populate character information fields.
                 XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml");
-                XmlNode objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + "]");
+                XmlNode objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + "]");
                 if(objMetatypeNode == null)
                 {
                     objMetatypeDoc = XmlManager.Load("critters.xml");
-                    objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + "]");
+                    objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + "]");
                 }
 
                 string strMetatype = objMetatypeNode?["translate"]?.InnerText ?? objCache.Metatype;

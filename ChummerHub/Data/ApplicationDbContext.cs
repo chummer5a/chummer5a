@@ -31,8 +31,8 @@ namespace ChummerHub.Data
             base.OnModelCreating(builder);
             //builder.Entity<ChummerHub.Models.V1.SINner>()
             //    .HasIndex(b => b.Id).IsUnique();
-            builder.Entity<ChummerHub.Models.V1.Tag>()
-                .HasIndex(b => b.Id).IsUnique();
+            //builder.Entity<ChummerHub.Models.V1.Tag>()
+            //    .HasIndex(b => b.Id).IsUnique();
             builder.Entity<ChummerHub.Models.V1.Tag>()
                 .HasIndex(b => new { b.TagName, b.TagValue });
             builder.Entity<ChummerHub.Models.V1.SINerUserRight>()
