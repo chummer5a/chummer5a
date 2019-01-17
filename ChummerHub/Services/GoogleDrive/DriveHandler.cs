@@ -159,12 +159,11 @@ namespace ChummerHub.Services.GoogleDrive
                 if(String.IsNullOrEmpty(chummerFile.GoogleDriveFileId))
                 {
                     chummerFile.DownloadUrl = UploadFileToDrive(service, uploadedFile, _contentType, chummerFile);
-                    _logger.LogError("File " + chummerFile.GoogleDriveFileId + " uploaded: " + chummerFile.DownloadUrl);
+                   
                 }
                 else
                 {
                     chummerFile.DownloadUrl = UpdateFileToDrive(service, uploadedFile, _contentType, chummerFile);
-                    _logger.LogError("File " + chummerFile.GoogleDriveFileId + " updated: " + chummerFile.DownloadUrl);
                 }
 
                 // Define parameters of request.
@@ -216,6 +215,7 @@ namespace ChummerHub.Services.GoogleDrive
             }
             catch(Exception e)
             {
+
                 _logger.LogError("Could not store file on GDrive: " + e.ToString());
                 throw;
 

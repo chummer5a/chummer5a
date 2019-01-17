@@ -2,6 +2,7 @@ Future Build 1.0.0.1
 
 WebService Changes:
 
+- added some telemetry data events and traces (only into the WebServer - no phoneing home in the client)
 - patched a Bug in handling different SINners with the same Id. That should not happen, unless people are editing the Guids directly - but nethertheless, they can be deleted now withouth Primary Key constraints.
 - implemented AdminGetSinners to create a backup of the whole Database. Plz note, that the Chummerfiles themself are NOT affected because they are on GDrive
 - changed the initial search for the SINners by Authorization: SINners are grouped now: edit, group, view

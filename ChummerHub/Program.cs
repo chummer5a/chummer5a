@@ -22,7 +22,7 @@ namespace ChummerHub
         public static IWebHost MyHost = null;
         public static void Main(string[] args)
         {
-
+            System.AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
             MyHost = CreateWebHostBuilder(args);
             Seed();
             MyHost.Run();
@@ -51,6 +51,13 @@ namespace ChummerHub
             //}
 
             //host.Run();
+        }
+
+        private static void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
+        {
+            System.Diagnostics.StackTrace st = new System.Diagnostics.StackTrace(true);
+            var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+            tc.TrackTrace("Exception thrown: " + e.Exception.ToString() + " thrown at " + st.ToString());
         }
 
         public static void Seed()

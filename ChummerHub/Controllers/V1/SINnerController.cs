@@ -63,7 +63,7 @@ namespace ChummerHub.Controllers.V1
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{sinnerid}")]
-        [AllowAnonymous]
+        [Authorize]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerDownloadFile")]
         //[Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
@@ -96,6 +96,24 @@ namespace ChummerHub.Controllers.V1
                 //string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.InternetCache), chummerFile.Id.ToString() + ".chum5z");
                 var stream = await MyHttpClient.GetStreamAsync(new Uri(chummerFile.DownloadUrl));
                 string downloadname = chummerFile.Id.ToString() + ".chum5z";
+                var user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+                if(user == null)
+                {
+                    throw new NoUserRightException("User not found!");
+                }
+                try
+                {
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    Microsoft.ApplicationInsights.DataContracts.EventTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.EventTelemetry("GetDownloadFile");
+                    telemetry.Properties.Add("User", user.Email);
+                    telemetry.Properties.Add("SINnerId", sinnerid.ToString());
+                    telemetry.Metrics.Add("FileSize", stream.Length);
+                    tc.TrackEvent(telemetry);
+                }
+                catch(Exception e)
+                {
+                    _logger.LogError(e.ToString());
+                }
                 return new FileStreamResult(stream, new Microsoft.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream"))
                 {
                     FileDownloadName = downloadname
@@ -178,21 +196,10 @@ namespace ChummerHub.Controllers.V1
                 {
                     return NotFound();
                 }
-                //sin.SINnerMetaData.Tags = await (from a in _context.Tags.Include(b => b.Tags)
-                //                                 .ThenInclude(t => t.Tags)
-                //                                 .ThenInclude(t => t.Tags)
-                //                                 .ThenInclude(t => t.Tags)
-                //                                 .ThenInclude(t => t.Tags)
-                //                                 .ThenInclude(t => t.Tags)
-                //                                 .ThenInclude(t => t.Tags)
-                //                        where a.SINnerId == sin.Id
-                //                        select a).ToListAsync();
-
+               
                 if (sin.SINnerMetaData.Visibility.IsPublic == true)
                     return Ok(sin);
 
-                //sin.SINnerMetaData.Visibility.UserRights = await (from a in _context.UserRights where a.SINnerId == sin.Id select a).ToListAsync();
-                
                 var user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                 if (user == null)
                 {
@@ -235,6 +242,8 @@ namespace ChummerHub.Controllers.V1
         [Authorize]
         public async Task<IActionResult> Put([FromRoute] Guid id, IFormFile uploadedFile)
         {
+            ApplicationUser user = null;
+            SINner dbsinner = null;
             try
             {
                 var sin = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights).FirstOrDefaultAsync(a => a.Id == id);
@@ -242,16 +251,34 @@ namespace ChummerHub.Controllers.V1
                 {
                     return NotFound("Sinner with Id " + id + " not found!");
                 }
-                var user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
-                SINner dbsinner = await CheckIfUpdateSINnerFile(id, user);
+                user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+                dbsinner = await CheckIfUpdateSINnerFile(id, user);
                 if (dbsinner == null)
                 {
                     return Conflict("CheckIfUpdateSINnerFile");
                 }
                 sin.GoogleDriveFileId = dbsinner.GoogleDriveFileId;
+                if(user == null)
+                {
+                    throw new NoUserRightException("User not found!");
+                }
+                
                 sin.DownloadUrl = Startup.GDrive.StoreXmlInCloud(sin, uploadedFile);
                 _context.Entry(dbsinner).CurrentValues.SetValues(sin);
-                
+                try
+                {
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    Microsoft.ApplicationInsights.DataContracts.EventTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.EventTelemetry("PutStoreXmlInCloud");
+                    telemetry.Properties.Add("User", user.Email);
+                    telemetry.Properties.Add("SINnerId", sin.Id.ToString());
+                    telemetry.Properties.Add("FileName", uploadedFile.FileName?.ToString());
+                    telemetry.Metrics.Add("FileSize", uploadedFile.Length);
+                    tc.TrackEvent(telemetry);
+                }
+                catch(Exception e)
+                {
+                    _logger.LogError(e.ToString());
+                }
                 try
                 {
                     int x = await _context.SaveChangesAsync();
@@ -269,7 +296,23 @@ namespace ChummerHub.Controllers.V1
             }
             catch (Exception e)
             {
+                try
+                {
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                    telemetry.Properties.Add("User", user?.Email);
+                    telemetry.Properties.Add("SINnerId", dbsinner?.Id?.ToString());
+                    telemetry.Properties.Add("FileName", uploadedFile.FileName?.ToString());
+                    telemetry.Metrics.Add("FileSize", uploadedFile.Length);
+                    tc.TrackException(telemetry);
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                }
+                //_logger.LogError("Could not store file on GDrive: " + e.ToString());
                 HubException hue = new HubException("Exception in PutSINnerFile: " + e.Message, e);
+
                 return BadRequest(hue);
             }
         }
@@ -279,6 +322,8 @@ namespace ChummerHub.Controllers.V1
         private async Task<IActionResult> PostSINnerInternal(UploadInfoObject uploadInfo)
         {
             _logger.LogTrace("Post SINnerInternalt: " + uploadInfo + ".");
+            ApplicationUser user = null;
+            SINner sinner = null;
             try
             {
                 if (!ModelState.IsValid)
@@ -313,10 +358,10 @@ namespace ChummerHub.Controllers.V1
                     }
                 }
                 var returncode = HttpStatusCode.OK;
-                var user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
-                foreach (var sinner in uploadInfo.SINners)
+                user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+                foreach (var tempsinner in uploadInfo.SINners)
                 {
-                    
+                    sinner = tempsinner;
                     if (sinner.Id.ToString() == "string")
                         sinner.Id = Guid.Empty;
 
@@ -404,6 +449,19 @@ namespace ChummerHub.Controllers.V1
                 }
                 catch(Exception e)
                 {
+                    try
+                    {
+                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                        Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                        telemetry.Properties.Add("User", user?.Email);
+                        telemetry.Properties.Add("SINnerId", sinner?.Id?.ToString());
+                        telemetry.Metrics.Add("TagCount", (double)sinner?.AllTags?.Count);
+                        tc.TrackException(telemetry);
+                    }
+                    catch(Exception ex)
+                    {
+                        _logger.LogError(ex.ToString());
+                    }
                     HubException hue = new HubException("Exception in PostSINnerFile: " + e.Message, e);
                     var msg = new System.Net.Http.HttpResponseMessage(HttpStatusCode.Conflict) { ReasonPhrase = hue.Message };
                     return Conflict(msg);
@@ -422,6 +480,19 @@ namespace ChummerHub.Controllers.V1
             }
             catch (Exception e)
             {
+                try
+                {
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                    telemetry.Properties.Add("User", user?.Email);
+                    telemetry.Properties.Add("SINnerId", sinner?.Id?.ToString());
+                    telemetry.Metrics.Add("TagCount", (double)sinner?.AllTags?.Count);
+                    tc.TrackException(telemetry);
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                }
                 HubException hue = new HubException("Exception in PostSINnerFile: " + e.Message, e);
                 return BadRequest(hue);
             }
