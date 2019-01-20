@@ -13523,7 +13523,7 @@
           <skill>
             <name>Spellcasting</name>
             <val>4</val>
-            <spec>Combat Spells</spec>
+            <spec>Combat</spec>
           </skill>
         </oneof>
       </required>

@@ -13,6 +13,7 @@ Data Changes:
 - Set the ammo type for the FN-AAL to Gyrojet. Possibly not correct, as there's no proper RAW on what ammo the weapon is supposed to fire. 
 - Fixed incorrect price for the Reakt geneware. 
 - Allowed the Peak-Discharge energy packs to be added as accessories to weapons with External Source ammo types. Fixes #3361.
+- Fixed incorrect specialisation requirement for the Death Dealer quality.
 
 Build 204
 
