@@ -1313,8 +1313,8 @@ namespace Chummer
             if (_strSubsystems.Length > 0)
             {
                 // Populate the Cyberware Category list.
-                string strSubsystem = ". = \"" + _strSubsystems.Replace(",", "\" or . = \"");
-                objXmlCategoryList = _xmlBaseCyberwareDataNode.Select("categories/category[" + strSubsystem + "\"]");
+                string strSubsystem = $"categories/category[. = \"{_strSubsystems.Replace(",", "\" or . = \"")}\"]";
+                objXmlCategoryList = _xmlBaseCyberwareDataNode.Select(strSubsystem);
             }
             else
             {

@@ -236,6 +236,7 @@
   </grades>
   <categories>
     <category blackmarket="Cyberware">Bodyware</category>
+    <category blackmarket="Cyberware">Auto Injector Mods</category>
     <category blackmarket="Cyberware">Cosmetic Enhancement</category>
     <category blackmarket="Cyberware">Cyberlimb</category>
     <category blackmarket="Cyberware">Cyberlimb Accessory</category>
@@ -2389,7 +2390,13 @@
       <limit>False</limit>
       <category>Bodyware</category>
       <ess>0.05</ess>
-      <capacity>0</capacity>
+      <allowgear>
+        <gearcategory>Drugs</gearcategory>
+        <gearcategory>Toxins</gearcategory>
+      </allowgear>
+      <allowsubsystems>
+          <category>Auto Injector Mods</category>
+      </allowsubsystems>
       <avail>2</avail>
       <cost>500</cost>
       <source>CF</source>
@@ -2397,10 +2404,12 @@
     </cyberware>
     <cyberware>
       <id>d97a6e2f-0e3d-4f9b-a046-e1a86d5dad88</id>
-      <name>Auto Injector Expansion</name>
+      <name>Expanded Reservoir</name>
       <limit>False</limit>
-      <category>Bodyware</category>
+      <category>Auto Injector Mods</category>
       <ess>0.05</ess>
+      <addtoparentess />
+      <requireparent>True</requireparent>
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>250</cost>
@@ -2409,10 +2418,12 @@
     </cyberware>
     <cyberware>
       <id>b2f64852-6fa5-4d7a-bb21-dddee2fb885f</id>
-      <name>Auto Injector Killswitch</name>
+      <name>Killswitch</name>
       <limit>False</limit>
-      <category>Bodyware</category>
-      <ess>0.01</ess>
+      <category>Auto Injector Mods</category>
+      <ess>0.05</ess>
+      <addtoparentess />
+      <requireparent>True</requireparent>
       <capacity>0</capacity>
       <avail>8F</avail>
       <cost>750</cost>

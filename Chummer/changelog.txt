@@ -7,6 +7,8 @@ Application Changes:
 - Fixed processing of FixedValues on the Select Gear window.
 - Refactored string processing method for Gear Ratings into a single method. Allows MinRating, MaxRating, MatrixAttributes and TotalBonusMatrixBoxes (for LivingPersona only) to use complex strings such as {Parent DeviceRating}. Fixes #3360
 - Foxed some behaviour in creation of packs to properly allow creatio nof lifestyles.
+- Fixed behaviour of child Cyberware with the AddToParentESS flag not properly adding their essence cost to the parent.
+- Fixed issues with the subsystem and gear limitations for Cyberware and Gear that prevented categories from loading properly.
 
 Data Changes:
 - Fixed incorrect underbarrel weapon name for the Nissan Optimum II that caused a crash. Fixes part of #3344
@@ -15,7 +17,8 @@ Data Changes:
 - Fixed incorrect price for the Reakt geneware. 
 - Allowed the Peak-Discharge energy packs to be added as accessories to weapons with External Source ammo types. Fixes #3361.
 - Fixed incorrect specialisation requirement for the Death Dealer quality.
-- Foxed missing nuyen bp costs for the ShadowNET starter pack and Runnerhub Basic Gear Pack. Fixes #3368
+- Fixed missing nuyen bp costs for the ShadowNET starter pack and Runnerhub Basic Gear Pack. Fixes #3368
+- The Auto Injector Expension and Killswitch are now properly addable to the Autoinjector as child objects. They've been renamed to Expanded Reservoir and Killswitch, respectively. Fixes #3365
 
 Build 204
 

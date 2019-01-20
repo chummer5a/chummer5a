@@ -110,7 +110,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strAllowedMount))
                         strMount.Append(". = \"" + strAllowedMount + "\" or ");
                 }
-                strMount.Append("category = \"General\"");
+                strMount.Append(". = \"General\"");
                 objXmlCategoryList = _xmlBaseGearDataNode.Select("categories/category[" + strMount.ToString() + "]");
             }
             else

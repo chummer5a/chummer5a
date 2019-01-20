@@ -2519,7 +2519,7 @@ namespace Chummer.Backend.Equipment
         {
             if (PrototypeTranshuman && blnReturnPrototype)
                 return 0;
-            if (Parent != null)
+            if (Parent != null && !AddToParentESS)
                 return 0;
             if (SourceID == EssenceHoleGUID || SourceID == EssenceAntiHoleGUID) // Essence hole or antihole
             {
