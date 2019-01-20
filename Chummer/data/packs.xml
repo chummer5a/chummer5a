@@ -2835,6 +2835,7 @@
     <pack>
       <name>Runnerhub Basic Gear Pack</name>
       <category>Community Packs</category>
+      <nuyenbp>21</nuyenbp>
       <armors>
         <armor>
           <name>Armor Jacket</name>
@@ -3038,7 +3039,7 @@
       </gears>
       <lifestyles>
         <lifestyle>
-          <name>Low</name>
+          <baselifestyle>Low</baselifestyle>
           <months>1</months>
         </lifestyle>
       </lifestyles>
@@ -3198,7 +3199,7 @@
       </gears>
       <lifestyles>
         <lifestyle>
-          <name>Low</name>
+          <baselifestyle>Low</baselifestyle>
           <months>1</months>
         </lifestyle>
       </lifestyles>
@@ -3229,6 +3230,7 @@
     <pack>
       <name>ShadowNET starter pack</name>
       <category>Community Packs</category>
+      <nuyenbp>10</nuyenbp>
       <armors>
         <armor>
           <name>Armor Jacket</name>

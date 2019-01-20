@@ -529,7 +529,7 @@ namespace Chummer
 
                             TreeNode objChild = new TreeNode
                             {
-                                Text = (objXmlLifestyle.SelectSingleNode("translate") ?? objXmlLifestyle.SelectSingleNode("name")).Value
+                                Text = (objXmlLifestyle.SelectSingleNode("translate") ?? objXmlLifestyle.SelectSingleNode("baselifestyle")).Value
                                        + strSpaceCharacter + objXmlLifestyle.SelectSingleNode("months").Value
                                        + strSpaceCharacter + strIncrementString + string.Format(LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Language), intPermanentAmount.ToString(GlobalOptions.CultureInfo))
                             };
