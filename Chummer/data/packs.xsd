@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
   <xs:element name="quality" nillable="true">
     <xs:complexType>
@@ -164,6 +164,7 @@
           </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <xs:element ref="gears" minOccurs="0" maxOccurs="1" />
         </xs:sequence>
       </xs:complexType>
       </xs:element>
@@ -194,6 +195,7 @@
       <xs:complexType>
         <xs:sequence>
         <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element ref="gears" minOccurs="0" maxOccurs="1" />
         <xs:element name="mods" minOccurs="0" maxOccurs="1">
           <xs:complexType>
           <xs:sequence>
@@ -272,6 +274,7 @@
                   </xs:simpleContent>
                 </xs:complexType>
               </xs:element>
+        <xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="qty" type="xs:integer" minOccurs="0" maxOccurs="1" />
         <xs:element name="rating" type="xs:integer" minOccurs="0" maxOccurs="1" />
         <xs:element name="bonded" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -312,6 +315,21 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+
+  <xs:element name="lifestyles">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="lifestyle" minOccurs="1" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+              <xs:element name="months" type="xs:integer" minOccurs="1" maxOccurs="1" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   
   <xs:element name="chummer">
     <xs:complexType>
@@ -340,20 +358,21 @@
           <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
           <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
           <xs:element name="nuyenbp" type="xs:integer" minOccurs="0" maxOccurs="1" />
-                    <xs:element ref="qualities" minOccurs="0" maxOccurs="1" />
-                    <xs:element ref="attributes" minOccurs="0" maxOccurs="1" />
-          <xs:element ref="skills" minOccurs="0" maxOccurs="1" />
-          <xs:element name="selectmartialart" minOccurs="0" maxOccurs="1" />
-          <xs:element ref="powers" minOccurs="0" maxOccurs="1" />
-          <xs:element ref="programs" minOccurs="0" maxOccurs="1" />
-          <xs:element ref="spells" minOccurs="0" maxOccurs="1" />
-          <xs:element ref="spirits" minOccurs="0" maxOccurs="1" />
           <xs:element ref="armors" minOccurs="0" maxOccurs="1" />
-          <xs:element ref="weapons" minOccurs="0" maxOccurs="1" />
-          <xs:element ref="cyberwares" minOccurs="0" maxOccurs="1" />
+                    <xs:element ref="attributes" minOccurs="0" maxOccurs="1" />
           <xs:element ref="biowares" minOccurs="0" maxOccurs="1" />
+          <xs:element ref="cyberwares" minOccurs="0" maxOccurs="1" />
           <xs:element ref="gears" minOccurs="0" maxOccurs="1" />
+          <xs:element ref="lifestyles" minOccurs="0" maxOccurs="1" />
+                    <xs:element ref="powers" minOccurs="0" maxOccurs="1" />
+                    <xs:element ref="programs" minOccurs="0" maxOccurs="1" />
+                    <xs:element ref="qualities" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="selectmartialart" minOccurs="0" maxOccurs="1" />
+                    <xs:element ref="skills" minOccurs="0" maxOccurs="1" />
+                    <xs:element ref="spells" minOccurs="0" maxOccurs="1" />
+                    <xs:element ref="spirits" minOccurs="0" maxOccurs="1" />
           <xs:element ref="vehicles" minOccurs="0" maxOccurs="1" />
+          <xs:element ref="weapons" minOccurs="0" maxOccurs="1" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
