@@ -10263,7 +10263,6 @@
       <name>Infected Optional Power: Armor</name>
       <karma>6</karma>
       <category>Positive</category>
-      <chargenlimit>0</chargenlimit>
       <doublecareer>False</doublecareer>
       <limit>False</limit>
       <bonus>
@@ -10287,7 +10286,6 @@
       <name>Infected Optional Power: Compulsion</name>
       <karma>9</karma>
       <category>Positive</category>
-      <chargenlimit>0</chargenlimit>
       <doublecareer>False</doublecareer>
       <bonus>
         <critterpowers>
@@ -10312,7 +10310,6 @@
       <name>Infected Optional Power: Enhanced Sense (Hearing)</name>
       <karma>3</karma>
       <category>Positive</category>
-      <chargenlimit>0</chargenlimit>
       <doublecareer>False</doublecareer>
       <bonus>
         <critterpowers>
@@ -10340,7 +10337,6 @@
       <name>Infected Optional Power: Enhanced Sense (Low-Light Vision)</name>
       <karma>3</karma>
       <category>Positive</category>
-      <chargenlimit>0</chargenlimit>
       <doublecareer>False</doublecareer>
       <bonus>
         <critterpowers>
@@ -10361,7 +10357,6 @@
       <name>Infected Optional Power: Enhanced Sense (Smell)</name>
       <karma>3</karma>
       <category>Positive</category>
-      <chargenlimit>0</chargenlimit>
       <doublecareer>False</doublecareer>
       <bonus>
         <critterpowers>
@@ -10387,7 +10382,6 @@
       <name>Infected Optional Power: Enhanced Sense (Taste)</name>
       <karma>3</karma>
       <category>Positive</category>
-      <chargenlimit>0</chargenlimit>
       <doublecareer>False</doublecareer>
       <bonus>
         <critterpowers>
@@ -10407,7 +10401,6 @@
       <name>Infected Optional Power: Enhanced Sense (Thermographic Vision)</name>
       <karma>3</karma>
       <category>Positive</category>
-      <chargenlimit>0</chargenlimit>
       <doublecareer>False</doublecareer>
       <bonus>
         <critterpowers>
@@ -10431,7 +10424,6 @@
       <name>Infected Optional Power: Enhanced Sense (Visual Acuity)</name>
       <karma>3</karma>
       <category>Positive</category>
-      <chargenlimit>0</chargenlimit>
       <doublecareer>False</doublecareer>
       <bonus>
         <critterpowers>
@@ -10451,7 +10443,6 @@
       <name>Infected Optional Power: Fear</name>
       <karma>9</karma>
       <category>Positive</category>
-      <chargenlimit>0</chargenlimit>
       <doublecareer>False</doublecareer>
       <bonus>
         <critterpowers>
@@ -10479,7 +10470,6 @@
       <name>Infected Optional Power: Immunity (Fire)</name>
       <karma>6</karma>
       <category>Positive</category>
-      <chargenlimit>0</chargenlimit>
       <doublecareer>False</doublecareer>
       <bonus>
         <critterpowers>
@@ -10499,7 +10489,6 @@
       <name>Infected Optional Power: Immunity (Pathogens)</name>
       <karma>6</karma>
       <category>Positive</category>
-      <chargenlimit>0</chargenlimit>
       <doublecareer>False</doublecareer>
       <bonus>
         <critterpowers>
@@ -10525,7 +10514,6 @@
       <name>Infected Optional Power: Immunity (Toxins)</name>
       <karma>6</karma>
       <category>Positive</category>
-      <chargenlimit>0</chargenlimit>
       <doublecareer>False</doublecareer>
       <bonus>
         <critterpowers>
@@ -10554,7 +10542,6 @@
       <name>Infected Optional Power: Influence</name>
       <karma>9</karma>
       <category>Positive</category>
-      <chargenlimit>0</chargenlimit>
       <doublecareer>False</doublecareer>
       <bonus>
         <critterpowers>
@@ -10580,7 +10567,6 @@
       <name>Infected Optional Power: Magical Guard</name>
       <karma>9</karma>
       <category>Positive</category>
-      <chargenlimit>0</chargenlimit>
       <doublecareer>False</doublecareer>
       <bonus>
         <critterpowers>
@@ -10606,7 +10592,6 @@
       <name>Infected Optional Power: Mist Form</name>
       <karma>12</karma>
       <category>Positive</category>
-      <chargenlimit>0</chargenlimit>
       <doublecareer>False</doublecareer>
       <bonus>
         <critterpowers>
@@ -10630,7 +10615,6 @@
       <name>Infected Optional Power: Paralyzing Howl</name>
       <karma>9</karma>
       <category>Positive</category>
-      <chargenlimit>0</chargenlimit>
       <doublecareer>False</doublecareer>
       <bonus>
         <critterpowers>
@@ -10655,7 +10639,6 @@
       <name>Infected Optional Power: Regeneration</name>
       <karma>12</karma>
       <category>Positive</category>
-      <chargenlimit>0</chargenlimit>
       <doublecareer>False</doublecareer>
       <bonus>
         <critterpowers>

@@ -19,6 +19,7 @@ Data Changes:
 - Fixed incorrect specialisation requirement for the Death Dealer quality.
 - Fixed missing nuyen bp costs for the ShadowNET starter pack and Runnerhub Basic Gear Pack. Fixes #3368
 - The Auto Injector Expension and Killswitch are now properly addable to the Autoinjector as child objects. They've been renamed to Expanded Reservoir and Killswitch, respectively. Fixes #3365
+- Fixed issues with the Infected Optional Power qualities that prevented them being taken in create mode. Closes #3234
 
 Build 204
 
