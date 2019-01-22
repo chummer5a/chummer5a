@@ -340,9 +340,12 @@ namespace Chummer
                 foreach (Spell objSpell in _objCharacter.Spells)
                 {
                     objWriter.WriteStartElement("spell");
+                    objWriter.WriteStartElement("name");
                     if (!string.IsNullOrEmpty(objSpell.Extra))
                         objWriter.WriteAttributeString("select", objSpell.Extra);
                     objWriter.WriteValue(objSpell.Name);
+                    objWriter.WriteEndElement();
+                    objWriter.WriteElementString("category", objSpell.Category);
                     objWriter.WriteEndElement();
                 }
                 // </spells>
@@ -359,7 +362,10 @@ namespace Chummer
                     // <program>
                     objWriter.WriteStartElement("complexform");
                     objWriter.WriteStartElement("name");
+                    if (!string.IsNullOrEmpty(objComplexForm.Extra))
+                        objWriter.WriteAttributeString("select", objComplexForm.Extra);
                     objWriter.WriteValue(objComplexForm.Name);
+                    objWriter.WriteEndElement();
                     objWriter.WriteEndElement();
                     // </program>
                     objWriter.WriteEndElement();
