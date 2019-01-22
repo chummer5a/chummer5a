@@ -2418,12 +2418,10 @@
     </cyberware>
     <cyberware>
       <id>b2f64852-6fa5-4d7a-bb21-dddee2fb885f</id>
-      <name>Killswitch</name>
+      <name>Auto Injector Killswitch</name>
       <limit>False</limit>
-      <category>Auto Injector Mods</category>
+      <category>Bodyware</category>
       <ess>0.05</ess>
-      <addtoparentess />
-      <requireparent>True</requireparent>
       <capacity>0</capacity>
       <avail>8F</avail>
       <cost>750</cost>
