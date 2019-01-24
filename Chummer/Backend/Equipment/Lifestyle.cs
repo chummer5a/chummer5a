@@ -916,12 +916,20 @@ namespace Chummer.Backend.Equipment
             get
             {
                 decimal d = (Roommates + Area + Comforts + Security) * 10;
-                d += Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost), GlobalOptions.InvariantCultureInfo);
+                d += Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost, false, BaseLifestyle, true, true), GlobalOptions.InvariantCultureInfo);
                 if (_eType == LifestyleType.Standard)
-                   d += Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.InvariantCultureInfo);
+                {
+                    d += Convert.ToDecimal(
+                        ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost),
+                        GlobalOptions.InvariantCultureInfo);
+                    d += Convert.ToDecimal(
+                        ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost, false,
+                            BaseLifestyle), GlobalOptions.InvariantCultureInfo);
+                }
+
                 d += LifestyleQualities.Sum(lq => lq.Multiplier);
                 d += 100M;
-                return (d / 100);
+                return Math.Max(d / 100, 0);
             }
         }
 

@@ -16340,7 +16340,8 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus>
-        <!--TODO: Implement flat cost reduction for specific lifestyle types. Scream internally at improvement naming conventions. -->
+        <lifestylecost lifestyle="Low">-50</lifestylecost>
+        <lifestylecost lifestyle="Squatter">-100</lifestylecost>
       </bonus>
       <required>
         <oneof>
