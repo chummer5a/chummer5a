@@ -805,6 +805,8 @@ namespace Chummer
         /// <param name="strSearch">String to clean.</param>
         public static string CleanXPath(this string strSearch)
         {
+            if(String.IsNullOrEmpty(strSearch))
+                return null;
             int intQuotePos = strSearch.IndexOf('"');
             if (intQuotePos == -1)
             {

@@ -34,6 +34,7 @@ namespace Chummer.Backend.Attributes
     /// Character CharacterAttribute.
     /// If using databinding, you should generally be using AttributeSection.{ATT}Binding
     /// </summary>
+    [HubClassTag("Abbrev", true, "TotalValue", null)]
     [DebuggerDisplay("{" + nameof(_strAbbrev) + "}")]
     public class CharacterAttrib : INotifyMultiplePropertyChanged
     {

@@ -16,19 +16,19 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Collections.Generic;
- using System.Collections.ObjectModel;
- using System.Collections.Specialized;
- using System.ComponentModel;
- using System.Globalization;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Globalization;
 using System.IO;
- using System.Linq;
- using System.Xml;
+using System.Linq;
+using System.Xml;
 using System.Windows.Forms;
- using Microsoft.Win32;
+using Microsoft.Win32;
 using iTextSharp.text.pdf;
- using MersenneTwister;
+using MersenneTwister;
 
 namespace Chummer
 {
@@ -56,7 +56,7 @@ namespace Chummer
             get => _strPath;
             set
             {
-                if (_strPath != value)
+                if(_strPath != value)
                 {
                     _strPath = value;
                     _objPdfReader?.Close();
@@ -71,10 +71,10 @@ namespace Chummer
         {
             get
             {
-                if (_objPdfReader == null)
+                if(_objPdfReader == null)
                 {
                     Uri uriPath = new Uri(Path);
-                    if (File.Exists(uriPath.LocalPath))
+                    if(File.Exists(uriPath.LocalPath))
                     {
                         // using the "partial" param it runs much faster and I couldnt find any downsides to it
                         _objPdfReader = new PdfReader(uriPath.LocalPath, null, true);
@@ -89,9 +89,9 @@ namespace Chummer
 
         private void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if(!disposedValue)
             {
-                if (disposing)
+                if(disposing)
                 {
                     _objPdfReader?.Dispose();
                 }
@@ -124,15 +124,15 @@ namespace Chummer
 
         public int CompareTo(object obj)
         {
-            if (obj == null)
+            if(obj == null)
                 return 1;
-            if (obj is CustomDataDirectoryInfo objOtherDirectoryInfo)
+            if(obj is CustomDataDirectoryInfo objOtherDirectoryInfo)
             {
                 int intReturn = string.Compare(Name, objOtherDirectoryInfo.Name, StringComparison.Ordinal);
-                if (intReturn == 0)
+                if(intReturn == 0)
                 {
                     intReturn = string.Compare(Path, objOtherDirectoryInfo.Path, StringComparison.Ordinal);
-                    if (intReturn == 0)
+                    if(intReturn == 0)
                     {
                         intReturn = Enabled == objOtherDirectoryInfo.Enabled ? 0 : (Enabled ? -1 : 1);
                     }
@@ -181,6 +181,7 @@ namespace Chummer
         private static bool _blnLiveUpdateCleanCharacterFiles;
         private static bool _blnHideCharacterRoster;
         private static bool _blnCreateBackupOnCareer;
+        private static bool _blnPluginsEnabled;
         private static string _strDefaultBuildMethod = DefaultBuildMethodDefaultValue;
         private static string _strDefaultGameplayOption = DefaultGameplayOptionDefaultValue;
 
@@ -208,6 +209,10 @@ namespace Chummer
         private static string _strOmaePassword = string.Empty;
         private static bool _blnOmaeAutoLogin;
 
+        // Plugins information
+        private static Dictionary<string, bool> _pluginsEnabledDic = new Dictionary<string, bool>();
+        public static Dictionary<string, bool> PluginsEnabledDic { get { return _pluginsEnabledDic; } }
+
         // PDF information.
         private static string _strPDFAppPath = string.Empty;
         private static string _strPDFParameters = string.Empty;
@@ -225,23 +230,23 @@ namespace Chummer
         public static bool LoadBoolFromRegistry(ref bool blnStorage, string strBoolName, string strSubKey = "", bool blnDeleteAfterFetch = false)
         {
             RegistryKey objKey = _objBaseChummerKey;
-            if (!string.IsNullOrWhiteSpace(strSubKey))
+            if(!string.IsNullOrWhiteSpace(strSubKey))
                 objKey = objKey.OpenSubKey(strSubKey);
-            if (objKey != null)
+            if(objKey != null)
             {
                 object objRegistryResult = objKey.GetValue(strBoolName);
-                if (objRegistryResult != null)
+                if(objRegistryResult != null)
                 {
-                    if (bool.TryParse(objRegistryResult.ToString(), out bool blnTemp))
+                    if(bool.TryParse(objRegistryResult.ToString(), out bool blnTemp))
                         blnStorage = blnTemp;
-                    if (!string.IsNullOrWhiteSpace(strSubKey))
+                    if(!string.IsNullOrWhiteSpace(strSubKey))
                         objKey.Close();
-                    if (blnDeleteAfterFetch)
+                    if(blnDeleteAfterFetch)
                         objKey.DeleteValue(strBoolName);
                     return true;
                 }
 
-                if (!string.IsNullOrWhiteSpace(strSubKey))
+                if(!string.IsNullOrWhiteSpace(strSubKey))
                     objKey.Close();
             }
 
@@ -254,23 +259,23 @@ namespace Chummer
         public static bool LoadInt32FromRegistry(ref int intStorage, string strIntName, string strSubKey = "", bool blnDeleteAfterFetch = false)
         {
             RegistryKey objKey = _objBaseChummerKey;
-            if (!string.IsNullOrWhiteSpace(strSubKey))
+            if(!string.IsNullOrWhiteSpace(strSubKey))
                 objKey = objKey.OpenSubKey(strSubKey);
-            if (objKey != null)
+            if(objKey != null)
             {
                 object objRegistryResult = objKey.GetValue(strIntName);
-                if (objRegistryResult != null)
+                if(objRegistryResult != null)
                 {
-                    if (int.TryParse(objRegistryResult.ToString(), out int intTemp))
+                    if(int.TryParse(objRegistryResult.ToString(), out int intTemp))
                         intStorage = intTemp;
-                    if (blnDeleteAfterFetch)
+                    if(blnDeleteAfterFetch)
                         objKey.DeleteValue(strIntName);
-                    if (!string.IsNullOrWhiteSpace(strSubKey))
+                    if(!string.IsNullOrWhiteSpace(strSubKey))
                         objKey.Close();
                     return true;
                 }
 
-                if (!string.IsNullOrWhiteSpace(strSubKey))
+                if(!string.IsNullOrWhiteSpace(strSubKey))
                     objKey.Close();
             }
 
@@ -283,23 +288,23 @@ namespace Chummer
         public static bool LoadDecFromRegistry(ref decimal decStorage, string strDecName, string strSubKey = "", bool blnDeleteAfterFetch = false)
         {
             RegistryKey objKey = _objBaseChummerKey;
-            if (!string.IsNullOrWhiteSpace(strSubKey))
+            if(!string.IsNullOrWhiteSpace(strSubKey))
                 objKey = objKey.OpenSubKey(strSubKey);
-            if (objKey != null)
+            if(objKey != null)
             {
                 object objRegistryResult = objKey.GetValue(strDecName);
-                if (objRegistryResult != null)
+                if(objRegistryResult != null)
                 {
-                    if (decimal.TryParse(objRegistryResult.ToString(), NumberStyles.Any, InvariantCultureInfo, out decimal decTemp))
+                    if(decimal.TryParse(objRegistryResult.ToString(), NumberStyles.Any, InvariantCultureInfo, out decimal decTemp))
                         decStorage = decTemp;
-                    if (blnDeleteAfterFetch)
+                    if(blnDeleteAfterFetch)
                         objKey.DeleteValue(strDecName);
-                    if (!string.IsNullOrWhiteSpace(strSubKey))
+                    if(!string.IsNullOrWhiteSpace(strSubKey))
                         objKey.Close();
                     return true;
                 }
 
-                if (!string.IsNullOrWhiteSpace(strSubKey))
+                if(!string.IsNullOrWhiteSpace(strSubKey))
                     objKey.Close();
             }
 
@@ -312,22 +317,22 @@ namespace Chummer
         public static bool LoadStringFromRegistry(ref string strStorage, string strStringName, string strSubKey = "", bool blnDeleteAfterFetch = false)
         {
             RegistryKey objKey = _objBaseChummerKey;
-            if (!string.IsNullOrWhiteSpace(strSubKey))
+            if(!string.IsNullOrWhiteSpace(strSubKey))
                 objKey = objKey.OpenSubKey(strSubKey);
-            if (objKey != null)
+            if(objKey != null)
             {
                 object objRegistryResult = objKey.GetValue(strStringName);
-                if (objRegistryResult != null)
+                if(objRegistryResult != null)
                 {
                     strStorage = objRegistryResult.ToString();
-                    if (blnDeleteAfterFetch)
+                    if(blnDeleteAfterFetch)
                         objKey.DeleteValue(strStringName);
-                    if (!string.IsNullOrWhiteSpace(strSubKey))
+                    if(!string.IsNullOrWhiteSpace(strSubKey))
                         objKey.Close();
                     return true;
                 }
 
-                if (!string.IsNullOrWhiteSpace(strSubKey))
+                if(!string.IsNullOrWhiteSpace(strSubKey))
                     objKey.Close();
             }
 
@@ -336,24 +341,24 @@ namespace Chummer
 
         static GlobalOptions()
         {
-            if (Utils.IsDesignerMode)
+            if(Utils.IsDesignerMode)
                 return;
 
             string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
-            if (!Directory.Exists(settingsDirectoryPath))
+            if(!Directory.Exists(settingsDirectoryPath))
             {
                 try
                 {
                     Directory.CreateDirectory(settingsDirectoryPath);
                 }
-                catch (UnauthorizedAccessException ex)
+                catch(UnauthorizedAccessException ex)
                 {
                     string strMessage = LanguageManager.GetString("Message_Insufficient_Permissions_Warning", Language, false);
-                    if (string.IsNullOrEmpty(strMessage))
+                    if(string.IsNullOrEmpty(strMessage))
                         strMessage = ex.ToString();
                     ErrorMessage += strMessage;
                 }
-                catch (Exception ex)
+                catch(Exception ex)
                 {
                     ErrorMessage += ex.ToString();
                 }
@@ -363,13 +368,13 @@ namespace Chummer
             {
                 _objBaseChummerKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                if (!string.IsNullOrEmpty(ErrorMessage))
+                if(!string.IsNullOrEmpty(ErrorMessage))
                     ErrorMessage += Environment.NewLine + Environment.NewLine;
                 ErrorMessage += ex.ToString();
             }
-            if (_objBaseChummerKey == null)
+            if(_objBaseChummerKey == null)
                 return;
             _objBaseChummerKey.CreateSubKey("Sourcebook");
 
@@ -403,7 +408,7 @@ namespace Chummer
 
             // Default character sheet.
             LoadStringFromRegistry(ref _strDefaultCharacterSheet, "defaultsheet");
-            if (_strDefaultCharacterSheet == "Shadowrun (Rating greater 0)")
+            if(_strDefaultCharacterSheet == "Shadowrun (Rating greater 0)")
                 _strDefaultCharacterSheet = DefaultCharacterSheetDefaultValue;
 
             LoadStringFromRegistry(ref _strDefaultBuildMethod, "defaultbuildmethod");
@@ -419,9 +424,9 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnOmaeAutoLogin, "omaeautologin");
             // Language.
             string strLanguage = _strLanguage;
-            if (LoadStringFromRegistry(ref strLanguage, "language"))
+            if(LoadStringFromRegistry(ref strLanguage, "language"))
             {
-                switch (strLanguage)
+                switch(strLanguage)
                 {
                     case "en-us2":
                         strLanguage = DefaultLanguage;
@@ -455,30 +460,38 @@ namespace Chummer
             // Folder path to check for characters.
             LoadStringFromRegistry(ref _strCharacterRosterPath, "characterrosterpath");
 
+            // Which Plugins are enabled.
+            LoadBoolFromRegistry(ref _blnPluginsEnabled, "pluginsenabled");
+
+            string jsonstring = "";
+            LoadStringFromRegistry(ref jsonstring, "plugins");
+            if(!String.IsNullOrEmpty(jsonstring))
+                _pluginsEnabledDic = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, bool>>(jsonstring);
+
             // Prefer Nightly Updates.
             LoadBoolFromRegistry(ref _blnPreferNightlyUpdates, "prefernightlybuilds");
 
             RebuildCustomDataDirectoryInfoList();
 
-            for (int i = 1; i <= MaxMruSize; i++)
+            for(int i = 1; i <= MaxMruSize; i++)
             {
                 object objLoopValue = _objBaseChummerKey.GetValue("stickymru" + i.ToString(InvariantCultureInfo));
-                if (objLoopValue != null)
+                if(objLoopValue != null)
                 {
                     string strFileName = objLoopValue.ToString();
-                    if (File.Exists(strFileName) && !_lstFavoritedCharacters.Contains(strFileName))
+                    if(File.Exists(strFileName) && !_lstFavoritedCharacters.Contains(strFileName))
                         _lstFavoritedCharacters.Add(strFileName);
                 }
             }
             _lstFavoritedCharacters.CollectionChanged += LstFavoritedCharactersOnCollectionChanged;
 
-            for (int i = 1; i <= MaxMruSize; i++)
+            for(int i = 1; i <= MaxMruSize; i++)
             {
                 object objLoopValue = _objBaseChummerKey.GetValue("mru" + i.ToString(InvariantCultureInfo));
-                if (objLoopValue != null)
+                if(objLoopValue != null)
                 {
                     string strFileName = objLoopValue.ToString();
-                    if (File.Exists(strFileName) && !_lstMostRecentlyUsedCharacters.Contains(strFileName))
+                    if(File.Exists(strFileName) && !_lstMostRecentlyUsedCharacters.Contains(strFileName))
                         _lstMostRecentlyUsedCharacters.Add(strFileName);
                 }
             }
@@ -494,6 +507,16 @@ namespace Chummer
         {
             get => _blnCreateBackupOnCareer;
             set => _blnCreateBackupOnCareer = value;
+        }
+
+
+        /// <summary>
+        /// Should the Plugins-Directory be loaded and the tabPlugins be shown?
+        /// </summary>
+        public static bool PluginsEnabled
+        {
+            get => _blnPluginsEnabled;
+            set => _blnPluginsEnabled = value;
         }
 
         /// <summary>
@@ -543,7 +566,7 @@ namespace Chummer
             get => _blnUseLogging;
             set
             {
-                if (_blnUseLogging != value)
+                if(_blnUseLogging != value)
                 {
                     _blnUseLogging = value;
                     // Sets up logging if the option is changed during runtime
@@ -618,14 +641,14 @@ namespace Chummer
             get => _strLanguage;
             set
             {
-                if (value != _strLanguage)
+                if(value != _strLanguage)
                 {
                     _strLanguage = value;
                     try
                     {
                         s_ObjLanguageCultureInfo = CultureInfo.GetCultureInfo(value);
                     }
-                    catch (CultureNotFoundException)
+                    catch(CultureNotFoundException)
                     {
                         s_ObjLanguageCultureInfo = SystemCultureInfo;
                     }
@@ -676,7 +699,7 @@ namespace Chummer
             get => _xmlClipboard;
             set
             {
-                if (_xmlClipboard != value)
+                if(_xmlClipboard != value)
                 {
                     _xmlClipboard = value;
                     ClipboardChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)));
@@ -740,16 +763,16 @@ namespace Chummer
             get
             {
                 // We need to generate _lstSourcebookInfo outside of the constructor to avoid initialization cycles
-                if (_lstSourcebookInfo == null)
+                if(_lstSourcebookInfo == null)
                 {
                     _lstSourcebookInfo = new HashSet<SourcebookInfo>();
                     // Retrieve the SourcebookInfo objects.
-                    using (XmlNodeList xmlBookList = XmlManager.Load("books.xml").SelectNodes("/chummer/books/book[not(hide)]"))
-                        if (xmlBookList != null)
-                            foreach (XmlNode xmlBook in xmlBookList)
+                    using(XmlNodeList xmlBookList = XmlManager.Load("books.xml").SelectNodes("/chummer/books/book[not(hide)]"))
+                        if(xmlBookList != null)
+                            foreach(XmlNode xmlBook in xmlBookList)
                             {
                                 string strCode = xmlBook["code"]?.InnerText;
-                                if (!string.IsNullOrEmpty(strCode))
+                                if(!string.IsNullOrEmpty(strCode))
                                 {
                                     SourcebookInfo objSource = new SourcebookInfo
                                     {
@@ -759,21 +782,21 @@ namespace Chummer
                                     try
                                     {
                                         string strTemp = string.Empty;
-                                        if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook") && !string.IsNullOrEmpty(strTemp))
+                                        if(LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook") && !string.IsNullOrEmpty(strTemp))
                                         {
                                             string[] strParts = strTemp.Split('|');
                                             objSource.Path = strParts[0];
-                                            if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
+                                            if(strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
                                             {
                                                 objSource.Offset = intTmp;
                                             }
                                         }
                                     }
-                                    catch (System.Security.SecurityException)
+                                    catch(System.Security.SecurityException)
                                     {
 
                                     }
-                                    catch (UnauthorizedAccessException)
+                                    catch(UnauthorizedAccessException)
                                     {
 
                                     }
@@ -791,23 +814,23 @@ namespace Chummer
 
             // Retrieve CustomDataDirectoryInfo objects from registry
             RegistryKey objCustomDataDirectoryKey = _objBaseChummerKey.OpenSubKey("CustomDataDirectory");
-            if (objCustomDataDirectoryKey != null)
+            if(objCustomDataDirectoryKey != null)
             {
                 List<KeyValuePair<CustomDataDirectoryInfo, int>> lstUnorderedCustomDataDirectories = new List<KeyValuePair<CustomDataDirectoryInfo, int>>(objCustomDataDirectoryKey.SubKeyCount);
 
                 string[] astrCustomDataDirectoryNames = objCustomDataDirectoryKey.GetSubKeyNames();
                 int intMinLoadOrderValue = int.MaxValue;
                 int intMaxLoadOrderValue = int.MinValue;
-                for (int i = 0; i < astrCustomDataDirectoryNames.Length; ++i)
+                for(int i = 0; i < astrCustomDataDirectoryNames.Length; ++i)
                 {
                     RegistryKey objLoopKey = objCustomDataDirectoryKey.OpenSubKey(astrCustomDataDirectoryNames[i]);
-                    if (objLoopKey != null)
+                    if(objLoopKey != null)
                     {
                         string strPath = string.Empty;
                         object objRegistryResult = objLoopKey.GetValue("Path");
-                        if (objRegistryResult != null)
+                        if(objRegistryResult != null)
                             strPath = objRegistryResult.ToString().Replace("$CHUMMER", Utils.GetStartupPath);
-                        if (!string.IsNullOrEmpty(strPath) && Directory.Exists(strPath))
+                        if(!string.IsNullOrEmpty(strPath) && Directory.Exists(strPath))
                         {
                             CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo
                             {
@@ -815,14 +838,14 @@ namespace Chummer
                                 Path = strPath
                             };
                             objRegistryResult = objLoopKey.GetValue("Enabled");
-                            if (objRegistryResult != null)
+                            if(objRegistryResult != null)
                             {
-                                if (bool.TryParse(objRegistryResult.ToString(), out bool blnTemp))
+                                if(bool.TryParse(objRegistryResult.ToString(), out bool blnTemp))
                                     objCustomDataDirectory.Enabled = blnTemp;
                             }
 
                             objRegistryResult = objLoopKey.GetValue("LoadOrder");
-                            if (objRegistryResult != null && int.TryParse(objRegistryResult.ToString(), out int intLoadOrder))
+                            if(objRegistryResult != null && int.TryParse(objRegistryResult.ToString(), out int intLoadOrder))
                             {
                                 // First load the infos alongside their load orders into a list whose order we don't care about
                                 intMaxLoadOrderValue = Math.Max(intMaxLoadOrderValue, intLoadOrder);
@@ -837,13 +860,13 @@ namespace Chummer
                 }
 
                 // Now translate the list of infos whose order we don't care about into the list where we do care about the order of infos
-                for (int i = intMinLoadOrderValue; i <= intMaxLoadOrderValue; ++i)
+                for(int i = intMinLoadOrderValue; i <= intMaxLoadOrderValue; ++i)
                 {
                     KeyValuePair<CustomDataDirectoryInfo, int> objLoopPair = lstUnorderedCustomDataDirectories.FirstOrDefault(x => x.Value == i);
-                    if (!objLoopPair.Equals(default(KeyValuePair<CustomDataDirectoryInfo, int>)))
+                    if(!objLoopPair.Equals(default(KeyValuePair<CustomDataDirectoryInfo, int>)))
                         _lstCustomDataDirectoryInfo.Add(objLoopPair.Key);
                 }
-                foreach (KeyValuePair<CustomDataDirectoryInfo, int> objLoopPair in lstUnorderedCustomDataDirectories.Where(x => x.Value == int.MinValue))
+                foreach(KeyValuePair<CustomDataDirectoryInfo, int> objLoopPair in lstUnorderedCustomDataDirectories.Where(x => x.Value == int.MinValue))
                 {
                     _lstCustomDataDirectoryInfo.Add(objLoopPair.Key);
                 }
@@ -883,103 +906,103 @@ namespace Chummer
         #region MRU Methods
         private static void LstFavoritedCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            switch (e.Action)
+            switch(e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                {
-                    for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
                     {
-                        if (i <= _lstFavoritedCharacters.Count)
-                            _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
-                        else
-                            _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
-                    }
-
-                    MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
-                    break;
-                }
-                case NotifyCollectionChangedAction.Remove:
-                {
-                    for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
-                    {
-                        if (i <= _lstFavoritedCharacters.Count)
-                            _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
-                        else
-                            _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
-                    }
-                    MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
-                    break;
-                }
-                case NotifyCollectionChangedAction.Replace:
-                {
-                    string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
-                    if (!string.IsNullOrEmpty(strNewFile))
-                        _objBaseChummerKey.SetValue("stickymru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
-                    else
-                    {
-                        for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                        for(int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
-                            if (i <= _lstFavoritedCharacters.Count)
+                            if(i <= _lstFavoritedCharacters.Count)
                                 _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
                             else
                                 _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                         }
-                    }
 
-                    MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
-                    break;
-                }
-                case NotifyCollectionChangedAction.Move:
-                {
-                    int intOldStartingIndex = e.OldStartingIndex;
-                    int intNewStartingIndex = e.NewStartingIndex;
-                    if (intOldStartingIndex == intNewStartingIndex)
+                        MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
                         break;
-
-                    int intUpdateFrom;
-                    int intUpdateTo;
-                    if (intOldStartingIndex > intNewStartingIndex)
-                    {
-                        intUpdateFrom = intNewStartingIndex;
-                        intUpdateTo = intOldStartingIndex;
                     }
-                    else
+                case NotifyCollectionChangedAction.Remove:
                     {
-                        intUpdateFrom = intOldStartingIndex;
-                        intUpdateTo = intNewStartingIndex;
+                        for(int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                        {
+                            if(i <= _lstFavoritedCharacters.Count)
+                                _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
+                            else
+                                _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
+                        }
+                        MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
+                        break;
                     }
-
-                    for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
+                case NotifyCollectionChangedAction.Replace:
                     {
-                        _objBaseChummerKey.SetValue("stickymru" + (i + 1).ToString(InvariantCultureInfo), _lstFavoritedCharacters[i]);
-                    }
-                    MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
-                    break;
-                }
-                case NotifyCollectionChangedAction.Reset:
-                {
-                    for (int i = 1; i <= MaxMruSize; ++i)
-                    {
-                        if (i <= _lstFavoritedCharacters.Count)
-                            _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
+                        string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
+                        if(!string.IsNullOrEmpty(strNewFile))
+                            _objBaseChummerKey.SetValue("stickymru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
                         else
-                            _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
+                        {
+                            for(int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                            {
+                                if(i <= _lstFavoritedCharacters.Count)
+                                    _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
+                                else
+                                    _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
+                            }
+                        }
+
+                        MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
+                        break;
                     }
-                    MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
-                    break;
-                }
+                case NotifyCollectionChangedAction.Move:
+                    {
+                        int intOldStartingIndex = e.OldStartingIndex;
+                        int intNewStartingIndex = e.NewStartingIndex;
+                        if(intOldStartingIndex == intNewStartingIndex)
+                            break;
+
+                        int intUpdateFrom;
+                        int intUpdateTo;
+                        if(intOldStartingIndex > intNewStartingIndex)
+                        {
+                            intUpdateFrom = intNewStartingIndex;
+                            intUpdateTo = intOldStartingIndex;
+                        }
+                        else
+                        {
+                            intUpdateFrom = intOldStartingIndex;
+                            intUpdateTo = intNewStartingIndex;
+                        }
+
+                        for(int i = intUpdateFrom; i <= intUpdateTo; ++i)
+                        {
+                            _objBaseChummerKey.SetValue("stickymru" + (i + 1).ToString(InvariantCultureInfo), _lstFavoritedCharacters[i]);
+                        }
+                        MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
+                        break;
+                    }
+                case NotifyCollectionChangedAction.Reset:
+                    {
+                        for(int i = 1; i <= MaxMruSize; ++i)
+                        {
+                            if(i <= _lstFavoritedCharacters.Count)
+                                _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
+                            else
+                                _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
+                        }
+                        MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
+                        break;
+                    }
             }
         }
 
         private static void LstMostRecentlyUsedCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            switch (e.Action)
+            switch(e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     {
-                        for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
+                        for(int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
-                            if (i <= _lstMostRecentlyUsedCharacters.Count)
+                            if(i <= _lstMostRecentlyUsedCharacters.Count)
                                 _objBaseChummerKey.SetValue("mru" + i.ToString(), _lstMostRecentlyUsedCharacters[i - 1]);
                             else
                                 _objBaseChummerKey.DeleteValue("mru" + i.ToString(), false);
@@ -990,9 +1013,9 @@ namespace Chummer
                     }
                 case NotifyCollectionChangedAction.Remove:
                     {
-                        for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                        for(int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
-                            if (i <= _lstMostRecentlyUsedCharacters.Count)
+                            if(i <= _lstMostRecentlyUsedCharacters.Count)
                                 _objBaseChummerKey.SetValue("mru" + i.ToString(), _lstMostRecentlyUsedCharacters[i - 1]);
                             else
                                 _objBaseChummerKey.DeleteValue("mru" + i.ToString(), false);
@@ -1003,15 +1026,15 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Replace:
                     {
                         string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
-                        if (!string.IsNullOrEmpty(strNewFile))
+                        if(!string.IsNullOrEmpty(strNewFile))
                         {
                             _objBaseChummerKey.SetValue("mru" + (e.OldStartingIndex + 1).ToString(), strNewFile);
                         }
                         else
                         {
-                            for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                            for(int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                             {
-                                if (i <= _lstMostRecentlyUsedCharacters.Count)
+                                if(i <= _lstMostRecentlyUsedCharacters.Count)
                                     _objBaseChummerKey.SetValue("mru" + i.ToString(), _lstMostRecentlyUsedCharacters[i - 1]);
                                 else
                                     _objBaseChummerKey.DeleteValue("mru" + i.ToString(), false);
@@ -1024,12 +1047,12 @@ namespace Chummer
                     {
                         int intOldStartingIndex = e.OldStartingIndex;
                         int intNewStartingIndex = e.NewStartingIndex;
-                        if (intOldStartingIndex == intNewStartingIndex)
+                        if(intOldStartingIndex == intNewStartingIndex)
                             break;
 
                         int intUpdateFrom;
                         int intUpdateTo;
-                        if (intOldStartingIndex > intNewStartingIndex)
+                        if(intOldStartingIndex > intNewStartingIndex)
                         {
                             intUpdateFrom = intNewStartingIndex;
                             intUpdateTo = intOldStartingIndex;
@@ -1040,7 +1063,7 @@ namespace Chummer
                             intUpdateTo = intNewStartingIndex;
                         }
 
-                        for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
+                        for(int i = intUpdateFrom; i <= intUpdateTo; ++i)
                         {
                             _objBaseChummerKey.SetValue("mru" + (i + 1).ToString(), _lstMostRecentlyUsedCharacters[i]);
                         }
@@ -1049,9 +1072,9 @@ namespace Chummer
                     }
                 case NotifyCollectionChangedAction.Reset:
                     {
-                        for (int i = 1; i <= MaxMruSize; ++i)
+                        for(int i = 1; i <= MaxMruSize; ++i)
                         {
-                            if (i <= _lstMostRecentlyUsedCharacters.Count)
+                            if(i <= _lstMostRecentlyUsedCharacters.Count)
                                 _objBaseChummerKey.SetValue("mru" + i.ToString(), _lstMostRecentlyUsedCharacters[i - 1]);
                             else
                                 _objBaseChummerKey.DeleteValue("mru" + i.ToString(), false);
