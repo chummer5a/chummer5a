@@ -9454,5 +9454,9 @@
 			<key>String_AvailablePlugins</key>
 			<text>Verfügbare Module</text>
 		</string>
+		<string>
+			<key>String_Program</key>
+			<text>Programm</text>
+		</string>
 	</strings>
 </chummer>

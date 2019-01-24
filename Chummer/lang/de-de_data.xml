@@ -8329,6 +8329,7 @@
 			<category translate="Spezielle Biodrohnen-Cyberware">Special Biodrone Cyberware</category>
 			<category translate="Cybersuite" translated="True">Cybersuite</category>
 			<category translate="Cyberimplantatwaffen-Zubehör">Cyber Implant Weapon Accessory</category>
+			<category translate="Injektionssysteme">Auto Injector Mods</category>
 		</categories>
 		<cyberwares>
 			<cyberware>
@@ -9325,7 +9326,7 @@
 			</cyberware>
 			<cyberware>
 				<id>d97a6e2f-0e3d-4f9b-a046-e1a86d5dad88</id>
-				<name>Auto Injector Expansion</name>
+				<name>Expanded Reservoir</name>
 				<translate>Injektionssystem Erweiterter Vorrat</translate>
 				<altpage>87</altpage>
 			</cyberware>
