@@ -3114,6 +3114,63 @@
       <page>173</page>
     </armor>
     <!-- End Region -->
+    <!-- Region No Future -->
+    <armor>
+      <id>31c68476-6328-476a-ae8a-94f65d505a04</id>
+      <name>Trenchcoat</name>
+      <category>Clothing</category>
+      <armor>0</armor>
+      <armorcapacity>0</armorcapacity>
+      <avail>0</avail>
+      <cost>100</cost>
+      <source>NF</source>
+      <page>173</page>
+    </armor>
+    <armor>
+      <id>31c68476-6328-476a-ae8a-94f65d505a04</id>
+      <name>Fedora</name>
+      <category>Clothing</category>
+      <armor>0</armor>
+      <armorcapacity>0</armorcapacity>
+      <avail>0</avail>
+      <cost>30</cost>
+      <source>NF</source>
+      <page>173</page>
+    </armor>
+    <armor>
+      <id>31c68476-6328-476a-ae8a-94f65d505a04</id>
+      <name>Trilby</name>
+      <category>Clothing</category>
+      <armor>0</armor>
+      <armorcapacity>0</armorcapacity>
+      <avail>0</avail>
+      <cost>20</cost>
+      <source>NF</source>
+      <page>173</page>
+    </armor>
+    <armor>
+      <id>31c68476-6328-476a-ae8a-94f65d505a04</id>
+      <name>Hornburg</name>
+      <category>Clothing</category>
+      <armor>0</armor>
+      <armorcapacity>0</armorcapacity>
+      <avail>0</avail>
+      <cost>40</cost>
+      <source>NF</source>
+      <page>173</page>
+    </armor>
+    <armor>
+      <id>31c68476-6328-476a-ae8a-94f65d505a04</id>
+      <name>Bowler</name>
+      <category>Clothing</category>
+      <armor>0</armor>
+      <armorcapacity>0</armorcapacity>
+      <avail>0</avail>
+      <cost>10</cost>
+      <source>NF</source>
+      <page>173</page>
+    </armor>
+    <!-- End Region -->
   </armors>
   <mods>
     <!-- Region Shadowrun 5 -->

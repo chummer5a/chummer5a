@@ -69,6 +69,8 @@
     <category>Miscellany</category>
     <category>Nanogear</category>
     <category blackmarket="Electronics">PI-Tac</category>
+    <category>Printing</category>
+    <category>Reporter Gear</category>
     <category>RFID Tags</category>
     <category blackmarket="Electronics,Vehicles">Rigger Command Consoles</category>
     <category>Security Devices</category>
@@ -17966,7 +17968,7 @@
       <cost>1200</cost>
     </gear>
     <!-- End Region -->
-    <!-- Region Tattoos -->
+    <!-- Region Better Than Bad -->
     <gear>
       <id>18e853c9-0fe8-4414-9b91-eedd0905359b</id>
       <name>Grey Mana Tattoos</name>
@@ -17991,6 +17993,247 @@
       <avail>8F</avail>
       <cost>250</cost>
     </gear>
+    <!-- End Region -->
+    <!-- Region No Future -->
+    <!-- Region Instruments -->
+    <gear>
+      <id>25641e84-a0ec-4bfa-a5fd-6a0effeeea04</id>
+      <name>Simple Instrument</name>
+      <category>Musical Instruments</category>
+      <rating>0</rating>
+      <source>NF</source>
+      <page>171</page>
+      <avail>0</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <allowgear>
+        <name>Internal Synthlink</name>
+        <name>External Synthlink</name>
+      </allowgear>
+      <cost>50</cost>
+    </gear>
+    <gear>
+          <id>cb8ede00-71f1-4cf0-9fd5-c70dbd312dec</id>
+          <name>Professional Instrument</name>
+          <category>Musical Instruments</category>
+          <rating>0</rating>
+          <source>NF</source>
+          <page>171</page>
+          <avail>0</avail>
+          <bonus>
+              <selecttext />
+          </bonus>
+          <allowgear>
+              <name>Internal Synthlink</name>
+              <name>External Synthlink</name>
+          </allowgear>
+          <cost>500</cost>
+      </gear>
+      <gear>
+          <id>93ead8c1-fb02-4031-bda9-d07cc43163bb</id>
+          <name>Rising Star Instrument</name>
+          <category>Musical Instruments</category>
+          <rating>0</rating>
+          <source>NF</source>
+          <page>171</page>
+          <avail>6</avail>
+          <bonus>
+              <selecttext />
+          </bonus>
+          <allowgear>
+              <name>Internal Synthlink</name>
+              <name>External Synthlink</name>
+          </allowgear>
+          <cost>5000</cost>
+      </gear>
+      <gear>
+          <id>bda4b57b-0d69-4782-a288-d3e2111caa55</id>
+          <name>Big Time Instrument</name>
+          <category>Musical Instruments</category>
+          <rating>0</rating>
+          <source>NF</source>
+          <page>171</page>
+          <avail>12</avail>
+          <bonus>
+              <selecttext />
+          </bonus>
+          <allowgear>
+              <name>Internal Synthlink</name>
+              <name>External Synthlink</name>
+          </allowgear>
+          <cost>50000</cost>
+      </gear>
+      <gear>
+          <id>bda4b57b-0d69-4782-a288-d3e2111caa55</id>
+          <name>Internal Synthlink</name>
+          <category>Musical Instruments</category>
+          <rating>0</rating>
+          <source>NF</source>
+          <page>171</page>
+          <avail>+4</avail>
+          <bonus>
+              <selecttext />
+          </bonus>
+          <requireparent />
+          <cost>{Parent Cost}x2</cost>
+      </gear>
+      <gear>
+          <id>bda4b57b-0d69-4782-a288-d3e2111caa55</id>
+          <name>External Synthlink</name>
+          <category>Musical Instruments</category>
+          <rating>0</rating>
+          <source>NF</source>
+          <page>171</page>
+          <avail>4</avail>
+          <bonus>
+              <selecttext />
+          </bonus>
+          <requireparent />
+          <cost>2000</cost>
+      </gear>
+    <!-- End Region -->
+    <!-- Region Biotech-->
+    <gear>
+      <id>132d65fa-132a-4f69-b007-a08860f47aa6</id>
+      <name>Litre of Milk</name>
+      <category>Biotech</category>
+      <rating>0</rating>
+      <source>NF</source>
+      <page>172</page>
+      <avail>0</avail>
+      <bonus />
+      <cost>3</cost>
+    </gear>
+    <!-- End Region -->
+    <!-- Region Tools-->
+    <gear>
+      <id>e948b761-836f-4681-83c8-d5627df81ef0</id>
+      <name>Graffiti Kit</name>
+      <category>Tools</category>
+      <rating>0</rating>
+      <source>NF</source>
+      <page>173</page>
+      <avail>4F</avail>
+      <bonus />
+      <cost>100</cost>
+    </gear>
+    <!-- End Region -->
+    <!-- Region Reporter Gear -->
+    <gear>
+      <id>e3230bd0-0de8-430a-a24b-4403ae8d05fe</id>
+      <name>Press Pass</name>
+      <category>Reporter Gear</category>
+      <rating>0</rating>
+      <source>NF</source>
+      <page>175</page>
+      <avail>6</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <cost>50</cost>
+    </gear>
+    <gear>
+      <id>f1c739c1-4976-4536-ac5e-dd9da491eb36</id>
+      <name>ProCam</name>
+      <category>Reporter Gear</category>
+      <rating>12</rating>
+      <source>NF</source>
+      <page>175</page>
+      <avail>4</avail>
+      <bonus />
+      <capacity>Rating</capacity>
+      <cost>Rating * 250</cost>
+      <addoncategory>Sensors</addoncategory>
+      <addoncategory>Custom</addoncategory>
+    </gear>
+    <gear>
+      <id>731608b0-7146-4083-945e-69d95a1df78f</id>
+      <name>SmartCam External</name>
+      <category>Sensors</category>
+      <rating>0</rating>
+      <source>NF</source>
+      <page>175</page>
+      <avail>6</avail>
+      <bonus />
+      <cost>200</cost>
+      <requireparent />
+    </gear>
+    <gear>
+      <id>b2775dfc-5eda-4097-a12e-4e767bb8759e</id>
+      <name>SmartCam Internal</name>
+      <category>Sensors</category>
+      <rating>0</rating>
+      <source>NF</source>
+      <page>175</page>
+      <avail>8</avail>
+      <bonus />
+      <cost>{Parent Cost}x2</cost>
+      <requireparent />
+    </gear>
+    <!-- End Region -->
+    <!-- Region Printing Presses -->
+    <gear>
+      <id>c405db73-efd7-4c51-a749-5e733fe6f4ca</id>
+      <name>Basic Press</name>
+      <category>Printing</category>
+      <rating>0</rating>
+      <source>NF</source>
+      <page>175</page>
+      <avail>4</avail>
+      <cost>500</cost>
+    </gear>
+    <gear>
+      <id>08edaa39-1045-4e8a-a0d9-ed8a75c6ebda</id>
+      <name>Small Press</name>
+      <category>Printing</category>
+      <rating>0</rating>
+      <source>NF</source>
+      <page>175</page>
+      <avail>6</avail>
+      <cost>5000</cost>
+    </gear>
+    <gear>
+      <id>1e70f54f-3c0c-413e-ab16-8f32e7aed835</id>
+      <name>Industrial Press</name>
+      <category>Printing</category>
+      <rating>0</rating>
+      <source>NF</source>
+      <page>175</page>
+      <avail>8</avail>
+      <cost>50000</cost>
+    </gear>
+    <gear>
+      <id>3fd93a7a-3f55-4c36-a6be-d03bc835e60d</id>
+      <name>Paper (per 500)</name>
+      <category>Printing</category>
+      <rating>0</rating>
+      <source>NF</source>
+      <page>175</page>
+      <avail>0</avail>
+      <cost>1</cost>
+    </gear>
+    <gear>
+      <id>0234cfa4-0658-45e8-9e66-a1fbc66b2526</id>
+      <name>Black Ink (per 500)</name>
+      <category>Printing</category>
+      <rating>0</rating>
+      <source>NF</source>
+      <page>175</page>
+      <avail>0</avail>
+      <cost>5</cost>
+    </gear>
+    <gear>
+      <id>0f43622d-87bb-4288-9d10-b6dab64b0f64</id>
+      <name>Color Ink (per 500)</name>
+      <category>Printing</category>
+      <rating>0</rating>
+      <source>NF</source>
+      <page>175</page>
+      <avail>0</avail>
+      <cost>20</cost>
+    </gear>
+    <!-- End Region -->
     <!-- End Region -->
   </gears>
 </chummer>

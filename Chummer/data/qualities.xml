@@ -17809,5 +17809,68 @@
     </quality>
     <!-- End Region -->
     <!-- End Region -->
+    <!-- Region No Future -->
+    <quality>
+      <id>7d1bedb9-5d27-419f-bc15-0a39d9b67516</id>
+      <name>Candle in the Darkness</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus>
+        <!--<contactloyalty>2</contactloyalty>-->
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Code of Honor</quality>
+          <quality>Code of Honor: Avenging Angel</quality>
+          <quality>Code of Honor: Black Hat</quality>
+          <quality>Code of Honor: Like a Boss</quality>
+        </oneof>
+      </required>
+      <source>NF</source>
+      <page>177</page>
+    </quality>
+    <quality>
+      <id>f8384574-ce99-4e33-8a94-b5aea7ddf4bd</id>
+      <name>Massive Network</name>
+      <karma>20</karma>
+      <category>Positive</category>
+      <bonus>
+          <!--<contactkarma>-2</contactkarma>-->
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Networker</quality>
+        </oneof>
+      </forbidden>
+      <source>NF</source>
+      <page>177</page>
+    </quality>
+    <quality>
+      <id>fc195df5-83f6-4aff-aca8-4287a56e4d4c</id>
+      <name>Networker</name>
+      <karma>20</karma>
+      <category>Positive</category>
+      <bonus>
+        <!--<contactkarma>-1</contactkarma>-->
+      </bonus>
+      <forbidden>
+        <oneof>
+          <quality>Massive Network</quality>
+        </oneof>
+      </forbidden>
+      <source>NF</source>
+      <page>177</page>
+    </quality>
+    <quality>
+      <id>8b18a3aa-fd5a-4712-8dd4-117d7a73ba11</id>
+      <name>Stolen Gear</name>
+      <karma>1</karma>
+      <category>Negative</category>
+      <limit>20</limit>
+      <bonus />
+      <source>NF</source>
+      <page>177</page>
+    </quality>
+      <!-- End Region -->
   </qualities>
 </chummer>

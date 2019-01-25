@@ -542,7 +542,7 @@
       <ess>(Rating * 0.1) + 0.1</ess>
       <capacity>(Rating * 4)</capacity>
       <avail>(Rating * 3)</avail>
-      <cost>FixedValues(4000,6000,10000,14000)</cost>
+      <cost>FixedValues(4000,6000,10000,14000,18000,22000)</cost>
       <source>SR5</source>
       <page>453</page>
       <allowgear>
@@ -553,7 +553,7 @@
         <category>Eyeware</category>
       </allowsubsystems>
       <minrating>1</minrating>
-      <rating>4</rating>
+      <rating>6</rating>
       <subsystems>
         <cyberware>
           <name>Image Link</name>
@@ -655,10 +655,10 @@
       <name>Vision Enhancement</name>
       <limit>False</limit>
       <category>Eyeware</category>
-      <ess>0.1</ess>
-      <capacity>[Rating]</capacity>
+      <ess>FixedValues(0.1,0.1,0.1,0.2,0.2,0.2)</ess>
+      <capacity>FixedValues(1,2,3,8,10,12)</capacity>
       <avail>Rating * 3</avail>
-      <cost>Rating * 4000</cost>
+      <cost>FixedValues(4000,8000,12000,20000,25000,30000)</cost>
       <source>SR5</source>
       <page>453</page>
       <bonus>
@@ -689,7 +689,7 @@
       <ess>(Rating * 0.1) + 0.1</ess>
       <capacity>Rating * 4</capacity>
       <avail>Rating * 3</avail>
-      <cost>FixedValues(3000,4500,7500,11000)</cost>
+      <cost>FixedValues(3000,4500,7500,11000,15500,21000)</cost>
       <source>SR5</source>
       <page>453</page>
       <allowgear>
@@ -700,7 +700,7 @@
         <category>Earware</category>
       </allowsubsystems>
       <minrating>1</minrating>
-      <rating>4</rating>
+      <rating>6</rating>
       <subsystems>
         <cyberware>
           <name>Sound Link</name>
@@ -712,10 +712,10 @@
       <name>Audio Enhancement</name>
       <limit>False</limit>
       <category>Earware</category>
-      <ess>0.1</ess>
-      <capacity>[Rating]</capacity>
+      <ess>FixedValues(0.1,0.1,0.1,0.2,0.2,0.2)</ess>
+      <capacity>FixedValues(1,2,3,8,10,12)</capacity>
       <avail>Rating * 3</avail>
-      <cost>Rating * 4000</cost>
+      <cost>FixedValues(4000,8000,12000,20000,25000,30000)</cost>
       <source>SR5</source>
       <page>453</page>
       <bonus>
@@ -8222,6 +8222,34 @@
       <cost>5000</cost>
       <source>KC</source>
       <page>66</page>
+    </cyberware>
+    <!-- End Region -->
+    <!-- Region Cybersenses -->
+    <cyberware>
+      <id>ba91b21a-2c8d-466f-a353-64293e09a9a8</id>
+      <name>Autovoice</name>
+      <limit>1</limit>
+      <category>Headware</category>
+      <ess>0.2</ess>
+      <rating>6</rating>
+      <capacity>0</capacity>
+      <avail>Rating</avail>
+      <cost>Rating*1000</cost>
+      <source>NF</source>
+      <page>175</page>
+    </cyberware>
+    <cyberware>
+      <id>ba91b21a-2c8d-466f-a353-64293e09a9a8</id>
+      <name>Autovoice (Hacked)</name>
+      <limit>1</limit>
+      <category>Headware</category>
+      <ess>0.2</ess>
+      <rating>6</rating>
+      <capacity>0</capacity>
+      <avail>(Rating*3)F</avail>
+      <cost>Rating*4000</cost>
+      <source>NF</source>
+      <page>175</page>
     </cyberware>
     <!-- End Region -->
   </cyberwares>

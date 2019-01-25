@@ -14205,6 +14205,224 @@
       <useskill>Exotic Ranged Weapon</useskill>
 	</weapon>
     <!-- End Region -->
+    <!-- Region No Future -->
+      <weapon>
+          <id>787627c8-a2c4-47c1-9f3e-dd96ebfadf29</id>
+          <name>Hardened Yo-Yo</name>
+          <category>Exotic Melee Weapons</category>
+          <type>Melee</type>
+          <conceal>0</conceal>
+          <accuracy>4</accuracy>
+          <reach>1</reach>
+          <damage>(STR+1)P</damage>
+          <ap>0</ap>
+          <mode>0</mode>
+          <rc>0</rc>
+          <ammo>0</ammo>
+          <avail>8</avail>
+          <cost>600</cost>
+          <source>NF</source>
+          <page>171</page>
+          <spec>Hardened Yo-Yo</spec>
+          <useskill>Exotic Melee Weapon</useskill>
+      </weapon>
+      <weapon>
+          <id>27d50841-a99b-4ba4-9dde-dc0706a5b852</id>
+          <name>Bladed Yo-Yo</name>
+          <category>Exotic Melee Weapons</category>
+          <type>Melee</type>
+          <conceal>0</conceal>
+          <accuracy>4</accuracy>
+          <reach>1</reach>
+          <damage>(STR+1)P</damage>
+          <ap>-1</ap>
+          <mode>0</mode>
+          <rc>0</rc>
+          <ammo>0</ammo>
+          <avail>12R</avail>
+          <cost>600</cost>
+          <source>NF</source>
+          <page>171</page>
+          <spec>Bladed Yo-Yo</spec>
+          <useskill>Exotic Melee Weapon</useskill>
+      </weapon>
+      <weapon>
+          <id>a67be7ca-baba-4ff7-8876-b76083f7e6cc</id>
+          <name>Monofilament Yo-Yo</name>
+          <category>Exotic Melee Weapons</category>
+          <type>Melee</type>
+          <conceal>0</conceal>
+          <accuracy>4</accuracy>
+          <reach>2</reach>
+          <damage>8P</damage>
+          <ap>-8</ap>
+          <mode>0</mode>
+          <rc>0</rc>
+          <ammo>0</ammo>
+          <avail>12F</avail>
+          <cost>12000</cost>
+          <source>NF</source>
+          <page>171</page>
+          <spec>Monofilament Yo-Yo</spec>
+          <useskill>Exotic Melee Weapon</useskill>
+      </weapon>
+      <weapon>
+          <id>38f30894-bf73-41a5-abad-fd88fe28eff4</id>
+          <name>Hardened Skateboard</name>
+          <category>Exotic Melee Weapons</category>
+          <type>Melee</type>
+          <conceal>-4</conceal>
+          <accuracy>4</accuracy>
+          <reach>0</reach>
+          <damage>(STR+2)P</damage>
+          <ap>0</ap>
+          <mode>0</mode>
+          <rc>0</rc>
+          <ammo>0</ammo>
+          <avail>8</avail>
+          <cost>600</cost>
+          <source>NF</source>
+          <page>171</page>
+          <spec>Hardened Rolling Blades</spec>
+          <useskill>Exotic Melee Weapon</useskill>
+      </weapon>
+      <weapon>
+          <id>38f30894-bf73-41a5-abad-fd88fe28eff4</id>
+          <name>Bladed Skateboard</name>
+          <category>Exotic Melee Weapons</category>
+          <type>Melee</type>
+          <conceal>-4</conceal>
+          <accuracy>4</accuracy>
+          <reach>0</reach>
+          <damage>(STR+2)P</damage>
+          <ap>-1</ap>
+          <mode>0</mode>
+          <rc>0</rc>
+          <ammo>0</ammo>
+          <avail>8</avail>
+          <cost>600</cost>
+          <source>NF</source>
+          <page>171</page>
+          <spec>Hardened Rolling Blades</spec>
+          <useskill>Exotic Melee Weapon</useskill>
+      </weapon>
+      <weapon>
+          <id>38f30894-bf73-41a5-abad-fd88fe28eff4</id>
+          <name>Rolling Blades</name>
+          <category>Exotic Melee Weapons</category>
+          <type>Melee</type>
+          <conceal>-4</conceal>
+          <accuracy>4</accuracy>
+          <reach>0</reach>
+          <damage>(STR+2)P</damage>
+          <ap>-1</ap>
+          <mode>0</mode>
+          <rc>0</rc>
+          <ammo>0</ammo>
+          <avail>8</avail>
+          <cost>600</cost>
+          <source>NF</source>
+          <page>171</page>
+          <spec>Hardened Rolling Blades</spec>
+          <useskill>Exotic Melee Weapon</useskill>
+      </weapon>
+      <weapon>
+          <id>38f30894-bf73-41a5-abad-fd88fe28eff4</id>
+          <name>Torch</name>
+          <category>Clubs</category>
+          <type>Melee</type>
+          <conceal>0</conceal>
+          <accuracy>3</accuracy>
+          <reach>1</reach>
+          <damage>8P</damage>
+          <ap>-4</ap>
+          <mode>0</mode>
+          <rc>0</rc>
+          <ammo>0</ammo>
+          <avail>0</avail>
+          <cost>10</cost>
+          <source>NF</source>
+          <page>172</page>
+      </weapon>
+      <weapon>
+          <id>38f30894-bf73-41a5-abad-fd88fe28eff4</id>
+          <name>Pitchfork</name>
+          <category>Clubs</category>
+          <type>Melee</type>
+          <conceal>0</conceal>
+          <accuracy>3</accuracy>
+          <reach>3</reach>
+          <damage>(STR+2)P</damage>
+          <ap>-1</ap>
+          <mode>0</mode>
+          <rc>0</rc>
+          <ammo>0</ammo>
+          <avail>4</avail>
+          <cost>25</cost>
+          <source>NF</source>
+          <page>172</page>
+      </weapon>
+      <weapon>
+          <id>38f30894-bf73-41a5-abad-fd88fe28eff4</id>
+          <name>Rolling Blades</name>
+          <category>Clubs</category>
+          <type>Melee</type>
+          <conceal>0</conceal>
+          <accuracy>4</accuracy>
+          <reach>0</reach>
+          <damage>(STR+2)P</damage>
+          <ap>-1</ap>
+          <mode>0</mode>
+          <rc>0</rc>
+          <ammo>0</ammo>
+          <avail>8</avail>
+          <cost>600</cost>
+          <source>NF</source>
+          <page>172</page>
+      </weapon>
+      <weapon>
+          <id>188454e1-9e6e-4eaf-a5f1-0b8232f76061</id>
+          <name>Grenade: Molotov Cocktail</name>
+          <category>Gear</category>
+          <type>Ranged</type>
+          <conceal>0</conceal>
+          <accuracy>Physical</accuracy>
+          <reach>0</reach>
+          <damage>8P (-4/m)</damage>
+          <ap>-6</ap>
+          <mode>0</mode>
+          <rc>0</rc>
+          <ammo>0</ammo>
+          <avail>6F</avail>
+          <cost>15</cost>
+          <source>NF</source>
+          <page>172</page>
+          <range>Standard Grenade</range>
+          <spec>Non-Aerodynamic</spec>
+          <useskill>Throwing Weapons</useskill>
+      </weapon>
+      <weapon>
+          <id>e67b21fe-ca6d-42fa-bad3-974b3797038c</id>
+          <name>Grenade: Molotov Cocktail (Aerodynamic)</name>
+          <category>Gear</category>
+          <type>Ranged</type>
+          <conceal>0</conceal>
+          <accuracy>Physical</accuracy>
+          <reach>0</reach>
+          <damage>8P (-4/m)</damage>
+          <ap>-6</ap>
+          <mode>0</mode>
+          <rc>0</rc>
+          <ammo>0</ammo>
+          <avail>6F</avail>
+          <cost>15</cost>
+          <source>NF</source>
+          <page>172</page>
+          <range>Aerodynamic Grenade</range>
+          <spec>Aerodynamic</spec>
+          <useskill>Throwing Weapons</useskill>
+      </weapon>
+    <!-- End Region -->
   </weapons>
   <accessories>
     <!-- Region Shadowrun 5 -->

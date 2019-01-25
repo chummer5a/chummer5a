@@ -252,5 +252,10 @@
       <name>Aetherology</name>
       <code>AET</code>
     </book>
+    <book>
+      <id>e65d69fd-8717-4e2b-88b0-73bf7a22bca0</id>
+      <name>No Future</name>
+      <code>NF</code>
+    </book>
   </books>
 </chummer>
