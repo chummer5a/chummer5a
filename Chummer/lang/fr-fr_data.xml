@@ -8071,6 +8071,7 @@
 			<category translate="Nanoware injecté">Soft Nanoware</category>
 			<category translate="Cyberware pour biodrones">Special Biodrone Cyberware</category>
 			<category translate="Cyberware pour armes">Cyber Implant Weapon Accessory</category>
+			<category translate="Modifications Auto-Injecteur">Auto Injector Mods</category>
 		</categories>
 		<cyberwares>
 			<cyberware translated="True">
@@ -18419,6 +18420,15 @@
 	</chummer>
 	<chummer file="improvements.xml">
 		<improvements>
+			<improvement>
+				<id>actiondicepool</id>
+				<name>Action Dice-Pool Modifier</name>
+				<translate>Modificateur du pool de dés d'action</translate>
+				<altpage>Ajuste le nombre de cases que le personnage possède dans son moniteur de 
+          condition étourdissant. Les nombres positifs augmentent le nombre de cases du
+          moniteur de condition. Les nombres négatifs réduisent le nombre de cases du
+          moniteur de condition.</altpage>
+			</improvement>
 			<improvement>
 				<id>specificattribute</id>
 				<name>Attribute</name>
