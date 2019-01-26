@@ -11177,7 +11177,7 @@
       <damage>7P</damage>
       <ap>-</ap>
       <mode>SA/BF/FA</mode>
-      <rc>1</rc>
+      <rc>0</rc>
       <ammo>24(c)</ammo>
       <avail>15F</avail>
       <cost>1500</cost>
@@ -11217,7 +11217,7 @@
       <damage>7P</damage>
       <ap>-</ap>
       <mode>SA/BF/FA</mode>
-      <rc>1</rc>
+      <rc>0</rc>
       <ammo>24(c)</ammo>
       <avail>15F</avail>
       <cost>2000</cost>
@@ -13486,7 +13486,7 @@
       <mode>SA</mode>
       <rc>0</rc>
       <ammo>6(m)x2</ammo>
-      <avail>12F</avail>
+      <avail>12R</avail>
       <cost>2000</cost>
       <source>SL</source>
       <page>39</page>
