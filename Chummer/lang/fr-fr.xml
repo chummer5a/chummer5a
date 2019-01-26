@@ -9518,5 +9518,9 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<key>String_AvailablePlugins</key>
 			<text>Plugins disponibles</text>
 		</string>
+		<string>
+			<key>String_Program</key>
+			<text>Programme</text>
+		</string>
 	</strings>
 </chummer>
