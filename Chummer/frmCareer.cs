@@ -57,6 +57,8 @@ namespace Chummer
         public Action<object> DiceRollerOpened { get; set; }
         public Action<Character, int> DiceRollerOpenedInt { get; set; }
 
+        public TabControl TabCharacterTabs { get { return this.tabCharacterTabs; } }
+
         #region Form Events
         [Obsolete("This constructor is for use by form designers only.", true)]
         public frmCareer()
@@ -704,6 +706,9 @@ namespace Chummer
             // Stupid hack to get the MDI icon to show up properly.
             Icon = Icon.Clone() as Icon;
             Timekeeper.Finish("load_frm_career");
+            Timekeeper.Start("load_plugins_frmcareer");
+            Program.MainForm.PluginLoader.CallPlugins(this);
+            Timekeeper.Finish("load_plugins_frmcareer");
             Timekeeper.Finish("loading");
 
             if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0)
@@ -11909,7 +11914,7 @@ namespace Chummer
             if (IsLoading || IsRefreshing || CharacterObject.MagicTradition.Type != TraditionType.MAG)
                 return;
             string strSelectedId = cboStream.SelectedValue?.ToString();
-            if (string.IsNullOrEmpty(strSelectedId) || strSelectedId == CharacterObject.MagicTradition.SourceID)
+            if (string.IsNullOrEmpty(strSelectedId) || strSelectedId == CharacterObject.MagicTradition.strSourceID)
                 return;
 
             XmlNode xmlNewStreamNode = XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions/tradition[id = \"" + strSelectedId + "\"]");
@@ -14567,7 +14572,7 @@ namespace Chummer
             }
             if (blnAmmoOnly)
             {
-                frmPickGear.SelectedGear = objSelectedGear.SourceID;
+                frmPickGear.SelectedGear = objSelectedGear.strSourceID;
             }
 
             frmPickGear.ShowDialog(this);

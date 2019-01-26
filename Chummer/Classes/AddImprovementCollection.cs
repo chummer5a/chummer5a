@@ -354,7 +354,7 @@ namespace Chummer.Classes
                 frmSelectItem frmPickItem = new frmSelectItem
                 {
                     DropdownItems = lstTraditions,
-                    SelectedItem = _objCharacter.MagicTradition.SourceID,
+                    SelectedItem = _objCharacter.MagicTradition.strSourceID,
                     AllowAutoSelect = false
                 };
                 frmPickItem.ShowDialog();
@@ -3041,7 +3041,10 @@ namespace Chummer.Classes
             Log.Info("lifestylecost");
             Log.Info("lifestylecost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LifestyleCost, _strUnique,
+
+            // If the Lifestyle node is present, we restrict to a specific lifestyle type. 
+            string baseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerText ?? string.Empty;
+            CreateImprovement(baseLifestyle, _objImprovementSource, SourceName, Improvement.ImprovementType.LifestyleCost, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3051,7 +3054,10 @@ namespace Chummer.Classes
             Log.Info("basiclifestylecost");
             Log.Info("basiclifestylecost = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BasicLifestyleCost, _strUnique,
+
+            // If the Lifestyle node is present, we restrict to a specific lifestyle type. 
+            string baseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerText ?? string.Empty;
+            CreateImprovement(baseLifestyle, _objImprovementSource, SourceName, Improvement.ImprovementType.BasicLifestyleCost, _strUnique,
                 ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 

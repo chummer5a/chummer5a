@@ -71,9 +71,11 @@ namespace Chummer
     /// <summary>
     /// A Quality.
     /// </summary>
+    [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
+        private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
         private string _strName = string.Empty;
         private bool _blnMetagenetic;
@@ -193,6 +195,7 @@ namespace Chummer
 
             if (objXmlQuality.TryGetField("id", Guid.TryParse, out Guid guiTemp))
             {
+                _sourceID = guiTemp;
                 _guiQualityId = guiTemp;
                 _objCachedMyXmlNode = null;
             }
@@ -408,6 +411,7 @@ namespace Chummer
             }
             else
                 _objCachedMyXmlNode = null;
+            _sourceID = _guiQualityId;
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("bp", ref _intBP);
             objNode.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
@@ -482,6 +486,9 @@ namespace Chummer
         #endregion
 
         #region Properties
+
+        public Guid SourceID { get { return _sourceID; } }
+
         /// <summary>
         /// Internal identifier which will be used to identify this Quality in the Improvement system.
         /// </summary>

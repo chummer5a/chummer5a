@@ -6,6 +6,12 @@ Application Changes:
 - Exposed the selection of AI programs to the main RequirementsMet method. Prevents issues with programs not being translated, offends me slightly less. Fixes #3350
 - Fixed processing of FixedValues on the Select Gear window.
 - Refactored string processing method for Gear Ratings into a single method. Allows MinRating, MaxRating, MatrixAttributes and TotalBonusMatrixBoxes (for LivingPersona only) to use complex strings such as {Parent DeviceRating}. Fixes #3360
+- Foxed some behaviour in creation of packs to properly allow creatio nof lifestyles.
+- Fixed behaviour of child Cyberware with the AddToParentESS flag not properly adding their essence cost to the parent.
+- Fixed issues with the subsystem and gear limitations for Cyberware and Gear that prevented categories from loading properly.
+- Capped cost multipliers for lifestyles to -0%. 
+- Added the 'lifestyle' attribute to the lifestylecost and basiclifestylecost improvement types. This supports limiting the bonus to a specific Lifestyle type, such as Low or Squatter. 
+- ValueOf has been altered slightly to allow for selecting objects that are either of a given ImprovedName, or don't have one, in support of the above changes. Defaults to existing behaviour.
 
 Data Changes:
 - Fixed incorrect underbarrel weapon name for the Nissan Optimum II that caused a crash. Fixes part of #3344
@@ -13,6 +19,11 @@ Data Changes:
 - Set the ammo type for the FN-AAL to Gyrojet. Possibly not correct, as there's no proper RAW on what ammo the weapon is supposed to fire. 
 - Fixed incorrect price for the Reakt geneware. 
 - Allowed the Peak-Discharge energy packs to be added as accessories to weapons with External Source ammo types. Fixes #3361.
+- Fixed incorrect specialisation requirement for the Death Dealer quality.
+- Fixed missing nuyen bp costs for the ShadowNET starter pack and Runnerhub Basic Gear Pack. Fixes #3368
+- The Auto Injector Expension and Killswitch are now properly addable to the Autoinjector as child objects. They've been renamed to Expanded Reservoir and Killswitch, respectively. Fixes #3365
+- Fixed issues with the Infected Optional Power qualities that prevented them being taken in create mode. Closes #3234
+- Implemented the lifestyle discount for the Community Connection quality. Closes #3372
 
 Build 204
 
@@ -87,6 +98,8 @@ New Strings:
 - Checkbox_DiceRoller_VariableGlitch
 - Message_CustomDrug_Name
 - MessageTitle_CustomDrug_Name
+- Tab_Options_Plugins
+- String_AvailablePlugins
 
 Changed Strings:
 

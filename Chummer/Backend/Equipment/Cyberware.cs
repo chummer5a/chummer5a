@@ -34,6 +34,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// A piece of Cyberware.
     /// </summary>
+    [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Cyberware : IHasChildren<Cyberware>, IHasGear, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort
     {
@@ -2724,7 +2725,7 @@ namespace Chummer.Backend.Equipment
         {
             if (PrototypeTranshuman && blnReturnPrototype)
                 return 0;
-            if (Parent != null)
+            if (Parent != null && !AddToParentESS)
                 return 0;
             if (SourceID == EssenceHoleGUID || SourceID == EssenceAntiHoleGUID) // Essence hole or antihole
             {

@@ -2009,7 +2009,8 @@ namespace Chummer
         /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
-        public static int ValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType, bool blnAddToRating = false, string strImprovedName = "", bool blnUnconditionalOnly = true)
+        /// <param name="blnIncludeUnimproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param> 
+        public static int ValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType, bool blnAddToRating = false, string strImprovedName = "", bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
         {
             //Log.Enter("ValueOf");
             //Log.Info("objImprovementType = " + objImprovementType.ToString());
@@ -2065,57 +2066,56 @@ namespace Chummer
             Dictionary<string, int> dicValues = new Dictionary<string, int>();
             foreach (Improvement objImprovement in objCharacter.Improvements)
             {
-                if (objImprovement.ImproveType == objImprovementType && objImprovement.Enabled && !objImprovement.Custom && (!blnUnconditionalOnly || string.IsNullOrEmpty(objImprovement.Condition)))
+                if (objImprovement.ImproveType != objImprovementType || !objImprovement.Enabled ||
+                    objImprovement.Custom ||
+                    (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition))) continue;
+                string strLoopImprovedName = objImprovement.ImprovedName;
+                bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
+                                  !(objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
+                                    objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice) &&
+                                  // Ignore items that apply to a Skill's Rating.
+                                  objImprovement.AddToRating == blnAddToRating &&
+                                  // If an Improved Name has been passed, only retrieve values that have this Improved Name.
+                                  (string.IsNullOrEmpty(strImprovedName) || strImprovedName == strLoopImprovedName ||
+                                   blnIncludeNonImproved && string.IsNullOrWhiteSpace(strLoopImprovedName));
+
+                if (!blnAllowed) continue;
+                string strUniqueName = objImprovement.UniqueName;
+                if (!string.IsNullOrEmpty(strUniqueName))
                 {
-                    string strLoopImprovedName = objImprovement.ImprovedName;
-                    bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
-                        !(objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
-                          objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice) &&
-                    // Ignore items that apply to a Skill's Rating.
-                          objImprovement.AddToRating == blnAddToRating &&
-                    // If an Improved Name has been passed, only retrieve values that have this Improved Name.
-                          (string.IsNullOrEmpty(strImprovedName) || strImprovedName == strLoopImprovedName);
-
-                    if (blnAllowed)
+                    // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                    if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
                     {
-                        string strUniqueName = objImprovement.UniqueName;
-                        if (!string.IsNullOrEmpty(strUniqueName))
-                        {
-                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
-                            {
-                                if (!lstUniqueNames.Contains(strUniqueName))
-                                    lstUniqueNames.Add(strUniqueName);
-                            }
-                            else
-                            {
-                                dicUniqueNames.Add(strLoopImprovedName, new HashSet<string>{strUniqueName});
-                            }
-
-                            // Add the values to the UniquePair List so we can check them later.
-                            if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
-                            {
-                                lstUniquePairs.Add(new Tuple<string, int>(strUniqueName, objImprovement.Value));
-                            }
-                            else
-                            {
-                                dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, int>> { new Tuple<string, int>(strUniqueName, objImprovement.Value) });
-                            }
-
-                            if (!dicValues.ContainsKey(strLoopImprovedName))
-                            {
-                                dicValues.Add(strLoopImprovedName, 0);
-                            }
-                        }
-                        else if (dicValues.ContainsKey(strLoopImprovedName))
-                        {
-                            dicValues[strLoopImprovedName] += objImprovement.Value;
-                        }
-                        else
-                        {
-                            dicValues.Add(strLoopImprovedName, objImprovement.Value);
-                        }
+                        if (!lstUniqueNames.Contains(strUniqueName))
+                            lstUniqueNames.Add(strUniqueName);
                     }
+                    else
+                    {
+                        dicUniqueNames.Add(strLoopImprovedName, new HashSet<string>{strUniqueName});
+                    }
+
+                    // Add the values to the UniquePair List so we can check them later.
+                    if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                    {
+                        lstUniquePairs.Add(new Tuple<string, int>(strUniqueName, objImprovement.Value));
+                    }
+                    else
+                    {
+                        dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, int>> { new Tuple<string, int>(strUniqueName, objImprovement.Value) });
+                    }
+
+                    if (!dicValues.ContainsKey(strLoopImprovedName))
+                    {
+                        dicValues.Add(strLoopImprovedName, 0);
+                    }
+                }
+                else if (dicValues.ContainsKey(strLoopImprovedName))
+                {
+                    dicValues[strLoopImprovedName] += objImprovement.Value;
+                }
+                else
+                {
+                    dicValues.Add(strLoopImprovedName, objImprovement.Value);
                 }
             }
 
@@ -2175,57 +2175,54 @@ namespace Chummer
             Dictionary<string, int> dicCustomValues = new Dictionary<string, int>();
             foreach (Improvement objImprovement in objCharacter.Improvements)
             {
-                if (objImprovement.Custom && objImprovement.Enabled && (!blnUnconditionalOnly || string.IsNullOrEmpty(objImprovement.Condition)))
+                if (!objImprovement.Custom || !objImprovement.Enabled ||
+                    (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition))) continue;
+                string strLoopImprovedName = objImprovement.ImprovedName;
+                bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
+                                  !(objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
+                                    objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice) &&
+                                  // Ignore items that apply to a Skill's Rating.
+                                  objImprovement.AddToRating == blnAddToRating &&
+                                  // If an Improved Name has been passed, only retrieve values that have this Improved Name.
+                                  (string.IsNullOrEmpty(strImprovedName) || strImprovedName == strLoopImprovedName);
+
+                if (!blnAllowed) continue;
+                string strUniqueName = objImprovement.UniqueName;
+                if (!string.IsNullOrEmpty(strUniqueName))
                 {
-                    string strLoopImprovedName = objImprovement.ImprovedName;
-                    bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
-                        !(objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
-                          objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice) &&
-                    // Ignore items that apply to a Skill's Rating.
-                          objImprovement.AddToRating == blnAddToRating &&
-                    // If an Improved Name has been passed, only retrieve values that have this Improved Name.
-                          (string.IsNullOrEmpty(strImprovedName) || strImprovedName == strLoopImprovedName);
-
-                    if (blnAllowed)
+                    // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                    if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
                     {
-                        string strUniqueName = objImprovement.UniqueName;
-                        if (!string.IsNullOrEmpty(strUniqueName))
-                        {
-                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
-                            {
-                                if (!lstUniqueNames.Contains(strUniqueName))
-                                    lstUniqueNames.Add(strUniqueName);
-                            }
-                            else
-                            {
-                                dicUniqueNames.Add(strLoopImprovedName, new HashSet<string> { strUniqueName });
-                            }
-
-                            // Add the values to the UniquePair List so we can check them later.
-                            if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
-                            {
-                                lstUniquePairs.Add(new Tuple<string, int>(strUniqueName, objImprovement.Value));
-                            }
-                            else
-                            {
-                                dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, int>> { new Tuple<string, int>(strUniqueName, objImprovement.Value) });
-                            }
-
-                            if (!dicCustomValues.ContainsKey(strLoopImprovedName))
-                            {
-                                dicCustomValues.Add(strLoopImprovedName, 0);
-                            }
-                        }
-                        else if (dicCustomValues.ContainsKey(strLoopImprovedName))
-                        {
-                            dicCustomValues[strLoopImprovedName] += objImprovement.Value;
-                        }
-                        else
-                        {
-                            dicCustomValues.Add(strLoopImprovedName, objImprovement.Value);
-                        }
+                        if (!lstUniqueNames.Contains(strUniqueName))
+                            lstUniqueNames.Add(strUniqueName);
                     }
+                    else
+                    {
+                        dicUniqueNames.Add(strLoopImprovedName, new HashSet<string> { strUniqueName });
+                    }
+
+                    // Add the values to the UniquePair List so we can check them later.
+                    if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                    {
+                        lstUniquePairs.Add(new Tuple<string, int>(strUniqueName, objImprovement.Value));
+                    }
+                    else
+                    {
+                        dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, int>> { new Tuple<string, int>(strUniqueName, objImprovement.Value) });
+                    }
+
+                    if (!dicCustomValues.ContainsKey(strLoopImprovedName))
+                    {
+                        dicCustomValues.Add(strLoopImprovedName, 0);
+                    }
+                }
+                else if (dicCustomValues.ContainsKey(strLoopImprovedName))
+                {
+                    dicCustomValues[strLoopImprovedName] += objImprovement.Value;
+                }
+                else
+                {
+                    dicCustomValues.Add(strLoopImprovedName, objImprovement.Value);
                 }
             }
 

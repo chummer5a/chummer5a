@@ -54,6 +54,8 @@ namespace Chummer
         //private readonly Stopwatch PowerPropertyChanged_StopWatch = Stopwatch.StartNew();
         //private readonly Stopwatch SkillPropertyChanged_StopWatch = Stopwatch.StartNew();
 
+        public TabControl TabCharacterTabs { get { return this.tabCharacterTabs; } }
+
         #region Form Events
         [Obsolete("This constructor is for use by form designers only.", true)]
         public frmCreate()
@@ -691,6 +693,7 @@ namespace Chummer
             // Stupid hack to get the MDI icon to show up properly.
             Icon = Icon.Clone() as Icon;
 
+            Program.MainForm.PluginLoader.CallPlugins(this);
             Timekeeper.Finish("load_frm_create");
             Timekeeper.Finish("loading");
 
@@ -8765,7 +8768,7 @@ namespace Chummer
             if (IsLoading || IsRefreshing || CharacterObject.MagicTradition.Type == TraditionType.MAG)
                 return;
             string strSelectedId = cboStream.SelectedValue?.ToString();
-            if (string.IsNullOrEmpty(strSelectedId) || strSelectedId == CharacterObject.MagicTradition.SourceID)
+            if (string.IsNullOrEmpty(strSelectedId) || strSelectedId == CharacterObject.MagicTradition.strSourceID)
                 return;
 
             XmlNode xmlNewStreamNode = XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions/tradition[id = \"" + strSelectedId + "\"]");
@@ -14130,43 +14133,29 @@ namespace Chummer
 
                 foreach (XmlNode objXmlLifestyle in xmlLifestyles.SelectNodes("lifestyle"))
                 {
-                    string strName = objXmlLifestyle["baselifestyle"].InnerText;
-                    int intMonths = Convert.ToInt32(objXmlLifestyle["months"].InnerText);
-
                     // Create the Lifestyle.
                     Lifestyle objLifestyle = new Lifestyle(CharacterObject);
 
-                    XmlNode objXmlLifestyleNode = objXmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + strName + "\"]");
+                    XmlNode objXmlLifestyleNode = objXmlLifestyleDocument.SelectSingleNode($"/chummer/lifestyles/lifestyle[name = \"{objXmlLifestyle["baselifestyle"].InnerText}\"]");
                     if (objXmlLifestyleNode != null)
                     {
-                        // This is a standard Lifestyle, so just use the Create method.
                         objLifestyle.Create(objXmlLifestyleNode);
-                        objLifestyle.Increments = intMonths;
-                    }
-                    else
-                    {
                         // This is an Advanced Lifestyle, so build it manually.
-                        objLifestyle.CustomName = strName;
-                        objLifestyle.Increments = intMonths;
-                        objLifestyle.Cost = Convert.ToDecimal(objXmlLifestyle["cost"].InnerText);
-                        objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"].InnerText);
-                        objLifestyle.Multiplier = Convert.ToInt32(objXmlLifestyle["multiplier"].InnerText);
-                        objLifestyle.BaseLifestyle = objXmlLifestyle["baselifestyle"].InnerText;
-                        objLifestyle.Source = "SR5";
-                        objLifestyle.Page = "373";
-                        objLifestyle.Comforts = Convert.ToInt32(objXmlLifestyle["comforts"].InnerText);
-                        objLifestyle.Security = Convert.ToInt32(objXmlLifestyle["security"].InnerText);
-                        objLifestyle.Area = Convert.ToInt32(objXmlLifestyle["area"].InnerText);
-                        objLifestyle.BaseComforts = Convert.ToInt32(objXmlLifestyle["comfortsminimum"].InnerText);
-                        objLifestyle.BaseSecurity = Convert.ToInt32(objXmlLifestyle["securityminimum"].InnerText);
-                        objLifestyle.BaseArea = Convert.ToInt32(objXmlLifestyle["areaminimum"].InnerText);
+                        objLifestyle.CustomName = objXmlLifestyle["name"]?.InnerText ?? string.Empty;
+                        objLifestyle.Comforts = Convert.ToInt32(objXmlLifestyle["comforts"]?.InnerText);
+                        objLifestyle.Security = Convert.ToInt32(objXmlLifestyle["security"]?.InnerText);
+                        objLifestyle.Area = Convert.ToInt32(objXmlLifestyle["area"]?.InnerText);
 
-                        foreach (LifestyleQuality objXmlQuality in objXmlLifestyle.SelectNodes("lifestylequalities/lifestylequality"))
-                            objLifestyle.LifestyleQualities.Add(objXmlQuality);
+                        foreach (XmlNode objXmlQuality in objXmlLifestyle.SelectNodes("qualities/quality"))
+                        {
+                            LifestyleQuality lq = new LifestyleQuality(CharacterObject);
+                            lq.Create(objXmlQuality, objLifestyle, CharacterObject, QualitySource.Selected);
+                            objLifestyle.LifestyleQualities.Add(lq);
+                        }
+
+                        // Add the Lifestyle to the character and Lifestyle Tree.
+                        CharacterObject.Lifestyles.Add(objLifestyle);
                     }
-
-                    // Add the Lifestyle to the character and Lifestyle Tree.
-                    CharacterObject.Lifestyles.Add(objLifestyle);
                 }
             }
 

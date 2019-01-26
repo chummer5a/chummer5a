@@ -10046,6 +10046,57 @@
       <seats>3</seats>
     </vehicle>
     <!-- End Region -->
+    <!-- Region No Future -->
+
+    <vehicle>
+      <id>378178d4-e941-4f43-acc0-b14a551c0f7b</id>
+      <name>Ford Broadcast</name>
+      <page>174</page>
+      <source>NF</source>
+      <accel>1</accel>
+      <armor>12</armor>
+      <avail>8R</avail>
+      <body>16</body>
+      <category>General</category>
+      <cost>50000</cost>
+      <handling>3/3</handling>
+      <pilot>2</pilot>
+      <sensor>4</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <seats>4</seats>
+    </vehicle>
+    <vehicle>
+      <id>8eaa5090-5fcb-42b4-9e96-ef408096d2a1</id>
+      <name>Skiorsky-Bell Condor</name>
+      <page>174</page>
+      <source>NF</source>
+      <accel>2</accel>
+      <armor>9</armor>
+      <avail>12R</avail>
+      <body>12</body>
+      <category>General</category>
+      <cost>120000</cost>
+      <handling>4</handling>
+      <pilot>2</pilot>
+      <sensor>6</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <seats>2</seats>
+    </vehicle>
+    <!-- End Region -->
   </vehicles>
   <mods>
     <!-- Region Vehicle Weapon Mount -->

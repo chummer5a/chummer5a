@@ -23,6 +23,7 @@ using System.Xml;
 
 namespace Chummer
 {
+    [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
     public class MentorSpirit : IHasInternalId, IHasName, IHasXmlNode, IHasSource
     {
@@ -216,9 +217,9 @@ namespace Chummer
                 objWriter.WriteElementString("choice2", string.Empty);
             objWriter.WriteElementString("notes", _strNotes);
 
-            if (!string.IsNullOrEmpty(SourceID))
+            if (!string.IsNullOrEmpty(strSourceID))
             {
-                objWriter.WriteElementString("id", SourceID);
+                objWriter.WriteElementString("id", strSourceID);
             }
 
             objWriter.WriteEndElement();
@@ -282,6 +283,9 @@ namespace Chummer
         #endregion
 
         #region Properties
+
+        public Guid SourceID { get { return _guiID; } }
+
         /// <summary>
         /// Name of the Mentor Spirit or Paragon.
         /// </summary>
@@ -410,7 +414,7 @@ namespace Chummer
         /// <summary>
         /// Guid of the Xml Node containing data on this Mentor Spirit or Paragon.
         /// </summary>
-        public string SourceID => _sourceID.Equals(Guid.Empty) ? string.Empty : _sourceID.ToString("D");
+        public string strSourceID => _sourceID.Equals(Guid.Empty) ? string.Empty : _sourceID.ToString("D");
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;

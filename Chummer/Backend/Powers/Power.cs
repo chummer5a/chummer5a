@@ -38,6 +38,7 @@ namespace Chummer
     /// <summary>
     /// An Adept Power.
     /// </summary>
+    [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayNameMethod(GlobalOptions.DefaultLanguage)}")]
     public class Power : INotifyMultiplePropertyChanged, IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
@@ -396,6 +397,8 @@ namespace Chummer
         /// Internal identifier which will be used to identify this Power in the Improvement system.
         /// </summary>
         public string InternalId => _guiID.ToString("D");
+
+        public Guid SourceID => _sourceID;
 
         /// <summary>
         /// Power's name.

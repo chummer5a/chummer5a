@@ -831,7 +831,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strPDFAppPath))
                 strPDFAppPath = GlobalOptions.PDFAppPath;
             // The user must have specified the arguments of their PDF application in order to use this functionality.
-            if (string.IsNullOrWhiteSpace(strPDFAppPath))
+            if (string.IsNullOrWhiteSpace(strPDFAppPath) || !File.Exists(strPDFAppPath))
                 return;
 
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
