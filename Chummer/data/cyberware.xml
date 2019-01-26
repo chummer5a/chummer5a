@@ -8224,9 +8224,9 @@
       <page>66</page>
     </cyberware>
     <!-- End Region -->
-    <!-- Region Cybersenses -->
+    <!-- Region No Future -->
     <cyberware>
-      <id>ba91b21a-2c8d-466f-a353-64293e09a9a8</id>
+      <id>3093590d-5021-441e-973e-38afb95225f6</id>
       <name>Autovoice</name>
       <limit>1</limit>
       <category>Headware</category>
@@ -8239,7 +8239,7 @@
       <page>175</page>
     </cyberware>
     <cyberware>
-      <id>ba91b21a-2c8d-466f-a353-64293e09a9a8</id>
+      <id>6ba97aa3-8b79-43a5-8499-95d5760a724e</id>
       <name>Autovoice (Hacked)</name>
       <limit>1</limit>
       <category>Headware</category>

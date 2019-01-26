@@ -2,24 +2,24 @@
 
 <!--This file is part of Chummer5a.
 
-    Chummer5a is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  Chummer5a is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    Chummer5a is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  Chummer5a is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License
+  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
 
-    You can obtain the full source code for Chummer5a at
-    https://github.com/chummer5a/chummer5a
+  You can obtain the full source code for Chummer5a at
+  https://github.com/chummer5a/chummer5a
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema gear.xsd">
+     xsi:schemaLocation="http://www.w3.org/2001/XMLSchema gear.xsd">
   <!-- Due to the large variety of items in gear.xml, Regions are organised by category rather than sourcebook. -->
   <version>0</version>
   <categories>
@@ -1383,216 +1383,216 @@
     </gear>
     <!-- Region Kill Code-->
 
-      <gear>
-          <id>7e104b61-69b3-4a7e-8221-a6190314c411</id>
-          <name>Ammo: Zapper</name>
-          <category>Ammunition</category>
-          <rating>0</rating>
-          <source>KC</source>
-          <page>48</page>
-          <avail>12R</avail>
-          <cost>140</cost>
-          <costfor>10</costfor>
-          <weaponbonus>
-              <damagetype>(M)</damagetype>
-          </weaponbonus>
-      </gear>
-      <gear>
-          <id>b8ad4fef-4092-42ac-87ad-518dd8b60fb7</id>
-          <name>Ammo: Looper</name>
-          <category>Ammunition</category>
-          <rating>6</rating>
-          <source>KC</source>
-          <page>48</page>
-          <avail>FixedValues(7R,8R,9R,10R,11R,12R)</avail>
-          <cost>FixedValues(20,30,40,50,100,200)</cost>
-          <costfor>10</costfor>
-          <weaponbonus>
-              <userange>Light Pistol</userange>
-          </weaponbonus>
-      </gear>
-      <gear>
-          <id>c40a91b0-7896-4ad1-b1e6-f39c9c93bf1b</id>
-          <name>Ammo: Fuzzy</name>
-          <category>Ammunition</category>
-          <rating>2</rating>
-          <source>KC</source>
-          <page>48</page>
-          <avail>FixedValues(10R,12R)</avail>
-          <cost>FixedValues(30,50)</cost>
-          <costfor>10</costfor>
-          <weaponbonus>
-              <userange>Light Pistol</userange>
-          </weaponbonus>
-      </gear>
-      <gear>
-          <id>efa87c80-d712-41d8-813e-768a2f4ffcf7</id>
-          <name>Ammo: E0-E0 (Public Grid)</name>
-          <category>Ammunition</category>
-          <rating>0</rating>
-          <source>KC</source>
-          <page>48</page>
-          <avail>5R</avail>
-          <cost>50</cost>
-          <costfor>10</costfor>
-          <weaponbonus>
-              <damagetype>(M)</damagetype>
-              <userange>Light Pistol</userange>
-          </weaponbonus>
-      </gear>
-      <gear>
-          <id>f4be287a-2ed8-4e7b-8244-32243905fe84</id>
-          <name>Ammo: E0-E0 (Local Grid)</name>
-          <category>Ammunition</category>
-          <rating>0</rating>
-          <source>KC</source>
-          <page>48</page>
-          <avail>5R</avail>
-          <cost>60</cost>
-          <bonus>
-              <selecttext />
-          </bonus>
-          <costfor>10</costfor>
-          <weaponbonus>
-              <damagetype>(M)</damagetype>
-              <userange>Light Pistol</userange>
-          </weaponbonus>
-      </gear>
-      <gear>
-          <id>8ddf2080-2444-4d9a-a601-5be4147b183d</id>
-          <name>Ammo: E0-E0 (Megacorporate Grid)</name>
-          <category>Ammunition</category>
-          <rating>0</rating>
-          <source>KC</source>
-          <page>48</page>
-          <avail>5R</avail>
-          <cost>100</cost>
-          <bonus>
-              <selecttext />
-          </bonus>
-          <costfor>10</costfor>
-          <weaponbonus>
-              <damagetype>(M)</damagetype>
-              <userange>Light Pistol</userange>
-          </weaponbonus>
-      </gear>
-      <gear>
-          <id>bf9001db-6484-47ab-9449-5f068f5fe04b</id>
-          <name>Ammo: E0-E0 Rifle (Public Grid)</name>
-          <category>Ammunition</category>
-          <rating>0</rating>
-          <source>KC</source>
-          <page>48</page>
-          <avail>5R</avail>
-          <cost>50</cost>
-          <costfor>10</costfor>
-          <weaponbonus>
-              <damagetype>(M)</damagetype>
-              <userange>Light Pistol</userange>
-          </weaponbonus>
-      </gear>
-      <gear>
-          <id>d1e0807b-6c6e-44bb-a230-c6f328ee26a5</id>
-          <name>Ammo: E0-E0 Rifle (Local Grid)</name>
-          <category>Ammunition</category>
-          <rating>0</rating>
-          <source>KC</source>
-          <page>48</page>
-          <avail>5R</avail>
-          <cost>60</cost>
-          <bonus>
-              <selecttext />
-          </bonus>
-          <costfor>10</costfor>
-          <weaponbonus>
-              <damagetype>(M)</damagetype>
-              <userange>Light Pistol</userange>
-          </weaponbonus>
-      </gear>
-      <gear>
-          <id>b580d8fc-9987-403a-9be5-760b1d88f926</id>
-          <name>Ammo: E0-E0 Rifle (Megacorporate Grid)</name>
-          <category>Ammunition</category>
-          <rating>0</rating>
-          <source>KC</source>
-          <page>48</page>
-          <avail>5R</avail>
-          <cost>100</cost>
-          <bonus>
-              <selecttext />
-          </bonus>
-          <costfor>10</costfor>
-          <weaponbonus>
-              <damage>-4</damage>
-              <ap>-4</ap>
-              <damagetype>(M)</damagetype>
-              <userange>Light Pistol</userange>
-          </weaponbonus>
-      </gear>
-      <gear>
-          <id>05a9f4e2-b7c0-4bf8-8614-33b1ee0f406d</id>
-          <name>Arrow: Arrowlink (50m)</name>
-          <category>Ammunition</category>
-          <rating>0</rating>
-          <source>KC</source>
-          <page>48</page>
-          <avail>6R</avail>
-          <cost>25</cost>
-      </gear>
-      <gear>
-          <id>2d3b26aa-a2c1-4514-915e-62aa08203456</id>
-          <name>Arrow: Arrowlink (100m)</name>
-          <category>Ammunition</category>
-          <rating>0</rating>
-          <source>KC</source>
-          <page>48</page>
-          <avail>8R</avail>
-          <cost>75</cost>
-      </gear>
-      <gear>
-          <id>74906d00-018e-4d1a-8a9c-4b77918de761</id>
-          <name>Arrow: Arrowlink (200m)</name>
-          <category>Ammunition</category>
-          <rating>0</rating>
-          <source>KC</source>
-          <page>48</page>
-          <avail>10R</avail>
-          <cost>200</cost>
-      </gear>
-      <gear>
-          <id>65a853d4-52d6-44c7-a867-10ea1beaece3</id>
-          <name>Arrow: Arrowlink (500m)</name>
-          <category>Ammunition</category>
-          <rating>0</rating>
-          <source>KC</source>
-          <page>48</page>
-          <avail>12R</avail>
-          <cost>400</cost>
-      </gear>
-      <gear>
-          <id>051ceea6-65c2-4058-95bd-f63d86a45984</id>
-          <name>Grenade: Fuzzy Boom Boom Bunnies</name>
-          <category>Ammunition</category>
-          <rating>20</rating>
-          <source>KC</source>
-          <page>48</page>
-          <avail>10R</avail>
-          <cost>Rating*20</cost>
-          <!-- TODO: Grenade weapons
-          <addweapon>Grenade: Fuzzy Boom Boom Bunnies</addweapon>-->
-      </gear>
-      <gear>
-          <id>7470ed31-0d81-4992-bae6-38f9de198020</id>
-          <name>Grenade: COS</name>
-          <category>Ammunition</category>
-          <rating>0</rating>
-          <source>KC</source>
-          <page>48</page>
-          <avail>10R</avail>
-          <cost>500</cost>
-          <!-- TODO: Grenade weapons
-          <addweapon>Grenade: COS</addweapon>-->
-      </gear>
+    <gear>
+      <id>7e104b61-69b3-4a7e-8221-a6190314c411</id>
+      <name>Ammo: Zapper</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>48</page>
+      <avail>12R</avail>
+      <cost>140</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damagetype>(M)</damagetype>
+      </weaponbonus>
+    </gear>
+    <gear>
+      <id>b8ad4fef-4092-42ac-87ad-518dd8b60fb7</id>
+      <name>Ammo: Looper</name>
+      <category>Ammunition</category>
+      <rating>6</rating>
+      <source>KC</source>
+      <page>48</page>
+      <avail>FixedValues(7R,8R,9R,10R,11R,12R)</avail>
+      <cost>FixedValues(20,30,40,50,100,200)</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <userange>Light Pistol</userange>
+      </weaponbonus>
+    </gear>
+    <gear>
+      <id>c40a91b0-7896-4ad1-b1e6-f39c9c93bf1b</id>
+      <name>Ammo: Fuzzy</name>
+      <category>Ammunition</category>
+      <rating>2</rating>
+      <source>KC</source>
+      <page>48</page>
+      <avail>FixedValues(10R,12R)</avail>
+      <cost>FixedValues(30,50)</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <userange>Light Pistol</userange>
+      </weaponbonus>
+    </gear>
+    <gear>
+      <id>efa87c80-d712-41d8-813e-768a2f4ffcf7</id>
+      <name>Ammo: E0-E0 (Public Grid)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>48</page>
+      <avail>5R</avail>
+      <cost>50</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damagetype>(M)</damagetype>
+        <userange>Light Pistol</userange>
+      </weaponbonus>
+    </gear>
+    <gear>
+      <id>f4be287a-2ed8-4e7b-8244-32243905fe84</id>
+      <name>Ammo: E0-E0 (Local Grid)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>48</page>
+      <avail>5R</avail>
+      <cost>60</cost>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damagetype>(M)</damagetype>
+        <userange>Light Pistol</userange>
+      </weaponbonus>
+    </gear>
+    <gear>
+      <id>8ddf2080-2444-4d9a-a601-5be4147b183d</id>
+      <name>Ammo: E0-E0 (Megacorporate Grid)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>48</page>
+      <avail>5R</avail>
+      <cost>100</cost>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damagetype>(M)</damagetype>
+        <userange>Light Pistol</userange>
+      </weaponbonus>
+    </gear>
+    <gear>
+      <id>bf9001db-6484-47ab-9449-5f068f5fe04b</id>
+      <name>Ammo: E0-E0 Rifle (Public Grid)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>48</page>
+      <avail>5R</avail>
+      <cost>50</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damagetype>(M)</damagetype>
+        <userange>Light Pistol</userange>
+      </weaponbonus>
+    </gear>
+    <gear>
+      <id>d1e0807b-6c6e-44bb-a230-c6f328ee26a5</id>
+      <name>Ammo: E0-E0 Rifle (Local Grid)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>48</page>
+      <avail>5R</avail>
+      <cost>60</cost>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damagetype>(M)</damagetype>
+        <userange>Light Pistol</userange>
+      </weaponbonus>
+    </gear>
+    <gear>
+      <id>b580d8fc-9987-403a-9be5-760b1d88f926</id>
+      <name>Ammo: E0-E0 Rifle (Megacorporate Grid)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>48</page>
+      <avail>5R</avail>
+      <cost>100</cost>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damage>-4</damage>
+        <ap>-4</ap>
+        <damagetype>(M)</damagetype>
+        <userange>Light Pistol</userange>
+      </weaponbonus>
+    </gear>
+    <gear>
+      <id>05a9f4e2-b7c0-4bf8-8614-33b1ee0f406d</id>
+      <name>Arrow: Arrowlink (50m)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>48</page>
+      <avail>6R</avail>
+      <cost>25</cost>
+    </gear>
+    <gear>
+      <id>2d3b26aa-a2c1-4514-915e-62aa08203456</id>
+      <name>Arrow: Arrowlink (100m)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>48</page>
+      <avail>8R</avail>
+      <cost>75</cost>
+    </gear>
+    <gear>
+      <id>74906d00-018e-4d1a-8a9c-4b77918de761</id>
+      <name>Arrow: Arrowlink (200m)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>48</page>
+      <avail>10R</avail>
+      <cost>200</cost>
+    </gear>
+    <gear>
+      <id>65a853d4-52d6-44c7-a867-10ea1beaece3</id>
+      <name>Arrow: Arrowlink (500m)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>48</page>
+      <avail>12R</avail>
+      <cost>400</cost>
+    </gear>
+    <gear>
+      <id>051ceea6-65c2-4058-95bd-f63d86a45984</id>
+      <name>Grenade: Fuzzy Boom Boom Bunnies</name>
+      <category>Ammunition</category>
+      <rating>20</rating>
+      <source>KC</source>
+      <page>48</page>
+      <avail>10R</avail>
+      <cost>Rating*20</cost>
+      <!-- TODO: Grenade weapons
+      <addweapon>Grenade: Fuzzy Boom Boom Bunnies</addweapon>-->
+    </gear>
+    <gear>
+      <id>7470ed31-0d81-4992-bae6-38f9de198020</id>
+      <name>Grenade: COS</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>48</page>
+      <avail>10R</avail>
+      <cost>500</cost>
+      <!-- TODO: Grenade weapons
+      <addweapon>Grenade: COS</addweapon>-->
+    </gear>
     <gear>
       <id>0c98750a-4286-4ec5-9035-b76f36c03ce4</id>
       <name>Grenade: Douser</name>
@@ -1603,7 +1603,7 @@
       <avail>Rating*2F</avail>
       <cost>Rating*50</cost>
       <!-- TODO: Grenade weapons
-      <addweapon>Grenade: Douser</addweapon>-->
+    <addweapon>Grenade: Douser</addweapon>-->
     </gear>
     <gear>
       <id>965ccb60-f9e2-4a44-8a11-05e6c5bd4457</id>
@@ -1615,7 +1615,7 @@
       <avail>Rating*2R</avail>
       <cost>Rating*50</cost>
       <!-- TODO: Grenade weapons
-      <addweapon>Grenade: DumDum</addweapon>-->
+    <addweapon>Grenade: DumDum</addweapon>-->
     </gear>
     <!-- End Region -->
     <!-- End Region -->
@@ -2732,7 +2732,7 @@
       <capacity>0</capacity>
       <cost>Rating*10000</cost>
       <devicerating>{Rating}</devicerating>
-	  <!-- TODO: This should have a more robust method to lock the attribute array. -->
+      <!-- TODO: This should have a more robust method to lock the attribute array. -->
       <attack>0</attack>
       <sleaze>0</sleaze>
       <dataprocessing>0</dataprocessing>
@@ -2800,10 +2800,10 @@
       <modattack>{Rating}</modattack>
       <required>
         <geardetails>
-            <OR>
-              <name>Fuchi Cyber-N</name>
-              <name>Fuchi Cyber-Ex</name>
-            </OR>
+          <OR>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -2820,10 +2820,10 @@
       <modsleaze>{Rating}</modsleaze>
       <required>
         <geardetails>
-            <OR>
-              <name>Fuchi Cyber-N</name>
-              <name>Fuchi Cyber-Ex</name>
-            </OR>
+          <OR>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -2840,10 +2840,10 @@
       <moddataprocessing>{Rating}</moddataprocessing>
       <required>
         <geardetails>
-            <OR>
-              <name>Fuchi Cyber-N</name>
-              <name>Fuchi Cyber-Ex</name>
-            </OR>
+          <OR>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -2860,10 +2860,10 @@
       <modfirewall>{Rating}</modfirewall>
       <required>
         <geardetails>
-            <OR>
-              <name>Fuchi Cyber-N</name>
-              <name>Fuchi Cyber-Ex</name>
-            </OR>
+          <OR>
+            <name>Fuchi Cyber-N</name>
+            <name>Fuchi Cyber-Ex</name>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -2888,7 +2888,7 @@
       <gears>
         <usegear>
           <name>Encryption</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2924,11 +2924,11 @@
       <gears>
         <usegear>
           <name>Encryption</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Shell</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2964,15 +2964,15 @@
       <gears>
         <usegear>
           <name>Encryption</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Shell</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Armor</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3008,19 +3008,19 @@
       <gears>
         <usegear>
           <name>Encryption</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Shell</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Armor</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Biofeedback Filter</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3036,8 +3036,8 @@
         </usegear>
       </gears>
     </gear>
-<!-- End Region -->
-<!-- Region Hunter Decks -->
+    <!-- End Region -->
+    <!-- Region Hunter Decks -->
     <gear>
       <id>17003ab0-8e96-4661-898d-8d57963a6e8d</id>
       <name>Hunter Deck: Fox</name>
@@ -3058,15 +3058,15 @@
       <gears>
         <usegear>
           <name>Track</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Shell</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Hammer</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3102,19 +3102,19 @@
       <gears>
         <usegear>
           <name>Track</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Shell</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Hammer</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Decryption</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3150,23 +3150,23 @@
       <gears>
         <usegear>
           <name>Track</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Shell</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Hammer</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Decryption</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Hammer</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3202,31 +3202,31 @@
       <gears>
         <usegear>
           <name>Track</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Shell</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Hammer</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Decryption</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Hammer</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Fork</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Biofeedback Filter</name>
-	      <category>Common Programs</category>
+          <category>Common Programs</category>
         </usegear>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3242,7 +3242,7 @@
         </usegear>
       </gears>
     </gear>
-<!-- End Region -->
+    <!-- End Region -->
     <gear>
       <id>96ce16be-8fca-4b3a-af65-0e3c38280b1d</id>
       <name>Aztechnology Shadow Warrior</name>
@@ -17972,7 +17972,8 @@
     <gear>
       <id>18e853c9-0fe8-4414-9b91-eedd0905359b</id>
       <name>Grey Mana Tattoos</name>
-      <category>Appearance Modification</category> <!-- IDK, had to call it something -->
+      <category>Appearance Modification</category>
+      <!-- IDK, had to call it something -->
       <rating>3</rating>
       <source>BTB</source>
       <page>156</page>
@@ -18014,84 +18015,108 @@
       <cost>50</cost>
     </gear>
     <gear>
-          <id>cb8ede00-71f1-4cf0-9fd5-c70dbd312dec</id>
-          <name>Professional Instrument</name>
-          <category>Musical Instruments</category>
-          <rating>0</rating>
-          <source>NF</source>
-          <page>171</page>
-          <avail>0</avail>
-          <bonus>
-              <selecttext />
-          </bonus>
-          <allowgear>
-              <name>Internal Synthlink</name>
-              <name>External Synthlink</name>
-          </allowgear>
-          <cost>500</cost>
-      </gear>
-      <gear>
-          <id>93ead8c1-fb02-4031-bda9-d07cc43163bb</id>
-          <name>Rising Star Instrument</name>
-          <category>Musical Instruments</category>
-          <rating>0</rating>
-          <source>NF</source>
-          <page>171</page>
-          <avail>6</avail>
-          <bonus>
-              <selecttext />
-          </bonus>
-          <allowgear>
-              <name>Internal Synthlink</name>
-              <name>External Synthlink</name>
-          </allowgear>
-          <cost>5000</cost>
-      </gear>
-      <gear>
-          <id>bda4b57b-0d69-4782-a288-d3e2111caa55</id>
-          <name>Big Time Instrument</name>
-          <category>Musical Instruments</category>
-          <rating>0</rating>
-          <source>NF</source>
-          <page>171</page>
-          <avail>12</avail>
-          <bonus>
-              <selecttext />
-          </bonus>
-          <allowgear>
-              <name>Internal Synthlink</name>
-              <name>External Synthlink</name>
-          </allowgear>
-          <cost>50000</cost>
-      </gear>
-      <gear>
-          <id>bda4b57b-0d69-4782-a288-d3e2111caa55</id>
-          <name>Internal Synthlink</name>
-          <category>Musical Instruments</category>
-          <rating>0</rating>
-          <source>NF</source>
-          <page>171</page>
-          <avail>+4</avail>
-          <bonus>
-              <selecttext />
-          </bonus>
-          <requireparent />
-          <cost>{Parent Cost}x2</cost>
-      </gear>
-      <gear>
-          <id>bda4b57b-0d69-4782-a288-d3e2111caa55</id>
-          <name>External Synthlink</name>
-          <category>Musical Instruments</category>
-          <rating>0</rating>
-          <source>NF</source>
-          <page>171</page>
-          <avail>4</avail>
-          <bonus>
-              <selecttext />
-          </bonus>
-          <requireparent />
-          <cost>2000</cost>
-      </gear>
+      <id>cb8ede00-71f1-4cf0-9fd5-c70dbd312dec</id>
+      <name>Professional Instrument</name>
+      <category>Musical Instruments</category>
+      <rating>0</rating>
+      <source>NF</source>
+      <page>171</page>
+      <avail>0</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <allowgear>
+        <name>Internal Synthlink</name>
+        <name>External Synthlink</name>
+      </allowgear>
+      <cost>500</cost>
+    </gear>
+    <gear>
+      <id>93ead8c1-fb02-4031-bda9-d07cc43163bb</id>
+      <name>Rising Star Instrument</name>
+      <category>Musical Instruments</category>
+      <rating>0</rating>
+      <source>NF</source>
+      <page>171</page>
+      <avail>6</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <allowgear>
+        <name>Internal Synthlink</name>
+        <name>External Synthlink</name>
+      </allowgear>
+      <cost>5000</cost>
+    </gear>
+    <gear>
+      <id>ca849c10-6b44-486d-83b2-6329d0e075d0</id>
+      <name>Big Time Instrument</name>
+      <category>Musical Instruments</category>
+      <rating>0</rating>
+      <source>NF</source>
+      <page>171</page>
+      <avail>12</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <allowgear>
+        <name>Internal Synthlink</name>
+        <name>External Synthlink</name>
+      </allowgear>
+      <cost>50000</cost>
+    </gear>
+    <gear>
+      <id>79facff7-e96b-47b5-a65b-3ad40af5529a</id>
+      <name>Internal Synthlink</name>
+      <category>Musical Instruments</category>
+      <rating>0</rating>
+      <source>NF</source>
+      <page>171</page>
+      <avail>+4</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <requireparent />
+      <cost>{Parent Cost}x2</cost>
+    </gear>
+    <gear>
+      <id>357d77f6-0e9e-4e5f-87f2-9c4b5422d23c</id>
+      <name>External Synthlink</name>
+      <category>Musical Instruments</category>
+      <rating>0</rating>
+      <source>NF</source>
+      <page>171</page>
+      <avail>4</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <requireparent />
+      <cost>2000</cost>
+    </gear>
+    <gear>
+      <id>3b0f2e22-827d-448e-95df-be872963bc23</id>
+      <name>Grenade: Molotov Cocktail</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <avail>6F</avail>
+      <source>NF</source>
+      <page>172</page>
+      <addweapon>Grenade: Molotov Cocktail</addweapon>
+      <cost>15</cost>
+      <costfor>1</costfor>
+    </gear>
+    <gear>
+      <id>ac40a996-daa5-4a63-bd2e-deba3e67dcf2</id>
+      <name>Grenade: Molotov Cocktail, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <avail>6F</avail>
+      <source>NF</source>
+      <page>172</page>
+      <addweapon>Grenade: Molotov Cocktail, Aerodynamic</addweapon>
+      <cost>15</cost>
+      <costfor>1</costfor>
+    </gear>
     <!-- End Region -->
     <!-- Region Biotech-->
     <gear>

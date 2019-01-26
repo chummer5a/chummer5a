@@ -14207,7 +14207,7 @@
     <!-- End Region -->
     <!-- Region No Future -->
       <weapon>
-          <id>787627c8-a2c4-47c1-9f3e-dd96ebfadf29</id>
+          <id>aedfc406-ebe3-4abf-8b9d-91d886479884</id>
           <name>Hardened Yo-Yo</name>
           <category>Exotic Melee Weapons</category>
           <type>Melee</type>
@@ -14227,7 +14227,7 @@
           <useskill>Exotic Melee Weapon</useskill>
       </weapon>
       <weapon>
-          <id>27d50841-a99b-4ba4-9dde-dc0706a5b852</id>
+          <id>cf9f71b2-0207-4da7-ac0c-b7d39e2d8cf7</id>
           <name>Bladed Yo-Yo</name>
           <category>Exotic Melee Weapons</category>
           <type>Melee</type>
@@ -14247,7 +14247,7 @@
           <useskill>Exotic Melee Weapon</useskill>
       </weapon>
       <weapon>
-          <id>a67be7ca-baba-4ff7-8876-b76083f7e6cc</id>
+          <id>e18c38e1-72b8-44e3-9afd-42c203b7b350</id>
           <name>Monofilament Yo-Yo</name>
           <category>Exotic Melee Weapons</category>
           <type>Melee</type>
@@ -14267,7 +14267,7 @@
           <useskill>Exotic Melee Weapon</useskill>
       </weapon>
       <weapon>
-          <id>38f30894-bf73-41a5-abad-fd88fe28eff4</id>
+          <id>8be0faad-0a8f-4735-9928-2cfd662ba742</id>
           <name>Hardened Skateboard</name>
           <category>Exotic Melee Weapons</category>
           <type>Melee</type>
@@ -14287,7 +14287,7 @@
           <useskill>Exotic Melee Weapon</useskill>
       </weapon>
       <weapon>
-          <id>38f30894-bf73-41a5-abad-fd88fe28eff4</id>
+          <id>dc713ac6-122b-4fa0-9a70-63822412962f</id>
           <name>Bladed Skateboard</name>
           <category>Exotic Melee Weapons</category>
           <type>Melee</type>
@@ -14307,7 +14307,7 @@
           <useskill>Exotic Melee Weapon</useskill>
       </weapon>
       <weapon>
-          <id>38f30894-bf73-41a5-abad-fd88fe28eff4</id>
+          <id>64efe703-1381-464a-b9ea-26c85b1837e3</id>
           <name>Rolling Blades</name>
           <category>Exotic Melee Weapons</category>
           <type>Melee</type>
@@ -14327,7 +14327,7 @@
           <useskill>Exotic Melee Weapon</useskill>
       </weapon>
       <weapon>
-          <id>38f30894-bf73-41a5-abad-fd88fe28eff4</id>
+          <id>68d76db6-3eb5-4f6c-b7d0-e3fcfeeef5c8</id>
           <name>Torch</name>
           <category>Clubs</category>
           <type>Melee</type>
@@ -14345,7 +14345,7 @@
           <page>172</page>
       </weapon>
       <weapon>
-          <id>38f30894-bf73-41a5-abad-fd88fe28eff4</id>
+          <id>9e04a42b-6e65-4a3f-b8ff-b91efefb1f5c</id>
           <name>Pitchfork</name>
           <category>Clubs</category>
           <type>Melee</type>
@@ -14363,7 +14363,7 @@
           <page>172</page>
       </weapon>
       <weapon>
-          <id>38f30894-bf73-41a5-abad-fd88fe28eff4</id>
+          <id>a83ce374-cb7b-45e2-b937-dff5520bd5ae</id>
           <name>Rolling Blades</name>
           <category>Clubs</category>
           <type>Melee</type>
@@ -14381,7 +14381,7 @@
           <page>172</page>
       </weapon>
       <weapon>
-          <id>188454e1-9e6e-4eaf-a5f1-0b8232f76061</id>
+          <id>c5861520-b344-45b3-8497-ec1b935ef531</id>
           <name>Grenade: Molotov Cocktail</name>
           <category>Gear</category>
           <type>Ranged</type>
@@ -14402,7 +14402,7 @@
           <useskill>Throwing Weapons</useskill>
       </weapon>
       <weapon>
-          <id>e67b21fe-ca6d-42fa-bad3-974b3797038c</id>
+          <id>fc52a56b-3ae3-40e4-9812-86d35bcb9e51</id>
           <name>Grenade: Molotov Cocktail (Aerodynamic)</name>
           <category>Gear</category>
           <type>Ranged</type>
