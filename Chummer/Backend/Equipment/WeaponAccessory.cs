@@ -34,8 +34,8 @@ namespace Chummer.Backend.Equipment
     /// Weapon Accessory.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort
-    {
+    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus
+	{
         private Guid _guiID;
         private readonly Character _objCharacter;
         private XmlNode _nodAllowGear;
@@ -78,6 +78,8 @@ namespace Chummer.Backend.Equipment
         private string _strAmmoReplace = string.Empty;
         private int _intAmmoBonus;
         private int _intSortOrder;
+        private bool _blnWirelessOn = false;
+        private XmlNode _nodWirelessBonus;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public WeaponAccessory(Character objCharacter)
@@ -224,6 +226,7 @@ namespace Chummer.Backend.Equipment
                                 objGear.Capacity = '[' + objXmlAccessoryGear["capacity"].InnerText + ']';
                         }
             }
+            _nodWirelessBonus = objXmlAccessory["wirelessbonus"];
         }
 
         private SourceString _objCachedSourceDetail;
@@ -300,6 +303,11 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("rangebonus", _intRangeBonus.ToString());
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("ammobonus", _intAmmoBonus.ToString());
+            objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
+            if (_nodWirelessBonus != null)
+                objWriter.WriteRaw(_nodWirelessBonus.OuterXml);
+            else
+                objWriter.WriteElementString("wirelessbonus", string.Empty);
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString());
             objWriter.WriteEndElement();
 
@@ -341,6 +349,8 @@ namespace Chummer.Backend.Equipment
             {
                 objNode.TryGetBoolFieldQuickly("installed", ref _blnEquipped);
             }
+            if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
+                _blnWirelessOn = false;
             _nodAllowGear = objNode["allowgear"];
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
 
@@ -386,6 +396,7 @@ namespace Chummer.Backend.Equipment
                 _blnEquipped = true;
                 Equipped = false;
             }
+            ToggleWirelessBonuses(WirelessOn);
         }
 
         /// <summary>
@@ -429,6 +440,11 @@ namespace Chummer.Backend.Equipment
         /// Internal identifier which will be used to identify this Weapon.
         /// </summary>
         public string InternalId => _guiID.ToString("D");
+
+        /// <summary>
+        /// XmlNode for the wireless bonuses (if any) this accessory provides. 
+        /// </summary>
+        public XmlNode WirelessBonus => _nodWirelessBonus;
 
         /// <summary>
         /// Name.
@@ -1040,9 +1056,64 @@ namespace Chummer.Backend.Equipment
             }
             return _objCachedMyXmlNode;
         }
+
+        /// <summary>
+        /// Whether or not this Accessory's wireless bonus is enabled
+        /// </summary>
+        public bool WirelessOn
+        {
+            get => _blnWirelessOn;
+            set
+            {
+                if (value == _blnWirelessOn)
+                    return;
+                ToggleWirelessBonuses(value);
+                _blnWirelessOn = value;
+            }
+        }
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Toggle the Wireless Bonus for this armor mod. 
+        /// </summary>
+        /// <param name="enable"></param>
+        public void ToggleWirelessBonuses(bool enable)
+        {
+            if (enable)
+            {
+                if (WirelessBonus?.Attributes?.Count > 0)
+                {
+                    if (WirelessBonus.Attributes["mode"].InnerText == "replace")
+                    {
+                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.WeaponAccessory && x.SourceName == InternalId).ToList());
+                    }
+                }
+                if (WirelessBonus?.InnerText != null)
+                {
+                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.WeaponAccessory,
+                        _guiID.ToString("D") + "Wireless", WirelessBonus, false, Rating,
+                        DisplayNameShort(GlobalOptions.Language));
+                }
+
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                    _strExtra = ImprovementManager.SelectedValue;
+            }
+            else
+            {
+                if (WirelessBonus?.Attributes?.Count > 0)
+                {
+                    if (WirelessBonus.Attributes?["mode"].InnerText == "replace")
+                    {
+                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.WeaponAccessory && x.SourceName == InternalId).ToList());
+                    }
+                }
+                ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.WeaponAccessory && x.SourceName == InternalId + "Wireless").ToList());
+            }
+        }
+
+
         public decimal DeleteWeaponAccessory()
         {
             decimal decReturn = 0;

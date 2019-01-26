@@ -36,8 +36,8 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "TotalArmor", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating, ICanSort
-    {
+    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus
+	{
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
         private Guid _guiWeaponID = Guid.Empty;
@@ -63,7 +63,7 @@ namespace Chummer.Backend.Equipment
         private Location _objLocation;
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
-        private bool _blnWirelessOn = true;
+        private bool _blnWirelessOn = false;
         private bool _blnDiscountCost;
         private int _intSortOrder;
 
@@ -166,7 +166,7 @@ namespace Chummer.Backend.Equipment
                 objXmlArmorNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             _nodBonus = objXmlArmorNode["bonus"];
             _nodWirelessBonus = objXmlArmorNode["wirelessbonus"];
-            _blnWirelessOn = _nodWirelessBonus != null;
+            _blnWirelessOn = false;
 
             objXmlArmorNode.TryGetStringFieldQuickly("cost", ref _strCost);
 
@@ -229,17 +229,7 @@ namespace Chummer.Backend.Equipment
                         _strExtra = ImprovementManager.SelectedValue;
                     }
                 }
-
-                if (WirelessOn && WirelessBonus != null)
-                {
-                    ImprovementManager.ForcedValue = Extra;
-
-                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D"), WirelessBonus, false, 1, DisplayNameShort(GlobalOptions.Language)))
-                    {
-                        _guiID = Guid.Empty;
-                        return;
-                    }
-                }
+                ToggleWirelessBonuses(WirelessOn);
             }
 
             if (!blnSkipSelectForms)
@@ -511,7 +501,7 @@ namespace Chummer.Backend.Equipment
             _nodBonus = objNode["bonus"];
             _nodWirelessBonus = objNode["wirelessbonus"];
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
-                _blnWirelessOn = _nodWirelessBonus != null;
+                _blnWirelessOn = false;
             XmlNode xmlChildrenNode = objNode["armormods"];
             if (xmlChildrenNode != null)
             {
@@ -1017,7 +1007,13 @@ namespace Chummer.Backend.Equipment
         public bool WirelessOn
         {
             get => _blnWirelessOn;
-            set => _blnWirelessOn = value;
+            set
+            {
+                if (value == _blnWirelessOn)
+                    return;
+                ToggleWirelessBonuses(value);
+                _blnWirelessOn = value;
+            }
         }
 
         /// <summary>
@@ -1527,6 +1523,45 @@ namespace Chummer.Backend.Equipment
             }
 
             return decReturn;
+        }
+
+
+        /// <summary>
+        /// Toggle the Wireless Bonus for this armor. 
+        /// </summary>
+        /// <param name="enable"></param>
+        public void ToggleWirelessBonuses(bool enable)
+        {
+            if (enable)
+            {
+                if (WirelessBonus?.Attributes?.Count > 0)
+                {
+                    if (WirelessBonus.Attributes["mode"].InnerText == "replace")
+                    {
+                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId).ToList());
+                    }
+                }
+                if (WirelessBonus?.InnerText != null)
+                {
+                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor,
+                        _guiID.ToString("D") + "Wireless", WirelessBonus, false, Rating,
+                        DisplayNameShort(GlobalOptions.Language));
+                }
+
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                    _strExtra = ImprovementManager.SelectedValue;
+            }
+            else
+            {
+                if (WirelessBonus?.Attributes?.Count > 0)
+                {
+                    if (WirelessBonus.Attributes?["mode"].InnerText == "replace")
+                    {
+                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId).ToList());
+                    }
+                }
+                ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId + "Wireless").ToList());
+            }
         }
 
         #region UI Methods

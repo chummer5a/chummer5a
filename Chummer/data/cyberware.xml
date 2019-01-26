@@ -397,6 +397,9 @@
           <category>Tools</category>
         </usegear>
       </gears>
+      <!--<wirelessbonus>
+        <noiserereduction>1</noiserereduction>
+      </wirelessbonus> -->
       <source>SR5</source>
       <page>452</page>
     </cyberware>
@@ -635,7 +638,7 @@
       <source>SR5</source>
       <page>453</page>
       <bonus>
-        <smartlink />
+        <smartlink>2</smartlink>
       </bonus>
     </cyberware>
     <cyberware>
@@ -976,7 +979,17 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
+      <wirelesspairbonus mode="replace">
+        <specificattribute>
+          <name precedence="1">REA</name>
+          <val>Rating</val>
+          <aug>FixedValues(0,0,1)</aug>
+        </specificattribute>
+      </wirelesspairbonus>
       <rating>3</rating>
+      <wirelesspairinclude>
+        <name>Wired Reflexes</name>
+      </wirelesspairinclude>
     </cyberware>
     <cyberware>
       <id>60485c4e-042f-44f6-ad89-324003223f73</id>
@@ -991,6 +1004,23 @@
       <bonus>
         <skillwire precedence="0">Rating</skillwire>
       </bonus>
+      <wirelessbonus>
+        <limitmodifier>
+          <limit>Mental</limit>
+          <value>1</value>
+          <condition>Only for Skillwires</condition>
+        </limitmodifier>
+        <limitmodifier>
+          <limit>Physical</limit>
+          <value>1</value>
+          <condition>Only for Skillwires</condition>
+        </limitmodifier>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>1</value>
+          <condition>Only for Skillwires</condition>
+        </limitmodifier>
+      </wirelessbonus>
       <rating>6</rating>
     </cyberware>
     <cyberware>
@@ -1023,6 +1053,17 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
+      <wirelesspairbonus mode="replace">
+        <initiativepass precedence="1">Rating</initiativepass>
+        <specificattribute>
+          <name precedence="1">REA</name>
+          <val>Rating</val>
+          <aug>FixedValues(0,0,1)</aug>
+        </specificattribute>
+      </wirelesspairbonus>
+      <wirelesspairinclude>
+        <name>Reaction Enhancers</name>
+      </wirelesspairinclude>
       <minrating>1</minrating>
       <rating>3</rating>
     </cyberware>
@@ -2052,6 +2093,12 @@
           <condition>Only for Perception</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </wirelessbonus>
     </cyberware>
     <cyberware>
       <id>80ba030a-7be4-4edb-96d6-c5cfd85806d5</id>
@@ -2148,6 +2195,12 @@
           <condition>Only for Navigation</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <specificskill>
+          <name>Navigation</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </wirelessbonus>
     </cyberware>
     <cyberware>
       <id>1b0084ee-6334-4a66-bee3-8b45c5cc63d2</id>
@@ -2289,6 +2342,12 @@
       <capacity>[4]</capacity>
       <avail>4</avail>
       <cost>1000</cost>
+      <wirelessbonus>
+          <skillcategory>
+            <name>Combat Active</name>
+            <bonus>1</bonus>
+          </skillcategory>
+      </wirelessbonus>
       <source>CF</source>
       <page>77</page>
     </cyberware>

@@ -229,6 +229,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>57</page>
     </armor>
@@ -247,6 +253,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>57</page>
     </armor>
@@ -265,6 +277,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit</name>
         <name>Concealability</name>
@@ -287,6 +305,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit</name>
         <name>Concealability</name>
@@ -309,6 +333,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit</name>
         <name>Concealability</name>
@@ -331,6 +361,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit</name>
         <name>Concealability</name>
@@ -353,6 +389,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit</name>
         <name>Concealability</name>
@@ -376,6 +418,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit (Stack)</name>
         <name>Concealability</name>
@@ -399,6 +447,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit (Stack)</name>
         <name>Concealability</name>
@@ -422,6 +476,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit (Stack)</name>
         <name>Concealability</name>
@@ -444,6 +504,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>60</page>
     </armor>
@@ -458,6 +524,12 @@
       <gears>
         <usegear>Holster</usegear>
       </gears>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>60</page>
     </armor>
@@ -472,6 +544,12 @@
       <mods>
         <name>Gear Access</name>
       </mods>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>60</page>
     </armor>
@@ -490,6 +568,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>60</page>
     </armor>
@@ -504,6 +588,12 @@
       <gears>
         <usegear>Holster</usegear>
       </gears>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>60</page>
     </armor>
@@ -518,6 +608,12 @@
       <gears>
         <usegear>Holster</usegear>
       </gears>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>60</page>
     </armor>
@@ -532,6 +628,12 @@
       <gears>
         <usegear>Holster</usegear>
       </gears>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>60</page>
     </armor>
@@ -546,6 +648,12 @@
       <mods>
         <name>Concealability</name>
       </mods>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>60</page>
     </armor>
@@ -557,13 +665,13 @@
       <armorcapacity>14</armorcapacity>
       <avail>7</avail>
       <cost>2250</cost>
-      <bonus>
+      <wirelessbonus>
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
           <condition>Must be visible</condition>
         </limitmodifier>
-      </bonus>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit</name>
       </mods>
@@ -578,13 +686,13 @@
       <armorcapacity>5</armorcapacity>
       <avail>8</avail>
       <cost>1500</cost>
-      <bonus>
+      <wirelessbonus>
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
           <condition>Must be visible</condition>
         </limitmodifier>
-      </bonus>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit</name>
       </mods>
@@ -603,13 +711,13 @@
       <armorcapacity>6</armorcapacity>
       <avail>8</avail>
       <cost>2300</cost>
-      <bonus>
+      <wirelessbonus>
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
           <condition>Must be visible</condition>
         </limitmodifier>
-      </bonus>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit (Stack)</name>
       </mods>
@@ -627,13 +735,13 @@
       <armorcapacity>10</armorcapacity>
       <avail>10</avail>
       <cost>13500</cost>
-      <bonus>
+      <wirelessbonus>
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
           <condition>Must be visible</condition>
         </limitmodifier>
-      </bonus>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit</name>
         <name>Newest Model</name>
@@ -660,6 +768,13 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>2</value>
+          <condition>Must be visible</condition>
+        </limitmodifier>
+      </wirelessbonus>
       <mods>
         <name>Custom Fit</name>
         <name>Newest Model</name>
@@ -830,6 +945,12 @@
       <gears>
         <usegear>Holster</usegear>
       </gears>
+      <wirelessbonus>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </wirelessbonus>
       <source>RG</source>
       <page>63</page>
     </armor>
@@ -844,6 +965,12 @@
       <selectmodsfromcategory>
         <category>Globetrotter Jacket Liners</category>
       </selectmodsfromcategory>
+      <wirelessbonus>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </wirelessbonus>
       <source>RG</source>
       <page>63</page>
     </armor>
@@ -861,6 +988,12 @@
       <mods>
         <name>Gear Access</name>
       </mods>
+      <wirelessbonus>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </wirelessbonus>
       <source>RG</source>
       <page>63</page>
     </armor>
@@ -881,6 +1014,12 @@
       <gears>
         <usegear>Holster</usegear>
       </gears>
+      <wirelessbonus>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </wirelessbonus>
       <source>RG</source>
       <page>63</page>
     </armor>
@@ -902,6 +1041,12 @@
       <mods>
         <name>Gear Access</name>
       </mods>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>64</page>
     </armor>
@@ -923,6 +1068,12 @@
       <gears>
         <usegear>Holster</usegear>
       </gears>
+      <wirelessbonus>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </wirelessbonus>
       <source>RG</source>
       <page>64</page>
     </armor>
@@ -1163,6 +1314,12 @@
         <name rating="8">Fire Resistance</name>
         <name>Restrictive</name>
       </mods>
+      <wirelessbonus>
+        <skillcategory>
+          <name>Social</name>
+          <bonus>1</bonus>
+        </skillcategory>
+      </wirelessbonus>
       <source>RG</source>
       <page>69</page>
     </armor>
@@ -1196,6 +1353,13 @@
         <name>Padded</name>
         <name>Restrictive</name>
       </mods>
+      <wirelessbonus>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>2</value>
+          <condition>Only for Intimidation, Must be visible</condition>
+        </limitmodifier>
+      </wirelessbonus>
       <source>RG</source>
       <page>69</page>
     </armor>
@@ -1233,6 +1397,13 @@
       <mods>
         <name>Gear Access</name>
       </mods>
+      <wirelessbonus>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>3</value>
+          <condition>Only for Intimidation, Must be visible</condition>
+        </limitmodifier>
+      </wirelessbonus>
       <source>RG</source>
       <page>70</page>
     </armor>
@@ -1486,6 +1657,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </wirelessbonus>
       <source>RG</source>
       <page>75</page>
     </armor>
@@ -1503,6 +1680,12 @@
       <gears>
         <usegear>Flare Compensation</usegear>
       </gears>
+      <wirelessbonus>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </wirelessbonus>
       <source>RG</source>
       <page>75</page>
     </armor>
@@ -1531,6 +1714,12 @@
       <gears>
         <usegear>Flare Compensation</usegear>
       </gears>
+      <wirelessbonus>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </wirelessbonus>
       <source>RG</source>
       <page>76</page>
     </armor>
@@ -1549,6 +1738,13 @@
       <gears>
         <usegear>Flare Compensation</usegear>
       </gears>
+      <wirelessbonus>
+        <limitmodifier>
+          <limit>Physical</limit>
+          <value>1</value>
+          <condition>For climbing only</condition>
+        </limitmodifier>
+      </wirelessbonus>
       <source>RG</source>
       <page>76</page>
     </armor>
@@ -1577,6 +1773,13 @@
         <usegear>Gas Mask</usegear>
         <usegear>Flare Compensation</usegear>
       </gears>
+      <wirelessbonus>
+        <limitmodifier>
+          <limit>Physical</limit>
+          <value>1</value>
+          <condition>For climbing only</condition>
+        </limitmodifier>
+      </wirelessbonus>
       <source>RG</source>
       <page>77</page>
     </armor>
@@ -3767,6 +3970,12 @@
       <armorcapacity>[2]</armorcapacity>
       <avail>14R</avail>
       <cost>Rating * 1000</cost>
+      <!--<bonus>
+        <noiserereduction>Rating</noiserereduction>
+      </bonus>
+      <wirelessbonus>
+        <noiserereduction>1</noiserereduction>
+      </wirelessbonus> -->
       <source>RG</source>
       <page>84</page>
     </mod>
@@ -3869,6 +4078,13 @@
       <armorcapacity>[4]</armorcapacity>
       <avail>8</avail>
       <cost>2500</cost>
+      <wirelessbonus>
+        <limitmodifier>
+          <limit>Mental</limit>
+          <value>1</value>
+          <condition>Only for Perception</condition>
+        </limitmodifier>
+      </wirelessbonus>
       <source>RG</source>
       <page>85</page>
     </mod>

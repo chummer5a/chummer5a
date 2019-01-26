@@ -72,6 +72,10 @@
       <text>N/A</text>
     </string>
     <string>
+      <key>String_Wireless</key>
+      <text>Wireless</text>
+    </string>
+    <string>
       <key>String_Version</key>
       <text>Version</text>
     </string>
@@ -498,6 +502,10 @@
     <string>
       <key>Checkbox_HomeNode</key>
       <text>Home Node</text>
+    </string>
+    <string>
+      <key>Checkbox_Wireless</key>
+      <text>Wireless Enabled</text>
     </string>
     <string>
       <key>Checkbox_Commlinks</key>

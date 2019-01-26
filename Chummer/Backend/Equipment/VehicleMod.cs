@@ -47,7 +47,7 @@ namespace Chummer.Backend.Equipment
         private string _strAvail = string.Empty;
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
-        private bool _blnWirelessOn = true;
+        private bool _blnWirelessOn = false;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private bool _blnIncludeInVehicle;
@@ -202,7 +202,7 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetStringFieldQuickly("page", ref _strPage);
             _nodBonus = objXmlMod?["bonus"];
             _nodWirelessBonus = objXmlMod?["wirelessbonus"];
-            _blnWirelessOn = _nodWirelessBonus != null;
+            _blnWirelessOn = false;
 
             if (Bonus != null)
             {
@@ -386,7 +386,7 @@ namespace Chummer.Backend.Equipment
             _nodBonus = objNode["bonus"];
             _nodWirelessBonus = objNode["wirelessbonus"];
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
-                _blnWirelessOn = _nodWirelessBonus != null;
+                _blnWirelessOn = false;
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
