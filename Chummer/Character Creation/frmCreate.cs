@@ -11521,7 +11521,6 @@ namespace Chummer
             Location objLocation = null;
             if (objSelectedGear == null)
             {
-                objSelectedGear = new Gear(CharacterObject);
                 blnNullParent = true;
                 objLocation =
                     CharacterObject.GearLocations.FirstOrDefault(location => location.InternalId == strSelectedId);
@@ -11546,7 +11545,7 @@ namespace Chummer
                 }
             }
 
-            frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, objSelectedGear.ChildAvailModifier, objSelectedGear.ChildCostMultiplier, objSelectedGear, strCategories);
+            frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, objSelectedGear?.ChildAvailModifier ?? 0, objSelectedGear?.ChildCostMultiplier ?? 0, objSelectedGear, strCategories);
             if (!blnNullParent)
             {
                 // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).

@@ -14511,10 +14511,13 @@ namespace Chummer
         private bool PickGear(IHasChildren<Gear> iParent, Location objLocation = null, bool blnAmmoOnly = false, Gear objStackGear = null, string strForceItemValue = "", IEnumerable<string> lstForceItemPrefixes = null)
         {
             bool blnNullParent = false;
-
-            if (!((iParent is Gear ? iParent : null) is Gear objSelectedGear))
+            Gear objSelectedGear = null;
+            if (iParent is Gear)
             {
-                objSelectedGear = new Gear(CharacterObject);
+                objSelectedGear = (Gear) iParent;
+            }
+            else
+            {
                 blnNullParent = true;
             }
 
