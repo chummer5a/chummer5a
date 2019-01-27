@@ -224,11 +224,7 @@
     <PostBuildEvent>echo Statement 1: copy $(TargetDir)$(TargetName).* $(TargetDir)Plugins\ /Y
 copy $(TargetDir)$(TargetName).* $(TargetDir)Plugins\ /Y
 echo Statement 2: copy $(TargetDir)$(TargetName).* $(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\ /Y
-copy $(TargetDir)$(TargetName).* $(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\ /Y
-IF NOT ($(ConfigurationName)) == (Debug) GOTO END
-echo Statement 3: copy $(TargetDir)$(TargetName).* $(SolutionDir)ChummerHub.Client.Tests\bin\$(ConfigurationName)\Plugins\ /Y
-copy $(TargetDir)$(TargetName).* $(SolutionDir)ChummerHub.Client.Tests\bin\$(ConfigurationName)\Plugins\ /Y
-:END</PostBuildEvent>
+copy $(TargetDir)$(TargetName).* $(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\ /Y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

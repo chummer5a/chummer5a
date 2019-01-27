@@ -206,7 +206,7 @@
   </Target>
   <Import Project="..\packages\MSTest.TestAdapter.1.3.2\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\packages\MSTest.TestAdapter.1.3.2\build\net45\MSTest.TestAdapter.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>echo Statement 3: copy $(SolutionDir)ChummerHub.Client\bin\$(ConfigurationName)\ChummerHub.Client*.* $(SolutionDir)ChummerHub.Client.Tests\bin\$(ConfigurationName)\Plugins\ /Y
+copy $(SolutionDir)ChummerHub.Client\bin\$(ConfigurationName)\ChummerHub.Client*.* $(SolutionDir)ChummerHub.Client.Tests\bin\$(ConfigurationName)\Plugins\ /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>
