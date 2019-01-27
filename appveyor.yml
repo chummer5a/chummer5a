@@ -111,3 +111,8 @@ deploy:
   artifact: Chummer
   draft: false
   prerelease: true
+test:
+  # all except assemblies to test
+  assemblies:
+    except:
+      - ChummerHub.Client.Tests.dll

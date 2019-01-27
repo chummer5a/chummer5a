@@ -26,6 +26,7 @@ namespace ChummerHub.Client.Model
                 {
                     Id = Guid.NewGuid(),
                     Tags = new List<Tag>(),
+                    Visibility = new SINnerVisibility()
                 };
             }
             else
@@ -51,7 +52,7 @@ namespace ChummerHub.Client.Model
                 MySINnerFile.SiNnerMetaData.Visibility =
                     JsonConvert.DeserializeObject<SINnerVisibility>(Properties.Settings.Default.SINnerVisibility);
 
-            if(MySINnerFile.SiNnerMetaData.Visibility.Id == null)
+            if(MySINnerFile.SiNnerMetaData.Visibility?.Id == null)
                 MySINnerFile.SiNnerMetaData.Visibility.Id = Guid.NewGuid();
 
             var cache = new frmCharacterRoster.CharacterCache(character.FileName);
