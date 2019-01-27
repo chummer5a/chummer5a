@@ -116,3 +116,4 @@ test:
   assemblies:
     except:
       - ChummerHub.Client.Tests.dll
+      - '**\ChummerHub.Client.Tests.dll'
