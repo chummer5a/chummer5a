@@ -4275,6 +4275,51 @@ namespace Chummer.Backend.Equipment
             return true;
         }
 
+        public void Upgrade(Character characterObject, Grade objGrade, int intRating, decimal refundPercentage)
+        {
+            decimal saleCost = TotalCost * refundPercentage;
+            int oldRating = Rating;
+            Grade oldGrade = Grade;
+
+            Rating = intRating;
+            Grade = objGrade;
+            decimal newCost = TotalCost - saleCost;
+
+            if (newCost > characterObject.Nuyen)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                Rating = oldRating;
+                Grade  = oldGrade;
+                return;
+            }
+            StringBuilder expenseBuilder = new StringBuilder();
+            expenseBuilder.Append(LanguageManager.GetString("String_ExpenseUpgradedCyberware", GlobalOptions.Language) +
+                                  LanguageManager.GetString("String_Space", GlobalOptions.Language) +
+                                  DisplayNameShort(GlobalOptions.Language));
+            if (oldGrade != Grade || oldRating != intRating)
+            {
+                expenseBuilder.Append('(' + LanguageManager.GetString("String_Grade", GlobalOptions.Language) +
+                                      LanguageManager.GetString("String_Space", GlobalOptions.Language) +
+                                      Grade.DisplayName(GlobalOptions.Language) +
+                                      LanguageManager.GetString("String_Space", GlobalOptions.Language) + '>' + oldGrade.DisplayName(GlobalOptions.Language) + 
+                                      LanguageManager.GetString("String_Space", GlobalOptions.Language) + LanguageManager.GetString("String_Rating", GlobalOptions.Language) +
+                                      oldRating +
+                                      LanguageManager.GetString("String_Space", GlobalOptions.Language) + '>' +
+                                      LanguageManager.GetString("String_Space", GlobalOptions.Language) + Rating + ')');
+            }
+            // Create the Expense Log Entry.
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(characterObject);
+            objExpense.Create(newCost * -1, expenseBuilder.ToString(), ExpenseType.Nuyen, DateTime.Now);
+            characterObject.ExpenseEntries.AddWithSort(objExpense);
+            characterObject.Nuyen -= newCost;
+
+            ExpenseUndo objUndo = new ExpenseUndo();
+            objUndo.CreateNuyen(NuyenExpenseType.AddGear, InternalId);
+            objExpense.Undo = objUndo;
+        }
 
         /// <summary>
         /// Alias map for SourceDetail control text and tooltip assignation. 

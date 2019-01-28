@@ -3279,6 +3279,10 @@
       <text>Purchased Cyberware Suite</text>
     </string>
     <string>
+      <key>String_ExpenseUpgradedCyberware</key>
+      <text>Upgraded Cyberware</text>
+    </string>
+    <string>
       <key>String_ExpensePurchaseWeapon</key>
       <text>Purchased Weapon</text>
     </string>

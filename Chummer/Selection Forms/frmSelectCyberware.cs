@@ -118,6 +118,12 @@ namespace Chummer
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
 
+            if (!string.IsNullOrEmpty(DefaultSearchText))
+            {
+                txtSearch.Text = DefaultSearchText;
+                txtSearch.Enabled = false;
+            }
+
             chkPrototypeTranshuman.Visible = _objCharacter.PrototypeTranshuman > 0 && _objMode == Mode.Bioware && !_objCharacter.Created;
 
             PopulateCategories();
@@ -610,6 +616,11 @@ namespace Chummer
         /// Parent cyberware that the current selection will be added to.
         /// </summary>
         public Cyberware CyberwareParent { get; set; }
+
+        /// <summary>
+        /// Default text string to filter by.
+        /// </summary>
+        public string DefaultSearchText { get; set; }
         #endregion
 
         #region Methods

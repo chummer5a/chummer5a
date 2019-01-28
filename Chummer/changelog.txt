@@ -12,6 +12,7 @@ Application Changes:
 - Capped cost multipliers for lifestyles to -0%. 
 - Added the 'lifestyle' attribute to the lifestylecost and basiclifestylecost improvement types. This supports limiting the bonus to a specific Lifestyle type, such as Low or Squatter. 
 - ValueOf has been altered slightly to allow for selecting objects that are either of a given ImprovedName, or don't have one, in support of the above changes. Defaults to existing behaviour.
+- Implemented a basic upgrade mechanism in career mode for cyberware, accessed through a submenu of the Delete Cyberware button.
 
 Data Changes:
 - Fixed incorrect underbarrel weapon name for the Nissan Optimum II that caused a crash. Fixes part of #3344

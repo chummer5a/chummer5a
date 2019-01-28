@@ -17326,5 +17326,38 @@ private void RefreshSelectedSpell()
         {
 
         }
+
+        private void tsCyberwareUpgrade_Click(object sender, EventArgs e)
+        {
+            if (treCyberware.SelectedNode?.Tag is Cyberware objCyberware)
+            {
+                if (objCyberware.Capacity == "[*]" && treCyberware.SelectedNode.Level == 2)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                frmSellItem frmSell = new frmSellItem();
+                frmSell.ShowDialog(this);
+
+                if (frmSell.DialogResult == DialogResult.Cancel)
+                    return;
+                frmSelectCyberware pickCyber = new frmSelectCyberware(CharacterObject, objCyberware.SourceType);
+                pickCyber.DefaultSearchText = objCyberware.DisplayNameShort(GlobalOptions.Language);
+                pickCyber.ShowDialog(this);
+
+                if (pickCyber.DialogResult == DialogResult.Cancel)
+                    return;
+
+                objCyberware.Upgrade(CharacterObject, pickCyber.SelectedGrade, pickCyber.SelectedRating, frmSell.SellPercent);
+
+                CharacterObject.IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
+            }
+            else { Utils.BreakIfDebug(); }
+
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
+
+        }
     }
 }
