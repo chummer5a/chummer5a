@@ -25,7 +25,7 @@ using System.Reflection;
 
 namespace Chummer
 {
-    static class Utils
+    public static class Utils
     {
         public static void BreakIfDebug()
         {
@@ -54,11 +54,7 @@ namespace Chummer
         {
             get
             {
-                //TODO: This doesn't behave if the unit test doesn't call frmChummerMain. What circumstances do we actually need this?
-                /*if (!IsUnitTest)
-                    return Application.StartupPath;
-                    */
-                return AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+                return !IsUnitTest ? Application.StartupPath : AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
             }
         }
 

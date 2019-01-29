@@ -23,16 +23,15 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Chummer.Tests
 {
-    /*
     [TestClass]
     public static class AssemblyInitializer
     {
         [AssemblyInitialize]
         public static void Initialize(TestContext context)
         {
-            Utils.IsRunningInUnitTest = true;
+            Utils.IsUnitTest = true;
         }
-    }*/
+    }
 
     [TestClass]
     public class ChummerTest
@@ -73,9 +72,13 @@ namespace Chummer.Tests
             foreach (FileInfo objFileInfo in aobjFiles)
             {
                 string destination = Path.Combine(objTestPath.FullName, objFileInfo.Name);
-                Character c = MainForm.LoadCharacter(objFileInfo.FullName);
+                Character c = LoadCharacter(objFileInfo);
                 SaveCharacter(c, destination);
-                MainForm.LoadCharacter(destination);
+                c = new Character
+                {
+                    FileName = destination
+                };
+                Assert.IsTrue(c.Load());
             }
             objTestPath.Delete(true);
         }
@@ -89,9 +92,13 @@ namespace Chummer.Tests
             try
             {
                 Debug.WriteLine("Loading: " + objFileInfo.Name);
-                c = MainForm.LoadCharacter(objFileInfo.FullName);
-                Assert.IsNotNull(c);
+                Character objCharacter = new Character
+                {
+                    FileName = objFileInfo.FullName
+                };
+                Assert.IsTrue(objCharacter.Load());
                 Debug.WriteLine("Character loaded: " + c.Name);
+                /*
                 if (c.Created)
                 {
                     frmCareer _ = new frmCareer(c);
@@ -103,6 +110,7 @@ namespace Chummer.Tests
                     frmCreate _ = new frmCreate(c);
                 }
                 Debug.WriteLine("Test Form Created: " + c.Name);
+                */
             }
             catch (AssertFailedException e)
             {

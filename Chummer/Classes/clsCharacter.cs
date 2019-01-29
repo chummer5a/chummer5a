@@ -1836,7 +1836,8 @@ namespace Chummer
         /// Load the Character from an XML file.
         /// </summary>
         /// <param name="frmLoadingForm">Instancs of frmLoading to use to update with loading progress. frmLoading::PerformStep() is called 35 times within this method, so plan accordingly.</param>
-        public bool Load(frmLoading frmLoadingForm = null)
+        /// <param name="showWarnings">Whether warnings about book content and other character content should be loaded.</param>
+        public bool Load(frmLoading frmLoadingForm = null, bool showWarnings = true)
         {
             if(!File.Exists(_strFileName))
                 return false;
@@ -1854,8 +1855,15 @@ namespace Chummer
                 }
                 catch(XmlException ex)
                 {
-                    MessageBox.Show(string.Format(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language), ex.Message),
-                        LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (showWarnings)
+                    {
+                        MessageBox.Show(
+                            string.Format(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language),
+                                ex.Message),
+                            LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
                     return false;
                 }
             }
@@ -1881,7 +1889,7 @@ namespace Chummer
             // Get the game edition of the file if possible and make sure it's intended to be used with this version of the application.
             string strGameEdition = string.Empty;
             if(xmlCharacterNavigator.TryGetStringFieldQuickly("gameedition", ref strGameEdition) &&
-                !string.IsNullOrEmpty(strGameEdition) && strGameEdition != "SR5")
+                !string.IsNullOrEmpty(strGameEdition) && strGameEdition != "SR5" && showWarnings)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_IncorrectGameVersion_SR4", GlobalOptions.Language),
                     LanguageManager.GetString("MessageTitle_IncorrectGameVersion", GlobalOptions.Language),
@@ -14400,6 +14408,7 @@ namespace Chummer
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
 
+            if (Program.MainForm == null) return;
             foreach(Character objLoopOpenCharacter in Program.MainForm.OpenCharacters)
             {
                 if(objLoopOpenCharacter != this && objLoopOpenCharacter.LinkedCharacters.Contains(this))
