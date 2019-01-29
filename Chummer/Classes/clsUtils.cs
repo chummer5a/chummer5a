@@ -54,8 +54,10 @@ namespace Chummer
         {
             get
             {
-                if (!IsUnitTest)
+                //TODO: This doesn't behave if the unit test doesn't call frmChummerMain. What circumstances do we actually need this?
+                /*if (!IsUnitTest)
                     return Application.StartupPath;
+                    */
                 return AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
             }
         }

@@ -1825,8 +1825,8 @@ namespace Chummer
             IsSaving = false;
             _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
 
-            if(callOnSaveCallBack)
-                this.OnSaveCompleted(this, this);
+            if(callOnSaveCallBack && OnSaveCompleted != null)
+                OnSaveCompleted(this, this);
             return blnErrorFree;
         }
 

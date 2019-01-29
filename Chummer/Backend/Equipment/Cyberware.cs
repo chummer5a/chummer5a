@@ -824,19 +824,27 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString("D"));
             if (_guiVehicleID != Guid.Empty)
                 objWriter.WriteElementString("vehicleguid", _guiVehicleID.ToString("D"));
+            #region PairInclude
             objWriter.WriteStartElement("pairinclude");
             foreach (string strName in _lstIncludeInPairBonus)
                 objWriter.WriteElementString("name", strName);
+            objWriter.WriteEndElement();
+            #endregion
+            #region WirelessPairInclude
             objWriter.WriteStartElement("wirelesspairinclude");
             foreach (string strName in _lstIncludeInWirelessPairBonus)
                 objWriter.WriteElementString("name", strName);
             objWriter.WriteEndElement();
+            #endregion
+            #region Children
             objWriter.WriteStartElement("children");
             foreach (Cyberware objChild in _lstChildren)
             {
                 objChild.Save(objWriter);
             }
             objWriter.WriteEndElement();
+            #endregion
+            #region Gear
             if (_lstGear.Count > 0)
             {
                 objWriter.WriteStartElement("gears");
@@ -846,6 +854,7 @@ namespace Chummer.Backend.Equipment
                 }
                 objWriter.WriteEndElement();
             }
+            #endregion
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
             objWriter.WriteElementString("addtoparentess", _blnAddToParentESS.ToString());
