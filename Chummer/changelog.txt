@@ -25,6 +25,7 @@ Data Changes:
 - The Auto Injector Expension and Killswitch are now properly addable to the Autoinjector as child objects. They've been renamed to Expanded Reservoir and Killswitch, respectively. Fixes #3365
 - Fixed issues with the Infected Optional Power qualities that prevented them being taken in create mode. Closes #3234
 - Implemented the lifestyle discount for the Community Connection quality. Closes #3372
+- Added a knowledge skill prompt for Zoology.
 
 Build 204
 
