@@ -1826,7 +1826,7 @@ namespace Chummer
             _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
 
             if(callOnSaveCallBack)
-                this.OnSaveCompleted(this, this);
+                OnSaveCompleted(this, this);
             return blnErrorFree;
         }
 
@@ -1881,7 +1881,7 @@ namespace Chummer
             // Get the game edition of the file if possible and make sure it's intended to be used with this version of the application.
             string strGameEdition = string.Empty;
             if(xmlCharacterNavigator.TryGetStringFieldQuickly("gameedition", ref strGameEdition) &&
-                !string.IsNullOrEmpty(strGameEdition) && strGameEdition != "SR5")
+                !string.IsNullOrEmpty(strGameEdition) && strGameEdition != "SR5" && !Utils.IsUnitTest)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_IncorrectGameVersion_SR4", GlobalOptions.Language),
                     LanguageManager.GetString("MessageTitle_IncorrectGameVersion", GlobalOptions.Language),
@@ -1894,7 +1894,7 @@ namespace Chummer
             string strVersion = string.Empty;
             //Check to see if the character was created in a version of Chummer later than the currently installed one.
             if(xmlCharacterNavigator.TryGetStringFieldQuickly("appversion", ref strVersion) &&
-                !string.IsNullOrEmpty(strVersion))
+                !string.IsNullOrEmpty(strVersion) && !Utils.IsUnitTest)
             {
                 if(strVersion.StartsWith("0."))
                 {
@@ -1904,6 +1904,7 @@ namespace Chummer
                 Version.TryParse(strVersion, out _verSavedVersion);
             }
 #if !DEBUG
+if (!Utils.IsUnitTest){
                 Version verCurrentversion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
                 int intResult = verCurrentversion.CompareTo(_verSavedVersion);
                 if (intResult == -1)
@@ -1916,10 +1917,10 @@ namespace Chummer
                         IsLoading = false;
                         return false;
                     }
-                }
+                }}
 #endif
-            // Get the name of the settings file in use if possible.
-            xmlCharacterNavigator.TryGetStringFieldQuickly("settings", ref _strSettingsFileName);
+                // Get the name of the settings file in use if possible.
+                xmlCharacterNavigator.TryGetStringFieldQuickly("settings", ref _strSettingsFileName);
 
             // Load the character's settings file.
             if(!_objOptions.Load(_strSettingsFileName))

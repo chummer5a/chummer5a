@@ -88,9 +88,7 @@
     <None Include="TestFiles\Fuzzy-chargen.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestFiles\Gangerbean.chum5">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="TestFiles\Gangerbean.chum5" />
     <None Include="TestFiles\Gentle Earthquake.chum5">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
