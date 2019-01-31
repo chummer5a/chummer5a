@@ -1729,6 +1729,15 @@
       </specs>
     </skill>
     <skill>
+      <id>c0be1393-e4a1-4af6-8c0d-f9eef89a93b1</id>
+      <name>Zoology</name>
+      <attribute>LOG</attribute>
+      <category>Academic</category>
+      <default>False</default>
+      <skillgroup />
+      <specs />
+    </skill>
+    <skill>
       <id>6331a44a-ad26-4b08-8b7a-2dbe3c2d0584</id>
       <name>Black Markets</name>
       <attribute>INT</attribute>

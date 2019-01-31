@@ -140,6 +140,7 @@ namespace Chummer
 			this.tsVehicleCyberwareNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsDeleteCyberware = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsCyberwareSell = new System.Windows.Forms.ToolStripMenuItem();
+			this.tsCyberwareUpgrade = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsLifestyle = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAdvancedLifestyle = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsArmor = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -1347,7 +1348,6 @@ namespace Chummer
 			this.tsVehicleWeaponMountAddUnderbarrel = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsVehicleWeaponMountNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsWeaponMountLocation = new System.Windows.Forms.ToolStripMenuItem();
-			this.tsCyberwareUpgrade = new System.Windows.Forms.ToolStripMenuItem();
 			this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();
@@ -2490,16 +2490,24 @@ namespace Chummer
             this.tsCyberwareSell,
             this.tsCyberwareUpgrade});
 			this.cmsDeleteCyberware.Name = "cmsDeleteCyberware";
-			this.cmsDeleteCyberware.Size = new System.Drawing.Size(181, 70);
+			this.cmsDeleteCyberware.Size = new System.Drawing.Size(147, 48);
 			// 
 			// tsCyberwareSell
 			// 
 			this.tsCyberwareSell.Image = global::Chummer.Properties.Resources.money_yen;
 			this.tsCyberwareSell.Name = "tsCyberwareSell";
-			this.tsCyberwareSell.Size = new System.Drawing.Size(180, 22);
+			this.tsCyberwareSell.Size = new System.Drawing.Size(146, 22);
 			this.tsCyberwareSell.Tag = "Menu_SellItem";
 			this.tsCyberwareSell.Text = "&Sell Item";
 			this.tsCyberwareSell.Click += new System.EventHandler(this.tsCyberwareSell_Click);
+			// 
+			// tsCyberwareUpgrade
+			// 
+			this.tsCyberwareUpgrade.Image = global::Chummer.Properties.Resources.cog_edit;
+			this.tsCyberwareUpgrade.Name = "tsCyberwareUpgrade";
+			this.tsCyberwareUpgrade.Size = new System.Drawing.Size(146, 22);
+			this.tsCyberwareUpgrade.Text = "&Upgrade Item";
+			this.tsCyberwareUpgrade.Click += new System.EventHandler(this.tsCyberwareUpgrade_Click);
 			// 
 			// cmsLifestyle
 			// 
@@ -18062,14 +18070,6 @@ namespace Chummer
 			this.tsWeaponMountLocation.Size = new System.Drawing.Size(166, 22);
 			this.tsWeaponMountLocation.Tag = "Menu_RenameLocation";
 			this.tsWeaponMountLocation.Text = "Rename &Location";
-			// 
-			// tsCyberwareUpgrade
-			// 
-			this.tsCyberwareUpgrade.Image = global::Chummer.Properties.Resources.cog_edit;
-			this.tsCyberwareUpgrade.Name = "tsCyberwareUpgrade";
-			this.tsCyberwareUpgrade.Size = new System.Drawing.Size(180, 22);
-			this.tsCyberwareUpgrade.Text = "&Upgrade Item";
-			this.tsCyberwareUpgrade.Click += new System.EventHandler(this.tsCyberwareUpgrade_Click);
 			// 
 			// frmCareer
 			// 

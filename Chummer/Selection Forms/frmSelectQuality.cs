@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Text;
+using System.Xml;
 using System.Xml.XPath;
 
 namespace Chummer
@@ -118,6 +119,7 @@ namespace Chummer
 
             if (xmlQuality != null)
             {
+                int i = 0;
                 if (chkFree.Checked)
                     lblBP.Text = 0.ToString(GlobalOptions.CultureInfo);
                 else
@@ -145,7 +147,20 @@ namespace Chummer
                     else
                     {
                         int.TryParse(strKarma, out int intBP);
-
+                        
+                        if (xmlQuality.SelectSingleNode("costdiscount").RequirementsMet(_objCharacter) && !chkFree.Checked)
+                        {
+                            string strValue = xmlQuality.SelectSingleNode("costdiscount/value")?.Value;
+                            switch (xmlQuality.SelectSingleNode("category")?.Value)
+                            {
+                                case "Positive":
+                                    intBP += Convert.ToInt32(strValue);
+                                    break;
+                                case "Negative":
+                                    intBP -= Convert.ToInt32(strValue);
+                                    break;
+                            }
+                        }
                         if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases)
                         {
                             string strDoubleCostCareer = xmlQuality.SelectSingleNode("doublecareer")?.Value;

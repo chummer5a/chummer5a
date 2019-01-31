@@ -20,6 +20,7 @@ environment:
   - project_name: Chummer
     api_token: 'secure: Ez1QcWiKJJWMAO+xXkQglJNI4OnWM5/JMjXgy6gwJH5IuUX4ttzrpthVYNjHWS12'
 init:
+
 - ps: |
     $headers = @{
     "Authorization" = "Bearer $token"
@@ -41,6 +42,7 @@ init:
         Exit-AppveyorBuild
         }
     }
+    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 install:
 - ps: |
     $token = $env:api_token

@@ -242,7 +242,7 @@ namespace ChummerHub.Client.Model
         {
             this.PopulateTags();
             this.PrepareModel();
-            Utils.PostSINnerAsync(this).ContinueWith((posttask) =>
+            ChummerHub.Client.Backend.Utils.PostSINnerAsync(this).ContinueWith((posttask) =>
             {
                 if(posttask.Status != TaskStatus.RanToCompletion)
                 {
@@ -277,7 +277,7 @@ namespace ChummerHub.Client.Model
                     throw;
                 }
                 System.Diagnostics.Trace.TraceInformation("Character " + this.MyCharacter.Alias + " posted with ID " + this.MySINnerFile.Id);
-                Utils.UploadChummerFileAsync(this).ContinueWith((uploadtask) =>
+                ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(this).ContinueWith((uploadtask) =>
                 {
                     if(uploadtask.Status != TaskStatus.RanToCompletion)
                     {

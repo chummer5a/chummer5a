@@ -130,8 +130,8 @@ namespace Chummer.Plugins
                 }
                 ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
                 ce.PrepareModel();
-                await Utils.PostSINnerAsync(ce);
-                await Utils.UploadChummerFileAsync(ce);
+                await ChummerHub.Client.Backend.Utils.PostSINnerAsync(ce);
+                await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(ce);
             }
             catch(Exception e)
             {
@@ -200,7 +200,7 @@ namespace Chummer.Plugins
 
         public async Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(ConcurrentDictionary<string, frmCharacterRoster.CharacterCache> CharDic, bool forceUpdate)
         {
-            return await Utils.GetCharacterRosterTreeNode(CharDic, forceUpdate);
+            return await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(CharDic, forceUpdate);
         }
 
         public void CustomInitialize(frmChummerMain mainControl)

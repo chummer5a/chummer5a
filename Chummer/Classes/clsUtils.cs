@@ -25,7 +25,7 @@ using System.Reflection;
 
 namespace Chummer
 {
-    static class Utils
+    public static class Utils
     {
         public static void BreakIfDebug()
         {
@@ -54,9 +54,7 @@ namespace Chummer
         {
             get
             {
-                if (!IsUnitTest)
-                    return Application.StartupPath;
-                return AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+                return !IsUnitTest ? Application.StartupPath : AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
             }
         }
 

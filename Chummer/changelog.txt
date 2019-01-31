@@ -13,6 +13,7 @@ Application Changes:
 - Added the 'lifestyle' attribute to the lifestylecost and basiclifestylecost improvement types. This supports limiting the bonus to a specific Lifestyle type, such as Low or Squatter. 
 - ValueOf has been altered slightly to allow for selecting objects that are either of a given ImprovedName, or don't have one, in support of the above changes. Defaults to existing behaviour.
 - Implemented a basic upgrade mechanism in career mode for cyberware, accessed through a submenu of the Delete Cyberware button.
+- Added code to the SelectQuality form to show karma discounts if the quality qualifies for it.
 
 Data Changes:
 - Fixed incorrect underbarrel weapon name for the Nissan Optimum II that caused a crash. Fixes part of #3344
@@ -25,6 +26,7 @@ Data Changes:
 - The Auto Injector Expension and Killswitch are now properly addable to the Autoinjector as child objects. They've been renamed to Expanded Reservoir and Killswitch, respectively. Fixes #3365
 - Fixed issues with the Infected Optional Power qualities that prevented them being taken in create mode. Closes #3234
 - Implemented the lifestyle discount for the Community Connection quality. Closes #3372
+- Added a knowledge skill prompt for Zoology.
 
 Build 204
 
