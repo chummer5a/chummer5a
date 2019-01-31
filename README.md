@@ -15,6 +15,7 @@ The repository for Adam Schmidt's original code can be found at: https://code.go
 Pre-release automated builds are performed by Appveyor, and are accessible via [the Releases page](https://github.com/chummer5a/chummer5a/releases).
 
 [![Build status](https://ci.appveyor.com/api/projects/status/wf0jbqd5xp05s4hs?svg=true)](https://ci.appveyor.com/project/chummer5a/chummer5a)
+[![ko-fi](https://www.ko-fi.com/img/donate_sm.png)](https://ko-fi.com/Z8Z7IP4E)
 
 ### Sponsors
 
