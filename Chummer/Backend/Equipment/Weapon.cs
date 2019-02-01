@@ -36,7 +36,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", null)]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource, ICanSort, IHasWirelessBonus
+    public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource, ICanSort, IHasWirelessBonus, IHasStolenProperty
 	{
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -117,7 +117,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnWirelessOn;
         private int _intMatrixCMFilled;
         private int _intSortOrder;
-
+	    private bool _blnStolen;
         private readonly Character _objCharacter;
         private string _strMount;
         private string _strExtraMount;
@@ -208,6 +208,7 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetInt32FieldQuickly("conceal", ref _intConceal);
             objXmlWeapon.TryGetStringFieldQuickly("avail", ref _strAvail);
             objXmlWeapon.TryGetStringFieldQuickly("cost", ref _strCost);
+            objXmlWeapon.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
 
             // Check for a Variable Cost.
             if (!blnSkipCost && _strCost.StartsWith("Variable("))
@@ -515,6 +516,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("requireammo", _blnRequireAmmo.ToString());
             objWriter.WriteElementString("accuracy", _strAccuracy);
             objWriter.WriteElementString("mount", _strMount);
+            objWriter.WriteElementString("stolen", _blnStolen.ToString());
             objWriter.WriteElementString("extramount", _strExtraMount);
             if (_lstAccessories.Count > 0)
             {
@@ -670,6 +672,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("weaponname", ref _strWeaponName);
+            objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             objNode.TryGetStringFieldQuickly("range", ref _strRange);
             objNode.TryGetStringFieldQuickly("mount", ref _strMount);
             objNode.TryGetStringFieldQuickly("extramount", ref _strExtraMount);
@@ -1611,6 +1614,12 @@ namespace Chummer.Backend.Equipment
                 _blnWirelessOn = value;
             }
         }
+
+	    public bool Stolen
+        {
+	        get => _blnStolen;
+	        set => _blnStolen = value;
+	    }
         #endregion
 
         #region Complex Properties
@@ -5195,7 +5204,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public int GetBaseMatrixAttribute(string strAttributeName)
+	    public int GetBaseMatrixAttribute(string strAttributeName)
         {
             IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
             if (objThis != null)

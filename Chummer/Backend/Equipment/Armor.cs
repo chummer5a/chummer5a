@@ -36,7 +36,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "TotalArmor", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus
+    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty
 	{
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -66,6 +66,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnWirelessOn = false;
         private bool _blnDiscountCost;
         private int _intSortOrder;
+	    private bool _blnStolen;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Armor(Character objCharacter)
@@ -404,6 +405,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("damage", _intDamage.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("maxrating", _intMaxRating.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("stolen", _blnStolen.ToString());
             objWriter.WriteStartElement("armormods");
             foreach (ArmorMod objMod in _lstArmorMods)
             {
@@ -497,6 +499,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("damage", ref _intDamage);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
+            objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             _nodBonus = objNode["bonus"];
             _nodWirelessBonus = objNode["wirelessbonus"];
@@ -1170,6 +1173,12 @@ namespace Chummer.Backend.Equipment
 
         public Guid SourceID => _sourceID;
 
+        public TaggedObservableCollection<Gear> Children => Gear;
+	    public bool Stolen
+	    {
+	        get => _blnStolen;
+	        set => _blnStolen = value;
+	    }
         #endregion
 
         #region Complex Properties
@@ -1655,7 +1664,5 @@ namespace Chummer.Backend.Equipment
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
         }
-
-        public TaggedObservableCollection<Gear> Children => Gear;
-    }
+	}
 }

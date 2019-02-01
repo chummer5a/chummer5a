@@ -2554,6 +2554,10 @@
       <text>{0} over your Nuyen total</text>
     </string>
     <string>
+      <key>Message_InvalidStolenNuyenExcess</key>
+      <text>{0} over your Nuyen total for Stolen Gear</text>
+    </string>
+    <string>
       <key>Message_InvalidEssenceExcess</key>
       <text>{0} over the Essence limit</text>
     </string>
@@ -3997,6 +4001,10 @@
       <text>Nuyen:</text>
     </string>
     <string>
+      <key>Label_StolenGearNuyen</key>
+      <text>Nuyen (Stolen):</text>
+    </string>
+    <string>
       <key>Node_SelectedQualities</key>
       <text>Selected Qualities</text>
     </string>
@@ -4755,6 +4763,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <!-- End Region-->
     <!-- Region Street Gear/Armor Tab -->
+    <string>
+      <key>Checkbox_Stolen</key>
+      <text>Stolen</text>
+    </string>
     <string>
       <key>Checkbox_Equipped</key>
       <text>Equipped</text>

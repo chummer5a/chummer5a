@@ -73,6 +73,7 @@ namespace Chummer
         private int _intPublicAwareness;
         private int _intBurntStreetCred;
         private decimal _decNuyen;
+        private decimal _decStolenNuyen;
         private decimal _decStartingNuyen;
         private int _intMaxAvail = 12;
         private decimal _decEssenceAtSpecialStart = decimal.MinValue;
@@ -677,6 +678,9 @@ namespace Chummer
                     new DependancyGraphNode<string>(nameof(DisplayNuyen),
                         new DependancyGraphNode<string>(nameof(Nuyen))
                     ),
+                    new DependancyGraphNode<string>(nameof(DisplayStolenNuyen),
+                        new DependancyGraphNode<string>(nameof(StolenNuyen))
+                    ),
                     new DependancyGraphNode<string>(nameof(DisplayKarma),
                         new DependancyGraphNode<string>(nameof(Karma))
                     ),
@@ -686,6 +690,7 @@ namespace Chummer
                             new DependancyGraphNode<string>(nameof(StartingNuyenModifiers)),
                             new DependancyGraphNode<string>(nameof(NuyenBP),
                                 new DependancyGraphNode<string>(nameof(TotalNuyenMaximumBP),
+                                    new DependancyGraphNode<string>(nameof(StolenNuyen)),
                                     new DependancyGraphNode<string>(nameof(NuyenMaximumBP)),
                                     new DependancyGraphNode<string>(nameof(IgnoreRules))
                                 )
@@ -11094,7 +11099,22 @@ if (!Utils.IsUnitTest){
             }
         }
 
+        public decimal StolenNuyen
+        {
+            get => _decStolenNuyen;
+            set
+            {
+                if (_decStolenNuyen != value)
+                {
+                    _decStolenNuyen = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public string DisplayNuyen => Nuyen.ToString(_objOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+
+        public string DisplayStolenNuyen => StolenNuyen.ToString(_objOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
         /// <summary>
         /// Amount of Nuyen the character started with via the priority system.
@@ -11129,7 +11149,7 @@ if (!Utils.IsUnitTest){
             get => _decNuyenBP;
             set
             {
-                decimal decNewValue = Math.Min(value, TotalNuyenMaximumBP);
+                decimal decNewValue = Math.Max(Math.Min(value, TotalNuyenMaximumBP), 0);
                 if(_decNuyenBP != decNewValue)
                 {
                     _decNuyenBP = decNewValue;

@@ -36,7 +36,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", null)]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasMatrixConditionMonitor, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort, IHasGear
+    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasMatrixConditionMonitor, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort, IHasGear, IHasStolenProperty
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -92,6 +92,7 @@ namespace Chummer.Backend.Equipment
         private string _strOverclocked = "None";
         private bool _blnCanSwapAttributes;
         private int _intSortOrder;
+        private bool _blnStolen;
 
         // Condition Monitor Progress.
         private int _intPhysicalCMFilled;
@@ -476,6 +477,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("parentid", _strParentID);
+            objWriter.WriteElementString("sortorder", _intSortOrder.ToString());
             objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("vehiclename", _strVehicleName);
@@ -650,7 +652,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("physicalcmfilled", ref _intPhysicalCMFilled);
             objNode.TryGetStringFieldQuickly("vehiclename", ref _strVehicleName);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
-
+            objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             string strNodeInnerXml = objNode.InnerXml;
             if (strNodeInnerXml.Contains("<mods>"))
             {
@@ -2903,6 +2905,11 @@ namespace Chummer.Backend.Equipment
 
                 return SystemColors.WindowText;
             }
+        }
+        public bool Stolen
+        {
+            get => _blnStolen;
+            set => _blnStolen = value;
         }
         #endregion
 

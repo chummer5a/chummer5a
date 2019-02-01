@@ -328,6 +328,7 @@
     <Compile Include="Interfaces\IHasInternalId.cs" />
     <Compile Include="Interfaces\IHasName.cs" />
     <Compile Include="Interfaces\IHasNotes.cs" />
+    <Compile Include="Interfaces\IHasStolenProperty.cs" />
     <Compile Include="Interfaces\IHasRating.cs" />
     <Compile Include="Interfaces\IHasSource.cs" />
     <Compile Include="Interfaces\IHasWirelessBonus.cs" />

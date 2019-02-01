@@ -17864,10 +17864,13 @@
     <quality>
       <id>8b18a3aa-fd5a-4712-8dd4-117d7a73ba11</id>
       <name>Stolen Gear</name>
-      <karma>1</karma>
+      <karma>-1</karma>
       <category>Negative</category>
       <limit>20</limit>
-      <bonus />
+      <bonus>
+        <nuyenamt condition="Stolen">10000</nuyenamt>
+        <nuyenmaxbp>-1</nuyenmaxbp>
+      </bonus>
       <source>NF</source>
       <page>177</page>
     </quality>
