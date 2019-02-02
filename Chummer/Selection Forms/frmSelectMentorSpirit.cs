@@ -115,6 +115,10 @@ namespace Chummer
                     {
                         cboChoice2.Visible = false;
                     }
+
+                    cboChoice1.Visible = lstChoice1.Count > 0;
+                    cboChoice1.Enabled = lstChoice1.Count > 1;
+                    cboChoice2.Enabled = lstChoice2.Count > 1;
                 }
                 else
                 {

@@ -389,6 +389,7 @@
         <oneof>
           <quality>Adept</quality>
           <quality>Aspected Magician</quality>
+          <quality>Aware</quality>
           <quality>Enchanter</quality>
           <quality>Explorer</quality>
           <quality>Apprentice</quality>

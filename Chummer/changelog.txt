@@ -14,6 +14,8 @@ Application Changes:
 - ValueOf has been altered slightly to allow for selecting objects that are either of a given ImprovedName, or don't have one, in support of the above changes. Defaults to existing behaviour.
 - Implemented a basic upgrade mechanism in career mode for cyberware, accessed through a submenu of the Delete Cyberware button.
 - Added code to the SelectQuality form to show karma discounts if the quality qualifies for it.
+- Fixed a crash when loading plugins, if plugins cannot be found. 
+- Altered the Mentor Spirit selection window to hide list choices that can't be taken due to Magician or Adept requirements.
 
 Data Changes:
 - Fixed incorrect underbarrel weapon name for the Nissan Optimum II that caused a crash. Fixes part of #3344
@@ -27,6 +29,7 @@ Data Changes:
 - Fixed issues with the Infected Optional Power qualities that prevented them being taken in create mode. Closes #3234
 - Implemented the lifestyle discount for the Community Connection quality. Closes #3372
 - Added a knowledge skill prompt for Zoology.
+- Allowed the Aware quality to permit taking Mentor Spirits.
 
 Build 204
 
