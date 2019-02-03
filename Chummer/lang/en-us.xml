@@ -9591,6 +9591,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>String_UI</key>
       <text>UI</text>
     </string>
+    <string>
+      <key>Message_OrphanedImprovements</key>
+      <text>Orphaned Improvements were found in your character file. In most cases it should be safe to load this character, but you may want to make a backup copy of this character file.\n\n Do you want to continue loading and remove these improvements?</text>
+    </string>
+    <string>
+      <key>MessageTitle_OrphanedImprovements</key>
+      <text>Orphaned Improvements Found</text>
+    </string>
     <!-- End Region -->
     <!-- Region HeroLab Importer -->
     <string>
