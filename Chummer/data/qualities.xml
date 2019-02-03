@@ -17664,7 +17664,7 @@
         </oneof>
       </forbidden>
       <source>BTB</source>
-      <page>160</page>
+      <page>139</page>
     </quality>
     <!-- End Region -->
     <!-- Region Positive -->
@@ -17722,7 +17722,7 @@
         </specificskill>
       </bonus>
       <source>BTB</source>
-      <page>161</page>
+      <page>139</page>
     </quality>
     <quality>
       <id>eb3b2334-29f3-4bd5-a9cc-817672b28d6e</id>
