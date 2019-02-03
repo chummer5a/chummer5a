@@ -16,6 +16,7 @@ Application Changes:
 - Added code to the SelectQuality form to show karma discounts if the quality qualifies for it.
 - Fixed a crash when loading plugins, if plugins cannot be found. 
 - Altered the Mentor Spirit selection window to hide list choices that can't be taken due to Magician or Adept requirements.
+- Better check for open files when trying to restart the application after updating.
 
 Data Changes:
 - Fixed incorrect underbarrel weapon name for the Nissan Optimum II that caused a crash. Fixes part of #3344
