@@ -867,12 +867,14 @@ namespace Chummer
             }
             else
             {
+                if (blnSquareBrackets)
+                    strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                 if (strCapacity.StartsWith("FixedValues("))
                 {
                     string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
                     strCapacity = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
                 }
-                if (strCapacity == "[*]")
+                if (strCapacity == "[*]" || strCapacity == "*")
                     lblCapacity.Text = "*";
                 else
                 {
@@ -900,8 +902,6 @@ namespace Chummer
                     }
                     else
                     {
-                        if (blnSquareBrackets)
-                            strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                         lblCapacity.Text = blnIsSuccess ? objProcess.ToString() : strCapacity;
                         if (blnSquareBrackets)

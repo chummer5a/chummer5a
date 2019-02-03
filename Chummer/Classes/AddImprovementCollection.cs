@@ -71,7 +71,7 @@ namespace Chummer.Classes
                 intAugmentedMaximum, strExclude, blnAddToRating, strTarget, strCondition);
         }
 
-        #region
+        #region Improvement Methods
         public void qualitylevel(XmlNode bonusNode)
         {
             /*
