@@ -2217,7 +2217,7 @@ if (!Utils.IsUnitTest){
                             Utils.BreakIfDebug();
                             if (removeImprovements || (MessageBox.Show(LanguageManager.GetString("Message_OrphanedImprovements"),
                                      LanguageManager.GetString("MessageTitle_OrphanedImprovements"), MessageBoxButtons.YesNo,
-                                     MessageBoxIcon.Error) == DialogResult.OK))
+                                     MessageBoxIcon.Error) == DialogResult.Yes))
                             {
                                 removeImprovements = true;
                                 continue;
