@@ -56,7 +56,7 @@ namespace Chummer.Backend.Equipment
         private string _strLocation = string.Empty;
         private string _strAllowedWeapons = string.Empty;
         private int _intSortOrder;
-
+        private bool _blnStolen;
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
         private readonly TaggedObservableCollection<VehicleMod> _lstMods = new TaggedObservableCollection<VehicleMod>();
@@ -191,6 +191,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString());
+            objWriter.WriteElementString("stolen", _blnStolen.ToString());
 			objWriter.WriteEndElement();
 
             if (!IncludedInVehicle)
@@ -284,7 +285,8 @@ namespace Chummer.Backend.Equipment
 			objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
 			objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
-        }
+		    objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
+		}
 
         /// <summary>
         /// Print the object's XML to the XmlWriter.
@@ -574,6 +576,15 @@ namespace Chummer.Backend.Equipment
         /// 
         /// </summary>
         public IList<WeaponMountOption> WeaponMountOptions { get; } = new List<WeaponMountOption>();
+
+        /// <summary>
+        /// Is the object stolen via the Stolen Gear quality?
+        /// </summary>
+        public bool Stolen
+        {
+            get => _blnStolen;
+            set => _blnStolen = value;
+        }
         #endregion
 
         #region Complex Properties

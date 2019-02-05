@@ -33,7 +33,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class VehicleMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanEquip, IHasSource, IHasRating, ICanSort
+    public class VehicleMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanEquip, IHasSource, IHasRating, ICanSort, IHasStolenProperty
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -68,7 +68,7 @@ namespace Chummer.Backend.Equipment
         private string _strAmmoReplace;
         private int _intAmmoBonus;
         private int _intSortOrder;
-
+        private bool _blnStolen;
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -289,6 +289,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString());
+            objWriter.WriteElementString("stolen", _blnStolen.ToString());
             objWriter.WriteEndElement();
 
             if (!IncludedInVehicle)
@@ -391,6 +392,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
+            objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
         }
 
         /// <summary>
@@ -724,6 +726,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _intSortOrder;
             set => _intSortOrder = value;
+        }
+
+        /// <summary>
+        /// Is the object stolen via the Stolen Gear quality?
+        /// </summary>
+        public bool Stolen
+        {
+            get => _blnStolen;
+            set => _blnStolen = value;
         }
         #endregion
 

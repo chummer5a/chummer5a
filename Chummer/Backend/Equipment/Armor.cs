@@ -1174,12 +1174,13 @@ namespace Chummer.Backend.Equipment
         public Guid SourceID => _sourceID;
 
         public TaggedObservableCollection<Gear> Children => Gear;
+
 	    public bool Stolen
 	    {
 	        get => _blnStolen;
 	        set => _blnStolen = value;
 	    }
-        #endregion
+	    #endregion
 
         #region Complex Properties
         /// <summary>
