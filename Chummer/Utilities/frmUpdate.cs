@@ -672,7 +672,12 @@ namespace Chummer
         {
             try
             {
-                File.OpenText(path);
+                File.Open(path, FileMode.Open);
+            }
+            catch (FileNotFoundException)
+            {
+                // File doesn't exist. 
+                return true;
             }
             catch (IOException)
             {
@@ -680,6 +685,11 @@ namespace Chummer
                 //still being written to
                 //or being processed by another thread
                 //or does not exist (has already been processed)
+                return true;
+            }
+            catch (Exception)
+            {
+                Utils.BreakIfDebug();
                 return true;
             }
 

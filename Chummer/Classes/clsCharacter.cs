@@ -2195,8 +2195,7 @@ if (!Utils.IsUnitTest){
             // Improvements.
             objXmlNodeList = objXmlCharacter.SelectNodes("improvements/improvement");
             string strCharacterInnerXml = objXmlCharacter.InnerXml;
-            // Orphaned improvements shouldn't be getting created after 5.198. If this is proven incorrect, bump up the version here.
-            bool blnDoCheckForOrphanedImprovements = LastSavedVersion < new Version("5.198.0");
+            bool removeImprovements = false;
             foreach(XmlNode objXmlImprovement in objXmlNodeList)
             {
                 string strImprovementSource = objXmlImprovement["improvementsource"]?.InnerText;
@@ -2209,17 +2208,30 @@ if (!Utils.IsUnitTest){
                     (strImprovementSource == "EssenceLoss" || strImprovementSource == "EssenceLossChargen"))
                     continue;
 
-                if(blnDoCheckForOrphanedImprovements)
+                string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerText;
+                if (!string.IsNullOrEmpty(strLoopSourceName) && strLoopSourceName.IsGuid() &&
+                    objXmlImprovement["custom"]?.InnerText != bool.TrueString)
                 {
-                    string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerText;
-                    if(!string.IsNullOrEmpty(strLoopSourceName) && strLoopSourceName.IsGuid() &&
-                        objXmlImprovement["custom"]?.InnerText != bool.TrueString)
+                    // Hacky way to make sure this character isn't loading in any orphaned improvements.
+                    // SourceName ID will pop up minimum twice in the save if the improvement's source is actually present: once in the improvement and once in the parent that added it.
+                    if (strCharacterInnerXml.IndexOf(strLoopSourceName, StringComparison.Ordinal) ==
+                        strCharacterInnerXml.LastIndexOf(strLoopSourceName, StringComparison.Ordinal))
                     {
-                        // Hacky way to make sure this character isn't loading in any orphaned improvements.
-                        // SourceName ID will pop up minimum twice in the save if the improvement's source is actually present: once in the improvement and once in the parent that added it.
-                        if(strCharacterInnerXml.IndexOf(strLoopSourceName, StringComparison.Ordinal) ==
-                            strCharacterInnerXml.LastIndexOf(strLoopSourceName, StringComparison.Ordinal))
-                            continue;
+                        if (!Utils.IsUnitTest)
+                        {
+                            Utils.BreakIfDebug();
+                            if (removeImprovements || (MessageBox.Show(LanguageManager.GetString("Message_OrphanedImprovements"),
+                                     LanguageManager.GetString("MessageTitle_OrphanedImprovements"), MessageBoxButtons.YesNo,
+                                     MessageBoxIcon.Error) == DialogResult.Yes))
+                            {
+                                removeImprovements = true;
+                                continue;
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
                     }
                 }
 

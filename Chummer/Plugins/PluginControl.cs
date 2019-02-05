@@ -114,6 +114,31 @@ namespace Chummer.Plugins
                 {
                     msg += exp.Message + Environment.NewLine;
                 }
+
+                msg += Environment.NewLine;
+                msg += e.ToString();
+                Console.WriteLine(msg);
+                System.Diagnostics.Debug.Write(msg);
+            }
+            catch (CompositionException e)
+            {
+
+                string msg = "Exception loading plugins: " + Environment.NewLine;
+
+                foreach (var exp in e.Errors)
+                {
+                    msg += exp.Exception + Environment.NewLine;
+                }
+
+                msg += Environment.NewLine;
+                msg += e.ToString();
+                Console.WriteLine(msg);
+                System.Diagnostics.Debug.Write(msg);
+            }
+            catch (Exception e)
+            {
+                string msg = "Exception loading plugins: " + Environment.NewLine;
+
                 msg += Environment.NewLine;
                 msg += e.ToString();
                 Console.WriteLine(msg);

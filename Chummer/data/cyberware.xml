@@ -659,7 +659,7 @@
       <limit>False</limit>
       <category>Eyeware</category>
       <ess>FixedValues(0.1,0.1,0.1,0.2,0.2,0.2)</ess>
-      <capacity>FixedValues(1,2,3,8,10,12)</capacity>
+      <capacity>[FixedValues(1,2,3,8,10,12)]</capacity>
       <avail>Rating * 3</avail>
       <cost>FixedValues(4000,8000,12000,20000,25000,30000)</cost>
       <source>SR5</source>
@@ -671,7 +671,7 @@
           <condition>Only for Perception (Visual).</condition>
         </limitmodifier>
       </bonus>
-      <rating>3</rating>
+      <rating>6</rating>
     </cyberware>
     <cyberware>
       <id>2c578376-1219-468d-b76b-4c0da44dfca2</id>
@@ -716,7 +716,7 @@
       <limit>False</limit>
       <category>Earware</category>
       <ess>FixedValues(0.1,0.1,0.1,0.2,0.2,0.2)</ess>
-      <capacity>FixedValues(1,2,3,8,10,12)</capacity>
+      <capacity>[FixedValues(1,2,3,8,10,12)]</capacity>
       <avail>Rating * 3</avail>
       <cost>FixedValues(4000,8000,12000,20000,25000,30000)</cost>
       <source>SR5</source>
@@ -728,7 +728,7 @@
           <condition>Only for Perception (Hearing)</condition>
         </limitmodifier>
       </bonus>
-      <rating>3</rating>
+      <rating>6</rating>
     </cyberware>
     <cyberware>
       <id>31d82330-4650-4550-aa90-c314a189f897</id>
