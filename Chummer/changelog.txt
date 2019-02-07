@@ -32,6 +32,7 @@ Data Changes:
 - Implemented the lifestyle discount for the Community Connection quality. Closes #3372
 - Added a knowledge skill prompt for Zoology.
 - Allowed the Aware quality to permit taking Mentor Spirits.
+- Fixed a crash when adding the Rockblood Signature Armored Shirt.
 
 New Strings:
 - Message_OrphanedImprovements
