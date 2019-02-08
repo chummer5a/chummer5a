@@ -36,7 +36,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Cyberware : IHasChildren<Cyberware>, IHasGear, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort
+    public class Cyberware : IHasChildren<Cyberware>, IHasGear, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort, IHasStolenProperty
     {
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
@@ -59,6 +59,7 @@ namespace Chummer.Backend.Equipment
         private string _strMaxRating = string.Empty;
         private string _strAllowSubsystems = string.Empty;
         private bool _blnSuite;
+        private bool _blnStolen;
         private string _strLocation = string.Empty;
         private string _strExtra = string.Empty;
         private Guid _guiWeaponID = Guid.Empty;
@@ -795,6 +796,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("location", _strLocation);
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("suite", _blnSuite.ToString());
+            objWriter.WriteElementString("stolen", _blnStolen.ToString());
             objWriter.WriteElementString("essdiscount", _intEssenceDiscount.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("extraessadditivemultiplier", _decExtraESSAdditiveMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("extraessmultiplicativemultiplier", _decExtraESSMultiplicativeMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
@@ -961,6 +963,7 @@ namespace Chummer.Backend.Equipment
                 _strLocation = string.Empty;
             }
             objNode.TryGetBoolFieldQuickly("suite", ref _blnSuite);
+            objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             objNode.TryGetInt32FieldQuickly("essdiscount", ref _intEssenceDiscount);
             objNode.TryGetDecFieldQuickly("extraessadditivemultiplier", ref _decExtraESSAdditiveMultiplier);
             objNode.TryGetDecFieldQuickly("extraessmultiplicativemultiplier", ref _decExtraESSMultiplicativeMultiplier);
@@ -1755,6 +1758,12 @@ namespace Chummer.Backend.Equipment
                 }
                 return blnReturn;
             }
+        }
+
+        public bool Stolen
+        {
+            get => _blnStolen;
+            set => _blnStolen = value;
         }
 
         public void ToggleWirelessBonuses(bool enable)
@@ -3066,6 +3075,51 @@ namespace Chummer.Backend.Equipment
                 {
                     decReturn += objGear.TotalCost;
                 }
+
+                return decReturn;
+            }
+        }
+
+
+        /// <summary>
+        /// Identical to TotalCost, including the modifiers from Suite improvements.
+        /// </summary>
+        public decimal StolenTotalCost
+        {
+            get
+            {
+                decimal decCost = OwnCostPreMultipliers;
+                decimal decReturn = decCost;
+
+                // Factor in the Cost multiplier of the selected CyberwareGrade.
+                decReturn *= Grade.Cost;
+
+                if (DiscountCost)
+                    decReturn *= 0.9m;
+
+                // Add in the cost of all child components.
+                foreach (Cyberware objChild in Children.Where(child => child.Stolen).AsParallel())
+                {
+                    if (objChild.Capacity == "[*]") continue;
+                    // If the child cost starts with "*", multiply the item's base cost.
+                    if (objChild.Cost.StartsWith('*'))
+                    {
+                        decimal decPluginCost = decCost * (Convert.ToDecimal(objChild.Cost.TrimStart('*'), GlobalOptions.InvariantCultureInfo) - 1);
+
+                        if (objChild.DiscountCost)
+                            decPluginCost *= 0.9m;
+
+                        decReturn += decPluginCost;
+                    }
+                    else
+                        decReturn += objChild.TotalCostWithoutModifiers;
+                }
+
+                // Add in the cost of all Gear plugins.
+                decReturn += Gear.Where(g => g.Stolen).AsParallel().Sum(objGear => objGear.StolenTotalCost);
+
+                if (_blnSuite)
+                    decReturn *= 0.9m;
 
                 return decReturn;
             }

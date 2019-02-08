@@ -18,6 +18,7 @@ Application Changes:
 - Altered the Mentor Spirit selection window to hide list choices that can't be taken due to Magician or Adept requirements.
 - Better check for open files when trying to restart the application after updating.
 - Orphaned improvement checks are now made on every character load. This is still a hackish method to get around the issue with Qi Foci that affect Improved Ability (Skill) causing orphaned improvements, but it's generally a healthy attitude to take anyway. In order to prevent character corruption without user acceptance, it will also prompt if you want to abort loading the character until you've taken a backup.
+- Made additions to the nuyenamt improvement to allow specifying specific conditions for which the nuyen is used. This in turn supports the Stolen quality of Equipment objects, allowing the Stolen nuyen to be spent exclusively on these items without affecting the overall nuyen budget of the character.
 
 Data Changes:
 - Fixed incorrect underbarrel weapon name for the Nissan Optimum II that caused a crash. Fixes part of #3344
@@ -32,11 +33,13 @@ Data Changes:
 - Implemented the lifestyle discount for the Community Connection quality. Closes #3372
 - Added a knowledge skill prompt for Zoology.
 - Allowed the Aware quality to permit taking Mentor Spirits.
+- The In Debt quality now reduces the karma that can be spent on nuyen, representing that the karma 'gained' through this quality has been spent on the increased nuyen, per RAW.
 - Fixed a crash when adding the Rockblood Signature Armored Shirt.
 
 New Strings:
 - Message_OrphanedImprovements
 - MessageTitle_OrphanedImprovements
+- Checkbox_Stolen
 
 Build 204
 

@@ -30,7 +30,7 @@ using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Equipment
 {
-    public class Drug : IHasName, IHasXmlNode, ICanSort
+    public class Drug : IHasName, IHasXmlNode, ICanSort, IHasStolenProperty
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID;
@@ -51,6 +51,7 @@ namespace Chummer.Backend.Equipment
         private decimal _decQty;
         private int _intSortOrder;
         private readonly Character _objCharacter;
+        private bool _blnStolen;
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -103,6 +104,7 @@ namespace Chummer.Backend.Equipment
             objXmlData.TryGetInt32FieldQuickly("threshold", ref _intAddictionThreshold);
             objXmlData.TryGetStringFieldQuickly("grade", ref _strGrade);
             objXmlData.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
+            objXmlData.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             //objXmlData.TryGetField("source", out _strSource);
             //objXmlData.TryGetField("page", out _strPage);
         }
@@ -132,6 +134,7 @@ namespace Chummer.Backend.Equipment
                 objXmlWriter.WriteElementString("threshold", _intAddictionThreshold.ToString());
             objXmlWriter.WriteElementString("grade", _strGrade);
             objXmlWriter.WriteElementString("sortorder", _intSortOrder.ToString());
+            objXmlWriter.WriteElementString("stolen", _blnStolen.ToString());
             /*if (source != null)
                 objXmlWriter.WriteElementString("source", source);
             if (page != 0)
@@ -322,10 +325,15 @@ namespace Chummer.Backend.Equipment
 		/// </summary>
 		public decimal TotalCost => Cost * Quantity;
 
-	    /// <summary>
-		/// Total amount of the Drug held by the character.
-		/// </summary>
-		public decimal Quantity
+        /// <summary>
+        /// Total cost of the Drug.
+        /// </summary>
+        public decimal StolenTotalCost => Stolen ? TotalCost : 0;
+
+        /// <summary>
+        /// Total amount of the Drug held by the character.
+        /// </summary>
+        public decimal Quantity
 		{
 			get => _decQty;
 	        set => _decQty = value;
@@ -609,6 +617,7 @@ namespace Chummer.Backend.Equipment
             }
         }
         public Guid SourceID => _sourceID;
+        public bool Stolen { get; set; }
 
         #endregion
 

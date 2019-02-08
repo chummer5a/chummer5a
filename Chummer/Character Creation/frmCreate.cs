@@ -218,6 +218,7 @@ namespace Chummer
             }
             
             lblNuyenTotal.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayTotalStartingNuyen));
+            lblStolenNuyen.DoDatabinding("Text", CharacterObject, nameof(Character.DisplayStolenNuyen));
             lblAttributesBase.Visible = CharacterObject.BuildMethodHasSkillPoints;
 
             txtGroupName.DataBindings.Add("Text", CharacterObject, nameof(Character.GroupName), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -858,6 +859,13 @@ namespace Chummer
                     break;
                 case nameof(Character.DisplayNuyen):
                     tssNuyenRemaining.Text = CharacterObject.DisplayNuyen;
+                    break;
+                case nameof(Character.StolenNuyen):
+                    bool show = CharacterObject.Improvements.Any(i =>
+                        i.ImproveType == Improvement.ImprovementType.Nuyen && i.ImprovedName == "Stolen");
+
+                    lblStolenNuyen.Visible      = show;
+                    lblStolenNuyenLabel.Visible = show;
                     break;
                 case nameof(Character.DisplayEssence):
                     tssEssence.Text = CharacterObject.DisplayEssence;
@@ -10215,35 +10223,78 @@ namespace Chummer
         private decimal CalculateNuyen()
         {
             decimal decDeductions = 0;
-
-            // Cyberware/Bioware cost.
-            decDeductions += CharacterObject.Cyberware.AsParallel().Sum(x => x.TotalCost);
-
-            // Initiation Grade cost.
-            foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
+            decimal decStolenDeductions = 0;
+            //If the character has the Stolen Gear quality or something similar, we need to handle the nuyen a little differently. 
+            if (CharacterObject.Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.Nuyen && i.ImprovedName == "Stolen"))
             {
-                if (objGrade.Schooling)
-                    decDeductions += 10000;
+                // Cyberware/Bioware cost.
+                decDeductions       += CharacterObject.Cyberware.Where(c => !c.Stolen).AsParallel().Sum(x => x.TotalCost);
+                decStolenDeductions += CharacterObject.Cyberware.Where(c =>  c.Stolen).AsParallel().Sum(x => x.StolenTotalCost);
+
+                // Initiation Grade cost.
+                foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
+                {
+                    if (objGrade.Schooling)
+                        decDeductions += 10000;
+                }
+
+                // Armor cost.
+                decDeductions       += CharacterObject.Armor.Where(c => !c.Stolen).AsParallel().Sum(x => x.TotalCost);
+                decStolenDeductions += CharacterObject.Armor.Where(c =>  c.Stolen).AsParallel().Sum(x => x.StolenTotalCost);
+
+                // Weapon cost.
+                decDeductions       += CharacterObject.Weapons.Where(c => !c.Stolen).AsParallel().Sum(x => x.TotalCost);
+                decStolenDeductions += CharacterObject.Weapons.Where(c =>  c.Stolen).AsParallel().Sum(x => x.TotalCost);
+
+                // Gear cost.
+                decDeductions       += CharacterObject.Gear.Where(c => !c.Stolen).AsParallel().Sum(x => x.TotalCost);
+                decStolenDeductions += CharacterObject.Gear.Where(c =>  c.Stolen).AsParallel().Sum(x => x.StolenTotalCost);
+
+                // Lifestyle cost.
+                decDeductions       += CharacterObject.Lifestyles.AsParallel().Sum(x => x.TotalCost);
+
+                // Vehicle cost.
+                decDeductions       += CharacterObject.Vehicles.Where(c => !c.Stolen).AsParallel().Sum(x => x.TotalCost);
+                decStolenDeductions += CharacterObject.Vehicles.Where(c =>  c.Stolen).AsParallel().Sum(x => x.StolenTotalCost);
+
+                // Drug cost.
+                decDeductions       += CharacterObject.Drugs.Where(c => !c.Stolen).AsParallel().Sum(x => x.TotalCost);
+                decStolenDeductions += CharacterObject.Drugs.Where(c =>  c.Stolen).AsParallel().Sum(x => x.StolenTotalCost);
+            }
+            else
+            {
+                // Cyberware/Bioware cost.
+                decDeductions += CharacterObject.Cyberware.AsParallel().Sum(x => x.TotalCost);
+
+                // Initiation Grade cost.
+                foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
+                {
+                    if (objGrade.Schooling)
+                        decDeductions += 10000;
+                }
+
+                // Armor cost.
+                decDeductions += CharacterObject.Armor.AsParallel().Sum(x => x.TotalCost);
+
+                // Weapon cost.
+                decDeductions += CharacterObject.Weapons.AsParallel().Sum(x => x.TotalCost);
+
+                // Gear cost.
+                decDeductions += CharacterObject.Gear.AsParallel().Sum(x => x.TotalCost);
+
+                // Lifestyle cost.
+                decDeductions += CharacterObject.Lifestyles.AsParallel().Sum(x => x.TotalCost);
+
+                // Vehicle cost.
+                decDeductions += CharacterObject.Vehicles.AsParallel().Sum(x => x.TotalCost);
+
+                // Drug cost.
+                decDeductions += CharacterObject.Drugs.AsParallel().Sum(x => x.TotalCost);
             }
 
-            // Armor cost.
-            decDeductions += CharacterObject.Armor.AsParallel().Sum(x => x.TotalCost);
-
-            // Weapon cost.
-            decDeductions += CharacterObject.Weapons.AsParallel().Sum(x => x.TotalCost);
-
-            // Gear cost.
-            decDeductions += CharacterObject.Gear.AsParallel().Sum(x => x.TotalCost);
-
-            // Lifestyle cost.
-            decDeductions += CharacterObject.Lifestyles.AsParallel().Sum(x => x.TotalCost);
-
-            // Vehicle cost.
-            decDeductions += CharacterObject.Vehicles.AsParallel().Sum(x => x.TotalCost);
-
-			// Drug cost.
-            decDeductions += CharacterObject.Drugs.AsParallel().Sum(x => x.TotalCost);
-
+            CharacterObject.StolenNuyen =
+                ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Nuyen, false, "Stolen") -
+                decStolenDeductions;
             return CharacterObject.Nuyen = CharacterObject.TotalStartingNuyen - decDeductions;
         }
 
@@ -10280,6 +10331,16 @@ namespace Chummer
             {
                 lblCyberwareSourceLabel.Visible = false;
                 lblCyberwareSource.Visible = false;
+            }
+
+            if (treCyberware.SelectedNode?.Tag is IHasStolenProperty loot)
+            {
+                chkCyberwareStolen.Visible = true;
+                chkCyberwareStolen.Checked = loot.Stolen;
+            }
+            else
+            {
+                chkCyberwareStolen.Visible = false;
             }
             // Locate the selected piece of Cyberware.
             if (treCyberware.SelectedNode?.Tag is Cyberware objCyberware)
@@ -10484,6 +10545,16 @@ namespace Chummer
             {
                 lblWeaponSourceLabel.Visible = false;
                 lblWeaponSource.Visible = false;
+            }
+
+            if (treWeapons.SelectedNode?.Tag is IHasStolenProperty loot)
+            {
+                chkWeaponStolen.Visible = true;
+                chkWeaponStolen.Checked = loot.Stolen;
+            }
+            else
+            {
+                chkWeaponStolen.Visible = false;
             }
 
             if (treWeapons.SelectedNode?.Tag is Weapon objWeapon)
@@ -10858,6 +10929,16 @@ namespace Chummer
                 lblArmorSource.Visible = false;
             }
 
+            if (treArmor.SelectedNode?.Tag is IHasStolenProperty loot)
+            {
+                chkArmorStolen.Visible = true;
+                chkArmorStolen.Checked = loot.Stolen;
+            }
+            else
+            {
+                chkArmorStolen.Visible = false;
+            }
+
             string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
             if (treArmor.SelectedNode?.Tag is Armor objArmor)
@@ -11068,6 +11149,16 @@ namespace Chummer
                 IsRefreshing = false;
                 flpGear.ResumeLayout();
                 return;
+            }
+
+            if (treGear.SelectedNode?.Tag is IHasStolenProperty loot)
+            {
+                chkGearStolen.Visible = true;
+                chkGearStolen.Checked = loot.Stolen;
+            }
+            else
+            {
+                chkGearStolen.Visible = false;
             }
 
             if (treGear.SelectedNode?.Tag is IHasSource objSelected)
@@ -11857,7 +11948,15 @@ namespace Chummer
             }
 
             string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
-
+            if (treVehicles.SelectedNode?.Tag is IHasStolenProperty selectedLoot)
+            {
+                chkVehicleStolen.Visible = true;
+                chkVehicleStolen.Checked = selectedLoot.Stolen;
+            }
+            else
+            {
+                chkVehicleStolen.Visible = false;
+            }
             if (treVehicles.SelectedNode?.Tag is IHasSource objSelected)
             {
                 lblVehicleSourceLabel.Visible = true;
@@ -12905,6 +13004,14 @@ namespace Chummer
             {
                 blnValid = false;
                 strMessage += Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_InvalidNuyenExcess", GlobalOptions.Language), (decNuyen * -1).ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥');
+            }
+            if (CharacterObject.StolenNuyen < 0)
+            {
+                blnValid = false;
+                strMessage += Environment.NewLine + '\t' + string.Format(
+                                  LanguageManager.GetString("Message_InvalidStolenNuyenExcess", GlobalOptions.Language),
+                                  (CharacterObject.StolenNuyen * -1).ToString(CharacterObjectOptions.NuyenFormat,
+                                      GlobalOptions.CultureInfo) + '¥');
             }
 
             // Check if the character's Essence is above 0.
@@ -15860,6 +15967,51 @@ namespace Chummer
             }
             pnlAttributes.ResumeLayout();
         }
+
+        #region Stolen Property Changes
+        private void chkDrugStolen_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!(treCustomDrugs.SelectedNode?.Tag is IHasStolenProperty loot)) return;
+            ProcessStolenChanged(loot, chkDrugStolen.Checked);
+        }
+
+        private void chkCyberwareStolen_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!(treCyberware.SelectedNode?.Tag is IHasStolenProperty loot)) return;
+            ProcessStolenChanged(loot, chkCyberwareStolen.Checked);
+        }
+
+        private void chkGearStolen_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!(treGear.SelectedNode?.Tag is IHasStolenProperty loot)) return;
+            ProcessStolenChanged(loot, chkGearStolen.Checked);
+        }
+
+        private void chkArmorStolen_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!(treArmor.SelectedNode?.Tag is IHasStolenProperty loot)) return;
+            ProcessStolenChanged(loot, chkArmorStolen.Checked);
+        }
+
+        private void chkWeaponStolen_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!(treWeapons.SelectedNode?.Tag is IHasStolenProperty loot)) return;
+            ProcessStolenChanged(loot, chkWeaponStolen.Checked);
+        }
+        private void chkVehicleStolen_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!(treVehicles.SelectedNode?.Tag is IHasStolenProperty loot)) return;
+            ProcessStolenChanged(loot, chkVehicleStolen.Checked);
+
+        }
+
+        private void ProcessStolenChanged(IHasStolenProperty loot, bool state)
+        {
+            loot.Stolen = state;
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
+        }
+        #endregion
     }
 }
 

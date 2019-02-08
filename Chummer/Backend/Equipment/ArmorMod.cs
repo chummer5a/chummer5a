@@ -34,7 +34,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Armor Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus
+    public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty
 	{
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -59,6 +59,7 @@ namespace Chummer.Backend.Equipment
         private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
         private bool _blnDiscountCost;
+	    private bool _blnStolen;
         private int _intSortOrder;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -245,6 +246,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("included", _blnIncludedInArmor.ToString());
             objWriter.WriteElementString("equipped", _blnEquipped.ToString());
             objWriter.WriteElementString("extra", _strExtra);
+            objWriter.WriteElementString("stolen", _blnStolen.ToString());
             if (_guiWeaponID != Guid.Empty)
                 objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString("D"));
             objWriter.WriteElementString("notes", _strNotes);
@@ -283,6 +285,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludedInArmor);
             objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
+            objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
                 _blnWirelessOn = false;
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
@@ -555,6 +558,15 @@ namespace Chummer.Backend.Equipment
             get => _strPage;
             set => _strPage = value;
         }
+
+        /// <summary>
+        /// Was the object stolen  via the Stolen Gear quality?
+        /// </summary>
+	    public bool Stolen
+	    {
+	        get => _blnStolen;
+	        set => _blnStolen = value;
+	    }
 
         private SourceString _objCachedSourceDetail;
         public SourceString SourceDetail
@@ -897,6 +909,23 @@ namespace Chummer.Backend.Equipment
                 return decReturn;
             }
         }
+
+	    /// <summary>
+	    /// Total cost of the Armor Mod.
+	    /// </summary>
+	    public decimal StolenTotalCost
+	    {
+	        get
+	        {
+	            decimal decReturn = 0;
+	            if (Stolen) decReturn += OwnCost;
+
+	            // Go through all of the Gear for this piece of Armor and add the Cost value.
+	            decReturn += Gear.Where(g => g.Stolen).AsParallel().Sum(objGear => objGear.StolenTotalCost);
+
+	            return decReturn;
+	        }
+	    }
 
         /// <summary>
         /// Cost for just the Armor Mod.
