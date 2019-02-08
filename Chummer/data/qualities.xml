@@ -3828,8 +3828,8 @@
       <limit>15</limit>
       <bonus>
         <nuyenamt>5000</nuyenamt>
+        <nuyenmaxbp>-1</nuyenmaxbp>
       </bonus>
-
       <source>RF</source>
       <page>156</page>
     </quality>
