@@ -1538,6 +1538,38 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+
+        /// <summary>
+        /// Total cost of the Vehicle including all after-market Modification.
+        /// </summary>
+        public decimal StolenTotalCost
+        {
+            get
+            {
+                decimal decCost = 0;
+                if (Stolen) decCost += OwnCost;
+
+                foreach (VehicleMod objMod in Mods)
+                {
+                    // Do not include the price of Mods that are part of the base configureation.
+                    if (!objMod.IncludedInVehicle)
+                    {
+                        decCost += objMod.StolenTotalCost;
+                    }
+                    else
+                    {
+                        // If the Mod is a part of the base config, check the items attached to it since their cost still counts.
+                        decCost += objMod.Weapons.AsParallel().Where(objGear => objGear.Stolen).Sum(objWeapon => objWeapon.StolenTotalCost);
+                        decCost += objMod.Cyberware.AsParallel().Where(objGear => objGear.Stolen).Sum(objCyberware => objCyberware.StolenTotalCost);
+                    }
+                }
+                decCost += WeaponMounts.AsParallel().Where(objGear => objGear.Stolen).Sum(wm => wm.StolenTotalCost);
+                decCost += Gear.AsParallel().Where(objGear => objGear.Stolen).Sum(objGear => objGear.StolenTotalCost);
+
+                return decCost;
+            }
+        }
+
         /// <summary>
         /// The cost of just the Vehicle itself.
         /// </summary>

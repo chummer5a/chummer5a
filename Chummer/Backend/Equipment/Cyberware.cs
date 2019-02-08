@@ -3080,6 +3080,51 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+
+        /// <summary>
+        /// Identical to TotalCost, including the modifiers from Suite improvements.
+        /// </summary>
+        public decimal StolenTotalCost
+        {
+            get
+            {
+                decimal decCost = OwnCostPreMultipliers;
+                decimal decReturn = decCost;
+
+                // Factor in the Cost multiplier of the selected CyberwareGrade.
+                decReturn *= Grade.Cost;
+
+                if (DiscountCost)
+                    decReturn *= 0.9m;
+
+                // Add in the cost of all child components.
+                foreach (Cyberware objChild in Children.Where(child => child.Stolen).AsParallel())
+                {
+                    if (objChild.Capacity == "[*]") continue;
+                    // If the child cost starts with "*", multiply the item's base cost.
+                    if (objChild.Cost.StartsWith('*'))
+                    {
+                        decimal decPluginCost = decCost * (Convert.ToDecimal(objChild.Cost.TrimStart('*'), GlobalOptions.InvariantCultureInfo) - 1);
+
+                        if (objChild.DiscountCost)
+                            decPluginCost *= 0.9m;
+
+                        decReturn += decPluginCost;
+                    }
+                    else
+                        decReturn += objChild.TotalCostWithoutModifiers;
+                }
+
+                // Add in the cost of all Gear plugins.
+                decReturn += Gear.Where(g => g.Stolen).AsParallel().Sum(objGear => objGear.StolenTotalCost);
+
+                if (_blnSuite)
+                    decReturn *= 0.9m;
+
+                return decReturn;
+            }
+        }
+
         /// <summary>
         /// Cost of just the Cyberware itself.
         /// </summary>

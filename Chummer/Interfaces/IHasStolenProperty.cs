@@ -9,5 +9,7 @@ namespace Chummer
     interface IHasStolenProperty
     {
         bool Stolen { get; set; }
+
+        decimal StolenTotalCost { get; }
     }
 }

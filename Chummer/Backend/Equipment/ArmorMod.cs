@@ -910,6 +910,23 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+	    /// <summary>
+	    /// Total cost of the Armor Mod.
+	    /// </summary>
+	    public decimal StolenTotalCost
+	    {
+	        get
+	        {
+	            decimal decReturn = 0;
+	            if (Stolen) decReturn += OwnCost;
+
+	            // Go through all of the Gear for this piece of Armor and add the Cost value.
+	            decReturn += Gear.Where(g => g.Stolen).AsParallel().Sum(objGear => objGear.StolenTotalCost);
+
+	            return decReturn;
+	        }
+	    }
+
         /// <summary>
         /// Cost for just the Armor Mod.
         /// </summary>

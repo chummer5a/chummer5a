@@ -2284,6 +2284,42 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Total cost of the Weapon Accessory.
+        /// </summary>
+        public decimal StolenTotalCost
+        {
+            get
+            {
+
+                decimal decReturn = 0;
+                if (Stolen)
+                    decReturn = OwnCostPreMultipliers;
+
+                decimal decPlugin = 0;
+                if (Children.Count > 0)
+                {
+                    // Add in the cost of all child components.
+                    object decPluginLock = new object();
+                    Parallel.ForEach(Children, objChild =>
+                    {
+                        decimal decLoop = objChild.StolenTotalCost;
+                        lock (decPluginLock)
+                            decPlugin += decLoop;
+                    });
+                }
+
+                // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
+                int intParentMultiplier = (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1;
+
+                decReturn = (decReturn * Quantity * intParentMultiplier) / CostFor;
+                // Add in the cost of the plugins separate since their value is not based on the Cost For number (it is always cost x qty).
+                decReturn += decPlugin * Quantity;
+
+                return decReturn;
+            }
+        }
+
+        /// <summary>
         /// The cost of just the Gear itself.
         /// </summary>
         public decimal OwnCost => (OwnCostPreMultipliers * (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1) / CostFor;

@@ -1328,6 +1328,20 @@ namespace Chummer.Backend.Equipment
                 return SystemColors.WindowText;
             }
         }
+
+        public decimal StolenTotalCost
+        {
+            get
+            {
+                decimal d = 0;
+                if (Stolen)
+                    d += OwnCost;
+                d += Weapons.AsParallel().Sum(objWeapon => objWeapon.StolenTotalCost);
+                d += Cyberware.AsParallel().Sum(objCyberware => objCyberware.StolenTotalCost);
+                return d;
+            }
+        }
+
         #endregion
         #endregion
 

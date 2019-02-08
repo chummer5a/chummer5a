@@ -1030,6 +1030,7 @@ namespace Chummer
 			this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsGearAllowRename = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsGearAllowRenameExtra = new System.Windows.Forms.ToolStripMenuItem();
+			this.chkVehicleStolen = new System.Windows.Forms.CheckBox();
 			this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();
@@ -10271,7 +10272,7 @@ namespace Chummer
 			this.gpbVehiclesCommon.Location = new System.Drawing.Point(3, 3);
 			this.gpbVehiclesCommon.MinimumSize = new System.Drawing.Size(500, 0);
 			this.gpbVehiclesCommon.Name = "gpbVehiclesCommon";
-			this.gpbVehiclesCommon.Size = new System.Drawing.Size(500, 174);
+			this.gpbVehiclesCommon.Size = new System.Drawing.Size(500, 199);
 			this.gpbVehiclesCommon.TabIndex = 3;
 			this.gpbVehiclesCommon.TabStop = false;
 			this.gpbVehiclesCommon.Tag = "String_Info";
@@ -10313,7 +10314,7 @@ namespace Chummer
 			this.tlpVehiclesCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tlpVehiclesCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tlpVehiclesCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpVehiclesCommon.Size = new System.Drawing.Size(494, 155);
+			this.tlpVehiclesCommon.Size = new System.Drawing.Size(494, 180);
 			this.tlpVehiclesCommon.TabIndex = 0;
 			// 
 			// lblVehicleNameLabel
@@ -10525,10 +10526,11 @@ namespace Chummer
 			this.tlpVehiclesCommon.SetColumnSpan(this.flpVehiclesCommonCheckBoxes, 2);
 			this.flpVehiclesCommonCheckBoxes.Controls.Add(this.chkVehicleWeaponAccessoryInstalled);
 			this.flpVehiclesCommonCheckBoxes.Controls.Add(this.chkVehicleIncludedInWeapon);
+			this.flpVehiclesCommonCheckBoxes.Controls.Add(this.chkVehicleStolen);
 			this.flpVehiclesCommonCheckBoxes.Location = new System.Drawing.Point(256, 105);
 			this.flpVehiclesCommonCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
 			this.flpVehiclesCommonCheckBoxes.Name = "flpVehiclesCommonCheckBoxes";
-			this.flpVehiclesCommonCheckBoxes.Size = new System.Drawing.Size(204, 25);
+			this.flpVehiclesCommonCheckBoxes.Size = new System.Drawing.Size(204, 50);
 			this.flpVehiclesCommonCheckBoxes.TabIndex = 242;
 			// 
 			// chkVehicleIncludedInWeapon
@@ -10553,7 +10555,7 @@ namespace Chummer
 			this.gpbVehiclesVehicle.AutoSize = true;
 			this.gpbVehiclesVehicle.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.gpbVehiclesVehicle.Controls.Add(this.tlpVehiclesVehicle);
-			this.gpbVehiclesVehicle.Location = new System.Drawing.Point(3, 183);
+			this.gpbVehiclesVehicle.Location = new System.Drawing.Point(3, 208);
 			this.gpbVehiclesVehicle.MinimumSize = new System.Drawing.Size(510, 0);
 			this.gpbVehiclesVehicle.Name = "gpbVehiclesVehicle";
 			this.gpbVehiclesVehicle.Size = new System.Drawing.Size(510, 119);
@@ -10954,7 +10956,7 @@ namespace Chummer
 			this.gpbVehiclesWeapon.AutoSize = true;
 			this.gpbVehiclesWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.gpbVehiclesWeapon.Controls.Add(this.flpVehiclesWeapon);
-			this.gpbVehiclesWeapon.Location = new System.Drawing.Point(3, 308);
+			this.gpbVehiclesWeapon.Location = new System.Drawing.Point(3, 333);
 			this.gpbVehiclesWeapon.MinimumSize = new System.Drawing.Size(500, 0);
 			this.gpbVehiclesWeapon.Name = "gpbVehiclesWeapon";
 			this.gpbVehiclesWeapon.Size = new System.Drawing.Size(500, 152);
@@ -11377,7 +11379,7 @@ namespace Chummer
 			this.gpbVehiclesMatrix.AutoSize = true;
 			this.gpbVehiclesMatrix.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.gpbVehiclesMatrix.Controls.Add(this.tlpVehiclesMatrix);
-			this.gpbVehiclesMatrix.Location = new System.Drawing.Point(3, 466);
+			this.gpbVehiclesMatrix.Location = new System.Drawing.Point(3, 491);
 			this.gpbVehiclesMatrix.MinimumSize = new System.Drawing.Size(500, 0);
 			this.gpbVehiclesMatrix.Name = "gpbVehiclesMatrix";
 			this.gpbVehiclesMatrix.Size = new System.Drawing.Size(516, 96);
@@ -13644,6 +13646,20 @@ namespace Chummer
 			this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
 			this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
 			// 
+			// chkVehicleStolen
+			// 
+			this.chkVehicleStolen.AutoSize = true;
+			this.chkVehicleStolen.Enabled = false;
+			this.chkVehicleStolen.Location = new System.Drawing.Point(3, 29);
+			this.chkVehicleStolen.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.chkVehicleStolen.Name = "chkVehicleStolen";
+			this.chkVehicleStolen.Size = new System.Drawing.Size(56, 17);
+			this.chkVehicleStolen.TabIndex = 76;
+			this.chkVehicleStolen.Tag = "Checkbox_Stolen";
+			this.chkVehicleStolen.Text = "Stolen";
+			this.chkVehicleStolen.UseVisualStyleBackColor = true;
+			this.chkVehicleStolen.CheckedChanged += new System.EventHandler(this.chkVehicleStolen_CheckedChanged);
+			// 
 			// frmCreate
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -14964,5 +14980,6 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkDrugStolen;
         private System.Windows.Forms.Label lblStolenNuyen;
         private System.Windows.Forms.Label lblStolenNuyenLabel;
+        private System.Windows.Forms.CheckBox chkVehicleStolen;
     }
 }

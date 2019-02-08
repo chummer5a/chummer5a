@@ -325,10 +325,15 @@ namespace Chummer.Backend.Equipment
 		/// </summary>
 		public decimal TotalCost => Cost * Quantity;
 
-	    /// <summary>
-		/// Total amount of the Drug held by the character.
-		/// </summary>
-		public decimal Quantity
+        /// <summary>
+        /// Total cost of the Drug.
+        /// </summary>
+        public decimal StolenTotalCost => Stolen ? TotalCost : 0;
+
+        /// <summary>
+        /// Total amount of the Drug held by the character.
+        /// </summary>
+        public decimal Quantity
 		{
 			get => _decQty;
 	        set => _decQty = value;

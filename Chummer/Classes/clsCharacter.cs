@@ -2219,7 +2219,7 @@ if (!Utils.IsUnitTest){
                     {
                         if (!Utils.IsUnitTest)
                         {
-                            Utils.BreakIfDebug();
+                            //Utils.BreakIfDebug();
                             if (removeImprovements || (MessageBox.Show(LanguageManager.GetString("Message_OrphanedImprovements"),
                                      LanguageManager.GetString("MessageTitle_OrphanedImprovements"), MessageBoxButtons.YesNo,
                                      MessageBoxIcon.Error) == DialogResult.Yes))
