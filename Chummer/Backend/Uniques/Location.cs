@@ -21,6 +21,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -227,7 +228,8 @@ namespace Chummer
             {
                 item.Location = null;
             }
-            return Parent.Remove(this);
+
+            return Parent.Remove(Parent.SingleOrDefault(i => i.InternalId == InternalId));
         }
     }
 }

@@ -10312,8 +10312,8 @@ namespace Chummer
                 gpbCyberwareMatrix.Visible = false;
 
                 // Buttons
-                cmdDeleteCyberware.Enabled = false;
-                
+                cmdDeleteCyberware.Enabled = treCyberware.SelectedNode?.Tag is ICanRemove;
+
                 IsRefreshing = false;
                 flpCyberware.ResumeLayout();
                 return;
@@ -10527,7 +10527,7 @@ namespace Chummer
                 gpbWeaponsMatrix.Visible = false;
 
                 // Buttons
-                cmdDeleteWeapon.Enabled = false;
+                cmdDeleteWeapon.Enabled = treWeapons.SelectedNode?.Tag is ICanRemove;
 
                 IsRefreshing = false;
                 flpWeapons.ResumeLayout();
@@ -10882,7 +10882,7 @@ namespace Chummer
                 lblWeaponDataProcessing.Text = objGear.GetTotalMatrixAttribute("Data Processing").ToString();
                 lblWeaponFirewall.Text = objGear.GetTotalMatrixAttribute("Firewall").ToString();
             }
-            else
+            else 
             {
                 gpbWeaponsCommon.Visible = false;
                 gpbWeaponsWeapon.Visible = false;
@@ -10911,7 +10911,7 @@ namespace Chummer
                 gpbArmorLocation.Visible = false;
 
                 // Buttons
-                cmdDeleteArmor.Enabled = false;
+                cmdDeleteArmor.Enabled = treArmor.SelectedNode?.Tag is ICanRemove;
 
                 IsRefreshing = false;
                 flpArmor.ResumeLayout();
@@ -11144,7 +11144,7 @@ namespace Chummer
                 gpbGearMatrix.Visible = false;
 
                 // Buttons
-                cmdDeleteGear.Enabled = false;
+                cmdDeleteGear.Enabled = treGear.SelectedNode?.Tag is ICanRemove;
 
                 IsRefreshing = false;
                 flpGear.ResumeLayout();
@@ -11850,7 +11850,7 @@ namespace Chummer
             if (treLifestyles.SelectedNode == null || treLifestyles.SelectedNode.Level <= 0 || !(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
             {
                 flpLifestyleDetails.Visible = false;
-                cmdDeleteLifestyle.Enabled = false;
+                cmdDeleteLifestyle.Enabled = treLifestyles.SelectedNode?.Tag is ICanRemove;
                 IsRefreshing = false;
                 flpLifestyleDetails.ResumeLayout();
                 return;
@@ -11940,7 +11940,7 @@ namespace Chummer
                 gpbVehiclesMatrix.Visible = false;
 
                 // Buttons
-                cmdDeleteVehicle.Enabled = false;
+                cmdDeleteVehicle.Enabled = treVehicles.SelectedNode?.Tag is ICanRemove;
 
                 IsRefreshing = false;
                 flpVehicles.ResumeLayout();
@@ -12567,7 +12567,7 @@ namespace Chummer
             else
             {
                 flpDrugs.Visible = false;
-                btnDeleteCustomDrug.Enabled = false;
+                btnDeleteCustomDrug.Enabled = treArmor.SelectedNode?.Tag is ICanRemove;
             }
 
             IsRefreshing = false;
@@ -12651,7 +12651,7 @@ namespace Chummer
             else
             {
                 gpbMagicianSpell.Visible = false;
-                cmdDeleteSpell.Enabled = false;
+                cmdDeleteSpell.Enabled = treSpells.SelectedNode?.Tag is ICanRemove;
             }
 
             IsRefreshing = false;
@@ -12685,7 +12685,7 @@ namespace Chummer
             else
             {
                 gpbTechnomancerComplexForm.Visible = false;
-                cmdDeleteComplexForm.Enabled = false;
+                cmdDeleteComplexForm.Enabled = treComplexForms.SelectedNode?.Tag is ICanRemove;
             }
 
             IsRefreshing = false;
