@@ -10939,16 +10939,6 @@ namespace Chummer
                 chkArmorStolen.Visible = false;
             }
 
-            if (treArmor.SelectedNode?.Tag is IHasStolenProperty loot)
-            {
-                chkArmorStolen.Visible = true;
-                chkArmorStolen.Checked = loot.Stolen;
-            }
-            else
-            {
-                chkArmorStolen.Visible = false;
-            }
-
             string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
 
             if (treArmor.SelectedNode?.Tag is Armor objArmor)
