@@ -14575,7 +14575,7 @@ namespace Chummer
             }
             if (blnAmmoOnly)
             {
-                frmPickGear.SelectedGear = objSelectedGear.strSourceID;
+                frmPickGear.SelectedGear = objSelectedGear?.strSourceID;
             }
 
             frmPickGear.ShowDialog(this);
@@ -14595,7 +14595,7 @@ namespace Chummer
             string strForceValue = string.Empty;
             if (blnAmmoOnly)
             {
-                strForceValue = objSelectedGear.Extra;
+                strForceValue = objSelectedGear?.Extra;
             }
             if (!string.IsNullOrEmpty(strForceItemValue))
                 strForceValue = strForceItemValue;
