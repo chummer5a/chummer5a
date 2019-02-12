@@ -2730,7 +2730,7 @@
       <page>60</page>
       <avail>Rating*2R</avail>
       <capacity>0</capacity>
-      <cost>Rating*10000</cost>
+      <cost>Rating*5000</cost>
       <devicerating>{Rating}</devicerating>
       <!-- TODO: This should have a more robust method to lock the attribute array. -->
       <attack>0</attack>

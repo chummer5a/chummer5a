@@ -36,6 +36,7 @@ Data Changes:
 - Allowed the Aware quality to permit taking Mentor Spirits.
 - The In Debt quality now reduces the karma that can be spent on nuyen, representing that the karma 'gained' through this quality has been spent on the increased nuyen, per RAW.
 - Fixed a crash when adding the Rockblood Signature Armored Shirt.
+- Fixed incorrect cost for the Fuchi Cyber-N.
 
 New Strings:
 - Message_OrphanedImprovements
