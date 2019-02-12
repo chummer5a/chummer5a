@@ -1454,6 +1454,10 @@
       <text>Save &amp;As</text>
     </string>
     <string>
+      <key>Menu_FileSaveAsCreated</key>
+      <text>Save As &amp;Created</text>
+    </string>
+    <string>
       <key>Menu_FileExport</key>
       <text>Export</text>
     </string>

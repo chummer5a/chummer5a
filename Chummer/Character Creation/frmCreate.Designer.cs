@@ -1030,7 +1030,8 @@ namespace Chummer
 			this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsGearAllowRename = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsGearAllowRenameExtra = new System.Windows.Forms.ToolStripMenuItem();
-			this.chkVehicleStolen = new System.Windows.Forms.CheckBox();
+            this.chkVehicleStolen = new System.Windows.Forms.CheckBox();
+            this.mnuFileSaveAsCreated = new System.Windows.Forms.ToolStripMenuItem();
 			this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();
@@ -2634,6 +2635,7 @@ namespace Chummer
 			this.mnuCreateFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuFileSave,
             this.mnuFileSaveAs,
+            this.mnuFileSaveAsCreated,
             this.toolStripSeparator1,
             this.mnuFileClose,
             this.toolStripSeparator2,
@@ -2671,7 +2673,7 @@ namespace Chummer
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.MergeAction = System.Windows.Forms.MergeAction.Insert;
-			this.toolStripSeparator1.MergeIndex = 5;
+			this.toolStripSeparator1.MergeIndex = 6;
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
 			this.toolStripSeparator1.Size = new System.Drawing.Size(145, 6);
 			// 
@@ -2679,7 +2681,7 @@ namespace Chummer
 			// 
 			this.mnuFileClose.Image = global::Chummer.Properties.Resources.cancel;
 			this.mnuFileClose.MergeAction = System.Windows.Forms.MergeAction.Insert;
-			this.mnuFileClose.MergeIndex = 6;
+			this.mnuFileClose.MergeIndex = 7;
 			this.mnuFileClose.Name = "mnuFileClose";
 			this.mnuFileClose.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
 			this.mnuFileClose.Size = new System.Drawing.Size(148, 22);
@@ -2689,7 +2691,7 @@ namespace Chummer
 			// 
 			// toolStripSeparator2
 			// 
-			this.toolStripSeparator2.MergeIndex = 7;
+			this.toolStripSeparator2.MergeIndex = 8;
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
 			this.toolStripSeparator2.Size = new System.Drawing.Size(145, 6);
 			// 
@@ -2697,7 +2699,7 @@ namespace Chummer
 			// 
 			this.mnuFilePrint.Image = global::Chummer.Properties.Resources.printer;
 			this.mnuFilePrint.MergeAction = System.Windows.Forms.MergeAction.Insert;
-			this.mnuFilePrint.MergeIndex = 8;
+			this.mnuFilePrint.MergeIndex = 9;
 			this.mnuFilePrint.Name = "mnuFilePrint";
 			this.mnuFilePrint.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
 			this.mnuFilePrint.Size = new System.Drawing.Size(148, 22);
@@ -13645,20 +13647,31 @@ namespace Chummer
 			this.tsGearAllowRenameExtra.Tag = "Menu_RenameExtraText";
 			this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
 			this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
-			// 
-			// chkVehicleStolen
-			// 
-			this.chkVehicleStolen.AutoSize = true;
-			this.chkVehicleStolen.Enabled = false;
-			this.chkVehicleStolen.Location = new System.Drawing.Point(3, 29);
-			this.chkVehicleStolen.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-			this.chkVehicleStolen.Name = "chkVehicleStolen";
-			this.chkVehicleStolen.Size = new System.Drawing.Size(56, 17);
-			this.chkVehicleStolen.TabIndex = 76;
-			this.chkVehicleStolen.Tag = "Checkbox_Stolen";
-			this.chkVehicleStolen.Text = "Stolen";
-			this.chkVehicleStolen.UseVisualStyleBackColor = true;
-			this.chkVehicleStolen.CheckedChanged += new System.EventHandler(this.chkVehicleStolen_CheckedChanged);
+            // 
+            // chkVehicleStolen
+            // 
+            this.chkVehicleStolen.AutoSize = true;
+            this.chkVehicleStolen.Enabled = false;
+            this.chkVehicleStolen.Location = new System.Drawing.Point(3, 29);
+            this.chkVehicleStolen.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkVehicleStolen.Name = "chkVehicleStolen";
+            this.chkVehicleStolen.Size = new System.Drawing.Size(56, 17);
+            this.chkVehicleStolen.TabIndex = 76;
+            this.chkVehicleStolen.Tag = "Checkbox_Stolen";
+            this.chkVehicleStolen.Text = "Stolen";
+            this.chkVehicleStolen.UseVisualStyleBackColor = true;
+            this.chkVehicleStolen.CheckedChanged += new System.EventHandler(this.chkVehicleStolen_CheckedChanged);
+            // 
+            // mnuFileSaveAsCreated
+            // 
+            this.mnuFileSaveAsCreated.Image = global::Chummer.Properties.Resources.accept;
+			this.mnuFileSaveAsCreated.Name = "mnuFileSaveAsCreated";
+            this.mnuFileSaveAsCreated.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.mnuFileSaveAsCreated.MergeIndex = 5;
+            this.mnuFileSaveAsCreated.Size = new System.Drawing.Size(180, 22);
+			this.mnuFileSaveAsCreated.Tag = "Menu_FileSaveAsCreated";
+			this.mnuFileSaveAsCreated.Text = "Save As &Created";
+			this.mnuFileSaveAsCreated.Click += new System.EventHandler(this.mnuFileSaveAsCreated_Click);
 			// 
 			// frmCreate
 			// 
@@ -14981,5 +14994,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblStolenNuyen;
         private System.Windows.Forms.Label lblStolenNuyenLabel;
         private System.Windows.Forms.CheckBox chkVehicleStolen;
+        private System.Windows.Forms.ToolStripMenuItem mnuFileSaveAsCreated;
     }
 }

@@ -1342,6 +1342,10 @@ namespace Chummer
         {
             SaveCharacterAs();
         }
+        private void mnuFileSaveAsCreated_Click(object sender, EventArgs e)
+        {
+            SaveCharacterAs(true);
+        }
 
         private void tsbSave_Click(object sender, EventArgs e)
         {
@@ -11315,9 +11319,10 @@ namespace Chummer
         /// <summary>
         /// Save the Character using the Save As dialogue box.
         /// </summary>
+        /// <param name="blnDoCreated">If True, forces the character to be saved in Career Mode (if possible to do so).</param>
         public override bool SaveCharacterAs(bool blnDoCreated = false)
         {
-            return base.SaveCharacterAs(chkCharacterCreated.Checked);
+            return base.SaveCharacterAs(blnDoCreated != false ? blnDoCreated : chkCharacterCreated.Checked);
         }
 
         /// <summary>

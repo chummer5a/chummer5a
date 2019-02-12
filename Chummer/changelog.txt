@@ -20,6 +20,7 @@ Application Changes:
 - Orphaned improvement checks are now made on every character load. This is still a hackish method to get around the issue with Qi Foci that affect Improved Ability (Skill) causing orphaned improvements, but it's generally a healthy attitude to take anyway. In order to prevent character corruption without user acceptance, it will also prompt if you want to abort loading the character until you've taken a backup.
 - Made additions to the nuyenamt improvement to allow specifying specific conditions for which the nuyen is used. This in turn supports the Stolen quality of Equipment objects, allowing the Stolen nuyen to be spent exclusively on these items without affecting the overall nuyen budget of the character.
 - Fixed issues with the refresh and removal of Locations.
+- Added a Save As Created option to the File window of characters in Create mode; this does not require that the Mark as Created checkbox be checked on the Character Info tab.
 
 Data Changes:
 - Fixed incorrect underbarrel weapon name for the Nissan Optimum II that caused a crash. Fixes part of #3344
@@ -42,6 +43,7 @@ New Strings:
 - Message_OrphanedImprovements
 - MessageTitle_OrphanedImprovements
 - Checkbox_Stolen
+- MenuFileSaveAsCreated
 
 Build 204
 
