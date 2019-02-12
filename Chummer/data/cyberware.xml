@@ -659,7 +659,7 @@
       <limit>False</limit>
       <category>Eyeware</category>
       <ess>FixedValues(0.1,0.1,0.1,0.2,0.2,0.2)</ess>
-      <capacity>[FixedValues(1,2,3,8,10,12)]</capacity>
+      <capacity>FixedValues([1],[2],[3],[8],[10],[12])</capacity>
       <avail>Rating * 3</avail>
       <cost>FixedValues(4000,8000,12000,20000,25000,30000)</cost>
       <source>SR5</source>
@@ -716,7 +716,7 @@
       <limit>False</limit>
       <category>Earware</category>
       <ess>FixedValues(0.1,0.1,0.1,0.2,0.2,0.2)</ess>
-      <capacity>[FixedValues(1,2,3,8,10,12)]</capacity>
+      <capacity>FixedValues([1],[2],[3],[8],[10],[12])</capacity>
       <avail>Rating * 3</avail>
       <cost>FixedValues(4000,8000,12000,20000,25000,30000)</cost>
       <source>SR5</source>
