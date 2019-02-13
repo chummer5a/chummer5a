@@ -2549,7 +2549,8 @@ namespace Chummer.Backend.Equipment
                 if (_objCharacter != null)
                 {
                     // Add any UnarmedAP bonus for the Unarmed Attack item.
-                    if (Name == "Unarmed Attack" || Skill != null && Skill.Name == "Unarmed Combat" && _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
+                    if (Name == "Unarmed Attack" || Skill?.Name == "Unarmed Combat" &&
+                        _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
                     {
                         bonusAP += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP);
                     }
@@ -2966,15 +2967,22 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intReach = Reach;
-
                 if (WeaponType == "Melee")
                 {
                     // Run through the Character's Improvements and add any Reach Improvements.
-                    intReach += _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.Reach && objImprovement.Enabled).Sum(objImprovement => objImprovement.Value);
+                    intReach += _objCharacter.Improvements
+                        .Where(objImprovement =>
+                            objImprovement.ImproveType == Improvement.ImprovementType.Reach && objImprovement.Enabled)
+                        .Sum(objImprovement => objImprovement.Value);
                 }
-                if (Name == "Unarmed Attack")
+
+                if (Name == "Unarmed Attack" || Skill?.Name == "Unarmed Combat" &&
+                    _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
                 {
-                    intReach += _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.UnarmedReach && objImprovement.Enabled).Sum(objImprovement => objImprovement.Value);
+                    intReach += _objCharacter.Improvements
+                        .Where(objImprovement =>
+                            objImprovement.ImproveType == Improvement.ImprovementType.UnarmedReach &&
+                            objImprovement.Enabled).Sum(objImprovement => objImprovement.Value);
                 }
 
                 return intReach;

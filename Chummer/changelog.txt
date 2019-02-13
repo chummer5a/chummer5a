@@ -22,6 +22,8 @@ Application Changes:
 - Fixed issues with the refresh and removal of Locations.
 - Added a Save As Created option to the File window of characters in Create mode; this does not require that the Mark as Created checkbox be checked on the Character Info tab.
 - Fixed an issue with the process of re-purchasing gear that is permitted to have zero quantity, such as ammunition.
+- Minor change in functionalty of the UnarmedImprovementsApplyToWeapons improvement type that now permits UnarmedReach improvements to affect weapons that use the Unarmed Combat skill. 
+- Improved functionality of gameplayoptions to decouple the link between a character's starting karma and their quality limit. Closes #3436
 
 Data Changes:
 - Fixed incorrect underbarrel weapon name for the Nissan Optimum II that caused a crash. Fixes part of #3344
@@ -39,6 +41,7 @@ Data Changes:
 - The In Debt quality now reduces the karma that can be spent on nuyen, representing that the karma 'gained' through this quality has been spent on the increased nuyen, per RAW.
 - Fixed a crash when adding the Rockblood Signature Armored Shirt.
 - Fixed incorrect cost for the Fuchi Cyber-N.
+- Gameplayoptions entries can now specify qualitylimit; this sets the maximum amount of positive and negative karma that can be spent on qualities. If not specified, it will revert to using the karma value. 
 
 New Strings:
 - Message_OrphanedImprovements

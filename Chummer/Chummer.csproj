@@ -412,6 +412,9 @@
     <None Include="data\drugcomponents.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="data\gameplayoptions.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="frmGMDashboard.cs">
       <SubType>Form</SubType>
     </None>

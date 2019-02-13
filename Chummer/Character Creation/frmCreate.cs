@@ -197,8 +197,6 @@ namespace Chummer
                 XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml").SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + CharacterObject.GameplayOption + "\"]");
                 if (objXmlGameplayOption != null)
                 {
-                    string strKarma = objXmlGameplayOption["karma"]?.InnerText;
-                    string strNuyen = objXmlGameplayOption["maxnuyen"]?.InnerText;
                     if (!CharacterObjectOptions.FreeContactsMultiplierEnabled)
                     {
                         string strContactMultiplier = objXmlGameplayOption["contactmultiplier"]?.InnerText;
@@ -209,8 +207,12 @@ namespace Chummer
                         CharacterObject.ContactMultiplier = CharacterObjectOptions.FreeContactsMultiplier;
                     }
 
-                    CharacterObject.GameplayOptionQualityLimit = CharacterObject.MaxKarma = Convert.ToInt32(strKarma);
-                    CharacterObject.MaxNuyen = Convert.ToInt32(strNuyen);
+                    CharacterObject.MaxKarma = Convert.ToInt32(objXmlGameplayOption["karma"]?.InnerText);
+                    CharacterObject.MaxNuyen = Convert.ToInt32(objXmlGameplayOption["maxnuyen"]?.InnerText);
+                    CharacterObject.GameplayOptionQualityLimit =
+                        objXmlGameplayOption["qualitylimit"]?.InnerText != null
+                            ? Convert.ToInt32(objXmlGameplayOption["qualitylimit"].InnerText)
+                            : CharacterObject.MaxKarma;
                 }
 
                 mnuSpecialChangeMetatype.Tag = "Menu_SpecialChangePriorities";
