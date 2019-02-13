@@ -283,5 +283,49 @@ namespace Chummer.UI.Skills
         {
             lblName.Width = i;
         }
+
+        /// <summary>
+        /// I'm not super pleased with how this works, but it's functional so w/e.
+        /// The goal is for controls to retain the ability to display tooltips even while disabled. IT DOES NOT WORK VERY WELL.
+        /// </summary>
+        #region ButtonWithToolTip Visibility workaround
+
+        ButtonWithToolTip _activeButton;
+
+        private ButtonWithToolTip ActiveButton
+        {
+            get => _activeButton;
+            set
+            {
+                if (value == ActiveButton) return;
+                ActiveButton?.ToolTipObject.Hide(this);
+                _activeButton = value;
+                if (_activeButton?.Visible == true)
+                {
+                    ActiveButton?.ToolTipObject.Show(ActiveButton?.ToolTipText, this);
+                }
+            }
+        }
+
+        private Control FindToolTipControl(Point pt)
+        {
+            foreach (Control c in Controls)
+            {
+                if (!(c is ButtonWithToolTip)) continue;
+                if (c.Bounds.Contains(pt)) return c;
+            }
+            return null;
+        }
+
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            ActiveButton = FindToolTipControl(e.Location) as ButtonWithToolTip;
+        }
+
+        private void OnMouseLeave(object sender, EventArgs e)
+        {
+            ActiveButton = null;
+        }
+        #endregion
     }
 }

@@ -251,6 +251,8 @@ namespace Chummer.UI.Skills
             this.cmsSkillLabel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSkill)).EndInit();
+            this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
             this.ResumeLayout(false);
             this.PerformLayout();
 
