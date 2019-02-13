@@ -21,6 +21,7 @@ Application Changes:
 - Made additions to the nuyenamt improvement to allow specifying specific conditions for which the nuyen is used. This in turn supports the Stolen quality of Equipment objects, allowing the Stolen nuyen to be spent exclusively on these items without affecting the overall nuyen budget of the character.
 - Fixed issues with the refresh and removal of Locations.
 - Added a Save As Created option to the File window of characters in Create mode; this does not require that the Mark as Created checkbox be checked on the Character Info tab.
+- Fixed an issue with the process of re-purchasing gear that is permitted to have zero quantity, such as ammunition.
 
 Data Changes:
 - Fixed incorrect underbarrel weapon name for the Nissan Optimum II that caused a crash. Fixes part of #3344

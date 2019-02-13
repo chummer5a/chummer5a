@@ -14596,6 +14596,7 @@ namespace Chummer
             if (blnAmmoOnly)
             {
                 strForceValue = objSelectedGear?.Extra;
+                strForceItemValue = string.Empty;
             }
             if (!string.IsNullOrEmpty(strForceItemValue))
                 strForceValue = strForceItemValue;
