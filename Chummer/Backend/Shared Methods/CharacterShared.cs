@@ -2026,7 +2026,7 @@ namespace Chummer
             NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs,
             ObservableCollection<Location> collection, string strSelectedId, string strNodeName)
         {
-            RefreshLocation(treSelected, nodRoot, cmsLocation, notifyCollectionChangedEventArgs, collection, strSelectedId, strNodeName);
+            RefreshLocation(treSelected, nodRoot, cmsLocation, () => 0, notifyCollectionChangedEventArgs, collection, strSelectedId, strNodeName);
         }
 
         private void RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
