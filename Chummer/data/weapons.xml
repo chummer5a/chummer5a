@@ -10944,7 +10944,7 @@
       <ap>-1</ap>
       <mode>SA</mode>
       <rc>0</rc>
-      <ammo>4(s)</ammo>
+      <ammo>4(c)</ammo>
       <avail>8R</avail>
       <cost>1000</cost>
       <source>SAG</source>
@@ -11688,7 +11688,7 @@
       <ap>-3</ap>
       <mode>SA/BF</mode>
       <rc>0</rc>
-      <ammo>30(s)</ammo>
+      <ammo>30(c)</ammo>
       <avail>10F</avail>
       <cost>8500</cost>
       <source>SAG</source>
@@ -11724,7 +11724,7 @@
       <ap>-4</ap>
       <mode>SA</mode>
       <rc>1</rc>
-      <ammo>10(s)</ammo>
+      <ammo>10(c)</ammo>
       <avail>18F</avail>
       <cost>45000</cost>
       <source>SAG</source>

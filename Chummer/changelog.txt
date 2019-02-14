@@ -43,6 +43,7 @@ Data Changes:
 - Fixed a crash when adding the Rockblood Signature Armored Shirt.
 - Fixed incorrect cost for the Fuchi Cyber-N.
 - Gameplayoptions entries can now specify qualitylimit; this sets the maximum amount of positive and negative karma that can be spent on qualities. If not specified, it will revert to using the karma value. 
+- Fixed incorrect Ammo strings on the Walther Secura Superkompakt, HK Urban Striker and HK DMR 11D.
 
 New Strings:
 - Message_OrphanedImprovements
