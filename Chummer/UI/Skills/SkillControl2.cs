@@ -362,7 +362,7 @@ namespace Chummer.UI.Skills
             if (_blnLoading)
                 return;
 
-            Skill_PropertyChanged(sender, new PropertyChangedEventArgs(nameof(Skill.Rating)));
+            _skill.OnPropertyChanged(nameof(Skill.Rating));
         }
 
         private void lblName_Click(object sender, EventArgs e)

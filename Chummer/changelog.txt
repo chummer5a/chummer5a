@@ -25,6 +25,7 @@ Application Changes:
 - Minor change in functionalty of the UnarmedImprovementsApplyToWeapons improvement type that now permits UnarmedReach improvements to affect weapons that use the Unarmed Combat skill. 
 - Improved functionality of gameplayoptions to decouple the link between a character's starting karma and their quality limit. Closes #3436
 - Implemented a hackish workaround for disabled tooltip controls on attribute and skill controls. Should fix #3414, most likely needs further work.
+- Fixed behaviour of skill controls to properly refresh their rating when selecting a custom attribute for tests.
 
 Data Changes:
 - Fixed incorrect underbarrel weapon name for the Nissan Optimum II that caused a crash. Fixes part of #3344
