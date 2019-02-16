@@ -27,6 +27,7 @@ using System.Reflection;
  using Application = System.Windows.Forms.Application;
  using MessageBox = System.Windows.Forms.MessageBox;
 using System.Collections.Generic;
+ using System.Threading;
 
 namespace Chummer
 {
@@ -79,7 +80,17 @@ namespace Chummer
             }
             Log.Info("frmUpdate_Load");
             Log.Info("Check Global Mutex for duplicate");
-            bool blnHasDuplicate = !Program.GlobalChummerMutex.WaitOne(0, false);
+            bool blnHasDuplicate = false;
+            try
+            {
+                blnHasDuplicate = !Program.GlobalChummerMutex.WaitOne(0, false);
+            }
+            catch (AbandonedMutexException ex)
+            {
+                Log.Exception(ex);
+                Utils.BreakIfDebug();
+                blnHasDuplicate = true;
+            }
             Log.Info("blnHasDuplicate = " + blnHasDuplicate.ToString());
             // If there is more than 1 instance running, do not let the application be updated.
             if (blnHasDuplicate)
