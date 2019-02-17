@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,36 +25,36 @@ using Chummer.OmaeService;
 
 namespace Chummer
 {
-	public partial class frmOmaeCompress : Form
-	{
-		private readonly OmaeHelper _objOmaeHelper = new OmaeHelper();
-		private List<string> _lstFiles = new List<string>();
+    public partial class frmOmaeCompress : Form
+    {
+        private readonly OmaeHelper _objOmaeHelper = new OmaeHelper();
+        private List<string> _lstFiles = new List<string>();
 
-		#region Control Events
-		public frmOmaeCompress()
-		{
-			InitializeComponent();
-		}
+        #region Control Events
+        public frmOmaeCompress()
+        {
+            InitializeComponent();
+        }
 
-		private void cmdCompress_Click(object sender, EventArgs e)
-		{
-			_lstFiles.Clear();
-			GetDirectories(txtFilePath.Text);
-			_objOmaeHelper.CompressMutipleToFile(_lstFiles, txtDestination.Text);
-			MessageBox.Show("Done");
-		}
-		#endregion
+        private void cmdCompress_Click(object sender, EventArgs e)
+        {
+            _lstFiles.Clear();
+            GetDirectories(txtFilePath.Text);
+            _objOmaeHelper.CompressMutipleToFile(_lstFiles, txtDestination.Text);
+            MessageBox.Show("Done");
+        }
+        #endregion
 
-		#region Methods
-		private void GetDirectories(string strDirectory)
-		{
-			foreach (string strFound in Directory.GetDirectories(strDirectory))
-			{
-				GetDirectories(strFound);
-			}
-			foreach (string strFile in Directory.GetFiles(strDirectory, "*.chum5"))
-				_lstFiles.Add(strFile);
-		}
-		#endregion
-	}
+        #region Methods
+        private void GetDirectories(string strDirectory)
+        {
+            foreach (string strFound in Directory.GetDirectories(strDirectory))
+            {
+                GetDirectories(strFound);
+            }
+            foreach (string strFile in Directory.GetFiles(strDirectory, "*.chum5"))
+                _lstFiles.Add(strFile);
+        }
+        #endregion
+    }
 }

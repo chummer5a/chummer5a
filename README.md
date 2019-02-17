@@ -14,3 +14,8 @@ The repository for Adam Schmidt's original code can be found at: https://code.go
 Pre-release automated builds are performed by Appveyor, and are accessible via [the Releases page](https://github.com/chummer5a/chummer5a/releases).
 
 [![Build status](https://ci.appveyor.com/api/projects/status/wf0jbqd5xp05s4hs?svg=true)](https://ci.appveyor.com/project/chummer5a/chummer5a)
+
+### Sponsors
+
+* [JetBrains](http://www.jetbrains.com/) have been kind enough to provide our development team with licences for their excellent tools
+    * [ReSharper](http://www.jetbrains.com/resharper/)

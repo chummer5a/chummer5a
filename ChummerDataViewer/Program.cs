@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Windows.Forms;
 using ChummerDataViewer.Model;
 
+[assembly: CLSCompliant(true)]
 namespace ChummerDataViewer
 {
 	static class Program

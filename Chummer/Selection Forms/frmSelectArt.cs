@@ -36,15 +36,15 @@ namespace Chummer
         private string _strNode = "art";
         private string _strRoot = "arts";
         private string _strCategory = string.Empty;
-
+        private string _strLocalName = string.Empty;
         private readonly Character _objCharacter;
 
-        private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
 
-        private readonly XmlDocument _objMetamagicDocument = new XmlDocument();
-        private readonly XmlDocument _objSpellDocument = new XmlDocument();
-        private readonly XmlDocument _objPowerDocument = new XmlDocument();
-        private readonly XmlDocument _objQualityDocument = new XmlDocument();
+        private readonly XmlDocument _objMetamagicDocument = null;
+        private readonly XmlDocument _objSpellDocument = null;
+        private readonly XmlDocument _objPowerDocument = null;
+        private readonly XmlDocument _objQualityDocument = null;
 
         public enum Mode
         {
@@ -54,36 +54,55 @@ namespace Chummer
             Ritual = 3,
         }
 
-        public frmSelectArt(Character objCharacter)
+        public frmSelectArt(Character objCharacter, Mode objWindowMode)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
 
-            _objMetamagicDocument = XmlManager.Instance.Load("metamagic.xml");
-            _objSpellDocument = XmlManager.Instance.Load("spells.xml");
-            _objPowerDocument = XmlManager.Instance.Load("powers.xml");
-            _objQualityDocument = XmlManager.Instance.Load("qualities.xml");
+            _objMetamagicDocument = XmlManager.Load("metamagic.xml");
+            _objSpellDocument = XmlManager.Load("spells.xml");
+            _objPowerDocument = XmlManager.Load("powers.xml");
+            _objQualityDocument = XmlManager.Load("qualities.xml");
+
+            // Load the Metamagic information.
+            WindowMode = objWindowMode;
+            _objXmlDocument = _objSpellDocument;
+            switch (_objMode)
+            {
+                case Mode.Art:
+                    _objXmlDocument = _objMetamagicDocument;
+                    break;
+                case Mode.Enhancement:
+                    _objXmlDocument = _objPowerDocument;
+                    break;
+            }
         }
 
         private void frmSelectArt_Load(object sender, EventArgs e)
         {
             // Update the window title if needed.
-            if (_objMode == Mode.Enhancement)
+            
+            switch (_objMode)
             {
-                Text = LanguageManager.Instance.GetString("Title_SelectEnhancement");
-                chkLimitList.Text = LanguageManager.Instance.GetString("Checkbox_SelectEnhancement_LimitList");
+                case Mode.Enhancement:
+                    _strLocalName = LanguageManager.GetString("String_Enhancement");
+                    break;
+                case Mode.Enchantment:
+                    _strLocalName = LanguageManager.GetString("String_Enchantment");
+                    break;
+                case Mode.Ritual:
+                    _strLocalName = LanguageManager.GetString("String_Ritual");
+                    break;
+                case Mode.Art:
+                    _strLocalName = LanguageManager.GetString("String_Art");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-            else if (_objMode == Mode.Enchantment)
-            {
-                Text = LanguageManager.Instance.GetString("Title_SelectEnchantment");
-                chkLimitList.Text = LanguageManager.Instance.GetString("Checkbox_SelectEnchantment_LimitList");
-            }
-            else if (_objMode == Mode.Ritual)
-            {
-                Text = LanguageManager.Instance.GetString("Title_SelectRitual");
-                chkLimitList.Text = LanguageManager.Instance.GetString("Checkbox_SelectRitual_LimitList");
-            }
+            
+            Text = LanguageManager.GetString("Title_SelectGeneric").Replace("{0}", _strLocalName);
+            chkLimitList.Text = LanguageManager.GetString("Checkbox_SelectGeneric_LimitList").Replace("{0}", _strLocalName);
 
             foreach (Label objLabel in Controls.OfType<Label>())
             {
@@ -102,13 +121,11 @@ namespace Chummer
             // Retireve the information for the selected piece of Cyberware.
             XmlNode objXmlMetamagic = _objXmlDocument.SelectSingleNode("/chummer/" + _strRoot + "/" + _strNode + "[name = \"" + lstArt.SelectedValue + "\"]");
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlMetamagic["source"].InnerText);
-            string strPage = objXmlMetamagic["page"].InnerText;
-            if (objXmlMetamagic["altpage"] != null)
-                strPage = objXmlMetamagic["altpage"].InnerText;
-            lblSource.Text = strBook + " " + strPage;
+            string strBook = _objCharacter.Options.LanguageBookShort(objXmlMetamagic["source"]?.InnerText);
+            string strPage = objXmlMetamagic["altpage"]?.InnerText ?? objXmlMetamagic["page"]?.InnerText;
+            lblSource.Text = $"{strBook} {strBook}";
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMetamagic["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMetamagic["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -194,88 +211,28 @@ namespace Chummer
             switch (_objMode)
             {
                 case Mode.Art:
-                    _objXmlDocument = XmlManager.Instance.Load("metamagic.xml");
                     objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[" + _objCharacter.Options.BookXPath() + "]");
                     break;
                 case Mode.Enhancement:
-                    _objXmlDocument = XmlManager.Instance.Load("powers.xml");
                     objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[" + _objCharacter.Options.BookXPath() + "]");
                     break;
-                case Mode.Enchantment:
-                case Mode.Ritual:
-                    _objXmlDocument = XmlManager.Instance.Load("spells.xml");
-                    objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[category = '" + _strCategory + "' and (" + _objCharacter.Options.BookXPath() + ")]");
-                    break;
                 default:
-                    _objXmlDocument = XmlManager.Instance.Load("spells.xml");
                     objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[category = '" + _strCategory + "' and (" + _objCharacter.Options.BookXPath() + ")]");
                     break;
             }
 
             foreach (XmlNode objXmlMetamagic in objXmlMetamagicList)
             {
-                if (!chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlMetamagic, false)))
-                {
-                    bool blnNew = true;
-                    switch (_objMode)
-                    {
-                        case Mode.Art:
-                            foreach(Art objArt in _objCharacter.Arts)
-                            {
-                                if (objArt.Name == objXmlMetamagic["name"].InnerText)
-                                {
-                                    blnNew = false;
-                                    break;
-                                }
-                            }
-                            break;
-                        case Mode.Enhancement:
-                            foreach(Enhancement objEnhancement in _objCharacter.Enhancements)
-                            {
-                                if (objEnhancement.Name == objXmlMetamagic["name"].InnerText)
-                                {
-                                    blnNew = false;
-                                    break;
-                                }
-                            }
-                            foreach(Power objPower in _objCharacter.Powers)
-                            {
-                                foreach (Enhancement objEnhancement in objPower.Enhancements)
-                                {
-                                    if (objEnhancement.Name == objXmlMetamagic["name"].InnerText)
-                                    {
-                                        blnNew = false;
-                                        break;
-                                    }
-                                }
-                            }
-                            break;
-                        case Mode.Enchantment:
-                        case Mode.Ritual:
-                            foreach (Spell objSpell in _objCharacter.Spells)
-                            {
-                                if (objSpell.Name == objXmlMetamagic["name"].InnerText)
-                                {
-                                    blnNew = false;
-                                    break;
-                                }
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-
-                    if (blnNew)
-                    {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objXmlMetamagic["name"].InnerText;
-                        if (objXmlMetamagic["translate"] != null)
-                            objItem.Name = objXmlMetamagic["translate"].InnerText;
-                        else
-                            objItem.Name = objXmlMetamagic["name"].InnerText;
-                        lstArts.Add(objItem);
-                    }
-                }
+                bool add = (!chkLimitList.Checked ||
+                               (chkLimitList.Checked &&
+                                Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, false,
+                                    _objCharacter, null,
+                                    null, _objQualityDocument, string.Empty, _strLocalName)));
+                if (!add) continue;
+                ListItem objItem = new ListItem();
+                objItem.Value = objXmlMetamagic["name"].InnerText;
+                objItem.Name = objXmlMetamagic["translate"]?.InnerText ?? objXmlMetamagic["name"].InnerText;
+                lstArts.Add(objItem);
             }
             SortListItem objSort = new SortListItem();
             lstArts.Sort(objSort.Compare);
@@ -308,266 +265,18 @@ namespace Chummer
             else
                 objXmlMetamagic = _objXmlDocument.SelectSingleNode("/chummer/spells/spell[category = \"Rituals\" and name = \"" + lstArt.SelectedValue + "\"]");
 
-            if (!RequirementMet(objXmlMetamagic, true))
+            if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, null, null, _objQualityDocument, string.Empty, _strLocalName))
                 return;
 
             DialogResult = DialogResult.OK;
         }
 
-        /// <summary>
-        /// Check if the Metamagic's requirements/restrictions are being met.
-        /// </summary>
-        /// <param name="objXmlCheckMetamagic">XmlNode of the Metamagic.</param>
-        /// <param name="blnShowMessage">Whether or not a message should be shown if the requirements are not met.</param>
-        private bool RequirementMet(XmlNode objXmlCheckMetamagic, bool blnShowMessage)
-        {
-            // Ignore the rules.
-            if (_objCharacter.IgnoreRules)
-                return true;
 
-            string strParent = string.Empty;
-            string strChild = string.Empty;
-            if (_objMode == Mode.Art)
-            {
-                strParent = "arts";
-                strChild = "art";
-            }
-            else if (_objMode == Mode.Enhancement)
-            {
-                strParent = "enhancements";
-                strChild = "enhancement";
-            }
-            else
-            {
-                strParent = "spells";
-                strChild = "spell";
-            }
-
-            if (objXmlCheckMetamagic.InnerXml.Contains("<required>"))
-            {
-                bool blnRequirementMet = true;
-                string strRequirement = string.Empty;
-                if (objXmlCheckMetamagic.InnerXml.Contains("<allof>"))
-                {
-                    strRequirement = "\n" + LanguageManager.Instance.GetString("Message_SelectQuality_AllOf");
-                }
-
-                // Metamagic requirements.
-                foreach (XmlNode objXmlMetamagic in objXmlCheckMetamagic.SelectNodes("required/allof/metamagic"))
-                {
-                    bool blnFound = false;
-                    foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
-                    {
-                        if (objMetamagic.Name == objXmlMetamagic.InnerText)
-                        {
-                            blnFound = true;
-                            break;
-                        }
-                    }
-
-                    if (!blnFound)
-                    {
-                        blnRequirementMet = false;
-                        XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/" + strParent + "/" + strChild + "[name = \"" + objXmlMetamagic.InnerText + "\"]");
-                        if (objNode["translate"] != null)
-                            strRequirement += "\n\t" + objNode["translate"].InnerText;
-                        else
-                            strRequirement += "\n\t" + objXmlMetamagic.InnerText;
-                    }
-                }
-
-                // Power requirements.
-                foreach (XmlNode objXmlPower in objXmlCheckMetamagic.SelectNodes("required/allof/power"))
-                {
-                    bool blnFound = false;
-                    foreach (Power objPower in _objCharacter.Powers)
-                    {
-                        if (objPower.Name == objXmlPower.InnerText)
-                        {
-                            blnFound = true;
-                            break;
-                        }
-                    }
-
-                    if (!blnFound)
-                    {
-                        blnRequirementMet = false;
-                        strRequirement += "\n\t" + objXmlPower.InnerText;
-                    }
-                }
-
-                // Art requirements.
-                bool blnStreetGrimoire = (_objCharacter.Options.Books.Contains("SG"));
-                if (blnStreetGrimoire && !_objCharacter.Options.IgnoreArt)
-                {
-                    foreach (XmlNode objXmlArt in objXmlCheckMetamagic.SelectNodes("required/allof/art"))
-                    {
-                        bool blnFound = false;
-                        foreach (Art objArt in _objCharacter.Arts)
-                        {
-                            if (objArt.Name == objXmlArt.InnerText)
-                            {
-                                blnFound = true;
-                                break;
-                            }
-                        }
-
-                        if (!blnFound)
-                        {
-                            blnRequirementMet = false;
-                            strRequirement += "\n\t" + objXmlArt.InnerText;
-                        }
-                    }
-                }
-
-                // Echo requirements.
-                foreach (XmlNode objXmlEcho in objXmlCheckMetamagic.SelectNodes("required/allof/echo"))
-                {
-                    bool blnFound = false;
-                    foreach (Metamagic objEcho in _objCharacter.Metamagics)
-                    {
-                        if (objEcho.Name == objXmlEcho.InnerText)
-                        {
-                            blnFound = true;
-                            break;
-                        }
-                    }
-
-                    if (!blnFound)
-                    {
-                        blnRequirementMet = false;
-                        XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/" + strParent + "/" + strChild + "[name = \"" + objXmlEcho.InnerText + "\"]");
-                        if (objNode["translate"] != null)
-                            strRequirement += "\n\t" + objNode["translate"].InnerText;
-                        else
-                            strRequirement += "\n\t" + objXmlEcho.InnerText;
-                    }
-                }
-
-                // Quality requirements.
-                bool blnQualityFound = false;
-                string strQualityRequirement = string.Empty;
-                if (objXmlCheckMetamagic.SelectNodes("required/allof/quality").Count == 0)
-                    blnQualityFound = true;
-                else
-                {
-                    foreach (XmlNode objXmlQuality in objXmlCheckMetamagic.SelectNodes("required/allof/quality"))
-                    {
-                        foreach (Quality objQuality in _objCharacter.Qualities)
-                        {
-                            if (objQuality.Name == objXmlQuality.InnerText)
-                            {
-                                blnQualityFound = true;
-                                break;
-                            }
-
-                            XmlNode objNode =
-                                _objQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-                            if (objNode["translate"] != null)
-                                strQualityRequirement += "\n\t" + objNode["translate"].InnerText;
-                            else
-                                strQualityRequirement += "\n\t" + objXmlQuality.InnerText;
-                        }
-                    }
-                    if (!blnQualityFound)
-                    {
-                        blnRequirementMet = false;
-                        strRequirement += strQualityRequirement;
-                    }
-                }
-
-                // Check OneOf requirements
-                string strOneOfRequirement = "\n" + LanguageManager.Instance.GetString("Message_SelectQuality_OneOf");
-                bool blnOneOfRequirementMet = false;
-
-                if (!objXmlCheckMetamagic.InnerXml.Contains("<oneof>"))
-                {
-                    blnOneOfRequirementMet = true;
-                }
-
-                foreach (XmlNode objXmlQuality in objXmlCheckMetamagic.SelectNodes("required/oneof/quality"))
-                {
-                    foreach (Quality objQuality in _objCharacter.Qualities)
-                    {
-                        if (objQuality.Name == objXmlQuality.InnerText)
-                        {
-                            blnOneOfRequirementMet = true;
-                            break;
-                        }
-                    }
-
-                    if (!blnOneOfRequirementMet)
-                        strOneOfRequirement += "\n\t" + objXmlQuality.InnerText;
-                    else
-                        break;
-                }
-
-                if (blnStreetGrimoire && !_objCharacter.Options.IgnoreArt)
-                {
-                    foreach (XmlNode objXmlArt in objXmlCheckMetamagic.SelectNodes("required/oneof/art"))
-                    {
-                        foreach (Art objArt in _objCharacter.Arts)
-                        {
-                            if (objArt.Name == objXmlArt.InnerText)
-                            {
-                                blnOneOfRequirementMet = true;
-                                break;
-                            }
-                        }
-
-                        if (!blnOneOfRequirementMet)
-                            strOneOfRequirement += "\n\t" + objXmlArt.InnerText;
-                        else
-                            break;
-                    }
-                }
-
-                if (!blnOneOfRequirementMet)
-                {
-                    blnRequirementMet = false;
-                    strRequirement += strOneOfRequirement;
-                }
-
-                if (!blnRequirementMet)
-                {
-                    string strMessage = string.Empty;
-                    string strTitle = string.Empty;
-
-                    if (_objMode == Mode.Art)
-                    {
-                        strMessage = LanguageManager.Instance.GetString("Message_SelectArt_ArtRequirement");
-                        strTitle = LanguageManager.Instance.GetString("MessageTitle_SelectArt_ArtRequirement");
-                    }
-                    else if (_objMode == Mode.Enchantment)
-                    {
-                        strMessage = LanguageManager.Instance.GetString("Message_SelectArt_EnchantmentRequirement");
-                        strTitle = LanguageManager.Instance.GetString("MessageTitle_SelectArt_EnchantmentRequirement");
-                    }
-                    else if (_objMode == Mode.Enhancement)
-                    {
-                        strMessage = LanguageManager.Instance.GetString("Message_SelectArt_EnhancementRequirement");
-                        strTitle = LanguageManager.Instance.GetString("MessageTitle_SelectArt_EnhancementRequirement");
-                    }
-                    else
-                    {
-                        strMessage = LanguageManager.Instance.GetString("Message_SelectArt_RitualRequirement");
-                        strTitle = LanguageManager.Instance.GetString("MessageTitle_SelectArt_RitualRequirement");
-                    }
-                    strMessage += strRequirement;
-
-                    if (blnShowMessage)
-                        MessageBox.Show(strMessage, strTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return false;
-                }
-            }
-
-            return true;
-        }
         #endregion
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.StaticOpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
         }
     }
 }

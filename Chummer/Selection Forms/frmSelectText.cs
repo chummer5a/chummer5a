@@ -26,24 +26,24 @@ namespace Chummer
     {
         private string _strReturnValue = string.Empty;
 
-		#region Control Events
-		public frmSelectText()
+        #region Control Events
+        public frmSelectText()
         {
             InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Load(GlobalOptions.Language, this);
         }
 
-		private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object sender, EventArgs e)
         {
-			if (PreventXPathErrors && txtValue.Text.Contains('"'))
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_InvalidCharacters"), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-			else
-			{
-				_strReturnValue = txtValue.Text;
-				DialogResult = DialogResult.OK;
-			}
+            if (PreventXPathErrors && txtValue.Text.Contains('"'))
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_InvalidCharacters"), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                _strReturnValue = txtValue.Text;
+                DialogResult = DialogResult.OK;
+            }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -51,34 +51,34 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-		private void frmSelectText_Shown(object sender, EventArgs e)
-		{
-		    if (DefaultString != null)
-		    {
-		        txtValue.Text = DefaultString;
-		    }
-		}		
-		#endregion
+        private void frmSelectText_Shown(object sender, EventArgs e)
+        {
+            if (DefaultString != null)
+            {
+                txtValue.Text = DefaultString;
+            }
+        }        
+        #endregion
 
-		#region Properties
-		/// <summary>
-		/// Value that was entered in the dialogue.
-		/// </summary>
-		public string SelectedValue
+        #region Properties
+        /// <summary>
+        /// Value that was entered in the dialogue.
+        /// </summary>
+        public string SelectedValue
         {
             get
             {
                 return _strReturnValue;
             }
-			set
-			{
-				txtValue.Text = value;
-			}
+            set
+            {
+                txtValue.Text = value;
+            }
         }
 
-		/// <summary>
-		/// Description to display in the dialogue.
-		/// </summary>
+        /// <summary>
+        /// Description to display in the dialogue.
+        /// </summary>
         public string Description
         {
             set
@@ -87,7 +87,7 @@ namespace Chummer
             }
         }
 
-		public bool PreventXPathErrors { get; internal set; }
+        public bool PreventXPathErrors { get; internal set; }
         public string DefaultString { get; internal set; }
         #endregion
     }

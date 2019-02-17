@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
@@ -227,9 +227,7 @@ namespace ChummerDataViewer.Model
 	{
 		public StatusChangedEventArgs(string status, dynamic attachedData = null)
 		{
-			if(status == null) throw new ArgumentNullException(nameof(status));
-
-			Status = status;
+            Status = status ?? throw new ArgumentNullException(nameof(status));
 			AttachedData = attachedData;
 		}
 

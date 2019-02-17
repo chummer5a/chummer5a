@@ -26,7 +26,7 @@ using System.Windows.Forms;
 
 namespace Chummer.helpers
 {
-    class TreeView : System.Windows.Forms.TreeView
+    public class TreeView : System.Windows.Forms.TreeView
     {
         public void Add(LimitModifier input, ContextMenuStrip strip)
         {
@@ -48,13 +48,12 @@ namespace Chummer.helpers
         public void Add(Improvement input, ContextMenuStrip strip)
         {
             TreeNode newNode = new TreeNode();
-            string strName = input.UniqueName;
+            string strName = input.UniqueName + ": ";
             if (input.Value > 0)
-                strName += " [+" + input.Value.ToString() + "]";
-            else
-                strName += " [" + input.Value.ToString() + "]";
-            if (!string.IsNullOrEmpty(input.Exclude))
-                strName += " (" + input.Exclude + ")";
+                strName += "+";
+            strName += input.Value.ToString();
+            if (!string.IsNullOrEmpty(input.Condition))
+                strName += ", " + input.Condition;
             newNode.Text = newNode.Name = strName;
             newNode.Tag = input.SourceName;
             if (!string.IsNullOrEmpty(input.Notes))

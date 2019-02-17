@@ -18,42 +18,42 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-	<options>
-		<limbcounts>
-			<limb>
-				<name>String_LimbCount4</name>
-				<limbcount>4</limbcount>
-				<exclude>torso,skull</exclude>
-			</limb>
-			<limb>
-				<name>String_LimbCount5Skull</name>
-				<limbcount>5</limbcount>
-				<exclude>torso</exclude>
-			</limb>
-			<limb>
-				<name>String_LimbCount5Torso</name>
-				<limbcount>5</limbcount>
-				<exclude>skull</exclude>
-			</limb>
-			<limb>
-				<name>String_LimbCount6</name>
-				<limbcount>6</limbcount>
-				<exclude />
-			</limb>
-		</limbcounts>
-		<pdfarguments>
-			<pdfargument>
-				<name>Web Browser</name>
-				<value>{absolutepath}#page={page}</value>
-			</pdfargument>
-			<pdfargument>
-				<name>Acrobat-style</name>
-				<value>/A "page={page}" "{localpath}"</value>
-			</pdfargument>
-			<pdfargument>
-				<name>Unix-style</name>
-				<value>-p {page} "{localpath}"</value>
-			</pdfargument>
-		</pdfarguments>
-	</options>
+  <options>
+    <limbcounts>
+      <limb>
+        <name>String_LimbCount4</name>
+        <limbcount>4</limbcount>
+        <exclude>torso,skull</exclude>
+      </limb>
+      <limb>
+        <name>String_LimbCount5Skull</name>
+        <limbcount>5</limbcount>
+        <exclude>torso</exclude>
+      </limb>
+      <limb>
+        <name>String_LimbCount5Torso</name>
+        <limbcount>5</limbcount>
+        <exclude>skull</exclude>
+      </limb>
+      <limb>
+        <name>String_LimbCount6</name>
+        <limbcount>6</limbcount>
+        <exclude />
+      </limb>
+    </limbcounts>
+    <pdfarguments>
+      <pdfargument>
+        <name>Web Browser</name>
+        <value>"file://{absolutepath}#page={page}"</value>
+      </pdfargument>
+      <pdfargument>
+        <name>Acrobat-style</name>
+        <value>/A "page={page}" "{localpath}"</value>
+      </pdfargument>
+      <pdfargument>
+        <name>Unix-style</name>
+        <value>-p {page} "{localpath}"</value>
+      </pdfargument>
+    </pdfarguments>
+  </options>
 </chummer>

@@ -18,8 +18,8 @@
     https://github.com/chummer5a/chummer5a
 -->
 
-<chummer>
-	<version>0</version>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema critterpowers.xsd">
+  <version>0</version>
   <powers>
     <!--spirit powers corebook-->
     <power>

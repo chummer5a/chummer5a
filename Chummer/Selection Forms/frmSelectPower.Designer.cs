@@ -191,11 +191,11 @@
         private System.Windows.Forms.Label lblPowerPointsLabel;
         private System.Windows.Forms.Label lblPowerPoints;
         private System.Windows.Forms.Button cmdCancel;
-		private System.Windows.Forms.Button cmdOKAdd;
-		private System.Windows.Forms.Label lblSource;
-		private System.Windows.Forms.Label lblSourceLabel;
-		private System.Windows.Forms.TextBox txtSearch;
-		private System.Windows.Forms.Label lblSearchLabel;
-		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
+        private System.Windows.Forms.Button cmdOKAdd;
+        private System.Windows.Forms.Label lblSource;
+        private System.Windows.Forms.Label lblSourceLabel;
+        private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.Label lblSearchLabel;
+        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
     }
 }

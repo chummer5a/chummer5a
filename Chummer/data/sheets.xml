@@ -1,0 +1,426 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <sheets lang="en-us">
+    <sheet>
+      <id>8b16e238-18c6-40e0-85ca-a3a6c1854bd9</id>
+      <name>Calendar</name>
+      <filename>Calendar</filename>
+    </sheet>
+    <sheet>
+      <id>88ffe3f4-f216-44bf-85f5-4dd27034599b</id>
+      <name>Commlinks</name>
+      <filename>Commlinks</filename>
+    </sheet>
+    <sheet>
+      <id>57ba779b-c7aa-4699-bd3b-4d0cbc1f8bd7</id>
+      <name>Contacts</name>
+      <filename>Contacts</filename>
+    </sheet>
+    <sheet>
+      <id>4feb3343-b759-47a6-a4e4-2fe308d30afa</id>
+      <name>Dossier</name>
+      <filename>Dossier</filename>
+    </sheet>
+    <sheet>
+      <id>ee596d7a-300b-4cd6-8fb0-2d180b8a1cd0</id>
+      <name>Expenses</name>
+      <filename>Expenses</filename>
+    </sheet>
+    <sheet>
+      <id>1ce3583c-d6b4-4ad4-b64c-67361ec53997</id>
+      <name>Fancy Blocks</name>
+      <filename>Fancy Blocks</filename>
+    </sheet>
+    <sheet>
+      <id>32949e5b-49ec-4231-8954-30366c5364a1</id>
+      <name>Formatted Text-Only</name>
+      <filename>Formatted Text-Only</filename>
+    </sheet>
+    <sheet>
+      <id>0a04bce3-5d9f-4aee-a54d-4514eaf86ee0</id>
+      <name>Game Master Summary</name>
+      <filename>Game Master Summary</filename>
+    </sheet>
+    <sheet>
+      <id>682a0fff-e064-4208-91fd-e386acf8fdda</id>
+      <name>Notes</name>
+      <filename>Notes</filename>
+    </sheet>
+    <sheet>
+      <id>61f0a006-b710-4013-9c07-315506ef3a85</id>
+      <name>Shadowrun 5 (Core)</name>
+      <filename>Shadowrun 5 (Core)</filename>
+    </sheet>
+    <sheet>
+      <id>19653431-f271-4e6b-bfcd-34525e168f3d</id>
+      <name>Shadowrun 5 (Grouped Skills by Name)</name>
+      <filename>Shadowrun 5 (Grouped Skills by Name)</filename>
+    </sheet>
+    <sheet>
+      <id>c2a5247f-e453-4393-a178-a904796cf90c</id>
+      <name>Shadowrun 5 (Grouped Skills by Rating)</name>
+      <filename>Shadowrun 5 (Grouped Skills by Rating)</filename>
+    </sheet>
+    <sheet>
+      <id>6cf47303-69fe-4e43-8ed8-24926629b3ff</id>
+      <name>Shadowrun 5 (Rating > 0)</name>
+      <filename>Shadowrun 5 (Rating greater 0)</filename>
+    </sheet>
+    <sheet>
+      <id>c4e73b93-8372-4d65-ac7c-b3e30218ef6f</id>
+      <name>Shadowrun 5</name>
+      <filename>Shadowrun 5</filename>
+    </sheet>
+    <sheet>
+      <id>5e4fa26c-22bc-46a8-b342-68d5ec975d35</id>
+      <name>Text-Only</name>
+      <filename>Text-Only</filename>
+    </sheet>
+    <sheet>
+      <id>995ad8c4-2c0b-4aaa-876e-5d3ae962ee84</id>
+      <name>Vehicles</name>
+      <filename>Vehicles</filename>
+    </sheet>
+  </sheets>
+  <sheets lang="de">
+    <sheet>
+      <id>b43dc8a1-976b-4c3d-8261-cbbea9437007</id>
+      <name>Dossier</name>
+      <filename>Dossier</filename>
+    </sheet>
+    <sheet>
+      <id>255f1f17-bcd9-40f1-ae84-9ce5529b91fc</id>
+      <name>Fahrzeuge</name>
+      <filename>Fahrzeuge</filename>
+    </sheet>
+    <sheet>
+      <id>e7d67499-4f86-4153-b748-e903f8bc97b3</id>
+      <name>Formatieren Nur Text</name>
+      <filename>Formatieren Nur Text</filename>
+    </sheet>
+    <sheet>
+      <id>5ccf5887-441f-44c9-94b9-6182137e824e</id>
+      <name>Kalender</name>
+      <filename>Kalender</filename>
+    </sheet>
+    <sheet>
+      <id>8b691596-e030-4305-8a0c-8ee1db29cae7</id>
+      <name>Kommlinks</name>
+      <filename>Kommlinks</filename>
+    </sheet>
+    <sheet>
+      <id>906e0ba0-4761-4ddb-a4d9-dfb34d30c39d</id>
+      <name>Kosten</name>
+      <filename>Kosten</filename>
+    </sheet>
+    <sheet>
+      <id>362ea83f-447a-475b-b8af-7f2d40de0d11</id>
+      <name>Notizen</name>
+      <filename>Notizen</filename>
+    </sheet>
+    <sheet>
+      <id>e5dc6627-35c2-4a36-8126-436ba0323e47</id>
+      <name>Nur Text</name>
+      <filename>Nur Text</filename>
+    </sheet>
+    <sheet>
+      <id>9dcbd2e5-aa5f-4127-ac26-f12e4f03d3a1</id>
+      <name>Schick Blöcke</name>
+      <filename>Fancy Blocks</filename>
+    </sheet>
+    <sheet>
+      <id>947b9c37-e19b-46cc-b8c0-242243d5ead9</id>
+      <name>Shadowrun 5 (Bewertet größer 0)</name>
+      <filename>Shadowrun 5 (Rating greater 0)</filename>
+    </sheet>
+    <sheet>
+      <id>7a80da80-317e-4ae7-bbee-26b3b1bcbb84</id>
+      <name>Shadowrun 5 (Gruppiert Fähigkeit durch Bewertet)</name>
+      <filename>Shadowrun 5 (Grouped Skills by Rating)</filename>
+    </sheet>
+    <sheet>
+      <id>1aef9b12-ad58-426d-b7f6-f1bcc2226376</id>
+      <name>Shadowrun 5 (Gruppiert Fähigkeit durch Name)</name>
+      <filename>Shadowrun 5 (Grouped Skills by Name)</filename>
+    </sheet>
+    <sheet>
+      <id>63314285-26fb-4162-bbf7-015788bea04b</id>
+      <name>Shadowrun 5 (Kern)</name>
+      <filename>Shadowrun 5 (Kern)</filename>
+    </sheet>
+    <sheet>
+      <id>4a612f4d-482b-4de7-9af6-7878847ae327</id>
+      <name>Shadowrun 5</name>
+      <filename>Shadowrun 5</filename>
+    </sheet>
+    <sheet>
+      <id>46467c0b-b0b8-4b6f-8f6f-9b4c1c44e9e1</id>
+      <name>Spielleiter Überblick</name>
+      <filename>Game Master Summary</filename>
+    </sheet>
+  </sheets>
+  <sheets lang="fr">
+    <sheet>
+      <id>9763ccaf-61f5-4473-b4d9-e5a210073a7b</id>
+      <name>Blocs fantaisie</name>
+      <filename>Blocs fantaisie</filename>
+    </sheet>
+    <sheet>
+      <id>9e9059ee-96a7-4dab-b2fb-dfe909a17702</id>
+      <name>Calendrier</name>
+      <filename>Calendrier</filename>
+    </sheet>
+    <sheet>
+      <id>7090c91a-f1e1-4791-b373-34280e75a5d1</id>
+      <name>Commlinks (en Francais)</name>
+      <filename>Commlinks</filename>
+    </sheet>
+    <sheet>
+      <id>8e61a393-f866-4d36-ac99-7f980b4a0fb5</id>
+      <name>Contacts</name>
+      <filename>Contacts</filename>
+    </sheet>
+    <sheet>
+      <id>9e85039b-c634-41b1-8be3-be4482374c26</id>
+      <name>Dossier</name>
+      <filename>Dossier</filename>
+    </sheet>
+    <sheet>
+      <id>d9991497-3d74-4f88-bc69-48188b778947</id>
+      <name>Dépenses</name>
+      <filename>Expenses</filename>
+    </sheet>
+    <sheet>
+      <id>ddbb9a60-6625-4091-8b42-59079538bb71</id>
+      <name>Formaté texte seulement</name>
+      <filename>Formaté texte seulement</filename>
+    </sheet>
+    <sheet>
+      <id>0f2c14d0-1d90-4b45-b26e-ef1da40c2ded</id>
+      <name>Remarques</name>
+      <filename>Remarques</filename>
+    </sheet>
+    <sheet>
+      <id>c24f51e2-c795-40e0-8b5b-3ddc04965221</id>
+      <name>Résumé du jeu</name>
+      <filename>Game Master Summary</filename>
+    </sheet>
+    <sheet>
+      <id>708ee7c5-c882-429f-b051-a2ff854fef82</id>
+      <name>Shadowrun 5 (Coeur)</name>
+      <filename>Shadowrun 5 (Coeur)</filename>
+    </sheet>
+    <sheet>
+      <id>5ae700f8-e679-4f63-80b6-04c8b20cb957</id>
+      <name>Shadowrun 5 (Groupé par nom)</name>
+      <filename>Shadowrun 5 (Grouped Skills by Name)</filename>
+    </sheet>
+    <sheet>
+      <id>9fe635c3-3d4e-448e-91e7-d3f87e59af2b</id>
+      <name>Shadowrun 5 (Groupé par évaluation)</name>
+      <filename>Shadowrun 5 (Grouped Skills by Rating)</filename>
+    </sheet>
+    <sheet>
+      <id>c306508d-5ffd-4b7b-acf7-13aef6bad142</id>
+      <name>Shadowrun 5 (Évaluation plus grand que zéro)</name>
+      <filename>Shadowrun 5 (Évaluation plus grand que zéro)</filename>
+    </sheet>
+    <sheet>
+      <id>4aa5eff0-6ec1-44ea-9adc-e2b8e2ecbb5a</id>
+      <name>Shadowrun 5</name>
+      <filename>Shadowrun 5</filename>
+    </sheet>
+    <sheet>
+      <id>ef153fd3-ac81-43cb-b8bb-13a8ed441ced</id>
+      <name>Texte seulement</name>
+      <filename>Texte seulement</filename>
+    </sheet>
+    <sheet>
+      <id>2fe33919-5419-4681-9cf1-556f0054d398</id>
+      <name>Véhicules</name>
+      <filename>Vehicles</filename>
+    </sheet>
+  </sheets>
+  <sheets lang="jp">
+    <sheet>
+      <id>5c7ad794-6040-4953-ad37-eee9287b66c2</id>
+      <name>Calendar</name>
+      <filename>Calendar</filename>
+    </sheet>
+    <sheet>
+      <id>1201df52-34b1-41fb-a320-fb4dd947f27a</id>
+      <name>Commlinks</name>
+      <filename>Commlinks</filename>
+    </sheet>
+    <sheet>
+      <id>04817427-dfc5-4cb0-9597-39f22bd1eb7e</id>
+      <name>Contacts</name>
+      <filename>Contacts</filename>
+    </sheet>
+    <sheet>
+      <id>3189dfcb-bd55-41a7-8e01-b51080054ef5</id>
+      <name>Dossier</name>
+      <filename>Dossier</filename>
+    </sheet>
+    <sheet>
+      <id>0c9c9a22-0282-478e-84ca-30dc8e839119</id>
+      <name>Expenses</name>
+      <filename>Expenses</filename>
+    </sheet>
+    <sheet>
+      <id>906672c1-35b8-49e7-ae01-97e841cb6b91</id>
+      <name>Fancy Blocks</name>
+      <filename>Fancy Blocks</filename>
+    </sheet>
+    <sheet>
+      <id>403d719e-1c5e-4cf9-a4c4-19893ac62d93</id>
+      <name>Formatted Text-Only</name>
+      <filename>Formatted Text-Only</filename>
+    </sheet>
+    <sheet>
+      <id>4156b5a9-6125-49bd-9a3d-e590286da5a5</id>
+      <name>Game Master Summary</name>
+      <filename>Game Master Summary</filename>
+    </sheet>
+    <sheet>
+      <id>1ee43e5e-900d-49eb-9faf-1ef5b713ab07</id>
+      <name>Notes</name>
+      <filename>Notes</filename>
+    </sheet>
+    <sheet>
+      <id>faba0e1d-116f-4f50-afea-5c474787a3a5</id>
+      <name>Shadowrun 5 (Core)</name>
+      <filename>Shadowrun 5 (Core)</filename>
+    </sheet>
+    <sheet>
+      <id>9ebcba20-b005-4ad8-8825-917fbe6db143</id>
+      <name>Shadowrun 5 (Grouped Skills by Name)</name>
+      <filename>Shadowrun 5 (Grouped Skills by Name)</filename>
+    </sheet>
+    <sheet>
+      <id>588e7395-f8d3-4e6c-8bea-3cc5c8a3f573</id>
+      <name>Shadowrun 5 (Grouped Skills by Rating)</name>
+      <filename>Shadowrun 5 (Grouped Skills by Rating)</filename>
+    </sheet>
+    <sheet>
+      <id>00c26526-4813-406a-81f1-3d00bd04fd09</id>
+      <name>Shadowrun 5 (Rating > 0)</name>
+      <filename>Shadowrun 5 (Rating greater 0)</filename>
+    </sheet>
+    <sheet>
+      <id>fe5f5885-a7d4-419d-9f7c-5d11d265e8d9</id>
+      <name>Shadowrun 5</name>
+      <filename>Shadowrun 5</filename>
+    </sheet>
+    <sheet>
+      <id>93e25efe-63d5-4f6b-9ed2-dfb882a7f257</id>
+      <name>Text-Only</name>
+      <filename>Text-Only</filename>
+    </sheet>
+    <sheet>
+      <id>03a18308-f4db-4695-a3c7-f06b5232ff6e</id>
+      <name>Vehicles</name>
+      <filename>Vehicles</filename>
+    </sheet>  
+    <sheets lang="zh">
+    <sheet>
+      <id>8b16e238-18c6-40e0-85ca-a3a6c1854bd9</id>
+      <name>日程表</name>
+      <filename>日程表</filename>
+    </sheet>
+    <sheet>
+      <id>88ffe3f4-f216-44bf-85f5-4dd27034599b</id>
+      <name>矩阵设备</name>
+      <filename>矩阵设备</filename>
+    </sheet>
+    <sheet>
+      <id>57ba779b-c7aa-4699-bd3b-4d0cbc1f8bd7</id>
+      <name>人脉</name>
+      <filename>人脉</filename>
+    </sheet>
+    <sheet>
+      <id>4feb3343-b759-47a6-a4e4-2fe308d30afa</id>
+      <name>档案</name>
+      <filename>档案</filename>
+    </sheet>
+    <sheet>
+      <id>ee596d7a-300b-4cd6-8fb0-2d180b8a1cd0</id>
+      <name>收支</name>
+      <filename>收支</filename>
+    </sheet>
+    <sheet>
+      <id>1ce3583c-d6b4-4ad4-b64c-67361ec53997</id>
+      <name>多彩方块</name>
+      <filename>多彩方块</filename>
+    </sheet>
+    <sheet>
+      <id>32949e5b-49ec-4231-8954-30366c5364a1</id>
+      <name>格式仅文本</name>
+      <filename>格式仅文本</filename>
+    </sheet>
+    <sheet>
+      <id>0a04bce3-5d9f-4aee-a54d-4514eaf86ee0</id>
+      <name>GM简要</name>
+      <filename>GM简要</filename>
+    </sheet>
+    <sheet>
+      <id>682a0fff-e064-4208-91fd-e386acf8fdda</id>
+      <name>备注</name>
+      <filename>备注</filename>
+    </sheet>
+    <sheet>
+      <id>61f0a006-b710-4013-9c07-315506ef3a85</id>
+      <name>暗影狂奔5（核心）</name>
+      <filename>暗影狂奔5（核心）</filename>
+    </sheet>
+    <sheet>
+      <id>19653431-f271-4e6b-bfcd-34525e168f3d</id>
+      <name>暗影狂奔5（名称排列）</name>
+      <filename>暗影狂奔5（名称排列）</filename>
+    </sheet>
+    <sheet>
+      <id>c2a5247f-e453-4393-a178-a904796cf90c</id>
+      <name>暗影狂奔5（等级排列）</name>
+      <filename>暗影狂奔5（等级排列）</filename>
+    </sheet>
+    <sheet>
+      <id>6cf47303-69fe-4e43-8ed8-24926629b3ff</id>
+      <name>暗影狂奔5（技能等级＞0）</name>
+      <filename>暗影狂奔5（技能等级＞0）</filename>
+    </sheet>
+    <sheet>
+      <id>c4e73b93-8372-4d65-ac7c-b3e30218ef6f</id>
+      <name>暗影狂奔5</name>
+      <filename>暗影狂奔5</filename>
+    </sheet>
+    <sheet>
+      <id>5e4fa26c-22bc-46a8-b342-68d5ec975d35</id>
+      <name>仅文本</name>
+      <filename>仅文本</filename>
+    </sheet>
+    <sheet>
+      <id>995ad8c4-2c0b-4aaa-876e-5d3ae962ee84</id>
+      <name>载具和无人机</name>
+      <filename>载具和无人机</filename>
+    </sheet>
+  </sheets>
+  </sheets>
+</chummer>

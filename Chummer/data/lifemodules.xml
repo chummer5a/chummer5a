@@ -252,7 +252,7 @@
 				</version>
 				<version>
 					<id>b70de7f3-844f-40ec-92c6-5b3b4bacbe4b</id>
-					<name>SINLess</name>
+					<name>SINless</name>
 					<bonus>
 						<attributelevel>
 							<name>BOD</name>
@@ -278,9 +278,9 @@
 					<group>Language</group>
 					<val>0</val>
 				</knowledgeskilllevel>
-        <skilllevel>
-          <name>Etiquette</name>
-        </skilllevel>
+				<skilllevel>
+					<name>Etiquette</name>
+				</skilllevel>
 				<knowledgeskilllevel>
 					<options>
 						<spanish>Spanish</spanish>
@@ -774,7 +774,7 @@
 				</knowledgeskilllevel>
 			</bonus>
 			<source>RF</source>
-			<story>$real was born in the northern part of America, in the Native AMerican Nations</story>
+			<story>$real was born in the northern part of America, in the Native American Nations</story>
 			<page>67</page>
 		</module>
 		<!-- End Region -->
@@ -1003,9 +1003,9 @@
 					<val>2</val>
 				</knowledgeskilllevel>
 				<freenegativequalities>-14</freenegativequalities>
-			<addqualities>
-				<addquality>Uncouth</addquality>
-			</addqualities>
+				<addqualities>
+					<addquality>Uncouth</addquality>
+				</addqualities>
 			</bonus>
 			<story>$real grew up almost everywhere, shifted from place to place by their $PARRENT 's military duties.</story>
 			<source>RF</source>
@@ -1256,9 +1256,9 @@
 					<group>Interest</group>
 				</knowledgeskilllevel>
 				<freepositivequalities>3</freepositivequalities>
-			<addqualities>
-				<addquality>Animal Empathy</addquality>
-			</addqualities>
+				<addqualities>
+					<addquality>Animal Empathy</addquality>
+				</addqualities>
 			</bonus>
 			<story>$real spent their teenage years on a farm, $FARMTASK .</story>
 			<source>RF</source>
@@ -1286,6 +1286,7 @@
 				</skilllevel>
 				<skillgrouplevel>
 					<name>Firearms</name>
+					<val>1</val>
 				</skillgrouplevel>
 				<skilllevel>
 					<name>Leadership</name>
@@ -1335,10 +1336,10 @@
 					<name>CHA</name>
 					<val>1</val>
 				</attributelevel>
-				<skilllevel>
+				<skillgrouplevel>
 					<name>Athletics</name>
 					<val>1</val>
-				</skilllevel>
+				</skillgrouplevel>
 				<skilllevel>
 					<name>Computer</name>
 					<val>2</val>
@@ -1454,7 +1455,7 @@
 					<name>Longarms</name>
 				</skilllevel>
 				<skillgrouplevel>
-					<name>Outdoor</name>
+					<name>Outdoors</name>
 					<val>1</val>
 				</skillgrouplevel>
 				<skilllevel>
@@ -1496,7 +1497,7 @@
 					<val>1</val>
 				</attributelevel>
 				<knowledgeskilllevel>
-					<name>Magical Theory</name>
+					<name>Magical Theory (Academic)</name>
 					<group>Academic</group>
 					<val>5</val>
 				</knowledgeskilllevel>
@@ -1525,9 +1526,9 @@
 					<val>2</val>
 				</skilllevel>
 				<freenegativequalities>-15</freenegativequalities>
-			<addqualities>
-				<addquality>SINner (Corporate Limited)</addquality>
-			</addqualities>
+				<addqualities>
+					<addquality>SINner (Corporate Limited)</addquality>
+				</addqualities>
 			</bonus>
 			<required>
 				<oneof>
@@ -1554,7 +1555,7 @@
 					<val>1</val>
 				</attributelevel>
 				<knowledgeskilllevel>
-					<name>Magical Theory</name>
+					<name>Magical Theory (Academic)</name>
 					<group>Academic</group>
 					<val>5</val>
 				</knowledgeskilllevel>
@@ -1612,7 +1613,7 @@
 					<val>1</val>
 				</attributelevel>
 				<knowledgeskilllevel>
-					<name>Magical Theory</name>
+					<name>Magical Theory (Academic)</name>
 					<group>Academic</group>
 					<val>5</val>
 				</knowledgeskilllevel>
@@ -1670,7 +1671,7 @@
 					<val>1</val>
 				</attributelevel>
 				<knowledgeskilllevel>
-					<name>Magical Theory</name>
+					<name>Magical Theory (Academic)</name>
 					<group>Academic</group>
 					<val>5</val>
 				</knowledgeskilllevel>
@@ -1699,9 +1700,9 @@
 					<val>2</val>
 				</skilllevel>
 				<freenegativequalities>-15</freenegativequalities>
-			<addqualities>
-				<addquality>SINner (Corporate Limited)</addquality>
-			</addqualities>
+				<addqualities>
+					<addquality>SINner (Corporate Limited)</addquality>
+				</addqualities>
 			</bonus>
 			<required>
 				<oneof>
@@ -1908,19 +1909,18 @@
 			<category>LifeModule</category>
 			<name>Community College</name>
 			<karma>55</karma>
-			<bonus>
-				<attributelevel>
-					<name>LOG</name>
-				</attributelevel>
-				<attributelevel>
-					<name>WIL</name>
-				</attributelevel>
-			</bonus>
+			<bonus />
 			<versions>
 				<version>
 					<id>cb7cf388-ca3b-4344-b6ba-7f813a8c347f</id>
 					<name>Architecture</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Artisan</name>
 							<spec>Drawing</spec>
@@ -1942,6 +1942,12 @@
 					<id>5233f360-4ad7-4b03-aab6-fd6a81f5fbaf</id>
 					<name>Business</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Con</name>
 						</skilllevel>
@@ -1963,6 +1969,12 @@
 					<id>3204c2db-d015-4da4-bcd4-cdedb127e5ca</id>
 					<name>Computer Science</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Cybercombat</name>
 						</skilllevel>
@@ -1984,6 +1996,12 @@
 					<id>b86653c5-96fd-46d4-9b97-b1e57d4049be</id>
 					<name>Engineering</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Chemistry</name>
 						</skilllevel>
@@ -2005,6 +2023,12 @@
 					<id>f5bf36b6-3d72-4daf-9d97-3a17ac31e91e</id>
 					<name>Law</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Etiquette</name>
 						</skilllevel>
@@ -2026,13 +2050,19 @@
 					<id>c3486abc-87e5-4bb4-be65-144bd6c8b692</id>
 					<name>Magic</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skillgrouplevel>
 							<name>Sorcery</name>
 							<val>1</val>
 						</skillgrouplevel>
 						<knowledgeskilllevel>
 							<options>
-								<magicaltheory>Magical Theory</magicaltheory>
+								<magicaltheory>Magical Theory (Academic)</magicaltheory>
 								<metaplanes>Metaplanes</metaplanes>
 							</options>
 							<group>Academic</group>
@@ -2044,6 +2074,12 @@
 					<id>6277e39c-10ff-4a7f-83ca-f9a8d84dc644</id>
 					<name>Mathematics</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Computer</name>
 						</skilllevel>
@@ -2065,6 +2101,12 @@
 					<id>558dfe69-711c-4ca3-b16c-3678c3ef3083</id>
 					<name>Medicine</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skillgrouplevel>
 							<name>Biotech</name>
 							<val>2</val>
@@ -2083,6 +2125,12 @@
 					<id>9a0e5409-7a46-4afe-91ae-ac93b101ba37</id>
 					<name>Natural Sciences</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Computer</name>
 						</skilllevel>
@@ -2108,6 +2156,12 @@
 					<id>7da1dbda-242f-4b42-8e91-fdb553033297</id>
 					<name>Art</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Artisan</name>
 							<val>3</val>
@@ -2123,6 +2177,12 @@
 					<id>d29437b7-c771-4fe6-a36a-994091ec8df1</id>
 					<name>History</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Computer</name>
 						</skilllevel>
@@ -2141,6 +2201,12 @@
 					<id>117e5150-c50f-44dc-828c-9adfe06e589d</id>
 					<name>Languages</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<knowledgeskilllevel>
 							<name>[Any]</name>
 							<val>6</val>
@@ -2161,6 +2227,12 @@
 					<id>bc75eec6-c413-4457-b581-59590b792aca</id>
 					<name>Literature</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Artisan</name>
 							<spec>Writing</spec>
@@ -2179,6 +2251,12 @@
 					<id>953b9a51-745f-442a-b1e5-e5e9a24901c8</id>
 					<name>Metahumanities</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Computer</name>
 						</skilllevel>
@@ -2195,6 +2273,12 @@
 					<id>9615d244-4ff5-4de2-b810-f5afeb90f4f6</id>
 					<name>Social Science</name>
 					<bonus>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<attributelevel>
+							<name>WIL</name>
+						</attributelevel>
 						<skilllevel>
 							<name>Computer</name>
 						</skilllevel>
@@ -2206,6 +2290,38 @@
 							<val>13</val>
 						</knowledgeskilllevel>
 					</bonus>
+				</version>
+				<version>
+					<id>45b62128-12f9-4d3f-89b9-b5ee34af16db</id>
+					<name>Trade School Shop</name>
+					<bonus>
+						<addqualities>
+							<addquality>Grease Monkey</addquality>
+						</addqualities>
+						<attributelevel>
+							<name>LOG</name>
+						</attributelevel>
+						<skillgrouplevel>
+							<name>Engineering</name>
+							<val>1</val>
+						</skillgrouplevel>
+						<knowledgeskilllevel>
+							<name>[Practical Mechanics]</name>
+							<group>Academic</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[Industrial Manufacturers]</name>
+							<group>Academic</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[Machine Parts]</name>
+							<group>Academic</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+					</bonus>
+					<source>R5</source>
 				</version>
 			</versions>
 			<story>$real wanted to get something that resembled higher education, but couldn’t afford to go to a real college. The solution: community college.</story>
@@ -2337,7 +2453,7 @@
 						</skillgrouplevel>
 						<knowledgeskilllevel>
 							<options>
-								<magicaltheory>Magical Theory</magicaltheory>
+								<magicaltheory>Magical Theory (Academic)</magicaltheory>
 								<metaplanes>Metaplanes</metaplanes>
 							</options>
 							<group>Academic</group>
@@ -2662,7 +2778,7 @@
 						</skillgrouplevel>
 						<knowledgeskilllevel>
 							<options>
-								<magicaltheory>Magical Theory</magicaltheory>
+								<magicaltheory>Magical Theory (Academic)</magicaltheory>
 								<metaplanes>Metaplanes</metaplanes>
 							</options>
 							<group>Academic</group>
@@ -2988,7 +3104,7 @@
 						</skillgrouplevel>
 						<knowledgeskilllevel>
 							<options>
-								<magicaltheory>Magical Theory</magicaltheory>
+								<magicaltheory>Magical Theory (Academic)</magicaltheory>
 								<metaplanes>Metaplanes</metaplanes>
 							</options>
 							<group>Academic</group>
@@ -3023,11 +3139,8 @@
 					<bonus>
 						<skillgrouplevel>
 							<name>Biotech</name>
-							<val>1</val>
+							<val>2</val>
 						</skillgrouplevel>
-						<skilllevel>
-							<name>Biotechnology</name>
-						</skilllevel>
 						<skilllevel>
 							<name>Chemistry</name>
 						</skilllevel>
@@ -4522,8 +4635,8 @@
 					<group>Interest</group>
 					<val>1</val>
 				</knowledgeskilllevel>
-				<!--todo: +6 points to be spent among vocational skills relating to your job (no more than 3 ranks per skill)-->
 			</bonus>
+			<!--todo: +6 points to be spent among vocational skills relating to your job (no more than 3 ranks per skill)-->
 			<story>$real got a job, exchanging labor for currency like a normal person.</story>
 			<source>RF</source>
 			<page>79</page>
@@ -4720,10 +4833,10 @@
 							<group>Street</group>
 							<val>3</val>
 						</knowledgeskilllevel>
-					<addqualities>
-						<!--todo: choose code of honor-->
-						<addquality>Code of Honor</addquality>
-					</addqualities>
+						<addqualities>
+							<!--todo: choose code of honor-->
+							<addquality>Code of Honor</addquality>
+						</addqualities>
 					</bonus>
 				</version>
 				<version>
@@ -4829,7 +4942,7 @@
 							<val>3</val>
 						</knowledgeskilllevel>
 						<knowledgeskilllevel>
-							<name>Magical Theory</name>
+							<name>Magical Theory (Street)</name>
 							<group>Street</group>
 							<val>1</val>
 						</knowledgeskilllevel>
@@ -4949,7 +5062,7 @@
 						</skilllevel>
 						<skillgrouplevel>
 							<name>Conjuring</name>
-							<val>3</val>
+							<val>2</val>
 						</skillgrouplevel>
 						<skilllevel>
 							<name>Palming</name>
@@ -4962,7 +5075,7 @@
 						</skilllevel>
 						<skillgrouplevel>
 							<name>Sorcery</name>
-							<val>2</val>
+							<val>3</val>
 						</skillgrouplevel>
 						<skilllevel>
 							<name>Survival</name>
@@ -5986,6 +6099,9 @@
 							<name>Blades</name>
 						</skilllevel>
 						<skilllevel>
+							<name>Free-Fall</name>
+						</skilllevel>
+						<skilllevel>
 							<name>Gunnery</name>
 						</skilllevel>
 						<skilllevel>
@@ -6006,6 +6122,9 @@
 						</skilllevel>
 						<skilllevel>
 							<name>Blades</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Free-Fall</name>
 						</skilllevel>
 						<skilllevel>
 							<name>Heavy Weapons</name>
@@ -6147,6 +6266,9 @@
 							<name>Demolitions</name>
 						</skilllevel>
 						<skilllevel>
+							<name>Free-Fall</name>
+						</skilllevel>
+						<skilllevel>
 							<name>Perception</name>
 						</skilllevel>
 						<skilllevel>
@@ -6171,8 +6293,8 @@
 			<source>RF</source>
 			<page>82</page>
 		</module>
-<!-- End Region -->
-<!-- End Region -->
+		<!-- End Region -->
+		<!-- End Region -->
 		<!--Region Data Trails-->
 		<module>
 			<id>4b56f994-84d5-4acc-8d6f-278eae90f624</id>
@@ -6679,7 +6801,7 @@
 			<source>DT</source>
 			<page>53</page>
 		</module>
-	<!-- End Region -->
+		<!-- End Region -->
 		<!-- Region Chrome Flesh -->
 		<module>
 			<id>c211d6f3-c773-4ff7-a1a1-64b16f47757e</id>
@@ -6833,10 +6955,10 @@
 					<val>1</val>
 				</knowledgeskilllevel>
 				<nuyenamt>16000</nuyenamt>
-				<addqualities>
-					<!--todo: choose biocompatibility type-->
-					<addquality>Biocompatability (Cyberware)</addquality>
-				</addqualities>
+				<selectquality>
+					<quality>Biocompatability (Cyberware)</quality>
+					<quality>Biocompatability (Bioware)</quality>
+				</selectquality>
 			</bonus>
 			<!--todo: Special: 16,000 nuyen in augmentations-->
 			<story>$real grew up a lab rat, used by mad scientists to test augmentations. On one hand, $real essence was irreparably shredded. On the other hand free ware! Score!</story>
@@ -7032,9 +7154,8 @@
 			<source>CF</source>
 			<page>61</page>
 		</module>
-<!-- End Region -->
+		<!-- End Region -->
 		<!-- Region Hard Targets-->
-		<!--Hard Targets modules-->
 		<module>
 			<id>efdee4d0-f6fb-4d75-816e-859e85ec29d4</id>
 			<stage>Nationality</stage>
@@ -7044,7 +7165,7 @@
 			<!--<selectable/>-->
 			<versions>
 				<version>
-					<id></id>
+					<id>62a71e87-d427-4b96-93f2-33d96c6226f2</id>
 					<name>Greater Antilles</name>
 					<story>$real was born somewhere in the Greater Antilles area.</story>
 					<bonus>
@@ -7184,15 +7305,13 @@
 						<lucimi>Lucimi</lucimi>
 						<taino>Taino</taino>
 					</options>
-					<id></id>
 					<group>Language</group>
 				</knowledgeskilllevel>
 			</bonus>
-			<story></story>
+			<story/>
 			<source>HT</source>
 			<page>138</page>
 		</module>
-		<!-- Region Teen Years -->
 		<module>
 			<id>cf75cd28-5992-40d4-a9b4-837f3b3c4867</id>
 			<stage>Teen Years</stage>
@@ -7347,7 +7466,6 @@
 			<source>HT</source>
 			<page>139</page>
 		</module>
-
 		<module>
 			<id>923cf93a-7892-43b5-8b2a-9b2cfba11acd</id>
 			<stage>Real Life</stage>
@@ -7411,8 +7529,6 @@
 			<source>HT</source>
 			<page>139</page>
 		</module>
-
-
 		<module>
 			<id>469157a3-d76d-46d9-9562-031a48baa2be</id>
 			<stage>Real Life</stage>
@@ -7491,7 +7607,6 @@
 			<source>HT</source>
 			<page>200</page>
 		</module>
-
 		<module>
 			<id>67f740bd-b3a8-40d0-9590-2a3d0d90d0da</id>
 			<stage>Real Life</stage>
@@ -8278,6 +8393,1683 @@
 		</module>
 		<!-- End Region -->
 		<!-- End Region -->
+		<!-- Region Shadows in Focus: Metropole -->
+		<module>
+			<id>36b14645-f416-4598-ae10-f60f80d93155</id>
+			<stage>Nationality</stage>
+			<category>LifeModule</category>
+			<name>Amazonian</name>
+			<karma>15</karma>
+			<!--<selectable/>-->
+			<versions>
+				<version>
+					<id>f9e684bb-d7fa-4fc7-87e0-d140cc6fc64d</id>
+					<name>Metropole - Rio de Janeiro</name>
+					<story>$real was born in Rio de Janeiro.</story>
+					<bonus>
+						<attributelevel>
+							<!--Defaults to <val>1</val>-->
+							<name>CHA</name>
+						</attributelevel>
+						<skilllevel>
+							<name>Etiquette</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Swimming</name>
+						</skilllevel>
+						<freenegativequalities>-5</freenegativequalities>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
+					</bonus>
+				</version>
+				<version>
+					<id>569ef9c9-3576-4d88-973b-df184a20675b</id>
+					<name>Metropole - Centro</name>
+					<story>$real was born in Centro.</story>
+					<bonus>
+						<attributelevel>
+							<!--Defaults to <val>1</val>-->
+							<name>LOG</name>
+						</attributelevel>
+						<knowledgeskilllevel>
+							<name>Law</name>
+							<group>Academic</group>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>Paranormal Critters</name>
+							<group>Academic</group>
+						</knowledgeskilllevel>
+						<skilllevel>
+							<name>Computer</name>
+						</skilllevel>
+						<freenegativequalities>-5</freenegativequalities>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
+					</bonus>
+				</version>
+				<version>
+					<id>5129c5a5-066f-47b6-a37e-fae8d3e87471</id>
+					<name>Metropole - Sao Paolo</name>
+					<story>$real was born in Sao Paolo.</story>
+					<bonus>
+						<attributelevel>
+							<!--Defaults to <val>1</val>-->
+							<name>LOG</name>
+						</attributelevel>
+						<knowledgeskilllevel>
+							<name>[Languge]</name>
+							<group>Language</group>
+						</knowledgeskilllevel>
+						<skilllevel>
+							<name>Negotiation</name>
+						</skilllevel>
+						<freenegativequalities>-5</freenegativequalities>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
+					</bonus>
+				</version>
+				<version>
+					<id>60de16a9-72e8-48d6-aefa-e4e89b1620cb</id>
+					<name>Metropole - Sinless</name>
+					<story>$real was born in the Metropole without the luxury of a SIN.</story>
+					<bonus>
+						<attributelevel>
+							<!--Defaults to <val>1</val>-->
+							<name>AGI</name>
+						</attributelevel>
+						<knowledgeskilllevel>
+							<name>Metropole</name>
+							<group>Street</group>
+						</knowledgeskilllevel>
+					</bonus>
+				</version>
+				<version>
+					<id>25d61719-2056-437b-80b8-376f70bd7cb3</id>
+					<name>Amazonian Tribal</name>
+					<story>$real was born in the Amazonian wilds.</story>
+					<bonus>
+						<attributelevel>
+							<!--Defaults to <val>1</val>-->
+							<name>BOD</name>
+						</attributelevel>
+						<knowledgeskilllevel>
+							<name>Amazonian Rainforest</name>
+							<group>Street</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>Flora</name>
+							<group>Street</group>
+						</knowledgeskilllevel>
+						<skilllevel>
+							<name>Archery</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Survival</name>
+						</skilllevel>
+						<freenegativequalities>-8</freenegativequalities>
+						<addqualities>
+							<addquality>Uneducated</addquality>
+						</addqualities>
+					</bonus>
+				</version>
+			</versions>
+			<bonus>
+				<knowledgeskilllevel>
+					<name>Football</name>
+					<group>Interest</group>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>Amazonia</name>
+					<group>Academic</group>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>Paranormal Critters</name>
+					<group>Academic</group>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>Amazonian Portugese</name>
+					<group>Language</group>
+					<val>0</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<options>
+						<spanish>Spanish</spanish>
+						<german>German</german>
+						<japanese>Japanese</japanese>
+					</options>
+					<id>a9df9852-6f4d-423d-8251-c92a709c1476</id>
+					<group>Language</group>
+				</knowledgeskilllevel>
+			</bonus>
+			<story>$real was born in eastern South America, in the country now known as Amazonia.</story>
+			<source>SFME</source>
+			<page>31</page>
+		</module>      
+		<!-- End Region -->
+		<!-- Region Run Faster German -->
+		<!-- Region Nationality -->
+		<module>
+			<id>b13f9a0d-dcef-45f4-9462-20bef88267ce</id>
+			<stage>Nationality</stage>
+			<category>LifeModule</category>
+			<name>Allied German States (AGS)</name>
+			<karma>15</karma>
+			<!--<selectable/>-->
+			<versions>
+				<version>
+					<id>4be3aea3-b0f9-4a6c-b963-50bca3b2000e</id>
+					<name>General AGS</name>
+					<story>$real was born somwhere in the AGS.</story>
+					<bonus>
+						<attributelevel>
+							<!--Defaults to <val>1</val>-->
+							<name>LOG</name>
+						</attributelevel>
+						<skilllevel>
+							<name>Etiquette</name>
+						</skilllevel>
+						<knowledgeskilllevel>
+							<name>Knowledge: [State of Origin]</name>
+							<group>Street</group>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[any language]</name>
+							<group>Language</group>
+						</knowledgeskilllevel>
+
+						<pushtext>AGS</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
+					</bonus>
+				</version>
+				<version>
+					<id>ed89941c-b0b9-4848-adb1-4c896c4c8aa7</id>
+					<name>Frankfurt</name>
+					<story>$real was born in Frankfurt.</story>
+					<bonus>
+						<attributelevel>
+							<!--Defaults to <val>1</val>-->
+							<name>LOG</name>
+						</attributelevel>
+						<skilllevel>
+							<name>Etiquette</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Con</name>
+						</skilllevel>
+						<knowledgeskilllevel>
+							<name>Area Knowledge: Frankfurt</name>
+							<group>Street</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+
+						<pushtext>AGS</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
+					</bonus>
+				</version>
+				<version>
+					<id>b136ce6a-e150-4673-ad55-7dfa4b8f71d4</id>
+					<name>Hamburg</name>
+					<story>$real was born in Hamburg.</story>
+					<bonus>
+						<attributelevel>
+							<!--Defaults to <val>1</val>-->
+							<name>CHA</name>
+						</attributelevel>
+						<skilllevel>
+							<name>Etiquette</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Negotiation</name>
+						</skilllevel>
+						<knowledgeskilllevel>
+							<name>Area Knowledge: Hamburg</name>
+							<group>Street</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+
+						<pushtext>AGS</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
+					</bonus>
+				</version>
+				<version>
+					<id>2619742f-08c9-467e-bf27-edb7ed561f72</id>
+					<name>Rhine-Ruhr megaplex</name>
+					<story>$real was born in the Rhine-Ruhr megaplex.</story>
+					<bonus>
+						<attributelevel>
+							<!--Defaults to <val>1</val>-->
+							<name>REA</name>
+						</attributelevel>
+						<skilllevel>
+							<name>Intimidation</name>
+						</skilllevel>
+						<knowledgeskilllevel>
+							<name>Area Knowledge: Rhine-Ruhr megaplex</name>
+							<group>Street</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+
+						<pushtext>AGS</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
+					</bonus>
+				</version>
+				<version>
+					<id>bc771dda-dd49-4983-a3ab-bc0b58125593</id>
+					<name>Troll Republic Black Forest</name>
+					<story>$real was born in the Troll Republic Black Forest.</story>
+					<bonus>
+						<attributelevel>
+							<!--Defaults to <val>1</val>-->
+							<name>INT</name>
+						</attributelevel>
+						<skilllevel>
+							<name>Survival</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Perception</name>
+						</skilllevel>
+						<knowledgeskilllevel>
+							<name>Awakened Black Forest</name>
+							<group>Interest</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+
+						<pushtext>AGS</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
+					</bonus>
+				</version>
+				<version>
+					<id>6806929f-1b40-4604-a986-bff193a44a70</id>
+					<name>SINless</name>
+					<story>$real was born in the AGS without the luxury of a SIN.</story>
+					<bonus>
+						<attributelevel>
+							<!--Defaults to <val>1</val>-->
+							<name>AGI</name>
+						</attributelevel>
+						<knowledgeskilllevel>
+							<name>Area Knowledge: [City]</name>
+							<group>Interest</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+					</bonus>
+				</version>
+			</versions>
+			<bonus>
+				<skilllevel>
+					<name>Computer</name>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<name>AGS</name>
+					<group>Street</group>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>Hostory</name>
+					<group>Academic</group>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>German</name>
+					<group>Language</group>
+					<val>0</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<options>
+						<albanian>Albanian</albanian>
+						<arabic>Arabic</arabic>
+						<bosnian>Bosnian</bosnian>
+						<french>French</french>
+						<italian>Italian</italian>
+						<croatian>Croatian</croatian>
+						<dutch>Dutch</dutch>
+						<polish>Polish</polish>
+						<rumanian>Rumanian</rumanian>
+						<russian>Russian</russian>
+						<serbian>Serbian</serbian>
+						<turkish>Turkish</turkish>
+					</options>
+					<id>a7e9fb3c-bd6b-4a39-bea3-0248d323f0e5</id>
+					<group>Language</group>
+				</knowledgeskilllevel>
+			</bonus>
+			<story />
+			<source>RFG</source>
+			<page>152</page>
+		</module>      
+		<module>
+			<id>6d400c83-b914-4d0e-9af6-fc45d6534af9</id>
+			<stage>Nationality</stage>
+			<category>LifeModule</category>
+			<name>Berlin</name>
+			<karma>15</karma>
+			<!--<selectable/>-->
+			<versions>
+				<version>
+					<id>8bb2073b-a4f6-4745-acd9-55d326c57497</id>
+					<name>Corp</name>
+					<story>$real was born in Berlin being part of one of the resident corps.</story>
+					<bonus>
+						<attributelevel>
+							<!--Defaults to <val>1</val>-->
+							<name>LOG</name>
+						</attributelevel>
+						<skilllevel>
+							<name>Computer</name>
+							<val>2</val>
+						</skilllevel>
+						<skilllevel>
+							<name>Con</name>
+						</skilllevel>
+						<knowledgeskilllevel>
+							<name>AGS</name>
+							<group>Street</group>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>History</name>
+							<group>Street</group>
+						</knowledgeskilllevel>
+
+						<pushtext>Berlin</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
+					</bonus>
+				</version>
+				<version>
+					<id>401603a7-8dc0-4d03-a764-3407121b176a</id>
+					<name>Normal Citizen</name>
+					<story>$real was born in Berlin.</story>
+					<bonus>
+						<attributelevel>
+							<!--Defaults to <val>1</val>-->
+							<name>INT</name>
+						</attributelevel>
+						<skilllevel>
+							<name>Computer</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Negotiation</name>
+						</skilllevel>
+						<knowledgeskilllevel>
+							<name>AGS</name>
+							<group>Street</group>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>Berlin</name>
+							<group>Street</group>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>History</name>
+							<group>Street</group>
+						</knowledgeskilllevel>
+
+						<pushtext>Berlin</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+						</addqualities>
+					</bonus>
+				</version>
+				<version>
+					<id>fa2da626-9f24-4099-892d-6c1ae4ee0156</id>
+					<name>Anarchist</name>
+					<story>$real was born in Berlin as part of the anarchist movement inside the city.</story>
+					<bonus>
+						<attributelevel>
+							<!--Defaults to <val>1</val>-->
+							<name>BOD</name>
+						</attributelevel>
+						<skilllevel>
+							<name>Stealth</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Survival</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Unarmed Combat</name>
+						</skilllevel>
+						<knowledgeskilllevel>
+							<name>Anarchy</name>
+							<group>Street</group>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>Berlin</name>
+							<group>Street</group>
+						</knowledgeskilllevel>
+						<pushtext>Policeman</pushtext>
+						<addqualities>
+							<addquality>Distinctive Style</addquality>
+							<addquality>Prejudiced (Common, Biased)</addquality>
+						</addqualities>
+					</bonus>
+				</version>
+				<version>
+					<id>932a8030-db57-40fc-b113-3105b35b1e42</id>
+					<name>SINless</name>
+					<story>$real was born in the city of Berlin without the luxury of a SIN.</story>
+					<bonus>
+						<attributelevel>
+							<!--Defaults to <val>1</val>-->
+							<name>WIL</name>
+						</attributelevel>
+						<knowledgeskilllevel>
+							<name>Area Knowledge: Berlin</name>
+							<group>Interest</group>
+						</knowledgeskilllevel>
+					</bonus>
+				</version>
+			</versions>
+			<bonus>
+				<skilllevel>
+					<name>Etiquette</name>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<name>Berlin</name>
+					<group>Street</group>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>Anarchy</name>
+					<group>Academic</group>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>German</name>
+					<group>Language</group>
+					<val>0</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<options>
+						<albanian>Albanian</albanian>
+						<arabic>Arabic</arabic>
+						<aztlanspanish>Aztlan Spanish</aztlanspanish>
+						<japanese>Japanese</japanese>
+						<polish>Polish</polish>
+						<russian>Russian</russian>
+						<serbian>Serbian</serbian>
+						<sorbic>Sorbic</sorbic>
+						<turkish>Turkish</turkish>
+						<ukrainian>Ukrainian</ukrainian>
+						<vietnamnese>Vietnamnese</vietnamnese>
+					</options>
+					<id>2e564c16-0da6-42eb-9d18-9b4ec432d576</id>
+					<group>Language</group>
+				</knowledgeskilllevel>
+			</bonus>
+			<story />
+			<source>RFG</source>
+			<page>152</page>
+		</module>
+		<module>
+			<id>6f3306c3-ce14-4a9e-8a31-1fddc986b601</id>
+			<stage>Nationality</stage>
+			<category>LifeModule</category>
+			<name>Pomorya</name>
+			<karma>15</karma>
+			<!--<selectable/>-->
+			<versions>
+				<version>
+					<id>7562d2a4-6e86-4d85-a3c3-06ce1172fbc1</id>
+					<name>Elf</name>
+					<story>$real was born an elf in Pomorya the elven nation north east of the AGS.</story>
+					<required>
+						<oneof>
+							<metatype>Elf</metatype>
+						</oneof>
+					</required>
+					<bonus>
+						<attributelevel>
+							<!--Defaults to <val>1</val>-->
+							<name>CHA</name>
+						</attributelevel>
+						<skilllevel>
+							<name>Computer</name>
+						</skilllevel>
+						<knowledgeskilllevel>
+							<name>German</name>
+							<group>Language</group>
+							<val>3</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>Polish</name>
+							<group>Language</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>Sperethiel</name>
+							<group>Language</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>Environmental Protection</name>
+							<group>Interest</group>
+							<val>1</val>
+						</knowledgeskilllevel>
+
+						<pushtext>Non-Elves</pushtext>
+						<pushtext>Pomorya</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+							<addquality>Prejudiced (Common, Biased)</addquality>
+						</addqualities>
+					</bonus>
+				</version>
+				<version>
+					<id>61c3a73c-42a3-4b4c-88da-b1b26bc977fa</id>
+					<name>Other</name>
+					<story>$real was born in Pomorya the elven nation north east of the AGS, but not as an elf.</story>
+					<forbidden>
+						<oneof>
+							<metatype>Elf</metatype>
+						</oneof>
+					</forbidden>
+					<bonus>
+						<attributelevel>
+							<!--Defaults to <val>1</val>-->
+							<name>WIL</name>
+						</attributelevel>
+						<skilllevel>
+							<name>Computer</name>
+						</skilllevel>
+						<knowledgeskilllevel>
+							<name>German</name>
+							<group>Language</group>
+							<val>3</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>Polish</name>
+							<group>Language</group>
+							<val>3</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>Sperethiel</name>
+							<group>Language</group>
+							<val>1</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>Environmental Protection</name>
+							<group>Interest</group>
+							<val>1</val>
+						</knowledgeskilllevel>
+
+						<pushtext>Non-Pomoryans</pushtext>
+						<pushtext>Pomorya</pushtext>
+						<addqualities>
+							<addquality>SINner (National)</addquality>
+							<addquality>Prejudiced (Common, Biased)</addquality>
+						</addqualities>
+					</bonus>
+				</version>
+				<version>
+					<id>61c3a73c-42a3-4b4c-88da-b1b26bc977fa</id>
+					<name>SINless</name>
+					<story>$real was born in Pomorya the elven nation north east of the AGS, without the luxury of a SIN.</story>
+					<bonus>
+						<attributelevel>
+							<!--Defaults to <val>1</val>-->
+							<name>INT</name>
+						</attributelevel>
+						<knowledgeskilllevel>
+							<name>Polish</name>
+							<group>Language</group>
+							<val>1</val>
+						</knowledgeskilllevel>
+					</bonus>
+				</version>
+			</versions>
+			<bonus>
+				<skilllevel>
+					<name>Etiquette</name>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<name>History</name>
+					<group>Academic</group>
+					<val>1</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>Pomorya</name>
+					<group>Street</group>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>Pomoryan</name>
+					<group>Language</group>
+					<val>0</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<options>
+						<german>German</german>
+						<estonian>Estonian</estonian>
+						<finnish>Finnish</finnish>
+						<irish>Irish</irish>
+						<lativan>Lativan</lativan>
+						<lithuainian>Lithuanian</lithuainian>
+						<polish>Polish</polish>
+						<russian>Russian</russian>
+						<swedish>Swedish</swedish>
+						<sperethiel>Sperethiel</sperethiel>
+					</options>
+					<id>2e564c16-0da6-42eb-9d18-9b4ec432d576</id>
+					<group>Language</group>
+				</knowledgeskilllevel>
+			</bonus>
+			<story />
+			<source>RFG</source>
+			<page>152</page>
+		</module> 
+		<!--End Region -->
+		<!--Region Real Life-->
+		<module>
+			<id>8f5d5b06-6010-40e5-9521-aef5183c5b7b</id>
+			<stage>Real Life</stage>
+			<category>LifeModule</category>
+			<name>Tour of Duty (MET2000)</name>
+			<karma>100</karma>
+			<bonus>
+				<attributelevel>
+					<name>BOD</name>
+				</attributelevel>
+				<attributelevel>
+					<name>REA</name>
+				</attributelevel>
+				<attributelevel>
+					<name>STR</name>
+				</attributelevel>
+				<skillgrouplevel>
+					<name>Firearms</name>
+					<val>1</val>
+				</skillgrouplevel>
+				<skilllevel>
+					<name>Computer</name>
+				</skilllevel>
+				<skilllevel>
+					<name>First Aid</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Navigation</name>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<name>European Armies</name>
+					<group>Professional</group>
+					<val>4</val>
+				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>SINner (National)</addquality>
+				</addqualities>
+			</bonus>
+			<versions>
+				<version>
+					<id>56265271-2c43-4541-9fc5-f5750b9aadae</id>
+					<name>Air Force</name>
+					<bonus>
+						<skilllevel>
+							<name>Armorer</name>
+							<val>2</val>
+						</skilllevel>
+						<skilllevel>
+							<name>Blades</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Gunnery</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Pilot Aircraft</name>
+							<val>2</val>
+						</skilllevel>
+						<skilllevel>
+							<name>Survival</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Free-Fall</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Aeronautics Mechanic</name>
+						</skilllevel>
+					</bonus>
+				</version>
+				<version>
+					<id>bcc4bdfc-87bc-4808-8deb-e5f3012bc456</id>
+					<name>Army</name>
+					<bonus>
+						<skilllevel>
+							<name>Armorer</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Blades</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Heavy Weapons</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Pilot Ground Craft</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Survival</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Automotive Mechanic</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Throwing Weapons</name>
+							<val>2</val>
+						</skilllevel>
+						<skilllevel>
+							<name>Free-Fall</name>
+						</skilllevel>
+					</bonus>
+				</version>
+				<version>
+					<id>68aeefb4-29d8-42f6-9cfb-3e666517858b</id>
+					<name>Engineering Corps</name>
+					<bonus>
+						<skilllevel>
+							<name>Armorer</name>
+							<val>2</val>
+						</skilllevel>
+						<skilllevel>
+							<name>Demolitions</name>
+						</skilllevel>
+						<skillgrouplevel>
+							<name>Engineering</name>
+							<val>1</val>
+						</skillgrouplevel>
+						<skilllevel>
+							<name>Pilot Ground Craft</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Gunnery</name>
+						</skilllevel>
+						<knowledgeskilllevel>
+							<name>Military Vehicles</name>
+							<group>Professional</group>
+							<val>5</val>
+						</knowledgeskilllevel>
+					</bonus>
+				</version>
+				<version>
+					<id>8f8934fb-2dfa-438c-a059-f62cd7d92aac</id>
+					<name>Mage Corps</name>
+					<bonus>
+						<skilllevel>
+							<name>Assensing</name>
+							<val>2</val>
+						</skilllevel>
+						<skillgrouplevel>
+							<name>Conjuring</name>
+							<val>1</val>
+						</skillgrouplevel>
+						<skilllevel>
+							<name>Perception</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Arcana</name>
+						</skilllevel>
+						<skillgrouplevel>
+							<name>Sorcery</name>
+							<val>1</val>
+						</skillgrouplevel>
+					</bonus>
+				</version>
+				<version>
+					<id>32b1e26c-49a0-42d0-9008-4a76382adc39</id>
+					<!--todo: require Nurse or Medicine module from Further Education-->
+					<name>Medical Corps</name>
+					<bonus>
+						<skillgrouplevel>
+							<name>Biotech</name>
+							<val>2</val>
+						</skillgrouplevel>
+						<skilllevel>
+							<name>Survival</name>
+						</skilllevel>
+					</bonus>
+				</version>
+				<version>
+					<id>640085a9-a6a6-486a-85ef-eef950b9601c</id>
+					<name>Navy</name>
+					<bonus>
+						<skilllevel>
+							<name>Armorer</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Blades</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Gunnery</name>
+							<val>2</val>
+						</skilllevel>
+						<skilllevel>
+							<name>Pilot Watercraft</name>
+							<val>2</val>
+						</skilllevel>
+						<skilllevel>
+							<name>Survival</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Swimming</name>
+						</skilllevel>
+					</bonus>
+				</version>
+				<version>
+					<id>8dde8124-e1a1-40f5-9cfb-e903fb288348</id>
+					<name>Rigger Corps</name>
+					<bonus>
+						<skilllevel>
+							<name>Electronic Warfare</name>
+							<val>2</val>
+						</skilllevel>
+						<skilllevel>
+							<name>Gunnery</name>
+							<val>2</val>
+						</skilllevel>
+						<skilllevel>
+							<name>Pilot Aircraft</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Pilot Walker</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Pilot Ground Craft</name>
+						</skilllevel>
+					</bonus>
+				</version>
+				<version>
+					<id>957e7fae-d9ea-4b71-a81d-ccaaddc41ffd</id>
+					<name>Special Forces</name>
+					<bonus>
+						<skilllevel>
+							<name>Armorer</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Blades</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Demolitions</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Electronic Warfare</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Free-Fall</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Perception</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Pilot Ground Craft</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Pilot Watercraft</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Sneaking</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Survival</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Tracking</name>
+						</skilllevel>
+					</bonus>
+				</version>
+			</versions>
+			<story>$real was a soldier in service of the AGS-based MET2000. During their service they probably saw some of europe and worked with the most modern equipment.</story>
+			<source>RFG</source>
+			<page>164</page>
+		</module>
+		<!-- End Region -->
+		<!-- End Region -->
+		<!-- Region SotA ADL -->
+		<!--Region Formative Years-->
+		<module>
+			<id>7b009ba2-dbd6-47a2-a13f-28709a625374</id>
+			<stage>Formative Years</stage>
+			<category>LifeModule</category>
+			<name>Arnachist Brat</name>
+			<karma>40</karma>
+			<bonus>
+				<attributelevel>
+					<name>BOD</name>
+					<val>1</val>
+				</attributelevel>
+				<attributelevel>
+					<name>REA</name>
+					<val>1</val>
+				</attributelevel>
+				<skilllevel>
+					<name>Running</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Sneaking</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Survival</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Unarmed Combat</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Perception</name>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<group>Street</group>
+					<name>Anarchy</name>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<group>Street</group>
+					<name>[Anarchist City]</name>
+				</knowledgeskilllevel>
+				<pushtext>Corp-Citizens</pushtext>
+				<addqualities>
+					<addquality>Prejudiced (Common, Outspoken)</addquality>
+					<addquality>Uneducated</addquality>
+					<addqiality>Toughness</addqiality>
+				</addqualities>
+			</bonus>
+			<story>$real was brought up consistently exposed to the Anarchist's way of seeing the world.</story>
+			<source>SAG</source>
+			<page>148</page>
+		</module>
+		<module>
+			<id>66b0b6d9-1afb-4218-92b9-54d529905639</id>
+			<stage>Formative Years</stage>
+			<category>LifeModule</category>
+			<name>Life on the Coast</name>
+			<karma>40</karma>
+			<bonus>
+				<attributelevel>
+					<name>BOD</name>
+					<val>1</val>
+				</attributelevel>
+				<attributelevel>
+					<name>STR</name>
+					<val>1</val>
+				</attributelevel>
+				<skillgrouplevel>
+					<name>Outdoors</name>
+				</skillgrouplevel>
+				<skilllevel>
+					<name>Pilot Watercraft</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Swimming</name>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<group>Professional</group>
+					<name>Fishing</name>
+				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>Uneducated</addquality>
+					<addqiality>Toughness</addqiality>
+				</addqualities>
+			</bonus>
+			<story>$real was brought up in one of the few small coastal towns around the world.</story>
+			<source>SAG</source>
+			<page>148</page>
+		</module>
+		<module>
+			<id>99b853b4-62f5-40ba-9d61-e6f853f6d0c1</id>
+			<stage>Formative Years</stage>
+			<category>LifeModule</category>
+			<name>Life by the Toxic Sea</name>
+			<karma>40</karma>
+			<bonus>
+				<attributelevel>
+					<name>BOD</name>
+					<val>1</val>
+				</attributelevel>
+				<attributelevel>
+					<name>INT</name>
+					<val>1</val>
+				</attributelevel>
+				<skillgrouplevel>
+					<name>Close Combat</name>
+				</skillgrouplevel>
+				<skilllevel>
+					<name>Perception</name>
+					<val>2</val>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<group>Street</group>
+					<name>Toxic Critters</name>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<group>Street</group>
+					<name>Toxic Spirits</name>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>Uneducated</addquality>
+					<addqiality>Toughness</addqiality>
+					<addqiality>Blighted (24 Months)</addqiality>
+					<addqiality>Perceptive</addqiality>
+				</addqualities>
+			</bonus>
+			<story>$real was brought up in proximity to of the world's many blighted coasts.</story>
+			<source>SAG</source>
+			<page>148</page>
+		</module>
+		<module>
+			<id>169485e7-4598-44c6-816a-d9282c18c9a0</id>
+			<stage>Formative Years</stage>
+			<category>LifeModule</category>
+			<name>Migratory Background</name>
+			<karma>40</karma>
+			<bonus>
+				<attributelevel>
+					<name>BOD</name>
+					<val>1</val>
+				</attributelevel>
+				<attributelevel>
+					<name>WIL</name>
+					<val>1</val>
+				</attributelevel>
+				<skilllevel>
+					<name>Etiquette</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Running</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Unarmed Combat</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Perception</name>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<group>Street</group>
+					<name>Area Knowledge: [City]</name>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<addqualities>
+					<addquality>Driven</addquality>
+					<addqiality>Bilingual</addqiality>
+				</addqualities>
+			</bonus>
+			<story>$real and their family may have been war refugees or hoping for a better life elsewhere, as they where leaving their home country. You are part of the next generation, brought in between two cultures.</story>
+			<source>SAG</source>
+			<page>148</page>
+		</module>
+		<module>
+			<id>32f753ce-0696-45e2-8a65-9f62d583feb9</id>
+			<stage>Formative Years</stage>
+			<category>LifeModule</category>
+			<name>Religious Upbringing</name>
+			<karma>40</karma>
+			<bonus>
+				<attributelevel>
+					<name>WIL</name>
+					<val>2</val>
+				</attributelevel>
+				<skilllevel>
+					<name>Artisan</name>
+					<val>2</val>
+				</skilllevel>
+				<skilllevel>
+					<name>Perception</name>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<group>Academic</group>
+					<name>[specific Religion]</name>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<group>Professional</group>
+					<name>[Prayers/Meditation]</name>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<group>Language</group>
+					<name>[Religious]</name>
+				</knowledgeskilllevel>
+				<pushtext>Members of different Religions</pushtext>
+				<addqualities>
+					<addquality>Prejudiced (Common, Biased)</addquality>
+				</addqualities>
+			</bonus>
+			<story>$real was brought up in a strictly religious family.</story>
+			<source>SAG</source>
+			<page>148</page>
+		</module>
+		<!-- End Region -->
+		<!--Region Teen Years-->
+		<module>
+			<id>746cde0e-1ca3-46ae-96b6-cb3971656673</id>
+			<stage>Teen Years</stage>
+			<category>LifeModule</category>
+			<name>Arnacho-Teen</name>
+			<karma>50</karma>
+			<bonus>
+				<attributelevel>
+					<name>BOD</name>
+				</attributelevel>
+				<attributelevel>
+					<name>REA</name>
+				</attributelevel>
+				<skilllevel>
+					<name>Gymnastics</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Pilot Ground Craft</name>
+				</skilllevel>
+				<skilllevel>
+					<name>First Aid</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Industrial Mechanics</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Clubs</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Survival</name>
+					<spec>Urban</spec>
+				</skilllevel>
+				<skilllevel>
+					<name>Negotiation</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Unarmed Combat</name>
+					<val>2</val>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<name>Anarchy</name>
+					<group>Academic</group>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>Agriculture</name>
+					<group>Professional</group>
+					<spec>Urban Agriculture</spec>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>Politics</name>
+					<group>Professional</group>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>[anarchist City]</name>
+					<group>Street</group>
+				</knowledgeskilllevel>
+				<pushtext>Policeman</pushtext>
+				<addqualities>
+					<addquality>Uncouth</addquality>
+					<addquality>Prejudiced (Common, Outspoken)</addquality>
+				</addqualities>
+			</bonus>
+			<story>$real spent thier teen years living the anarchist life.</story>
+			<source>SAG</source>
+			<page>150</page>
+		</module>
+		<module>
+			<id>feaaa9a3-774e-4a6c-9a83-968da043c06d</id>
+			<stage>Teen Years</stage>
+			<category>LifeModule</category>
+			<name>Life on the Coast</name>
+			<karma>50</karma>
+			<bonus>
+				<attributelevel>
+					<name>BOD</name>
+				</attributelevel>
+				<attributelevel>
+					<name>STR</name>
+				</attributelevel>
+				<skilllevel>
+					<name>Blades</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Pilot Watercraft</name>
+					<val>2</val>
+				</skilllevel>
+				<skilllevel>
+					<name>Swimming</name>
+					<val>2</val>
+				</skilllevel>
+				<skilllevel>
+					<name>Nautical Mechanic</name>
+					<val>2</val>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<name>Anarchy</name>
+					<group>Academic</group>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>Fishing</name>
+					<group>Professional</group>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>Interest</name>
+					<group>[Any]</group>
+				</knowledgeskilllevel>
+			</bonus>
+			<story>$real spent his teen years living in a small coastal town, working in the fishing industry.</story>
+			<source>SAG</source>
+			<page>150</page>
+		</module>
+		<module>
+			<id>f0523ed1-9d9b-48fe-957c-1f64079d4e41</id>
+			<stage>Teen Years</stage>
+			<category>LifeModule</category>
+			<name>Life by the toxic sea</name>
+			<karma>50</karma>
+			<bonus>
+				<attributelevel>
+					<name>WIL</name>
+				</attributelevel>
+				<attributelevel>
+					<name>INT</name>
+				</attributelevel>
+				<skillgrouplevel>
+					<name>Engineering</name>
+				</skillgrouplevel>
+				<skillgrouplevel>
+					<name>Close Combat</name>
+				</skillgrouplevel>
+				<skilllevel>
+					<name>First Aid</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Hardware</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Pistols</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Survival</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Perception</name>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<name>Ecological Groups</name>
+					<group>Street</group>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>Shipping Companies</name>
+					<group>Street</group>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>Smuggling Routes</name>
+					<group>Street</group>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>Toxic Critters</name>
+					<group>Street</group>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>Toxic Spirits</name>
+					<group>Street</group>
+				</knowledgeskilllevel>
+				<addqualities>
+					<addqiality>Blighted (24 Months)</addqiality>
+				</addqualities>
+			</bonus>
+			<story>$real spent his teen years helping his small community at the toxic coast.</story>
+			<source>SAG</source>
+			<page>150</page>
+		</module>
+		<module>
+			<id>cb3be5ba-587f-4009-a19b-0b6b40ab6bda</id>
+			<stage>Teen Years</stage>
+			<category>LifeModule</category>
+			<name>Religious School</name>
+			<karma>50</karma>
+			<bonus>
+				<attributelevel>
+					<name>WIL</name>
+				</attributelevel>
+				<attributelevel>
+					<name>INT</name>
+				</attributelevel>
+				<skillgrouplevel>
+					<name>Athletics</name>
+				</skillgrouplevel>
+				<skilllevel>
+					<name>Arcana</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Artisan</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Con</name>
+					<val>2</val>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<name>[Any I]</name>
+					<group>Academic</group>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>[Any II]</name>
+					<group>Academic</group>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>[specific Religion]</name>
+					<group>Academic</group>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>[Prayers/Meditation]</name>
+					<group>Professional</group>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>[Religious]</name>
+					<group>Language</group>
+				</knowledgeskilllevel>
+			</bonus>
+			<story>$real spent his teen years in a private, religious school.</story>
+			<source>SAG</source>
+			<page>151</page>
+		</module>
+		<!-- End Region -->
+		<!-- Region Further Education -->
+		<module>
+			<id>256848e3-c5eb-4e5f-b8b1-85efcc52d596</id>
+			<stage>Further Education</stage>
+			<category>LifeModule</category>
+			<name>Religious Study</name>
+			<karma>80</karma>
+			<bonus>
+				<attributelevel>
+					<name>LOG</name>
+				</attributelevel>
+				<attributelevel>
+					<name>INT</name>
+				</attributelevel>
+				<attributelevel>
+					<name>CHA</name>
+				</attributelevel>
+			</bonus>
+			<versions>
+				<version>
+					<id>42504898-5de8-45f9-8577-a3187cff17ab</id>
+					<name>Priestly Formation</name>
+					<bonus>
+						<skilllevel>
+							<name>Intimidation</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Negotiation</name>
+							<val>2</val>
+						</skilllevel>
+						<skilllevel>
+							<name>Con</name>
+							<val>2</val>
+						</skilllevel>
+						<knowledgeskilllevel>
+							<name>Magic Theory</name>
+							<group>Academic</group>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[specific Religion]</name>
+							<group>Academic</group>
+							<val>3</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[Philosophy/Religion I]</name>
+							<group>Academic</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[Philosophy/Religion II]</name>
+							<group>Academic</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[Prayers/Meditation]</name>
+							<group>Professional</group>
+							<val>3</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[Religious]</name>
+							<group>Language</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[Any]</name>
+							<group>Language</group>
+							<val>3</val>
+						</knowledgeskilllevel>
+					</bonus>
+				</version>
+				<version>
+					<id>0ccd44f1-90d1-4b51-9964-9bb7fce0d689</id>
+					<name>Monastery Residence</name>
+					<bonus>
+						<skilllevel>
+							<name>Arcana</name>
+						</skilllevel>
+						<skilllevel>
+							<name>First Aid</name>
+							<val>3</val>
+						</skilllevel>
+						<skilllevel>
+							<name>Medicine</name>
+							<val>2</val>
+						</skilllevel>
+						<skilllevel>
+							<name>Instruction</name>
+							<val>2</val>
+						</skilllevel>
+						<knowledgeskilllevel>
+							<name>Magic Theory</name>
+							<group>Academic</group>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[specific Religion]</name>
+							<group>Academic</group>
+							<val>3</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[Prayers/Meditation]</name>
+							<group>Professional</group>
+							<val>3</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[Religious]</name>
+							<group>Language</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+					</bonus>
+				</version>
+				<version>
+					<id>deb3d65a-ab9e-4da7-978f-917f8cf81485</id>
+					<name>Religious College</name>
+					<bonus>
+						<skilllevel>
+							<name>Arcana</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Negotiation</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Con</name>
+						</skilllevel>
+						<knowledgeskilllevel>
+							<name>Magic Theory</name>
+							<group>Academic</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[specific Religion]</name>
+							<group>Academic</group>
+							<val>3</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[Philosophy/Religion I]</name>
+							<group>Academic</group>
+							<val>3</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[Philosophy/Religion II]</name>
+							<group>Academic</group>
+							<val>3</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[Prayers/Meditation]</name>
+							<group>Professional</group>
+							<val>3</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[Religious]</name>
+							<group>Language</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+					</bonus>
+				</version>
+				<version>
+					<id>9170ccaa-0e4c-4ec4-b6be-06fc4b73137c</id>
+					<name>Neo-Pagan Education</name>
+					<bonus>
+						<skilllevel>
+							<name>Arcana</name>
+							<val>3</val>
+						</skilllevel>
+						<skilllevel>
+							<name>First Aid</name>
+							<val>2</val>
+						</skilllevel>
+						<skilllevel>
+							<name>Medicine</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Perception</name>
+						</skilllevel>
+						<knowledgeskilllevel>
+							<name>Magic Theory</name>
+							<group>Academic</group>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[specific Religion]</name>
+							<group>Academic</group>
+							<val>3</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[Prayers/Meditation]</name>
+							<group>Professional</group>
+							<val>3</val>
+						</knowledgeskilllevel>
+						<knowledgeskilllevel>
+							<name>[Religious]</name>
+							<group>Language</group>
+							<val>2</val>
+						</knowledgeskilllevel>
+					</bonus>
+				</version>
+			</versions>
+			<story>$real achieved their higher education via their religiou community.</story>
+			<source>RF</source>
+			<page>72</page>
+		</module>
+		<module>
+			<id>7eef2cb1-e0f7-4e99-8fdb-92bd453f1a7c</id>
+			<stage>Further Education</stage>
+			<category>LifeModule</category>
+			<name>Craft Apprenticeship</name>
+			<karma>55</karma>
+			<bonus>
+				<attributelevel>
+					<name>LOG</name>
+				</attributelevel>
+				<attributelevel>
+					<name>INT</name>
+				</attributelevel>
+			</bonus>
+			<versions>
+				<version>
+					<id>040183f6-607b-4b81-9999-d9600458090c</id>
+					<name>Creative</name>
+					<bonus>
+						<skilllevel>
+							<name>Forgery</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Artisan</name>
+							<val>2</val>
+							<spec>[Profession]</spec>
+						</skilllevel>
+						<knowledgeskilllevel>
+							<name>[Profession]</name>
+							<group>Professional</group>
+							<val>4</val>
+						</knowledgeskilllevel>
+					</bonus>
+				</version>
+				<version>
+					<id>c9d9d7dd-ffef-4e04-aa65-492383010acb</id>
+					<name>Practical</name>
+					<bonus>
+						<skilllevel>
+							<name>First Aid</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Artisan</name>
+							<val>2</val>
+							<spec>[Profession]</spec>
+						</skilllevel>
+						<knowledgeskilllevel>
+							<name>[Profession]</name>
+							<group>Professional</group>
+							<val>4</val>
+						</knowledgeskilllevel>
+					</bonus>
+				</version>
+				<version>
+					<id>21026fc6-f943-4097-a76c-1444b4be19ce</id>
+					<name>Industrial</name>
+					<bonus>
+						<skilllevel>
+							<name>Hardware</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Industrial Mechanic</name>
+							<val>2</val>
+							<spec>[Profession]</spec>
+						</skilllevel>
+						<knowledgeskilllevel>
+							<name>[Profession]</name>
+							<group>Professional</group>
+							<val>4</val>
+						</knowledgeskilllevel>
+					</bonus>
+				</version>
+				<version>
+					<id>608db28c-3df0-4b64-b100-97d2c3eec85a</id>
+					<name>Engineering</name>
+					<bonus>
+						<skilllevel>
+							<name>Computer</name>
+						</skilllevel>
+						<!-- TODO: Skill Selection Automotive, Nautical or Aeronautics Mechanic -->
+						<knowledgeskilllevel>
+							<name>[Profession]</name>
+							<group>Professional</group>
+							<val>4</val>
+						</knowledgeskilllevel>
+					</bonus>
+				</version>
+			</versions>
+			<story>$real achieved their higher education via their religiou community.</story>
+			<source>RF</source>
+			<page>72</page>
+		</module>
+		<!-- End Region -->
+		<!--Region Real Life-->
+		<!-- End Region -->
+		<!-- End Region -->
 	</modules>
 	<storybuilder>
 		<macros>
@@ -8287,15 +10079,21 @@
 					<a2>A is for Aztechnology</a2>
 					<c>C is for Celedyr</c>
 					<d>D is for Dunkelzahn</d>
+					<d2>D is for DocWagon</d2>
 					<e>E is for Evo</e>
 					<h>H is for Horizon</h>
 					<h2>H is for Hualpa</h2>
+					<l>L is for Lofwyr</l>
+					<l2>L is for LoneStar</l2>
 					<m>M is for Mitsuhama</m>
-					<n>N is for Neonet</n>
+					<m2>M is for Monobe</m2>
+					<n>N is for NeoNET</n>
+					<p>P is for Proteus</p>
 					<r>R is for Renraku</r>
 					<s>S is for Saeder-Krupp</s>
 					<s2>S is for Shiawase</s2>
 					<w>W is for Wuxing</w>
+					<z>Z is for Zurich-Orbital</z>
 				</random>
 			</alphabet>
 			<sticky>
@@ -8315,7 +10113,7 @@
 				<random>
 					<corp>corporate board meetings</corp>
 					<ppv>paid porn sites</ppv>
-				</random>.
+				</random>
 			</matrixhide>
 			<slave>
 				<random>
@@ -8335,7 +10133,7 @@
 			<shadowchild>
 				<random>
 					<gun>which end of a gun bullets come out of</gun>
-					<mage>why and how one geek mages</mage>
+					<mage>why and how one geeks mages</mage>
 					<s1>how to shoot straight</s1>
 					<s2>how to conserve ammo</s2>
 					<s3>why one must never deal with a dragon</s3>
@@ -8358,7 +10156,7 @@
 				<random>
 					<nazi>one of two elf supremacist nations</nazi>
 					<prop>a magical utopia founded by elves, for elves</prop>
-					<conspiracy>a fascist dictatorship run by undying tyrants who predate written histor</conspiracy>
+					<conspiracy>a fascist dictatorship run by undying tyrants who predate written history</conspiracy>
 				</random>
 			</tirdesc>
 			<farmdesc>
@@ -8390,7 +10188,7 @@
 					<e>Evo</e>
 					<h>Horizon</h>
 					<m>Mitsuhama</m>
-					<n>Neonet</n>
+					<n>NeoNET</n>
 					<r>Renraku</r>
 					<s>Saeder-Krupp</s>
 					<s2>Shiawase</s2>
@@ -8409,7 +10207,7 @@
 					<e>Evo</e>
 					<h>Horizon</h>
 					<m>Mitsuhama</m>
-					<n>Neonet</n>
+					<n>NeoNET</n>
 					<r>Renraku</r>
 					<s>Saeder-Krupp</s>
 					<s2>Shiawase</s2>
@@ -8508,6 +10306,7 @@
 			<flee>
 				<random>
 					<feds>the feds</feds>
+					<god>the Grid Overwatch Division</god>
 					<corp>$RMEGA corporate security forces</corp>
 					<riaa>RIAA Anti-Piracy Forces</riaa>
 				</random>
@@ -8536,7 +10335,7 @@
 					<aztech>Aztechnology</aztech>
 					<evo>EVO</evo>
 					<horizon>Horizon</horizon>
-					<neonet>Neonet</neonet>
+					<neonet>NeoNET</neonet>
 					<mct>Mitsuhama</mct>
 					<renraku>Renraku</renraku>
 					<sk>Saeder-Krupp</sk>
@@ -8550,7 +10349,7 @@
 					<aztech>Aztechnology</aztech>
 					<evo>EVO</evo>
 					<horizon>Horizon</horizon>
-					<neonet>Neonet</neonet>
+					<neonet>NeoNET</neonet>
 					<mct>Mitsuhama</mct>
 					<renraku>Renraku</renraku>
 					<sk>Saeder-Krupp</sk>
@@ -8562,7 +10361,7 @@
 				<random>
 					<spring>Spring</spring>
 					<summer>Summer</summer>
-					<atum>Atum</atum>
+					<atum>Autumn</atum>
 					<winter>Winter</winter>
 				</random>
 			</season>

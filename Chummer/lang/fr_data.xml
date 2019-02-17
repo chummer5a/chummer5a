@@ -1834,7 +1834,7 @@
       </power>
       <power>
         <id>224f6093-af49-4fd4-a30a-b0c38673ffb7</id>
-        <name>Substance Extrusion</name>
+        <name>Secretion/Substance Extrusion</name>
         <translate>Projection de substance</translate>
         <page>239</page>
       </power>
@@ -6788,7 +6788,7 @@
         <page>333</page>
       </gear>
       <gear>
-        <id>ce63e6c6-409a-49dd-bdcc-f8efb2f9dadf</id>
+        <id>e140b671-dc22-429d-b12a-dfbf46951049</id>
         <name>Ultrasound</name>
         <translate>Senseur à ultrasons</translate>
         <page>333</page>
@@ -7664,7 +7664,7 @@
         <page>193</page>
       </gear>
       <gear>
-        <id>2c98be77-22d7-4116-90fc-e8489944578d</id>
+        <id>ce33ea7f-b406-45e2-a01e-beba431083c2</id>
         <name>Detonator, Blasting Cap</name>
         <translate>Detonator, Blasting Cap</translate>
         <page>436</page>
@@ -9070,471 +9070,471 @@
         <name>Attribute</name>
         <translate>Attribut</translate>
         <page>Ajuste la valeur d'un des Attributs du personnage. Les nombres positifs
-					augmentent un attribut. Les nombres négatifs diminuent un attribut. Sélectionnez
-					un attribut à modifier en cliquant sur le bouton de sélection de valeur. Valeur
-					ajuste la valeur courante de l'attribut. Minimum ajuste la valeur minimale de
-					métatype de l'attribut. Maximum ajuste la valeur maximale de métatype de
-					l'attribut. La valeur maximale augmentée de métatype est automatiquement ajustée
-					par rapport au maximum de métatype. Les champs peuvent être laissés à 0 si vous
-					ne voulez pas affecter cet aspect particulier de l'attribut. </page>
+          augmentent un attribut. Les nombres négatifs diminuent un attribut. Sélectionnez
+          un attribut à modifier en cliquant sur le bouton de sélection de valeur. Valeur
+          ajuste la valeur courante de l'attribut. Minimum ajuste la valeur minimale de
+          métatype de l'attribut. Maximum ajuste la valeur maximale de métatype de
+          l'attribut. La valeur maximale augmentée de métatype est automatiquement ajustée
+          par rapport au maximum de métatype. Les champs peuvent être laissés à 0 si vous
+          ne voulez pas affecter cet aspect particulier de l'attribut. </page>
       </improvement>
       <improvement>
         <id>conditionmonitorphysical</id>
         <name>Condition Monitor, Physical</name>
         <translate>Moniteur de condition, physique</translate>
         <page>Ajuste le nombre de cases que le personnage possède dans son moniteur de
-					condition physique. Les nombres positifs augmentent le nombre de cases du
-					moniteur de condition. Les nombres négatifs réduisent le nombre de cases du
-					moniteur de condition.</page>
+          condition physique. Les nombres positifs augmentent le nombre de cases du
+          moniteur de condition. Les nombres négatifs réduisent le nombre de cases du
+          moniteur de condition.</page>
       </improvement>
       <improvement>
         <id>conditionmonitorstun</id>
         <name>Condition Monitor, Stun</name>
         <translate>Moniteur de condition, étourdissant</translate>
         <page>Ajuste le nombre de cases que le personnage possède dans son moniteur de
-					condition étourdissant. Les nombres positifs augmentent le nombre de cases du
-					moniteur de condition. Les nombres négatifs réduisent le nombre de cases du
-					moniteur de condition.</page>
+          condition étourdissant. Les nombres positifs augmentent le nombre de cases du
+          moniteur de condition. Les nombres négatifs réduisent le nombre de cases du
+          moniteur de condition.</page>
       </improvement>
       <improvement>
         <id>conditionmonitorthreshold</id>
         <name>Condition Monitor, Threshold</name>
         <translate>Moniteur de condition, seuil</translate>
         <page>Ajuste le nombre de cases entre chaque seuil des moniteurs de condition. Les
-					nombres positifs augmentent le nombre de cases entre chaque seuil. Les nombres
-					négatifs réduisent le nombre de cases entre chaque seuil.</page>
+          nombres positifs augmentent le nombre de cases entre chaque seuil. Les nombres
+          négatifs réduisent le nombre de cases entre chaque seuil.</page>
       </improvement>
       <improvement>
         <id>conditionmonitoroffset</id>
         <name>Condition Monitor, Threshold Offset</name>
         <translate>Moniteur de condition, décalage du premier seuil</translate>
         <page>Ajuste le nombre de cases entre le début des moniteurs de condition et le
-					premier seuil. Les nombres positifs augmentent la position de départ du premier
-					seuil. Les nombres négatifs réduisent la position de départ du premier
-					seuil.</page>
+          premier seuil. Les nombres positifs augmentent la position de départ du premier
+          seuil. Les nombres négatifs réduisent la position de départ du premier
+          seuil.</page>
       </improvement>
       <improvement>
         <id>livingpersonabiofeedback</id>
         <name>Living Persona, Biofeedback Filter</name>
         <translate>Persona incarné, filtre de biofeedback</translate>
         <page>Ajuste le niveau du filtre de biofeedback du persona incarné par la valeur
-					saisie. Les nombres positifs augmentent le niveau du filtre de biofeedback. Les
-					nombres négatifs réduisent le niveau du filtre de biofeedback. Pas d'effet sur
-					les peronnages qui n'ont pas de persona incarné.</page>
+          saisie. Les nombres positifs augmentent le niveau du filtre de biofeedback. Les
+          nombres négatifs réduisent le niveau du filtre de biofeedback. Pas d'effet sur
+          les peronnages qui n'ont pas de persona incarné.</page>
       </improvement>
       <improvement>
         <id>livingpersonafirewall</id>
         <name>Living Persona, Firewall</name>
         <translate>Persona incarné, firewall</translate>
         <page>Ajuste le niveau du firewall du persona incarné par la valeur saisie. Les
-					nombres positifs augmentent le niveau du firewall. Les nombres négatifs
-					réduisent le niveau du firewall. Pas d'effet sur les peronnages qui n'ont pas de
-					persona incarné.</page>
+          nombres positifs augmentent le niveau du firewall. Les nombres négatifs
+          réduisent le niveau du firewall. Pas d'effet sur les peronnages qui n'ont pas de
+          persona incarné.</page>
       </improvement>
       <improvement>
         <id>livingpersonaresponse</id>
         <name>Living Persona, Response</name>
         <translate>Persona incarné, réponse</translate>
         <page>Ajuste le niveau de réponse du persona incarné par la valeur saisie. Les
-					nombres positifs augmentent le niveau de réponse. Les nombres négatifs réduisent
-					le niveau de réponse. Pas d'effet sur les peronnages qui n'ont pas de persona
-					incarné.</page>
+          nombres positifs augmentent le niveau de réponse. Les nombres négatifs réduisent
+          le niveau de réponse. Pas d'effet sur les peronnages qui n'ont pas de persona
+          incarné.</page>
       </improvement>
       <improvement>
         <id>livingpersonasignal</id>
         <name>Living Persona, Signal</name>
         <translate>Persona incarné, signal</translate>
         <page>Ajuste le niveau de signal du persona incarné par la valeur saisie. Les
-					nombres positifs augmentent le niveau de signal. Les nombres négatifs réduisent
-					le niveau de signal. Pas d'effet sur les peronnages qui n'ont pas de persona
-					incarné.</page>
+          nombres positifs augmentent le niveau de signal. Les nombres négatifs réduisent
+          le niveau de signal. Pas d'effet sur les peronnages qui n'ont pas de persona
+          incarné.</page>
       </improvement>
       <improvement>
         <id>livingpersonasystem</id>
         <name>Living Persona, System</name>
         <translate>Persona incarné, système</translate>
         <page>Ajuste le niveau du système du persona incarné par la valeur saisie. Les
-					nombres positifs augmentent le niveau du système. Les nombres négatifs réduisent
-					le niveau du système. Pas d'effet sur les peronnages qui n'ont pas de persona
-					incarné.</page>
+          nombres positifs augmentent le niveau du système. Les nombres négatifs réduisent
+          le niveau du système. Pas d'effet sur les peronnages qui n'ont pas de persona
+          incarné.</page>
       </improvement>
       <improvement>
         <id>specificskill</id>
         <name>Skill</name>
         <translate>Compétence</translate>
         <page>Ajuste la valeur d'une des compétences du personnage par la valeur entrée. Les
-					nombres positifs augmentent la compétence. Les nombres négatifs réduisent la
-					compétence. Sélectionnez une compétence en cliquant sur le bouton de sélection
-					de valeur. Le modificateur peut être appliqué à l'indice de la compétence ou
-					comme modificateur à la réserve de dés.</page>
+          nombres positifs augmentent la compétence. Les nombres négatifs réduisent la
+          compétence. Sélectionnez une compétence en cliquant sur le bouton de sélection
+          de valeur. Le modificateur peut être appliqué à l'indice de la compétence ou
+          comme modificateur à la réserve de dés.</page>
       </improvement>
       <improvement>
         <id>skillcategory</id>
         <name>Skills in Category</name>
         <translate>Compétences d'une catégorie</translate>
         <page>Ajuste la valeur de toutes les compétences d'une catégorie par la valeur
-					entrée. Les nombres positifs augmentent les compétences. Les nombres négatifs
-					réduisent les compétences. Sélectionnez une catégorie de compétences en cliquant
-					sur le bouton de sélection de valeur. Le modificateur peut être appliqué a
-					l'indice des compétences ou comme modificateur à la réserve de dés.</page>
+          entrée. Les nombres positifs augmentent les compétences. Les nombres négatifs
+          réduisent les compétences. Sélectionnez une catégorie de compétences en cliquant
+          sur le bouton de sélection de valeur. Le modificateur peut être appliqué a
+          l'indice des compétences ou comme modificateur à la réserve de dés.</page>
       </improvement>
       <improvement>
         <id>skillgroup</id>
         <name>Skills in Group</name>
         <translate>Compétences d'un groupe</translate>
         <page>Ajuste la valeur de toutes les compétences d'un groupe de compétences par la
-					valeur entrée. Les nombres positifs augmentent les compétences. Les nombres
-					négatifs réduisent les compétences. Sélectionnez un groupe de compétences en
-					cliquant sur le bouton de sélection de valeur. Le modificateur peut être
-					appliqué a l'indice des compétences ou comme modificateur à la réserve de
-					dés.</page>
+          valeur entrée. Les nombres positifs augmentent les compétences. Les nombres
+          négatifs réduisent les compétences. Sélectionnez un groupe de compétences en
+          cliquant sur le bouton de sélection de valeur. Le modificateur peut être
+          appliqué a l'indice des compétences ou comme modificateur à la réserve de
+          dés.</page>
       </improvement>
       <improvement>
         <id>skillattribute</id>
         <name>Skills linked to Attribute</name>
         <translate>Compétences liées à un attribut</translate>
         <page>Ajuste la valeur de toutes les compétences liées à un attribut par la valeur
-					entrée. Les nombres positifs augmentent les compétences. Les nombres négatifs
-					réduisent les compétences. Sélectionnez un attribut en cliquant sur le bouton de
-					sélection de valeur. Le modificateur peut être appliqué a l'indice des
-					compétences ou comme modificateur à la réserve de dés.</page>
+          entrée. Les nombres positifs augmentent les compétences. Les nombres négatifs
+          réduisent les compétences. Sélectionnez un attribut en cliquant sur le bouton de
+          sélection de valeur. Le modificateur peut être appliqué a l'indice des
+          compétences ou comme modificateur à la réserve de dés.</page>
       </improvement>
       <improvement>
         <id>armorb</id>
         <name>Armor, Ballistic</name>
         <translate>Armure, balistique</translate>
         <page>Ajuste la valeur d'armure balistique du personnage par la valeur entrée. Les
-					nombres positifs augmentent l'armure balistique. Les nombres négatifs réduisent
-					l'armure balistique.</page>
+          nombres positifs augmentent l'armure balistique. Les nombres négatifs réduisent
+          l'armure balistique.</page>
       </improvement>
       <improvement>
         <id>armori</id>
         <name>Armor, Impact</name>
         <translate>Armure, impact</translate>
         <page>Ajuste la valeur d'armure d'impact du personnage par la valeur entrée. Les
-					nombres positifs augmentent l'armure d'impact. Les nombres négatifs réduisent
-					l'armure d'impact.</page>
+          nombres positifs augmentent l'armure d'impact. Les nombres négatifs réduisent
+          l'armure d'impact.</page>
       </improvement>
       <improvement>
         <id>reach</id>
         <name>Reach</name>
         <translate>Allonge</translate>
         <page>Ajuste l'allonge du personnage par la valeur entrée. Les nombres positifs
-					augmentent l'allonge. Les nombres négatifs réduisent l'allonge.</page>
+          augmentent l'allonge. Les nombres négatifs réduisent l'allonge.</page>
       </improvement>
       <improvement>
         <id>unarmeddv</id>
         <name>Unarmed DV</name>
         <translate>Combat à mains nues, VD</translate>
         <page>Ajuste la VD des attaques à mains nues du personnage par la valeur entrée. Les
-					nombres positifs augmentent la VD. Les nombres négatifs réduisent la VD.</page>
+          nombres positifs augmentent la VD. Les nombres négatifs réduisent la VD.</page>
       </improvement>
       <improvement>
         <id>unarmeddvphysical</id>
         <name>Unarmed DV Physical</name>
         <translate>Combat à mains nues, dommages physiques</translate>
         <page>Toutes les attaques à mains nues du personnage font des dommages physiques au
-					lieu d'étourdissant.</page>
+          lieu d'étourdissant.</page>
       </improvement>
       <improvement>
         <id>unarmedap</id>
         <name>Unarmed AP</name>
         <translate>Combat à mains nues, PA</translate>
         <page>Ajuste la PA des attaques à mains nues du personnage par la valeur entrée. Les
-					nombres positifs augmentent la PA. Les nombres négatifs réduisent la PA.</page>
+          nombres positifs augmentent la PA. Les nombres négatifs réduisent la PA.</page>
       </improvement>
       <improvement>
         <id>initiative</id>
         <name>Initiative</name>
         <translate>Initiative</translate>
         <page>Ajuste l'initiative du personnage par la valeur entrée. Les nombres positifs
-					augmentent l'initiative. Les nombres négatifs réduisent l'initiative.</page>
+          augmentent l'initiative. Les nombres négatifs réduisent l'initiative.</page>
       </improvement>
       <improvement>
         <id>initiativepassadd</id>
         <name>Initiative Passes</name>
         <translate>Passes d'initiative</translate>
         <page>Ajuste le nombre de passes d'initiative du personnage par la valeur entrée.
-					Les nombres positifs augmentent le nombre de PI. Les nombres négatifs réduisent
-					le nombre de PI.</page>
+          Les nombres positifs augmentent le nombre de PI. Les nombres négatifs réduisent
+          le nombre de PI.</page>
       </improvement>
       <improvement>
         <id>matrixinitiative</id>
         <name>Matrix Initiative</name>
         <translate>Initiative matricielle</translate>
         <page>Ajuste l'initiative matricielle du personnage par la valeur entrée. Les
-					nombres positifs augmentent l'initiative. Les nombres négatifs réduisent
-					l'initiative.</page>
+          nombres positifs augmentent l'initiative. Les nombres négatifs réduisent
+          l'initiative.</page>
       </improvement>
       <improvement>
         <id>matrixinitiativediceadd</id>
         <name>Matrix Initiative Dice</name>
         <translate>Passes d'initiative matricielle</translate>
         <page>Ajuste le nombre de passes d'initiative matricielle du personnage par la
-					valeur entrée. Les nombres positifs augmentent le nombre de PI. Les nombres
-					négatifs réduisent le nombre de PI.</page>
+          valeur entrée. Les nombres positifs augmentent le nombre de PI. Les nombres
+          négatifs réduisent le nombre de PI.</page>
       </improvement>
       <improvement>
         <id>lifestylecost</id>
         <name>Lifestyle Cost</name>
         <translate>Coût de niveau de vie</translate>
         <page>Ajuste le coût en Nuyens de tous les niveaux de vie par le pourcentage entré.
-					Tous les niveaux de vie coûteront X% supplémentaires par mois. Les nombres
-					positifs augmentent le coût mensuel du niveau de vie. Les nombres négatifs
-					réduisent le coût mensuel du niveau de vie.</page>
+          Tous les niveaux de vie coûteront X% supplémentaires par mois. Les nombres
+          positifs augmentent le coût mensuel du niveau de vie. Les nombres négatifs
+          réduisent le coût mensuel du niveau de vie.</page>
       </improvement>
       <improvement>
         <id>genetechcostmultiplier</id>
         <name>Genetech Cost</name>
         <translate>Coût du Génétech</translate>
         <page>Ajuste le coût en Nuyens du Bioware de catégorie Génétech par le pourcentage
-					entré. Tout le Génétech coûtera maintenant X% de sa valeur originale. Les
-					nombres inférieurs à 100 réduisent le coût. Les nombres supérieurs à 100
-					augmentent le coût.</page>
+          entré. Tout le Génétech coûtera maintenant X% de sa valeur originale. Les
+          nombres inférieurs à 100 réduisent le coût. Les nombres supérieurs à 100
+          augmentent le coût.</page>
       </improvement>
       <improvement>
         <id>transgenicsgenetechcost</id>
         <name>Transgenics Cost</name>
         <translate>Coût du transgénique</translate>
         <page>Ajuste le coût en Nuyens du Bioware de catégorie Génétech : transgénique par
-					le pourcentage entré. Tout le transgénique coûtera maintenant X% de sa valeur
-					originale. Les nombres inférieurs à 100 réduisent le coût. Les nombres
-					supérieurs à 100 augmentent le coût.</page>
+          le pourcentage entré. Tout le transgénique coûtera maintenant X% de sa valeur
+          originale. Les nombres inférieurs à 100 réduisent le coût. Les nombres
+          supérieurs à 100 augmentent le coût.</page>
       </improvement>
       <improvement>
         <id>basicbiowareessmultiplier</id>
         <name>Basic Bioware Essence Cost</name>
         <translate>Coût en essence du Bioware basique</translate>
         <page>Ajuste le coût en essence du Bioware de catégorie basique par le pourcentage
-					entré. Tout le Bioware basique coûtera maintenant X% de sa valeur originale. Les
-					nombres inférieurs à 100 réduisent le coût. Les nombres supérieurs à 100
-					augmentent le coût.</page>
+          entré. Tout le Bioware basique coûtera maintenant X% de sa valeur originale. Les
+          nombres inférieurs à 100 réduisent le coût. Les nombres supérieurs à 100
+          augmentent le coût.</page>
       </improvement>
       <improvement>
         <id>biowareessmultiplier</id>
         <name>Bioware Essence Cost</name>
         <translate>Coût en essence du Bioware</translate>
         <page>Ajuste le coût en essence du Bioware par le pourcentage entré. Tout le Bioware
-					coûtera maintenant X% de sa valeur originale. Les nombres inférieurs à 100
-					réduisent le coût. Les nombres supérieurs à 100 augmentent le coût.</page>
+          coûtera maintenant X% de sa valeur originale. Les nombres inférieurs à 100
+          réduisent le coût. Les nombres supérieurs à 100 augmentent le coût.</page>
       </improvement>
       <improvement>
         <id>cyberwareessmultiplier</id>
         <name>Cyberware Essence Cost</name>
         <translate>Coût en essence du Cyberware</translate>
         <page>Ajuste le coût en essence du Cyberware par le pourcentage entré. Tout le
-					Cyberware coûtera maintenant X% de sa valeur originale. Les nombres inférieurs à
-					100 réduisent le coût. Les nombres supérieurs à 100 augmentent le coût.</page>
+          Cyberware coûtera maintenant X% de sa valeur originale. Les nombres inférieurs à
+          100 réduisent le coût. Les nombres supérieurs à 100 augmentent le coût.</page>
       </improvement>
       <improvement>
         <id>weaponcategorydv</id>
         <name>Weapon Category DV</name>
         <translate>Catégorie d'arme, VD</translate>
         <page>Ajuste la VD de toutes les armes dans la catégorie sélectionnée par la valeur
-					entrée. Les nombres positifs augmentent la VD. Les nombres négatifs réduisent la
-					VD.</page>
+          entrée. Les nombres positifs augmentent la VD. Les nombres négatifs réduisent la
+          VD.</page>
       </improvement>
       <improvement>
         <id>movementpercent</id>
         <name>Movement Percent</name>
         <translate>Vitesse de déplacement, pourcentage</translate>
         <page>Ajuste la vitesse de mouvement du personnage par le pourcentage entré. Les
-					nombres positifs augmentent la vitesse de mouvement. Les nombres négatifs
-					réduisent la vitesse de mouvement. Pas d'effet sur les personnages qui n'ont pas
-					de vitesse de mouvement.</page>
+          nombres positifs augmentent la vitesse de mouvement. Les nombres négatifs
+          réduisent la vitesse de mouvement. Pas d'effet sur les personnages qui n'ont pas
+          de vitesse de mouvement.</page>
       </improvement>
       <improvement>
         <id>swimpercent</id>
         <name>Swim Percent</name>
         <translate>Vitesse de nage, pourcentage</translate>
         <page>Ajuste la vitesse de nage du personnage par le pourcentage entré. Les nombres
-					positifs augmentent la vitesse de nage. Les nombres négatifs réduisent la
-					vitesse de nage. Pas d'effet sur les personnages qui n'ont pas de vitesse de
-					nage.</page>
+          positifs augmentent la vitesse de nage. Les nombres négatifs réduisent la
+          vitesse de nage. Pas d'effet sur les personnages qui n'ont pas de vitesse de
+          nage.</page>
       </improvement>
       <improvement>
         <id>flypercent</id>
         <name>Fly Percent</name>
         <translate>Vitesse de vol, pourcentage</translate>
         <page>Ajuste la vitesse de vol du personnage par le pourcentage entré. Les nombres
-					positifs augmentent la vitesse de vol. Les nombres négatifs réduisent la vitesse
-					de vol. Pas d'effet sur les personnages qui n'ont pas de vitesse de vol.</page>
+          positifs augmentent la vitesse de vol. Les nombres négatifs réduisent la vitesse
+          de vol. Pas d'effet sur les personnages qui n'ont pas de vitesse de vol.</page>
       </improvement>
       <improvement>
         <id>flyspeed</id>
         <name>Fly Speed</name>
         <translate>Vitesse de vol</translate>
         <page>Donne au personnage une vitesse de vol de la valeur entrée s'il n'en avait pas
-					déjà une. Cela n'a pas d'effet sur les personnages qui ont déjà une vitesse de
-					vol.</page>
+          déjà une. Cela n'a pas d'effet sur les personnages qui ont déjà une vitesse de
+          vol.</page>
       </improvement>
       <improvement>
         <id>freespiritpowerpoints</id>
         <name>Power Points, Free Spirit</name>
         <translate>Points de pouvoir, esprit libre</translate>
         <page>Ajuste le nombre de points de pouvoir qu'un esprit libre reçoit pour les
-					pouvoirs de créature par la valeur entrée. Les nombres positifs augmentent le
-					nombre de points de pouvoir. Les nombres négatifs réduisent le nombre de points
-					de pouvoir. Pas d'effet sur un personnage non esprit libre.</page>
+          pouvoirs de créature par la valeur entrée. Les nombres positifs augmentent le
+          nombre de points de pouvoir. Les nombres négatifs réduisent le nombre de points
+          de pouvoir. Pas d'effet sur un personnage non esprit libre.</page>
       </improvement>
       <improvement>
         <id>adeptpowerpoints</id>
         <name>Power Points, Adept</name>
         <translate>Points de pouvoir, adepte</translate>
         <page>Ajuste le nombre de points de pouvoir qu'un adepte reçoit pour les pouvoirs
-					d'adepte par la valeur entrée. Les nombres positifs augmentent le nombre de
-					points de pouvoir. Les nombres négatifs réduisent le nombre de points de
-					pouvoir. Pas d'effet sur un personnage non adepte.</page>
+          d'adepte par la valeur entrée. Les nombres positifs augmentent le nombre de
+          points de pouvoir. Les nombres négatifs réduisent le nombre de points de
+          pouvoir. Pas d'effet sur un personnage non adepte.</page>
       </improvement>
       <improvement>
         <id>armorencumbrancepenalty</id>
         <name>Armor Encumbrance Penalty</name>
         <translate>Pénalité d'encombrement d'armure</translate>
         <page>Ajuste la pénalité d'encombrement d'armure du personnage par la valeur entrée.
-					Les nombres positifs augmentent la pénalité d'encombrement d'armure (mauvais).
-					Les nombres négatifs réduisent la pénalité d'encombrement d'armure (bon).</page>
+          Les nombres positifs augmentent la pénalité d'encombrement d'armure (mauvais).
+          Les nombres négatifs réduisent la pénalité d'encombrement d'armure (bon).</page>
       </improvement>
       <improvement>
         <id>damageresistance</id>
         <name>Damage Resistance</name>
         <translate>Résistance aux dommages</translate>
         <page>Ajuste la taille de la réserve de dés du personnage pour les tests de
-					résistance aux dommages par la valeur entrée. Les nombres positifs augmentent la
-					taille de la réserve de dés. Les nombres négatifs réduisent la taille de la
-					réserve de dés.</page>
+          résistance aux dommages par la valeur entrée. Les nombres positifs augmentent la
+          taille de la réserve de dés. Les nombres négatifs réduisent la taille de la
+          réserve de dés.</page>
       </improvement>
       <improvement>
         <id>judgeintentions</id>
         <name>Judge Intentions</name>
         <translate>Attribut spécial, Jauger les intentions</translate>
         <page>Ajuste l'attribut spécial Jauger les intention du personnage par la valeur
-					entrée. Les nombres positifs améliorent Jauger les intentions. Les nombres
-					négatifs réduisent Jauger les intentions.</page>
+          entrée. Les nombres positifs améliorent Jauger les intentions. Les nombres
+          négatifs réduisent Jauger les intentions.</page>
       </improvement>
       <improvement>
         <id>composure</id>
         <name>Composure</name>
         <translate>Attribut spécial, Sang-froid</translate>
         <page>Ajuste l'attribut spécial Sang-froid du personnage par la valeur entrée. Les
-					nombres positifs améliorent Sang-froid. Les nombres négatifs réduisent
-					Sang-froid.</page>
+          nombres positifs améliorent Sang-froid. Les nombres négatifs réduisent
+          Sang-froid.</page>
       </improvement>
       <improvement>
         <id>liftandcarry</id>
         <name>Lift and Carry</name>
         <translate>Attribut spécial, Soulever et transporter</translate>
         <page>Ajuste l'attribut spécial Soulever et transporter du personnage par la valeur
-					entrée. Les nombres positifs améliorent Soulever et transporter. Les nombres
-					négatifs réduisent Soulever et transporter.</page>
+          entrée. Les nombres positifs améliorent Soulever et transporter. Les nombres
+          négatifs réduisent Soulever et transporter.</page>
       </improvement>
       <improvement>
         <id>memory</id>
         <name>Memory</name>
         <translate>Attribut spécial, Mémoire</translate>
         <page>Ajuste l'attribut spécial Mémoire du personnage par la valeur entrée. Les
-					nombres positifs améliorent Mémoire. Les nombres négatifs réduisent
-					Mémoire.</page>
+          nombres positifs améliorent Mémoire. Les nombres négatifs réduisent
+          Mémoire.</page>
       </improvement>
       <improvement>
         <id>concealability</id>
         <name>Concealability</name>
         <translate>Dissimulation</translate>
         <page>Ajuste la capacité du personnage à dissimuler les armes par la valeur entrée.
-					Ce bonus est appliqué à la dissimulation de toutes les armes. Les nombres
-					positifs améliorent la dissimulation. Les nombres négatifs réduisent la
-					dissimulation.</page>
+          Ce bonus est appliqué à la dissimulation de toutes les armes. Les nombres
+          positifs améliorent la dissimulation. Les nombres négatifs réduisent la
+          dissimulation.</page>
       </improvement>
       <improvement>
         <id>drainresist</id>
         <name>Drain Resistance</name>
         <translate>Résistance aux Drain</translate>
         <page>Ajuste la taille de la réserve de dés du personnage pour les tests de
-					résistance aux Drain par la valeur entrée. Les nombres positifs augmentent la
-					taille de la réserve de dés. Les nombres négatifs réduisent la taille de la
-					réserve de dés.</page>
+          résistance aux Drain par la valeur entrée. Les nombres positifs augmentent la
+          taille de la réserve de dés. Les nombres négatifs réduisent la taille de la
+          réserve de dés.</page>
       </improvement>
       <improvement>
         <id>fadingresist</id>
         <name>Fading Resistance</name>
         <translate>Résistance aux Technodrain</translate>
         <page>Ajuste la taille de la réserve de dés du personnage pour les tests de
-					résistance aux Technodrain par la valeur entrée. Les nombres positifs augmentent
-					la taille de la réserve de dés. Les nombres négatifs réduisent la taille de la
-					réserve de dés.</page>
+          résistance aux Technodrain par la valeur entrée. Les nombres positifs augmentent
+          la taille de la réserve de dés. Les nombres négatifs réduisent la taille de la
+          réserve de dés.</page>
       </improvement>
       <improvement>
         <id>spellcategory</id>
         <name>Spells in Category</name>
         <translate>Catégorie de sorts</translate>
         <page>&gt;Ajuste la taille de la réserve de dés du personnage pour les tests de
-					lancement de sort pour les sorts de la catégorie sélectionnée. Les nombres
-					positifs augmentent la taille de la réserve de dés. Les nombres négatifs
-					réduisent la taille de la réserve de dés.</page>
+          lancement de sort pour les sorts de la catégorie sélectionnée. Les nombres
+          positifs augmentent la taille de la réserve de dés. Les nombres négatifs
+          réduisent la taille de la réserve de dés.</page>
       </improvement>
       <improvement>
         <id>skillsoftaccess</id>
         <name>Skillsoft Access</name>
         <translate>Accès aux skillsofts</translate>
         <page>Le perosnnage peut utiliser les Knowsofts et Linguasofts comme s'il avait une
-					interface neurale directe.</page>
+          interface neurale directe.</page>
       </improvement>
       <improvement>
         <id>essence</id>
         <name>Essence</name>
         <translate>Essence</translate>
         <page>Ajuste l'essence du personnage par la valeur entrée. Les nombres positifs
-					augmentent l'essence. Les nombres négatifs réduisent l'essence.</page>
+          augmentent l'essence. Les nombres négatifs réduisent l'essence.</page>
       </improvement>
       <improvement>
         <id>throwrange</id>
         <name>Throwing Weapon Range</name>
         <translate>Portée des armes de jet</translate>
         <page>Ajuste la force du personnage pour déterminer la portée des armes de jet. Les
-					nombres positifs augmentent la force effective du personnage. Les nombres
-					négatifs réduisent la force effective du personnage.</page>
+          nombres positifs augmentent la force effective du personnage. Les nombres
+          négatifs réduisent la force effective du personnage.</page>
       </improvement>
       <improvement>
         <id>skillwire</id>
         <name>Skillwire Rating</name>
         <translate>Indice de compétences câblées</translate>
         <page>Donne au personnage l'accès aux compétences câblées à l'indice spécifié qui
-					limite l'indice effectif de tous les skillsofts que le personnage
-					utilise.</page>
+          limite l'indice effectif de tous les skillsofts que le personnage
+          utilise.</page>
       </improvement>
       <improvement>
         <id>swapskillattribute</id>
         <name>Swap Skill Attribute (Physical for Mental)</name>
         <translate>Echange des attributs de compétence (physique vers mental)</translate>
         <page>Change l'attribut physique utilisé par les compétences actives par l'attribut
-					mental correspondant comme décrit dans la table des attributs astraux. (AGI/LOG;
-					CON/VOL; REA/INT; FOR/CHR)</page>
+          mental correspondant comme décrit dans la table des attributs astraux. (AGI/LOG;
+          CON/VOL; REA/INT; FOR/CHR)</page>
       </improvement>
       <improvement>
         <id>quickeningmetamagic</id>
         <name>Quickening</name>
         <translate>Activation</translate>
         <page>Donne au personnage l'accès à l'Activation de la même manière que la métamagie
-					Activation.</page>
+          Activation.</page>
       </improvement>
       <improvement>
         <id>basiclifestylecost</id>
         <name>Basic Lifestyle Cost</name>
         <translate>Coût de niveau de vie basique</translate>
         <page>Ajuste le coût en Nuyens de tous les niveaux de vie basiques par le
-					pourcentage entré. Tous les niveaux de vie basiques coûteront X% supplémentaires
-					par mois. Les niveaux de vie basiques se trouvent uniquement dans le livre de
-					base SR4 et n'incluent pas les niveaux de vie avancés, ni les planques et
-					réfuges. Les nombres positifs augmentent le coût mensuel du niveau de vie
-					basique. Les nombres négatifs réduisent le coût mensuel du niveau de vie
-					basique.</page>
+          pourcentage entré. Tous les niveaux de vie basiques coûteront X% supplémentaires
+          par mois. Les niveaux de vie basiques se trouvent uniquement dans le livre de
+          base SR4 et n'incluent pas les niveaux de vie avancés, ni les planques et
+          réfuges. Les nombres positifs augmentent le coût mensuel du niveau de vie
+          basique. Les nombres négatifs réduisent le coût mensuel du niveau de vie
+          basique.</page>
       </improvement>
       <improvement>
         <id>throwstr</id>
         <name>Throwing Weapon STR</name>
         <translate>VD des armes de jet</translate>
         <page>Ajuste la force du personnage pour déterminer la VD des armes de jet. Les
-					nombres positifs augmentent la force effective du personnage. Les nombres
-					négatifs réduisent la force effective du personnage.</page>
+          nombres positifs augmentent la force effective du personnage. Les nombres
+          négatifs réduisent la force effective du personnage.</page>
       </improvement>
       <improvement>
         <id>essencemax</id>
@@ -10374,15 +10374,15 @@
         <name>Bear</name>
         <translate>Ours</translate>
         <advantage>+2 dés aux sorts de Santé, +2 dés pour résister pour résister aux
-					Dommages physiques.</advantage>
+          Dommages physiques.</advantage>
         <disadvantage>Les magiciens Ours peuvent devenir enragés lorsqu’ils sont blessés
-					(Dommages physiques) en combat ou si quelqu’un sous leur garde est gravement
-					blessé. Effectuez un Test de Volonté + Charisme (les modificateurs de blessure
-					s’appliquent). Le personnage devient enragé pendant 3 tours, moins 1 tour par
-					succès ; avec au moins 3 succès la rage du magicien est totalement contenue. Un
-					magicien enragé s’en prendra à l’attaquant sans se soucier de sa propre
-					sécurité. Si le magicien met hors combat une cible avant que la durée n’arrive à
-					son terme, la rage se dissipe.</disadvantage>
+          (Dommages physiques) en combat ou si quelqu’un sous leur garde est gravement
+          blessé. Effectuez un Test de Volonté + Charisme (les modificateurs de blessure
+          s’appliquent). Le personnage devient enragé pendant 3 tours, moins 1 tour par
+          succès ; avec au moins 3 succès la rage du magicien est totalement contenue. Un
+          magicien enragé s’en prendra à l’attaquant sans se soucier de sa propre
+          sécurité. Si le magicien met hors combat une cible avant que la durée n’arrive à
+          son terme, la rage se dissipe.</disadvantage>
         <page>201</page>
         <choices>
           <choice>
@@ -10464,13 +10464,13 @@
         <name>Cat</name>
         <translate>Chat</translate>
         <advantage>+2 dés aux sorts d’Illusion, +2 dés soit aux Test de Gymnastique soit à
-					ceux d’Infiltration (le personnage doit choisir entre les deux
-					compétences).</advantage>
+          ceux d’Infiltration (le personnage doit choisir entre les deux
+          compétences).</advantage>
         <disadvantage>Les magiciens Chat jouent avec leur proie. À moins que le magicien ne
-					réussisse un Test de Volonté + Charisme (3), il ne peut pas faire d’attaque qui
-					mettra hors combat sa cible (par exemple, un sort de Combat doit être lancé avec
-					une Puissance qui ne terrassera pas sa victime). Si le magicien est blessé, ce
-					petit jeu prend fin.</disadvantage>
+          réussisse un Test de Volonté + Charisme (3), il ne peut pas faire d’attaque qui
+          mettra hors combat sa cible (par exemple, un sort de Combat doit être lancé avec
+          une Puissance qui ne terrassera pas sa victime). Si le magicien est blessé, ce
+          petit jeu prend fin.</disadvantage>
         <page>200</page>
         <choices>
           <choice>
@@ -10624,10 +10624,10 @@
         <name>Dog</name>
         <translate>Chien</translate>
         <advantage>+2 dés aux sorts de Détection, +2 dés pour les esprits de
-					l’Homme.</advantage>
+          l’Homme.</advantage>
         <disadvantage>Un magicien Chien est obstinément loyal. Il ne peut jamais abandonner
-					quelqu’un, trahir ses camarades ou laisser quelqu’un d’autre se sacrifier à sa
-					place sans avoir réussi un Test de Volonté + Charisme (3).</disadvantage>
+          quelqu’un, trahir ses camarades ou laisser quelqu’un d’autre se sacrifier à sa
+          place sans avoir réussi un Test de Volonté + Charisme (3).</disadvantage>
         <page>200</page>
         <choices>
           <choice>
@@ -10709,13 +10709,13 @@
         <name>Doom</name>
         <translate>Fatalité</translate>
         <advantage>+2 dés pour les esprits toxiques Guides ou de l’Homme (au choix), +2 dés
-					aux tests d’Escroquerie.</advantage>
+          aux tests d’Escroquerie.</advantage>
         <disadvantage>Persuadés que la fin du monde est proche, les hérauts de Fatalité ne
-					voient aucun intérêt à maintenir des relations, à porter de l’intérêt à certains
-					sujets ou à conserver des biens qui n’ont pas d’utilité dans leurs plans
-					apocalyptiques. De tels magiciens doivent réussir un Test de Volonté + Charisme
-					(3) pour entreprendre une action qui maintiendrait des attachements
-					inutiles.</disadvantage>
+          voient aucun intérêt à maintenir des relations, à porter de l’intérêt à certains
+          sujets ou à conserver des biens qui n’ont pas d’utilité dans leurs plans
+          apocalyptiques. De tels magiciens doivent réussir un Test de Volonté + Charisme
+          (3) pour entreprendre une action qui maintiendrait des attachements
+          inutiles.</disadvantage>
         <page>137</page>
         <choices>
           <choice>
@@ -10869,10 +10869,10 @@
         <name>Dragonslayer</name>
         <translate>Tueur de dragons</translate>
         <advantage>+2 dés aux sorts de Combat, +2 dés pour les tests avec une Compétence
-					sociale au choix.</advantage>
+          sociale au choix.</advantage>
         <disadvantage>Si un magicien Tueurs de dragons rompt une promesse, que ce soit par
-					choix ou par accident, il subit un malus de −1 dé à toutes ses actions jusqu’à
-					ce qu’il tienne sa promesse ou qu’il ne se rachète de son erreur.</disadvantage>
+          choix ou par accident, il subit un malus de −1 dé à toutes ses actions jusqu’à
+          ce qu’il tienne sa promesse ou qu’il ne se rachète de son erreur.</disadvantage>
         <page>202</page>
         <choices>
           <choice>
@@ -10955,7 +10955,7 @@
         <translate>Aigle</translate>
         <advantage>+2 dés aux sorts de Détection, +2 pour les esprits de l’Air.</advantage>
         <disadvantage>Les magiciens Aigle reçoivent le Défaut Allergie (Polluants, Légère).
-					Voir p. 93 (ils ne reçoivent pas de PC en contrepartie).</disadvantage>
+          Voir p. 93 (ils ne reçoivent pas de PC en contrepartie).</disadvantage>
         <page>200</page>
         <choices>
           <choice>
@@ -11191,7 +11191,7 @@
         <name>Great Mother</name>
         <translate>Grande mère</translate>
         <advantage>+2 dés aux sorts de Santé, +2 dés aux esprits de la Terre ou des Plantes
-					(le joueur doit choisir l’un des deux).</advantage>
+          (le joueur doit choisir l’un des deux).</advantage>
         <disadvantage>−1 dé aux sorts de Combat.</disadvantage>
         <page>174</page>
         <choices>
@@ -11346,11 +11346,11 @@
         <name>Mountain</name>
         <translate>Montagne</translate>
         <advantage>+2 dés aux Tests de Contresort, +2 dés pour les esprits de la
-					Terre.</advantage>
+          Terre.</advantage>
         <disadvantage>Lorsqu’un magicien Montagne établit un plan, il s’y tient. Le magicien
-					doit réussir un Test de Volonté + Charisme (3) pour abandonner une tactique en
-					faveur d’une autre. S’il échoue, il fera tout son possible pour poursuivre son
-					plan d’origine, même si ça signifie continuer seul.</disadvantage>
+          doit réussir un Test de Volonté + Charisme (3) pour abandonner une tactique en
+          faveur d’une autre. S’il échoue, il fera tout son possible pour poursuivre son
+          plan d’origine, même si ça signifie continuer seul.</disadvantage>
         <page>201</page>
         <choices>
           <choice>
@@ -11432,13 +11432,13 @@
         <name>Mutation</name>
         <translate>Mutation</translate>
         <advantage>+2 dés pour les esprits toxiques de l’Homme ou de la Bête (au choix), +2
-					dés aux sorts de Santé.</advantage>
+          dés aux sorts de Santé.</advantage>
         <disadvantage>Les disciples de Mutation méprisent la faiblesse. Si un magicien est
-					amené à faire preuve de faiblesse ou à se révéler inférieur à quiconque, il
-					souffre alors d’un modificateur de réserve de dés de −1 à toutes ses actions,
-					jusqu’à ce qu’il puisse, d’une façon ou d’une autre, compenser cette faiblesse
-					ou écraser son rival (ce qui conduit beaucoup de magiciens à acquérir de
-					nouveaux implants ou de nouvelles améliorations).</disadvantage>
+          amené à faire preuve de faiblesse ou à se révéler inférieur à quiconque, il
+          souffre alors d’un modificateur de réserve de dés de −1 à toutes ses actions,
+          jusqu’à ce qu’il puisse, d’une façon ou d’une autre, compenser cette faiblesse
+          ou écraser son rival (ce qui conduit beaucoup de magiciens à acquérir de
+          nouveaux implants ou de nouvelles améliorations).</disadvantage>
         <page>137</page>
         <choices>
           <choice>
@@ -11520,10 +11520,10 @@
         <name>Pollution</name>
         <translate>Pollution</translate>
         <advantage>+2 dés pour les esprits toxiques de l’Eau, de l’Air ou de la Terre (au
-					choix), +2 dés pour résister aux pathogènes et aux toxines.</advantage>
+          choix), +2 dés pour résister aux pathogènes et aux toxines.</advantage>
         <disadvantage>Un magicien de Pollution doit réussir un Test de Volonté + Charisme
-					(3) pour résister à l’envie de souiller ou de polluer tout environnement
-					préservé qu’il trouve sur son chemin.</disadvantage>
+          (3) pour résister à l’envie de souiller ou de polluer tout environnement
+          préservé qu’il trouve sur son chemin.</disadvantage>
         <page>138</page>
         <choices>
           <choice>
@@ -11605,11 +11605,11 @@
         <name>Rat</name>
         <translate>Rat</translate>
         <advantage>+2 dés aux Tests d’Infiltration, +2 dés pour résister à la maladie et aux
-					poisons.</advantage>
+          poisons.</advantage>
         <disadvantage>Un magicien Rat doit réussir un Test de Volonté + Charisme (3) pour ne
-					pas fuir (ou au moins se mettre à couvert) immédiatement dans toute situation de
-					combat où il est impliqué. S’il n’y a nulle part où s’enfuir, alors il sera
-					forcé de combattre.</disadvantage>
+          pas fuir (ou au moins se mettre à couvert) immédiatement dans toute situation de
+          combat où il est impliqué. S’il n’y a nulle part où s’enfuir, alors il sera
+          forcé de combattre.</disadvantage>
         <page>202</page>
         <choices>
           <choice>
@@ -11691,9 +11691,9 @@
         <name>Raven</name>
         <translate>Corbeau</translate>
         <advantage>+2 dés aux sorts de Manipulation, +2 dés pour les esprits de
-					l’Air.</advantage>
+          l’Air.</advantage>
         <disadvantage>Un magicien Corbeau doit réussir un Test de Volonté + Charisme (3)
-					pour ne pas exploiter l’infortune de quelqu’un à son avantage.</disadvantage>
+          pour ne pas exploiter l’infortune de quelqu’un à son avantage.</disadvantage>
         <page>200</page>
         <choices>
           <choice>
@@ -11775,7 +11775,7 @@
         <name>Sea</name>
         <translate>Mer</translate>
         <advantage>+2 dés pour les esprits de l’eau, +2 dés aux Tests de
-					Natation.</advantage>
+          Natation.</advantage>
         <disadvantage>−1 dé aux Tests de Négociation.</disadvantage>
         <page>201</page>
         <choices>
@@ -11858,12 +11858,12 @@
         <name>Shark</name>
         <translate>Requin</translate>
         <advantage>+2 dés aux sorts de Combat, +2 dés pour les esprits de la
-					Mer.</advantage>
+          Mer.</advantage>
         <disadvantage>Les magiciens peuvent devenir enragés en combat (comme les magiciens
-					Ours) lorsqu’ils sont blessés ou quand ils blessent un adversaire (voir p. 201).
-					Un magicien Requin enragé peut continuer à attaquer le corps de sa dernière
-					victime au lieu d’attaquer une nouvelle cible, si le joueur le
-					décide.</disadvantage>
+          Ours) lorsqu’ils sont blessés ou quand ils blessent un adversaire (voir p. 201).
+          Un magicien Requin enragé peut continuer à attaquer le corps de sa dernière
+          victime au lieu d’attaquer une nouvelle cible, si le joueur le
+          décide.</disadvantage>
         <page>202</page>
         <choices>
           <choice>
@@ -11945,7 +11945,7 @@
         <name>Snake</name>
         <translate>Serpent</translate>
         <advantage>+2 dés aux sorts de Détection, +2 dés aux Tests de Contrôle
-					d’esprits.</advantage>
+          d’esprits.</advantage>
         <disadvantage>−1 dé aux sorts de Combat.</disadvantage>
         <page>202</page>
         <choices>
@@ -12028,9 +12028,9 @@
         <name>Thunderbird</name>
         <translate>Oiseau-tonnerre</translate>
         <advantage>+2 dés pour les esprits de l’Air, +2 dés aux Tests
-					d’Intimidation.</advantage>
+          d’Intimidation.</advantage>
         <disadvantage>Un magicien Oiseau-tonnerre doit réussir un Test de Volonté + Charisme
-					(3) pour ne pas « aller au contact » de ceux qui l’ont insulté.</disadvantage>
+          (3) pour ne pas « aller au contact » de ceux qui l’ont insulté.</disadvantage>
         <page>201</page>
         <choices>
           <choice>
@@ -12113,7 +12113,7 @@
         <translate>Sage guerrier</translate>
         <advantage>+2 dés aux sorts de Combat et de Détection.</advantage>
         <disadvantage>−1 dé tous les tests après un acte déshonorant, jusqu’à ce que le
-					personnage ait racheté sa faute.</disadvantage>
+          personnage ait racheté sa faute.</disadvantage>
         <page>202</page>
         <choices>
           <choice>
@@ -12267,9 +12267,9 @@
         <name>Wolf</name>
         <translate>Loup</translate>
         <advantage>+2 dés aux sorts de Combat, +2 dés pour les esprits des
-					Bêtes.</advantage>
+          Bêtes.</advantage>
         <disadvantage>Un magicien Loup doit réussir un Test de Volonté + Charisme (3) pour
-					faire retraite en combat.</disadvantage>
+          faire retraite en combat.</disadvantage>
         <page>201</page>
         <choices>
           <choice>
@@ -13353,49 +13353,49 @@
         <name>01</name>
         <translate>01</translate>
         <advantage>+1 dé pour compiler et enregistrer un sprite de n’importe quel
-					type.</advantage>
+          type.</advantage>
         <disadvantage>Zéro-un est la perfection du code et demande la même chose de ses
-					adorateurs, ou leur enseigne du moins une dure leçon s’ils échouent. Les
-					technomanciens de Zéro-in dépensent 2 points de Chance pour annuler une
-					complication ou diminuer un échec critique.</disadvantage>
+          adorateurs, ou leur enseigne du moins une dure leçon s’ils échouent. Les
+          technomanciens de Zéro-in dépensent 2 points de Chance pour annuler une
+          complication ou diminuer un échec critique.</disadvantage>
         <page>144</page>
       </mentor>
       <mentor>
         <name>Abort</name>
         <translate>Abandon</translate>
         <advantage>+2 dés aux Tests de Plantage, +1 dé pour les sprites dissonants d’Erreur
-					ou Cracker (au choix).</advantage>
+          ou Cracker (au choix).</advantage>
         <disadvantage>En cybercombat un technomancien d’Abandon doit réussir un Test de
-					Volonté + Charisme (3) pour faire autre chose qu’essayer de planter les
-					logiciels de son adversaire.</disadvantage>
+          Volonté + Charisme (3) pour faire autre chose qu’essayer de planter les
+          logiciels de son adversaire.</disadvantage>
         <page>171</page>
       </mentor>
       <mentor>
         <name>Alias</name>
         <translate>Alias</translate>
         <advantage>+2 dés aux Tests de Falsification, +1 dé pour les sprites Cracker ou
-					Limier (au choix).</advantage>
+          Limier (au choix).</advantage>
         <disadvantage>Les technomanciens d’Alias ne supportent pas de payer pour leur Niveau
-					de Vie, et doivent toujours le falsifier (voir Le guide du hacker, p.
-					79).</disadvantage>
+          de Vie, et doivent toujours le falsifier (voir Le guide du hacker, p.
+          79).</disadvantage>
         <page>144</page>
       </mentor>
       <mentor>
         <name>Archivist</name>
         <translate>Archiviste</translate>
         <advantage>+2 dés aux Tests de Catalogue, +1 dé pour les sprites Code ou de Données
-					(au choix).</advantage>
+          (au choix).</advantage>
         <disadvantage>Les technomanciens d’Archiviste ne peuvent pas volontairement détruire
-					ou corrompre des données. Le technomancien doit réussir un Test de Volonté +
-					Logique (3) pour effacer ou corrompre volontairement des données (ou ordonner à
-					un sprite de le faire).</disadvantage>
+          ou corrompre des données. Le technomancien doit réussir un Test de Volonté +
+          Logique (3) pour effacer ou corrompre volontairement des données (ou ordonner à
+          un sprite de le faire).</disadvantage>
         <page>145</page>
       </mentor>
       <mentor>
         <name>Architect</name>
         <translate>Architect</translate>
         <advantage>+2 dés aux Tests d’Édition, +1 dé pour les sprites de Données ou Machine
-					(au choix).</advantage>
+          (au choix).</advantage>
         <disadvantage>−1 dé aux Tests de Plantage.</disadvantage>
         <page>145</page>
       </mentor>
@@ -13403,86 +13403,86 @@
         <name>Babel</name>
         <translate>Babel</translate>
         <advantage>+1 dé aux Tests d’Étiquette en ligne et de Langue, +1 dé pour les sprites
-					Coursier ou Tuteur (au choix).</advantage>
+          Coursier ou Tuteur (au choix).</advantage>
         <disadvantage>Le secret est le fléau de la communication, les technomanciens de
-					Babel doivent réussir un Test de Volonté + Logique (3) pour crypter des
-					données.</disadvantage>
+          Babel doivent réussir un Test de Volonté + Logique (3) pour crypter des
+          données.</disadvantage>
         <page>145</page>
       </mentor>
       <mentor>
         <name>The Black Hat</name>
         <translate>Le Chapeau noir</translate>
         <advantage>+2 dés aux Tests d’Exploitation, +1 dé pour les sprites Cracker ou Défaut
-					(au choix).</advantage>
+          (au choix).</advantage>
         <disadvantage>Les technomanciens du Chapeau noir ont les pires difficultés à
-					s’empêcher de pirater un noeud qui a l’air intéressant. Les technomanciens du
-					Chapeau noir doivent réussir un Test de Volonté + Charisme (3) pour éviter de
-					pirater un tel système quand l’occasion se présente.</disadvantage>
+          s’empêcher de pirater un noeud qui a l’air intéressant. Les technomanciens du
+          Chapeau noir doivent réussir un Test de Volonté + Charisme (3) pour éviter de
+          pirater un tel système quand l’occasion se présente.</disadvantage>
         <page>145</page>
       </mentor>
       <mentor>
         <name>Cryptome</name>
         <translate>Cryptome</translate>
         <advantage>+2 dés aux Tests de Cryptage et de Décryptage, +1 dé pour les sprites
-					Coursier ou de Données (au choix).</advantage>
+          Coursier ou de Données (au choix).</advantage>
         <disadvantage>Les technomanciens du Cryptome ne dévoilent pas de secrets facilement,
-					et jamais à une personne indigne de confiance. Les technomanciens du Cryptome
-					doivent réussir un Test de Volonté + Logique (3) pour dévoiler une information à
-					quelqu’un en qui ils n’ont pas totalement confiance… et cette confiance est
-					rare.</disadvantage>
+          et jamais à une personne indigne de confiance. Les technomanciens du Cryptome
+          doivent réussir un Test de Volonté + Logique (3) pour dévoiler une information à
+          quelqu’un en qui ils n’ont pas totalement confiance… et cette confiance est
+          rare.</disadvantage>
         <page>145</page>
       </mentor>
       <mentor>
         <name>Daedalus</name>
         <translate>Dédale</translate>
         <advantage>+2 dés aux Tests de Hardware, +1 dé pour les sprites Code ou Tuteur (au
-					choix).</advantage>
+          choix).</advantage>
         <disadvantage>Les technomanciens de Dédale interagissent avec les machines sur
-					lesquelles ils travaillent à un niveau subconscient plus profond encore que
-					d’habitude. Ainsi, les modifications sont conçues pour des gens ayant leurs
-					talents et leur vision du monde, plutôt que pour un utilisateur lambda, ou même
-					pour un technomancien qui n’adore pas Dédale. Les appareils construits ou
-					modifiés par ces technomanciens ont des interfaces plus occultes, imposant un
-					malus de −2 à ceux qui veulent légitimement s’en servir.</disadvantage>
+          lesquelles ils travaillent à un niveau subconscient plus profond encore que
+          d’habitude. Ainsi, les modifications sont conçues pour des gens ayant leurs
+          talents et leur vision du monde, plutôt que pour un utilisateur lambda, ou même
+          pour un technomancien qui n’adore pas Dédale. Les appareils construits ou
+          modifiés par ces technomanciens ont des interfaces plus occultes, imposant un
+          malus de −2 à ceux qui veulent légitimement s’en servir.</disadvantage>
         <page>146</page>
       </mentor>
       <mentor>
         <name>Delphi</name>
         <translate>Delphes</translate>
         <advantage>+2 dés aux Tests d’Analyse, +1 dé pour les sprites d’Erreur ou Machine
-					(au choix).</advantage>
+          (au choix).</advantage>
         <disadvantage>Les technomanciens de Delphes ne s’adaptent pas facilement aux
-					situations imprévues. Les technomanciens de Delphes doivent réussir un Test de
-					Volonté + Logique (3) pour prendre une décision rapide dans une situation qu’ils
-					n’ont pas planifiée.</disadvantage>
+          situations imprévues. Les technomanciens de Delphes doivent réussir un Test de
+          Volonté + Logique (3) pour prendre une décision rapide dans une situation qu’ils
+          n’ont pas planifiée.</disadvantage>
         <page>146</page>
       </mentor>
       <mentor>
         <name>Disinformation</name>
         <translate>Désinformation</translate>
         <advantage>+1 dé à tous les Tests du groupe de compétences Influence, +1 dé pour les
-					sprites dissonants de Données ou Tuteur (au choix).</advantage>
+          sprites dissonants de Données ou Tuteur (au choix).</advantage>
         <disadvantage>Les désinformants doivent réussir un Test de Volonté + Charisme (3)
-					pour faire passer une information véridique, complète ou non-orientée par la
-					Matrice à des technomanciens non-dissonants.</disadvantage>
+          pour faire passer une information véridique, complète ou non-orientée par la
+          Matrice à des technomanciens non-dissonants.</disadvantage>
         <page>171</page>
       </mentor>
       <mentor>
         <name>Echelon</name>
         <translate>Échelon</translate>
         <advantage>+1 dé aux Tests de Renifleur et de Pistage, +1 dé pour les sprites
-					Cracker ou Limier (au choix).</advantage>
+          Cracker ou Limier (au choix).</advantage>
         <disadvantage>Les adorateurs d’Échelon travaillent sans cesse pour accumuler des
-					informations sur ce qui se passe autour d’eux. Quand ils sont pris par surprise,
-					sans l’information dont ils ont besoin, ou dans une situation en aveugle, ils
-					ont un malus de −1 à leurs actions tant que la situation perdure.</disadvantage>
+          informations sur ce qui se passe autour d’eux. Quand ils sont pris par surprise,
+          sans l’information dont ils ont besoin, ou dans une situation en aveugle, ils
+          ont un malus de −1 à leurs actions tant que la situation perdure.</disadvantage>
         <page>146</page>
       </mentor>
       <mentor>
         <name>Flow</name>
         <translate>Flux</translate>
         <advantage>+2 dés aux Tests de Tissage, +1 dé pour les sprites Code ou de Données
-					(au choix).</advantage>
+          (au choix).</advantage>
         <disadvantage>−1 dé aux tests d’Attaque en cybercombat.</disadvantage>
         <page>146</page>
       </mentor>
@@ -13490,61 +13490,61 @@
         <name>Idoru</name>
         <translate>Idoru</translate>
         <advantage>+2 dés aux Tests d’Escroquerie, +1 dé pour les sprites Cracker ou Limier
-					(un seul des deux au choix).</advantage>
+          (un seul des deux au choix).</advantage>
         <disadvantage>Les technomanciens d’Idoru doivent réussir un Test de Volonté +
-					Logique (3) pour ne pas manipuler les données à leur avantage quand l’occasion
-					se présente.</disadvantage>
+          Logique (3) pour ne pas manipuler les données à leur avantage quand l’occasion
+          se présente.</disadvantage>
         <page>146</page>
       </mentor>
       <mentor>
         <name>Intrusion Countermeasure (IC)</name>
         <translate>Contremesure d'intrusion (CI)</translate>
         <advantage>+2 dés aux tests de résistance aux dommages matriciels sauf le
-					Technodrain, +1 dé pour les sprites Paladin.</advantage>
+          Technodrain, +1 dé pour les sprites Paladin.</advantage>
         <disadvantage>Si un technomancien de CI échoue à protéger ou à défendre quelque
-					chose dont il a la charge, ou qu’il n’atteint pas un but qu’il s’est fixé, il
-					subit un malus de −1 à ses actions jusqu’à ce qu’il expie sa
-					faute.</disadvantage>
+          chose dont il a la charge, ou qu’il n’atteint pas un but qu’il s’est fixé, il
+          subit un malus de −1 à ses actions jusqu’à ce qu’il expie sa
+          faute.</disadvantage>
         <page>145</page>
       </mentor>
       <mentor>
         <name>Jormungand</name>
         <translate>Jormungand</translate>
         <advantage>+2 aux Tests de Corruption, +1 dé pour les sprites dissonants de Données
-					ou Codeur (au choix).</advantage>
+          ou Codeur (au choix).</advantage>
         <disadvantage>Les technomanciens de Jormungand sont destructeurs et saisiront la
-					moindre opportunité de saccager un noeud en effaçant de manière permanente ou en
-					corrompant ses données. Ils doivent réussir un Test de Volonté + Logique (3)
-					pour laisser indemne un noeud qu’ils ont piraté.</disadvantage>
+          moindre opportunité de saccager un noeud en effaçant de manière permanente ou en
+          corrompant ses données. Ils doivent réussir un Test de Volonté + Logique (3)
+          pour laisser indemne un noeud qu’ils ont piraté.</disadvantage>
         <page>172</page>
       </mentor>
       <mentor>
         <name>Nemesis</name>
         <translate>Némésis</translate>
         <advantage>+2 dés aux Tests d’Escroquerie, +1 dé pour les sprites dissonants Limier
-					ou d’Erreur (au choix).</advantage>
+          ou d’Erreur (au choix).</advantage>
         <disadvantage>Un technomancien de Némésis doit réussir un Test de Volonté + Charisme
-					(3) pour se retenir de punir ceux qu’il pense le mériter.</disadvantage>
+          (3) pour se retenir de punir ceux qu’il pense le mériter.</disadvantage>
         <page>172</page>
       </mentor>
       <mentor>
         <name>Noise</name>
         <translate>Bruit</translate>
         <advantage>+2 dés aux Tests de Tissage, +1 dé pour les sprites dissonants Codeur ou
-					Coursier (au choix).</advantage>
+          Coursier (au choix).</advantage>
         <disadvantage>Les technomanciens de Bruit se reposent bien plus sur le bruit de fond
-					de la Matrice que les autres, et subissent des modificateurs doublés aux actions
-					matricielles et non-matricielles quand ils se retrouvent dans des zones
-					d’interférences ou des zones sans couverture (voir SR4A, p. 220).</disadvantage>
+          de la Matrice que les autres, et subissent des modificateurs doublés aux actions
+          matricielles et non-matricielles quand ils se retrouvent dans des zones
+          d’interférences ou des zones sans couverture (voir SR4A, p. 220).</disadvantage>
         <page>171</page>
       </mentor>
       <mentor>
         <name>Probe</name>
         <translate>Sonde</translate>
         <advantage>+2 dés aux Tests de Scan, +1 dé pour les sprites Cracker ou Limier (au
-					choix).</advantage>
+          choix).</advantage>
         <disadvantage>Les technomanciens de Sonde ont un malus de −2 dés à leurs actions
-					s’ils piratent un noeud sans l’avoir sondé d’abord.</disadvantage>
+          s’ils piratent un noeud sans l’avoir sondé d’abord.</disadvantage>
         <page>146</page>
       </mentor>
       <mentor>
@@ -13552,33 +13552,33 @@
         <translate>Impulsion</translate>
         <advantage>+2 dés aux Tests d’Initiative matricielle.</advantage>
         <disadvantage>−2 dés aux Tests de Hacking quand ils n’improvisent
-					pas.</disadvantage>
+          pas.</disadvantage>
         <page>146</page>
       </mentor>
       <mentor>
         <name>Shooter</name>
         <translate>Shooter</translate>
         <advantage>+2 dés aux tests d’attaque matricielle, +1 dé pour les sprites Paladin ou
-					Tank (au choix).</advantage>
+          Tank (au choix).</advantage>
         <disadvantage>Les technomanciens de Shooter doivent réussir un Test de Volonté +
-					Logique (3) pour quitter un combat matriciel.</disadvantage>
+          Logique (3) pour quitter un combat matriciel.</disadvantage>
         <page>146</page>
       </mentor>
       <mentor>
         <name>Snuff</name>
         <translate>Snuff</translate>
         <advantage>+2 dés aux Tests de Renifleur, +1 dé pour les sprites dissonants Limier
-					ou Cracker (au choix).</advantage>
+          ou Cracker (au choix).</advantage>
         <disadvantage>Les technomanciens de Snuff subissent un modificateur de −2 à leur
-					réserve de dés pour résister à la dépendance aux BTL ou aux médias
-					matriciels.</disadvantage>
+          réserve de dés pour résister à la dépendance aux BTL ou aux médias
+          matriciels.</disadvantage>
         <page>172</page>
       </mentor>
       <mentor>
         <name>Tiamat</name>
         <translate>Tiamat</translate>
         <advantage>+2 dés en Cybercombat, +1 dé pour les sprites dissonants Tank ou Cracker
-					(au choix).</advantage>
+          (au choix).</advantage>
         <disadvantage>−1 aux Tests de Hacking.</disadvantage>
         <page>172</page>
       </mentor>
@@ -13586,13 +13586,13 @@
         <name>The World Tree</name>
         <translate>L’Arbre-Monde</translate>
         <advantage>+2 dés aux Tests d’Analyse, +1 dé pour les sprites Code ou Coursier (au
-					choix).</advantage>
+          choix).</advantage>
         <disadvantage>Les technomanciens de l’Arbre-Monde sont facilement distraits par des
-					informations qu’ils trouvent intéressantes. Face à de nouvelles informations,
-					des données ou des phénomènes inhabituels, les technomanciens de l’Arbre-Monde
-					doivent réussir un Test de Volonté + Charisme (3) pour éviter de laisser tomber
-					ce qu’il faisait pour examiner, analyser et acquérir l’information (si
-					possible).</disadvantage>
+          informations qu’ils trouvent intéressantes. Face à de nouvelles informations,
+          des données ou des phénomènes inhabituels, les technomanciens de l’Arbre-Monde
+          doivent réussir un Test de Volonté + Charisme (3) pour éviter de laisser tomber
+          ce qu’il faisait pour examiner, analyser et acquérir l’information (si
+          possible).</disadvantage>
         <page>145</page>
       </mentor>
     </mentors>
@@ -13731,6 +13731,11 @@
         <translate>Réflexes améliorés 3</translate>
         <page>196</page>
       </power>
+    <power>
+  <id>fea9e769-5f2c-4bae-9610-56c0825e145a</id>
+  <name>Improved Reflexes</name>
+  <translate>Réflexes améliorés</translate>
+</power>
       <power>
         <id>1376c13b-9a01-4873-b935-5b7d91e03785</id>
         <name>Improved Sense</name>
@@ -14414,14 +14419,8 @@
       </quality>
       <quality translated="True">
         <id>4d5c22b9-4908-493d-a6f7-4ccc3066888c</id>
-        <name>Focused Concentration (Rating 1)</name>
-        <translate>Concentration accrue (Indice 1)</translate>
-        <page>76</page>
-      </quality>
-      <quality translated="True">
-        <id>082d7513-1539-4e79-ac3e-91c6f2ea32ed</id>
-        <name>Focused Concentration (Rating 2)</name>
-        <translate>Concentration accrue (Indice 2)</translate>
+        <name>Focused Concentration</name>
+        <translate>Concentration accrue</translate>
         <page>76</page>
       </quality>
       <quality translated="True">
@@ -14432,20 +14431,8 @@
       </quality>
       <quality translated="True">
         <id>b7866fb4-3747-4caf-9240-69cbdd79ce78</id>
-        <name>High Pain Tolerance (Rating 1)</name>
-        <translate>Endurance à la douleur (1 case)</translate>
-        <page>76</page>
-      </quality>
-      <quality translated="True">
-        <id>4c2804b5-2934-46f1-992c-87a943ce044b</id>
-        <name>High Pain Tolerance (Rating 2)</name>
-        <translate>Endurance à la douleur (2 cases)</translate>
-        <page>76</page>
-      </quality>
-      <quality translated="True">
-        <id>c1f41d1f-6345-4d4b-9041-ef93aad61948</id>
-        <name>High Pain Tolerance (Rating 3)</name>
-        <translate>Endurance à la douleur (3 cases)</translate>
+        <name>High Pain Tolerance</name>
+        <translate>Endurance à la douleur</translate>
         <page>76</page>
       </quality>
       <quality translated="True">
@@ -14494,26 +14481,8 @@
       </quality>
       <quality translated="True">
         <id>f80ef6fc-e844-441c-81e3-b1264b34a4e7</id>
-        <name>Magic Resistance (Rating 1)</name>
-        <translate>Résistance à la magie (Indice 1)</translate>
-        <page>78</page>
-      </quality>
-      <quality translated="True">
-        <id>4779f545-b27d-42d9-8664-269253e2f901</id>
-        <name>Magic Resistance (Rating 2)</name>
-        <translate>Résistance à la magie (Indice 2)</translate>
-        <page>78</page>
-      </quality>
-      <quality translated="True">
-        <id>c55ac86e-212e-4e18-a9c2-68304b6bea89</id>
-        <name>Magic Resistance (Rating 3)</name>
-        <translate>Résistance à la magie (Indice 3)</translate>
-        <page>78</page>
-      </quality>
-      <quality translated="True">
-        <id>2f239f68-c93f-4ab9-b9a0-44386b4ea190</id>
-        <name>Magic Resistance (Rating 4)</name>
-        <translate>Résistance à la magie (Indice 4)</translate>
+        <name>Magic Resistance</name>
+        <translate>Résistance à la magie</translate>
         <page>78</page>
       </quality>
       <quality translated="True">
@@ -14611,20 +14580,8 @@
       </quality>
       <quality translated="True">
         <id>18d2a522-6460-4654-916b-a96631f11323</id>
-        <name>Will to Live (Rating 1)</name>
-        <translate>Rage de vivre (1 case)</translate>
-        <page>77</page>
-      </quality>
-      <quality translated="True">
-        <id>5b785abd-91b7-4a94-8856-e98e71a32118</id>
-        <name>Will to Live (Rating 2)</name>
-        <translate>Rage de vivre (2 cases)</translate>
-        <page>77</page>
-      </quality>
-      <quality translated="True">
-        <id>2916b7de-7265-4e31-b872-074863c5aff3</id>
-        <name>Will to Live (Rating 3)</name>
-        <translate>Rage de vivre (3 cases)</translate>
+        <name>Will to Live</name>
+        <translate>Rage de vivre</translate>
         <page>77</page>
       </quality>
       <quality translated="True">
@@ -14749,26 +14706,8 @@
       </quality>
       <quality translated="True">
         <id>de12b672-f60a-486d-85f6-b94a80a058da</id>
-        <name>Gremlins (Rating 1)</name>
-        <translate>Gremlins (Indice 1)</translate>
-        <page>82</page>
-      </quality>
-      <quality translated="True">
-        <id>b71cecd5-7197-4372-bcf8-d55bf1c5d328</id>
-        <name>Gremlins (Rating 2)</name>
-        <translate>Gremlins (Indice 2)</translate>
-        <page>82</page>
-      </quality>
-      <quality translated="True">
-        <id>1e819d6e-0ddb-441e-9025-f286fecf93e3</id>
-        <name>Gremlins (Rating 3)</name>
-        <translate>Gremlins (Indice 3)</translate>
-        <page>82</page>
-      </quality>
-      <quality translated="True">
-        <id>564284b5-da31-4915-bc69-a893ab25b519</id>
-        <name>Gremlins (Rating 4)</name>
-        <translate>Gremlins (Indice 4)</translate>
+        <name>Gremlins</name>
+        <translate>Gremlins</translate>
         <page>82</page>
       </quality>
       <quality translated="True">
@@ -14873,30 +14812,6 @@
         <name>Weak Immune System</name>
         <translate>Immunodéficience</translate>
         <page>83</page>
-      </quality>
-      <quality translated="True">
-        <id>c6939a14-58c0-4168-b936-8124fd09ffe6</id>
-        <name>Focused Concentration (Rating 3)</name>
-        <translate>Concentration accrue (Indice 3)</translate>
-        <page>76</page>
-      </quality>
-      <quality translated="True">
-        <id>79979e99-6776-4c93-b202-b630fabf3b30</id>
-        <name>Focused Concentration (Rating 4)</name>
-        <translate>Concentration accrue (Indice 4)</translate>
-        <page>76</page>
-      </quality>
-      <quality translated="True">
-        <id>0e911cb1-da5c-4117-ae20-ffbf7f607c7d</id>
-        <name>Focused Concentration (Rating 5)</name>
-        <translate>Concentration accrue (Indice 5)</translate>
-        <page>76</page>
-      </quality>
-      <quality translated="True">
-        <id>90ce7689-1dd8-437b-98ad-f10207380684</id>
-        <name>Focused Concentration (Rating 6)</name>
-        <translate>Concentration accrue (Indice 6)</translate>
-        <page>76</page>
       </quality>
       <quality translated="True">
         <id>5c18a150-8e38-4f6d-b4f5-b1b674a3581e</id>
@@ -15171,33 +15086,13 @@
       </quality>
       <quality>
         <id>97e9b186-8924-4885-a948-3c781244a5cb</id>
-        <name>Aged (Rating 1)</name>
-        <translate>Aged (Rating 1)</translate>
-      </quality>
-      <quality>
-        <id>dd0b1ba0-6262-4eb9-9784-c4d29d6b7771</id>
-        <name>Aged (Rating 2)</name>
-        <translate>Aged (Rating 2)</translate>
-      </quality>
-      <quality>
-        <id>d93fdb8e-c8ca-4699-a610-75cad195b50d</id>
-        <name>Aged (Rating 3)</name>
-        <translate>Aged (Rating 3)</translate>
+        <name>Aged</name>
+        <translate>Aged</translate>
       </quality>
       <quality>
         <id>d537536d-893d-4bd6-89c6-03b7dd5bd24c</id>
-        <name>Illness (Rating 1)</name>
-        <translate>Illness (Rating 1)</translate>
-      </quality>
-      <quality>
-        <id>16c8e91c-0d65-42bb-bc85-4af17c681714</id>
-        <name>Illness (Rating 2)</name>
-        <translate>Illness (Rating 2)</translate>
-      </quality>
-      <quality>
-        <id>cea9bcde-4cbf-475e-b641-b6385d518543</id>
-        <name>Illness (Rating 3)</name>
-        <translate>Illness (Rating 3)</translate>
+        <name>Illness</name>
+        <translate>Illness</translate>
       </quality>
       <quality>
         <id>08cceb0d-4fbe-44c8-97ca-e9ec24b692df</id>
@@ -15388,7 +15283,7 @@
           <spec translate="Esprit guide">Guidance Spirit</spec>
           <spec translate="Esprit des plantes">Plant Spirit</spec>
           <spec translate="Esprit ouvrier">Task Spirit</spec>
-		  <spec translate="Esprit veilleurs">Watcher Spirit</spec>
+      <spec translate="Esprit veilleurs">Watcher Spirit</spec>
         </specs>
         <page>144</page>
       </skill>
@@ -15407,7 +15302,7 @@
           <spec translate="Esprit guide">Guidance Spirit</spec>
           <spec translate="Esprit des plantes">Plant Spirit</spec>
           <spec translate="Esprit ouvrier">Task Spirit</spec>
-		  <spec translate="Esprit veilleurs">Watcher Spirit</spec>
+      <spec translate="Esprit veilleurs">Watcher Spirit</spec>
         </specs>
         <page>145</page>
       </skill>
@@ -15984,7 +15879,7 @@
           <spec translate="Esprit guide">Guidance Spirit</spec>
           <spec translate="Esprit des plantes">Plant Spirit</spec>
           <spec translate="Esprit ouvrier">Task Spirit</spec>
-		  <spec translate="Esprit veilleurs">Watcher Spirit</spec>
+      <spec translate="Esprit veilleurs">Watcher Spirit</spec>
         </specs>
         <page>145</page>
       </skill>
@@ -16085,7 +15980,7 @@
           <spec translate="Durée">Time</spec>
           <spec translate="[Déclencheur]">[Trigger]</spec>
         </specs>
-		<page>144</page>
+    <page>144</page>
       </skill>
       <skill translated="True">
         <id>955d9376-3066-469d-8670-5170c1d59020</id>
@@ -16094,7 +15989,7 @@
         <specs>
           <spec translate="Analyse de focus">Focus Analysis</spec>
           <spec translate="[Type de focus]">[Focus Type]</spec>
-		  <page>145</page>
+      <page>145</page>
         </specs>
       </skill>
       <skill translated="True">
@@ -16108,7 +16003,7 @@
           <spec translate="Thérapie génique">Gene Therapy</spec>
           <spec translate="Maintenance en cuve">Vat Maintenance</spec>
         </specs>
-		<page>146</page>
+    <page>146</page>
       </skill>
       <skill translated="True">
         <id>a9d9b686-bc4a-4347-b011-ff8f41455965</id>
@@ -16117,7 +16012,7 @@
         <specs>
           <spec translate="[Type]">[Type]</spec>
         </specs>
-		<page>145</page>
+    <page>145</page>
       </skill>
       <skill translated="True">
         <id>f510ccc3-cf95-4461-b2f7-e966daaa5a91</id>
@@ -16134,7 +16029,7 @@
           <spec translate="Wingsuit">Wingsuit</spec>
           <spec translate="Tyroliennes">Zipline</spec>
         </specs>
-		<page>135</page>
+    <page>135</page>
       </skill>
       <skill translated="True">
         <id>e7e5a43f-9762-4863-86dc-3fd7799e53a2</id>
@@ -16147,7 +16042,7 @@
           <spec translate="Ork">Ork</spec>
           <spec translate="Troll">Troll</spec>
         </specs>
-		<page>141</page>
+    <page>141</page>
       </skill>
       <skill translated="True">
         <id>53f96d6a-363b-4c14-be1d-68e74930c67b</id>
@@ -16159,7 +16054,7 @@
           <spec translate="Présentation">Presentation</spec>
           <spec translate="[Instrument de musique]">[Musical Instrument]</spec>
         </specs>
-		<page>141</page>
+    <page>141</page>
       </skill>
       <skill translated="True">
         <id>b8a24d87-465a-4365-9948-038fe1ac62c4</id>
@@ -16171,7 +16066,7 @@
           <spec translate="Quadruped">Quadruped</spec>
           <spec translate="Contrôle à distance">Remote Operation</spec>
         </specs>
-		<page>149</page>
+    <page>149</page>
       </skill>
       <skill translated="True">
         <id>9cff9aa7-d092-4f89-8b7b-3ab835818874</id>
@@ -16184,7 +16079,7 @@
           <spec translate="Milieu sauvage">Wilderness</spec>
           <spec translate="[Terrain]">[Terrain]</spec>
         </specs>
-		<page>135</page>
+    <page>135</page>
       </skill>
     </skills>
     <knowledgeskills>

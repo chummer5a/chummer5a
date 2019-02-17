@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+
+<!-- This XML file removes the Headware category from all cyberlimbs. -->
+<chummer>
+  <cyberwares>
+    <cyberware>
+      <name>Obvious Full Arm</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Obvious Full Leg</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Obvious Foot</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Obvious Hand</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Obvious Lower Arm</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Obvious Lower Leg</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Obvious Torso</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Synthetic Full Arm</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Synthetic Full Leg</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Synthetic Foot</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Synthetic Hand</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Synthetic Lower Arm</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Synthetic Lower Leg</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Synthetic Torso</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+	<cyberware>
+      <name>Obvious Full Arm, Modular</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Obvious Full Leg, Modular</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Obvious Foot, Modular</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Obvious Hand, Modular</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Obvious Lower Arm, Modular</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Obvious Lower Leg, Modular</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Synthetic Full Arm, Modular</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Synthetic Full Leg, Modular</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Synthetic Foot, Modular</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Synthetic Hand, Modular</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Synthetic Lower Arm, Modular</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Synthetic Lower Leg, Modular</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Centaur Front Leg, Modular</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Centaur Rear Leg, Modular</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+	<cyberware>
+	<cyberware>
+      <name>Liminal Body, Wheeled (Full)</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+    </cyberware>
+    <cyberware>
+      <name>Liminal Body, Tank (Full)</name>
+      <allowsubsystems>
+		<category requireinnertextmatch="yes" remove="yes">Headware</category>
+      </allowsubsystems>
+	<cyberware>
+  </cyberwares>
+</chummer>

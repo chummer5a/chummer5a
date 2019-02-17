@@ -1,0 +1,271 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="required">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="allof" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:group ref="checks" minOccurs="1" maxOccurs="1" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="oneof" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:group ref="checks" minOccurs="1" maxOccurs="1" />
+                    </xs:complexType>
+                </xs:element> 
+                <xs:group ref="details" minOccurs="0" maxOccurs="1" />
+            </xs:sequence>
+            <xs:attribute name="unique" type="xs:string" use="optional" />
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="forbidden">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="allof" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:group ref="checks" minOccurs="1" maxOccurs="1" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="oneof" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:group ref="checks" minOccurs="1" maxOccurs="1" />
+                    </xs:complexType>
+                </xs:element> 
+                <xs:group ref="details" minOccurs="0" maxOccurs="1" />
+            </xs:sequence>
+            <xs:attribute name="unique" type="xs:string" use="optional" />
+        </xs:complexType>
+    </xs:element>  
+    <xs:group name="checks">
+        <xs:sequence>
+            <xs:element name="attribute" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                        <xs:element name="total" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="attributetotal" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="attributes" type="xs:string" minOccurs="1" maxOccurs="1" />
+                        <xs:element name="val" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="careerkarma" type="xs:integer" minOccurs="0" maxOccurs="1" />
+            <xs:element name="critterpower" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="bioware" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="count" type="xs:integer" use="optional" />
+                            <xs:attribute name="select" type="xs:string" use="optional" />
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="biowarecontains" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="count" type="xs:integer" use="optional" />
+                            <xs:attribute name="select" type="xs:string" use="optional" />
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="cyberware" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="count" type="xs:integer" use="optional" />
+                            <xs:attribute name="select" type="xs:string" use="optional" />
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="cyberwarecontains" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="count" type="xs:integer" use="optional" />
+                            <xs:attribute name="select" type="xs:string" use="optional" />
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ess" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="grade" type="xs:string" use="optional" />
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element> 
+            <xs:element name="group" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:group ref="checks" minOccurs="1" maxOccurs="1" />
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="inherited" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="initiategrade" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="martialtechnique" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="metamagic" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="metamagicart" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="metatype" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="metatypecategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="metavariant" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="power" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="quality" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="skill" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                        <xs:element name="val" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                        <xs:element name="spec" type="xs:string" minOccurs="0" maxOccurs="1" />
+                        <xs:element name="type" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="skillgrouptotal" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="skillgroups" type="xs:string" minOccurs="1" maxOccurs="1" />
+                        <xs:element name="val" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="spell" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="spellcategory" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                        <xs:element name="count" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="spelldescriptor" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                        <xs:element name="count" type="xs:integer" minOccurs="1" maxOccurs="1" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>      
+            <xs:element name="streetcredvsnotoriety" minOccurs="0" maxOccurs="1" />
+            <xs:element name="tradition" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:group>
+    <xs:group name="details">
+        <xs:sequence>
+            <xs:element name="geardetails" minOccurs="0" >
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="OR" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                                <xs:group ref="geardetailoptions" />
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:group ref="geardetailoptions" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="vehicledetails" minOccurs="0" >
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="OR" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                                <xs:group ref="vehicledetailoptions" />
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:group ref="vehicledetailoptions" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="weapondetails" minOccurs="0" >
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="OR" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                                <xs:group ref="weapondetailoptions" />
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:group ref="weapondetailoptions" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:group>
+    <xs:group name="geardetailoptions">
+        <xs:sequence>
+            <xs:element name="name" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attributeGroup ref="xmloperations"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:group>
+    <xs:group name="vehicledetailoptions">
+        <xs:sequence>
+            <xs:element name="body" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attributeGroup ref="xmloperations"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="category" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attributeGroup ref="xmloperations"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="name" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attributeGroup ref="xmloperations"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="seats" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attributeGroup ref="xmloperations"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:group>
+    <xs:group name="weapondetailoptions">
+        <xs:sequence>
+            <xs:element name="name" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attributeGroup ref="xmloperations"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:group>
+    <xs:attributeGroup name="xmloperations">
+        <xs:attribute name="operation" type="xs:string" use="optional"/>
+    </xs:attributeGroup>
+</xs:schema>

@@ -17,7 +17,7 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema complexforms.xsd">
   <version>0</version>
   <complexforms>
     <complexform>
@@ -25,7 +25,7 @@
       <name>Cleaner</name>
       <target>Persona</target>
       <duration>P</duration>
-      <fv>L+1</fv>
+      <fv>L-2</fv>
       <source>SR5</source>
       <page>252</page>
     </complexform>
@@ -34,7 +34,7 @@
       <name>Diffusion of [Matrix Attribute]</name>
       <target>Device</target>
       <duration>S</duration>
-      <fv>L+1</fv>
+      <fv>L-2</fv>
       <bonus>
         <selecttext />
       </bonus>
@@ -46,7 +46,7 @@
       <name>Editor</name>
       <target>File</target>
       <duration>P</duration>
-      <fv>L+2</fv>
+      <fv>L-1</fv>
       <source>SR5</source>
       <page>252</page>
     </complexform>
@@ -55,7 +55,7 @@
       <name>Infusion of [Matrix Attribute]</name>
       <target>Device</target>
       <duration>S</duration>
-      <fv>L+1</fv>
+      <fv>L-2</fv>
       <bonus>
         <selecttext />
       </bonus>
@@ -67,7 +67,7 @@
       <name>Static Veil</name>
       <target>Persona</target>
       <duration>S</duration>
-      <fv>L-1</fv>
+      <fv>L-3</fv>
       <source>SR5</source>
       <page>252</page>
     </complexform>
@@ -76,7 +76,7 @@
       <name>Pulse Storm</name>
       <target>Persona</target>
       <duration>I</duration>
-      <fv>L+0</fv>
+      <fv>L-3</fv>
       <source>SR5</source>
       <page>252</page>
     </complexform>
@@ -85,7 +85,7 @@
       <name>Puppeteer</name>
       <target>Device</target>
       <duration>I</duration>
-      <fv>L+4</fv>
+      <fv>L+1</fv>
       <source>SR5</source>
       <page>252</page>
     </complexform>
@@ -94,7 +94,7 @@
       <name>Resonance Channel</name>
       <target>Device</target>
       <duration>S</duration>
-      <fv>L-1</fv>
+      <fv>L-3</fv>
       <source>SR5</source>
       <page>252</page>
     </complexform>
@@ -103,7 +103,7 @@
       <name>Resonance Spike</name>
       <target>Device</target>
       <duration>I</duration>
-      <fv>L+0</fv>
+      <fv>L-3</fv>
       <source>SR5</source>
       <page>253</page>
     </complexform>
@@ -112,7 +112,7 @@
       <name>Resonance Veil</name>
       <target>Device</target>
       <duration>S</duration>
-      <fv>L-1</fv>
+      <fv>L-3</fv>
       <source>SR5</source>
       <page>253</page>
     </complexform>
@@ -121,7 +121,7 @@
       <name>Static Bomb</name>
       <target>Self</target>
       <duration>I</duration>
-      <fv>L+2</fv>
+      <fv>L-1</fv>
       <source>SR5</source>
       <page>253</page>
     </complexform>
@@ -130,7 +130,7 @@
       <name>Stitches</name>
       <target>Sprite</target>
       <duration>P</duration>
-      <fv>L-2</fv>
+      <fv>L-3</fv>
       <source>SR5</source>
       <page>253</page>
     </complexform>
@@ -148,7 +148,7 @@
       <name>Tattletale</name>
       <target>Persona</target>
       <duration>P</duration>
-      <fv>L-2</fv>
+      <fv>L-3</fv>
       <source>SR5</source>
       <page>253</page>
     </complexform>
@@ -197,7 +197,7 @@
       <source>DT</source>
       <page>58</page>
     </complexform>
-	<complexform>
+    <complexform>
       <id>f9a63582-6858-4b83-a76f-6daa52b127c5</id>
       <name>Coriolis</name>
       <target>Persona</target>

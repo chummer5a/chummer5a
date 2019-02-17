@@ -28,8 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Available Complex Forms");
             this.trePrograms = new System.Windows.Forms.TreeView();
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblTargetLabel = new System.Windows.Forms.Label();
@@ -53,10 +51,6 @@
             this.trePrograms.HideSelection = false;
             this.trePrograms.Location = new System.Drawing.Point(12, 12);
             this.trePrograms.Name = "trePrograms";
-            treeNode1.Name = "nodAvailable";
-            treeNode1.Text = "Available Complex Forms";
-            this.trePrograms.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1});
             this.trePrograms.Size = new System.Drawing.Size(241, 430);
             this.trePrograms.TabIndex = 6;
             this.trePrograms.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.trePrograms_AfterSelect);
@@ -157,10 +151,15 @@
             // 
             // tipTooltip
             // 
+            this.tipTooltip.AllowLinksHandling = true;
             this.tipTooltip.AutoPopDelay = 10000;
+            this.tipTooltip.BaseStylesheet = null;
             this.tipTooltip.InitialDelay = 250;
             this.tipTooltip.IsBalloon = true;
+            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
+            this.tipTooltip.OwnerDraw = true;
             this.tipTooltip.ReshowDelay = 100;
+            this.tipTooltip.TooltipCssClass = "htmltooltip";
             this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.tipTooltip.ToolTipTitle = "Chummer Help";
             // 
@@ -244,12 +243,12 @@
         private System.Windows.Forms.Label lblTargetLabel;
         private System.Windows.Forms.Label lblTarget;
         private System.Windows.Forms.Button cmdCancel;
-		private System.Windows.Forms.Button cmdOKAdd;
-		private System.Windows.Forms.Label lblSource;
-		private System.Windows.Forms.Label lblSourceLabel;
-		private System.Windows.Forms.TextBox txtSearch;
-		private System.Windows.Forms.Label lblSearchLabel;
-		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
+        private System.Windows.Forms.Button cmdOKAdd;
+        private System.Windows.Forms.Label lblSource;
+        private System.Windows.Forms.Label lblSourceLabel;
+        private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.Label lblSearchLabel;
+        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.Label lblDuration;
         private System.Windows.Forms.Label lblDurationLabel;
         private System.Windows.Forms.Label lblFV;

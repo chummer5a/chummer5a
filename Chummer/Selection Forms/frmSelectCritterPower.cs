@@ -24,159 +24,147 @@ using System.Xml;
 
 namespace Chummer
 {
-	public partial class frmSelectCritterPower : Form
-	{
-		private string _strSelectedPower = string.Empty;
-		private int _intSelectedRating = 0;
-		private static string _strSelectCategory = string.Empty;
-		private double _dblPowerPoints = 0.0;
-		private bool _blnAddAgain = false;
+    public partial class frmSelectCritterPower : Form
+    {
+        private string _strSelectedPower = string.Empty;
+        private int _intSelectedRating = 0;
+        private static string _strSelectCategory = string.Empty;
+        private double _dblPowerPoints = 0.0;
+        private bool _blnAddAgain = false;
 
-		private XmlDocument _objXmlDocument = new XmlDocument();
-		private XmlDocument _objXmlCritterDocument = new XmlDocument();
-		private readonly Character _objCharacter;
+        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlCritterDocument = null;
+        private readonly Character _objCharacter;
 
-		private List<ListItem> _lstCategory = new List<ListItem>();
+        private List<ListItem> _lstCategory = new List<ListItem>();
 
-		#region Control Events
-		public frmSelectCritterPower(Character objCharacter)
-		{
-			InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-			_objCharacter = objCharacter;
-			MoveControls();
-		}
+        #region Control Events
+        public frmSelectCritterPower(Character objCharacter)
+        {
+            InitializeComponent();
+            LanguageManager.Load(GlobalOptions.Language, this);
+            _objCharacter = objCharacter;
+            MoveControls();
+            _objXmlDocument = XmlManager.Load("critterpowers.xml");
+            if (_objCharacter.IsCritter)
+                _objXmlCritterDocument = XmlManager.Load("critters.xml");
+            else
+                _objXmlCritterDocument = XmlManager.Load("metatypes.xml");
+            if (_objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]") == null)
+            {
+                _objXmlCritterDocument = XmlManager.Load("metatypes.xml");
+            }
+        }
 
-		private void frmSelectCritterPower_Load(object sender, EventArgs e)
-		{
-			foreach (Label objLabel in Controls.OfType<Label>())
-			{
-				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = string.Empty;
-			}
+        private void frmSelectCritterPower_Load(object sender, EventArgs e)
+        {
+            foreach (Label objLabel in Controls.OfType<Label>())
+            {
+                if (objLabel.Text.StartsWith("["))
+                    objLabel.Text = string.Empty;
+            }
 
-			_objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
+            // Populate the Category list.
+            XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
+            foreach (XmlNode objXmlCategory in objXmlCategoryList)
+            {
+                ListItem objItem = new ListItem();
+                objItem.Value = objXmlCategory.InnerText;
+                objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
+                _lstCategory.Add(objItem);
+            }
 
-			// Populate the Category list.
-			XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-			foreach (XmlNode objXmlCategory in objXmlCategoryList)
-			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlCategory.InnerText;
-				if (objXmlCategory.Attributes != null)
-				{
-					if (objXmlCategory.Attributes["translate"] != null)
-						objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
-					else
-						objItem.Name = objXmlCategory.InnerText;
-				}
-				else
-					objItem.Name = objXmlCategory.InnerXml;
-				_lstCategory.Add(objItem);
-			}
+            // Remove Optional Powers if the Critter does not have access to them.
+            XmlNode objXmlCritter = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
+            if (objXmlCritter["optionalpowers"] == null)
+            {
+                foreach (ListItem objItem in _lstCategory)
+                {
+                    if (objItem.Value == "Allowed Optional Powers")
+                    {
+                        _lstCategory.Remove(objItem);
+                        break;
+                    }
+                }
+            }
 
-			if (_objCharacter.IsCritter)
-				_objXmlCritterDocument = XmlManager.Instance.Load("critters.xml");
-			else
-				_objXmlCritterDocument = XmlManager.Instance.Load("metatypes.xml");
-			XmlNode objXmlCritter = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
+            // Remove Free Spirit Powers if the critter is not a Free Spirit.
+            if (_objCharacter.Metatype != "Free Spirit")
+            {
+                foreach (ListItem objItem in _lstCategory)
+                {
+                    if (objItem.Value == "Free Spirit")
+                    {
+                        _lstCategory.Remove(objItem);
+                        break;
+                    }
+                }
+            }
 
-			if (objXmlCritter == null)
-			{
-				_objXmlCritterDocument = XmlManager.Instance.Load("metatypes.xml");
-				objXmlCritter = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-			}
+            // Remove Toxic Critter Powers if the critter is not a Toxic Critter.
+            if (_objCharacter.MetatypeCategory != "Toxic Critters")
+            {
+                foreach (ListItem objItem in _lstCategory)
+                {
+                    if (objItem.Value == "Toxic Critter Powers")
+                    {
+                        _lstCategory.Remove(objItem);
+                        break;
+                    }
+                }
+            }
 
-			// Remove Optional Powers if the Critter does not have access to them.
-			if (objXmlCritter["optionalpowers"] == null)
-			{
-				foreach (ListItem objItem in _lstCategory)
-				{
-					if (objItem.Value == "Allowed Optional Powers")
-					{
-						_lstCategory.Remove(objItem);
-						break;
-					}
-				}
-			}
+            // Remove Emergent Powers if the critter is not a Sprite or A.I.
+            if (!_objCharacter.MetatypeCategory.EndsWith("Sprites") && !_objCharacter.MetatypeCategory.EndsWith("Sprite") && !_objCharacter.MetatypeCategory.EndsWith("A.I.s") & _objCharacter.MetatypeCategory != "Technocritters" && _objCharacter.MetatypeCategory != "Protosapients")
+            {
+                foreach (ListItem objItem in _lstCategory)
+                {
+                    if (objItem.Value == "Emergent")
+                    {
+                        _lstCategory.Remove(objItem);
+                        break;
+                    }
+                }
+            }
 
-			// Remove Free Spirit Powers if the critter is not a Free Spirit.
-			if (_objCharacter.Metatype != "Free Spirit")
-			{
-				foreach (ListItem objItem in _lstCategory)
-				{
-					if (objItem.Value == "Free Spirit")
-					{
-						_lstCategory.Remove(objItem);
-						break;
-					}
-				}
-			}
+            // Remove Echoes Powers if the critter is not a Free Sprite.
+            if (!_objCharacter.IsFreeSprite)
+            {
+                foreach (ListItem objItem in _lstCategory)
+                {
+                    if (objItem.Value == "Echoes")
+                    {
+                        _lstCategory.Remove(objItem);
+                        break;
+                    }
+                }
+            }
 
-			// Remove Toxic Critter Powers if the critter is not a Toxic Critter.
-			if (_objCharacter.MetatypeCategory != "Toxic Critters")
-			{
-				foreach (ListItem objItem in _lstCategory)
-				{
-					if (objItem.Value == "Toxic Critter Powers")
-					{
-						_lstCategory.Remove(objItem);
-						break;
-					}
-				}
-			}
+            // Remove Shapeshifter Powers if the critter is not a Shapeshifter.
+            if (_objCharacter.MetatypeCategory != "Shapeshifter")
+            {
+                foreach (ListItem objItem in _lstCategory)
+                {
+                    if (objItem.Value == "Shapeshifter")
+                    {
+                        _lstCategory.Remove(objItem);
+                        break;
+                    }
+                }
+            }
 
-			// Remove Emergent Powers if the critter is not a Sprite or A.I.
-			if (!_objCharacter.MetatypeCategory.EndsWith("Sprites") && !_objCharacter.MetatypeCategory.EndsWith("Sprite") && !_objCharacter.MetatypeCategory.EndsWith("A.I.s") & _objCharacter.MetatypeCategory != "Technocritters" && _objCharacter.MetatypeCategory != "Protosapients")
-			{
-				foreach (ListItem objItem in _lstCategory)
-				{
-					if (objItem.Value == "Emergent")
-					{
-						_lstCategory.Remove(objItem);
-						break;
-					}
-				}
-			}
+            bool blnIsDrake = false;
+            foreach (Quality objQuality in _objCharacter.Qualities)
+            {
+                if (objQuality.Name == "Dracoform (Eastern Drake)" || objQuality.Name == "Dracoform (Western Drake)" ||
+                    objQuality.Name == "Dracoform (Sea Drake)" || objQuality.Name == "Dracoform (Feathered Drake)")
+                {
+                    blnIsDrake = true;
+                }
+            }
 
-			// Remove Echoes Powers if the critter is not a Free Sprite.
-			if (!_objCharacter.IsFreeSprite)
-			{
-				foreach (ListItem objItem in _lstCategory)
-				{
-					if (objItem.Value == "Echoes")
-					{
-						_lstCategory.Remove(objItem);
-						break;
-					}
-				}
-			}
-
-			// Remove Shapeshifter Powers if the critter is not a Shapeshifter.
-			if (_objCharacter.MetatypeCategory != "Shapeshifter")
-			{
-				foreach (ListItem objItem in _lstCategory)
-				{
-					if (objItem.Value == "Shapeshifter")
-					{
-						_lstCategory.Remove(objItem);
-						break;
-					}
-				}
-			}
-
-		    bool blnIsDrake = false;
-		    foreach (Quality objQuality in _objCharacter.Qualities)
-		    {
-		        if (objQuality.Name == "Dracoform (Eastern Drake)" || objQuality.Name == "Dracoform (Western Drake)" ||
-		            objQuality.Name == "Dracoform (Sea Drake)" || objQuality.Name == "Dracoform (Feathered Drake)")
-		        {
-		            blnIsDrake = true;
-		        }
-		    }
-
-		    if (!blnIsDrake)
-		    {
+            if (!blnIsDrake)
+            {
                 foreach (ListItem objItem in _lstCategory)
                 {
                     if (objItem.Value != "Drake")
@@ -186,13 +174,13 @@ namespace Chummer
                     }
                 }
             }
-		    SortListItem objSort = new SortListItem();
-		    _lstCategory.Sort(objSort.Compare);
+            SortListItem objSort = new SortListItem();
+            _lstCategory.Sort(objSort.Compare);
             cboCategory.BeginUpdate();
             cboCategory.DataSource = null;
-		    cboCategory.ValueMember = "Value";
-		    cboCategory.DisplayMember = "Name";
-		    cboCategory.DataSource = _lstCategory;
+            cboCategory.ValueMember = "Value";
+            cboCategory.DisplayMember = "Name";
+            cboCategory.DataSource = _lstCategory;
             cboCategory.EndUpdate();
 
             if (blnIsDrake)
@@ -209,33 +197,33 @@ namespace Chummer
             }
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(_strSelectCategory))
-				cboCategory.SelectedIndex = 0;
-			else if (cboCategory.Items.Contains(_strSelectCategory))
-			{
-				cboCategory.SelectedValue = _strSelectCategory;
-			}
+                cboCategory.SelectedIndex = 0;
+            else if (cboCategory.Items.Contains(_strSelectCategory))
+            {
+                cboCategory.SelectedValue = _strSelectCategory;
+            }
 
-			if (cboCategory.SelectedIndex == -1)
-				cboCategory.SelectedIndex = 0;
-		}
+            if (cboCategory.SelectedIndex == -1)
+                cboCategory.SelectedIndex = 0;
+        }
 
-		private void cmdOK_Click(object sender, EventArgs e)
-		{
-			AcceptForm();
-		}
+        private void cmdOK_Click(object sender, EventArgs e)
+        {
+            AcceptForm();
+        }
 
-		private void cmdCancel_Click(object sender, EventArgs e)
-		{
-			DialogResult = DialogResult.Cancel;
-		}
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
 
-		private void trePowers_AfterSelect(object sender, TreeViewEventArgs e)
-		{
-			lblPowerPoints.Visible = false;
-			lblPowerPointsLabel.Visible = false;
-			if (!string.IsNullOrEmpty(trePowers.SelectedNode.Tag.ToString()))
-			{
-				XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + trePowers.SelectedNode.Tag + "\"]");
+        private void trePowers_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            lblPowerPoints.Visible = false;
+            lblPowerPointsLabel.Visible = false;
+            if (!string.IsNullOrEmpty(trePowers.SelectedNode.Tag.ToString()))
+            {
+                XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + trePowers.SelectedNode.Tag + "\"]");
                 if (objXmlPower != null)
                 {
                     if (objXmlPower["category"] != null)
@@ -246,10 +234,10 @@ namespace Chummer
                         switch (objXmlPower["type"].InnerText)
                         {
                             case "M":
-                                lblCritterPowerType.Text = LanguageManager.Instance.GetString("String_SpellTypeMana");
+                                lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypeMana");
                                 break;
                             case "P":
-                                lblCritterPowerType.Text = LanguageManager.Instance.GetString("String_SpellTypePhysical");
+                                lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypePhysical");
                                 break;
                             default:
                                 lblCritterPowerType.Text = string.Empty;
@@ -262,19 +250,19 @@ namespace Chummer
                         switch (objXmlPower["action"].InnerText)
                         {
                             case "Auto":
-                                lblCritterPowerAction.Text = LanguageManager.Instance.GetString("String_ActionAutomatic");
+                                lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionAutomatic");
                                 break;
                             case "Free":
-                                lblCritterPowerAction.Text = LanguageManager.Instance.GetString("String_ActionFree");
+                                lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionFree");
                                 break;
                             case "Simple":
-                                lblCritterPowerAction.Text = LanguageManager.Instance.GetString("String_ActionSimple");
+                                lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionSimple");
                                 break;
                             case "Complex":
-                                lblCritterPowerAction.Text = LanguageManager.Instance.GetString("String_ActionComplex");
+                                lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionComplex");
                                 break;
                             case "Special":
-                                lblCritterPowerAction.Text = LanguageManager.Instance.GetString("String_SpellDurationSpecial");
+                                lblCritterPowerAction.Text = LanguageManager.GetString("String_SpellDurationSpecial");
                                 break;
                         }
                     }
@@ -282,13 +270,13 @@ namespace Chummer
                     if (objXmlPower["range"] != null)
                     {
                         string strRange = objXmlPower["range"].InnerText;
-                        strRange = strRange.Replace("Self", LanguageManager.Instance.GetString("String_SpellRangeSelf"));
-                        strRange = strRange.Replace("Special", LanguageManager.Instance.GetString("String_SpellDurationSpecial"));
-                        strRange = strRange.Replace("LOS", LanguageManager.Instance.GetString("String_SpellRangeLineOfSight"));
-                        strRange = strRange.Replace("LOI", LanguageManager.Instance.GetString("String_SpellRangeLineOfInfluence"));
-                        strRange = strRange.Replace("T", LanguageManager.Instance.GetString("String_SpellRangeTouch"));
-                        strRange = strRange.Replace("(A)", "(" + LanguageManager.Instance.GetString("String_SpellRangeArea") + ")");
-                        strRange = strRange.Replace("MAG", LanguageManager.Instance.GetString("String_AttributeMAGShort"));
+                        strRange = strRange.Replace("Self", LanguageManager.GetString("String_SpellRangeSelf"));
+                        strRange = strRange.Replace("Special", LanguageManager.GetString("String_SpellDurationSpecial"));
+                        strRange = strRange.Replace("LOS", LanguageManager.GetString("String_SpellRangeLineOfSight"));
+                        strRange = strRange.Replace("LOI", LanguageManager.GetString("String_SpellRangeLineOfInfluence"));
+                        strRange = strRange.Replace("T", LanguageManager.GetString("String_SpellRangeTouch"));
+                        strRange = strRange.Replace("(A)", "(" + LanguageManager.GetString("String_SpellRangeArea") + ")");
+                        strRange = strRange.Replace("MAG", LanguageManager.GetString("String_AttributeMAGShort"));
                         lblCritterPowerRange.Text = strRange;
                     }
 
@@ -297,16 +285,16 @@ namespace Chummer
                         switch (objXmlPower["duration"].InnerText)
                         {
                             case "Instant":
-                                lblCritterPowerDuration.Text = LanguageManager.Instance.GetString("String_SpellDurationInstantLong");
+                                lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationInstantLong");
                                 break;
                             case "Sustained":
-                                lblCritterPowerDuration.Text = LanguageManager.Instance.GetString("String_SpellDurationSustained");
+                                lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationSustained");
                                 break;
                             case "Always":
-                                lblCritterPowerDuration.Text = LanguageManager.Instance.GetString("String_SpellDurationAlways");
+                                lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationAlways");
                                 break;
                             case "Special":
-                                lblCritterPowerDuration.Text = LanguageManager.Instance.GetString("String_SpellDurationSpecial");
+                                lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationSpecial");
                                 break;
                             default:
                                 lblCritterPowerDuration.Text = objXmlPower["duration"].InnerText;
@@ -324,7 +312,7 @@ namespace Chummer
                         strPage = objXmlPower["altpage"].InnerText;
                     lblCritterPowerSource.Text = strBook + " " + strPage;
                     if (objXmlPower["source"] != null)
-                        tipTooltip.SetToolTip(lblCritterPowerSource, _objCharacter.Options.LanguageBookLong(objXmlPower["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+                        tipTooltip.SetToolTip(lblCritterPowerSource, _objCharacter.Options.LanguageBookLong(objXmlPower["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
 
                     nudCritterPowerRating.Enabled = objXmlPower["rating"] != null;
 
@@ -340,247 +328,247 @@ namespace Chummer
                         lblPowerPointsLabel.Visible = true;
                     }
                 }
-			}
-		}
+            }
+        }
 
-		private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			XmlNode objXmlCritter = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
+        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            XmlNode objXmlCritter = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
 
-			trePowers.Nodes.Clear();
+            trePowers.Nodes.Clear();
 
-			if (cboCategory.SelectedValue.ToString() == "Toxic Critter Powers")
-			{
-				// Display the special Toxic Critter Powers.
-				foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[toxic = \"yes\"]"))
-				{
-					TreeNode objNode = new TreeNode();
-					objNode.Tag = objXmlPower["id"].InnerText;
-					objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
-					trePowers.Nodes.Add(objNode);
-				}
-			}
-			else if (cboCategory.SelectedValue.ToString() == "Weakness")
-			{
-				// Display the special Toxic Critter Powers.
-				foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[category = \"Weakness\"]"))
-				{
-					TreeNode objNode = new TreeNode();
-					objNode.Tag = objXmlPower["id"].InnerText;
-					objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
-					trePowers.Nodes.Add(objNode);
-				}
-			}
-			else
-			{
-				// If the Critter is only allowed certain Powers, display only those.
-				if (objXmlCritter["optionalpowers"] != null)
-				{
-					foreach (XmlNode objXmlCritterPower in objXmlCritter.SelectNodes("optionalpowers/power"))
-					{
-						XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlCritterPower.InnerText + "\"]");
-						TreeNode objNode = new TreeNode();
-						objNode.Tag = objXmlPower["id"].InnerText;
-						objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
-						trePowers.Nodes.Add(objNode);
-					}
+            if (cboCategory.SelectedValue.ToString() == "Toxic Critter Powers")
+            {
+                // Display the special Toxic Critter Powers.
+                foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[toxic = \"yes\" and (" + _objCharacter.Options.BookXPath() + ")]"))
+                {
+                    TreeNode objNode = new TreeNode();
+                    objNode.Tag = objXmlPower["id"].InnerText;
+                    objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
+                    trePowers.Nodes.Add(objNode);
+                }
+            }
+            else if (cboCategory.SelectedValue.ToString() == "Weakness")
+            {
+                // Display the special Toxic Critter Powers.
+                foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[category = \"Weakness\" and (" + _objCharacter.Options.BookXPath() + ")]"))
+                {
+                    TreeNode objNode = new TreeNode();
+                    objNode.Tag = objXmlPower["id"].InnerText;
+                    objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
+                    trePowers.Nodes.Add(objNode);
+                }
+            }
+            else
+            {
+                // If the Critter is only allowed certain Powers, display only those.
+                if (objXmlCritter["optionalpowers"] != null)
+                {
+                    foreach (XmlNode objXmlCritterPower in objXmlCritter.SelectNodes("optionalpowers/power"))
+                    {
+                        XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlCritterPower.InnerText + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+                        TreeNode objNode = new TreeNode();
+                        objNode.Tag = objXmlPower["id"].InnerText;
+                        objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
+                        trePowers.Nodes.Add(objNode);
+                    }
 
-					// Determine if the Critter has a physical presence Power (Materialization, Possession, or Inhabitation).
-					bool blnPhysicalPresence = false;
-					foreach (CritterPower objCheckPower in _objCharacter.CritterPowers)
-					{
-						if (objCheckPower.Name == "Materialization" || objCheckPower.Name == "Possession" || objCheckPower.Name == "Inhabitation")
-						{
-							blnPhysicalPresence = true;
-							break;
-						}
-					}
+                    // Determine if the Critter has a physical presence Power (Materialization, Possession, or Inhabitation).
+                    bool blnPhysicalPresence = false;
+                    foreach (CritterPower objCheckPower in _objCharacter.CritterPowers)
+                    {
+                        if (objCheckPower.Name == "Materialization" || objCheckPower.Name == "Possession" || objCheckPower.Name == "Inhabitation")
+                        {
+                            blnPhysicalPresence = true;
+                            break;
+                        }
+                    }
 
-					// Add any Critter Powers the Critter comes with that have been manually deleted so they can be re-added.
-					foreach (XmlNode objXmlCritterPower in objXmlCritter.SelectNodes("powers/power"))
-					{
-						bool blnAddPower = true;
-						// Make sure the Critter doesn't already have the Power.
-						foreach (CritterPower objCheckPower in _objCharacter.CritterPowers)
-						{
-							if (objCheckPower.Name == objXmlCritterPower.InnerText)
-							{
-								blnAddPower = false;
-								break;
-							}
-							if ((objCheckPower.Name == "Materialization" || objCheckPower.Name == "Possession" || objCheckPower.Name == "Inhabitation") && blnPhysicalPresence)
-							{
-								blnAddPower = false;
-								break;
-							}
-						}
+                    // Add any Critter Powers the Critter comes with that have been manually deleted so they can be re-added.
+                    foreach (XmlNode objXmlCritterPower in objXmlCritter.SelectNodes("powers/power"))
+                    {
+                        bool blnAddPower = true;
+                        // Make sure the Critter doesn't already have the Power.
+                        foreach (CritterPower objCheckPower in _objCharacter.CritterPowers)
+                        {
+                            if (objCheckPower.Name == objXmlCritterPower.InnerText)
+                            {
+                                blnAddPower = false;
+                                break;
+                            }
+                            if ((objCheckPower.Name == "Materialization" || objCheckPower.Name == "Possession" || objCheckPower.Name == "Inhabitation") && blnPhysicalPresence)
+                            {
+                                blnAddPower = false;
+                                break;
+                            }
+                        }
 
-						if (blnAddPower)
-						{
-							XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlCritterPower.InnerText + "\"]");
-							TreeNode objNode = new TreeNode();
-							objNode.Tag = objXmlPower["id"].InnerText;
-							objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
-							trePowers.Nodes.Add(objNode);
+                        if (blnAddPower)
+                        {
+                            XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlCritterPower.InnerText + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+                            TreeNode objNode = new TreeNode();
+                            objNode.Tag = objXmlPower["id"].InnerText;
+                            objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
+                            trePowers.Nodes.Add(objNode);
 
-							// If Manifestation is one of the Powers, also include Inhabitation and Possess if they're not already in the list.
-							if (!blnPhysicalPresence){
-								if (objXmlPower["name"].InnerText == "Materialization")
-								{
-									bool blnFound = false;
-									foreach (TreeNode objCheckNode in trePowers.Nodes)
-									{
-										if (objCheckNode.Tag.ToString() == "Possession")
-										{
-											blnFound = true;
-											break;
-										}
-									}
-									if (!blnFound)
-									{
-										XmlNode objXmlPossessionPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Possession\"]");
-										TreeNode objPossessionNode = new TreeNode();
-										objPossessionNode.Tag = objXmlPossessionPower["name"].InnerText;
-										objPossessionNode.Text = objXmlPossessionPower["translate"]?.InnerText ?? objXmlPossessionPower["name"].InnerText;
-										trePowers.Nodes.Add(objPossessionNode);
-									}
+                            // If Manifestation is one of the Powers, also include Inhabitation and Possess if they're not already in the list.
+                            if (!blnPhysicalPresence){
+                                if (objXmlPower["name"].InnerText == "Materialization")
+                                {
+                                    bool blnFound = false;
+                                    foreach (TreeNode objCheckNode in trePowers.Nodes)
+                                    {
+                                        if (objCheckNode.Tag.ToString() == "Possession")
+                                        {
+                                            blnFound = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!blnFound)
+                                    {
+                                        XmlNode objXmlPossessionPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Possession\" and (" + _objCharacter.Options.BookXPath() + ")]");
+                                        TreeNode objPossessionNode = new TreeNode();
+                                        objPossessionNode.Tag = objXmlPossessionPower["name"].InnerText;
+                                        objPossessionNode.Text = objXmlPossessionPower["translate"]?.InnerText ?? objXmlPossessionPower["name"].InnerText;
+                                        trePowers.Nodes.Add(objPossessionNode);
+                                    }
 
-								    blnFound = trePowers.Nodes.Cast<TreeNode>().Any(objCheckNode => objCheckNode.Tag.ToString() == "Inhabitation");
+                                    blnFound = trePowers.Nodes.Cast<TreeNode>().Any(objCheckNode => objCheckNode.Tag.ToString() == "Inhabitation");
 
-								    if (!blnFound)
-									{
-										XmlNode objXmlPossessionPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Inhabitation\"]");
-										TreeNode objPossessionNode = new TreeNode();
-										objPossessionNode.Tag = objXmlPossessionPower["name"].InnerText;
-										objPossessionNode.Text = objXmlPossessionPower["translate"]?.InnerText ?? objXmlPossessionPower["name"].InnerText;
-										trePowers.Nodes.Add(objPossessionNode);
-									}
-								}
-							}
-						}
-					}
-				}
-				else
-				{
-					foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[category = \"" + cboCategory.SelectedValue + "\"]"))
-					{
-						TreeNode objNode = new TreeNode();
-						objNode.Tag = objXmlPower["id"].InnerText;
-						objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
-						trePowers.Nodes.Add(objNode);
-					}
-				}
-			}
-			trePowers.Sort();
-		}
+                                    if (!blnFound)
+                                    {
+                                        XmlNode objXmlPossessionPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Inhabitation\" and (" + _objCharacter.Options.BookXPath() + ")]");
+                                        TreeNode objPossessionNode = new TreeNode();
+                                        objPossessionNode.Tag = objXmlPossessionPower["name"].InnerText;
+                                        objPossessionNode.Text = objXmlPossessionPower["translate"]?.InnerText ?? objXmlPossessionPower["name"].InnerText;
+                                        trePowers.Nodes.Add(objPossessionNode);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]"))
+                    {
+                        TreeNode objNode = new TreeNode();
+                        objNode.Tag = objXmlPower["id"].InnerText;
+                        objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
+                        trePowers.Nodes.Add(objNode);
+                    }
+                }
+            }
+            trePowers.Sort();
+        }
 
-		private void trePowers_DoubleClick(object sender, EventArgs e)
-		{
-			AcceptForm();
-		}
+        private void trePowers_DoubleClick(object sender, EventArgs e)
+        {
+            AcceptForm();
+        }
 
-		private void cmdOKAdd_Click(object sender, EventArgs e)
-		{
-			_blnAddAgain = true;
-			cmdOK_Click(sender, e);
-		}
-		#endregion
+        private void cmdOKAdd_Click(object sender, EventArgs e)
+        {
+            _blnAddAgain = true;
+            cmdOK_Click(sender, e);
+        }
+        #endregion
 
-		#region Methods
-		/// <summary>
-		/// Accept the selected item and close the form.
-		/// </summary>
-		private void AcceptForm()
-		{
-			if (trePowers.SelectedNode == null)
-				return;
+        #region Methods
+        /// <summary>
+        /// Accept the selected item and close the form.
+        /// </summary>
+        private void AcceptForm()
+        {
+            if (trePowers.SelectedNode == null)
+                return;
 
-			if (nudCritterPowerRating.Enabled)
-				_intSelectedRating = Convert.ToInt32(nudCritterPowerRating.Value);
-			_strSelectCategory = cboCategory.SelectedValue.ToString();
-			_strSelectedPower = trePowers.SelectedNode.Tag.ToString();
+            if (nudCritterPowerRating.Enabled)
+                _intSelectedRating = Convert.ToInt32(nudCritterPowerRating.Value);
+            _strSelectCategory = cboCategory.SelectedValue.ToString();
+            _strSelectedPower = trePowers.SelectedNode.Tag.ToString();
 
-			// If the character is a Free Spirit (PC, not the Critter version), populate the Power Points Cost as well.
-			if (_objCharacter.Metatype == "Free Spirit" && !_objCharacter.IsCritter)
-			{
-				XmlNode objXmlCritter = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-				XmlNode objXmlPower = objXmlCritter.SelectSingleNode("optionalpowers/power[. = \"" + trePowers.SelectedNode.Tag + "\"]");
-				_dblPowerPoints = Convert.ToDouble(objXmlPower.Attributes["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
-			}
+            // If the character is a Free Spirit (PC, not the Critter version), populate the Power Points Cost as well.
+            if (_objCharacter.Metatype == "Free Spirit" && !_objCharacter.IsCritter)
+            {
+                XmlNode objXmlCritter = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
+                XmlNode objXmlPower = objXmlCritter.SelectSingleNode("optionalpowers/power[. = \"" + trePowers.SelectedNode.Tag + "\"]");
+                _dblPowerPoints = Convert.ToDouble(objXmlPower.Attributes["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
+            }
 
-			DialogResult = DialogResult.OK;
-		}
+            DialogResult = DialogResult.OK;
+        }
 
-		private void MoveControls()
-		{
-			int intWidth = Math.Max(lblCritterPowerCategoryLabel.Width, lblCritterPowerTypeLabel.Width);
-			intWidth = Math.Max(intWidth, lblCritterPowerActionLabel.Width);
-			intWidth = Math.Max(intWidth, lblCritterPowerRangeLabel.Width);
-			intWidth = Math.Max(intWidth, lblCritterPowerDurationLabel.Width);
-			intWidth = Math.Max(intWidth, lblCritterPowerRatingLabel.Width);
-			intWidth = Math.Max(intWidth, lblCritterPowerSourceLabel.Width);
-			intWidth = Math.Max(intWidth, lblPowerPointsLabel.Width);
+        private void MoveControls()
+        {
+            int intWidth = Math.Max(lblCritterPowerCategoryLabel.Width, lblCritterPowerTypeLabel.Width);
+            intWidth = Math.Max(intWidth, lblCritterPowerActionLabel.Width);
+            intWidth = Math.Max(intWidth, lblCritterPowerRangeLabel.Width);
+            intWidth = Math.Max(intWidth, lblCritterPowerDurationLabel.Width);
+            intWidth = Math.Max(intWidth, lblCritterPowerRatingLabel.Width);
+            intWidth = Math.Max(intWidth, lblCritterPowerSourceLabel.Width);
+            intWidth = Math.Max(intWidth, lblPowerPointsLabel.Width);
 
-			lblCritterPowerCategory.Left = lblCritterPowerCategoryLabel.Left + intWidth + 6;
-			lblCritterPowerType.Left = lblCritterPowerTypeLabel.Left + intWidth + 6;
-			lblCritterPowerAction.Left = lblCritterPowerActionLabel.Left + intWidth + 6;
-			lblCritterPowerRange.Left = lblCritterPowerRangeLabel.Left + intWidth + 6;
-			lblCritterPowerDuration.Left = lblCritterPowerDurationLabel.Left + intWidth + 6;
-			nudCritterPowerRating.Left = lblCritterPowerRatingLabel.Left + intWidth + 6;
-			lblCritterPowerSource.Left = lblCritterPowerSourceLabel.Left + intWidth + 6;
-			lblPowerPoints.Left = lblPowerPointsLabel.Left + intWidth + 6;
-		}
-		#endregion
+            lblCritterPowerCategory.Left = lblCritterPowerCategoryLabel.Left + intWidth + 6;
+            lblCritterPowerType.Left = lblCritterPowerTypeLabel.Left + intWidth + 6;
+            lblCritterPowerAction.Left = lblCritterPowerActionLabel.Left + intWidth + 6;
+            lblCritterPowerRange.Left = lblCritterPowerRangeLabel.Left + intWidth + 6;
+            lblCritterPowerDuration.Left = lblCritterPowerDurationLabel.Left + intWidth + 6;
+            nudCritterPowerRating.Left = lblCritterPowerRatingLabel.Left + intWidth + 6;
+            lblCritterPowerSource.Left = lblCritterPowerSourceLabel.Left + intWidth + 6;
+            lblPowerPoints.Left = lblPowerPointsLabel.Left + intWidth + 6;
+        }
+        #endregion
 
-		#region Properties
-		/// <summary>
-		/// Whether or not the user wants to add another item after this one.
-		/// </summary>
-		public bool AddAgain
-		{
-			get
-			{
-				return _blnAddAgain;
-			}
-		}
+        #region Properties
+        /// <summary>
+        /// Whether or not the user wants to add another item after this one.
+        /// </summary>
+        public bool AddAgain
+        {
+            get
+            {
+                return _blnAddAgain;
+            }
+        }
 
-		/// <summary>
-		/// Criter Power that was selected in the dialogue.
-		/// </summary>
-		public string SelectedPower
-		{
-			get
-			{
-				return _strSelectedPower;
-			}
-		}
+        /// <summary>
+        /// Criter Power that was selected in the dialogue.
+        /// </summary>
+        public string SelectedPower
+        {
+            get
+            {
+                return _strSelectedPower;
+            }
+        }
 
-		/// <summary>
-		/// Rating for the Critter Power that was selected in the dialogue.
-		/// </summary>
-		public int SelectedRating
-		{
-			get
-			{
-				return _intSelectedRating;
-			}
-		}
+        /// <summary>
+        /// Rating for the Critter Power that was selected in the dialogue.
+        /// </summary>
+        public int SelectedRating
+        {
+            get
+            {
+                return _intSelectedRating;
+            }
+        }
 
-		/// <summary>
-		/// Power Point cost for the Critter Power (only applies to Free Spirits).
-		/// </summary>
-		public double PowerPoints
-		{
-			get
-			{
-				return _dblPowerPoints;
-			}
-		}
-		#endregion
+        /// <summary>
+        /// Power Point cost for the Critter Power (only applies to Free Spirits).
+        /// </summary>
+        public double PowerPoints
+        {
+            get
+            {
+                return _dblPowerPoints;
+            }
+        }
+        #endregion
 
         private void lblCritterPowerSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.StaticOpenPDF(lblCritterPowerSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblCritterPowerSource.Text, _objCharacter);
         }
-	}
+    }
 }

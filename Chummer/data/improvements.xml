@@ -25,9 +25,9 @@
       <id>enableattribute</id>
       <internal>enableattribute</internal>
       <fields>
-        <field>val</field>
+        <field>SelectSpecialAttribute</field>
       </fields>
-      <xml><![CDATA[<name>{val}</name>]]></xml>
+      <xml><![CDATA[<name>{select}</name>]]></xml>
       <page>Unlocks the controls for an attribute, allowing the values to be increased. Expected values are MAG, RES or DEP for Magic, Resonance and Depth respectively.</page>
     </improvement>
     <improvement>
@@ -368,14 +368,14 @@
       <page>Adjusts the character's Initiative by the value entered. Positive numbers increase Initiative. Negative numbers reduce Initiative.</page>
     </improvement>
     <improvement>
-      <name>Initiative Passes</name>
-      <id>initiativepassadd</id>
-      <internal>initiativepassadd</internal>
+      <name>Initiative Dice</name>
+      <id>initiativediceadd</id>
+      <internal>initiativediceadd</internal>
       <fields>
         <field>val</field>
       </fields>
       <xml><![CDATA[{val}]]></xml>
-      <page>Adjusts the number of Initiative Passes the character receives by the value entered. Positive numbers increase the number of Initiative Passes. Negative numbers reduce the number of Initiative Passes.</page>
+      <page>Adjusts the number of Initiative Dice the character receives by the value entered. Positive numbers increase the number of Initiative Dice. Negative numbers reduce the number of Initiative Dice.</page>
     </improvement>
     <improvement>
       <name>Matrix Initiative</name>
@@ -467,46 +467,6 @@
       </fields>
       <xml><![CDATA[<name>{select}</name><bonus>{val}</bonus>]]></xml>
       <page>Adjusts the Damage Value of all Weapons in the selected category by the value entered. Positive numbers increase Weapon Damage Value. Negative numbers decrease Weapon Damage Value.</page>
-    </improvement>
-    <improvement>
-      <name>Movement Percent</name>
-      <id>movementpercent</id>
-      <internal>movementpercent</internal>
-      <fields>
-        <field>val</field>
-      </fields>
-      <xml><![CDATA[{val}]]></xml>
-      <page>Adjusts a character's Movement speed by the percent value entered. Positive numbers increase Movement speed. Negative numbers reduce Movement speed. This has no effect on characters that do not have a Movement speed.</page>
-    </improvement>
-    <improvement>
-      <name>Swim Percent</name>
-      <id>swimpercent</id>
-      <internal>swimpercent</internal>
-      <fields>
-        <field>val</field>
-      </fields>
-      <xml><![CDATA[{val}]]></xml>
-      <page>Adjusts a character's Swim speed by the percent value entered. Positive numbers increase Swim speed. Negative numbers reduce Swim speed. This has no effect on characters that do not have a Swim speed.</page>
-    </improvement>
-    <improvement>
-      <name>Fly Percent</name>
-      <id>flypercent</id>
-      <internal>flypercent</internal>
-      <fields>
-        <field>val</field>
-      </fields>
-      <xml><![CDATA[{val}]]></xml>
-      <page>Adjusts a character's Fly speed by the percent value entered. Positive numbers increase Fly speed. Negative numbers reduce Fly speed. This has no effect on characters that do not have a Fly speed.</page>
-    </improvement>
-    <improvement>
-      <name>Fly Speed</name>
-      <id>flyspeed</id>
-      <internal>flyspeed</internal>
-      <fields>
-        <field>val</field>
-      </fields>
-      <xml><![CDATA[{val}]]></xml>
-      <page>Grants a character a Fly speed of the value entered if they do not already have one. This has no effect on characters that already have a Fly speed.</page>
     </improvement>
     <improvement>
       <name>Power Points, Free Spirit</name>

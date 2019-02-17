@@ -17,9 +17,9 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer>
-	<version>0</version>
-	<categories>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema packs.xsd">
+  <version>0</version>
+  <categories>
     <category>Core Packs</category>
     <category>Weapon and Ammo Packs</category>
     <category>Armor Packs</category>
@@ -32,8 +32,8 @@
     <category>Magic Packs</category>
     <category>Community Packs</category>
     <category>Custom</category>
-	</categories>
-	<packs>
+  </categories>
+  <packs>
     <pack>
       <name>Intro Runner Pack</name>
       <category>Core Packs</category>
@@ -2554,11 +2554,11 @@
           <category>Software</category>
         </gear>
         <gear>
-          <name select="motorcycles and motorcycle parts">Shopsoft</name>
+          <name select="Motorcycles and Motorcycle Parts">Shopsoft</name>
           <category>Software</category>
         </gear>
         <gear>
-          <name select="Automotive mechanics">Tool Kit</name>
+          <name select="Automotive Mechanic">Tool Kit</name>
           <category>Tools</category>
         </gear>
       </gears>
@@ -2812,25 +2812,25 @@
       </vehicles>
     </pack>
     <!--Example PACK
- 		<pack>
-			<name>Data Thief Programs</name>
-			<category>Gear Kits</category>
-			<nuyenbp>4</nuyenbp>
-			<gears>
-				<gear>
-					<name>Decrypt</name>
-					<rating>5</rating>
-				</gear>
-				<gear>
-					<name>Defuse</name>
-					<rating>5</rating>
-				</gear>
-				<gear>
-					<name>Track</name>
-					<rating>5</rating>
-				</gear>
-			</gears>
-		</pack> -->
+    <pack>
+      <name>Data Thief Programs</name>
+      <category>Gear Kits</category>
+      <nuyenbp>4</nuyenbp>
+      <gears>
+        <gear>
+          <name>Decrypt</name>
+          <rating>5</rating>
+        </gear>
+        <gear>
+          <name>Defuse</name>
+          <rating>5</rating>
+        </gear>
+        <gear>
+          <name>Track</name>
+          <rating>5</rating>
+        </gear>
+      </gears>
+    </pack> -->
     <pack>
       <name>Runnerhub Basic Gear Pack</name>
       <category>Community Packs</category>
@@ -3366,5 +3366,5 @@
         </gear>
       </gears>
     </pack>
-	</packs>
+  </packs>
 </chummer>

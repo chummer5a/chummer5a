@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.treSpells = new System.Windows.Forms.TreeView();
             this.lblDescriptorsLabel = new System.Windows.Forms.Label();
             this.lblDescriptors = new System.Windows.Forms.Label();
@@ -53,6 +52,7 @@
             this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.chkExtended = new System.Windows.Forms.CheckBox();
             this.chkAlchemical = new System.Windows.Forms.CheckBox();
+            this.chkFreeBonus = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // treSpells
@@ -270,10 +270,15 @@
             // 
             // tipTooltip
             // 
+            this.tipTooltip.AllowLinksHandling = true;
             this.tipTooltip.AutoPopDelay = 10000;
+            this.tipTooltip.BaseStylesheet = null;
             this.tipTooltip.InitialDelay = 250;
             this.tipTooltip.IsBalloon = true;
+            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
+            this.tipTooltip.OwnerDraw = true;
             this.tipTooltip.ReshowDelay = 100;
+            this.tipTooltip.TooltipCssClass = "htmltooltip";
             this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.tipTooltip.ToolTipTitle = "Chummer Help";
             // 
@@ -306,6 +311,17 @@
         " increased by +2.");
             this.chkAlchemical.UseVisualStyleBackColor = true;
             // 
+            // chkFreeBonus
+            // 
+            this.chkFreeBonus.AutoSize = true;
+            this.chkFreeBonus.Location = new System.Drawing.Point(282, 286);
+            this.chkFreeBonus.Name = "chkFreeBonus";
+            this.chkFreeBonus.Size = new System.Drawing.Size(50, 17);
+            this.chkFreeBonus.TabIndex = 22;
+            this.chkFreeBonus.Tag = "";
+            this.chkFreeBonus.Text = "Free!";
+            this.chkFreeBonus.UseVisualStyleBackColor = true;
+            // 
             // frmSelectSpell
             // 
             this.AcceptButton = this.cmdOK;
@@ -313,6 +329,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(548, 560);
+            this.Controls.Add(this.chkFreeBonus);
             this.Controls.Add(this.chkAlchemical);
             this.Controls.Add(this.chkExtended);
             this.Controls.Add(this.chkLimited);
@@ -367,14 +384,15 @@
         private System.Windows.Forms.Label lblDV;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Button cmdCancel;
-		private System.Windows.Forms.TextBox txtSearch;
-		private System.Windows.Forms.Label lblSearchLabel;
-		private System.Windows.Forms.Button cmdOKAdd;
-		private System.Windows.Forms.Label lblSource;
-		private System.Windows.Forms.Label lblSourceLabel;
-		private System.Windows.Forms.CheckBox chkLimited;
-		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
-		private System.Windows.Forms.CheckBox chkExtended;
+        private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.Label lblSearchLabel;
+        private System.Windows.Forms.Button cmdOKAdd;
+        private System.Windows.Forms.Label lblSource;
+        private System.Windows.Forms.Label lblSourceLabel;
+        private System.Windows.Forms.CheckBox chkLimited;
+        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
+        private System.Windows.Forms.CheckBox chkExtended;
         private System.Windows.Forms.CheckBox chkAlchemical;
+        private System.Windows.Forms.CheckBox chkFreeBonus;
     }
 }

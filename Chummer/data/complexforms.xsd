@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+<xs:include schemaLocation="../data../bonuses.xsd" />
+<xs:include schemaLocation="../data../conditions.xsd" />
+  <xs:element name="chummer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="version" type="xs:string" minOccurs="0" />
+        <xs:element name="categories" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="category" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:simpleContent msdata:ColumnName="category_Text" msdata:Ordinal="0">
+                    <xs:extension base="xs:string">
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="complexforms" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="complexform" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="target" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="duration" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="fv" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element ref="bonus" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="source" type="xs:string" minOccurs="1"  maxOccurs="1" />
+                    <xs:element name="page" type="xs:string" minOccurs="1"  maxOccurs="1" />
+                    <xs:element ref="required" minOccurs="0" maxOccurs="1" />
+                    <xs:element ref="forbidden" minOccurs="0" maxOccurs="1" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="chummer" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

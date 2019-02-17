@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,12 +31,29 @@ namespace Chummer
         string Name { get; set; }
     }
 
+    public interface IItemWithNode
+    {
+        System.Xml.XmlNode MyXmlNode { get; }
+    }
+
     public interface IHasChildren<T>
     {
         List<T> Children { get; }
     }
 
+    public interface INamedItemWithNode : INamedItem, IItemWithNode
+    {
+    }
+
     public interface INamedItemWithGuid : IItemWithGuid, INamedItem
+    {
+    }
+
+    public interface IItemWithGuidAndNode : IItemWithGuid, IItemWithNode
+    {
+    }
+
+    public interface INamedItemWithGuidAndNode : INamedItemWithGuid, IItemWithGuidAndNode, INamedItemWithNode
     {
     }
 
@@ -44,7 +61,23 @@ namespace Chummer
     {
     }
 
-    public interface INamedParentWithGuid<T> : INamedParent<T>, IItemWithGuid
+    public interface IParentWithNode<T> : IHasChildren<T>, IItemWithNode
+    {
+    }
+
+    public interface IParentWithGuidAndNode<T> : IParentWithNode<T>, INamedItemWithGuidAndNode
+    {
+    }
+
+    public interface INamedParentWithNode<T> : IHasChildren<T>, INamedItemWithNode
+    {
+    }
+
+    public interface INamedParentWithGuid<T> : INamedParent<T>, INamedItemWithGuid, INamedItemWithNode
+    {
+    }
+
+    public interface INamedParentWithGuidAndNode<T> : INamedParentWithGuid<T>, INamedParentWithNode<T>, IParentWithGuidAndNode<T>, IParentWithNode<T>, INamedItemWithGuidAndNode
     {
     }
 }

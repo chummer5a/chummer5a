@@ -21,6 +21,15 @@
   <version>-494</version>
   <name>Français</name>
   <strings>
+	<!-- Meta Strings -->
+	<string>
+		<key>Message_Insufficient_Permissions_Warning</key>
+		<text>Chummer5 is currently not being run with proper permissions! If you are not running Chummer5 as an administrator, please move it to a folder owned by your user.</text>
+	</string>
+	<string>
+		<key>Message_Save_Error_Warning</key>
+		<text>Chummer5 encountered an error while saving the character.</text>
+	</string>
     <!-- Common Strings -->
     <string>
       <key>String_BP</key>
@@ -114,10 +123,10 @@
       <key>Label_Karma</key>
       <text>Karma :</text>
     </string>
-	<string>
-			<key>Label_LP</key>
-			<text>LP:</text>
-	</string>
+  <string>
+      <key>Label_LP</key>
+      <text>LP:</text>
+  </string>
     <string>
       <key>Label_KarmaRemaining</key>
       <text>Karma restant :</text>
@@ -162,7 +171,7 @@
       <key>Label_Armor</key>
       <text>Blindage :</text>
     </string>
-	<string>
+  <string>
       <key>Label_Seats</key>
       <text>Sièges :</text>
     </string>
@@ -254,7 +263,7 @@
       <key>Label_Mount</key>
       <text>Monture :</text>
     </string>
-	<string>
+  <string>
       <key>Label_Mount</key>
       <text>Monture Extra :</text>
     </string>
@@ -2798,10 +2807,10 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <key>Label_FreeKnowledgeSkills</key>
       <text>Points gratuits restants :</text>
     </string>
-	<string>
-		<key>Label_CustomKnowledgeSkillsReminder</key>
-		<text>Rappelez-vous que vous pouvez toujours ajouter compétences et spécialisations personalisés!</text>
-	</string>
+  <string>
+    <key>Label_CustomKnowledgeSkillsReminder</key>
+    <text>Rappelez-vous que vous pouvez toujours ajouter compétences et spécialisations personalisés!</text>
+  </string>
     <string>
       <key>Button_AddSkill</key>
       <text>&amp;Ajout Comp.</text>
@@ -3459,7 +3468,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <key>Label_Mugshot</key>
       <text>Photo du suspect</text>
     </string>
-	<string>
+  <string>
       <key>Label_MugshotDimensions</key>
       <text>210 X 310 pixels</text>
     </string>
@@ -4442,7 +4451,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Label_LifestyleNuyen_ResultOf</key>
-      <text>Résultat de</text>
+      <text>Résultat de {0}D6: (</text>
     </string>
     <!-- Select Metatype Window -->
     <string>
@@ -4986,10 +4995,10 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <key>Checkbox_Options_AutomaticUpdates</key>
       <text>Mises à jour automatiques</text>
     </string>
-	<string>
-			<key>Checkbox_Options_UseCyberlimbCalculation</key>
-			<text>Ne pas utiliser cybernétiques pour le calcul des attributs augmentés</text>
-		</string>
+  <string>
+      <key>Checkbox_Options_UseCyberlimbCalculation</key>
+      <text>Ne pas utiliser cybernétiques pour le calcul des attributs augmentés</text>
+    </string>
     <string>
       <key>Checkbox_Options_ConfirmDelete</key>
       <text>Demander confirmation avant d'effacer un article</text>
@@ -6037,10 +6046,10 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <key>Checkbox_SelectQuality_Metagenetic</key>
       <text>N'afficher que les traits métagénétiques</text>
     </string>
-	<string>
-		<key>Checkbox_SelectQuality_Not_Metagenetic</key>
-		<text>Ne pas afficher Qualités Meta génétiques</text>
-	</string>
+  <string>
+    <key>Checkbox_SelectQuality_Not_Metagenetic</key>
+    <text>Ne pas afficher Qualités Meta génétiques</text>
+  </string>
     <string>
       <key>Message_SelectQuality_QualityLimit</key>
       <text>Ce Trait ne peut pas être pris plus d'une fois.</text>
@@ -6910,6 +6919,14 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <key>String_CustomItem_SelectText</key>
       <text>Entrez un nom pour cet objet personnalisé.</text>
     </string>
+	<string>
+      <key>Message_Improvement_EmptySelectionList</key>
+      <text>No eligible items could be selected for this effect!</text>
+    </string>
+	<string>
+      <key>Message_Improvement_EmptySelectionListNamed</key>
+      <text>No eligible items could be selected for {0} to affect!</text>
+    </string>
     <string>
       <key>MessageTitle_Metatype_SelectTalent</key>
       <text>Selectionner un Talent</text>
@@ -7307,7 +7324,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Val (Aug)</text>
     </string>
     <string>
-      <key>Tip_OptionsKnucks</key>
+      <key>Tip_OptionsUnarmedSkillImprovements</key>
       <text>Enabling this house rule allows Knucks to benefit from bonuses that apply to unarmed attacks including DV bonuses.</text>
     </string>
     <string>
@@ -7394,10 +7411,10 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <key>Checkbox_Options_AllowInitiation</key>
       <text>Allow Initiation/Submersion in Create mode</text>
     </string>
-	<string>
-			<key>Checkbox_Options_DroneArmorMultiplier</key>
-			<text>Limitez Drone Armure Enhancement à Drone Armure</text>
-		</string>
+  <string>
+      <key>Checkbox_Options_DroneArmorMultiplier</key>
+      <text>Limitez Drone Armure Enhancement à Drone Armure</text>
+    </string>
     <string>
       <key>String_Improvement_SelectLimitNamed</key>
       <text>Choose a Limit for {0} to affect.</text>
@@ -7422,75 +7439,75 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <key>Tip_Skill_AddSpecialization</key>
       <text>Add Specialization for {0} Karma</text>
     </string>
-	<!-- Advanced Programs Region -->
-			<string>
-			<key>Label_SummaryAINormalPrograms</key>
-			<text>Programmes Normales</text>
-		</string>
-		<string>
-			<key>Label_SummaryAIAdvancedPrograms</key>
-			<text>Programmes Avancés</text>
-		</string>
-		<string>
-			<key>Label_Options_NewAIProgram</key>
-			<text>Nouveau Programme (IA)</text>
-		</string>
-		<string>
-			<key>Label_Options_NewAIAdvancedProgram</key>
-			<text>Nouveau Programme Avancé (IA)</text>
-		</string>
-		<!-- Advanced Programs Tab -->
-		<string>
-			<key>Tab_AdvancedPrograms</key>
-			<text>Programmes Avancés</text>
-		</string>
-		<string>
-			<key>Label_AIProgramsAdvancedPrograms</key>
-			<text>Programmes et Programmes Avancés d'IA</text>
-		</string>
-		<string>
-			<key>Button_AddProgram</key>
-			<text>Ajouter Programme</text>
-		</string>
-		<string>
-			<key>String_Requires</key>
-			<text>Prérequis:</text>
-		</string>
-		<string>
-			<key>Node_SelectedAIPrograms</key>
-			<text>Programmes et Programmes Avancés d'IA qui sont Selectionnés</text>
-		</string>
-		<!-- End Region-->
-		<!-- Select AI Program Window -->
-		<string>
-			<key>Title_SelectAIProgram</key>
-			<text>Sélection d'un Programme ou Programme Avancé</text>
-		</string>
-		<string>
-			<key>Message_SelectAIProgram_AdvancedProgramRequirement</key>
-			<text>Vous ne réunissez pas les conditions minimales pour ce programme avancé. Vous devez savoir tout les programmes suivants: </text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>
-			<text>Prérequis du Programme Avancé</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectAIProgram_LimitList</key>
-			<text>N'afficher que les programmes d'IA pouvant être prises</text>
-		</string>
-		<string>
-			<key>Message_DeleteAIProgram</key>
-			<text>Êtes-vous sûr de vouloir supprimer ce programme d'IA?</text>
-		</string>
-		<!-- End Region -->
-		<string>
-			<key>String_ExpenseLearnProgram</key>
-			<text>Apprentissage du programme d'IA</text>
-		</string>
-		<string>
-			<key>Message_DroneIllegalDowngrade</key>
-			<text>Les {0} drones suivants ont des rétrogradés qui trop réduisent leurs attributs:</text>
-		</string>
-	<!-- End Region -->
+  <!-- Advanced Programs Region -->
+      <string>
+      <key>Label_SummaryAINormalPrograms</key>
+      <text>Programmes Normales</text>
+    </string>
+    <string>
+      <key>Label_SummaryAIAdvancedPrograms</key>
+      <text>Programmes Avancés</text>
+    </string>
+    <string>
+      <key>Label_Options_NewAIProgram</key>
+      <text>Nouveau Programme (IA)</text>
+    </string>
+    <string>
+      <key>Label_Options_NewAIAdvancedProgram</key>
+      <text>Nouveau Programme Avancé (IA)</text>
+    </string>
+    <!-- Advanced Programs Tab -->
+    <string>
+      <key>Tab_AdvancedPrograms</key>
+      <text>Programmes Avancés</text>
+    </string>
+    <string>
+      <key>Label_AIProgramsAdvancedPrograms</key>
+      <text>Programmes et Programmes Avancés d'IA</text>
+    </string>
+    <string>
+      <key>Button_AddProgram</key>
+      <text>Ajouter Programme</text>
+    </string>
+    <string>
+      <key>String_Requires</key>
+      <text>Prérequis:</text>
+    </string>
+    <string>
+      <key>Node_SelectedAIPrograms</key>
+      <text>Programmes et Programmes Avancés d'IA qui sont Selectionnés</text>
+    </string>
+    <!-- End Region-->
+    <!-- Select AI Program Window -->
+    <string>
+      <key>Title_SelectAIProgram</key>
+      <text>Sélection d'un Programme ou Programme Avancé</text>
+    </string>
+    <string>
+      <key>Message_SelectAIProgram_AdvancedProgramRequirement</key>
+      <text>Vous ne réunissez pas les conditions minimales pour ce programme avancé. Vous devez savoir tout les programmes suivants: </text>
+    </string>
+    <string>
+      <key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>
+      <text>Prérequis du Programme Avancé</text>
+    </string>
+    <string>
+      <key>Checkbox_SelectAIProgram_LimitList</key>
+      <text>N'afficher que les programmes d'IA pouvant être prises</text>
+    </string>
+    <string>
+      <key>Message_DeleteAIProgram</key>
+      <text>Êtes-vous sûr de vouloir supprimer ce programme d'IA?</text>
+    </string>
+    <!-- End Region -->
+    <string>
+      <key>String_ExpenseLearnProgram</key>
+      <text>Apprentissage du programme d'IA</text>
+    </string>
+    <string>
+      <key>Message_DroneIllegalDowngrade</key>
+      <text>Les {0} drones suivants ont des rétrogradés qui trop réduisent leurs attributs:</text>
+    </string>
+  <!-- End Region -->
   </strings>
 </chummer>

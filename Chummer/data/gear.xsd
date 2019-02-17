@@ -1,131 +1,180 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-<xs:include schemaLocation="../data../bonuses.xsd" />
+    <xs:include schemaLocation="../data../bonuses.xsd" />
+    <xs:include schemaLocation="../data../conditions.xsd" />
 
-  <xs:element name="chummer">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="version" type="xs:string" minOccurs="0" />
-        <xs:element name="categories" minOccurs="0" maxOccurs="unbounded">
-          <xs:complexType>
+    <xs:element name="chummer">
+        <xs:complexType>
             <xs:sequence>
-              <xs:element name="category" nillable="true" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:simpleContent msdata:ColumnName="category_Text" msdata:Ordinal="0">
-                    <xs:extension base="xs:string">
-					  <xs:attribute name="show" type="xs:string" use="optional" />
-                    </xs:extension>
-                  </xs:simpleContent>
-                </xs:complexType>
-              </xs:element>
+                <xs:element name="version" type="xs:string" minOccurs="0" />
+                <xs:element name="categories" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="category" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:simpleContent msdata:ColumnName="category_Text" msdata:Ordinal="0">
+                                        <xs:extension base="xs:string">
+                                            <xs:attribute name="show" type="xs:string" use="optional" />
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="gears" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="gear" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="rating" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="addoncategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                                        <xs:element name="addweapon" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                                        <xs:element name="armorcapacity" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="attack" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="attributearray" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="modattributearray" type="xs:string" minOccurs="0" maxOccurs="1" />
+										<xs:element name="matrixcmbonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                                        <xs:element ref="bonus" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="capacity" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="childavailmodifier" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="childcostmultiplier" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="cost" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="costfor" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="dataprocessing" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="devicerating" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="firewall" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element ref="gears" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="minrating" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="programs" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element ref="required" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="response" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="signal" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="skill" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="sleaze" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="system" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="tags" minOccurs="0" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="tag" minOccurs="0" maxOccurs="unbounded" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="weaponbonus" minOccurs="0" maxOccurs="1">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="accuracy" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                                    <xs:element name="ap" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                                    <xs:element name="apreplace" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                                    <xs:element name="damage" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                                    <xs:element name="damagereplace" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                                    <xs:element name="damagetype" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                                    <xs:element name="mode" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                                    <xs:element name="modereplace" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                                    <xs:element name="pool" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                                    <xs:element name="rangebonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                                                    <xs:element name="rc" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                                    <xs:element name="userange" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
             </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-        <xs:element name="gears" minOccurs="0" maxOccurs="unbounded">
-          <xs:complexType>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="gears">
+        <xs:complexType>
             <xs:sequence>
-              <xs:element name="gear" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="addoncategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-                    <xs:element name="rating" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element name="minrating" type="xs:string" minOccurs="0" maxOccurs="1" />
-					<xs:element name="capacity" type="xs:string" minOccurs="0" maxOccurs="1" />
-					<xs:element name="armorcapacity" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="firewall" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="system" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="response" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="signal" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="devicerating" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="attack" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="sleaze" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="dataprocessing" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="firewall" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element name="avail3" type="xs:string" minOccurs="0" maxOccurs="1" />
-					<xs:element name="avail6" type="xs:string" minOccurs="0" maxOccurs="1" />
-					<xs:element name="avail10" type="xs:string" minOccurs="0" maxOccurs="1" />
-					<xs:element name="addweapon" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-                    <xs:element name="cost3" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="cost6" type="xs:string" minOccurs="0" maxOccurs="1" />
-					<xs:element name="cost10" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="costfor" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="cost" type="xs:string" minOccurs="0" maxOccurs="1" />
-					<xs:element name="weaponbonus" minOccurs="0" maxOccurs="1">
-					  <xs:complexType>
-					    <xs:sequence>
-						  <xs:element name="ap" type="xs:string" minOccurs="0" maxOccurs="1" />
-						  <xs:element name="apreplace" type="xs:string" minOccurs="0" maxOccurs="1" />
-						  <xs:element name="damage" type="xs:string" minOccurs="0" maxOccurs="1" />
-						  <xs:element name="damagereplace" type="xs:string" minOccurs="0" maxOccurs="1" />
-						  <xs:element name="damagetype" type="xs:string" minOccurs="0" maxOccurs="1" />
-						  <xs:element name="mode" type="xs:string" minOccurs="0" maxOccurs="1" />
-						  <xs:element name="modereplace" type="xs:string" minOccurs="0" maxOccurs="1" />
-						  <xs:element name="pool" type="xs:string" minOccurs="0" maxOccurs="1" />
-						  <xs:element name="rangebonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
-						  <xs:element name="rc" type="xs:string" minOccurs="0" maxOccurs="1" />
-						  <xs:element name="userange" type="xs:string" minOccurs="0" maxOccurs="1" />
-						</xs:sequence>
-					  </xs:complexType>
-					</xs:element>
-					<xs:element ref="bonus" minOccurs="0" maxOccurs="1" />
-					<xs:element name="childcostmultiplier" type="xs:integer" minOccurs="0" maxOccurs="1" />
-					<xs:element name="childavailmodifier" type="xs:integer" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element ref="gears" minOccurs="0" maxOccurs="1" />
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
+                <xs:element name="gear" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                            <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
+							<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="usegear" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="name" minOccurs="1" maxOccurs="1">
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="xs:string">
+                                            <xs:attribute name="select" type="xs:string" use="optional" />
+											<xs:attribute name="createchildren" type="xs:string" use="optional" />
+											<xs:attribute name="addimprovements" type="xs:string" use="optional" />
+											<xs:attribute name="qty" type="xs:string" use="optional" />
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
+                            <xs:element name="rating" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                            <xs:element name="capacity" type="xs:integer" minOccurs="0" maxOccurs="1" />
+							<xs:element name="page" type="xs:integer" minOccurs="0" maxOccurs="1" />
+							<xs:element name="source" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                            <xs:element ref="gears" minOccurs="0" maxOccurs="1">
+							</xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+				<xs:element name="choosegear" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="usegear" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="name" minOccurs="1" maxOccurs="1">
+											<xs:complexType>
+												<xs:simpleContent>
+													<xs:extension base="xs:string">
+														<xs:attribute name="select" type="xs:string" use="optional" />
+														<xs:attribute name="createchildren" type="xs:string" use="optional" />
+														<xs:attribute name="addimprovements" type="xs:string" use="optional" />
+														<xs:attribute name="qty" type="xs:string" use="optional" />
+													</xs:extension>
+												</xs:simpleContent>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
+										<xs:element name="rating" type="xs:integer" minOccurs="0" maxOccurs="1" />
+										<xs:element name="capacity" type="xs:integer" minOccurs="0" maxOccurs="1" />
+										<xs:element name="page" type="xs:integer" minOccurs="0" maxOccurs="1" />
+										<xs:element name="source" type="xs:integer" minOccurs="0" maxOccurs="1" />
+										<xs:element ref="gears" minOccurs="0" maxOccurs="1">
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+					<xs:attribute name="required" type="xs:string" use="optional" />
+                </xs:element>
             </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  
-<xs:element name="gears">
-  <xs:complexType>
-	<xs:sequence>
-	  <xs:element name="gear" minOccurs="0" maxOccurs="unbounded">
-		<xs:complexType>
-		  <xs:sequence>
-			<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-			<xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
-		  </xs:sequence>
-		</xs:complexType>
-	  </xs:element>
-	  <xs:element name="usegear" minOccurs="0" maxOccurs="unbounded">
-		<xs:complexType>
-			<xs:sequence>
-			  <xs:element name="name" minOccurs="1" maxOccurs="1">
-				<xs:complexType>
-				  <xs:simpleContent>
-					  <xs:extension base="xs:string">
-						<xs:attribute name="select" type="xs:string" use="optional" />
-					  </xs:extension>
-				  </xs:simpleContent>
-				</xs:complexType>
-			  </xs:element>
-			  <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1"/>
-			  <xs:element name="rating" type="xs:integer" minOccurs="0" maxOccurs="1" />
-			  <xs:element name="capacity" type="xs:integer" minOccurs="0" maxOccurs="1" />
-			  <xs:element ref="gears" minOccurs="0" maxOccurs="1" />
-			</xs:sequence>
-		</xs:complexType>
-	  </xs:element>
-	</xs:sequence>
-  </xs:complexType>
-</xs:element>
-  
-  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
-    <xs:complexType>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element ref="chummer" />
-      </xs:choice>
-    </xs:complexType>
-  </xs:element>
+			<xs:attribute name="startcollapsed" type="xs:string" use="optional" />
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="chummer" />
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
 </xs:schema>

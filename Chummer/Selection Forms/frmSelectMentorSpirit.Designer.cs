@@ -1,34 +1,33 @@
 ﻿namespace Chummer
 {
-	partial class frmSelectMentorSpirit
-	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+    partial class frmSelectMentorSpirit
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-            this.components = new System.ComponentModel.Container();
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             this.lblDisadvantage = new System.Windows.Forms.Label();
             this.lblDisadvantageLabel = new System.Windows.Forms.Label();
             this.lblAdvantage = new System.Windows.Forms.Label();
@@ -42,6 +41,7 @@
             this.cboChoice1 = new System.Windows.Forms.ComboBox();
             this.cboChoice2 = new System.Windows.Forms.ComboBox();
             this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
+            this.chkMentorMask = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // lblDisadvantage
@@ -169,12 +169,27 @@
             // 
             // tipTooltip
             // 
+            this.tipTooltip.AllowLinksHandling = true;
             this.tipTooltip.AutoPopDelay = 10000;
+            this.tipTooltip.BaseStylesheet = null;
             this.tipTooltip.InitialDelay = 250;
             this.tipTooltip.IsBalloon = true;
+            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
+            this.tipTooltip.OwnerDraw = true;
             this.tipTooltip.ReshowDelay = 100;
+            this.tipTooltip.TooltipCssClass = "htmltooltip";
             this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.tipTooltip.ToolTipTitle = "Chummer Help";
+            // 
+            // chkMentorMask
+            // 
+            this.chkMentorMask.AutoSize = true;
+            this.chkMentorMask.Location = new System.Drawing.Point(321, 113);
+            this.chkMentorMask.Name = "chkMentorMask";
+            this.chkMentorMask.Size = new System.Drawing.Size(117, 17);
+            this.chkMentorMask.TabIndex = 14;
+            this.chkMentorMask.Text = "Use Mentor\'s Mask";
+            this.chkMentorMask.UseVisualStyleBackColor = true;
             // 
             // frmSelectMentorSpirit
             // 
@@ -182,6 +197,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(682, 362);
+            this.Controls.Add(this.chkMentorMask);
             this.Controls.Add(this.cboChoice2);
             this.Controls.Add(this.cboChoice1);
             this.Controls.Add(this.lblChoice2);
@@ -206,22 +222,23 @@
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
+        }
 
-		#endregion
+        #endregion
 
         private System.Windows.Forms.Label lblDisadvantage;
-		private System.Windows.Forms.Label lblDisadvantageLabel;
-		private System.Windows.Forms.Label lblAdvantage;
-		private System.Windows.Forms.Label lblAdvantageLabel;
-		private System.Windows.Forms.Button cmdOK;
-		private System.Windows.Forms.ListBox lstMentor;
-		private System.Windows.Forms.Label lblSource;
-		private System.Windows.Forms.Label lblSourceLabel;
-		private System.Windows.Forms.Label lblChoice1;
-		private System.Windows.Forms.Label lblChoice2;
-		private System.Windows.Forms.ComboBox cboChoice1;
-		private System.Windows.Forms.ComboBox cboChoice2;
-		private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
-	}
+        private System.Windows.Forms.Label lblDisadvantageLabel;
+        private System.Windows.Forms.Label lblAdvantage;
+        private System.Windows.Forms.Label lblAdvantageLabel;
+        private System.Windows.Forms.Button cmdOK;
+        private System.Windows.Forms.ListBox lstMentor;
+        private System.Windows.Forms.Label lblSource;
+        private System.Windows.Forms.Label lblSourceLabel;
+        private System.Windows.Forms.Label lblChoice1;
+        private System.Windows.Forms.Label lblChoice2;
+        private System.Windows.Forms.ComboBox cboChoice1;
+        private System.Windows.Forms.ComboBox cboChoice2;
+        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
+        private System.Windows.Forms.CheckBox chkMentorMask;
+    }
 }

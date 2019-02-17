@@ -23,75 +23,66 @@ using System.Xml;
 
 namespace Chummer
 {
-	public partial class frmSelectWeaponCategory : Form
-	{
-		private string _strSelectedCategory = string.Empty;
-		private string _strForceCategory = string.Empty;
+    public partial class frmSelectWeaponCategory : Form
+    {
+        private string _strSelectedCategory = string.Empty;
+        private string _strForceCategory = string.Empty;
 
-		public string WeaponType { get; set; }
+        public string WeaponType { get; set; }
 
-		private XmlDocument _objXmlDocument = new XmlDocument();
+        private readonly XmlDocument _objXmlDocument = null;
 
-		#region Control Events
-		public frmSelectWeaponCategory()
-		{
-			InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-		}
+        #region Control Events
+        public frmSelectWeaponCategory()
+        {
+            InitializeComponent();
+            LanguageManager.Load(GlobalOptions.Language, this);
+            _objXmlDocument = XmlManager.Load("weapons.xml");
+        }
 
-		private void frmSelectWeaponCategory_Load(object sender, EventArgs e)
-		{
-			_objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+        private void frmSelectWeaponCategory_Load(object sender, EventArgs e)
+        {
+            // Build a list of Weapon Categories found in the Weapons file.
+            XmlNodeList objXmlCategoryList;
+            List<ListItem> lstCategory = new List<ListItem>();
+            if (!string.IsNullOrEmpty(_strForceCategory))
+            {
+                objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category[. = \"" + _strForceCategory + "\"]");
+            }
+            else
+            {
+                objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
+            }
 
-			// Build a list of Weapon Categories found in the Weapons file.
-			XmlNodeList objXmlCategoryList;
-			List<ListItem> lstCategory = new List<ListItem>();
-			if (!string.IsNullOrEmpty(_strForceCategory))
-			{
-				objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category[. = \"" + _strForceCategory + "\"]");
-			}
-			else
-			{
-				objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-			}
+            foreach (XmlNode objXmlCategory in objXmlCategoryList)
+            {
+                if (WeaponType != null)
+                {
+                    if (objXmlCategory.Attributes["type"] == null)
+                        continue;
 
-			foreach (XmlNode objXmlCategory in objXmlCategoryList)
-			{
-				if (WeaponType != null)
-				{
-					if (objXmlCategory.Attributes["type"] == null)
-						continue;
+                    if (objXmlCategory.Attributes["type"].Value != WeaponType)
+                        continue;
+                }
 
-					if (objXmlCategory.Attributes["type"].Value != WeaponType)
-						continue;
-				}
+                ListItem objItem = new ListItem();
+                objItem.Value = objXmlCategory.InnerText;
+                objItem.Name = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText;
+                lstCategory.Add(objItem);
+            }
 
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlCategory.InnerText;
-				if (objXmlCategory.Attributes != null)
-				{
-					if (objXmlCategory.Attributes["translate"] != null)
-						objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
-					else
-						objItem.Name = objXmlCategory.InnerText;
-				}
-				else
-					objItem.Name = objXmlCategory.InnerText;
-				lstCategory.Add(objItem);
-			}
-
-			// Add the Cyberware Category.
-			if (/*string.IsNullOrEmpty(_strForceCategory) ||*/ _strForceCategory == "Cyberware")
-			{
-				ListItem objItem = new ListItem();
-				objItem.Value = "Cyberware";
-				objItem.Name = "Cyberware";
-				lstCategory.Add(objItem);
-			}
+            // Add the Cyberware Category.
+            if (/*string.IsNullOrEmpty(_strForceCategory) ||*/ _strForceCategory == "Cyberware")
+            {
+                ListItem objItem = new ListItem();
+                objItem.Value = "Cyberware";
+                objItem.Name = "Cyberware";
+                lstCategory.Add(objItem);
+            }
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
-			cboCategory.DisplayMember = "Name";
-			cboCategory.DataSource = lstCategory;
+            cboCategory.DisplayMember = "Name";
+            cboCategory.DataSource = lstCategory;
 
             // Select the first Skill in the list.
             if (cboCategory.Items.Count > 0)
@@ -99,49 +90,49 @@ namespace Chummer
             cboCategory.EndUpdate();
 
             if (cboCategory.Items.Count == 1)
-				cmdOK_Click(sender, e);
-		}
+                cmdOK_Click(sender, e);
+        }
 
-		private void cmdOK_Click(object sender, EventArgs e)
-		{
-			_strSelectedCategory = cboCategory.SelectedValue.ToString();
-			DialogResult = DialogResult.OK;
-		}
-		#endregion
+        private void cmdOK_Click(object sender, EventArgs e)
+        {
+            _strSelectedCategory = cboCategory.SelectedValue.ToString();
+            DialogResult = DialogResult.OK;
+        }
+        #endregion
 
-		#region Properties
-		/// <summary>
-		/// Weapon Category that was selected in the dialogue.
-		/// </summary>
-		public string SelectedCategory
-		{
-			get
-			{
-				return _strSelectedCategory;
-			}
-		}
+        #region Properties
+        /// <summary>
+        /// Weapon Category that was selected in the dialogue.
+        /// </summary>
+        public string SelectedCategory
+        {
+            get
+            {
+                return _strSelectedCategory;
+            }
+        }
 
-		/// <summary>
-		/// Description to show in the window.
-		/// </summary>
-		public string Description
-		{
-			set
-			{
-				lblDescription.Text = value;
-			}
-		}
+        /// <summary>
+        /// Description to show in the window.
+        /// </summary>
+        public string Description
+        {
+            set
+            {
+                lblDescription.Text = value;
+            }
+        }
 
-		/// <summary>
-		/// Restrict the list to only a single Category.
-		/// </summary>
-		public string OnlyCategory
-		{
-			set
-			{
-				_strForceCategory = value;
-			}
-		}
-		#endregion
-	}
+        /// <summary>
+        /// Restrict the list to only a single Category.
+        /// </summary>
+        public string OnlyCategory
+        {
+            set
+            {
+                _strForceCategory = value;
+            }
+        }
+        #endregion
+    }
 }

@@ -23,6 +23,15 @@
   <version>-497</version>
   <name>日本語 (JP)</name>
   <strings>
+	<!-- Meta Strings -->
+	<string>
+		<key>Message_Insufficient_Permissions_Warning</key>
+		<text>Chummer5 is currently not being run with proper permissions! If you are not running Chummer5 as an administrator, please move it to a folder owned by your user.</text>
+	</string>
+	<string>
+		<key>Message_Save_Error_Warning</key>
+		<text>Chummer5 encountered an error while saving the character.</text>
+	</string>
     <!-- Common Strings -->
     <string>
       <key>String_BP</key>
@@ -120,10 +129,10 @@
       <key>Label_Karma</key>
       <text>カルマ:</text>
     </string>
-	<string>
-		<key>Label_LP</key>
-		<text>カルマ:</text>
-	</string>
+  <string>
+    <key>Label_LP</key>
+    <text>カルマ:</text>
+  </string>
     <string>
       <key>Label_KarmaRemaining</key>
       <text>残りカルマ:</text>
@@ -168,7 +177,7 @@
       <key>Label_Armor</key>
       <text>装甲値:</text>
     </string>
-	<string>
+  <string>
       <key>Label_Seats</key>
       <text>席値:</text>
     </string>
@@ -260,10 +269,10 @@
       <key>Label_Mount</key>
       <text>Mount:</text>
     </string>
-	<string>
-		<key>Label_ExtraMount</key>
-		<text>Extra Mount:</text>
-	</string>
+  <string>
+    <key>Label_ExtraMount</key>
+    <text>Extra Mount:</text>
+  </string>
     <string>
       <key>Label_DataFile</key>
       <text>データファイル:</text>
@@ -2811,10 +2820,10 @@
       <key>Label_FreeKnowledgeSkills</key>
       <text>初期知識技能点の残り:</text>
     </string>
-	<string>
-		<key>Label_CustomKnowledgeSkillsReminder</key>
-		<text>Remember, you can always write in custom skills and specializations!</text>
-	</string>
+  <string>
+    <key>Label_CustomKnowledgeSkillsReminder</key>
+    <text>Remember, you can always write in custom skills and specializations!</text>
+  </string>
     <string>
       <key>Button_AddSkill</key>
       <text>技能を追加 (&amp;A)</text>
@@ -3476,7 +3485,7 @@
       <key>Label_Mugshot</key>
       <text>顔写真:</text>
     </string>
-	<string>
+  <string>
       <key>Label_MugshotDimensions</key>
       <text>210 × 310 ピクセル</text>
     </string>
@@ -4457,10 +4466,6 @@
       <key>Label_LifestyleNuyen_Description</key>
       <text>キャラクターの開始時の新円の額を決めるため, 下に表示された数のダイスを振ってください.</text>
     </string>
-    <string>
-      <key>Label_LifestyleNuyen_ResultOf</key>
-      <text>ダイス数</text>
-    </string>
     <!-- Select Metatype Window -->
     <string>
       <key>Title_Metatype</key>
@@ -5027,10 +5032,10 @@
       <key>Checkbox_Options_PrintExpenses</key>
       <text>カルマと新円の支出を印刷する</text>
     </string>
-	<string>
-			<key>Checkbox_Options_UseCyberlimbCalculation</key>
-			<text>増補属性を計算するためCyberlimbsを使用しないでください</text>
-		</string>	
+  <string>
+      <key>Checkbox_Options_UseCyberlimbCalculation</key>
+      <text>増補属性を計算するためCyberlimbsを使用しないでください</text>
+    </string>    
     <string>
       <key>Label_Options_BPAttribute</key>
       <text>能力値</text>
@@ -6078,10 +6083,10 @@
       <key>Checkbox_SelectQuality_Metagenetic</key>
       <text>メタジェネティックの資質のみを表示</text>
     </string>
-	<string>
-		<key>Checkbox_SelectQuality_Not_Metagenetic</key>
-		<text>メタ遺伝的資質を表示しません</text>
-	</string>
+  <string>
+    <key>Checkbox_SelectQuality_Not_Metagenetic</key>
+    <text>メタ遺伝的資質を表示しません</text>
+  </string>
     <string>
       <key>Message_SelectQuality_QualityLimit</key>
       <text>この資質を複数取ることはできません.</text>
@@ -7016,7 +7021,7 @@
       <text>Val (Aug)</text>
     </string>
     <string>
-      <key>Tip_OptionsKnucks</key>
+      <key>Tip_OptionsUnarmedSkillImprovements</key>
       <text>Enabling this house rule allows Knucks to benefit from bonuses that apply to unarmed attacks including DV bonuses.</text>
     </string>
     <string>
@@ -7239,10 +7244,10 @@
       <key>Checkbox_Options_AllowInitiation</key>
       <text>Allow Initiation/Submersion in Create mode</text>
     </string>
-	<string>
-			<key>Checkbox_Options_DroneArmorMultiplier</key>
-			<text>ドローンアーマーにドローンアーマー強化を制限</text>
-		</string>
+  <string>
+      <key>Checkbox_Options_DroneArmorMultiplier</key>
+      <text>ドローンアーマーにドローンアーマー強化を制限</text>
+    </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Qualities</key>
       <text>Qualities</text>
@@ -7351,6 +7356,14 @@
       <key>String_CustomItem_SelectText</key>
       <text>Enter a name for this custom item.</text>
     </string>
+	<string>
+      <key>Message_Improvement_EmptySelectionList</key>
+      <text>No eligible items could be selected for this effect!</text>
+    </string>
+	<string>
+      <key>Message_Improvement_EmptySelectionListNamed</key>
+      <text>No eligible items could be selected for {0} to affect!</text>
+    </string>
     <string>
       <key>String_MetamagicSkillBase</key>
       <text>Based on your talent selection, you may choose {0}.</text>
@@ -7415,75 +7428,75 @@
       <key>Tip_Skill_AddSpecialization</key>
       <text>Add Specialization for {0} Karma</text>
     </string>
-	<!-- Advanced Programs Region -->
-			<string>
-			<key>Label_SummaryAINormalPrograms</key>
-			<text>Normal Programs</text>
-		</string>
-		<string>
-			<key>Label_SummaryAIAdvancedPrograms</key>
-			<text>Advanced Programs</text>
-		</string>
-		<string>
-			<key>Label_Options_NewAIProgram</key>
-			<text>New Program (AI)</text>
-		</string>
-		<string>
-			<key>Label_Options_NewAIAdvancedProgram</key>
-			<text>New Advanced Program (AI)</text>
-		</string>
-		<!-- Advanced Programs Tab -->
-		<string>
-			<key>Tab_AdvancedPrograms</key>
-			<text>Advanced Programs</text>
-		</string>
-		<string>
-			<key>Label_AIProgramsAdvancedPrograms</key>
-			<text>AI Programs and Advanced Programs</text>
-		</string>
-		<string>
-			<key>Button_AddProgram</key>
-			<text>Add Program</text>
-		</string>
-		<string>
-			<key>String_Requires</key>
-			<text>Requires:</text>
-		</string>
-		<string>
-			<key>Node_SelectedAIPrograms</key>
-			<text>Selected AI Programs and Advanced Programs</text>
-		</string>
-		<!-- End Region-->
-		<!-- Select AI Program Window -->
-		<string>
-			<key>Title_SelectAIProgram</key>
-			<text>Select AI Program or Advanced Program</text>
-		</string>
-		<string>
-			<key>Message_SelectAIProgram_AdvancedProgramRequirement</key>
-			<text>You do not meet the requirements for this Advanced Program. You must know the following Program: </text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>
-			<text>Advanced Program Requirement</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectAIProgram_LimitList</key>
-			<text>Show only Advanced Programs I can take</text>
-		</string>
-		<string>
-			<key>Message_DeleteAIProgram</key>
-			<text>Are you sure you want to delete this AI Program?</text>
-		</string>
-		<!-- End Region -->
-		<string>
-			<key>String_ExpenseLearnProgram</key>
-			<text>Learned AI Program</text>
-		</string>
-		<string>
-			<key>Message_DroneIllegalDowngrade</key>
-			<text>The following {0} drones have downgrades which decrease their attributes too far:</text>
-		</string>
-	<!-- End Region -->
+  <!-- Advanced Programs Region -->
+      <string>
+      <key>Label_SummaryAINormalPrograms</key>
+      <text>Normal Programs</text>
+    </string>
+    <string>
+      <key>Label_SummaryAIAdvancedPrograms</key>
+      <text>Advanced Programs</text>
+    </string>
+    <string>
+      <key>Label_Options_NewAIProgram</key>
+      <text>New Program (AI)</text>
+    </string>
+    <string>
+      <key>Label_Options_NewAIAdvancedProgram</key>
+      <text>New Advanced Program (AI)</text>
+    </string>
+    <!-- Advanced Programs Tab -->
+    <string>
+      <key>Tab_AdvancedPrograms</key>
+      <text>Advanced Programs</text>
+    </string>
+    <string>
+      <key>Label_AIProgramsAdvancedPrograms</key>
+      <text>AI Programs and Advanced Programs</text>
+    </string>
+    <string>
+      <key>Button_AddProgram</key>
+      <text>Add Program</text>
+    </string>
+    <string>
+      <key>String_Requires</key>
+      <text>Requires:</text>
+    </string>
+    <string>
+      <key>Node_SelectedAIPrograms</key>
+      <text>Selected AI Programs and Advanced Programs</text>
+    </string>
+    <!-- End Region-->
+    <!-- Select AI Program Window -->
+    <string>
+      <key>Title_SelectAIProgram</key>
+      <text>Select AI Program or Advanced Program</text>
+    </string>
+    <string>
+      <key>Message_SelectAIProgram_AdvancedProgramRequirement</key>
+      <text>You do not meet the requirements for this Advanced Program. You must know the following Program: </text>
+    </string>
+    <string>
+      <key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>
+      <text>Advanced Program Requirement</text>
+    </string>
+    <string>
+      <key>Checkbox_SelectAIProgram_LimitList</key>
+      <text>Show only Advanced Programs I can take</text>
+    </string>
+    <string>
+      <key>Message_DeleteAIProgram</key>
+      <text>Are you sure you want to delete this AI Program?</text>
+    </string>
+    <!-- End Region -->
+    <string>
+      <key>String_ExpenseLearnProgram</key>
+      <text>Learned AI Program</text>
+    </string>
+    <string>
+      <key>Message_DroneIllegalDowngrade</key>
+      <text>The following {0} drones have downgrades which decrease their attributes too far:</text>
+    </string>
+  <!-- End Region -->
   </strings>
 </chummer>

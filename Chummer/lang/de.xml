@@ -21,6 +21,14 @@
   <version>-495</version>
   <name>Deutsch (DE)</name>
   <strings>
+	<string>
+		<key>Message_Insufficient_Permissions_Warning</key>
+		<text>Chummer5 is currently not being run with proper permissions! If you are not running Chummer5 as an administrator, please move it to a folder owned by your user.</text>
+	</string>
+	<string>
+		<key>Message_Save_Error_Warning</key>
+		<text>Chummer5 encountered an error while saving the character.</text>
+	</string>
     <string>
       <key>String_BP</key>
       <text>GP</text>
@@ -101,10 +109,10 @@
       <key>Label_Karma</key>
       <text>Karma:</text>
     </string>
-	<string>
-			<key>Label_LP</key>
-			<text>LP:</text>
-		</string>
+    <string>
+      <key>Label_LP</key>
+      <text>LP:</text>
+    </string>
     <string>
       <key>Label_KarmaRemaining</key>
       <text>verbleibendes Karma:</text>
@@ -149,10 +157,10 @@
       <key>Label_Armor</key>
       <text>Panzerung:</text>
     </string>
-	<string>
-		<key>Label_Seats</key>
-		<text>Sitzplätze:</text>
-	</string>
+    <string>
+      <key>Label_Seats</key>
+      <text>Sitzplätze:</text>
+    </string>
     <string>
       <key>Label_Sensor</key>
       <text>Sensor:</text>
@@ -241,7 +249,7 @@
       <key>Label_Mount</key>
       <text>Halterung:</text>
     </string>
-	<string>
+    <string>
       <key>Label_ExtraMount</key>
       <text>Extra Halterung:</text>
     </string>
@@ -979,7 +987,7 @@
     </string>
     <string>
       <key>Message_DeleteComplexFormOption</key>
-      <text>Möchten Sie diese Komplexe Form Einstellung wirklich löschen</text>
+      <text>Möchten Sie diese Komplexe Form Einstellung wirklich löschen?</text>
     </string>
     <string>
       <key>Message_DeleteQuality</key>
@@ -1711,15 +1719,15 @@
     </string>
     <string>
       <key>String_SkillFilterAll</key>
-      <text>Zeige alle aktiven Fertigkeiten</text>
+      <text>Zeige alle aktive Fertigkeiten</text>
     </string>
     <string>
       <key>String_SkillFilterRatingAboveZero</key>
-      <text>Zeige alle aktiven Fertigkeiten &gt; 0</text>
+      <text>Zeige aktive Fertigkeiten Stufe &gt; 0</text>
     </string>
     <string>
       <key>String_SkillFilterTotalRatingAboveZero</key>
-      <text>Zeige alle aktiven Fertigkeiten mit einem Gesamtwert &gt; 0</text>
+      <text>Zeige aktive Fertigkeiten mit Gesamtwert &gt; 0</text>
     </string>
     <string>
       <key>String_CyberzombieReduceAttribute</key>
@@ -2457,10 +2465,10 @@
       <key>Label_FreeKnowledgeSkills</key>
       <text>Verbleibende freie Punkte für Wissensfertigkeiten:</text>
     </string>
-	<string>
-		<key>Label_CustomKnowledgeSkillsReminder</key>
-		<text>Erinnern sie daran, dass Sie eigene Fähigkeiten und Spezialisierungen immer einfügen dürfen!</text>
-	</string>
+    <string>
+      <key>Label_CustomKnowledgeSkillsReminder</key>
+      <text>Erinnern sie daran, dass Sie eigene Fähigkeiten und Spezialisierungen immer einfügen dürfen!</text>
+    </string>
     <string>
       <key>Button_AddSkill</key>
       <text>Fertigkeit hinzufügen</text>
@@ -2517,8 +2525,8 @@
       <key>Skill_SortCategory</key>
       <text>Kategorie</text>
     </string>
-		<!-- End Region -->
-		<!-- Region  Martial Arts Tab -->
+    <!-- End Region -->
+    <!-- Region  Martial Arts Tab -->
     <string>
       <key>Button_AddMartialArt</key>
       <text>&amp;Kampfkunst hinzufügen</text>
@@ -3051,7 +3059,7 @@
       <key>Label_Mugshot</key>
       <text>Portrait:</text>
     </string>
-	<string>
+    <string>
       <key>Label_MugshotDimensions</key>
       <text>210px x 310px</text>
     </string>
@@ -3061,7 +3069,7 @@
     </string>
     <string>
       <key>Button_AddMugshot</key>
-      <text>Ändern</text>
+      <text>Hinzufügen</text>
     </string>
     <string>
       <key>Tip_CharacterCreated</key>
@@ -3365,7 +3373,7 @@
     </string>
     <string>
       <key>Label_CMPhysical</key>
-      <text>physisch</text>
+      <text>Körperlich</text>
     </string>
     <string>
       <key>Label_CMStun</key>
@@ -3677,7 +3685,7 @@
     </string>
     <string>
       <key>Label_CreatePACKSKit_KitName</key>
-      <text>Kit Name:</text>
+      <text>Set-Name:</text>
     </string>
     <string>
       <key>Checkbox_CreatePACKSKit_Attributes</key>
@@ -3869,7 +3877,7 @@
     </string>
     <string>
       <key>Label_LifestyleNuyen_ResultOf</key>
-      <text>Ergebnis aus</text>
+      <text>Ergebnis aus {0}W6: (</text>
     </string>
     <string>
       <key>Title_Metatype</key>
@@ -4245,9 +4253,9 @@
     </string>
     <string>
       <key>Checkbox_Options_PrintExpenses</key>
-      <text>Karma und Nuyen Ausgaben mitschreiben</text>
+      <text>Karma und Nuyen Ausgaben ausdrucken</text>
     </string>
-	<string>
+    <string>
       <key>Checkbox_Options_UseCyberlimbCalculation</key>
       <text>Nutze Cyber-Gliedmaßen nicht für Attributberechnung</text>
     </string>
@@ -4353,7 +4361,7 @@
     </string>
     <string>
       <key>Label_Options_Enemies</key>
-      <text>Enemies</text>
+      <text>Feinde</text>
     </string>
     <string>
       <key>Label_Options_Carryover</key>
@@ -4395,14 +4403,14 @@
       <key>Checkbox_Options_MetatypesCostKarma</key>
       <text>Karma-Kosten für Metatypen sind gleich der GP-Kosten</text>
     </string>
-	<string>
-		<key>Checkbox_Options_Dronemods</key>
-		<text>Drohnenmodifikationsregeln benutzen (R5 128)</text>
-	</string>
-	<string>
-		<key>Checkbox_Options_Dronemods_Pilot</key>
-		<text>Beschränke maximales Pilot Attribut</text>
-	</string>
+    <string>
+      <key>Checkbox_Options_Dronemods</key>
+      <text>Drohnenmodifikationsregeln benutzen (R5 128)</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_Dronemods_Pilot</key>
+      <text>Beschränke maximales Pilot Attribut</text>
+    </string>
     <string>
       <key>Checkbox_Options_FreeContactPointsKarma</key>
       <text>Kostenlose Connectionpunkte: CHA x </text>
@@ -4537,7 +4545,7 @@
       <text>Handicaps</text>
     </string>
     <string>
-			xxx<key>Label_SelectAdvancedLifestyle_Comforts</key><text>Komfort:</text></string>
+      xxx<key>Label_SelectAdvancedLifestyle_Comforts</key><text>Komfort:</text></string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Entertainment</key>
       <text>Unterhaltung:</text>
@@ -4620,7 +4628,7 @@
     </string>
     <string>
       <key>Label_SelectContactConnection_MagicalResources</key>
-      <text>magische Ressourcen:</text>
+      <text>Magische Ressourcen:</text>
     </string>
     <string>
       <key>Label_SelectContactConnection_MatrixResources</key>
@@ -4696,7 +4704,7 @@
     </string>
     <string>
       <key>Label_SelectCyberware_ESSDiscount</key>
-      <text>Zusätzlicher Rabatt:</text>
+      <text>Essenz Rabatt:</text>
     </string>
     <string>
       <key>Title_SelectCyberwareSuite</key>
@@ -4974,10 +4982,10 @@
       <key>Checkbox_SelectQuality_Metagenetic</key>
       <text>Nur metagenetische Gaben anzeigen</text>
     </string>
-	<string>
-		<key>Checkbox_SelectQuality_Not_Metagenetic</key>
-		<text>Keine metagenetischen Gaben anzeigen</text>
-	</string>
+    <string>
+      <key>Checkbox_SelectQuality_Not_Metagenetic</key>
+      <text>Keine metagenetischen Gaben anzeigen</text>
+    </string>
     <string>
       <key>Message_SelectQuality_QualityLimit</key>
       <text>Diese(s) Gabe/Handicap kann nicht mehrmals gewählt werden.</text>
@@ -5156,7 +5164,7 @@
     </string>
     <string>
       <key>Button_Viewer_SaveAsXml</key>
-      <text>Speichere XML</text>
+      <text>Speichere als XML</text>
     </string>
     <string>
       <key>Label_Viewer_CharacterSheet</key>
@@ -5322,10 +5330,10 @@
       <key>Button_EditWeek</key>
       <text>Woche bearbeiten</text>
     </string>
-	<string>
-		<key>Button_DeleteWeek</key>
-		<text>Woche löschen</text>
-	</string>
+    <string>
+      <key>Button_DeleteWeek</key>
+      <text>Woche löschen</text>
+    </string>
     <string>
       <key>String_WeekDisplay</key>
       <text>{0}: Monat {1}, Woche {2}</text>
@@ -5539,11 +5547,11 @@
       <text>Ort umbenennen</text>
     </string>
     <!-- Removed with Build 294
-		<string>
-			<key>Node_SelectedComplexForms</key>
-			<text>Komplexe Form auswählen</text>
-		</string>
-		-->
+    <string>
+      <key>Node_SelectedComplexForms</key>
+      <text>Komplexe Form auswählen</text>
+    </string>
+    -->
     <string>
       <key>Label_OtherCareerNuyen</key>
       <text>Karriere Nuyen:</text>
@@ -5570,7 +5578,7 @@
     </string>
     <string>
       <key>Message_DeleteStackedFocus</key>
-      <text>Wollen Sie diesen Mehrfachfokus wirklich löschen?</text>
+      <text>Möchten Sie diesen Mehrfachfokus wirklich löschen?</text>
     </string>
     <string>
       <key>String_StackedFocus</key>
@@ -6313,11 +6321,11 @@
       <text>Möchten Sie diesen Ort wirklich löschen? Die gesamte Ausrüstung dieses Ortes wird dann dem Fahrzeug zugeordnet.</text>
     </string>
     <!-- Gelöscht
-		<string>
-			<key>Message_WeaponUnderbarrelLimit</key>
-			<text>Waffen können lediglich mit einer Unterlaufwaffe ausgestattet werden.</text>
-		</string>
-		-->
+    <string>
+      <key>Message_WeaponUnderbarrelLimit</key>
+      <text>Waffen können lediglich mit einer Unterlaufwaffe ausgestattet werden.</text>
+    </string>
+    -->
     <!-- Version 363 -->
     <string>
       <key>Button_DiceRoller_RollMisses</key>
@@ -6325,63 +6333,63 @@
     </string>
     <!-- Version 365 -->
     <!-- Gelöscht
-		<string>
-			<key>Button_DeleteQuality</key>
-			<text>Gabe löschen</text>
-		</string>
-		<string>
-			<key>Button_DeleteSpell</key>
-			<text>Zauber löschen</text>
-		</string>
-		<string>
-			<key>Button_DeleteComplexForm</key>
-			<text>Komplexe Form löschen</text>
-		</string>
-		<string>
-			<key>Button_DeleteCritterPower</key>
-			<text>Kraft löschen</text>
-		</string>
-		<string>
-			<key>Button_DeleteMetamagic</key>
-			<text>Metamagische Technik löschen</text>
-		</string>
-		<string>
-			<key>Button_DeleteEcho</key>
-			<text>Echo löschen</text>
-		</string>
-		<string>
-			<key>Button_DeleteLifestyle</key>
-			<text>Lebensstil löschen</text>
-		</string>
-		<string>
-			<key>Button_DeleteArmor</key>
-			<text>Panzerung löschen</text>
-		</string>
-		<string>
-			<key>Button_DeleteWeapon</key>
-			<text>Waffe löschen</text>
-		</string>
-		<string>
-			<key>Button_DeleteGear</key>
-			<text>Ausrüstung löschen</text>
-		</string>
-		<string>
-			<key>Button_DeleteVehicle</key>
-			<text>Fahrzeug löschen</text>
-		</string>
-		<string>
-			<key>Button_DeleteMod</key>
-			<text>Modifikation löschen</text>
-		</string>
-		<string>
-			<key>Button_DeleteAccessory</key>
-			<text>Zubehör löschen</text>
-		</string>
-		<string>
-			<key>Button_DeleteImprovement</key>
-			<text>Verbesserung löschen</text>
-		</string>
-		-->
+    <string>
+      <key>Button_DeleteQuality</key>
+      <text>Gabe löschen</text>
+    </string>
+    <string>
+      <key>Button_DeleteSpell</key>
+      <text>Zauber löschen</text>
+    </string>
+    <string>
+      <key>Button_DeleteComplexForm</key>
+      <text>Komplexe Form löschen</text>
+    </string>
+    <string>
+      <key>Button_DeleteCritterPower</key>
+      <text>Kraft löschen</text>
+    </string>
+    <string>
+      <key>Button_DeleteMetamagic</key>
+      <text>Metamagische Technik löschen</text>
+    </string>
+    <string>
+      <key>Button_DeleteEcho</key>
+      <text>Echo löschen</text>
+    </string>
+    <string>
+      <key>Button_DeleteLifestyle</key>
+      <text>Lebensstil löschen</text>
+    </string>
+    <string>
+      <key>Button_DeleteArmor</key>
+      <text>Panzerung löschen</text>
+    </string>
+    <string>
+      <key>Button_DeleteWeapon</key>
+      <text>Waffe löschen</text>
+    </string>
+    <string>
+      <key>Button_DeleteGear</key>
+      <text>Ausrüstung löschen</text>
+    </string>
+    <string>
+      <key>Button_DeleteVehicle</key>
+      <text>Fahrzeug löschen</text>
+    </string>
+    <string>
+      <key>Button_DeleteMod</key>
+      <text>Modifikation löschen</text>
+    </string>
+    <string>
+      <key>Button_DeleteAccessory</key>
+      <text>Zubehör löschen</text>
+    </string>
+    <string>
+      <key>Button_DeleteImprovement</key>
+      <text>Verbesserung löschen</text>
+    </string>
+    -->
     <!-- Version 371 -->
     <string>
       <key>Menu_Main_Edit</key>
@@ -6542,15 +6550,15 @@
       <text>Frei Geister erhalten ihre Powerpunkte basierend auf ihrem MAG Attribute, nicht Edge</text>
     </string>
     <!-- Gelöscht
-		<string>
-			<key>Checkbox_Options_IncludeSmartlink</key>
-			<text>Smartlink Bonus bei den Aktionsfertigkeiten miteinberechnen</text>
-		</string>
-		-->
+    <string>
+      <key>Checkbox_Options_IncludeSmartlink</key>
+      <text>Smartlink Bonus bei den Aktionsfertigkeiten miteinberechnen</text>
+    </string>
+    -->
     <!-- Version 413 -->
     <string>
       <key>String_SkillFilterRatingZero</key>
-      <text>Zeige alle aktiven Fertigkeiten = 0</text>
+      <text>Zeige aktive Fertigkeiten Stufe = 0</text>
     </string>
     <string>
       <key>Checkbox_DiceRoller_RushedJob</key>
@@ -6857,7 +6865,7 @@
     </string>
     <string>
       <key>Label_DataProcessing</key>
-      <text>Datenverarbeitung</text>
+      <text>Datenverarb:</text>
     </string>
     <string>
       <key>Label_ArmorShort</key>
@@ -6909,7 +6917,7 @@
     </string>
     <string>
       <key>String_MountSide</key>
-      <text>Side</text>
+      <text>Seite</text>
     </string>
     <string>
       <key>String_MountInternal</key>
@@ -6929,15 +6937,15 @@
     </string>
     <string>
       <key>Message_DeleteLimitModifier</key>
-      <text>Sind Sie sicher, dass sie diesen Limit Modifikator löschen möchten?</text>
+      <text>Möchten Sie diesen Limit Modifikator wirklich löschen?</text>
     </string>
     <string>
       <key>Message_DeleteInitiateGrade</key>
-      <text>Sind Sie sicher, dass sie diesen Initiatengrad und alle damit verbundenen Boni löschen möchten?</text>
+      <text>Möchten Sie diesen Initiatengrad und alle damit verbundenen Boni wirklich löschen?</text>
     </string>
     <string>
       <key>Message_DeleteSubmersionGrade</key>
-      <text>Sind Sie sicher, dass sie diesen Wandlungsgrad und alle damit verbundenen Boni löschen möchten?</text>
+      <text>Möchten Sie diesen Wandlungsgrad und alle damit verbundenen Boni wirklich löschen?</text>
     </string>
     <string>
       <key>Message_DeleteArt</key>
@@ -6945,7 +6953,7 @@
     </string>
     <string>
       <key>Message_DeleteEnhancement</key>
-      <text>Sind Sie sicher, dass Sie diese Verbesserung löschen wollen?</text>
+      <text>Möchten Sie diese Verbesserung wirklich löschen?</text>
     </string>
     <string>
       <key>Message_CannotDeleteLimitModifier</key>
@@ -6957,7 +6965,7 @@
     </string>
     <string>
       <key>Message_SelectLimitModifier</key>
-      <text>You must select a Limit to add a Modifier to.</text>
+      <text>Sie müssen ein Limit auswählen, um einen Modifikator hinzuzufügen.</text>
     </string>
     <string>
       <key>MessageTitle_SelectLimitModifier</key>
@@ -6983,7 +6991,7 @@
       <key>Message_PriorityComplexFormLimit</key>
       <text>Your number of Complex Forms cannot exceed the number defined by your selected Talent priority.</text>
     </string>
-<string>
+    <string>
       <key>Message_InvalidAttributeExcess</key>
       <text>{0} über erlaubten Attributspunktem</text>
     </string>
@@ -7092,7 +7100,7 @@
       <text>Val (Aug)</text>
     </string>
     <string>
-      <key>Tip_OptionsKnucks</key>
+      <key>Tip_OptionsUnarmedSkillImprovements</key>
       <text>Aktivierung dieser Hausregel erlaubt es Schlagringen, von Boni zu profitieren, die Waffenlosen Kampf beeinflussen, inklusive DK Boni.</text>
     </string>
     <string>
@@ -7203,7 +7211,7 @@
       <key>Checkbox_InitiationSchooling</key>
       <text>Ausbildung (-10%)</text>
     </string>
-        <string>
+    <string>
       <key>Button_AddInitiateGrade</key>
       <text>Initiatengrad hinzufügen</text>
     </string>
@@ -7319,13 +7327,13 @@
       <key>Checkbox_Options_ExtendAnyDetectionSpell</key>
       <text>Allow any Detection Spell to be taken as Extended range version (SM 165)</text>
     </string>
-	<string>
+    <string>
       <key>Checkbox_Options_DroneArmorMultiplier</key>
       <text>Begrenze Dronen Panzerungsverbesserung auf Dronen-Panzerung</text>
     </string>
     <string>
       <key>Checkbox_Options_SpecialKarmaCost</key>
-      <text>Karma cost for increasing Special Attributes is reduced with Essence Loss</text>
+      <text>Karma cost for increasing Special Attributes is not reduced with Essence Loss</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Qualities</key>
@@ -7435,6 +7443,14 @@
       <key>String_CustomItem_SelectText</key>
       <text>Geben Sie einen Namen für diesen Gegenstand an.</text>
     </string>
+	<string>
+      <key>Message_Improvement_EmptySelectionList</key>
+      <text>No eligible items could be selected for this effect!</text>
+    </string>
+	<string>
+      <key>Message_Improvement_EmptySelectionListNamed</key>
+      <text>No eligible items could be selected for {0} to affect!</text>
+    </string>
     <string>
       <key>String_MetamagicSkillBase</key>
       <text>Basierend auf Ihrer Talentauswahl dürfen Sie {0} auswählen.</text>
@@ -7499,147 +7515,499 @@
       <key>Tip_Skill_AddSpecialization</key>
       <text>Spezialisierung für {0} Karma hinzufügen</text>
     </string>
-	<string>
-		<key>Label_CounterspellingDice</key>
-		<text>Antimagie Würfel</text>
-	</string>
-	<string>
-		<key>Label_SpellDefenceIndirectDodge</key>
-		<text>Indirektes Ausweichen</text>
-	</string>
-	<string>
-		<key>Label_SpellDefenceIndirect</key>
-		<text>Indirektes Widerstehen</text>
-	</string>
-	<string>
-		<key>Label_SpellDefenceDirectSoakMana</key>
-		<text>Direktes Widerstehen - Mana</text>
-	</string>
-	<string>
-		<key>Label_SpellDefenceDirectSoakPhysical</key>
-		<text>Direktes Widerstehen - Körperlich</text>
-	</string>
-	<string>
-		<key>Label_SpellDefenceDetection</key>
-		<text>Wahrnehmungszauber</text>
-	</string>
-	<string>
-		<key>Label_SpellDefenceDecAttBOD</key>
-		<text>Attribut verringern (KON)</text>
-	</string>
-	<string>
-		<key>Label_SpellDefenceDecAttSTR</key>
-		<text>Attribut verringern (STR)</text>
-	</string>
-	<string>
-		<key>Label_SpellDefenceDecAttAGI</key>
-		<text>Attribut verringern (GES)</text>
-	</string>
-	<string>
-		<key>Label_SpellDefenceDecAttREA</key>
-		<text>Attribut verringern (REA)</text>
-	</string>
-	<string>
-		<key>Label_SpellDefenceDecAttLOG</key>
-		<text>Attribut verringern (LOG)</text>
-	</string>
-	<string>
-		<key>Label_SpellDefenceDecAttWIL</key>
-		<text>Attribut verringern (WIL)</text>
-	</string>
-	<string>
-		<key>Label_SpellDefenceDecAttINT</key>
-		<text>Attribut verringern (INT)</text>
-	</string>
-	<string>
-		<key>Label_SpellDefenceDecAttCHA</key>
-		<text>Attribut verringern (CHA)</text>
-	</string>
-	<string>
-		<key>Label_SpellDefenceIllusionMana</key>
-		<text>Illusion - Mana</text>
-	</string>
-	<string>
-		<key>Label_SpellDefenceIllusionPhysical</key>
-		<text>Illusion - Körperlich</text>
-	</string>
-	<string>
-		<key>Label_SpellDefenceManipMental</key>
-		<text>Manipulation - Mental</text>
-	</string>
-	<string>
-		<key>Label_SpellDefenceManipPhysical</key>
-		<text>Manipulation - Körperlich</text>
-	</string>
-	<!-- Advanced Programs Region -->
-		<string>
-			<key>Label_SummaryAINormalPrograms</key>
-			<text>Normale Programme</text>
-		</string>
-		<string>
-			<key>Label_SummaryAIAdvancedPrograms</key>
-			<text>Fortgeschrittene Programme</text>
-		</string>
-		<string>
-			<key>Label_Options_NewAIProgram</key>
-			<text>Neues Programm (KI)</text>
-		</string>
-		<string>
-			<key>Label_Options_NewAIAdvancedProgram</key>
-			<text>Neues fortgeschrittene Programm (KI)</text>
-		</string>
-		<!-- Advanced Programs Tab -->
-		<string>
-			<key>Tab_AdvancedPrograms</key>
-			<text>Fortgeschrittene Programme</text>
-		</string>
-		<string>
-			<key>Label_AIProgramsAdvancedPrograms</key>
-			<text>KI Programme und fortgeschrittene Programme</text>
-		</string>
-		<string>
-			<key>Button_AddProgram</key>
-			<text>Programm hinzufügen</text>
-		</string>
-		<string>
-			<key>String_Requires</key>
-			<text>Benötigt:</text>
-		</string>
-		<string>
-			<key>Node_SelectedAIPrograms</key>
-			<text>Ausgewählte KI Programme und fortgeschrittene Programme</text>
-		</string>
-		<!-- End Region-->
-		<!-- Select AI Program Window -->
-		<string>
-			<key>Title_SelectAIProgram</key>
-			<text>KI Programm oder fortgeschrittenes Programm auswählen</text>
-		</string>
-		<string>
-			<key>Message_SelectAIProgram_AdvancedProgramRequirement</key>
-			<text>Sie erfüllen nicht alle Anforderungen für dieses fortgeschrittene Programm. Die folgenden Programme müssen gelernt werden: </text>
-		</string>
-		<string>
-			<key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>
-			<text>Anforderung des fortgeschrittenen Programm</text>
-		</string>
-		<string>
-			<key>Checkbox_SelectAIProgram_LimitList</key>
-			<text>Nur Fortgeschrittene Programme anzeigen, die ich wählen kann.</text>
-		</string>
-		<string>
-			<key>Message_DeleteAIProgram</key>
-			<text>Möchten Sie dieses Programm wirklich löschen?</text>
-		</string>
-		<!-- End Region -->
-		<string>
-			<key>String_ExpenseLearnProgram</key>
-			<text>Erlernte KI Programme</text>
-		</string>
-	<!-- End Region -->
-	<string>
-			<key>Message_DroneIllegalDowngrade</key>
-			<text>Die folgenden {0} Drohnen haben Downgrades durch die Attribute zu weit gesenkt werden:</text>
-		</string>
+    <string>
+      <key>Label_CounterspellingDice</key>
+      <text>Antimagie Würfel</text>
+    </string>
+    <string>
+      <key>Label_SpellDefenceIndirectDodge</key>
+      <text>Indirektes Ausweichen</text>
+    </string>
+    <string>
+      <key>Label_SpellDefenceIndirect</key>
+      <text>Indirektes Widerstehen</text>
+    </string>
+    <string>
+      <key>Label_SpellDefenceDirectSoakMana</key>
+      <text>Direktes Widerstehen - Mana</text>
+    </string>
+    <string>
+      <key>Label_SpellDefenceDirectSoakPhysical</key>
+      <text>Direktes Widerstehen - Körperlich</text>
+    </string>
+    <string>
+      <key>Label_SpellDefenceDetection</key>
+      <text>Wahrnehmungszauber</text>
+    </string>
+    <string>
+      <key>Label_SpellDefenceDecAttBOD</key>
+      <text>Attribut verringern (KON)</text>
+    </string>
+    <string>
+      <key>Label_SpellDefenceDecAttSTR</key>
+      <text>Attribut verringern (STR)</text>
+    </string>
+    <string>
+      <key>Label_SpellDefenceDecAttAGI</key>
+      <text>Attribut verringern (GES)</text>
+    </string>
+    <string>
+      <key>Label_SpellDefenceDecAttREA</key>
+      <text>Attribut verringern (REA)</text>
+    </string>
+    <string>
+      <key>Label_SpellDefenceDecAttLOG</key>
+      <text>Attribut verringern (LOG)</text>
+    </string>
+    <string>
+      <key>Label_SpellDefenceDecAttWIL</key>
+      <text>Attribut verringern (WIL)</text>
+    </string>
+    <string>
+      <key>Label_SpellDefenceDecAttINT</key>
+      <text>Attribut verringern (INT)</text>
+    </string>
+    <string>
+      <key>Label_SpellDefenceDecAttCHA</key>
+      <text>Attribut verringern (CHA)</text>
+    </string>
+    <string>
+      <key>Label_SpellDefenceIllusionMana</key>
+      <text>Illusion - Mana</text>
+    </string>
+    <string>
+      <key>Label_SpellDefenceIllusionPhysical</key>
+      <text>Illusion - Körperlich</text>
+    </string>
+    <string>
+      <key>Label_SpellDefenceManipMental</key>
+      <text>Manipulation - Mental</text>
+    </string>
+    <string>
+      <key>Label_SpellDefenceManipPhysical</key>
+      <text>Manipulation - Körperlich</text>
+    </string>
+    <!-- Advanced Programs Region -->
+    <string>
+      <key>Label_SummaryAINormalPrograms</key>
+      <text>Normale Programme</text>
+    </string>
+    <string>
+      <key>Label_SummaryAIAdvancedPrograms</key>
+      <text>Fortgeschrittene Programme</text>
+    </string>
+    <string>
+      <key>Label_Options_NewAIProgram</key>
+      <text>Neues Programm (KI)</text>
+    </string>
+    <string>
+      <key>Label_Options_NewAIAdvancedProgram</key>
+      <text>Neues fortgeschrittene Programm (KI)</text>
+    </string>
+    <!-- Advanced Programs Tab -->
+    <string>
+      <key>Tab_AdvancedPrograms</key>
+      <text>Fortgeschrittene Programme</text>
+    </string>
+    <string>
+      <key>Label_AIProgramsAdvancedPrograms</key>
+      <text>KI Programme und fortgeschrittene Programme</text>
+    </string>
+    <string>
+      <key>Button_AddProgram</key>
+      <text>Programm hinzufügen</text>
+    </string>
+    <string>
+      <key>String_Requires</key>
+      <text>Benötigt:</text>
+    </string>
+    <string>
+      <key>Node_SelectedAIPrograms</key>
+      <text>Ausgewählte KI Programme und fortgeschrittene Programme</text>
+    </string>
+    <!-- End Region-->
+    <!-- Select AI Program Window -->
+    <string>
+      <key>Title_SelectAIProgram</key>
+      <text>KI Programm oder fortgeschrittenes Programm auswählen</text>
+    </string>
+    <string>
+      <key>Message_SelectAIProgram_AdvancedProgramRequirement</key>
+      <text>Sie erfüllen nicht alle Anforderungen für dieses fortgeschrittene Programm. Die folgenden Programme müssen gelernt werden: </text>
+    </string>
+    <string>
+      <key>MessageTitle_SelectAIProgram_AdvancedProgramRequirement</key>
+      <text>Anforderung des fortgeschrittenen Programm</text>
+    </string>
+    <string>
+      <key>Checkbox_SelectAIProgram_LimitList</key>
+      <text>Nur Fortgeschrittene Programme anzeigen, die ich wählen kann.</text>
+    </string>
+    <string>
+      <key>Message_DeleteAIProgram</key>
+      <text>Möchten Sie dieses Programm wirklich löschen?</text>
+    </string>
+    <!-- End Region -->
+    <string>
+      <key>String_ExpenseLearnProgram</key>
+      <text>Erlernte KI Programme</text>
+    </string>
+    <!-- End Region -->
+    <string>
+      <key>Message_DroneIllegalDowngrade</key>
+      <text>Die folgenden {0} Drohnen haben Downgrades durch die Attribute zu weit gesenkt werden:</text>
+    </string>
+    <string>
+      <key>String_Search</key>
+      <text>Suche:</text>
+    </string>
+    <string>
+      <key>String_All</key>
+      <text>Alle</text>
+    </string>
+    <string>
+      <key>String_OverPriorityPoints</key>
+      <text>{0} von {1}: {2} Karma</text>
+    </string>
+    <string>
+      <key>Label_Weapons</key>
+      <text>Waffen:</text>
+    </string>
+    <string>
+      <key>String_Initiative</key>
+      <text>{0} +{1}W6</text>
+    </string>
+    <string>
+      <key>String_MatrixInitiative</key>
+      <text>{0} + DV +{1}W6</text>
+    </string>
+    <string>
+      <key>String_MatrixInitiativeLong</key>
+      <text>{0} + Datenverarbeitung +{1}W6</text>
+    </string>
+    <string>
+      <key>String_AttributeESSLong</key>
+      <text>Essenz</text>
+    </string>
+    <string>
+      <key>String_AttributeESSShort</key>
+      <text>ESS</text>
+    </string>
+    <string>
+      <key>Label_Roster_File_Name</key>
+      <text>Dateiname:</text>
+    </string>
+    <string>
+      <key>Tab_Roster_Description</key>
+      <text>Beschreibung</text>
+    </string>
+    <string>
+      <key>Tab_Roster_Concept</key>
+      <text>Konzept</text>
+    </string>
+    <string>
+      <key>Tab_Roster_Background</key>
+      <text>Hintergrund</text>
+    </string>
+    <string>
+      <key>Menu_FilePrintPreview</key>
+      <text>&amp;Druckvorschau</text>
+    </string>
+    <string>
+      <key>String_MetamagicSkills</key>
+      <text>{0} {1} Fertigkeit(en) die auf Stufe {2} beginnt</text>
+    </string>
+    <string>
+      <key>String_LimbCount4</key>
+      <text>4 (2 Arme, 2 Beine)</text>
+    </string>
+    <string>
+      <key>Label_About</key>
+      <text>Über</text>
+    </string>
+    <string>
+      <key>Button_Add</key>
+      <text>Hinzufügen</text>
+    </string>
+    <string>
+      <key>Message_DeleteCalendarWeek</key>
+      <text>Möchten Sie diesen Kalendereintrag wirklich löschen?</text>
+    </string>
+    <string>
+      <key>String_Attack</key>
+      <text>Angriff</text>
+    </string>
+    <string>
+      <key>Label_SumtoTenAttributes</key>
+      <text>Attribute:</text>
+    </string>
+    <string>
+      <key>Label_Biography</key>
+      <text>Biographie:</text>
+    </string>
+    <string>
+      <key>Label_SkillGroup_Broken</key>
+      <text>Gebrochen</text>
+    </string>
+    <string>
+      <key>Tab_Roster_CharacterNotes</key>
+      <text>Charakternotizen</text>
+    </string>
+    <string>
+      <key>Label_SelectAdvancedLifestyle_Base_Comforts</key>
+      <text>Komfort: [{0}/{1}]</text>
+    </string>
+    <string>
+      <key>String_DataProcessing</key>
+      <text>Datenverarbeitung</text>
+    </string>
+    <string>
+      <key>Label_SpellDicePool</key>
+      <text>Würfelpool:</text>
+    </string>
+    <string>
+      <key>Node_SelectAdvancedLifestyle_Entertainments</key>
+      <text>Unterhaltungen</text>
+    </string>
+    <string>
+      <key>String_No_Update_Found</key>
+      <text>Fehler</text>
+    </string>
+    <string>
+      <key>Label_Exit</key>
+      <text>Verlassen</text>
+    </string>
+    <string>
+      <key>MessageTitle_ExtraPoints</key>
+      <text>Extra Punkte</text>
+    </string>
+    <string>
+      <key>Label_File</key>
+      <text>Datei</text>
+    </string>
+    <string>
+      <key>Label_Contact_Free</key>
+      <text>Frei:</text>
+    </string>
+    <string>
+      <key>Tab_Roster_GameNotes</key>
+      <text>Spielnotizen</text>
+    </string>
+    <string>
+      <key>Label_Handedness</key>
+      <text>Händigkeit:</text>
+    </string>
+    <string>
+      <key>Label_Help</key>
+      <text>Hilfe</text>
+    </string>
+    <string>
+      <key>Label_InitiativeDice</key>
+      <text>Initiativwürfel</text>
+    </string>
+    <string>
+      <key>Label_SelectAdvancedLifestyle_Base_Lifestyle</key>
+      <text>Lebensstil:</text>
+    </string>
+    <string>
+      <key>String_Limit</key>
+      <text>Limit:</text>
+    </string>
+    <string>
+      <key>Label_SumtoTenTalent</key>
+      <text>Magie oder Resonanz:</text>
+    </string>
+    <string>
+      <key>Label_SumtoTenHeritage</key>
+      <text>Metatyp:</text>
+    </string>
+    <string>
+      <key>String_Name</key>
+      <text>Name</text>
+    </string>
+    <string>
+      <key>Button_Next</key>
+      <text>Nächste</text>
+    </string>
+    <string>
+      <key>MessageTitle_NoContactFound</key>
+      <text>No Available Contacts Found</text>
+    </string>
+    <string>
+      <key>Label_Options_PDFParameters</key>
+      <text>PDF Parameter:</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_UseCalculatedPublicAwareness</key>
+      <text>Prominenz sollte sein (Straßenruf + schlechter Ruf /3)</text>
+    </string>
+    <string>
+      <key>Label_SelectAdvancedLifestyle_Rating</key>
+      <text>Stufe:</text>
+    </string>
+    <string>
+      <key>Button_Remove</key>
+      <text>Entfernen</text>
+    </string>
+    <string>
+      <key>Button_Reset</key>
+      <text>Zurücksetzen</text>
+    </string>
+    <string>
+      <key>Label_SumtoTenResources</key>
+      <text>Resourcen:</text>
+    </string>
+    <string>
+      <key>Button_Viewer_SaveAsPdf</key>
+      <text>Speichere als PDF</text>
+    </string>
+    <string>
+      <key>Label_VehicleSeats</key>
+      <text>Sitze:</text>
+    </string>
+    <string>
+      <key>String_SecondChance</key>
+      <text>Zweite Chance</text>
+    </string>
+    <string>
+      <key>Label_SelectAdvancedLifestyle_Base_Security</key>
+      <text>Sicherheit: [{0}/{1}]</text>
+    </string>
+    <string>
+      <key>String_KnowledgeSkillFilterAll</key>
+      <text>Zeige alle Wissensfertigkeiten</text>
+    </string>
+    <string>
+      <key>String_SkillFilterBrokenSkillGroup</key>
+      <text>Zeige aktive Fertigkeiten in gebrochenen Fertigkeitsgruppen</text>
+    </string>
+    <string>
+      <key>String_KnowledgeSkillFilterRatingZero</key>
+      <text>Zeige Wissensfertigkeiten Stufe = 0</text>
+    </string>
+    <string>
+      <key>String_KnowledgeSkillFilterRatingAboveZero</key>
+      <text>Zeige Wissensfertigkeiten Stufe &gt; 0</text>
+    </string>
+    <string>
+      <key>String_KnowledgeSkillFilterTotalRatingAboveZero</key>
+      <text>Zeige Wissensfertigkeiten mit Gesamtwert &gt; 0</text>
+    </string>
+    <string>
+      <key>String_SkillFilterNoSkillGroup</key>
+      <text>Zeile nicht gruppierte aktive Fertigkeiten</text>
+    </string>
+    <string>
+      <key>Label_SumtoTenSkills</key>
+      <text>Fertigkeiten:</text>
+    </string>
+    <string>
+      <key>String_Sleaze</key>
+      <text>Schleicher</text>
+    </string>
+    <string>
+      <key>Button_Sort</key>
+      <text>Sortieren</text>
+    </string>
+    <string>
+      <key>String_SpellResistanceDice</key>
+      <text>Zauberwiderstand-Würfel</text>
+    </string>
+    <string>
+      <key>Label_Vehicles</key>
+      <text>Fahrzeuge</text>
+    </string>
+    <string>
+      <key>Message_DeleteExoticSkill</key>
+      <text>Möchten Sie diese exotische Fertigkeitn wirklich löschen?</text>
+    </string>
+    <string>
+      <key>Message_SelectQuality_RequireESSAbove</key>
+      <text>Essenz über {0}: Sie haben {1}</text>
+    </string>
+    <string>
+      <key>Message_SelectQuality_RequireESSBelow</key>
+      <text>Essenz unter {0}: Sie haben {1}</text>
+    </string>
+    <string>
+      <key>InitRoller_Header</key>
+      <text>Initiativwürfel Ergebnisse</text>
+    </string>
+    <string>
+      <key>Label_Open</key>
+      <text>Öffnen</text>
+    </string>
+    <string>
+      <key>Label_Powertrain</key>
+      <text>Kraft:</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_StartingKarma</key>
+      <text>Anfangs-\nKarma</text>
+    </string>
+    <string>
+      <key>String_SumtoTen</key>
+      <text>Zehn-Punkte-Option</text>
+    </string>
+    <string>
+      <key>String_ActionInterrupt</key>
+      <text>Unterbrechung (-5 Initiative)</text>
+    </string>
+    <string>
+      <key>Label_SummaryRituals</key>
+      <text>Rituale</text>
+    </string>
+    <string>
+      <key>Label_SelectAdvancedLifestyle_Base_Area</key>
+      <text>Gegend: [{0}/{1}]</text>
+    </string>
+    <string>
+      <key>Label_SelectAdvancedLifestyle_UnusedLP</key>
+      <text>Ungen. LP:</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_SumToX</key>
+      <text>Zehn-Punkte-Option</text>
+    </string>
+    <string>
+      <key>String_LifestyleFreeNuyen</key>
+      <text>Im Lebensstil enthalten</text>
+    </string>
+    <string>
+      <key>Node_SelectAdvancedLifestyle_FreeMatrixGrids</key>
+      <text>Freie Matrix-Gitter</text>
+    </string>
+    <string>
+      <key>Title_ListView</key>
+      <text>Listenansicht</text>
+    </string>
+    <string>
+      <key>Title_Browse</key>
+      <text>Durchblättern</text>
+    </string>
+    <string>
+      <key>Label_PowerLevels</key>
+      <text>Stufe:</text>
+    </string>
+    <string>
+      <key>Power_SortAction</key>
+      <text>Handlung</text>
+    </string>
+    <string>
+      <key>String_PowerFilterAll</key>
+      <text>Zeige alle Kräfte</text>
+    </string>
+    <string>
+      <key>String_PowerFilterRatingAboveZero</key>
+      <text>Zeige aktive Kräfte mit Stufe &gt; 0</text>
+    </string>
+    <string>
+      <key>String_PowerFilterRatingZero</key>
+      <text>Zeige Kräfte mit Stufe = 0</text>
+    </string>
+    <string>
+      <key>Label_SummaryPreparations</key>
+      <text>Alchemistische Zauber</text>
+    </string>
   </strings>
 </chummer>

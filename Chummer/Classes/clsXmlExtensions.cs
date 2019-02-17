@@ -32,7 +32,7 @@ namespace Chummer
     {
         //QUESTION: TrySelectField<T> that uses SelectSingleNode instead of this[node]?
 
-	    public delegate bool TryParseFunction<T>(string input, out T result);
+        public delegate bool TryParseFunction<T>(string input, out T result);
 
         /// <summary>
         /// This method is syntaxtic sugar for atempting to read a data field
@@ -85,18 +85,18 @@ namespace Chummer
              *     failure();
              * }
              */
-	        string fieldValue = null;
-	        if (!CheckGetField<T>(node, field, ref fieldValue))
-	        {
-				read = onError;
-				return false;
-	        }
-
-
-	        try
+            string fieldValue = null;
+            if (!CheckGetField<T>(node, field, ref fieldValue))
             {
-		        read = (T) Convert.ChangeType(fieldValue, typeof (T));
-	            return true;
+                read = onError;
+                return false;
+            }
+
+
+            try
+            {
+                read = (T) Convert.ChangeType(fieldValue, typeof (T), GlobalOptions.InvariantCultureInfo);
+                return true;
             }
             catch (Exception)
             {
@@ -121,63 +121,63 @@ namespace Chummer
         }
 
 
-		/// <summary>
-		/// This method is syntaxtic sugar for atempting to read a data field
-		/// from an XmlNode. This version sets the output variable to its 
-		/// default value in case of a failed read and can be used for 
-		/// initializing variables. It can work on any type, but it requires
-		/// a tryParse style function that is fed the nodes InnerText
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="node"></param>
-		/// <param name="field"></param>
-		/// <param name="parser"></param>
-		/// <param name="read"></param>
-		/// <param name="onError"></param>
-		/// <returns></returns>
-		public static bool TryGetField<T>(this XmlNode node, string field, TryParseFunction<T> parser, out T read,
-			T onError = default(T))
-		{
-			string fieldValue = node[field]?.InnerText;
-			if (parser != null && fieldValue != null)
-			{
+        /// <summary>
+        /// This method is syntaxtic sugar for atempting to read a data field
+        /// from an XmlNode. This version sets the output variable to its 
+        /// default value in case of a failed read and can be used for 
+        /// initializing variables. It can work on any type, but it requires
+        /// a tryParse style function that is fed the nodes InnerText
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="node"></param>
+        /// <param name="field"></param>
+        /// <param name="parser"></param>
+        /// <param name="read"></param>
+        /// <param name="onError"></param>
+        /// <returns></returns>
+        public static bool TryGetField<T>(this XmlNode node, string field, TryParseFunction<T> parser, out T read,
+            T onError = default(T))
+        {
+            string fieldValue = node[field]?.InnerText;
+            if (parser != null && fieldValue != null)
+            {
                 return parser(fieldValue, out read);
             }
 
-			read = onError;
-			return false;
-		}
+            read = onError;
+            return false;
+        }
 
-		//T needed for debug info (so not)
-		private static bool CheckGetField<T>(XmlNode node, string field, ref string fieldValue)
-	    {
-		    if (node[field] == null)
-		    {
+        //T needed for debug info (so not)
+        private static bool CheckGetField<T>(XmlNode node, string field, ref string fieldValue)
+        {
+            if (node[field] == null)
+            {
 #if DEBUG
-			    //Extra magic in debug builds, but can provide errors in release
-			    //builds due to inlining
-			    System.Reflection.MethodBase mth
-				    = new StackTrace().GetFrame(2).GetMethod();
-			    string errorMsg = string.Format
-				    (
-					    "Tried to read missing field \"{0}\" of type \"{1}\" in {1}.{2}",
-					    field,
-					    typeof (T),
-					    mth.ReflectedType.Name
-				    );
+                //Extra magic in debug builds, but can provide errors in release
+                //builds due to inlining
+                System.Reflection.MethodBase mth
+                    = new StackTrace().GetFrame(2).GetMethod();
+                string errorMsg = string.Format
+                    (
+                        "Tried to read missing field \"{0}\" of type \"{1}\" in {1}.{2}",
+                        field,
+                        typeof (T),
+                        mth.ReflectedType.Name
+                    );
 #else //So if DEBUG flag is missing we don't reflect info
                 string errorMsg = $"Tried to read missing field \"{field}\" of type \"{typeof(T)}\"";
 #endif
-			    Log.Error(errorMsg);
-			    //Assign something
-			    return false;
-		    }
+                Log.Error(errorMsg);
+                //Assign something
+                return false;
+            }
 
-		    fieldValue = node[field].InnerText;
-		    return true;
-	    }
+            fieldValue = node[field].InnerText;
+            return true;
+        }
 
-	    /// <summary>
+        /// <summary>
         /// This method is syntaxtic sugar for atempting to read a data field
         /// from an XmlNode. This version preserves the output variable in case
         /// of a failed read 
@@ -199,31 +199,31 @@ namespace Chummer
             return false;
         }
 
-		/// <summary>
-		/// Checks if the specific field exists and is equal to value
-		/// </summary>
-		/// <param name="node">The XmlNode to read from</param>
-		/// <param name="field">The field to check on the XmlNode</param>
-		/// <param name="value">The value to compare to</param>
-		/// <returns>true if the field exists and is equal to value</returns>
-	    public static bool TryCheckValue(this XmlNode node, string field, string value)
-	    {
-			//QUESTION: Create regex version?
-		    string fieldValue;
-		    if (node.TryGetField(field, out fieldValue))
-		    {
-			    return fieldValue == value;
-		    }
+        /// <summary>
+        /// Checks if the specific field exists and is equal to value
+        /// </summary>
+        /// <param name="node">The XmlNode to read from</param>
+        /// <param name="field">The field to check on the XmlNode</param>
+        /// <param name="value">The value to compare to</param>
+        /// <returns>true if the field exists and is equal to value</returns>
+        public static bool TryCheckValue(this XmlNode node, string field, string value)
+        {
+            //QUESTION: Create regex version?
+            string fieldValue;
+            if (node.TryGetField(field, out fieldValue))
+            {
+                return fieldValue == value;
+            }
 
-		    return false;
-	    }
+            return false;
+        }
 
         /// <summary>
         /// Processes a single operation node with children that are either nodes to check whether the parent has a node that fulfills a condition, or they are nodes that are parents to further operation nodes
         /// </summary>
         public static bool ProcessFilterOperationNode(this XmlNode objXmlParentNode, XmlNode objXmlOperationNode, bool boolIsOrNode = false)
         {
-            if (objXmlParentNode == null || objXmlOperationNode == null)
+            if (objXmlOperationNode == null)
                 return false;
 
             XmlNodeList objXmlNodeList = objXmlOperationNode.SelectNodes("*");
@@ -233,7 +233,7 @@ namespace Chummer
             {
                 bool boolInvert = objXmlOperationChildNode.Attributes?["NOT"] != null;
 
-                bool boolOperationChildNodeResult;
+                bool boolOperationChildNodeResult = boolInvert;
                 if (objXmlOperationChildNode.Name == "OR")
                 {
                     boolOperationChildNodeResult = ProcessFilterOperationNode(objXmlParentNode, objXmlOperationChildNode, true) != boolInvert;
@@ -242,7 +242,11 @@ namespace Chummer
                 {
                     boolOperationChildNodeResult = ProcessFilterOperationNode(objXmlParentNode, objXmlOperationChildNode) != boolInvert;
                 }
-                else
+                else if (objXmlOperationChildNode.Name == "NONE")
+                {
+                    boolOperationChildNodeResult = (objXmlParentNode == null) != boolInvert;
+                }
+                else if (objXmlParentNode != null)
                 {
                     string strOperationType = objXmlOperationChildNode.Attributes?["operation"]?.InnerText ?? "==";
                     XmlNodeList objXmlTargetNodeList = objXmlParentNode.SelectNodes(objXmlOperationChildNode.Name);

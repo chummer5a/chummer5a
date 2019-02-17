@@ -24,144 +24,136 @@ using System.Xml;
 
 namespace Chummer
 {
-	public partial class frmSelectMartialArtAdvantage : Form
-	{
-		private string _strSelectedAdvantage = string.Empty;
+    public partial class frmSelectMartialArtAdvantage : Form
+    {
+        private string _strSelectedAdvantage = string.Empty;
 
-		private bool _blnAddAgain = false;
-		private string _strMartialArt = string.Empty;
+        private bool _blnAddAgain = false;
+        private string _strMartialArt = string.Empty;
 
-		private XmlDocument _objXmlDocument = new XmlDocument();
-		private readonly Character _objCharacter;
+        private readonly XmlDocument _objXmlDocument = null;
+        private readonly Character _objCharacter;
 
-		#region Control Events
-		public frmSelectMartialArtAdvantage(Character objCharacter)
-		{
-			InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-			_objCharacter = objCharacter;
-		}
+        #region Control Events
+        public frmSelectMartialArtAdvantage(Character objCharacter)
+        {
+            InitializeComponent();
+            LanguageManager.Load(GlobalOptions.Language, this);
+            _objCharacter = objCharacter;
+            // Load the Martial Art information.
+            _objXmlDocument = XmlManager.Load("martialarts.xml");
+        }
 
-		private void frmSelectMartialArtAdvantage_Load(object sender, EventArgs e)
-		{
-			foreach (Label objLabel in Controls.OfType<Label>())
-			{
-				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = string.Empty;
-			}
+        private void frmSelectMartialArtAdvantage_Load(object sender, EventArgs e)
+        {
+            foreach (Label objLabel in Controls.OfType<Label>())
+            {
+                if (objLabel.Text.StartsWith("["))
+                    objLabel.Text = string.Empty;
+            }
 
-			List<ListItem> lstAdvantage = new List<ListItem>();
+            List<ListItem> lstAdvantage = new List<ListItem>();
 
-			// Load the Martial Art information.
-			_objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
-
-			// Populate the Martial Art Advantage list.
-			XmlNodeList objXmlAdvantageList = _objXmlDocument.SelectNodes("/chummer/martialarts/martialart[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + _strMartialArt + "\"]/techniques/technique");
-			foreach (XmlNode objXmlAdvantage in objXmlAdvantageList)
-			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlAdvantage["name"].InnerText;
-				if (objXmlAdvantage.Attributes["translate"] != null)
-					objItem.Name = objXmlAdvantage.Attributes["translate"].InnerText;
-				else
-					objItem.Name = objXmlAdvantage["name"].InnerText;
-
-                bool blnIsNew = true;
-                foreach (MartialArt objMartialArt in _objCharacter.MartialArts)
+            // Populate the Martial Art Advantage list.
+            XmlNode objMartialArtNode = _objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + _strMartialArt + "\"]");
+            if (objMartialArtNode["alltechniques"] != null)
+                objMartialArtNode = _objXmlDocument.SelectSingleNode("/chummer");
+            XmlNodeList objXmlAdvantageList = objMartialArtNode.SelectNodes("techniques/technique");
+            foreach (XmlNode objXmlAdvantage in objXmlAdvantageList)
+            {
+                string strAdvantageName = objXmlAdvantage["name"].InnerText;
+                foreach (MartialArt objMartialArt in _objCharacter.MartialArts.Where(objMartialArt => objMartialArt.Name == _strMartialArt))
                 {
-                    if (objMartialArt.Name == _strMartialArt)
+                    if (objMartialArt.Advantages.Any(advantage => advantage.Name == strAdvantageName))
                     {
-                        foreach (MartialArtAdvantage objMartialArtAdvantage in objMartialArt.Advantages)
-                        {
-                            if (objMartialArtAdvantage.Name == objItem.Value)
-                            {
-                                blnIsNew = false;
-                            }
-                        }
+                        goto NotNewAdvantage;
                     }
                 }
 
-                if (blnIsNew)
-				    lstAdvantage.Add(objItem);
+                ListItem objItem = new ListItem();
+                objItem.Value = strAdvantageName;
+                objItem.Name = objXmlAdvantage.Attributes?["translate"]?.InnerText ?? strAdvantageName;
+                lstAdvantage.Add(objItem);
+                NotNewAdvantage:;
             }
-			SortListItem objSort = new SortListItem();
-			lstAdvantage.Sort(objSort.Compare);
+            SortListItem objSort = new SortListItem();
+            lstAdvantage.Sort(objSort.Compare);
             lstAdvantages.BeginUpdate();
             lstAdvantages.DataSource = null;
-			lstAdvantages.ValueMember = "Value";
-			lstAdvantages.DisplayMember = "Name";
-			lstAdvantages.DataSource = lstAdvantage;
+            lstAdvantages.ValueMember = "Value";
+            lstAdvantages.DisplayMember = "Name";
+            lstAdvantages.DataSource = lstAdvantage;
             lstAdvantages.EndUpdate();
         }
 
-		private void cmdOK_Click(object sender, EventArgs e)
-		{
-			if (!string.IsNullOrEmpty(lstAdvantages.Text))
-				AcceptForm();
-		}
+        private void cmdOK_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(lstAdvantages.Text))
+                AcceptForm();
+        }
 
-		private void cmdCancel_Click(object sender, EventArgs e)
-		{
-			DialogResult = DialogResult.Cancel;
-		}
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
 
-		private void lstAdvantages_DoubleClick(object sender, EventArgs e)
-		{
+        private void lstAdvantages_DoubleClick(object sender, EventArgs e)
+        {
             cmdOK_Click(sender, e);
         }
 
-		private void cmdOKAdd_Click(object sender, EventArgs e)
-		{
-			_blnAddAgain = true;
-			cmdOK_Click(sender, e);
-		}
-		#endregion
+        private void cmdOKAdd_Click(object sender, EventArgs e)
+        {
+            _blnAddAgain = true;
+            cmdOK_Click(sender, e);
+        }
+        #endregion
 
-		#region Properties
-		/// <summary>
-		/// Whether or not the user wants to add another item after this one.
-		/// </summary>
-		public bool AddAgain
-		{
-			get
-			{
-				return _blnAddAgain;
-			}
+        #region Properties
+        /// <summary>
+        /// Whether or not the user wants to add another item after this one.
+        /// </summary>
+        public bool AddAgain
+        {
+            get
+            {
+                return _blnAddAgain;
+            }
 
-		}
+        }
 
-		/// <summary>
-		/// Martial Art to display Advantages for.
-		/// </summary>
-		public string MartialArt
-		{
-			set
-			{
-				_strMartialArt = value;
-			}
-		}
+        /// <summary>
+        /// Martial Art to display Advantages for.
+        /// </summary>
+        public string MartialArt
+        {
+            set
+            {
+                _strMartialArt = value;
+            }
+        }
 
-		/// <summary>
-		/// Martial Art Advantage that was selected in the dialogue.
-		/// </summary>
-		public string SelectedAdvantage
-		{
-			get
-			{
-				return _strSelectedAdvantage;
-			}
-		}
-		#endregion
+        /// <summary>
+        /// Martial Art Advantage that was selected in the dialogue.
+        /// </summary>
+        public string SelectedAdvantage
+        {
+            get
+            {
+                return _strSelectedAdvantage;
+            }
+        }
+        #endregion
 
-		#region Methods
-		/// <summary>
-		/// Accept the selected item and close the form.
-		/// </summary>
-		private void AcceptForm()
-		{
-			_strSelectedAdvantage = lstAdvantages.SelectedValue.ToString();
-			DialogResult = DialogResult.OK;
-		}
-		#endregion
-	}
+        #region Methods
+        /// <summary>
+        /// Accept the selected item and close the form.
+        /// </summary>
+        private void AcceptForm()
+        {
+            _strSelectedAdvantage = lstAdvantages.SelectedValue.ToString();
+            DialogResult = DialogResult.OK;
+        }
+        #endregion
+    }
 }

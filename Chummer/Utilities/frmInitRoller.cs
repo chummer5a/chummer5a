@@ -35,7 +35,7 @@ namespace Chummer
         public frmInitRoller()
         {
             InitializeComponent();
-            //LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            //LanguageManager.Load(GlobalOptions.Language, this);
             CenterToParent();
         }
 

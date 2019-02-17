@@ -57,23 +57,23 @@ namespace Chummer
 			if (e.KeyCode == Keys.Escape)
 				DialogResult = DialogResult.OK;
 
-			if (e.Control && e.KeyCode == Keys.A)
-			{
-				e.SuppressKeyPress = true;
+            if (e.Control && e.KeyCode == Keys.A)
+            {
+                e.SuppressKeyPress = true;
                 if (sender != null)
-					((TextBox)sender).SelectAll();
-			}
-		}
+                    ((TextBox)sender).SelectAll();
+            }
+        }
 
-		private void frmNotes_Resize(object sender, EventArgs e)
-		{
-			if (_blnLoading)
-				return;
+        private void frmNotes_Resize(object sender, EventArgs e)
+        {
+            if (_blnLoading)
+                return;
 
-			_intWidth = Width;
-			_intHeight = Height;
-		}
-		#endregion
+            _intWidth = Width;
+            _intHeight = Height;
+        }
+        #endregion
 
 		#region Properties
 		/// <summary>

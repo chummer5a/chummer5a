@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,9 +19,12 @@ namespace CrashHandler
 		{
 			InitializeComponent();
 
-			lblProgress.Text = dmper.Progress.GetDescription();
+            if (dmper != null)
+            {
+                lblProgress.Text = dmper.Progress.GetDescription();
 
-			dmper.CrashDumperProgressChanged += Dmper_CrashDumperProgressChanged;
+                dmper.CrashDumperProgressChanged += Dmper_CrashDumperProgressChanged;
+            }
 		}
 
 		private void Dmper_CrashDumperProgressChanged(object sender, CrashDumperProgressChangedEventArgs args)

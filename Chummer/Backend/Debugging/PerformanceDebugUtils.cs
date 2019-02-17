@@ -6,19 +6,19 @@ using System.Text;
 
 namespace Chummer
 {
-	internal static class PerformanceDebugUtils
-	{
-		public static TimeSpan TaskEnd(this Stopwatch sw, string task)
-		{
-		    sw.Stop();
+    internal static class PerformanceDebugUtils
+    {
+        public static TimeSpan TaskEnd(this Stopwatch sw, string task)
+        {
+            sw.Stop();
 
-			TimeSpan elapsed = sw.Elapsed;
-			Trace.WriteLine($"{task} finished in {elapsed.TotalMilliseconds} ms");
+            TimeSpan elapsed = sw.Elapsed;
+            Trace.WriteLine($"{task} finished in {elapsed.TotalMilliseconds} ms");
 
-			sw.Restart();
-			return elapsed;
+            sw.Restart();
+            return elapsed;
 
-		}
+        }
 
-	}
+    }
 }

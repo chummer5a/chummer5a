@@ -17,75 +17,75 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema echoes.xsd">
   <version>0</version>
   <echoes>
     <echo>
       <id>36aa9af4-5c04-40d9-ba09-31b401cc1ff0</id>
       <name>Attack Upgrade</name>
-      <limit>no</limit>
+      <source>SR5</source>
+      <page>258</page>
       <bonus>
         <livingpersona>
           <attack>1</attack>
         </livingpersona>
       </bonus>
-      <source>SR5</source>
-      <page>258</page>
+      <limit>no</limit>
     </echo>
     <echo>
       <id>cd2e640c-06b7-4638-9eb4-bf75c28452a2</id>
       <name>Data Processing Upgrade</name>
-      <limit>no</limit>
+      <source>SR5</source>
+      <page>258</page>
       <bonus>
         <livingpersona>
           <dataprocessing>1</dataprocessing>
         </livingpersona>
       </bonus>
-      <source>SR5</source>
-      <page>258</page>
+      <limit>no</limit>
     </echo>
     <echo>
       <id>4550fe9d-e5da-4b01-8115-14f7a0dfab1c</id>
       <name>Firewall Upgrade</name>
-      <limit>no</limit>
+      <source>SR5</source>
+      <page>258</page>
       <bonus>
         <livingpersona>
           <firewall>1</firewall>
         </livingpersona>
       </bonus>
-      <source>SR5</source>
-      <page>258</page>
+      <limit>no</limit>
     </echo>
     <echo>
       <id>13c9f18c-a5f6-40e3-97c1-39265e1d70c2</id>
       <name>Mind Over Machine</name>
-      <limit>no</limit>
       <source>SR5</source>
       <page>258</page>
+      <limit>no</limit>
     </echo>
     <echo>
       <id>0adbc66d-6b29-4427-b652-0a93a87804b2</id>
       <name>NeuroFilter</name>
-      <limit>no</limit>
+      <source>SR5</source>
+      <page>258</page>
       <bonus>
         <livingpersona>
           <biofeedback>1</biofeedback>
         </livingpersona>
       </bonus>
-      <source>SR5</source>
-      <page>258</page>
+      <limit>no</limit>
     </echo>
     <echo>
       <id>61055141-71f5-400e-9e67-cef650ce4801</id>
       <name>Overclocking</name>
+      <source>SR5</source>
+      <page>258</page>
       <bonus>
         <livingpersona>
           <response>1</response>
         </livingpersona>
         <matrixinitiativediceadd>1</matrixinitiativediceadd>
       </bonus>
-      <source>SR5</source>
-      <page>258</page>
     </echo>
     <echo>
       <id>dbd2fbba-8487-45cc-a92a-33813c3643b6</id>
@@ -96,101 +96,101 @@
     <echo>
       <id>d5dbe3f7-8a44-466b-8d5d-db9f0c68ee6b</id>
       <name>Resonance [Program]</name>
-      <limit>no</limit>
+      <source>SR5</source>
+      <page>258</page>
       <bonus>
         <selecttext />
       </bonus>
-      <source>SR5</source>
-      <page>258</page>
+      <limit>no</limit>
     </echo>
     <echo>
       <id>ce98f873-d261-4f1e-8bc7-fafa3c712700</id>
       <name>Sleaze Upgrade</name>
-      <limit>no</limit>
+      <source>SR5</source>
+      <page>258</page>
       <bonus>
         <livingpersona>
           <sleaze>1</sleaze>
         </livingpersona>
       </bonus>
-      <source>SR5</source>
-      <page>258</page>
+      <limit>no</limit>
     </echo>
     <echo>
       <id>18269d5a-2750-4636-8ae3-f9f268d44577</id>
       <name>Fight or Flight Filter</name>
-      <limit>no</limit>
       <source>DT</source>
       <page>58</page>
+      <limit>no</limit>
     </echo>
     <echo>
       <id>e7dc7a5a-89dc-42e4-8332-8225bbff3c45</id>
       <name>Mathemagics</name>
-      <limit>no</limit>
       <source>DT</source>
       <page>58</page>
+      <limit>no</limit>
     </echo>
     <echo>
       <id>262dd3e2-5433-4b9a-b637-c5f5a3af5510</id>
       <name>MMRI</name>
-      <limit>no</limit>
       <source>DT</source>
       <page>59</page>
+      <limit>no</limit>
     </echo>
     <echo>
       <id>032d5d7f-41b9-47f5-8bd0-b7e2cf2c3adf</id>
       <name>Quiet</name>
-      <limit>no</limit>
       <source>DT</source>
       <page>59</page>
+      <limit>no</limit>
     </echo>
     <echo>
       <id>0408da17-8327-4e8c-a64f-48431bba8e58</id>
       <name>Resonance Riding</name>
-      <limit>no</limit>
       <source>DT</source>
       <page>59</page>
+      <limit>no</limit>
     </echo>
     <echo>
       <id>e6f66ec1-af07-4008-abbe-e4d31cc82358</id>
       <name>Resonance Scream</name>
-      <limit>no</limit>
       <source>DT</source>
       <page>59</page>
+      <limit>no</limit>
     </echo>
     <echo>
       <id>45ed755c-cf0e-4f57-95d2-2c01b4eda760</id>
       <name>Skinlink</name>
-      <limit>no</limit>
       <source>DT</source>
       <page>59</page>
+      <limit>no</limit>
     </echo>
     <echo>
       <id>228b8261-deca-4723-b072-0a5135ddef3f</id>
       <name>Sleepwalker</name>
-      <limit>no</limit>
       <source>DT</source>
       <page>59</page>
+      <limit>no</limit>
     </echo>
-		<echo>
-			<id>cee8e3bc-447b-4a67-9752-15e3e104e57d</id>
-			<name>Contaminate</name>
-			<limit>no</limit>
-			<source>DTD</source>
-			<page>165</page>
-		</echo>
-		<echo>
-			<id>a0966081-2534-4fc4-a2e6-504b4ecf9756</id>
-			<name>Siphon</name>
-			<limit>no</limit>
-			<source>DTD</source>
-			<page>165</page>
-		</echo>
-		<echo>
-			<id>2fe27536-4de7-49c1-a933-8d9a65604533</id>
-			<name>Pryon</name>
-			<limit>no</limit>
-			<source>DTD</source>
-			<page>165</page>
-		</echo>
+    <echo>
+      <id>cee8e3bc-447b-4a67-9752-15e3e104e57d</id>
+      <name>Contaminate</name>
+      <source>DTD</source>
+      <page>165</page>
+      <limit>no</limit>
+    </echo>
+    <echo>
+      <id>a0966081-2534-4fc4-a2e6-504b4ecf9756</id>
+      <name>Siphon</name>
+      <source>DTD</source>
+      <page>165</page>
+      <limit>no</limit>
+    </echo>
+    <echo>
+      <id>2fe27536-4de7-49c1-a933-8d9a65604533</id>
+      <name>Pryon</name>
+      <source>DTD</source>
+      <page>165</page>
+      <limit>no</limit>
+    </echo>
   </echoes>
 </chummer>

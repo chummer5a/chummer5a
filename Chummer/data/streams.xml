@@ -17,7 +17,7 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema streams.xsd">
   <version>0</version>
   <traditions>
     <tradition>
@@ -38,8 +38,10 @@
   <spirits>
     <!--Sprites Corebook-->
     <spirit>
-      <id></id>
+      <id>acf0c123-0881-4f13-8a98-010516e74019</id>
       <name>Courier Sprite</name>
+      <page>259</page>
+      <source>SR5</source>
       <bod>0</bod>
       <agi>0</agi>
       <rea>0</rea>
@@ -49,22 +51,20 @@
       <log>F+1</log>
       <wil>F+2</wil>
       <ini>(F*2)+1</ini>
-      <skills>
-        <skill attr="log">Computers</skill>
-        <skill attr="log">Hacking</skill>
-      </skills>
       <powers>
         <power>Cookie</power>
         <power>Hash</power>
       </powers>
-      <optionalpowers></optionalpowers>
-      <weaknesses></weaknesses>
-      <source>SR5</source>
-      <page>259</page>
+      <skills>
+        <skill attr="log">Computers</skill>
+        <skill attr="log">Hacking</skill>
+      </skills>
     </spirit>
     <spirit>
-      <id></id>
+      <id>610c00a4-7f11-4c88-8074-158f33aeccc0</id>
       <name>Crack Sprite</name>
+      <page>259</page>
+      <source>SR5</source>
       <bod>0</bod>
       <agi>0</agi>
       <rea>0</rea>
@@ -74,22 +74,20 @@
       <log>F+2</log>
       <wil>F+1</wil>
       <ini>(F*2)+2</ini>
+      <powers>
+        <power>Suppression</power>
+      </powers>
       <skills>
         <skill attr="log">Computers</skill>
         <skill attr="log">Electronic Warfare</skill>
         <skill attr="log">Hacking</skill>
       </skills>
-      <powers>
-        <power>Suppression</power>
-      </powers>
-      <optionalpowers></optionalpowers>
-      <weaknesses></weaknesses>
-      <source>SR5</source>
-      <page>259</page>
     </spirit>
     <spirit>
-      <id></id>
+      <id>61357134-dd63-442c-b532-355420b30b6e</id>
       <name>Data Sprite</name>
+      <page>259</page>
+      <source>SR5</source>
       <bod>0</bod>
       <agi>0</agi>
       <rea>0</rea>
@@ -99,22 +97,20 @@
       <log>F+4</log>
       <wil>F+1</wil>
       <ini>(F*2)+4</ini>
-      <skills>
-        <skill attr="log">Computers</skill>
-        <skill attr="log">Electronic Warfare</skill>
-      </skills>
       <powers>
         <power>Camoulage</power>
         <power>Watermark</power>
       </powers>
-      <optionalpowers></optionalpowers>
-      <weaknesses></weaknesses>
-      <source>SR5</source>
-      <page>259</page>
+      <skills>
+        <skill attr="log">Computers</skill>
+        <skill attr="log">Electronic Warfare</skill>
+      </skills>
     </spirit>
     <spirit>
-      <id></id>
+      <id>c3be27c2-247c-4039-9529-2ff3b2e670ec</id>
       <name>Fault Sprite</name>
+      <page>259</page>
+      <source>SR5</source>
       <bod>0</bod>
       <agi>0</agi>
       <rea>0</rea>
@@ -124,22 +120,20 @@
       <log>F+1</log>
       <wil>F+2</wil>
       <ini>(F*2)+1</ini>
+      <powers>
+        <power>Electron Storm</power>
+      </powers>
       <skills>
         <skill attr="log">Computers</skill>
         <skill attr="log">Cyber Combat</skill>
         <skill attr="log">Hacking</skill>
       </skills>
-      <powers>
-        <power>Electron Storm</power>
-      </powers>
-      <optionalpowers></optionalpowers>
-      <weaknesses></weaknesses>
-      <source>SR5</source>
-      <page>259</page>
     </spirit>
     <spirit>
-      <id></id>
+      <id>80bd0cd6-fcaa-49c2-a88f-c28b4eb28c61</id>
       <name>Machine Sprite</name>
+      <page>259</page>
+      <source>SR5</source>
       <bod>0</bod>
       <agi>0</agi>
       <rea>0</rea>
@@ -149,20 +143,16 @@
       <log>F+3</log>
       <wil>F+2</wil>
       <ini>(F*2)+3</ini>
-      <skills>
-        <skill attr="log">Computers</skill>
-        <skill attr="log">Electronic Warfare</skill>
-        <skill attr="log">Hardware</skill>
-      </skills>
       <powers>
         <power>Diagnostics</power>
         <power>Gremlins</power>
         <power>Stability</power>
       </powers>
-      <optionalpowers></optionalpowers>
-      <weaknesses></weaknesses>
-      <source>SR5</source>
-      <page>259</page>
+      <skills>
+        <skill attr="log">Computers</skill>
+        <skill attr="log">Electronic Warfare</skill>
+        <skill attr="log">Hardware</skill>
+      </skills>
     </spirit>
   </spirits>
 </chummer>

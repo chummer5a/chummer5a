@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,83 +25,83 @@ using System.Text;
 
 namespace Chummer
 {
-	static class Timekeeper
-	{
-		static Stopwatch time = new Stopwatch();
-		private static readonly Dictionary<String, TimeSpan> Starts = new Dictionary<string, TimeSpan>(); 
-		private static readonly Dictionary<string, Tuple<TimeSpan, int>> Statistics = new Dictionary<string, Tuple<TimeSpan, int>>();
+    static class Timekeeper
+    {
+        static Stopwatch time = new Stopwatch();
+        private static readonly Dictionary<String, TimeSpan> Starts = new Dictionary<string, TimeSpan>(); 
+        private static readonly Dictionary<string, Tuple<TimeSpan, int>> Statistics = new Dictionary<string, Tuple<TimeSpan, int>>();
 
-		static Timekeeper ()
-		{
-			time.Start();
-		}
+        static Timekeeper ()
+        {
+            time.Start();
+        }
 
-		public static void Start(string taskname)
-		{
-			if (!Starts.ContainsKey(taskname))
-			{
-				Starts.Add(taskname, time.Elapsed);
-			}
-		}
+        public static void Start(string taskname)
+        {
+            if (!Starts.ContainsKey(taskname))
+            {
+                Starts.Add(taskname, time.Elapsed);
+            }
+        }
 
-		public static TimeSpan Elapsed(string taskname)
-		{
-		    TimeSpan objStartTimeSpan;
-            if (Starts.TryGetValue(taskname, out objStartTimeSpan))
-			{
-				return time.Elapsed - objStartTimeSpan;
-			}
-			else
-			{
-				return TimeSpan.Zero;
-			}
-		}
-
-		public static TimeSpan Finish(string taskname)
-		{
+        public static TimeSpan Elapsed(string taskname)
+        {
             TimeSpan objStartTimeSpan;
             if (Starts.TryGetValue(taskname, out objStartTimeSpan))
             {
-				TimeSpan final = time.Elapsed - objStartTimeSpan;
+                return time.Elapsed - objStartTimeSpan;
+            }
+            else
+            {
+                return TimeSpan.Zero;
+            }
+        }
 
-				Starts.Remove(taskname);
-				string logentry = $"Task \"{taskname}\" finished in {final}";
+        public static TimeSpan Finish(string taskname)
+        {
+            TimeSpan objStartTimeSpan;
+            if (Starts.TryGetValue(taskname, out objStartTimeSpan))
+            {
+                TimeSpan final = time.Elapsed - objStartTimeSpan;
+
+                Starts.Remove(taskname);
+                string logentry = $"Task \"{taskname}\" finished in {final}";
                 Chummer.Log.Info(logentry);
 
-				Debug.WriteLine(logentry);
+                Debug.WriteLine(logentry);
 
                 Tuple<TimeSpan, int> existing;
                 if (Statistics.TryGetValue(taskname, out existing))
-				{
-					Statistics[taskname] = new Tuple<TimeSpan, int>(existing.Item1 + final, existing.Item2 + 1);
-				}
-				else
-				{
-					Statistics.Add(taskname, new Tuple<TimeSpan, int>(final, 1));
-				}
-				
-				return final;
-			}
-			else
-			{
-				Debug.WriteLine("Non started task \"" + taskname + "\" finished");
-				return TimeSpan.Zero;
-			}
-		}
+                {
+                    Statistics[taskname] = new Tuple<TimeSpan, int>(existing.Item1 + final, existing.Item2 + 1);
+                }
+                else
+                {
+                    Statistics.Add(taskname, new Tuple<TimeSpan, int>(final, 1));
+                }
+                
+                return final;
+            }
+            else
+            {
+                Debug.WriteLine("Non started task \"" + taskname + "\" finished");
+                return TimeSpan.Zero;
+            }
+        }
 
-		public static void Log()
-		{
-			StringBuilder sb = new StringBuilder("Time statistics\n");
+        public static void Log()
+        {
+            StringBuilder sb = new StringBuilder("Time statistics\n");
 
-			foreach (KeyValuePair<string, Tuple<TimeSpan, int>> keyValuePair in Statistics)
-			{
-				sb.AppendLine($"\t{keyValuePair.Key}({keyValuePair.Value.Item2}) = {keyValuePair.Value.Item1}");
-			}
+            foreach (KeyValuePair<string, Tuple<TimeSpan, int>> keyValuePair in Statistics)
+            {
+                sb.AppendLine($"\t{keyValuePair.Key}({keyValuePair.Value.Item2}) = {keyValuePair.Value.Item1}");
+            }
 
-			string strined = sb.ToString();
-			Debug.WriteLine(strined);
-			Chummer.Log.Info(strined);
-		}
+            string strined = sb.ToString();
+            Debug.WriteLine(strined);
+            Chummer.Log.Info(strined);
+        }
 
-	}
+    }
 }

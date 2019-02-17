@@ -1,361 +1,363 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-	<xs:include schemaLocation="../data../bonuses.xsd" />
+    <xs:include schemaLocation="../data../bonuses.xsd" />
 
-	<xs:element name="metavariant">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
-				<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-				<xs:element name="karma" type="xs:string" minOccurs="1" maxOccurs="1" />
-				<xs:element name="powers" minOccurs="0" maxOccurs="1">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element ref="power" minOccurs="0" maxOccurs="unbounded" />
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="optionalpowers" minOccurs="0" maxOccurs="1">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element ref="optionalpower" minOccurs="0" maxOccurs="unbounded" />
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="skills" minOccurs="0" maxOccurs="1">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="skill" nillable="true" minOccurs="0" maxOccurs="unbounded">
-								<xs:complexType>
-									<xs:simpleContent msdata:ColumnName="skill_Text" msdata:Ordinal="3">
-										<xs:extension base="xs:string">
-											<xs:attribute name="rating" type="xs:string" />
-											<xs:attribute name="spec" type="xs:string" />
-											<xs:attribute name="select" type="xs:string" />
-										</xs:extension>
-									</xs:simpleContent>
-								</xs:complexType>
-							</xs:element>
-							<xs:element name="group" nillable="true" minOccurs="0" maxOccurs="unbounded">
-								<xs:complexType>
-									<xs:simpleContent msdata:ColumnName="group_Text" msdata:Ordinal="1">
-										<xs:extension base="xs:string">
-											<xs:attribute name="rating" type="xs:string" />
-										</xs:extension>
-									</xs:simpleContent>
-								</xs:complexType>
-							</xs:element>
-							<xs:element name="knowledge" nillable="true" minOccurs="0" maxOccurs="unbounded">
-								<xs:complexType>
-									<xs:simpleContent msdata:ColumnName="knowledge_Text" msdata:Ordinal="2">
-										<xs:extension base="xs:string">
-											<xs:attribute name="rating" type="xs:string" />
-											<xs:attribute name="category" type="xs:string" />
-										</xs:extension>
-									</xs:simpleContent>
-								</xs:complexType>
-							</xs:element>
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="qualities" minOccurs="0" maxOccurs="1">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="positive" minOccurs="0" maxOccurs="1">
-								<xs:complexType>
-									<xs:sequence>
-										<xs:element ref="quality" minOccurs="0" maxOccurs="unbounded" />
-									</xs:sequence>
-								</xs:complexType>
-							</xs:element>
-							<xs:element name="negative" minOccurs="0" maxOccurs="1">
-								<xs:complexType>
-									<xs:sequence>
-										<xs:element ref="quality" minOccurs="0" maxOccurs="unbounded" />
-									</xs:sequence>
-								</xs:complexType>
-							</xs:element>
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
-				<xs:element ref="bonus" minOccurs="0" maxOccurs="1" />
-				<xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
-				<xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="metavariant">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
+				<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                <xs:element name="karma" type="xs:string" minOccurs="1" maxOccurs="1" />
+                <xs:element name="powers" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="power" minOccurs="0" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="optionalpowers" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="optionalpower" minOccurs="0" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="skills" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="skill" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:simpleContent msdata:ColumnName="skill_Text" msdata:Ordinal="3">
+                                        <xs:extension base="xs:string">
+                                            <xs:attribute name="rating" type="xs:string" />
+                                            <xs:attribute name="spec" type="xs:string" />
+                                            <xs:attribute name="select" type="xs:string" />
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="group" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:simpleContent msdata:ColumnName="group_Text" msdata:Ordinal="1">
+                                        <xs:extension base="xs:string">
+                                            <xs:attribute name="rating" type="xs:string" />
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="knowledge" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:simpleContent msdata:ColumnName="knowledge_Text" msdata:Ordinal="2">
+                                        <xs:extension base="xs:string">
+                                            <xs:attribute name="rating" type="xs:string" />
+                                            <xs:attribute name="category" type="xs:string" />
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="qualities" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="positive" minOccurs="0" maxOccurs="1">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element ref="quality" minOccurs="0" maxOccurs="unbounded" />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="negative" minOccurs="0" maxOccurs="1">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element ref="quality" minOccurs="0" maxOccurs="unbounded" />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="bonus" minOccurs="0" maxOccurs="1" />
+                <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
+                <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="quality" nillable="true">
-		<xs:complexType>
-			<xs:simpleContent>
-				<xs:extension base="xs:string">
-					<xs:attribute name="select" type="xs:string" use="optional" />
-				</xs:extension>
-			</xs:simpleContent>
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="power" nillable="true">
-		<xs:complexType>
-			<xs:simpleContent msdata:ColumnName="power_Text" msdata:Ordinal="2">
-				<xs:extension base="xs:string">
-					<xs:attribute name="select" type="xs:string" />
-					<xs:attribute name="rating" type="xs:string" />
-				</xs:extension>
-			</xs:simpleContent>
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="optionalpower" nillable="true">
-		<xs:complexType>
-			<xs:simpleContent msdata:ColumnName="power_Text" msdata:Ordinal="2">
-				<xs:extension base="xs:string">
-					<xs:attribute name="select" type="xs:string" />
-					<xs:attribute name="rating" type="xs:string" />
-				</xs:extension>
-			</xs:simpleContent>
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="chummer">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="version" type="xs:string" minOccurs="0" />
-				<xs:element name="categories" minOccurs="0" maxOccurs="unbounded">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="category" nillable="true" minOccurs="0" maxOccurs="unbounded">
-								<xs:complexType>
-									<xs:simpleContent msdata:ColumnName="category_Text" msdata:Ordinal="0">
-										<xs:extension base="xs:string">
-										</xs:extension>
-									</xs:simpleContent>
-								</xs:complexType>
-							</xs:element>
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="metatypes" minOccurs="0" maxOccurs="unbounded">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="metatype" minOccurs="0" maxOccurs="unbounded">
-								<xs:complexType>
-									<xs:sequence>
-										<xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="name" type="xs:string" minOccurs="0" />
-										<xs:element name="category" type="xs:string" minOccurs="0" />
-										<xs:element name="forcecreature" type="xs:string" minOccurs="0" />
-										<xs:element name="karma" type="xs:string" minOccurs="0" />
-										<xs:element name="bodmin" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="bodmax" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="bodaug" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="agimin" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="agimax" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="agiaug" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="reamin" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="reamax" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="reaaug" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="strmin" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="strmax" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="straug" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="chamin" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="chamax" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="chaaug" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="intmin" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="intmax" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="intaug" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="logmin" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="logmax" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="logaug" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="wilmin" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="wilmax" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="wilaug" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="inimin" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="inimax" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="iniaug" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="edgmin" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="edgmax" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="edgaug" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="magmin" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="magmax" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="magaug" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="resmin" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="resmax" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="resaug" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="depmin" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="depmax" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="depaug" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="essmin" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="essmax" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="essaug" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="movement" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="walk" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="run" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="sprint" type="xs:string" minOccurs="0" maxOccurs="1" />
-										<xs:element name="qualityrestriction" minOccurs="0" maxOccurs="1">
-											<xs:complexType>
-												<xs:sequence>
-													<xs:element name="positive" minOccurs="0" maxOccurs="1">
-														<xs:complexType>
-															<xs:sequence>
-																<xs:element ref="quality" minOccurs="0" maxOccurs="unbounded" />
-															</xs:sequence>
-														</xs:complexType>
-													</xs:element>
-													<xs:element name="negative" minOccurs="0" maxOccurs="1">
-														<xs:complexType>
-															<xs:sequence>
-																<xs:element ref="quality" minOccurs="0" maxOccurs="unbounded" />
-															</xs:sequence>
-														</xs:complexType>
-													</xs:element>
-												</xs:sequence>
-											</xs:complexType>
-										</xs:element>
-										<xs:element name="qualities" minOccurs="0" maxOccurs="1">
-											<xs:complexType>
-												<xs:sequence>
-													<xs:element name="positive" minOccurs="0" maxOccurs="1">
-														<xs:complexType>
-															<xs:sequence>
-																<xs:element ref="quality" minOccurs="0" maxOccurs="unbounded" />
-															</xs:sequence>
-														</xs:complexType>
-													</xs:element>
-													<xs:element name="negative" minOccurs="0" maxOccurs="1">
-														<xs:complexType>
-															<xs:sequence>
-																<xs:element ref="quality" minOccurs="0" maxOccurs="unbounded" />
-															</xs:sequence>
-														</xs:complexType>
-													</xs:element>
-												</xs:sequence>
-											</xs:complexType>
-										</xs:element>
-										<xs:element ref="bonus" minOccurs="0" maxOccurs="1" />
-										<xs:element name="powers" minOccurs="0" maxOccurs="1">
-											<xs:complexType>
-												<xs:sequence>
-													<xs:element ref="power" minOccurs="0" maxOccurs="unbounded" />
-												</xs:sequence>
-											</xs:complexType>
-										</xs:element>
-										<xs:element name="optionalpowers" minOccurs="0" maxOccurs="1">
-											<xs:complexType>
-												<xs:sequence>
-													<xs:element ref="optionalpower" minOccurs="0" maxOccurs="unbounded" />
-												</xs:sequence>
-											</xs:complexType>
-										</xs:element>
-										<xs:element name="skills" minOccurs="0" maxOccurs="1">
-											<xs:complexType>
-												<xs:sequence>
-													<xs:element name="skill" nillable="true" minOccurs="0" maxOccurs="unbounded">
-														<xs:complexType>
-															<xs:simpleContent msdata:ColumnName="skill_Text" msdata:Ordinal="3">
-																<xs:extension base="xs:string">
-																	<xs:attribute name="rating" type="xs:string" />
-																	<xs:attribute name="spec" type="xs:string" />
-																	<xs:attribute name="select" type="xs:string" />
-																</xs:extension>
-															</xs:simpleContent>
-														</xs:complexType>
-													</xs:element>
-													<xs:element name="group" nillable="true" minOccurs="0" maxOccurs="unbounded">
-														<xs:complexType>
-															<xs:simpleContent msdata:ColumnName="group_Text" msdata:Ordinal="1">
-																<xs:extension base="xs:string">
-																	<xs:attribute name="rating" type="xs:string" />
-																</xs:extension>
-															</xs:simpleContent>
-														</xs:complexType>
-													</xs:element>
-													<xs:element name="knowledge" nillable="true" minOccurs="0" maxOccurs="unbounded">
-														<xs:complexType>
-															<xs:simpleContent msdata:ColumnName="knowledge_Text" msdata:Ordinal="2">
-																<xs:extension base="xs:string">
-																	<xs:attribute name="rating" type="xs:string" />
-																	<xs:attribute name="category" type="xs:string" />
-																</xs:extension>
-															</xs:simpleContent>
-														</xs:complexType>
-													</xs:element>
-												</xs:sequence>
-											</xs:complexType>
-										</xs:element>
-										<xs:element name="complexforms" minOccurs="0" maxOccurs="1">
-											<xs:complexType>
-												<xs:sequence>
-													<xs:element name="complexform" minOccurs="0" maxOccurs="unbounded">
-														<xs:complexType>
-															<xs:simpleContent>
-																<xs:extension base="xs:string">
-																	<xs:attribute name="rating" type="xs:string" use="optional" />
-																	<xs:attribute name="select" type="xs:string" use="optional" />
-																	<xs:attribute name="category" type="xs:string" use="optional" />
-																	<xs:attribute name="option" type="xs:string" use="optional" />
-																	<xs:attribute name="optionrating" type="xs:string" use="optional" />
-																	<xs:attribute name="optionselect" type="xs:string" use="optional" />
-																</xs:extension>
-															</xs:simpleContent>
-														</xs:complexType>
-													</xs:element>
-												</xs:sequence>
-											</xs:complexType>
-										</xs:element>
-										<xs:element name="optionalcomplexforms" minOccurs="0" maxOccurs="1">
-											<xs:complexType>
-												<xs:sequence>
-													<xs:element name="complexform" minOccurs="0" maxOccurs="unbounded">
-														<xs:complexType>
-															<xs:simpleContent>
-																<xs:extension base="xs:string">
-																	<xs:attribute name="rating" type="xs:string" use="optional" />
-																	<xs:attribute name="category" type="xs:string" use="optional" />
-																</xs:extension>
-															</xs:simpleContent>
-														</xs:complexType>
-													</xs:element>
-												</xs:sequence>
-											</xs:complexType>
-										</xs:element>
-										<xs:element name="gears" minOccurs="0" maxOccurs="1">
-											<xs:complexType>
-												<xs:sequence>
-													<xs:element name="gear" minOccurs="0" maxOccurs="unbounded">
-														<xs:complexType>
-															<xs:simpleContent>
-																<xs:extension base="xs:string">
-																	<xs:attribute name="rating" type="xs:string" use="optional" />
-																</xs:extension>
-															</xs:simpleContent>
-														</xs:complexType>
-													</xs:element>
-												</xs:sequence>
-											</xs:complexType>
-										</xs:element>
-										<xs:element name="source" type="xs:string" minOccurs="0" />
-										<xs:element name="page" type="xs:string" minOccurs="0" />
-										<xs:element name="metavariants" minOccurs="0" maxOccurs="1">
-											<xs:complexType>
-												<xs:sequence>
-													<xs:element ref="metavariant" minOccurs="0" maxOccurs="unbounded" />
-												</xs:sequence>
-											</xs:complexType>
-										</xs:element>
-									</xs:sequence>
-								</xs:complexType>
-							</xs:element>
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
-		<xs:complexType>
-			<xs:choice minOccurs="0" maxOccurs="unbounded">
-				<xs:element ref="quality" />
-				<xs:element ref="power" />
-				<xs:element ref="chummer" />
-			</xs:choice>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="quality" nillable="true">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="select" type="xs:string" use="optional" />
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="power" nillable="true">
+        <xs:complexType>
+            <xs:simpleContent msdata:ColumnName="power_Text" msdata:Ordinal="2">
+                <xs:extension base="xs:string">
+                    <xs:attribute name="select" type="xs:string" />
+                    <xs:attribute name="rating" type="xs:string" />
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="optionalpower" nillable="true">
+        <xs:complexType>
+            <xs:simpleContent msdata:ColumnName="power_Text" msdata:Ordinal="2">
+                <xs:extension base="xs:string">
+                    <xs:attribute name="select" type="xs:string" />
+                    <xs:attribute name="rating" type="xs:string" />
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="chummer">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="version" type="xs:string" minOccurs="0" />
+                <xs:element name="categories" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="category" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:simpleContent msdata:ColumnName="category_Text" msdata:Ordinal="0">
+                                        <xs:extension base="xs:string">
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="metatypes" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="metatype" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
+										<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="name" type="xs:string" minOccurs="0" />
+                                        <xs:element name="category" type="xs:string" minOccurs="0" />
+                                        <xs:element name="forcecreature" type="xs:string" minOccurs="0" />
+                                        <xs:element name="karma" type="xs:string" minOccurs="0" />
+                                        <xs:element name="bodmin" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="bodmax" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="bodaug" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="agimin" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="agimax" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="agiaug" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="reamin" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="reamax" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="reaaug" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="strmin" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="strmax" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="straug" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="chamin" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="chamax" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="chaaug" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="intmin" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="intmax" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="intaug" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="logmin" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="logmax" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="logaug" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="wilmin" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="wilmax" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="wilaug" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="inimin" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="inimax" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="iniaug" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="edgmin" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="edgmax" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="edgaug" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="magmin" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="magmax" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="magaug" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="resmin" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="resmax" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="resaug" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="depmin" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="depmax" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="depaug" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="essmin" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="essmax" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="essaug" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="movement" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="walk" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="run" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="sprint" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="qualityrestriction" minOccurs="0" maxOccurs="1">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="positive" minOccurs="0" maxOccurs="1">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element ref="quality" minOccurs="0" maxOccurs="unbounded" />
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="negative" minOccurs="0" maxOccurs="1">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element ref="quality" minOccurs="0" maxOccurs="unbounded" />
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="qualities" minOccurs="0" maxOccurs="1">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="positive" minOccurs="0" maxOccurs="1">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element ref="quality" minOccurs="0" maxOccurs="unbounded" />
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="negative" minOccurs="0" maxOccurs="1">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element ref="quality" minOccurs="0" maxOccurs="unbounded" />
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element ref="bonus" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="powers" minOccurs="0" maxOccurs="1">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element ref="power" minOccurs="0" maxOccurs="unbounded" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="optionalpowers" minOccurs="0" maxOccurs="1">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element ref="optionalpower" minOccurs="0" maxOccurs="unbounded" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="skills" minOccurs="0" maxOccurs="1">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="skill" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:simpleContent msdata:ColumnName="skill_Text" msdata:Ordinal="3">
+                                                                <xs:extension base="xs:string">
+                                                                    <xs:attribute name="rating" type="xs:string" />
+                                                                    <xs:attribute name="spec" type="xs:string" />
+                                                                    <xs:attribute name="select" type="xs:string" />
+                                                                </xs:extension>
+                                                            </xs:simpleContent>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="group" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:simpleContent msdata:ColumnName="group_Text" msdata:Ordinal="1">
+                                                                <xs:extension base="xs:string">
+                                                                    <xs:attribute name="rating" type="xs:string" />
+                                                                </xs:extension>
+                                                            </xs:simpleContent>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="knowledge" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:simpleContent msdata:ColumnName="knowledge_Text" msdata:Ordinal="2">
+                                                                <xs:extension base="xs:string">
+                                                                    <xs:attribute name="rating" type="xs:string" />
+                                                                    <xs:attribute name="category" type="xs:string" />
+                                                                </xs:extension>
+                                                            </xs:simpleContent>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="complexforms" minOccurs="0" maxOccurs="1">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="complexform" minOccurs="0" maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:simpleContent>
+                                                                <xs:extension base="xs:string">
+                                                                    <xs:attribute name="rating" type="xs:string" use="optional" />
+                                                                    <xs:attribute name="select" type="xs:string" use="optional" />
+                                                                    <xs:attribute name="category" type="xs:string" use="optional" />
+                                                                    <xs:attribute name="option" type="xs:string" use="optional" />
+                                                                    <xs:attribute name="optionrating" type="xs:string" use="optional" />
+                                                                    <xs:attribute name="optionselect" type="xs:string" use="optional" />
+                                                                </xs:extension>
+                                                            </xs:simpleContent>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="optionalcomplexforms" minOccurs="0" maxOccurs="1">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="complexform" minOccurs="0" maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:simpleContent>
+                                                                <xs:extension base="xs:string">
+                                                                    <xs:attribute name="rating" type="xs:string" use="optional" />
+                                                                    <xs:attribute name="category" type="xs:string" use="optional" />
+                                                                </xs:extension>
+                                                            </xs:simpleContent>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="gears" minOccurs="0" maxOccurs="1">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="gear" minOccurs="0" maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:simpleContent>
+                                                                <xs:extension base="xs:string">
+                                                                    <xs:attribute name="rating" type="xs:string" use="optional" />
+                                                                </xs:extension>
+                                                            </xs:simpleContent>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="source" type="xs:string" minOccurs="0" />
+                                        <xs:element name="page" type="xs:string" minOccurs="0" />
+                                        <xs:element name="metavariants" minOccurs="0" maxOccurs="1">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element ref="metavariant" minOccurs="0" maxOccurs="unbounded" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="quality" />
+                <xs:element ref="power" />
+                <xs:element ref="chummer" />
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
 </xs:schema>
