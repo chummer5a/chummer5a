@@ -9480,7 +9480,7 @@
 		</string>
 		<string>
 			<key>Message_InvalidStolenNuyenExcess</key>
-			<text>{0} über Ihrer Gesamtsumme von Nuyen für gestohlene Ausrüstung</text>
+			<text>{0} über Ihrer Nuyen-Gesamtsumme für gestohlene Ausrüstung</text>
 		</string>
 		<string>
 			<key>Menu_FileSaveAsCreated</key>
