@@ -612,6 +612,7 @@ namespace Chummer
 			this.lblCyberwareEssence = new System.Windows.Forms.Label();
 			this.gpbCyberwareMatrix = new System.Windows.Forms.GroupBox();
 			this.tlpCyberwareMatrix = new Chummer.BufferedTableLayoutPanel(this.components);
+			this.chkCyberwareWireless = new System.Windows.Forms.CheckBox();
 			this.lblCyberFirewallLabel = new System.Windows.Forms.Label();
 			this.lblCyberDataProcessingLabel = new System.Windows.Forms.Label();
 			this.lblCyberDeviceRatingLabel = new System.Windows.Forms.Label();
@@ -8036,7 +8037,7 @@ namespace Chummer
 			this.flpCyberware.Location = new System.Drawing.Point(301, 29);
 			this.flpCyberware.Margin = new System.Windows.Forms.Padding(0);
 			this.flpCyberware.Name = "flpCyberware";
-			this.flpCyberware.Size = new System.Drawing.Size(534, 596);
+			this.flpCyberware.Size = new System.Drawing.Size(562, 596);
 			this.flpCyberware.TabIndex = 230;
 			// 
 			// gpbEssenceConsumption
@@ -8471,7 +8472,7 @@ namespace Chummer
 			this.gpbCyberwareMatrix.Location = new System.Drawing.Point(3, 307);
 			this.gpbCyberwareMatrix.MinimumSize = new System.Drawing.Size(500, 0);
 			this.gpbCyberwareMatrix.Name = "gpbCyberwareMatrix";
-			this.gpbCyberwareMatrix.Size = new System.Drawing.Size(516, 98);
+			this.gpbCyberwareMatrix.Size = new System.Drawing.Size(556, 98);
 			this.gpbCyberwareMatrix.TabIndex = 233;
 			this.gpbCyberwareMatrix.TabStop = false;
 			this.gpbCyberwareMatrix.Tag = "String_Matrix";
@@ -8487,6 +8488,7 @@ namespace Chummer
 			this.tlpCyberwareMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
 			this.tlpCyberwareMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
 			this.tlpCyberwareMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+			this.tlpCyberwareMatrix.Controls.Add(this.chkCyberwareWireless, 4, 0);
 			this.tlpCyberwareMatrix.Controls.Add(this.lblCyberFirewallLabel, 4, 1);
 			this.tlpCyberwareMatrix.Controls.Add(this.lblCyberDataProcessingLabel, 3, 1);
 			this.tlpCyberwareMatrix.Controls.Add(this.lblCyberDeviceRatingLabel, 0, 1);
@@ -8510,14 +8512,31 @@ namespace Chummer
 			this.tlpCyberwareMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tlpCyberwareMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tlpCyberwareMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tlpCyberwareMatrix.Size = new System.Drawing.Size(510, 79);
+			this.tlpCyberwareMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tlpCyberwareMatrix.Size = new System.Drawing.Size(550, 79);
 			this.tlpCyberwareMatrix.TabIndex = 229;
+			// 
+			// chkCyberwareWireless
+			// 
+			this.chkCyberwareWireless.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.chkCyberwareWireless.AutoSize = true;
+			this.chkCyberwareWireless.Location = new System.Drawing.Point(443, 4);
+			this.chkCyberwareWireless.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.chkCyberwareWireless.Name = "chkCyberwareWireless";
+			this.chkCyberwareWireless.Size = new System.Drawing.Size(104, 19);
+			this.chkCyberwareWireless.TabIndex = 247;
+			this.chkCyberwareWireless.Tag = "Checkbox_Wireless";
+			this.chkCyberwareWireless.Text = "Wireless";
+			this.chkCyberwareWireless.UseVisualStyleBackColor = true;
+			this.chkCyberwareWireless.CheckedChanged += new System.EventHandler(this.chkCyberwareWireless_CheckedChanged);
 			// 
 			// lblCyberFirewallLabel
 			// 
 			this.lblCyberFirewallLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.lblCyberFirewallLabel.AutoSize = true;
-			this.lblCyberFirewallLabel.Location = new System.Drawing.Point(411, 33);
+			this.lblCyberFirewallLabel.Location = new System.Drawing.Point(443, 33);
 			this.lblCyberFirewallLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
 			this.lblCyberFirewallLabel.Name = "lblCyberFirewallLabel";
 			this.lblCyberFirewallLabel.Size = new System.Drawing.Size(45, 13);
@@ -8529,7 +8548,7 @@ namespace Chummer
 			// 
 			this.lblCyberDataProcessingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.lblCyberDataProcessingLabel.AutoSize = true;
-			this.lblCyberDataProcessingLabel.Location = new System.Drawing.Point(309, 33);
+			this.lblCyberDataProcessingLabel.Location = new System.Drawing.Point(333, 33);
 			this.lblCyberDataProcessingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
 			this.lblCyberDataProcessingLabel.Name = "lblCyberDataProcessingLabel";
 			this.lblCyberDataProcessingLabel.Size = new System.Drawing.Size(88, 13);
@@ -8553,7 +8572,7 @@ namespace Chummer
 			// 
 			this.lblCyberSleazeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.lblCyberSleazeLabel.AutoSize = true;
-			this.lblCyberSleazeLabel.Location = new System.Drawing.Point(207, 33);
+			this.lblCyberSleazeLabel.Location = new System.Drawing.Point(223, 33);
 			this.lblCyberSleazeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
 			this.lblCyberSleazeLabel.Name = "lblCyberSleazeLabel";
 			this.lblCyberSleazeLabel.Size = new System.Drawing.Size(42, 13);
@@ -8565,7 +8584,7 @@ namespace Chummer
 			// 
 			this.lblCyberAttackLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.lblCyberAttackLabel.AutoSize = true;
-			this.lblCyberAttackLabel.Location = new System.Drawing.Point(105, 33);
+			this.lblCyberAttackLabel.Location = new System.Drawing.Point(113, 33);
 			this.lblCyberAttackLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
 			this.lblCyberAttackLabel.Name = "lblCyberAttackLabel";
 			this.lblCyberAttackLabel.Size = new System.Drawing.Size(41, 13);
@@ -8589,9 +8608,9 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.cboCyberwareAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboCyberwareAttack.FormattingEnabled = true;
-			this.cboCyberwareAttack.Location = new System.Drawing.Point(105, 55);
+			this.cboCyberwareAttack.Location = new System.Drawing.Point(113, 55);
 			this.cboCyberwareAttack.Name = "cboCyberwareAttack";
-			this.cboCyberwareAttack.Size = new System.Drawing.Size(96, 21);
+			this.cboCyberwareAttack.Size = new System.Drawing.Size(104, 21);
 			this.cboCyberwareAttack.TabIndex = 211;
 			this.cboCyberwareAttack.TooltipText = "";
 			this.cboCyberwareAttack.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareAttack_SelectedIndexChanged);
@@ -8602,9 +8621,9 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.cboCyberwareSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboCyberwareSleaze.FormattingEnabled = true;
-			this.cboCyberwareSleaze.Location = new System.Drawing.Point(207, 55);
+			this.cboCyberwareSleaze.Location = new System.Drawing.Point(223, 55);
 			this.cboCyberwareSleaze.Name = "cboCyberwareSleaze";
-			this.cboCyberwareSleaze.Size = new System.Drawing.Size(96, 21);
+			this.cboCyberwareSleaze.Size = new System.Drawing.Size(104, 21);
 			this.cboCyberwareSleaze.TabIndex = 212;
 			this.cboCyberwareSleaze.TooltipText = "";
 			this.cboCyberwareSleaze.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareSleaze_SelectedIndexChanged);
@@ -8615,9 +8634,9 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.cboCyberwareDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboCyberwareDataProcessing.FormattingEnabled = true;
-			this.cboCyberwareDataProcessing.Location = new System.Drawing.Point(309, 55);
+			this.cboCyberwareDataProcessing.Location = new System.Drawing.Point(333, 55);
 			this.cboCyberwareDataProcessing.Name = "cboCyberwareDataProcessing";
-			this.cboCyberwareDataProcessing.Size = new System.Drawing.Size(96, 21);
+			this.cboCyberwareDataProcessing.Size = new System.Drawing.Size(104, 21);
 			this.cboCyberwareDataProcessing.TabIndex = 214;
 			this.cboCyberwareDataProcessing.TooltipText = "";
 			this.cboCyberwareDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareDataProcessing_SelectedIndexChanged);
@@ -8628,9 +8647,9 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.cboCyberwareFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboCyberwareFirewall.FormattingEnabled = true;
-			this.cboCyberwareFirewall.Location = new System.Drawing.Point(411, 55);
+			this.cboCyberwareFirewall.Location = new System.Drawing.Point(443, 55);
 			this.cboCyberwareFirewall.Name = "cboCyberwareFirewall";
-			this.cboCyberwareFirewall.Size = new System.Drawing.Size(96, 21);
+			this.cboCyberwareFirewall.Size = new System.Drawing.Size(104, 21);
 			this.cboCyberwareFirewall.TabIndex = 213;
 			this.cboCyberwareFirewall.TooltipText = "";
 			this.cboCyberwareFirewall.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareFirewall_SelectedIndexChanged);
@@ -8641,10 +8660,10 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.chkCyberwareHomeNode.AutoSize = true;
-			this.chkCyberwareHomeNode.Location = new System.Drawing.Point(207, 4);
+			this.chkCyberwareHomeNode.Location = new System.Drawing.Point(223, 4);
 			this.chkCyberwareHomeNode.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.chkCyberwareHomeNode.Name = "chkCyberwareHomeNode";
-			this.chkCyberwareHomeNode.Size = new System.Drawing.Size(96, 19);
+			this.chkCyberwareHomeNode.Size = new System.Drawing.Size(104, 19);
 			this.chkCyberwareHomeNode.TabIndex = 244;
 			this.chkCyberwareHomeNode.Tag = "Checkbox_HomeNode";
 			this.chkCyberwareHomeNode.Text = "Home Node";
@@ -8657,11 +8676,10 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.chkCyberwareActiveCommlink.AutoSize = true;
-			this.tlpCyberwareMatrix.SetColumnSpan(this.chkCyberwareActiveCommlink, 2);
-			this.chkCyberwareActiveCommlink.Location = new System.Drawing.Point(309, 4);
+			this.chkCyberwareActiveCommlink.Location = new System.Drawing.Point(333, 4);
 			this.chkCyberwareActiveCommlink.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.chkCyberwareActiveCommlink.Name = "chkCyberwareActiveCommlink";
-			this.chkCyberwareActiveCommlink.Size = new System.Drawing.Size(198, 19);
+			this.chkCyberwareActiveCommlink.Size = new System.Drawing.Size(104, 19);
 			this.chkCyberwareActiveCommlink.TabIndex = 245;
 			this.chkCyberwareActiveCommlink.Tag = "Checkbox_ActiveCommlink";
 			this.chkCyberwareActiveCommlink.Text = "Active Commlink";
@@ -8674,9 +8692,9 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.cboCyberwareOverclocker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboCyberwareOverclocker.FormattingEnabled = true;
-			this.cboCyberwareOverclocker.Location = new System.Drawing.Point(105, 3);
+			this.cboCyberwareOverclocker.Location = new System.Drawing.Point(113, 3);
 			this.cboCyberwareOverclocker.Name = "cboCyberwareOverclocker";
-			this.cboCyberwareOverclocker.Size = new System.Drawing.Size(96, 21);
+			this.cboCyberwareOverclocker.Size = new System.Drawing.Size(104, 21);
 			this.cboCyberwareOverclocker.TabIndex = 216;
 			this.cboCyberwareOverclocker.TooltipText = "";
 			this.cboCyberwareOverclocker.Visible = false;
@@ -8686,7 +8704,7 @@ namespace Chummer
 			// 
 			this.lblCyberwareOverclockerLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.lblCyberwareOverclockerLabel.AutoSize = true;
-			this.lblCyberwareOverclockerLabel.Location = new System.Drawing.Point(31, 6);
+			this.lblCyberwareOverclockerLabel.Location = new System.Drawing.Point(39, 6);
 			this.lblCyberwareOverclockerLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
 			this.lblCyberwareOverclockerLabel.Name = "lblCyberwareOverclockerLabel";
 			this.lblCyberwareOverclockerLabel.Size = new System.Drawing.Size(68, 13);
@@ -19637,7 +19655,6 @@ namespace Chummer
         private CheckBox chkPhysicalCM22;
         private CheckBox chkPhysicalCM23;
         private CheckBox chkPhysicalCM24;
-        private CheckBox chkCyberwareWireless;
         private FlowLayoutPanel flowLayoutPanel4;
         private TableLayoutPanel tableLayoutPanel3;
         private FlowLayoutPanel flowLayoutPanel5;
@@ -19798,5 +19815,6 @@ namespace Chummer
         private CheckBox chkArmorWireless;
         private CheckBox chkWeaponWireless;
         private ToolStripMenuItem tsCyberwareUpgrade;
+        private CheckBox chkCyberwareWireless;
     }
 }
