@@ -9458,5 +9458,41 @@
 			<key>String_Program</key>
 			<text>Programm</text>
 		</string>
+		<string>
+			<key>Message_OrphanedImprovements</key>
+			<text>In Ihrer Charakterdatei wurden nicht zuordenbare Verbesserungen gefunden. In den meisten Fällen sollte es unbedenklich sein, diesen Charakter zu laden. Sie sollten aber eine Sicherungskopie dieser Charakterdatei erstellen.\n\nWollen Sie das Laden des Charakters fortsetzen und diese Verbesserungen entfernen?</text>
+		</string>
+		<string>
+			<key>MessageTitle_OrphanedImprovements</key>
+			<text>Nicht zuordenbare Verbesserungen vorhanden</text>
+		</string>
+		<string>
+			<key>Checkbox_Stolen</key>
+			<text>gestohlen</text>
+		</string>
+		<string>
+			<key>Label_StolenGearNuyen</key>
+			<text>Nuyen (gestohlen):</text>
+		</string>
+		<string>
+			<key>String_ExpenseUpgradedCyberware</key>
+			<text>Verbesserte Cyberware</text>
+		</string>
+		<string>
+			<key>Message_InvalidStolenNuyenExcess</key>
+			<text>{0} über Ihrer Gesamtsumme von Nuyen für gestohlene Ausrüstung</text>
+		</string>
+		<string>
+			<key>Menu_FileSaveAsCreated</key>
+			<text>Speichern unter &amp;Erstellt</text>
+		</string>
+		<string>
+			<key>Checkbox_Wireless</key>
+			<text>WiFi aktiviert</text>
+		</string>
+		<string>
+			<key>String_Wireless</key>
+			<text>WiFi</text>
+		</string>
 	</strings>
 </chummer>
