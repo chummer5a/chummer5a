@@ -662,11 +662,12 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-			    if (IncludedInVehicle)
-			    {
-			        return 0;
-			    }
-				return OwnCost + Weapons.Sum(w => w.TotalCost) + WeaponMountOptions.Sum(w => w.Cost) + Mods.Sum(m => m.TotalCost);
+                decimal cost = 0;
+                if (!IncludedInVehicle && !Stolen)
+                {
+                    cost += OwnCost;
+                }
+                return cost + Weapons.Sum(w => w.TotalCost) + WeaponMountOptions.Sum(w => w.Cost) + Mods.Sum(m => m.TotalCost);
 			}
         }
 
@@ -677,14 +678,9 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (IncludedInVehicle)
-                {
-                    return 0;
-                }
-
                 decimal d = 0;
 
-                if (Stolen)
+                if (!IncludedInVehicle && Stolen)
                 {
                     d += OwnCost;
                 }
