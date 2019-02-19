@@ -48,6 +48,7 @@ Data Changes:
 - Fixed incorrect Ammo strings on the Walther Secura Superkompakt, HK Urban Striker and HK DMR 11D.
 - Fixed incorrect AP value on the Trollbow's melee option. 
 - Altered the Regeneration critter power to permit Deltaware bioware.
+- Altered the Hand Razors and Hand Blade cyberwares to be limited by the number of arms a character has and be limited to being installed into things with fingers. Included a customdata file to remove this requirement.
 
 New Strings:
 - Message_OrphanedImprovements

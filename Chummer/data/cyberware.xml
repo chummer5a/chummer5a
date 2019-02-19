@@ -1866,7 +1866,7 @@
     <cyberware>
       <id>ba93ab8d-fd7f-4fc4-bfa3-5f987fd15d77</id>
       <name>Hand Blade</name>
-      <limit>False</limit>
+      <limit>{arm}</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.25</ess>
       <capacity>[2]</capacity>
@@ -1875,6 +1875,18 @@
       <source>SR5</source>
       <page>458</page>
       <addweapon>Hand Blade</addweapon>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <required>
+        <parentdetails>
+          <OR>
+            <NONE />
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Hand</name>
+            <name operation="contains">Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
       <allowsubsystems>
         <category>Cyber Implant Weapon Accessory</category>
       </allowsubsystems>
@@ -1882,7 +1894,7 @@
     <cyberware>
       <id>923d1629-5267-4093-a978-34eb4543cb15</id>
       <name>Hand Razors</name>
-      <limit>False</limit>
+      <limit>{arm}</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.2</ess>
       <capacity>[2]</capacity>
@@ -1891,6 +1903,18 @@
       <source>SR5</source>
       <page>458</page>
       <addweapon>Hand Razors</addweapon>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <required>
+        <parentdetails>
+          <OR>
+            <NONE />
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Hand</name>
+            <name operation="contains">Drone Arm</name>
+          </OR>
+        </parentdetails>
+      </required>
       <allowsubsystems>
         <category>Cyber Implant Weapon Accessory</category>
       </allowsubsystems>
