@@ -23,18 +23,22 @@
   <righttoleft>False</righttoleft>
   <strings>
 	  <!-- Region Meta Strings -->
-	<string>
-		<key>Message_Insufficient_Permissions_Warning</key>
-		<text>Chummer5 is currently not being run with proper permissions! If you are not running Chummer5 as an administrator, please move it to a folder owned by your user.</text>
-	</string>
-	<string>
-		<key>Message_Save_Error_Warning</key>
-		<text>Chummer5 encountered an error while saving the character.</text>
-	</string>
-	<string>
-		<key>Message_File_Cannot_Be_Accessed</key>
-		<text>Chummer5 cannot access the file for writing. Please make sure it has permission to write to the location and that the file is not currently in use.</text>
-	</string>
+	  <string>
+		  <key>Message_Insufficient_Permissions_Warning</key>
+		  <text>Chummer5 is currently not being run with proper permissions! If you are not running Chummer5 as an administrator, please move it to a folder owned by your user.</text>
+	  </string>
+	  <string>
+		  <key>Message_Save_Error_Warning</key>
+		  <text>Chummer5 encountered an error while saving the character.</text>
+	  </string>
+	  <string>
+		  <key>Message_File_Cannot_Be_Accessed</key>
+		  <text>Chummer5 cannot access the file for writing. Please make sure it has permission to write to the location and that the file is not currently in use.</text>
+	  </string>
+    <string>
+      <key>Message_Files_Cannot_Be_Removed</key>
+      <text>Chummer5 could not remove the below files during update as they were inaccessible:</text>
+    </string>
     <!-- End Region -->
     <!-- Region File Dialog Filter Strings -->
   <string>

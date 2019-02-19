@@ -27,6 +27,7 @@ using System.Reflection;
  using Application = System.Windows.Forms.Application;
  using MessageBox = System.Windows.Forms.MessageBox;
 using System.Collections.Generic;
+ using System.Linq;
  using System.Threading;
 
 namespace Chummer
@@ -615,14 +616,34 @@ namespace Chummer
             }
             if (blnDoRestart)
             {
-                foreach (string strFileToDelete in lstFilesToDelete)
+                List<string> lstBlocked = new List<string>();
+                foreach (var strFileToDelete in lstFilesToDelete)
                 {
                     //TODO: This will quite likely leave some wreckage behind. Introduce a sleep and scream after x seconds. 
                     if (!IsFileLocked(strFileToDelete))
-                        File.Delete(strFileToDelete);
+                        try
+                        {
+                            File.Delete(strFileToDelete);
+                        }
+                        catch (IOException)
+                        {
+                            lstBlocked.Add(strFileToDelete);
+                        }
                     else
                         Utils.BreakIfDebug();
                 }
+
+                /*TODO: It seems like the most likely cause here is that the ChummerHub plugin is holding onto the REST API dlls.
+                //      Investigate a solution for this; possibly do something to shut down plugins while updating.
+                //      Likely best option is a helper exe that caches opened characters and other relevant variables, relaunching after update is complete. 
+                 if (lstBlocked.Count > 0)
+                {
+                    var output = LanguageManager.GetString("Message_Files_Cannot_Be_Removed",
+                        GlobalOptions.Language);
+                    output = lstBlocked.Aggregate(output, (current, s) => current + Environment.NewLine + s);
+
+                    MessageBox.Show(output);
+                }*/
                 Utils.RestartApplication(GlobalOptions.Language, string.Empty);
             }
             else
