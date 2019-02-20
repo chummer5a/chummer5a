@@ -493,12 +493,13 @@ namespace Chummer
                 XmlNode node = objDoc.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{CharacterObject.Metatype}\"]");
                 List<ListItem> lstAttributeCategories = new List<ListItem>
                 {
-                    new ListItem("Shapeshifter", node?.SelectSingleNode("name/@translate")?.InnerText ?? CharacterObject.Metatype)
+                    new ListItem("Standard", node?.SelectSingleNode("name/@translate")?.InnerText ?? CharacterObject.Metatype)
                 };
 
                 node = node?.SelectSingleNode($"metavariants/metavariant[name = \"{CharacterObject.Metavariant}\"]/name/@translate");
 
-                lstAttributeCategories.Add(new ListItem("Standard", node?.InnerText ?? CharacterObject.Metavariant));
+                //The Shapeshifter attribute category is treated as the METAHUMAN form of a shapeshifter. 
+                lstAttributeCategories.Add(new ListItem("Shapeshifter", node?.InnerText ?? CharacterObject.Metavariant));
 
                 lstAttributeCategories.Sort(CompareListItems.CompareNames);
                 cboAttributeCategory.BeginUpdate();

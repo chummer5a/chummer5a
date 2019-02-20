@@ -6071,7 +6071,7 @@ namespace Chummer
             if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
             {
                 _objCharacter.FileName = saveFileDialog.FileName;
-                return SaveCharacter(false);
+                return SaveCharacter(false, blnDoCreated);
             }
 
             return false;

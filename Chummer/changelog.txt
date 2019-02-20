@@ -27,6 +27,7 @@ Application Changes:
 - Implemented a hackish workaround for disabled tooltip controls on attribute and skill controls. Should fix #3414, most likely needs further work.
 - Fixed behaviour of skill controls to properly refresh their rating when selecting a custom attribute for tests.
 - Fixed a cost calculation for built-in weapon mounts.
+- Fixed behaviour of the Shapeshifter attribute in career mode incorrectly presenting the wrong way around. Closes #3343
 
 Data Changes:
 - Fixed incorrect underbarrel weapon name for the Nissan Optimum II that caused a crash. Fixes part of #3344
