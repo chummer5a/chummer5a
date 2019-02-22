@@ -16274,6 +16274,27 @@
       <page>43</page>
     </quality>
     <!-- End Region -->
+    <!-- Region Mentor's Mask -->
+    <quality>
+      <id>bf68095e-35b9-49dc-a008-f67bbac9b83b</id>
+      <name>Mentor's Mask</name>
+      <karma>0</karma>
+      <category>Positive</category>
+      <contributetolimit>False</contributetolimit>
+      <bonus>
+        <adeptpowerpoints>1</adeptpowerpoints>
+        <spellcategorydrain>
+          <val>-1</val>
+        </spellcategorydrain>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <source>FA</source>
+      <page>182</page>
+    </quality>
     <!-- End Region -->
     <!-- Region SotA ADL Negative Qualities-->
     <quality>

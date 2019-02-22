@@ -29,6 +29,7 @@ Application Changes:
 - Fixed a cost calculation for built-in weapon mounts.
 - Fixed behaviour of the Shapeshifter attribute in career mode incorrectly presenting the wrong way around. Closes #3343
 - Fixed an issue that meant restarting Chummer with multiple character files open would open the same file multiple times. Closes #3298
+- Removed the hard-coded Mentor's Mask improvement and replaced it with a 0-point quality. Closes #3449
 
 Data Changes:
 - Fixed incorrect underbarrel weapon name for the Nissan Optimum II that caused a crash. Fixes part of #3344
