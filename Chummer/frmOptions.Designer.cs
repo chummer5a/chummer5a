@@ -433,7 +433,7 @@ namespace Chummer
             this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpOptions.Size = new System.Drawing.Size(898, 610);
+            this.tlpOptions.Size = new System.Drawing.Size(898, 661);
             this.tlpOptions.TabIndex = 6;
             // 
             // txtSettingName
@@ -496,7 +496,7 @@ namespace Chummer
             this.tabOptions.Location = new System.Drawing.Point(3, 30);
             this.tabOptions.Name = "tabOptions";
             this.tabOptions.SelectedIndex = 0;
-            this.tabOptions.Size = new System.Drawing.Size(892, 548);
+            this.tabOptions.Size = new System.Drawing.Size(892, 599);
             this.tabOptions.TabIndex = 4;
             // 
             // tabGlobal
@@ -506,7 +506,7 @@ namespace Chummer
             this.tabGlobal.Location = new System.Drawing.Point(4, 22);
             this.tabGlobal.Name = "tabGlobal";
             this.tabGlobal.Padding = new System.Windows.Forms.Padding(9);
-            this.tabGlobal.Size = new System.Drawing.Size(884, 522);
+            this.tabGlobal.Size = new System.Drawing.Size(884, 573);
             this.tabGlobal.TabIndex = 5;
             this.tabGlobal.Tag = "Tab_Options_Global";
             this.tabGlobal.Text = "Global Options";
@@ -586,7 +586,7 @@ namespace Chummer
             this.tlpGlobal.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpGlobal.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpGlobal.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpGlobal.Size = new System.Drawing.Size(866, 504);
+            this.tlpGlobal.Size = new System.Drawing.Size(866, 555);
             this.tlpGlobal.TabIndex = 39;
             // 
             // imgSheetLanguageFlag
@@ -907,7 +907,7 @@ namespace Chummer
             this.grpSelectedSourcebook.Location = new System.Drawing.Point(304, 475);
             this.grpSelectedSourcebook.MaximumSize = new System.Drawing.Size(500, 10000);
             this.grpSelectedSourcebook.Name = "grpSelectedSourcebook";
-            this.grpSelectedSourcebook.Size = new System.Drawing.Size(434, 26);
+            this.grpSelectedSourcebook.Size = new System.Drawing.Size(434, 77);
             this.grpSelectedSourcebook.TabIndex = 27;
             this.grpSelectedSourcebook.TabStop = false;
             this.grpSelectedSourcebook.Tag = "Label_Options_SelectedSourcebook";
@@ -933,7 +933,7 @@ namespace Chummer
             this.tlpSelectedSourcebook.RowCount = 2;
             this.tlpSelectedSourcebook.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpSelectedSourcebook.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpSelectedSourcebook.Size = new System.Drawing.Size(428, 7);
+            this.tlpSelectedSourcebook.Size = new System.Drawing.Size(428, 58);
             this.tlpSelectedSourcebook.TabIndex = 18;
             // 
             // txtPDFLocation
@@ -1318,7 +1318,7 @@ namespace Chummer
             this.lstGlobalSourcebookInfos.Location = new System.Drawing.Point(3, 32);
             this.lstGlobalSourcebookInfos.Name = "lstGlobalSourcebookInfos";
             this.tlpGlobal.SetRowSpan(this.lstGlobalSourcebookInfos, 18);
-            this.lstGlobalSourcebookInfos.Size = new System.Drawing.Size(295, 469);
+            this.lstGlobalSourcebookInfos.Size = new System.Drawing.Size(295, 520);
             this.lstGlobalSourcebookInfos.TabIndex = 48;
             this.lstGlobalSourcebookInfos.SelectedIndexChanged += new System.EventHandler(this.lstGlobalSourcebookInfos_SelectedIndexChanged);
             // 
@@ -1356,7 +1356,7 @@ namespace Chummer
             this.tabCharacterOptions.Location = new System.Drawing.Point(4, 22);
             this.tabCharacterOptions.Name = "tabCharacterOptions";
             this.tabCharacterOptions.Padding = new System.Windows.Forms.Padding(9);
-            this.tabCharacterOptions.Size = new System.Drawing.Size(884, 522);
+            this.tabCharacterOptions.Size = new System.Drawing.Size(884, 572);
             this.tabCharacterOptions.TabIndex = 0;
             this.tabCharacterOptions.Tag = "Tab_Options_Character";
             this.tabCharacterOptions.Text = "Character Options";
@@ -1416,7 +1416,7 @@ namespace Chummer
             this.tlpCharacterOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCharacterOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpCharacterOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpCharacterOptions.Size = new System.Drawing.Size(866, 504);
+            this.tlpCharacterOptions.Size = new System.Drawing.Size(866, 554);
             this.tlpCharacterOptions.TabIndex = 40;
             // 
             // treSourcebook
@@ -1429,7 +1429,7 @@ namespace Chummer
             this.treSourcebook.ShowLines = false;
             this.treSourcebook.ShowPlusMinus = false;
             this.treSourcebook.ShowRootLines = false;
-            this.treSourcebook.Size = new System.Drawing.Size(295, 431);
+            this.treSourcebook.Size = new System.Drawing.Size(295, 481);
             this.treSourcebook.TabIndex = 1;
             // 
             // chkPrintNotes
@@ -1442,7 +1442,7 @@ namespace Chummer
             this.tlpCharacterOptions.SetColumnSpan(this.chkPrintNotes, 4);
             this.chkPrintNotes.Location = new System.Drawing.Point(304, 416);
             this.chkPrintNotes.Name = "chkPrintNotes";
-            this.chkPrintNotes.Size = new System.Drawing.Size(274, 56);
+            this.chkPrintNotes.Size = new System.Drawing.Size(274, 106);
             this.chkPrintNotes.TabIndex = 14;
             this.chkPrintNotes.Tag = "Checkbox_Option_PrintNotes";
             this.chkPrintNotes.Text = "Print Notes";
@@ -1767,7 +1767,7 @@ namespace Chummer
             // 
             this.cmdEnableSourcebooks.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdEnableSourcebooks.Location = new System.Drawing.Point(3, 478);
+            this.cmdEnableSourcebooks.Location = new System.Drawing.Point(3, 528);
             this.cmdEnableSourcebooks.Name = "cmdEnableSourcebooks";
             this.cmdEnableSourcebooks.Size = new System.Drawing.Size(295, 23);
             this.cmdEnableSourcebooks.TabIndex = 6;
@@ -1783,7 +1783,7 @@ namespace Chummer
             this.tabKarmaCosts.Location = new System.Drawing.Point(4, 22);
             this.tabKarmaCosts.Name = "tabKarmaCosts";
             this.tabKarmaCosts.Padding = new System.Windows.Forms.Padding(9);
-            this.tabKarmaCosts.Size = new System.Drawing.Size(884, 522);
+            this.tabKarmaCosts.Size = new System.Drawing.Size(884, 572);
             this.tabKarmaCosts.TabIndex = 1;
             this.tabKarmaCosts.Tag = "Tab_Options_KarmaCosts";
             this.tabKarmaCosts.Text = "Karma Costs";
@@ -1800,7 +1800,7 @@ namespace Chummer
             this.tlpKarmaCosts.RowCount = 2;
             this.tlpKarmaCosts.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpKarmaCosts.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpKarmaCosts.Size = new System.Drawing.Size(866, 504);
+            this.tlpKarmaCosts.Size = new System.Drawing.Size(866, 554);
             this.tlpKarmaCosts.TabIndex = 125;
             // 
             // tlpKarmaCostsList
@@ -1967,7 +1967,7 @@ namespace Chummer
             this.tlpKarmaCostsList.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpKarmaCostsList.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpKarmaCostsList.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpKarmaCostsList.Size = new System.Drawing.Size(860, 469);
+            this.tlpKarmaCostsList.Size = new System.Drawing.Size(860, 519);
             this.tlpKarmaCostsList.TabIndex = 124;
             // 
             // nudKarmaMysticAdeptPowerPoint
@@ -3401,7 +3401,7 @@ namespace Chummer
             this.cmdRestoreDefaultsKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdRestoreDefaultsKarma.AutoSize = true;
             this.cmdRestoreDefaultsKarma.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdRestoreDefaultsKarma.Location = new System.Drawing.Point(767, 478);
+            this.cmdRestoreDefaultsKarma.Location = new System.Drawing.Point(767, 528);
             this.cmdRestoreDefaultsKarma.Name = "cmdRestoreDefaultsKarma";
             this.cmdRestoreDefaultsKarma.Size = new System.Drawing.Size(96, 23);
             this.cmdRestoreDefaultsKarma.TabIndex = 108;
@@ -3417,7 +3417,7 @@ namespace Chummer
             this.tabOptionalRules.Location = new System.Drawing.Point(4, 22);
             this.tabOptionalRules.Name = "tabOptionalRules";
             this.tabOptionalRules.Padding = new System.Windows.Forms.Padding(9);
-            this.tabOptionalRules.Size = new System.Drawing.Size(884, 522);
+            this.tabOptionalRules.Size = new System.Drawing.Size(884, 572);
             this.tabOptionalRules.TabIndex = 2;
             this.tabOptionalRules.Tag = "Tab_Options_OptionalRules";
             this.tabOptionalRules.Text = "Optional Rules";
@@ -3446,7 +3446,7 @@ namespace Chummer
             this.tlpOptionalRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOptionalRules.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpOptionalRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpOptionalRules.Size = new System.Drawing.Size(866, 504);
+            this.tlpOptionalRules.Size = new System.Drawing.Size(866, 554);
             this.tlpOptionalRules.TabIndex = 44;
             // 
             // cmdDecreaseCustomDirectoryLoadOrder
@@ -3454,7 +3454,7 @@ namespace Chummer
             this.cmdDecreaseCustomDirectoryLoadOrder.AutoSize = true;
             this.tlpOptionalRules.SetColumnSpan(this.cmdDecreaseCustomDirectoryLoadOrder, 2);
             this.cmdDecreaseCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDecreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(698, 477);
+            this.cmdDecreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(698, 527);
             this.cmdDecreaseCustomDirectoryLoadOrder.Name = "cmdDecreaseCustomDirectoryLoadOrder";
             this.cmdDecreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(165, 24);
             this.cmdDecreaseCustomDirectoryLoadOrder.TabIndex = 42;
@@ -3468,7 +3468,7 @@ namespace Chummer
             this.cmdIncreaseCustomDirectoryLoadOrder.AutoSize = true;
             this.tlpOptionalRules.SetColumnSpan(this.cmdIncreaseCustomDirectoryLoadOrder, 2);
             this.cmdIncreaseCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdIncreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(527, 477);
+            this.cmdIncreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(527, 527);
             this.cmdIncreaseCustomDirectoryLoadOrder.Name = "cmdIncreaseCustomDirectoryLoadOrder";
             this.cmdIncreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(165, 24);
             this.cmdIncreaseCustomDirectoryLoadOrder.TabIndex = 43;
@@ -3511,7 +3511,7 @@ namespace Chummer
             this.treCustomDataDirectories.ShowLines = false;
             this.treCustomDataDirectories.ShowPlusMinus = false;
             this.treCustomDataDirectories.ShowRootLines = false;
-            this.treCustomDataDirectories.Size = new System.Drawing.Size(860, 438);
+            this.treCustomDataDirectories.Size = new System.Drawing.Size(860, 488);
             this.treCustomDataDirectories.TabIndex = 40;
             this.treCustomDataDirectories.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treCustomDataDirectories_AfterCheck);
             // 
@@ -3550,7 +3550,7 @@ namespace Chummer
             this.tabHouseRules.Location = new System.Drawing.Point(4, 22);
             this.tabHouseRules.Name = "tabHouseRules";
             this.tabHouseRules.Padding = new System.Windows.Forms.Padding(9);
-            this.tabHouseRules.Size = new System.Drawing.Size(884, 522);
+            this.tabHouseRules.Size = new System.Drawing.Size(884, 572);
             this.tabHouseRules.TabIndex = 3;
             this.tabHouseRules.Tag = "Tab_Options_HouseRules";
             this.tabHouseRules.Text = "House Rules";
@@ -3632,7 +3632,7 @@ namespace Chummer
             this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRules.Size = new System.Drawing.Size(866, 504);
+            this.tlpHouseRules.Size = new System.Drawing.Size(866, 554);
             this.tlpHouseRules.TabIndex = 39;
             // 
             // chkNoArmorEncumbrance
@@ -3732,7 +3732,7 @@ namespace Chummer
             this.chkEnemyKarmaQualityLimit.Location = new System.Drawing.Point(3, 482);
             this.chkEnemyKarmaQualityLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkEnemyKarmaQualityLimit.Name = "chkEnemyKarmaQualityLimit";
-            this.chkEnemyKarmaQualityLimit.Size = new System.Drawing.Size(382, 18);
+            this.chkEnemyKarmaQualityLimit.Size = new System.Drawing.Size(382, 68);
             this.chkEnemyKarmaQualityLimit.TabIndex = 37;
             this.chkEnemyKarmaQualityLimit.Tag = "Checkbox_Options_EnemyKarmaQualityLimit";
             this.chkEnemyKarmaQualityLimit.Text = "Karma spent on enemies counts towards negative Quality limit in create mode";
@@ -4319,7 +4319,7 @@ namespace Chummer
             this.tabGitHubIssues.Location = new System.Drawing.Point(4, 22);
             this.tabGitHubIssues.Name = "tabGitHubIssues";
             this.tabGitHubIssues.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGitHubIssues.Size = new System.Drawing.Size(884, 522);
+            this.tabGitHubIssues.Size = new System.Drawing.Size(884, 572);
             this.tabGitHubIssues.TabIndex = 4;
             this.tabGitHubIssues.Tag = "Tab_Options_GitHubIssues";
             this.tabGitHubIssues.Text = "GitHub Issues";
@@ -4344,7 +4344,7 @@ namespace Chummer
             this.tabPlugins.Location = new System.Drawing.Point(4, 22);
             this.tabPlugins.Name = "tabPlugins";
             this.tabPlugins.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPlugins.Size = new System.Drawing.Size(884, 522);
+            this.tabPlugins.Size = new System.Drawing.Size(884, 572);
             this.tabPlugins.TabIndex = 6;
             this.tabPlugins.Tag = "Tab_Options_Plugins";
             this.tabPlugins.Text = "Plugins";
@@ -4365,7 +4365,7 @@ namespace Chummer
             this.bufferedTableLayoutPanel1.RowCount = 2;
             this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(878, 516);
+            this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(878, 566);
             this.bufferedTableLayoutPanel1.TabIndex = 0;
             // 
             // grpAvailablePlugins
@@ -4374,7 +4374,7 @@ namespace Chummer
             this.grpAvailablePlugins.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpAvailablePlugins.Location = new System.Drawing.Point(3, 3);
             this.grpAvailablePlugins.Name = "grpAvailablePlugins";
-            this.grpAvailablePlugins.Size = new System.Drawing.Size(125, 490);
+            this.grpAvailablePlugins.Size = new System.Drawing.Size(125, 540);
             this.grpAvailablePlugins.TabIndex = 0;
             this.grpAvailablePlugins.TabStop = false;
             this.grpAvailablePlugins.Tag = "String_AvailablePlugins";
@@ -4386,7 +4386,7 @@ namespace Chummer
             this.clbPlugins.FormattingEnabled = true;
             this.clbPlugins.Location = new System.Drawing.Point(3, 16);
             this.clbPlugins.Name = "clbPlugins";
-            this.clbPlugins.Size = new System.Drawing.Size(119, 471);
+            this.clbPlugins.Size = new System.Drawing.Size(119, 521);
             this.clbPlugins.TabIndex = 0;
             this.clbPlugins.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbPlugins_ItemCheck);
             this.clbPlugins.SelectedValueChanged += new System.EventHandler(this.clbPlugins_SelectedValueChanged);
@@ -4399,7 +4399,7 @@ namespace Chummer
             this.panelPluginOption.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelPluginOption.Location = new System.Drawing.Point(134, 3);
             this.panelPluginOption.Name = "panelPluginOption";
-            this.panelPluginOption.Size = new System.Drawing.Size(741, 490);
+            this.panelPluginOption.Size = new System.Drawing.Size(741, 540);
             this.panelPluginOption.TabIndex = 1;
             // 
             // flpOKCancel
@@ -4410,7 +4410,7 @@ namespace Chummer
             this.flpOKCancel.Controls.Add(this.cmdOK);
             this.flpOKCancel.Controls.Add(this.cmdCancel);
             this.flpOKCancel.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpOKCancel.Location = new System.Drawing.Point(729, 584);
+            this.flpOKCancel.Location = new System.Drawing.Point(729, 635);
             this.flpOKCancel.Name = "flpOKCancel";
             this.flpOKCancel.Size = new System.Drawing.Size(166, 23);
             this.flpOKCancel.TabIndex = 5;
@@ -4423,7 +4423,7 @@ namespace Chummer
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(916, 628);
+            this.ClientSize = new System.Drawing.Size(916, 679);
             this.Controls.Add(this.tlpOptions);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
