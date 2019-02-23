@@ -428,7 +428,7 @@ namespace Chummer.Backend.Skills
         {
             CharacterObject = character;
             CharacterObject.PropertyChanged += OnCharacterChanged;
-
+            CharacterObject.AttributeSection.PropertyChanged += OnAttributeSectionChanged;
             Specializations.ListChanged += SpecializationsOnListChanged;
 
             _skillDependencyGraph = new DependancyGraph<string>(
@@ -579,9 +579,26 @@ namespace Chummer.Backend.Skills
             );
         }
 
+        private void OnAttributeSectionChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != nameof(AttributeSection.AttributeCategory)) return;
+            AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
+            AttributeObject = CharacterObject.GetAttribute(Attribute);
+
+            AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
+            AttributeActiveOnPropertyChanged(sender, e);
+        }
+
+        private void AttributeActiveOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            OnPropertyChanged(nameof(Rating));
+        }
+
         public void UnbindSkill()
         {
             CharacterObject.PropertyChanged -= OnCharacterChanged;
+            CharacterObject.AttributeSection.PropertyChanged -= OnAttributeSectionChanged;
+
             if (SkillGroupObject != null)
                 SkillGroupObject.PropertyChanged -= OnSkillGroupChanged;
         }

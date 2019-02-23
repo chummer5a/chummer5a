@@ -683,11 +683,9 @@ namespace Chummer.Backend.Attributes
 	        get => _eAttributeCategory;
 	        set
 	        {
-	            if (_eAttributeCategory != value)
-	            {
-	                _eAttributeCategory = value;
-	                OnPropertyChanged();
-	            }
+	            if (_eAttributeCategory == value) return;
+	            _eAttributeCategory = value;
+	            OnPropertyChanged();
 	        }
 	    }
         #endregion

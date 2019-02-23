@@ -31,6 +31,7 @@ Application Changes:
 - Fixed an issue that meant restarting Chummer with multiple character files open would open the same file multiple times. Closes #3298
 - Removed the hard-coded Mentor's Mask improvement and replaced it with a 0-point quality. Closes #3449
 - Fixed an issue with inability to add user-enterable specialisations in active or knowledge skills.
+- Made some changes to the way in which skills are notified about changes to their linked attributes. Improves functionality for shapeshifters, may have knock-on issues that I haven't been able to test. 
 
 Data Changes:
 - Fixed incorrect underbarrel weapon name for the Nissan Optimum II that caused a crash. Fixes part of #3344
