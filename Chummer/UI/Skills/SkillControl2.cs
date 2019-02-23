@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
+using Chummer.Annotations;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Attributes;
 
@@ -176,14 +177,12 @@ namespace Chummer.UI.Skills
             if (_blnLoading)
                 return;
 
-            if (e.PropertyName == nameof(AttributeSection.AttributeCategory))
-            {
-                _attributeActive.PropertyChanged -= AttributeActiveOnPropertyChanged;
-                _attributeActive = _skill.CharacterObject.GetAttribute((string)cboSelectAttribute.SelectedValue);
+            if (e.PropertyName != nameof(AttributeSection.AttributeCategory)) return;
+            _attributeActive.PropertyChanged -= AttributeActiveOnPropertyChanged;
+            _attributeActive = _skill.CharacterObject.GetAttribute((string)cboSelectAttribute.SelectedValue);
 
-                _attributeActive.PropertyChanged += AttributeActiveOnPropertyChanged;
-                AttributeActiveOnPropertyChanged(sender, e);
-            }
+            _attributeActive.PropertyChanged += AttributeActiveOnPropertyChanged;
+            AttributeActiveOnPropertyChanged(sender, e);
         }
 
         private void Skill_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -331,16 +330,15 @@ namespace Chummer.UI.Skills
 
         public bool CustomAttributeSet => _attributeActive != _skill.AttributeObject;
 
-        public int NameWidth => lblName.PreferredWidth;
-        public int NudSkillWidth => nudSkill.Width;
+        [UsedImplicitly] public int NameWidth => lblName.PreferredWidth;
+        [UsedImplicitly] public int NudSkillWidth => nudSkill.Width;
 
+        [UsedImplicitly]
         public void ResetSelectAttribute()
         {
-            if (CustomAttributeSet)
-            {
-                cboSelectAttribute.SelectedValue = _skill.AttributeObject.Abbrev;
-                cboSelectAttribute_Closed(null, null);
-            }
+            if (!CustomAttributeSet) return;
+            cboSelectAttribute.SelectedValue = _skill.AttributeObject.Abbrev;
+            cboSelectAttribute_Closed(null, null);
         }
 
         private void tsSkillLabelNotes_Click(object sender, EventArgs e)
@@ -370,24 +368,7 @@ namespace Chummer.UI.Skills
             CommonFunctions.OpenPDF(_skill.Source + ' ' + _skill.DisplayPage(GlobalOptions.Language));
         }
 
-        private void cboSpec_TextChanged(object sender, EventArgs e)
-        {
-            if (_blnLoading)
-                return;
-
-            if (!_skill.CharacterObject.Options.AllowPointBuySpecializationsOnKarmaSkills &&
-                !string.IsNullOrWhiteSpace(cboSpec.Text) && (nudSkill.Value == 0 || !nudSkill.Enabled))
-            {
-                chkKarma.Checked = true;
-            }
-        }
-
-        /* Delnar: TODO Awaiting other authors' approval before activation.
-        private void chkKarma_CheckChanged(object sender, EventArgs e)
-        {
-            cboSpec_TextChanged(sender, e);
-        }
-        */
+        [UsedImplicitly]
         public void MoveControls(int i)
         {
             lblName.Width = i;

@@ -63,7 +63,6 @@ namespace Chummer.UI.Skills
             this.cboSpec.Name = "cboSpec";
             this.cboSpec.Size = new System.Drawing.Size(177, 21);
             this.cboSpec.TabIndex = 17;
-            this.cboSpec.TextChanged += new System.EventHandler(this.cboSpec_TextChanged);
             // 
             // chkKarma
             // 
