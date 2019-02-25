@@ -58,6 +58,18 @@ namespace SINners
         /// </param>
         Task<HttpOperationResponse<ApplicationUser>> GetUserByEmailWithHttpMessagesAsync(string email = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <param name='email'>
+        /// </param>
+        /// <param name='userrole'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<ApplicationUser>> PostSetUserRoleWithHttpMessagesAsync(string email = default(string), string userrole = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
         /// </param>
@@ -137,10 +149,6 @@ namespace SINners
         /// </param>
         Task<HttpOperationResponse<SINner>> GetByIdWithHttpMessagesAsync(Guid id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
-        /// <summary>
-        /// The Xml or Zip File can be uploaded (knowing the previously stored
-        /// Id)
-        /// </summary>
         /// <param name='id'>
         /// </param>
         /// <param name='uploadedFile'>
@@ -151,13 +159,8 @@ namespace SINners
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse> PutWithHttpMessagesAsync(Guid id, System.IO.Stream uploadedFile = default(System.IO.Stream), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse> PutSINWithHttpMessagesAsync(Guid id, System.IO.Stream uploadedFile = default(System.IO.Stream), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
-        /// <summary>
-        /// Store the MetaData for chummerfiles (to get a Id).
-        /// This Id can be used to store the actual file with PUT afterwards.
-        /// Alternativly, the DownloadUrl can be set directly from the Client.
-        /// </summary>
         /// <param name='uploadInfo'>
         /// </param>
         /// <param name='customHeaders'>
@@ -166,7 +169,7 @@ namespace SINners
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse> PostWithHttpMessagesAsync(UploadInfoObject uploadInfo = default(UploadInfoObject), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse> PostSINWithHttpMessagesAsync(UploadInfoObject uploadInfo = default(UploadInfoObject), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <param name='id'>
         /// </param>
@@ -177,6 +180,18 @@ namespace SINners
         /// The cancellation token.
         /// </param>
         Task<HttpOperationResponse> DeleteWithHttpMessagesAsync(Guid id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <param name='groupname'>
+        /// </param>
+        /// <param name='sinnerId'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse> PostGroupWithHttpMessagesAsync(string groupname = default(string), Guid? sinnerId = default(Guid?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <param name='searchTag'>
         /// </param>

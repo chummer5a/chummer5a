@@ -1,4 +1,18 @@
-Future Build 1.0.0.1
+Future Build 1.0.0.2
+
+WebService Changes:
+
+- added a SetUserRole-Call, so that Admins can set roles (like other Admins or "ArchetypeAdmin or whatever")
+- added the ability to create a group (with name)
+- found a bug that prevented uploading for none-admins (damn - I'm just used to have all the rights...)
+
+
+Application Changes:
+
+- added the ability to create a group.
+- added a "Archetype"-Checkbox for ArchetypeAdmins only (including a name)
+
+Build 1.0.0.1
 
 WebService Changes:
 

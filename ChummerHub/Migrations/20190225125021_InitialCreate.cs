@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ChummerHub.Migrations
 {
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -62,6 +62,20 @@ namespace ChummerHub.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SINnerComments", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SINnerGroups",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    IsPublic = table.Column<bool>(nullable: false),
+                    IsGroupVisible = table.Column<bool>(nullable: false),
+                    Groupname = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SINnerGroups", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -248,11 +262,18 @@ namespace ChummerHub.Migrations
                     UploadClientId = table.Column<Guid>(nullable: false),
                     SINnerMetaDataId = table.Column<Guid>(nullable: true),
                     JsonSummary = table.Column<string>(nullable: true),
+                    MyGroupId = table.Column<Guid>(nullable: true),
                     GoogleDriveFileId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SINners", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SINners_SINnerGroups_MyGroupId",
+                        column: x => x.MyGroupId,
+                        principalTable: "SINnerGroups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_SINners_SINnerMetaData_SINnerMetaDataId",
                         column: x => x.SINnerMetaDataId,
@@ -268,6 +289,7 @@ namespace ChummerHub.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     TagName = table.Column<string>(nullable: true),
                     TagValue = table.Column<string>(nullable: true),
+                    TagComment = table.Column<string>(nullable: true),
                     ParentTagId = table.Column<Guid>(nullable: true),
                     SINnerId = table.Column<Guid>(nullable: true),
                     IsUserGenerated = table.Column<bool>(nullable: false),
@@ -337,15 +359,14 @@ namespace ChummerHub.Migrations
                 column: "VisibilityId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SINners_MyGroupId",
+                table: "SINners",
+                column: "MyGroupId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SINners_SINnerMetaDataId",
                 table: "SINners",
                 column: "SINnerMetaDataId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tags_Id",
-                table: "Tags",
-                column: "Id",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tags_SINnerMetaDataId",
@@ -410,6 +431,9 @@ namespace ChummerHub.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "SINnerGroups");
 
             migrationBuilder.DropTable(
                 name: "SINnerMetaData");

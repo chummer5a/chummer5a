@@ -49,6 +49,8 @@ namespace ChummerHub.Models.V1
 
         public String JsonSummary { get; set; }
 
+        public SINnerGroup MyGroup { get; set; }
+
         [JsonIgnore]
         [XmlIgnore]
         public string GoogleDriveFileId { get; set; }

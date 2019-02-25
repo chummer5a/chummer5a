@@ -676,7 +676,7 @@ namespace ChummerHub.Client.UI
                             {
                                 sin
                             };
-                            var t = StaticUtils.Client.PostWithHttpMessagesAsync(uploadInfoObject);
+                            var t = StaticUtils.Client.PostSINWithHttpMessagesAsync(uploadInfoObject);
                             t.ContinueWith((posttask) =>
                             {
                                 if(posttask.Result.Response.IsSuccessStatusCode)

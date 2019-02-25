@@ -53,7 +53,7 @@ namespace ChummerHub.Controllers
                 var user = await _signInManager.UserManager.GetUserAsync(User);
                 if (user.EmailConfirmed)
                 {
-                    await SeedData.EnsureRole(Program.MyHost.Services, user.Id, API.Authorizarion.Constants.ConfirmedUserRole, _roleManager, _userManager);
+                    await SeedData.EnsureRole(Program.MyHost.Services, user.Id, API.Authorizarion.Constants.UserRoleConfirmed, _roleManager, _userManager);
                 }
                 var roles = await _userManager.GetRolesAsync(user);
                 return Ok(roles.ToList());
@@ -82,6 +82,30 @@ namespace ChummerHub.Controllers
                 return Ok(user);
             }
             catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [HttpGet]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("PostSetUserRole")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<ActionResult<ApplicationUser>> PostSetUserRole(string email, string userrole)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(email);
+                if(user == null)
+                    return NotFound();
+                user.PasswordHash = "";
+                user.SecurityStamp = "";
+                await SeedData.EnsureRole(Program.MyHost.Services, user.Id, userrole, _roleManager, _userManager);
+                return Ok(user);
+            }
+            catch(Exception e)
             {
                 return BadRequest(e);
             }

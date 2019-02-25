@@ -45,7 +45,6 @@ namespace ChummerHub.Client.Model
             {
                 if(MySINnerFile.SiNnerMetaData.Visibility.Id == null)
                     MySINnerFile.SiNnerMetaData.Visibility.Id = Guid.NewGuid();
-                return;
             }
             
             if (!string.IsNullOrEmpty(Properties.Settings.Default.SINnerVisibility))

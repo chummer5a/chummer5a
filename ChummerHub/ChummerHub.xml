@@ -21,7 +21,7 @@
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:ChummerHub.Controllers.V1.SINnerController.Put(System.Guid,Microsoft.AspNetCore.Http.IFormFile)">
+        <member name="M:ChummerHub.Controllers.V1.SINnerController.PutSIN(System.Guid,Microsoft.AspNetCore.Http.IFormFile)">
             <summary>
             The Xml or Zip File can be uploaded (knowing the previously stored Id)
             </summary>
@@ -29,11 +29,18 @@
             <param name="uploadedFile"></param>
             <returns></returns>
         </member>
-        <member name="M:ChummerHub.Controllers.V1.SINnerController.Post(ChummerHub.Models.V1.UploadInfoObject)">
+        <member name="M:ChummerHub.Controllers.V1.SINnerController.PostSIN(ChummerHub.Models.V1.UploadInfoObject)">
             <summary>
             Store the MetaData for chummerfiles (to get a Id).
             This Id can be used to store the actual file with PUT afterwards.
             Alternativly, the DownloadUrl can be set directly from the Client.
+            </summary>
+            <param name="uploadInfo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.PostGroup(System.String,System.Guid)">
+            <summary>
+            Store the new group
             </summary>
             <param name="uploadInfo"></param>
             <returns></returns>

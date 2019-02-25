@@ -26,7 +26,7 @@ namespace ChummerHub.Controllers.V1
     [Route("api/v{api-version:apiVersion}/[controller]/[action]")]
     [ApiController]
     [ApiVersion("1.0")]
-    [ControllerName("SINner")]
+    [ControllerName("SIN")]
     [Authorize]
     public class SINnerController : ControllerBase
     {
@@ -240,7 +240,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerPut")]
         [Authorize]
-        public async Task<IActionResult> Put([FromRoute] Guid id, IFormFile uploadedFile)
+        public async Task<IActionResult> PutSIN([FromRoute] Guid id, IFormFile uploadedFile)
         {
             ApplicationUser user = null;
             SINner dbsinner = null;
@@ -433,11 +433,11 @@ namespace ChummerHub.Controllers.V1
                     {
                         if(entry.Entity is SINner)
                         {
-                            DbUpdateConcurrencyExceptionHandler(entry);
+                            Utils.DbUpdateConcurrencyExceptionHandler(entry, _logger);
                         }
                         else if (entry.Entity is Tag)
                         {
-                            DbUpdateConcurrencyExceptionHandler(entry);
+                            Utils.DbUpdateConcurrencyExceptionHandler(entry, _logger);
                         }
                         else
                         {
@@ -498,33 +498,7 @@ namespace ChummerHub.Controllers.V1
             }
         }
 
-        private void DbUpdateConcurrencyExceptionHandler(Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry entry)
-        {
-            var proposedValues = entry.CurrentValues;
-            var databaseValues = entry.GetDatabaseValues();
-            string msg = "";
-            foreach(var property in proposedValues.Properties)
-            {
-                Object proposedValue = null;
-                Object databaseValue = null;
-                if(proposedValues?.Properties?.Contains(property) == true)
-                    proposedValue = proposedValues[property];
-                if(databaseValues?.Properties?.Contains(property) == true)
-                    databaseValue = databaseValues[property];
-
-                msg += Environment.NewLine + "property: " + property + Environment.NewLine;
-                msg += "\tproposedValue: " + proposedValue + Environment.NewLine;
-                msg += "\tdatabaseValue: " + databaseValue + Environment.NewLine;
-                _logger.LogError(msg);
-                // TODO: decide which value should be written to database
-                // proposedValues[property] = <value to be saved>;
-            }
-            throw new NotSupportedException(
-               "Don't know how to handle concurrency conflicts for "
-               + entry.Metadata.Name + ": " + msg);
-            // Refresh original values to bypass next concurrency check
-            entry.OriginalValues.SetValues(databaseValues);
-        }
+      
 
         private void UpdateEntityEntries(List<Tag> taglist)
         {
@@ -555,9 +529,8 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerUpload")]
-        //[Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Created, Type = typeof(SINner))]
         [Authorize]
-        public async Task<IActionResult> Post([FromBody] UploadInfoObject uploadInfo)
+        public async Task<IActionResult> PostSIN([FromBody] UploadInfoObject uploadInfo)
         {
             
             return await PostSINnerInternal(uploadInfo);
@@ -627,7 +600,7 @@ namespace ChummerHub.Controllers.V1
                         break;
                     }
                 }
-                var dbsinner = await _context.SINners.FirstOrDefaultAsync(e => e.Id == id);
+                var dbsinner = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights).FirstOrDefaultAsync(e => e.Id == id);
                 if (dbsinner != null)
                 { 
                     var editseq = (from a in dbsinner.SINnerMetaData.Visibility.UserRights where a.EMail.ToUpperInvariant() == user.NormalizedEmail select a).ToList();

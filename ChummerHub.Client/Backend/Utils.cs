@@ -481,7 +481,7 @@ namespace ChummerHub.Client.Backend
                 System.Diagnostics.Trace.TraceInformation("Posting " + ce.MySINnerFile.Id + "...");
                 if (!StaticUtils.IsUnitTest)
                 {
-                    res = await StaticUtils.Client.PostWithHttpMessagesAsync(uploadInfoObject);
+                    res = await StaticUtils.Client.PostSINWithHttpMessagesAsync(uploadInfoObject);
                     if ((res.Response.StatusCode != HttpStatusCode.OK)
                         && (res.Response.StatusCode != HttpStatusCode.Accepted)
                         && (res.Response.StatusCode != HttpStatusCode.Created))
@@ -500,7 +500,7 @@ namespace ChummerHub.Client.Backend
                 }
                 else
                 {
-                    StaticUtils.Client.PostWithHttpMessagesAsync(uploadInfoObject).RunSynchronously();
+                    StaticUtils.Client.PostSINWithHttpMessagesAsync(uploadInfoObject).RunSynchronously();
                 }
                 System.Diagnostics.Trace.TraceInformation("Post of " + ce.MySINnerFile.Id + " finished.");
                
@@ -542,7 +542,7 @@ namespace ChummerHub.Client.Backend
                                 PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
                             });
                             HttpStatusCode myStatus = HttpStatusCode.Unused;
-                            res = await StaticUtils.Client.PutWithHttpMessagesAsync(ce.MySINnerFile.Id.Value, fs);
+                            res = await StaticUtils.Client.PutSINWithHttpMessagesAsync(ce.MySINnerFile.Id.Value, fs);
                             //var task = res.ContinueWith((sender) =>
                             //{
 
@@ -572,7 +572,7 @@ namespace ChummerHub.Client.Backend
                         }
                         else
                         {
-                            StaticUtils.Client.Put(ce.MySINnerFile.Id.Value, fs);
+                            StaticUtils.Client.PutSIN(ce.MySINnerFile.Id.Value, fs);
                         }
                     }
                     catch (Exception e)

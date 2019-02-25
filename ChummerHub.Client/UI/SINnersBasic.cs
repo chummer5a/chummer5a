@@ -59,6 +59,19 @@ namespace ChummerHub.Client.UI
                 {
                     this.bUpload.Text = "Upload to SINners";
                 }
+                this.cbTagArchetype.Enabled = false;
+                this.tbArchetypeName.Enabled = false;
+                var resroles = await StaticUtils.Client.GetRolesWithHttpMessagesAsync();
+                if(response.Response.StatusCode == HttpStatusCode.OK)
+                {
+                    var archetypeseq = from a in resroles.Body where a.ToLowerInvariant() == "ArchetypeAdmin".ToLowerInvariant() select a;
+                    if (archetypeseq.Any())
+                    {
+                        this.cbTagArchetype.Enabled = true;
+                        this.tbArchetypeName.Enabled = true;
+                    }
+                }
+
             }
             catch (Exception ex)
             {
@@ -99,27 +112,7 @@ namespace ChummerHub.Client.UI
             
         }
 
-        private void tbGroupname_TextChanged(object sender, EventArgs e)
-        {
-            var tagseq = from a in myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags
-                         where a.TagName == "GM_Groupname"
-                         select a;
-            if (!tagseq.Any())
-            {
-                Tag tag = new Tag(true);
-                tag.SiNnerId = myUC.MyCE.MySINnerFile.Id;
-                tag.TagName = "GM_Groupname";
-                tag.TagType = "string";
-                myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Add(tag);
-            }
-            tagseq = from a in myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags
-                     where a.TagName == "GM_Groupname"
-                     select a;
-            foreach (var tag in tagseq)
-            {
-                tag.TagValue = tbGroupname.Text;
-            }
-        }
+        
 
         private async void bUpload_Click(object sender, EventArgs e)
         {
@@ -130,11 +123,40 @@ namespace ChummerHub.Client.UI
             CheckSINnerStatus();
         }
 
-        private void tabLayoutPanel_Paint(object sender, PaintEventArgs e)
+        private void bGroupSearch_Click(object sender, EventArgs e)
         {
-
+            frmSINnerGroupSearch gs = new frmSINnerGroupSearch(myUC.MyCE.MySINnerFile);
+            var res = gs.ShowDialog();
+            
         }
 
-        
+        private void cbTagArchetype_Click(object sender, EventArgs e)
+        {
+            var tagseq = from a in myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags
+                         where a.TagName == "Archetype"
+                         select a;
+            if(cbSRMReady.Checked == true)
+            {
+                if(!tagseq.Any())
+                {
+                    Tag tag = new Tag(true);
+                    tag.SiNnerId = myUC.MyCE.MySINnerFile.Id;
+                    tag.TagName = "Archetype";
+                    tag.TagValue = tbArchetypeName.Text;
+                    tag.TagType = "string";
+                    myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Add(tag);
+                }
+            }
+            else
+            {
+                if(tagseq.Any())
+                {
+                    foreach(var tag in tagseq)
+                    {
+                        myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Remove(tag);
+                    }
+                }
+            }
+        }
     }
 }

@@ -12,6 +12,8 @@ namespace ChummerHub.Models.V1
 
         public UploadClient Client { get; set; }
 
-        public IEnumerable<SINner> SINners { get; set; } 
+        public IEnumerable<SINner> SINners { get; set; }
+
+        public String Groupname { get; set; }
     }
 }
