@@ -13286,6 +13286,10 @@ namespace Chummer
 
             string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             string strESSFormat = CharacterObjectOptions.EssenceFormat;
+            if (treCyberware.SelectedNode?.Tag is IHasWirelessBonus hasWirelessBonus)
+            {
+                chkCyberwareWireless.Checked = hasWirelessBonus.WirelessOn;
+            }
             if (treCyberware.SelectedNode?.Tag is IHasSource objSelected)
             {
                 lblCyberwareSourceLabel.Visible = true;

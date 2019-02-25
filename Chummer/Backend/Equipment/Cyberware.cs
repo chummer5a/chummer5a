@@ -36,7 +36,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Cyberware : IHasChildren<Cyberware>, IHasGear, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort, IHasStolenProperty
+    public class Cyberware : IHasChildren<Cyberware>, IHasGear, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort, IHasStolenProperty, IHasWirelessBonus
     {
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
@@ -792,6 +792,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("minrating", _strMinRating);
             objWriter.WriteElementString("maxrating", _strMaxRating);
             objWriter.WriteElementString("subsystems", _strAllowSubsystems);
+            objWriter.WriteElementString("wirelesson", WirelessOn.ToString());
             objWriter.WriteElementString("grade", _objGrade.Name);
             objWriter.WriteElementString("location", _strLocation);
             objWriter.WriteElementString("extra", _strExtra);
