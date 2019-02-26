@@ -137,13 +137,6 @@ namespace Chummer
 
 		private void AcceptForm()
 		{
-		    // Make sure the suite and file name fields are populated.
-		    if (string.IsNullOrEmpty(txtDrugName.Text))
-		    {
-		        MessageBox.Show(LanguageManager.GetString("Message_CustomDrug_Name", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Name", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-		    }
-            _objDrug.Quantity = 1;
 		}
 
 		private void AddSelectedComponent()
@@ -252,15 +245,13 @@ namespace Chummer
 
         private void btnRemoveComponent_Click(object sender, EventArgs e)
         {
-            if (treChosenComponents.SelectedNode?.Tag is clsNodeData objNodeData)
-            {
-                treChosenComponents.Nodes.Remove(treChosenComponents.SelectedNode);
+            if (!(treChosenComponents.SelectedNode?.Tag is clsNodeData objNodeData)) return;
+            treChosenComponents.Nodes.Remove(treChosenComponents.SelectedNode);
 
-                _lstSelectedDrugComponents.Remove(objNodeData);
+            _lstSelectedDrugComponents.Remove(objNodeData);
 
-                UpdateCustomDrugStats();
-                lblDrugDescription.Text = _objDrug.GenerateDescription(0);
-            }
+            UpdateCustomDrugStats();
+            lblDrugDescription.Text = _objDrug.GenerateDescription(0);
         }
 
         private void txtDrugName_TextChanged(object sender, EventArgs e)
@@ -271,7 +262,14 @@ namespace Chummer
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-	        AcceptForm();
+            // Make sure the suite and file name fields are populated.
+            if (string.IsNullOrEmpty(txtDrugName.Text))
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_CustomDrug_Name", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Name", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            _objDrug.Quantity = 1;
+
             DialogResult = DialogResult.OK;
             Close();
         }

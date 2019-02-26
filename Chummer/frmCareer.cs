@@ -17204,6 +17204,7 @@ private void RefreshSelectedSpell()
             Drug objCustomDrug = form.CustomDrug;
             objCustomDrug.Quantity = 0;
             CharacterObject.Drugs.Add(objCustomDrug);
+            objCustomDrug.GenerateImprovement();
         }
 
         private void btnIncreaseDrugQty_Click(object sender, EventArgs e)
@@ -17252,7 +17253,7 @@ private void RefreshSelectedSpell()
         {
             TreeNode objSelectedNode = treCustomDrugs.SelectedNode;
             if (!(objSelectedNode?.Tag is Drug objDrug)) return;
-
+            
             frmSelectNumber frmPickNumber = new frmSelectNumber()
             {
                 Minimum = 0,

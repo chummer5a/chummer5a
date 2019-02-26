@@ -71,7 +71,7 @@
             <name>WIL</name>
             <value>1</value>
           </attribute>
-          <quality>High Pain Tolerance III</quality>
+          <quality rating="3">High Pain Tolerance</quality>
         </effect>
       </effects>
       <availability>+4R</availability>

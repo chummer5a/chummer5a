@@ -27,6 +27,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Attributes;
+using Chummer.Classes;
 
 namespace Chummer.Backend.Equipment
 {
@@ -39,11 +40,10 @@ namespace Chummer.Backend.Equipment
         private string _strAvailability = "0";
         private string _strDescription = string.Empty;
         private string _strEffectDescription = string.Empty;
-        private ObservableCollection<DrugComponent> _lstDrugComponents = new ObservableCollection<DrugComponent>();
         private Dictionary<string, int> _dicCachedAttributes = new Dictionary<string, int>();
         private List<string> _lstCachedInfos = new List<string>();
         private Dictionary<string, int> _dicCachedLimits = new Dictionary<string, int>();
-        private List<string> _lstCachedQualities = new List<string>();
+        private List<XmlNode> _lstCachedQualities = new List<XmlNode>();
         private string _strGrade = "";
         private decimal _decCost;
         private int _intAddictionThreshold;
@@ -60,7 +60,7 @@ namespace Chummer.Backend.Equipment
             _objCharacter = objCharacter;
             // Create the GUID for the new Drug.
             _guiID = Guid.NewGuid();
-            _lstDrugComponents.CollectionChanged += ComponentsChanged;
+            Components.CollectionChanged += ComponentsChanged;
         }
 
         private void ComponentsChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -118,7 +118,7 @@ namespace Chummer.Backend.Equipment
             objXmlWriter.WriteElementString("category", _strCategory);
             objXmlWriter.WriteElementString("quantity", _decQty.ToString(GlobalOptions.InvariantCultureInfo));
             objXmlWriter.WriteStartElement("drugcomponents");
-            foreach (DrugComponent objDrugComponent in _lstDrugComponents)
+            foreach (DrugComponent objDrugComponent in Components)
             {
                 objXmlWriter.WriteStartElement("drugcomponent");
                 objDrugComponent.Save(objXmlWriter);
@@ -198,11 +198,11 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteEndElement();
 
             objWriter.WriteStartElement("qualities");
-            foreach (string strQuality in Qualities)
+            foreach (XmlNode nodQuality in Qualities)
             {
                 objWriter.WriteStartElement("quality");
-                objWriter.WriteElementString("name", LanguageManager.TranslateExtra(strQuality, strLanguageToPrint));
-                objWriter.WriteElementString("name_english", strQuality);
+                objWriter.WriteElementString("name", LanguageManager.TranslateExtra(nodQuality.InnerText, strLanguageToPrint));
+                objWriter.WriteElementString("name_english", nodQuality.InnerText);
                 objWriter.WriteEndElement();
             }
             objWriter.WriteEndElement();
@@ -223,7 +223,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteEndElement();
         }
         #endregion
-
         #region Properties
         /// <summary>
         /// Internal identifier which will be used to identify this item.
@@ -267,14 +266,10 @@ namespace Chummer.Backend.Equipment
             set => _strEffectDescription = value;
         }
 
-        /// <summary>
-        /// Components of the Drug.
-        /// </summary>
-        public ObservableCollection<DrugComponent> Components
-        {
-            get => _lstDrugComponents;
-            set => _lstDrugComponents = value;
-        }
+		/// <summary>
+		/// Components of the Drug.
+		/// </summary>
+		public ObservableCollection<DrugComponent> Components { get; set; } = new ObservableCollection<DrugComponent>();
 
         /// <summary>
         /// Name of the Drug.
@@ -448,7 +443,7 @@ namespace Chummer.Backend.Equipment
         }
 
         private bool _blnCachedQualityFlag;
-        public List<string> Qualities
+        public List<XmlNode> Qualities
 	    {
 	        get
 	        {
@@ -620,8 +615,6 @@ namespace Chummer.Backend.Equipment
         public bool Stolen { get; set; }
 
         #endregion
-
-
         #region UI Methods
         /// <summary>
         /// Add a piece of Armor to the Armor TreeView.
@@ -721,8 +714,8 @@ namespace Chummer.Backend.Equipment
 					strbldDescription.AppendLine();
 				}
 
-				foreach (string strQuality in Qualities)
-					strbldDescription.Append(LanguageManager.TranslateExtra(strQuality, strLanguage)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Quality", strLanguage));
+				foreach (XmlNode nodQuality in Qualities)
+					strbldDescription.Append(LanguageManager.TranslateExtra(nodQuality.InnerText, strLanguage)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Quality", strLanguage));
 				foreach (string strInfo in Infos)
 					strbldDescription.AppendLine(LanguageManager.TranslateExtra(strInfo, strLanguage));
 
@@ -765,6 +758,135 @@ namespace Chummer.Backend.Equipment
 			return strReturn;
 		}
 
+        public void GenerateImprovement()
+        {
+            if (_objCharacter.ImprovementGroups.Any(ig => ig == Name)) return;
+            _objCharacter.ImprovementGroups.Add(Name);
+            List<Improvement> lstImprovements = new List<Improvement>();
+
+            foreach (KeyValuePair<string, int> objAttribute in Attributes)
+            {
+                if (objAttribute.Value == 0) continue;
+                var i = new Improvement(_objCharacter)
+                {
+                    Custom = true,
+                    ImproveSource = Improvement.ImprovementSource.Drug,
+                    ImproveType = Improvement.ImprovementType.Attribute,
+                    ImprovedName = InternalId,
+                    CustomGroup = Name,
+                    Value = objAttribute.Value
+                };
+                i.ImprovedName = objAttribute.Key;
+                lstImprovements.Add(i);
+            }
+
+            foreach (KeyValuePair<string, int> objLimit in Limits)
+            {
+                if (objLimit.Value == 0) continue;
+                var i = new Improvement(_objCharacter)
+                {
+                    Custom = true,
+                    ImproveSource = Improvement.ImprovementSource.Drug,
+                    ImprovedName = InternalId,
+                    CustomGroup = Name,
+                    Value = objLimit.Value
+                };
+                switch (objLimit.Key)
+                {
+                    case "Physical":
+                        i.ImproveType = Improvement.ImprovementType.PhysicalLimit;
+                        break;
+                    case "Mental":
+                        i.ImproveType = Improvement.ImprovementType.MentalLimit;
+                        break;
+                    case "Social":
+                        i.ImproveType = Improvement.ImprovementType.SocialLimit;
+                        break;
+                }
+                lstImprovements.Add(i);
+            }
+
+            if (Initiative != 0)
+            {
+                var i = new Improvement(_objCharacter)
+                {
+                    Custom = true,
+                    ImproveSource = Improvement.ImprovementSource.Drug,
+                    ImprovedName = InternalId,
+                    ImproveType = Improvement.ImprovementType.Initiative,
+                    CustomGroup = Name,
+                    Value = Initiative
+                };
+                lstImprovements.Add(i);
+            }
+
+            if (InitiativeDice != 0)
+            {
+                var i = new Improvement(_objCharacter)
+                {
+                    Custom = true,
+                    ImproveSource = Improvement.ImprovementSource.Drug,
+                    ImprovedName = InternalId,
+                    ImproveType = Improvement.ImprovementType.InitiativeDice,
+                    CustomGroup = Name,
+                    Value = InitiativeDice
+                };
+                lstImprovements.Add(i);
+            }
+
+            if (Qualities.Count > 0)
+            {
+                XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
+                foreach (XmlNode objXmlAddQuality in Qualities)
+                {
+                    XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
+                    string strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
+
+                    string strRating = objXmlAddQuality.Attributes?["rating"]?.InnerText;
+                    int intCount = string.IsNullOrEmpty(strRating) ? 1 : ImprovementManager.ValueToInt(_objCharacter, strRating, 1);
+                    bool blnDoesNotContributeToBP = !String.Equals(objXmlAddQuality.Attributes?["contributetobp"]?.InnerText, bool.TrueString, StringComparison.CurrentCultureIgnoreCase);
+
+                    for (int i = 0; i < intCount; ++i)
+                    {
+                        // Makes sure we aren't over our limits for this particular quality from this overall source
+                        if (objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString ||
+                            objXmlSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality", GlobalOptions.Language), string.Empty, Name))
+                        {
+                            List<Weapon> lstWeapons = new List<Weapon>();
+                            Quality objAddQuality = new Quality(_objCharacter);
+                            objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, Name);
+
+                            if (blnDoesNotContributeToBP)
+                            {
+                                objAddQuality.BP = 0;
+                                objAddQuality.ContributeToLimit = false;
+                            }
+
+                            _objCharacter.Qualities.Add(objAddQuality);
+                            foreach (Weapon objWeapon in lstWeapons)
+                                _objCharacter.Weapons.Add(objWeapon);
+                            ImprovementManager.CreateImprovement(_objCharacter, objAddQuality.InternalId, Improvement.ImprovementSource.Drug, InternalId, Improvement.ImprovementType.SpecificQuality,"");
+
+                            Improvement objImprovement = _objCharacter.Improvements.FirstOrDefault(imp => imp.SourceName == InternalId);
+                            if (objImprovement == null) continue;
+                            objImprovement.Custom = true;
+                            objImprovement.CustomGroup = Name;
+                        }
+                        else
+                        {
+                            throw new AbortedException();
+                        }
+                    }
+                }
+            }
+            _objCharacter.Improvements.AddRange(lstImprovements);
+            foreach (Improvement i in _objCharacter.Improvements.Where(imp => imp.ImprovedName == InternalId))
+            {
+                i.CustomName = "Test";
+                i.CustomGroup = Name;
+                i.Custom = true;
+            }
+        }
         public XmlNode GetNode()
         {
             return GetNode(GlobalOptions.Language);
@@ -791,7 +913,6 @@ namespace Chummer.Backend.Equipment
         private string _strName;
 		private string _strCategory;
 	    private string _strAvailability = "0";
-        private readonly List<DrugEffect> _lstEffects = new List<DrugEffect>();
         private int _intLevel;
 		private string _strSource;
 		private string _strPage;
@@ -847,7 +968,7 @@ namespace Chummer.Backend.Equipment
                                     break;
                                 }
                                 case "quality":
-                                    objDrugEffect.Qualities.Add(objXmlEffect.InnerText);
+                                    objDrugEffect.Qualities.Add(objXmlEffect);
                                     break;
                                 case "info":
                                     objDrugEffect.Infos.Add(objXmlEffect.InnerText);
@@ -889,7 +1010,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-		            _lstEffects.Add(objDrugEffect);
+		            DrugEffects.Add(objDrugEffect);
 		        }
 		    }
 
@@ -910,7 +1031,7 @@ namespace Chummer.Backend.Equipment
 			objXmlWriter.WriteElementString("category", _strCategory);
 
 			objXmlWriter.WriteStartElement("effects");
-			foreach (DrugEffect objDrugEffect in _lstEffects)
+			foreach (DrugEffect objDrugEffect in DrugEffects)
 			{
 				objXmlWriter.WriteStartElement("effect");
 				foreach (KeyValuePair<string, int> objAttribute in objDrugEffect.Attributes)
@@ -927,10 +1048,10 @@ namespace Chummer.Backend.Equipment
 					objXmlWriter.WriteElementString("value", objLimit.Value.ToString());
 					objXmlWriter.WriteEndElement();
 				}
-				foreach (string strQuality in objDrugEffect.Qualities)
+				foreach (XmlNode nodQuality in objDrugEffect.Qualities)
 				{
-					objXmlWriter.WriteElementString("quality", strQuality);
-				}
+				    objXmlWriter.WriteRaw("<quality>" + nodQuality.InnerXml + "</quality>");
+                }
 				foreach (string strInfo in objDrugEffect.Infos)
 				{
 					objXmlWriter.WriteElementString("info", strInfo);
@@ -1043,9 +1164,9 @@ namespace Chummer.Backend.Equipment
 	        return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
 	    }
 
-        public List<DrugEffect> DrugEffects => _lstEffects;
+		public List<DrugEffect> DrugEffects { get; } = new List<DrugEffect>();
 
-	    public DrugEffect ActiveDrugEffect => DrugEffects.FirstOrDefault(effect => effect.Level == Level);
+        public DrugEffect ActiveDrugEffect => DrugEffects.FirstOrDefault(effect => effect.Level == Level);
 
 	    public string Cost
 		{
@@ -1159,7 +1280,7 @@ namespace Chummer.Backend.Equipment
         #region Methods
         public string GenerateDescription(int intLevel = -1)
 		{
-			if (intLevel >= _lstEffects.Count)
+			if (intLevel >= DrugEffects.Count)
 				return null;
 
 			StringBuilder strbldDescription = new StringBuilder();
@@ -1170,7 +1291,7 @@ namespace Chummer.Backend.Equipment
 
             if (intLevel != -1)
 			{
-				DrugEffect objDrugEffect = _lstEffects[intLevel];
+				DrugEffect objDrugEffect = DrugEffects[intLevel];
 
 				foreach (KeyValuePair<string, int> objAttribute in objDrugEffect.Attributes)
 				{
@@ -1225,8 +1346,8 @@ namespace Chummer.Backend.Equipment
 				    strbldDescription.AppendLine();
                 }
 
-			    foreach (string strQuality in objDrugEffect.Qualities)
-			        strbldDescription.Append(LanguageManager.TranslateExtra(strQuality, GlobalOptions.Language)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Quality"));
+			    foreach (XmlNode strQuality in objDrugEffect.Qualities)
+			        strbldDescription.Append(LanguageManager.TranslateExtra(strQuality.InnerText, GlobalOptions.Language)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Quality"));
 			    foreach (string strInfo in objDrugEffect.Infos)
 			        strbldDescription.AppendLine(LanguageManager.TranslateExtra(strInfo, GlobalOptions.Language));
 
@@ -1293,7 +1414,7 @@ namespace Chummer.Backend.Equipment
 		{
 			Attributes = new Dictionary<string, int>();
 			Limits = new Dictionary<string, int>();
-			Qualities = new List<string>();
+			Qualities = new List<XmlNode>();
 			Infos = new List<string>();
 		}
 
@@ -1301,7 +1422,7 @@ namespace Chummer.Backend.Equipment
 
 	    public Dictionary<string, int> Limits { get; }
 
-	    public List<string> Qualities { get; }
+	    public List<XmlNode> Qualities { get; }
 
 	    public List<string> Infos { get; }
 
