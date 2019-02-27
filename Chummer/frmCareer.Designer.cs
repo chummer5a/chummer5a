@@ -922,7 +922,7 @@ namespace Chummer
 			this.treCustomDrugs = new System.Windows.Forms.TreeView();
 			this.flowLayoutPanel19 = new System.Windows.Forms.FlowLayoutPanel();
 			this.btnCreateCustomDrug = new System.Windows.Forms.Button();
-			this.btnDeleteCustomDrug = new System.Windows.Forms.Button();
+			this.cmdDeleteCustomDrug = new System.Windows.Forms.Button();
 			this.flpDrugs = new System.Windows.Forms.FlowLayoutPanel();
 			this.gpbDrugsCommon = new System.Windows.Forms.GroupBox();
 			this.tlpDrugsCommon = new System.Windows.Forms.TableLayoutPanel();
@@ -12624,7 +12624,7 @@ namespace Chummer
 			this.tabDrugs.Location = new System.Drawing.Point(4, 22);
 			this.tabDrugs.Name = "tabDrugs";
 			this.tabDrugs.Padding = new System.Windows.Forms.Padding(3);
-			this.tabDrugs.Size = new System.Drawing.Size(184, 48);
+			this.tabDrugs.Size = new System.Drawing.Size(833, 605);
 			this.tabDrugs.TabIndex = 7;
 			this.tabDrugs.Tag = "Tab_Drugs";
 			this.tabDrugs.Text = "Drugs";
@@ -12654,20 +12654,20 @@ namespace Chummer
 			this.tblDrugDescription.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tblDrugDescription.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tblDrugDescription.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tblDrugDescription.Size = new System.Drawing.Size(178, 42);
+			this.tblDrugDescription.Size = new System.Drawing.Size(827, 599);
 			this.tblDrugDescription.TabIndex = 109;
 			// 
 			// treCustomDrugs
 			// 
 			this.treCustomDrugs.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.treCustomDrugs.Location = new System.Drawing.Point(3, 61);
+			this.treCustomDrugs.Location = new System.Drawing.Point(3, 32);
 			this.treCustomDrugs.Name = "treCustomDrugs";
 			treeNode22.Name = "nodSelectedDrug";
 			treeNode22.Tag = "Node_SelectedDrugs";
 			treeNode22.Text = "Selected Drugs";
 			this.treCustomDrugs.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode22});
-			this.treCustomDrugs.Size = new System.Drawing.Size(295, 1);
+			this.treCustomDrugs.Size = new System.Drawing.Size(295, 564);
 			this.treCustomDrugs.TabIndex = 2;
 			this.treCustomDrugs.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCustomDrugs_AfterSelect);
 			// 
@@ -12676,11 +12676,11 @@ namespace Chummer
 			this.flowLayoutPanel19.AutoSize = true;
 			this.tblDrugDescription.SetColumnSpan(this.flowLayoutPanel19, 2);
 			this.flowLayoutPanel19.Controls.Add(this.btnCreateCustomDrug);
-			this.flowLayoutPanel19.Controls.Add(this.btnDeleteCustomDrug);
+			this.flowLayoutPanel19.Controls.Add(this.cmdDeleteCustomDrug);
 			this.flowLayoutPanel19.Location = new System.Drawing.Point(0, 0);
 			this.flowLayoutPanel19.Margin = new System.Windows.Forms.Padding(0);
 			this.flowLayoutPanel19.Name = "flowLayoutPanel19";
-			this.flowLayoutPanel19.Size = new System.Drawing.Size(120, 58);
+			this.flowLayoutPanel19.Size = new System.Drawing.Size(201, 29);
 			this.flowLayoutPanel19.TabIndex = 99;
 			// 
 			// btnCreateCustomDrug
@@ -12694,15 +12694,16 @@ namespace Chummer
 			this.btnCreateCustomDrug.UseVisualStyleBackColor = true;
 			this.btnCreateCustomDrug.Click += new System.EventHandler(this.btnCreateCustomDrug_Click);
 			// 
-			// btnDeleteCustomDrug
+			// cmdDeleteCustomDrug
 			// 
-			this.btnDeleteCustomDrug.Location = new System.Drawing.Point(3, 32);
-			this.btnDeleteCustomDrug.Name = "btnDeleteCustomDrug";
-			this.btnDeleteCustomDrug.Size = new System.Drawing.Size(75, 23);
-			this.btnDeleteCustomDrug.TabIndex = 3;
-			this.btnDeleteCustomDrug.Tag = "String_Delete";
-			this.btnDeleteCustomDrug.Text = "Delete";
-			this.btnDeleteCustomDrug.UseVisualStyleBackColor = true;
+			this.cmdDeleteCustomDrug.Location = new System.Drawing.Point(123, 3);
+			this.cmdDeleteCustomDrug.Name = "cmdDeleteCustomDrug";
+			this.cmdDeleteCustomDrug.Size = new System.Drawing.Size(75, 23);
+			this.cmdDeleteCustomDrug.TabIndex = 3;
+			this.cmdDeleteCustomDrug.Tag = "String_Delete";
+			this.cmdDeleteCustomDrug.Text = "Delete";
+			this.cmdDeleteCustomDrug.UseVisualStyleBackColor = true;
+			this.cmdDeleteCustomDrug.Click += new System.EventHandler(this.cmdDeleteCustomDrug_Click);
 			// 
 			// flpDrugs
 			// 
@@ -12710,10 +12711,10 @@ namespace Chummer
 			this.flpDrugs.AutoSize = true;
 			this.flpDrugs.Controls.Add(this.gpbDrugsCommon);
 			this.flpDrugs.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.flpDrugs.Location = new System.Drawing.Point(301, 58);
+			this.flpDrugs.Location = new System.Drawing.Point(301, 29);
 			this.flpDrugs.Margin = new System.Windows.Forms.Padding(0);
 			this.flpDrugs.Name = "flpDrugs";
-			this.flpDrugs.Size = new System.Drawing.Size(1, 1);
+			this.flpDrugs.Size = new System.Drawing.Size(526, 570);
 			this.flpDrugs.TabIndex = 100;
 			// 
 			// gpbDrugsCommon
@@ -19592,7 +19593,7 @@ namespace Chummer
         private Label lblDrugCategoryLabel;
         private Label lblDrugName;
         private Label lblDrugNameLabel;
-        private Button btnDeleteCustomDrug;
+        private Button cmdDeleteCustomDrug;
         private TreeView treCustomDrugs;
         private Button btnCreateCustomDrug;
         private FlowLayoutPanel flwDrugQty;

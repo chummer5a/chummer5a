@@ -758,9 +758,15 @@ namespace Chummer.Backend.Equipment
 			return strReturn;
 		}
 
+        /// <summary>
+        /// Creates the improvements necessary to to 'activate' a given drug.
+        /// TODO: I'm really not happy with the lack of extensibility on this.
+        /// TODO: Refactor drug effects to just use XML nodes, which can then be passed to Improvement Manager?
+        /// TODO: Refactor Improvement Manager to automatically collapse improvements of the same type into a single improvement?
+        /// </summary>
         public void GenerateImprovement()
         {
-            if (_objCharacter.ImprovementGroups.Any(ig => ig == Name)) return;
+            if (_objCharacter.Improvements.Any(ig => ig.SourceName == InternalId)) return;
             _objCharacter.ImprovementGroups.Add(Name);
             List<Improvement> lstImprovements = new List<Improvement>();
 
@@ -769,14 +775,12 @@ namespace Chummer.Backend.Equipment
                 if (objAttribute.Value == 0) continue;
                 var i = new Improvement(_objCharacter)
                 {
-                    Custom = true,
                     ImproveSource = Improvement.ImprovementSource.Drug,
                     ImproveType = Improvement.ImprovementType.Attribute,
-                    ImprovedName = InternalId,
-                    CustomGroup = Name,
-                    Value = objAttribute.Value
+                    SourceName = InternalId,
+                    Value = objAttribute.Value,
+                    ImprovedName = objAttribute.Key
                 };
-                i.ImprovedName = objAttribute.Key;
                 lstImprovements.Add(i);
             }
 
@@ -785,10 +789,8 @@ namespace Chummer.Backend.Equipment
                 if (objLimit.Value == 0) continue;
                 var i = new Improvement(_objCharacter)
                 {
-                    Custom = true,
                     ImproveSource = Improvement.ImprovementSource.Drug,
-                    ImprovedName = InternalId,
-                    CustomGroup = Name,
+                    SourceName = InternalId,
                     Value = objLimit.Value
                 };
                 switch (objLimit.Key)
@@ -810,11 +812,9 @@ namespace Chummer.Backend.Equipment
             {
                 var i = new Improvement(_objCharacter)
                 {
-                    Custom = true,
                     ImproveSource = Improvement.ImprovementSource.Drug,
-                    ImprovedName = InternalId,
+                    SourceName = InternalId,
                     ImproveType = Improvement.ImprovementType.Initiative,
-                    CustomGroup = Name,
                     Value = Initiative
                 };
                 lstImprovements.Add(i);
@@ -824,11 +824,9 @@ namespace Chummer.Backend.Equipment
             {
                 var i = new Improvement(_objCharacter)
                 {
-                    Custom = true,
                     ImproveSource = Improvement.ImprovementSource.Drug,
-                    ImprovedName = InternalId,
+                    SourceName = InternalId,
                     ImproveType = Improvement.ImprovementType.InitiativeDice,
-                    CustomGroup = Name,
                     Value = InitiativeDice
                 };
                 lstImprovements.Add(i);
@@ -844,7 +842,7 @@ namespace Chummer.Backend.Equipment
 
                     string strRating = objXmlAddQuality.Attributes?["rating"]?.InnerText;
                     int intCount = string.IsNullOrEmpty(strRating) ? 1 : ImprovementManager.ValueToInt(_objCharacter, strRating, 1);
-                    bool blnDoesNotContributeToBP = !String.Equals(objXmlAddQuality.Attributes?["contributetobp"]?.InnerText, bool.TrueString, StringComparison.CurrentCultureIgnoreCase);
+                    bool blnDoesNotContributeToBP = !string.Equals(objXmlAddQuality.Attributes?["contributetobp"]?.InnerText, bool.TrueString, StringComparison.CurrentCultureIgnoreCase);
 
                     for (int i = 0; i < intCount; ++i)
                     {
@@ -866,11 +864,6 @@ namespace Chummer.Backend.Equipment
                             foreach (Weapon objWeapon in lstWeapons)
                                 _objCharacter.Weapons.Add(objWeapon);
                             ImprovementManager.CreateImprovement(_objCharacter, objAddQuality.InternalId, Improvement.ImprovementSource.Drug, InternalId, Improvement.ImprovementType.SpecificQuality,"");
-
-                            Improvement objImprovement = _objCharacter.Improvements.FirstOrDefault(imp => imp.SourceName == InternalId);
-                            if (objImprovement == null) continue;
-                            objImprovement.Custom = true;
-                            objImprovement.CustomGroup = Name;
                         }
                         else
                         {

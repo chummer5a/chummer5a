@@ -3235,17 +3235,12 @@ namespace Chummer
 
         private void cmdDeleteArmor_Click(object sender, EventArgs e)
         {
-            object objSelectedNode = treArmor.SelectedNode?.Tag;
-            if (objSelectedNode == null)
-                return;
+            RemoveSelectedObject(treArmor.SelectedNode?.Tag);
+        }
 
-            if (objSelectedNode is ICanRemove selectedObject)
-            {
-                selectedObject.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete);
-            }
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
+        private void cmdDeleteCustomDrug_Click(object sender, EventArgs e)
+        {
+            RemoveSelectedObject(treCustomDrugs.SelectedNode?.Tag);
         }
 
         private void cmdAddBioware_Click(object sender, EventArgs e)
@@ -3347,17 +3342,17 @@ namespace Chummer
         private void cmdDeleteWeapon_Click(object sender, EventArgs e)
         {
             // Delete the selected Weapon.
-            if (treWeapons.SelectedNode == null) return;
+            RemoveSelectedObject(treWeapons.SelectedNode?.Tag);
+        }
 
-            // Locate the Weapon that is selected in the tree.
-            if (treWeapons.SelectedNode?.Tag is ICanRemove objRemovable)
+        private void RemoveSelectedObject(object selectedObject)
+        {
+            if (selectedObject is ICanRemove iRemovable)
             {
-                objRemovable.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete);
+                if (!iRemovable.Remove(CharacterObject, CharacterObjectOptions.ConfirmDelete)) return;
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private void cmdAddLifestyle_Click(object sender, EventArgs e)
@@ -3391,13 +3386,7 @@ namespace Chummer
 
         private void cmdDeleteLifestyle_Click(object sender, EventArgs e)
         {
-            // Delete the selected Lifestyle.
-            if (treLifestyles.SelectedNode?.Tag is ICanRemove selectedObject)
-            {
-                if (!selectedObject.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete)) return;
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
+            RemoveSelectedObject(treLifestyles.SelectedNode?.Tag);
         }
 
         private void cmdAddGear_Click(object sender, EventArgs e)
@@ -3414,12 +3403,7 @@ namespace Chummer
 
         private void cmdDeleteGear_Click(object sender, EventArgs e)
         {
-            if (treGear.SelectedNode?.Tag is ICanRemove objSelectedGear && objSelectedGear.Remove(CharacterObject, CharacterObjectOptions.ConfirmDelete))
-            {
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
+            RemoveSelectedObject(treGear.SelectedNode?.Tag);
         }
 
         private bool AddVehicle(Location objLocation = null)
@@ -3621,10 +3605,7 @@ namespace Chummer
 
         private void cmdDeleteMartialArt_Click(object sender, EventArgs e)
         {
-            if (!(treMartialArts.SelectedNode?.Tag is ICanRemove objSelectedNode)) return;
-            if (!objSelectedNode.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete)) return;
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            RemoveSelectedObject(treMartialArts.SelectedNode?.Tag);
         }
 
 #if LEGACY
@@ -3918,10 +3899,7 @@ namespace Chummer
 
         private void cmdDeleteMetamagic_Click(object sender, EventArgs e)
         {
-            if (!(treMetamagic.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(CharacterObject,CharacterObjectOptions.ConfirmDelete)) return;
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            RemoveSelectedObject(treMetamagic.SelectedNode?.Tag);
         }
 
         private void cmdKarmaGained_Click(object sender, EventArgs e)
@@ -13131,7 +13109,7 @@ namespace Chummer
             {
 
                 flpDrugs.Visible = true;
-                btnDeleteCustomDrug.Enabled = true;
+                cmdDeleteCustomDrug.Enabled = true;
 
                 lblDrugName.Text = objDrug.Name;
                 lblDrugAvail.Text = objDrug.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
@@ -13154,7 +13132,7 @@ namespace Chummer
             else
             {
                 flpDrugs.Visible = false;
-                btnDeleteCustomDrug.Enabled = treCustomDrugs.SelectedNode?.Tag is ICanRemove;
+                cmdDeleteCustomDrug.Enabled = treCustomDrugs.SelectedNode?.Tag is ICanRemove;
             }
 
             IsRefreshing = false;

@@ -716,7 +716,7 @@ namespace Chummer
 			this.treCustomDrugs = new System.Windows.Forms.TreeView();
 			this.flpDrugButtons = new System.Windows.Forms.FlowLayoutPanel();
 			this.btnCreateCustomDrug = new System.Windows.Forms.Button();
-			this.btnDeleteCustomDrug = new System.Windows.Forms.Button();
+			this.cmdDeleteCustomDrug = new System.Windows.Forms.Button();
 			this.flpDrugs = new System.Windows.Forms.FlowLayoutPanel();
 			this.gpbDrugsCommon = new System.Windows.Forms.GroupBox();
 			this.tlpDrugsCommon = new System.Windows.Forms.TableLayoutPanel();
@@ -9492,7 +9492,7 @@ namespace Chummer
 			this.flpDrugButtons.AutoSize = true;
 			this.tblDrugInfo.SetColumnSpan(this.flpDrugButtons, 2);
 			this.flpDrugButtons.Controls.Add(this.btnCreateCustomDrug);
-			this.flpDrugButtons.Controls.Add(this.btnDeleteCustomDrug);
+			this.flpDrugButtons.Controls.Add(this.cmdDeleteCustomDrug);
 			this.flpDrugButtons.Location = new System.Drawing.Point(0, 0);
 			this.flpDrugButtons.Margin = new System.Windows.Forms.Padding(0);
 			this.flpDrugButtons.Name = "flpDrugButtons";
@@ -9510,15 +9510,15 @@ namespace Chummer
 			this.btnCreateCustomDrug.UseVisualStyleBackColor = true;
 			this.btnCreateCustomDrug.Click += new System.EventHandler(this.btnCreateCustomDrug_Click_1);
 			// 
-			// btnDeleteCustomDrug
+			// cmdDeleteCustomDrug
 			// 
-			this.btnDeleteCustomDrug.Location = new System.Drawing.Point(123, 3);
-			this.btnDeleteCustomDrug.Name = "btnDeleteCustomDrug";
-			this.btnDeleteCustomDrug.Size = new System.Drawing.Size(75, 23);
-			this.btnDeleteCustomDrug.TabIndex = 3;
-			this.btnDeleteCustomDrug.Tag = "String_Delete";
-			this.btnDeleteCustomDrug.Text = "Delete";
-			this.btnDeleteCustomDrug.UseVisualStyleBackColor = true;
+			this.cmdDeleteCustomDrug.Location = new System.Drawing.Point(123, 3);
+			this.cmdDeleteCustomDrug.Name = "cmdDeleteCustomDrug";
+			this.cmdDeleteCustomDrug.Size = new System.Drawing.Size(75, 23);
+			this.cmdDeleteCustomDrug.TabIndex = 3;
+			this.cmdDeleteCustomDrug.Tag = "String_Delete";
+			this.cmdDeleteCustomDrug.Text = "Delete";
+			this.cmdDeleteCustomDrug.UseVisualStyleBackColor = true;
 			// 
 			// flpDrugs
 			// 
@@ -14809,7 +14809,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblWeaponCapacityLabel;
         private Chummer.BufferedTableLayoutPanel tblLifestyleDetails;
 	    private System.Windows.Forms.TabPage tabDrugs;
-	    private System.Windows.Forms.Button btnDeleteCustomDrug;
+	    private System.Windows.Forms.Button cmdDeleteCustomDrug;
 	    private System.Windows.Forms.TreeView treCustomDrugs;
 	    private System.Windows.Forms.Button btnCreateCustomDrug;
 	    private System.Windows.Forms.Label lblDrugComponents;

@@ -4211,7 +4211,7 @@ namespace Chummer
                         {
                             foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom || objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
                                 {
                                     AddToTree(objImprovement);
                                     AddToLimitTree(objImprovement);

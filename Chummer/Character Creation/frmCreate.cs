@@ -12554,7 +12554,7 @@ namespace Chummer
             {
 
                 flpDrugs.Visible = true;
-                btnDeleteCustomDrug.Enabled = true;
+                cmdDeleteCustomDrug.Enabled = true;
 
                 lblDrugName.Text = objDrug.Name;
                 lblDrugAvail.Text = objDrug.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
@@ -12574,7 +12574,7 @@ namespace Chummer
             else
             {
                 flpDrugs.Visible = false;
-                btnDeleteCustomDrug.Enabled = treArmor.SelectedNode?.Tag is ICanRemove;
+                cmdDeleteCustomDrug.Enabled = treArmor.SelectedNode?.Tag is ICanRemove;
             }
 
             IsRefreshing = false;

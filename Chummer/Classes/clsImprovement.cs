@@ -307,7 +307,8 @@ namespace Chummer
             MetageneticLimit,
             Tradition,
             ActionDicePool,
-            NumImprovementTypes, // 🡐 This one should always be the last defined enum
+            DisableDrugGrade,
+            NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 
         public enum ImprovementSource
