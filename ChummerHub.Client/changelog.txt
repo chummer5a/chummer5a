@@ -2,6 +2,8 @@ Future Build 1.0.0.2
 
 WebService Changes:
 
+- sinneruserright for uploading user will now be added if not existent
+- uploading user is now checked if he/she actually may update a existing sinner
 - added a SetUserRole-Call, so that Admins can set roles (like other Admins or "ArchetypeAdmin or whatever")
 - added the ability to create a group (with name)
 - found a bug that prevented uploading for none-admins (damn - I'm just used to have all the rights...)
@@ -9,6 +11,8 @@ WebService Changes:
 
 Application Changes:
 
+- Id of SINnerVisibility is now generated and not reused from the options for each Sinner (DuplicateKeyError)
+- added a post prior to creating a new group, so the current sinner can be added automatically
 - added the ability to create a group.
 - added a "Archetype"-Checkbox for ArchetypeAdmins only (including a name)
 

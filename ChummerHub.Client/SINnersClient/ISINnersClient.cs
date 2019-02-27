@@ -149,6 +149,10 @@ namespace SINners
         /// </param>
         Task<HttpOperationResponse<SINner>> GetByIdWithHttpMessagesAsync(Guid id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// The Xml or Zip File can be uploaded (knowing the previously stored
+        /// Id)
+        /// </summary>
         /// <param name='id'>
         /// </param>
         /// <param name='uploadedFile'>
@@ -161,6 +165,11 @@ namespace SINners
         /// </param>
         Task<HttpOperationResponse> PutSINWithHttpMessagesAsync(Guid id, System.IO.Stream uploadedFile = default(System.IO.Stream), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// Store the MetaData for chummerfiles (to get a Id).
+        /// This Id can be used to store the actual file with PUT afterwards.
+        /// Alternativly, the DownloadUrl can be set directly from the Client.
+        /// </summary>
         /// <param name='uploadInfo'>
         /// </param>
         /// <param name='customHeaders'>
@@ -181,6 +190,9 @@ namespace SINners
         /// </param>
         Task<HttpOperationResponse> DeleteWithHttpMessagesAsync(Guid id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// Store the new group
+        /// </summary>
         /// <param name='groupname'>
         /// </param>
         /// <param name='sinnerId'>

@@ -306,6 +306,9 @@ namespace SINners
                 }
             }
 
+            /// <summary>
+            /// The Xml or Zip File can be uploaded (knowing the previously stored Id)
+            /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
@@ -318,6 +321,9 @@ namespace SINners
                 Task.Factory.StartNew(s => ((ISINnersClient)s).PutSINAsync(id, uploadedFile), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
+            /// <summary>
+            /// The Xml or Zip File can be uploaded (knowing the previously stored Id)
+            /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
@@ -333,6 +339,11 @@ namespace SINners
                 await operations.PutSINWithHttpMessagesAsync(id, uploadedFile, null, cancellationToken).ConfigureAwait(false);
             }
 
+            /// <summary>
+            /// Store the MetaData for chummerfiles (to get a Id).
+            /// This Id can be used to store the actual file with PUT afterwards.
+            /// Alternativly, the DownloadUrl can be set directly from the Client.
+            /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
@@ -343,6 +354,11 @@ namespace SINners
                 Task.Factory.StartNew(s => ((ISINnersClient)s).PostSINAsync(uploadInfo), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
+            /// <summary>
+            /// Store the MetaData for chummerfiles (to get a Id).
+            /// This Id can be used to store the actual file with PUT afterwards.
+            /// Alternativly, the DownloadUrl can be set directly from the Client.
+            /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
@@ -379,6 +395,9 @@ namespace SINners
                 await operations.DeleteWithHttpMessagesAsync(id, null, cancellationToken).ConfigureAwait(false);
             }
 
+            /// <summary>
+            /// Store the new group
+            /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
@@ -391,6 +410,9 @@ namespace SINners
                 Task.Factory.StartNew(s => ((ISINnersClient)s).PostGroupAsync(groupname, sinnerId), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
+            /// <summary>
+            /// Store the new group
+            /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>

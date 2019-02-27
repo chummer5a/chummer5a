@@ -180,49 +180,53 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerGet")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerGetById")]
         [Authorize]
         public async Task<ActionResult<SINner>> GetById([FromRoute] Guid id)
         {
             try
             {
-                if (!ModelState.IsValid)
+                if(!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
 
-                var sin = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights).FirstOrDefaultAsync(a=> a.Id == id);
-                if (sin == null)
+                var sin = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights)
+                        .Include(b => b.MyGroup)
+                        .FirstOrDefaultAsync(a => a.Id == id);
+                if(sin == null)
                 {
-                    return NotFound();
+                    return NotFound("SINner with id " + id + " does not exist.");
                 }
-               
-                if (sin.SINnerMetaData.Visibility.IsPublic == true)
+
+                if(sin.SINnerMetaData.Visibility.IsPublic == true)
                     return Ok(sin);
 
                 var user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
-                if (user == null)
+                if(user == null)
                 {
                     return BadRequest("Could not find user: " + User.Identity.Name);
                 }
                 var list = (from a in sin.SINnerMetaData.Visibility.UserRights where a.EMail.ToUpperInvariant() == user.NormalizedEmail select a);
-                if (list.Any())
+                if(list.Any())
                     return Ok(sin);
-                if (sin.SINnerMetaData.Visibility.IsGroupVisible)
-                {
-                    if (sin.SINnerMetaData.Visibility.Groupname?.ToUpperInvariant()
-                        == user.Groupname?.ToUpperInvariant())
-                    {
-                        return Ok(sin);
-                    }
-                }
-
-                return BadRequest("not authorized");
+                //if(sin.SINnerMetaData.Visibility.IsGroupVisible)
+                //{
+                //    var userrights = await sin.MyGroup.GetUserRights(_context);
+                //    if(userrights.Any(a => a.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant()))
+                //        return Ok(sin);
+                //    else
+                //        throw new NoUserRightException("SINner may not be viewed by user " + user.UserName + ".");
+                //}
+                //else
+                //{
+                throw new NoUserRightException("SINner is not viewable for public or groupmembers.");
+                //}
             }
             catch (Exception e)
             {
-                HubException hue = new HubException("Exception in GetSINnerfile: " + e.Message, e);
-                return BadRequest(hue);
+                HubException hue = new HubException("Exception in GetById: " + e.Message, e);
+                throw hue;
             }
         }
 
@@ -377,19 +381,68 @@ namespace ChummerHub.Controllers.V1
                     {
                         return BadRequest("Sinner  " + sinner.Id + ": LastChange not set!");
                     }
-                    if (sinner.SINnerMetaData.Visibility.Id == null)
+                    if ((sinner.SINnerMetaData.Visibility.Id == null)
+                        || (sinner.SINnerMetaData.Visibility.Id == Guid.Empty))
                     {
                         sinner.SINnerMetaData.Visibility.Id = Guid.NewGuid();
                     }
-                    var olduserrights = await (from a in _context.UserRights where a.SINnerId == sinner.Id select a).ToListAsync();
-                    _context.UserRights.RemoveRange(olduserrights);
-                    foreach (var ur in sinner.SINnerMetaData.Visibility.UserRights)
+                    var oldsinner = (from a in _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights)
+                                     where a.Id == sinner.Id
+                                     select a).FirstOrDefault();
+                    if(oldsinner != null)
                     {
-                        ur.Id = Guid.NewGuid();
-                        ur.SINnerId = sinner.Id;
-                        _context.UserRights.Add(ur);
+                        var olduserrights = oldsinner.SINnerMetaData.Visibility.UserRights.ToList();
+                        bool canedit = false;
+                        foreach(var oldright in olduserrights)
+                        {
+                            if((oldright.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant()
+                                && (oldright.CanEdit == true)))
+                            {
+                                canedit = true;
+                                break;
+                            }
+                        }
+                        if(!canedit)
+                        {
+                            string msg = "SINner " + sinner.Id + " is not editable for user " + user.Email + ".";
+                            throw new NoUserRightException(msg);
+                        }
+                        _context.UserRights.RemoveRange(olduserrights);
+                        bool userfound = false;
+                        foreach(var ur in sinner.SINnerMetaData.Visibility.UserRights)
+                        {
+                            if (ur.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant())
+                            {
+                                ur.CanEdit = true;
+                                userfound = true;
+                            }
+                            ur.Id = Guid.NewGuid();
+                            ur.SINnerId = sinner.Id;
+                            _context.UserRights.Add(ur);
+                        }
+                        if (!userfound)
+                        {
+                            SINerUserRight ownUser = new SINerUserRight();
+                            ownUser.Id = Guid.NewGuid();
+                            ownUser.SINnerId = sinner.Id;
+                            ownUser.CanEdit = true;
+                            ownUser.EMail = user.Email;
+                            sinner.SINnerMetaData.Visibility.UserRights.Add(ownUser);
+                            _context.UserRights.Add(ownUser);                                
+                        }
                     }
-
+                    else
+                    {
+                        if(_context.SINnerMetaData.Any(a => a.Id == sinner.SINnerMetaData.Id))
+                            sinner.SINnerMetaData.Id = Guid.NewGuid();
+                        if(_context.SINnerVisibility.Any(a => a.Id == sinner.SINnerMetaData.Visibility.Id))
+                            sinner.SINnerMetaData.Visibility.Id = Guid.NewGuid();
+                        foreach(var ur in sinner.SINnerMetaData.Visibility.UserRights)
+                        {
+                            ur.SINnerId = sinner.Id;
+                        }
+                    }
+               
                     foreach(var tag in sinner.SINnerMetaData.Tags)
                     {
                         tag.SetSinnerIdRecursive(sinner.Id);
@@ -404,10 +457,9 @@ namespace ChummerHub.Controllers.V1
                             sinner.GoogleDriveFileId = dbsinner.GoogleDriveFileId;
                         if(String.IsNullOrEmpty(sinner.DownloadUrl))
                             sinner.DownloadUrl = dbsinner.DownloadUrl;
-                        //_context.Entry(dbsinner.SINnerMetaData.Visibility).State = EntityState.Modified;
+                        _context.Entry(dbsinner.SINnerMetaData.Visibility).State = EntityState.Modified;
                         _context.Entry(dbsinner.SINnerMetaData.Visibility).CurrentValues.SetValues(sinner.SINnerMetaData.Visibility);
 
-                        //_context.Tags.RemoveRange(dbsinner.AllTags);
                         _context.Entry(dbsinner).State = EntityState.Modified;
                         _context.Entry(dbsinner).CurrentValues.SetValues(sinner);
                         string msg = "Sinner " + sinner.Id + " updated: " + _context.Entry(dbsinner).State.ToString();
@@ -462,9 +514,9 @@ namespace ChummerHub.Controllers.V1
                     {
                         _logger.LogError(ex.ToString());
                     }
-                    HubException hue = new HubException("Exception in PostSINnerFile: " + e.Message, e);
-                    var msg = new System.Net.Http.HttpResponseMessage(HttpStatusCode.Conflict) { ReasonPhrase = hue.Message };
-                    return Conflict(msg);
+                    HubException hue = new HubException("Exception in PostSINnerFile: " + e.ToString(), e);
+                    //var msg = new System.Net.Http.HttpResponseMessage(HttpStatusCode.Conflict) { ReasonPhrase = e.Message };
+                    return Conflict(hue);
                 }
                 List<Guid> myids = (from a in uploadInfo.SINners select a.Id.Value).ToList();
                 switch(returncode)

@@ -183,9 +183,9 @@ namespace ChummerHub.Controllers.V1
                         {
                             _logger.LogError(ex.ToString());
                         }
-                        HubException hue = new HubException("Exception in PostSINnerFile: " + e.Message, e);
-                        var msg = new System.Net.Http.HttpResponseMessage(HttpStatusCode.Conflict) { ReasonPhrase = hue.Message };
-                        return Conflict(msg);
+                        HubException hue = new HubException("Exception in PostSINnerFile: " + e.ToString(), e);
+                        var msg = new System.Net.Http.HttpResponseMessage(HttpStatusCode.Conflict) { ReasonPhrase = e.Message };
+                        return Conflict(hue);
                     }
                 }
                 switch(returncode)

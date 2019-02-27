@@ -295,57 +295,24 @@ namespace ChummerHub.Client.Backend
                 {
                     return new List<TreeNode>() { MyOnlineTreeNode }; 
                 }
-                foreach (var list in response.Body.SinLists)
+                foreach (var parentlist in response.Body.SinLists)
                 {
                     try
                     {
-                        if(!list.SiNners.Any())
-                            continue;
-                        TreeNode objListNode = new TreeNode
+                        foreach(var list in parentlist.MySINnersList)
                         {
-                            Text = list.Header,
-                            Tag = list,
-                            ContextMenuStrip = PluginHandler.MainForm.CharacterRoster.ContextMenuStrip
-                        };
-                        foreach(var sinner in list.SiNners)
-                        {
-                            if(String.IsNullOrEmpty(sinner.JsonSummary))
-                                continue;
-                            CharacterCache objCache = Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(sinner.JsonSummary);
-                            SetEventHandlers(sinner, objCache);
-
-                            TreeNode objNode = new TreeNode
-                            {
-                                Text = objCache.CalculatedName(),
-                                Tag = sinner.Id.Value.ToString(),
-                                ToolTipText = "Last Change: " + sinner.LastChange,
-                                ContextMenuStrip = PluginHandler.MainForm.CharacterRoster.ContextMenuStrip
-
-                            };
-                            if(!string.IsNullOrEmpty(objCache.ErrorText))
-                            {
-                                objNode.ForeColor = Color.Red;
-                                objNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error", GlobalOptions.Language)
-                                                        + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + Environment.NewLine + objCache.ErrorText;
-                            }
-                            CharacterCache delObj;
-                            CharCache.TryRemove(sinner.Id.Value.ToString(), out delObj);
-                            CharCache.TryAdd(sinner.Id.Value.ToString(), objCache);
+                            var objListNode = GetCharacterRosterTreeNodeRecursive(list, ref CharCache);
+                            
                             PluginHandler.MainForm.DoThreadSafe(() =>
                             {
-                                objListNode.Nodes.Add(objNode);
+                                if (objListNode != null)
+                                    MyOnlineTreeNode.Nodes.Add(objListNode);
                             });
                         }
-
-                        PluginHandler.MainForm.DoThreadSafe(() =>
-                        {
-                            MyOnlineTreeNode.Nodes.Add(objListNode);
-                        });
-                        
                     }
                     catch (Exception e)
                     {
-                        System.Diagnostics.Trace.TraceWarning("Could not deserialize CharacterCache-Object: " + list.Header);
+                        System.Diagnostics.Trace.TraceWarning("Could not deserialize CharacterCache-Object: " + e.ToString());
                     }
                 }
                 if (MyOnlineTreeNode.Nodes.Count > 0)
@@ -358,6 +325,38 @@ namespace ChummerHub.Client.Backend
                 System.Diagnostics.Trace.TraceError(ex.ToString());
                 throw;
             }
+        }
+
+        private static TreeNode GetCharacterRosterTreeNodeRecursive(SINnerList list, ref ConcurrentDictionary<string, CharacterCache> CharCache)
+        {
+            var sinner = list.SiNner;
+            if(String.IsNullOrEmpty(sinner?.JsonSummary))
+                return null; ;
+            CharacterCache objCache = Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterCache>(sinner.JsonSummary);
+            SetEventHandlers(sinner, objCache);
+            TreeNode objListNode = new TreeNode
+            {
+                Text = objCache.CalculatedName(),
+                Tag = sinner.Id.Value.ToString(),
+                ToolTipText = "Last Change: " + sinner.LastChange,
+                ContextMenuStrip = PluginHandler.MainForm.CharacterRoster.ContextMenuStrip
+            };
+            if(!string.IsNullOrEmpty(objCache.ErrorText))
+            {
+                objListNode.ForeColor = Color.Red;
+                objListNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error", GlobalOptions.Language)
+                                        + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + Environment.NewLine + objCache.ErrorText;
+            }
+            CharacterCache delObj;
+            CharCache.TryRemove(sinner.Id.Value.ToString(), out delObj);
+            CharCache.TryAdd(sinner.Id.Value.ToString(), objCache);
+            foreach(var childlist in list.SinList)
+            {
+                var childnode = GetCharacterRosterTreeNodeRecursive(childlist, ref CharCache);
+                if (childnode != null)
+                    objListNode.Nodes.Add(childnode);
+            }
+            return objListNode;
         }
 
 

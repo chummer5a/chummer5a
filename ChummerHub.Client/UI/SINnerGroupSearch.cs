@@ -10,12 +10,14 @@ using System.Windows.Forms;
 using ChummerHub.Client.Backend;
 using System.Net;
 using SINners.Models;
+using ChummerHub.Client.Model;
+using Chummer.Plugins;
 
 namespace ChummerHub.Client.UI
 {
     public partial class SINnerGroupSearch : UserControl
     {
-        public SINner MySinner { get; set; }
+        public CharacterExtended MyCE { get; set; }
         public SINnerGroupSearch()
         {
             InitializeComponent();
@@ -36,12 +38,20 @@ namespace ChummerHub.Client.UI
                     this.tbSearchGroupname.Focus();
                     return null;
                 }
-                if(this.MySinner == null)
+                if(this.MyCE == null)
                 {
                     MessageBox.Show("MySinner not set!");
                     return null;
                 }
-                var response = await StaticUtils.Client.PostGroupWithHttpMessagesAsync(this.tbSearchGroupname.Text, MySinner.Id);
+
+                bool uploaded = await MyCE.Upload();
+                if (!uploaded)
+                {
+                    MessageBox.Show("SINner not successully uploaded.");
+                    return null;
+                }
+                
+                var response = await StaticUtils.Client.PostGroupWithHttpMessagesAsync(this.tbSearchGroupname.Text, MyCE.MySINnerFile.Id);
                 var rescontent = await response.Response.Content.ReadAsStringAsync();
                 if((response.Response.StatusCode == HttpStatusCode.OK)
                     || (response.Response.StatusCode == HttpStatusCode.Created))

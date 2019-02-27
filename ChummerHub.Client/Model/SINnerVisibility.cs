@@ -32,6 +32,10 @@ namespace SINners.Models
                 }
                 return _UserRightsObservable;
             }
+            set
+            {
+                _UserRightsObservable = value;
+            }
         }
 
         public void Save(CheckedListBox clbVisibilityToUsers)

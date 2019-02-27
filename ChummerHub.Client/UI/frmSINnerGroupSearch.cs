@@ -1,3 +1,4 @@
+using ChummerHub.Client.Model;
 using SINners.Models;
 using System;
 using System.Collections.Generic;
@@ -13,12 +14,12 @@ namespace ChummerHub.Client.UI
 {
     public partial class frmSINnerGroupSearch : Form
     {
-        private SINner MySinner { get; }
-        public frmSINnerGroupSearch(SINner sinner)
+        private CharacterExtended MyCE { get; }
+        public frmSINnerGroupSearch(CharacterExtended ce)
         {
-            MySinner = sinner;
+            MyCE = ce;
             InitializeComponent();
-            this.siNnerGroupSearch1.MySinner = MySinner;
+            this.siNnerGroupSearch1.MyCE = ce;
         }
     }
 }

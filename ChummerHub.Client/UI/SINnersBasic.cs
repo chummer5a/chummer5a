@@ -125,7 +125,7 @@ namespace ChummerHub.Client.UI
 
         private void bGroupSearch_Click(object sender, EventArgs e)
         {
-            frmSINnerGroupSearch gs = new frmSINnerGroupSearch(myUC.MyCE.MySINnerFile);
+            frmSINnerGroupSearch gs = new frmSINnerGroupSearch(myUC.MyCE);
             var res = gs.ShowDialog();
             
         }

@@ -129,6 +129,38 @@ namespace ChummerHub.Client.Model
             return MySINnerFile.SiNnerMetaData.Tags.ToList();
         }
 
+        public async Task<bool> Upload()
+        {
+            try
+            {
+
+
+                var found = await StaticUtils.Client.GetByIdWithHttpMessagesAsync(this.MySINnerFile.Id.Value);
+                if(found.Response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var sinjson = await found.Response.Content.ReadAsStringAsync();
+                    var foundobj = Newtonsoft.Json.JsonConvert.DeserializeObject<SINner>(sinjson);
+                    SINner foundsin = foundobj as SINner;
+                    if(foundsin.LastChange >= this.MyCharacter.FileLastWriteTime)
+                    {
+                        //is already up to date!
+                        return true;
+                    }
+
+                }
+                this.MySINnerFile.SiNnerMetaData.Tags = this.PopulateTags();
+                this.PrepareModel();
+                await ChummerHub.Client.Backend.Utils.PostSINnerAsync(this);
+                await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(this);
+                return true;
+            }
+            catch(Exception e)
+            {
+                System.Diagnostics.Trace.TraceError(e.ToString(), e);
+                throw;
+            }
+        }
+
         public void PopulateTree(ref TreeNode root, IList<Tag> tags, IList<SearchTag> filtertags)
         {
             if (tags == null)
@@ -203,11 +235,22 @@ namespace ChummerHub.Client.Model
                     new SINnerVisibility
                     {
                         Id = Guid.NewGuid(),
-                        Groupname = SINnersOptions.SINnerVisibility.Groupname,
                         IsGroupVisible = SINnersOptions.SINnerVisibility.IsGroupVisible,
                         IsPublic = SINnersOptions.SINnerVisibility.IsPublic,
                         UserRights = SINnersOptions.SINnerVisibility.UserRights
                     };
+            }
+            if (MySINnerFile.SiNnerMetaData.Visibility.Id == SINnersOptions.SINnerVisibility.Id)
+            {
+                //make the visibility your own and dont reuse the id from the general options!
+                MySINnerFile.SiNnerMetaData.Visibility.Id = Guid.NewGuid();
+            }
+            foreach(var ur in MySINnerFile.SiNnerMetaData.Visibility.UserRights)
+            {
+                if (SINnersOptions.SINnerVisibility.UserRights.Any(a => a.Id == ur.Id))
+                {
+                    ur.Id = Guid.NewGuid();
+                }
             }
 
 

@@ -534,7 +534,7 @@ namespace SINners
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
-            _httpRequest.Method = new HttpMethod("GET");
+            _httpRequest.Method = new HttpMethod("POST");
             _httpRequest.RequestUri = new Uri(_url);
             // Set Headers
             if (customHeaders != null)
@@ -1605,6 +1605,9 @@ namespace SINners
             return _result;
         }
 
+        /// <summary>
+        /// The Xml or Zip File can be uploaded (knowing the previously stored Id)
+        /// </summary>
         /// <param name='id'>
         /// </param>
         /// <param name='uploadedFile'>
@@ -1720,6 +1723,11 @@ namespace SINners
             return _result;
         }
 
+        /// <summary>
+        /// Store the MetaData for chummerfiles (to get a Id).
+        /// This Id can be used to store the actual file with PUT afterwards.
+        /// Alternativly, the DownloadUrl can be set directly from the Client.
+        /// </summary>
         /// <param name='uploadInfo'>
         /// </param>
         /// <param name='customHeaders'>
@@ -1917,6 +1925,9 @@ namespace SINners
             return _result;
         }
 
+        /// <summary>
+        /// Store the new group
+        /// </summary>
         /// <param name='groupname'>
         /// </param>
         /// <param name='sinnerId'>

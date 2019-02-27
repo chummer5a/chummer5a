@@ -114,6 +114,7 @@
     <Compile Include="SINnersClient\Models\SINerUserRight.cs" />
     <Compile Include="SINnersClient\Models\SINner.cs" />
     <Compile Include="SINnersClient\Models\SINnerGroup.cs" />
+    <Compile Include="SINnersClient\Models\SINnerList.cs" />
     <Compile Include="SINnersClient\Models\SINnerMetaData.cs" />
     <Compile Include="SINnersClient\Models\SINnersList.cs" />
     <Compile Include="SINnersClient\Models\SINnerVisibility.cs" />
