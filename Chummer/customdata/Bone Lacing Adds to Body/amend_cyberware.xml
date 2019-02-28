@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+    <cyberwares>
+        <cyberware>
+            <id>76523da7-271d-459a-9502-3f7c8d54be6a</id>
+            <!-- <name>Bone Lacing (Aluminum)</name> -->
+            <bonus>
+                <damageresistance amendoperation="remove" />
+                <specificattribute amendoperation="addnode">
+                    <name>BOD</name>
+                    <val>2</val>
+                </specificattribute>
+            </bonus>
+            <notes />
+        </cyberware>
+        <cyberware>
+            <id>4fd033ab-9a43-4ee0-9675-47414af3c8f4</id>
+            <!-- <name>Bone Lacing (Plastic)</name>-->
+            <bonus>
+                <damageresistance amendoperation="remove" />
+                <specificattribute amendoperation="addnode">
+                    <name>BOD</name>
+                    <val>1</val>
+                </specificattribute>
+            </bonus>
+            <notes />
+        </cyberware>
+        <cyberware>
+            <id>2ecc8684-5a9f-4523-beb8-d3abc886a233</id>
+            <!-- <name>Bone Lacing (Titanium)</name> -->
+            <bonus>
+                <damageresistance amendoperation="remove" />
+                <specificattribute amendoperation="addnode">
+                    <name>BOD</name>
+                    <val>3</val>
+                </specificattribute>
+            </bonus>
+            <notes />
+        </cyberware>
+    </cyberwares>
+</chummer>

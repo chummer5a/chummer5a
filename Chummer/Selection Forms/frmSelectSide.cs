@@ -16,86 +16,79 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-	public partial class frmSelectSide : Form
-	{
-		private string _strSelectedSide = "";
+    public partial class frmSelectSide : Form
+    {
+        private string _strSelectedSide = string.Empty;
 
-		#region Control Events
-		public frmSelectSide()
-		{
-			InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+        #region Control Events
+        public frmSelectSide()
+        {
+            InitializeComponent();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
-			// Create a list for the sides.
-			List<ListItem> lstSides = new List<ListItem>();
-			ListItem objLeft = new ListItem();
-			objLeft.Value = "Left";
-			objLeft.Name = LanguageManager.Instance.GetString("String_Improvement_SideLeft");
+            // Create a list for the sides.
+            List<ListItem> lstSides = new List<ListItem>
+            {
+                new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft", GlobalOptions.Language)),
+                new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight", GlobalOptions.Language))
+            };
 
-			ListItem objRight = new ListItem();
-			objRight.Value = "Right";
-			objRight.Name = LanguageManager.Instance.GetString("String_Improvement_SideRight");
+            cboSide.BeginUpdate();
+            cboSide.ValueMember = "Value";
+            cboSide.DisplayMember = "Name";
+            cboSide.DataSource = lstSides;
+            cboSide.EndUpdate();
+        }
 
-			lstSides.Add(objLeft);
-			lstSides.Add(objRight);
+        private void cmdOK_Click(object sender, EventArgs e)
+        {
+            _strSelectedSide = cboSide.SelectedValue.ToString();
+            DialogResult = DialogResult.OK;
+        }
 
-			cboSide.DataSource = lstSides;
-			cboSide.ValueMember = "Value";
-			cboSide.DisplayMember = "Name";
-		}
+        private void frmSelectSide_Load(object sender, EventArgs e)
+        {
+            // Select the first item in the list.
+            cboSide.SelectedIndex = 0;
+        }
+        #endregion
 
-		private void cmdOK_Click(object sender, EventArgs e)
-		{
-			_strSelectedSide = cboSide.Text;
-			this.DialogResult = DialogResult.OK;
-		}
+        #region Properties
+        // Description to show in the window.
+        public string Description
+        {
+            set => lblDescription.Text = value;
+        }
 
-		private void frmSelectSide_Load(object sender, EventArgs e)
-		{
-			// Select the first item in the list.
-			cboSide.SelectedIndex = 0;
-		}
-		#endregion
+        /// <summary>
+        /// Side that was selected in the dialogue.
+        /// </summary>
+        public string SelectedSide => _strSelectedSide;
 
-		#region Properties
-		// Description to show in the window.
-		public string Description
-		{
-			set
-			{
-				lblDescription.Text = value;
-			}
-		}
+        #endregion
 
-		/// <summary>
-		/// Side that was selected in the dialogue.
-		/// </summary>
-		public string SelectedSide
-		{
-			get
-			{
-				return _strSelectedSide;
-			}
-		}
-		#endregion
+        #region Methods
+        /// <summary>
+        /// Force a particular value to be selected in the window.
+        /// </summary>
+        /// <param name="strSide">Value to force.</param>
+        public void ForceValue(string strSide)
+        {
+            cboSide.SelectedValue = strSide;
+            cboSide.Text = strSide;
+            cmdOK_Click(this, null);
+        }
+        #endregion
 
-		#region Methods
-		/// <summary>
-		/// Force a particular value to be selected in the window.
-		/// </summary>
-		/// <param name="strSide">Value to force.</param>
-		public void ForceValue(string strSide)
-		{
-			cboSide.SelectedValue = strSide;
-			cboSide.Text = strSide;
-			cmdOK_Click(this, null);
-		}
-		#endregion
-	}
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
+    }
 }

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <biowares>
+    <bioware>
+      <bonus>
+        <specificskill xpathfilter="name = 'Escape Artist' or name = 'Navigation' or name = 'Perception'" amendoperation="remove" />
+        <skilllinkedattribute amendoperation="remove" />
+        <skillgroup xpathfilter="name = 'Athletics'">
+          <name>Prowess</name>
+        </skillgroup>
+        <specificskill xpathfilter="name = 'Gymnastics'">
+          <name>Acrobatics</name>
+        </specificskill>
+      </bonus>
+    </bioware>
+    <bioware xpathfilter="name = 'Enhanced Articulation (2050)' or name = 'Enhanced Articulation'">
+      <bonus>
+        <limitmodifier>
+          <condition>Only for Contortion</condition>
+        </limitmodifier>
+      </bonus>
+    </bioware>
+    <bioware>
+      <name>Synch</name>
+      <bonus>
+        <physicalillusionresist>1</physicalillusionresist>
+      </bonus>
+    </bioware>
+    <bioware>
+      <name>PuSHed</name>
+      <bonus>
+        <specificattribute amendoperation="addnode">
+          <name>LOG</name>
+          <val>1</val>
+        </specificattribute>
+      </bonus>
+    </bioware>
+    <bioware>
+      <name>Qualia</name>
+      <bonus>
+        <specificattribute amendoperation="addnode">
+          <name>INT</name>
+          <val>1</val>
+        </specificattribute>
+      </bonus>
+    </bioware>
+  </biowares>
+</chummer>

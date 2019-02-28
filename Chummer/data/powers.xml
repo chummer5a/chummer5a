@@ -17,39 +17,52 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema powers.xsd">
   <version>0</version>
   <powers>
+    <!-- Region SR5 -->
     <power>
       <id>8caaadf4-75b4-4535-928a-5648d395c13a</id>
       <name>Adrenaline Boost</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <points>0.25</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>309</page>
+      <action>Free</action>
     </power>
     <power>
       <id>39224ecf-f3d0-40b6-95a6-2f047f95d736</id>
       <name>Astral Perception</name>
       <points>1</points>
-      <adeptway>.5</adeptway>
-			<bonus>
-				<unlockskills name="Assensing">Name</unlockskills>
-			</bonus>
-      <levels>no</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>309</page>
+      <action>Simple</action>
+      <adeptway>0.5</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Artist's Way</quality>
+            <quality>The Beast's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
+      <bonus>
+        <unlockskills name="Assensing">Name</unlockskills>
+      </bonus>
     </power>
     <power>
       <id>ddcca815-d6fe-41ed-b174-2e7255320f17</id>
       <name>Attribute Boost</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
-      <limit>1</limit>
+      <points>0.25</points>
+      <levels>True</levels>
+      <limit>4</limit>
+      <source>SR5</source>
+      <page>309</page>
+      <action>Simple</action>
       <bonus>
         <selectattribute>
           <attribute>AGI</attribute>
@@ -58,42 +71,60 @@
           <attribute>STR</attribute>
         </selectattribute>
       </bonus>
-      <source>SR5</source>
-      <page>309</page>
     </power>
     <power>
       <id>76337564-7688-497f-84f9-302c6ece10fe</id>
       <name>Combat Sense</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <points>0.5</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>309</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Beast's Way</quality>
+            <quality>The Invisible Way</quality>
+            <quality>The Spiritual Way</quality>
+            <quality>The Warrior's Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
+      <bonus>
+        <dodge>Rating</dodge>
+      </bonus>
     </power>
     <power>
       <id>dbf16604-164c-485c-96c8-fe3136cd5caa</id>
       <name>Critical Strike</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
-      <limit>no</limit>
+      <points>0.5</points>
+      <levels>False</levels>
+      <limit>100</limit>
+      <source>SR5</source>
+      <page>309</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Invisible Way</quality>
+            <quality>The Spiritual Way</quality>
+            <quality>The Warrior's Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
       <bonus>
         <weaponcategorydv>
-          <selectskill skillcategory="Combat Active">
-          </selectskill>
+          <selectskill limittoskill="Astral Combat,Blades,Clubs,Exotic Melee Weapon,Unarmed Combat" />
           <bonus>1</bonus>
         </weaponcategorydv>
       </bonus>
-      <source>SR5</source>
-      <page>309</page>
     </power>
     <power>
       <id>980d6575-c28f-4076-9b36-881cea018335</id>
       <name>Danger Sense</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <points>0.25</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>309</page>
@@ -101,10 +132,24 @@
     <power>
       <id>974d2aba-1772-474b-aaff-c84a12766e5f</id>
       <name>Enhanced Perception</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <points>0.5</points>
+      <levels>True</levels>
       <limit>1</limit>
+      <source>SR5</source>
+      <page>309</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Artisan's Way</quality>
+            <quality>The Artist's Way</quality>
+            <quality>The Beast's Way</quality>
+            <quality>The Invisible Way</quality>
+            <quality>The Speaker's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
       <bonus>
         <specificskill>
           <name>Perception</name>
@@ -115,48 +160,74 @@
           <bonus>Rating</bonus>
         </specificskill>
       </bonus>
-      <source>SR5</source>
-      <page>309</page>
     </power>
     <power>
       <id>e009da31-0301-4604-b13f-49b071aa25a1</id>
       <name>Enhanced Accuracy (skill)</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>no</levels>
+      <points>0.25</points>
+      <levels>False</levels>
       <limit>100</limit>
-      <bonus>
-        <selectskill skillcategory="Combat Active">
-          <val>0</val>
-          <applytoaccuracy>yes</applytoaccuracy>
-        </selectskill>
-      </bonus>
       <source>SR5</source>
       <page>309</page>
+      <bonus>
+        <weaponskillaccuracy precedence="0">
+          <selectskill skillcategory="Combat Active" excludeskill="Unarmed Combat" />
+          <value>1</value>
+        </weaponskillaccuracy>
+      </bonus>
     </power>
     <power>
       <id>75821fb7-a180-4012-aa16-daa92ac3bb63</id>
       <name>Improved Ability (skill)</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <points>0.5</points>
+      <levels>True</levels>
       <limit>100</limit>
-      <bonus>
-        <selectskill>
-          <val>Rating</val>
-          <applytorating>yes</applytorating>
-        </selectskill>
-      </bonus>
       <source>SR5</source>
       <page>309</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Artisan's Way</quality>
+            <quality>The Artist's Way</quality>
+            <quality>The Athlete's Way</quality>
+            <quality>The Speaker's Way</quality>
+            <quality>The Spiritual Way</quality>
+            <quality>The Warrior's Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
+      <bonus>
+        <selectskill minimumrating="1">
+          <val>Rating</val>
+          <!-- Hero Lab says this is not RAW <applytorating>True</applytorating> -->
+          <skillcategories>
+            <category>Combat Active</category>
+            <category>Physical Active</category>
+            <category>Social Active</category>
+            <category>Technical Active</category>
+            <category>Vehicle Active</category>
+          </skillcategories>
+        </selectskill>
+      </bonus>
     </power>
     <power>
       <id>901d2af5-246a-447a-a8e2-b2e8c10593df</id>
       <name>Improved Physical Attribute</name>
       <points>1</points>
-      <adeptway>.5</adeptway>
-      <levels>yes</levels>
+      <levels>True</levels>
       <limit>12</limit>
+      <source>SR5</source>
+      <page>309</page>
+      <adeptway>0.5</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Athlete's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
       <bonus>
         <selectattribute>
           <attribute>BOD</attribute>
@@ -164,147 +235,154 @@
           <attribute>REA</attribute>
           <attribute>STR</attribute>
           <val>Rating</val>
-          <affectbase>yes</affectbase>
         </selectattribute>
       </bonus>
+    </power>
+    <power>
+      <id>1fde7231-e5cc-4fa3-a1fe-b80b00212417</id>
+      <name>Improved Potential (Social)</name>
+      <points>0.5</points>
+      <levels>False</levels>
+      <limit>1</limit>
       <source>SR5</source>
       <page>309</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Athlete's Way</quality>
+            <quality>The Speaker's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
+      <bonus>
+        <sociallimit>1</sociallimit>
+      </bonus>
     </power>
-		<power>
-			<id>1fde7231-e5cc-4fa3-a1fe-b80b00212417</id>
-			<name>Improved Potential (Social)</name>
-			<points>.5</points>
-			<adeptway>.25</adeptway>
-			<levels>no</levels>
-			<limit>1</limit>
-			<bonus>
-				<sociallimit>1</sociallimit>
-			</bonus>
-			<source>SR5</source>
-			<page>309</page>
-		</power>
-		<power>
-			<id>2a7abc86-aa01-4127-b4b1-f73b49a2b5db</id>
-			<name>Improved Potential (Mental)</name>
-			<points>.5</points>
-			<adeptway>.25</adeptway>
-			<levels>no</levels>
-			<limit>1</limit>
-			<bonus>
-				<mentallimit>1</mentallimit>
-			</bonus>
-			<source>SR5</source>
-			<page>309</page>
-		</power>
+    <power>
+      <id>2a7abc86-aa01-4127-b4b1-f73b49a2b5db</id>
+      <name>Improved Potential (Mental)</name>
+      <points>0.5</points>
+      <levels>False</levels>
+      <limit>1</limit>
+      <source>SR5</source>
+      <page>309</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Athlete's Way</quality>
+            <quality>The Speaker's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
+      <bonus>
+        <mentallimit>1</mentallimit>
+      </bonus>
+    </power>
     <power>
       <id>d9b811f4-aa64-46fb-b67d-2995134eda4e</id>
       <name>Improved Potential (Physical)</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>1</limit>
-      <bonus>
-				<physicallimit>1</physicallimit>
-      </bonus>
       <source>SR5</source>
       <page>309</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Athlete's Way</quality>
+            <quality>The Spiritual Way</quality>
+            <quality>The Warrior's Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
+      <bonus>
+        <physicallimit>1</physicallimit>
+      </bonus>
     </power>
     <power>
-      <id>96d01fd7-abe8-495c-960e-a250d8e2dec0</id>
-      <name>Improved Reflexes 1</name>
-      <points>1.5</points>
-      <adeptway>.75</adeptway>
-      <levels>no</levels>
+      <id>fea9e769-5f2c-4bae-9610-56c0825e145a</id>
+      <name>Improved Reflexes</name>
+      <points>1</points>
+      <levels>True</levels>
       <limit>1</limit>
-      <doublecost>no</doublecost>
-      <bonus>
-				<initiativepass precedence="0">1</initiativepass>
-        <specificattribute>
-          <name>REA</name>
-          <val>1</val>
-        </specificattribute>
-      </bonus>
       <source>SR5</source>
       <page>310</page>
-    </power>
-    <power>
-      <id>60eb2147-c131-4f2f-a3cf-d210453533ef</id>
-      <name>Improved Reflexes 2</name>
-      <points>2.5</points>
-      <adeptway>.75</adeptway>
-      <levels>no</levels>
-      <limit>1</limit>
-      <doublecost>no</doublecost>
+      <adeptwayrequires>
+        <!-- Note, this isn't required here because the power cannot be discounted anyway, but in the future, this is how to blacklist a power from Magician's Way -->
+        <magicianswayforbids />
+      </adeptwayrequires>
       <bonus>
-        <initiativepass precedence="0">2</initiativepass>
+        <initiativepass precedence="0">Rating</initiativepass>
         <specificattribute>
           <name>REA</name>
-          <val>2</val>
+          <val>Rating</val>
         </specificattribute>
       </bonus>
-      <source>SR5</source>
-      <page>310</page>
-    </power>
-    <power>
-      <id>669f249e-49fe-4870-89ba-475cfb027dfc</id>
-      <name>Improved Reflexes 3</name>
-      <points>3.5</points>
-      <adeptway>.75</adeptway>
-      <levels>no</levels>
-      <limit>1</limit>
-      <doublecost>no</doublecost>
-      <bonus>
-				<initiativepass precedence="0">3</initiativepass>
-        <specificattribute>
-          <name>REA</name>
-          <val>3</val>
-        </specificattribute>
-      </bonus>
-      <source>SR5</source>
-      <page>310</page>
+      <doublecost>False</doublecost>
+      <extrapointcost>0.5</extrapointcost>
+      <maxlevels>3</maxlevels>
     </power>
     <power>
       <id>1376c13b-9a01-4873-b935-5b7d91e03785</id>
       <name>Improved Sense</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>no</levels>
+      <points>0.25</points>
+      <levels>False</levels>
       <limit>100</limit>
+      <source>SR5</source>
+      <page>310</page>
       <bonus>
         <selecttext />
       </bonus>
-      <source>SR5</source>
-      <page>310</page>
     </power>
     <power>
       <id>23636777-44df-44f1-8742-db29dc3c4fdf</id>
       <name>Killing Hands</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>1</limit>
+      <source>SR5</source>
+      <page>310</page>
+      <action>Free</action>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Artisan's Way</quality>
+            <quality>The Artist's Way</quality>
+            <quality>The Beast's Way</quality>
+            <quality>The Invisible Way</quality>
+            <quality>The Speaker's Way</quality>
+            <quality>The Spiritual Way</quality>
+            <quality>The Warrior's Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
       <bonus>
         <unarmeddvphysical />
       </bonus>
-      <source>SR5</source>
-      <page>310</page>
     </power>
     <power>
       <id>f1e8a618-ba12-4972-91f0-974500387893</id>
       <name>Kinesics</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <points>0.25</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>310</page>
+      <bonus>
+        <judgeintentionsdefense>Rating</judgeintentionsdefense>
+      </bonus>
     </power>
     <power>
       <id>ce7df757-792e-4fac-a86e-6b587586deb2</id>
       <name>Light Body</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <points>0.25</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>310</page>
@@ -312,182 +390,305 @@
     <power>
       <id>c152dcba-8bb7-4a2a-86bb-6f854ea53b55</id>
       <name>Missile Parry</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <points>0.25</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>310</page>
+      <action>Interrupt</action>
     </power>
     <power>
       <id>da5f9389-a5fd-48ed-8825-8852ff5c56a8</id>
       <name>Mystic Armor</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <points>0.5</points>
+      <levels>True</levels>
       <limit>1</limit>
+      <source>SR5</source>
+      <page>310</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Beast's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
       <bonus>
         <armor>Rating</armor>
       </bonus>
-      <source>SR5</source>
-      <page>310</page>
     </power>
     <power>
       <id>98b59b41-6a91-4abc-a6d2-e8debaa3b5aa</id>
       <name>Natural Immunity</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <points>0.25</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>311</page>
+      <bonus>
+        <pathogencontactresist>Rating</pathogencontactresist>
+        <pathogeningestionresist>Rating</pathogeningestionresist>
+        <pathogeninhalationresist>Rating</pathogeninhalationresist>
+        <pathogeninjectionresist>Rating</pathogeninjectionresist>
+        <toxincontactresist>Rating</toxincontactresist>
+        <toxiningestionresist>Rating</toxiningestionresist>
+        <toxininhalationresist>Rating</toxininhalationresist>
+        <toxininjectionresist>Rating</toxininjectionresist>
+      </bonus>
     </power>
     <power>
       <id>545a4bec-c144-42a1-b553-6d6c0c91f07f</id>
       <name>Pain Resistance</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <points>0.5</points>
+      <levels>True</levels>
       <limit>1</limit>
+      <source>SR5</source>
+      <page>311</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Athlete's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
       <bonus>
         <conditionmonitor>
           <thresholdoffset>Rating</thresholdoffset>
         </conditionmonitor>
       </bonus>
-      <source>SR5</source>
-      <page>311</page>
+      <forbidden>
+        <oneof>
+          <quality>High Pain Tolerance</quality>
+        </oneof>
+      </forbidden>
     </power>
     <power>
       <id>4676b6f7-120d-4344-81ac-5922445a521b</id>
       <name>Rapid Healing</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <points>0.5</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>311</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Athlete's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
+      <bonus>
+        <physicalcmrecovery>Rating</physicalcmrecovery>
+        <stuncmrecovery>Rating</stuncmrecovery>
+      </bonus>
     </power>
     <power>
       <id>82d8c376-7509-468a-be17-8c9cba4c86c4</id>
       <name>Spell Resistance</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <points>0.5</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>311</page>
+      <adeptway>0.25</adeptway>
+      <bonus>
+        <spellresistance>Rating</spellresistance>
+      </bonus>
     </power>
     <power>
       <id>3f3fcdbc-c046-4a95-bd46-511a76d75b56</id>
       <name>Traceless Walk</name>
       <points>1</points>
-      <adeptway>.5</adeptway>
-      <levels>no</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>311</page>
+      <adeptway>0.5</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Beast's Way</quality>
+            <quality>The Invisible Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
     </power>
     <power>
       <id>71692391-e01f-4902-98f0-abbbf5431680</id>
       <name>Voice Control</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <points>0.5</points>
+      <levels>True</levels>
       <limit>20</limit>
-      <bonus>
-        <sociallimit>Rating</sociallimit>
-      </bonus>
       <source>SR5</source>
       <page>311</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Artist's Way</quality>
+            <quality>The Speaker's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
+      <bonus>
+        <specificskill>
+          <name>Impersonation</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+        <sociallimit>Rating</sociallimit>
+      </bonus>
     </power>
     <power>
       <id>bfd1e09c-5765-423b-b079-f5d8e794485a</id>
       <name>Wall Running</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SR5</source>
       <page>311</page>
+      <action>Simple</action>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Athlete's Way</quality>
+            <quality>The Spiritual Way</quality>
+            <quality>The Invisible Way</quality>
+			</oneof>
+        </required>
+      </adeptwayrequires>
     </power>
+    <!-- End Region -->
+    <!-- Region Street Grimoire -->
     <power>
       <id>0099ad65-bcc1-47a5-a241-02f621e7c33a</id>
       <name>Analytics</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <points>0.5</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>169</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Artisan's Way</quality>
+            <quality>The Speaker's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
     </power>
     <power>
       <id>870edcf8-cb19-4e15-948c-1b3bf80ac651</id>
       <name>Animal Empathy</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <points>0.25</points>
+      <levels>True</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>169</page>
       <bonus>
         <specificskill>
           <name>Animal Handling</name>
           <bonus>Rating</bonus>
         </specificskill>
       </bonus>
-      <limit>1</limit>
-      <source>SG</source>
-      <page>169</page>
     </power>
     <power>
       <id>80577dac-7697-4da9-87fd-d4442dc34560</id>
       <name>Berserk</name>
       <points>1</points>
-      <adeptway>.5</adeptway>
-      <levels>no</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>169</page>
+      <action>Simple</action>
+      <adeptway>0.5</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Beast's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
     </power>
     <power>
       <id>59455eae-beb5-45fc-b19d-dc3aff65335d</id>
       <name>Berserker's Rage</name>
       <points>1</points>
-      <adeptway>.5</adeptway>
-      <levels>no</levels>
+      <levels>False</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>169</page>
+      <action>Complex</action>
+      <adeptway>0.5</adeptway>
+      <adeptwayrequires />
       <required>
         <oneof>
           <power>Berserk</power>
         </oneof>
       </required>
-      <limit>1</limit>
-      <source>SG</source>
-      <page>169</page>
     </power>
     <power>
       <id>f3df89bb-71f6-41d8-a86d-4bde1ab74352</id>
       <name>Blind Fighting</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>169</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Invisible Way</quality>
+            <quality>The Warrior's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
     </power>
     <power>
       <id>42baa818-50ca-4c6b-b316-780a51df9c97</id>
       <name>Cloak</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <points>0.25</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>169</page>
+      <bonus>
+        <detectionspellresist>Rating</detectionspellresist>
+      </bonus>
     </power>
     <power>
       <id>deec22db-cf2c-47b6-ac34-95a13bcd0bf8</id>
       <name>Cool Resolve</name>
       <points>1</points>
-      <adeptway>.5</adeptway>
-      <levels>yes</levels>
+      <levels>True</levels>
       <limit>1</limit>
+      <source>SG</source>
+      <page>169</page>
+      <adeptway>0.5</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Artisan's Way</quality>
+            <quality>The Artist's Way</quality>
+            <quality>The Invisible Way</quality>
+            <quality>The Speaker's Way</quality>
+            <quality>The Spiritual Way</quality>
+            <quality>The Warrior's Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
       <bonus>
         <specificskill>
           <name>Con</name>
@@ -522,112 +723,158 @@
           <bonus>Rating</bonus>
         </specificskill>
       </bonus>
-      <source>SG</source>
-      <page>169</page>
     </power>
     <power>
       <id>5f1ebcd8-9571-4716-b7fd-ec674306b833</id>
       <name>Authoritative Tone</name>
-      <points>.50</points>
-      <adeptway>0.25</adeptway>
-      <levels>yes</levels>
-      <maxlevel>3</maxlevel>
+      <points>0.5</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>170</page>
+      <adeptway>0.25</adeptway>
+      <!-- Awaiting activation by errata
+	  <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Speaker's Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
+	  -->
+      <maxlevels>3</maxlevels>
     </power>
     <power>
       <id>6770cfab-8c1a-4c6d-add7-f7d96220e9b0</id>
       <name>Counterstrike</name>
       <points>1</points>
-      <adeptway>.5</adeptway>
-      <levels>yes</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>170</page>
+      <action>Interrupt</action>
+      <adeptway>0.5</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Spiritual Way</quality>
+            <quality>The Warrior's Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
     </power>
     <power>
       <id>1eb8d3fa-2a67-4b71-a9de-dfbf5236eeda</id>
       <name>Elemental Body</name>
       <points>1</points>
-      <adeptway>.5</adeptway>
-      <levels>no</levels>
+      <levels>False</levels>
       <limit>100</limit>
-      <bonus>
-        <selecttext />
-      </bonus>
       <source>SG</source>
       <page>170</page>
+      <action>Complex</action>
+      <adeptway>0.5</adeptway>
+      <bonus>
+        <addweapon>
+          <name>Elemental Body</name>
+        </addweapon>
+        <selecttext />
+      </bonus>
+      <required>
+        <oneof>
+          <power>Elemental Strike</power>
+        </oneof>
+      </required>
     </power>
     <power>
       <id>3d27c3bb-9cca-45c2-b8b1-6225a236069b</id>
       <name>Elemental Strike</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>100</limit>
+      <source>SG</source>
+      <page>170</page>
+      <action>Simple</action>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Beast's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
       <bonus>
         <selecttext />
       </bonus>
-      <source>SG</source>
-      <page>170</page>
+      <required>
+        <oneof>
+          <power>Killing Hands</power>
+        </oneof>
+      </required>
     </power>
     <power>
       <id>eb323003-4112-42ad-955a-00211e43e6d1</id>
       <name>Elemental Weapon</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>100</limit>
+      <source>SG</source>
+      <page>170</page>
+      <action>Simple</action>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
       <bonus>
         <selecttext />
       </bonus>
-      <source>SG</source>
-      <page>170</page>
     </power>
     <power>
       <id>6680b68d-77df-4fe4-a722-30464dd3c646</id>
       <name>Empathic Healing</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>171</page>
+      <action>Special</action>
+      <adeptway>0.25</adeptway>
     </power>
     <power>
       <id>fbd06bae-b3ba-4514-8d90-870eff1c336b</id>
       <name>Facial Sculpt</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <points>0.25</points>
+      <levels>True</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>171</page>
+      <action>Complex</action>
       <bonus>
         <specificskill>
           <name>Disguise</name>
           <bonus>Rating</bonus>
         </specificskill>
       </bonus>
-      <limit>1</limit>
-      <source>SG</source>
-      <page>171</page>
     </power>
     <power>
       <id>438fb5de-9c09-4421-a6a8-c3d68ba8aada</id>
       <name>Flexibility</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
-      <maxlevel>3</maxlevel>
+      <points>0.25</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>171</page>
+      <maxlevels>3</maxlevels>
     </power>
     <power>
       <id>88bf5626-6cf8-4dcc-bfc0-8abc889cdf4e</id>
       <name>Freefall</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <points>0.25</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>171</page>
@@ -635,251 +882,357 @@
     <power>
       <id>c59c1bb0-9b3e-41be-9079-8982b451fe45</id>
       <name>Hang Time</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
-      <bonus>
-        <specificskill>
-          <name>Climbing</name>
-          <bonus>Rating</bonus>
-        </specificskill>
-      </bonus>
+      <points>0.25</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>171</page>
+      <action>Simple</action>
+      <bonus>
+        <!-- TODO: Add improvement that contributes dice to a specific specialization
+        <specificskill>
+          <name>Climbing</name>
+          <bonus>Rating</bonus>
+        </specificskill> -->
+      </bonus>
     </power>
     <power>
       <id>da59618c-059d-4cc5-adb5-c61e6049378c</id>
       <name>Inertia Strike</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
+      <action>Free</action>
+      <adeptway>0.25</adeptway>
+    </power>
+    <power>
+      <id>830de0b7-8d83-467b-91e4-ce10081838b0</id>
+      <name>Keratin Control</name>
+      <points>0.5</points>
+      <levels>False</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>1</page>
+      <action>Free</action>
+      <adeptway>0.25</adeptway>
     </power>
     <power>
       <id>e1e242c3-cb63-476f-9868-90c311b36383</id>
       <name>Kinesics Mastery</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>172</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Artist's Way</quality>
+            <quality>The Speaker's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
       <required>
         <oneof>
           <power>Kinesics</power>
         </oneof>
       </required>
-      <limit>1</limit>
-      <source>SG</source>
-      <page>172</page>
     </power>
     <power>
       <id>44f0bbba-184a-4e76-93de-19862ac6607b</id>
       <name>Linguistics</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>no</levels>
+      <points>0.25</points>
+      <levels>False</levels>
       <limit>1</limit>
-      <bonus>
-        <adeptlinguistics />
-      </bonus>
       <source>SG</source>
       <page>172</page>
+      <bonus>
+        <nativelanguagelimit>1</nativelanguagelimit>
+      </bonus>
+    </power>
+    <power>
+      <id>ee72398d-9daf-493f-b79b-5dab81e84013</id>
+      <name>Living Focus</name>
+      <points>1</points>
+      <levels>False</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>1</page>
+      <adeptway>0.5</adeptway>
     </power>
     <power>
       <id>d20f0441-a290-4732-829f-3138d446aad4</id>
       <name>Magic Sense</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Beast's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
     </power>
     <power>
       <id>2149818a-22b0-4267-83d6-7b3c27d4ee69</id>
       <name>Melanin Control</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
+      <adeptway>0.25</adeptway>
     </power>
     <power>
       <id>ecd611b4-dda6-4683-b7a9-850a469a3274</id>
       <name>Metabolic Control</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Artisan's Way</quality>
+            <quality>The Artist's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
     </power>
-		<power>
-			<id>1221e699-e61b-4aed-adbb-a8eec02a65e2</id>
-			<name>Missile Mastery</name>
-			<points>1</points>
-			<adeptway>.5</adeptway>
-			<levels>no</levels>
-			<limit>1</limit>
-			<bonus>
-				<throwstr>1</throwstr>
-				<specificskill>
-					<name>Throwing Weapons</name>
-					<bonus>1</bonus>
-				</specificskill>
-			</bonus>
-			<source>SG</source>
-			<page>172</page>
-		</power>
+    <power>
+      <id>1221e699-e61b-4aed-adbb-a8eec02a65e2</id>
+      <name>Missile Mastery</name>
+      <points>1</points>
+      <levels>False</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>172</page>
+      <adeptway>0.5</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Spiritual Way</quality>
+            <quality>The Warrior's Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
+      <bonus>
+        <specificskill>
+          <name>Throwing Weapons</name>
+          <bonus>1</bonus>
+        </specificskill>
+        <throwstr>1</throwstr>
+      </bonus>
+    </power>
     <power>
       <id>930ace31-a2a2-4616-8dfb-1074e4be76c9</id>
       <name>Motion Sense</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Beast's Way</quality>
+            <quality>The Invisible Way</quality>
+            <quality>The Spiritual Way</quality>
+            <quality>The Warrior's Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
     </power>
     <power>
       <id>d1279546-69a6-4c35-9b3d-0211138050e8</id>
       <name>Nerve Strike</name>
       <points>1</points>
-      <adeptway>.5</adeptway>
-      <levels>no</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>173</page>
+      <adeptway>0.5</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Invisible Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
     </power>
     <power>
       <id>1ec402f1-6139-4f94-8e86-92aa463bf536</id>
       <name>Nimble Fingers</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>no</levels>
+      <points>0.25</points>
+      <levels>False</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>173</page>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Artist's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
       <bonus>
         <specificskill>
           <name>Palming</name>
           <bonus>1</bonus>
         </specificskill>
       </bonus>
-      <limit>1</limit>
-      <source>SG</source>
-      <page>173</page>
     </power>
     <power>
       <id>adda6c9c-703b-4361-a4dd-d7ebfd3c138d</id>
       <name>Pain Relief</name>
       <points>1</points>
-      <adeptway>.5</adeptway>
-      <levels>no</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>173</page>
+      <adeptway>0.5</adeptway>
     </power>
     <power>
       <id>70311f5c-a019-47b9-be21-e9a8d270e32e</id>
       <name>Penetrating Strike</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
-			<bonus>
-				<unarmedap>-Rating</unarmedap>
-			</bonus>
-      <maxlevel>4</maxlevel>
+      <points>0.25</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>173</page>
+      <bonus>
+        <unarmedap>-Rating</unarmedap>
+      </bonus>
+      <maxlevels>4</maxlevels>
     </power>
     <power>
       <id>941225f2-148b-484e-a2b2-0a32cc7debe1</id>
       <name>Plague Cloud</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>173</page>
+      <action>Free</action>
+      <adeptway>0.25</adeptway>
     </power>
     <power>
       <id>832a418d-4d55-433c-8230-4b04f05ba6d9</id>
       <name>Rapid Draw</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>173</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Spiritual Way</quality>
+            <quality>The Warrior's Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
     </power>
     <power>
       <id>11f3fa59-e06d-4816-87a9-b74664d1ae9a</id>
       <name>Riposte</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <points>0.5</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
+      <action>Interrupt</action>
+      <adeptway>0.25</adeptway>
     </power>
     <power>
       <id>c0d647dd-4f66-42a6-9040-202b1bba4b71</id>
       <name>Skate</name>
       <points>1</points>
-      <adeptway>.5</adeptway>
-      <levels>no</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
+      <adeptway>0.5</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Athlete's Way</quality>
+            <quality>The Invisible Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
     </power>
     <power>
       <id>1dc0b5c6-94a8-4598-a017-f6399d9175da</id>
       <name>Smashing Blow</name>
       <points>1</points>
-      <adeptway>.5</adeptway>
-      <levels>no</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
+      <adeptway>0.5</adeptway>
     </power>
     <power>
       <id>24bc482d-9ce3-4d0a-bd43-31311b6716d6</id>
       <name>Spirit Claw</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>no</levels>
+      <points>0.25</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
+      <action>Free</action>
     </power>
     <power>
       <id>6145977c-5825-4358-b0db-1d189cd9d402</id>
       <name>Spirit Ram</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
+      <action>Simple</action>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Athlete's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
     </power>
     <power>
       <id>02eb1616-9361-47a8-acc8-030566d9a0ea</id>
       <name>Stillness</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
-      <maxlevel>3</maxlevel>
+      <points>0.25</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
+      <maxlevels>3</maxlevels>
     </power>
     <power>
       <id>772e0298-8abf-42b7-9734-359cadcb8d1e</id>
       <name>Sustenance</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>no</levels>
+      <points>0.25</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>174</page>
@@ -887,69 +1240,94 @@
     <power>
       <id>bf425bd4-f112-4218-b729-2e8bb32f3b2b</id>
       <name>Temperature Tolerance</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <points>0.25</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>175</page>
+      <bonus>
+        <coldarmor>Rating</coldarmor>
+        <firearmor>Rating</firearmor>
+      </bonus>
     </power>
     <power>
       <id>61406917-9d88-440f-a756-16bdf6ffb37e</id>
       <name>Three-Dimensional Memory</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SG</source>
       <page>175</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Artisan's Way</quality>
+            <quality>The Invisible Way</quality>
+            <quality>The Speaker's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
     </power>
     <power>
       <id>6ed1a784-1097-4db8-b179-e4198493c2f0</id>
       <name>Toxic Strike</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>100</limit>
       <source>SG</source>
       <page>176</page>
+      <action>Simple</action>
+      <adeptway>0.25</adeptway>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <required>
+        <oneof>
+          <power>Killing Hands</power>
+        </oneof>
+      </required>
     </power>
+    <!-- End Region -->
+    <!-- Region Bullets and Bandages -->
     <power>
       <id>0f0a55a8-5c39-4568-a15d-219b3664b10f</id>
       <name>Feign Illness</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>BB</source>
       <page>22</page>
+      <adeptway>0.25</adeptway>
     </power>
     <power>
       <id>ca35c065-86ab-4aa8-a52f-ae37cc69648c</id>
       <name>Feign Death</name>
       <points>1</points>
-      <adeptway>.5</adeptway>
-      <levels>no</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>BB</source>
       <page>22</page>
+      <adeptway>0.5</adeptway>
     </power>
     <power>
       <id>d890df94-b4f0-4b56-8289-7e1cfac2a95d</id>
       <name>Transmit Damage</name>
       <points>1</points>
-      <adeptway>.5</adeptway>
-      <levels>yes</levels>
+      <levels>True</levels>
       <limit>1</limit>
       <source>BB</source>
       <page>22</page>
+      <adeptway>0.5</adeptway>
     </power>
+    <!-- End Region -->
+    <!-- Region Stolen Souls -->
     <power>
       <id>b6982580-fb86-4ac8-9312-98459ecbe811</id>
       <name>Light Touch</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <points>0.25</points>
+      <levels>True</levels>
       <limit>100</limit>
       <source>SS</source>
       <page>191</page>
@@ -957,455 +1335,566 @@
     <power>
       <id>60ac2e3a-d24a-459c-b8a4-cf648f0de447</id>
       <name>Mimic</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <points>0.25</points>
+      <levels>True</levels>
       <limit>6</limit>
       <source>SS</source>
       <page>191</page>
     </power>
     <power>
-      <id>60ac2e3a-d24a-459c-b8a4-cf648f0de447</id>
+      <id>9fd628cc-dd06-435c-80d3-5261e7e5b1e5</id>
       <name>Commanding Voice</name>
       <points>1</points>
-      <adeptway>0.5</adeptway>
-      <levels>no</levels>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SS</source>
       <page>191</page>
-    </power>	
-    <power>
-      <id>ee72398d-9daf-493f-b79b-5dab81e84013</id>
-      <name>Living Focus</name>
-      <points>1</points>
-      <adeptway>.5</adeptway>
-      <levels>no</levels>
-      <limit>1</limit>
-      <source>SG</source>
-      <page>1</page>
+      <adeptway>0.5</adeptway>
     </power>
+    <!-- End Region -->
+    <!-- Region Shadow Spells -->
     <power>
-      <id>830de0b7-8d83-467b-91e4-ce10081838b0</id>
-      <name>Keratin Control</name>
-      <points>.5</points>
-      <adeptway>.25</adeptway>
-      <levels>no</levels>
-      <limit>1</limit>
-      <source>SG</source>
-      <page>1</page>
-    </power>
-   <power>
+      <id>89f8d4a8-a769-4a3c-9009-f0371e42daf8</id>
       <name>Demara</name>
-      <points>.5</points>
-      <adeptway>0.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
+      <adeptway>0.25</adeptway>
     </power>
     <power>
+      <id>57e7de72-6155-486b-9269-caebedfb34fe</id>
       <name>Eidetic Sense Memory</name>
-      <points>.5</points>
-      <adeptway>0.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
+      <adeptway>0.25</adeptway>
     </power>
     <power>
+      <id>51755f26-c5d4-461d-bd59-496a45b03e6b</id>
       <name>Enthralling Performance</name>
-      <points>.5</points>
-      <adeptway>0.25</adeptway>
-      <levels>no</levels>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>100</limit>
       <source>SSP</source>
       <page>23</page>
+      <adeptway>0.25</adeptway>
     </power>
     <power>
-      <name>Heightened Concern</name>
-      <points>.5</points>
-      <adeptway>0.25</adeptway>
-      <levels>no</levels>
+      <id>df257b19-9ef7-4f0b-9aaa-4dbc43372431</id>
+      <name>Heightened Concentration</name>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
+      <adeptway>0.25</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Artisan's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
     </power>
     <power>
+      <id>d75638f3-be99-4f65-b61f-ea8b4b249f92</id>
       <name>Indomitable Will</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <points>0.25</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
     </power>
-	<power>
+    <power>
+      <id>bde8c111-b429-4283-87ca-9d3a2afc0215</id>
       <name>Iron Gut</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <points>0.25</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
-    </power>    
-	<power>
+      <bonus>
+        <toxiningestionresist>Rating</toxiningestionresist>
+      </bonus>
+    </power>
+    <power>
+      <id>bee8413d-ad32-4c0b-998e-b38f2728d417</id>
       <name>Iron Lungs</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <points>0.25</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
-    </power>    
-	<power>
+      <bonus>
+        <fatigueresist>Rating</fatigueresist>
+      </bonus>
+    </power>
+    <power>
+      <id>ad169692-909f-4945-a3b8-fc0d19e2ed28</id>
       <name>Iron Will</name>
-      <points>.5</points>
-      <adeptway>0.25</adeptway>
-      <levels>yes</levels>
+      <points>0.5</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
-    </power>    
-	<power>
-      <name>Keratin Control</name>
-      <points>.5</points>
       <adeptway>0.25</adeptway>
-      <levels>no</levels>
+      <bonus>
+        <mentalmanipulationresist>Rating</mentalmanipulationresist>
+      </bonus>
+    </power>
+    <power>
+      <id>489a28c7-c4a2-4071-9f5a-35c0e333f589</id>
+      <name>Keratin Control</name>
+      <points>0.5</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
-    </power>	
-	<power>
+      <adeptway>0.25</adeptway>
+    </power>
+    <power>
+      <id>57d6a5ba-44f0-458a-8db5-40acf479065c</id>
       <name>Living Focus</name>
       <points>1</points>
+      <levels>False</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>24</page>
+      <action>Free</action>
       <adeptway>0.5</adeptway>
-      <levels>no</levels>
-      <limit>1</limit>
-      <source>SSP</source>
-      <page>24</page>
     </power>
-	<power>
+    <power>
+      <id>29761d0e-072e-48a9-afc6-6154af8b2262</id>
       <name>Maintain Warmth</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>no</levels>
+      <points>0.25</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
     </power>
-	<power>
+    <power>
+      <id>35a76113-84fb-4f9d-b47d-f7fb491e6285</id>
       <name>Memory Displacement</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>no</levels>
+      <points>0.25</points>
+      <levels>False</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
+      <action>Complex</action>
     </power>
-	<power>
+    <power>
+      <id>57cea4cd-754b-4fcd-8711-75721b1edc15</id>
       <name>Piercing Senses</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <points>0.25</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
-    </power>	
-	<power>
+      <bonus>
+        <manaillusionresist>Rating</manaillusionresist>
+        <physicalillusionresist>Rating</physicalillusionresist>
+      </bonus>
+    </power>
+    <power>
+      <id>0fd4d5ac-3254-458b-9323-e0b441060dc9</id>
       <name>Power Swimming</name>
       <points>1</points>
+      <levels>False</levels>
+      <limit>1</limit>
+      <includeinlimit>
+        <name>Power Swimming (Elf or Troll)</name>
+      </includeinlimit>
+      <source>SSP</source>
+      <page>24</page>
       <adeptway>0.5</adeptway>
-      <levels>no</levels>
+      <bonus>
+        <sprintbonus>
+          <category>Swim</category>
+          <val>200</val>
+        </sprintbonus>
+        <walkmultiplier>
+          <category>Swim</category>
+          <percent>100</percent>
+        </walkmultiplier>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <metatype>Elf</metatype>
+          <metatype>Troll</metatype>
+        </oneof>
+      </forbidden>
+    </power>
+    <power>
+      <id>639a2d7f-9018-4016-a61c-b7f83ebcd9b9</id>
+      <name>Power Swimming (Elf or Troll)</name>
+      <points>1</points>
+      <levels>False</levels>
       <limit>1</limit>
+      <includeinlimit>
+        <name>Power Swimming</name>
+      </includeinlimit>
       <source>SSP</source>
       <page>24</page>
+      <adeptway>0.5</adeptway>
+      <bonus>
+        <sprintbonus>
+          <category>Swim</category>
+          <val>400</val>
+        </sprintbonus>
+        <walkmultiplier>
+          <category>Swim</category>
+          <percent>100</percent>
+        </walkmultiplier>
+      </bonus>
+      <required>
+        <oneof>
+          <metatype>Elf</metatype>
+          <metatype>Troll</metatype>
+        </oneof>
+      </required>
     </power>
-	<power>
+    <power>
+      <id>79eda3bf-f81b-4db7-9cb9-d22255c99e12</id>
       <name>Rooting</name>
-      <points>.25</points>
-      <adeptway>0</adeptway>
-      <levels>yes</levels>
+      <points>0.25</points>
+      <levels>True</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
+      <action>Simple</action>
     </power>
-	<power>
+    <power>
+      <id>300edbf6-1943-4f4e-87eb-7379ccef8ed5</id>
       <name>Supernatural Toughness</name>
       <points>1</points>
-      <adeptway>0.5</adeptway>
-      <levels>yes</levels>
+      <levels>True</levels>
       <limit>1</limit>
-	  <bonus>
-		<conditionmonitor>
-			<physical>Rating</physical>
-			<stun>Rating</stun>
-		</conditionmonitor>
-		</bonus>
       <source>SSP</source>
       <page>24</page>
+      <adeptway>0.5</adeptway>
+      <bonus>
+        <conditionmonitor>
+          <physical>Rating</physical>
+          <stun>Rating</stun>
+        </conditionmonitor>
+      </bonus>
     </power>
-		<power>
-			<name>Adept Spell</name>
-			<points>1</points>
-			<adeptway>0.5</adeptway>
-			<levels>no</levels>
-			<limit>1</limit>
-			<bonus>
-				<unlockskills name="Spellcasting">Name</unlockskills>
-				<selectspell ignorerequirements ="true" />
-			</bonus>
-			<source>HT</source>
-			<page>190</page>
-			<id>87f0f97d-cbcf-4427-9259-baf376c9f55a</id>
-		</power>
-		<power>
-			<name>Adept Accident</name>
-			<points>.5</points>
-			<adeptway>.25</adeptway>
-			<levels>no</levels>
-			<limit>1</limit>
-			<source>HT</source>
-			<page>190</page>
-			<id>9646a0b8-ab39-4499-85cf-1ffd9983d0a5</id>
-		</power>
-		<power>
-			<name>Focused Archery</name>
-			<points>.25</points>
-			<adeptway>0</adeptway>
-			<levels>yes</levels>
-			<limit>3</limit>
-			<source>HT</source>
-			<page>190</page>
-			<id>c2ea9046-647d-4104-871a-24b3ee1fecfa</id>
-		</power>
-		<power>
-			<name>Kiai</name>
-			<points>.25</points>
-			<adeptway>0</adeptway>
-			<levels>yes</levels>
-			<limit>6</limit>
-			<source>HT</source>
-			<page>190</page>
-			<id>857fcf19-78ce-427a-a1e8-077e52aab759</id>
-		</power>
-		<power>
-			<name>Master Archer</name>
-			<points>1</points>
-			<adeptway>0.5</adeptway>
-			<levels>no</levels>
-			<limit>1</limit>
-			<source>HT</source>
-			<page>191</page>
-			<id>3c0862c4-1070-44dd-8866-0ba89276246b</id>
-		</power>
-		<power>
-			<name>Precision Throwing</name>
-			<points>.25</points>
-			<adeptway>0</adeptway>
-			<levels>yes</levels>
-			<limit>3</limit>
-			<source>HT</source>
-			<page>190</page>
-			<id>18da4f2f-f813-4d17-8b7b-29b2751e9cfa</id>
-		</power>
-		<power>
-			<name>Body Sculpt</name>
-			<points>1</points>
-			<adeptway>0.5</adeptway>
-			<levels>no</levels>
-			<limit>1</limit>
-			<required>
-        			<oneof>
-          				<power>Facial Sculpt</power>
-        			</oneof>
-      			</required>
-			<source>BLB</source>
-			<page>160</page>
-			<id>1dcfcd05-b290-4373-a5dc-60da89c11bf1</id>
-		</power>
-		<!-- Region Cutting Aces -->
-		<power>
-			<id>7a5084df-b4d2-4f2a-84aa-43627f43c240</id>
-			<name>Lie Detector</name>
-			<points>.25</points>
-			<adeptway>0</adeptway>
-			<levels>yes</levels>
-			<limit>1</limit>
-			<bonus>
-				<judgeintentions>Rating</judgeintentions>
-			</bonus>
-			<source>CA</source>
-			<page>153</page>
-		</power>
-		<power>
-			<id>e2b791c0-54ef-4843-ab70-12a08767699a</id>
-			<name>Osmosis</name>
-			<points>.25</points>
-			<adeptway>0</adeptway>
-			<levels>yes</levels>
-			<limit>1</limit>
-			<required>
-        		<oneof>
-          			<power>Mimic</power>
-        		</oneof>
-      		</required>
-			<source>CA</source>
-			<page>153</page>
-		</power>
-		<power>
-			<id>93b7663e-30da-468b-83cf-dc07439bcae2</id>
-			<name>Ventriloquism</name>
-			<points>.25</points>
-			<adeptway>0</adeptway>
-			<levels>no</levels>
-			<limit>1</limit>
-			<source>CA</source>
-			<page>153</page>
-		</power>
-		<!-- End Region -->
+    <!-- End Region -->
+    <!-- Region Hard Targets -->
+    <power>
+      <id>87f0f97d-cbcf-4427-9259-baf376c9f55a</id>
+      <name>Adept Spell</name>
+      <points>1</points>
+      <levels>False</levels>
+      <limit>1</limit>
+      <source>HT</source>
+      <page>190</page>
+      <action>Simple</action>
+      <adeptway>0.5</adeptway>
+      <bonus>
+        <selectspell ignorerequirements ="True" />
+        <unlockskills name="Spellcasting">Name</unlockskills>
+      </bonus>
+    </power>
+    <power>
+      <id>9646a0b8-ab39-4499-85cf-1ffd9983d0a5</id>
+      <name>Adept Accident</name>
+      <points>0.5</points>
+      <levels>False</levels>
+      <limit>1</limit>
+      <source>HT</source>
+      <page>190</page>
+      <adeptway>0.25</adeptway>
+    </power>
+    <power>
+      <id>c2ea9046-647d-4104-871a-24b3ee1fecfa</id>
+      <name>Focused Archery</name>
+      <points>0.25</points>
+      <levels>True</levels>
+      <limit>1</limit>
+      <source>HT</source>
+      <page>190</page>
+      <maxlevels>3</maxlevels>
+    </power>
+    <power>
+      <id>857fcf19-78ce-427a-a1e8-077e52aab759</id>
+      <name>Kiai</name>
+      <points>0.25</points>
+      <levels>True</levels>
+      <limit>1</limit>
+      <source>HT</source>
+      <page>190</page>
+      <maxlevels>6</maxlevels>
+    </power>
+    <power>
+      <id>3c0862c4-1070-44dd-8866-0ba89276246b</id>
+      <name>Master Archer</name>
+      <points>1</points>
+      <levels>False</levels>
+      <limit>1</limit>
+      <source>HT</source>
+      <page>191</page>
+      <adeptway>0.5</adeptway>
+      <bonus>
+        <weaponcategorydice>
+          <category>
+            <name>Bows</name>
+            <value>1</value>
+          </category>
+        </weaponcategorydice>
+      </bonus>
+    </power>
+    <power>
+      <id>18da4f2f-f813-4d17-8b7b-29b2751e9cfa</id>
+      <name>Precision Throwing</name>
+      <points>0.25</points>
+      <levels>True</levels>
+      <limit>1</limit>
+      <source>HT</source>
+      <page>190</page>
+      <bonus>
+        <throwrangestr>Rating*2</throwrangestr>
+      </bonus>
+      <maxlevels>3</maxlevels>
+    </power>
+    <!-- End Region -->
+    <!-- Region Bloody Business -->
+    <power>
+      <id>1dcfcd05-b290-4373-a5dc-60da89c11bf1</id>
+      <name>Body Sculpt</name>
+      <points>1</points>
+      <levels>False</levels>
+      <limit>1</limit>
+      <source>BLB</source>
+      <page>160</page>
+      <adeptway>0.5</adeptway>
+      <required>
+        <oneof>
+          <power>Facial Sculpt</power>
+        </oneof>
+      </required>
+      <bonus>
+        <specificskill>
+          <name>Disguise</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </bonus>
+    </power>
+    <!-- End Region -->
+    <!-- Region Cutting Aces -->
+    <power>
+      <id>7a5084df-b4d2-4f2a-84aa-43627f43c240</id>
+      <name>Lie Detector</name>
+      <points>0.25</points>
+      <levels>True</levels>
+      <limit>1</limit>
+      <source>CA</source>
+      <page>153</page>
+      <bonus>
+        <judgeintentions>Rating</judgeintentions>
+      </bonus>
+    </power>
+    <power>
+      <id>e2b791c0-54ef-4843-ab70-12a08767699a</id>
+      <name>Osmosis</name>
+      <points>0.25</points>
+      <levels>True</levels>
+      <limit>6</limit>
+      <source>CA</source>
+      <page>153</page>
+      <required>
+        <oneof>
+          <power>Mimic</power>
+        </oneof>
+      </required>
+    </power>
+    <power>
+      <id>93b7663e-30da-468b-83cf-dc07439bcae2</id>
+      <name>Ventriloquism</name>
+      <points>0.25</points>
+      <levels>False</levels>
+      <limit>1</limit>
+      <source>CA</source>
+      <page>153</page>
+    </power>
+    <!-- End Region -->
+    <!-- Region Better Than Bad -->
+    <power>
+      <id>1ac890d7-5152-40a8-80e8-73d342571a33</id>
+      <name>Mystic Aptitude</name>
+      <points>0.75</points>
+      <levels>True</levels>
+      <limit>1</limit>
+      <source>BTB</source>
+      <page>153</page>
+      <maxlevels>3</maxlevels>
+    </power>
+    <power>
+      <id>56b4fe33-eb48-4365-ae2e-ebdffa05b1f6</id>
+      <name>State of Purity</name>
+      <points>1.5</points>
+      <levels>False</levels>
+      <limit>1</limit>
+      <source>BTB</source>
+      <page>160</page>
+      <required>
+        <oneof>
+          <ess>6</ess>
+        </oneof>
+      </required>
+    </power>
+    <!-- End Region -->
   </powers>
   <enhancements>
     <enhancement>
       <id>8dc0a8e3-535a-4935-8c90-2079666e6a01</id>
       <name>Air Walking</name>
       <power>Light Body</power>
-      <required>
-        <allof>
-          <quality>The Athlete's Way</quality>
-          <power>Light Body</power>
-        </allof>
-      </required>
       <source>SG</source>
       <page>156</page>
+      <required>
+        <allof>
+          <power>Light Body</power>
+          <quality>The Athlete's Way</quality>
+        </allof>
+      </required>
     </enhancement>
     <enhancement>
       <id>19bafb80-2f5a-4370-8cbe-875477ce7471</id>
       <name>Pied Piper</name>
       <power />
+      <source>SG</source>
+      <page>156</page>
       <required>
         <allof>
           <quality>The Artist's Way</quality>
         </allof>
       </required>
-      <source>SG</source>
-      <page>156</page>
     </enhancement>
     <enhancement>
       <id>855a7a07-5def-4ec5-bb69-29273327b885</id>
       <name>Skin Artist</name>
       <power>Melanin Control</power>
-      <required>
-        <allof>
-          <quality>The Artist's Way</quality>
-          <power>Melanin Control</power>
-        </allof>
-      </required>
       <source>SG</source>
       <page>157</page>
+      <required>
+        <allof>
+          <power>Melanin Control</power>
+          <quality>The Artist's Way</quality>
+        </allof>
+      </required>
     </enhancement>
     <enhancement>
       <id>3f0a99c7-6524-46cb-b43e-070a978c5052</id>
       <name>Claws</name>
       <power>Keratin Control</power>
-      <required>
-        <allof>
-          <quality>The Beast's Way</quality>
-          <power>Keratin Control</power>
-        </allof>
-      </required>
       <source>SG</source>
       <page>157</page>
+      <bonus>
+        <unarmeddv>1</unarmeddv>
+      </bonus>
+      <required>
+        <allof>
+          <power>Keratin Control</power>
+          <quality>The Beast's Way</quality>
+        </allof>
+      </required>
     </enhancement>
     <enhancement>
       <id>2d2939f0-486c-4915-bbeb-084b857c2450</id>
       <name>Hot Qi</name>
       <power>Living Focus</power>
-      <required>
-        <allof>
-          <quality>The Burnout's Way</quality>
-          <power>Living Focus</power>
-        </allof>
-      </required>
       <source>SG</source>
       <page>157</page>
+      <required>
+        <allof>
+          <power>Living Focus</power>
+          <quality>The Burnout's Way</quality>
+        </allof>
+      </required>
     </enhancement>
     <enhancement>
       <id>25f6368f-21ef-4544-ac55-3c20d8a60374</id>
       <name>Shadow Touch</name>
       <power>Traceless Walk</power>
-      <required>
-        <allof>
-          <quality>The Invisible Way</quality>
-          <power>Traceless Walk</power>
-        </allof>
-      </required>
       <source>SG</source>
       <page>158</page>
+      <required>
+        <allof>
+          <power>Traceless Walk</power>
+          <quality>The Invisible Way</quality>
+        </allof>
+      </required>
     </enhancement>
     <enhancement>
       <id>e5cf0578-be0f-4453-9223-118234d3e749</id>
       <name>Digital Celerity</name>
       <power>Nimble Fingers</power>
+      <source>SG</source>
+      <page>158</page>
       <required>
         <allof>
-          <quality>The Magician's Way</quality>
           <power>Nimble Fingers</power>
+          <quality>The Magician's Way</quality>
         </allof>
       </required>
-      <source>SG</source>
-      <page>157</page>
     </enhancement>
     <enhancement>
       <id>e66fac54-39e4-4e3e-92c6-670485c28c25</id>
       <name>Master of the Nine Chakras</name>
       <power>Nerve Strike</power>
-      <required>
-        <allof>
-          <quality>The Magician's Way</quality>
-          <power>Nerve Strike</power>
-        </allof>
-      </required>
       <source>SG</source>
       <page>158</page>
+      <required>
+        <allof>
+          <power>Nerve Strike</power>
+          <quality>The Magician's Way</quality>
+        </allof>
+      </required>
     </enhancement>
     <enhancement>
       <id>fafc7fd4-8418-4a86-b396-6e90943d9e68</id>
       <name>Silver-Tongued Devil</name>
-      <power>Authoritative Tone</power>
-      <required>
-        <allof>
-          <quality>The Speaker's Way</quality>
-          <power>Authoritative Tone</power>
-        </allof>
-      </required>
+      <power>Commanding Voice</power>
       <source>SG</source>
       <page>159</page>
+      <required>
+        <allof>
+          <power>Commanding Voice</power>
+          <quality>The Speaker's Way</quality>
+        </allof>
+      </required>
     </enhancement>
     <enhancement>
       <id>215a5a0e-09fc-47ff-9a84-74c99f4f1a53</id>
       <name>Barrage</name>
       <power>Missile Mastery</power>
-      <required>
-        <allof>
-          <quality>The Warrior's Way</quality>
-          <power>Missile Mastery</power>
-        </allof>
-      </required>
       <source>SG</source>
       <page>159</page>
+      <required>
+        <allof>
+          <power>Missile Mastery</power>
+          <quality>The Warrior's Way</quality>
+        </allof>
+      </required>
     </enhancement>
     <enhancement>
       <id>47cb80a1-a11b-4a60-a557-feada7114379</id>
       <name>Master of Taijiquan</name>
       <power>Counterstrike</power>
-      <required>
-        <allof>
-          <quality>The Warrior's Way</quality>
-          <power>Counterstrike</power>
-        </allof>
-      </required>
       <source>SG</source>
       <page>159</page>
+      <required>
+        <allof>
+          <power>Counterstrike</power>
+          <quality>The Warrior's Way</quality>
+        </allof>
+      </required>
     </enhancement>
   </enhancements>
 </chummer>

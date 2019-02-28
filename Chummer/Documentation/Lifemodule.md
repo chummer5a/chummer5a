@@ -1,35 +1,48 @@
-﻿Life Modules Documentation
-==========================
+﻿# Life Modules Documentation
 
 This document details how to format the lifemodules.xml file in chummer5a  
-The nodes <[bonus]> and <[addquality]> only have a rudimentary explanation and are
-better detailed in [bonus] and [addquality]
+
+This documentation is far from complete, feel free to expand it!
 
 **NOTICE:** If you are unfamiliar with XML, please see this tutoral by [w3shools.com](http://www.w3schools.com/xml/)
 
 
-Table of Contents
------------------
+## Table of Contents
+1. [File layout](#file-layout)
+   * [stages](#stages)
+   * [modules](#modules)
+   * [storybuilder](#storybuilder)
+2. [Nodes](#nodes)
+   * [stages](#stages-1)
+   * [modules](#modules)
+   * [bonus](#modules)
+   * [versions](#versions)
+   * [addquality](#addquality)
+   * [story](#story)
+   * [forbidden](#forbidden)
+   * [required](#required)
+3. [Storybuilder](#storybuilder-1)
+   * [Storybuilder Basics](#storybuilder-basics)
+   * [Random](#random)
+   * [persistent](#persistent)
+   * [System Macros](#system-macros)
 
-
-File layout
------------
+## File layout
 Under the root node `chummer`, there are 3 nodes used by life modules. Those are `stages`, `modules` and `storybuilder`.
 
-### stages  
+### Stages  
 Stages contain information about the order the different life modules are presented in.  
 Once reaching the last stage, Chummer5a will allow you to continue adding more modules from that stage.
 
-### modules  
+### Modules  
 Modules contain the acctual modules that can be added to a character, including what bonuses they give, their cost, requirements and possible versions.
 
 ### storybuilder
 Storybuilder is a feature on life modules where each module can contain a small piece of backstory based on that module. 
 Then, as multiple life modules are added, a small backstory is written for that character, that can then either be the backstory, provide inspiration or scraped in favour of another backstory
 
-
-Stages
-------
+## Nodes
+### stages
 A stage module looks like this
 ```XML
 <stage order="index">Stage</stage>
@@ -47,19 +60,18 @@ Each stage is placed under `chummer/stages` and looks like this
 It is possible to add the last stage multiple times, increasing the number of stages will lead to Chummer5a automaticaly detecting the increase and changing the last.  
 If a gap is placed in the index, Chummer5a will offer no options for continuing, halting progress.
 
-Modules
--------
-### Basics
+### module
+#### Basics
 The most basic module looks like this
 ```XML
 <module>
-	<id>GUID HERE</id>
-	<stage>The stage</stage>
-	<category>LifeModule</category>
-	<name>The name</name>
-	<karma>a number</karma>
-	<source>A 2 letter book acronym</source>
-	<page>A page</page>
+    <id>GUID HERE</id>
+    <stage>The stage</stage>
+    <category>LifeModule</category>
+    <name>The name</name>
+    <karma>a number</karma>
+    <source>A 2 letter book acronym</source>
+    <page>A page</page>
 </module>
 ```
 The `id` is an [GUID](https://en.wikipedia.org/wiki/Globally_unique_identifier)(Global Unique IDentifier), 
@@ -89,24 +101,25 @@ This is the bare minimum required to make a Life Module, but said Life Module wi
 In the following selection we will explore how to make a Life Module add bonuses to a character, 
 add requirements for it showing up, bundle qualities and automaticaly writing a backstory.
 
-### The `bonus` node
+### bonus
 This will only give a brief discription on how the [bonus] node works. See [bonus] for all possible options.
 
-### The `versions` node
+### versions
 
-### The `addquality` node
+### addquality
 This will only give a brief discription on how the [addquality] node works. See [addquality] for all possible options.
 
-### The `story` node
+### story
 
-### The `forbidden` and `required` nodes
+### forbidden
+
+### required
 
 
 
 
-Storybuilder
-------------
-### Basics
+## Storybuilder
+### Storybuilder Basics
 
 Storybuilder is a feature that dynamicaly creates a backstory based on selected life modules.
 
@@ -140,12 +153,12 @@ Macros can contain other macros, up to a depth of 5.
 In a macro, instead of including text, you can instead define a child named `random` and then define several children   
 ```XML
 <rmega>
-	<random>
-		<ares>Ares</ares>
-		<aztech>Aztechnology</aztech
-		<renraku>Renraku</renraku>
-		<sk>Saeder-Krupp</sk>
-	</random>
+    <random>
+        <ares>Ares</ares>
+        <aztech>Aztechnology</aztech
+        <renraku>Renraku</renraku>
+        <sk>Saeder-Krupp</sk>
+    </random>
 </rmega>
 ```
 Then, when typing $RMEGA, it will evaluate to of the 4 Megas defined above.
@@ -165,16 +178,16 @@ Only one ! is needed or allowed
 Macros inside parenthesis are not evaluated so it is not possible to do
 $RMEGA(!$OTHERMEGA)
 
-### Persistent
+### persistent
 it is also possible to place a `persistent` node instead of a `random`
 ```XML
 <body>
-	<persistent>
-		<head>side of the head</head>
-		<shoulder>shoulder</shoulder>
-		<arm>upper arm</arm>
-		<hand>hand</hand>
-	</persistent>
+    <persistent>
+        <head>side of the head</head>
+        <shoulder>shoulder</shoulder>
+        <arm>upper arm</arm>
+        <hand>hand</hand>
+    </persistent>
 </body>
 ```
 This works the same way as `random` except for one small change. It is only random once.  
@@ -190,12 +203,12 @@ You can also use this feature to peek into the result of another persitent
 if you have the macro
 ```XML
 <hurt>
-	<persistent>
-		<head>headaches</head>
-		<shoulder>pain moving</shoulder>
-		<arm>pain moving</arm>
-		<hand>unsteady hands</hand>
-	</persistent>
+    <persistent>
+        <head>headaches</head>
+        <shoulder>pain moving</shoulder>
+        <arm>pain moving</arm>
+        <hand>unsteady hands</hand>
+    </persistent>
 </hurt>
 ```
 
@@ -247,6 +260,4 @@ This evaluates to the $ sign.
 
 
 
-[bonus]: javascript:alert("broken")
-[addquality]: javascript:alert("broken")
 [XML]: http://www.w3schools.com/xml/

@@ -16,37 +16,37 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
+ using System.Text;
 using System.Windows.Forms;
 
 namespace Chummer
 {
     public partial class DiceRollerControl : UserControl
     {
-        private static Random _random = new Random();
+        private static readonly Random s_ObjRandom = MersenneTwister.SfmtRandom.Create();
+        private int _intModuloTemp;
 
         #region Properties
-        public enum EdgeUses { None, PushTheLimit, SecondChance, SeizeTheInit, Blitz, CloseCall, DeadManTrigger }
+        private enum EdgeUses
+        {
+            None = 0,
+            PushTheLimit,
+            SecondChance,
+            SeizeTheInit,
+            Blitz,
+            CloseCall,
+            DeadManTrigger,
+        }
 
         /// <summary>
         /// The threshold that the character needs in order to pass
         /// </summary>
         public int Threshold 
         {
-            get
-            {
-                return Convert.ToInt32(this.nudThreshold.Value);
-            }
-            set
-            {
-                this.nudThreshold.Value = value;
-            }
+            get => decimal.ToInt32(nudThreshold.Value);
+            set => nudThreshold.Value = value;
         }
 
         /// <summary>
@@ -54,14 +54,8 @@ namespace Chummer
         /// </summary>
         public int Gremlins 
         {
-            get
-            {
-                return Convert.ToInt32(this.nudGremlins.Value);
-            }
-            set
-            {
-                this.nudGremlins.Value = value;
-            }
+            get => decimal.ToInt32(nudGremlins.Value);
+            set => nudGremlins.Value = value;
         }
 
         /// <summary>
@@ -69,14 +63,8 @@ namespace Chummer
         /// </summary>
         public int NumberOfDice 
         {
-            get
-            {
-                return Convert.ToInt32(this.nudDice.Value);
-            }
-            set
-            {
-                this.nudDice.Value = value;
-            }
+            get => decimal.ToInt32(nudDice.Value);
+            set => nudDice.Value = value;
         }
 
         /// <summary>
@@ -87,12 +75,12 @@ namespace Chummer
         /// <summary>
         /// What the character is using for it's edge case
         /// </summary>
-        public EdgeUses EdgeUse 
+        private EdgeUses EdgeUse 
         {
             get
             {
-                return (EdgeUses)this.cboEdgeUse.SelectedItem == default(EdgeUses) ? EdgeUses.None :
-                (EdgeUses)this.cboEdgeUse.SelectedItem;
+                EdgeUses eSelectedItem = (EdgeUses)cboEdgeUse.SelectedItem;
+                return eSelectedItem == default(EdgeUses) ? EdgeUses.None : eSelectedItem;
             }
             set
             {
@@ -100,7 +88,7 @@ namespace Chummer
                 {
                     case EdgeUses.CloseCall: break;
                     case EdgeUses.SeizeTheInit: break;
-                    default: this.cboEdgeUse.SelectedItem = value; break;
+                    default:cboEdgeUse.SelectedItem = value; break;
                 }
             }
         }
@@ -112,14 +100,8 @@ namespace Chummer
         /// </summary>
         public int Limit 
         {
-            get
-            {
-                return Convert.ToInt32(this.nudLimit.Value);
-            }
-            set
-            {
-                this.nudLimit.Value = value;
-            }
+            get => decimal.ToInt32(nudLimit.Value);
+            set => nudLimit.Value = value;
         }
 
         #endregion
@@ -127,20 +109,22 @@ namespace Chummer
         public DiceRollerControl()
         {
             InitializeComponent();
-            this.nudDice.Maximum = Int32.MaxValue;
-            this.nudGremlins.Maximum = Int32.MaxValue;
-            this.nudLimit.Maximum = Int32.MaxValue;
-            this.nudThreshold.Maximum = Int32.MaxValue;
+            nudDice.Maximum = int.MaxValue;
+            nudGremlins.Maximum = int.MaxValue;
+            nudLimit.Maximum = int.MaxValue;
+            nudThreshold.Maximum = int.MaxValue;
             List<EdgeUses> edge = new List<EdgeUses>() 
             { 
                 EdgeUses.None, 
-                EdgeUses.PushTheLimit, 
-                EdgeUses.SecondChance, 
-                EdgeUses.Blitz, 
+                EdgeUses.PushTheLimit,
+                EdgeUses.SecondChance,
+                EdgeUses.Blitz,
                 EdgeUses.DeadManTrigger
             };
-            this.cboEdgeUse.DataSource = edge;
-            this.EdgeUse = EdgeUses.None;
+            cboEdgeUse.BeginUpdate();
+            cboEdgeUse.DataSource = edge;
+            cboEdgeUse.EndUpdate();
+            EdgeUse = EdgeUses.None;
         }
 
         #region Event Handling
@@ -148,98 +132,131 @@ namespace Chummer
         {
             // TODO roll the dice
             List<int> results = new List<int>();
-            for (int i = 0; i < this.NumberOfDice; i++)
+            for (int i = 0; i < NumberOfDice; i++)
             {
-                int val = _random.Next(1, 7);
+                do
+                {
+                    _intModuloTemp = s_ObjRandom.Next();
+                }
+                while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
+                int val = 1 + _intModuloTemp % 6;
                 results.Add(val);
 
                 // check for pushing the limit
-                if ((this.EdgeUse == EdgeUses.PushTheLimit || this.chkRuleOf6.Checked) && val == 6)
+                if (EdgeUse == EdgeUses.PushTheLimit || chkRuleOf6.Checked)
                 {
-                    int edgeRoll = _random.Next(1, 7);
-                    results.Add(edgeRoll);
-                    bool @continue = true;
-                    while (@continue)
+                    while (val == 6)
                     {
-                        if (edgeRoll != 6)
-                            @continue = false;
-                        else
+                        do
                         {
-                            edgeRoll = _random.Next(1, 7);
-                            results.Add(edgeRoll);
+                            _intModuloTemp = s_ObjRandom.Next();
                         }
+                        while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
+                        val = 1 + _intModuloTemp % 6;
+                        results.Add(val);
                     }
                 }
             }
 
+            // populate the text box
+            StringBuilder sb = new StringBuilder();
             // show the number of hits
             int hits = 0;
-            results.ForEach(x => { if (x == 5 || x == 6) hits++; });
-
             // calculate the 1 (and 2's)
             int glitches = 0;
-            if (this.chkRushJob.Checked)
-                results.ForEach(x => { if (x == 1 || x == 2) glitches++;});
-            else
-                results.ForEach(x => { if (x == 1) glitches++;});
+            foreach (int intResult in results)
+            {
+                if (intResult == 5 || intResult == 6)
+                    hits += 1;
+                else if (intResult == 1 || (chkRushJob.Checked && intResult == 2))
+                    glitches += 1;
+                sb.Append(intResult.ToString());
+                sb.Append(", ");
+            }
+            if (sb.Length > 0)
+                sb.Length -= 2; // remove trailing comma
+
+            string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            if (chkBubbleDie.Checked && (results.Count & 1) == 0 && results.Count / 2 == glitches + Gremlins)
+            {
+                do
+                {
+                    _intModuloTemp = s_ObjRandom.Next();
+                }
+                while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
+                int intBubbleDieResult = 1 + _intModuloTemp % 6;
+                sb.Append(',' + strSpace + LanguageManager.GetString("String_BubbleDie", GlobalOptions.Language) + strSpace + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')');
+                if (intBubbleDieResult == 1 || (chkRushJob.Checked && intBubbleDieResult == 2))
+                {
+                    glitches++;
+                }
+            }
+            txtResults.Text = sb.ToString();
 
             // calculate if we glitched or critically glitched (using gremlins)
-            bool glitch = false, criticalGlitch = false;
-            glitch = glitches + this.Gremlins > 0 && results.Count / (glitches + this.Gremlins) < 2;
-
-            if (glitch && hits == 0)
-                criticalGlitch = true;
-            int limitAppliedHits = hits;
-            if (this.Limit > 0 && !(this.EdgeUse == EdgeUses.PushTheLimit))
-                limitAppliedHits = hits > this.Limit ? this.Limit : hits;
+            bool glitch = glitches + Gremlins > 0 && results.Count / (glitches + Gremlins) < 2;
             
+            int limitAppliedHits = hits;
+            string strLimitString = string.Empty;
+            if (limitAppliedHits > Limit && EdgeUse != EdgeUses.PushTheLimit)
+            {
+                limitAppliedHits = Limit;
+                strLimitString = ',' + strSpace + LanguageManager.GetString("String_Limit", GlobalOptions.Language) + strSpace + limitAppliedHits.ToString();
+            }
+
             // show the results
             // we have not gone over our limit
-            StringBuilder sb = new StringBuilder();
-            if (hits > 0 && limitAppliedHits == hits)
-                sb.Append("Results: " + hits + " Hits!");
-            if (limitAppliedHits < hits)
-                sb.Append("Results: " + limitAppliedHits + " Hits by Limit!");
-            if (glitch && !criticalGlitch)
-                sb.Append(" Glitch!");   // we glitched though...
-            if (criticalGlitch)
-                sb.Append("Results: Critical Glitch!");   // we crited!
-            if (hits == 0 && !glitch)
-                sb.Append("Results: 0 Hits.");   // we have no hits and no glitches
+            sb = new StringBuilder(LanguageManager.GetString("Label_DiceRoller_Result", GlobalOptions.Language) + ' ');
+            if (glitch)
+            {
+                if (hits > 0)
+                {
+                    if (Threshold > 0)
+                    {
+                        sb.AppendFormat(LanguageManager.GetString(hits >= Threshold || limitAppliedHits >= Threshold ? "String_DiceRoller_Success" : "String_DiceRoller_Failure", GlobalOptions.Language) +
+                                        strSpace + '(' + LanguageManager.GetString("String_DiceRoller_Glitch", GlobalOptions.Language) + strLimitString + ')', hits.ToString(GlobalOptions.CultureInfo));
+                    }
+                    else
+                    {
+                        sb.AppendFormat(LanguageManager.GetString("String_DiceRoller_Glitch", GlobalOptions.Language) + strLimitString, hits.ToString(GlobalOptions.CultureInfo));
+                    }
+                }
+                else
+                {
+                    sb.Append(LanguageManager.GetString("String_DiceRoller_CriticalGlitch", GlobalOptions.Language));
+                }
+            }
+            else if (Threshold > 0)
+            {
+                sb.AppendFormat(LanguageManager.GetString(hits >= Threshold || limitAppliedHits >= Threshold ? "String_DiceRoller_Success" : "String_DiceRoller_Failure", GlobalOptions.Language) +
+                                strSpace + '(' + LanguageManager.GetString("String_DiceRoller_Hits", GlobalOptions.Language) + strLimitString + ')', hits.ToString(GlobalOptions.CultureInfo));
+            }
+            else
+            {
+                sb.AppendFormat(LanguageManager.GetString("String_DiceRoller_Hits", GlobalOptions.Language) + strLimitString, hits.ToString(GlobalOptions.CultureInfo));
+            }
 
-            if (this.Threshold > 0)
-                if (hits >= this.Threshold || limitAppliedHits >= this.Threshold)
-                    this.lblThreshold.Text = "Success! Threshold:";   // we succeded on the threshold test...
-
-
-            this.lblResults.Text = sb.ToString();
-
-            // now populate the text box
-            sb = new StringBuilder();
-            // apply limit modifiers
-            results.ForEach(x => { sb.Append(x.ToString()); sb.Append(", "); });
-            sb.Length -= 2; // remove trailing comma
-            this.txtResults.Text = sb.ToString();
+            lblResults.Text = sb.ToString();
         }
 
         private void nudDice_ValueChanged(object sender, EventArgs e)
         {
-            this.NumberOfDice = Convert.ToInt32(this.nudDice.Value);
+            NumberOfDice = decimal.ToInt32(nudDice.Value);
         }
 
         private void nudThreshold_ValueChanged(object sender, EventArgs e)
         {
-            this.Threshold = Convert.ToInt32(this.nudThreshold.Value);
+            Threshold = decimal.ToInt32(nudThreshold.Value);
         }
 
         private void nudGremlins_ValueChanged(object sender, EventArgs e)
         {
-            this.Gremlins = Convert.ToInt32(this.nudGremlins.Value);
+            Gremlins = decimal.ToInt32(nudGremlins.Value);
         }
 
         private void nudLimit_ValueChanged(object sender, EventArgs e)
         {
-            this.Limit = Convert.ToInt32(this.nudLimit.Value);
+            Limit = decimal.ToInt32(nudLimit.Value);
         }
         #endregion
     }

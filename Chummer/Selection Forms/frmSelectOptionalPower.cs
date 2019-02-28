@@ -16,126 +16,81 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
-﻿using System.Linq;
 ﻿using System.Windows.Forms;
-﻿using Octokit;
 
 namespace Chummer
 {
     public partial class frmSelectOptionalPower : Form
     {
-	    private string _strReturnPower = "";
-	    private string _strReturnExtra = "";
-		private List<KeyValuePair<string, KeyValuePair<string, string>>> _lstPowers = new List<KeyValuePair<string, KeyValuePair<string, string>>>();
+        private string _strReturnPower = string.Empty;
+        private string _strReturnExtra = string.Empty;
+        private readonly List<ListItem> _lstPowerItems = new List<ListItem>();
 
-		#region Control Events
-		public frmSelectOptionalPower()
+        #region Control Events
+        public frmSelectOptionalPower(params Tuple<string, string>[] lstPowerExtraPairs)
         {
             InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+
+            foreach (Tuple<string, string> lstObject in lstPowerExtraPairs)
+            {
+                string strName = LanguageManager.TranslateExtra(lstObject.Item1, GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(lstObject.Item2))
+                {
+                    strName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.TranslateExtra(lstObject.Item2, GlobalOptions.Language) + ')';
+                }
+                _lstPowerItems.Add(new ListItem(lstObject, strName));
+            }
+            cboPower.BeginUpdate();
+            cboPower.ValueMember = "Value";
+            cboPower.DisplayMember = "Name";
+            cboPower.DataSource = _lstPowerItems;
+            if (_lstPowerItems.Count >= 1)
+                cboPower.SelectedIndex = 0;
+            else
+                cmdOK.Enabled = false;
+            cboPower.EndUpdate();
         }
 
-		private void cmdOK_Click(object sender, EventArgs e)
-		{
-			_strReturnPower = (((KeyValuePair<string, KeyValuePair<string, string>>)cboPower.SelectedItem).Value).Key;
-			_strReturnExtra = (((KeyValuePair<string, KeyValuePair<string, string>>)cboPower.SelectedItem).Value).Value;
-			this.DialogResult = DialogResult.OK;
+        private void cmdOK_Click(object sender, EventArgs e)
+        {
+            if (cboPower.SelectedValue is Tuple<string, string> objSelectedItem)
+            {
+                _strReturnPower = objSelectedItem.Item1;
+                _strReturnExtra = objSelectedItem.Item2;
+                DialogResult = DialogResult.OK;
+            }
         }
 
         private void frmSelectOptionalPower_Load(object sender, EventArgs e)
         {
-            // Select the first Power in the list.
-            cboPower.SelectedIndex = 0;
+            if (_lstPowerItems.Count == 1)
+                cmdOK_Click(sender, e);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
+        #endregion
 
-		private void frmSelectOptionalPower_Shown(object sender, EventArgs e)
-		{
-			// If only a single Power is in the list when the form is shown,
-			// click the OK button since the user really doesn't have a choice.
-			if (cboPower.Items.Count == 1)
-				cmdOK_Click(sender, e);
-		}
-		#endregion
-
-		#region Properties
-		/// <summary>
+        #region Properties
+        /// <summary>
         /// Power that was selected in the dialogue.
         /// </summary>
-        public string SelectedPower
-        {
-            get
-            {
-                return _strReturnPower;
-            }
-        }
+        public string SelectedPower => _strReturnPower;
 
-	    public string SelectedPowerExtra
-	    {
-		    get { return _strReturnExtra; }
-	    }
+        public string SelectedPowerExtra => _strReturnExtra;
 
-	    /// <summary>
+        /// <summary>
         /// Description to display on the form.
         /// </summary>
         public string Description
         {
-            set
-            {
-                lblDescription.Text = value;
-            }
+            set => lblDescription.Text = value;
         }
-		#endregion
-
-		#region Methods
-		/// <summary>
-		/// Limit the list to a single Power.
-		/// </summary>
-		/// <param name="strValue">Single Power to display.</param>
-		public void SinglePower(string strValue)
-		{
-			List<ListItem> lstItems = new List<ListItem>();
-			ListItem objItem = new ListItem();
-			objItem.Value = strValue;
-			objItem.Name = strValue;
-			lstItems.Add(objItem);
-			cboPower.DataSource = null;
-			cboPower.ValueMember = "Value";
-			cboPower.DisplayMember = "Name";
-			cboPower.DataSource = lstItems;
-		}
-
-		/// <summary>
-		/// Limit the list to a few Powers.
-		/// </summary>
-		/// <param name="lstValue">List of Powers.</param>
-		public void LimitToList(List<KeyValuePair<string, string>> lstValue)
-		{
-			_lstPowers.Clear();
-			foreach (KeyValuePair<string, string> lstObject in lstValue)
-			{
-				string strName = "";
-				if (lstObject.Value != "")
-				{
-					strName = lstObject.Key + " (" + lstObject.Value + ")";
-				}
-				else
-				{
-					strName = lstObject.Key;
-				}
-				_lstPowers.Add(new KeyValuePair<string, KeyValuePair<string, string>>(strName, lstObject));
-			}
-			cboPower.DataSource = null;
-			cboPower.DataSource = _lstPowers;
-			cboPower.ValueMember = "Value";
-			cboPower.DisplayMember = "Name";
-		}
-		#endregion
+        #endregion
     }
 }

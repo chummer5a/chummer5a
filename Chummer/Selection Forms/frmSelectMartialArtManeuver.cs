@@ -24,133 +24,135 @@ using System.Xml;
 
 namespace Chummer
 {
-	public partial class frmSelectMartialArtManeuver : Form
-	{
-		private string _strSelectedManeuver = "";
+    public partial class frmSelectMartialArtManeuver : Form
+    {
+        private string _strSelectedManeuver = string.Empty;
 
-		private bool _blnAddAgain = false;
+        private bool _blnAddAgain = false;
 
-		private XmlDocument _objXmlDocument = new XmlDocument();
-		private readonly Character _objCharacter;
+        private readonly XmlDocument _objXmlDocument = null;
+        private readonly Character _objCharacter;
 
-		#region Control Events
-		public frmSelectMartialArtManeuver(Character objCharacter)
-		{
-			_objCharacter = objCharacter;
-			InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-		}
-
-		private void frmSelectMartialArtManeuver_Load(object sender, EventArgs e)
-		{
-			foreach (Label objLabel in this.Controls.OfType<Label>())
-			{
-				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
-			}
-
-			List<ListItem> lstManeuver = new List<ListItem>();
-
-			// Load the Martial Art information.
-			_objXmlDocument = XmlManager.Instance.Load("martialarts.xml");
-
-			// Populate the Martial Art Maneuver list.
-			XmlNodeList objManeuverList = _objXmlDocument.SelectNodes("/chummer/maneuvers/maneuver[" + _objCharacter.Options.BookXPath() + "]");
-			foreach (XmlNode objXmlManeuver in objManeuverList)
-			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlManeuver["name"].InnerText;
-				if (objXmlManeuver["translate"] != null)
-					objItem.Name = objXmlManeuver["translate"].InnerText;
-				else
-					objItem.Name = objXmlManeuver["name"].InnerText;
-				lstManeuver.Add(objItem);
-			}
-			SortListItem objSort = new SortListItem();
-			lstManeuver.Sort(objSort.Compare);
-			lstManeuvers.DataSource = null;
-			lstManeuvers.ValueMember = "Value";
-			lstManeuvers.DisplayMember = "Name";
-			lstManeuvers.DataSource = lstManeuver;
-		}
-
-		private void cmdOK_Click(object sender, EventArgs e)
-		{
-			if (lstManeuvers.Text != "")
-				AcceptForm();
-		}
-
-		private void cmdCancel_Click(object sender, EventArgs e)
-		{
-			this.DialogResult = DialogResult.Cancel;
-		}
-
-		private void lstMartialArts_DoubleClick(object sender, EventArgs e)
-		{
-			if (lstManeuvers.Text != "")
-				AcceptForm();
-		}
-
-		private void lstMartialArts_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			// Populate the Maneuvers list.
-			XmlNode objXmlManeuver = _objXmlDocument.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + lstManeuvers.SelectedValue + "\"]");
-
-			string strBook = _objCharacter.Options.LanguageBookShort(objXmlManeuver["source"].InnerText);
-			string strPage = objXmlManeuver["page"].InnerText;
-			if (objXmlManeuver["altpage"] != null)
-				strPage = objXmlManeuver["altpage"].InnerText;
-			lblSource.Text = strBook + " " + strPage;
-
-			tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlManeuver["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
-		}
-
-		private void cmdOKAdd_Click(object sender, EventArgs e)
-		{
-			_blnAddAgain = true;
-			cmdOK_Click(sender, e);
-		}
-		#endregion
-
-		#region Properties
-		/// <summary>
-		/// Whether or not the user wants to add another item after this one.
-		/// </summary>
-		public bool AddAgain
-		{
-			get
-			{
-				return _blnAddAgain;
-			}
-		}
-
-		/// <summary>
-		/// Maneuver that was selected in the dialogue.
-		/// </summary>
-		public string SelectedManeuver
-		{
-			get
-			{
-				return _strSelectedManeuver;
-			}
-		}
-		#endregion
-
-		#region Methods
-		/// <summary>
-		/// Accept the selected item and close the form.
-		/// </summary>
-		private void AcceptForm()
-		{
-			_strSelectedManeuver = lstManeuvers.SelectedValue.ToString();
-			this.DialogResult = DialogResult.OK;
-		}
-		#endregion
-
-        private void lblSource_Click(object sender, EventArgs e)
+        #region Control Events
+        public frmSelectMartialArtManeuver(Character objCharacter)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblSource.Text);
+            _objCharacter = objCharacter;
+            InitializeComponent();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            // Load the Martial Art information.
+            _objXmlDocument = XmlManager.Load("martialarts.xml");
         }
-	}
+
+        private void frmSelectMartialArtManeuver_Load(object sender, EventArgs e)
+        {
+            List<ListItem> lstManeuver = new List<ListItem>();
+
+            // Populate the Martial Art Maneuver list.
+            XmlNodeList objManeuverList = _objXmlDocument.SelectNodes("/chummer/maneuvers/maneuver[" + _objCharacter.Options.BookXPath() + "]");
+            foreach (XmlNode objXmlManeuver in objManeuverList)
+            {
+                string strName = objXmlManeuver["name"].InnerText;
+                lstManeuver.Add(new ListItem(strName, objXmlManeuver["translate"]?.InnerText ?? strName));
+            }
+            lstManeuver.Sort(CompareListItems.CompareNames);
+            lstManeuvers.BeginUpdate();
+            lstManeuvers.DataSource = null;
+            lstManeuvers.ValueMember = "Value";
+            lstManeuvers.DisplayMember = "Name";
+            lstManeuvers.DataSource = lstManeuver;
+            lstManeuvers.EndUpdate();
+        }
+
+        private void cmdOK_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(lstManeuvers.Text))
+            {
+                _blnAddAgain = false;
+                AcceptForm();
+            }
+        }
+
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
+
+        private void lstMartialArts_DoubleClick(object sender, EventArgs e)
+        {
+            cmdOK_Click(sender, e);
+        }
+
+        private void lstMartialArts_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string strSelectedId = lstManeuvers.SelectedValue?.ToString();
+            XmlNode xmlManeuver = null;
+            if (!string.IsNullOrEmpty(strSelectedId))
+                xmlManeuver = _objXmlDocument.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + strSelectedId + "\"]");
+
+            if (xmlManeuver != null)
+            {
+                string strSource = xmlManeuver["source"].InnerText;
+                string strPage = xmlManeuver["altpage"]?.InnerText ?? xmlManeuver["page"].InnerText;
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                ToolTipFactory.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+            }
+            else
+            {
+                lblSource.Text = string.Empty;
+
+                ToolTipFactory.SetToolTip(lblSource, string.Empty);
+            }
+        }
+
+        private void cmdOKAdd_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(lstManeuvers.Text))
+            {
+                _blnAddAgain = true;
+                AcceptForm();
+            }
+        }
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// Whether or not the user wants to add another item after this one.
+        /// </summary>
+        public bool AddAgain
+        {
+            get
+            {
+                return _blnAddAgain;
+            }
+        }
+
+        /// <summary>
+        /// Maneuver that was selected in the dialogue.
+        /// </summary>
+        public string SelectedManeuver
+        {
+            get
+            {
+                return _strSelectedManeuver;
+            }
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Accept the selected item and close the form.
+        /// </summary>
+        private void AcceptForm()
+        {
+            _strSelectedManeuver = lstManeuvers.SelectedValue.ToString();
+            DialogResult = DialogResult.OK;
+        }
+
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPDFFromControl(sender, e);
+        }
+        #endregion
+    }
 }

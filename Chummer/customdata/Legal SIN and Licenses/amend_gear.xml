@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <gears>
+    <gear amendoperation="addnode">
+      <id>2eed08e8-1bda-4f4a-86a5-d9564c1c55a7</id>
+      <name>SIN</name>
+      <category>ID/Credsticks</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>442</page>
+      <avail>0</avail>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>SINner (Corporate)</quality>
+          <quality>SINner (Criminal)</quality>
+          <quality>SINner (National)</quality>
+          <quality>SINner (Corporate Limited)</quality>
+        </oneof>
+      </required>
+      <forbidden>
+        <geardetails>
+          <OR>
+            <name>SIN</name>
+            <name>Fake SIN</name>
+          </OR>
+        </geardetails>
+      </forbidden>
+      <cost>0</cost>
+      <addoncategory>ID/Credsticks</addoncategory>
+      <addoncategory>Custom</addoncategory>
+      <allowrename>True</allowrename>
+    </gear>
+    <gear amendoperation="addnode">
+      <id>fca52123-266f-4366-a908-37023c9ad59e</id>
+      <name>License</name>
+      <category>ID/Credsticks</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>443</page>
+      <avail>0</avail>
+      <bonus>
+        <selectrestricted />
+      </bonus>
+      <cost>Variable(0-250)</cost>
+      <required>
+        <geardetails>
+          <OR>
+            <name>SIN</name>
+          </OR>
+        </geardetails>
+      </required>
+      <allowrename>True</allowrename>
+    </gear>
+    <gear>
+      <id>0c800bca-e6ff-475b-a014-c2069f5e364c</id> <!-- Fake SIN -->
+      <forbidden>
+        <geardetails amendoperation="replace" addifnotfound="True">
+          <OR>
+            <name>SIN</name>
+            <name>Fake SIN</name>
+          </OR>
+        </geardetails>
+      </forbidden>
+    </gear>
+  </gears>
+</chummer>

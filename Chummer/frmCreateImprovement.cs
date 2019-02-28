@@ -16,413 +16,583 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
+ using System.Linq;
+ using System.Text;
+ using System.Windows.Forms;
 using System.Xml;
+ using Chummer.Backend.Skills;
 
 namespace Chummer
 {
-	public partial class frmCreateImprovement : Form
-	{
-		private readonly Character _objCharacter;
-		private XmlDocument _objDocument = new XmlDocument();
-		private string _strSelect = "";
-		private Improvement _objEditImprovement;
+    // ReSharper disable once InconsistentNaming
+    public partial class frmCreateImprovement : Form
+    {
+        private readonly Character _objCharacter;
+        private readonly XmlDocument _objDocument;
+        private string _strSelect = string.Empty;
+        private readonly string _strCustomGroup;
+        private Improvement _objEditImprovement;
 
-		#region Control Events
-		public frmCreateImprovement(Character objCharacter)
-		{
-			InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-			_objCharacter = objCharacter;
-			MoveControls();
-		}
+        #region Control Events
+        public frmCreateImprovement(Character objCharacter, string strCustomGroup = "")
+        {
+            InitializeComponent();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            _objCharacter = objCharacter;
+            _strCustomGroup = strCustomGroup;
+            _objDocument = XmlManager.Load("improvements.xml");
+        }
 
-		private void frmCreateImprovement_Load(object sender, EventArgs e)
-		{
-			List<ListItem> lstTypes = new List<ListItem>();
-			_objDocument = XmlManager.Instance.Load("improvements.xml");
+        private void frmCreateImprovement_Load(object sender, EventArgs e)
+        {
+            List<ListItem> lstTypes = new List<ListItem>();
 
-			// Populate the Improvement Type list.
-			XmlNodeList objXmlImprovementList = _objDocument.SelectNodes("/chummer/improvements/improvement");
-			foreach (XmlNode objXmlImprovement in objXmlImprovementList)
-			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlImprovement["id"].InnerText;
-				if (objXmlImprovement["translate"] != null)
-					objItem.Name = objXmlImprovement["translate"].InnerText;
-				else
-					objItem.Name = objXmlImprovement["name"].InnerText;
-				lstTypes.Add(objItem);
-			}
+            // Populate the Improvement Type list.
+            XmlNodeList objXmlImprovementList = _objDocument.SelectNodes("/chummer/improvements/improvement");
+            if (objXmlImprovementList != null)
+                lstTypes.AddRange(from XmlNode objXmlImprovement in objXmlImprovementList
+                    select new ListItem(objXmlImprovement["id"]?.InnerText, Name = objXmlImprovement["translate"]?.InnerText ?? objXmlImprovement["name"]?.InnerText));
 
-			SortListItem objSort = new SortListItem();
-			lstTypes.Sort(objSort.Compare);
-			cboImprovemetType.ValueMember = "Value";
-			cboImprovemetType.DisplayMember = "Name";
-			cboImprovemetType.DataSource = lstTypes;
+            lstTypes.Sort(CompareListItems.CompareNames);
+            cboImprovemetType.BeginUpdate();
+            cboImprovemetType.ValueMember = "Value";
+            cboImprovemetType.DisplayMember = "Name";
+            cboImprovemetType.DataSource = lstTypes;
 
-			// Load the information from the passed Improvement if one has been given.
-			if (_objEditImprovement != null)
-			{
-				cboImprovemetType.SelectedValue = _objEditImprovement.CustomId;
-				txtName.Text = _objEditImprovement.CustomName;
-				if (nudMax.Visible)
-					nudMax.Value = _objEditImprovement.Maximum;
-				if (nudMin.Visible)
-					nudMin.Value = _objEditImprovement.Minimum;
-				if (nudVal.Visible)
-				{
-					// specificattribute stores the Value in Augmented instead.
-					if (_objEditImprovement.CustomId == "specificattribute")
-						nudVal.Value = _objEditImprovement.Augmented;
-					else
-						nudVal.Value = _objEditImprovement.Value;
-				}
-				if (chkApplyToRating.Visible)
-					chkApplyToRating.Checked = _objEditImprovement.AddToRating;
-				else
-					chkApplyToRating.Checked = false;
-				if (txtSelect.Visible)
-					txtSelect.Text = _objEditImprovement.ImprovedName;
-			}
-		}
+            // Load the information from the passed Improvement if one has been given.
+            if (_objEditImprovement != null)
+            {
+                cboImprovemetType.SelectedValue = _objEditImprovement.CustomId;
+                txtName.Text = _objEditImprovement.CustomName;
+                if (nudMax.Visible)
+                    nudMax.Value = _objEditImprovement.Maximum;
+                if (nudMin.Visible)
+                    nudMin.Value = _objEditImprovement.Minimum;
+                if (nudVal.Visible)
+                {
+                    // specificattribute stores the Value in Augmented instead.
+                    nudVal.Value = _objEditImprovement.CustomId == "specificattribute" ? _objEditImprovement.Augmented : _objEditImprovement.Value;
+                }
+                chkApplyToRating.Checked = chkApplyToRating.Visible && _objEditImprovement.AddToRating;
+                if (txtTranslateSelection.Visible)
+                {
+                    txtSelect.Text = _objEditImprovement.ImprovedName;
+                    // get the selection type of improvement and generate translation
+                    XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = \"" + cboImprovemetType.SelectedValue + "\"]/fields/field");
+                    txtTranslateSelection.Text = TranslateField(objFetchNode.InnerText, _objEditImprovement.ImprovedName);
+                }
+            }
+            cboImprovemetType.EndUpdate();
+        }
 
-		private void cmdOK_Click(object sender, EventArgs e)
-		{
-			AcceptForm();
-		}
+        private void cmdOK_Click(object sender, EventArgs e)
+        {
+            AcceptForm();
+        }
 
-		private void cmdCancel_Click(object sender, EventArgs e)
-		{
-			this.DialogResult = DialogResult.Cancel;
-		}
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
 
-		private void cboImprovemetType_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = \"" + cboImprovemetType.SelectedValue + "\"]");
+        private void cboImprovemetType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = \"" + cboImprovemetType.SelectedValue + "\"]");
 
-			lblVal.Visible = false;
-			lblMin.Visible = false;
-			lblMax.Visible = false;
-			lblAug.Visible = false;
-			nudVal.Visible = false;
-			nudMin.Visible = false;
-			nudMax.Visible = false;
-			nudAug.Visible = false;
-			chkApplyToRating.Visible = false;
-			chkApplyToRating.Checked = false;
+            lblVal.Visible = false;
+            lblMin.Visible = false;
+            lblMax.Visible = false;
+            lblAug.Visible = false;
+            nudVal.Visible = false;
+            nudMin.Visible = false;
+            nudMax.Visible = false;
+            nudAug.Visible = false;
+            chkApplyToRating.Visible = false;
+            chkApplyToRating.Checked = false;
             chkFree.Visible = false;
             chkFree.Checked = false;
 
             lblSelect.Visible = false;
-			txtSelect.Visible = false;
-			txtSelect.Text = "";
-			cmdChangeSelection.Visible = false;
-			_strSelect = "";
+            txtSelect.Visible = false;
+            txtSelect.Text = string.Empty;
+            txtTranslateSelection.Text = string.Empty;
+            txtTranslateSelection.Visible = false;
+            cmdChangeSelection.Visible = false;
+            _strSelect = string.Empty;
 
-			foreach (XmlNode objNode in objFetchNode.SelectNodes("fields/field"))
-			{
-				switch (objNode.InnerText)
-				{
-				    case "val":
-				        lblVal.Visible = true;
-				        nudVal.Visible = true;
-				        break;
-				    case "min":
-				        lblMin.Visible = true;
-				        nudMin.Visible = true;
-				        break;
-				    case "max":
-				        lblMax.Visible = true;
-				        nudMax.Visible = true;
-				        break;
-				    case "aug":
-				        lblAug.Visible = true;
-				        nudAug.Visible = true;
-				        break;
-				    case "applytorating":
-				        chkApplyToRating.Visible = true;
-				        break;
-				    case "free":
-				        chkFree.Visible = true;
-				        break;
-				    default:
-				        if (objNode.InnerText.StartsWith("Select"))
-				        {
-				            lblSelect.Visible = true;
-				            txtSelect.Visible = true;
-				            cmdChangeSelection.Visible = true;
-				            _strSelect = objNode.InnerText;
-				        }
-				        break;
-				}
-			}
+            if (objFetchNode == null) return;
+            XmlNodeList xmlNodeList = objFetchNode.SelectNodes("fields/field");
+            if (xmlNodeList != null)
+                foreach (XmlNode objNode in xmlNodeList)
+                {
+                    switch (objNode.InnerText)
+                    {
+                        case "val":
+                            lblVal.Visible = true;
+                            nudVal.Visible = true;
+                            break;
+                        case "min":
+                            lblMin.Visible = true;
+                            nudMin.Visible = true;
+                            break;
+                        case "max":
+                            lblMax.Visible = true;
+                            nudMax.Visible = true;
+                            break;
+                        case "aug":
+                            lblAug.Visible = true;
+                            nudAug.Visible = true;
+                            break;
+                        case "applytorating":
+                            chkApplyToRating.Visible = true;
+                            break;
+                        case "free":
+                            chkFree.Visible = true;
+                            break;
+                        default:
+                            if (objNode.InnerText.StartsWith("Select"))
+                            {
+                                lblSelect.Visible = true;
+                                txtTranslateSelection.Visible = true;
+                                cmdChangeSelection.Visible = true;
+                                _strSelect = objNode.InnerText;
+                            }
+                            break;
+                    }
+                }
 
-			// Display the help information.
-			lblHelp.Text = objFetchNode["altpage"]?.InnerText ?? objFetchNode["page"].InnerText;
-		}
+            // Display the help information.
+            lblHelp.Text = objFetchNode["altpage"]?.InnerText ?? objFetchNode["page"]?.InnerText;
+        }
 
-		private void cmdChangeSelection_Click(object sender, EventArgs e)
-		{
-			if (_strSelect == "SelectAttribute")
-			{
-				frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
-				frmPickAttribute.Description = LanguageManager.Instance.GetString("Title_SelectAttribute");
-				if (_objCharacter.MAGEnabled)
-					frmPickAttribute.AddMAG();
-				if (_objCharacter.RESEnabled)
-					frmPickAttribute.AddRES();
-                if (_objCharacter.DEPEnabled)
-                    frmPickAttribute.AddDEP();
-                frmPickAttribute.ShowDialog(this);
-
-				if (frmPickAttribute.DialogResult == DialogResult.OK)
-					txtSelect.Text = frmPickAttribute.SelectedAttribute;
-			}
-			else if (_strSelect == "SelectPhysicalAttribute")
-			{
-				frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
-				frmPickAttribute.Description = LanguageManager.Instance.GetString("Title_SelectAttribute");
-
-				List<string> strValue = new List<string>();
-				strValue.Add("LOG");
-				strValue.Add("WIL");
-				strValue.Add("INT");
-				strValue.Add("CHA");
-				strValue.Add("EDG");
-				strValue.Add("MAG");
-				strValue.Add("RES");
-				frmPickAttribute.RemoveFromList(strValue);
-
-				frmPickAttribute.ShowDialog(this);
-
-				if (frmPickAttribute.DialogResult == DialogResult.OK)
-					txtSelect.Text = frmPickAttribute.SelectedAttribute;
-			}
-			else if (_strSelect == "SelectMentalAttribute")
-			{
-				frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
-				frmPickAttribute.Description = LanguageManager.Instance.GetString("Title_SelectAttribute");
-
-				List<string> strValue = new List<string>();
-				strValue.Add("BOD");
-				strValue.Add("AGI");
-				strValue.Add("REA");
-				strValue.Add("STR");
-				strValue.Add("EDG");
-				strValue.Add("MAG");
-				strValue.Add("RES");
-				frmPickAttribute.RemoveFromList(strValue);
-
-				frmPickAttribute.ShowDialog(this);
-
-				if (frmPickAttribute.DialogResult == DialogResult.OK)
-					txtSelect.Text = frmPickAttribute.SelectedAttribute;
-			}
-			else if (_strSelect == "SelectSkill")
-			{
-                frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
-				frmPickSkill.Description = LanguageManager.Instance.GetString("Title_SelectSkill");
-				frmPickSkill.ShowDialog(this);
-
-				if (frmPickSkill.DialogResult == DialogResult.OK)
-					txtSelect.Text = frmPickSkill.SelectedSkill;
-			}
-            else if (_strSelect == "SelectKnowSkill")
-			{
-                frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
-				frmPickSkill.ShowKnowledgeSkills = true;
-				frmPickSkill.Description = LanguageManager.Instance.GetString("Title_SelectSkill");
-				frmPickSkill.ShowDialog(this);
-
-				if (frmPickSkill.DialogResult == DialogResult.OK)
-					txtSelect.Text = frmPickSkill.SelectedSkill;
-			}
-            else if (_strSelect == "SelectSkillCategory")
-			{
-				frmSelectSkillCategory frmPickSkillCategory = new frmSelectSkillCategory();
-				frmPickSkillCategory.Description = LanguageManager.Instance.GetString("Title_SelectSkillCategory");
-				frmPickSkillCategory.ShowDialog(this);
-
-				if (frmPickSkillCategory.DialogResult == DialogResult.OK)
-					txtSelect.Text = frmPickSkillCategory.SelectedCategory;
-			}
-            else if (_strSelect == "SelectSkillGroup")
-			{
-				frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup();
-				frmPickSkillGroup.Description = LanguageManager.Instance.GetString("Title_SelectSkillGroup");
-				frmPickSkillGroup.ShowDialog(this);
-
-				if (frmPickSkillGroup.DialogResult == DialogResult.OK)
-					txtSelect.Text = frmPickSkillGroup.SelectedSkillGroup;
-			}
-            else if (_strSelect == "SelectWeaponCategory")
-			{
-				frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory();
-				frmPickWeaponCategory.Description = LanguageManager.Instance.GetString("Title_SelectWeaponCategory");
-				frmPickWeaponCategory.ShowDialog(this);
-
-				if (frmPickWeaponCategory.DialogResult == DialogResult.OK)
-					txtSelect.Text = frmPickWeaponCategory.SelectedCategory;
-			}
-            else if (_strSelect == "SelectSpellCategory")
-			{
-				frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory();
-				frmPickSpellCategory.Description = LanguageManager.Instance.GetString("Title_SelectSpellCategory");
-				frmPickSpellCategory.ShowDialog(this);
-
-				if (frmPickSpellCategory.DialogResult == DialogResult.OK)
-					txtSelect.Text = frmPickSpellCategory.SelectedCategory;
-            }
-            else if (_strSelect == "SelectAdeptPower")
+        private void cmdChangeSelection_Click(object sender, EventArgs e)
+        {
+            switch (_strSelect)
             {
-                frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
-                frmPickPower.ShowDialog(this);
+                case "SelectActionDicePool":
+                    List<ListItem> lstActions = new List<ListItem>();
+                    using (XmlNodeList xmlActionList = XmlManager.Load("actions.xml").SelectNodes("/chummer/actions/action"))
+                        if (xmlActionList != null)
+                            foreach (XmlNode xmlAction in xmlActionList)
+                            {
+                                lstActions.Add(new ListItem(xmlAction["name"].InnerText, xmlAction["translate"]?.InnerText ?? xmlAction["name"]?.InnerText));
+                            }
 
-                if (frmPickPower.DialogResult == DialogResult.OK)
-                    txtSelect.Text = frmPickPower.SelectedPower;
+                    frmSelectItem select = new frmSelectItem
+                    {
+                        Description = LanguageManager.GetString("Title_SelectAction", GlobalOptions.Language)
+                    };
+                    select.ShowDialog(this);
+
+                    if (select.DialogResult == DialogResult.OK)
+                    {
+                        txtSelect.Text = select.SelectedName;
+                        txtTranslateSelection.Text = TranslateField(_strSelect, select.SelectedName);
+                    }
+                    break;
+                case "SelectAttribute":
+                    {
+                        List<string> lstAbbrevs = new List<string>(Backend.Attributes.AttributeSection.AttributeStrings);
+
+                        lstAbbrevs.Remove("ESS");
+                        if (!_objCharacter.MAGEnabled)
+                        {
+                            lstAbbrevs.Remove("MAG");
+                            lstAbbrevs.Remove("MAGAdept");
+                        }
+                        else if (!_objCharacter.IsMysticAdept || !_objCharacter.Options.MysAdeptSecondMAGAttribute)
+                            lstAbbrevs.Remove("MAGAdept");
+
+                        if (!_objCharacter.RESEnabled)
+                            lstAbbrevs.Remove("RES");
+                        if (!_objCharacter.DEPEnabled)
+                            lstAbbrevs.Remove("DEP");
+                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
+                        {
+                            Description = LanguageManager.GetString("Title_SelectAttribute", GlobalOptions.Language)
+                        };
+                        frmPickAttribute.ShowDialog(this);
+
+                        if (frmPickAttribute.DialogResult == DialogResult.OK)
+                        {
+                            txtSelect.Text = frmPickAttribute.SelectedAttribute;
+                            txtTranslateSelection.Text = TranslateField(_strSelect, frmPickAttribute.SelectedAttribute);
+                        }
+                    }
+                    break;
+                case "SelectMentalAttribute":
+                    {
+                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute(Backend.Attributes.AttributeSection.MentalAttributes.ToArray())
+                        {
+                            Description = LanguageManager.GetString("Title_SelectAttribute", GlobalOptions.Language)
+                        };
+
+                        frmPickAttribute.ShowDialog(this);
+
+                        if (frmPickAttribute.DialogResult == DialogResult.OK)
+                        {
+                            txtSelect.Text = frmPickAttribute.SelectedAttribute;
+                            txtTranslateSelection.Text = TranslateField(_strSelect, frmPickAttribute.SelectedAttribute);
+                        }
+                    }
+                    break;
+                case "SelectPhysicalAttribute":
+                    {
+                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute(Backend.Attributes.AttributeSection.PhysicalAttributes.ToArray())
+                        {
+                            Description = LanguageManager.GetString("Title_SelectAttribute", GlobalOptions.Language)
+                        };
+
+                        frmPickAttribute.ShowDialog(this);
+
+                        if (frmPickAttribute.DialogResult == DialogResult.OK)
+                        {
+                            txtSelect.Text = frmPickAttribute.SelectedAttribute;
+                            txtTranslateSelection.Text = TranslateField(_strSelect, frmPickAttribute.SelectedAttribute);
+                        }
+                    }
+                    break;
+                case "SelectSpecialAttribute":
+                    {
+                        List<string> lstAbbrevs = new List<string>(Backend.Attributes.AttributeSection.AttributeStrings);
+                        lstAbbrevs.RemoveAll(x => Backend.Attributes.AttributeSection.PhysicalAttributes.Contains(x) || Backend.Attributes.AttributeSection.MentalAttributes.Contains(x));
+                        lstAbbrevs.Remove("ESS");
+                        /*
+                        if (!_objCharacter.MAGEnabled)
+                        {
+                            lstAbbrevs.Remove("MAG");
+                            lstAbbrevs.Remove("MAGAdept");
+                        }
+                        else if (!_objCharacter.IsMysticAdept || !_objCharacter.Options.MysAdeptSecondMAGAttribute)
+                            lstAbbrevs.Remove("MAGAdept");
+
+                        if (!_objCharacter.RESEnabled)
+                            lstAbbrevs.Remove("RES");
+                        if (!_objCharacter.DEPEnabled)
+                            lstAbbrevs.Remove("DEP");
+                            */
+                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
+                        {
+                            Description = LanguageManager.GetString("Title_SelectAttribute", GlobalOptions.Language)
+                        };
+
+                        frmPickAttribute.ShowDialog(this);
+
+                        if (frmPickAttribute.DialogResult == DialogResult.OK)
+                        {
+                            txtSelect.Text = frmPickAttribute.SelectedAttribute;
+                            txtTranslateSelection.Text = TranslateField(_strSelect, frmPickAttribute.SelectedAttribute);
+                        }
+
+                    }
+                    break;
+                case "SelectSkill":
+                    {
+                        frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter)
+                        {
+                            Description = LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Language)
+                        };
+                        frmPickSkill.ShowDialog(this);
+
+                        if (frmPickSkill.DialogResult == DialogResult.OK)
+                        {
+                            txtSelect.Text = frmPickSkill.SelectedSkill;
+                            txtTranslateSelection.Text = TranslateField(_strSelect, frmPickSkill.SelectedSkill);
+                        }  
+                    }
+                    break;
+                case "SelectKnowSkill":
+                    {
+                        List<ListItem> lstDropdownItems = new List<ListItem>();
+                        HashSet<string> setProcessedSkillNames = new HashSet<string>();
+                        foreach (KnowledgeSkill objKnowledgeSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+                        {
+                            lstDropdownItems.Add(new ListItem(objKnowledgeSkill.Name, objKnowledgeSkill.DisplayNameMethod(GlobalOptions.Language)));
+                            setProcessedSkillNames.Add(objKnowledgeSkill.Name);
+                        }
+                        StringBuilder objFilter = new StringBuilder();
+                        if (setProcessedSkillNames.Count > 0)
+                        {
+                            objFilter.Append("not(");
+                            foreach (string strName in setProcessedSkillNames)
+                            {
+                                objFilter.Append("name = \"" + strName + "\" or ");
+                            }
+
+                            objFilter.Length -= 4;
+                            objFilter.Append(')');
+                        }
+
+                        string strFilter = objFilter.Length > 0 ? '[' + objFilter.ToString() + ']' : string.Empty;
+                        using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectNodes("/chummer/knowledgeskills/skill" + strFilter))
+                        {
+                            if (xmlSkillList?.Count > 0)
+                            {
+                                foreach (XmlNode xmlSkill in xmlSkillList)
+                                {
+                                    string strName = xmlSkill["name"]?.InnerText;
+                                    if (!string.IsNullOrEmpty(strName))
+                                        lstDropdownItems.Add(new ListItem(strName, xmlSkill["translate"]?.InnerText ?? strName));
+                                }
+                            }
+                        }
+
+                        lstDropdownItems.Sort(CompareListItems.CompareNames);
+
+                        frmSelectItem frmPickSkill = new frmSelectItem
+                        {
+                            DropdownItems = lstDropdownItems,
+                            Description = LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Language)
+                        };
+
+                        frmPickSkill.ShowDialog(this);
+
+                        if (frmPickSkill.DialogResult == DialogResult.OK)
+                        {
+                            txtSelect.Text = frmPickSkill.SelectedItem;
+                            txtTranslateSelection.Text = TranslateField(_strSelect, frmPickSkill.SelectedItem);
+                        }
+                    }
+                    break;
+                case "SelectSkillCategory":
+                    frmSelectSkillCategory frmPickSkillCategory = new frmSelectSkillCategory
+                    {
+                        Description = LanguageManager.GetString("Title_SelectSkillCategory", GlobalOptions.Language)
+                    };
+                    frmPickSkillCategory.ShowDialog(this);
+
+                    if (frmPickSkillCategory.DialogResult == DialogResult.OK)
+                    {
+                        txtSelect.Text = frmPickSkillCategory.SelectedCategory;
+                        txtTranslateSelection.Text = TranslateField(_strSelect, frmPickSkillCategory.SelectedCategory);
+                    }
+                       
+                    break;
+                case "SelectSkillGroup":
+                    frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup
+                    {
+                        Description = LanguageManager.GetString("Title_SelectSkillGroup", GlobalOptions.Language)
+                    };
+                    frmPickSkillGroup.ShowDialog(this);
+
+                    if (frmPickSkillGroup.DialogResult == DialogResult.OK)
+                    {
+                        txtSelect.Text = frmPickSkillGroup.SelectedSkillGroup;
+                        txtTranslateSelection.Text = TranslateField(_strSelect, frmPickSkillGroup.SelectedSkillGroup);
+                    }
+                        
+                    break;
+                case "SelectWeaponCategory":
+                    frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory
+                    {
+                        Description = LanguageManager.GetString("Title_SelectWeaponCategory", GlobalOptions.Language)
+                    };
+                    frmPickWeaponCategory.ShowDialog(this);
+
+                    if (frmPickWeaponCategory.DialogResult == DialogResult.OK)
+                    {
+                        txtSelect.Text = frmPickWeaponCategory.SelectedCategory;
+                        txtTranslateSelection.Text = TranslateField(_strSelect, frmPickWeaponCategory.SelectedCategory);
+                    }
+                    break;
+                case "SelectSpellCategory":
+                    frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory
+                    {
+                        Description = LanguageManager.GetString("Title_SelectSpellCategory", GlobalOptions.Language)
+                    };
+                    frmPickSpellCategory.ShowDialog(this);
+
+                    if (frmPickSpellCategory.DialogResult == DialogResult.OK)
+                    {
+                        txtSelect.Text = frmPickSpellCategory.SelectedCategory;
+                        txtTranslateSelection.Text = TranslateField(_strSelect, frmPickSpellCategory.SelectedCategory);
+                    }                     
+                    break;
+                case "SelectAdeptPower":
+                    frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
+                    frmPickPower.ShowDialog(this);
+
+                    if (frmPickPower.DialogResult == DialogResult.OK)
+                    {
+                        txtSelect.Text = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]/name")?.InnerText;
+                        txtTranslateSelection.Text = TranslateField(_strSelect, frmPickPower.SelectedPower);
+                    }
+                    break;
             }
         }
-		#endregion
+        #endregion
 
-		#region Methods
-		/// <summary>
-		/// Accept the values on the Form and create the required XML data.
-		/// </summary>
-		private void AcceptForm()
-		{
-			// Make sure a value has been selected if necessary.
-			if (txtSelect.Visible && txtSelect.Text == string.Empty)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectItem"), LanguageManager.Instance.GetString("MessageTitle_SelectItem"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
-			}
+        #region Methods
+        /// <summary>
+        /// Accept the values on the Form and create the required XML data.
+        /// </summary>
+        private void AcceptForm()
+        {
+            // Make sure a value has been selected if necessary.
+            if (txtTranslateSelection.Visible && string.IsNullOrEmpty(txtSelect.Text))
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_SelectItem", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectItem", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
-			// Make sure a value has been provided for the name.
-			if (txtName.Text == string.Empty)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_ImprovementName"), LanguageManager.Instance.GetString("MessageTitle_ImprovementName"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-				txtName.Focus();
-				return;
-			}
+            // Make sure a value has been provided for the name.
+            if (string.IsNullOrEmpty(txtName.Text))
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_ImprovementName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_ImprovementName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtName.Focus();
+                return;
+            }
 
-			MemoryStream objStream = new MemoryStream();
-			XmlWriter objWriter = XmlWriter.Create(objStream);
+            MemoryStream objStream = new MemoryStream();
+            XmlWriter objWriter = XmlWriter.Create(objStream);
 
-			// Build the XML for the Improvement.
-			XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = \"" + cboImprovemetType.SelectedValue + "\"]");
-			objWriter.WriteStartDocument();
-			// <bonus>
-			objWriter.WriteStartElement("bonus");
-			// <whatever element>
-			objWriter.WriteStartElement(objFetchNode["internal"].InnerText);
+            // Build the XML for the Improvement.
+            XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = \"" + cboImprovemetType.SelectedValue + "\"]");
+            string strInternal = objFetchNode?["internal"]?.InnerText;
+            if (string.IsNullOrEmpty(strInternal))
+                return;
+            objWriter.WriteStartDocument();
+            // <bonus>
+            objWriter.WriteStartElement("bonus");
+            // <whatever element>
+            objWriter.WriteStartElement(strInternal);
 
-			string strRating = "";
-			if (chkApplyToRating.Checked)
-				strRating = "<applytorating>yes</applytorating>";
+            string strRating = string.Empty;
+            if (chkApplyToRating.Checked)
+                strRating = "<applytorating>True</applytorating>";
 
-			// Retrieve the XML data from the document and replace the values as necessary.
-			string strXml = objFetchNode["xml"].InnerText;
-			strXml = strXml.Replace("{val}", nudVal.Value.ToString());
-			strXml = strXml.Replace("{min}", nudMin.Value.ToString());
-			strXml = strXml.Replace("{max}", nudMax.Value.ToString());
-			strXml = strXml.Replace("{aug}", nudAug.Value.ToString());
+            // Retrieve the XML data from the document and replace the values as necessary.
+            // ReSharper disable once PossibleNullReferenceException
+            string strXml = objFetchNode["xml"].InnerText;
+            strXml = strXml.Replace("{val}", nudVal.Value.ToString(GlobalOptions.InvariantCultureInfo));
+            strXml = strXml.Replace("{min}", nudMin.Value.ToString(GlobalOptions.InvariantCultureInfo));
+            strXml = strXml.Replace("{max}", nudMax.Value.ToString(GlobalOptions.InvariantCultureInfo));
+            strXml = strXml.Replace("{aug}", nudAug.Value.ToString(GlobalOptions.InvariantCultureInfo));
             strXml = strXml.Replace("{free}", chkFree.Checked.ToString().ToLower());
             strXml = strXml.Replace("{select}", txtSelect.Text);
-			strXml = strXml.Replace("{applytorating}", strRating);
-			objWriter.WriteRaw(strXml);
+            strXml = strXml.Replace("{applytorating}", strRating);
+            objWriter.WriteRaw(strXml);
 
-			// Write the rest of the document.
-			// </whatever element>
-			objWriter.WriteEndElement();
-			// </bonus>
-			objWriter.WriteEndElement();
-			objWriter.WriteEndDocument();
-			objWriter.Flush();
-			objStream.Flush();
+            // Write the rest of the document.
+            // </whatever element>
+            objWriter.WriteEndElement();
+            // </bonus>
+            objWriter.WriteEndElement();
+            objWriter.WriteEndDocument();
+            objWriter.Flush();
 
-			objStream.Position = 0;
+            objStream.Position = 0;
 
-			// Read it back in as an XmlDocument.
-			StreamReader objReader = new StreamReader(objStream);
-			XmlDocument objBonusXML = new XmlDocument();
-			string strXML = objReader.ReadToEnd();
-			objBonusXML.LoadXml(strXML);
+            // Read it back in as an XmlDocument.
+            StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true);
+            XmlDocument objBonusXml = new XmlDocument();
+            strXml = objReader.ReadToEnd();
+            objBonusXml.LoadXml(strXml);
 
-			objWriter.Close();
-			objStream.Close();
+            objWriter.Close();
 
-			// Pluck out the bonus information.
-			XmlNode objNode = objBonusXML.SelectSingleNode("/bonus");
+            // Pluck out the bonus information.
+            XmlNode objNode = objBonusXml.SelectSingleNode("/bonus");
 
-			// Pass it to the Improvement Manager so that it can be added to the character.
-			ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-			string strGuid = Guid.NewGuid().ToString();
-			objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Custom, strGuid, objNode, false, 1, txtName.Text);
+            // Pass it to the Improvement Manager so that it can be added to the character.
+            string strGuid = Guid.NewGuid().ToString("D");
+            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Custom, strGuid, objNode, false, 1, txtName.Text);
 
-			// If an Improvement was passed in, remove it from the character.
-			string strNotes = "";
-			int intOrder = 0;
-			if (_objEditImprovement != null)
-			{
-				// Copy the notes over to the new item.
-				strNotes = _objEditImprovement.Notes;
-				intOrder = _objEditImprovement.SortOrder;
-				objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Custom, _objEditImprovement.SourceName);
-			}
+            // If an Improvement was passed in, remove it from the character.
+            string strNotes = string.Empty;
+            int intOrder = 0;
+            if (_objEditImprovement != null)
+            {
+                // Copy the notes over to the new item.
+                strNotes = _objEditImprovement.Notes;
+                intOrder = _objEditImprovement.SortOrder;
+                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Custom, _objEditImprovement.SourceName);
+            }
 
-			// Find the newly-created Improvement and attach its custom name.
-			foreach (Improvement objImprovement in _objCharacter.Improvements)
-			{
-				if (objImprovement.SourceName == strGuid)
-				{
-					objImprovement.CustomName = txtName.Text;
-					objImprovement.CustomId = cboImprovemetType.SelectedValue.ToString();
-					objImprovement.Custom = true;
-					objImprovement.Notes = strNotes;
-					objImprovement.SortOrder = intOrder;
-				}
-			}
+            // Find the newly-created Improvement and attach its custom name.
+            Improvement objImprovement = _objCharacter.Improvements.FirstOrDefault(imp => imp.SourceName == strGuid);
+            if (objImprovement != null)
+            {
+                objImprovement.CustomName = txtName.Text;
+                objImprovement.CustomId = cboImprovemetType.SelectedValue.ToString();
+                objImprovement.Custom = true;
+                objImprovement.Notes = strNotes;
+                objImprovement.SortOrder = intOrder;
+                objImprovement.CustomGroup = _strCustomGroup;
+                NewImprovement = objImprovement;
+            }
+            else {Utils.BreakIfDebug();}
 
-			this.DialogResult = DialogResult.OK;
-		}
+            DialogResult = DialogResult.OK;
+        }
 
-		private void MoveControls()
-		{
-			int intWidth = 0;
-			intWidth = Math.Max(lblImprovementType.Width, lblName.Width);
-			intWidth = Math.Max(intWidth, lblSelect.Width);
-			intWidth = Math.Max(intWidth, lblVal.Width);
-			intWidth = Math.Max(intWidth, lblMin.Width);
-			intWidth = Math.Max(intWidth, lblMax.Width);
-			intWidth = Math.Max(intWidth, lblAug.Width);
+        /// <summary>
+        /// Returns a current language translation given an improvement name.
+        /// </summary>
+        /// <param name="strImprovementType"> The selector for the target translation. Often just _strSelect. </param>
+        /// <param name="strToTranslate"> The string which to translate. Usually name. Guid in the case of adept powers.</param>
+        /// <returns></returns>
+        private string TranslateField(string strImprovementType, string strToTranslate)
+        {
+            XmlNode objXmlNode;
+            switch (strImprovementType)
+            {
+                case "SelectAttribute":
+                case "SelectPhysicalAttribute":
+                case "SelectMentalAttribute":
+                case "SelectSpecialAttribute":
+                    return strToTranslate == "MAGAdept"
+                    ? LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_DescAdept", GlobalOptions.Language) + ')'
+                    : LanguageManager.GetString("String_Attribute" + strToTranslate + "Short", GlobalOptions.Language);
 
-			cboImprovemetType.Left = lblImprovementType.Left + intWidth + 6;
-			txtName.Left = cboImprovemetType.Left;
-			txtSelect.Left = cboImprovemetType.Left;
-			cmdChangeSelection.Left = txtSelect.Left + txtSelect.Width + 6;
-			nudVal.Left = cboImprovemetType.Left;
-			nudMin.Left = cboImprovemetType.Left;
-			nudMax.Left = cboImprovemetType.Left;
-			nudAug.Left = cboImprovemetType.Left;
-			chkApplyToRating.Left = nudVal.Left + nudVal.Width + 6;
-		}
-		#endregion
+                case "SelectSkill":
+                    objXmlNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/skills/skill[name = \"" + strToTranslate + "\"]");
+                    return objXmlNode.SelectSingleNode("translate")?.InnerText ?? objXmlNode.SelectSingleNode("name").InnerText;
 
-		#region Properties
-		/// <summary>
-		/// Improvement object to edit.
-		/// </summary>
-		public Improvement EditImprovementObject
-		{
-			set
-			{
-				_objEditImprovement = value;
-			}
-		}
-		#endregion
-	}
+                case "SelectKnowSkill":
+                    objXmlNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + strToTranslate + "\"]");
+                    return objXmlNode.SelectSingleNode("translate")?.InnerText ?? objXmlNode.SelectSingleNode("name").InnerText;
+
+                case "SelectSkillCategory":
+                    objXmlNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/categories/category[. = \"" + strToTranslate + "\"]");
+                    return objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.SelectSingleNode(".").InnerText;
+
+                case "SelectSkillGroup":
+                    objXmlNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/skillgroups/name[. = \"" + strToTranslate + "\"]");
+                    return objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.SelectSingleNode(".").InnerText;
+
+                case "SelectWeaponCategory":
+                    objXmlNode = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/categories/category[. = \"" + strToTranslate + "\"]");
+                    return objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.SelectSingleNode(".").InnerText;
+
+                case "SelectSpellCategory":
+                    objXmlNode = XmlManager.Load("spells.xml").SelectSingleNode("/chummer/categories/category[. = \"" + strToTranslate + "\"]");
+                    return objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.SelectSingleNode(".").InnerText;
+
+                case "SelectAdeptPower":
+                    objXmlNode = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[id = \"" + strToTranslate + "\" or name = \"" + strToTranslate + "\"]");
+                    return objXmlNode.SelectSingleNode("translate")?.InnerText ?? objXmlNode.SelectSingleNode("name").InnerText;
+
+                default:
+                    return strToTranslate;
+            }
+        }
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// Improvement object to edit.
+        /// </summary>
+        public Improvement EditImprovementObject
+        {
+            set => _objEditImprovement = value;
+        }
+
+        public Improvement NewImprovement { get; set; }
+
+        #endregion
+    }
 }

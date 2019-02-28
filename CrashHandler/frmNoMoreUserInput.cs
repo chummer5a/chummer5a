@@ -1,27 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CrashHandler
 {
-	public partial class frmNoMoreUserInput : Form
+	public sealed partial class frmNoMoreUserInput : Form
 	{
 		delegate void ChangeDesc(CrashDumperProgress progress, string desc);
-
 
 		public frmNoMoreUserInput(CrashDumper dmper)
 		{
 			InitializeComponent();
 
-			lblProgress.Text = dmper.Progress.GetDescription();
+            if (dmper != null)
+            {
+                lblProgress.Text = dmper.Progress.GetDescription();
 
-			dmper.CrashDumperProgressChanged += Dmper_CrashDumperProgressChanged;
+                dmper.CrashDumperProgressChanged += Dmper_CrashDumperProgressChanged;
+            }
 		}
 
 		private void Dmper_CrashDumperProgressChanged(object sender, CrashDumperProgressChangedEventArgs args)

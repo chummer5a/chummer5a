@@ -1,6 +1,6 @@
-﻿namespace Chummer
+namespace Chummer
 {
-    partial class InitiativeUserControl
+    public sealed partial class InitiativeUserControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnRemove = new System.Windows.Forms.Button();
@@ -45,7 +45,7 @@
             this.btnMinus10Init = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.btnAdd10Init = new System.Windows.Forms.Button();
-            this.cboManeuvers = new System.Windows.Forms.ComboBox();
+            this.cboManeuvers = new ElasticComboBox();
             this.btnApplyInterrupt = new System.Windows.Forms.Button();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnNext = new System.Windows.Forms.Button();
@@ -399,7 +399,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "InitiativeUserControl";
             this.Size = new System.Drawing.Size(420, 265);
-            this.Tag = "";
+            this.Tag = string.Empty;
             this.tableLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
@@ -412,7 +412,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Button btnRemove;
@@ -429,7 +429,7 @@
         private System.Windows.Forms.Button btnMinus10Init;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button btnAdd10Init;
-        private System.Windows.Forms.ComboBox cboManeuvers;
+        private ElasticComboBox cboManeuvers;
         private System.Windows.Forms.Button btnApplyInterrupt;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.Button btnNext;

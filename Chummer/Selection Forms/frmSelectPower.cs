@@ -16,378 +16,267 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
-using System.Xml;
+using System.Xml.XPath;
 
 namespace Chummer
 {
     public partial class frmSelectPower : Form
     {
-        private string _strSelectedPower = "";
-        private bool _blnLevels = false;
-        private decimal _decPointsPerLevel = 0;
-        private decimal _decAdeptWayDiscount = 0;
-		private int _intMaxLevels = 0;
-		private string _strLimitToPowers = "";
+        private bool _blnLoading = true;
+        private string _strLimitToPowers;
+        private decimal _decLimitToRating;
 
-		private bool _blnAddAgain = false;
+        private readonly Character _objCharacter;
 
-		private readonly Character _objCharacter;
+        private readonly XPathNavigator _xmlBasePowerDataNode;
 
-		private XmlDocument _objXmlDocument = new XmlDocument();
-
-		#region Control Events
-		public frmSelectPower(Character objCharacter)
+        #region Control Events
+        public frmSelectPower(Character objCharacter)
         {
             InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-			_objCharacter = objCharacter;
-			MoveControls();
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            _objCharacter = objCharacter;
+            // Load the Powers information.
+            _xmlBasePowerDataNode = XmlManager.Load("powers.xml").GetFastNavigator().SelectSingleNode("/chummer");
         }
 
         private void frmSelectPower_Load(object sender, EventArgs e)
         {
-			foreach (Label objLabel in this.Controls.OfType<Label>())
-			{
-				if (objLabel.Text.StartsWith("["))
-					objLabel.Text = "";
-			}
+            _blnLoading = false;
 
-        	List<ListItem> lstPower = new List<ListItem>();
-
-            // Load the Powers information.
-			_objXmlDocument = XmlManager.Instance.Load("powers.xml");
-
-			// Populate the Powers list.
-			XmlNodeList objXmlPowerList;
-			
-				if (_strLimitToPowers != "")
-				{
-					string strFilter = "(";
-					string[] strValue = _strLimitToPowers.Split(',');
-					foreach (string strPower in strValue)
-						strFilter += "name = \"" + strPower.Trim() + "\" or ";
-					// Remove the trailing " or ".
-					strFilter = strFilter.Substring(0, strFilter.Length - 4);
-					strFilter += ")";
-					objXmlPowerList = _objXmlDocument.SelectNodes("chummer/powers/power[" + strFilter + "]");
-				}
-				else
-				{
-					objXmlPowerList = _objXmlDocument.SelectNodes("/chummer/powers/power[" + _objCharacter.Options.BookXPath() + "]");
-				}
-			foreach (XmlNode objXmlPower in objXmlPowerList)
-			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlPower["name"].InnerText;
-				if (objXmlPower["translate"] != null)
-					objItem.Name = objXmlPower["translate"].InnerText;
-				else
-					objItem.Name = objXmlPower["name"].InnerText;
-				lstPower.Add(objItem);
-			}
-			SortListItem objSort = new SortListItem();
-			lstPower.Sort(objSort.Compare);
-			lstPowers.DataSource = null;
-			lstPowers.ValueMember = "Value";
-			lstPowers.DisplayMember = "Name";
-			lstPowers.DataSource = lstPower;
+            BuildPowerList();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (lstPowers.Text != "")
-                AcceptForm();
+            AddAgain = false;
+            AcceptForm();
         }
 
         private void lstPowers_DoubleClick(object sender, EventArgs e)
         {
-            if (lstPowers.Text != "")
-                AcceptForm();
+            AddAgain = false;
+            AcceptForm();
         }
 
-		private void lstPowers_SelectedIndexChanged(object sender, EventArgs e)
+        private void lstPowers_SelectedIndexChanged(object sender, EventArgs e)
         {
-			if (lstPowers.SelectedValue == null)
-				return;
+            if (_blnLoading)
+                return;
 
-            // Display the information for the selected Power.
-			XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + lstPowers.SelectedValue + "\"]");
+            string strSelectedId = lstPowers.SelectedValue?.ToString();
+            XPathNavigator objXmlPower = null;
+            if (!string.IsNullOrEmpty(strSelectedId))
+                objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = \"" + strSelectedId + "\"]");
 
-            lblPowerPoints.Text = objXmlPower["points"].InnerText;
-			if (objXmlPower["levels"].InnerText == "yes")
-			{
-				lblPowerPoints.Text += " / ";
-				lblPowerPoints.Text += LanguageManager.Instance.GetString("Label_Power_Level");
-			}
+            if (objXmlPower != null)
+            {
+                // Display the information for the selected Power.
+                string strPowerPointsText = objXmlPower.SelectSingleNode("points")?.Value ?? string.Empty;
+                if (objXmlPower.SelectSingleNode("levels")?.Value == bool.TrueString)
+                {
+                    strPowerPointsText += $" / {LanguageManager.GetString("Label_Power_Level", GlobalOptions.Language)}";
+                }
+                string strExtrPointCost = objXmlPower.SelectSingleNode("extrapointcost")?.Value;
+                if (!string.IsNullOrEmpty(strExtrPointCost))
+                {
+                    strPowerPointsText = strExtrPointCost + " + " + strPowerPointsText;
+                }
+                lblPowerPoints.Text = strPowerPointsText;
 
-			string strBook = _objCharacter.Options.LanguageBookShort(objXmlPower["source"].InnerText);
-			string strPage = objXmlPower["page"].InnerText;
-			if (objXmlPower["altpage"] != null)
-				strPage = objXmlPower["altpage"].InnerText;
-			lblSource.Text = strBook + " " + strPage;
+                string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strPage = objXmlPower.SelectSingleNode("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + strSpaceCharacter + strPage;
+                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + strSpaceCharacter + strPage);
+            }
+            else
+            {
+                lblPowerPoints.Text = string.Empty;
+                lblSource.Text = string.Empty;
+                lblSource.SetToolTip(string.Empty);
+            }
 
-			tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlPower["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+            lblPowerPointsLabel.Visible = !string.IsNullOrEmpty(lblPowerPoints.Text);
+            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 
-		private void cmdOKAdd_Click(object sender, EventArgs e)
-		{
-			_blnAddAgain = true;
-			cmdOK_Click(sender, e);
-		}
+        private void cmdOKAdd_Click(object sender, EventArgs e)
+        {
+            AddAgain = true;
+            AcceptForm();
+        }
 
-		private void txtSearch_TextChanged(object sender, EventArgs e)
-		{
-			XmlNodeList objXmlPowerList;
-			if (txtSearch.Text == "")
-				objXmlPowerList = _objXmlDocument.SelectNodes("/chummer/powers/power[" + _objCharacter.Options.BookXPath() + "]");
-			else
-				objXmlPowerList = _objXmlDocument.SelectNodes("/chummer/powers/power[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]");
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            BuildPowerList();
+        }
 
-			List<ListItem> lstPower = new List<ListItem>();
-			foreach (XmlNode objXmlPower in objXmlPowerList)
-			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlPower["name"].InnerText;
-				if (objXmlPower["translate"] != null)
-					objItem.Name = objXmlPower["translate"].InnerText;
-				else
-					objItem.Name = objXmlPower["name"].InnerText;
-				lstPower.Add(objItem);
-			}
-			SortListItem objSort = new SortListItem();
-			lstPower.Sort(objSort.Compare);
-			lstPowers.DataSource = null;
-			lstPowers.ValueMember = "Value";
-			lstPowers.DisplayMember = "Name";
-			lstPowers.DataSource = lstPower;
-		}
+        private void txtSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Down)
+            {
+                if (lstPowers.SelectedIndex + 1 < lstPowers.Items.Count)
+                {
+                    lstPowers.SelectedIndex += 1;
+                }
+                else if (lstPowers.Items.Count > 0)
+                {
+                    lstPowers.SelectedIndex = 0;
+                }
+            }
+            if (e.KeyCode == Keys.Up)
+            {
+                if (lstPowers.SelectedIndex - 1 >= 0)
+                {
+                    lstPowers.SelectedIndex -= 1;
+                }
+                else if (lstPowers.Items.Count > 0)
+                {
+                    lstPowers.SelectedIndex = lstPowers.Items.Count - 1;
+                }
+            }
+        }
 
-		private void txtSearch_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Down)
-			{
-				try
-				{
-					lstPowers.SelectedIndex++;
-				}
-				catch
-				{
-					try
-					{
-						lstPowers.SelectedIndex = 0;
-					}
-					catch
-					{
-					}
-				}
-			}
-			if (e.KeyCode == Keys.Up)
-			{
-				try
-				{
-					lstPowers.SelectedIndex--;
-					if (lstPowers.SelectedIndex == -1)
-						lstPowers.SelectedIndex = lstPowers.Items.Count - 1;
-				}
-				catch
-				{
-					try
-					{
-						lstPowers.SelectedIndex = lstPowers.Items.Count - 1;
-					}
-					catch
-					{
-					}
-				}
-			}
-		}
+        private void txtSearch_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Up)
+                txtSearch.Select(txtSearch.Text.Length, 0);
+        }
+        #endregion
 
-		private void txtSearch_KeyUp(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Up)
-				txtSearch.Select(txtSearch.Text.Length, 0);
-		}
-		#endregion
+        #region Properties
+        /// <summary>
+        /// Whether or not the user wants to add another item after this one.
+        /// </summary>
+        public bool AddAgain { get; private set; }
 
-		#region Properties
-		/// <summary>
-		/// Whether or not the user wants to add another item after this one.
-		/// </summary>
-		public bool AddAgain
-		{
-			get
-			{
-				return _blnAddAgain;
-			}
-		}
+        /// <summary>
+        /// Whether or not we should ignore how many of a given power may be taken. Generally used when bonding Qi Foci.
+        /// </summary>
+        public bool IgnoreLimits { get; set; }
 
-		/// <summary>
+        /// <summary>
         /// Power that was selected in the dialogue.
         /// </summary>
-        public string SelectedPower
-        {
-            get
-            {
-                return _strSelectedPower;
-            }
-        }
+        public string SelectedPower { get; private set; } = string.Empty;
+
 
         /// <summary>
-        /// Is Power level enabled for this Power?
+        /// Only the provided Powers should be shown in the list.
         /// </summary>
-        public bool LevelEnabled
+        public string LimitToPowers
         {
-            get
-            {
-                return _blnLevels;
-            }
+            set => _strLimitToPowers = value;
         }
 
         /// <summary>
-        /// Power Points per level cost for the Power.
+        /// Limit the selections based on the Rating of an external source, where 1 Rating = 0.25 PP.
         /// </summary>
-        public decimal PointsPerLevel
+        public int LimitToRating
         {
-            get
-            {
-                return _decPointsPerLevel;
-            }
+            set => _decLimitToRating = value * PointsPerLevel;
         }
 
         /// <summary>
-        /// Power Point discount for an Adept Way.
+        /// Value of the PP per level if using LimitToRating. Defaults to 0.25.
         /// </summary>
-        public decimal AdeptWayDiscount
+        public decimal PointsPerLevel { set; get; } = 0.25m;
+
+        #endregion
+
+        #region Methods
+        private void BuildPowerList()
         {
-            get
+            if (_blnLoading)
+                return;
+
+            string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
+            if (!string.IsNullOrEmpty(_strLimitToPowers))
             {
-                return _decAdeptWayDiscount;
+                StringBuilder objFilter = new StringBuilder();
+                foreach (string strPower in _strLimitToPowers.Split(','))
+                    if (!string.IsNullOrEmpty(strPower))
+                        objFilter.Append("name = \"" + strPower.Trim() + "\" or ");
+                if (objFilter.Length > 0)
+                {
+                    strFilter += " and (" + objFilter.ToString().TrimEndOnce(" or ") + ')';
+                }
             }
+
+            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+
+            List<ListItem> lstPower = new List<ListItem>();
+            foreach (XPathNavigator objXmlPower in _xmlBasePowerDataNode.Select("powers/power[" + strFilter + "]"))
+            {
+                decimal decPoints = Convert.ToDecimal(objXmlPower.SelectSingleNode("points")?.Value, GlobalOptions.InvariantCultureInfo);
+                string strExtraPointCost = objXmlPower.SelectSingleNode("extrapointcost")?.Value;
+                string strName = objXmlPower.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(strExtraPointCost))
+                {
+                    //If this power has already had its rating paid for with PP, we don't care about the extrapoints cost.
+                    if (!_objCharacter.Powers.Any(power => power.Name == strName && power.TotalRating > 0))
+                        decPoints += Convert.ToDecimal(strExtraPointCost, GlobalOptions.InvariantCultureInfo);
+                }
+                if (_decLimitToRating > 0 && decPoints > _decLimitToRating)
+                {
+                    continue;
+                }
+
+                if (!objXmlPower.RequirementsMet(_objCharacter, null, string.Empty, string.Empty, string.Empty, string.Empty, IgnoreLimits))
+                    continue;
+
+                lstPower.Add(new ListItem(objXmlPower.SelectSingleNode("id")?.Value ?? string.Empty, objXmlPower.SelectSingleNode("translate")?.Value ?? strName));
+            }
+            lstPower.Sort(CompareListItems.CompareNames);
+            _blnLoading = true;
+            string strOldSelected = lstPowers.SelectedValue?.ToString();
+            lstPowers.BeginUpdate();
+            lstPowers.ValueMember = "Value";
+            lstPowers.DisplayMember = "Name";
+            lstPowers.DataSource = lstPower;
+            _blnLoading = false;
+            if (!string.IsNullOrEmpty(strOldSelected))
+                lstPowers.SelectedValue = strOldSelected;
+            else
+                lstPowers.SelectedIndex = -1;
+            lstPowers.EndUpdate();
         }
 
         /// <summary>
-		/// Maximum number of levels allowed by the Power. Standard rules apply if this is 0.
-		/// </summary>
-		public int MaxLevels()
-		{
-			return _intMaxLevels;
-		}
-
-		/// <summary>
-		/// Only the provided Skills should be shown in the list.
-		/// </summary>
-		public string LimitToPowers
-		{
-			set
-			{
-				_strLimitToPowers = value;
-			}
-		}
-		#endregion
-
-		#region Methods
-		/// <summary>
-		/// Accept the selected item and close the form.
-		/// </summary>
-		private void AcceptForm()
+        /// Accept the selected item and close the form.
+        /// </summary>
+        private void AcceptForm()
         {
-            // Check to see if the user needs to select anything for the Power.
-			XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + lstPowers.SelectedValue + "\"]");
+            string strSelectedId = lstPowers.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strSelectedId))
+            {
+                // Check to see if the user needs to select anything for the Power.
+                XPathNavigator objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = \"" + strSelectedId + "\"]");
 
-			// Make sure the character meets the Quality requirements if any.
-			if (objXmlPower.InnerXml.Contains("<required>"))
-			{
-				string strRequirement = "";
-				bool blnRequirementMet = true;
-
-				// Quality requirements.
-				foreach (XmlNode objXmlQuality in objXmlPower.SelectNodes("required/allof/quality"))
-				{
-					bool blnFound = false;
-					foreach (Quality objQuality in _objCharacter.Qualities)
-					{
-						if (objQuality.Name == objXmlQuality.InnerText)
-						{
-							blnFound = true;
-							break;
-						}
-					}
-
-					if (!blnFound)
-					{
-						blnRequirementMet = false;
-						strRequirement += "\n\t" + objXmlQuality.InnerText;
-					}
-				}
-
-				foreach (XmlNode objXmlQuality in objXmlPower.SelectNodes("required/oneof/quality"))
-				{
-					blnRequirementMet = false;
-					foreach (Quality objQuality in _objCharacter.Qualities)
-					{
-						if (objQuality.Name == objXmlQuality.InnerText)
-						{
-							blnRequirementMet = true;
-							break;
-						}
-					}
-
-					if (!blnRequirementMet)
-						strRequirement += "\n\t" + objXmlQuality.InnerText;
-					else
-						break;
-				}
-
-				if (!blnRequirementMet)
-				{
-					string strMessage = LanguageManager.Instance.GetString("Message_SelectPower_PowerRequirement");
-					strMessage += strRequirement;
-
-					MessageBox.Show(strMessage, LanguageManager.Instance.GetString("MessageTitle_SelectPower_PowerRequirement"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-					return;
-				}
-			}
-
-            // Retrieve the Power Level information.
-			if (objXmlPower["levels"].InnerText != "no")
-			{
-				_blnLevels = true;
-                if (objXmlPower["maxlevel"] != null)
-                    _intMaxLevels = Convert.ToInt32(objXmlPower["maxlevel"].InnerText);
-                else
-                    _intMaxLevels = 100;
-			}
-			else
-				_blnLevels = false;
-
-			_decPointsPerLevel = Convert.ToDecimal(objXmlPower["points"].InnerText, GlobalOptions.Instance.CultureInfo);
-            _decAdeptWayDiscount = Convert.ToDecimal(objXmlPower["adeptway"].InnerText, GlobalOptions.Instance.CultureInfo);
-			
-            _strSelectedPower = lstPowers.SelectedValue.ToString();
-            this.DialogResult = DialogResult.OK;
+                if (objXmlPower.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Power", GlobalOptions.Language), string.Empty, string.Empty, string.Empty, IgnoreLimits))
+                {
+                    SelectedPower = strSelectedId;
+                    DialogResult = DialogResult.OK;
+                }
+            }
         }
 
-		private void MoveControls()
-		{
-			lblPowerPoints.Left = lblPowerPointsLabel.Left + lblPowerPointsLabel.Width + 6;
-			lblSource.Left = lblSourceLabel.Left + lblSourceLabel.Width + 6;
-			lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
-		}
-		#endregion
-
-        private void lblSource_Click(object sender, EventArgs e)
+        private void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblSource.Text);
+            CommonFunctions.OpenPDFFromControl(sender, e);
         }
+        #endregion
     }
 }

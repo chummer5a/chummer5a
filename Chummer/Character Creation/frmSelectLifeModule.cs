@@ -16,7 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -27,119 +28,108 @@ namespace Chummer
     public partial class frmSelectLifeModule : Form
     {
         public bool AddAgain { get; private set; }
-        private Character _objCharacter;
-        private int _intStage;
-        private String _strDefaultStageName;
+        private readonly Character _objCharacter;
+        private readonly int _intStage;
+        private string _strDefaultStageName;
         private XmlDocument _xmlDocument;
-        private String _selectedId;
-	    private Regex searchRegex;
+        private string _strSelectedId;
+        private Regex _rgxSearchRegex;
 
 
-	    private String _strWorkStage = null;
-        
-        public frmSelectLifeModule(Character objCharacter, int stage)
+        private string _strWorkStage;
+
+        public frmSelectLifeModule(Character objCharacter, int intStage)
         {
             InitializeComponent();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            _intStage = stage;
-            MoveControls();
+            _intStage = intStage;
         }
 
         private void frmSelectLifeModule_Load(object sender, EventArgs e)
         {
-            MoveControls();
+            _xmlDocument = XmlManager.Load("lifemodules.xml");
+            string strSelectString = "chummer/stages/stage[@order = \"" + _intStage + "\"]";
 
-            _xmlDocument = XmlManager.Instance.Load("lifemodules.xml");
-            String selectString = "chummer/stages/stage[@order = \"" + _intStage + "\"]";
+            XmlNode xmlStageNode = _xmlDocument.SelectSingleNode(strSelectString);
+            if (xmlStageNode != null)
+            {
+                _strWorkStage = _strDefaultStageName = xmlStageNode.InnerText;
 
-            XmlNode stageNode = _xmlDocument.SelectSingleNode(selectString);
-	        if (stageNode != null)
-	        {
-		        _strWorkStage = _strDefaultStageName = stageNode.InnerText;
-
-		        BuildTree(GetSelectString());
-	        }
-	        else
-	        {
-		        _strWorkStage = _strDefaultStageName = "null";
-	        }
+                BuildTree(GetSelectString());
+            }
+            else
+            {
+                _strWorkStage = _strDefaultStageName = "null";
+            }
         }
 
-	    private void BuildTree(String stageString)
-	    {
-		    XmlNodeList matches = _xmlDocument.SelectNodes("chummer/modules/module" + stageString);
-            treModules.Nodes.Clear();
-		    treModules.Nodes.AddRange(
-			    BuildList(matches));
-	    }
-
-	    private TreeNode[] BuildList(XmlNodeList xmlNodes)
+        private void BuildTree(string stageString)
         {
-            List<TreeNode> nodes = new List<TreeNode>();
+            XmlNodeList matches = _xmlDocument.SelectNodes("chummer/modules/module" + stageString);
+            treModules.Nodes.Clear();
+            treModules.Nodes.AddRange(
+                BuildList(matches));
+        }
+
+        private TreeNode[] BuildList(XmlNodeList xmlNodes)
+        {
+            List<TreeNode> lstTreeNodes = new List<TreeNode>();
             for (int i = 0; i < xmlNodes.Count; i++)
             {
                 XmlNode xmlNode = xmlNodes[i];
 
-	            if (Quality.IsValid(_objCharacter, xmlNode) || !chkLimitList.Checked)
-	            {
+                if (!chkLimitList.Checked || xmlNode.RequirementsMet(_objCharacter))
+                {
 
-		            TreeNode treNode = new TreeNode();
+                    TreeNode treNode = new TreeNode
+                    {
+                        Text = xmlNode["name"]?.InnerText ?? string.Empty
+                    };
+                    if (xmlNode["versions"] != null)
+                    {
+                        treNode.Nodes.AddRange(
+                            BuildList(xmlNode.SelectNodes("versions/version[" + _objCharacter.Options.BookXPath() + "or not(source)]")));
+                    }
 
-		            treNode.Text = xmlNode["name"].InnerText;
-		            if (xmlNode["versions"] != null)
-		            {
-			            treNode.Nodes.AddRange(
-				            BuildList(xmlNode.SelectNodes("versions/version")));
-		            }
+                    treNode.Tag = xmlNode["id"]?.InnerText;
+                    if (_rgxSearchRegex != null)
+                    {
+                        if (_rgxSearchRegex.IsMatch(treNode.Text))
+                        {
+                            lstTreeNodes.Add(treNode);
+                        }
+                        else if (treNode.Nodes.Count != 0)
+                        {
+                            lstTreeNodes.Add(treNode);
+                        }
+                    }
+                    else
+                    {
+                        lstTreeNodes.Add(treNode);
+                    }
 
-		            treNode.Tag = xmlNode["id"].InnerText;
-		            if (searchRegex != null)
-		            {
-			            if (searchRegex.IsMatch(treNode.Text))
-			            {
-				            nodes.Add(treNode);
-			            }
-						else if (treNode.Nodes.Count != 0)
-						{
-							nodes.Add(treNode);
-						}
-		            }
-		            else
-		            {
-						nodes.Add(treNode);
-					}
-		            
-	            }
+                }
             }
 
-            return nodes.ToArray();
+            return lstTreeNodes.ToArray();
         }
         
         private void cmdOK_Click(object sender, EventArgs e)
         {
             AddAgain = false;
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             AddAgain = true;
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
-        }
-
-        private void MoveControls()
-        {
-            int intWidth = Math.Max(lblBPLabel.Width, lblSourceLabel.Width);
-            lblBP.Left = lblBPLabel.Left + intWidth + 6;
-            lblSource.Left = lblSourceLabel.Left + intWidth + 6;
-
-            lblSearch.Left = txtSearch.Left - 6 - lblSearch.Width;
+            DialogResult = DialogResult.Cancel;
         }
 
         private void treModules_AfterSelect(object sender, TreeViewEventArgs e)
@@ -153,208 +143,169 @@ namespace Chummer
             else
             {
                 //Select any node that have an id node equal to tag
-                String selectString = "//*[id = \"" + e.Node.Tag + "\"]/selectable";
+                string selectString = "//*[id = \"" + e.Node.Tag + "\"]/selectable";
                 XmlNode node = _xmlDocument.SelectSingleNode(selectString);
-                //if it contains >selectable>true</selectable>, yes or </selectable>
+                //if it contains >selectable>True</selectable>, yes or </selectable>
                 //set button to selectable, otherwise not
-                blnSelectAble = (node != null &&
-                                 (node.InnerText == "true" || node.InnerText == "yes" || node.OuterXml.EndsWith("/>")));
+                blnSelectAble = (node != null && (node.InnerText == bool.TrueString || node.OuterXml.EndsWith("/>")));
             }
 
-	        try
-	        {
+            _strSelectedId = (string)e.Node.Tag;
+            XmlNode xmlSelectedNodeInfo = Quality.GetNodeOverrideable(_strSelectedId, XmlManager.Load("lifemodules.xml", GlobalOptions.Language));
 
+            if (xmlSelectedNodeInfo != null)
+            {
+                cmdOK.Enabled = blnSelectAble;
+                cmdOKAdd.Enabled = blnSelectAble;
 
-		        XmlNode selectedNodeInfo = Quality.GetNodeOverrideable((string) e.Node.Tag);
-		        _selectedId = (string) e.Node.Tag;
+                lblBP.Text = xmlSelectedNodeInfo["karma"]?.InnerText ?? string.Empty;
+                lblSource.Text = xmlSelectedNodeInfo["source"]?.InnerText ?? string.Empty + LanguageManager.GetString("String_Space", GlobalOptions.Language) + xmlSelectedNodeInfo["page"]?.InnerText;
+                lblStage.Text = xmlSelectedNodeInfo["stage"]?.InnerText ?? string.Empty;
+            }
+            else
+            {
+                lblBP.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
+                lblStage.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
+                lblSource.Text = LanguageManager.GetString("String_Error", GlobalOptions.Language);
 
-		        cmdOK.Enabled = blnSelectAble;
-		        cmdOKAdd.Enabled = blnSelectAble;
-
-		        lblBP.Text = selectedNodeInfo["karma"] != null ? selectedNodeInfo["karma"].InnerText : "";
-		        lblSource.Text = (selectedNodeInfo["source"] != null ? selectedNodeInfo["source"].InnerText : "") +
-		                         " " + (selectedNodeInfo["page"] != null ? selectedNodeInfo["page"].InnerText : "");
-
-		        lblStage.Text = selectedNodeInfo["stage"] != null ? selectedNodeInfo["stage"].InnerText : "";
-	        }
-	        catch (Exception)
-	        {
-		        lblBP.Text = "ERROR";
-		        lblStage.Text = "ERROR";
-		        lblSource.Text = "ERROR";
-
-				cmdOK.Enabled = false;
-				cmdOKAdd.Enabled = false;
-			}
+                cmdOK.Enabled = false;
+                cmdOKAdd.Enabled = false;
+            }
 
         }
 
-        public XmlNode SelectedNode
+        public XmlNode SelectedNode => Quality.GetNodeOverrideable(_strSelectedId, XmlManager.Load("lifemodules.xml", GlobalOptions.Language));
+
+        private void treModules_DoubleClick(object sender, EventArgs e)
         {
-            get { return Quality.GetNodeOverrideable(_selectedId); }
+            if (cmdOK.Enabled)
+            {
+                AddAgain = false;
+                cmdOK_Click(sender, e);
+            }
         }
 
-		private void treModules_DoubleClick(object sender, EventArgs e)
-		{
-			if (cmdOK.Enabled)
-			{
-				AddAgain = false;
-				cmdOK_Click(sender, e);
-			}
-		}
+        private void chkLimitList_Click(object sender, EventArgs e)
+        {
+            cboStage.BeginUpdate();
+            lblStage.Visible = chkLimitList.Checked;
+            cboStage.Visible = !chkLimitList.Checked;
 
-		private void chkLimitList_Click(object sender, EventArgs e)
-		{
-			lblStage.Visible = chkLimitList.Checked;
-			cboStage.Visible = !chkLimitList.Checked;
+            if (cboStage.Visible)
+            {
+                if (cboStage.DataSource == null)
+                {
+                    List<ListItem> Stages = new List<ListItem>()
+                    {
+                        new ListItem("0", LanguageManager.GetString("String_All", GlobalOptions.Language))
+                    };
 
-			if (cboStage.Visible)
-			{
-				if (cboStage.DataSource == null)
-				{
-					List<ListItem> Stages = new List<ListItem>()
-					{
-						new ListItem()
-						{
-							Name = LanguageManager.Instance.GetString("String_All"),
-							Value = "0"
-						}
-					};
+                    using (XmlNodeList xmlNodes = _xmlDocument.SelectNodes("/chummer/stages/stage"))
+                        if (xmlNodes != null)
+                            foreach (XmlNode xnode in xmlNodes)
+                            {
+                                string strOrder = xnode.Attributes?["order"]?.Value;
+                                if (!string.IsNullOrEmpty(strOrder))
+                                {
+                                    Stages.Add(new ListItem(strOrder, xnode.InnerText));
+                                }
+                            }
 
-					XmlNodeList xnodes = _xmlDocument.SelectNodes("/chummer/stages/stage");
-					foreach (XmlNode xnode in xnodes)
-					{
-						XmlAttribute attrib = xnode.Attributes["order"];
-						if (attrib != null)
-						{
-							ListItem item = new ListItem();
-							item.Name = xnode.InnerText;
-							item.Value = xnode.Attributes["order"].Value;
-							Stages.Add(item);
-						}
-					}
+                    //Sort based on integer value of key
+                    Stages.Sort((x, y) =>
+                    {
+                        if (int.TryParse(x.Value.ToString(), out int xint))
+                        {
+                            if (int.TryParse(y.Value.ToString(), out int yint))
+                            {
+                                return xint - yint;
+                            }
 
-					//Sort based on integer value of key
-					Stages.Sort((x, y) =>
-					{
-						int xint = 0;
-						int yint = 0;
-						if (int.TryParse(x.Value, out xint))
-						{
-							if (int.TryParse(y.Value, out yint))
-							{
-								return xint - yint;
-							}
-							else
-							{
-								return 1;
-							}
-						}
-						else
-						{
-							if (int.TryParse(y.Value, out yint))
-							{
-								return -1;
-							}
-							else
-							{
-								return 0;
-							}
-						}
-					});
+                            return 1;
+                        }
 
-					cboStage.ValueMember = "Value";
-					cboStage.DisplayMember = "Name";
-					cboStage.DataSource = Stages;
-				}
+                        if (int.TryParse(y.Value.ToString(), out int _))
+                        {
+                            return -1;
+                        }
 
-				ListItem selectedItem = ((List<ListItem>) cboStage.DataSource).Find(x => x.Value == _intStage.ToString());
-				if (selectedItem != null)
-				{
-					cboStage.SelectedItem = selectedItem;
-				}
+                        return 0;
+                    });
 
-			}
-			else
-			{
-				_strWorkStage = _strDefaultStageName;
-				BuildTree(GetSelectString());
-			}
+                    cboStage.ValueMember = "Value";
+                    cboStage.DisplayMember = "Name";
+                    cboStage.DataSource = Stages;
+                }
 
-		}
+                ListItem selectedItem = ((List<ListItem>) cboStage.DataSource).Find(x => x.Value.ToString() == _intStage.ToString());
+                if (!string.IsNullOrEmpty(selectedItem.Name))
+                    cboStage.SelectedItem = selectedItem;
 
-		private void cboStage_SelectionChangeCommitted(object sender, EventArgs e)
-		{
-			String strSelected = (String) cboStage.SelectedValue;
-			if (strSelected == "0")
-			{
-				_strWorkStage = null;
-				BuildTree(GetSelectString());
-			}
-			else
-			{
-				String strNodeSelect = "chummer/stages/stage[@order = \"" + strSelected + "\"]";
-                _strWorkStage = _xmlDocument.SelectSingleNode(strNodeSelect).InnerText;
-				BuildTree(GetSelectString());
-			}
-			
-		}
-		private void txtSearch_TextChanged(object sender, EventArgs e)
-		{
-			if (String.IsNullOrWhiteSpace(txtSearch.Text))
-			{
-				searchRegex = null;
-			}
-			else
-			{
-				try
-				{
-					searchRegex = new Regex(txtSearch.Text, RegexOptions.IgnoreCase);
-				}
-				catch (Exception)
-				{
-					//No other way to check for a valid regex that i know of
-					
-				}
-			}
-			
-			BuildTree(GetSelectString());
-		}
+            }
+            else
+            {
+                _strWorkStage = _strDefaultStageName;
+                BuildTree(GetSelectString());
+            }
+            cboStage.EndUpdate();
+        }
 
-	    private String GetSelectString()
-	    {
-		    String working = "[";
-		    bool before = false;
+        private void cboStage_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            string strSelected = (string) cboStage.SelectedValue;
+            if (strSelected == "0")
+            {
+                _strWorkStage = null;
+                BuildTree(GetSelectString());
+            }
+            else
+            {
+                _strWorkStage = _xmlDocument.SelectSingleNode("chummer/stages/stage[@order = \"" + strSelected + "\"]")?.InnerText;
+                BuildTree(GetSelectString());
+            }
 
-			///chummer/modules/module//name[contains(., "C")]/..["" = ""]
-			/// /chummer/modules/module//name[contains(., "can")]/..[id]
+        }
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtSearch.Text))
+            {
+                _rgxSearchRegex = null;
+            }
+            else
+            {
+                try
+                {
+                    _rgxSearchRegex = new Regex(txtSearch.Text, RegexOptions.IgnoreCase);
+                }
+                catch (ArgumentException)
+                {
+                    //No other way to check for a valid regex that i know of
+                }
+            }
 
-			//if (!String.IsNullOrWhiteSpace(_strSearch))
-			//{
-			//	working = String.Format("//name[contains(., \"{0}\")]..[", _strSearch);
-			//	before = true;
-			//}
-			if (!String.IsNullOrWhiteSpace(_strWorkStage))
-		    {
-				working += String.Format("{0}stage = \"{1}\"", before ? " and " : "", _strWorkStage);
-				before = true;
-		    }
-			if (before)
-		    {
-			    working += " and (";
-		    }
-		    working += _objCharacter.Options.BookXPath();
-		    if (before)
-		    {
-			    working += ")]";
-		    }
-		    else
-		    {
-			    working += "]";
-		    }
+            BuildTree(GetSelectString());
+        }
+
+        private string GetSelectString()
+        {
+            string strReturn = "[(" + _objCharacter.Options.BookXPath();
+
+            //chummer/modules/module//name[contains(., "C")]/..["" = string.Empty]
+            // /chummer/modules/module//name[contains(., "can")]/..[id]
+
+            //if (!string.IsNullOrWhiteSpace(_strSearch))
+            //{
+            //    strReturn = string.Format("//name[contains(., \"{0}\")]..[", _strSearch);
+            //    before = true;
+            //}
+            if (!string.IsNullOrWhiteSpace(_strWorkStage))
+            {
+                strReturn += ") and (stage = \"" + _strWorkStage + '\"';
+            }
+            strReturn += ")]";
 
 
-		    return working;
-	    }
-	}
+            return strReturn;
+        }
+    }
 }

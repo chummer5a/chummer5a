@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+  <metatypes>
+    <metatype>
+      <name>Troll</name>
+      <qualities>
+        <negative amendoperation="addnode">
+          <quality removable="True">Horns</quality>
+        </negative>
+      </qualities>
+    </metatype>
+      <metatype xpathfilter="contains(name,'Shapeshifter')">
+        <metavariants>
+          <metavariant xpathfilter="name = 'Troll'">
+            <qualities>
+              <negative amendoperation="addnode">
+                <quality removable="True">Horns</quality>
+              </negative>
+            </qualities>
+          </metavariant>
+        </metavariants>
+      </metatype>
+  </metatypes>
+</chummer>

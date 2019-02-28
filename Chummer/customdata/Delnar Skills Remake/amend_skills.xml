@@ -1,0 +1,913 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <skillgroups amendoperation="replace" >
+    <name>Firearms</name>
+    <name>Close Combat</name>
+    <name>Projectile Weapons</name>
+    <name>Stealth</name>
+    <name>Prowess</name>
+    <name>Driving</name>
+    <name>Outdoors</name>
+    <name>Stagecraft</name>
+    <name>Influence</name>
+    <name>Military Science</name>
+    <name>Engineering</name>
+    <name>Computers</name>
+    <name>Biotechnology</name>
+    <name>Aetherology</name>
+    <name>Sorcery</name>
+    <name>Conjuring</name>
+    <name>Processing</name>
+    <name>Tasking</name>
+  </skillgroups>
+  <categories amendoperation="replace" >
+    <category type="active">Combat Active</category>
+    <category type="active">Physical Active</category>
+    <category type="active">Social Active</category>
+    <category type="active">Magical Active</category>
+    <category type="active">Resonance Active</category>
+    <category type="active">Technical Active</category>
+    <category type="knowledge">Academic</category>
+    <category type="knowledge">Interest</category>
+    <category type="knowledge">Language</category>
+    <category type="knowledge">Professional</category>
+    <category type="knowledge">Street</category>
+  </categories>
+  <skills amendoperation="replace">
+    <skill>
+      <id>a9fa961d-07e5-46da-8edc-403ae3e6cc75</id>
+      <name>Acrobatics</name>
+      <attribute>STR</attribute>
+      <category>Physical Active</category>
+      <default>True</default>
+      <skillgroup>Prowess</skillgroup>
+      <specs>
+        <spec>Climbing</spec>
+        <spec>Contortion</spec>
+        <spec>Falling/Free-Falling</spec>
+        <spec>Jumping/Leaping</spec>
+      </specs>
+      <source>SR5</source>
+      <page>133</page>
+    </skill>
+    <skill>
+      <id>e7e5a43f-9762-4863-86dc-3fd7799e53a2</id>
+      <name>Acting</name>
+      <attribute>CHA</attribute>
+      <category>Social Active</category>
+      <default>True</default>
+      <skillgroup>Stagecraft</skillgroup>
+      <specs>
+        <spec>Emotional (SimSense)</spec>
+        <spec>Make-Up</spec>
+        <spec>Physical</spec>
+        <spec>Voice</spec>
+      </specs>
+      <source>SR5</source>
+      <page>138</page>
+    </skill>
+    <skill>
+      <id>fc89344f-daa6-438e-b61d-23f10dd13e44</id>
+      <name>Alchemy</name>
+      <attribute>MAG</attribute>
+      <category>Magical Active</category>
+      <default>True</default>
+      <skillgroup>Sorcery</skillgroup>
+      <specs>
+        <spec>[Specific Preparation]</spec>
+      </specs>
+      <source>SR5</source>
+      <page>142</page>
+    </skill>
+    <skill>
+      <id>e09e5aa7-e496-41a2-97ce-17f577361888</id>
+      <name>Animal Handling</name>
+      <attribute>INT</attribute>
+      <category>Physical Active</category>
+      <default>True</default>
+      <skillgroup>Outdoors</skillgroup>
+      <specs>
+        <spec>Herding/Driving</spec>
+        <spec>Riding</spec>
+        <spec>Taming/Training</spec>
+      </specs>
+      <source>SR5</source>
+      <page>143</page>
+    </skill>
+    <skill>
+      <id>0dbcb9cd-f824-4b5d-a387-90d33318b04c</id>
+      <name>Aquatics</name>
+      <attribute>STR</attribute>
+      <category>Physical Active</category>
+      <default>True</default>
+      <skillgroup>Prowess</skillgroup>
+      <specs>
+        <spec>Diving</spec>
+        <spec>Paddling</spec>
+        <spec>Swimming</spec>
+        <spec>[Muscle-Powered Water Locomotion]</spec>
+      </specs>
+      <source>SR5</source>
+      <page>134</page>
+    </skill>
+    <skill>
+      <id>74a68a9e-8c5b-4998-8dbb-08c1e768afc3</id>
+      <name>Arcana</name>
+      <attribute>MAG</attribute>
+      <category>Magical Active</category>
+      <default>True</default>
+      <skillgroup>Aetherology</skillgroup>
+      <specs>
+        <spec>Arcane Lore</spec>
+        <spec>Artificing</spec>
+        <spec>Disrupt Ritual</spec>
+      </specs>
+      <source>SR5</source>
+      <page>142</page>
+    </skill>
+    <skill>
+      <id>1537ca5c-fa93-4c05-b073-a2a0eed91b8e</id>
+      <name>Archery</name>
+      <attribute>AGI</attribute>
+      <category>Combat Active</category>
+      <default>True</default>
+      <skillgroup>Projectile Weapons</skillgroup>
+      <specs>
+        <spec>Blowguns</spec>
+        <spec>Bows</spec>
+        <spec>Pistol Crossbows</spec>
+        <spec>Rifle Crossbows</spec>
+        <spec>Slingshots</spec>
+      </specs>
+      <source>SR5</source>
+      <page>130</page>
+    </skill>
+    <skill>
+      <id>ada6d9b2-e451-4289-be45-7085fa34a51a</id>
+      <name>Armorer</name>
+      <attribute>LOG</attribute>
+      <category>Technical Active</category>
+      <default>True</default>
+      <skillgroup>Engineering</skillgroup>
+      <specs>
+        <spec>Ammunition</spec>
+        <spec>Armor</spec>
+        <spec>Close Combat Weapons</spec>
+        <spec>Firearms</spec>
+        <spec>Projectile Weapons</spec>
+      </specs>
+      <source>SR5</source>
+      <page>143</page>
+    </skill>
+    <skill>
+      <id>59318078-e071-411b-9194-7222560e9f4a</id>
+      <name>Astral</name>
+      <attribute>MAG</attribute>
+      <category>Magical Active</category>
+      <default>True</default>
+      <skillgroup>Aetherology</skillgroup>
+      <specs>
+        <spec>Assensing</spec>
+        <spec>Astral Combat</spec>
+        <spec>Astral Navigation</spec>
+      </specs>
+      <source>SR5</source>
+      <page>142</page>
+    </skill>
+    <skill>
+      <id>1531b2d8-6116-4be4-87b0-232dba1fc447</id>
+      <name>Athletics</name>
+      <attribute>STR</attribute>
+      <category>Physical Active</category>
+      <default>True</default>
+      <skillgroup>Prowess</skillgroup>
+      <specs>
+        <spec>Cycling</spec>
+        <spec>Running</spec>
+        <spec>Skating</spec>
+        <spec>Skiing</spec>
+        <spec>[Muscle-Powered Ground or Air Locomotion]</spec>
+      </specs>
+      <source>SR5</source>
+      <page>133</page>
+    </skill>
+    <skill>
+      <id>9a2d9175-d445-45ca-842d-90223ad13f05</id>
+      <name>Banishing</name>
+      <attribute>MAG</attribute>
+      <category>Magical Active</category>
+      <default>True</default>
+      <skillgroup>Conjuring</skillgroup>
+      <specs>
+        <spec>Bound Spirits</spec>
+        <spec>Free Spirits</spec>
+        <spec>Summoned Spirits</spec>
+      </specs>
+      <source>SR5</source>
+      <page>142</page>
+    </skill>
+    <skill>
+      <id>dfba7c09-3d95-43fd-be75-39b3e8b22cd3</id>
+      <name>Binding</name>
+      <attribute>MAG</attribute>
+      <category>Magical Active</category>
+      <default>True</default>
+      <skillgroup>Conjuring</skillgroup>
+      <specs>
+        <spec>[Spirit Type]</spec>
+      </specs>
+      <source>SR5</source>
+      <page>142</page>
+    </skill>
+    <skill>
+      <id>cd9f6bf7-fa48-464b-9a8f-c7ce26713a72</id>
+      <name>Blunt Weapons</name>
+      <attribute>AGI</attribute>
+      <category>Combat Active</category>
+      <default>True</default>
+      <skillgroup>Close Combat</skillgroup>
+      <specs>
+        <spec>Battering Rams</spec>
+        <spec>Flexible Weapons</spec>
+        <spec>Large Clubs/Maces</spec>
+        <spec>Shields</spec>
+        <spec>Small Clubs/Maces</spec>
+        <spec>Staves</spec>
+        <spec>Stun Guns</spec>
+      </specs>
+      <source>SR5</source>
+      <page>131</page>
+    </skill>
+    <skill>
+      <id>bd4d977a-cbd4-4289-99bb-896caed6786a</id>
+      <name>Chemistry</name>
+      <attribute>LOG</attribute>
+      <category>Technical Active</category>
+      <default>True</default>
+      <skillgroup>Biotechnology</skillgroup>
+      <specs>
+        <spec>Analysis</spec>
+        <spec>[Drug or Compound]</spec>
+      </specs>
+      <source>SR5</source>
+      <page>144</page>
+    </skill>
+    <skill>
+      <id>963a548d-c629-4a13-a3e3-31b085a42e20</id>
+      <name>Command</name>
+      <attribute>CHA</attribute>
+      <category>Social Active</category>
+      <default>True</default>
+      <skillgroup>Influence</skillgroup>
+      <specs>
+        <spec>Intimidate/Interrogate</spec>
+        <spec>Instruction</spec>
+        <spec>Leadership</spec>
+      </specs>
+      <source>SR5</source>
+      <page>139</page>
+    </skill>
+    <skill>
+      <id>f338d383-ffd8-4ff8-b99b-cf4c2ed1b159</id>
+      <name>Compiling</name>
+      <attribute>RES</attribute>
+      <category>Resonance Active</category>
+      <default>True</default>
+      <skillgroup>Tasking</skillgroup>
+      <specs>
+        <spec>[Sprite Type]</spec>
+      </specs>
+      <source>SR5</source>
+      <page>143</page>
+    </skill>
+    <skill>
+      <id>6d7f48d3-84a1-4fce-90d3-58d566f70fa6</id>
+      <name>Con</name>
+      <attribute>CHA</attribute>
+      <category>Social Active</category>
+      <default>True</default>
+      <skillgroup>Stagecraft</skillgroup>
+      <specs>
+        <spec>Advance Fee Scam</spec>
+        <spec>Insurance Fraud</spec>
+        <spec>The Badger</spec>
+        <spec>Three-Card Monte</spec>
+        <spec>[Confidence Game]</spec>
+      </specs>
+      <source>SR5</source>
+      <page>138</page>
+    </skill>
+    <skill>
+      <id>3db81bcc-264b-47e1-847c-06bdacd88973</id>
+      <name>Counterspelling</name>
+      <attribute>MAG</attribute>
+      <category>Magical Active</category>
+      <default>True</default>
+      <skillgroup>Sorcery</skillgroup>
+      <specs>
+        <spec>Instant Spells</spec>
+        <spec>Sustained/Permanent Spells</spec>
+        <spec>Disjoining</spec>
+      </specs>
+      <source>SR5</source>
+      <page>142</page>
+    </skill>
+    <skill>
+      <id>6e9670cf-3ccc-4a3a-84f3-da4da18cc973</id>
+      <name>Counterthreading</name>
+      <attribute>RES</attribute>
+      <category>Resonance Active</category>
+      <default>True</default>
+      <skillgroup>Processing</skillgroup>
+      <specs>
+        <spec>Instant Complex Forms</spec>
+        <spec>Sustained/Permanent Complex Forms</spec>
+        <spec>Nested Forms</spec>
+      </specs>
+      <source>SR5</source>
+      <page>250</page>
+    </skill>
+    <skill>
+      <id>7143f979-aa48-4cc8-a29c-e010400e6e11</id>
+      <name>Cyberwarfare</name>
+      <attribute>LOG</attribute>
+      <category>Technical Active</category>
+      <default>True</default>
+      <skillgroup>Computers</skillgroup>
+      <specs>
+        <spec>[Attack Matrix Action]</spec>
+        <spec>[Sleaze Matrix Action other than Control Device]</spec>
+        <spec>[Firewall Matrix Action]</spec>
+      </specs>
+      <source>SR5</source>
+      <page>144</page>
+    </skill>
+    <skill>
+      <id>64eed2e9-e61c-4cba-81d4-18a612cf2df6</id>
+      <name>Decompiling</name>
+      <attribute>RES</attribute>
+      <category>Resonance Active</category>
+      <default>True</default>
+      <skillgroup>Tasking</skillgroup>
+      <specs>
+        <spec>Compiled Sprites</spec>
+        <spec>Free Sprites</spec>
+        <spec>Registered Sprites</spec>
+      </specs>
+      <source>SR5</source>
+      <page>143</page>
+    </skill>
+    <skill>
+      <id>276877e1-5cdf-4e95-befd-13c1abb5ae02</id>
+      <name>Demolitions</name>
+      <attribute>LOG</attribute>
+      <category>Technical Active</category>
+      <default>True</default>
+      <skillgroup>Military Science</skillgroup>
+      <specs>
+        <spec>Defusing</spec>
+        <spec>Explosives Improvization</spec>
+        <spec>Explosives Placement</spec>
+      </specs>
+      <source>SR5</source>
+      <page>144</page>
+    </skill>
+    <skill>
+      <id>48763fa5-4b89-48c7-80ff-d0a2761de4c0</id>
+      <name>Edged Weapons</name>
+      <attribute>AGI</attribute>
+      <category>Combat Active</category>
+      <default>True</default>
+      <skillgroup>Close Combat</skillgroup>
+      <specs>
+        <spec>Axes</spec>
+        <spec>Chainsaws</spec>
+        <spec>Monofilament Flexible Weapons</spec>
+        <spec>Large Blades</spec>
+        <spec>Polearms</spec>
+        <spec>Small Blades</spec>
+      </specs>
+      <source>SR5</source>
+      <page>130</page>
+    </skill>
+    <skill>
+      <id>41e184e0-7273-403a-9300-fa29a1707bf0</id>
+      <name>Electronics</name>
+      <attribute>LOG</attribute>
+      <category>Technical Active</category>
+      <default>True</default>
+      <skillgroup>Engineering</skillgroup>
+      <specs>
+        <spec>Commlinks</spec>
+        <spec>Cyberdecks</spec>
+        <spec>Cyberware</spec>
+        <spec>Hard Nanoware</spec>
+        <spec>[Electronics Type]</spec>
+      </specs>
+      <source>SR5</source>
+      <page>145</page>
+    </skill>
+    <skill>
+      <id>47cb1e8b-c285-4c54-9aaa-75305ad6dd4f</id>
+      <name>First Aid</name>
+      <attribute>LOG</attribute>
+      <category>Technical Active</category>
+      <default>True</default>
+      <skillgroup>Biotechnology</skillgroup>
+      <specs>
+        <spec>External Physical Damage</spec>
+        <spec>Internal Physical Damage</spec>
+        <spec>Stun Damage</spec>
+      </specs>
+      <source>SR5</source>
+      <page>144</page>
+    </skill>
+    <skill>
+      <id>58452cff-44ea-41c6-a554-28a869149b27</id>
+      <name>Gunnery</name>
+      <attribute>LOG</attribute>
+      <category>Technical Active</category>
+      <default>True</default>
+      <skillgroup>Military Science</skillgroup>
+      <specs>
+        <spec>Artillery</spec>
+        <spec>Energy</spec>
+        <spec>Rocket/Missile</spec>
+        <spec>Small Arms</spec>
+      </specs>
+      <source>SR5</source>
+      <page>146</page>
+    </skill>
+    <skill>
+      <id>adf31a50-b228-4e09-a09c-46ab9f5e59a1</id>
+      <name>Handguns</name>
+      <attribute>REA</attribute>
+      <category>Combat Active</category>
+      <default>True</default>
+      <skillgroup>Firearms</skillgroup>
+      <specs>
+        <spec>Compressed Air Pistols</spec>
+        <spec>Large Pistols</spec>
+        <spec>Revolvers</spec>
+        <spec>Small Pistols</spec>
+      </specs>
+      <source>SR5</source>
+      <page>132</page>
+    </skill>
+    <skill>
+      <id>64841e6e-9487-4b63-80a1-dcad6eb78179</id>
+      <name>Heavy Weapons</name>
+      <attribute>REA</attribute>
+      <category>Combat Active</category>
+      <default>True</default>
+      <skillgroup>Firearms</skillgroup>
+      <specs>
+        <spec>Assault Cannons</spec>
+        <spec>Flamethrowers</spec>
+        <spec>Machine Guns</spec>
+      </specs>
+      <source>SR5</source>
+      <page>132</page>
+    </skill>
+    <skill>
+      <id>470d49b8-69b5-496a-8f28-349625c14859</id>
+      <name>Launcher Weapons</name>
+      <attribute>AGI</attribute>
+      <category>Combat Active</category>
+      <default>True</default>
+      <skillgroup>Projectile Weapons</skillgroup>
+      <specs>
+        <spec>Flare Launchers</spec>
+        <spec>Grapple Guns</spec>
+        <spec>Grenade Launchers</spec>
+        <spec>Harpoon Guns</spec>
+        <spec>Missile/Rocket Launchers</spec>
+        <spec>Net Guns</spec>
+      </specs>
+      <source>SR5</source>
+      <page>132</page>
+    </skill>
+    <skill>
+      <id>09fbc992-9fad-4f2d-ab56-725bac943dc6</id>
+      <name>Locksmith</name>
+      <attribute>AGI</attribute>
+      <category>Technical Active</category>
+      <default>True</default>
+      <skillgroup>Stealth</skillgroup>
+      <specs>
+        <spec>Physical Key</spec>
+        <spec>Electronic Key</spec>
+        <spec>Biometric</spec>
+        <spec>Combination</spec>
+        <spec>[Lock Type]</spec>
+      </specs>
+      <source>SR5</source>
+      <page>145</page>
+    </skill>
+    <skill>
+      <id>64088b25-de37-4d71-8800-4a430fde08af</id>
+      <name>Longarms</name>
+      <attribute>REA</attribute>
+      <category>Combat Active</category>
+      <default>True</default>
+      <skillgroup>Firearms</skillgroup>
+      <specs>
+        <spec>Automatic Rifles</spec>
+        <spec>Compressed Air Longarms</spec>
+        <spec>Precision Rifles</spec>
+        <spec>Submachine Guns</spec>
+        <spec>Shotguns</spec>
+      </specs>
+      <source>SR5</source>
+      <page>132</page>
+    </skill>
+    <skill>
+      <id>1c14bf0d-cc69-4126-9a95-1f2429c11aa5</id>
+      <name>Matrix</name>
+      <attribute>LOG</attribute>
+      <category>Technical Active</category>
+      <default>True</default>
+      <skillgroup>Computers</skillgroup>
+      <specs>
+        <spec>Control Device</spec>
+        <spec>Sensor Operations</spec>
+        <spec>[Data Processing Matrix Action]</spec>
+      </specs>
+      <source>SR5</source>
+      <page>144</page>
+    </skill>
+    <skill>
+      <id>5e5f2f7f-f63b-4f65-a65d-91b3d4523c6f</id>
+      <name>Mechanics</name>
+      <attribute>LOG</attribute>
+      <category>Technical Active</category>
+      <default>True</default>
+      <skillgroup>Engineering</skillgroup>
+      <specs>
+        <spec>Aerospace</spec>
+        <spec>Groundcraft</spec>
+        <spec>Watercraft</spec>
+      </specs>
+      <source>SR5</source>
+      <page>143</page>
+    </skill>
+    <skill>
+      <id>938be691-4b3d-49a2-a673-bbf9924ce8f0</id>
+      <name>Medicine</name>
+      <attribute>LOG</attribute>
+      <category>Technical Active</category>
+      <default>True</default>
+      <skillgroup>Biotechnology</skillgroup>
+      <specs>
+        <spec>Bioware</spec>
+        <spec>Extended Care</spec>
+        <spec>Geneware</spec>
+        <spec>Magical Health</spec>
+        <spec>Soft Nanoware</spec>
+        <spec>Surgery</spec>
+      </specs>
+      <source>SR5</source>
+      <page>145</page>
+    </skill>
+    <skill>
+      <id>01555a93-b8cd-4b6e-81a9-f647f5f1010b</id>
+      <name>Nesting</name>
+      <attribute>RES</attribute>
+      <category>Resonance Active</category>
+      <default>True</default>
+      <skillgroup>Processing</skillgroup>
+      <specs>
+        <spec>[Specific Nested Form]</spec>
+      </specs>
+      <source>SR5</source>
+      <page>250</page>
+    </skill>
+    <skill>
+      <id>f8037e7f-d48b-452b-8f66-2e0c36677fea</id>
+      <name>Query</name>
+      <attribute>INT</attribute>
+      <category>Physical Active</category>
+      <default>True</default>
+      <skillgroup>Outdoors</skillgroup>
+      <specs>
+        <spec>Navigation</spec>
+        <spec>Searching</spec>
+        <spec>Tailing/Tracking</spec>
+      </specs>
+      <source>SR5</source>
+      <page>145</page>
+    </skill>
+    <skill>
+      <id>729c9cee-ef8f-492d-aa7f-17ec1bc3816e</id>
+      <name>Persuade</name>
+      <attribute>CHA</attribute>
+      <category>Social Active</category>
+      <default>True</default>
+      <skillgroup>Influence</skillgroup>
+      <specs>
+        <spec>Bargaining/Bartering</spec>
+        <spec>Diplomacy/Debate</spec>
+        <spec>Seduction</spec>
+      </specs>
+      <source>SR5</source>
+      <page>139</page>
+    </skill>
+    <skill>
+      <id>53f96d6a-363b-4c14-be1d-68e74930c67b</id>
+      <name>Performance</name>
+      <attribute>CHA</attribute>
+      <category>Social Active</category>
+      <default>True</default>
+      <skillgroup>Stagecraft</skillgroup>
+      <specs>
+        <spec>Bowed Strings</spec>
+        <spec>Dancing</spec>
+        <spec>Keyboard</spec>
+        <spec>Plucked Strings</spec>
+        <spec>Singing</spec>
+        <spec>[Musical Instrument Type]</spec>
+      </specs>
+      <source>SR5</source>
+      <page>139</page>
+    </skill>
+    <skill>
+      <id>3ba9397e-f790-44ca-ae40-15a2356e348d</id>
+      <name>Pilot Aerospace</name>
+      <attribute>REA</attribute>
+      <category>Physical Active</category>
+      <default>True</default>
+      <skillgroup>Driving</skillgroup>
+      <specs>
+        <spec>Bionic</spec>
+        <spec>Fixed-Wing</spec>
+        <spec>Gliders</spec>
+        <spec>Lighter-Than-Air</spec>
+        <spec>Rotorcraft</spec>
+        <spec>Spacecraft</spec>
+        <spec>VTOL/VSTOL</spec>
+      </specs>
+      <source>SR5</source>
+      <page>146</page>
+    </skill>
+    <skill>
+      <id>ae91a8a6-80e7-4f52-b9eb-21725a5528a4</id>
+      <name>Pilot Groundcraft</name>
+      <attribute>REA</attribute>
+      <category>Physical Active</category>
+      <default>True</default>
+      <skillgroup>Driving</skillgroup>
+      <specs>
+        <spec>Bionic/Walker</spec>
+        <spec>Enclosed Wheeled</spec>
+        <spec>Open Wheeled (Bikes, RVs)</spec>
+        <spec>Tracked</spec>
+      </specs>
+      <source>SR5</source>
+      <page>147</page>
+    </skill>
+    <skill>
+      <id>1579818e-af85-47cd-8c9f-2e86e9dc19da</id>
+      <name>Pilot Watercraft</name>
+      <attribute>REA</attribute>
+      <category>Physical Active</category>
+      <default>True</default>
+      <skillgroup>Driving</skillgroup>
+      <specs>
+        <spec>Bionic</spec>
+        <spec>Motorboat</spec>
+        <spec>Sailing</spec>
+        <spec>Ship</spec>
+        <spec>Submarine</spec>
+      </specs>
+      <source>SR5</source>
+      <page>147</page>
+    </skill>
+    <skill>
+      <id>3a38bbcf-38b0-435b-98f2-4ce8c50e8490</id>
+      <name>Registering</name>
+      <attribute>RES</attribute>
+      <category>Resonance Active</category>
+      <default>True</default>
+      <skillgroup>Tasking</skillgroup>
+      <specs>
+        <spec>[Sprite Type]</spec>
+      </specs>
+      <source>SR5</source>
+      <page>143</page>
+    </skill>
+    <skill>
+      <id>a6287e62-6a3b-43ce-b6e0-20f3655910e2</id>
+      <name>Ritual Spellcasting</name>
+      <attribute>MAG</attribute>
+      <category>Magical Active</category>
+      <default>True</default>
+      <skillgroup>Aetherology</skillgroup>
+      <specs>
+        <spec>[Specific Ritual]</spec>
+      </specs>
+      <source>SR5</source>
+      <page>142</page>
+    </skill>
+    <skill>
+      <id>17fbaafa-8dbb-4f29-9244-5ae1cd4ac42f</id>
+      <name>Sleight of Hand</name>
+      <attribute>AGI</attribute>
+      <category>Physical Active</category>
+      <default>True</default>
+      <skillgroup>Stealth</skillgroup>
+      <specs>
+        <spec>Palming</spec>
+        <spec>Pickpocketing</spec>
+        <spec>Trapping</spec>
+      </specs>
+      <source>SR5</source>
+      <page>133</page>
+    </skill>
+    <skill>
+      <id>d06dfd90-1df0-4f05-84d5-1fea9d146f87</id>
+      <name>Combat Tactics</name>
+      <attribute>LOG</attribute>
+      <category>Technical Active</category>
+      <default>True</default>
+      <skillgroup>Military Science</skillgroup>
+      <specs>
+        <spec>Ambush</spec>
+        <spec>Guerilla</spec>
+        <spec>Patrol</spec>
+        <spec>Reconnaissance</spec>
+        <spec>Siege</spec>
+      </specs>
+      <source>SR5</source>
+      <page>1</page>
+    </skill>
+    <skill>
+      <id>9cff9aa7-d092-4f89-8b7b-3ab835818874</id>
+      <name>Sneaking</name>
+      <attribute>AGI</attribute>
+      <category>Physical Active</category>
+      <default>True</default>
+      <skillgroup>Stealth</skillgroup>
+      <specs>
+        <spec>Physical</spec>
+        <spec>Social</spec>
+        <spec>Vehicle</spec>
+      </specs>
+      <source>SR5</source>
+      <page>133</page>
+    </skill>
+    <skill>
+      <id>b20acd11-f102-40f3-a641-e3c420fbdb91</id>
+      <name>Socialize</name>
+      <attribute>CHA</attribute>
+      <category>Social Active</category>
+      <default>True</default>
+      <skillgroup>Influence</skillgroup>
+      <specs>
+        <spec>Street Society</spec>
+        <spec>Squatter Society</spec>
+        <spec>Low Society</spec>
+        <spec>Middle Society</spec>
+        <spec>High Society</spec>
+        <spec>Luxury Society</spec>
+        <spec>Commercial</spec>
+        <spec>Traveler Society</spec>
+        <spec>[Lifestyle or Lifestyle Type]</spec>
+      </specs>
+      <source>SR5</source>
+      <page>138</page>
+    </skill>
+    <skill>
+      <id>b693f3bf-48dc-4570-9743-d94d14ee698b</id>
+      <name>Software</name>
+      <attribute>LOG</attribute>
+      <category>Technical Active</category>
+      <default>True</default>
+      <skillgroup>Computers</skillgroup>
+      <specs>
+        <spec>Matrix Sculpting</spec>
+        <spec>Programming</spec>
+        <spec>SimSense Design</spec>
+      </specs>
+      <source>SR5</source>
+      <page>145</page>
+    </skill>
+    <skill>
+      <id>c4367a39-4065-4b1d-aa62-e9dce377e452</id>
+      <name>Spellcasting</name>
+      <attribute>MAG</attribute>
+      <category>Magical Active</category>
+      <default>True</default>
+      <skillgroup>Sorcery</skillgroup>
+      <specs>
+        <spec>[Specific Spell]</spec>
+      </specs>
+      <source>SR5</source>
+      <page>143</page>
+    </skill>
+    <skill>
+      <id>51e34c6c-b07f-45f4-8a5e-8f2b617ed32f</id>
+      <name>Summoning</name>
+      <attribute>MAG</attribute>
+      <category>Magical Active</category>
+      <default>True</default>
+      <skillgroup>Conjuring</skillgroup>
+      <specs>
+        <spec>[Spirit Type]</spec>
+      </specs>
+      <source>SR5</source>
+      <page>143</page>
+    </skill>
+    <skill>
+      <id>89ee1730-053a-400f-a13a-4fbadae015f0</id>
+      <name>Survival</name>
+      <attribute>INT</attribute>
+      <category>Physical Active</category>
+      <default>True</default>
+      <skillgroup>Outdoors</skillgroup>
+      <specs>
+        <spec>Desert</spec>
+        <spec>Forest</spec>
+        <spec>Jungle</spec>
+        <spec>Mountain</spec>
+        <spec>Open Sea</spec>
+        <spec>Polar</spec>
+        <spec>Urban</spec>
+        <spec>Wasteland</spec>
+        <spec>[Terrain]</spec>
+      </specs>
+      <source>SR5</source>
+      <page>133</page>
+    </skill>
+    <skill>
+      <id>891451fd-a0ef-4ef9-b2c2-5751d8abe935</id>
+      <name>Threading</name>
+      <attribute>RES</attribute>
+      <category>Resonance Active</category>
+      <default>True</default>
+      <skillgroup>Processing</skillgroup>
+      <specs>
+        <spec>[Specific Complex Form]</spec>
+      </specs>
+      <source>SR5</source>
+      <page>250</page>
+    </skill>
+    <skill>
+      <id>867a6fa0-7d98-4cde-83a4-b33dd39de08e</id>
+      <name>Throwing Weapons</name>
+      <attribute>AGI</attribute>
+      <category>Combat Active</category>
+      <default>True</default>
+      <skillgroup>Projectile Weapons</skillgroup>
+      <specs>
+        <spec>Axes</spec>
+        <spec>Flexible Weapons</spec>
+        <spec>Grenades</spec>
+        <spec>Monofilament Flexible Weapons</spec>
+        <spec>Polearms</spec>
+        <spec>Small Blades</spec>
+        <spec>Small Clubs/Maces</spec>
+      </specs>
+      <source>SR5</source>
+      <page>132</page>
+    </skill>
+    <skill>
+      <id>4fcd40cb-4b02-4b7e-afcb-f44d46cd5706</id>
+      <name>Unarmed Combat</name>
+      <attribute>AGI</attribute>
+      <category>Combat Active</category>
+      <default>True</default>
+      <skillgroup>Close Combat</skillgroup>
+      <specs>
+        <spec>Disarming</spec>
+        <spec>Leveraging (Clinching and Throwing)</spec>
+        <spec>Striking/Attacking</spec>
+        <spec>Stunning</spec>
+        <spec>Subduing</spec>
+      </specs>
+      <source>SR5</source>
+      <page>132</page>
+    </skill>
+  </skills>
+  <knowledgeskills>
+    <skill xpathfilter="contains(name,' Unit Tactics')" amendoperation="remove" />
+  </knowledgeskills>
+</chummer>

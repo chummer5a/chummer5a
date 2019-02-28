@@ -16,192 +16,189 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
-using System.ComponentModel;
-using System.Drawing;
+using System;
 using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
-﻿using System.Runtime.CompilerServices;
-﻿using System.Xml;
-
-// ConnectionRatingChanged Event Handler.
-public delegate void ConnectionRatingChangedHandler(Object sender);
-// GroupRatingChanged Event Handler.
-public delegate void ConnectionGroupRatingChangedHandler(Object sender);
-// FreeRatingChanged Event Handler.
-public delegate void FreeRatingChangedHandler(Object sender);
-// LoyaltyRatingChanged Event Handler.
-public delegate void LoyaltyRatingChangedHandler(Object sender);
-// DeleteContact Event Handler.
-public delegate void DeleteContactHandler(Object sender);
-// FileNameChanged Event Handler.
-public delegate void FileNameChangedHandler(Object sender);
-// FamilyChanged Event Handler.
-public delegate void FamilyChangedHandler(Object sender);
-// BlackmailChanged Event Handler.
-public delegate void BlackmailChangedHandler(Object sender);
-// OtherCostChanged Event Handler.
-public delegate void OtherCostChangedHandler(Object sender);
+using System.Xml;
+using System.Linq;
 
 namespace Chummer
 {
     public partial class ContactControl : UserControl
     {
-        private Contact _objContact;
-		private CommonFunctions functions = new CommonFunctions();
-        private readonly Character _objCharacter;
-        private string _strContactName;
-        private string _strContactRole;
-        private string _strContactLocation;
-        private bool _blnEnemy = false;
-	    private bool _loading = true;
-
+        private readonly Contact _objContact;
+        private bool _blnLoading = true;
+        //private readonly int _intLowHeight = 25;
+        //private readonly int _intFullHeight = 156;
 
         // Events.
-        public event ConnectionRatingChangedHandler ConnectionRatingChanged;
-        public event ConnectionGroupRatingChangedHandler GroupStatusChanged;
-		public event LoyaltyRatingChangedHandler LoyaltyRatingChanged;
-        public event FreeRatingChangedHandler FreeRatingChanged;
-        public event DeleteContactHandler DeleteContact;
-        public event FileNameChangedHandler FileNameChanged;
-        public event BlackmailChangedHandler BlackmailChanged;
-        public event FamilyChangedHandler FamilyChanged;
+        public event TextEventHandler ContactDetailChanged;
+        public event EventHandler DeleteContact;
 
         #region Control Events
-        public ContactControl(Character objCharacter)
+        public ContactControl(Contact objContact)
         {
             InitializeComponent();
-            _objCharacter = objCharacter;
-
-	        if (!_objCharacter.Created)
-            {
-                if (_objCharacter.FriendsInHighPlaces)
-                {
-                    nudConnection.Maximum = 12;
-                }
-                else
-                {
-                    nudConnection.Maximum = 6;
-                }
-            }
-            else
-            {
-                nudConnection.Maximum = 12;
-            }
 
             //We don't actually pay for contacts in play so everyone is free
             //Don't present a useless field
-            if (_objCharacter.Created)
+            if (objContact.CharacterObject.Created)
             {
                 chkFree.Visible = false;
             }
-	        MoveControls();
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-        }
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            MoveControls();
 
-        
+            _objContact = objContact;
+
+            foreach (ToolStripItem objItem in cmsContact.Items)
+            {
+                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+            }
+        }
 
         private void ContactControl_Load(object sender, EventArgs e)
         {
-            this.Width = cmdDelete.Left + cmdDelete.Width;
+            DoubleBuffered = true;
+            Width = cmdDelete.Left + cmdDelete.Width;
+
             LoadContactList();
+
+            DoDataBindings();
+
+            if (_objContact.EntityType == ContactType.Enemy)
+            {
+                imgLink.SetToolTip(!string.IsNullOrEmpty(_objContact.FileName)
+                        ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy", GlobalOptions.Language)
+                        : LanguageManager.GetString("Tip_Enemy_LinkEnemy", GlobalOptions.Language));
+
+                string strTooltip = LanguageManager.GetString("Tip_Enemy_EditNotes", GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(_objContact.Notes))
+                    strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
+                imgNotes.SetToolTip(strTooltip.WordWrap(100));
+            }
+            else
+            {
+                imgLink.SetToolTip(!string.IsNullOrEmpty(_objContact.FileName)
+                        ? LanguageManager.GetString("Tip_Contact_OpenLinkedContact", GlobalOptions.Language)
+                        : LanguageManager.GetString("Tip_Contact_LinkContact", GlobalOptions.Language));
+
+                string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes", GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(_objContact.Notes))
+                    strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
+                imgNotes.SetToolTip(strTooltip.WordWrap(100));
+            }
+
+            _blnLoading = false;
+        }
+
+        public void UnbindContactControl()
+        {
+            foreach (Control objControl in Controls)
+            {
+                objControl.DataBindings.Clear();
+            }
         }
 
         private void nudConnection_ValueChanged(object sender, EventArgs e)
         {
-            // Raise the ConnectionGroupRatingChanged Event when the NumericUpDown's Value changes.
-            // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
-            if (!_objCharacter.Created)
-            {
-                if (_objCharacter.FriendsInHighPlaces)
-                {
-                    nudConnection.Maximum = 12;
-                }
-                else
-                {
-                    nudConnection.Maximum = 6;
-                }
-            }
-            else
-            {
-                nudConnection.Maximum = 12;
-            }
-            _objContact.Connection = Convert.ToInt32(nudConnection.Value);
-            ConnectionRatingChanged(this);
-            UpdateQuickText();
+            // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Connection"));
         }
 
         private void nudLoyalty_ValueChanged(object sender, EventArgs e)
         {
-            // Raise the LoyaltyRatingChanged Event when the NumericUpDown's Value changes.
+            // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
-            _objContact.Loyalty = Convert.ToInt32(nudLoyalty.Value);
-            LoyaltyRatingChanged(this);
-            UpdateQuickText();
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Loyalty"));
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
             // Raise the DeleteContact Event when the user has confirmed their desire to delete the Contact.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
-            DeleteContact(this);
+            DeleteContact?.Invoke(this, e);
         }
 
-		private void chkGroup_CheckedChanged(object sender, EventArgs e)
-		{
-			if (_loading)
-				return;
+        private void chkGroup_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Group"));
+        }
 
-			_objContact.IsGroup = chkGroup.Checked;
-			chkGroup.Enabled = !_objContact.MadeMan;
 
-            if (GroupStatusChanged != null) GroupStatusChanged(this);
-
-            //Loyalty can be changed by event above
-            nudLoyalty.Enabled = !_objContact.IsGroup;
-			nudLoyalty.Value = _objContact.Loyalty;
-			UpdateQuickText();
-		}
-
-		
         private void cmdExpand_Click(object sender, EventArgs e)
         {
-	        bool blnExpanded = (this.Height > 22);
-	        if (blnExpanded)
-            {
-                this.Height -= 25;
-                this.cmdExpand.Image = Properties.Resources.Expand;
-            }
-            else
-            {
-                this.Height += 25;
-                this.cmdExpand.Image = Properties.Resources.Collapse;
-            }
+            Expanded = !Expanded;
         }
 
-	    private void cboContactRole_TextChanged(object sender, EventArgs e)
+        private void cboContactRole_TextChanged(object sender, EventArgs e)
         {
-            _objContact.Role = cboContactRole.Text;
-            ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Role"));
         }
 
         private void txtContactName_TextChanged(object sender, EventArgs e)
         {
-            _objContact.Name = txtContactName.Text;
-            ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Name"));
         }
 
         private void txtContactLocation_TextChanged(object sender, EventArgs e)
         {
-            _objContact.Location = txtContactLocation.Text;
-            ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Location"));
+        }
+
+        private void cboMetatype_TextChanged(object sender, EventArgs e)
+        {
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
+        }
+
+        private void cboSex_TextChanged(object sender, EventArgs e)
+        {
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Sex"));
+        }
+
+        private void cboAge_TextChanged(object sender, EventArgs e)
+        {
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Age"));
+        }
+
+        private void cboPersonalLife_TextChanged(object sender, EventArgs e)
+        {
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("PersonalLife"));
+        }
+
+        private void cboType_TextChanged(object sender, EventArgs e)
+        {
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Type"));
+        }
+
+        private void cboPreferredPayment_TextChanged(object sender, EventArgs e)
+        {
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("PreferredPayment"));
+        }
+
+        private void cboHobbiesVice_TextChanged(object sender, EventArgs e)
+        {
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("HobbiesVice"));
         }
 
         private void imgLink_Click(object sender, EventArgs e)
         {
             // Determine which options should be shown based on the FileName value.
-            if (_objContact.FileName != "")
+            if (!string.IsNullOrEmpty(_objContact.FileName))
             {
                 tsAttachCharacter.Visible = false;
                 tsContactOpen.Visible = true;
@@ -218,423 +215,415 @@ namespace Chummer
 
         private void tsContactOpen_Click(object sender, EventArgs e)
         {
-            bool blnError = false;
-            bool blnUseRelative = false;
-
-            // Make sure the file still exists before attempting to load it.
-            if (!File.Exists(_objContact.FileName))
+            if (_objContact.LinkedCharacter != null)
             {
-                // If the file doesn't exist, use the relative path if one is available.
-                if (_objContact.RelativeFileName == "")
-                    blnError = true;
-                else
+                Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x == _objContact.LinkedCharacter);
+                Cursor = Cursors.WaitCursor;
+                if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                 {
-                    MessageBox.Show(Path.GetFullPath(_objContact.RelativeFileName));
-                    if (!File.Exists(Path.GetFullPath(_objContact.RelativeFileName)))
+                    objOpenCharacter = Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName);
+                    Program.MainForm.OpenCharacter(objOpenCharacter);
+                }
+                Cursor = Cursors.Default;
+            }
+            else
+            {
+                bool blnUseRelative = false;
+
+                // Make sure the file still exists before attempting to load it.
+                if (!File.Exists(_objContact.FileName))
+                {
+                    bool blnError = false;
+                    // If the file doesn't exist, use the relative path if one is available.
+                    if (string.IsNullOrEmpty(_objContact.RelativeFileName))
+                        blnError = true;
+                    else if (!File.Exists(Path.GetFullPath(_objContact.RelativeFileName)))
                         blnError = true;
                     else
                         blnUseRelative = true;
-                }
 
-                if (blnError)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_FileNotFound").Replace("{0}", _objContact.FileName), LanguageManager.Instance.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    if (blnError)
+                    {
+                        MessageBox.Show(string.Format(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language), _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                 }
+                string strFile = blnUseRelative ? Path.GetFullPath(_objContact.RelativeFileName) : _objContact.FileName;
+                System.Diagnostics.Process.Start(strFile);
             }
-	        if (Path.GetExtension(_objContact.FileName) == "chum5")
-	        {
-		        if (!blnUseRelative)
-			        GlobalOptions.Instance.MainForm.LoadCharacter(_objContact.FileName, false);
-		        else
-		        {
-			        string strFile = Path.GetFullPath(_objContact.RelativeFileName);
-			        GlobalOptions.Instance.MainForm.LoadCharacter(strFile, false);
-		        }
-	        }
-	        else
-	        {
-				if (!blnUseRelative)
-					System.Diagnostics.Process.Start(_objContact.FileName);
-				else
-				{
-					string strFile = Path.GetFullPath(_objContact.RelativeFileName);
-					System.Diagnostics.Process.Start(strFile);
-				}
-	        }
         }
 
         private void tsAttachCharacter_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*";
-
-            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+            OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                _objContact.FileName = openFileDialog.FileName;
-                if (_objContact.EntityType == ContactType.Enemy)
-                    tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Enemy_OpenFile"));
-                else
-                    tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Contact_OpenFile"));
-
-                // Set the relative path.
-                Uri uriApplication = new Uri(@Application.StartupPath);
-                Uri uriFile = new Uri(@_objContact.FileName);
-                Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
-                _objContact.RelativeFileName = "../" + uriRelative.ToString();
-
-                FileNameChanged(this);
+                Filter = LanguageManager.GetString("DialogFilter_Chum5", GlobalOptions.Language) + '|' + LanguageManager.GetString("DialogFilter_All", GlobalOptions.Language)
+            };
+            if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
+            {
+                openFileDialog.InitialDirectory = Path.GetDirectoryName(_objContact.FileName);
+                openFileDialog.FileName = Path.GetFileName(_objContact.FileName);
             }
+
+            if (openFileDialog.ShowDialog(this) != DialogResult.OK) return;
+            _objContact.FileName = openFileDialog.FileName;
+            imgLink.SetToolTip(_objContact.EntityType == ContactType.Enemy
+                    ? LanguageManager.GetString("Tip_Enemy_OpenFile", GlobalOptions.Language)
+                    : LanguageManager.GetString("Tip_Contact_OpenFile", GlobalOptions.Language));
+
+            // Set the relative path.
+            Uri uriApplication = new Uri(Utils.GetStartupPath);
+            Uri uriFile = new Uri(_objContact.FileName);
+            Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
+            _objContact.RelativeFileName = "../" + uriRelative;
+
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
         }
 
         private void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
             // Remove the file association from the Contact.
-            if (MessageBox.Show(LanguageManager.Instance.GetString("Message_RemoveCharacterAssociation"), LanguageManager.Instance.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show(LanguageManager.GetString("Message_RemoveCharacterAssociation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                _objContact.FileName = "";
-                _objContact.RelativeFileName = "";
-                if (_objContact.EntityType == ContactType.Enemy)
-                    tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Enemy_LinkFile"));
-                else
-                    tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Contact_LinkFile"));
-                FileNameChanged(this);
+                _objContact.FileName = string.Empty;
+                _objContact.RelativeFileName = string.Empty;
+                imgLink.SetToolTip(_objContact.EntityType == ContactType.Enemy
+                        ? LanguageManager.GetString("Tip_Enemy_LinkFile", GlobalOptions.Language)
+                        : LanguageManager.GetString("Tip_Contact_LinkFile", GlobalOptions.Language));
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
             }
         }
 
         private void imgNotes_Click(object sender, EventArgs e)
         {
-            frmNotes frmContactNotes = new frmNotes();
-            frmContactNotes.Notes = _objContact.Notes;
+            frmNotes frmContactNotes = new frmNotes
+            {
+                Notes = _objContact.Notes
+            };
             frmContactNotes.ShowDialog(this);
 
-            if (frmContactNotes.DialogResult == DialogResult.OK)
+            if (frmContactNotes.DialogResult == DialogResult.OK && _objContact.Notes != frmContactNotes.Notes)
+            {
                 _objContact.Notes = frmContactNotes.Notes;
 
-            string strTooltip = "";
+                string strTooltip = LanguageManager.GetString(_objContact.EntityType == ContactType.Enemy ? "Tip_Enemy_EditNotes" : "Tip_Contact_EditNotes", GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(_objContact.Notes))
+                    strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
+                imgNotes.SetToolTip(strTooltip.WordWrap(100));
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
+            }
+        }
+
+        private void chkFree_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Free"));
+        }
+
+        private void chkBlackmail_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Blackmail"));
+        }
+
+        private void chkFamily_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Family"));
+        }
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// Contact object this is linked to.
+        /// </summary>
+        public Contact ContactObject => _objContact;
+
+        public bool Expanded
+        {
+            get => tlpStatBlock.Visible;
+            set
+            {
+                tlpStatHeader.Visible = tlpStatBlock.Visible = value;
+                cmdExpand.Image = value ? Properties.Resources.Collapse : cmdExpand.Image = Properties.Resources.Expand;
+            }
+        }
+        #endregion
+
+        #region Methods
+        private void LoadContactList()
+        {
             if (_objContact.EntityType == ContactType.Enemy)
-                strTooltip = LanguageManager.Instance.GetString("Tip_Enemy_EditNotes");
-            else
-                strTooltip = LanguageManager.Instance.GetString("Tip_Contact_EditNotes");
-            if (_objContact.Notes != string.Empty)
-                strTooltip += "\n\n" + _objContact.Notes;
-            tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
+            {
+                string strContactRole = _objContact.DisplayRole;
+                if (!string.IsNullOrEmpty(strContactRole))
+                    cboContactRole.Text = strContactRole;
+                return;
+            }
+
+            // Read the list of Categories from the XML file.
+            List<ListItem> lstCategories = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            List<ListItem> lstMetatypes = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            List<ListItem> lstSexes = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            List<ListItem> lstAges = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            List<ListItem> lstPersonalLives = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            List<ListItem> lstTypes = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            List<ListItem> lstPreferredPayments = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            List<ListItem> lstHobbiesVices = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            
+            XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml").SelectSingleNode("/chummer");
+            if (xmlContactsBaseNode != null)
+            {
+                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("contacts/contact"))
+                    if (xmlNodeList != null)
+                        foreach (XmlNode xmlNode in xmlNodeList)
+                        {
+                            string strName = xmlNode.InnerText;
+                            lstCategories.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                        }
+
+                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("sexes/sex"))
+                    if (xmlNodeList != null)
+                        foreach (XmlNode xmlNode in xmlNodeList)
+                        {
+                            string strName = xmlNode.InnerText;
+                            lstSexes.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                        }
+
+                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("ages/age"))
+                    if (xmlNodeList != null)
+                        foreach (XmlNode xmlNode in xmlNodeList)
+                        {
+                            string strName = xmlNode.InnerText;
+                            lstAges.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                        }
+
+                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("personallives/personallife"))
+                    if (xmlNodeList != null)
+                        foreach (XmlNode xmlNode in xmlNodeList)
+                        {
+                            string strName = xmlNode.InnerText;
+                            lstPersonalLives.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                        }
+
+                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("types/type"))
+                    if (xmlNodeList != null)
+                        foreach (XmlNode xmlNode in xmlNodeList)
+                        {
+                            string strName = xmlNode.InnerText;
+                            lstTypes.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                        }
+
+                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("preferredpayments/preferredpayment"))
+                    if (xmlNodeList != null)
+                        foreach (XmlNode xmlNode in xmlNodeList)
+                        {
+                            string strName = xmlNode.InnerText;
+                            lstPreferredPayments.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                        }
+
+                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("hobbiesvices/hobbyvice"))
+                    if (xmlNodeList != null)
+                        foreach (XmlNode xmlNode in xmlNodeList)
+                        {
+                            string strName = xmlNode.InnerText;
+                            lstHobbiesVices.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                        }
+            }
+
+            string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
+            using (XmlNodeList xmlMetatypeList = XmlManager.Load("metatypes.xml").SelectNodes("/chummer/metatypes/metatype"))
+                if (xmlMetatypeList != null)
+                    foreach (XmlNode xmlMetatypeNode in xmlMetatypeList)
+                    {
+                        string strName = xmlMetatypeNode["name"]?.InnerText;
+                        string strMetatypeDisplay = xmlMetatypeNode["translate"]?.InnerText ?? strName;
+                        lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
+                        XmlNodeList xmlMetavariantList = xmlMetatypeNode.SelectNodes("metavariants/metavariant");
+                        if (xmlMetavariantList != null)
+                        {
+                            foreach (XmlNode objXmlMetavariantNode in xmlMetavariantList)
+                            {
+                                string strMetavariantName = objXmlMetavariantNode["name"]?.InnerText;
+                                if (lstMetatypes.All(x => x.Value.ToString() != strMetavariantName))
+                                    lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + strSpaceCharacter + '(' + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
+                            }
+                        }
+                    }
+
+            lstCategories.Sort(CompareListItems.CompareNames);
+            lstMetatypes.Sort(CompareListItems.CompareNames);
+            lstSexes.Sort(CompareListItems.CompareNames);
+            lstAges.Sort(CompareListItems.CompareNames);
+            lstPersonalLives.Sort(CompareListItems.CompareNames);
+            lstTypes.Sort(CompareListItems.CompareNames);
+            lstHobbiesVices.Sort(CompareListItems.CompareNames);
+            lstPreferredPayments.Sort(CompareListItems.CompareNames);
+
+            cboContactRole.BeginUpdate();
+            cboContactRole.ValueMember = "Value";
+            cboContactRole.DisplayMember = "Name";
+            cboContactRole.DataSource = lstCategories;
+            cboContactRole.EndUpdate();
+
+            cboMetatype.BeginUpdate();
+            cboMetatype.ValueMember = "Value";
+            cboMetatype.DisplayMember = "Name";
+            cboMetatype.DataSource = lstMetatypes;
+            cboMetatype.EndUpdate();
+
+            cboSex.BeginUpdate();
+            cboSex.ValueMember = "Value";
+            cboSex.DisplayMember = "Name";
+            cboSex.DataSource = lstSexes;
+            cboSex.EndUpdate();
+
+            cboAge.BeginUpdate();
+            cboAge.ValueMember = "Value";
+            cboAge.DisplayMember = "Name";
+            cboAge.DataSource = lstAges;
+            cboAge.EndUpdate();
+
+            cboPersonalLife.BeginUpdate();
+            cboPersonalLife.ValueMember = "Value";
+            cboPersonalLife.DisplayMember = "Name";
+            cboPersonalLife.DataSource = lstPersonalLives;
+            cboPersonalLife.EndUpdate();
+
+            cboType.BeginUpdate();
+            cboType.ValueMember = "Value";
+            cboType.DisplayMember = "Name";
+            cboType.DataSource = lstTypes;
+            cboType.EndUpdate();
+
+            cboPreferredPayment.BeginUpdate();
+            cboPreferredPayment.ValueMember = "Value";
+            cboPreferredPayment.DisplayMember = "Name";
+            cboPreferredPayment.DataSource = lstPreferredPayments;
+            cboPreferredPayment.EndUpdate();
+
+            cboHobbiesVice.BeginUpdate();
+            cboHobbiesVice.ValueMember = "Value";
+            cboHobbiesVice.DisplayMember = "Name";
+            cboHobbiesVice.DataSource = lstHobbiesVices;
+            cboHobbiesVice.EndUpdate();
         }
-        private void cmsContact_Opening(object sender, CancelEventArgs e)
+
+        private void DoDataBindings()
         {
-            foreach (ToolStripItem objItem in ((ContextMenuStrip)sender).Items)
-            {
-                if (objItem.Tag != null)
-                {
-                    objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
-                }
-            }
-		}
+            chkGroup.DataBindings.Add("Checked", _objContact, nameof(_objContact.IsGroup), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            chkGroup.DataBindings.Add("Enabled", _objContact, nameof(_objContact.GroupEnabled), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            chkFree.DataBindings.Add("Checked", _objContact, nameof(_objContact.Free), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            chkFree.DataBindings.Add("Enabled", _objContact, nameof(_objContact.FreeEnabled), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            chkFamily.DataBindings.Add("Checked", _objContact, nameof(_objContact.Family), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            chkFamily.DataBindings.Add("Visible", _objContact, nameof(_objContact.IsNotEnemy), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            chkBlackmail.DataBindings.Add("Checked", _objContact, nameof(_objContact.Blackmail), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            chkBlackmail.DataBindings.Add("Visible", _objContact, nameof(_objContact.IsNotEnemy), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            lblQuickStats.DataBindings.Add("Text", _objContact, nameof(_objContact.QuickText), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            nudLoyalty.DataBindings.Add("Value", _objContact, nameof(_objContact.Loyalty), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            nudLoyalty.DataBindings.Add("Enabled", _objContact, nameof(_objContact.LoyaltyEnabled), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            nudConnection.DataBindings.Add("Value", _objContact, nameof(_objContact.Connection), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            nudConnection.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NotReadOnly), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            nudConnection.DataBindings.Add("Maximum", _objContact, nameof(_objContact.ConnectionMaximum), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            txtContactName.DataBindings.Add("Text", _objContact, nameof(_objContact.Name), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            txtContactLocation.DataBindings.Add("Text", _objContact, nameof(_objContact.Location), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            cboContactRole.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayRole), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            cboMetatype.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayMetatype), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            cboSex.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplaySex), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            cboAge.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayAge), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            cboPersonalLife.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayPersonalLife), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            cboType.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayType), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            cboPreferredPayment.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayPreferredPayment), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            cboHobbiesVice.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayHobbiesVice), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            cmdDelete.DataBindings.Add("Visible", _objContact, nameof(_objContact.NotReadOnly), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            DataBindings.Add("BackColor", _objContact, nameof(_objContact.PreferredColor), false,
+                DataSourceUpdateMode.OnPropertyChanged);
 
-		private void chkFree_CheckedChanged(object sender, EventArgs e)
-		{
-			_objContact.Free = chkFree.Checked;
-            FreeRatingChanged?.Invoke(this);
+            // Properties controllable by the character themselves
+            txtContactName.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            cboMetatype.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            cboSex.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            cboAge.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter), false,
+                DataSourceUpdateMode.OnPropertyChanged);
         }
 
-		private void chkBlackmail_CheckedChanged(object sender, EventArgs e)
-		{
-			_objContact.Blackmail = chkBlackmail.Checked;
-            BlackmailChanged?.Invoke(this);
-        }
-
-		private void chkFamily_CheckedChanged(object sender, EventArgs e)
-		{
-			_objContact.Family = chkFamily.Checked;
-            FamilyChanged?.Invoke(this);
-        }
-		#endregion
-
-		#region Properties
-		/// <summary>
-		/// Contact object this is linked to.
-		/// </summary>
-		public Contact ContactObject
+        private void MoveControls()
         {
-            get
-            {
-                return _objContact;
-            }
-            set
-            {
-                _objContact = value;
-            }
+            // no need to do anything here using TableLayoutPanels
+            //lblConnection.Left = txtContactName.Left;
+            //nudConnection.Left = lblConnection.Right + 2;
+            //lblLoyalty.Left = nudConnection.Right + 2;
+            //nudLoyalty.Left = lblLoyalty.Right + 2;
+            //imgLink.Left = nudLoyalty.Right + 4;
+            //imgNotes.Left = imgLink.Right + 4;
+            //chkGroup.Left = imgNotes.Right + 4;
+            //chkFree.Left = chkGroup.Right + 2;
+            //chkBlackmail.Left = chkFree.Right + 2;
+            //chkFamily.Left = chkBlackmail.Right + 2;
+
+            //lblmetatype.left = cbometatype.left - 7 - lblmetatype.width;
+            //lblage.left = cboage.left - 7 - lblage.width;
+            //lblsex.left = cbosex.left - 7 - lblsex.width;
+            //lbltype.left = cbotype.left - 7 - lbltype.width;
+
+            //lblpersonallife.left = cbopersonallife.left - 7 - lblpersonallife.width;
+            //lblpreferredpayment.left = cbopreferredpayment.left - 7 - lblpreferredpayment.width;
+            //lblhobbiesvice.left = cbohobbiesvice.left - 7 - lblhobbiesvice.width;
         }
+        #endregion
 
-        public bool IsEnemy
-        {
-            get
-            {
-                return _blnEnemy;
-            }
-            set
-            {
-                _blnEnemy = value;
-                cboContactRole.Items.Clear();
-            }
-        }
-
-        /// <summary>
-        /// Contact name.
-        /// </summary>
-        public string ContactName
-        {
-            get
-            {
-                return _objContact.Name;
-            }
-            set
-            {
-                txtContactName.Text = value;
-                _strContactName = value;
-                _objContact.Name = value;
-            }
-        }
-
-        /// <summary>
-        /// Contact role.
-        /// </summary>
-        public string ContactRole
-        {
-            get
-            {
-                return _objContact.Role;
-            }
-            set
-            {
-                cboContactRole.Text = value;
-                _strContactRole = value;
-                _objContact.Role = value;
-            }
-        }
-
-        /// <summary>
-        /// Contact location.
-        /// </summary>
-        public string ContactLocation
-        {
-            get
-            {
-                return _objContact.Location;
-            }
-            set
-            {
-                txtContactLocation.Text = value;
-                _strContactLocation = value;
-                _objContact.Location = value;
-            }
-        }
-
-        /// <summary>
-		/// Indicates if this is a Contact or Enemy.
-		/// </summary>
-		public ContactType EntityType
-        {
-            get
-            {
-                return _objContact.EntityType;
-            }
-            set
-            {
-                _objContact.EntityType = value;
-                if (value == ContactType.Enemy)
-                {
-                    if (_objContact.FileName != "")
-                        tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Enemy_OpenLinkedEnemy"));
-                    else
-                        tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Enemy_LinkEnemy"));
-
-                    string strTooltip = LanguageManager.Instance.GetString("Tip_Enemy_EditNotes");
-                    if (_objContact.Notes != string.Empty)
-                        strTooltip += "\n\n" + _objContact.Notes;
-					tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
-	                chkFamily.Visible = false;
-	                chkBlackmail.Visible = false;
-					nudConnection.Minimum = 1;
-                }
-                else
-                {
-                    if (_objContact.FileName != "")
-                        tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Contact_OpenLinkedContact"));
-                    else
-                        tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Contact_LinkContact"));
-
-                    string strTooltip = LanguageManager.Instance.GetString("Tip_Contact_EditNotes");
-                    if (_objContact.Notes != string.Empty)
-                        strTooltip += "\n\n" + _objContact.Notes;
-					tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
-
-					nudConnection.Minimum = 1;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Connection Rating.
-        /// </summary>
-        public int ConnectionRating
-        {
-            get
-            {
-                return _objContact.Connection;
-            }
-            set
-            {
-                nudConnection.Value = value;
-                _objContact.Connection = value;
-            }
-        }
-
-        /// <summary>
-        /// Loyalty Rating.
-        /// </summary>
-        public int LoyaltyRating
-        {
-            get
-            {
-                return _objContact.Loyalty;
-            }
-            set
-            {
-                nudLoyalty.Value = value;
-                _objContact.Loyalty = value;
-            }
-        }
-
-		/// <summary>
-		/// Whether or not this contact is a Family member.
-		/// </summary>
-	    public bool Family
-	    {
-		    get { return _objContact.Family; }
-			set { _objContact.Family = value; }
-	    }
-
-		/// <summary>
-		/// Whether or not this contact is being blackmailed. 
-		/// </summary>
-	    public bool Blackmail
-	    {
-		    get { return _objContact.Blackmail; }
-			set { _objContact.Blackmail = value; }
-	    }
-
-        /// <summary>
-        /// Whether or not this is a free Contact.
-        /// </summary>
-        public bool Free
-        {
-            get
-            {
-                return _objContact.Free;
-            }
-            set
-            {
-                _objContact.Free = value;
-            }
-        }
-        /// <summary>
-        /// Is the contract a group contract
-        /// </summary>
-        public bool IsGroup
-        {
-            get
-            {
-                return _objContact.IsGroup;
-            }
-            set
-            {
-                _objContact.IsGroup = value;
-            }
-        }
-		#endregion
-
-		#region Methods
-		private void LoadContactList()
-		{
-			if (_blnEnemy)
-			{
-				if (_strContactRole != "")
-					cboContactRole.Text = _strContactRole;
-				return;
-			}
-
-			if (_objContact.ReadOnly)
-			{
-				chkFree.Enabled = chkGroup.Enabled =
-				nudConnection.Enabled = nudLoyalty.Enabled = false;
-
-				cmdDelete.Visible = false;
-			}
-
-
-			// Read the list of Categories from the XML file.
-			List<ListItem> lstCategories = new List<ListItem>();
-
-			ListItem objBlank = new ListItem();
-			objBlank.Value = "";
-			objBlank.Name = "";
-			lstCategories.Add(objBlank);
-
-			XmlDocument objXmlDocument = new XmlDocument();
-			objXmlDocument = XmlManager.Instance.Load("contacts.xml");
-			XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/contacts/contact");
-			foreach (XmlNode objXmlCategory in objXmlSkillList)
-			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objXmlCategory.InnerText;
-				if (objXmlCategory.Attributes["translate"] != null)
-					objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
-				else
-					objItem.Name = objXmlCategory.InnerText;
-				lstCategories.Add(objItem);
-			}
-
-			SortListItem objContactSort = new SortListItem();
-			lstCategories.Sort(objContactSort.Compare);
-			cboContactRole.DataSource = lstCategories;
-			cboContactRole.ValueMember = "Value";
-			cboContactRole.DisplayMember = "Name";
-			chkGroup.Checked = _objContact.IsGroup;
-			chkFree.Checked = _objContact.Free;
-			if (_objContact.MadeMan)
-			{
-				chkGroup.Checked = _objContact.MadeMan;
-			}
-
-			if (_strContactRole != "")
-				cboContactRole.Text = _strContactRole;
-
-			_loading = false;
-		}
-
-	    private void MoveControls()
-	    {
-		    lblConnection.Left = txtContactName.Left;
-		    nudConnection.Left = lblConnection.Right + 2;
-		    lblLoyalty.Left = nudConnection.Right + 2;
-		    nudLoyalty.Left = lblLoyalty.Right + 2;
-		    imgLink.Left = nudLoyalty.Right + 4; 
-		    imgNotes.Left = imgLink.Right + 4;
-		    chkGroup.Left = imgNotes.Right + 4;
-		    chkFree.Left = chkGroup.Right + 2;
-		    chkBlackmail.Left = chkFree.Right + 2;
-		    chkFamily.Left = chkBlackmail.Right + 2;
-
-	    }
-		#endregion
-		
-
-        public void UpdateQuickText()
-        {
-            lblQuickStats.Text = String.Format("({0}/{1})", _objContact.Connection, _objContact.IsGroup ? (_objContact.MadeMan ? "M" : "G") : _objContact.Loyalty.ToString());
-
-        }
-	}
+    }
 }

@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "sinners-219509",
+  "private_key_id": "664ee1aa20ec97d2a45317a73f51514b1272b9cf",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDjb9sFpZ+uwdo9\nYbdoDMD0Vlyxfk9qro4xujNc+h+1hvcOAFPxLJ6eWImLt4mtNdE8HO4Gs115MpdN\nOE+6/Ri9t9XcTE3F9o2XFh4XCMP95wumB2piLYd26UuI5DzPtlvnCDAfsWUtDNbI\naYhbFj7bN6dgagPyUZR6F8rVdeuDZqjt2bqXbrg7KN1UXK21VnOVjMrLgjqDvhyc\noUZ4B8wIXFE8THlIE9GtBcOcG4UoTFCyXfms6uu4vTrr+1fnygcpvvRjsPhYYIn7\n2xjmC3feoqjIrswOmlmhZ6MzYUjBqV/B2MmlMu2kTP5T7+uCaBtXv5cFstAYWNn4\nYAgfaLQDAgMBAAECggEAHWcSCR5a0PRluua9l7mCXnQlwpqCONf9MQeR6VS6sbST\njt9S+sxaaz0l9waQyXA6LwvMZ9hbXrZAIi8D+7gJsUkpYDQLH+sabexhknfDIrly\nY5H02mFpcGGDrtxW0kGQiwMfeZFs85CD2d/uzVvIX33H6Sp7fSG30LrvsX3vpwpp\nqWFiukLV+pnrNq/33kff/+TDB9J32FrS199nJ/qbGIkLAneR024fgbDTUBSLY2mn\nNN3XXkvC/RujkqnTtO0hw/eN8bBbreflbZ2cifwog8bnj/iElPLAHEkTafXf3y7N\nTOXxV2621vjYntKyyueqMW/KLGLbNWJ0fU1GdFtWXQKBgQD1bPuCgJefle93mTkV\ns6AyAlxGT1iHtI/ZLx3lTlfwKzMILeXEjKjPlDanrexrT3ivAHiVVvcZ0CGPiPtX\nPdy3yleImeGmcvGGlemBDXR4LnomZ9+qBLYEYH69X2R54G+GnmOPYzLDuB3H5tnD\nikpG8YS4CQgYdKFFUgpJAIUYFQKBgQDtPHV9P3KjTkhQdMboBk/70Ii0Fjs0B+PS\nXvUA8gmQ7OoWqBrEDSMY8gR8CIk/47P2V785CG5N+h0yi9L0kekekmIABIoZs+Sp\ndjLLFqV09L/ojij2NlQokFsD6+jPgzh5UcVSRIl8CtzP+cZiTALIsBOxhciROnyt\n9mXUGezJtwKBgQDw7KZN6wxtNdPZVUnrmuTkktqgjt26gi9AJfe0Fd9Pviifm+bV\ntrs04ytwGdVfVqmDKfQ1riRua5m2fOM3NlxI89JQH7ebHXUqCFosPNgb7owszYWM\nMom37D4eitlop0D0JuJXbSr1ZPWfOmiFg2j9EbSWsQ8Iat2x3iKInYEKLQKBgQCJ\nS3wTSCzoJd3j8jFLBpwzd7QlxNfufMJ0dVAFhA3VOccf5ZnX7GJrhWTjA22q8/Sq\nlI2uTBrKNf2/yvwDXo4zizP8HqRty5aCHE25CxomXZ7Sz7MVCswZzbFey6Cot6Bv\nVcuEmPWYPBEeq8cMDEFwM7ax/mLc6aROaVL1NSu8cQKBgGZ8XTAKIwwplXmFagp9\nlRAHLb4frbVKKZFsEbhMplEEK5FCPKL8/4RpxmoCBCzG4JZOj/RcVlQEVG9m0K8Q\nCdVVH7ZROCjlUsPEeoGv4A/SGwjziTtcuIMFmTCorO2UvkcW+Zcc0u5NYtydrLjO\nA3M6tx+Wn49zUbhtH7WWnjf9\n-----END PRIVATE KEY-----\n",
+  "client_email": "sinners-azure@sinners-219509.iam.gserviceaccount.com",
+  "client_id": "102983453629186210849",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sinners-azure%40sinners-219509.iam.gserviceaccount.com"
+}

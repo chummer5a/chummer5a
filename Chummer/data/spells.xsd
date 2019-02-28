@@ -1,7 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-<xs:include schemaLocation="../data../bonuses.xsd" />
-
+  <xs:include schemaLocation="bonuses.xsd" />
+  <xs:include schemaLocation="conditions.xsd" />
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
@@ -26,51 +26,21 @@
               <xs:element name="spell" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
-                    <xs:element name="name" type="xs:string" minOccurs="1" />
-                    <xs:element name="descriptor" type="xs:string" minOccurs="1" />
-                    <xs:element name="category" type="xs:string" minOccurs="1" />
-                    <xs:element name="type" type="xs:string" minOccurs="1" />
-                    <xs:element name="range" type="xs:string" minOccurs="1" />
-                    <xs:element name="damage" type="xs:string" minOccurs="1" />
-                    <xs:element name="duration" type="xs:string" minOccurs="1" />
-                    <xs:element name="dv" type="xs:string" minOccurs="1" />
-                    <xs:element ref="bonus" minOccurs="0" maxOccurs="1" />
-					<xs:element name="source" type="xs:string" minOccurs="1" />
-                    <xs:element name="page" type="xs:string" minOccurs="1" />
-					<xs:element name="required" minOccurs="0" maxOccurs="1">
-					  <xs:complexType>
-					    <xs:sequence>
-						  <xs:element name="allof" minOccurs="0" maxOccurs="1">
-						    <xs:complexType>
-							  <xs:sequence>
-								<xs:element name="inherited" type="xs:string" minOccurs="0" maxOccurs="1" />
-							    <xs:element name="quality" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="metatype" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="metatypecategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="metamagic" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="metavariant" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="careerkarma" type="xs:integer" minOccurs="0" maxOccurs="1" />
-								<xs:element name="ess" type="xs:string" minOccurs="0" maxOccurs="1" />
-							  </xs:sequence>
-							</xs:complexType>
-						  </xs:element>
-						  <xs:element name="oneof" minOccurs="0" maxOccurs="unbounded">
-						    <xs:complexType>
-							  <xs:sequence>
-								<xs:element name="inherited" type="xs:string" minOccurs="0" maxOccurs="1" />
-							    <xs:element name="quality" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="metatype" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="metatypecategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="metamagic" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="metavariant" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-								<xs:element name="careerkarma" type="xs:integer" minOccurs="0" maxOccurs="1" />
-								<xs:element name="ess" type="xs:string" minOccurs="0" maxOccurs="1" />
-							  </xs:sequence>
-							</xs:complexType>
-						  </xs:element>
-						</xs:sequence>
-					  </xs:complexType>
-					</xs:element>
+                    <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="damage" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="descriptor" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="duration" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="dv" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="range" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="type" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+                    <xs:element ref="forbidden" minOccurs="0" maxOccurs="1" />
+                    <xs:element ref="required" minOccurs="0" maxOccurs="1" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
