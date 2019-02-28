@@ -31,7 +31,7 @@
       <name>Elder God</name>
       <hide />
     </tradition>
-<!--    <tradition>
+	<tradition>
       <name>Necro Magic</name>
       <hide />
     </tradition> -->
@@ -101,7 +101,7 @@
       <name>Blood Shade</name>
       <hide />
     </spirit>
-<!--    <spirit>
+	<spirit>
       <name>Carcass Spirit</name>
       <hide />
     </spirit>
