@@ -52,8 +52,16 @@ namespace ChummerHub.Data
             base.OnModelCreating(builder);
             builder.Entity<ChummerHub.Models.V1.Tag>()
                 .HasIndex(b => new { b.TagName, b.TagValue });
+            builder.Entity<ChummerHub.Models.V1.Tag>()
+                .HasIndex(b => b.SINnerId);
             builder.Entity<ChummerHub.Models.V1.SINerUserRight>()
                 .HasIndex(b => b.SINnerId);
+            builder.Entity<ChummerHub.Models.V1.SINner>()
+                .HasIndex(b => b.Alias);
+            builder.Entity<ChummerHub.Models.V1.SINnerGroup>()
+                .HasIndex(b => b.Groupname);
+            builder.Entity<ChummerHub.Models.V1.SINerUserRight>()
+                .HasIndex(b => b.EMail);
         }
 
         public DbSet<ChummerHub.Models.V1.SINner> SINners { get; set; }
@@ -70,7 +78,9 @@ namespace ChummerHub.Data
         public DbSet<ChummerHub.Models.V1.SINnerVisibility> SINnerVisibility { get; set; }
         public DbSet<ChummerHub.Models.V1.SINnerMetaData> SINnerMetaData { get; set; }
 
+        public DbSet<ChummerHub.Models.V1.SINnerGroupSetting> SINnerGroupSettings { get; set; }
 
+        
 
 
 

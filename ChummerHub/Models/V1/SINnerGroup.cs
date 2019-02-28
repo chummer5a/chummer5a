@@ -4,9 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using ChummerHub.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace ChummerHub.Models.V1
 {
@@ -18,7 +20,11 @@ namespace ChummerHub.Models.V1
 
         public bool IsPublic { get; set; }
 
-        
+        public string GameMasterUsername { get; set; }
+
+        public SINnerGroupSetting MySettings { get; set; }
+
+
         public string Groupname { get; set; }
 
         public SINnerGroup()
@@ -32,11 +38,13 @@ namespace ChummerHub.Models.V1
         {
             try
             {
-                var groupmembers = from a in context.SINners.Include(a => a.MyGroup)
-                                   .Include(b => b.SINnerMetaData.Visibility.UserRights)
+                var groupmembers = await (from a in context.SINners
                                    where a.MyGroup.Id == this.Id
-                                   select a;
-                return groupmembers.ToList();
+                                         && this.Id != null
+                                         && ((a.SINnerMetaData.Visibility.IsGroupVisible == true)
+                                         || (a.SINnerMetaData.Visibility.IsPublic == true))
+                                   select a).ToListAsync();
+                return groupmembers;
 
             }
             catch(Exception e)
@@ -70,6 +78,21 @@ namespace ChummerHub.Models.V1
         //        throw;
         //    }
         //}
+    }
+
+    public class SINnerGroupSetting
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid? Id { get; set; }
+
+        public string DownloadUrl { get; set; }
+
+        [JsonIgnore]
+        [XmlIgnore]
+        public string GoogleDriveFileId { get; set; }
+
+        public Guid MyGroupId { get; set; }
     }
 }
 

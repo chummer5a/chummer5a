@@ -222,64 +222,52 @@ namespace ChummerHub.Controllers
                 }
                 //get all from visibility
                 SINnersList list = new SINnersList();
-                var userseq = (from a in _context.UserRights where a.EMail == user.NormalizedEmail && a.CanEdit == true select a).ToList();
-                foreach(var ur in userseq)
+                List<SINner> mySinners = await SINner.GetSINnersFromUser(user, _context, true);
+                foreach(var sin in mySinners)
                 {
-                    if (ur?.SINnerId == null) continue;
-                    var sin = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights)
-                        .Include(b => b.MyGroup)
-                        .FirstOrDefaultAsync(a => a.Id == ur.SINnerId);
-                    if (sin != null)
+                    SINnerList owndSINner = new SINnerList
                     {
-                        SINnerList owndSINner = new SINnerList
+                        SINner = sin
+                    };
+                    if(sin.MyGroup != null)
+                    {
+                        //add all members of his group
+                        var members = await sin.MyGroup.GetGroupMembers(_context);
+                        foreach(var member in members)
                         {
-                            SINner = sin
-                        };
-                        if(sin.MyGroup != null)
-                        {
-                            //add all members of his group
-                            var members = await sin.MyGroup.GetGroupMembers(_context);
-                            foreach(var member in members)
+                            if((member.SINnerMetaData.Visibility.IsGroupVisible == true)
+                                || (member.SINnerMetaData.Visibility.IsPublic)
+                                )
                             {
-                                if((member.SINnerMetaData.Visibility.IsGroupVisible == true)
-                                    || (member.SINnerMetaData.Visibility.IsPublic)
-                                    )
-                                {
-                                    SINnerList memberlist = new SINnerList();
-                                    memberlist.SINner = member;
-                                    owndSINner.SINList.Add(memberlist);
-                                }
+                                SINnerList memberlist = new SINnerList();
+                                memberlist.SINner = member;
+                                owndSINner.SINList.Add(memberlist);
                             }
                         }
-                        list.MySINnersList.Add(owndSINner);
                     }
+                    list.MySINnersList.Add(owndSINner);
                 }
 
                 //get all that are viewable but NOT editable
                 SINnerList viewlist = new SINnerList();
                 viewlist.Header = "View";
-                userseq = (from a in _context.UserRights where a.EMail == user.NormalizedEmail && a.CanEdit == false select a).ToList();
-                foreach(var ur in userseq)
+                List<SINner> myViewSinners = await SINner.GetSINnersFromUser(user, _context, false);
+                foreach(var sin in myViewSinners)
                 {
-                    if(ur?.SINnerId == null) continue;
-                    var sin = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights).FirstOrDefaultAsync(a => a.Id == ur.SINnerId);
-                    if(sin != null)
+                    bool found = false;
+                    foreach(var sinlist in list.MySINnersList)
                     {
-                        bool found = false;
-                        foreach(var sinlist in list.MySINnersList)
+                        if (sinlist.SINner == sin)
                         {
-                            if (sinlist.SINner == sin)
-                            {
-                                found = true;
-                                break; 
-                            }
+                            found = true;
+                            break; 
                         }
-                        if (!found)
-                        {
-                            SINnerList childviewlist = new SINnerList();
-                            childviewlist.SINner = sin;
-                            viewlist.SINList.Add(childviewlist);
-                        }
+                    }
+                    if (!found)
+                    {
+                        SINnerList childviewlist = new SINnerList();
+                        childviewlist.SINner = sin;
+                        viewlist.SINList.Add(childviewlist);
                     }
                 }
                 list.MySINnersList.Add(viewlist);

@@ -42,7 +42,32 @@
             <summary>
             Store the new group
             </summary>
-            <param name="uploadInfo"></param>
+            <param name="Groupname"></param>
+            <param name="SinnerId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.PutSINerInGroup(System.Guid,System.Guid)">
+            <summary>
+            Store the new group
+            </summary>
+            <param name="GroupId"></param>
+            <param name="SinnerId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.GetGroupById(System.Guid)">
+            <summary>
+            Search for Groups
+            </summary>
+            <param name="groupid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ChummerHub.Controllers.V1.SINnerGroupController.GetSearchGroups(System.String,System.String,System.String)">
+            <summary>
+            Search for Groups
+            </summary>
+            <param name="Groupname"></param>
+            <param name="UsernameOrEmail"></param>
+            <param name="SINnerName"></param>
             <returns></returns>
         </member>
         <member name="T:ChummerHub.Properties.Resources">

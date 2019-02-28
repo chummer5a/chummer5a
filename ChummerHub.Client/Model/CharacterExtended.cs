@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using SINners.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace ChummerHub.Client.Model
         public CharacterExtended(Character character, string fileElement = null)
         {
             MyCharacter = character;
-            MySINnerFile = new SINner();
+            _MySINnerFile = new SINner();
             if (string.IsNullOrEmpty(fileElement))
             {
                 MySINnerFile.SiNnerMetaData = new SINnerMetaData
@@ -71,8 +72,18 @@ namespace ChummerHub.Client.Model
 
         public Character MyCharacter { get; set; }
 
+        private SINner _MySINnerFile = null;
+
         // ReSharper disable once InconsistentNaming
-        public SINner MySINnerFile { get; }
+        public SINner MySINnerFile
+        {
+            get { return _MySINnerFile; }
+        }
+
+        public void SetSINner(SINner sinner)
+        {
+            _MySINnerFile = sinner;
+        }
 
         public string ZipFilePath { get; set; }
 
@@ -135,7 +146,7 @@ namespace ChummerHub.Client.Model
             {
 
 
-                var found = await StaticUtils.Client.GetByIdWithHttpMessagesAsync(this.MySINnerFile.Id.Value);
+                var found = await StaticUtils.Client.GetSINByIdWithHttpMessagesAsync(this.MySINnerFile.Id.Value);
                 if(found.Response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     var sinjson = await found.Response.Content.ReadAsStringAsync();
@@ -156,7 +167,8 @@ namespace ChummerHub.Client.Model
             }
             catch(Exception e)
             {
-                System.Diagnostics.Trace.TraceError(e.ToString(), e);
+                System.Diagnostics.Trace.TraceError(e.Message, e);
+                Debug.WriteLine(e.ToString());
                 throw;
             }
         }
@@ -228,6 +240,7 @@ namespace ChummerHub.Client.Model
                 MySINnerIds = MySINnerIds; //Save it!
             }
 
+            MySINnerFile.Alias = MyCharacter.CharacterName;
             MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
             if (MySINnerFile.SiNnerMetaData.Visibility?.UserRights == null)
             {

@@ -119,24 +119,6 @@ namespace ChummerHub.Controllers.V1
                     FileDownloadName = downloadname
                 };
 
-               
-                //using (var client = new WebClient())
-                //{
-                //    client.DownloadFile(new Uri(chummerFile.DownloadUrl), path);
-                //}
-                //if (!System.IO.File.Exists(path))
-                //{
-                //    string msg = "No file downloaded from " + chummerFile.DownloadUrl;
-                //    return BadRequest(msg);
-                //}
-                
-                ////var res = new FileStreamResult(new MemoryStream(path), "application/octet-stream");
-                ////var res = new FileResult(downloadname, path, "application/octet-stream");
-                ////var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
-                ////var reader = new StreamReader(stream, true);
-                //return PhysicalFile(path, "application/octet-stream", downloadname);
-                ////return File(path, "application/octet-stream");
-                ////return new ObjectResult(reader.BaseStream);
             }
             catch (Exception e)
             {
@@ -180,9 +162,9 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerGetById")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSINById")]
         [Authorize]
-        public async Task<ActionResult<SINner>> GetById([FromRoute] Guid id)
+        public async Task<ActionResult<SINner>> GetSINById([FromRoute] Guid id)
         {
             try
             {
@@ -191,9 +173,10 @@ namespace ChummerHub.Controllers.V1
                     return BadRequest(ModelState);
                 }
 
-                var sin = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights)
-                        .Include(b => b.MyGroup)
-                        .FirstOrDefaultAsync(a => a.Id == id);
+                var sin = await _context.SINners
+                    .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                    .Include(b => b.MyGroup.MySettings)
+                    .FirstOrDefaultAsync(a => a.Id == id);
                 if(sin == null)
                 {
                     return NotFound("SINner with id " + id + " does not exist.");
@@ -210,22 +193,13 @@ namespace ChummerHub.Controllers.V1
                 var list = (from a in sin.SINnerMetaData.Visibility.UserRights where a.EMail.ToUpperInvariant() == user.NormalizedEmail select a);
                 if(list.Any())
                     return Ok(sin);
-                //if(sin.SINnerMetaData.Visibility.IsGroupVisible)
-                //{
-                //    var userrights = await sin.MyGroup.GetUserRights(_context);
-                //    if(userrights.Any(a => a.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant()))
-                //        return Ok(sin);
-                //    else
-                //        throw new NoUserRightException("SINner may not be viewed by user " + user.UserName + ".");
-                //}
-                //else
-                //{
+                
                 throw new NoUserRightException("SINner is not viewable for public or groupmembers.");
-                //}
+                
             }
             catch (Exception e)
             {
-                HubException hue = new HubException("Exception in GetById: " + e.Message, e);
+                HubException hue = new HubException("Exception in GetSINById: " + e.Message, e);
                 throw hue;
             }
         }
@@ -433,10 +407,6 @@ namespace ChummerHub.Controllers.V1
                     }
                     else
                     {
-                        if(_context.SINnerMetaData.Any(a => a.Id == sinner.SINnerMetaData.Id))
-                            sinner.SINnerMetaData.Id = Guid.NewGuid();
-                        if(_context.SINnerVisibility.Any(a => a.Id == sinner.SINnerMetaData.Visibility.Id))
-                            sinner.SINnerMetaData.Visibility.Id = Guid.NewGuid();
                         foreach(var ur in sinner.SINnerMetaData.Visibility.UserRights)
                         {
                             ur.SINnerId = sinner.Id;
@@ -457,11 +427,21 @@ namespace ChummerHub.Controllers.V1
                             sinner.GoogleDriveFileId = dbsinner.GoogleDriveFileId;
                         if(String.IsNullOrEmpty(sinner.DownloadUrl))
                             sinner.DownloadUrl = dbsinner.DownloadUrl;
-                        _context.Entry(dbsinner.SINnerMetaData.Visibility).State = EntityState.Modified;
-                        _context.Entry(dbsinner.SINnerMetaData.Visibility).CurrentValues.SetValues(sinner.SINnerMetaData.Visibility);
+                        
+                        _context.UserRights.RemoveRange(dbsinner.SINnerMetaData.Visibility.UserRights);
+                        _context.SINnerVisibility.Remove(dbsinner.SINnerMetaData.Visibility);
+                        var alltags = await dbsinner.GetTagsForSinnerFlat(_context);
+                        _context.Tags.RemoveRange(alltags);
+                        _context.SINnerMetaData.Remove(dbsinner.SINnerMetaData);
+                        _context.SINners.Remove(dbsinner);
+                        dbsinner.SINnerMetaData.Visibility.UserRights.Clear();
+                        dbsinner.SINnerMetaData.Visibility = null;
+                        dbsinner.SINnerMetaData.Tags = null;
+                        dbsinner.SINnerMetaData = null;
+                        
+                        await _context.SaveChangesAsync();
 
-                        _context.Entry(dbsinner).State = EntityState.Modified;
-                        _context.Entry(dbsinner).CurrentValues.SetValues(sinner);
+                        await _context.SINners.AddAsync(sinner);
                         string msg = "Sinner " + sinner.Id + " updated: " + _context.Entry(dbsinner).State.ToString();
                         msg += Environment.NewLine + Environment.NewLine + "LastChange: " + dbsinner.LastChange;
                         _logger.LogError(msg);
@@ -507,7 +487,6 @@ namespace ChummerHub.Controllers.V1
                         Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                         telemetry.Properties.Add("User", user?.Email);
                         telemetry.Properties.Add("SINnerId", sinner?.Id?.ToString());
-                        telemetry.Metrics.Add("TagCount", (double)sinner?.AllTags?.Count);
                         tc.TrackException(telemetry);
                     }
                     catch(Exception ex)
@@ -522,9 +501,9 @@ namespace ChummerHub.Controllers.V1
                 switch(returncode)
                 {
                     case HttpStatusCode.OK:
-                        return Accepted("PostSINnerFile", myids);
+                        return Accepted("PostSIN", myids);
                     case HttpStatusCode.Created:
-                        return CreatedAtAction("PostSINnerFile", myids);
+                        return CreatedAtAction("PostSIN", myids);
                     default:
                         break;
                 }
@@ -538,7 +517,6 @@ namespace ChummerHub.Controllers.V1
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     telemetry.Properties.Add("SINnerId", sinner?.Id?.ToString());
-                    telemetry.Metrics.Add("TagCount", (double)sinner?.AllTags?.Count);
                     tc.TrackException(telemetry);
                 }
                 catch(Exception ex)

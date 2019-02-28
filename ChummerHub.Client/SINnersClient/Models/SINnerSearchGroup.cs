@@ -11,24 +11,30 @@ namespace SINners.Models
     using Microsoft.Rest;
     using Microsoft.Rest.Serialization;
 
-    public partial class SINnerGroup
+    public partial class SINnerSearchGroup
     {
         /// <summary>
-        /// Initializes a new instance of the SINnerGroup class.
+        /// Initializes a new instance of the SINnerSearchGroup class.
         /// </summary>
-        public SINnerGroup() { }
+        public SINnerSearchGroup() { }
 
         /// <summary>
-        /// Initializes a new instance of the SINnerGroup class.
+        /// Initializes a new instance of the SINnerSearchGroup class.
         /// </summary>
-        public SINnerGroup(Guid? id = default(Guid?), bool? isPublic = default(bool?), string gameMasterUsername = default(string), SINnerGroupSetting mySettings = default(SINnerGroupSetting), string groupname = default(string))
+        public SINnerSearchGroup(IList<SINnerSearchGroupMember> myMembers = default(IList<SINnerSearchGroupMember>), Guid? id = default(Guid?), bool? isPublic = default(bool?), string gameMasterUsername = default(string), SINnerGroupSetting mySettings = default(SINnerGroupSetting), string groupname = default(string))
         {
+            MyMembers = myMembers;
             Id = id;
             IsPublic = isPublic;
             GameMasterUsername = gameMasterUsername;
             MySettings = mySettings;
             Groupname = groupname;
         }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "myMembers")]
+        public IList<SINnerSearchGroupMember> MyMembers { get; set; }
 
         /// <summary>
         /// </summary>

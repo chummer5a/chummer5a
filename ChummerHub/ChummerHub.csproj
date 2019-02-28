@@ -37,7 +37,7 @@
   </PropertyGroup>-->
   
   <ItemGroup>
-    <PackageReference Include="Google.Apis.Drive.v3" Version="1.38.0.1491" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.38.0.1505" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.6.1" />
     <PackageReference Include="Microsoft.ApplicationInsights.Web" Version="2.9.1" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />

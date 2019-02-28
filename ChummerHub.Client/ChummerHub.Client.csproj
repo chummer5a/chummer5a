@@ -95,6 +95,7 @@
     <Compile Include="Backend\TagExtractor.cs" />
     <Compile Include="Model\CharacterExtended.cs" />
     <Compile Include="Model\SearchTag.cs" />
+    <Compile Include="Model\SINnerSearchGroupMember.cs" />
     <Compile Include="Model\SINnerVisibility.cs" />
     <Compile Include="Model\Tag.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -114,10 +115,14 @@
     <Compile Include="SINnersClient\Models\SINerUserRight.cs" />
     <Compile Include="SINnersClient\Models\SINner.cs" />
     <Compile Include="SINnersClient\Models\SINnerGroup.cs" />
+    <Compile Include="SINnersClient\Models\SINnerGroupSetting.cs" />
     <Compile Include="SINnersClient\Models\SINnerList.cs" />
     <Compile Include="SINnersClient\Models\SINnerMetaData.cs" />
+    <Compile Include="SINnersClient\Models\SINnerSearchGroup.cs" />
+    <Compile Include="SINnersClient\Models\SINnerSearchGroupMember.cs" />
     <Compile Include="SINnersClient\Models\SINnersList.cs" />
     <Compile Include="SINnersClient\Models\SINnerVisibility.cs" />
+    <Compile Include="SINnersClient\Models\SINSearchGroupResult.cs" />
     <Compile Include="SINnersClient\Models\SINSearchResult.cs" />
     <Compile Include="SINnersClient\Models\Tag.cs" />
     <Compile Include="SINnersClient\Models\UploadClient.cs" />

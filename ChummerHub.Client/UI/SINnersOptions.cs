@@ -198,20 +198,44 @@ namespace ChummerHub.Client.UI
 
         private void FillVisibilityListBox()
         {
-            
-            SINnersOptions.SINnerVisibility = null;
-            ((ListBox)clbVisibilityToUsers).DataSource = null;
-            this.cbVisibilityIsPublic.Checked = SINnersOptions.SINnerVisibility.IsPublic.Value;
-            this.cbVisibilityIsGroupVisible.Checked = SINnersOptions.SINnerVisibility.IsGroupVisible.Value;
-            ((ListBox)clbVisibilityToUsers).DataSource = SINnersOptions.SINnerVisibility.UserRightsObservable;
-            ((ListBox)clbVisibilityToUsers).DisplayMember = "EMail";
-            ((ListBox)clbVisibilityToUsers).ValueMember = "CanEdit";
-            for(int i = 0; i < clbVisibilityToUsers.Items.Count; i++)
+            PluginHandler.MainForm.DoThreadSafe(new Action(() =>
             {
-                SINerUserRight obj = (SINerUserRight)clbVisibilityToUsers.Items[i];
-                clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit.Value);
-            }
-            clbVisibilityToUsers.Refresh();
+                try
+                {
+                    this.cbVisibilityIsPublic.CheckedChanged -= cbVisibilityIsPublic_CheckedChanged;
+                    this.cbVisibilityIsGroupVisible.CheckedChanged -= cbVisibilityIsGroupVisible_CheckedChanged;
+                    SINnersOptions.SINnerVisibility = null;
+                    ((ListBox)clbVisibilityToUsers).DataSource = null;
+                    if(SINnersOptions.SINnerVisibility != null)
+                    {
+                        if(SINnersOptions.SINnerVisibility.IsPublic != null)
+                            this.cbVisibilityIsPublic.Checked = SINnersOptions.SINnerVisibility.IsPublic.Value;
+                        if(SINnersOptions.SINnerVisibility.IsGroupVisible != null)
+                            this.cbVisibilityIsGroupVisible.Checked = SINnersOptions.SINnerVisibility.IsGroupVisible.Value;
+                        ((ListBox)clbVisibilityToUsers).DataSource = SINnersOptions.SINnerVisibility.UserRightsObservable;
+                    }
+
+                    ((ListBox)clbVisibilityToUsers).DisplayMember = "EMail";
+                    ((ListBox)clbVisibilityToUsers).ValueMember = "CanEdit";
+                    for(int i = 0; i < clbVisibilityToUsers.Items.Count; i++)
+                    {
+                        SINerUserRight obj = (SINerUserRight)clbVisibilityToUsers.Items[i];
+                        clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit != null && obj.CanEdit.Value);
+                    }
+                    clbVisibilityToUsers.Refresh();
+                    this.cbVisibilityIsPublic.CheckedChanged += cbVisibilityIsPublic_CheckedChanged;
+                    this.cbVisibilityIsGroupVisible.CheckedChanged += cbVisibilityIsGroupVisible_CheckedChanged;
+                }
+                catch(Exception e)
+                {
+                    System.Diagnostics.Trace.TraceError(e.Message, e);
+                    Console.WriteLine(e);
+                    throw;
+                }
+
+            }));
+            
+            
         }
 
         ~SINnersOptions()
@@ -508,7 +532,7 @@ namespace ChummerHub.Client.UI
 
             SINnersOptions.SINnerVisibility.IsPublic = this.cbVisibilityIsPublic.Checked      ;
             SINnersOptions.SINnerVisibility.IsGroupVisible  = this.cbVisibilityIsGroupVisible.Checked;
-            SINnerVisibility.Save(null);
+            SINnerVisibility.Save(this.clbVisibilityToUsers);
         }
 
         private void cbVisibilityIsPublic_CheckedChanged(object sender, EventArgs e)

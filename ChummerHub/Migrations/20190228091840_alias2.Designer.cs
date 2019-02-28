@@ -4,14 +4,16 @@ using ChummerHub.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ChummerHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190228091840_alias2")]
+    partial class alias2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,37 +128,15 @@ namespace ChummerHub.Migrations
                     b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("GameMasterUsername");
-
                     b.Property<string>("Groupname");
 
                     b.Property<bool>("IsPublic");
-
-                    b.Property<Guid?>("MySettingsId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Groupname");
 
-                    b.HasIndex("MySettingsId");
-
                     b.ToTable("SINnerGroups");
-                });
-
-            modelBuilder.Entity("ChummerHub.Models.V1.SINnerGroupSetting", b =>
-                {
-                    b.Property<Guid?>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("DownloadUrl");
-
-                    b.Property<string>("GoogleDriveFileId");
-
-                    b.Property<Guid>("MyGroupId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SINnerGroupSettings");
                 });
 
             modelBuilder.Entity("ChummerHub.Models.V1.SINnerMetaData", b =>
@@ -211,8 +191,6 @@ namespace ChummerHub.Migrations
                     b.Property<string>("TagValue");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SINnerId");
 
                     b.HasIndex("SINnerMetaDataId");
 
@@ -391,13 +369,6 @@ namespace ChummerHub.Migrations
                     b.HasOne("ChummerHub.Models.V1.SINnerMetaData", "SINnerMetaData")
                         .WithMany()
                         .HasForeignKey("SINnerMetaDataId");
-                });
-
-            modelBuilder.Entity("ChummerHub.Models.V1.SINnerGroup", b =>
-                {
-                    b.HasOne("ChummerHub.Models.V1.SINnerGroupSetting", "MySettings")
-                        .WithMany()
-                        .HasForeignKey("MySettingsId");
                 });
 
             modelBuilder.Entity("ChummerHub.Models.V1.SINnerMetaData", b =>

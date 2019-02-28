@@ -50,9 +50,10 @@ namespace ChummerHub.Client.UI
                     this.bUpload.Text = "SINless Character/Error";
                     return;
                 }
-                var response = await StaticUtils.Client.GetByIdWithHttpMessagesAsync(myUC.MyCE.MySINnerFile.Id.Value);
+                var response = await StaticUtils.Client.GetSINByIdWithHttpMessagesAsync(myUC.MyCE.MySINnerFile.Id.Value);
                 if (response.Response.StatusCode == HttpStatusCode.OK)
                 {
+                    myUC.MyCE.SetSINner(response.Body);
                     this.bUpload.Text = "Remove from SINners";
                 }
                 else
@@ -71,6 +72,9 @@ namespace ChummerHub.Client.UI
                         this.tbArchetypeName.Enabled = true;
                     }
                 }
+                if(myUC?.MyCE?.MySINnerFile?.MyGroup != null)
+                    this.lGourpForSinner.Text = myUC.MyCE.MySINnerFile.MyGroup.Groupname;
+
 
             }
             catch (Exception ex)

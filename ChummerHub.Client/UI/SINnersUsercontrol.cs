@@ -41,11 +41,12 @@ namespace ChummerHub.Client.UI
         public CharacterExtended SetCharacterFrom(CharacterShared mySINner)
         {
             _mySINner = mySINner;
+            MyCE = new CharacterExtended(mySINner.CharacterObject, null);
             TabSINnersBasic = new SINnersBasic(this);
             TabSINnersBasic.Visible = true;
             TabSINnersAdvanced = new SINnersAdvanced(this);
             TabSINnersAdvanced.Visible = true;
-            MyCE = new CharacterExtended(mySINner.CharacterObject, null);
+            
             MyCE.MySINnerFile.SiNnerMetaData.Tags = MyCE.PopulateTags();
             MyCE.ZipFilePath = MyCE.PrepareModel();
             InitializeComponent();
