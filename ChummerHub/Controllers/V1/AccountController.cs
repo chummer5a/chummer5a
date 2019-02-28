@@ -53,7 +53,7 @@ namespace ChummerHub.Controllers
                 var user = await _signInManager.UserManager.GetUserAsync(User);
                 if (user.EmailConfirmed)
                 {
-                    await SeedData.EnsureRole(Program.MyHost.Services, user.Id, API.Authorizarion.Constants.ConfirmedUserRole, _roleManager, _userManager);
+                    await SeedData.EnsureRole(Program.MyHost.Services, user.Id, API.Authorizarion.Constants.UserRoleConfirmed, _roleManager, _userManager);
                 }
                 var roles = await _userManager.GetRolesAsync(user);
                 return Ok(roles.ToList());
@@ -82,6 +82,30 @@ namespace ChummerHub.Controllers
                 return Ok(user);
             }
             catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [HttpPost]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("PostSetUserRole")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<ActionResult<ApplicationUser>> PostSetUserRole(string email, string userrole)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(email);
+                if(user == null)
+                    return NotFound();
+                user.PasswordHash = "";
+                user.SecurityStamp = "";
+                await SeedData.EnsureRole(Program.MyHost.Services, user.Id, userrole, _roleManager, _userManager);
+                return Ok(user);
+            }
+            catch(Exception e)
             {
                 return BadRequest(e);
             }
@@ -198,52 +222,56 @@ namespace ChummerHub.Controllers
                 }
                 //get all from visibility
                 SINnersList list = new SINnersList();
-                var userseq = (from a in _context.UserRights where a.EMail == user.NormalizedEmail && a.CanEdit == true select a).ToList();
-                foreach(var ur in userseq)
+                List<SINner> mySinners = await SINner.GetSINnersFromUser(user, _context, true);
+                foreach(var sin in mySinners)
                 {
-                    if (ur?.SINnerId == null) continue;
-                    var sin = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights).FirstOrDefaultAsync(a => a.Id == ur.SINnerId);
-                    if (sin != null)
+                    SINnerList owndSINner = new SINnerList
                     {
-                        list.SINners.Add(sin);
-                    }
-                }
-                list.Header = "Edit";
-                ret.SINLists.Add(list);
-                //get all from my group
-                SINnersList grouplist = new SINnersList();
-                var sinseq = (from a in _context.SINners.Include(a => a.SINnerMetaData).Include(b => b.SINnerMetaData.Visibility) where a.SINnerMetaData.Visibility.IsGroupVisible == true && a.SINnerMetaData.Visibility.Groupname == user.Groupname select a).ToList();
-                foreach(var sin in sinseq)
-                {
-                    if(sin.Id == null) continue;
-                    if(list.SINners.Contains(sin))
-                        continue;
-                    if(sin != null)
+                        SINner = sin
+                    };
+                    if(sin.MyGroup != null)
                     {
-                        grouplist.SINners.Add(sin);
+                        //add all members of his group
+                        var members = await sin.MyGroup.GetGroupMembers(_context);
+                        foreach(var member in members)
+                        {
+                            if((member.SINnerMetaData.Visibility.IsGroupVisible == true)
+                                || (member.SINnerMetaData.Visibility.IsPublic)
+                                )
+                            {
+                                SINnerList memberlist = new SINnerList();
+                                memberlist.SINner = member;
+                                owndSINner.SINList.Add(memberlist);
+                            }
+                        }
                     }
+                    list.MySINnersList.Add(owndSINner);
                 }
-                grouplist.Header = "Group";
-                ret.SINLists.Add(grouplist);
+
                 //get all that are viewable but NOT editable
-                SINnersList viewlist = new SINnersList();
-                userseq = (from a in _context.UserRights where a.EMail == user.NormalizedEmail && a.CanEdit == false select a).ToList();
-                foreach(var ur in userseq)
+                SINnerList viewlist = new SINnerList();
+                viewlist.Header = "View";
+                List<SINner> myViewSinners = await SINner.GetSINnersFromUser(user, _context, false);
+                foreach(var sin in myViewSinners)
                 {
-                    if(ur?.SINnerId == null) continue;
-                    var sin = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights).FirstOrDefaultAsync(a => a.Id == ur.SINnerId);
-                    if(sin != null)
+                    bool found = false;
+                    foreach(var sinlist in list.MySINnersList)
                     {
-                        if(list.SINners.Contains(sin))
-                            continue;
-                        if(grouplist.SINners.Contains(sin))
-                            continue;
-                        viewlist.SINners.Add(sin);
+                        if (sinlist.SINner == sin)
+                        {
+                            found = true;
+                            break; 
+                        }
+                    }
+                    if (!found)
+                    {
+                        SINnerList childviewlist = new SINnerList();
+                        childviewlist.SINner = sin;
+                        viewlist.SINList.Add(childviewlist);
                     }
                 }
-                viewlist.Header = "View";
-                ret.SINLists.Add(viewlist);
-               
+                list.MySINnersList.Add(viewlist);
+                ret.SINLists.Add(list);
                 return Ok(ret);
             }
             catch (Exception e)

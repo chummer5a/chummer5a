@@ -1,7 +1,3 @@
-// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-
 using Microsoft.AspNetCore.Hosting;
 using System;
 using Microsoft.Extensions.Logging;
@@ -14,6 +10,7 @@ using ChummerHub.Data;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ChummerHub
 {
@@ -23,10 +20,8 @@ namespace ChummerHub
         public static void Main(string[] args)
         {
             System.AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
-            MyHost = CreateWebHostBuilder(args);
-            Seed();
-            MyHost.Run();
-            return;
+         
+#if DEBUG           
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
@@ -36,21 +31,11 @@ namespace ChummerHub
                 //.WriteTo.File(@"ChummerHub_log.txt")
                 .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate)
                 .CreateLogger();
-
-            //var seed = args.Contains("/seed");
-            //if (seed)
-            //{
-            //    args = args.Except(new[] { "/seed" }).ToArray();
-            //}
-
-            //var host = CreateWebHostBuilder(args).Build();
-            
-            //if (seed)
-            //{
-            //    //SeedData.EnsureSeedData(host.Services);
-            //}
-
-            //host.Run();
+#endif
+            MyHost = CreateWebHostBuilder(args);
+            Seed();
+            MyHost.Run();
+            return;
         }
 
         private static void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
@@ -62,7 +47,7 @@ namespace ChummerHub
 
         public static void Seed()
         {
-            
+
             using(var scope = MyHost.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -85,7 +70,8 @@ namespace ChummerHub
                 var testUserPw = config["SeedUserPW"];
                 try
                 {
-                    SeedData.Initialize(services, testUserPw).Wait();
+                    var env = services.GetService<IHostingEnvironment>();
+                    SeedData.Initialize(services, testUserPw, env).Wait();
                 }
                 catch(Exception ex)
                 {
@@ -118,25 +104,5 @@ namespace ChummerHub
                 })
                 .CaptureStartupErrors(true)
                 .Build();
-
-//        public static IWebHost BuildWebHost(string[] args)
-//        {
-//            return WebHost.CreateDefaultBuilder(args)
-//                    .UseStartup<Startup>()
-//                    .UseSerilog((context, configuration) =>
-//                    {
-//                        configuration
-//                            .MinimumLevel.Debug()
-//                            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-//                            .MinimumLevel.Override("System", LogEventLevel.Warning)
-//                            .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
-//                            .Enrich.FromLogContext()
-//#if DEBUG
-//                            .WriteTo.File(@"SINners_log.txt")
-//#endif
-//                            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate);
-//                    })
-//                    .Build();
-//        }
     }
 }

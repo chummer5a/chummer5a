@@ -18,8 +18,6 @@ namespace ChummerHub.Models.V1
 
         public bool IsGroupVisible { get; set; }
 
-        public string Groupname { get; set; }
-
         //[JsonIgnore]
         //[XmlIgnore]
         //[SoapIgnore]

@@ -1067,7 +1067,10 @@ namespace Chummer
 
         private void TreeView_MouseDown(object sender, MouseEventArgs e)
         {
-            OnMyMouseDown(sender, e);
+            if (OnMyMouseDown != null)
+            {
+                OnMyMouseDown(sender, e);
+            }
         }
 
         public void OnDefaultMouseDown(object sender, MouseEventArgs e)

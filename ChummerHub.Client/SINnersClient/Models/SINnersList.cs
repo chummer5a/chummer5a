@@ -21,27 +21,15 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINnersList class.
         /// </summary>
-        public SINnersList(string header = default(string), IList<SINner> siNners = default(IList<SINner>), IList<SINnersList> sinList = default(IList<SINnersList>))
+        public SINnersList(IList<SINnerList> mySINnersList = default(IList<SINnerList>))
         {
-            Header = header;
-            SiNners = siNners;
-            SinList = sinList;
+            MySINnersList = mySINnersList;
         }
 
         /// <summary>
         /// </summary>
-        [JsonProperty(PropertyName = "header")]
-        public string Header { get; set; }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "siNners")]
-        public IList<SINner> SiNners { get; set; }
-
-        /// <summary>
-        /// </summary>
-        [JsonProperty(PropertyName = "sinList")]
-        public IList<SINnersList> SinList { get; set; }
+        [JsonProperty(PropertyName = "mySINnersList")]
+        public IList<SINnerList> MySINnersList { get; set; }
 
     }
 }

@@ -64,7 +64,6 @@ namespace ChummerHub
         public void ConfigureServices(IServiceCollection services)
         {
             MyServices = services;
-
            
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -81,22 +80,8 @@ namespace ChummerHub
 
             services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
 
-            //services.AddDefaultIdentity<ApplicationUser>()
-            //    .AddEntityFrameworkStores<ApplicationDbContext>()
-            //    .AddSignInManager()
-            //    .AddRoleManager<RoleManager<ApplicationRole>>()
-            //    .AddDefaultTokenProviders();
-
-            //services.AddIdentityCore<ApplicationUser>(options => { });
-            //new IdentityBuilder(typeof(ApplicationUser), typeof(IdentityRole), services)
-            //    .AddRoleManager<RoleManager<IdentityRole>>()
-            //    .AddSignInManager<SignInManager<ApplicationUser>>()
-            //    .AddEntityFrameworkStores<ApplicationDbContext>()
-            //    .AddDefaultTokenProviders();
-
-
+          
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
-            //services.AddDefaultIdentity<ApplicationUser>(options =>
             {
 
               })
@@ -115,8 +100,6 @@ namespace ChummerHub
 
             services.AddMvc(options =>
             {
-                // using Microsoft.AspNetCore.Mvc.Authorization;
-                // using Microsoft.AspNetCore.Authorization;
                 var policy = new AuthorizationPolicyBuilder()
                                  .RequireAuthenticatedUser()
                                  .Build();

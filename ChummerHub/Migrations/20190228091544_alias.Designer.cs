@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChummerHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190109150934_TagComment")]
-    partial class TagComment
+    [Migration("20190228091544_alias")]
+    partial class alias
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.0-rtm-35687")
+                .HasAnnotation("ProductVersion", "2.2.2-servicing-10034")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -74,6 +74,8 @@ namespace ChummerHub.Migrations
                     b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("Alias");
+
                     b.Property<string>("DownloadUrl");
 
                     b.Property<string>("GoogleDriveFileId");
@@ -82,6 +84,8 @@ namespace ChummerHub.Migrations
 
                     b.Property<DateTime>("LastChange");
 
+                    b.Property<Guid?>("MyGroupId");
+
                     b.Property<Guid?>("SINnerMetaDataId");
 
                     b.Property<Guid>("UploadClientId");
@@ -89,6 +93,8 @@ namespace ChummerHub.Migrations
                     b.Property<DateTime?>("UploadDateTime");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MyGroupId");
 
                     b.HasIndex("SINnerMetaDataId");
 
@@ -113,6 +119,20 @@ namespace ChummerHub.Migrations
                     b.ToTable("SINnerComments");
                 });
 
+            modelBuilder.Entity("ChummerHub.Models.V1.SINnerGroup", b =>
+                {
+                    b.Property<Guid?>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Groupname");
+
+                    b.Property<bool>("IsPublic");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SINnerGroups");
+                });
+
             modelBuilder.Entity("ChummerHub.Models.V1.SINnerMetaData", b =>
                 {
                     b.Property<Guid>("Id")
@@ -131,8 +151,6 @@ namespace ChummerHub.Migrations
                 {
                     b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Groupname");
 
                     b.Property<bool>("IsGroupVisible");
 
@@ -167,9 +185,6 @@ namespace ChummerHub.Migrations
                     b.Property<string>("TagValue");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
 
                     b.HasIndex("SINnerMetaDataId");
 
@@ -341,6 +356,10 @@ namespace ChummerHub.Migrations
 
             modelBuilder.Entity("ChummerHub.Models.V1.SINner", b =>
                 {
+                    b.HasOne("ChummerHub.Models.V1.SINnerGroup", "MyGroup")
+                        .WithMany()
+                        .HasForeignKey("MyGroupId");
+
                     b.HasOne("ChummerHub.Models.V1.SINnerMetaData", "SINnerMetaData")
                         .WithMany()
                         .HasForeignKey("SINnerMetaDataId");

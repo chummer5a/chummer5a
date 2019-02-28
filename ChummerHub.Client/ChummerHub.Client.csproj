@@ -37,8 +37,8 @@
     <Reference Include="GroupControls, Version=1.8.0.0, Culture=neutral, PublicKeyToken=3726d9da21b6ac8f, processorArchitecture=MSIL">
       <HintPath>..\packages\GroupControls.1.8.0\lib\net45\GroupControls.dll</HintPath>
     </Reference>
-    <Reference Include="IdentityModel, Version=3.10.1.0, Culture=neutral, PublicKeyToken=e7877f4675df049f, processorArchitecture=MSIL">
-      <HintPath>..\packages\IdentityModel.3.10.1\lib\net452\IdentityModel.dll</HintPath>
+    <Reference Include="IdentityModel, Version=3.10.6.0, Culture=neutral, PublicKeyToken=e7877f4675df049f, processorArchitecture=MSIL">
+      <HintPath>..\packages\IdentityModel.3.10.6\lib\net452\IdentityModel.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.2\lib\net45\Microsoft.Rest.ClientRuntime.dll</HintPath>
@@ -95,6 +95,7 @@
     <Compile Include="Backend\TagExtractor.cs" />
     <Compile Include="Model\CharacterExtended.cs" />
     <Compile Include="Model\SearchTag.cs" />
+    <Compile Include="Model\SINnerSearchGroupMember.cs" />
     <Compile Include="Model\SINnerVisibility.cs" />
     <Compile Include="Model\Tag.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -113,15 +114,27 @@
     <Compile Include="SINnersClient\Models\SearchTag.cs" />
     <Compile Include="SINnersClient\Models\SINerUserRight.cs" />
     <Compile Include="SINnersClient\Models\SINner.cs" />
+    <Compile Include="SINnersClient\Models\SINnerGroup.cs" />
+    <Compile Include="SINnersClient\Models\SINnerGroupSetting.cs" />
+    <Compile Include="SINnersClient\Models\SINnerList.cs" />
     <Compile Include="SINnersClient\Models\SINnerMetaData.cs" />
+    <Compile Include="SINnersClient\Models\SINnerSearchGroup.cs" />
+    <Compile Include="SINnersClient\Models\SINnerSearchGroupMember.cs" />
     <Compile Include="SINnersClient\Models\SINnersList.cs" />
     <Compile Include="SINnersClient\Models\SINnerVisibility.cs" />
+    <Compile Include="SINnersClient\Models\SINSearchGroupResult.cs" />
     <Compile Include="SINnersClient\Models\SINSearchResult.cs" />
     <Compile Include="SINnersClient\Models\Tag.cs" />
     <Compile Include="SINnersClient\Models\UploadClient.cs" />
     <Compile Include="SINnersClient\Models\UploadInfoObject.cs" />
     <Compile Include="SINnersClient\SINnersClient.cs" />
     <Compile Include="SINnersClient\SINnersClientExtensions.cs" />
+    <Compile Include="UI\frmSINnerGroupSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\frmSINnerGroupSearch.Designer.cs">
+      <DependentUpon>frmSINnerGroupSearch.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\frmSINnerSearch.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -133,6 +146,12 @@
     </Compile>
     <Compile Include="UI\frmWebBrowser.Designer.cs">
       <DependentUpon>frmWebBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SINnerGroupSearch.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SINnerGroupSearch.Designer.cs">
+      <DependentUpon>SINnerGroupSearch.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\SINnersAdvanced.cs">
       <SubType>UserControl</SubType>
@@ -172,11 +191,17 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\frmSINnerGroupSearch.resx">
+      <DependentUpon>frmSINnerGroupSearch.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\frmSINnerSearch.resx">
       <DependentUpon>frmSINnerSearch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\frmWebBrowser.resx">
       <DependentUpon>frmWebBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SINnerGroupSearch.resx">
+      <DependentUpon>SINnerGroupSearch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SINnersAdvanced.resx">
       <DependentUpon>SINnersAdvanced.cs</DependentUpon>
