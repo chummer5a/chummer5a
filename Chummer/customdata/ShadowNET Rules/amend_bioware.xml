@@ -19,9 +19,6 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema bioware.xsd">
   <grades>
-      <name>Gammaware</name>
-      <hide />
-    </grade>
     <grade>
       <name>Omegaware</name>
       <hide />
