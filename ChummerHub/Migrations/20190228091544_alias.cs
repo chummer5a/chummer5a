@@ -2,21 +2,21 @@
 
 namespace ChummerHub.Migrations
 {
-    public partial class TagComment : Migration
+    public partial class alias : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "TagComment",
-                table: "Tags",
+                name: "Alias",
+                table: "SINners",
                 nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "TagComment",
-                table: "Tags");
+                name: "Alias",
+                table: "SINners");
         }
     }
 }

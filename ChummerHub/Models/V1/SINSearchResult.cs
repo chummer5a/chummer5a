@@ -18,17 +18,26 @@ namespace ChummerHub.Models.V1
 
     public class SINnersList
     {
-        public string Header { get; set; }
-
-        public List<SINner> SINners { get; set; }
-
-        public List<SINnersList> SINList { get; set; }
+        public List<SINnerList> MySINnersList { get; set; }
 
         public SINnersList()
         {
-            Header = "defaultHeader";
-            SINners = new List<SINner>();
-            SINList = new List<SINnersList>();
+            MySINnersList = new List<SINnerList>();
+        }
+    }
+
+    public class SINnerList
+    {
+        public string Header { get; set; }
+
+        public SINner SINner { get; set; }
+
+        public List<SINnerList> SINList { get; set; }
+
+        public SINnerList()
+        {
+            Header = null;
+            SINList = new List<SINnerList>();
         }
     }
 }

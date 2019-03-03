@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ChummerHub.API;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ChummerHub
 {
@@ -15,10 +16,10 @@ namespace ChummerHub
     {
 
         #region snippet_Initialize
-        public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw)
+        public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw, IHostingEnvironment env)
         {
             using (var context = new ApplicationDbContext(
-                serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
+                serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>(), env))
             {
                 
                 if (context.Users.Any())
@@ -34,7 +35,8 @@ namespace ChummerHub
                 {
                     var userID = await EnsureUser(serviceProvider, user, testUserPw);
                     await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.AdministratorsRole, null, null);
-                    await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.RegisteredUserRole, null, null);
+                    await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.UserRoleRegistered, null, null);
+                    await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.UserRoleArchetype, null, null);
                 }
                 context.SaveChanges();
             }

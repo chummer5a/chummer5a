@@ -42,8 +42,6 @@ namespace ChummerHub.Client.UI
             this.tbVisibilityAddEmail = new System.Windows.Forms.TextBox();
             this.bVisibilityAddEmail = new System.Windows.Forms.Button();
             this.bVisibilityRemove = new System.Windows.Forms.Button();
-            this.lGroupname = new System.Windows.Forms.Label();
-            this.tbGroupname = new System.Windows.Forms.TextBox();
             this.tbHelptext = new System.Windows.Forms.TextBox();
             this.cbSINnerUrl = new System.Windows.Forms.ComboBox();
             this.lSINnerUrl = new System.Windows.Forms.Label();
@@ -114,8 +112,6 @@ namespace ChummerHub.Client.UI
             this.tlpVisibility.Controls.Add(this.cbVisibilityIsPublic, 0, 1);
             this.tlpVisibility.Controls.Add(this.cbVisibilityIsGroupVisible, 0, 0);
             this.tlpVisibility.Controls.Add(this.gpVisibilityToUserList, 1, 0);
-            this.tlpVisibility.Controls.Add(this.lGroupname, 0, 2);
-            this.tlpVisibility.Controls.Add(this.tbGroupname, 0, 3);
             this.tlpVisibility.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpVisibility.Location = new System.Drawing.Point(3, 16);
             this.tlpVisibility.MinimumSize = new System.Drawing.Size(40, 40);
@@ -233,29 +229,6 @@ namespace ChummerHub.Client.UI
             this.bVisibilityRemove.Text = "Remove";
             this.bVisibilityRemove.UseVisualStyleBackColor = true;
             this.bVisibilityRemove.Click += new System.EventHandler(this.bVisibilityRemove_Click);
-            // 
-            // lGroupname
-            // 
-            this.lGroupname.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lGroupname.AutoSize = true;
-            this.lGroupname.Location = new System.Drawing.Point(3, 46);
-            this.lGroupname.MinimumSize = new System.Drawing.Size(20, 20);
-            this.lGroupname.Name = "lGroupname";
-            this.lGroupname.Size = new System.Drawing.Size(176, 20);
-            this.lGroupname.TabIndex = 2;
-            this.lGroupname.Text = "Groupname:";
-            this.lGroupname.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // tbGroupname
-            // 
-            this.tbGroupname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbGroupname.Location = new System.Drawing.Point(3, 69);
-            this.tbGroupname.Name = "tbGroupname";
-            this.tbGroupname.Size = new System.Drawing.Size(176, 20);
-            this.tbGroupname.TabIndex = 3;
-            this.tbGroupname.TextChanged += new System.EventHandler(this.tbGroupname_TextChanged);
             // 
             // tbHelptext
             // 
@@ -441,8 +414,6 @@ namespace ChummerHub.Client.UI
         private System.Windows.Forms.TextBox tbVisibilityAddEmail;
         private System.Windows.Forms.Button bVisibilityAddEmail;
         private System.Windows.Forms.Button bVisibilityRemove;
-        private System.Windows.Forms.Label lGroupname;
-        private System.Windows.Forms.TextBox tbGroupname;
         private System.Windows.Forms.Button bMultiUpload;
         private System.Windows.Forms.FlowLayoutPanel flpButtons;
         private System.Windows.Forms.Button bBackup;
