@@ -16283,9 +16283,7 @@
       <contributetolimit>False</contributetolimit>
       <bonus>
         <adeptpowerpoints>1</adeptpowerpoints>
-        <spellcategorydrain>
-          <val>-1</val>
-        </spellcategorydrain>
+        <drainvalue>-1</drainvalue>
       </bonus>
       <required>
         <oneof>
