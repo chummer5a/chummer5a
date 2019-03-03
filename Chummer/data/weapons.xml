@@ -11534,7 +11534,7 @@
       <damage>9P</damage>
       <ap>-2</ap>
       <mode>SA/BF/FA</mode>
-      <rc>3</rc>
+      <rc>0</rc>
       <ammo>32(c)</ammo>
       <avail>9F</avail>
       <cost>2850</cost>
