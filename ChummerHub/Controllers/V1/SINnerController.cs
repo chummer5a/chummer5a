@@ -451,6 +451,7 @@ namespace ChummerHub.Controllers.V1
                     else
                     {
                         returncode = HttpStatusCode.Created;
+                        sinner.MyGroup = null;
                         _context.SINners.Add(sinner);
                     }
                 }
@@ -458,7 +459,6 @@ namespace ChummerHub.Controllers.V1
                 {
                     await _context.SaveChangesAsync();
                 }
-                
                 catch(DbUpdateConcurrencyException ex)
                 {
                     foreach(var entry in ex.Entries)
@@ -604,6 +604,7 @@ namespace ChummerHub.Controllers.V1
                     if(_context.SINnerMetaData.Contains(oldsin.SINnerMetaData))
                         _context.SINnerMetaData.Remove(oldsin.SINnerMetaData);
                 }
+
                 _context.SINners.RemoveRange(oldsinners);
                 await _context.SaveChangesAsync();
 
