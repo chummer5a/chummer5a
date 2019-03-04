@@ -35,6 +35,7 @@ namespace ChummerHub.Client.UI
         private void SINnersBasicConstructor(SINnersUserControl parent)
         {
             InitializeComponent();
+            this.bGroupSearch.Enabled = false;
             this.AutoSize = true;
             myUC = parent;
             myUC.MyCE = parent.MyCE;
@@ -55,10 +56,25 @@ namespace ChummerHub.Client.UI
                 {
                     myUC.MyCE.SetSINner(response.Body);
                     this.bUpload.Text = "Remove from SINners";
+                    this.bGroupSearch.Enabled = true;
+                    this.lUploadStatus.Text = "online";
+                    this.bUpload.Enabled = true;
+                }
+                else if(response.Response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    this.lUploadStatus.Text = "not online";
+                    this.bGroupSearch.Enabled = false;
+                    this.bGroupSearch.SetToolTip("SINner needs to be uploaded first, before he/she can join a group.");
+                    this.bUpload.Enabled = true;
+                    this.bUpload.Text = "Upload";
                 }
                 else
                 {
-                    this.bUpload.Text = "Upload to SINners";
+                    this.lUploadStatus.Text = "Statuscode: " + response.Response.StatusCode;
+                    this.bGroupSearch.Enabled = false;
+                    this.bGroupSearch.SetToolTip("SINner needs to be uploaded first, before he/she can join a group.");
+                    this.bUpload.Text = "Upload";
+                    this.bUpload.Enabled = true;
                 }
                 this.cbTagArchetype.Enabled = false;
                 this.tbArchetypeName.Enabled = false;

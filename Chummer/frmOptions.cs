@@ -814,6 +814,8 @@ namespace Chummer
             GlobalOptions.DefaultBuildMethod = cboBuildMethod.SelectedValue?.ToString() ?? GlobalOptions.DefaultBuildMethodDefaultValue;
             GlobalOptions.DefaultGameplayOption = XmlManager.Load("gameplayoptions.xml", _strSelectedLanguage).SelectSingleNode("/chummer/gameplayoptions/gameplayoption[id = \"" + cboDefaultGameplayOption.SelectedValue?.ToString() + "\"]/name")?.InnerText ?? GlobalOptions.DefaultGameplayOptionDefaultValue;
             GlobalOptions.PluginsEnabled = chkEnablePlugins.Enabled;
+           
+
         }
 
         /// <summary>
@@ -848,6 +850,10 @@ namespace Chummer
                 objRegistry.SetValue("hidecharacterroster", chkHideCharacterRoster.Checked);
                 objRegistry.SetValue("createbackuponcareer", chkCreateBackupOnCareer.Checked);
                 objRegistry.SetValue("pluginsenabled", chkEnablePlugins.Checked);
+
+                //Save the Plugins-Dictionary
+                string jsonstring = Newtonsoft.Json.JsonConvert.SerializeObject(GlobalOptions.PluginsEnabledDic);
+                objRegistry.SetValue("plugins", jsonstring);
 
                 // Save the SourcebookInfo.
                 RegistryKey objSourceRegistry = objRegistry.CreateSubKey("Sourcebook");

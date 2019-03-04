@@ -15,6 +15,9 @@ WebService Changes:
 
 Application Changes:
 
+- added a check, if a character is already uploaded before enabling the "open group dialog"-button
+- Runtime now allows (or should allow) code from remote sources (plugin-dlls are not loaded otherwise under Windows-UAC)
+- Globaloptions now saves which plugins are enabled in the registry
 - Changing the URL of the Chummerhub-Repository in the options no longer crashes the program.
 - refractored the CharacterTreeNodes, to support Groups in the frmCharacterRoster (not finished yet)
 - hopefully fixed a IndexOutOfRangeException, that would occur when saving the options from the sinner-optionsdialog.
