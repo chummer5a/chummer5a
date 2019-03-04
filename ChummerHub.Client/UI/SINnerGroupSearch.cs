@@ -56,13 +56,7 @@ namespace ChummerHub.Client.UI
                     return null;
                 }
 
-                bool uploaded = await MyCE.Upload();
-                if (!uploaded)
-                {
-                    MessageBox.Show("SINner not successully uploaded.");
-                    return null;
-                }
-                
+
                 var Result = await StaticUtils.Client.PostGroupWithHttpMessagesAsync(this.tbSearchGroupname.Text, MyCE.MySINnerFile.Id);
                 var rescontent = await Result.Response.Content.ReadAsStringAsync();
                 if((Result.Response.StatusCode == HttpStatusCode.OK)
@@ -72,8 +66,8 @@ namespace ChummerHub.Client.UI
                     try
                     {
                         Object objIds = Newtonsoft.Json.JsonConvert.DeserializeObject<Object>(jsonResultString);
-                        Guid? id = objIds as Guid?;
-                        if(id == null)
+                        Guid id;
+                        if (!Guid.TryParse(objIds.ToString(), out id))
                         {
                             string msg = "ChummerHub did not return a valid Id for the group " + this.tbSearchGroupname.Text + ".";
                             System.Diagnostics.Trace.TraceError(msg);
