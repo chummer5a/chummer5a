@@ -27,6 +27,11 @@ Application Changes:
 - Implemented a hackish workaround for disabled tooltip controls on attribute and skill controls. Should fix #3414, most likely needs further work.
 - Fixed behaviour of skill controls to properly refresh their rating when selecting a custom attribute for tests.
 - Fixed a cost calculation for built-in weapon mounts.
+- Fixed behaviour of the Shapeshifter attribute in career mode incorrectly presenting the wrong way around. Closes #3343
+- Fixed an issue that meant restarting Chummer with multiple character files open would open the same file multiple times. Closes #3298
+- Removed the hard-coded Mentor's Mask improvement and replaced it with a 0-point quality. Closes #3449
+- Fixed an issue with inability to add user-enterable specialisations in active or knowledge skills.
+- Made some changes to the way in which skills are notified about changes to their linked attributes. Improves functionality for shapeshifters, may have knock-on issues that I haven't been able to test. 
 
 Data Changes:
 - Fixed incorrect underbarrel weapon name for the Nissan Optimum II that caused a crash. Fixes part of #3344
@@ -49,6 +54,8 @@ Data Changes:
 - Fixed incorrect AP value on the Trollbow's melee option. 
 - Altered the Regeneration critter power to permit Deltaware bioware.
 - Altered the Hand Razors and Hand Blade cyberwares to be limited by the number of arms a character has and be limited to being installed into things with fingers. Included a customdata file to remove this requirement.
+- Changed incorrect CHA defaults for the Xenosapient AI metavariant.
+- Fixed incorrect range and concealability on the Morrissey Elite. 
 
 New Strings:
 - Message_OrphanedImprovements

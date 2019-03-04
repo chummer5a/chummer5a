@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -171,34 +172,28 @@ namespace Chummer
             frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
             // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
             string[] strArgs = Environment.GetCommandLineArgs();
-            string strLoop;
-            List<Character> lstCharactersToLoad = new List<Character>();
-            object lstCharactersToLoadLock = new object();
+            ConcurrentBag<Character> lstCharactersToLoad = new ConcurrentBag<Character>();
             bool blnShowTest = false;
             object blnShowTestLock = new object();
             if(!Utils.IsUnitTest)
             {
                 Parallel.For(1, strArgs.Length, i =>
                 {
-                    strLoop = strArgs[i];
-                    if(strLoop == "/test")
+                    if (strArgs[i] == "/test")
                     {
                         lock(blnShowTestLock)
                             blnShowTest = true;
                     }
-                    else if(!strLoop.StartsWith('/'))
+                    else if(!strArgs[i].StartsWith('/'))
                     {
-                        if(!File.Exists(strLoop))
+                        if(!File.Exists(strArgs[i]))
                         {
                             throw new ArgumentException("Chummer started with unknown command line arguments: " + strArgs.Aggregate((j, k) => j + " " + k));
                         }
 
-                        if(lstCharactersToLoad.All(x => x.FileName != strLoop))
-                        {
-                            Character objLoopCharacter = LoadCharacter(strLoop);
-                            lock(lstCharactersToLoadLock)
-                                lstCharactersToLoad.Add(objLoopCharacter);
-                        }
+                        if (lstCharactersToLoad.Any(x => x.FileName == strArgs[i])) return;
+                        Character objLoopCharacter = LoadCharacter(strArgs[i]);
+                        lstCharactersToLoad.Add(objLoopCharacter);
                     }
                 });
             }

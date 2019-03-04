@@ -11534,7 +11534,7 @@
       <damage>9P</damage>
       <ap>-2</ap>
       <mode>SA/BF/FA</mode>
-      <rc>3</rc>
+      <rc>0</rc>
       <ammo>32(c)</ammo>
       <avail>9F</avail>
       <cost>2850</cost>
@@ -12960,7 +12960,7 @@
       <name>Morrissey Elite</name>
       <category>Heavy Pistols</category>
       <type>Ranged</type>
-      <conceal>0</conceal>
+      <conceal>-1</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>8P</damage>
@@ -12984,6 +12984,7 @@
         <mount>Stock</mount>
         <mount>Side</mount>
       </accessorymounts>
+	  <range>Light Pistols</range>
       <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>

@@ -11315,7 +11315,7 @@ namespace Chummer
         /// </summary>
         public override bool SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false)
         {
-            return base.SaveCharacter(blnNeedConfirm, chkCharacterCreated.Checked);
+            return base.SaveCharacter(blnNeedConfirm, blnDoCreated || chkCharacterCreated.Checked);
         }
 
         /// <summary>

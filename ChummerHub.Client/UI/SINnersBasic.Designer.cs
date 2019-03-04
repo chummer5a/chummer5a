@@ -44,6 +44,7 @@ namespace ChummerHub.Client.UI
             // tabLayoutPanel
             // 
             this.tabLayoutPanel.ColumnCount = 3;
+
             this.tabLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tabLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tabLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -61,9 +62,11 @@ namespace ChummerHub.Client.UI
             this.tabLayoutPanel.RowCount = 6;
             this.tabLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tabLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+
             this.tabLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tabLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tabLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+
             this.tabLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tabLayoutPanel.Size = new System.Drawing.Size(409, 210);
             this.tabLayoutPanel.TabIndex = 0;
@@ -79,6 +82,7 @@ namespace ChummerHub.Client.UI
             this.cbTagArchetype.Text = "Archetype";
             this.cbTagArchetype.UseVisualStyleBackColor = true;
             this.cbTagArchetype.Click += new System.EventHandler(this.cbTagArchetype_Click);
+
             // 
             // cbSRMReady
             // 
@@ -97,7 +101,9 @@ namespace ChummerHub.Client.UI
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label1.AutoSize = true;
+
             this.label1.Location = new System.Drawing.Point(3, 34);
+
             this.label1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(39, 13);
@@ -108,7 +114,9 @@ namespace ChummerHub.Client.UI
             // 
             this.lGourpForSinner.AutoSize = true;
             this.lGourpForSinner.Dock = System.Windows.Forms.DockStyle.Left;
+
             this.lGourpForSinner.Location = new System.Drawing.Point(92, 26);
+
             this.lGourpForSinner.Name = "lGourpForSinner";
             this.lGourpForSinner.Size = new System.Drawing.Size(92, 29);
             this.lGourpForSinner.TabIndex = 6;
@@ -120,7 +128,9 @@ namespace ChummerHub.Client.UI
             this.bGroupSearch.AutoSize = true;
             this.bGroupSearch.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.bGroupSearch.Dock = System.Windows.Forms.DockStyle.Left;
+
             this.bGroupSearch.Location = new System.Drawing.Point(190, 29);
+
             this.bGroupSearch.Name = "bGroupSearch";
             this.bGroupSearch.Size = new System.Drawing.Size(86, 23);
             this.bGroupSearch.TabIndex = 7;
@@ -128,8 +138,9 @@ namespace ChummerHub.Client.UI
             this.bGroupSearch.UseVisualStyleBackColor = true;
             this.bGroupSearch.Click += new System.EventHandler(this.bGroupSearch_Click);
             // 
-            // bUpload
+            // cbTagArchetype
             // 
+
             this.bUpload.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.bUpload.Enabled = false;
@@ -140,6 +151,7 @@ namespace ChummerHub.Client.UI
             this.bUpload.Text = "Upload";
             this.bUpload.UseVisualStyleBackColor = true;
             this.bUpload.Click += new System.EventHandler(this.bUpload_Click);
+
             // 
             // tbArchetypeName
             // 
@@ -198,7 +210,9 @@ namespace ChummerHub.Client.UI
         private System.Windows.Forms.Button bGroupSearch;
         private System.Windows.Forms.CheckBox cbTagArchetype;
         private System.Windows.Forms.TextBox tbArchetypeName;
+
         private System.Windows.Forms.Label lUploadStatus;
         private System.Windows.Forms.Label lStatuslabel;
+
     }
 }

@@ -271,14 +271,6 @@ namespace Chummer.UI.Skills
                 frmParent.IsCharacterUpdateRequested = true;
         }
 
-        private void cboSpec_TextChanged(object sender, EventArgs e)
-        {
-            if (!_skill.CharacterObject.Options.AllowPointBuySpecializationsOnKarmaSkills && nudSkill.Value == 0 && !string.IsNullOrWhiteSpace(cboSpec.Text))
-            {
-                chkKarma.Checked = true;
-            }
-        }
-
         public void MoveControls(int i)
         {
             lblName.Width = i;

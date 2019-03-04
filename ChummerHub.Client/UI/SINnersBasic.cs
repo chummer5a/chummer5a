@@ -88,6 +88,7 @@ namespace ChummerHub.Client.UI
                         this.tbArchetypeName.Enabled = true;
                     }
                 }
+
                 if(myUC?.MyCE?.MySINnerFile?.MyGroup != null)
                     this.lGourpForSinner.Text = myUC.MyCE.MySINnerFile.MyGroup.Groupname;
 

@@ -2036,9 +2036,9 @@
           <strmin>0</strmin>
           <strmax>0</strmax>
           <straug>0</straug>
-          <chamin>2</chamin>
-          <chamax>7</chamax>
-          <chaaug>11</chaaug>
+          <chamin>1</chamin>
+          <chamax>4</chamax>
+          <chaaug>8</chaaug>
           <intmin>2</intmin>
           <intmax>7</intmax>
           <intaug>11</intaug>

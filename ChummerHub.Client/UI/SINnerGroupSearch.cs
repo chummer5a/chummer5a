@@ -56,6 +56,7 @@ namespace ChummerHub.Client.UI
                     return null;
                 }
 
+
                 var Result = await StaticUtils.Client.PostGroupWithHttpMessagesAsync(this.tbSearchGroupname.Text, MyCE.MySINnerFile.Id);
                 var rescontent = await Result.Response.Content.ReadAsStringAsync();
                 if((Result.Response.StatusCode == HttpStatusCode.OK)

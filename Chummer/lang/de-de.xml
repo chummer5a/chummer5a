@@ -9494,5 +9494,9 @@
 			<key>String_Wireless</key>
 			<text>WiFi</text>
 		</string>
+		<string>
+			<key>Message_Files_Cannot_Be_Removed</key>
+			<text>Chummer5 konnte die nachfolgenden Dateien während des Updates nicht entfernen, da auf sie nicht zugegriffen werden konnte:</text>
+		</string>
 	</strings>
 </chummer>

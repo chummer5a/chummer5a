@@ -493,12 +493,13 @@ namespace Chummer
                 XmlNode node = objDoc.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{CharacterObject.Metatype}\"]");
                 List<ListItem> lstAttributeCategories = new List<ListItem>
                 {
-                    new ListItem("Shapeshifter", node?.SelectSingleNode("name/@translate")?.InnerText ?? CharacterObject.Metatype)
+                    new ListItem("Standard", node?.SelectSingleNode("name/@translate")?.InnerText ?? CharacterObject.Metatype)
                 };
 
                 node = node?.SelectSingleNode($"metavariants/metavariant[name = \"{CharacterObject.Metavariant}\"]/name/@translate");
 
-                lstAttributeCategories.Add(new ListItem("Standard", node?.InnerText ?? CharacterObject.Metavariant));
+                //The Shapeshifter attribute category is treated as the METAHUMAN form of a shapeshifter. 
+                lstAttributeCategories.Add(new ListItem("Shapeshifter", node?.InnerText ?? CharacterObject.Metavariant));
 
                 lstAttributeCategories.Sort(CompareListItems.CompareNames);
                 cboAttributeCategory.BeginUpdate();
@@ -13285,6 +13286,10 @@ namespace Chummer
 
             string strSpace = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             string strESSFormat = CharacterObjectOptions.EssenceFormat;
+            if (treCyberware.SelectedNode?.Tag is IHasWirelessBonus hasWirelessBonus)
+            {
+                chkCyberwareWireless.Checked = hasWirelessBonus.WirelessOn;
+            }
             if (treCyberware.SelectedNode?.Tag is IHasSource objSelected)
             {
                 lblCyberwareSourceLabel.Visible = true;
@@ -17103,6 +17108,8 @@ private void RefreshSelectedSpell()
         }
         private void cboAttributeCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (CharacterObject.AttributeSection.AttributeCategory ==
+                AttributeSection.ConvertAttributeCategory(cboAttributeCategory.SelectedValue.ToString())) return;
             CharacterObject.AttributeSection.AttributeCategory = AttributeSection.ConvertAttributeCategory(cboAttributeCategory.SelectedValue.ToString());
             CharacterObject.AttributeSection.ResetBindings();
             CharacterObject.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.MetatypeMaximum), nameof(CharacterAttrib.MetatypeMinimum));

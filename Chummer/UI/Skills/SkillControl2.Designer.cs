@@ -140,7 +140,6 @@ namespace Chummer.UI.Skills
             this.cboSpec.Size = new System.Drawing.Size(402, 21);
             this.cboSpec.Sorted = true;
             this.cboSpec.TabIndex = 17;
-            this.cboSpec.TextChanged += new System.EventHandler(this.cboSpec_TextChanged);
             // 
             // chkKarma
             // 

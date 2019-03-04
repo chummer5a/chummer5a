@@ -9522,5 +9522,29 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<key>String_Program</key>
 			<text>Programme</text>
 		</string>
+		<string>
+			<key>Message_Files_Cannot_Be_Removed</key>
+			<text>Chummer5 n'a pas pu enlever les fichiers ci-dessous pendant la mise à jour parce qu'ils n'étaient pas accessibles :</text>
+		</string>
+		<string>
+			<key>Label_StolenGearNuyen</key>
+			<text>Nuyen (volé) :</text>
+		</string>
+		<string>
+			<key>Message_InvalidStolenNuyenExcess</key>
+			<text>{0} de plus que votre total Nuyen pour le équioement volé</text>
+		</string>
+		<string>
+			<key>Checkbox_Stolen</key>
+			<text>Volé</text>
+		</string>
+		<string>
+			<key>Menu_FileSaveAsCreated</key>
+			<text>Sauvegarder comme &amp;créé</text>
+		</string>
+		<string>
+			<key>String_ExpenseUpgradedCyberware</key>
+			<text>Cyberware modernisé</text>
+		</string>
 	</strings>
 </chummer>
