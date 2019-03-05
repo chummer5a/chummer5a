@@ -11198,8 +11198,8 @@ if (!Utils.IsUnitTest){
                     return decMaxValue;
                 }
 
-                return Math.Min(decMaxValue,
-                    NuyenMaximumBP + ImprovementManager.ValueOf(this, Improvement.ImprovementType.NuyenMaxBP));
+                return Math.Max(Math.Min(decMaxValue,
+                    NuyenMaximumBP + ImprovementManager.ValueOf(this, Improvement.ImprovementType.NuyenMaxBP)), 0);
             }
         }
 
