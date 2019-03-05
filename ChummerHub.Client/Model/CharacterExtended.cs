@@ -270,9 +270,11 @@ namespace ChummerHub.Client.Model
             var tempDir = Path.Combine(Path.GetTempPath(), "SINner", MySINnerFile.Id.Value.ToString());
             if (!Directory.Exists(tempDir))
                 Directory.CreateDirectory(tempDir);
-            foreach (var file in Directory.GetFiles(tempDir))
+            foreach(var file in Directory.GetFiles(tempDir))
             {
-                File.Delete(file);
+                FileInfo fi = new FileInfo(file);
+                if (fi.LastWriteTimeUtc < MyCharacter.FileLastWriteTime)
+                    File.Delete(file);
             }
 
             var summary = new frmCharacterRoster.CharacterCache(MyCharacter.FileName);
@@ -286,9 +288,19 @@ namespace ChummerHub.Client.Model
 
             string zipPath = Path.Combine(Path.GetTempPath(), "SINner", MySINnerFile.Id.Value + ".chum5z");
             if (File.Exists(zipPath))
-                File.Delete(zipPath);
-            ZipFile.CreateFromDirectory(tempDir, zipPath);
-            ZipFilePath = zipPath;
+            {
+                ZipFilePath = zipPath;
+                FileInfo fi = new FileInfo(zipPath);
+                if (fi.LastWriteTimeUtc < MyCharacter.FileLastWriteTime)
+                    File.Delete(zipPath);
+            }
+
+            if (!File.Exists(zipPath))
+            {
+                ZipFile.CreateFromDirectory(tempDir, zipPath);
+                ZipFilePath = zipPath;
+            }
+
             return zipPath;
         }
 

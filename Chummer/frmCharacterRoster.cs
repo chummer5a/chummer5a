@@ -752,7 +752,7 @@ namespace Chummer
             [IgnoreDataMember]
             public Dictionary<string, object> MyPluginDataDic { get; set; }
 
-            public Task<Character> DownLoadRunning { get; set; }
+            public Task<string> DownLoadRunning { get; set; }
 
             public CharacterCache()
             {

@@ -15,6 +15,7 @@ WebService Changes:
 
 Application Changes:
 
+- fixed a bug that deleted the freshly downloaded characterfile while loading the charfile (yes, I was confused as well)
 - after the Post of the metadata, now the actual file is uploaded as well in the SINnersBasic-Tab
 - added a check, if a character is already uploaded before enabling the "open group dialog"-button
 - Runtime now allows (or should allow) code from remote sources (plugin-dlls are not loaded otherwise under Windows-UAC)
