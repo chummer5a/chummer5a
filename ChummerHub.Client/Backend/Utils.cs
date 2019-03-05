@@ -690,7 +690,7 @@ namespace ChummerHub.Client.Backend
         {
             try
             {
-                if(objCache.DownLoadRunning != null)
+                if ((objCache.DownLoadRunning != null)&& (objCache.DownLoadRunning.Status == TaskStatus.Running))
                     return objCache.DownLoadRunning;
 
                 objCache.DownLoadRunning = Task.Factory.StartNew<Character>(() =>

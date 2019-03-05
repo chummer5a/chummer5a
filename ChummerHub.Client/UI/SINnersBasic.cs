@@ -138,7 +138,10 @@ namespace ChummerHub.Client.UI
         private async void bUpload_Click(object sender, EventArgs e)
         {
             if (bUpload.Text.Contains("Upload"))
-                await ChummerHub.Client.Backend.Utils.PostSINnerAsync(myUC.MyCE);
+            {
+                await myUC.MyCE.Upload();
+            }
+
             else
                 await myUC.RemoveSINnerAsync();
             CheckSINnerStatus();
