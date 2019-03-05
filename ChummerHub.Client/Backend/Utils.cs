@@ -384,13 +384,18 @@ namespace ChummerHub.Client.Backend
                     t.ContinueWith((downloadtask) =>
                     {
                         PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(true);
-                        Character c = downloadtask.Result as Character;
-                        if(c != null)
+                        string filepath = downloadtask.Result as string;
+                        PluginHandler.MainForm.DoThreadSafe(() =>
                         {
-                            SwitchToCharacter(c);
-                        }
-                        SwitchToCharacter(objCache);
-                        PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(false);
+                            Character c = PluginHandler.MainForm.LoadCharacter(filepath);
+                            if(c != null)
+                            {
+                                SwitchToCharacter(c);
+                            }
+                            SwitchToCharacter(objCache);
+                            PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(false);
+                        });
+                        
                     });
                
                 
@@ -399,7 +404,7 @@ namespace ChummerHub.Client.Backend
             objCache.OnMyAfterSelect -= objCache.OnDefaultAfterSelect;
             objCache.OnMyAfterSelect += (sender, treeViewEventArgs) =>
             {
-                DownloadFileTask(sinner, objCache);
+                objCache.FilePath = DownloadFileTask(sinner, objCache).Result;
             };
             objCache.OnMyKeyDown -= objCache.OnDefaultKeyDown;
             objCache.OnMyKeyDown += (sender, args) =>
@@ -602,7 +607,7 @@ namespace ChummerHub.Client.Backend
             return res;
         }
 
-        public static Character DownloadFile(SINners.Models.SINner sinner, CharacterCache objCache)
+        public static string DownloadFile(SINners.Models.SINner sinner, CharacterCache objCache)
         {
             try
             {
@@ -620,6 +625,7 @@ namespace ChummerHub.Client.Backend
                             || sinner.LastChange == null)
                         {
                             loadFilePath = file;
+                            objCache.FilePath = loadFilePath;
                             break;
                         }
                         //no recent file found - download it (again).
@@ -634,16 +640,16 @@ namespace ChummerHub.Client.Backend
                 objOpenCharacter = PluginHandler.MainForm?.OpenCharacters?.FirstOrDefault(x => x.FileName == loadFilePath);
                 if ((objOpenCharacter != null))
                 {
-                    return objOpenCharacter;
+                    return loadFilePath;
                 }
                 if (String.IsNullOrEmpty(loadFilePath))
                 {
                     try
                     {
-                        PluginHandler.MainForm?.DoThreadSafe(() =>
-                        {
-                            PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
-                        });
+                        //PluginHandler.MainForm?.DoThreadSafe(() =>
+                        //{
+                        //    PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
+                        //});
                         string zippedFile = Path.Combine(System.IO.Path.GetTempPath(), "SINner", sinner.Id.Value + ".chum5z");
                         if (File.Exists(zippedFile))
                             File.Delete(zippedFile);
@@ -659,6 +665,7 @@ namespace ChummerHub.Client.Backend
                             if (sinner.LastChange != null)
                                 File.SetLastWriteTime(file, sinner.LastChange.Value);
                             loadFilePath = file;
+                            objCache.FilePath = loadFilePath;
                         }
                     }
                     catch (Exception ex)
@@ -669,14 +676,14 @@ namespace ChummerHub.Client.Backend
                     }
                     finally
                     {
-                        PluginHandler.MainForm?.DoThreadSafe(() =>
-                        {
-                            PluginHandler.MainForm.Cursor = Cursors.Default;
-                        });
+                        //PluginHandler.MainForm?.DoThreadSafe(() =>
+                        //{
+                        //    PluginHandler.MainForm.Cursor = Cursors.Default;
+                        //});
                     }
                     
                 }
-                return null;
+                return objCache.FilePath;
             }
             catch (Exception e)
             {
@@ -686,16 +693,18 @@ namespace ChummerHub.Client.Backend
             }
         }
 
-        public static Task<Character> DownloadFileTask(SINners.Models.SINner sinner, CharacterCache objCache)
+        public static Task<string> DownloadFileTask(SINners.Models.SINner sinner, CharacterCache objCache)
         {
             try
             {
-                if(objCache.DownLoadRunning != null)
+                if ((objCache.DownLoadRunning != null)&& (objCache.DownLoadRunning.Status == TaskStatus.Running))
                     return objCache.DownLoadRunning;
 
-                objCache.DownLoadRunning = Task.Factory.StartNew<Character>(() =>
+                objCache.DownLoadRunning = Task.Factory.StartNew<string>(() =>
                 {
-                    return DownloadFile(sinner, objCache);
+                    string filepath = DownloadFile(sinner, objCache);
+                    objCache.FilePath = filepath;
+                    return objCache.FilePath;
                 });
                 return objCache.DownLoadRunning;
             }
@@ -704,6 +713,8 @@ namespace ChummerHub.Client.Backend
                 objCache.ErrorText = ex.ToString();
                 throw;
             }
+
+          
         }
 
 
