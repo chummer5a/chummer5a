@@ -701,11 +701,11 @@
     <Compile Include="Selection Forms\frmSelectLifestyle.Designer.cs">
       <DependentUpon>frmSelectLifestyle.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectArmorMod.cs">
+    <Compile Include="Selection Forms\frmSelectEquipment.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectArmorMod.Designer.cs">
-      <DependentUpon>frmSelectArmorMod.cs</DependentUpon>
+    <Compile Include="Selection Forms\frmSelectEquipment.Designer.cs">
+      <DependentUpon>frmSelectEquipment.cs</DependentUpon>
     </Compile>
     <Compile Include="Selection Forms\frmSelectArt.cs">
       <SubType>Form</SubType>
@@ -1197,8 +1197,8 @@
     <EmbeddedResource Include="Selection Forms\frmSelectLifestyle.resx">
       <DependentUpon>frmSelectLifestyle.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectArmorMod.resx">
-      <DependentUpon>frmSelectArmorMod.cs</DependentUpon>
+    <EmbeddedResource Include="Selection Forms\frmSelectEquipment.resx">
+      <DependentUpon>frmSelectEquipment.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectArt.resx">
       <DependentUpon>frmSelectArt.cs</DependentUpon>
