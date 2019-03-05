@@ -61,6 +61,27 @@
       <page>411</page>
       <avail>3F</avail>
       <cost>15</cost>
+      <speed>1</speed>
+      <duration>6-{BOD}</duration>
+      <bonus>
+        <attribute>
+          <name>REA</name>
+          <value>1</value>
+        </attribute>
+        <limit>
+          <name>Mental</name>
+          <value>-1</value>
+        </limit>
+        <limit>
+          <name>Physical</name>
+          <value>-1</value>
+        </limit>
+        <limit>
+          <name>Social</name>
+          <value>-1</value>
+        </limit>
+        <quality rating="3">High Pain Tolerance</quality>
+      </bonus>
     </drug>
     <drug>
       <id>8dc829b9-8b94-4510-ab1a-2305cbad69c9</id>

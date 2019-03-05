@@ -38,6 +38,7 @@ namespace Chummer.Backend.Equipment
         private string _strName = "";
         private string _strCategory = "";
         private string _strAvailability = "0";
+        private string _strDuration;
         private string _strDescription = string.Empty;
         private string _strEffectDescription = string.Empty;
         private Dictionary<string, int> _dicCachedAttributes = new Dictionary<string, int>();
@@ -52,6 +53,12 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
         private readonly Character _objCharacter;
         private bool _blnStolen;
+        private bool _blnCachedAttributeFlag;
+        private XmlNode _objCachedMyXmlNode;
+        private string _strCachedXmlNodeLanguage;
+        private string _strSource;
+        private string _strPage;
+        private int _intDurationDice;
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -74,6 +81,33 @@ namespace Chummer.Backend.Equipment
             _blnCachedLimitFlag = false;
             _blnCachedAttributeFlag = false;
             _strDescription = string.Empty;
+        }
+
+        public void Create(XmlNode objXmlData)
+        {
+            objXmlData.TryGetField("guid", Guid.TryParse, out _guiID);
+            objXmlData.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
+            if (objXmlData["sourceid"] == null || !objXmlData.TryGetField("sourceid", Guid.TryParse, out _sourceID))
+            {
+                XmlNode node = GetNode(GlobalOptions.Language);
+                node?.TryGetField("id", Guid.TryParse, out _sourceID);
+            }
+            objXmlData.TryGetStringFieldQuickly("availability", ref _strAvailability);
+            objXmlData.TryGetDecFieldQuickly("cost", ref _decCost);
+            objXmlData.TryGetDecFieldQuickly("quantity", ref _decQty);
+            objXmlData.TryGetInt32FieldQuickly("rating", ref _intAddictionRating);
+            objXmlData.TryGetInt32FieldQuickly("threshold", ref _intAddictionThreshold);
+            objXmlData.TryGetStringFieldQuickly("grade", ref _strGrade);
+            objXmlData.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
+            objXmlData.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
+            objXmlData.TryGetStringFieldQuickly("duration", ref _strDuration);
+            objXmlData.TryGetInt32FieldQuickly("durationdice", ref _intDurationDice);
+            DurationTimescale = CommonFunctions.ConvertStringToTimescale(objXmlData["timescale"]?.InnerText);
+
+            objXmlData.TryGetField("source", out _strSource);
+            objXmlData.TryGetField("page", out _strPage);
+
         }
 
         public void Load(XmlNode objXmlData)
@@ -105,8 +139,8 @@ namespace Chummer.Backend.Equipment
             objXmlData.TryGetStringFieldQuickly("grade", ref _strGrade);
             objXmlData.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             objXmlData.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
-            //objXmlData.TryGetField("source", out _strSource);
-            //objXmlData.TryGetField("page", out _strPage);
+            objXmlData.TryGetField("source", out _strSource);
+            objXmlData.TryGetField("page", out _strPage);
         }
 
         public void Save(XmlWriter objXmlWriter)
@@ -135,10 +169,8 @@ namespace Chummer.Backend.Equipment
             objXmlWriter.WriteElementString("grade", _strGrade);
             objXmlWriter.WriteElementString("sortorder", _intSortOrder.ToString());
             objXmlWriter.WriteElementString("stolen", _blnStolen.ToString());
-            /*if (source != null)
-                objXmlWriter.WriteElementString("source", source);
-            if (page != 0)
-                objXmlWriter.WriteElementString("page", page.ToString());*/
+            objXmlWriter.WriteElementString("source", _strSource);
+            objXmlWriter.WriteElementString("page", _strPage);
             objXmlWriter.WriteEndElement();
         }
 
@@ -516,12 +548,66 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_intCachedDuration != int.MinValue) return _intCachedDuration;
-                _intCachedDuration = Components.Sum(d => d.ActiveDrugEffect.Duration);
+                if (!string.IsNullOrWhiteSpace(_strDuration))
+                {
+                    StringBuilder strbldDrain = new StringBuilder(_strDuration);
+                    foreach (string strAttribute in AttributeSection.AttributeStrings)
+                    {
+                        CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
+                        strbldDrain.CheapReplace(_strDuration, objAttrib.Abbrev,
+                            () => objAttrib.TotalValue.ToString());
+                    }
+
+                    string strDuration = strbldDrain.ToString();
+                    if (!int.TryParse(strDuration, out int intDuration))
+                    {
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strDuration, out bool blnIsSuccess);
+                        if (blnIsSuccess)
+                            intDuration = Convert.ToInt32(objProcess);
+                    }
+
+                    _intCachedDuration = intDuration;
+                }
+
+                _intCachedDuration += Components.Sum(d => d.ActiveDrugEffect.Duration) + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrugDuration);
+                if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrugDurationMultiplier) == 0)
+                    return _intCachedDuration;
+                decimal decMultiplier = 1;
+                decMultiplier = _objCharacter.Improvements
+                    .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCostNonRetroactive && objImprovement.Enabled)
+                    .Aggregate(decMultiplier, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
+                _intCachedDuration *= Convert.ToInt32(1.0m - decMultiplier);
                 return _intCachedDuration;
             }
         }
 
+        public CommonFunctions.Timescale DurationTimescale { get; private set; }
+
+        private string _strCachedDisplayDuration;
+        public string DisplayDuration
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(_strCachedDisplayDuration)) return _strCachedDisplayDuration;
+                StringBuilder sb = new StringBuilder();
+                sb.Append(Duration);
+                sb.Append(LanguageManager.GetString("String_Space"));
+                if (DurationDice > 0)
+                {
+                    sb.Append($"x {DurationDice}{LanguageManager.GetString("String_D6")}");
+                    sb.Append(LanguageManager.GetString("String_Space"));
+                }
+                sb.Append(CommonFunctions.GetTimescaleString(DurationTimescale, Duration > 1));
+                _strCachedDisplayDuration = sb.ToString();
+
+                return _strCachedDisplayDuration;
+            }
+        }
+
+        public int DurationDice { get; set; }
+
         private int _intCachedCrashDamage = int.MinValue;
+
         public int CrashDamage
         {
             get
@@ -567,10 +653,6 @@ namespace Chummer.Backend.Equipment
         }
 
         public string CurrentDisplayName => DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
-
-        private bool _blnCachedAttributeFlag;
-        private XmlNode _objCachedMyXmlNode;
-        private string _strCachedXmlNodeLanguage;
 
         public Dictionary<string, int> Attributes
         {
