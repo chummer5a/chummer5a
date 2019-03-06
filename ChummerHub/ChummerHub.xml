@@ -136,6 +136,11 @@
             <param name="key"></param>
             <returns></returns>
         </member>
+        <member name="P:ChummerHub.Startup.ConnectionStringToMasterSqlDB">
+            <summary>
+            This leads to the master-azure-db to create/edit/delete users
+            </summary>
+        </member>
         <member name="P:Microsoft.AspNetCore.Identity.ApplicationUser.Groupname">
             <summary>
             A way for a GM to search for all the characters of "his" group

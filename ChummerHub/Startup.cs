@@ -32,11 +32,29 @@ using ChummerHub.API;
 using ChummerHub.Controllers.V1;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.ApplicationInsights.SnapshotCollector;
+using Microsoft.Extensions.Options;
+using Microsoft.ApplicationInsights.AspNetCore;
+using Microsoft.ApplicationInsights.Extensibility;
 
 namespace ChummerHub
 {
     public class Startup
     {
+        private class SnapshotCollectorTelemetryProcessorFactory : ITelemetryProcessorFactory
+        {
+            private readonly IServiceProvider _serviceProvider;
+
+            public SnapshotCollectorTelemetryProcessorFactory(IServiceProvider serviceProvider) =>
+                _serviceProvider = serviceProvider;
+
+            public ITelemetryProcessor Create(ITelemetryProcessor next)
+            {
+                var snapshotConfigurationOptions = _serviceProvider.GetService<IOptions<SnapshotCollectorConfiguration>>();
+                return new SnapshotCollectorTelemetryProcessor(next, configuration: snapshotConfigurationOptions.Value);
+            }
+        }
+
         private readonly ILogger<Startup> _logger;
 
         private static DriveHandler _gdrive = null;
@@ -47,6 +65,18 @@ namespace ChummerHub
                 return _gdrive;
             }
         }
+
+        /// <summary>
+        /// This leads to the master-azure-db to create/edit/delete users
+        /// </summary>
+        public static string ConnectionStringToMasterSqlDb { get; set; }
+
+        /// <summary>
+        /// This leads to the master-azure-db to create/edit/delete users
+        /// </summary>
+        public static string ConnectionStringSinnersDb { get; set; }
+
+        
 
         public Startup(ILogger<Startup> logger, IConfiguration configuration)
         {
@@ -64,7 +94,17 @@ namespace ChummerHub
         public void ConfigureServices(IServiceCollection services)
         {
             MyServices = services;
-           
+
+            ConnectionStringToMasterSqlDb = Configuration.GetConnectionString("MasterSqlConnection");
+            ConnectionStringSinnersDb = Configuration.GetConnectionString("DefaultConnection");
+
+            // Configure SnapshotCollector from application settings
+            services.Configure<SnapshotCollectorConfiguration>(Configuration.GetSection(nameof(SnapshotCollectorConfiguration)));
+
+            // Add SnapshotCollector telemetry processor.
+            services.AddSingleton<ITelemetryProcessorFactory>(sp => new SnapshotCollectorTelemetryProcessorFactory(sp));
+
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -257,7 +297,7 @@ namespace ChummerHub
 
                 foreach (var description in provider.ApiVersionDescriptions)
                 {
-                    options.SwaggerDoc(description.GroupName, new Swashbuckle.AspNetCore.Swagger.Info
+                    options.SwaggerDoc(description.GroupName, new Info
                     {
                         Version = description.GroupName,
                         Title = "ChummerHub",
@@ -390,8 +430,5 @@ namespace ChummerHub
           
 
         }
-
-
-        
     }
 }
