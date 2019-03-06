@@ -27,6 +27,10 @@ namespace ChummerHub.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            var configurationBuilder = new ConfigurationBuilder()
+                .SetBasePath(HostingEnvironment.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            Configuration = configurationBuilder.Build();
             if(!optionsBuilder.IsConfigured)
             {
                 if(HostingEnvironment == null)
@@ -37,15 +41,14 @@ namespace ChummerHub.Data
                 }
                 else
                 {
-                    var configurationBuilder = new ConfigurationBuilder()
-                        .SetBasePath(HostingEnvironment.ContentRootPath)
-                        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-                    Configuration = configurationBuilder.Build();
                     optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
                 }
             }
+            
             optionsBuilder.EnableSensitiveDataLogging();
         }
+
+        
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -79,10 +82,5 @@ namespace ChummerHub.Data
         public DbSet<ChummerHub.Models.V1.SINnerMetaData> SINnerMetaData { get; set; }
 
         public DbSet<ChummerHub.Models.V1.SINnerGroupSetting> SINnerGroupSettings { get; set; }
-
-        
-
-
-
     }
 }
