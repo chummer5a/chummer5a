@@ -49,6 +49,7 @@ namespace Chummer.Backend.Equipment
         private decimal _decCost;
         private int _intAddictionThreshold;
         private int _intAddictionRating;
+        private int _intSpeed = 0;
         private decimal _decQty;
         private int _intSortOrder;
         private readonly Character _objCharacter;
@@ -532,12 +533,16 @@ namespace Chummer.Backend.Equipment
         }
 
         private int _intCachedSpeed = int.MinValue;
+        /// <summary>
+        /// How quickly the Drug takes effect, in seconds. A Combat Turn is considered
+        /// to be 6 seconds, so anything with a Speed below 6 is considered to be Immediate. 
+        /// </summary>
         public int Speed
         {
             get
             {
                 if (_intCachedSpeed != int.MinValue) return _intCachedSpeed;
-                _intCachedSpeed = Components.Sum(d => d.ActiveDrugEffect.Speed);
+                _intCachedSpeed = Components.Sum(d => d.ActiveDrugEffect.Speed) + _intSpeed;
                 return _intCachedSpeed;
             }
         }
@@ -574,7 +579,7 @@ namespace Chummer.Backend.Equipment
                     return _intCachedDuration;
                 decimal decMultiplier = 1;
                 decMultiplier = _objCharacter.Improvements
-                    .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCostNonRetroactive && objImprovement.Enabled)
+                    .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DrugDurationMultiplier && objImprovement.Enabled)
                     .Aggregate(decMultiplier, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
                 _intCachedDuration *= Convert.ToInt32(1.0m - decMultiplier);
                 return _intCachedDuration;

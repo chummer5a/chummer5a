@@ -62,6 +62,7 @@
       <avail>3F</avail>
       <cost>15</cost>
       <speed>1</speed>
+      <vectors>Inhalation,Injection</vectors>
       <duration>6-{BOD}</duration>
       <bonus>
         <attribute>
