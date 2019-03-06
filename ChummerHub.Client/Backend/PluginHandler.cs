@@ -66,28 +66,20 @@ namespace Chummer.Plugins
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCareer input)
         {
-#if DEBUG
             SINnersUserControl uc = new SINnersUserControl();
             var ce = uc.SetCharacterFrom(input);
             TabPage page = new TabPage("SINners");
             page.Controls.Add(uc);
             return new List<TabPage>() { page };
-#else
-            return null;
-#endif
         }
 
         IEnumerable<TabPage> IPlugin.GetTabPages(frmCreate input)
         {
-#if DEBUG
             SINnersUserControl uc = new SINnersUserControl();
             var ce = uc.SetCharacterFrom(input);
             TabPage page = new TabPage("SINners");
             page.Controls.Add(uc);
             return new List<TabPage>() { page };
-#else
-            return null;
-#endif
         }
 
         private static bool IsSaving = false;
