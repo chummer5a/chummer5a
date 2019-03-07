@@ -101,6 +101,7 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetAddSqlDbUser")]
         [Authorize(Roles = "Administrator")]
+
         public async Task<ActionResult<string>> GetAddSqlDbUser(string username, string password, string start_ip_address, string end_ip_address)
         {
             string result = "";
@@ -110,6 +111,7 @@ namespace ChummerHub.Controllers
                     throw new ArgumentNullException(nameof(username));
                 if (String.IsNullOrEmpty(password))
                     throw new ArgumentNullException(nameof(password));
+
                 IPAddress startaddress = null;
                 if (!String.IsNullOrEmpty(start_ip_address))
                 {
@@ -120,7 +122,6 @@ namespace ChummerHub.Controllers
                 {
                     endaddress = IPAddress.Parse(end_ip_address);
                 }
-
                 if (String.IsNullOrEmpty(Startup.ConnectionStringToMasterSqlDb))
                 {
                     throw new ArgumentNullException("Startup.ConnectionStringToMasterSqlDB");
@@ -238,7 +239,6 @@ namespace ChummerHub.Controllers
                 {
                     result += e.Message + Environment.NewLine + Environment.NewLine;
                 }
-                
                 return Ok(result);
             }
             catch(Exception e)

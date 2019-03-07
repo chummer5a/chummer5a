@@ -62,7 +62,7 @@ namespace ChummerHub
                     Console.WriteLine(e.ToString());
                     return null;
                 }
-               
+
             }
         }
 
