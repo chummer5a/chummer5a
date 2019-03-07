@@ -249,63 +249,29 @@ namespace ChummerHub.Controllers.V1
             ApplicationUser user = null;
             try
             {
-                if(!ModelState.IsValid)
+                user = await _signInManager.UserManager.GetUserAsync(User);
+                if (!ModelState.IsValid)
                 {
                     var errors = ModelState.Select(x => x.Value.Errors)
-                                               .Where(y => y.Count > 0)
-                                               .ToList();
+                        .Where(y => y.Count > 0)
+                        .ToList();
                     string msg = "ModelState is invalid: ";
-                    foreach(var err in errors)
+                    foreach (var err in errors)
                     {
-                        foreach(var singleerr in err)
+                        foreach (var singleerr in err)
                         {
                             msg += Environment.NewLine + "\t" + singleerr.ToString();
                         }
 
                     }
+
                     return new BadRequestObjectResult(new HubException(msg));
                 }
 
-                if(GroupId == Guid.Empty)
-                {
-                    return BadRequest("GroupId may not be empty.");
-                }
-
-                if(SinnerId == Guid.Empty)
-                {
-                    return BadRequest("SinnerId may not be empty.");
-                }
-                var groupset = await (from a in _context.SINnerGroups.Include(a => a.MySettings)
-                    where a.Id == GroupId
-                    select a).ToListAsync();
-                if (!groupset.Any())
-                {
-                    return NotFound(GroupId);
-                }
-
-                var sinnerseq = await (from a in _context.SINners
-                        .Include(a => a.MyGroup)
-                        .Include(a => a.SINnerMetaData)
-                        .Include(a => a.SINnerMetaData.Visibility)
-                        .Include(a => a.SINnerMetaData.Visibility.UserRights)
-                        where a.Id == SinnerId
-                    select a).ToListAsync();
-                SINner sin = null;
-                if (!sinnerseq.Any())
-                {
-                    return NotFound(SinnerId);
-                }
-                else
-                {
-                    sin = sinnerseq.FirstOrDefault();
-                    if (sin != null)
-                        sin.MyGroup = groupset.FirstOrDefault();
-                }
-
-                await _context.SaveChangesAsync();
+                var sin = await PutSiNerInGroupInternal(GroupId, SinnerId, user, _context, _logger);
                 return Ok(sin);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 try
                 {
@@ -321,7 +287,72 @@ namespace ChummerHub.Controllers.V1
                 }
                 HubException hue = new HubException("Exception in PutSINerInGroup: " + e.Message, e);
                 return new BadRequestObjectResult(hue);
+            }
 
+        }
+
+        internal static async Task<ActionResult<SINner>> PutSiNerInGroupInternal(Guid GroupId, Guid SinnerId, ApplicationUser user, ApplicationDbContext context, ILogger logger)
+        {
+            try
+            {
+                if (GroupId == Guid.Empty)
+                {
+                    throw new ArgumentNullException(nameof(GroupId), "GroupId may not be empty.");
+                }
+
+                if (SinnerId == Guid.Empty)
+                {
+                    throw new ArgumentNullException(nameof(SinnerId), "SinnerId may not be empty.");
+                }
+
+                var groupset = await (from a in context.SINnerGroups.Include(a => a.MySettings)
+                    where a.Id == GroupId
+                    select a).ToListAsync();
+                if (!groupset.Any())
+                {
+                    throw new ArgumentException("GroupId not found", nameof(GroupId));
+                }
+
+                var sinnerseq = await (from a in context.SINners
+                        .Include(a => a.MyGroup)
+                        .Include(a => a.SINnerMetaData)
+                        .Include(a => a.SINnerMetaData.Visibility)
+                        .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                    where a.Id == SinnerId
+                    select a).ToListAsync();
+                SINner sin = null;
+                if (!sinnerseq.Any())
+                {
+                    throw new ArgumentException("SinnerId not found", nameof(SinnerId));
+                }
+                else
+                {
+                    sin = sinnerseq.FirstOrDefault();
+                    if (sin != null)
+                        sin.MyGroup = groupset.FirstOrDefault();
+                }
+
+                await context.SaveChangesAsync();
+                return sin;
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry =
+                        new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                    telemetry.Properties.Add("User", user?.Email);
+                    telemetry.Properties.Add("GroupId", GroupId.ToString());
+                    tc.TrackException(telemetry);
+                }
+                catch (Exception ex)
+                {
+                    logger?.LogError(ex.ToString());
+                }
+
+                HubException hue = new HubException("Exception in PutSiNerInGroupInternal: " + e.Message, e);
+                return new BadRequestObjectResult(hue);
             }
         }
 
