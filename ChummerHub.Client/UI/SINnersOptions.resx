@@ -121,7 +121,10 @@
     <value>17, 17</value>
   </metadata>
   <data name="tbHelptext.Text" xml:space="preserve">
-    <value>Every SINner, that gets uploaded by you will have this settings applied to it. Please note, that these visibility and "can edit" settings won't be updated for already online characters if you change them afterwards. It's up to the guys from chummer to maybe write a UI to do that (it can be set with every "POST" call to the webservice).
-The Groupname circumvents that. Every other user, that has the same groupname will also see (but may not edit) your files, even if he joins after you submited the file to the repository. Please note, that this feature is PRE ALPHA, and - although I will try to be upwards compatible with myself as development progresses - at this point I'm pretty certain, that I will have to wipe the whole database at some point or another.</value>
+    <value>Every SINner, that gets uploaded by you will have this settings applied to it. Please note, that these visibility and "can edit" settings will be updated for already online characters only, if you upload them again.
+
+You will notice a new SINners-Tabpage when opening the character. There you can upload it manually and join or create a group. All users can see (but not edit) you character, that also have joined the same group with a character.
+
+Please note, that this feature is PRE ALPHA, and - although I will try to be upwards compatible with myself as development progresses - at this point I'm pretty certain, that I will have to wipe the whole database at some point or another.</value>
   </data>
 </root>

@@ -84,6 +84,8 @@ namespace Chummer.Plugins
 
         private static bool IsSaving = false;
 
+        public static SINner MySINnerLoading { get; internal set; }
+
         string IPlugin.GetSaveToFileElement(Character input)
         {
             CharacterExtended ce;
@@ -95,7 +97,14 @@ namespace Chummer.Plugins
             {
                 IsSaving = true;
                 //removing a handler that is not registered is legal - that way only one handler is registered EVER!
-                input.OnSaveCompleted -= MyOnSaveUpload;
+                try
+                {
+                    input.OnSaveCompleted -= MyOnSaveUpload;
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Trace.TraceInformation(e.ToString());
+                }
                 input.OnSaveCompleted += MyOnSaveUpload;
             }
             return JsonConvert.SerializeObject(ce.MySINnerFile.SiNnerMetaData);
@@ -108,7 +117,6 @@ namespace Chummer.Plugins
                 input.OnSaveCompleted -= MyOnSaveUpload;
                 CharacterExtended ce = new CharacterExtended(input, null);
                 await ce.Upload();
-               
             }
             catch(Exception e)
             {
@@ -122,13 +130,24 @@ namespace Chummer.Plugins
 
         void IPlugin.LoadFileElement(Character input, string fileElement)
         {
-            CharacterExtended ce;
-            if(MyCharExtendedDic.TryGetValue(input.FileName, out ce))
-            {
-                ce.MyCharacter = input;
-            }
-            else
-                ce = new CharacterExtended(input, fileElement);
+            //not used right now, because all the information comes from the WebService...
+
+            //but this is how it COULD work
+
+            //CharacterExtended ce;
+            //if(MyCharExtendedDic.TryGetValue(input.FileName, out ce))
+            //{
+            //    ce.MyCharacter = input;
+            //}
+            //else
+            //{
+            //    if (PluginHandler.MySINnerLoading != null)
+            //    {
+            //        ce = new CharacterExtended(input, fileElement, PluginHandler.MySINnerLoading);
+                    
+            //    }
+            //}
+                
             
         }
 

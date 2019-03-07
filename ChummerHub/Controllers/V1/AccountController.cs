@@ -101,7 +101,8 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetAddSqlDbUser")]
         [Authorize(Roles = "Administrator")]
-        public async Task<ActionResult<string>> GetAddSqlDbUser(string username, string password)
+
+        public async Task<ActionResult<string>> GetAddSqlDbUser(string username, string password, string start_ip_address, string end_ip_address)
         {
             string result = "";
             try
@@ -110,6 +111,17 @@ namespace ChummerHub.Controllers
                     throw new ArgumentNullException(nameof(username));
                 if (String.IsNullOrEmpty(password))
                     throw new ArgumentNullException(nameof(password));
+
+                IPAddress startaddress = null;
+                if (!String.IsNullOrEmpty(start_ip_address))
+                {
+                    startaddress = IPAddress.Parse(start_ip_address);
+                }
+                IPAddress endaddress = null;
+                if(!String.IsNullOrEmpty(end_ip_address))
+                {
+                    endaddress = IPAddress.Parse(end_ip_address);
+                }
                 if (String.IsNullOrEmpty(Startup.ConnectionStringToMasterSqlDb))
                 {
                     throw new ArgumentNullException("Startup.ConnectionStringToMasterSqlDB");
@@ -206,6 +218,26 @@ namespace ChummerHub.Controllers
                     {
                         result += e.Message + Environment.NewLine + Environment.NewLine;
                     }
+                }
+                try
+                {
+                    string cmd = "EXEC sp_set_database_firewall_rule N'Allow " +
+                                 username + "', '" + startaddress + "', '" + endaddress + "';";
+                    using(SqlConnection masterConnection = new SqlConnection(Startup.ConnectionStringSinnersDb))
+                    {
+                        await masterConnection.OpenAsync();
+                        using(SqlCommand dbcmd = new SqlCommand(cmd, masterConnection))
+                        {
+                            dbcmd.ExecuteNonQuery();
+                        }
+
+                        result += "Firewallrule added: " + startaddress + " - " + endaddress + Environment.NewLine +
+                                  Environment.NewLine;
+                    }
+                }
+                catch(Exception e)
+                {
+                    result += e.Message + Environment.NewLine + Environment.NewLine;
                 }
                 return Ok(result);
             }
