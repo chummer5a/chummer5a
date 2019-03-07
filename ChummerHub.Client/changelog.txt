@@ -2,6 +2,7 @@ Future Build 1.0.0.2
 
 WebService Changes:
 
+- added two parameters to addsqlusers to set the azure firewall rule
 - added the ability to add sqlusers to the Azure-Database (Swagger GetAddSqlDbUser), so that Admins can connect via SSMS or Azure Data Studio 
 - added a "JoinGroup" function to the Groupscontroller
 - added a GM-Property (string username) to groups

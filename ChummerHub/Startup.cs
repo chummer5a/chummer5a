@@ -50,8 +50,19 @@ namespace ChummerHub
 
             public ITelemetryProcessor Create(ITelemetryProcessor next)
             {
-                var snapshotConfigurationOptions = _serviceProvider.GetService<IOptions<SnapshotCollectorConfiguration>>();
-                return new SnapshotCollectorTelemetryProcessor(next, configuration: snapshotConfigurationOptions.Value);
+                try
+                {
+                    var snapshotConfigurationOptions = _serviceProvider.GetService<IOptions<SnapshotCollectorConfiguration>>();
+                    ITelemetryProcessor ret = new SnapshotCollectorTelemetryProcessor(next, configuration: snapshotConfigurationOptions.Value);
+                    return ret;
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Trace.TraceError(e.ToString(), e);
+                    Console.WriteLine(e.ToString());
+                    return null;
+                }
+               
             }
         }
 
