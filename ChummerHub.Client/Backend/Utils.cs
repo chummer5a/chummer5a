@@ -383,6 +383,7 @@ namespace ChummerHub.Client.Backend
                     var t = DownloadFileTask(sinner, objCache);
                     t.ContinueWith((downloadtask) =>
                     {
+                        PluginHandler.MySINnerLoading = sinner;
                         PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(true);
                         string filepath = downloadtask.Result as string;
                         PluginHandler.MainForm.DoThreadSafe(() =>
@@ -393,7 +394,9 @@ namespace ChummerHub.Client.Backend
                                 SwitchToCharacter(c);
                             }
                             SwitchToCharacter(objCache);
+                            
                             PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(false);
+                            PluginHandler.MySINnerLoading = null;
                         });
                         
                     });
@@ -445,22 +448,39 @@ namespace ChummerHub.Client.Backend
         {
             PluginHandler.MainForm.DoThreadSafe(() =>
             {
-                PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
-                if (objOpenCharacter == null || !PluginHandler.MainForm.SwitchToOpenCharacter(objOpenCharacter, false))
+                try
                 {
-                    PluginHandler.MainForm.OpenCharacter(objOpenCharacter, false);
+                    PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
+                    if (objOpenCharacter == null ||
+                        !PluginHandler.MainForm.SwitchToOpenCharacter(objOpenCharacter, false))
+                    {
+                        PluginHandler.MainForm.OpenCharacter(objOpenCharacter, false);
+                    }
                 }
-                PluginHandler.MainForm.Cursor = Cursors.Default;
+                finally
+                {
+                    PluginHandler.MainForm.Cursor = Cursors.Default;
+                }
             });
         }
 
         private static void SwitchToCharacter(CharacterCache objCache)
         {
-            Character objOpenCharacter = PluginHandler.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FilePath);
-            if (objOpenCharacter == null) 
-                objOpenCharacter = PluginHandler.MainForm.LoadCharacter(objCache.FilePath);
-            SwitchToCharacter(objOpenCharacter);
-        
+            PluginHandler.MainForm.DoThreadSafe(() =>
+            {
+                try
+                {
+                    PluginHandler.MainForm.Cursor = Cursors.WaitCursor;
+                    Character objOpenCharacter = PluginHandler.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FilePath);
+                    if(objOpenCharacter == null)
+                        objOpenCharacter = PluginHandler.MainForm.LoadCharacter(objCache.FilePath);
+                    SwitchToCharacter(objOpenCharacter);
+                }
+                finally
+                {
+                    PluginHandler.MainForm.Cursor = Cursors.Default;
+                }
+            });
 
         }
 

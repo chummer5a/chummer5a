@@ -39,17 +39,24 @@ namespace ChummerHub.Client.UI
             this.AutoSize = true;
             myUC = parent;
             myUC.MyCE = parent.MyCE;
-            CheckSINnerStatus();
+            CheckSINnerStatus().ContinueWith(a =>
+            {
+                if (!a.Result)
+                {
+                    System.Diagnostics.Trace.TraceError("somehow I couldn't check the onlinestatus of " +
+                                                        myUC.MyCE.MySINnerFile.Id);
+                }
+            });
         }
 
-        private async void CheckSINnerStatus()
+        private async Task<bool> CheckSINnerStatus()
         {
             try
             {
                 if ((myUC?.MyCE?.MySINnerFile?.Id == null) || (myUC.MyCE.MySINnerFile.Id == Guid.Empty))
                 {
                     this.bUpload.Text = "SINless Character/Error";
-                    return;
+                    return false;
                 }
                 var response = await StaticUtils.Client.GetSINByIdWithHttpMessagesAsync(myUC.MyCE.MySINnerFile.Id.Value);
                 if (response.Response.StatusCode == HttpStatusCode.OK)
@@ -98,15 +105,18 @@ namespace ChummerHub.Client.UI
             {
                 System.Diagnostics.Trace.TraceError(ex.ToString());
                 this.bUpload.Text = "unknown Status";
+                return false;
             }
+
+            return true;
         }
 
         private void cbSRMReady_Click(object sender, EventArgs e)
         {
             
-            var tagseq = from a in myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags
+            var tagseq = (from a in myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags
                          where a.TagName == "SRM_ready"
-                         select a;
+                         select a).ToList();
             if (cbSRMReady.Checked == true)
             {
                 
@@ -156,9 +166,9 @@ namespace ChummerHub.Client.UI
 
         private void cbTagArchetype_Click(object sender, EventArgs e)
         {
-            var tagseq = from a in myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags
+            var tagseq = (from a in myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags
                          where a.TagName == "Archetype"
-                         select a;
+                         select a).ToList();
             if(cbSRMReady.Checked == true)
             {
                 if(!tagseq.Any())

@@ -136,7 +136,12 @@
             <param name="key"></param>
             <returns></returns>
         </member>
-        <member name="P:ChummerHub.Startup.ConnectionStringToMasterSqlDB">
+        <member name="P:ChummerHub.Startup.ConnectionStringToMasterSqlDb">
+            <summary>
+            This leads to the master-azure-db to create/edit/delete users
+            </summary>
+        </member>
+        <member name="P:ChummerHub.Startup.ConnectionStringSinnersDb">
             <summary>
             This leads to the master-azure-db to create/edit/delete users
             </summary>

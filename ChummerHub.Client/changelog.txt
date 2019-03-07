@@ -16,6 +16,8 @@ WebService Changes:
 
 Application Changes:
 
+- Tags are now shown in the SinnersAdvanced-Tab
+- fixed a bug where a new Id is given to an already uploaded character.
 - removed the #ifdebug-braces, so that the SINners-Tab will be visible in release (SinnerSearch-Menuitem is still returning null in Release)
 - fixed a bug that deleted the freshly downloaded characterfile while loading the charfile (yes, I was confused as well)
 - after the Post of the metadata, now the actual file is uploaded as well in the SINnersBasic-Tab

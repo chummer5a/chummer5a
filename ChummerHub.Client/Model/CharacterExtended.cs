@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Chummer.Plugins;
 
 namespace ChummerHub.Client.Model
 {
@@ -70,6 +71,12 @@ namespace ChummerHub.Client.Model
             this.MySINnerFile.JsonSummary = JsonConvert.SerializeObject(cache);
         }
 
+        public CharacterExtended(Character character, string fileElement = null, SINner mySINnerLoading = null) : this(character, fileElement)
+        {
+            if (mySINnerLoading != null)
+                this._MySINnerFile = mySINnerLoading;
+        }
+
         public Character MyCharacter { get; set; }
 
         private SINner _MySINnerFile = null;
@@ -90,7 +97,7 @@ namespace ChummerHub.Client.Model
 
         // ReSharper disable once InconsistentNaming
         private static Dictionary<string, Guid> _SINnerIds;
-
+     
         // ReSharper disable once InconsistentNaming
         public static Dictionary<string, Guid> MySINnerIds
         {
@@ -230,12 +237,24 @@ namespace ChummerHub.Client.Model
         public string PrepareModel()
         {
             MySINnerFile.UploadDateTime = DateTime.Now;
-
+            string zipPath = Path.Combine(Path.GetTempPath(), "SINner", MySINnerFile.Id.Value + ".chum5z");
+            if (PluginHandler.MySINnerLoading != null)
+            {
+                if (MySINnerIds.ContainsKey(MyCharacter.Alias))
+                    MySINnerIds.Remove(MyCharacter.Alias);
+            }
             if (MySINnerIds.TryGetValue(MyCharacter.Alias, out var singuid))
                 MySINnerFile.Id = singuid;
             else
             {
-                MySINnerFile.Id = Guid.NewGuid();
+                if (PluginHandler.MySINnerLoading != null)
+                {
+                    _MySINnerFile = PluginHandler.MySINnerLoading;
+                    MySINnerIds.Add(MyCharacter.Alias, MySINnerFile.Id.Value);
+                    return zipPath;
+                }
+                else
+                    MySINnerFile.Id = Guid.NewGuid();
                 MySINnerIds.Add(MyCharacter.Alias, MySINnerFile.Id.Value);
                 MySINnerIds = MySINnerIds; //Save it!
             }
@@ -286,7 +305,7 @@ namespace ChummerHub.Client.Model
                 File.Copy(MyCharacter.FileName, tempfile);
             }
 
-            string zipPath = Path.Combine(Path.GetTempPath(), "SINner", MySINnerFile.Id.Value + ".chum5z");
+            ;
             if (File.Exists(zipPath))
             {
                 ZipFilePath = zipPath;

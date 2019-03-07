@@ -641,7 +641,7 @@ namespace ChummerHub.Client.UI
                     if(!c.Load())
                         continue;
                     Debug.WriteLine("Character loaded: " + c.Name);
-                    CharacterExtended ce = new CharacterExtended(c);
+                    CharacterExtended ce = new CharacterExtended(c, null);
                     ce.UploadInBackground();
                 }
                 catch (Exception ex)
