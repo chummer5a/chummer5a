@@ -142,7 +142,6 @@
             </summary>
         </member>
         <member name="P:ChummerHub.Startup.ConnectionStringSinnersDb">
-
             <summary>
             This leads to the master-azure-db to create/edit/delete users
             </summary>

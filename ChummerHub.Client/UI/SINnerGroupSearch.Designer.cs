@@ -129,10 +129,12 @@ namespace ChummerHub.Client.UI
             // tbSearchByAlias
             // 
             this.tbSearchByAlias.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbSearchByAlias.Enabled = false;
             this.tbSearchByAlias.Location = new System.Drawing.Point(97, 33);
             this.tbSearchByAlias.Name = "tbSearchByAlias";
             this.tbSearchByAlias.Size = new System.Drawing.Size(281, 20);
             this.tbSearchByAlias.TabIndex = 3;
+            this.tbSearchByAlias.Text = "not implemented yet";
             // 
             // lSearchByAlias
             // 
@@ -159,10 +161,12 @@ namespace ChummerHub.Client.UI
             // tbSearchByUsername
             // 
             this.tbSearchByUsername.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbSearchByUsername.Enabled = false;
             this.tbSearchByUsername.Location = new System.Drawing.Point(97, 4);
             this.tbSearchByUsername.Name = "tbSearchByUsername";
             this.tbSearchByUsername.Size = new System.Drawing.Size(281, 20);
             this.tbSearchByUsername.TabIndex = 2;
+            this.tbSearchByUsername.Text = "not implemented yet";
             // 
             // bSearch
             // 

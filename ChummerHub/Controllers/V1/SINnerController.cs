@@ -361,6 +361,7 @@ namespace ChummerHub.Controllers.V1
                         sinner.SINnerMetaData.Visibility.Id = Guid.NewGuid();
                     }
                     var oldsinner = (from a in _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights)
+                                                        .Include(b => b.MyGroup)
                                      where a.Id == sinner.Id
                                      select a).FirstOrDefault();
                     if(oldsinner != null)
@@ -420,8 +421,10 @@ namespace ChummerHub.Controllers.V1
 
                     sinner.UploadClientId = uploadInfo.Client.Id;
                     SINner dbsinner = await CheckIfUpdateSINnerFile(sinner.Id.Value, user);
+                    SINnerGroup oldgroup = null;
                     if (dbsinner != null)
                     {
+                        oldgroup = dbsinner.MyGroup;
                         _context.SINners.Attach(dbsinner);
                         if (String.IsNullOrEmpty(sinner.GoogleDriveFileId))
                             sinner.GoogleDriveFileId = dbsinner.GoogleDriveFileId;
@@ -440,7 +443,7 @@ namespace ChummerHub.Controllers.V1
                         dbsinner.SINnerMetaData = null;
                         
                         await _context.SaveChangesAsync();
-
+                        
                         await _context.SINners.AddAsync(sinner);
                         string msg = "Sinner " + sinner.Id + " updated: " + _context.Entry(dbsinner).State.ToString();
                         msg += Environment.NewLine + Environment.NewLine + "LastChange: " + dbsinner.LastChange;
@@ -454,49 +457,56 @@ namespace ChummerHub.Controllers.V1
                         sinner.MyGroup = null;
                         _context.SINners.Add(sinner);
                     }
-                }
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch(DbUpdateConcurrencyException ex)
-                {
-                    foreach(var entry in ex.Entries)
-                    {
-                        if(entry.Entity is SINner)
-                        {
-                            Utils.DbUpdateConcurrencyExceptionHandler(entry, _logger);
-                        }
-                        else if (entry.Entity is Tag)
-                        {
-                            Utils.DbUpdateConcurrencyExceptionHandler(entry, _logger);
-                        }
-                        else
-                        {
-                            throw new NotSupportedException(
-                                "Don't know how to handle concurrency conflicts for "
-                                + entry.Metadata.Name);
-                        }
-                    }
-                }
-                catch(Exception e)
-                {
+
                     try
                     {
-                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
-                        Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
-                        telemetry.Properties.Add("User", user?.Email);
-                        telemetry.Properties.Add("SINnerId", sinner?.Id?.ToString());
-                        tc.TrackException(telemetry);
+                        await _context.SaveChangesAsync();
+                        if (oldgroup != null)
+                        {
+                            await SINnerGroupController.PutSiNerInGroupInternal(oldgroup.Id.Value, sinner.Id.Value, user, _context,
+                                _logger);
+                        }
                     }
-                    catch(Exception ex)
+                    catch(DbUpdateConcurrencyException ex)
                     {
-                        _logger.LogError(ex.ToString());
+                        foreach(var entry in ex.Entries)
+                        {
+                            if(entry.Entity is SINner)
+                            {
+                                Utils.DbUpdateConcurrencyExceptionHandler(entry, _logger);
+                            }
+                            else if(entry.Entity is Tag)
+                            {
+                                Utils.DbUpdateConcurrencyExceptionHandler(entry, _logger);
+                            }
+                            else
+                            {
+                                throw new NotSupportedException(
+                                    "Don't know how to handle concurrency conflicts for "
+                                    + entry.Metadata.Name);
+                            }
+                        }
                     }
-                    HubException hue = new HubException("Exception in PostSINnerFile: " + e.ToString(), e);
-                    //var msg = new System.Net.Http.HttpResponseMessage(HttpStatusCode.Conflict) { ReasonPhrase = e.Message };
-                    return Conflict(hue);
+                    catch(Exception e)
+                    {
+                        try
+                        {
+                            var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                            Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                            telemetry.Properties.Add("User", user?.Email);
+                            telemetry.Properties.Add("SINnerId", sinner?.Id?.ToString());
+                            tc.TrackException(telemetry);
+                        }
+                        catch(Exception ex)
+                        {
+                            _logger.LogError(ex.ToString());
+                        }
+                        HubException hue = new HubException("Exception in PostSINnerFile: " + e.ToString(), e);
+                        //var msg = new System.Net.Http.HttpResponseMessage(HttpStatusCode.Conflict) { ReasonPhrase = e.Message };
+                        return Conflict(hue);
+                    }
                 }
+                
                 List<Guid> myids = (from a in uploadInfo.SINners select a.Id.Value).ToList();
                 switch(returncode)
                 {
@@ -631,7 +641,9 @@ namespace ChummerHub.Controllers.V1
                         break;
                     }
                 }
-                var dbsinner = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights).FirstOrDefaultAsync(e => e.Id == id);
+                var dbsinner = await _context.SINners.Include(a => a.SINnerMetaData.Visibility.UserRights)
+                    .Include(b => b.MyGroup)
+                    .FirstOrDefaultAsync(e => e.Id == id);
                 if (dbsinner != null)
                 { 
                     var editseq = (from a in dbsinner.SINnerMetaData.Visibility.UserRights where a.EMail.ToUpperInvariant() == user.NormalizedEmail select a).ToList();

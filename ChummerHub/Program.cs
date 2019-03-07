@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
@@ -38,11 +39,21 @@ namespace ChummerHub
             return;
         }
 
+       
         private static void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
         {
-            System.Diagnostics.StackTrace st = new System.Diagnostics.StackTrace(true);
-            var tc = new Microsoft.ApplicationInsights.TelemetryClient();
-            tc.TrackTrace("Exception thrown: " + e.Exception.ToString() + " thrown at " + st.ToString());
+            try
+            {
+                System.Diagnostics.StackTrace st = new System.Diagnostics.StackTrace(true);
+                var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                tc.TrackTrace("Exception thrown: " + e.Exception.ToString() + " thrown at " + st.ToString());
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError(ex.ToString(), ex);
+                AggregateException ae = new AggregateException(new List<Exception>() { e.Exception, ex });
+                throw ae;
+            }
         }
 
         public static void Seed()

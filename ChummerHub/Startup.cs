@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using System.Reflection;
 using System.IO;
+using System.Net;
 using ChummerHub.Controllers;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -35,12 +36,15 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.ApplicationInsights.SnapshotCollector;
 using Microsoft.Extensions.Options;
 using Microsoft.ApplicationInsights.AspNetCore;
+using Microsoft.ApplicationInsights.Channel;
+using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 
 namespace ChummerHub
 {
     public class Startup
     {
+        
         private class SnapshotCollectorTelemetryProcessorFactory : ITelemetryProcessorFactory
         {
             private readonly IServiceProvider _serviceProvider;
