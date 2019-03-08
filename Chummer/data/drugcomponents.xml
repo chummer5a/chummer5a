@@ -93,6 +93,16 @@
       <page>411</page>
       <avail>2R</avail>
       <cost>10</cost>
+      <speed>600</speed>
+      <vectors>Inhalation,Injection</vectors>
+      <duration>12-{BOD}</duration>
+      <bonus>
+        <attribute>
+          <name>REA</name>
+          <value>1</value>
+        </attribute>
+        <initiativedice>1</initiativedice>
+      </bonus>
     </drug>
     <drug>
       <id>5f5bc907-ce31-4f34-b7cf-a48d9d5d10b3</id>
@@ -103,6 +113,28 @@
       <page>411</page>
       <avail>8F</avail>
       <cost>400</cost>
+      <speed>1</speed>
+      <vectors>Inhalation,Injection</vectors>
+      <duration>6-{BOD}</duration>
+      <bonus>
+        <attribute>
+          <name>REA</name>
+          <value>1</value>
+        </attribute>
+        <attribute>
+          <name>WIL</name>
+          <value>1</value>
+        </attribute>
+        <limit>
+          <name>Physical</name>
+          <value>-1</value>
+        </limit>
+        <limit>
+          <name>Mental</name>
+          <value>1</value>
+        </limit>
+        <initiativedice>1</initiativedice>
+      </bonus>
     </drug>
     <drug>
       <id>929c4835-1754-4999-9215-9859e8ec5384</id>
@@ -113,6 +145,20 @@
       <page>411</page>
       <avail>2R</avail>
       <cost>75</cost>
+      <speed>1</speed>
+      <vectors>Inhalation</vectors>
+      <duration>10*({D6}*60)</duration>
+      <bonus>
+        <attribute>
+          <name>REA</name>
+          <value>1</value>
+        </attribute>
+        <limit>
+          <name>Physical</name>
+          <value>1</value>
+        </limit>
+        <initiativedice>2</initiativedice>
+      </bonus>
     </drug>
     <drug>
       <id>098bf489-bea9-4f17-b3d9-aead979fdc32</id>
@@ -123,6 +169,37 @@
       <page>412</page>
       <avail>4R</avail>
       <cost>100</cost>
+      <speed>1</speed>
+      <vectors>Inhalation</vectors>
+      <duration>10*({D6}*60)</duration>
+      <bonus>
+        <attribute>
+          <name>AGI</name>
+          <value>1</value>
+        </attribute>
+        <attribute>
+          <name>BOD</name>
+          <value>1</value>
+        </attribute>
+        <attribute>
+          <name>REA</name>
+          <value>1</value>
+        </attribute>
+        <attribute>
+          <name>STR</name>
+          <value>2</value>
+        </attribute>
+        <attribute>
+          <name>WIL</name>
+          <value>1</value>
+        </attribute>
+        <limit>
+          <name>Physical</name>
+          <value>2</value>
+        </limit>
+        <initiativedice>2</initiativedice>
+        <quality rating="3">High Pain Tolerance</quality>
+      </bonus>
     </drug>
     <drug>
       <id>d4cf626d-0af1-41f7-bec0-e53b4dba2eb1</id>
@@ -133,6 +210,9 @@
       <page>412</page>
       <avail>0</avail>
       <cost>50</cost>
+      <speed>600</speed>
+      <vectors>Injection</vectors>
+      <duration>345600</duration>
     </drug>
     <drug>
       <id>d7ec13fa-8601-4f9c-a59c-6a86573b40ee</id>
@@ -143,6 +223,28 @@
       <page>412</page>
       <avail>2R</avail>
       <cost>50</cost>
+      <speed>6</speed>
+      <vectors>Inhalation</vectors>
+      <duration>10*({D6}*60)</duration>
+      <bonus>
+        <attribute>
+          <name>STR</name>
+          <value>2</value>
+        </attribute>
+        <attribute>
+          <name>WIL</name>
+          <value>2</value>
+        </attribute>
+        <limit>
+          <name>Physical</name>
+          <value>2</value>
+        </limit>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>2</bonus>
+        </specificskill>
+        <quality rating="6">High Pain Tolerance</quality>
+      </bonus>
     </drug>
     <drug>
       <id>836f54d5-1e11-49ea-b115-34c14ed843c9</id>
@@ -153,6 +255,28 @@
       <page>412</page>
       <avail>2R</avail>
       <cost>10</cost>
+      <speed>6</speed>
+      <vectors>Inhalation,Injection</vectors>
+      <duration>(10-{BOD})*3600</duration>
+      <bonus>
+        <attribute>
+          <name>CHA</name>
+          <value>1</value>
+        </attribute>
+        <attribute>
+          <name>REA</name>
+          <value>1</value>
+        </attribute>
+        <limit>
+          <name>Social</name>
+          <value>2</value>
+        </limit>
+        <quality rating="1">High Pain Tolerance</quality>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
     </drug>
     <drug>
       <id>778eefae-94ad-4f8c-ad03-8b9039b5c48e</id>
@@ -163,6 +287,23 @@
       <page>412</page>
       <avail>0</avail>
       <cost>200</cost>
+      <speed>600</speed>
+      <vectors>Inhalation,Injection</vectors>
+      <duration>(12-{BOD})*3600</duration>
+      <bonus>
+        <attribute>
+          <name>INT</name>
+          <value>1</value>
+        </attribute>
+        <attribute>
+          <name>LOG</name>
+          <value>1</value>
+        </attribute>
+        <limit>
+          <name>Mental</name>
+          <value>1</value>
+        </limit>
+      </bonus>
     </drug>
     <drug>
       <id>3a946800-be1e-4bbb-899a-c3d1c48a3a31</id>
@@ -173,6 +314,19 @@
       <page>412</page>
       <avail>4R</avail>
       <cost>5</cost>
+      <speed>300</speed>
+      <vectors>Inhalation</vectors>
+      <duration>10*({D6}*60)</duration>
+      <bonus>
+        <attribute>
+          <name>REA</name>
+          <value>-2</value>
+        </attribute>
+        <attribute>
+          <name>WIL</name>
+          <value>1</value>
+        </attribute>
+      </bonus>
     </drug>
     <!-- End Region -->
     <!-- Region Bullets and Bandages-->
