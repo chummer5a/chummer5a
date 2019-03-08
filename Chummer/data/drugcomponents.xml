@@ -63,7 +63,7 @@
       <cost>15</cost>
       <speed>1</speed>
       <vectors>Inhalation,Injection</vectors>
-      <duration>6-{BOD}</duration>
+      <duration>(6-{BOD})*3600</duration>
       <bonus>
         <attribute>
           <name>REA</name>
@@ -95,7 +95,7 @@
       <cost>10</cost>
       <speed>600</speed>
       <vectors>Inhalation,Injection</vectors>
-      <duration>12-{BOD}</duration>
+      <duration>(12-{BOD})*3600</duration>
       <bonus>
         <attribute>
           <name>REA</name>
@@ -115,7 +115,7 @@
       <cost>400</cost>
       <speed>1</speed>
       <vectors>Inhalation,Injection</vectors>
-      <duration>6-{BOD}</duration>
+      <duration>(6-{BOD})*3600</duration>
       <bonus>
         <attribute>
           <name>REA</name>
