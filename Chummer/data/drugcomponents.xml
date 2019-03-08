@@ -147,7 +147,7 @@
       <cost>75</cost>
       <speed>1</speed>
       <vectors>Inhalation</vectors>
-      <duration>10*({D6}*60)</duration>
+      <duration>{D6}*600</duration>
       <bonus>
         <attribute>
           <name>REA</name>
@@ -171,7 +171,7 @@
       <cost>100</cost>
       <speed>1</speed>
       <vectors>Inhalation</vectors>
-      <duration>10*({D6}*60)</duration>
+      <duration>{D6}*600</duration>
       <bonus>
         <attribute>
           <name>AGI</name>
@@ -225,7 +225,7 @@
       <cost>50</cost>
       <speed>6</speed>
       <vectors>Inhalation</vectors>
-      <duration>10*({D6}*60)</duration>
+      <duration>{D6}*600</duration>
       <bonus>
         <attribute>
           <name>STR</name>
@@ -316,7 +316,7 @@
       <cost>5</cost>
       <speed>300</speed>
       <vectors>Inhalation</vectors>
-      <duration>10*({D6}*60)</duration>
+      <duration>{D6}*600</duration>
       <bonus>
         <attribute>
           <name>REA</name>
