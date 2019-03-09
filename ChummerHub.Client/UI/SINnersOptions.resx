@@ -121,10 +121,12 @@
     <value>17, 17</value>
   </metadata>
   <data name="tbHelptext.Text" xml:space="preserve">
-    <value>Every SINner, that gets uploaded by you will have this settings applied to it. Please note, that these visibility and "can edit" settings will be updated for already online characters only, if you upload them again.
+    <value>When this setting is enabled, every character file (SINner) that is saved by your client will be automatically uploaded into ChummerHub, using the Visibility settings above. 
+Changes are NOT retroactive until a character is saved again; if you change your mind about whether your characters should be visible to different users, you'll have to open and save them again. 
+While this plugin is active, you will see an additional tab in the Character view, SINners. This tab controls the groups that the character is visible to, online status, presence in groups and other settings. 
+Important note: Only the owner of a character can make changes to a character in a group. 
+Please note that this feature is PRE ALPHA, and - although we will take all due care with your character files and attempt to maintain backwards compatibility as development progresses - we make no guarantees as to the retention of data and strongly recommend that you keep an offline save of any characters you choose to upload.
 
-You will notice a new SINners-Tabpage when opening the character. There you can upload it manually and join or create a group. All users can see (but not edit) you character, that also have joined the same group with a character.
-
-Please note, that this feature is PRE ALPHA, and - although I will try to be upwards compatible with myself as development progresses - at this point I'm pretty certain, that I will have to wipe the whole database at some point or another.</value>
+That said, we greatly appreciate your patience and feedback as we implement this exciting new feature. </value>
   </data>
 </root>

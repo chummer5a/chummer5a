@@ -267,7 +267,7 @@ namespace ChummerHub.Client.UI
                 {
                     if(LoginStatus == true)
                     {
-                 
+                        
                         var t = GetUserEmail();
                         t.ContinueWith((emailtask) =>
                         {
@@ -487,16 +487,7 @@ namespace ChummerHub.Client.UI
                 }
                 PluginHandler.MainForm.DoThreadSafe(new Action(() =>
                 {
-                    if(Roles.Contains("Administrator"))
-                    {
-
-                        bBackup.Visible = true;
-                    }
-                    else
-                    {
-                        bBackup.Visible = false;
-                    }
-
+                    bBackup.Visible = Roles.Contains("Administrator");
                 }));
                 
                 return roles;
