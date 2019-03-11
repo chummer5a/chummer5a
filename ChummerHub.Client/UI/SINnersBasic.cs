@@ -35,6 +35,7 @@ namespace ChummerHub.Client.UI
         private void SINnersBasicConstructor(SINnersUserControl parent)
         {
             InitializeComponent();
+            this.Name = "SINnersBasic";
             this.bGroupSearch.Enabled = false;
             this.AutoSize = true;
             myUC = parent;
@@ -49,7 +50,7 @@ namespace ChummerHub.Client.UI
             });
         }
 
-        private async Task<bool> CheckSINnerStatus()
+        public async Task<bool> CheckSINnerStatus()
         {
             try
             {
@@ -147,19 +148,30 @@ namespace ChummerHub.Client.UI
 
         private async void bUpload_Click(object sender, EventArgs e)
         {
-            if (bUpload.Text.Contains("Upload"))
+            try
             {
-                await myUC.MyCE.Upload();
-            }
+                if (bUpload.Text.Contains("Upload"))
+                {
+                    await myUC.MyCE.Upload();
+                }
 
-            else
-                await myUC.RemoveSINnerAsync();
+                else
+                    await myUC.RemoveSINnerAsync();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
             CheckSINnerStatus();
         }
 
         private void bGroupSearch_Click(object sender, EventArgs e)
         {
             frmSINnerGroupSearch gs = new frmSINnerGroupSearch(myUC.MyCE);
+            gs.MySINnerGroupSearch.OnGroupJoinCallback += (o, group) =>
+            {
+                this.CheckSINnerStatus().RunSynchronously();
+            };
             var res = gs.ShowDialog();
             
         }

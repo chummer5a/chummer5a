@@ -317,7 +317,12 @@ namespace ChummerHub.Client.UI
                                     Properties.Settings.Default.Save();
                                     FillVisibilityListBox();
                                 }
-                                    
+                                //also, since we are logged in in now, refresh the frmCharacterRoster!
+                                PluginHandler.MainForm.DoThreadSafe(() =>
+                                {
+                                    PluginHandler.MainForm.CharacterRoster.LoadCharacters(true, true, true, true);
+                                });
+                                
                             }
                                 
                         });

@@ -5,6 +5,7 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
+using System.Security.Authentication;
 using System.Threading.Tasks;
 using ChummerHub.API;
 using ChummerHub.Data;
@@ -381,7 +382,7 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SinnersByAuthorization")]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSinnersByAuthorization")]
         [Authorize]
         public async Task<ActionResult<SINSearchResult>> GetSINnersByAuthorization()
         {
@@ -392,7 +393,7 @@ namespace ChummerHub.Controllers
                 if(user == null)
                 {
                     ret.ErrorText = "Unauthorized";
-                    return Unauthorized(ret);
+                    throw new AuthenticationException("User is not authenticated.");
                 }
                 //get all from visibility
                 SINnersList list = new SINnersList();
@@ -453,7 +454,7 @@ namespace ChummerHub.Controllers
             catch (Exception e)
             {
                 ret.ErrorText = e.ToString();
-                return BadRequest(ret);
+                throw;
             }
         }
 

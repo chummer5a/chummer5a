@@ -45,8 +45,10 @@ namespace ChummerHub.Client.UI
             MyCE = new CharacterExtended(mySINner.CharacterObject, null, PluginHandler.MySINnerLoading);
             MyCE.MySINnerFile.SiNnerMetaData.Tags = MyCE.PopulateTags();
             MyCE.ZipFilePath = MyCE.PrepareModel();
-            TabSINnersBasic = new SINnersBasic(this);
-            TabSINnersBasic.Visible = true;
+            TabSINnersBasic = new SINnersBasic(this)
+            {
+                Visible = true
+            };
             TabSINnersAdvanced = new SINnersAdvanced(this);
 #if DEBUG
             TabSINnersAdvanced.Visible = true;

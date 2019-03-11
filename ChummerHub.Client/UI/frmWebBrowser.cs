@@ -29,10 +29,8 @@ namespace ChummerHub.Client.UI
                 if(String.IsNullOrEmpty(Properties.Settings.Default.SINnerUrl))
                 {
                     Properties.Settings.Default.SINnerUrl = "https://sinners.azurewebsites.net/";
-#if DEBUG
                     string msg = "if you are (want to be) a Beta-Tester, change this to http://sinners-beta.azurewebsites.net/!";
                     System.Diagnostics.Trace.TraceWarning(msg);
-#endif
                     Properties.Settings.Default.Save();
                 }
                 string path = Properties.Settings.Default.SINnerUrl.TrimEnd('/');

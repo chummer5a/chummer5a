@@ -1,4 +1,10 @@
-Future Build 1.0.0.2
+Future Build 1.0.0.3
+
+Application Changes:
+
+- creating a new character with the plugin enabled no longer crashes the program
+
+Build 1.0.0.2
 
 WebService Changes:
 

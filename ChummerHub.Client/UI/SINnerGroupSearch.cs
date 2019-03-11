@@ -20,6 +20,7 @@ namespace ChummerHub.Client.UI
     public partial class SINnerGroupSearch : UserControl
     {
         public CharacterExtended MyCE { get; set; }
+        public EventHandler<SINnerGroup> OnGroupJoinCallback = null;
         public SINnerGroupSearch()
         {
             InitializeComponent();
@@ -35,8 +36,6 @@ namespace ChummerHub.Client.UI
                     var test = a.Result;
                     SearchForGroups(test.Groupname, null, null);
                 });
-
-
             });
         }
 
@@ -80,7 +79,10 @@ namespace ChummerHub.Client.UI
                         {
                             var getgroup = await StaticUtils.Client.GetGroupByIdWithHttpMessagesAsync(id);
                             MyCE.MySINnerFile.MyGroup = getgroup.Body;
-                            MessageBox.Show("Group " + getgroup.Body.Groupname + "joined!");
+                            if (OnGroupJoinCallback != null)
+                                OnGroupJoinCallback(this, getgroup.Body);
+                            MessageBox.Show("Group " + getgroup.Body.Groupname + " joined!");
+
                         }
                         else
                         {
@@ -204,6 +206,8 @@ namespace ChummerHub.Client.UI
                         }
                         else
                         {
+                            if (OnGroupJoinCallback != null)
+                                OnGroupJoinCallback(this, item.MyParentGroup);
                             System.Diagnostics.Trace.TraceInformation(
                                 "Char " + MyCE.MyCharacter.CharacterName + " joined group " + item.Groupname + ".");
                         }

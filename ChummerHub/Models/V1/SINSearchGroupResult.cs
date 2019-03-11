@@ -19,6 +19,11 @@ namespace ChummerHub.Models.V1
 
     public class SINnerSearchGroup : SINnerGroup
     {
+
+        public SINnerSearchGroup MySINSearchGroup { get; set; }
+
+        public string ErrorText { get; set; }
+
         public List<SINnerSearchGroupMember> MyMembers { get; set; }
 
         public SINnerSearchGroup()

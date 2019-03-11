@@ -236,8 +236,7 @@ namespace ChummerHub.Client.Model
 
         public string PrepareModel()
         {
-            MySINnerFile.UploadDateTime = DateTime.Now;
-            string zipPath = Path.Combine(Path.GetTempPath(), "SINner", MySINnerFile.Id.Value + ".chum5z");
+            string zipPath = Path.Combine(Path.GetTempPath(), "SINner", MySINnerFile.Id + ".chum5z");
             if (PluginHandler.MySINnerLoading != null)
             {
                 if (MySINnerIds.ContainsKey(MyCharacter.Alias))
@@ -258,6 +257,10 @@ namespace ChummerHub.Client.Model
                 MySINnerIds.Add(MyCharacter.Alias, MySINnerFile.Id.Value);
                 MySINnerIds = MySINnerIds; //Save it!
             }
+            zipPath = Path.Combine(Path.GetTempPath(), "SINner", MySINnerFile.Id.Value + ".chum5z");
+            MySINnerFile.UploadDateTime = DateTime.Now;
+            
+
 
             MySINnerFile.Alias = MyCharacter.CharacterName;
             MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
@@ -285,6 +288,8 @@ namespace ChummerHub.Client.Model
                 }
             }
 
+            if (!File.Exists(MyCharacter.FileName))
+                return null;
 
             var tempDir = Path.Combine(Path.GetTempPath(), "SINner", MySINnerFile.Id.Value.ToString());
             if (!Directory.Exists(tempDir))

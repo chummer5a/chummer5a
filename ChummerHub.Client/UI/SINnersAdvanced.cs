@@ -35,6 +35,7 @@ namespace ChummerHub.Client.UI
         private void SINnersAdvancedConstructor(SINnersUserControl parent)
         {
             InitializeComponent();
+            this.Name = "SINnersAdvanced";
             this.AutoSize = true;
             this.cbSINnerUrl.SelectedIndex = 0;
             MySINnersUsercontrol = parent;

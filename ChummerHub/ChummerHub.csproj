@@ -3,11 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <UserSecretsId>572ea518-a8ec-422d-b9f3-8817088ece8c</UserSecretsId>
-    <AssemblyVersion>1.0.0.2</AssemblyVersion>
+    <AssemblyVersion>1.0.0.3</AssemblyVersion>
     <FileVersion>1.0.0.2</FileVersion>
     <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
     <ApplicationInsightsResourceId>/subscriptions/40a6e5b5-2e4f-4003-8763-099db581b842/resourcegroups/SINners/providers/microsoft.insights/components/SINners</ApplicationInsightsResourceId>
     <ApplicationInsightsAnnotationResourceId>/subscriptions/40a6e5b5-2e4f-4003-8763-099db581b842/resourcegroups/SINners/providers/microsoft.insights/components/SINners</ApplicationInsightsAnnotationResourceId>
+    <PackageProjectUrl>https://sinners.azurewebsites.net/</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
