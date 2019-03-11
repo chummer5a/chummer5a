@@ -30,6 +30,7 @@ namespace ChummerHub.Models.V1
         public SINnerGroup()
         {
             //MySINners = new List<SINner>();
+            MyGroups = new List<SINnerGroup>();
         }
 
         //public List<SINner> MySINners { get; set; }

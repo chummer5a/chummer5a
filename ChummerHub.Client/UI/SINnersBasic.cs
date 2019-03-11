@@ -170,7 +170,11 @@ namespace ChummerHub.Client.UI
             frmSINnerGroupSearch gs = new frmSINnerGroupSearch(myUC.MyCE);
             gs.MySINnerGroupSearch.OnGroupJoinCallback += (o, group) =>
             {
-                this.CheckSINnerStatus().RunSynchronously();
+                if (this.CheckSINnerStatus().Result == true)
+                {
+                    MessageBox.Show("Status and group refreshed!");
+                }
+
             };
             var res = gs.ShowDialog();
             

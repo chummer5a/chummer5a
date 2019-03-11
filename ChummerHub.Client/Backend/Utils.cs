@@ -307,6 +307,14 @@ namespace ChummerHub.Client.Backend
                             {
                                 if (objListNode != null)
                                     MyOnlineTreeNode.Nodes.Add(objListNode);
+                                else
+                                {
+                                    TreeNode node = new TreeNode("no owned chummers found");
+                                    node.Tag = "";
+                                    node.Name = "no owned chummers found";
+                                    node.ToolTipText = "To upload a chummer go into the sinners-tabpage after opening a character and press upload (and wait a bit).";
+                                    MyOnlineTreeNode.Nodes.Add(node);
+                                }
                             });
                         }
                     }

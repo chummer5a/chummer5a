@@ -229,7 +229,36 @@ namespace Chummer.Plugins
 
         public async Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(ConcurrentDictionary<string, frmCharacterRoster.CharacterCache> CharDic, bool forceUpdate)
         {
-            return await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(CharDic, forceUpdate);
+            try
+            {
+                return await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(CharDic, forceUpdate);
+            }
+            catch(Microsoft.Rest.SerializationException e)
+            {
+                if (e.Content.Contains("Log in - ChummerHub"))
+                {
+                    TreeNode node = new TreeNode("Online, but not logged in!");
+                    node.ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login";
+                    node.Tag = e;
+                    return new List<TreeNode>() { node };
+                }
+                else
+                {
+                    TreeNode node = new TreeNode("Error: " + e.Message);
+                    node.ToolTipText = e.ToString();
+                    node.Tag = e;
+                    return new List<TreeNode>() { node };
+                }
+            }
+            catch(Exception e)
+            {
+                TreeNode node = new TreeNode("Error: " + e.Message);
+                node.ToolTipText = e.ToString();
+                node.Tag = e;
+                return new List<TreeNode>() { node };
+            }
+            
+            
         }
 
         public void CustomInitialize(frmChummerMain mainControl)

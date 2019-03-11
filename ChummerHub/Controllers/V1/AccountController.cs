@@ -425,29 +425,29 @@ namespace ChummerHub.Controllers
                     list.MySINnersList.Add(owndSINner);
                 }
 
-                //get all that are viewable but NOT editable
-                SINnerList viewlist = new SINnerList();
-                viewlist.Header = "View";
-                List<SINner> myViewSinners = await SINner.GetSINnersFromUser(user, _context, false);
-                foreach(var sin in myViewSinners)
-                {
-                    bool found = false;
-                    foreach(var sinlist in list.MySINnersList)
-                    {
-                        if (sinlist.SINner == sin)
-                        {
-                            found = true;
-                            break; 
-                        }
-                    }
-                    if (!found)
-                    {
-                        SINnerList childviewlist = new SINnerList();
-                        childviewlist.SINner = sin;
-                        viewlist.SINList.Add(childviewlist);
-                    }
-                }
-                list.MySINnersList.Add(viewlist);
+                ////get all that are viewable but NOT editable
+                //SINnerList viewlist = new SINnerList();
+                //viewlist.Header = "View";
+                //List<SINner> myViewSinners = await SINner.GetSINnersFromUser(user, _context, false);
+                //foreach(var sin in myViewSinners)
+                //{
+                //    bool found = false;
+                //    foreach(var sinlist in list.MySINnersList)
+                //    {
+                //        if (sinlist.SINner == sin)
+                //        {
+                //            found = true;
+                //            break; 
+                //        }
+                //    }
+                //    if (!found)
+                //    {
+                //        SINnerList childviewlist = new SINnerList();
+                //        childviewlist.SINner = sin;
+                //        viewlist.SINList.Add(childviewlist);
+                //    }
+                //}
+                //list.MySINnersList.Add(viewlist);
                 ret.SINLists.Add(list);
                 return Ok(ret);
             }
