@@ -9546,5 +9546,21 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
 			<key>String_ExpenseUpgradedCyberware</key>
 			<text>Cyberware modernisé</text>
 		</string>
+		<string>
+			<key>Message_OrphanedImprovements</key>
+			<text>Il y a des améliorations dans votre fichier de personnages qui ne peuvent pas être assignées. Dans la plupart des cas, il ne devrait pas être risqué de charger ce personnage. Mais vous devez faire une copie de sauvegarde de ce fichier de personnage.\n\nVoulez-vous continuer à charger le personnage et effacer ces améliorations ?</text>
+		</string>
+		<string>
+			<key>MessageTitle_OrphanedImprovements</key>
+			<text>Des améliorations inattribuables sont présentes</text>
+		</string>
+		<string>
+			<key>Checkbox_Wireless</key>
+			<text>WiFi activé</text>
+		</string>
+		<string>
+			<key>String_Wireless</key>
+			<text>WiFi</text>
+		</string>
 	</strings>
 </chummer>

@@ -3219,6 +3219,12 @@
 				<translate>Ätherologie</translate>
 				<altcode>AET</altcode>
 			</book>
+			<book>
+				<id>e65d69fd-8717-4e2b-88b0-73bf7a22bca0</id>
+				<name>No Future</name>
+				<translate>Lifestyle 2080</translate>
+				<altcode>NF</altcode>
+			</book>
 		</books>
 	</chummer>
 	<chummer file="critterpowers.xml">
