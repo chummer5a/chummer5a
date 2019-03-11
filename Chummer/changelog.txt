@@ -1,3 +1,13 @@
+Future Build 206
+
+UI Changes:
+
+- Fixed some behaviour with non-maximised windows to prevent new windows from being opened maximised, or windows being maximised on gaining focus. 
+
+Data Changes:
+
+- Fixed incorrect spelling of Limit Modifiers on the Retractable Climbing Claws cyberware.
+
 Build 205
 
 Application Changes:
