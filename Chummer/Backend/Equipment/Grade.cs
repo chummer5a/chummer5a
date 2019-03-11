@@ -17,7 +17,9 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Xml;
 
 namespace Chummer.Backend.Equipment
@@ -55,7 +57,12 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             if (!objNode.TryGetField("id", Guid.TryParse, out _guidSourceId))
             {
-                XmlNode xmlDataNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml", GlobalOptions.Language).SelectSingleNode("/chummer/grades/grade[name = " + Name.CleanXPath() + "]");
+                var xmlDataNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware
+                        ? "bioware.xml"
+                        : _eSource == Improvement.ImprovementSource.Drug
+                            ? "drugcomponents.xml"
+                            : "cyberware.xml", GlobalOptions.Language)
+                    .SelectSingleNode("/chummer/grades/grade[name = " + Name.CleanXPath() + "]");
                 if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guidSourceId) != true)
                     _guidSourceId = Guid.NewGuid();
             }
@@ -91,12 +98,33 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml", strLanguage).SelectSingleNode("/chummer/grades/grade[id = \"" + SourceId.ToString("D") + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : _eSource == Improvement.ImprovementSource.Drug ? "drugcomponents.xml" : "cyberware.xml", strLanguage).SelectSingleNode("/chummer/grades/grade[id = \"" + SourceId.ToString("D") + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
         }
         #endregion
+
+        #region Helper Methods
+        /// <summary>
+        /// Convert a string to a Grade.
+        /// </summary>
+        /// <param name="strValue">String value to convert.</param>
+        /// <param name="objSource">Source representing whether this is a cyberware, drug or bioware grade.</param>
+        /// <param name="objCharacter">Character from which to fetch a grade list</param>
+        public static Grade ConvertToCyberwareGrade(string strValue, Improvement.ImprovementSource objSource, Character objCharacter)
+        {
+            IList<Grade> lstGrades = objCharacter.GetGradeList(objSource, true);
+            foreach (Grade objGrade in lstGrades)
+            {
+                if (objGrade.Name == strValue)
+                    return objGrade;
+            }
+
+            return lstGrades.FirstOrDefault(x => x.Name == "Standard");
+        }
+        #endregion
+
 
         #region Properties
         /// <summary>

@@ -124,7 +124,7 @@ namespace Chummer
             {
                 Name = txtDrugName.Text,
                 Category = "Custom Drug",
-                Grade = cboGrade.SelectedValue.ToString()
+                Grade = Grade.ConvertToCyberwareGrade(cboGrade.SelectedValue.ToString(),Improvement.ImprovementSource.Drug,_objCharacter)
             };
 
             foreach (clsNodeData objNodeData in _lstSelectedDrugComponents)

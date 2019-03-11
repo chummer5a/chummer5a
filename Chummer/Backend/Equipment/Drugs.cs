@@ -116,6 +116,8 @@ namespace Chummer.Backend.Equipment
             objXmlData.TryGetField("guid", Guid.TryParse, out _guiID);
             objXmlData.TryGetStringFieldQuickly("name", ref _strName);
             objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
+            Grade = Grade.ConvertToCyberwareGrade(objXmlData["grade"]?.InnerText, Improvement.ImprovementSource.Drug, _objCharacter);
+
             XmlNodeList xmlComponentsNodeList = objXmlData.SelectNodes("drugcomponents/drugcomponent");
             if (xmlComponentsNodeList?.Count > 0)
             {
@@ -167,7 +169,7 @@ namespace Chummer.Backend.Equipment
                 objXmlWriter.WriteElementString("rating", _intAddictionRating.ToString());
             if (_intAddictionThreshold != 0)
                 objXmlWriter.WriteElementString("threshold", _intAddictionThreshold.ToString());
-            objXmlWriter.WriteElementString("grade", _strGrade);
+            objXmlWriter.WriteElementString("grade", Grade.Name);
             objXmlWriter.WriteElementString("sortorder", _intSortOrder.ToString());
             objXmlWriter.WriteElementString("stolen", _blnStolen.ToString());
             objXmlWriter.WriteElementString("source", _strSource);
@@ -189,7 +191,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("category_english", Category);
-            objWriter.WriteElementString("grade", Grade);
+            objWriter.WriteElementString("grade", Grade.DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("qty", Quantity.ToString( "#,0.##", objCulture));
             objWriter.WriteElementString("addictionthreshold", AddictionThreshold.ToString(objCulture));
             objWriter.WriteElementString("addictionrating", AddictionRating.ToString(objCulture));
@@ -263,13 +265,9 @@ namespace Chummer.Backend.Equipment
         public string InternalId => _guiID.ToString();
 
         /// <summary>
-        /// Grade of the Drug.
+        /// Grade level of the Cyberware.
         /// </summary>
-        public string Grade
-        {
-            get => _strGrade;
-            set => _strGrade = value;
-        }
+        public Grade Grade { get; set; }
 
         /// <summary>
         /// Compiled description of the drug.

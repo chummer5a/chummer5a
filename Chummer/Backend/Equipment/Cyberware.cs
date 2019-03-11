@@ -109,26 +109,6 @@ namespace Chummer.Backend.Equipment
 
         private readonly Character _objCharacter;
 
-        #region Helper Methods
-        /// <summary>
-        /// Convert a string to a Grade.
-        /// </summary>
-        /// <param name="strValue">String value to convert.</param>
-        /// <param name="objSource">Source representing whether this is a cyberware or bioware grade.</param>
-        /// <param name="objCharacter">Character from which to fetch a grade list</param>
-        public static Grade ConvertToCyberwareGrade(string strValue, Improvement.ImprovementSource objSource, Character objCharacter)
-        {
-            IList<Grade> lstGrades = objCharacter.GetGradeList(objSource, true);
-            foreach (Grade objGrade in lstGrades)
-            {
-                if (objGrade.Name == strValue)
-                    return objGrade;
-            }
-
-            return lstGrades.FirstOrDefault(x => x.Name == "Standard");
-        }
-        #endregion
-
         #region Constructor, Create, Save, Load, and Print Methods
         public Cyberware(Character objCharacter)
         {
@@ -956,7 +936,7 @@ namespace Chummer.Backend.Equipment
             }
             objNode.TryGetStringFieldQuickly("subsystems", ref _strAllowSubsystems);
             if (objNode["grade"] != null)
-                _objGrade = ConvertToCyberwareGrade(objNode["grade"].InnerText, _objImprovementSource, _objCharacter);
+                _objGrade = Grade.ConvertToCyberwareGrade(objNode["grade"].InnerText, _objImprovementSource, _objCharacter);
             objNode.TryGetStringFieldQuickly("location", ref _strLocation);
             if (!objNode.TryGetStringFieldQuickly("extra", ref _strExtra) && _strLocation != "Left" && _strLocation != "Right")
             {
@@ -1011,7 +991,7 @@ namespace Chummer.Backend.Equipment
             {
                 _strForceGrade = GetNode()?["forcegrade"]?.InnerText;
                 if (!string.IsNullOrEmpty(_strForceGrade))
-                    _objGrade = ConvertToCyberwareGrade(_strForceGrade, _objImprovementSource, _objCharacter);
+                    _objGrade = Grade.ConvertToCyberwareGrade(_strForceGrade, _objImprovementSource, _objCharacter);
             }
             if (objNode["weaponguid"] != null)
             {
@@ -2142,7 +2122,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (!string.IsNullOrWhiteSpace(ForceGrade) && ForceGrade != _objGrade.Name)
                 {
-                    return ConvertToCyberwareGrade(ForceGrade, SourceType, _objCharacter);
+                    return Grade.ConvertToCyberwareGrade(ForceGrade, SourceType, _objCharacter);
                 }
                 return _objGrade;
             }
