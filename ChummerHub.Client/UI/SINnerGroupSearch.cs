@@ -20,6 +20,7 @@ namespace ChummerHub.Client.UI
     public partial class SINnerGroupSearch : UserControl
     {
         public CharacterExtended MyCE { get; set; }
+        public EventHandler<SINnerGroup> OnGroupJoinCallback = null;
         public SINnerGroupSearch()
         {
             InitializeComponent();
@@ -27,17 +28,24 @@ namespace ChummerHub.Client.UI
 
         private void bCreateGroup_Click(object sender, EventArgs e)
         {
-            var task = CreateGroup(this.tbSearchGroupname.Text);
-            task.ContinueWith(a =>
+            try
             {
-                PluginHandler.MainForm.DoThreadSafe(() =>
+                var task = CreateGroup(this.tbSearchGroupname.Text);
+                task.ContinueWith(a =>
                 {
-                    var test = a.Result;
-                    SearchForGroups(test.Groupname, null, null);
+                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    {
+                        var test = a.Result;
+                        SearchForGroups(test.Groupname, null, null);
+                    });
                 });
-
-
-            });
+            }
+            catch(Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError(ex.ToString(), ex);
+                MessageBox.Show(ex.ToString());
+            }
+            
         }
 
         private async Task<SINnerGroup> CreateGroup(string groupname)
@@ -80,7 +88,10 @@ namespace ChummerHub.Client.UI
                         {
                             var getgroup = await StaticUtils.Client.GetGroupByIdWithHttpMessagesAsync(id);
                             MyCE.MySINnerFile.MyGroup = getgroup.Body;
-                            MessageBox.Show("Group " + getgroup.Body.Groupname + "joined!");
+                            if (OnGroupJoinCallback != null)
+                                OnGroupJoinCallback(this, getgroup.Body);
+                            MessageBox.Show("Group " + getgroup.Body.Groupname + " joined!");
+
                         }
                         else
                         {
@@ -204,6 +215,8 @@ namespace ChummerHub.Client.UI
                         }
                         else
                         {
+                            if (OnGroupJoinCallback != null)
+                                OnGroupJoinCallback(this, item.MyParentGroup);
                             System.Diagnostics.Trace.TraceInformation(
                                 "Char " + MyCE.MyCharacter.CharacterName + " joined group " + item.Groupname + ".");
                         }

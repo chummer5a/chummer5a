@@ -58,6 +58,22 @@ namespace SINners
         /// </param>
         Task<HttpOperationResponse<ApplicationUser>> GetUserByEmailWithHttpMessagesAsync(string email = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <param name='username'>
+        /// </param>
+        /// <param name='password'>
+        /// </param>
+        /// <param name='startIpAddress'>
+        /// </param>
+        /// <param name='endIpAddress'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<string>> GetAddSqlDbUserWithHttpMessagesAsync(string username = default(string), string password = default(string), string startIpAddress = default(string), string endIpAddress = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
         /// <param name='email'>
         /// </param>
         /// <param name='userrole'>
@@ -193,6 +209,28 @@ namespace SINners
         /// <summary>
         /// Store the new group
         /// </summary>
+        /// <param name='groupId'>
+        /// </param>
+        /// <param name='groupname'>
+        /// In case you want to rename the group
+        /// </param>
+        /// <param name='parentGroupId'>
+        /// </param>
+        /// <param name='adminIdentityRole'>
+        /// </param>
+        /// <param name='isPublicVisible'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<SINner>> PutGroupInGroupWithHttpMessagesAsync(Guid? groupId = default(Guid?), string groupname = default(string), Guid? parentGroupId = default(Guid?), string adminIdentityRole = default(string), bool? isPublicVisible = default(bool?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Store the new group
+        /// </summary>
         /// <param name='groupname'>
         /// </param>
         /// <param name='sinnerId'>
@@ -249,6 +287,19 @@ namespace SINners
         /// The cancellation token.
         /// </param>
         Task<HttpOperationResponse<SINSearchGroupResult>> GetSearchGroupsWithHttpMessagesAsync(string groupname = default(string), string usernameOrEmail = default(string), string sINnerName = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Search for all members and subgroups of a group
+        /// </summary>
+        /// <param name='groupid'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<SINSearchGroupResult>> GetGroupMembersWithHttpMessagesAsync(Guid? groupid = default(Guid?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <param name='searchTag'>
         /// </param>

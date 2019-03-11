@@ -21,13 +21,16 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the SINnerGroup class.
         /// </summary>
-        public SINnerGroup(Guid? id = default(Guid?), bool? isPublic = default(bool?), string gameMasterUsername = default(string), SINnerGroupSetting mySettings = default(SINnerGroupSetting), string groupname = default(string))
+        public SINnerGroup(Guid? id = default(Guid?), bool? isPublic = default(bool?), string gameMasterUsername = default(string), SINnerGroupSetting mySettings = default(SINnerGroupSetting), string groupname = default(string), IList<SINnerGroup> myGroups = default(IList<SINnerGroup>), SINnerGroup myParentGroup = default(SINnerGroup), string myAdminIdentityRole = default(string))
         {
             Id = id;
             IsPublic = isPublic;
             GameMasterUsername = gameMasterUsername;
             MySettings = mySettings;
             Groupname = groupname;
+            MyGroups = myGroups;
+            MyParentGroup = myParentGroup;
+            MyAdminIdentityRole = myAdminIdentityRole;
         }
 
         /// <summary>
@@ -54,6 +57,22 @@ namespace SINners.Models
         /// </summary>
         [JsonProperty(PropertyName = "groupname")]
         public string Groupname { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "myGroups")]
+        public IList<SINnerGroup> MyGroups { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "myParentGroup")]
+        public SINnerGroup MyParentGroup { get; set; }
+
+        /// <summary>
+        /// Only users of the specified Role can join this group
+        /// </summary>
+        [JsonProperty(PropertyName = "myAdminIdentityRole")]
+        public string MyAdminIdentityRole { get; set; }
 
     }
 }

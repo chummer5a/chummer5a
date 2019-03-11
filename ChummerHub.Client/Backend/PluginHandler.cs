@@ -14,6 +14,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Xml;
@@ -69,6 +70,7 @@ namespace Chummer.Plugins
             SINnersUserControl uc = new SINnersUserControl();
             var ce = uc.SetCharacterFrom(input);
             TabPage page = new TabPage("SINners");
+            page.Name = "SINners";
             page.Controls.Add(uc);
             return new List<TabPage>() { page };
         }
@@ -78,6 +80,7 @@ namespace Chummer.Plugins
             SINnersUserControl uc = new SINnersUserControl();
             var ce = uc.SetCharacterFrom(input);
             TabPage page = new TabPage("SINners");
+            page.Name = "SINners";
             page.Controls.Add(uc);
             return new List<TabPage>() { page };
         }
@@ -117,6 +120,36 @@ namespace Chummer.Plugins
                 input.OnSaveCompleted -= MyOnSaveUpload;
                 CharacterExtended ce = new CharacterExtended(input, null);
                 await ce.Upload();
+                var found = (from a in MainForm.OpenCharacterForms where a.CharacterObject == input select a)
+                    .FirstOrDefault();
+                if (found == null)
+                {
+                    return;
+                }
+                TabPage tabPage = null;
+                if ((found is frmCreate frm) && (frm.TabCharacterTabs.TabPages.ContainsKey("SINners")))
+                {
+                    var index = frm.TabCharacterTabs.TabPages.IndexOfKey("SINners");
+                    tabPage = frm.TabCharacterTabs.TabPages[index];
+                }
+
+                if ((found is frmCareer frm2) && (frm2.TabCharacterTabs.TabPages.ContainsKey("SINners")))
+                {
+                    var index = frm2.TabCharacterTabs.TabPages.IndexOfKey("SINners");
+                    tabPage = frm2.TabCharacterTabs.TabPages[index];
+                }
+
+                if (tabPage == null)
+                    return;
+                var ucseq = tabPage.Controls.Find("SINnersBasic", true);
+                foreach (var uc in ucseq)
+                {
+                    var sb = uc as SINnersBasic;
+                    if (sb != null)
+                        await sb?.CheckSINnerStatus();
+                }
+                var ucseq2 = tabPage.Controls.Find("SINnersAdvanced", true);
+
             }
             catch(Exception e)
             {
@@ -196,7 +229,36 @@ namespace Chummer.Plugins
 
         public async Task<IEnumerable<TreeNode>> GetCharacterRosterTreeNode(ConcurrentDictionary<string, frmCharacterRoster.CharacterCache> CharDic, bool forceUpdate)
         {
-            return await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(CharDic, forceUpdate);
+            try
+            {
+                return await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(CharDic, forceUpdate);
+            }
+            catch(Microsoft.Rest.SerializationException e)
+            {
+                if (e.Content.Contains("Log in - ChummerHub"))
+                {
+                    TreeNode node = new TreeNode("Online, but not logged in!");
+                    node.ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login";
+                    node.Tag = e;
+                    return new List<TreeNode>() { node };
+                }
+                else
+                {
+                    TreeNode node = new TreeNode("Error: " + e.Message);
+                    node.ToolTipText = e.ToString();
+                    node.Tag = e;
+                    return new List<TreeNode>() { node };
+                }
+            }
+            catch(Exception e)
+            {
+                TreeNode node = new TreeNode("Error: " + e.Message);
+                node.ToolTipText = e.ToString();
+                node.Tag = e;
+                return new List<TreeNode>() { node };
+            }
+            
+            
         }
 
         public void CustomInitialize(frmChummerMain mainControl)

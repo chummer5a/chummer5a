@@ -27,13 +27,11 @@ namespace ChummerHub.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var configurationBuilder = new ConfigurationBuilder()
-                .SetBasePath(HostingEnvironment.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-            Configuration = configurationBuilder.Build();
+            
             if(!optionsBuilder.IsConfigured)
             {
-                if(HostingEnvironment == null)
+                
+                if (HostingEnvironment == null)
                 {
                     string constring = "Server=(localdb)\\mssqllocaldb;Database=SINners_DB;Trusted_Connection=True;MultipleActiveResultSets=true";
                     optionsBuilder.UseSqlServer(constring);
@@ -41,6 +39,10 @@ namespace ChummerHub.Data
                 }
                 else
                 {
+                    var configurationBuilder = new ConfigurationBuilder()
+                        .SetBasePath(HostingEnvironment.ContentRootPath)
+                        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                    Configuration = configurationBuilder.Build();
                     optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
                 }
             }

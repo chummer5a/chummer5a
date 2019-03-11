@@ -30,6 +30,7 @@ namespace ChummerHub.Models.V1
         public SINnerGroup()
         {
             //MySINners = new List<SINner>();
+            MyGroups = new List<SINnerGroup>();
         }
 
         //public List<SINner> MySINners { get; set; }
@@ -53,6 +54,15 @@ namespace ChummerHub.Models.V1
                 throw;
             }
         }
+
+        public List<SINnerGroup> MyGroups { get; set; }
+
+        public SINnerGroup MyParentGroup { get; set; }
+
+        /// <summary>
+        /// Only users of the specified Role can join this group
+        /// </summary>
+        public string MyAdminIdentityRole { get; set; }
 
         //public async Task<List<SINerUserRight>> GetUserRights(ApplicationDbContext context)
         //{

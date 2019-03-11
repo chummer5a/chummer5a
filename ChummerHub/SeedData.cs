@@ -38,8 +38,26 @@ namespace ChummerHub
                     await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.UserRoleRegistered, null, null);
                     await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.UserRoleArchetype, null, null);
                 }
+
+                CreateViews(context);
                 context.SaveChanges();
             }
+        }
+
+        private static void CreateViews(ApplicationDbContext context)
+        {
+            /*
+              DROP VIEW dbo.ViewSINners
+              CREATE VIEW dbo.ViewSINners as
+                    SELECT dbo.SINners.Id, dbo.SINners.MyGroupId, dbo.SINners.GoogleDriveFileId, dbo.SINners.Alias, dbo.SINners.JsonSummary, dbo.SINners.UploadClientId, dbo.SINners.LastChange, dbo.SINners.UploadDateTime, 
+                          dbo.SINners.DownloadUrl, dbo.SINners.SINnerMetaDataId, dbo.SINnerMetaData.VisibilityId, dbo.UserRights.CanEdit, dbo.UserRights.EMail, dbo.UserRights.SINnerId, dbo.SINnerVisibility.IsPublic AS SINnerIsPublic, 
+                          dbo.SINnerVisibility.IsGroupVisible, dbo.SINnerGroups.IsPublic AS GroupIsPublic, dbo.SINnerGroups.Groupname, dbo.SINnerGroups.MyAdminIdentityRole, dbo.SINnerGroups.MyParentGroupId
+                        FROM            dbo.SINners LEFT OUTER JOIN
+                          dbo.SINnerMetaData ON dbo.SINners.SINnerMetaDataId = dbo.SINnerMetaData.Id INNER JOIN
+                          dbo.SINnerVisibility ON dbo.SINnerMetaData.VisibilityId = dbo.SINnerVisibility.Id INNER JOIN
+                          dbo.SINnerGroups ON dbo.SINners.MyGroupId = dbo.SINnerGroups.Id LEFT OUTER JOIN
+                          dbo.UserRights ON dbo.SINnerVisibility.Id = dbo.UserRights.SINnerVisibilityId
+             */
         }
 
         /// <summary>
