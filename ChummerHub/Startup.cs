@@ -267,18 +267,6 @@ namespace ChummerHub
                 })
                 .AddAuthorization();
 
-//            services.AddAuthentication("Bearer")
-//                .AddIdentityServerAuthentication(options =>
-//                {
-//#if DEBUG
-//                    options.Authority = "http://localhost:5000";
-//#else
-//                    options.Authority = "http://sinners.azurewebsites.net";
-//#endif
-//                    options.RequireHttpsMetadata = false;
-//                    options.ApiName = "api1";
-//                });
-
             services.AddApiVersioning(o =>
             {
                 o.ReportApiVersions = true;

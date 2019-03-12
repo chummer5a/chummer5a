@@ -493,6 +493,7 @@ namespace ChummerHub.Client.UI
                 PluginHandler.MainForm.DoThreadSafe(new Action(() =>
                 {
                     bBackup.Visible = Roles.Contains("Administrator");
+                    bRestore.Visible = Roles.Contains("Administrator");
                 }));
                 
                 return roles;

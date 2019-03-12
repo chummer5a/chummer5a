@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.ApplicationInsights.DataContracts;
 
 namespace ChummerHub
 {
@@ -39,20 +40,44 @@ namespace ChummerHub
             return;
         }
 
+        private static bool _preventOverflow = false;
        
         private static void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
         {
             try
             {
-                System.Diagnostics.StackTrace st = new System.Diagnostics.StackTrace(true);
-                var tc = new Microsoft.ApplicationInsights.TelemetryClient();
-                tc.TrackTrace("Exception thrown: " + e.Exception.ToString() + " thrown at " + st.ToString());
+                if (_preventOverflow)
+                    return;
+                _preventOverflow = true;
+                if (!e.Exception.Message.Contains("Non-static method requires a target."))
+                {
+
+                    string msg = e.Exception.ToString() + Environment.NewLine + Environment.NewLine;
+                    System.Diagnostics.Trace.TraceError(msg, e.Exception);
+                    Console.WriteLine(msg);
+                    System.Diagnostics.Debug.WriteLine(msg);
+                    System.Diagnostics.StackTrace st = new System.Diagnostics.StackTrace(true);
+                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    ExceptionTelemetry et = new ExceptionTelemetry(e.Exception);
+                    tc.TrackException(et);
+                }
+                else
+                {
+                    System.Diagnostics.Debugger.Break();
+                }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.TraceError(ex.ToString(), ex);
-                AggregateException ae = new AggregateException(new List<Exception>() { e.Exception, ex });
-                throw ae;
+                string msg = ex.ToString() + Environment.NewLine + Environment.NewLine;
+                System.Diagnostics.Trace.TraceError(msg, ex);
+                Console.WriteLine(msg);
+                System.Diagnostics.Debug.WriteLine(msg);
+                //AggregateException ae = new AggregateException(new List<Exception>() { e.Exception, ex });
+                //throw ae;
+            }
+            finally
+            {
+                _preventOverflow = false;
             }
         }
 

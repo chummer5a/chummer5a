@@ -116,7 +116,8 @@ namespace ChummerHub.Client.UI
             this.cbSINnerUrl.FormattingEnabled = true;
             this.cbSINnerUrl.Items.AddRange(new object[] {
             "https://sinners.azurewebsites.net/",
-            "https://localhost:5001/"});
+            "https://localhost:5001/",
+            "https://sinners-beta.azurewebsites.net/"});
             this.cbSINnerUrl.Location = new System.Drawing.Point(354, 19);
             this.cbSINnerUrl.Name = "cbSINnerUrl";
             this.cbSINnerUrl.Size = new System.Drawing.Size(294, 21);
