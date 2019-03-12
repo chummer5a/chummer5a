@@ -76,7 +76,7 @@ namespace Chummer
             }
         }
 
-        private void frmSelectArmorMod_Load(object sender, EventArgs e)
+        private void frmSelectEquipment_Load(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {

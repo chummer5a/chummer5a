@@ -24,7 +24,7 @@ using System.Xml;
 
 namespace Chummer
 {
-    public partial class frmSelectArmorMod : Form
+    public partial class frmSelectArmorMod : frmSelectEquipment
     {
         private bool _blnLoading = true;
         private string _strSelectedArmorMod = string.Empty;
@@ -43,7 +43,8 @@ namespace Chummer
         private readonly HashSet<string> _setBlackMarketMaps;
 
         #region Control Events
-        public frmSelectArmorMod(Character objCharacter)
+        public frmSelectArmorMod(Character objCharacter, object objParentNode = null, string strAllowedCategories = "") :
+                            base(objCharacter, "armor.xml", "mods/mod", objParentNode, strAllowedCategories)
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);

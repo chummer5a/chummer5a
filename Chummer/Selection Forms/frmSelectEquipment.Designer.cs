@@ -597,7 +597,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectArmorMod";
             this.Text = "Select an Armor Mod";
-            this.Load += new System.EventHandler(this.frmSelectArmorMod_Load);
+            this.Load += new System.EventHandler(this.frmSelectEquipment_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
