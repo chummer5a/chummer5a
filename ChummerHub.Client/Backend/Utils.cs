@@ -197,21 +197,17 @@ namespace ChummerHub.Client.Backend
                         {
                             if (!StaticUtils.IsUnitTest)
                                 return null;
-                            Properties.Settings.Default.SINnerUrl = "https://sinners.azurewebsites.net/";
+                            Properties.Settings.Default.SINnerUrl = "https://sinners-beta.azurewebsites.net/";
                         }
-                            
                         ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
                         ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-                        //ServiceClientCredentials credentials = new TokenCredentials("Bearer");
                         Uri baseUri = new Uri(Properties.Settings.Default.SINnerUrl);
                         Microsoft.Rest.ServiceClientCredentials credentials = new MyCredentials();
-                        //ServiceClientCredentials creds = new ServiceClientCredentials();
                         DelegatingHandler delegatingHandler = new MyMessageHandler();
                         HttpClientHandler httpClientHandler = new HttpClientHandler();
                         httpClientHandler.CookieContainer = AuthorizationCookieContainer;
                         _client = new SINnersClient(baseUri, credentials, httpClientHandler, delegatingHandler);
                         var version = _client.GetVersion();
-                        //var version = _client.GetVersionWithHttpMessagesAsync().Result;
                         System.Diagnostics.Trace.TraceInformation("Connected to SINners in version " + version.AssemblyVersion + ".");
                     }
                     catch (Exception ex)
@@ -288,7 +284,10 @@ namespace ChummerHub.Client.Backend
                     var content = await response.Response.Content.ReadAsStringAsync();
                     msg += Environment.NewLine + "Content: " + content;
                     System.Diagnostics.Trace.TraceWarning(msg);
-                    MyOnlineTreeNode.ToolTipText = msg;
+                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    {
+                        MyOnlineTreeNode.ToolTipText = msg;
+                    });
                     return new List<TreeNode>() { MyOnlineTreeNode };
                 }
                 if (response == null || response.Body == null || response.Body?.SinLists == null)
@@ -323,10 +322,17 @@ namespace ChummerHub.Client.Backend
                         System.Diagnostics.Trace.TraceWarning("Could not deserialize CharacterCache-Object: " + e.ToString());
                     }
                 }
-                if (MyOnlineTreeNode.Nodes.Count > 0)
-                    return MyTreeNodeList = new List<TreeNode>() { MyOnlineTreeNode };
-                else
-                    return MyTreeNodeList = null;
+                if (MyOnlineTreeNode.Nodes.Count == 0)
+                {
+                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    {
+                        TreeNode node = new TreeNode("Online, but no chummers uploaded");
+                        node.Tag = node.Text;
+                        node.ToolTipText = "To upload a chummer, open it go to the sinners-tabpage and click upload (and wait a bit).";
+                        MyOnlineTreeNode.Nodes.Add(node);
+                    });
+                }
+                return MyTreeNodeList = new List<TreeNode>() { MyOnlineTreeNode };
             }
             catch (Exception ex)
             {

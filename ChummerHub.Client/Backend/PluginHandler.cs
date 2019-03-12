@@ -252,7 +252,7 @@ namespace Chummer.Plugins
             }
             catch(Exception e)
             {
-                TreeNode node = new TreeNode("Error: " + e.Message);
+                TreeNode node = new TreeNode("SINners Error: please log in");
                 node.ToolTipText = e.ToString();
                 node.Tag = e;
                 return new List<TreeNode>() { node };
