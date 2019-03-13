@@ -24,6 +24,8 @@ namespace ChummerHub.Client.UI
         public SINnerGroupSearch()
         {
             InitializeComponent();
+            bCreateGroup.Enabled = false;
+            bJoinGroup.Enabled = false;
         }
 
         private void bCreateGroup_Click(object sender, EventArgs e)
@@ -122,41 +124,90 @@ namespace ChummerHub.Client.UI
 
         private void bSearch_Click(object sender, EventArgs e)
         {
-            SearchForGroups(this.tbSearchGroupname.Text, this.tbSearchByUsername.Text, this.tbSearchByAlias.Text);
+            try
+            {
+                using (new CursorWait(true, this))
+                {
+                    this.bSearch.Text = "searching";
+                    var result = SearchForGroups(this.tbSearchGroupname.Text, this.tbSearchByUsername.Text, this.tbSearchByAlias.Text).Result;
+                    this.bCreateGroup.Enabled = !result;
+                    this.bJoinGroup.Enabled = result;
+                }
+            }
+            catch(Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError(ex.Message, ex);
+                MessageBox.Show(e.ToString());
+            }
+            finally
+            {
+                this.bSearch.Text = "Search";
+            }
+            
         }
 
-        private void SearchForGroups(string groupname, string user, string alias)
+        private async Task<bool> SearchForGroups(string groupname, string user, string alias)
         {
-            var task = SearchForGroupsTask(groupname, user, alias);
-            task.ContinueWith(a =>
+            try
             {
+                if (user == "not implemented yet")
+                    user = null;
+                if (alias == "not implemented yet")
+                    alias = null;
+                var a = await SearchForGroupsTask(groupname, user, alias);
                 PluginHandler.MainForm.DoThreadSafe(() =>
                 {
-                    var test = a.Result.SinGroups;
-                    this.lbGroupSearchResult.DataSource = test;
-                    this.lbGroupSearchResult.DisplayMember = "Groupname";
-                    if (this.lbGroupSearchResult.Items.Count > 0)
+                    try
                     {
-                        this.lbGroupSearchResult.SelectedItem = this.lbGroupSearchResult.Items[0];
+                        var test = a.SinGroups;
+                        this.lbGroupSearchResult.DataSource = test;
+                        this.lbGroupSearchResult.DisplayMember = "Groupname";
+                        if (this.lbGroupSearchResult.Items.Count > 0)
+                        {
+                            this.lbGroupSearchResult.SelectedItem = this.lbGroupSearchResult.Items[0];
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        System.Diagnostics.Trace.TraceError(e.Message, e);
+                        throw;
                     }
                 });
-            });
+                return a.SinGroups.Any();
+            }
+            catch(Exception e)
+            {
+                System.Diagnostics.Trace.TraceError(e.Message, e);
+                throw;
+            }
+            
         }
 
         private async Task<SINSearchGroupResult> SearchForGroupsTask(string groupname, string userName, string sinnername)
         {
-            SINSearchGroupResult ssgr = null;
-            var response = await StaticUtils.Client.GetSearchGroupsWithHttpMessagesAsync(groupname, userName, sinnername);
-            if((response.Response.StatusCode == HttpStatusCode.OK))
+            try
             {
-                return response.Body;
+
+
+                SINSearchGroupResult ssgr = null;
+                var response = await StaticUtils.Client.GetSearchGroupsWithHttpMessagesAsync(groupname, userName, sinnername);
+                if ((response.Response.StatusCode == HttpStatusCode.OK))
+                {
+                    return response.Body;
+                }
+                else
+                {
+                    var rescontent = await response.Response.Content.ReadAsStringAsync();
+                    MessageBox.Show(rescontent);
+                }
+                return ssgr;
             }
-            else
+            catch(Exception e)
             {
-                var rescontent = await response.Response.Content.ReadAsStringAsync();
-                MessageBox.Show(rescontent);
+                System.Diagnostics.Trace.TraceError(e.Message, e);
+                MessageBox.Show(e.ToString());
             }
-            return ssgr;
+            return null;
         }
 
      

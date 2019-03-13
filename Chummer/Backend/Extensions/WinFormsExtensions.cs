@@ -36,10 +36,21 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DoThreadSafe(this Control objControl, Action funcToRun)
         {
-            if (objControl?.InvokeRequired == true)
-                objControl.Invoke(funcToRun);
-            else
-                funcToRun.Invoke();
+            try
+            {
+                if (objControl?.InvokeRequired == true)
+                    objControl.Invoke(funcToRun);
+                else
+                    funcToRun.Invoke();
+            }
+            catch(Exception e)
+            {
+                System.Diagnostics.Trace.TraceError(e.Message, e);
+                Console.WriteLine(e.ToString());
+#if DEBUG
+                MessageBox.Show(e.ToString());
+#endif
+            }
         }
 
         /// <summary>

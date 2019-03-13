@@ -74,7 +74,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                    await StaticUtils.Client.DeleteAsync(MyCE.MySINnerFile.Id.Value);
+                await StaticUtils.Client.DeleteAsync(MyCE.MySINnerFile.Id.Value);
             }
             catch (Exception ex)
             {

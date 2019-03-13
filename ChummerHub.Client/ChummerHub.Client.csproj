@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backend\ApiKeyCredentials.cs" />
+    <Compile Include="Backend\CursorWait.cs" />
     <Compile Include="Backend\PluginHandler.cs" />
     <Compile Include="Backend\Search\SearchTagExtractor.cs" />
     <Compile Include="Backend\Utils.cs" />

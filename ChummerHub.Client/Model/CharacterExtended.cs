@@ -151,8 +151,6 @@ namespace ChummerHub.Client.Model
         {
             try
             {
-
-
                 var found = await StaticUtils.Client.GetSINByIdWithHttpMessagesAsync(this.MySINnerFile.Id.Value);
                 if(found.Response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
@@ -164,7 +162,6 @@ namespace ChummerHub.Client.Model
                         //is already up to date!
                         return true;
                     }
-
                 }
                 this.MySINnerFile.SiNnerMetaData.Tags = this.PopulateTags();
                 this.PrepareModel();
@@ -331,59 +328,73 @@ namespace ChummerHub.Client.Model
    
         public void UploadInBackground()
         {
-            this.PopulateTags();
-            this.PrepareModel();
-            ChummerHub.Client.Backend.Utils.PostSINnerAsync(this).ContinueWith((posttask) =>
+            try
             {
-                if(posttask.Status != TaskStatus.RanToCompletion)
+                Cursor.Current = Cursors.AppStarting;
+                this.PopulateTags();
+                this.PrepareModel();
+                ChummerHub.Client.Backend.Utils.PostSINnerAsync(this).ContinueWith((posttask) =>
                 {
-                    if(posttask.Exception != null)
-                        throw posttask.Exception;
-                    return;
-                }
-                var jsonResultString = posttask.Result.Response.Content.ReadAsStringAsync().Result;
-                try
-                {
-                    Object objIds = Newtonsoft.Json.JsonConvert.DeserializeObject<Object>(jsonResultString);
-                    System.Collections.ICollection ids = objIds as System.Collections.ICollection;
-                    if(ids == null || ids.Count == 0)
+                    if (posttask.Status != TaskStatus.RanToCompletion)
                     {
-                        string msg = "ChummerHub did not return a valid Id for sinner " + this.MyCharacter.Name + ".";
-                        System.Diagnostics.Trace.TraceError(msg);
-                        throw new ArgumentException(msg);
-                    }
-                    var cur = ids.GetEnumerator();
-                    cur.MoveNext();
-                    if(!Guid.TryParse(cur.Current.ToString(), out var sinGuid))
-                    {
-                        string msg = "ChummerHub did not return a valid IdArray for sinner " + this.MyCharacter.Alias + ".";
-                        System.Diagnostics.Trace.TraceError(msg);
-                        throw new ArgumentException(msg);
-                    }
-                    this.MySINnerFile.Id = sinGuid;
-                }
-                catch(Exception ex)
-                {
-                    System.Diagnostics.Trace.TraceError(ex.ToString());
-                    throw;
-                }
-                System.Diagnostics.Trace.TraceInformation("Character " + this.MyCharacter.Alias + " posted with ID " + this.MySINnerFile.Id);
-                ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(this).ContinueWith((uploadtask) =>
-                {
-                    if(uploadtask.Status != TaskStatus.RanToCompletion)
-                    {
-                        if(uploadtask.Exception != null)
-                            throw uploadtask.Exception;
+                        if (posttask.Exception != null)
+                            throw posttask.Exception;
                         return;
                     }
-                    if(uploadtask.Result?.Response?.StatusCode != HttpStatusCode.OK)
+                    var jsonResultString = posttask.Result.Response.Content.ReadAsStringAsync().Result;
+                    try
                     {
-                        System.Diagnostics.Trace.TraceWarning("Upload failed for Character " + this.MyCharacter.Alias + ": " + uploadtask.Result?.Response?.StatusCode);
+                        Object objIds = Newtonsoft.Json.JsonConvert.DeserializeObject<Object>(jsonResultString);
+                        System.Collections.ICollection ids = objIds as System.Collections.ICollection;
+                        if (ids == null || ids.Count == 0)
+                        {
+                            string msg = "ChummerHub did not return a valid Id for sinner " + this.MyCharacter.Name + ".";
+                            System.Diagnostics.Trace.TraceError(msg);
+                            throw new ArgumentException(msg);
+                        }
+                        var cur = ids.GetEnumerator();
+                        cur.MoveNext();
+                        if (!Guid.TryParse(cur.Current.ToString(), out var sinGuid))
+                        {
+                            string msg = "ChummerHub did not return a valid IdArray for sinner " + this.MyCharacter.Alias + ".";
+                            System.Diagnostics.Trace.TraceError(msg);
+                            throw new ArgumentException(msg);
+                        }
+                        this.MySINnerFile.Id = sinGuid;
                     }
-                    else
-                        System.Diagnostics.Trace.TraceInformation("Character " + this.MyCharacter.Alias + " uploaded.");
-                });
-            }).ConfigureAwait(false);
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Trace.TraceError(ex.ToString());
+                        throw;
+                    }
+                    System.Diagnostics.Trace.TraceInformation("Character " + this.MyCharacter.Alias + " posted with ID " + this.MySINnerFile.Id);
+                    ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(this).ContinueWith((uploadtask) =>
+                    {
+                        if (uploadtask.Status != TaskStatus.RanToCompletion)
+                        {
+                            if (uploadtask.Exception != null)
+                                throw uploadtask.Exception;
+                            return;
+                        }
+                        if (uploadtask.Result?.Response?.StatusCode != HttpStatusCode.OK)
+                        {
+                            System.Diagnostics.Trace.TraceWarning("Upload failed for Character " + this.MyCharacter.Alias + ": " + uploadtask.Result?.Response?.StatusCode);
+                        }
+                        else
+                            System.Diagnostics.Trace.TraceInformation("Character " + this.MyCharacter.Alias + " uploaded.");
+                    });
+                }).ConfigureAwait(false);
+            }
+            catch(Exception e)
+            {
+                System.Diagnostics.Trace.TraceError(e.Message, e);
+                Console.WriteLine(e.ToString());
+                MessageBox.Show(e.ToString());
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
         }
 
     }
